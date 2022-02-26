@@ -14,7 +14,6 @@ jobs:
           node-version: "16.x"
       - name: Build project
         run: |
-          cd client
           npm install
           npm run build
           mkdir -p tmp/client
@@ -25,10 +24,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: upload client
-          path: client/tmp/client.zip
+          path: tmp/client.zip
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: client/tmp/client.zip application/zip
+          args: tmp/client.zip application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
