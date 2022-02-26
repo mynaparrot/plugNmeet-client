@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script src="./assets/config.js"></script>
+</head>
+<body>
+<div class="container mx-auto">
+    <div class="mt-5">
+        <form action="#" method="POST" id="loginForm">
+            <div class="shadow overflow-hidden sm:rounded-md">
+                <div class="px-4 py-5 bg-white sm:p-6">
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6 sm:col-span-3">
+                            <label
+                                    for="api_key"
+                                    class="block text-sm font-medium text-gray-700"
+                            >plugNmeet API Key</label
+                            >
+                            <input
+                                    type="text"
+                                    name="api_key"
+                                    id="api_key"
+                                    value="plugnmeet"
+                                    required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            />
+                        </div>
+
+                        <div class="col-span-6 sm:col-span-3">
+                            <label
+                                    for="api_secret"
+                                    class="block text-sm font-medium text-gray-700"
+                            >plugNmeet API Secret</label
+                            >
+                            <input
+                                    type="text"
+                                    name="api_secret"
+                                    id="api_secret"
+                                    value="zumyyYWqv7KR2kUqvYdq4z4sXg7XTBD2ljT6"
+                                    required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-6 gap-6 mt-5">
+                        <div class="col-span-6 sm:col-span-3">
+                            <label
+                                    for="room_id"
+                                    class="block text-sm font-medium text-gray-700"
+                            >Select room</label
+                            >
+                            <select
+                                    id="room_id"
+                                    name="room_id"
+                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            >
+                                <option value="room01">Room 1</option>
+                                <option value="room02">Room 2</option>
+                                <option value="room03">Room 3</option>
+                                <option value="room04">Room 4</option>
+                                <option value="room05">Room 5</option>
+                                <option value="room06">Room 6</option>
+                                <option value="room07">Room 7</option>
+                                <option value="room08">Room 8</option>
+                                <option value="room09">Room 9</option>
+                                <option value="room10">Room 10</option>
+                                <option value="room11">Room 11</option>
+                                <option value="room12">Room 12</option>
+                                <option value="room13">Room 13</option>
+                                <option value="room14">Room 14</option>
+                                <option value="room15">Room 15</option>
+                            </select>
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label
+                                    for="user_type"
+                                    class="block text-sm font-medium text-gray-700"
+                            >User type</label
+                            >
+                            <select
+                                    id="user_type"
+                                    name="user_type"
+                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            >
+                                <option value="admin">Admin</option>
+                                <option value="participant">Participant</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-6 gap-6 mt-5">
+                        <div class="col-span-6 sm:col-span-3">
+                            <label
+                                    for="name"
+                                    class="block text-sm font-medium text-gray-700"
+                            >Name</label
+                            >
+                            <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            />
+                        </div>
+
+                        <div class="col-span-6 sm:col-span-3">
+                            <label
+                                    for="user_id"
+                                    class="block text-sm font-medium text-gray-700"
+                            >User Id</label
+                            >
+                            <input
+                                    type="text"
+                                    name="user_id"
+                                    id="user_id"
+                                    required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                    <button
+                            type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Join
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const loginForm = document.getElementById('loginForm');
+    let API_KEY, API_SECRET;
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+
+        const roomInfo = {
+            room_id: data.get('room_id'),
+            empty_timeout: 60 * 60 * 2,
+            metadata: {
+                room_title: 'Demo room',
+                welcome_message: 'Welcome to plugNmeet!<br /> To share microphone click mic icon from bottom left side.',
+                //webhook_url: "http://example.com",
+                room_features: {
+                    allow_webcams: true,
+                    mute_on_start: false,
+                    allow_screen_share: true,
+                    allow_recording: true,
+                    allow_rtmp: true,
+                    admin_only_webcams: false,
+                    allow_view_other_webcams: true,
+                    allow_view_other_users_list: true,
+                    chat_features: {
+                        allow_chat: true,
+                        allow_file_upload: true,
+                        max_file_size: 50,
+                        allowed_file_types: ['jpg', 'png', 'zip'],
+                    },
+                },
+                // default_lock_settings: {
+                //     lock_microphone: true,
+                //     lock_screen_sharing: true,
+                //     lock_webcam: true,
+                //     lock_chat_file_share: true,
+                //     lock_chat_send_message: true
+                // }
+            },
+        };
+
+        const userInfo = {
+            is_admin: data.get('user_type') === 'admin',
+            name: data.get('name'),
+            user_id: data.get('user_id'),
+        };
+
+        API_KEY = data.get('api_key');
+        API_SECRET = data.get('api_secret');
+
+        processRequest(roomInfo, userInfo);
+    });
+
+    processRequest = async (roomInfo, userInfo) => {
+        // let's check if room is active or not
+        const isRoomActiveReq = {
+            room_id: roomInfo.room_id,
+        };
+
+        let isRoomActive = false;
+        const res = await sendRequest(isRoomActiveReq, 'room/isRoomActive');
+        isRoomActive = res.status;
+
+        // if not active then we'll create
+        if (!isRoomActive) {
+            const roomCreateRes = await sendRequest(roomInfo, 'room/create');
+            isRoomActive = roomCreateRes.status;
+        }
+
+        // if room active then we'll join
+        if (isRoomActive) {
+            const getJoinTokenReq = {
+                room_id: roomInfo.room_id,
+                user_info: userInfo,
+            };
+
+            const roomCreateRes = await sendRequest(
+                getJoinTokenReq,
+                'room/getJoinToken',
+            );
+
+            if (roomCreateRes.status) {
+                window.location.href = '/?access_token=' + roomCreateRes.token;
+            } else {
+                console.log(roomCreateRes.msg);
+                alert("Can't get token");
+            }
+        }
+    };
+
+    sendRequest = async (body, method) => {
+        let headers = {
+            'Content-Type': 'application/json',
+            'API-KEY': API_KEY,
+            'API-SECRET': API_SECRET,
+        };
+
+        const response = await fetch(
+            window.PLUG_N_MEET_SERVER_URL + '/auth/' + method,
+            {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body),
+            },
+        );
+
+        if (response.status !== 200) {
+            alert(response.statusText);
+            console.log(response.json());
+            return;
+        }
+
+        return await response.json();
+    };
+</script>
+</body>
+</html>

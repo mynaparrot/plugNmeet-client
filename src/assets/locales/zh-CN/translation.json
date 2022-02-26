@@ -1,0 +1,166 @@
+{
+  "ok": "是",
+  "close": "关闭",
+  "cancel": "取消",
+  "join": "加入",
+  "share": "分享",
+  "notifications": {
+    "room-not-active": "房间没有激活",
+    "recording-already-running": "录制程序已经在运行",
+    "recording-not-running": "录制程序没有运行",
+    "no-recorder-available": "没有录制记录",
+    "recording-started": "录制开始",
+    "recording-ended": "录制结束",
+    "recording-ended-with-error": "录制结束错误",
+    "rtmp-started": "RTMP 直播开始",
+    "rtmp-ended": "RTMP 直播结束",
+    "rtmp-ended-with-error": "直播结束错误"
+  },
+  "room-metadata": {
+    "session-recording": "此会议正在被录制",
+    "session-not-recording": "此会议已经不在被录制",
+    "rtmp-started": "此会议使用RTMP进行直播",
+    "rtmp-stopped": "此会议停止使用RTMP进行直播"
+  },
+  "header": {
+    "menus": {
+      "settings": "设置",
+      "logout": "登出",
+      "end": "结束",
+      "alert": {
+        "confirm": "确定吗?",
+        "logout": "你将要离开会议.",
+        "end": "你将要关闭会议. 所有用户将要离线."
+      }
+    },
+    "room-settings": {
+      "title": "会议室设置",
+      "data-savings": "节省数据流量",
+      "notifications": "提醒",
+      "show-webcams": "显示摄像头",
+      "show-screen-share": "显示屏幕分享",
+      "allow-audio-notification": "允许声音提醒"
+    }
+  },
+  "app": {
+    "how-to-join": "选择怎样的方式加入?",
+    "microphone": "话筒",
+    "listen-only": "只是听",
+    "token-missing-title": "缺少访问token",
+    "token-missing-des": "需要访问token,但是缺失",
+    "verification-failed-title": "验证失败!",
+    "token-not-valid": "Token 无效!",
+    "connecting": "连接中...",
+    "re-connecting": "重新连接中...",
+    "checking": "检测中...",
+    "loading": "下载中...",
+    "connected": "已连接",
+    "ready": "就绪"
+  },
+  "left-panel": {
+    "participants": "参会人员 ({{total}})",
+    "menus": {
+      "items": {
+        "ask-to-share-microphone": "请求分享麦克",
+        "share-microphone": "分享麦克风",
+        "ask-to-unmute-mic": "请求静音",
+        "unmute-mic": "取消静音",
+        "mute-mic": "静音麦克风",
+        "ask-to-share-webcam": "请求分享摄像头",
+        "ask-to-stop-webcam": "请求停止分享摄像头",
+        "share-webcam": "分享摄像头",
+        "stop-webcam": "停止分享摄像头",
+        "unlock-microphone": "解锁麦克风",
+        "lock-microphone": "禁用麦克风",
+        "unlock-webcam": "解锁摄像头",
+        "lock-webcam": "禁用摄像头",
+        "unlock-screen-sharing": "解锁屏幕分享",
+        "lock-screen-sharing": "禁用屏幕分享",
+        "unlock-chat": "解锁聊天",
+        "lock-chat": "禁用聊天",
+        "unlock-send-chat-message": "解锁发送聊天消息",
+        "lock-send-chat-message": "禁用发送聊天消息",
+        "unlock-send-file": "解锁发送文件",
+        "lock-send-file": "禁用发送文件",
+        "remove-participant": "移除参会人员"
+      },
+      "notice": {
+        "participant-removed": "参会人员已经移除",
+        "confirm": "确定要移除 {{name}}?",
+        "remove": "移除",
+        "asked-you-to": "{{name}} 请求你 ",
+        "you-have-asked": "你请求 {{name}} 去 ",
+        "you-have-muted-to": "你已经将 {{name}} 设置为静音",
+        "applied-new-setting": "应用了新的禁用设置"
+      }
+    }
+  },
+  "right-panel": {
+    "you": "You",
+    "uploading-file": "上传中 {{fileName}}",
+    "file-upload-success": "文件上传成功",
+    "chat-box-placeholder": "写消息 (换行: Shift + enter)"
+  },
+  "footer": {
+    "icons": {
+      "start-webcam": "启用摄像头",
+      "leave-webcam": "关闭摄像头",
+      "webcam-locked": "摄像头被禁用",
+      "start-microphone-sharing": "开始分享麦克风",
+      "microphone-locked": "麦克风被禁用",
+      "leave-microphone": "关闭麦克风",
+      "hide-users-list": "隐藏用户列表",
+      "show-users-list": "显示用户列表",
+      "hide-chat-panel": "隐藏聊天窗口",
+      "show-chat-panel": "显示聊天窗口",
+      "stop-screen-sharing": "停止分享屏幕",
+      "start-screen-sharing": "开始分享屏幕",
+      "screen-sharing-locked": "分享屏幕被禁用",
+      "lower-hand": "取消举手",
+      "raise-hand": "举手",
+      "stop-recording": "结束录制",
+      "start-recording": "开始录制",
+      "stop-rtmp-broadcasting": "结束 RTMP 直播",
+      "start-rtmp-broadcasting": "开始 RTMP 直播"
+    },
+    "menus": {
+      "mute-all-users": "静音所有用户",
+      "room-lock-settings": "会议室禁用设置",
+      "mute-microphone": "静音麦克风",
+      "unmute-microphone": "取消静音麦克风",
+      "leave-microphone": "关闭麦克风",
+      "leave-webcam": "关闭摄像头"
+    },
+    "notice": {
+      "already-active-screen-sharing": "已经有一个屏幕在分享",
+      "start-recording-progress": "准备开始录制视频",
+      "recording-not-start": "录制视频没有开始",
+      "stop-recording-service-in-progress": "准备停止录制视频",
+      "recording-did-not-stop": "录制视频没有停止",
+      "has-raised-hand": "{{user}} 在举手",
+      "you-raised-hand": "你已经举手",
+      "muted-all-microphone": "所有麦克风静音",
+      "applied-settings": "应用新的禁用设置",
+      "rtmp-starting": "RTMP 直播启动中，请等待",
+      "rtmp-ending": "RTMP 直播关闭中. 请等待"
+    },
+    "modal": {
+      "lock-settings-title": "会议室禁用功能设置",
+      "lock-microphone": "禁用麦克风",
+      "lock-webcams": "禁用摄像头",
+      "lock-screen-sharing": "禁用屏幕分享",
+      "lock-chat": "禁用聊天",
+      "lock-send-message": "禁用发送消息",
+      "lock-chat-file-share": "禁用发送文件",
+      "rtmp-title": "RTMP 直播",
+      "rtmp-select-provider": "选择直播平台",
+      "rtmp-server-url": "服务器 URL",
+      "rtmp-stream-key": "Stream Key/Secret",
+      "rtmp-start-broadcast": "开始直播",
+      "rtmp-close-confirm": "确定要结束直播?",
+      "rtmp-close-msg": "你将要结束RTMP直播",
+      "select-microphone": "选择一个麦克风",
+      "select-webcam": "选择一个摄像头"
+    }
+  }
+}

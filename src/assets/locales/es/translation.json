@@ -1,0 +1,166 @@
+{
+  "ok": "Ok",
+  "close": "Cerrar",
+  "cancel": "Cancelar",
+  "join": "Unirse",
+  "share": "Compartir",
+  "notifications": {
+    "room-not-active": "La sala no está activa.",
+    "recording-already-running": "la grabación ya se está ejecutando",
+    "recording-not-running": "la grabación no se ejecuta",
+    "no-recorder-available": "no hay grabadora disponible",
+    "recording-started": "Grabación iniciada",
+    "recording-ended": "Grabación finalizada",
+    "recording-ended-with-error": "Grabación finalizada con error",
+    "rtmp-started": "Comenzó la transmisión RTMP",
+    "rtmp-ended": "Finalizó la transmisión RTMP",
+    "rtmp-ended-with-error": "La transmisión RTMP finalizó con un error"
+  },
+  "room-metadata": {
+    "session-recording": "Esta sesión se está grabando",
+    "session-not-recording": "Esta sesión ya no se está grabando",
+    "rtmp-started": "Esta sesión se está transmitiendo usando RTMP",
+    "rtmp-stopped": "Esta sesión ya no se transmite por RTMP"
+  },
+  "header": {
+    "menus": {
+      "settings": "Configuraciones",
+      "logout": "Cerrar sesión",
+      "end": "Fin",
+      "alert": {
+        "confirm": "¿Estás seguro?",
+        "logout": "Está a punto de salir de la sesión.",
+        "end": "Está a punto de finalizar la sesión. Todos los usuarios serán desconectados."
+      }
+    },
+    "room-settings": {
+      "title": "Configuraciones de la sala",
+      "data-savings": "Ahorro de datos",
+      "notifications": "Notificaciones",
+      "show-webcams": "Mostrar cámaras web",
+      "show-screen-share": "Mostrar pantalla compartida",
+      "allow-audio-notification": "Permitir notificación de audio"
+    }
+  },
+  "app": {
+    "how-to-join": "¿Cómo te gustaría unirte?",
+    "microphone": "Micrófono",
+    "listen-only": "Solo escuchar",
+    "token-missing-title": "Falta el token de acceso",
+    "token-missing-des": "Se requiere token de acceso que falta",
+    "verification-failed-title": "¡Fallo en la verificación!",
+    "token-not-valid": "¡El token no es válido!",
+    "connecting": "conectando...",
+    "re-connecting": "volviendo a conectar...",
+    "checking": "comprobando...",
+    "loading": "cargando...",
+    "connected": "conectado",
+    "ready": "listo"
+  },
+  "left-panel": {
+    "participants": "Participantes ({{total}})",
+    "menus": {
+      "items": {
+        "ask-to-share-microphone": "Pedir compartir Micrófono",
+        "share-microphone": "compartir micrófono",
+        "ask-to-unmute-mic": "Solicitar activar el micrófono",
+        "unmute-mic": "Activar micrófono",
+        "mute-mic": "Silenciar micrófono",
+        "ask-to-share-webcam": "Pedir compartir cámara web",
+        "ask-to-stop-webcam": "Solicitar detener la cámara web",
+        "share-webcam": "compartir cámara web",
+        "stop-webcam": "detener la cámara web",
+        "unlock-microphone": "Desbloquear micrófono",
+        "lock-microphone": "Bloquear micrófono",
+        "unlock-webcam": "Desbloquear cámara web",
+        "lock-webcam": "Bloquear cámara web",
+        "unlock-screen-sharing": "Desbloquear pantalla compartida",
+        "lock-screen-sharing": "Compartir pantalla de bloqueo",
+        "unlock-chat": "Desbloquear chat",
+        "lock-chat": "Bloquear chat",
+        "unlock-send-chat-message": "Desbloquear enviar mensaje de chat",
+        "lock-send-chat-message": "Bloquear enviar mensaje de chat",
+        "unlock-send-file": "Desbloquear enviar archivo",
+        "lock-send-file": "Bloquear enviar archivo",
+        "remove-participant": "Quitar participante"
+      },
+      "notice": {
+        "participant-removed": "Participante eliminado",
+        "confirm": "¿Estás seguro de eliminar {{name}}?",
+        "remove": "Eliminar",
+        "asked-you-to": "{{name}} te pidió ",
+        "you-have-asked": "Tú has preguntado a {{name}} para ",
+        "you-have-muted-to": "Has silenciado el micrófono a {{name}}",
+        "applied-new-setting": "Nueva configuración de bloqueo aplicada"
+      }
+    }
+  },
+  "right-panel": {
+    "you": "You",
+    "uploading-file": "Cargando {{fileName}}",
+    "file-upload-success": "El archivo ha sido subido correctamente",
+    "chat-box-placeholder": "Escribe un mensaje (nueva línea: Shift + enter)"
+  },
+  "footer": {
+    "icons": {
+      "start-webcam": "Iniciar cámara web",
+      "leave-webcam": "Dejar cámara web",
+      "webcam-locked": "Cámara web bloqueada",
+      "start-microphone-sharing": "Empezar a compartir el micrófono",
+      "microphone-locked": "Micrófono bloqueado",
+      "leave-microphone": "Dejar Micrófono",
+      "hide-users-list": "Ocultar lista de usuarios",
+      "show-users-list": "Mostrar lista de usuarios",
+      "hide-chat-panel": "Ocultar panel de chat",
+      "show-chat-panel": "Mostrar panel de chat",
+      "stop-screen-sharing": "Dejar de compartir pantalla",
+      "start-screen-sharing": "Empezar a compartir pantalla",
+      "screen-sharing-locked": "Pantalla compartida bloqueada",
+      "lower-hand": "Mano baja",
+      "raise-hand": "Levantar la mano",
+      "stop-recording": "Parar de grabar",
+      "start-recording": "Empezar a grabar",
+      "stop-rtmp-broadcasting": "Detener la transmisión RTMP",
+      "start-rtmp-broadcasting": "Iniciar transmisión RTMP"
+    },
+    "menus": {
+      "mute-all-users": "Silenciar a todos los usuarios",
+      "room-lock-settings": "Configuración de bloqueo de sala",
+      "mute-microphone": "Micrófono silenciado",
+      "unmute-microphone": "Activar micrófono",
+      "leave-microphone": "Dejar Micrófono",
+      "leave-webcam": "Dejar cámara web"
+    },
+    "notice": {
+      "already-active-screen-sharing": "La sesión ya tiene un uso compartido de pantalla activo",
+      "start-recording-progress": "Comenzar a grabar el servicio en curso",
+      "recording-not-start": "La grabación no comenzó",
+      "stop-recording-service-in-progress": "Detener el servicio de grabación en curso",
+      "recording-did-not-stop": "La grabación no se detuvo",
+      "has-raised-hand": "{{user}} ha levantado la mano",
+      "you-raised-hand": "Tú has levantado la mano",
+      "muted-all-microphone": "Silenciados todos los micrófonos",
+      "applied-settings": "Nueva configuración de bloqueo aplicada",
+      "rtmp-starting": "La transmisión RTMP está comenzando. Espere por favor",
+      "rtmp-ending": "La transmisión RTMP está finalizando. Espere por favor"
+    },
+    "modal": {
+      "lock-settings-title": "Configuración de bloqueo de sala",
+      "lock-microphone": "Bloquear micrófono",
+      "lock-webcams": "Bloquear cámaras web",
+      "lock-screen-sharing": "Uso compartido de la pantalla de bloqueo",
+      "lock-chat": "Bloquear chat",
+      "lock-send-message": "Bloquear enviar mensaje",
+      "lock-chat-file-share": "Bloquear el uso compartido de archivos de chat",
+      "rtmp-title": "Transmisión RTMP",
+      "rtmp-select-provider": "Seleccionar proveedor",
+      "rtmp-server-url": "URL del servidor",
+      "rtmp-stream-key": "Stream Key/Secret",
+      "rtmp-start-broadcast": "Comenzar la transmisión",
+      "rtmp-close-confirm": "¿Estás seguro de terminar la transmisión?",
+      "rtmp-close-msg": "Está a punto de cerrar la transmisión RTMP",
+      "select-microphone": "Seleccione un micrófono",
+      "select-webcam": "Select one webcam"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+name: Build and release client
+on:
+  release:
+    types: [ published ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - name: Build project
+        run: |
+          cd client
+          npm install
+          npm run build
+          mkdir -p tmp/client
+          rsync -ar dist tmp/client/
+          cd tmp
+          zip -X -r client.zip client
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: upload client
+          path: client/tmp/client.zip
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: client/tmp/client.zip application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

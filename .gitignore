@@ -1,0 +1,9 @@
+log
+*.log
+.DS_Store
+npm-debug.log*
+package-lock.json
+src/assets/config.js
+.idea/
+dist
+node_modules/
