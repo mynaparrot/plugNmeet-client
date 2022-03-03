@@ -151,7 +151,7 @@ const RtmpModal = () => {
                     >
                       <div className="s">
                         <div className="grid grid-cols-6 gap-6">
-                          <div className="col-span-6 sm:col-span-3">
+                          <div className="col-span-6 sm:col-span-4">
                             <label
                               htmlFor="provider"
                               className="block text-sm font-medium text-gray-700"

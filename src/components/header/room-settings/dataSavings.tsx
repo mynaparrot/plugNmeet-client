@@ -39,8 +39,8 @@ const DataSavings = () => {
   const render = () => {
     return (
       <Switch.Group>
-        <div className="flex items-center mb-2">
-          <Switch.Label className="pr-4 w-full max-w-[190px] lg:max-w-[200px]">
+        <div className="flex items-center justify-between mb-2">
+          <Switch.Label className="pr-4 w-full">
             {t('header.room-settings.show-webcams')}
           </Switch.Label>
           <Switch
@@ -57,8 +57,8 @@ const DataSavings = () => {
             />
           </Switch>
         </div>
-        <div className="flex items-center">
-          <Switch.Label className="pr-4 w-full max-w-[190px] lg:max-w-[200px]">
+        <div className="flex items-center justify-between">
+          <Switch.Label className="pr-4 w-full">
             {t('header.room-settings.show-screen-share')}
           </Switch.Label>
           <Switch

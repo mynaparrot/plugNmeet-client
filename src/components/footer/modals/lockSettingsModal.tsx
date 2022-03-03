@@ -55,8 +55,8 @@ const LockSettingsModal = () => {
   const showLockItems = () => {
     return (
       <Switch.Group>
-        <div className="flex items-center mb-4">
-          <Switch.Label className="pr-4 w-full max-w-[300px]">
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-microphone')}
           </Switch.Label>
           <Switch
@@ -76,8 +76,8 @@ const LockSettingsModal = () => {
           </Switch>
         </div>
 
-        <div className="flex items-center mb-4">
-          <Switch.Label className="pr-4 w-full max-w-[300px]">
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-webcams')}
           </Switch.Label>
           <Switch
@@ -97,8 +97,8 @@ const LockSettingsModal = () => {
           </Switch>
         </div>
 
-        <div className="flex items-center mb-4">
-          <Switch.Label className="pr-4 w-full max-w-[300px]">
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-screen-sharing')}
           </Switch.Label>
           <Switch
@@ -120,8 +120,8 @@ const LockSettingsModal = () => {
           </Switch>
         </div>
 
-        <div className="flex items-center mb-4">
-          <Switch.Label className="pr-4 w-full max-w-[300px]">
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-chat')}
           </Switch.Label>
           <Switch
@@ -139,8 +139,8 @@ const LockSettingsModal = () => {
           </Switch>
         </div>
 
-        <div className="flex items-center mb-4">
-          <Switch.Label className="pr-4 w-full max-w-[300px]">
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-send-message')}
           </Switch.Label>
           <Switch
@@ -162,8 +162,8 @@ const LockSettingsModal = () => {
           </Switch>
         </div>
 
-        <div className="flex items-center mb-4">
-          <Switch.Label className="pr-4 w-full max-w-[300px]">
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-chat-file-share')}
           </Switch.Label>
           <Switch
