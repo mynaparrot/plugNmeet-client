@@ -74,7 +74,7 @@ const MainArea = ({
     <div
       id="main-area"
       className={`${
-        !isRecorder ? 'lg:h-[calc(100vh-130px)]' : 'h-[calc(100vh)] isRecorder'
+        !isRecorder ? 'lg:h-[calc(100vh-110px)]' : 'h-[calc(100vh)] isRecorder'
       }  plugNmeet-app-main-area overflow-hidden relative flex ${
         !isActiveChatPanel ? 'hideChatPanel' : 'showChatPanel'
       } ${
