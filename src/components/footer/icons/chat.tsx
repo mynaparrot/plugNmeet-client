@@ -16,12 +16,18 @@ const isActiveChatPanelSelector = createSelector(
   (isActiveChatPanel) => isActiveChatPanel,
 );
 
+const totalUnreadChatMsgsSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.totalUnreadChatMsgs,
+  (totalUnreadChatMsgs) => totalUnreadChatMsgs,
+);
+
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
 
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
+  const totalUnreadChatMsgs = useAppSelector(totalUnreadChatMsgsSelector);
   const [iconCSS, setIconCSS] = useState<string>('brand-color1');
   const [allowChat, setAllowChat] = useState<boolean>(true);
 
@@ -61,9 +67,11 @@ const ChatIcon = () => {
         </span>
 
         <i className={`pnm-chat ${iconCSS} text-[12px] lg:text-[16px]`} />
-        <div className="unseen-message-count bg-brandRed w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
-          29
-        </div>
+        {!isActiveChatPanel && totalUnreadChatMsgs > 0 ? (
+          <div className="unseen-message-count bg-brandRed w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
+            {totalUnreadChatMsgs}
+          </div>
+        ) : null}
       </div>
     );
   };

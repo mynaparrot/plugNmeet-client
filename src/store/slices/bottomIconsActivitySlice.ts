@@ -1,30 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface IBottomIconsSlice {
-  isActiveMicrophone: boolean;
-  isActiveWebcam: boolean;
-  isActiveChatPanel: boolean;
-  isActiveParticipantsPanel: boolean;
-  isActiveRaisehand: boolean;
-  isActiveRecording: boolean;
-  isActiveScreenshare: boolean;
-  isActiveMenu: boolean;
-  isActiveEndSession: boolean;
-
-  isMicMuted: boolean;
-  screenWidth: number;
-
-  // modal related
-  showMicrophoneModal: boolean;
-  showVideoShareModal: boolean;
-  showLockSettingsModal: boolean;
-  showRtmpModal: boolean;
-
-  // start action related
-  startMicrophoneShare: boolean;
-  startWebcamShare: boolean;
-  startRecording: boolean;
-}
+import { IBottomIconsSlice } from './interfaces/bottomIcons';
 
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
@@ -34,8 +9,6 @@ const initialState: IBottomIconsSlice = {
   isActiveRaisehand: false,
   isActiveRecording: false,
   isActiveScreenshare: false,
-  isActiveMenu: false,
-  isActiveEndSession: false,
 
   isMicMuted: false,
   screenWidth: 1024,
@@ -45,10 +18,9 @@ const initialState: IBottomIconsSlice = {
   showLockSettingsModal: false,
   showRtmpModal: false,
 
-  startMicrophoneShare: false,
-  startWebcamShare: false,
-  startRecording: false,
+  totalUnreadChatMsgs: 0,
 };
+
 const bottomIconsSlice = createSlice({
   name: 'bottomIconsActivity',
   initialState,
@@ -72,6 +44,11 @@ const bottomIconsSlice = createSlice({
         state.isActiveParticipantsPanel = false;
       }
       state.isActiveChatPanel = action.payload;
+
+      // if open then we'll make it 0
+      if (state.isActiveChatPanel) {
+        state.totalUnreadChatMsgs = 0;
+      }
     },
     updateIsActiveParticipantsPanel: (
       state,
@@ -96,12 +73,6 @@ const bottomIconsSlice = createSlice({
     updateIsActiveScreenshare: (state, action: PayloadAction<boolean>) => {
       state.isActiveScreenshare = action.payload;
     },
-    updateIsActiveMenu: (state, action: PayloadAction<boolean>) => {
-      state.isActiveMenu = action.payload;
-    },
-    updateIsActiveEndSession: (state, action: PayloadAction<boolean>) => {
-      state.isActiveEndSession = action.payload;
-    },
     updateScreenWidth: (state, action: PayloadAction<number>) => {
       state.screenWidth = action.payload;
     },
@@ -120,15 +91,10 @@ const bottomIconsSlice = createSlice({
       state.showRtmpModal = action.payload;
     },
 
-    // start action related
-    updateStartMicrophoneShare: (state, action: PayloadAction<boolean>) => {
-      state.startMicrophoneShare = action.payload;
-    },
-    updateStartWebcamShare: (state, action: PayloadAction<boolean>) => {
-      state.startWebcamShare = action.payload;
-    },
-    updateStartRecording: (state, action: PayloadAction<boolean>) => {
-      state.startRecording = action.payload;
+    updateTotalUnreadChatMsgs: (state) => {
+      if (!state.isActiveChatPanel) {
+        state.totalUnreadChatMsgs += 1;
+      }
     },
   },
 });
@@ -142,16 +108,12 @@ export const {
   updateIsActiveRaisehand,
   updateIsActiveRecording,
   updateIsActiveScreenshare,
-  updateIsActiveMenu,
-  updateIsActiveEndSession,
   updateShowMicrophoneModal,
   updateShowVideoShareModal,
   updateShowLockSettingsModal,
   updateShowRtmpModal,
-  updateStartMicrophoneShare,
-  updateStartWebcamShare,
-  updateStartRecording,
   updateScreenWidth,
+  updateTotalUnreadChatMsgs,
 } = bottomIconsSlice.actions;
 
 export default bottomIconsSlice.reducer;

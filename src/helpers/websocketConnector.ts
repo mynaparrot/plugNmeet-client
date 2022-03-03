@@ -17,6 +17,7 @@ import {
 } from '../store/slices/sessionSlice';
 import { ISession } from '../store/slices/interfaces/session';
 import { participantsSelector } from '../store/slices/participantSlice';
+import { updateTotalUnreadChatMsgs } from '../store/slices/bottomIconsActivitySlice';
 
 let session: ISession;
 let isConnected = false;
@@ -91,6 +92,13 @@ const handleUserTypeData = (body: IChatMsg, message_id: string) => {
       body.message_id = message_id;
     }
     store.dispatch(addChatMessage(body));
+
+    if (
+      !body.isPrivate &&
+      !store.getState().bottomIconsActivity.isActiveChatPanel
+    ) {
+      store.dispatch(updateTotalUnreadChatMsgs());
+    }
   }
 };
 
