@@ -157,7 +157,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     <>
       <header
         id="main-header"
-        className="relative z-[99999] h-[50px] lg:h-[60px] px-4 shadow-header flex items-center justify-between bg-white"
+        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white"
       >
         <img
           className="absolute top-[-90px] left-[-35px] w-[300px] pointer-events-none"
