@@ -81,9 +81,15 @@ module.exports = {
           from: 'src/assets',
           to: 'assets',
           globOptions: {
-            ignore: ['assets/fonts'],
+            ignore: ['assets/fonts', '**/assets/tflite'],
           },
           info: { minimized: true },
+        },
+        {
+          from: 'src/assets/tflite/*',
+          to() {
+            return 'assets/js/[name][ext]';
+          },
         },
       ],
     }),
