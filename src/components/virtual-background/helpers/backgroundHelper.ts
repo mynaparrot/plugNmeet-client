@@ -3,6 +3,10 @@ export type BackgroundConfig = {
   url?: string;
 };
 
+export const defaultBackgroundConfig: BackgroundConfig = {
+  type: 'blur',
+};
+
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
 export const backgroundImageUrls = [

@@ -14,43 +14,62 @@ type OutputViewerProps = {
   postProcessingConfig: PostProcessingConfig;
   bodyPix: BodyPix;
   tflite: any;
+  id: string;
+  onCanvasRef?: (canvasRef: React.MutableRefObject<HTMLCanvasElement>) => void;
 };
 
-const VirtualBackground = (props: OutputViewerProps) => {
+const OutputViewer = ({
+  sourcePlayback,
+  backgroundConfig,
+  segmentationConfig,
+  postProcessingConfig,
+  bodyPix,
+  tflite,
+  id,
+  onCanvasRef,
+}: OutputViewerProps) => {
   const { pipeline, backgroundImageRef, canvasRef } = useRenderingPipeline(
-    props.sourcePlayback,
-    props.backgroundConfig,
-    props.segmentationConfig,
-    props.bodyPix,
-    props.tflite,
+    sourcePlayback,
+    backgroundConfig,
+    segmentationConfig,
+    bodyPix,
+    tflite,
   );
 
   useEffect(() => {
     if (pipeline) {
-      pipeline.updatePostProcessingConfig(props.postProcessingConfig);
+      pipeline.updatePostProcessingConfig(postProcessingConfig);
     }
-  }, [pipeline, props.postProcessingConfig]);
+  }, [pipeline, postProcessingConfig]);
+
+  useEffect(() => {
+    if (onCanvasRef) {
+      onCanvasRef(canvasRef);
+    }
+    // eslint-disable-next-line
+  }, [canvasRef]);
 
   return (
     <div className="root">
-      {props.backgroundConfig.type === 'image' && (
+      {backgroundConfig.type === 'image' && (
         <img
           ref={backgroundImageRef}
           className="render"
-          src={props.backgroundConfig.url}
+          src={backgroundConfig.url}
           alt=""
-          hidden={props.segmentationConfig.pipeline === 'webgl2'}
+          hidden={segmentationConfig.pipeline === 'webgl2'}
         />
       )}
       <canvas
-        key={props.segmentationConfig.pipeline}
+        key={segmentationConfig.pipeline}
         ref={canvasRef}
         className="render"
-        width={props.sourcePlayback.width}
-        height={props.sourcePlayback.height}
+        width={sourcePlayback.width}
+        height={sourcePlayback.height}
+        id={id}
       />
     </div>
   );
 };
 
-export default VirtualBackground;
+export default OutputViewer;

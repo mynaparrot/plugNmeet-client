@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, SyntheticEvent } from 'react';
+import React, { useRef, useEffect, SyntheticEvent, useState } from 'react';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 
 interface IVideoBoxProps {
@@ -7,10 +7,10 @@ interface IVideoBoxProps {
 }
 const VideoBox = ({ deviceId, onLoad }: IVideoBoxProps) => {
   const ref = useRef<HTMLVideoElement>(null);
+  const [mediaStream, setMediaStream] = useState<MediaStream>();
 
   useEffect(() => {
     const el = ref.current;
-    let ms: MediaStream;
     const constraints: MediaStreamConstraints = {
       video: {
         deviceId,
@@ -18,7 +18,7 @@ const VideoBox = ({ deviceId, onLoad }: IVideoBoxProps) => {
     };
     navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
       if (el) {
-        ms = mediaStream;
+        setMediaStream(mediaStream);
         el.srcObject = mediaStream;
       }
     });
@@ -27,12 +27,13 @@ const VideoBox = ({ deviceId, onLoad }: IVideoBoxProps) => {
         el.pause();
         el.removeAttribute('src'); // empty source
       }
-      if (ms) {
-        ms.getTracks().forEach((track) => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => {
           track.stop();
         });
       }
     };
+    // eslint-disable-next-line
   }, [deviceId]);
 
   function handleVideoLoad(event: SyntheticEvent) {

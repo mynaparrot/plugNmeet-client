@@ -1,66 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
-import useBodyPix from '../../virtual-background/hooks/useBodyPix';
-import useTFLite from '../../virtual-background/hooks/useTFLite';
-import { SegmentationConfig } from '../../virtual-background/helpers/segmentationHelper';
-import { PostProcessingConfig } from '../../virtual-background/helpers/postProcessingHelper';
-import VirtualBackground from '../../virtual-background/VirtualBackground';
-import { BackgroundConfig } from '../../virtual-background/helpers/backgroundHelper';
+import {
+  BackgroundConfig,
+  defaultBackgroundConfig,
+} from '../../virtual-background/helpers/backgroundHelper';
 import VideoBox from './videoBox';
+import { store } from '../../../store';
+import VirtualBackground from '../../virtual-background/virtualBackground';
 
 interface IPreviewWebcamProps {
   deviceId: string;
 }
-const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
-  //const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
+const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [show, setShow] = useState<boolean>(false);
   const [previousDeviceId, setPreviousDeviceId] = useState<string>();
-  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>();
-
-  const [segmentationConfig, setSegmentationConfig] =
-    useState<SegmentationConfig>({
-      model: 'meet',
-      backend: 'wasmSimd',
-      inputResolution: '160x96',
-      pipeline: 'webgl2',
-    });
-
-  const postProcessingConfig: PostProcessingConfig = {
-    smoothSegmentationMask: true,
-    jointBilateralFilter: { sigmaSpace: 1, sigmaColor: 0.1 },
-    coverage: [0.5, 0.75],
-    lightWrapping: 0.3,
-    blendMode: 'screen',
-  };
-
-  const bodyPix: any = useBodyPix();
-  const { tflite, isSIMDSupported } = useTFLite(segmentationConfig);
+  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>(
+    defaultBackgroundConfig,
+  );
+  const currenUser = store.getState().session.currenUser?.userId;
 
   useEffect(() => {
-    if (bodyPix) {
-      setSegmentationConfig((previousSegmentationConfig) => {
-        if (
-          previousSegmentationConfig.backend === 'wasmSimd' &&
-          !isSIMDSupported
-        ) {
-          return { ...previousSegmentationConfig, backend: 'wasm' };
-        } else {
-          return previousSegmentationConfig;
-        }
-      });
-    }
-
     setBackgroundConfig({
       type: 'blur',
     });
+    //  //const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
     // setBackgroundConfig({
     //   type: 'image',
     //   url: assetPath + '/backgrounds/shibuyasky-4768679_1280.jpg',
     // });
     // eslint-disable-next-line
-  }, [isSIMDSupported]);
+  }, []);
 
   useEffect(() => {
     if (previousDeviceId !== deviceId) {
@@ -85,14 +57,11 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   return (
     <div className="mt-5">
       <VideoBox deviceId={deviceId} onLoad={setSourcePlayback} />
-      {show && sourcePlayback && bodyPix && tflite && backgroundConfig ? (
+      {show && sourcePlayback && currenUser ? (
         <VirtualBackground
           sourcePlayback={sourcePlayback}
           backgroundConfig={backgroundConfig}
-          segmentationConfig={segmentationConfig}
-          postProcessingConfig={postProcessingConfig}
-          bodyPix={bodyPix}
-          tflite={tflite}
+          id={currenUser}
         />
       ) : null}
     </div>
