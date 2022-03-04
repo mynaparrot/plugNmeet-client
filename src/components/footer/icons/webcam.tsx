@@ -58,6 +58,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [deviceId, setDeviceId] = useState();
+  const [mediaStream, setMediaStream] = useState<MediaStream>();
 
   useEffect(() => {
     const session = store.getState().session;
@@ -117,7 +118,18 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   useEffect(() => {
     if (!isActiveWebcam) {
       setDeviceId(undefined);
+      const el = videoRef.current;
+      if (el) {
+        el.pause();
+        el.removeAttribute('src'); // empty source
+      }
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
     }
+    // eslint-disable-next-line
   }, [isActiveWebcam]);
 
   const toggleWebcam = () => {
@@ -149,6 +161,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
         if (el) {
           console.log(mediaStream);
           el.srcObject = mediaStream;
+          setMediaStream(mediaStream);
         }
 
         // await currentRoom.localParticipant.publishTrack(track);

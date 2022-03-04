@@ -1,13 +1,17 @@
-import React, { useRef, useEffect, SyntheticEvent, useState } from 'react';
+import React, { useRef, useEffect, SyntheticEvent } from 'react';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 
 interface IVideoBoxProps {
   deviceId: string;
-  onLoad: (sourcePlayback: SourcePlayback) => void;
+  onSourcePlayback: (sourcePlayback: SourcePlayback) => void;
+  onMediaStream: (mediaStream: MediaStream) => void;
 }
-const VideoBox = ({ deviceId, onLoad }: IVideoBoxProps) => {
+const VideoBox = ({
+  deviceId,
+  onSourcePlayback,
+  onMediaStream,
+}: IVideoBoxProps) => {
   const ref = useRef<HTMLVideoElement>(null);
-  const [mediaStream, setMediaStream] = useState<MediaStream>();
 
   useEffect(() => {
     const el = ref.current;
@@ -18,7 +22,7 @@ const VideoBox = ({ deviceId, onLoad }: IVideoBoxProps) => {
     };
     navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
       if (el) {
-        setMediaStream(mediaStream);
+        onMediaStream(mediaStream);
         el.srcObject = mediaStream;
       }
     });
@@ -27,23 +31,18 @@ const VideoBox = ({ deviceId, onLoad }: IVideoBoxProps) => {
         el.pause();
         el.removeAttribute('src'); // empty source
       }
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => {
-          track.stop();
-        });
-      }
     };
     // eslint-disable-next-line
   }, [deviceId]);
 
-  function handleVideoLoad(event: SyntheticEvent) {
+  const handleVideoLoad = (event: SyntheticEvent) => {
     const video = event.target as HTMLVideoElement;
-    onLoad({
+    onSourcePlayback({
       htmlElement: video,
       width: 330,
       height: 200,
     });
-  }
+  };
 
   return (
     <div>

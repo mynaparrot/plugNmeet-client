@@ -20,6 +20,8 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>(
     defaultBackgroundConfig,
   );
+  const [mediaStream, setMediaStream] = useState<MediaStream>();
+
   const currenUser = store.getState().session.currenUser?.userId;
 
   useEffect(() => {
@@ -31,6 +33,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
     //   type: 'image',
     //   url: assetPath + '/backgrounds/shibuyasky-4768679_1280.jpg',
     // });
+
     // eslint-disable-next-line
   }, []);
 
@@ -54,9 +57,32 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
     }
   }, [sourcePlayback]);
 
+  useEffect(() => {
+    return () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
+  }, [mediaStream]);
+
+  const onMediaStream = (newMediaStream) => {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach((track) => track.stop());
+    }
+    setMediaStream(newMediaStream);
+  };
+
   return (
     <div className="mt-5">
-      <VideoBox deviceId={deviceId} onLoad={setSourcePlayback} />
+      {deviceId ? (
+        <VideoBox
+          deviceId={deviceId}
+          onSourcePlayback={setSourcePlayback}
+          onMediaStream={onMediaStream}
+        />
+      ) : null}
       {show && sourcePlayback && currenUser ? (
         <VirtualBackground
           sourcePlayback={sourcePlayback}
@@ -68,4 +94,4 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   );
 };
 
-export default PreviewWebcam;
+export default React.memo(PreviewWebcam);
