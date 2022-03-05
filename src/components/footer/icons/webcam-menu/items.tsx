@@ -56,14 +56,14 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   }, [selectedVideoDevice, videoDevices]);
 
   useEffect(() => {
-    const changeDevice = async (id: string) => {
-      await currentRoom.switchActiveDevice('videoinput', id);
-    };
+    // const changeDevice = async (id: string) => {
+    //   await currentRoom.switchActiveDevice('videoinput', id);
+    // };
     if (newDevice) {
-      changeDevice(newDevice);
+      //changeDevice(newDevice);
       dispatch(updateSelectedVideoDevice(newDevice));
     }
-  }, [newDevice, currentRoom, dispatch]);
+  }, [newDevice, dispatch]);
 
   const leaveWebcam = () => {
     currentRoom.localParticipant.videoTracks.forEach(async (publication) => {

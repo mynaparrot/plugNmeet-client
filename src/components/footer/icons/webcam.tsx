@@ -29,21 +29,22 @@ const isActiveWebcamPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWebcam,
   (isActiveWebcam) => isActiveWebcam,
 );
-
 const showVideoShareModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showVideoShareModal,
   (showVideoShareModal) => showVideoShareModal,
 );
-
 const isWebcamLockSelector = createSelector(
   (state: RootState) =>
     state.session.currenUser?.metadata?.lock_settings.lock_webcam,
   (lock_webcam) => lock_webcam,
 );
-
 const virtualBackgroundSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.virtualBackground,
   (virtualBackground) => virtualBackground,
+);
+const selectedVideoDeviceSelector = createSelector(
+  (state: RootState) => state.roomSettings.selectedVideoDevice,
+  (selectedVideoDevice) => selectedVideoDevice,
 );
 
 const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
@@ -55,13 +56,14 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const isActiveWebcam = useAppSelector(isActiveWebcamPanelSelector);
   const isWebcamLock = useAppSelector(isWebcamLockSelector);
   const virtualBackground = useAppSelector(virtualBackgroundSelector);
+  const selectedVideoDevice = useAppSelector(selectedVideoDeviceSelector);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useTranslation();
 
   const [allowWebcam, setAllowWebcam] = useState<boolean>(true);
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
-  const [deviceId, setDeviceId] = useState();
+  const [deviceId, setDeviceId] = useState<string>();
   const [mediaStream, setMediaStream] = useState<MediaStream>();
 
   useEffect(() => {
@@ -136,6 +138,35 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, [isActiveWebcam]);
 
+  useEffect(() => {
+    if (!selectedVideoDevice || !deviceId) {
+      return;
+    }
+    if (selectedVideoDevice === deviceId) {
+      return;
+    }
+
+    const changeDevice = async (deviceId: string) => {
+      await currentRoom.switchActiveDevice('videoinput', deviceId);
+    };
+
+    const changeDeviceWithVB = async (deviceId: string) => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+      }
+      await createDeviceStream(deviceId);
+    };
+
+    if (virtualBackground.type === 'none') {
+      changeDevice(selectedVideoDevice);
+    } else {
+      changeDeviceWithVB(selectedVideoDevice);
+    }
+
+    setDeviceId(selectedVideoDevice);
+    // eslint-disable-next-line
+  }, [selectedVideoDevice]);
+
   const toggleWebcam = () => {
     if (lockWebcam) {
       return;
@@ -146,9 +177,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     }
   };
 
-  const onSelectedDevice = async (deviceId) => {
-    setDeviceId(deviceId);
-
+  const createDeviceStream = async (deviceId) => {
     const localTrack = await createLocalTracks({
       audio: false,
       video: {
@@ -174,6 +203,12 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
       }
     });
 
+    return;
+  };
+
+  const onSelectedDevice = async (deviceId) => {
+    setDeviceId(deviceId);
+    await createDeviceStream(deviceId);
     dispatch(updateSelectedVideoDevice(deviceId));
   };
 
