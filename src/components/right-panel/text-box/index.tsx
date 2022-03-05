@@ -98,6 +98,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
   const cleanHtml = (rawText) => {
     return sanitizeHtml(rawText, {
       allowedTags: ['b', 'i', 'strong', 'br'],
+      allowedSchemes: ['mailto', 'tel'],
     });
   };
 
