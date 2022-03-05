@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createSelector } from '@reduxjs/toolkit';
+import {
+  createLocalTracks,
+  Room,
+  Track,
+  VideoPreset,
+  VideoPresets,
+} from 'livekit-client';
 
 import {
   RootState,
@@ -11,9 +19,7 @@ import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
-import { createSelector } from '@reduxjs/toolkit';
 import ShareWebcamModal from '../modals/webcam/shareWebcam';
-import { createLocalTracks, Room, Track, VideoPresets } from 'livekit-client';
 import WebcamMenu from './webcam-menu';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { participantsSelector } from '../../../store/slices/participantSlice';
@@ -180,11 +186,19 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   };
 
   const createDeviceStream = async (deviceId) => {
+    let resolution = VideoPresets.hd.resolution;
+
+    // with virtual background don't need high resolution
+    if (virtualBackground.type !== 'none') {
+      const preset = new VideoPreset(160, 96, 60_000, 15);
+      resolution = preset.resolution;
+    }
+
     const localTrack = await createLocalTracks({
       audio: false,
       video: {
         deviceId: deviceId,
-        resolution: VideoPresets.hd,
+        resolution,
       },
     });
 
