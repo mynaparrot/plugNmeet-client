@@ -4,7 +4,7 @@ export type BackgroundConfig = {
 };
 
 export const defaultBackgroundConfig: BackgroundConfig = {
-  type: 'blur',
+  type: 'none',
 };
 
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';

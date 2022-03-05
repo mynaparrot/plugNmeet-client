@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IBottomIconsSlice } from './interfaces/bottomIcons';
+import {
+  BackgroundConfig,
+  defaultBackgroundConfig,
+} from '../../components/virtual-background/helpers/backgroundHelper';
 
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
@@ -19,6 +23,7 @@ const initialState: IBottomIconsSlice = {
   showRtmpModal: false,
 
   totalUnreadChatMsgs: 0,
+  virtualBackground: defaultBackgroundConfig,
 };
 
 const bottomIconsSlice = createSlice({
@@ -96,6 +101,12 @@ const bottomIconsSlice = createSlice({
         state.totalUnreadChatMsgs += 1;
       }
     },
+    updateVirtualBackground: (
+      state,
+      action: PayloadAction<BackgroundConfig>,
+    ) => {
+      state.virtualBackground = action.payload;
+    },
   },
 });
 
@@ -114,6 +125,7 @@ export const {
   updateShowRtmpModal,
   updateScreenWidth,
   updateTotalUnreadChatMsgs,
+  updateVirtualBackground,
 } = bottomIconsSlice.actions;
 
 export default bottomIconsSlice.reducer;

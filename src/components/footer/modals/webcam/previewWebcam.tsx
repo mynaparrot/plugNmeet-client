@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { SourcePlayback } from '../../../virtual-background/helpers/sourceHelper';
 import { BackgroundConfig } from '../../../virtual-background/helpers/backgroundHelper';
 import VideoBox from './videoBox';
-import { store } from '../../../../store';
+import { store, useAppDispatch } from '../../../../store';
 import VirtualBackground from '../../../virtual-background/virtualBackground';
 import BackgroundItems from './backgroundItems';
+import { updateVirtualBackground } from '../../../../store/slices/bottomIconsActivitySlice';
 
 interface IPreviewWebcamProps {
   deviceId: string;
@@ -19,18 +20,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
 
   const currenUser = store.getState().session.currenUser?.userId;
-
-  useEffect(() => {
-    // setBackgroundConfig({
-    //   type: 'blur',
-    // });
-    //  //const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-    // setBackgroundConfig({
-    //   type: 'image',
-    //   url: assetPath + '/backgrounds/shibuyasky-4768679_1280.jpg',
-    // });
-    // eslint-disable-next-line
-  }, []);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (previousDeviceId !== deviceId) {
@@ -63,7 +53,8 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   }, [mediaStream]);
 
   const onSelectBg = (bg: BackgroundConfig) => {
-    console.log(bg);
+    dispatch(updateVirtualBackground(bg));
+
     if (bg.type === 'none') {
       setShow(false);
       setBackgroundConfig(undefined);

@@ -41,6 +41,11 @@ const isWebcamLockSelector = createSelector(
   (lock_webcam) => lock_webcam,
 );
 
+const virtualBackgroundSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.virtualBackground,
+  (virtualBackground) => virtualBackground,
+);
+
 const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const dispatch = useAppDispatch();
   // we don't need this for small devices
@@ -49,6 +54,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
   const isActiveWebcam = useAppSelector(isActiveWebcamPanelSelector);
   const isWebcamLock = useAppSelector(isWebcamLockSelector);
+  const virtualBackground = useAppSelector(virtualBackgroundSelector);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useTranslation();
 
@@ -151,19 +157,20 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
       },
     });
 
-    localTrack.forEach((track) => {
+    localTrack.forEach(async (track) => {
       if (track.kind === Track.Kind.Video) {
-        const mediaStream = new MediaStream();
-        mediaStream.addTrack(track.mediaStreamTrack);
-        const el = videoRef.current;
-        if (el) {
-          console.log(mediaStream);
-          el.srcObject = mediaStream;
-          setMediaStream(mediaStream);
+        if (virtualBackground.type === 'none') {
+          await currentRoom.localParticipant.publishTrack(track);
+          dispatch(updateIsActiveWebcam(true));
+        } else {
+          const mediaStream = new MediaStream();
+          mediaStream.addTrack(track.mediaStreamTrack);
+          const el = videoRef.current;
+          if (el) {
+            el.srcObject = mediaStream;
+            setMediaStream(mediaStream);
+          }
         }
-
-        // await currentRoom.localParticipant.publishTrack(track);
-        // dispatch(updateIsActiveWebcam(true));
       }
     });
 
@@ -175,8 +182,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     if (el) {
       setSourcePlayback({
         htmlElement: el,
-        height: VideoPresets.hd.height,
-        width: VideoPresets.hd.width,
+        height: VideoPresets.vga.height,
+        width: VideoPresets.vga.width,
       });
     }
   };
@@ -184,14 +191,14 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const onCanvasRef = (
     canvasRef: React.MutableRefObject<HTMLCanvasElement>,
   ) => {
-    console.log('canvasRef.current.id', canvasRef.current.id);
-
-    const stream = canvasRef.current.captureStream();
-
+    const stream = canvasRef.current.captureStream(
+      VideoPresets.hd.resolution.frameRate,
+    );
     stream.getTracks().forEach(async (track) => {
       if (track.kind === Track.Kind.Video) {
         await currentRoom.localParticipant.publishTrack(track, {
           source: Track.Source.Camera,
+          name: 'canvas',
         });
         dispatch(updateIsActiveWebcam(true));
       }
@@ -232,18 +239,19 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
         ) : null}
         <>
-          {sourcePlayback && deviceId ? (
+          {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
             <div style={{ display: 'none' }}>
               <VirtualBackground
                 sourcePlayback={sourcePlayback}
                 id={deviceId}
+                backgroundConfig={virtualBackground}
                 onCanvasRef={onCanvasRef}
               />
             </div>
           ) : null}
         </>
         <>
-          {deviceId ? (
+          {deviceId && virtualBackground.type !== 'none' ? (
             <video
               style={{ display: 'none' }}
               className="mt-5 mb-5"
