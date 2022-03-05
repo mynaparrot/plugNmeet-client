@@ -219,8 +219,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     if (el) {
       setSourcePlayback({
         htmlElement: el,
-        height: VideoPresets.vga.height,
-        width: VideoPresets.vga.width,
+        width: 320,
+        height: 180,
       });
     }
   };
@@ -228,9 +228,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const onCanvasRef = (
     canvasRef: React.MutableRefObject<HTMLCanvasElement>,
   ) => {
-    const stream = canvasRef.current.captureStream(
-      VideoPresets.hd.resolution.frameRate,
-    );
+    const stream = canvasRef.current.captureStream(15);
     stream.getTracks().forEach(async (track) => {
       if (track.kind === Track.Kind.Video) {
         await currentRoom.localParticipant.publishTrack(track, {
