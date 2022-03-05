@@ -22,6 +22,9 @@ import {
   updateIsActiveParticipantsPanel,
   updateScreenWidth,
 } from '../../store/slices/bottomIconsActivitySlice';
+import useBodyPix from '../virtual-background/hooks/useBodyPix';
+import useTFLite from '../virtual-background/hooks/useTFLite';
+import { defaultSegmentationConfig } from '../virtual-background/helpers/segmentationHelper';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +49,11 @@ const App = () => {
   const [screenHeight, setScreenHeight] = useState<string>('');
   const ref = useRef(null);
   const { t } = useTranslation();
+
+  // we'll require making ready virtual background
+  // elements as early as possible.
+  useBodyPix();
+  useTFLite(defaultSegmentationConfig);
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);

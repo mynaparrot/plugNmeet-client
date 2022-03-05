@@ -89,4 +89,4 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   );
 };
 
-export default React.memo(PreviewWebcam);
+export default PreviewWebcam;

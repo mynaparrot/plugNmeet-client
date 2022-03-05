@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
 import { updateSelectedVideoDevice } from '../../../../store/slices/roomSettingsSlice';
-import { updateIsActiveWebcam } from '../../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActiveWebcam,
+  updateVirtualBackground,
+} from '../../../../store/slices/bottomIconsActivitySlice';
 
 interface IWebcamMenuItemsProps {
   currentRoom: Room;
@@ -56,11 +59,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   }, [selectedVideoDevice, videoDevices]);
 
   useEffect(() => {
-    // const changeDevice = async (id: string) => {
-    //   await currentRoom.switchActiveDevice('videoinput', id);
-    // };
     if (newDevice) {
-      //changeDevice(newDevice);
       dispatch(updateSelectedVideoDevice(newDevice));
     }
   }, [newDevice, dispatch]);
@@ -76,6 +75,11 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
     });
     dispatch(updateIsActiveWebcam(false));
     dispatch(updateSelectedVideoDevice(''));
+    dispatch(
+      updateVirtualBackground({
+        type: 'none',
+      }),
+    );
   };
 
   return (
