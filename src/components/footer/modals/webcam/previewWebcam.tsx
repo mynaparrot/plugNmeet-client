@@ -21,7 +21,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
 
   const currenUser = store.getState().session.currenUser?.userId;
   const dispatch = useAppDispatch();
-  const isSafari = navigator.userAgent.indexOf('Safari') !== -1;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   useEffect(() => {
     if (previousDeviceId !== deviceId) {
