@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useEffect, useState } from 'react';
 import {
   getTFLiteModelFileName,
@@ -8,7 +7,7 @@ import {
 declare function createTFLiteModule(): Promise<TFLite>;
 declare function createTFLiteSIMDModule(): Promise<TFLite>;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// eslint-disable-next-line
 // @ts-ignore
 export interface TFLite extends EmscriptenModule {
   _getModelBufferMemoryOffset(): number;
@@ -113,6 +112,7 @@ function useTFLite(segmentationConfig: SegmentationConfig) {
     }
 
     loadTFLiteModel();
+    // eslint-disable-next-line
   }, [
     tflite,
     tfliteSIMD,

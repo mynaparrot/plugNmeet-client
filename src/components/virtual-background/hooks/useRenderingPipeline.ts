@@ -8,6 +8,7 @@ import { RenderingPipeline } from '../helpers/renderingPipelineHelper';
 import { SegmentationConfig } from '../helpers/segmentationHelper';
 import { SourcePlayback } from '../helpers/sourceHelper';
 import { TFLite } from './useTFLite';
+declare const IS_PRODUCTION: boolean;
 
 function useRenderingPipeline(
   sourcePlayback: SourcePlayback,
@@ -91,25 +92,30 @@ function useRenderingPipeline(
     }
 
     render();
-    console.log(
-      'Animation started:',
-      sourcePlayback,
-      backgroundConfig,
-      segmentationConfig,
-    );
-
+    if(!IS_PRODUCTION){
+      console.log(
+          'Animation started:',
+          sourcePlayback,
+          backgroundConfig,
+          segmentationConfig,
+      );
+    }
+    
     setPipeline(newPipeline);
 
     return () => {
       shouldRender = false;
       cancelAnimationFrame(renderRequestId);
       newPipeline.cleanUp();
-      console.log(
-        'Animation stopped:',
-        sourcePlayback,
-        backgroundConfig,
-        segmentationConfig,
-      );
+      
+      if(!IS_PRODUCTION){
+        console.log(
+            'Animation stopped:',
+            sourcePlayback,
+            backgroundConfig,
+            segmentationConfig,
+        );
+      }
 
       setPipeline(null);
     };

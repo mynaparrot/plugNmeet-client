@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { BodyPix } from '@tensorflow-models/body-pix';
 import { BackgroundConfig } from '../../helpers/backgroundHelper';
 import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
@@ -17,6 +16,7 @@ export function buildCanvas2dPipeline(
   tflite: any,
   addFrameEvent: () => void,
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ctx = canvas.getContext('2d')!;
 
   const [segmentationWidth, segmentationHeight] =
@@ -26,6 +26,7 @@ export function buildCanvas2dPipeline(
   const segmentationMaskCanvas = document.createElement('canvas');
   segmentationMaskCanvas.width = segmentationWidth;
   segmentationMaskCanvas.height = segmentationHeight;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const segmentationMaskCtx = segmentationMaskCanvas.getContext('2d')!;
 
   const inputMemoryOffset = tflite._getInputMemoryOffset() / 4;
