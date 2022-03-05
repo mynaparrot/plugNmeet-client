@@ -50,7 +50,7 @@ const OutputViewer = ({
   }, [canvasRef]);
 
   return (
-    <div className="root">
+    <div className="root preview-camera-webcam">
       {backgroundConfig.type === 'image' && (
         <img
           ref={backgroundImageRef}

@@ -682,6 +682,11 @@ button.previous-cam:hover, button.next-cam:hover {
     font-size: 18px;
   }
 }
+@media screen and (min-width:641px) {
+  .preview-camera-webcam video, .preview-camera-webcam canvas {
+    height: 240px;
+  }
+}
 @media screen and (max-width:640px) {
   header#main-header {
     flex-wrap: wrap;
