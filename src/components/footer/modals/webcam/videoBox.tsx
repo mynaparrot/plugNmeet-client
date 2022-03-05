@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, SyntheticEvent } from 'react';
-import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
+import { SourcePlayback } from '../../../virtual-background/helpers/sourceHelper';
 
 interface IVideoBoxProps {
   deviceId: string;
@@ -47,7 +47,6 @@ const VideoBox = ({
   return (
     <div>
       <video
-        style={{ display: 'none' }}
         className="mt-5 mb-5"
         ref={ref}
         autoPlay

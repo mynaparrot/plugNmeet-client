@@ -3,17 +3,17 @@ import { createSelector } from '@reduxjs/toolkit';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, useAppDispatch } from '../../../store';
+import { useAppSelector, RootState, useAppDispatch } from '../../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
-} from '../../../store/slices/bottomIconsActivitySlice';
-import { getDevices } from '../../../helpers/utils';
+} from '../../../../store/slices/bottomIconsActivitySlice';
+import { getDevices } from '../../../../helpers/utils';
 import PreviewWebcam from './previewWebcam';
 import {
   addVideoDevices,
   IMediaDevice,
-} from '../../../store/slices/roomSettingsSlice';
+} from '../../../../store/slices/roomSettingsSlice';
 
 interface IShareWebcamModal {
   onSelectedDevice: (deviceId: string) => void;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import OutputViewer from './outputViewer';
 import { defaultPostProcessingConfig } from './helpers/postProcessingHelper';
 import { SourcePlayback } from './helpers/sourceHelper';
@@ -29,7 +30,7 @@ const VirtualBackground = ({
   const [segmentationConfig, setSegmentationConfig] =
     useState<SegmentationConfig>(defaultSegmentationConfig);
 
-  const bodyPix: any = useBodyPix();
+  const bodyPix = useBodyPix();
   const { tflite, isSIMDSupported } = useTFLite(segmentationConfig);
 
   useEffect(() => {

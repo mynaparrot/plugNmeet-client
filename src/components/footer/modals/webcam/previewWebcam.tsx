@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
-import {
-  BackgroundConfig,
-  defaultBackgroundConfig,
-} from '../../virtual-background/helpers/backgroundHelper';
+import { SourcePlayback } from '../../../virtual-background/helpers/sourceHelper';
+import { BackgroundConfig } from '../../../virtual-background/helpers/backgroundHelper';
 import VideoBox from './videoBox';
-import { store } from '../../../store';
-import VirtualBackground from '../../virtual-background/virtualBackground';
+import { store } from '../../../../store';
+import VirtualBackground from '../../../virtual-background/virtualBackground';
+import BackgroundItems from './backgroundItems';
 
 interface IPreviewWebcamProps {
   deviceId: string;
@@ -17,23 +15,20 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [show, setShow] = useState<boolean>(false);
   const [previousDeviceId, setPreviousDeviceId] = useState<string>();
-  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>(
-    defaultBackgroundConfig,
-  );
+  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>();
   const [mediaStream, setMediaStream] = useState<MediaStream>();
 
   const currenUser = store.getState().session.currenUser?.userId;
 
   useEffect(() => {
-    setBackgroundConfig({
-      type: 'blur',
-    });
+    // setBackgroundConfig({
+    //   type: 'blur',
+    // });
     //  //const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
     // setBackgroundConfig({
     //   type: 'image',
     //   url: assetPath + '/backgrounds/shibuyasky-4768679_1280.jpg',
     // });
-
     // eslint-disable-next-line
   }, []);
 
@@ -67,29 +62,38 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
     };
   }, [mediaStream]);
 
-  const onMediaStream = (newMediaStream) => {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach((track) => track.stop());
+  const onSelectBg = (bg: BackgroundConfig) => {
+    console.log(bg);
+    if (bg.type === 'none') {
+      setShow(false);
+      setBackgroundConfig(undefined);
+    } else {
+      if (!show && deviceId) {
+        setShow(true);
+      }
+      setBackgroundConfig(bg);
     }
-    setMediaStream(newMediaStream);
   };
 
   return (
     <div className="mt-5">
       {deviceId ? (
-        <VideoBox
-          deviceId={deviceId}
-          onSourcePlayback={setSourcePlayback}
-          onMediaStream={onMediaStream}
-        />
+        <div style={backgroundConfig ? { display: 'none' } : { display: '' }}>
+          <VideoBox
+            deviceId={deviceId}
+            onSourcePlayback={setSourcePlayback}
+            onMediaStream={setMediaStream}
+          />
+        </div>
       ) : null}
-      {show && sourcePlayback && currenUser ? (
+      {show && sourcePlayback && currenUser && backgroundConfig ? (
         <VirtualBackground
           sourcePlayback={sourcePlayback}
           backgroundConfig={backgroundConfig}
           id={currenUser}
         />
       ) : null}
+      <BackgroundItems onSelect={onSelectBg} />
     </div>
   );
 };

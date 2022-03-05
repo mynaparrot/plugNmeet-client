@@ -1,102 +1,132 @@
 @font-face {
-  font-family: 'plugnmeet';
-  src:  url('../assets/fonts/plugnmeet.ttf') format('truetype');
-  src:  url('../assets/fonts/plugnmeet.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
+    font-family: 'plugnmeet';
+    src: url('../assets/fonts/plugnmeet.ttf') format('truetype');
+    src: url('../assets/fonts/plugnmeet.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
 }
 
 @font-face {
-  font-family: 'Nunito Sans';
-  src:  url('../assets/fonts/NunitoSans-Regular.woff2');
-  src:  url('../assets/fonts/NunitoSans-Bold.woff2');
-  src:  url('../assets/fonts/NunitoSans-Italic.woff2');
-  src:  url('../assets/fonts/NunitoSans-ExtraBold.woff2');
-  src:  url('../assets/fonts/NunitoSans-SemiBold.woff2');
+    font-family: 'Nunito Sans';
+    src: url('../assets/fonts/NunitoSans-Regular.woff2');
+    src: url('../assets/fonts/NunitoSans-Bold.woff2');
+    src: url('../assets/fonts/NunitoSans-Italic.woff2');
+    src: url('../assets/fonts/NunitoSans-ExtraBold.woff2');
+    src: url('../assets/fonts/NunitoSans-SemiBold.woff2');
 }
 
 i {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'plugnmeet' !important;
-  speak: never;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'plugnmeet' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.pnm-blur:before {
+    content: "\e917";
+}
+
+.pnm-ban-solid:before {
+    content: "\e918";
 }
 
 .pnm-broadcasting:before {
-  content: "\e916";
+    content: "\e916";
 }
+
 .pnm-settings:before {
-  content: "\e903";
+    content: "\e903";
 }
+
 .pnm-logout:before {
-  content: "\e914";
+    content: "\e914";
 }
+
 .pnm-rec:before {
-  content: "\e915";
+    content: "\e915";
 }
+
 .pnm-arrow-down:before {
-  content: "\e912";
+    content: "\e912";
 }
+
 .pnm-arrow-up:before {
-  content: "\e913";
+    content: "\e913";
 }
+
 .pnm-network:before {
-  content: "\e910";
+    content: "\e910";
 }
+
 .pnm-fullscreen:before {
-  content: "\e911";
+    content: "\e911";
 }
+
 .pnm-listen-only:before {
-  content: "\e90f";
+    content: "\e90f";
 }
+
 .pnm-menu-small:before {
-  content: "\e900";
+    content: "\e900";
 }
+
 .pnm-attachment:before {
-  content: "\e901";
+    content: "\e901";
 }
+
 .pnm-webcam:before {
-  content: "\e902";
+    content: "\e902";
 }
+
 .pnm-send:before {
-  content: "\e904";
+    content: "\e904";
 }
+
 .pnm-screen-share:before {
-  content: "\e905";
+    content: "\e905";
 }
+
 .pnm-raise-hand:before {
-  content: "\e906";
+    content: "\e906";
 }
+
 .pnm-participant:before {
-  content: "\e907";
+    content: "\e907";
 }
+
 .pnm-arrow-below:before {
-  content: "\e908";
+    content: "\e908";
 }
+
 .pnm-mic-mute:before {
-  content: "\e909";
+    content: "\e909";
 }
+
 .pnm-lock:before {
-  content: "\e90a";
+    content: "\e90a";
 }
+
 .pnm-mic-unmute:before {
-  content: "\e90b";
+    content: "\e90b";
 }
+
 .pnm-menu-horizontal:before {
-  content: "\e90c";
+    content: "\e90c";
 }
+
 .pnm-call:before {
-  content: "\e90d";
+    content: "\e90d";
 }
+
 .pnm-chat:before {
-  content: "\e90e";
+    content: "\e90e";
 }

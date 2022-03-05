@@ -12,7 +12,7 @@ import {
   updateShowVideoShareModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import { createSelector } from '@reduxjs/toolkit';
-import ShareWebcamModal from '../modals/shareWebcam';
+import ShareWebcamModal from '../modals/webcam/shareWebcam';
 import { createLocalTracks, Room, Track, VideoPresets } from 'livekit-client';
 import WebcamMenu from './webcam-menu';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
@@ -20,8 +20,6 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
-import Kind = Track.Kind;
-import Source = Track.Source;
 
 interface IWebcamIconProps {
   currentRoom: Room;
@@ -191,9 +189,9 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     const stream = canvasRef.current.captureStream();
 
     stream.getTracks().forEach(async (track) => {
-      if (track.kind === Kind.Video) {
+      if (track.kind === Track.Kind.Video) {
         await currentRoom.localParticipant.publishTrack(track, {
-          source: Source.Camera,
+          source: Track.Source.Camera,
         });
         dispatch(updateIsActiveWebcam(true));
       }
