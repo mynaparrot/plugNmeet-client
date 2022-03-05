@@ -121,8 +121,9 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, []);
 
+  // need to make sure we've closed hidden video player with stream
   useEffect(() => {
-    if (!isActiveWebcam) {
+    if (!isActiveWebcam && deviceId) {
       setDeviceId(undefined);
       const el = videoRef.current;
       if (el) {
@@ -138,6 +139,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, [isActiveWebcam]);
 
+  // this is required during changing webcam device
   useEffect(() => {
     if (!selectedVideoDevice || !deviceId) {
       return;

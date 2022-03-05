@@ -21,6 +21,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
 
   const currenUser = store.getState().session.currenUser?.userId;
   const dispatch = useAppDispatch();
+  const isSafari = navigator.userAgent.indexOf('Safari') !== -1;
 
   useEffect(() => {
     if (previousDeviceId !== deviceId) {
@@ -84,7 +85,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
           id={currenUser}
         />
       ) : null}
-      <BackgroundItems onSelect={onSelectBg} />
+      {!isSafari ? <BackgroundItems onSelect={onSelectBg} /> : null}
     </div>
   );
 };
