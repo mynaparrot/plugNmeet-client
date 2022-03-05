@@ -103,7 +103,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
           <div className="flex items-center justify-center min-h-screen">
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-            <div className="popup-inner bg-white w-full max-w-sm rounded-3xl shadow-header relative px-6 py-14">
+            <div className="popup-inner bg-white w-full max-w-md rounded-3xl shadow-header relative px-6 py-14">
               <button
                 className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                 type="button"

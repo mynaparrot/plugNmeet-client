@@ -47,7 +47,7 @@ const VideoBox = ({
   return (
     <div>
       <video
-        className="mt-5 mb-5"
+        className="my-5"
         ref={ref}
         autoPlay
         height="50"
