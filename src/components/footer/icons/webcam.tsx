@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   createLocalTracks,
+  LocalTrack,
   Room,
   Track,
   VideoPreset,
@@ -63,14 +64,13 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const isWebcamLock = useAppSelector(isWebcamLockSelector);
   const virtualBackground = useAppSelector(virtualBackgroundSelector);
   const selectedVideoDevice = useAppSelector(selectedVideoDeviceSelector);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useTranslation();
 
   const [allowWebcam, setAllowWebcam] = useState<boolean>(true);
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
-  const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [deviceId, setDeviceId] = useState<string>();
-  const [mediaStream, setMediaStream] = useState<MediaStream>();
+  const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
+  const [localTrack, setLocalTrack] = useState<LocalTrack>();
 
   useEffect(() => {
     const session = store.getState().session;
@@ -127,23 +127,13 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, []);
 
-  // need to make sure we've closed hidden video player with stream
+  // we should check & close track
   useEffect(() => {
-    if (!isActiveWebcam && deviceId) {
-      setDeviceId(undefined);
-      const el = videoRef.current;
-      if (el) {
-        el.pause();
-        el.removeAttribute('src'); // empty source
-      }
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => {
-          track.stop();
-        });
-      }
+    if (!isActiveWebcam && localTrack && !selectedVideoDevice) {
+      localTrack.stop();
     }
-    // eslint-disable-next-line
-  }, [isActiveWebcam]);
+    //eslint-disable-next-line
+  }, [selectedVideoDevice]);
 
   // this is required during changing webcam device
   useEffect(() => {
@@ -157,11 +147,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     const changeDevice = async (deviceId: string) => {
       await currentRoom.switchActiveDevice('videoinput', deviceId);
     };
-
+    // for virtual background we'll require creating new stream
     const changeDeviceWithVB = async (deviceId: string) => {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => track.stop());
-      }
       await createDeviceStream(deviceId);
     };
 
@@ -174,6 +161,23 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     setDeviceId(selectedVideoDevice);
     // eslint-disable-next-line
   }, [selectedVideoDevice]);
+
+  // localTrack only update when using virtual background
+  // need to stop previous track before starting new one
+  useEffect(() => {
+    if (localTrack) {
+      setSourcePlayback({
+        htmlElement: localTrack.attach() as HTMLVideoElement,
+        width: 320,
+        height: 180,
+      });
+    }
+    return () => {
+      if (localTrack) {
+        localTrack.stop();
+      }
+    };
+  }, [localTrack]);
 
   const toggleWebcam = () => {
     if (lockWebcam) {
@@ -208,13 +212,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           await currentRoom.localParticipant.publishTrack(track);
           dispatch(updateIsActiveWebcam(true));
         } else {
-          const mediaStream = new MediaStream();
-          mediaStream.addTrack(track.mediaStreamTrack);
-          const el = videoRef.current;
-          if (el) {
-            el.srcObject = mediaStream;
-            setMediaStream(mediaStream);
-          }
+          setLocalTrack(track);
         }
       }
     });
@@ -228,17 +226,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     dispatch(updateSelectedVideoDevice(deviceId));
   };
 
-  const onLoadedData = () => {
-    const el: any = videoRef.current;
-    if (el) {
-      setSourcePlayback({
-        htmlElement: el,
-        width: 320,
-        height: 180,
-      });
-    }
-  };
-
+  // handle virtual background canvas
   const onCanvasRef = (
     canvasRef: React.MutableRefObject<HTMLCanvasElement>,
   ) => {
@@ -297,18 +285,6 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
                 onCanvasRef={onCanvasRef}
               />
             </div>
-          ) : null}
-        </>
-        <>
-          {deviceId && virtualBackground.type !== 'none' ? (
-            <video
-              style={{ display: 'none' }}
-              className="mt-5 mb-5"
-              ref={videoRef}
-              autoPlay
-              height="50"
-              onLoadedData={onLoadedData}
-            />
           ) : null}
         </>
       </>
