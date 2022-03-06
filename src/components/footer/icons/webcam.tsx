@@ -132,6 +132,9 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     if (!isActiveWebcam && localTrack && !selectedVideoDevice) {
       localTrack.stop();
     }
+    if (!isActiveWebcam && !selectedVideoDevice && deviceId) {
+      setDeviceId(undefined);
+    }
     //eslint-disable-next-line
   }, [selectedVideoDevice]);
 
