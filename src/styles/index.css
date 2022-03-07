@@ -689,6 +689,10 @@ button.previous-cam:hover, button.next-cam:hover {
     width: calc(100% - 16px);
     padding-bottom: 60%;
   }
+  #main-area .all-webcam-wrapper.total-cam-3 .video-camera-item {
+    width: calc(85% - 16px);
+    padding-bottom: 46%;
+  }
   .all-webcam-wrapper-inner {
     padding: 0 5px;
   }
