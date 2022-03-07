@@ -31,6 +31,14 @@ i {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-notepad:before {
+    content: "\e919";
+}
+
+.pnm-journal:before {
+    content: "\e91a";
+}
+
 .pnm-blur:before {
     content: "\e917";
 }
