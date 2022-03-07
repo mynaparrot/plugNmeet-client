@@ -560,7 +560,7 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 100%;
     /* padding-bottom: 23%; */
     margin: 5px;
-    height: 76px;
+    height: 80px;
     padding-bottom: 0;
     max-width: 93px;
   }
@@ -573,7 +573,8 @@ button.previous-cam:hover, button.next-cam:hover {
     top: 0px;
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video button {
-    bottom: 86px;
+    bottom: 145px;
+    position: fixed;
   }
   .Toastify__toast-container .Toastify__toast-body {
     padding: 0;
@@ -615,7 +616,7 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 25px;
     left: auto;
     height: 25px;
-    top: 50%;
+    top: 40%;
     transform: rotate(-90deg);
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button i {
@@ -629,7 +630,7 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 25px;
     left: -5px;
     height: 25px;
-    top: 50%;
+    top: 40%;
     transform: rotate(-90deg);
   }
   .plugNmeet-app header#main-header {
