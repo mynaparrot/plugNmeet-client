@@ -6,6 +6,8 @@
   "dependencies": {
     "@headlessui/react": "^1.5.0",
     "@reduxjs/toolkit": "^1.7.2",
+    "@tensorflow-models/body-pix": "^2.2.0",
+    "@tensorflow/tfjs": "^3.14.0",
     "axios": "^0.26.0",
     "i18next": "^21.6.12",
     "i18next-browser-languagedetector": "^6.1.3",

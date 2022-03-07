@@ -1,3 +1,5 @@
+import { BackgroundConfig } from '../../../components/virtual-background/helpers/backgroundHelper';
+
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;
   isActiveWebcam: boolean;
@@ -17,4 +19,5 @@ export interface IBottomIconsSlice {
   showRtmpModal: boolean;
 
   totalUnreadChatMsgs: number;
+  virtualBackground: BackgroundConfig;
 }

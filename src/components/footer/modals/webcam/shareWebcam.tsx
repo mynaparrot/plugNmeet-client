@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Room, VideoPresets, createLocalTracks, Track } from 'livekit-client';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, useAppDispatch } from '../../../store';
+import { useAppSelector, RootState, useAppDispatch } from '../../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
-} from '../../../store/slices/bottomIconsActivitySlice';
-import { getDevices } from '../../../helpers/utils';
+} from '../../../../store/slices/bottomIconsActivitySlice';
+import { getDevices } from '../../../../helpers/utils';
 import PreviewWebcam from './previewWebcam';
 import {
   addVideoDevices,
   IMediaDevice,
-  updateSelectedVideoDevice,
-} from '../../../store/slices/roomSettingsSlice';
+} from '../../../../store/slices/roomSettingsSlice';
 
 interface IShareWebcamModal {
-  currentRoom: Room;
+  onSelectedDevice: (deviceId: string) => void;
 }
 
 const showVideoShareModalSelector = createSelector(
@@ -26,7 +24,7 @@ const showVideoShareModalSelector = createSelector(
   (showVideoShareModal) => showVideoShareModal,
 );
 
-const ShareWebcamModal = ({ currentRoom }: IShareWebcamModal) => {
+const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
   const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedWebcam, setSelectWebcam] = useState<string>('');
@@ -35,7 +33,7 @@ const ShareWebcamModal = ({ currentRoom }: IShareWebcamModal) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const getDeviceMics = async () => {
+    const getDeviceWebcams = async () => {
       const mics = await getDevices('videoinput');
       const videoDevices: Array<IMediaDevice> = [];
 
@@ -59,7 +57,7 @@ const ShareWebcamModal = ({ currentRoom }: IShareWebcamModal) => {
         dispatch(addVideoDevices(videoDevices));
       }
     };
-    getDeviceMics();
+    getDeviceWebcams();
   }, [dispatch]);
 
   useEffect(() => {
@@ -73,23 +71,7 @@ const ShareWebcamModal = ({ currentRoom }: IShareWebcamModal) => {
     if (!selectedWebcam) {
       return;
     }
-
-    const localTrack = await createLocalTracks({
-      audio: false,
-      video: {
-        deviceId: selectedWebcam,
-        resolution: VideoPresets.hd,
-      },
-    });
-
-    localTrack.forEach(async (track) => {
-      if (track.kind === Track.Kind.Video) {
-        await currentRoom.localParticipant.publishTrack(track);
-        dispatch(updateIsActiveWebcam(true));
-      }
-    });
-
-    dispatch(updateSelectedVideoDevice(selectedWebcam));
+    onSelectedDevice(selectedWebcam);
   };
 
   const onClose = () => {
@@ -121,7 +103,7 @@ const ShareWebcamModal = ({ currentRoom }: IShareWebcamModal) => {
           <div className="flex items-center justify-center min-h-screen">
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-            <div className="popup-inner bg-white w-full max-w-sm rounded-3xl shadow-header relative px-6 py-14">
+            <div className="popup-inner bg-white w-full max-w-md rounded-3xl shadow-header relative px-6 py-14">
               <button
                 className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                 type="button"
@@ -162,7 +144,7 @@ const ShareWebcamModal = ({ currentRoom }: IShareWebcamModal) => {
       </Transition>
     );
   };
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default ShareWebcamModal;

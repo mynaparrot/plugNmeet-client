@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createSelector } from '@reduxjs/toolkit';
+import {
+  createLocalTracks,
+  LocalTrack,
+  Room,
+  Track,
+  VideoPreset,
+  VideoPresets,
+} from 'livekit-client';
 
 import {
-  useAppSelector,
   RootState,
-  useAppDispatch,
   store,
+  useAppDispatch,
+  useAppSelector,
 } from '../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
-import { createSelector } from '@reduxjs/toolkit';
-import ShareWebcamModal from '../modals/shareWebcam';
-import { Room, Track } from 'livekit-client';
+import ShareWebcamModal from '../modals/webcam/shareWebcam';
 import WebcamMenu from './webcam-menu';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { participantsSelector } from '../../../store/slices/participantSlice';
+import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
+import VirtualBackground from '../../virtual-background/virtualBackground';
+import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 
 interface IWebcamIconProps {
   currentRoom: Room;
@@ -26,16 +36,22 @@ const isActiveWebcamPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWebcam,
   (isActiveWebcam) => isActiveWebcam,
 );
-
 const showVideoShareModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showVideoShareModal,
   (showVideoShareModal) => showVideoShareModal,
 );
-
 const isWebcamLockSelector = createSelector(
   (state: RootState) =>
     state.session.currenUser?.metadata?.lock_settings.lock_webcam,
   (lock_webcam) => lock_webcam,
+);
+const virtualBackgroundSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.virtualBackground,
+  (virtualBackground) => virtualBackground,
+);
+const selectedVideoDeviceSelector = createSelector(
+  (state: RootState) => state.roomSettings.selectedVideoDevice,
+  (selectedVideoDevice) => selectedVideoDevice,
 );
 
 const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
@@ -46,10 +62,15 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
   const isActiveWebcam = useAppSelector(isActiveWebcamPanelSelector);
   const isWebcamLock = useAppSelector(isWebcamLockSelector);
+  const virtualBackground = useAppSelector(virtualBackgroundSelector);
+  const selectedVideoDevice = useAppSelector(selectedVideoDeviceSelector);
   const { t } = useTranslation();
 
   const [allowWebcam, setAllowWebcam] = useState<boolean>(true);
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
+  const [deviceId, setDeviceId] = useState<string>();
+  const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
+  const [localTrack, setLocalTrack] = useState<LocalTrack>();
 
   useEffect(() => {
     const session = store.getState().session;
@@ -106,6 +127,61 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, []);
 
+  // we should check & close track
+  useEffect(() => {
+    if (!isActiveWebcam && localTrack && !selectedVideoDevice) {
+      localTrack.stop();
+    }
+    if (!isActiveWebcam && !selectedVideoDevice && deviceId) {
+      setDeviceId(undefined);
+    }
+    //eslint-disable-next-line
+  }, [selectedVideoDevice]);
+
+  // this is required during changing webcam device
+  useEffect(() => {
+    if (!selectedVideoDevice || !deviceId) {
+      return;
+    }
+    if (selectedVideoDevice === deviceId) {
+      return;
+    }
+
+    const changeDevice = async (deviceId: string) => {
+      await currentRoom.switchActiveDevice('videoinput', deviceId);
+    };
+    // for virtual background we'll require creating new stream
+    const changeDeviceWithVB = async (deviceId: string) => {
+      await createDeviceStream(deviceId);
+    };
+
+    if (virtualBackground.type === 'none') {
+      changeDevice(selectedVideoDevice);
+    } else {
+      changeDeviceWithVB(selectedVideoDevice);
+    }
+
+    setDeviceId(selectedVideoDevice);
+    // eslint-disable-next-line
+  }, [selectedVideoDevice]);
+
+  // localTrack only update when using virtual background
+  // need to stop previous track before starting new one
+  useEffect(() => {
+    if (localTrack) {
+      setSourcePlayback({
+        htmlElement: localTrack.attach() as HTMLVideoElement,
+        width: 320,
+        height: 180,
+      });
+    }
+    return () => {
+      if (localTrack) {
+        localTrack.stop();
+      }
+    };
+  }, [localTrack]);
+
   const toggleWebcam = () => {
     if (lockWebcam) {
       return;
@@ -116,9 +192,62 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     }
   };
 
+  const createDeviceStream = async (deviceId) => {
+    let resolution = VideoPresets.hd.resolution;
+
+    // with virtual background don't need high resolution
+    if (virtualBackground.type !== 'none') {
+      const preset = new VideoPreset(160, 96, 60_000, 15);
+      resolution = preset.resolution;
+    }
+
+    const localTrack = await createLocalTracks({
+      audio: false,
+      video: {
+        deviceId: deviceId,
+        resolution,
+      },
+    });
+
+    localTrack.forEach(async (track) => {
+      if (track.kind === Track.Kind.Video) {
+        if (virtualBackground.type === 'none') {
+          await currentRoom.localParticipant.publishTrack(track);
+          dispatch(updateIsActiveWebcam(true));
+        } else {
+          setLocalTrack(track);
+        }
+      }
+    });
+
+    return;
+  };
+
+  const onSelectedDevice = async (deviceId) => {
+    setDeviceId(deviceId);
+    await createDeviceStream(deviceId);
+    dispatch(updateSelectedVideoDevice(deviceId));
+  };
+
+  // handle virtual background canvas
+  const onCanvasRef = (
+    canvasRef: React.MutableRefObject<HTMLCanvasElement>,
+  ) => {
+    const stream = canvasRef.current.captureStream(15);
+    stream.getTracks().forEach(async (track) => {
+      if (track.kind === Track.Kind.Video) {
+        await currentRoom.localParticipant.publishTrack(track, {
+          source: Track.Source.Camera,
+          name: 'canvas',
+        });
+        dispatch(updateIsActiveWebcam(true));
+      }
+    });
+  };
+
   const render = () => {
     return (
-      <React.Fragment>
+      <>
         <div
           className={`camera relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
             showTooltip ? 'has-tooltip' : ''
@@ -133,7 +262,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
             </span>
           ) : null}
 
-          <React.Fragment>
+          <>
             {!isActiveWebcam ? (
               <i className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]" />
             ) : null}
@@ -142,18 +271,30 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
                 <i className="pnm-lock brand-color1" />
               </div>
             ) : null}
-          </React.Fragment>
+          </>
 
           {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
         </div>
         {showVideoShareModal ? (
-          <ShareWebcamModal currentRoom={currentRoom} />
+          <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
         ) : null}
-      </React.Fragment>
+        <>
+          {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
+            <div style={{ display: 'none' }}>
+              <VirtualBackground
+                sourcePlayback={sourcePlayback}
+                id={deviceId}
+                backgroundConfig={virtualBackground}
+                onCanvasRef={onCanvasRef}
+              />
+            </div>
+          ) : null}
+        </>
+      </>
     );
   };
 
-  return <React.Fragment>{allowWebcam ? render() : null}</React.Fragment>;
+  return <>{allowWebcam ? render() : null}</>;
 };
 
 export default WebcamIcon;
