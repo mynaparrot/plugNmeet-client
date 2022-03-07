@@ -71,7 +71,7 @@ code {
 }
 /* Message */
 .all-webcam-wrapper {
-  height: calc(100vh - 130px);
+  height: calc(100vh - 110px);
   display: flex;
   align-items: center;
 }
@@ -160,7 +160,7 @@ code {
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper {
   position: relative;
   width: 250px;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 110px);
   display: block;
   background: rgb(235, 248, 255);
   background: linear-gradient(
@@ -463,7 +463,7 @@ button.previous-cam:hover, button.next-cam:hover {
 }
 .share-screen-wrapper.is-share-screen-running .screen-share-video {
   flex: 1;
-  padding-bottom: calc(100vh - 130px) !important;
+  padding-bottom: calc(100vh - 110px) !important;
   padding-left: 25px;
 }
 .share-screen-wrapper.is-share-screen-running .screen-share-video video.video-player {
@@ -546,7 +546,8 @@ button.previous-cam:hover, button.next-cam:hover {
     height: auto;
     width: 100%;
     z-index: 9;
-    padding-top: 25px;
+    padding-top: 0px;
+    bottom: 0;
   }
   .share-screen-wrapper.is-share-screen-running {
     position: relative;
@@ -568,8 +569,11 @@ button.previous-cam:hover, button.next-cam:hover {
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video video.video-player {
     width: calc(100% - 30px);
-    height: calc(100% - 30px);
-    top: 40px;
+    height: calc(100% - 85px);
+    top: 0px;
+  }
+  .share-screen-wrapper.is-share-screen-running .screen-share-video button {
+    bottom: 86px;
   }
   .Toastify__toast-container .Toastify__toast-body {
     padding: 0;
@@ -680,6 +684,13 @@ button.previous-cam:hover, button.next-cam:hover {
   }
   .message-form .btns button i {
     font-size: 18px;
+  }
+  #main-area .all-webcam-wrapper.total-cam-2 .video-camera-item, #main-area .all-webcam-wrapper.total-cam-1 .video-camera-item {
+    width: calc(100% - 16px);
+    padding-bottom: 60%;
+  }
+  .all-webcam-wrapper-inner {
+    padding: 0 5px;
   }
 }
 @media screen and (min-width:641px) {
