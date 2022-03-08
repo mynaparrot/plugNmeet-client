@@ -700,6 +700,8 @@ button.previous-cam:hover, button.next-cam:hover {
 @media screen and (min-width:641px) {
   .preview-camera-webcam video, .preview-camera-webcam canvas {
     height: 240px;
+    width: auto !important;
+    margin: auto;
   }
 }
 @media screen and (max-width:640px) {
