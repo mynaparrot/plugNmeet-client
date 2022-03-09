@@ -13,6 +13,7 @@ import {
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import LockSettingsModal from '../modals/lockSettingsModal';
 import {
+  updateIsActiveSharedNotePad,
   updateShowLockSettingsModal,
   updateShowRtmpModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
@@ -30,12 +31,20 @@ const showRtmpModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showRtmpModal,
   (showRtmpModal) => showRtmpModal,
 );
+const sharedNotepadStatusSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
+      .is_active,
+  (is_active) => is_active,
+);
+
 const MenusIcon = () => {
   const session = store.getState().session;
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const showLockSettingsModal = useAppSelector(showLockSettingsModalSelector);
+  const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
   const showRtmpModal = useAppSelector(showRtmpModalSelector);
   const isActiveRtmpBroadcasting = useAppSelector(
     isActiveRtmpBroadcastingSelector,
@@ -60,6 +69,47 @@ const MenusIcon = () => {
         toastId: 'asked-status',
         type: 'error',
       });
+    }
+  };
+
+  const toggleSharedNotepad = async () => {
+    const host =
+      store.getState().session.currentRoom.metadata?.room_features
+        .shared_note_pad_features.host;
+
+    if (!host && !sharedNotepadStatus) {
+      const res = await sendAPIRequest('etherpad/create', {});
+      if (res.status) {
+        dispatch(updateIsActiveSharedNotePad(true));
+      } else {
+        toast(t(res.msg), {
+          type: 'error',
+        });
+      }
+    } else if (host && !sharedNotepadStatus) {
+      const res = await sendAPIRequest('etherpad/changeStatus', {
+        room_id: store.getState().session.currentRoom.room_id,
+        is_active: true,
+      });
+      if (res.status) {
+        dispatch(updateIsActiveSharedNotePad(true));
+      } else {
+        toast(t(res.msg), {
+          type: 'error',
+        });
+      }
+    } else if (host && sharedNotepadStatus) {
+      const res = await sendAPIRequest('etherpad/changeStatus', {
+        room_id: store.getState().session.currentRoom.room_id,
+        is_active: false,
+      });
+      if (res.status) {
+        dispatch(updateIsActiveSharedNotePad(false));
+      } else {
+        toast(t(res.msg), {
+          type: 'error',
+        });
+      }
     }
   };
 
@@ -123,6 +173,19 @@ const MenusIcon = () => {
                       >
                         <i className="pnm-mic-mute text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
                         {t('footer.menus.mute-all-users')}
+                      </button>
+                    </Menu.Item>
+                  </div>
+                  <div className="py-1" role="none">
+                    <Menu.Item>
+                      <button
+                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                        onClick={() => toggleSharedNotepad()}
+                      >
+                        <i className="pnm-notepad text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                        {sharedNotepadStatus
+                          ? t('footer.menus.disable-shared-notepad')
+                          : t('footer.menus.enable-shared-notepad')}
                       </button>
                     </Menu.Item>
                   </div>

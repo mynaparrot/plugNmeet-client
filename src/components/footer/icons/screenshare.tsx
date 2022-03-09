@@ -194,9 +194,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     );
   };
 
-  return (
-    <React.Fragment>{allowScreenSharing ? render() : null}</React.Fragment>
-  );
+  return <>{allowScreenSharing ? render() : null}</>;
 };
 
 export default ScrenshareIcon;

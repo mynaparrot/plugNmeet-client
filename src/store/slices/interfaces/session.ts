@@ -53,6 +53,7 @@ interface IRoomFeatures {
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
   chat_features: IChatFeatures;
+  shared_note_pad_features: ISharedNotepadFeatures;
 }
 
 interface IChatFeatures {
@@ -60,6 +61,15 @@ interface IChatFeatures {
   allow_file_upload: boolean;
   allowed_file_types?: Array<string>;
   max_file_size?: number;
+}
+
+interface ISharedNotepadFeatures {
+  allowed_shared_note_pad: boolean;
+  is_active: boolean;
+  node_id?: string;
+  host?: string;
+  note_pad_id?: string;
+  read_only_pad_id?: string;
 }
 
 interface ILockSettings {

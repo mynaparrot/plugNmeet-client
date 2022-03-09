@@ -123,11 +123,15 @@
       "stop-recording": "Stop recording",
       "start-recording": "Start recording",
       "stop-rtmp-broadcasting": "Stop RTMP broadcasting",
-      "start-rtmp-broadcasting": "Start RTMP broadcasting"
+      "start-rtmp-broadcasting": "Start RTMP broadcasting",
+      "show-shared-notepad": "Show shared notepad",
+      "hide-shared-notepad": "Hide shared notepad"
     },
     "menus": {
       "mute-all-users": "Mute all users",
       "room-lock-settings": "Room Lock Settings",
+      "enable-shared-notepad": "Enable shared notepad",
+      "disable-shared-notepad": "Disable shared notepad",
       "mute-microphone": "Mute Microphone",
       "unmute-microphone": "Unmute Microphone",
       "leave-microphone": "Leave Microphone",

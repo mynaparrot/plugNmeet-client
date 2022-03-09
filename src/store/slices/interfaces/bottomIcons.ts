@@ -8,6 +8,7 @@ export interface IBottomIconsSlice {
   isActiveRaisehand: boolean;
   isActiveRecording: boolean;
   isActiveScreenshare: boolean;
+  isActiveSharedNotePad: boolean;
 
   isMicMuted: boolean;
   screenWidth: number;
