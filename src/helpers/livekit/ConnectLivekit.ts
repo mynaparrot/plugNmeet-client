@@ -450,7 +450,7 @@ export default class ConnectLivekit {
   ) => {
     console.log('==== updateVideoSubscribers ====');
     if (typeof participant.identity === 'undefined') {
-      console.log('participant.sid undefined');
+      console.log('participant.identity undefined');
       return;
     }
 
