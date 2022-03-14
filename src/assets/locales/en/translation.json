@@ -130,8 +130,8 @@
     "menus": {
       "mute-all-users": "Mute all users",
       "room-lock-settings": "Room Lock Settings",
-      "enable-shared-notepad": "Enable shared notepad",
-      "disable-shared-notepad": "Disable shared notepad",
+      "enable-shared-notepad": "Enable Shared Notepad",
+      "disable-shared-notepad": "Disable Shared Notepad",
       "mute-microphone": "Mute Microphone",
       "unmute-microphone": "Unmute Microphone",
       "leave-microphone": "Leave Microphone",

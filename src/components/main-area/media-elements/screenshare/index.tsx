@@ -14,6 +14,7 @@ import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
 import {
   updateIsActiveParticipantsPanel,
   updateIsActiveScreenshare,
+  updateIsActiveSharedNotePad,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import VideoElements from '../videos';
 
@@ -54,6 +55,7 @@ const ScreenShareElements = ({
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
+    dispatch(updateIsActiveSharedNotePad(false));
 
     return () => {
       // just for double check to make sure we disabled status of screen share

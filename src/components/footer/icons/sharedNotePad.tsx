@@ -30,6 +30,15 @@ const SharedNotePad = () => {
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
 
   useEffect(() => {
+    // if not active then we can disable it.
+    if (!sharedNotepadStatus) {
+      dispatch(updateIsActiveSharedNotePad(false));
+    } else {
+      dispatch(updateIsActiveSharedNotePad(true));
+    }
+  }, [sharedNotepadStatus, dispatch]);
+
+  useEffect(() => {
     if (isActiveSharedNotePad) {
       setIconCSS('brand-color2');
     } else {
@@ -39,9 +48,9 @@ const SharedNotePad = () => {
 
   const text = () => {
     if (isActiveSharedNotePad) {
-      return t('footer.icons.show-shared-notepad');
-    } else {
       return t('footer.icons.hide-shared-notepad');
+    } else {
+      return t('footer.icons.show-shared-notepad');
     }
   };
 
