@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
-import { LocalParticipant, Room, RemoteParticipant } from 'livekit-client';
+import {
+  LocalParticipant,
+  Room,
+  RemoteParticipant,
+  LocalTrackPublication,
+  RemoteTrackPublication,
+} from 'livekit-client';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -11,13 +17,15 @@ import ActiveSpeakers from './active-speakers';
 import MediaElementsComponent from './media-elements';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
-import { IScreenShareInfo } from '../../helpers/livekit/ConnectLivekit';
 
 interface IMainAreaProps {
   currentRoom: Room;
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
   audioSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  screenShareInfo?: Map<string, IScreenShareInfo>;
+  screenShareTracks?: Map<
+    string,
+    LocalTrackPublication | RemoteTrackPublication
+  >;
   isRecorder: boolean; // it could be recorder or RTMP bot.
 }
 
@@ -42,7 +50,7 @@ const MainArea = ({
   currentRoom,
   audioSubscribers,
   videoSubscribers,
-  screenShareInfo,
+  screenShareTracks,
   isRecorder,
 }: IMainAreaProps) => {
   const isActiveParticipantsPanel = useAppSelector(
@@ -79,7 +87,7 @@ const MainArea = ({
           ? 'hideParticipantsPanel'
           : 'showParticipantsPanel'
       } ${
-        screenShareInfo?.size && activeScreenSharingView
+        screenShareTracks?.size && activeScreenSharingView
           ? 'showScreenShare'
           : 'hideScreenShare'
       }
@@ -111,7 +119,7 @@ const MainArea = ({
             currentRoom={currentRoom}
             audioSubscribers={audioSubscribers}
             videoSubscribers={videoSubscribers}
-            screenShareInfo={screenShareInfo}
+            screenShareTracks={screenShareTracks}
           />
         </div>
 

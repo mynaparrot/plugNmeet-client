@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { LocalParticipant, RemoteParticipant, Room } from 'livekit-client';
+import {
+  LocalParticipant,
+  LocalTrackPublication,
+  RemoteParticipant,
+  RemoteTrackPublication,
+  Room,
+} from 'livekit-client';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import ScreenShareElements from './screenshare';
 import AudioElements from './audios';
 import VideoElements from './videos';
 import SharedNotepadElement from '../shared-notepad';
-import { IScreenShareInfo } from '../../../helpers/livekit/ConnectLivekit';
 
 interface MediaElementsComponentProps {
   currentRoom: Room;
   audioSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  screenShareInfo?: Map<string, IScreenShareInfo>;
+  screenShareTracks?: Map<
+    string,
+    LocalTrackPublication | RemoteTrackPublication
+  >;
 }
 const isActiveScreenSharingSelector = createSelector(
   (state: RootState) => state.session.screenSharing,
@@ -37,7 +45,7 @@ const isActiveSharedNotePadSelector = createSelector(
 const MediaElementsComponent = ({
   audioSubscribers,
   videoSubscribers,
-  screenShareInfo,
+  screenShareTracks,
 }: MediaElementsComponentProps) => {
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
@@ -84,10 +92,10 @@ const MediaElementsComponent = ({
   const render = () => {
     return (
       <React.Fragment>
-        {shouldShowScreenSharing() && screenShareInfo ? (
+        {shouldShowScreenSharing() && screenShareTracks ? (
           <ScreenShareElements
             videoSubscribers={videoSubscribers}
-            screenShareInfo={screenShareInfo}
+            screenShareTracks={screenShareTracks}
           />
         ) : null}
         {shouldShowSharedNotepad() ? (

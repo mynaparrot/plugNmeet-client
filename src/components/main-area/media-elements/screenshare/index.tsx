@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import {
+  LocalTrackPublication,
   RemoteTrackPublication,
   Track,
   LocalParticipant,
@@ -15,11 +16,13 @@ import {
   updateIsActiveScreenshare,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import VideoElements from '../videos';
-import { IScreenShareInfo } from '../../../../helpers/livekit/ConnectLivekit';
 
 interface IScreenShareElementsProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  screenShareInfo: Map<string, IScreenShareInfo>;
+  screenShareTracks: Map<
+    string,
+    LocalTrackPublication | RemoteTrackPublication
+  >;
 }
 
 const isActiveParticipantsPanelSelector = createSelector(
@@ -38,7 +41,7 @@ const activateWebcamsViewSelector = createSelector(
 );
 
 const ScreenShareElements = ({
-  screenShareInfo,
+  screenShareTracks,
   videoSubscribers,
 }: IScreenShareElementsProps) => {
   const dispatch = useAppDispatch();
@@ -59,11 +62,10 @@ const ScreenShareElements = ({
   }, [dispatch]);
 
   const render = () => {
-    if (screenShareInfo) {
+    if (screenShareTracks) {
       const elm = Array<JSX.Element>();
 
-      screenShareInfo.forEach((info) => {
-        const track = info.track;
+      screenShareTracks.forEach((track) => {
         if (track.source === Track.Source.ScreenShare) {
           elm.push(<VideoElm key={track.trackSid} track={track} />);
         } else if (track.source === Track.Source.ScreenShareAudio) {

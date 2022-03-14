@@ -1,8 +1,14 @@
 import { useState } from 'react';
-import { Room, LocalParticipant, RemoteParticipant } from 'livekit-client';
+import {
+  Room,
+  LocalParticipant,
+  RemoteParticipant,
+  LocalTrackPublication,
+  RemoteTrackPublication,
+} from 'livekit-client';
 
 import { IErrorPageProps } from '../../../components/extra-pages/Error';
-import ConnectLivekit, { IScreenShareInfo } from '../ConnectLivekit';
+import ConnectLivekit from '../ConnectLivekit';
 
 export interface IuseLivekitConnect {
   error: IErrorPageProps | undefined;
@@ -14,7 +20,9 @@ export interface IuseLivekitConnect {
   videoSubscribers:
     | Map<string, RemoteParticipant | LocalParticipant>
     | undefined;
-  screenShareInfo: Map<string, IScreenShareInfo> | undefined;
+  screenShareTracks:
+    | Map<string, LocalTrackPublication | RemoteTrackPublication>
+    | undefined;
   startLivekitConnection(): void;
 }
 
@@ -31,8 +39,8 @@ const useLivekitConnect = (): IuseLivekitConnect => {
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
   // screen share
-  const [screenShareInfo, setScreenShareInfo] =
-    useState<Map<string, IScreenShareInfo>>();
+  const [screenShareTracks, setScreenShareTracks] =
+    useState<Map<string, LocalTrackPublication | RemoteTrackPublication>>();
 
   const startLivekitConnection = () => {
     new ConnectLivekit(
@@ -41,7 +49,7 @@ const useLivekitConnect = (): IuseLivekitConnect => {
       setCurrentRoom,
       setError,
       setRoomConnectionStatus,
-      setScreenShareInfo,
+      setScreenShareTracks,
     );
   };
 
@@ -53,7 +61,7 @@ const useLivekitConnect = (): IuseLivekitConnect => {
     currentRoom,
     audioSubscribers,
     videoSubscribers,
-    screenShareInfo: screenShareInfo,
+    screenShareTracks,
     startLivekitConnection,
   };
 };

@@ -69,11 +69,6 @@ export interface IConnectLivekit {
   updateScreenShareOnUserDisconnect(participant: RemoteParticipant): void;
 }
 
-export interface IScreenShareInfo {
-  track: LocalTrackPublication | RemoteTrackPublication;
-  participant: LocalParticipant | RemoteParticipant;
-}
-
 export default class ConnectLivekit {
   private _audioSubscribersMap = new Map<string, RemoteParticipant>();
   private audioSubscribersState: Dispatch<Map<string, RemoteParticipant>>;
@@ -86,8 +81,13 @@ export default class ConnectLivekit {
     Map<string, LocalParticipant | RemoteParticipant>
   >;
 
-  private _screenShareTracksInfoMap = new Map<string, IScreenShareInfo>();
-  private screenShareTracksInfoState: Dispatch<Map<string, IScreenShareInfo>>;
+  private _screenShareTracksMap = new Map<
+    string,
+    LocalTrackPublication | RemoteTrackPublication
+  >();
+  private screenShareTracksState: Dispatch<
+    Map<string, LocalTrackPublication | RemoteTrackPublication>
+  >;
 
   private currentRoomState: Dispatch<Room>;
   private errorState: Dispatch<IErrorPageProps>;
@@ -112,7 +112,9 @@ export default class ConnectLivekit {
     currentRoomState: Dispatch<Room>,
     errorState: Dispatch<IErrorPageProps>,
     roomConnectionStatusState: Dispatch<connectionStatus>,
-    screenShareTracksInfoState: Dispatch<Map<string, IScreenShareInfo>>,
+    screenShareTracksState: Dispatch<
+      Map<string, LocalTrackPublication | RemoteTrackPublication>
+    >,
   ) {
     this.token = store.getState().session.token;
     // audio Subscribers state
@@ -120,7 +122,7 @@ export default class ConnectLivekit {
     // video Subscribers state
     this.videoSubscribersState = mediaSubscribersState;
     // screen share state
-    this.screenShareTracksInfoState = screenShareTracksInfoState;
+    this.screenShareTracksState = screenShareTracksState;
 
     this.currentRoomState = currentRoomState;
     this.errorState = errorState;
@@ -375,28 +377,26 @@ export default class ConnectLivekit {
   ) => {
     console.log('=== setScreenShareTrack ===', track.source);
     if (add) {
-      this._screenShareTracksInfoMap.set(participant.identity, {
-        track,
-        participant,
-      });
+      this._screenShareTracksMap.set(participant.identity, track);
     } else {
-      this._screenShareTracksInfoMap.delete(participant.identity);
+      this._screenShareTracksMap.delete(participant.identity);
     }
 
-    this.screenShareTracksInfoState(
-      new Map(this._screenShareTracksInfoMap as any),
-    );
+    this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
   };
 
+  /**
+   * This method will update screen sharing if user disconnect
+   * This will ensure UI has been updated properly
+   * @param participant: LocalParticipant | RemoteParticipant
+   */
   public updateScreenShareOnUserDisconnect = (
     participant: RemoteParticipant,
   ) => {
-    if (this._screenShareTracksInfoMap.size) {
-      if (this._screenShareTracksInfoMap.has(participant.identity)) {
-        this._screenShareTracksInfoMap.delete(participant.identity);
-        this.screenShareTracksInfoState(
-          new Map(this._screenShareTracksInfoMap as any),
-        );
+    if (this._screenShareTracksMap.size) {
+      if (this._screenShareTracksMap.has(participant.identity)) {
+        this._screenShareTracksMap.delete(participant.identity);
+        this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
       }
     }
   };
@@ -410,24 +410,24 @@ export default class ConnectLivekit {
     participant: Participant | LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
-    if (typeof participant.sid === 'undefined') {
-      console.log('participant.sid undefined');
+    if (typeof participant.identity === 'undefined') {
+      console.log('participant.identity undefined');
       return;
     }
 
     // we don't want to add local audio here.
-    if (participant.sid === this._room.localParticipant.sid) {
+    if (participant.identity === this._room.localParticipant.identity) {
       return;
     }
 
     if (add) {
       this._audioSubscribersMap.set(
-        participant.sid,
+        participant.identity,
         participant as RemoteParticipant,
       );
     } else {
-      if (this._audioSubscribersMap.has(participant.sid)) {
-        this._audioSubscribersMap.delete(participant.sid);
+      if (this._audioSubscribersMap.has(participant.identity)) {
+        this._audioSubscribersMap.delete(participant.identity);
       }
     }
 
@@ -449,17 +449,17 @@ export default class ConnectLivekit {
     add = true,
   ) => {
     console.log('==== updateVideoSubscribers ====');
-    if (typeof participant.sid === 'undefined') {
+    if (typeof participant.identity === 'undefined') {
       console.log('participant.sid undefined');
       return;
     }
 
     if (add) {
-      this._videoSubscribersMap.set(participant.sid, participant);
+      this._videoSubscribersMap.set(participant.identity, participant);
     } else {
-      if (this._videoSubscribersMap.has(participant.sid)) {
-        console.log('removing..', participant.sid);
-        this._videoSubscribersMap.delete(participant.sid);
+      if (this._videoSubscribersMap.has(participant.identity)) {
+        console.log('removing..', participant.identity);
+        this._videoSubscribersMap.delete(participant.identity);
       }
     }
 
@@ -473,7 +473,8 @@ export default class ConnectLivekit {
 
     const mediaSubscribersToArray = Array.from(this._videoSubscribersMap);
     const withoutLocalSubscriber = mediaSubscribersToArray.filter(
-      (participants) => participants[0] !== this._room.localParticipant?.sid,
+      (participants) =>
+        participants[0] !== this._room.localParticipant?.identity,
     );
 
     withoutLocalSubscriber.sort((a, b) => {
