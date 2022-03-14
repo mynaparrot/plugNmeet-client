@@ -103,7 +103,7 @@ export default class HandleMediaTracks {
     participant: RemoteParticipant,
   ) => {
     // to do
-    console.log(streamState, participant);
+    console.log(streamState, participant.name);
   };
 
   private addSubscriber(
@@ -187,7 +187,7 @@ export default class HandleMediaTracks {
             },
           }),
         );
-      } else {
+      } else if (track.source === Track.Source.Camera) {
         this.that.updateVideoSubscribers(participant);
       }
     }
@@ -235,7 +235,7 @@ export default class HandleMediaTracks {
 
       if (track.source === Track.Source.Microphone) {
         this.that.updateAudioSubscribers(participant, false);
-      } else {
+      } else if (track.source === Track.Source.Camera) {
         this.that.updateVideoSubscribers(participant, false);
       }
     }

@@ -116,6 +116,8 @@ export default class HandleParticipants {
     this.that.updateVideoSubscribers(p, false);
     // now remove audio
     this.that.updateAudioSubscribers(p, false);
+    // check for screen sharing
+    this.that.updateScreenShareOnUserDisconnect(p);
   };
 
   public connectionQualityChanged = (

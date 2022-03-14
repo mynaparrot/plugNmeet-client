@@ -66,6 +66,12 @@ export interface IConnectLivekit {
     participant: LocalParticipant | RemoteParticipant,
     add?: boolean,
   ): void;
+  updateScreenShareOnUserDisconnect(participant: RemoteParticipant): void;
+}
+
+export interface IScreenShareInfo {
+  track: LocalTrackPublication | RemoteTrackPublication;
+  participant: LocalParticipant | RemoteParticipant;
 }
 
 export default class ConnectLivekit {
@@ -80,13 +86,8 @@ export default class ConnectLivekit {
     Map<string, LocalParticipant | RemoteParticipant>
   >;
 
-  private _screenShareTracksMap = new Map<
-    string,
-    LocalTrackPublication | RemoteTrackPublication
-  >();
-  private screenShareTracksState: Dispatch<
-    Map<string, LocalTrackPublication | RemoteTrackPublication>
-  >;
+  private _screenShareTracksInfoMap = new Map<string, IScreenShareInfo>();
+  private screenShareTracksInfoState: Dispatch<Map<string, IScreenShareInfo>>;
 
   private currentRoomState: Dispatch<Room>;
   private errorState: Dispatch<IErrorPageProps>;
@@ -111,9 +112,7 @@ export default class ConnectLivekit {
     currentRoomState: Dispatch<Room>,
     errorState: Dispatch<IErrorPageProps>,
     roomConnectionStatusState: Dispatch<connectionStatus>,
-    screenShareTracksState: Dispatch<
-      Map<string, LocalTrackPublication | RemoteTrackPublication>
-    >,
+    screenShareTracksInfoState: Dispatch<Map<string, IScreenShareInfo>>,
   ) {
     this.token = store.getState().session.token;
     // audio Subscribers state
@@ -121,7 +120,7 @@ export default class ConnectLivekit {
     // video Subscribers state
     this.videoSubscribersState = mediaSubscribersState;
     // screen share state
-    this.screenShareTracksState = screenShareTracksState;
+    this.screenShareTracksInfoState = screenShareTracksInfoState;
 
     this.currentRoomState = currentRoomState;
     this.errorState = errorState;
@@ -376,18 +375,30 @@ export default class ConnectLivekit {
   ) => {
     console.log('=== setScreenShareTrack ===', track.source);
     if (add) {
-      this._screenShareTracksMap.set(track.source, track);
-      if (
-        participant.sid !== this._room.localParticipant.sid &&
-        track.source === Track.Source.ScreenShareAudio
-      ) {
-        this._screenShareTracksMap.set(track.source, track);
-      }
+      this._screenShareTracksInfoMap.set(participant.identity, {
+        track,
+        participant,
+      });
     } else {
-      this._screenShareTracksMap.delete(track.source);
+      this._screenShareTracksInfoMap.delete(participant.identity);
     }
 
-    this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
+    this.screenShareTracksInfoState(
+      new Map(this._screenShareTracksInfoMap as any),
+    );
+  };
+
+  public updateScreenShareOnUserDisconnect = (
+    participant: RemoteParticipant,
+  ) => {
+    if (this._screenShareTracksInfoMap.size) {
+      if (this._screenShareTracksInfoMap.has(participant.identity)) {
+        this._screenShareTracksInfoMap.delete(participant.identity);
+        this.screenShareTracksInfoState(
+          new Map(this._screenShareTracksInfoMap as any),
+        );
+      }
+    }
   };
 
   /**

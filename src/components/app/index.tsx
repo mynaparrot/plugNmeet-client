@@ -36,7 +36,7 @@ const App = () => {
     currentRoom,
     audioSubscribers,
     videoSubscribers,
-    screenShareTracks,
+    screenShareInfo,
     startLivekitConnection,
   } = useLivekitConnect();
 
@@ -199,7 +199,7 @@ const App = () => {
             currentRoom={currentRoom}
             audioSubscribers={audioSubscribers}
             videoSubscribers={videoSubscribers}
-            screenShareTracks={screenShareTracks}
+            screenShareInfo={screenShareInfo}
             isRecorder={isRecorder}
           />
           {!isRecorder ? <Footer currentRoom={currentRoom} /> : null}

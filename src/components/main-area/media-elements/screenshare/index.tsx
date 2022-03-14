@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import {
-  LocalTrackPublication,
   RemoteTrackPublication,
   Track,
   LocalParticipant,
@@ -11,15 +10,16 @@ import {
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
-import { updateIsActiveParticipantsPanel } from '../../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActiveParticipantsPanel,
+  updateIsActiveScreenshare,
+} from '../../../../store/slices/bottomIconsActivitySlice';
 import VideoElements from '../videos';
+import { IScreenShareInfo } from '../../../../helpers/livekit/ConnectLivekit';
 
 interface IScreenShareElementsProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  screenShareTracks: Map<
-    string,
-    LocalTrackPublication | RemoteTrackPublication
-  >;
+  screenShareInfo: Map<string, IScreenShareInfo>;
 }
 
 const isActiveParticipantsPanelSelector = createSelector(
@@ -38,7 +38,7 @@ const activateWebcamsViewSelector = createSelector(
 );
 
 const ScreenShareElements = ({
-  screenShareTracks,
+  screenShareInfo,
   videoSubscribers,
 }: IScreenShareElementsProps) => {
   const dispatch = useAppDispatch();
@@ -51,13 +51,19 @@ const ScreenShareElements = ({
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
+
+    return () => {
+      // just for double check to make sure we disabled status of screen share
+      dispatch(updateIsActiveScreenshare(false));
+    };
   }, [dispatch]);
 
   const render = () => {
-    if (screenShareTracks) {
+    if (screenShareInfo) {
       const elm = Array<JSX.Element>();
 
-      screenShareTracks.forEach((track) => {
+      screenShareInfo.forEach((info) => {
+        const track = info.track;
         if (track.source === Track.Source.ScreenShare) {
           elm.push(<VideoElm key={track.trackSid} track={track} />);
         } else if (track.source === Track.Source.ScreenShareAudio) {

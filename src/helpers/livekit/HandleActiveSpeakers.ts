@@ -10,6 +10,9 @@ import {
 } from '../../store/slices/activeSpeakersSlice';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
+const ACTIVE_SPEAKER_LIST_CHANGE_DURATION = 500; // milliseconds
+const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 4000; // milliseconds
+
 export default class HandleActiveSpeakers {
   private that: IConnectLivekit;
   private lastActiveWebcamChanged: number = Date.now();
@@ -30,7 +33,9 @@ export default class HandleActiveSpeakers {
         // we won't update if user is paginating & viewing webcams from other pages.
         if (!isPaginating && this.that.videoSubscribersMap.size > 2) {
           // we'll wait little bit before changing
-          const last = this.lastActiveWebcamChanged + 1000 * 4;
+          const last =
+            this.lastActiveWebcamChanged +
+            ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION;
           if (now > last) {
             if (this.that.videoSubscribersMap.has(participant.sid)) {
               this.that.updateVideoSubscribers(participant);
@@ -65,7 +70,7 @@ export default class HandleActiveSpeakers {
       } else {
         store.dispatch(addManySpeakers(this.activeSpeakers));
       }
-    }, 1500);
+    }, ACTIVE_SPEAKER_LIST_CHANGE_DURATION);
   };
 
   public onLivekitDisconnect = () => {
