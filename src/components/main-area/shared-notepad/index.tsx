@@ -62,8 +62,8 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
       }
 
       return (
-        <div>
-          <iframe height="500px" width="100%" src={url} />
+        <div className="notepad-wrapper h-full w-full flex-1">
+          <iframe height="100%" width="100%" src={url} />
         </div>
       );
     } else {
@@ -81,7 +81,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   };
 
   return (
-    <div className="share-screen-wrapper is-share-screen-running">
+    <div className="shared-notepad-wrapper h-full">
       {/*{if videoSubscribers has webcams}*/}
       {videoSubscribers && shouldShowVideoElems() ? (
         <VideoElements videoSubscribers={videoSubscribers} perPage={3} />

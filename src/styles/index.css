@@ -275,6 +275,8 @@ padding: 0;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.previous-cam,
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam {
     position: absolute;
@@ -291,17 +293,22 @@ padding: 0;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.previous-cam i,
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam i,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam i,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam i,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam i,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam i {
   transform: rotate(0deg);
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam {
     bottom: 0;
     top: auto;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.previous-cam:hover,
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam:hover,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam:hover,
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam:hover,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam:hover,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam:hover {
     background-color: rgba(0,0,0,0.5);
@@ -509,6 +516,35 @@ button.previous-cam:hover, button.next-cam:hover {
   }
 }
 
+
+
+
+#main-area.hideParticipantsPanel.showSharedNotepad .shared-notepad-wrapper {
+  display: flex;
+  position: relative;
+}
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper {
+  position: relative;
+  width: 250px;
+  height: calc(100vh - 110px);
+  display: block;
+  background: rgb(235, 248, 255);
+  background: linear-gradient( 150deg , rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100% );
+  padding: 0;
+}
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner {
+  margin: 30px 0;
+  padding: 0px;
+}
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item {
+  width: 100%;
+  padding-bottom: 68%;
+  box-shadow: none;
+  margin: 5px 10px;
+}
+
+
+
 @media screen and (max-width:1280px) {
   .all-MessageModule-wrap .message-item .system p.message-content {
     font-size: 12px;
@@ -541,27 +577,37 @@ button.previous-cam:hover, button.next-cam:hover {
     width: calc(33.33% - 16px);
     padding-bottom: 23.5%;
   }
-  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper {
+  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper,
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper {
     position: absolute;
     height: auto;
     width: 100%;
     z-index: 9;
     padding-top: 25px;
   }
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper {
+    bottom: 0;
+    padding-top: 0px;
+  }
   .share-screen-wrapper.is-share-screen-running {
     position: relative;
   }
-  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner {
+  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner,
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner {
     margin: 0;
     padding: 0 5px;
   }
-  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
+  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item,
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
     width: 100%;
     /* padding-bottom: 23%; */
     margin: 5px;
     height: 76px;
     padding-bottom: 0;
     max-width: 93px;
+  }
+  #main-area.hideParticipantsPanel.showSharedNotepad .shared-notepad-wrapper .notepad-wrapper {
+    height: calc(100% - 87px);
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video {
     padding-left: 15px;
@@ -606,12 +652,13 @@ button.previous-cam:hover, button.next-cam:hover {
     background: rgb(235, 248, 255);
     background: linear-gradient( 150deg, rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100% );
   }
-  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam {
+  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam,
+  #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam {
     right: -5px;
     width: 25px;
     left: auto;
     height: 25px;
-    top: 50%;
+    top: 40%;
     transform: rotate(-90deg);
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button i {
@@ -620,12 +667,13 @@ button.previous-cam:hover, button.next-cam:hover {
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button:hover {
     background-color: transparent;
   }
-  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam {
+  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam,
+  #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam {
     right: auto;
     width: 25px;
     left: -5px;
     height: 25px;
-    top: 50%;
+    top: 40%;
     transform: rotate(-90deg);
   }
   .plugNmeet-app header#main-header {
