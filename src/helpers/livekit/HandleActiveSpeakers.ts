@@ -10,7 +10,7 @@ import {
 } from '../../store/slices/activeSpeakersSlice';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
-const ACTIVE_SPEAKER_LIST_CHANGE_DURATION = 500; // milliseconds
+const ACTIVE_SPEAKER_LIST_CHANGE_DURATION = 1000; // milliseconds
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 4000; // milliseconds
 
 export default class HandleActiveSpeakers {
@@ -25,6 +25,8 @@ export default class HandleActiveSpeakers {
   }
 
   public activeSpeakersChanged = (participants: Participant[]) => {
+    this.activeSpeakers = [];
+
     if (participants.length) {
       const isPaginating = store.getState().session.isWebcamPaginating;
       const now = Date.now();
@@ -55,8 +57,6 @@ export default class HandleActiveSpeakers {
         store.dispatch(addSpeaker(speaker));
         this.activeSpeakers.push(speaker);
       });
-    } else {
-      this.activeSpeakers = [];
     }
   };
 
