@@ -57,6 +57,16 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    alias: {
+      '@tensorflow/tfjs$': path.resolve(
+        __dirname,
+        './custom_tfjs/custom_tfjs.js',
+      ),
+      '@tensorflow/tfjs-core$': path.resolve(
+        __dirname,
+        './custom_tfjs/custom_tfjs_core.js',
+      ),
+    },
   },
   plugins: [
     new webpack.DefinePlugin({

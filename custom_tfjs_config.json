@@ -1,0 +1,13 @@
+/* 
+https://www.tensorflow.org/js/tutorials/deployment/size_optimized_bundles
+*/
+{
+  "kernels": [],
+  "backends": [
+    "webgl"
+  ],
+  "models": [],
+  "outputPath": "./custom_tfjs",
+  "forwardModeOnly": true
+}
+
