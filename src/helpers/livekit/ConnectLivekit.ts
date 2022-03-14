@@ -397,6 +397,16 @@ export default class ConnectLivekit {
       if (this._screenShareTracksMap.has(participant.identity)) {
         this._screenShareTracksMap.delete(participant.identity);
         this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
+
+        // update status too
+        if (!this._screenShareTracksMap.size) {
+          store.dispatch(
+            updateScreenSharing({
+              isActive: false,
+              sharedBy: '',
+            }),
+          );
+        }
       }
     }
   };
