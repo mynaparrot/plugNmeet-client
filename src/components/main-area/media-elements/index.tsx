@@ -12,6 +12,7 @@ import { RootState, store, useAppSelector } from '../../../store';
 import ScreenShareElements from './screenshare';
 import AudioElements from './audios';
 import VideoElements from './videos';
+import SharedNotepadElement from '../shared-notepad';
 
 interface MediaElementsComponentProps {
   currentRoom: Room;
@@ -36,6 +37,11 @@ const activeScreenSharingViewSelector = createSelector(
   (activeScreenSharingView) => activeScreenSharingView,
 );
 
+const isActiveSharedNotePadSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
+  (isActiveSharedNotePad) => isActiveSharedNotePad,
+);
+
 const MediaElementsComponent = ({
   audioSubscribers,
   videoSubscribers,
@@ -46,6 +52,7 @@ const MediaElementsComponent = ({
   const activeScreenSharingView = useAppSelector(
     activeScreenSharingViewSelector,
   );
+  const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
     (window as any).NUMBER_OF_WEBCAMS_PER_PAGE_PC ?? 25,
   );
@@ -74,6 +81,14 @@ const MediaElementsComponent = ({
     return isActiveScreenSharing;
   };
 
+  const shouldShowSharedNotepad = () => {
+    if (isActiveScreenSharing) {
+      return false;
+    }
+
+    return isActiveSharedNotePad;
+  };
+
   const render = () => {
     return (
       <React.Fragment>
@@ -82,6 +97,9 @@ const MediaElementsComponent = ({
             videoSubscribers={videoSubscribers}
             screenShareTracks={screenShareTracks}
           />
+        ) : null}
+        {shouldShowSharedNotepad() ? (
+          <SharedNotepadElement videoSubscribers={videoSubscribers} />
         ) : null}
         {shouldShowWebcams() && videoSubscribers ? (
           <VideoElements
