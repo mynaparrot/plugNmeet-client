@@ -68,10 +68,10 @@ const MediaElementsComponent = ({
     if (!activateWebcamsView) {
       return false;
     }
-    if (!activeScreenSharingView) {
+    if (!activeScreenSharingView && !isActiveSharedNotePad) {
       return true;
     }
-    return !isActiveScreenSharing;
+    return !isActiveScreenSharing && !isActiveSharedNotePad;
   };
 
   const shouldShowScreenSharing = () => {
