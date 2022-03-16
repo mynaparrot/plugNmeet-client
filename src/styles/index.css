@@ -606,9 +606,9 @@ button.previous-cam:hover, button.next-cam:hover {
     padding-bottom: 0;
     max-width: 93px;
   }
-  #main-area.hideParticipantsPanel.showSharedNotepad .shared-notepad-wrapper .notepad-wrapper {
+  /* #main-area.hideParticipantsPanel.showSharedNotepad .shared-notepad-wrapper .notepad-wrapper {
     height: calc(100% - 87px);
-  }
+  } */
   .share-screen-wrapper.is-share-screen-running .screen-share-video {
     padding-left: 15px;
   }
