@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
@@ -43,16 +43,20 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const currentUser = store.getState().session.currenUser;
+  const [loaded, setLoaded] = useState<boolean>();
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
   }, [dispatch]);
 
+  const onLoad = () => {
+    setLoaded(true);
+  };
+
   const render = () => {
     if (sharedNotepadFeatures?.is_active && sharedNotepadFeatures.host) {
       let url = sharedNotepadFeatures.host;
       if (sharedNotepadFeatures.host.match('host.docker.internal')) {
-        console.log('localhost');
         url = 'http://localhost:9001';
       }
       if (currentUser?.metadata?.is_admin) {
@@ -63,7 +67,15 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
 
       return (
         <div className="notepad-wrapper h-full w-full flex-1">
-          <iframe height="100%" width="100%" src={url} />
+          {!loaded ? (
+            <div className="loading flex justify-center">
+              <div className="lds-ripple">
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          ) : null}
+          <iframe height="100%" width="100%" src={url} onLoad={onLoad} />
         </div>
       );
     } else {
