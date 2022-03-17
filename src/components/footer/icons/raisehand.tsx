@@ -82,7 +82,7 @@ const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
 
   return (
     <div
-      className={`hands h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
+      className={`hands footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
         showTooltip ? 'has-tooltip' : ''
       }`}
       onClick={() => toggleRaiseHand()}
