@@ -41,6 +41,10 @@ const activeScreenSharingViewSelector = createSelector(
   (state: RootState) => state.roomSettings.activeScreenSharingView,
   (activeScreenSharingView) => activeScreenSharingView,
 );
+const isActiveSharedNotePadSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
+  (isActiveSharedNotePad) => isActiveSharedNotePad,
+);
 
 const MainArea = ({
   currentRoom,
@@ -55,6 +59,7 @@ const MainArea = ({
   const activeScreenSharingView = useAppSelector(
     activeScreenSharingViewSelector,
   );
+  const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
@@ -85,7 +90,9 @@ const MainArea = ({
         screenShareTracks?.size && activeScreenSharingView
           ? 'showScreenShare'
           : 'hideScreenShare'
-      }`}
+      }
+      ${isActiveSharedNotePad ? 'showSharedNotepad' : 'hideSharedNotepad'}
+      `}
     >
       <img
         className="absolute w-full h-full left-0 top-0 object-cover pointer-events-none"

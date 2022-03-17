@@ -66,6 +66,7 @@ export interface IConnectLivekit {
     participant: LocalParticipant | RemoteParticipant,
     add?: boolean,
   ): void;
+  updateScreenShareOnUserDisconnect(participant: RemoteParticipant): void;
 }
 
 export default class ConnectLivekit {
@@ -376,18 +377,38 @@ export default class ConnectLivekit {
   ) => {
     console.log('=== setScreenShareTrack ===', track.source);
     if (add) {
-      this._screenShareTracksMap.set(track.source, track);
-      if (
-        participant.sid !== this._room.localParticipant.sid &&
-        track.source === Track.Source.ScreenShareAudio
-      ) {
-        this._screenShareTracksMap.set(track.source, track);
-      }
+      this._screenShareTracksMap.set(participant.identity, track);
     } else {
-      this._screenShareTracksMap.delete(track.source);
+      this._screenShareTracksMap.delete(participant.identity);
     }
 
     this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
+  };
+
+  /**
+   * This method will update screen sharing if user disconnect
+   * This will ensure UI has been updated properly
+   * @param participant: LocalParticipant | RemoteParticipant
+   */
+  public updateScreenShareOnUserDisconnect = (
+    participant: RemoteParticipant,
+  ) => {
+    if (this._screenShareTracksMap.size) {
+      if (this._screenShareTracksMap.has(participant.identity)) {
+        this._screenShareTracksMap.delete(participant.identity);
+        this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
+
+        // update status too
+        if (!this._screenShareTracksMap.size) {
+          store.dispatch(
+            updateScreenSharing({
+              isActive: false,
+              sharedBy: '',
+            }),
+          );
+        }
+      }
+    }
   };
 
   /**
@@ -399,24 +420,24 @@ export default class ConnectLivekit {
     participant: Participant | LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
-    if (typeof participant.sid === 'undefined') {
-      console.log('participant.sid undefined');
+    if (typeof participant.identity === 'undefined') {
+      console.log('participant.identity undefined');
       return;
     }
 
     // we don't want to add local audio here.
-    if (participant.sid === this._room.localParticipant.sid) {
+    if (participant.identity === this._room.localParticipant.identity) {
       return;
     }
 
     if (add) {
       this._audioSubscribersMap.set(
-        participant.sid,
+        participant.identity,
         participant as RemoteParticipant,
       );
     } else {
-      if (this._audioSubscribersMap.has(participant.sid)) {
-        this._audioSubscribersMap.delete(participant.sid);
+      if (this._audioSubscribersMap.has(participant.identity)) {
+        this._audioSubscribersMap.delete(participant.identity);
       }
     }
 
@@ -438,17 +459,17 @@ export default class ConnectLivekit {
     add = true,
   ) => {
     console.log('==== updateVideoSubscribers ====');
-    if (typeof participant.sid === 'undefined') {
-      console.log('participant.sid undefined');
+    if (typeof participant.identity === 'undefined') {
+      console.log('participant.identity undefined');
       return;
     }
 
     if (add) {
-      this._videoSubscribersMap.set(participant.sid, participant);
+      this._videoSubscribersMap.set(participant.identity, participant);
     } else {
-      if (this._videoSubscribersMap.has(participant.sid)) {
-        console.log('removing..', participant.sid);
-        this._videoSubscribersMap.delete(participant.sid);
+      if (this._videoSubscribersMap.has(participant.identity)) {
+        console.log('removing..', participant.identity);
+        this._videoSubscribersMap.delete(participant.identity);
       }
     }
 
@@ -462,7 +483,8 @@ export default class ConnectLivekit {
 
     const mediaSubscribersToArray = Array.from(this._videoSubscribersMap);
     const withoutLocalSubscriber = mediaSubscribersToArray.filter(
-      (participants) => participants[0] !== this._room.localParticipant?.sid,
+      (participants) =>
+        participants[0] !== this._room.localParticipant?.identity,
     );
 
     withoutLocalSubscriber.sort((a, b) => {

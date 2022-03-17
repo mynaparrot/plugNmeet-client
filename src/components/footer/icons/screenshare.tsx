@@ -2,12 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import {
-  createLocalScreenTracks,
-  Room,
-  Track,
-  VideoPresets,
-} from 'livekit-client';
+import { createLocalScreenTracks, Room, Track } from 'livekit-client';
 
 import {
   RootState,
@@ -140,7 +135,6 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
       }
 
       const localTracks = await createLocalScreenTracks({
-        resolution: VideoPresets.hd.resolution,
         audio: true,
       });
       localTracks.forEach(async (track) => {
@@ -194,9 +188,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     );
   };
 
-  return (
-    <React.Fragment>{allowScreenSharing ? render() : null}</React.Fragment>
-  );
+  return <>{allowScreenSharing ? render() : null}</>;
 };
 
 export default ScrenshareIcon;

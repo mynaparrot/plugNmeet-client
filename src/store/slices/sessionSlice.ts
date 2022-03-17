@@ -42,6 +42,10 @@ const initialState: ISession = {
           allow_chat: true,
           allow_file_upload: true,
         },
+        shared_note_pad_features: {
+          allowed_shared_note_pad: false,
+          is_active: false,
+        },
       },
     },
   },

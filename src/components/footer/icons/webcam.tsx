@@ -193,7 +193,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   };
 
   const createDeviceStream = async (deviceId) => {
-    let resolution = VideoPresets.hd.resolution;
+    let resolution = VideoPresets.h720.resolution;
 
     // with virtual background don't need high resolution
     if (virtualBackground.type !== 'none') {

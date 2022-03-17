@@ -47,6 +47,7 @@ const App = () => {
   const [orientationClass, setOrientationClass] =
     useState<string>('landscape-device');
   const [screenHeight, setScreenHeight] = useState<string>('');
+  const [userTypeClass, setUserTypeClass] = useState('participant');
   const ref = useRef(null);
   const { t } = useTranslation();
 
@@ -117,6 +118,10 @@ const App = () => {
         currentRoom.localParticipant.identity === 'RTMP_BOT'
       ) {
         setIsRecorder(true);
+      }
+
+      if (store.getState().session.currenUser?.metadata?.is_admin) {
+        setUserTypeClass('admin');
       }
     }
   }, [currentRoom]);
@@ -231,7 +236,7 @@ const App = () => {
 
   return (
     <div
-      className={`${orientationClass} ${deviceClass}`}
+      className={`${orientationClass} ${deviceClass} ${userTypeClass}`}
       style={{ height: screenHeight }}
     >
       {render()}
