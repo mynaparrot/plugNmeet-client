@@ -5,6 +5,7 @@ import sessionSlice from './slices/sessionSlice';
 import bottomIconsSlice from './slices/bottomIconsActivitySlice';
 import chatMessagesSlice from './slices/chatMessagesSlice';
 import roomSettingsSlice from './slices/roomSettingsSlice';
+import whiteboardSlice from './slices/whiteboard';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -16,6 +17,7 @@ export const store = configureStore({
     bottomIconsActivity: bottomIconsSlice,
     chatMessages: chatMessagesSlice,
     roomSettings: roomSettingsSlice,
+    whiteboard: whiteboardSlice,
   },
   devTools: !IS_PRODUCTION,
 });

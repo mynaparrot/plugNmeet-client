@@ -9,24 +9,12 @@ import {
   useAppSelector,
 } from '../../../store';
 import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
-import VideoElements from '../media-elements/videos';
+import VerticalWebcams from '../media-elements/vertical-webcams';
 
 interface ISharedNotepadProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
 }
 
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
-);
-const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
-);
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
-);
 const sharedNotepadFeaturesSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
@@ -35,12 +23,6 @@ const sharedNotepadFeaturesSelector = createSelector(
 
 const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const dispatch = useAppDispatch();
-
-  const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
-  );
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const currentUser = store.getState().session.currenUser;
   const [loaded, setLoaded] = useState<boolean>();
@@ -83,21 +65,10 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
     }
   };
 
-  // we won't show video elements if both
-  // chat & participant panel active
-  const shouldShowVideoElems = (): boolean => {
-    if (!activateWebcamsView) {
-      return false;
-    }
-    return !(isActiveChatPanel && isActiveParticipantsPanel);
-  };
-
   return (
     <div className="shared-notepad-wrapper h-full">
       {/*{if videoSubscribers has webcams}*/}
-      {videoSubscribers && shouldShowVideoElems() ? (
-        <VideoElements videoSubscribers={videoSubscribers} perPage={3} />
-      ) : null}
+      <VerticalWebcams videoSubscribers={videoSubscribers} />
 
       {render()}
     </div>

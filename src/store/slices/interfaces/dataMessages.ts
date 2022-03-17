@@ -6,7 +6,7 @@ export interface IDataMessage {
   room_sid: string;
   room_id?: string;
   to?: string; // user sid
-  body: ISystemMsg | IChatMsg;
+  body: ISystemMsg | IChatMsg | WhiteboardMsg;
 }
 
 export interface ISystemMsg {
@@ -28,6 +28,7 @@ export interface IChatMsg {
 export enum DataMessageType {
   USER = 'USER',
   SYSTEM = 'SYSTEM',
+  WHITEBOARD = 'WHITEBOARD',
 }
 
 export enum SystemMsgType {
@@ -40,4 +41,17 @@ export enum SystemMsgType {
   SEND_CHAT_MSGS = 'SEND_CHAT_MSGS',
   RENEW_TOKEN = 'RENEW_TOKEN',
   UPDATE_LOCK_SETTINGS = 'UPDATE_LOCK_SETTINGS',
+}
+
+export interface WhiteboardMsg {
+  type: WhiteboardMsgType;
+  time?: string;
+  from: ICurrentUser;
+  msg: string;
+}
+
+export enum WhiteboardMsgType {
+  INIT_WHITEBOARD = 'INIT_WHITEBOARD',
+  SCENE_UPDATE = 'SCENE_UPDATE',
+  POINTER_UPDATE = 'POINTER_UPDATE',
 }

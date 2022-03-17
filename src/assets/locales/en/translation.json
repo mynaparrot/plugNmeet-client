@@ -125,7 +125,9 @@
       "stop-rtmp-broadcasting": "Stop RTMP broadcasting",
       "start-rtmp-broadcasting": "Start RTMP broadcasting",
       "show-shared-notepad": "Show shared notepad",
-      "hide-shared-notepad": "Hide shared notepad"
+      "hide-shared-notepad": "Hide shared notepad",
+      "show-whiteboard": "Show whiteboard",
+      "hide-whiteboard": "Hide whiteboard"
     },
     "menus": {
       "mute-all-users": "Mute all users",

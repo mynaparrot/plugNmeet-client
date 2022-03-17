@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   LocalTrackPublication,
   RemoteTrackPublication,
@@ -10,13 +9,13 @@ import {
 
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
-import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
+import { useAppDispatch } from '../../../../store';
 import {
   updateIsActiveParticipantsPanel,
   updateIsActiveScreenshare,
   updateIsActiveSharedNotePad,
 } from '../../../../store/slices/bottomIconsActivitySlice';
-import VideoElements from '../videos';
+import VerticalWebcams from '../vertical-webcams';
 
 interface IScreenShareElementsProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -26,32 +25,11 @@ interface IScreenShareElementsProps {
   >;
 }
 
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
-);
-
-const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
-);
-
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
-);
-
 const ScreenShareElements = ({
   screenShareTracks,
   videoSubscribers,
 }: IScreenShareElementsProps) => {
   const dispatch = useAppDispatch();
-
-  const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
-  );
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
@@ -86,21 +64,10 @@ const ScreenShareElements = ({
     }
   };
 
-  // we won't show video elements if both
-  // chat & participant panel active
-  const shouldShowVideoElems = (): boolean => {
-    if (!activateWebcamsView) {
-      return false;
-    }
-    return !(isActiveChatPanel && isActiveParticipantsPanel);
-  };
-
   return (
     <div className="share-screen-wrapper is-share-screen-running">
       {/*{if videoSubscribers has webcams}*/}
-      {videoSubscribers && shouldShowVideoElems() ? (
-        <VideoElements videoSubscribers={videoSubscribers} perPage={3} />
-      ) : null}
+      <VerticalWebcams videoSubscribers={videoSubscribers} />
 
       {render()}
     </div>

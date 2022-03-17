@@ -6,6 +6,7 @@ import {
   IChatMsg,
   IDataMessage,
   SystemMsgType,
+  WhiteboardMsg,
 } from '../store/slices/interfaces/dataMessages';
 import {
   addChatMessage,
@@ -18,6 +19,10 @@ import {
 import { ISession } from '../store/slices/interfaces/session';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { updateTotalUnreadChatMsgs } from '../store/slices/bottomIconsActivitySlice';
+import {
+  updateExcalidrawElements,
+  updateMousePointerLocation,
+} from '../store/slices/whiteboard';
 
 let session: ISession;
 let isConnected = false;
@@ -82,6 +87,8 @@ const onMessage = (event: any) => {
       handleUserTypeData(data.body as IChatMsg, data.message_id);
     } else if (data.type === 'SYSTEM') {
       handleSystemTypeData(data);
+    } else if (data.type === 'WHITEBOARD') {
+      handleWhiteboardMsg(data.body as WhiteboardMsg);
     }
   }
 };
@@ -154,6 +161,14 @@ const handlePushMsgMsg = (mainBody: IDataMessage) => {
         type: 'warning',
       });
       break;
+  }
+};
+
+const handleWhiteboardMsg = (data: WhiteboardMsg) => {
+  if (data.type === 'SCENE_UPDATE') {
+    store.dispatch(updateExcalidrawElements(data.msg));
+  } else if (data.type === 'POINTER_UPDATE') {
+    store.dispatch(updateMousePointerLocation(data.msg));
   }
 };
 
