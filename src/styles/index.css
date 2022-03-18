@@ -157,27 +157,33 @@ code {
   display: none;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper,
-#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper {
+#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper {
   position: relative;
   width: 250px;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 110px);
   display: block;
   background: rgb(235, 248, 255);
   background: linear-gradient(
 150deg
 , rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100% );
-padding: 0;
+padding: 30px 0;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper.total-cam-0 {
   display: none;
 }
 #main-area.hideParticipantsPanel.showScreenShare .middle-area,
-#main-area.hideChatPanel.showScreenShare .middle-area {
+#main-area.hideChatPanel.showScreenShare .middle-area,
+#main-area.hideChatPanel.showSharedNotepad .middle-area,
+#main-area.hideChatPanel.showWhiteboard .middle-area {
   display: flex;
   flex-flow: row-reverse;
 }
 #main-area.hideParticipantsPanel.showScreenShare .share-screen-wrapper,
-#main-area.hideChatPanel.showScreenShare .share-screen-wrapper {
+#main-area.hideChatPanel.showScreenShare .share-screen-wrapper,
+#main-area.hideChatPanel.showSharedNotepad .shared-notepad-wrapper,
+#main-area.hideChatPanel.showWhiteboard .shared-notepad-wrapper {
   flex: auto;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper .adminWebcams,
@@ -188,19 +194,25 @@ padding: 0;
   flex-wrap: wrap;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper .video-camera-item,
-#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper .video-camera-item {
+#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper .video-camera-item,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper .video-camera-item {
   width: 100%;
   padding-bottom: 68%;
   box-shadow: none;
   margin: 5px 10px;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper .video-camera-item::after,
-#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper .video-camera-item::after {
+#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper .video-camera-item::after,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item::after,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper .video-camera-item::after {
   background-color: transparent;
   opacity: 1;
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper .video-camera-item .name,
-#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper .video-camera-item .name {
+#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper .video-camera-item .name,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item .name,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper .video-camera-item .name {
   opacity: 1;
   top: auto;
   left: 0.75rem;
@@ -280,7 +292,11 @@ padding: 0;
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.previous-cam,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam,
-#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam {
+#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.previous-cam,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.next-cam {
     position: absolute;
     top: 0;
     width: 100%;
@@ -299,6 +315,10 @@ padding: 0;
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam i,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.previous-cam i,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam i,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam i,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.next-cam i,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.previous-cam i,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.next-cam i,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam i,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam i {
   transform: rotate(0deg);
@@ -306,6 +326,8 @@ padding: 0;
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.next-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam {
     bottom: 0;
     top: auto;
@@ -316,6 +338,10 @@ padding: 0;
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam:hover,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.previous-cam:hover,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam:hover,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam:hover,
+#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper button.next-cam:hover,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.previous-cam:hover,
+#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper button.next-cam:hover,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam:hover,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam:hover {
     background-color: rgba(0,0,0,0.5);

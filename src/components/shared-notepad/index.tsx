@@ -61,7 +61,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   };
 
   return (
-    <div className="shared-notepad-wrapper h-full">
+    <div className="shared-notepad-wrapper h-full flex">
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
