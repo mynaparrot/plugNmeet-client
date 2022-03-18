@@ -2,10 +2,10 @@
     display: flex;
 }
 
-.excalidraw-wrapper {
-    height: 800px;
-    margin: 5px 10px;
-}
+/* .excalidraw-wrapper {
+    height: 100%;
+    margin: 0px 10px;
+} */
 
 :root[dir="ltr"]
 .excalidraw

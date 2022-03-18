@@ -230,7 +230,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper">{render()}</div>
+      <div className="excalidraw-wrapper w-full h-full sm:px-5">{render()}</div>
     </div>
   );
 };

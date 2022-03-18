@@ -277,6 +277,8 @@ padding: 0;
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.previous-cam,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam {
     position: absolute;
@@ -295,12 +297,15 @@ padding: 0;
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam i,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam i,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam i,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.previous-cam i,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam i,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam i,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam i {
   transform: rotate(0deg);
 }
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam {
     bottom: 0;
     top: auto;
@@ -309,6 +314,8 @@ padding: 0;
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper button.next-cam:hover,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.previous-cam:hover,
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper button.next-cam:hover,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.previous-cam:hover,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper button.next-cam:hover,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.previous-cam:hover,
 #main-area.hideChatPanel.showScreenShare .all-webcam-wrapper button.next-cam:hover {
     background-color: rgba(0,0,0,0.5);
@@ -519,11 +526,13 @@ button.previous-cam:hover, button.next-cam:hover {
 
 
 
-#main-area.hideParticipantsPanel.showSharedNotepad .shared-notepad-wrapper {
+#main-area.hideParticipantsPanel.showSharedNotepad .shared-notepad-wrapper,
+#main-area.hideParticipantsPanel.showWhiteboard .shared-notepad-wrapper {
   display: flex;
   position: relative;
 }
-#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper {
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper {
   position: relative;
   width: 250px;
   height: calc(100vh - 110px);
@@ -532,11 +541,13 @@ button.previous-cam:hover, button.next-cam:hover {
   background: linear-gradient( 150deg , rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100% );
   padding: 0;
 }
-#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner {
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper .all-webcam-wrapper-inner {
   margin: 30px 0;
   padding: 0px;
 }
-#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item {
+#main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item,
+#main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper .video-camera-item {
   width: 100%;
   padding-bottom: 68%;
   box-shadow: none;
@@ -578,14 +589,16 @@ button.previous-cam:hover, button.next-cam:hover {
     padding-bottom: 23.5%;
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper,
-  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper {
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper,
+  #main-area.showWhiteboard .shared-notepad-wrapper .all-webcam-wrapper {
     position: absolute;
     height: auto;
     width: 100%;
     z-index: 9;
     padding-top: 25px;
   }
-  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper {
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper,
+  #main-area.showWhiteboard .shared-notepad-wrapper .all-webcam-wrapper {
     bottom: 0;
     padding-top: 0px;
   }
@@ -593,12 +606,14 @@ button.previous-cam:hover, button.next-cam:hover {
     position: relative;
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner,
-  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner {
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner,
+  #main-area.showWhiteboard .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner {
     margin: 0;
     padding: 0 5px;
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item,
-  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
+  #main-area.showSharedNotepad .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item,
+  #main-area.showWhiteboard .shared-notepad-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
     width: 100%;
     /* padding-bottom: 23%; */
     margin: 5px;
@@ -653,7 +668,8 @@ button.previous-cam:hover, button.next-cam:hover {
     background: linear-gradient( 150deg, rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100% );
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam,
-  #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam {
+  #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam,
+  #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam {
     right: -5px;
     width: 25px;
     left: auto;
@@ -668,7 +684,8 @@ button.previous-cam:hover, button.next-cam:hover {
     background-color: transparent;
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam,
-  #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam {
+  #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam,
+  #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam {
     right: auto;
     width: 25px;
     left: -5px;
