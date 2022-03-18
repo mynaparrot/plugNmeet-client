@@ -54,4 +54,5 @@ export interface WhiteboardMsg {
 export enum WhiteboardMsgType {
   SCENE_UPDATE = 'SCENE_UPDATE',
   POINTER_UPDATE = 'POINTER_UPDATE',
+  ADD_WHITEBOARD_FILE = 'ADD_WHITEBOARD_FILE',
 }

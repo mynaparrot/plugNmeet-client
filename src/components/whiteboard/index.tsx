@@ -30,6 +30,9 @@ import { ReconciledElements, reconcileElements } from './collab/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
 import { updateExcalidrawElements } from '../../store/slices/whiteboard';
+import UploadFiles from './uploadFiles';
+import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
+import { getFile } from './data/fileReader';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -42,6 +45,10 @@ const excalidrawElementsSelector = createSelector(
 const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
+);
+const whiteboardFilesSelector = createSelector(
+  (state: RootState) => state.whiteboard.whiteboardFiles,
+  (whiteboardFiles) => whiteboardFiles,
 );
 const heightSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenHeight,
@@ -65,6 +72,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const [theme, setTheme] = useState('light');
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
+  const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
   const collaborators = new Map<string, Collaborator>();
 
   useEffect(() => {
@@ -133,6 +141,42 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [mousePointerLocation]);
 
+  useEffect(() => {
+    const addFile = async (url, fileName) => {
+      const result: any = await getFile(url, fileName);
+      if (result && excalidrawAPI) {
+        excalidrawAPI.addFiles([result.image]);
+
+        const elements = excalidrawAPI
+          .getSceneElementsIncludingDeleted()
+          .filter((elm) => elm.id);
+        elements.push(result.elm);
+
+        excalidrawAPI.updateScene({
+          elements: elements,
+        });
+      }
+    };
+
+    if (whiteboardFiles && excalidrawAPI) {
+      const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
+      files.forEach((file) => {
+        const url =
+          (window as any).PLUG_N_MEET_SERVER_URL +
+          '/download/chat/' +
+          file.filePath;
+
+        const hasAlready = excalidrawAPI
+          .getSceneElementsIncludingDeleted()
+          .filter((elm) => elm.id === file.fileName);
+
+        if (!hasAlready.length) {
+          addFile(url, file.fileName);
+        }
+      });
+    }
+  }, [whiteboardFiles, excalidrawAPI]);
+
   const handleRemoteSceneUpdate = (
     elements: ReconciledElements,
     { init = false }: { init?: boolean } = {},
@@ -148,9 +192,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     // undo, a user makes a change, and then try to redo, your element(s) will be lost. However,
     // right now we think this is the right tradeoff.
     excalidrawAPI?.history.clear();
-
-    // TO DO
-    // loadImageFiles();
   };
 
   const onChange = (elements: readonly ExcalidrawElement[]) => {
@@ -226,6 +267,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     CURSOR_SYNC_TIMEOUT,
   );
 
+  const renderTopRightUI = () => {
+    return <UploadFiles />;
+  };
+
   const render = () => {
     return (
       <Excalidraw
@@ -240,6 +285,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         autoFocus={true}
         detectScroll={true}
         langCode={i18n.languages[0]}
+        renderTopRightUI={renderTopRightUI}
       />
     );
   };

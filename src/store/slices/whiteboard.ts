@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IWhiteboardSlice } from './interfaces/whiteboard';
+import { IWhiteboardFile, IWhiteboardSlice } from './interfaces/whiteboard';
 
 const initialState: IWhiteboardSlice = {
   excalidrawElements: '',
   mousePointerLocation: '',
+  whiteboardFiles: '',
 };
 
 const whiteboardSlice = createSlice({
@@ -16,10 +17,21 @@ const whiteboardSlice = createSlice({
     updateMousePointerLocation: (state, action: PayloadAction<string>) => {
       state.mousePointerLocation = action.payload;
     },
+    addWhiteboardFile: (state, action: PayloadAction<IWhiteboardFile>) => {
+      let files: Array<IWhiteboardFile> = [];
+      if (state.whiteboardFiles) {
+        files = JSON.parse(state.whiteboardFiles);
+      }
+      files.push(action.payload);
+      state.whiteboardFiles = JSON.stringify(files);
+    },
   },
 });
 
-export const { updateExcalidrawElements, updateMousePointerLocation } =
-  whiteboardSlice.actions;
+export const {
+  updateExcalidrawElements,
+  updateMousePointerLocation,
+  addWhiteboardFile,
+} = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;
