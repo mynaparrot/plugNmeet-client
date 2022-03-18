@@ -1,11 +1,6 @@
 .excalidraw .App-menu_top .buttonList {
     display: flex;
 }
-
-.excalidraw-wrapper {
-    margin: 5px 10px;
-}
-
 :root[dir="ltr"]
 .excalidraw
 .layer-ui__wrapper
