@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import throttle from 'lodash/throttle';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import Excalidraw, { getSceneVersion } from '@excalidraw/excalidraw';
@@ -189,7 +189,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
   };
 
-  const onPointerUpdate = _.throttle(
+  const onPointerUpdate = throttle(
     (payload: { pointer; button; pointersMap: Gesture['pointers'] }) => {
       if (viewModeEnabled) {
         return;
