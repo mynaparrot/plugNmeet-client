@@ -7,6 +7,7 @@ import {
   IDataMessage,
   SystemMsgType,
   WhiteboardMsg,
+  WhiteboardMsgType,
 } from '../store/slices/interfaces/dataMessages';
 import {
   addChatMessage,
@@ -115,6 +116,9 @@ const handleSystemTypeData = (body: IDataMessage) => {
     case SystemMsgType.SEND_CHAT_MSGS:
       handleSendChatMsg(body);
       break;
+    case SystemMsgType.INIT_WHITEBOARD:
+      handleSendInitWhiteboard(body);
+      break;
     case SystemMsgType.RENEW_TOKEN:
       handleRenewToken(body);
       break;
@@ -141,6 +145,33 @@ const handleSendChatMsg = (mainBody: IDataMessage) => {
       };
       sendWebsocketMessage(JSON.stringify(data));
     });
+};
+
+const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
+  const elements = store.getState().whiteboard.excalidrawElements;
+  if (!elements) {
+    return;
+  }
+
+  const info: WhiteboardMsg = {
+    type: WhiteboardMsgType.SCENE_UPDATE,
+    from: {
+      sid: session.currenUser?.sid ?? '',
+      userId: session.currenUser?.userId ?? '',
+    },
+    msg: elements,
+  };
+
+  const data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    room_id: session.currentRoom.room_id,
+    message_id: '',
+    body: info,
+    to: mainBody.body.from.sid,
+  };
+
+  sendWebsocketMessage(JSON.stringify(data));
 };
 
 const handleRenewToken = (mainBody: IDataMessage) => {
@@ -184,6 +215,8 @@ const onConnect = () => {
   });
 
   const donor = participants[0];
+
+  // send initial chat messages
   const data: IDataMessage = {
     type: DataMessageType.SYSTEM,
     room_sid: session.currentRoom.sid,
@@ -198,8 +231,24 @@ const onConnect = () => {
       msg: '',
     },
   };
-
   sendWebsocketMessage(JSON.stringify(data));
+
+  // send initial whiteboard elements
+  const whiteboardElms: IDataMessage = {
+    type: DataMessageType.SYSTEM,
+    room_sid: session.currentRoom.sid,
+    message_id: '',
+    to: donor.sid,
+    body: {
+      type: SystemMsgType.INIT_WHITEBOARD,
+      from: {
+        sid: session.currenUser?.sid ?? '',
+        userId: session.currenUser?.userId ?? '',
+      },
+      msg: '',
+    },
+  };
+  sendWebsocketMessage(JSON.stringify(whiteboardElms));
 };
 
 const getURL = () => {

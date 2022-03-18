@@ -1,12 +1,6 @@
 .excalidraw .App-menu_top .buttonList {
     display: flex;
 }
-
-/* .excalidraw-wrapper {
-    height: 100%;
-    margin: 0px 10px;
-} */
-
 :root[dir="ltr"]
 .excalidraw
 .layer-ui__wrapper
@@ -36,5 +30,13 @@
 }
 
 .ToolIcon__library {
+    display: none !important;
+}
+
+.App-toolbar label:last-child {
+    display: none !important;
+}
+
+.HelpDialog--header {
     display: none !important;
 }

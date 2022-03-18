@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import throttle from 'lodash/throttle';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
+import { createSelector } from '@reduxjs/toolkit';
 import Excalidraw, { getSceneVersion } from '@excalidraw/excalidraw';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
@@ -13,7 +14,7 @@ import {
 
 import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import './style.css';
-import { RootState, store, useAppSelector } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './hooks/useCallbackRefState';
 import {
   DataMessageType,
@@ -25,9 +26,10 @@ import {
   isSocketConnected,
   sendWebsocketMessage,
 } from '../../helpers/websocketConnector';
-import { createSelector } from '@reduxjs/toolkit';
 import { ReconciledElements, reconcileElements } from './collab/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
+import { useTranslation } from 'react-i18next';
+import { updateExcalidrawElements } from '../../store/slices/whiteboard';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -41,13 +43,21 @@ const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
 );
+const heightSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenHeight,
+  (screenHeight) => screenHeight,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
   const currentRoom = store.getState().session.currentRoom;
   let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
+  let lastElements: readonly ExcalidrawElement[] = [];
 
+  const height = useAppSelector(heightSelector);
+  const { i18n } = useTranslation();
+  const dispatch = useAppDispatch();
   const participants = useAppSelector(participantsSelector.selectAll);
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
@@ -62,8 +72,14 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       setViewModeEnabled(false);
     }
     setTheme('light');
+
+    return () => {
+      if (lastElements.length) {
+        dispatch(updateExcalidrawElements(JSON.stringify(lastElements)));
+      }
+    };
     //eslint-disable-next-line
-  }, []);
+  }, [lastElements]);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -97,7 +113,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       handleRemoteSceneUpdate(reconciledElements);
     }
     //eslint-disable-next-line
-  }, [excalidrawElements]);
+  }, [excalidrawElements, excalidrawAPI]);
 
   useEffect(() => {
     if (mousePointerLocation) {
@@ -168,11 +184,12 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         };
 
         sendWebsocketMessage(JSON.stringify(data));
+        lastElements = elements;
       }
     }
   };
 
-  const onPointerUpdate = _.throttle(
+  const onPointerUpdate = throttle(
     (payload: { pointer; button; pointersMap: Gesture['pointers'] }) => {
       if (viewModeEnabled) {
         return;
@@ -219,8 +236,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         isCollaborating={true}
         theme={theme}
         name="plugNmeet whiteboard"
-        UIOptions={{ canvasActions: { loadScene: false } }}
+        UIOptions={{ canvasActions: { loadScene: false, export: false } }}
         autoFocus={true}
+        detectScroll={true}
+        langCode={i18n.languages[0]}
       />
     );
   };

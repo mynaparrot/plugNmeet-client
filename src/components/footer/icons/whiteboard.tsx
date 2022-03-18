@@ -12,10 +12,18 @@ import {
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
   (isActiveWhiteboard) => isActiveWhiteboard,
+);
+
+const isWhiteboardVisibleSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.whiteboard_features
+      .visible,
+  (visible) => visible,
 );
 
 const Whiteboard = () => {
@@ -24,6 +32,11 @@ const Whiteboard = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const [iconCSS, setIconCSS] = useState<string>('brand-color1');
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
+  const isVisible = useAppSelector(isWhiteboardVisibleSelector);
+  const allowedWhiteboard =
+    store.getState().session.currentRoom.metadata?.room_features
+      .whiteboard_features.allowed_whiteboard;
+  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   useEffect(() => {
     if (isActiveWhiteboard) {
@@ -34,6 +47,19 @@ const Whiteboard = () => {
     }
   }, [dispatch, isActiveWhiteboard]);
 
+  useEffect(() => {
+    if (!allowedWhiteboard && isAdmin) {
+      return;
+    }
+
+    if (isVisible) {
+      dispatch(updateIsActiveWhiteboard(true));
+    } else {
+      dispatch(updateIsActiveWhiteboard(false));
+    }
+    //eslint-disable-next-line
+  }, [isVisible]);
+
   const text = () => {
     if (isActiveWhiteboard) {
       return t('footer.icons.hide-whiteboard');
@@ -42,8 +68,17 @@ const Whiteboard = () => {
     }
   };
 
-  const toggleWhiteboard = () => {
+  const toggleWhiteboard = async () => {
     dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
+
+    const body: any = {
+      room_id: store.getState().session.currentRoom.room_id,
+      visible_white_board: !isActiveWhiteboard,
+    };
+    if (!isActiveWhiteboard) {
+      body.visible_notepad = false;
+    }
+    await sendAPIRequest('changeVisibility', body);
   };
 
   const render = () => {
@@ -66,7 +101,7 @@ const Whiteboard = () => {
     );
   };
 
-  return <>{render()}</>;
+  return <>{allowedWhiteboard ? render() : null}</>;
 };
 
 export default Whiteboard;

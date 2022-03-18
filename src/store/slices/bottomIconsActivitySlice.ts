@@ -14,10 +14,11 @@ const initialState: IBottomIconsSlice = {
   isActiveRecording: false,
   isActiveScreenshare: false,
   isActiveSharedNotePad: false,
-  isActiveWhiteboard: false,
+  isActiveWhiteboard: true,
 
   isMicMuted: false,
   screenWidth: 1024,
+  screenHeight: 500,
 
   showMicrophoneModal: false,
   showVideoShareModal: false,
@@ -89,6 +90,9 @@ const bottomIconsSlice = createSlice({
     updateScreenWidth: (state, action: PayloadAction<number>) => {
       state.screenWidth = action.payload;
     },
+    updateScreenHeight: (state, action: PayloadAction<number>) => {
+      state.screenHeight = action.payload;
+    },
 
     // modal related
     updateShowMicrophoneModal: (state, action: PayloadAction<boolean>) => {
@@ -134,6 +138,7 @@ export const {
   updateShowLockSettingsModal,
   updateShowRtmpModal,
   updateScreenWidth,
+  updateScreenHeight,
   updateTotalUnreadChatMsgs,
   updateVirtualBackground,
 } = bottomIconsSlice.actions;
