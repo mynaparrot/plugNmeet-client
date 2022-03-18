@@ -41,3 +41,7 @@
 .App-toolbar label:last-child {
     display: none !important;
 }
+
+.HelpDialog--header {
+    display: none !important;
+}

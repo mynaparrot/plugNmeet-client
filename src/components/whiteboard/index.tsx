@@ -28,6 +28,7 @@ import {
 import { createSelector } from '@reduxjs/toolkit';
 import { ReconciledElements, reconcileElements } from './collab/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
+import { useTranslation } from 'react-i18next';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -53,6 +54,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const CURSOR_SYNC_TIMEOUT = 33;
 
   const height = useAppSelector(heightSelector);
+  const { i18n } = useTranslation();
   const participants = useAppSelector(participantsSelector.selectAll);
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
@@ -227,6 +229,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         UIOptions={{ canvasActions: { loadScene: false } }}
         autoFocus={true}
         detectScroll={true}
+        langCode={i18n.languages[0]}
       />
     );
   };
