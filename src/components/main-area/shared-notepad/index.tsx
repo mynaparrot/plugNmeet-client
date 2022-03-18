@@ -66,7 +66,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
       }
 
       return (
-        <div className="notepad-wrapper h-full w-full flex-1">
+        <div className="notepad-wrapper h-full w-full flex-1 sm:px-5">
           {!loaded ? (
             <div className="loading flex justify-center">
               <div className="lds-ripple">

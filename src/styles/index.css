@@ -770,6 +770,10 @@ button.previous-cam:hover, button.next-cam:hover {
     font-size: 14px;
     word-break: break-all;
   }
+  .admin footer#main-footer .footer-icon {
+    height: 30px;
+    width: 30px;
+  }
 }
 @media screen and (max-width:575px) {
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
