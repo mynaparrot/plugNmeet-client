@@ -8,7 +8,11 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../store';
-import { updateIsActiveSharedNotePad } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActiveSharedNotePad,
+  updateIsActiveWhiteboard,
+} from '../../../store/slices/bottomIconsActivitySlice';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const isActiveSharedNotePadSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
@@ -20,6 +24,12 @@ const sharedNotepadStatusSelector = createSelector(
       .is_active,
   (is_active) => is_active,
 );
+const isSharedNotepadVisibleSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
+      .visible,
+  (visible) => visible,
+);
 
 const SharedNotePad = () => {
   const { t } = useTranslation();
@@ -28,6 +38,8 @@ const SharedNotePad = () => {
   const [iconCSS, setIconCSS] = useState<string>('brand-color1');
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
+  const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
+  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   useEffect(() => {
     // if not active then we can disable it.
@@ -41,10 +53,24 @@ const SharedNotePad = () => {
   useEffect(() => {
     if (isActiveSharedNotePad) {
       setIconCSS('brand-color2');
+      dispatch(updateIsActiveWhiteboard(false));
     } else {
       setIconCSS('brand-color1');
     }
-  }, [isActiveSharedNotePad]);
+  }, [isActiveSharedNotePad, dispatch]);
+
+  useEffect(() => {
+    if (!sharedNotepadStatus && isAdmin) {
+      return;
+    }
+
+    if (isVisible) {
+      dispatch(updateIsActiveSharedNotePad(true));
+    } else {
+      dispatch(updateIsActiveSharedNotePad(false));
+    }
+    //eslint-disable-next-line
+  }, [isVisible]);
 
   const text = () => {
     if (isActiveSharedNotePad) {
@@ -54,8 +80,17 @@ const SharedNotePad = () => {
     }
   };
 
-  const toggleSharedNotePad = () => {
+  const toggleSharedNotePad = async () => {
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
+
+    const body: any = {
+      room_id: store.getState().session.currentRoom.room_id,
+      visible_notepad: !isActiveSharedNotePad,
+    };
+    if (!isActiveSharedNotePad) {
+      body.visible_white_board = false;
+    }
+    await sendAPIRequest('changeVisibility', body);
   };
 
   const render = () => {

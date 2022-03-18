@@ -41,6 +41,10 @@ const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
 );
+const heightSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenHeight,
+  (screenHeight) => screenHeight,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
@@ -48,6 +52,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
 
+  const height = useAppSelector(heightSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
@@ -221,6 +226,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         name="plugNmeet whiteboard"
         UIOptions={{ canvasActions: { loadScene: false } }}
         autoFocus={true}
+        detectScroll={true}
       />
     );
   };
@@ -230,7 +236,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper">{render()}</div>
+      <div className="excalidraw-wrapper" style={{ height: height - 120 }}>
+        {render()}
+      </div>
     </div>
   );
 };

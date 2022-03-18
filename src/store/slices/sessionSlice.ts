@@ -45,6 +45,11 @@ const initialState: ISession = {
         shared_note_pad_features: {
           allowed_shared_note_pad: false,
           is_active: false,
+          visible: false,
+        },
+        whiteboard_features: {
+          allowed_whiteboard: true,
+          visible: true,
         },
       },
     },

@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
-import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
-import VerticalWebcams from '../media-elements/vertical-webcams';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
+import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 
 interface ISharedNotepadProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;

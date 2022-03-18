@@ -13,6 +13,7 @@ export interface IBottomIconsSlice {
 
   isMicMuted: boolean;
   screenWidth: number;
+  screenHeight: number;
 
   // modal related
   showMicrophoneModal: boolean;

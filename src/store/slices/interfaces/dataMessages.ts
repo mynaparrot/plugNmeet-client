@@ -41,6 +41,7 @@ export enum SystemMsgType {
   SEND_CHAT_MSGS = 'SEND_CHAT_MSGS',
   RENEW_TOKEN = 'RENEW_TOKEN',
   UPDATE_LOCK_SETTINGS = 'UPDATE_LOCK_SETTINGS',
+  INIT_WHITEBOARD = 'INIT_WHITEBOARD',
 }
 
 export interface WhiteboardMsg {
@@ -51,7 +52,6 @@ export interface WhiteboardMsg {
 }
 
 export enum WhiteboardMsgType {
-  INIT_WHITEBOARD = 'INIT_WHITEBOARD',
   SCENE_UPDATE = 'SCENE_UPDATE',
   POINTER_UPDATE = 'POINTER_UPDATE',
 }

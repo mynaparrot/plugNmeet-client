@@ -54,6 +54,7 @@ interface IRoomFeatures {
   admin_only_webcams: boolean;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
+  whiteboard_features: IWhiteboardFeatures;
 }
 
 interface IChatFeatures {
@@ -66,10 +67,16 @@ interface IChatFeatures {
 interface ISharedNotepadFeatures {
   allowed_shared_note_pad: boolean;
   is_active: boolean;
+  visible: boolean;
   node_id?: string;
   host?: string;
   note_pad_id?: string;
   read_only_pad_id?: string;
+}
+
+interface IWhiteboardFeatures {
+  allowed_whiteboard: boolean;
+  visible: boolean;
 }
 
 interface ILockSettings {

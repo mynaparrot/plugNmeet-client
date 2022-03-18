@@ -12,7 +12,7 @@ import { RootState, store, useAppSelector } from '../../../store';
 import ScreenShareElements from './screenshare';
 import AudioElements from './audios';
 import VideoElements from './videos';
-import SharedNotepadElement from '../shared-notepad';
+import SharedNotepadElement from '../../shared-notepad';
 import Whiteboard from '../../whiteboard';
 
 interface MediaElementsComponentProps {

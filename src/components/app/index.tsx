@@ -20,6 +20,7 @@ import AudioNotification from './audioNotification';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
+  updateScreenHeight,
   updateScreenWidth,
 } from '../../store/slices/bottomIconsActivitySlice';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
@@ -130,6 +131,7 @@ const App = () => {
   useEffect(() => {
     window.onresize = () => {
       dispatch(updateScreenWidth(window.innerWidth));
+      dispatch(updateScreenHeight(window.innerHeight));
       adjustScreenSize();
 
       const isActiveChatPanel =
@@ -147,6 +149,7 @@ const App = () => {
     };
 
     dispatch(updateScreenWidth(window.innerWidth));
+    dispatch(updateScreenHeight(window.innerHeight));
 
     if (window.innerWidth < 1024) {
       dispatch(updateIsActiveParticipantsPanel(false));

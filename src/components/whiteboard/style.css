@@ -3,7 +3,6 @@
 }
 
 .excalidraw-wrapper {
-    height: 800px;
     margin: 5px 10px;
 }
 
@@ -36,5 +35,9 @@
 }
 
 .ToolIcon__library {
+    display: none !important;
+}
+
+.App-toolbar label:last-child {
     display: none !important;
 }
