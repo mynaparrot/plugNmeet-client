@@ -5,6 +5,7 @@ const initialState: IWhiteboardSlice = {
   excalidrawElements: '',
   mousePointerLocation: '',
   whiteboardFiles: '',
+  lastExcalidrawElements: '',
 };
 
 const whiteboardSlice = createSlice({
@@ -28,6 +29,9 @@ const whiteboardSlice = createSlice({
     addWhiteboardFileAsJSON: (state, action: PayloadAction<string>) => {
       state.whiteboardFiles = action.payload;
     },
+    updateLastExcalidrawElements: (state, action: PayloadAction<string>) => {
+      state.lastExcalidrawElements = action.payload;
+    },
   },
 });
 
@@ -36,6 +40,7 @@ export const {
   updateMousePointerLocation,
   addWhiteboardFile,
   addWhiteboardFileAsJSON,
+  updateLastExcalidrawElements,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

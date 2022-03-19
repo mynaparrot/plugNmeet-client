@@ -149,7 +149,11 @@ const handleSendChatMsg = (mainBody: IDataMessage) => {
 };
 
 const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
-  const elements = store.getState().whiteboard.excalidrawElements;
+  let elements = store.getState().whiteboard.excalidrawElements;
+  if (!elements) {
+    elements = store.getState().whiteboard.lastExcalidrawElements;
+  }
+
   if (!elements) {
     return;
   }

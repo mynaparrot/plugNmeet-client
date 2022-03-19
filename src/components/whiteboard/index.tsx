@@ -29,7 +29,10 @@ import {
 import { ReconciledElements, reconcileElements } from './collab/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
-import { updateExcalidrawElements } from '../../store/slices/whiteboard';
+import {
+  updateExcalidrawElements,
+  updateLastExcalidrawElements,
+} from '../../store/slices/whiteboard';
 import UploadFiles from './uploadFiles';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { getFile } from './data/fileReader';
@@ -75,6 +78,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
     setTheme('light');
 
+    return () => {
+      const lastExcalidrawElements =
+        store.getState().whiteboard.lastExcalidrawElements;
+      dispatch(updateExcalidrawElements(lastExcalidrawElements));
+    };
     //eslint-disable-next-line
   }, []);
 
@@ -225,7 +233,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         };
 
         sendWebsocketMessage(JSON.stringify(data));
-        dispatch(updateExcalidrawElements(msg));
+        dispatch(updateLastExcalidrawElements(msg));
       }
     }
   };
