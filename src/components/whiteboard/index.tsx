@@ -50,10 +50,6 @@ const whiteboardFilesSelector = createSelector(
   (state: RootState) => state.whiteboard.whiteboardFiles,
   (whiteboardFiles) => whiteboardFiles,
 );
-const heightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenHeight,
-  (screenHeight) => screenHeight,
-);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
@@ -62,7 +58,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const CURSOR_SYNC_TIMEOUT = 33;
   let lastElements: readonly ExcalidrawElement[] = [];
 
-  const height = useAppSelector(heightSelector);
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const participants = useAppSelector(participantsSelector.selectAll);
@@ -291,11 +286,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   return (
-    <div className="shared-notepad-wrapper h-full">
+    <div className="shared-notepad-wrapper h-full flex">
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper" style={{ height: height - 120 }}>
+      <div className="excalidraw-wrapper flex-1 w-full h-full sm:px-5">
         {render()}
       </div>
     </div>

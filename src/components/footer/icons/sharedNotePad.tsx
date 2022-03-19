@@ -72,6 +72,34 @@ const SharedNotePad = () => {
     //eslint-disable-next-line
   }, [isVisible]);
 
+  useEffect(() => {
+    const sendRequest = async (body) => {
+      await sendAPIRequest('changeVisibility', body);
+    };
+    const currentRoom = store.getState().session.currentRoom;
+
+    if (
+      isActiveSharedNotePad &&
+      !currentRoom.metadata?.room_features.shared_note_pad_features.visible
+    ) {
+      const body: any = {
+        room_id: currentRoom.room_id,
+        visible_white_board: false,
+        visible_notepad: true,
+      };
+      sendRequest(body);
+    } else if (
+      !isActiveSharedNotePad &&
+      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+    ) {
+      const body: any = {
+        room_id: currentRoom.room_id,
+        visible_notepad: false,
+      };
+      sendRequest(body);
+    }
+  }, [isActiveSharedNotePad]);
+
   const text = () => {
     if (isActiveSharedNotePad) {
       return t('footer.icons.hide-shared-notepad');
@@ -82,15 +110,6 @@ const SharedNotePad = () => {
 
   const toggleSharedNotePad = async () => {
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
-
-    const body: any = {
-      room_id: store.getState().session.currentRoom.room_id,
-      visible_notepad: !isActiveSharedNotePad,
-    };
-    if (!isActiveSharedNotePad) {
-      body.visible_white_board = false;
-    }
-    await sendAPIRequest('changeVisibility', body);
   };
 
   const render = () => {

@@ -60,6 +60,35 @@ const Whiteboard = () => {
     //eslint-disable-next-line
   }, [isVisible]);
 
+  useEffect(() => {
+    const sendRequest = async (body) => {
+      await sendAPIRequest('changeVisibility', body);
+    };
+
+    const currentRoom = store.getState().session.currentRoom;
+
+    if (
+      isActiveWhiteboard &&
+      !currentRoom.metadata?.room_features.whiteboard_features.visible
+    ) {
+      const body: any = {
+        room_id: currentRoom.room_id,
+        visible_white_board: true,
+        visible_notepad: false,
+      };
+      sendRequest(body);
+    } else if (
+      !isActiveWhiteboard &&
+      currentRoom.metadata?.room_features.whiteboard_features.visible
+    ) {
+      const body: any = {
+        room_id: currentRoom.room_id,
+        visible_white_board: false,
+      };
+      sendRequest(body);
+    }
+  }, [isActiveWhiteboard]);
+
   const text = () => {
     if (isActiveWhiteboard) {
       return t('footer.icons.hide-whiteboard');
@@ -70,15 +99,6 @@ const Whiteboard = () => {
 
   const toggleWhiteboard = async () => {
     dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
-
-    const body: any = {
-      room_id: store.getState().session.currentRoom.room_id,
-      visible_white_board: !isActiveWhiteboard,
-    };
-    if (!isActiveWhiteboard) {
-      body.visible_notepad = false;
-    }
-    await sendAPIRequest('changeVisibility', body);
   };
 
   const render = () => {
