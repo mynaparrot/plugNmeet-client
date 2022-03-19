@@ -10,11 +10,7 @@ import {
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
 import { useAppDispatch } from '../../../../store';
-import {
-  updateIsActiveParticipantsPanel,
-  updateIsActiveScreenshare,
-  updateIsActiveSharedNotePad,
-} from '../../../../store/slices/bottomIconsActivitySlice';
+import { updateIsActiveScreenshare } from '../../../../store/slices/bottomIconsActivitySlice';
 import VerticalWebcams from '../vertical-webcams';
 
 interface IScreenShareElementsProps {
@@ -32,9 +28,6 @@ const ScreenShareElements = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(updateIsActiveParticipantsPanel(false));
-    dispatch(updateIsActiveSharedNotePad(false));
-
     return () => {
       // just for double check to make sure we disabled status of screen share
       dispatch(updateIsActiveScreenshare(false));

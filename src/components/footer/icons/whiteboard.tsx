@@ -8,10 +8,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../store';
-import {
-  updateIsActiveSharedNotePad,
-  updateIsActiveWhiteboard,
-} from '../../../store/slices/bottomIconsActivitySlice';
+import { updateIsActiveWhiteboard } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const isActiveWhiteboardSelector = createSelector(
@@ -41,7 +38,6 @@ const Whiteboard = () => {
   useEffect(() => {
     if (isActiveWhiteboard) {
       setIconCSS('brand-color2');
-      dispatch(updateIsActiveSharedNotePad(false));
     } else {
       setIconCSS('brand-color1');
     }
