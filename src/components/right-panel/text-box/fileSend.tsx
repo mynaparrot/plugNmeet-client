@@ -32,6 +32,11 @@ const FileSend = ({
   const toastId = React.useRef<string>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { t } = useTranslation();
+  const chat_features =
+    store.getState().session.currentRoom.metadata?.room_features.chat_features;
+  const accept =
+    chat_features?.allowed_file_types?.map((type) => '.' + type).join(',') ??
+    '*';
 
   const openFileBrowser = () => {
     if (!isUploading) {
@@ -62,6 +67,22 @@ const FileSend = ({
       },
       headers: {
         Authorization: session.token,
+      },
+      fileType: chat_features?.allowed_file_types ?? [],
+      fileTypeErrorCallback(file) {
+        toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
+          type: toast.TYPE.ERROR,
+        });
+      },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      maxFileSize: chat_features?.max_file_size
+        ? chat_features?.max_file_size * 1000000
+        : undefined,
+      maxFileSizeErrorCallback() {
+        toast(t('notifications.max-file-size-exceeds'), {
+          type: toast.TYPE.ERROR,
+        });
       },
     });
 
@@ -166,6 +187,7 @@ const FileSend = ({
           type="file"
           id="chat-file"
           ref={inputFile}
+          accept={accept}
           style={{ display: 'none' }}
           onChange={(e) => onChange(e)}
         />

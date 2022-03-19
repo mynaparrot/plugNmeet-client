@@ -91,7 +91,7 @@ const UploadFiles = () => {
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      maxFileSize: 2000000,
+      maxFileSize: 2 * 1000000,
       maxFileSizeErrorCallback() {
         toast(t('notifications.max-file-size-exceeds'), {
           type: toast.TYPE.ERROR,

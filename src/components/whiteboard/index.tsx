@@ -70,21 +70,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const collaborators = new Map<string, Collaborator>();
 
   useEffect(() => {
-    if (!excalidrawAPI) {
-      if (currentUser?.metadata?.is_admin) {
-        setViewModeEnabled(false);
-      }
-      setTheme('light');
+    if (currentUser?.metadata?.is_admin) {
+      setViewModeEnabled(false);
     }
+    setTheme('light');
 
-    return () => {
-      if (excalidrawAPI) {
-        const lastElements = excalidrawAPI.getSceneElementsIncludingDeleted();
-        dispatch(updateExcalidrawElements(JSON.stringify(lastElements)));
-      }
-    };
     //eslint-disable-next-line
-  }, [excalidrawAPI]);
+  }, []);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -184,6 +176,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     elements: ReconciledElements,
     { init = false }: { init?: boolean } = {},
   ) => {
+    if (!elements.length) {
+      return;
+    }
+
     excalidrawAPI?.updateScene({
       elements,
       commitToHistory: init,
@@ -209,6 +205,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
       if (getSceneVersion(elements) > lastBroadcastedOrReceivedSceneVersion) {
         lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
+        const msg = JSON.stringify(elements);
 
         const info: WhiteboardMsg = {
           type: WhiteboardMsgType.SCENE_UPDATE,
@@ -216,7 +213,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
             sid: currentUser.sid,
             userId: currentUser.userId,
           },
-          msg: JSON.stringify(elements),
+          msg: msg,
         };
 
         const data: IDataMessage = {
@@ -228,6 +225,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         };
 
         sendWebsocketMessage(JSON.stringify(data));
+        dispatch(updateExcalidrawElements(msg));
       }
     }
   };
