@@ -83,7 +83,10 @@ const SharedNotePad = () => {
         visible_white_board: false,
         visible_notepad: true,
       };
-      sendRequest(body);
+      // wait little bit before change visibility
+      setTimeout(() => {
+        sendRequest(body);
+      }, 500);
     } else if (
       !isActiveSharedNotePad &&
       currentRoom.metadata?.room_features.shared_note_pad_features.visible

@@ -166,7 +166,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
   const render = () => {
     return (
       <div
-        className={`share-screen h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 hidden md:flex items-center justify-center cursor-pointer ${
+        className={`share-screen footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 hidden md:flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleScreenShare()}

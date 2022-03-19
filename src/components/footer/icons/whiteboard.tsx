@@ -72,7 +72,10 @@ const Whiteboard = () => {
         visible_white_board: true,
         visible_notepad: false,
       };
-      sendRequest(body);
+      // wait little bit before change visibility
+      setTimeout(() => {
+        sendRequest(body);
+      }, 500);
     } else if (
       !isActiveWhiteboard &&
       currentRoom.metadata?.room_features.whiteboard_features.visible

@@ -71,7 +71,7 @@ code {
 }
 /* Message */
 .all-webcam-wrapper {
-  height: calc(100vh - 130px);
+  height: calc(100vh - 110px);
   display: flex;
   align-items: center;
 }
@@ -503,7 +503,7 @@ button.previous-cam:hover, button.next-cam:hover {
 }
 .share-screen-wrapper.is-share-screen-running .screen-share-video {
   flex: 1;
-  padding-bottom: calc(100vh - 130px) !important;
+  padding-bottom: calc(100vh - 110px) !important;
   padding-left: 25px;
 }
 .share-screen-wrapper.is-share-screen-running .screen-share-video video.video-player {
@@ -621,7 +621,8 @@ button.previous-cam:hover, button.next-cam:hover {
     height: auto;
     width: 100%;
     z-index: 9;
-    padding-top: 25px;
+    padding-top: 0px;
+    bottom: 0;
   }
   #main-area.showSharedNotepad .middle-fullscreen-wrapper .all-webcam-wrapper,
   #main-area.showWhiteboard .middle-fullscreen-wrapper .all-webcam-wrapper {
@@ -641,11 +642,10 @@ button.previous-cam:hover, button.next-cam:hover {
   #main-area.showSharedNotepad .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item,
   #main-area.showWhiteboard .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
     width: 100%;
-    /* padding-bottom: 23%; */
     margin: 5px;
-    height: 76px;
+    height: 90px;
     padding-bottom: 0;
-    max-width: 93px;
+    max-width: 105px;
   }
   /* #main-area.hideParticipantsPanel.showSharedNotepad .middle-fullscreen-wrapper .notepad-wrapper {
     height: calc(100% - 87px);
@@ -655,8 +655,12 @@ button.previous-cam:hover, button.next-cam:hover {
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video video.video-player {
     width: calc(100% - 30px);
-    height: calc(100% - 30px);
-    top: 40px;
+    height: calc(100% - 85px);
+    top: 0px;
+  }
+  .share-screen-wrapper.is-share-screen-running .screen-share-video button {
+    bottom: 155px;
+    position: fixed;
   }
   .Toastify__toast-container .Toastify__toast-body {
     padding: 0;
@@ -772,6 +776,17 @@ button.previous-cam:hover, button.next-cam:hover {
   .message-form .btns button i {
     font-size: 18px;
   }
+  #main-area .all-webcam-wrapper.total-cam-2 .video-camera-item, #main-area .all-webcam-wrapper.total-cam-1 .video-camera-item {
+    width: calc(100% - 16px);
+    padding-bottom: 60%;
+  }
+  #main-area .all-webcam-wrapper.total-cam-3 .video-camera-item {
+    width: calc(85% - 16px);
+    padding-bottom: 46%;
+  }
+  .all-webcam-wrapper-inner {
+    padding: 0 5px;
+  }
 }
 @media screen and (min-width:641px) {
   .preview-camera-webcam video, .preview-camera-webcam canvas {
@@ -797,5 +812,15 @@ button.previous-cam:hover, button.next-cam:hover {
   header#main-header .middle h2 {
     font-size: 14px;
     word-break: break-all;
+  }
+  .admin footer#main-footer .footer-icon {
+    height: 30px;
+    width: 30px;
+  }
+}
+@media screen and (max-width:575px) {
+  #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
+    width: calc(32.5% - 10px);
+    max-width: 100%;
   }
 }
