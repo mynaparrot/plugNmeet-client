@@ -299,11 +299,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   return (
-    <div className="shared-notepad-wrapper h-full flex">
+    <div className="middle-fullscreen-wrapper h-full flex">
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper flex-1 w-full h-full sm:px-5">
+      <div className="excalidraw-wrapper flex-1 w-full h-[calc(100%-50px)] sm:px-5 mt-9">
         {render()}
       </div>
     </div>

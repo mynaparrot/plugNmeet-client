@@ -40,3 +40,6 @@
 .HelpDialog--header {
     display: none !important;
 }
+.excalidraw .Stack_horizontal {
+    justify-content: start !important;
+}

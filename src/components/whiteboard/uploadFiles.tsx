@@ -175,9 +175,9 @@ const UploadFiles = () => {
         <button
           disabled={isUploading}
           onClick={() => openFileBrowser()}
-          className="w-4 h-6 px-2"
+          className="w-10 h-7 flex items-center justify-center"
         >
-          <i className="pnm-attachment brand-color1 text-[20px] opacity-50" />
+          <i className="pnm-attachment brand-color1 text-[14px] opacity-50" />
         </button>
       </>
     );
