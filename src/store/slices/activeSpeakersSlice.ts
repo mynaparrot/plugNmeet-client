@@ -32,10 +32,11 @@ const activeSpeakersSlice = createSlice({
   reducers: {
     addSpeaker: activeSpeakerAdapter.addOne,
     addManySpeakers: activeSpeakerAdapter.addMany,
+    setAllSpeakers: activeSpeakerAdapter.setAll,
     removeSpeakers: activeSpeakerAdapter.removeAll,
   },
 });
 
-export const { addSpeaker, addManySpeakers, removeSpeakers } =
+export const { addSpeaker, addManySpeakers, removeSpeakers, setAllSpeakers } =
   activeSpeakersSlice.actions;
 export default activeSpeakersSlice.reducer;
