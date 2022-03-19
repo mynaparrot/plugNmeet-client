@@ -38,6 +38,8 @@ export const getFile = async (url, file_name) => {
 
     readerBase64.onload = () => {
       imgData = readerBase64.result as string;
+      imgData = imgData.replace('application/octet-stream', fileMimeType);
+
       if (fileMimeType !== 'image/svg+xml') {
         const image = new Image();
         image.src = imgData;
@@ -71,8 +73,8 @@ const prepareForExcalidraw = (): FileReaderResult => {
   const elm: ExcalidrawElement = {
     id: fileName,
     type: 'image',
-    x: 100,
-    y: 100,
+    x: 360,
+    y: 115,
     width: fileWidth,
     height: fileHeight,
     angle: 0,

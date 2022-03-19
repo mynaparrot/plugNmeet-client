@@ -8,6 +8,13 @@ import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { addWhiteboardFile } from '../../store/slices/whiteboard';
+import {
+  DataMessageType,
+  IDataMessage,
+  WhiteboardMsg,
+  WhiteboardMsgType,
+} from '../../store/slices/interfaces/dataMessages';
+import { sendWebsocketMessage } from '../../helpers/websocketConnector';
 
 const UploadFiles = () => {
   const inputFile = useRef<HTMLInputElement>(null);
@@ -24,7 +31,6 @@ const UploadFiles = () => {
 
   const onChange = (e) => {
     const files = e.target.files;
-    console.log(files);
     if (!files.length) {
       return;
     }
@@ -38,6 +44,28 @@ const UploadFiles = () => {
       fileName,
     };
     dispatch(addWhiteboardFile(file));
+
+    const files = store.getState().whiteboard.whiteboardFiles;
+    const session = store.getState().session;
+
+    const info: WhiteboardMsg = {
+      type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
+      from: {
+        sid: session.currenUser?.sid ?? '',
+        userId: session.currenUser?.userId ?? '',
+      },
+      msg: files,
+    };
+
+    const data: IDataMessage = {
+      type: DataMessageType.WHITEBOARD,
+      room_sid: session.currentRoom.sid,
+      room_id: session.currentRoom.room_id,
+      message_id: '',
+      body: info,
+    };
+
+    sendWebsocketMessage(JSON.stringify(data));
   };
 
   const sendFile = (session: ISession, files: Array<File>) => {
@@ -142,6 +170,7 @@ const UploadFiles = () => {
           ref={inputFile}
           style={{ display: 'none' }}
           onChange={(e) => onChange(e)}
+          accept=".png,.jpg,.jpeg,.svg"
         />
         <button
           disabled={isUploading}

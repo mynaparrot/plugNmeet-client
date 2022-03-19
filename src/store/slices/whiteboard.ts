@@ -25,6 +25,9 @@ const whiteboardSlice = createSlice({
       files.push(action.payload);
       state.whiteboardFiles = JSON.stringify(files);
     },
+    addWhiteboardFileAsJSON: (state, action: PayloadAction<string>) => {
+      state.whiteboardFiles = action.payload;
+    },
   },
 });
 
@@ -32,6 +35,7 @@ export const {
   updateExcalidrawElements,
   updateMousePointerLocation,
   addWhiteboardFile,
+  addWhiteboardFileAsJSON,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

@@ -21,6 +21,7 @@ import { ISession } from '../store/slices/interfaces/session';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { updateTotalUnreadChatMsgs } from '../store/slices/bottomIconsActivitySlice';
 import {
+  addWhiteboardFileAsJSON,
   updateExcalidrawElements,
   updateMousePointerLocation,
 } from '../store/slices/whiteboard';
@@ -153,7 +154,7 @@ const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
     return;
   }
 
-  const info: WhiteboardMsg = {
+  let info: WhiteboardMsg = {
     type: WhiteboardMsgType.SCENE_UPDATE,
     from: {
       sid: session.currenUser?.sid ?? '',
@@ -162,7 +163,33 @@ const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
     msg: elements,
   };
 
-  const data: IDataMessage = {
+  let data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    room_id: session.currentRoom.room_id,
+    message_id: '',
+    body: info,
+    to: mainBody.body.from.sid,
+  };
+
+  sendWebsocketMessage(JSON.stringify(data));
+
+  // send whiteboard files
+  const files = store.getState().whiteboard.whiteboardFiles;
+  if (files === '') {
+    return;
+  }
+
+  info = {
+    type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
+    from: {
+      sid: session.currenUser?.sid ?? '',
+      userId: session.currenUser?.userId ?? '',
+    },
+    msg: files,
+  };
+
+  data = {
     type: DataMessageType.WHITEBOARD,
     room_sid: session.currentRoom.sid,
     room_id: session.currentRoom.room_id,
@@ -200,6 +227,8 @@ const handleWhiteboardMsg = (data: WhiteboardMsg) => {
     store.dispatch(updateExcalidrawElements(data.msg));
   } else if (data.type === 'POINTER_UPDATE') {
     store.dispatch(updateMousePointerLocation(data.msg));
+  } else if (data.type === 'ADD_WHITEBOARD_FILE') {
+    store.dispatch(addWhiteboardFileAsJSON(data.msg));
   }
 };
 

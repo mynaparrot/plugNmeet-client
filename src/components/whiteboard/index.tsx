@@ -56,7 +56,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentRoom = store.getState().session.currentRoom;
   let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
-  let lastElements: readonly ExcalidrawElement[] = [];
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
@@ -71,18 +70,21 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const collaborators = new Map<string, Collaborator>();
 
   useEffect(() => {
-    if (currentUser?.metadata?.is_admin) {
-      setViewModeEnabled(false);
+    if (!excalidrawAPI) {
+      if (currentUser?.metadata?.is_admin) {
+        setViewModeEnabled(false);
+      }
+      setTheme('light');
     }
-    setTheme('light');
 
     return () => {
-      if (lastElements.length) {
+      if (excalidrawAPI) {
+        const lastElements = excalidrawAPI.getSceneElementsIncludingDeleted();
         dispatch(updateExcalidrawElements(JSON.stringify(lastElements)));
       }
     };
     //eslint-disable-next-line
-  }, [lastElements]);
+  }, [excalidrawAPI]);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -142,10 +144,22 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (result && excalidrawAPI) {
         excalidrawAPI.addFiles([result.image]);
 
-        const elements = excalidrawAPI
+        let elements = excalidrawAPI
           .getSceneElementsIncludingDeleted()
           .filter((elm) => elm.id);
-        elements.push(result.elm);
+        const hasElm = elements.filter((elm) => elm.id === fileName);
+
+        if (!hasElm.length) {
+          // we shouldn't push if element already there.
+          // otherwise, it will override if element's position was changed
+          elements.push(result.elm);
+        } else if (hasElm.length && hasElm[0].isDeleted) {
+          // if deleted then we can consider adding again
+          elements = excalidrawAPI
+            .getSceneElementsIncludingDeleted()
+            .filter((elm) => elm.id !== fileName);
+          elements.push(result.elm);
+        }
 
         excalidrawAPI.updateScene({
           elements: elements,
@@ -161,13 +175,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
           '/download/chat/' +
           file.filePath;
 
-        const hasAlready = excalidrawAPI
-          .getSceneElementsIncludingDeleted()
-          .filter((elm) => elm.id === file.fileName);
-
-        if (!hasAlready.length) {
-          addFile(url, file.fileName);
-        }
+        addFile(url, file.fileName);
       });
     }
   }, [whiteboardFiles, excalidrawAPI]);
@@ -220,7 +228,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         };
 
         sendWebsocketMessage(JSON.stringify(data));
-        lastElements = elements;
       }
     }
   };
@@ -263,7 +270,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   );
 
   const renderTopRightUI = () => {
-    return <UploadFiles />;
+    return <>{currentUser?.metadata?.is_admin ? <UploadFiles /> : null}</>;
   };
 
   const render = () => {
