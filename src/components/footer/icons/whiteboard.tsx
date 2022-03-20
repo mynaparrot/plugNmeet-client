@@ -97,6 +97,11 @@ const Whiteboard = () => {
   };
 
   const toggleWhiteboard = async () => {
+    const isActiveScreenShare =
+      store.getState().bottomIconsActivity.isActiveScreenshare;
+    if (isActiveScreenShare) {
+      return;
+    }
     dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
   };
 

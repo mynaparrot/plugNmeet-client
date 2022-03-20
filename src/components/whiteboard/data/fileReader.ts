@@ -8,21 +8,21 @@ export interface FileReaderResult {
   elm: ExcalidrawElement;
 }
 
-let fileName = '',
+let fileId = '',
   fileMimeType = '',
   imgData = '',
   fileHeight = 50,
   fileWidth = 50;
 
-export const getFile = async (url, file_name) => {
-  return new Promise(async (resolve, reject) => {
+export const getFile = async (url, file_id) => {
+  return new Promise<FileReaderResult>(async (resolve, reject) => {
     const res = await fetch(url);
     const imageData = await res.blob();
     if (!imageData) {
       reject(null);
     }
 
-    fileName = file_name;
+    fileId = file_id;
     const reader = new FileReader();
     const readerBase64 = new FileReader();
 
@@ -64,14 +64,14 @@ export const getFile = async (url, file_name) => {
 
 const prepareForExcalidraw = (): FileReaderResult => {
   const image: BinaryFileData = {
-    id: fileName as any,
+    id: fileId as any,
     dataURL: imgData as DataURL,
     mimeType: fileMimeType as any,
     created: Date.now(),
   };
 
   const elm: ExcalidrawElement = {
-    id: fileName,
+    id: fileId,
     type: 'image',
     x: 360,
     y: 115,
@@ -95,7 +95,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     updated: Date.now(),
     link: null,
     status: 'pending',
-    fileId: fileName as any,
+    fileId: fileId as any,
     scale: [1, 1],
   };
 

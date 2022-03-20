@@ -108,6 +108,11 @@ const SharedNotePad = () => {
   };
 
   const toggleSharedNotePad = async () => {
+    const isActiveScreenShare =
+      store.getState().bottomIconsActivity.isActiveScreenshare;
+    if (isActiveScreenShare) {
+      return;
+    }
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
   };
 

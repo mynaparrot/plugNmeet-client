@@ -6,6 +6,7 @@ export interface IWhiteboardSlice {
 }
 
 export interface IWhiteboardFile {
+  id: string;
   filePath: string;
   fileName: string;
 }

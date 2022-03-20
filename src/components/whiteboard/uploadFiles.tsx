@@ -15,6 +15,7 @@ import {
   WhiteboardMsgType,
 } from '../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../helpers/websocketConnector';
+import { randomString } from '../../helpers/utils';
 
 const UploadFiles = () => {
   const inputFile = useRef<HTMLInputElement>(null);
@@ -40,6 +41,7 @@ const UploadFiles = () => {
 
   const broadcastFile = (filePath, fileName) => {
     const file: IWhiteboardFile = {
+      id: randomString(),
       filePath,
       fileName,
     };

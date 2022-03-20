@@ -9,6 +9,7 @@ import {
   ExcalidrawImperativeAPI,
   Gesture,
   Collaborator,
+  BinaryFileData,
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
@@ -59,6 +60,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentRoom = store.getState().session.currentRoom;
   let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
+  const collaborators = new Map<string, Collaborator>();
+  const fileReadImages: Array<BinaryFileData> = [];
+  const fileReadElms: Array<ExcalidrawElement> = [];
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
@@ -70,7 +74,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
   const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
-  const collaborators = new Map<string, Collaborator>();
 
   useEffect(() => {
     if (currentUser?.metadata?.is_admin) {
@@ -86,6 +89,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, []);
 
+  // for adding users to canvas as collaborators
   useEffect(() => {
     if (!excalidrawAPI) {
       return;
@@ -103,6 +107,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [participants, excalidrawAPI]);
 
+  // for handling draw elements
   useEffect(() => {
     if (excalidrawElements && excalidrawAPI) {
       const elements = JSON.parse(excalidrawElements);
@@ -120,6 +125,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [excalidrawElements, excalidrawAPI]);
 
+  // for handling mouse pointer location
   useEffect(() => {
     if (mousePointerLocation) {
       const { pointer, button, name, userId, selectedElementIds } =
@@ -138,47 +144,69 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [mousePointerLocation]);
 
+  // for handling files
   useEffect(() => {
-    const addFile = async (url, fileName) => {
-      const result: any = await getFile(url, fileName);
-      if (result && excalidrawAPI) {
-        excalidrawAPI.addFiles([result.image]);
-
-        let elements = excalidrawAPI
-          .getSceneElementsIncludingDeleted()
-          .filter((elm) => elm.id);
-        const hasElm = elements.filter((elm) => elm.id === fileName);
-
-        if (!hasElm.length) {
-          // we shouldn't push if element already there.
-          // otherwise, it will override if element's position was changed
-          elements.push(result.elm);
-        } else if (hasElm.length && hasElm[0].isDeleted) {
-          // if deleted then we can consider adding again
-          elements = excalidrawAPI
-            .getSceneElementsIncludingDeleted()
-            .filter((elm) => elm.id !== fileName);
-          elements.push(result.elm);
-        }
-
-        excalidrawAPI.updateScene({
-          elements: elements,
-        });
-      }
-    };
-
     if (whiteboardFiles && excalidrawAPI) {
       const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
-      files.forEach((file) => {
-        const url =
-          (window as any).PLUG_N_MEET_SERVER_URL +
-          '/download/chat/' +
-          file.filePath;
-
-        addFile(url, file.fileName);
-      });
+      handleExcalidrawAddFiles(excalidrawAPI, files);
     }
+    //eslint-disable-next-line
   }, [whiteboardFiles, excalidrawAPI]);
+
+  const handleExcalidrawAddFiles = async (
+    excalidrawAPI: ExcalidrawImperativeAPI,
+    files: Array<IWhiteboardFile>,
+  ) => {
+    for (const file of files) {
+      const url =
+        (window as any).PLUG_N_MEET_SERVER_URL +
+        '/download/chat/' +
+        file.filePath;
+
+      const canvasFiles = excalidrawAPI.getFiles();
+      let hasFile = false;
+      for (const canvasFile in canvasFiles) {
+        if (canvasFiles[canvasFile].id === file.id) {
+          hasFile = true;
+          break;
+        }
+      }
+
+      if (!hasFile) {
+        const result = await getFile(url, file.id);
+        if (result && excalidrawAPI) {
+          fileReadImages.push(result.image);
+          fileReadElms.push(result.elm);
+        }
+      }
+    }
+
+    if (!fileReadImages.length) {
+      return;
+    }
+    // need to add all the files at a same time
+    // we can't add one by one otherwise file will be missing
+    excalidrawAPI.addFiles(fileReadImages);
+
+    fileReadElms.forEach((element) => {
+      // it's important to add existing elements too
+      // otherwise element will be missing
+      const elements = excalidrawAPI
+        .getSceneElementsIncludingDeleted()
+        .slice(0);
+      const hasElm = elements.filter((elm) => elm.id === element.id);
+
+      if (!hasElm.length) {
+        // we shouldn't push if element already there.
+        // otherwise, it will override if element's position was changed
+        elements.push(element);
+      }
+
+      excalidrawAPI.updateScene({
+        elements,
+      });
+    });
+  };
 
   const handleRemoteSceneUpdate = (
     elements: ReconciledElements,
