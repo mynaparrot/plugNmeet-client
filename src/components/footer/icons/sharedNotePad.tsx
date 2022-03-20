@@ -36,6 +36,7 @@ const SharedNotePad = () => {
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
   const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
+  const [initiated, setInitiated] = useState<boolean>(false);
   const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   useEffect(() => {
@@ -72,11 +73,21 @@ const SharedNotePad = () => {
     if (!isAdmin) {
       return;
     }
+    const currentRoom = store.getState().session.currentRoom;
+
+    if (
+      !initiated &&
+      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+    ) {
+      setInitiated(true);
+      return;
+    } else if (!initiated) {
+      setInitiated(true);
+    }
 
     const sendRequest = async (body) => {
       await sendAPIRequest('changeVisibility', body);
     };
-    const currentRoom = store.getState().session.currentRoom;
 
     if (
       isActiveSharedNotePad &&
