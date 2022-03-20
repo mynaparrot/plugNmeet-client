@@ -317,7 +317,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const render = () => {
     return (
       <Excalidraw
-        ref={excalidrawRefCallback}
+        ref={excalidrawRefCallback as any}
         onChange={onChange}
         onPointerUpdate={onPointerUpdate}
         viewModeEnabled={viewModeEnabled}
