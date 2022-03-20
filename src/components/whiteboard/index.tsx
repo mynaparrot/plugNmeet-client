@@ -16,7 +16,7 @@ import {
 import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import './style.css';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-import { useCallbackRefState } from './hooks/useCallbackRefState';
+import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   DataMessageType,
   IDataMessage,
@@ -27,7 +27,10 @@ import {
   isSocketConnected,
   sendWebsocketMessage,
 } from '../../helpers/websocketConnector';
-import { ReconciledElements, reconcileElements } from './collab/reconciliation';
+import {
+  ReconciledElements,
+  reconcileElements,
+} from './helpers/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,7 +39,7 @@ import {
 } from '../../store/slices/whiteboard';
 import UploadFiles from './uploadFiles';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
-import { getFile } from './data/fileReader';
+import { getFile } from './helpers/fileReader';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
