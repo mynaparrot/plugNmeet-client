@@ -99,7 +99,7 @@ const FileSend = ({
       setIsUploading(false);
 
       setTimeout(() => {
-        toast.done(toastId.current ?? '');
+        toast.dismiss(toastId.current ?? '');
       }, 300);
 
       if (res.status) {
@@ -115,7 +115,7 @@ const FileSend = ({
       setIsUploading(false);
 
       setTimeout(() => {
-        toast.done(toastId.current ?? '');
+        toast.dismiss(toastId.current ?? '');
       }, 300);
 
       toast(t(res.msg), {

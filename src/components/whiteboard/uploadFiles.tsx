@@ -114,8 +114,8 @@ const UploadFiles = () => {
       setIsUploading(false);
 
       setTimeout(() => {
-        toast.done(toastId.current ?? '');
-      }, 1000);
+        toast.dismiss(toastId.current ?? '');
+      }, 300);
 
       if (res.status) {
         broadcastFile(res.filePath, res.fileName);
@@ -130,8 +130,8 @@ const UploadFiles = () => {
       setIsUploading(false);
 
       setTimeout(() => {
-        toast.done(toastId.current ?? '');
-      }, 1000);
+        toast.dismiss(toastId.current ?? '');
+      }, 300);
 
       toast(t(res.msg), {
         type: toast.TYPE.ERROR,
@@ -146,19 +146,18 @@ const UploadFiles = () => {
           fileName,
         }),
         {
-          closeButton: true,
+          closeButton: false,
           progress: 0,
-          autoClose: 300,
         },
       );
     });
 
-    // r.on('fileProgress', function (file) {
-    //   const progress = file.progress(false);
-    //   toast.update(toastId.current ?? '', {
-    //     progress: Number(progress),
-    //   });
-    // });
+    r.on('fileProgress', function (file) {
+      const progress = file.progress(false);
+      toast.update(toastId.current ?? '', {
+        progress: Number(progress),
+      });
+    });
 
     r.addFiles(files);
   };
