@@ -7,7 +7,6 @@ import {
   IDataMessage,
   SystemMsgType,
   WhiteboardMsg,
-  WhiteboardMsgType,
 } from '../store/slices/interfaces/dataMessages';
 import {
   addChatMessage,
@@ -24,6 +23,7 @@ import {
   addWhiteboardFileAsJSON,
   updateExcalidrawElements,
   updateMousePointerLocation,
+  updateRequestedWhiteboardData,
 } from '../store/slices/whiteboard';
 
 let session: ISession;
@@ -149,60 +149,18 @@ const handleSendChatMsg = (mainBody: IDataMessage) => {
 };
 
 const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
-  let elements = store.getState().whiteboard.excalidrawElements;
-  if (!elements) {
-    elements = store.getState().whiteboard.lastExcalidrawElements;
-  }
-
-  if (!elements) {
+  if (store.getState().whiteboard.requestedWhiteboardData.requested) {
+    // already have one request
     return;
   }
-
-  let info: WhiteboardMsg = {
-    type: WhiteboardMsgType.SCENE_UPDATE,
-    from: {
-      sid: session.currenUser?.sid ?? '',
-      userId: session.currenUser?.userId ?? '',
-    },
-    msg: elements,
-  };
-
-  let data: IDataMessage = {
-    type: DataMessageType.WHITEBOARD,
-    room_sid: session.currentRoom.sid,
-    room_id: session.currentRoom.room_id,
-    message_id: '',
-    body: info,
-    to: mainBody.body.from.sid,
-  };
-
-  sendWebsocketMessage(JSON.stringify(data));
-
-  // send whiteboard files
-  const files = store.getState().whiteboard.whiteboardFiles;
-  if (files === '') {
-    return;
-  }
-
-  info = {
-    type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
-    from: {
-      sid: session.currenUser?.sid ?? '',
-      userId: session.currenUser?.userId ?? '',
-    },
-    msg: files,
-  };
-
-  data = {
-    type: DataMessageType.WHITEBOARD,
-    room_sid: session.currentRoom.sid,
-    room_id: session.currentRoom.room_id,
-    message_id: '',
-    body: info,
-    to: mainBody.body.from.sid,
-  };
-
-  sendWebsocketMessage(JSON.stringify(data));
+  // we'll update reducer only
+  // component will take care for sending data
+  store.dispatch(
+    updateRequestedWhiteboardData({
+      requested: true,
+      sendTo: mainBody.body.from.sid,
+    }),
+  );
 };
 
 const handleRenewToken = (mainBody: IDataMessage) => {
@@ -267,6 +225,7 @@ const onConnect = () => {
   sendWebsocketMessage(JSON.stringify(data));
 
   // send initial whiteboard elements
+  // this is also helpful if user got reconnect
   const whiteboardElms: IDataMessage = {
     type: DataMessageType.SYSTEM,
     room_sid: session.currentRoom.sid,

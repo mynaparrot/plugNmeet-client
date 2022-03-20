@@ -56,7 +56,7 @@ const SharedNotePad = () => {
   }, [isActiveSharedNotePad, dispatch]);
 
   useEffect(() => {
-    if (!sharedNotepadStatus && isAdmin) {
+    if (!sharedNotepadStatus) {
       return;
     }
 
@@ -69,6 +69,10 @@ const SharedNotePad = () => {
   }, [isVisible]);
 
   useEffect(() => {
+    if (!isAdmin) {
+      return;
+    }
+
     const sendRequest = async (body) => {
       await sendAPIRequest('changeVisibility', body);
     };
@@ -97,6 +101,7 @@ const SharedNotePad = () => {
       };
       sendRequest(body);
     }
+    //eslint-disable-next-line
   }, [isActiveSharedNotePad]);
 
   const text = () => {

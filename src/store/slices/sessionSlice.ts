@@ -49,7 +49,7 @@ const initialState: ISession = {
         },
         whiteboard_features: {
           allowed_whiteboard: true,
-          visible: true,
+          visible: false,
         },
       },
     },

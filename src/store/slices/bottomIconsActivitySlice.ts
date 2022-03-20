@@ -14,7 +14,7 @@ const initialState: IBottomIconsSlice = {
   isActiveRecording: false,
   isActiveScreenshare: false,
   isActiveSharedNotePad: false,
-  isActiveWhiteboard: true,
+  isActiveWhiteboard: false,
 
   isMicMuted: false,
   screenWidth: 1024,
@@ -93,6 +93,7 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveSharedNotePad) {
         state.isActiveWhiteboard = false;
+        state.isActiveParticipantsPanel = false;
       }
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
@@ -100,6 +101,7 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveWhiteboard) {
         state.isActiveSharedNotePad = false;
+        state.isActiveParticipantsPanel = false;
       }
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {

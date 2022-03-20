@@ -33,13 +33,14 @@ import {
 } from './helpers/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
-import {
-  updateExcalidrawElements,
-  updateLastExcalidrawElements,
-} from '../../store/slices/whiteboard';
+import { updateExcalidrawElements } from '../../store/slices/whiteboard';
 import UploadFiles from './uploadFiles';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { getFile } from './helpers/fileReader';
+import {
+  sendRequestedForWhiteboardData,
+  sendWhiteboardData,
+} from './helpers/handleRequestedWhiteboardData';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -56,6 +57,10 @@ const mousePointerLocationSelector = createSelector(
 const whiteboardFilesSelector = createSelector(
   (state: RootState) => state.whiteboard.whiteboardFiles,
   (whiteboardFiles) => whiteboardFiles,
+);
+const requestedWhiteboardDataSelector = createSelector(
+  (state: RootState) => state.whiteboard.requestedWhiteboardData,
+  (requestedWhiteboardData) => requestedWhiteboardData,
 );
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
@@ -77,20 +82,39 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
   const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
+  const requestedWhiteboardData = useAppSelector(
+    requestedWhiteboardDataSelector,
+  );
 
   useEffect(() => {
-    if (currentUser?.metadata?.is_admin) {
-      setViewModeEnabled(false);
+    // get initial data from other users
+    // who had joined before me
+    sendRequestedForWhiteboardData();
+
+    if (!excalidrawAPI) {
+      if (currentUser?.metadata?.is_admin) {
+        setViewModeEnabled(false);
+      }
+      setTheme('light');
     }
-    setTheme('light');
 
     return () => {
-      const lastExcalidrawElements =
-        store.getState().whiteboard.lastExcalidrawElements;
-      dispatch(updateExcalidrawElements(lastExcalidrawElements));
+      if (excalidrawAPI) {
+        const lastExcalidrawElements = JSON.stringify(
+          excalidrawAPI.getSceneElementsIncludingDeleted(),
+        );
+        dispatch(updateExcalidrawElements(lastExcalidrawElements));
+      }
     };
     //eslint-disable-next-line
-  }, []);
+  }, [excalidrawAPI]);
+
+  // keep looking for request from other users & send data
+  useEffect(() => {
+    if (requestedWhiteboardData.requested && excalidrawAPI) {
+      sendWhiteboardData(excalidrawAPI, requestedWhiteboardData.sendTo);
+    }
+  }, [requestedWhiteboardData, excalidrawAPI]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
@@ -268,7 +292,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         };
 
         sendWebsocketMessage(JSON.stringify(data));
-        dispatch(updateLastExcalidrawElements(msg));
       }
     }
   };

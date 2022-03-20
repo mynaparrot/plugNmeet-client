@@ -15,7 +15,6 @@ const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
   (isActiveWhiteboard) => isActiveWhiteboard,
 );
-
 const isWhiteboardVisibleSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features.whiteboard_features
@@ -28,8 +27,10 @@ const Whiteboard = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [initiated, setInitiated] = useState<boolean>(false);
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
   const isVisible = useAppSelector(isWhiteboardVisibleSelector);
+
   const allowedWhiteboard =
     store.getState().session.currentRoom.metadata?.room_features
       .whiteboard_features.allowed_whiteboard;
@@ -44,24 +45,37 @@ const Whiteboard = () => {
   }, [dispatch, isActiveWhiteboard]);
 
   useEffect(() => {
-    if (!allowedWhiteboard && isAdmin) {
+    if (!allowedWhiteboard) {
       return;
     }
 
     if (isVisible) {
       dispatch(updateIsActiveWhiteboard(true));
-    } else {
+    } else if (!isVisible) {
       dispatch(updateIsActiveWhiteboard(false));
     }
     //eslint-disable-next-line
   }, [isVisible]);
 
   useEffect(() => {
+    if (!isAdmin) {
+      return;
+    }
+    const currentRoom = store.getState().session.currentRoom;
+
+    if (
+      !initiated &&
+      currentRoom.metadata?.room_features.whiteboard_features.visible
+    ) {
+      setInitiated(true);
+      return;
+    } else if (!initiated) {
+      setInitiated(true);
+    }
+
     const sendRequest = async (body) => {
       await sendAPIRequest('changeVisibility', body);
     };
-
-    const currentRoom = store.getState().session.currentRoom;
 
     if (
       isActiveWhiteboard &&
@@ -86,6 +100,7 @@ const Whiteboard = () => {
       };
       sendRequest(body);
     }
+    //eslint-disable-next-line
   }, [isActiveWhiteboard]);
 
   const text = () => {
