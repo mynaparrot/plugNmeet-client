@@ -64,8 +64,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
   const collaborators = new Map<string, Collaborator>();
-  const fileReadImages: Array<BinaryFileData> = [];
-  const fileReadElms: Array<ExcalidrawElement> = [];
+  let fileReadImages: Array<BinaryFileData> = [];
+  let fileReadElms: Array<ExcalidrawElement> = [];
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
@@ -209,6 +209,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         elements,
       });
     });
+
+    // memory cleanup
+    fileReadImages = [];
+    fileReadElms = [];
   };
 
   const handleRemoteSceneUpdate = (
