@@ -36,7 +36,7 @@ import { useTranslation } from 'react-i18next';
 import { updateExcalidrawElements } from '../../store/slices/whiteboard';
 import UploadFiles from './uploadFiles';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
-import { getFile } from './helpers/fileReader';
+import { fetchFileWithElm } from './helpers/fileReader';
 import {
   sendRequestedForWhiteboardData,
   sendWhiteboardData,
@@ -87,10 +87,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   );
 
   useEffect(() => {
-    // get initial data from other users
-    // who had joined before me
-    sendRequestedForWhiteboardData();
-
     if (!excalidrawAPI) {
       if (currentUser?.metadata?.is_admin) {
         setViewModeEnabled(false);
@@ -111,6 +107,12 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // keep looking for request from other users & send data
   useEffect(() => {
+    if (!excalidrawAPI) {
+      // get initial data from other users
+      // who had joined before me
+      sendRequestedForWhiteboardData();
+    }
+
     if (requestedWhiteboardData.requested && excalidrawAPI) {
       sendWhiteboardData(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
@@ -200,7 +202,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
 
       if (!hasFile) {
-        const result = await getFile(url, file.id);
+        const result = await fetchFileWithElm(
+          url,
+          file.id,
+          lastBroadcastedOrReceivedSceneVersion,
+        );
         if (result && excalidrawAPI) {
           fileReadImages.push(result.image);
           fileReadElms.push(result.elm);

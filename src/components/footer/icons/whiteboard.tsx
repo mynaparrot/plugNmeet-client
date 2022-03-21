@@ -131,11 +131,11 @@ const Whiteboard = () => {
         <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
           {text()}
         </span>
-        <React.Fragment>
+        <>
           <i
             className={`pnm-whiteboard ${iconCSS} text-[12px] lg:text-[16px]`}
           />
-        </React.Fragment>
+        </>
       </div>
     );
   };

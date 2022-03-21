@@ -1,8 +1,9 @@
 import React from 'react';
 import { createSelector } from '@reduxjs/toolkit';
+import { LocalParticipant, RemoteParticipant } from 'livekit-client';
+
 import { RootState, useAppSelector } from '../../../../store';
 import VideoElements from '../videos';
-import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
 interface IVerticalWebcamsProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;

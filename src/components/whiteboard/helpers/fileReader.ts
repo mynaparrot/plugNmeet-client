@@ -2,6 +2,7 @@
 import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types/types';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
+import { randomInteger } from '../../../helpers/utils';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -12,9 +13,10 @@ let fileId = '',
   fileMimeType = '',
   imgData = '',
   fileHeight = 50,
-  fileWidth = 50;
+  fileWidth = 50,
+  lastVersion;
 
-export const getFile = async (url, file_id) => {
+export const fetchFileWithElm = async (url, file_id, last_version) => {
   return new Promise<FileReaderResult>(async (resolve, reject) => {
     const res = await fetch(url);
     const imageData = await res.blob();
@@ -23,6 +25,10 @@ export const getFile = async (url, file_id) => {
     }
 
     fileId = file_id;
+    lastVersion = last_version;
+    if (lastVersion < 0) {
+      lastVersion = 1;
+    }
     const reader = new FileReader();
     const readerBase64 = new FileReader();
 
@@ -87,9 +93,9 @@ const prepareForExcalidraw = (): FileReaderResult => {
     opacity: 100,
     groupIds: [],
     strokeSharpness: 'round',
-    seed: Date.now(),
-    version: 4,
-    versionNonce: Date.now(),
+    seed: randomInteger(),
+    version: lastVersion + 1,
+    versionNonce: randomInteger(),
     isDeleted: false,
     boundElements: null,
     updated: Date.now(),
