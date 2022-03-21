@@ -92,16 +92,20 @@ const bottomIconsSlice = createSlice({
       state.isActiveSharedNotePad = action.payload;
 
       if (state.isActiveSharedNotePad) {
-        state.isActiveWhiteboard = false;
         state.isActiveParticipantsPanel = false;
+        if (state.isActiveWhiteboard) {
+          state.isActiveWhiteboard = false;
+        }
       }
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
       state.isActiveWhiteboard = action.payload;
 
       if (state.isActiveWhiteboard) {
-        state.isActiveSharedNotePad = false;
         state.isActiveParticipantsPanel = false;
+        if (state.isActiveSharedNotePad) {
+          state.isActiveSharedNotePad = false;
+        }
       }
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {
