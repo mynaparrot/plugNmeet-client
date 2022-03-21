@@ -9,6 +9,7 @@ import {
   useAppSelector,
 } from '../../../store';
 import { updateIsActiveSharedNotePad } from '../../../store/slices/bottomIconsActivitySlice';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const isActiveSharedNotePadSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
@@ -20,6 +21,12 @@ const sharedNotepadStatusSelector = createSelector(
       .is_active,
   (is_active) => is_active,
 );
+const isSharedNotepadVisibleSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
+      .visible,
+  (visible) => visible,
+);
 
 const SharedNotePad = () => {
   const { t } = useTranslation();
@@ -28,6 +35,9 @@ const SharedNotePad = () => {
   const [iconCSS, setIconCSS] = useState<string>('brand-color1');
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
+  const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
+  const [initiated, setInitiated] = useState<boolean>(false);
+  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   useEffect(() => {
     // if not active then we can disable it.
@@ -44,6 +54,65 @@ const SharedNotePad = () => {
     } else {
       setIconCSS('brand-color1');
     }
+  }, [isActiveSharedNotePad, dispatch]);
+
+  useEffect(() => {
+    if (!sharedNotepadStatus) {
+      return;
+    }
+
+    if (isVisible) {
+      dispatch(updateIsActiveSharedNotePad(true));
+    } else {
+      dispatch(updateIsActiveSharedNotePad(false));
+    }
+    //eslint-disable-next-line
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      return;
+    }
+    const currentRoom = store.getState().session.currentRoom;
+
+    if (
+      !initiated &&
+      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+    ) {
+      setInitiated(true);
+      return;
+    } else if (!initiated) {
+      setInitiated(true);
+    }
+
+    const sendRequest = async (body) => {
+      await sendAPIRequest('changeVisibility', body);
+    };
+
+    if (
+      isActiveSharedNotePad &&
+      !currentRoom.metadata?.room_features.shared_note_pad_features.visible
+    ) {
+      const body: any = {
+        room_id: currentRoom.room_id,
+        visible_white_board: false,
+        visible_notepad: true,
+      };
+      // wait little bit before change visibility
+      setTimeout(() => {
+        sendRequest(body);
+      }, 500);
+    } else if (
+      !isActiveSharedNotePad &&
+      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+    ) {
+      const body: any = {
+        room_id: currentRoom.room_id,
+        visible_notepad: false,
+      };
+      sendRequest(body);
+    }
+    //eslint-disable-next-line
   }, [isActiveSharedNotePad]);
 
   const text = () => {
@@ -54,14 +123,19 @@ const SharedNotePad = () => {
     }
   };
 
-  const toggleSharedNotePad = () => {
+  const toggleSharedNotePad = async () => {
+    const isActiveScreenShare =
+      store.getState().bottomIconsActivity.isActiveScreenshare;
+    if (isActiveScreenShare) {
+      return;
+    }
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
   };
 
   const render = () => {
     return (
       <div
-        className={`share-screen footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
+        className={`shared-notepad h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleSharedNotePad()}
@@ -69,9 +143,9 @@ const SharedNotePad = () => {
         <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
           {text()}
         </span>
-        <React.Fragment>
+        <>
           <i className={`pnm-notepad ${iconCSS} text-[12px] lg:text-[16px]`} />
-        </React.Fragment>
+        </>
       </div>
     );
   };

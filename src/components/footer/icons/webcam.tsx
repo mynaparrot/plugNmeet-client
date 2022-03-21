@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import {
-  createLocalTracks,
+  createLocalVideoTrack,
   LocalTrack,
   Room,
   Track,
@@ -201,24 +201,17 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
       resolution = preset.resolution;
     }
 
-    const localTrack = await createLocalTracks({
-      audio: false,
-      video: {
-        deviceId: deviceId,
-        resolution,
-      },
+    const track = await createLocalVideoTrack({
+      deviceId: deviceId,
+      resolution,
     });
 
-    localTrack.forEach(async (track) => {
-      if (track.kind === Track.Kind.Video) {
-        if (virtualBackground.type === 'none') {
-          await currentRoom.localParticipant.publishTrack(track);
-          dispatch(updateIsActiveWebcam(true));
-        } else {
-          setLocalTrack(track);
-        }
-      }
-    });
+    if (virtualBackground.type === 'none') {
+      await currentRoom.localParticipant.publishTrack(track);
+      dispatch(updateIsActiveWebcam(true));
+    } else {
+      setLocalTrack(track);
+    }
 
     return;
   };

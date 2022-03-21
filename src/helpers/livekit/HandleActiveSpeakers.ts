@@ -4,9 +4,9 @@ import { IConnectLivekit } from './ConnectLivekit';
 import { store } from '../../store';
 import {
   activeSpeakersSelector,
-  addManySpeakers,
   addSpeaker,
   removeSpeakers,
+  setAllSpeakers,
 } from '../../store/slices/activeSpeakersSlice';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
@@ -68,7 +68,7 @@ export default class HandleActiveSpeakers {
           store.dispatch(removeSpeakers());
         }
       } else {
-        store.dispatch(addManySpeakers(this.activeSpeakers));
+        store.dispatch(setAllSpeakers(this.activeSpeakers));
       }
     }, ACTIVE_SPEAKER_LIST_CHANGE_DURATION);
   };

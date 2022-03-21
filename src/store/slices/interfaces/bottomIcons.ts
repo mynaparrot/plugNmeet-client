@@ -9,9 +9,11 @@ export interface IBottomIconsSlice {
   isActiveRecording: boolean;
   isActiveScreenshare: boolean;
   isActiveSharedNotePad: boolean;
+  isActiveWhiteboard: boolean;
 
   isMicMuted: boolean;
   screenWidth: number;
+  screenHeight: number;
 
   // modal related
   showMicrophoneModal: boolean;

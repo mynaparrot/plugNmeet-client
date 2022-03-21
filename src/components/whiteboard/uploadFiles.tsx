@@ -1,42 +1,28 @@
 import React, { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
-import { Room } from 'livekit-client';
-import { useTranslation } from 'react-i18next';
 import Resumable from 'resumablejs';
 import ResumableFile = Resumable.ResumableFile;
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
-import { store } from '../../../store';
-import { ISession } from '../../../store/slices/interfaces/session';
-import {
-  isSocketConnected,
-  sendWebsocketMessage,
-} from '../../../helpers/websocketConnector';
+import { store, useAppDispatch } from '../../store';
+import { ISession } from '../../store/slices/interfaces/session';
+import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
+import { addWhiteboardFile } from '../../store/slices/whiteboard';
 import {
   DataMessageType,
-  IChatMsg,
   IDataMessage,
-} from '../../../store/slices/interfaces/dataMessages';
+  WhiteboardMsg,
+  WhiteboardMsgType,
+} from '../../store/slices/interfaces/dataMessages';
+import { sendWebsocketMessage } from '../../helpers/websocketConnector';
+import { randomString } from '../../helpers/utils';
 
-interface IFileSendProps {
-  isChatServiceReady: boolean;
-  lockSendFile: boolean;
-  currentRoom: Room;
-}
-
-const FileSend = ({
-  isChatServiceReady,
-  lockSendFile,
-  currentRoom,
-}: IFileSendProps) => {
+const UploadFiles = () => {
   const inputFile = useRef<HTMLInputElement>(null);
   const toastId = React.useRef<string>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { t } = useTranslation();
-  const chat_features =
-    store.getState().session.currentRoom.metadata?.room_features.chat_features;
-  const accept =
-    chat_features?.allowed_file_types?.map((type) => '.' + type).join(',') ??
-    '*';
+  const dispatch = useAppDispatch();
 
   const openFileBrowser = () => {
     if (!isUploading) {
@@ -51,6 +37,37 @@ const FileSend = ({
     }
     const session = store.getState().session;
     sendFile(session, files);
+  };
+
+  const broadcastFile = (filePath, fileName) => {
+    const file: IWhiteboardFile = {
+      id: randomString(),
+      filePath,
+      fileName,
+    };
+    dispatch(addWhiteboardFile(file));
+
+    const files = store.getState().whiteboard.whiteboardFiles;
+    const session = store.getState().session;
+
+    const info: WhiteboardMsg = {
+      type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
+      from: {
+        sid: session.currenUser?.sid ?? '',
+        userId: session.currenUser?.userId ?? '',
+      },
+      msg: files,
+    };
+
+    const data: IDataMessage = {
+      type: DataMessageType.WHITEBOARD,
+      room_sid: session.currentRoom.sid,
+      room_id: session.currentRoom.room_id,
+      message_id: '',
+      body: info,
+    };
+
+    sendWebsocketMessage(JSON.stringify(data));
   };
 
   const sendFile = (session: ISession, files: Array<File>) => {
@@ -68,7 +85,7 @@ const FileSend = ({
       headers: {
         Authorization: session.token,
       },
-      fileType: chat_features?.allowed_file_types ?? [],
+      fileType: ['jpg', 'jpeg', 'png', 'svg'],
       fileTypeErrorCallback(file) {
         toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
           type: toast.TYPE.ERROR,
@@ -76,9 +93,7 @@ const FileSend = ({
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      maxFileSize: chat_features?.max_file_size
-        ? chat_features?.max_file_size * 1000000
-        : undefined,
+      maxFileSize: 2 * 1000000,
       maxFileSizeErrorCallback() {
         toast(t('notifications.max-file-size-exceeds'), {
           type: toast.TYPE.ERROR,
@@ -103,7 +118,7 @@ const FileSend = ({
       }, 300);
 
       if (res.status) {
-        publishToChat(res.filePath, res.fileName);
+        broadcastFile(res.filePath, res.fileName);
         toast(t('right-panel.file-upload-success'), {
           type: toast.TYPE.SUCCESS,
         });
@@ -139,45 +154,12 @@ const FileSend = ({
 
     r.on('fileProgress', function (file) {
       const progress = file.progress(false);
-
       toast.update(toastId.current ?? '', {
         progress: Number(progress),
       });
     });
 
     r.addFiles(files);
-  };
-
-  const publishToChat = (filePath: string, fileName: string) => {
-    if (!isSocketConnected()) {
-      return;
-    }
-
-    const message = `<a href="${
-      (window as any).PLUG_N_MEET_SERVER_URL + '/download/chat/' + filePath
-    }" target="_blank">${fileName}</a>`;
-
-    const info: IChatMsg = {
-      type: 'CHAT',
-      isPrivate: false,
-      time: '',
-      message_id: '',
-      from: {
-        sid: currentRoom.localParticipant.sid,
-        userId: currentRoom.localParticipant.identity,
-        name: currentRoom.localParticipant.name,
-      },
-      msg: message,
-    };
-
-    const data: IDataMessage = {
-      type: DataMessageType.USER,
-      room_sid: currentRoom.sid,
-      message_id: '',
-      body: info,
-    };
-
-    sendWebsocketMessage(JSON.stringify(data));
   };
 
   const render = () => {
@@ -187,16 +169,16 @@ const FileSend = ({
           type="file"
           id="chat-file"
           ref={inputFile}
-          accept={accept}
           style={{ display: 'none' }}
           onChange={(e) => onChange(e)}
+          accept=".png,.jpg,.jpeg,.svg"
         />
         <button
-          disabled={!isChatServiceReady || lockSendFile || isUploading}
+          disabled={isUploading}
           onClick={() => openFileBrowser()}
-          className="w-4 h-6 px-2"
+          className="w-10 h-7 flex items-center justify-center"
         >
-          <i className="pnm-attachment brand-color1 text-[20px] opacity-50" />
+          <i className="pnm-attachment brand-color1 text-[14px] opacity-50" />
         </button>
       </>
     );
@@ -205,4 +187,4 @@ const FileSend = ({
   return <>{render()}</>;
 };
 
-export default FileSend;
+export default UploadFiles;

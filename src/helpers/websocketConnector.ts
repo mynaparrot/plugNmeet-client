@@ -6,6 +6,7 @@ import {
   IChatMsg,
   IDataMessage,
   SystemMsgType,
+  WhiteboardMsg,
 } from '../store/slices/interfaces/dataMessages';
 import {
   addChatMessage,
@@ -18,6 +19,12 @@ import {
 import { ISession } from '../store/slices/interfaces/session';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { updateTotalUnreadChatMsgs } from '../store/slices/bottomIconsActivitySlice';
+import {
+  addWhiteboardFileAsJSON,
+  updateExcalidrawElements,
+  updateMousePointerLocation,
+  updateRequestedWhiteboardData,
+} from '../store/slices/whiteboard';
 
 let session: ISession;
 let isConnected = false;
@@ -82,6 +89,8 @@ const onMessage = (event: any) => {
       handleUserTypeData(data.body as IChatMsg, data.message_id);
     } else if (data.type === 'SYSTEM') {
       handleSystemTypeData(data);
+    } else if (data.type === 'WHITEBOARD') {
+      handleWhiteboardMsg(data.body as WhiteboardMsg);
     }
   }
 };
@@ -107,6 +116,9 @@ const handleSystemTypeData = (body: IDataMessage) => {
     // got request to send previous chat messages. We'll send last 30 messages
     case SystemMsgType.SEND_CHAT_MSGS:
       handleSendChatMsg(body);
+      break;
+    case SystemMsgType.INIT_WHITEBOARD:
+      handleSendInitWhiteboard(body);
       break;
     case SystemMsgType.RENEW_TOKEN:
       handleRenewToken(body);
@@ -136,6 +148,21 @@ const handleSendChatMsg = (mainBody: IDataMessage) => {
     });
 };
 
+const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
+  if (store.getState().whiteboard.requestedWhiteboardData.requested) {
+    // already have one request
+    return;
+  }
+  // we'll update reducer only
+  // component will take care for sending data
+  store.dispatch(
+    updateRequestedWhiteboardData({
+      requested: true,
+      sendTo: mainBody.body.from.sid,
+    }),
+  );
+};
+
 const handleRenewToken = (mainBody: IDataMessage) => {
   store.dispatch(addToken(mainBody.body.msg));
 };
@@ -157,6 +184,16 @@ const handlePushMsgMsg = (mainBody: IDataMessage) => {
   }
 };
 
+const handleWhiteboardMsg = (data: WhiteboardMsg) => {
+  if (data.type === 'SCENE_UPDATE') {
+    store.dispatch(updateExcalidrawElements(data.msg));
+  } else if (data.type === 'POINTER_UPDATE') {
+    store.dispatch(updateMousePointerLocation(data.msg));
+  } else if (data.type === 'ADD_WHITEBOARD_FILE') {
+    store.dispatch(addWhiteboardFileAsJSON(data.msg));
+  }
+};
+
 const onConnect = () => {
   const participants = participantsSelector
     .selectAll(store.getState())
@@ -169,6 +206,8 @@ const onConnect = () => {
   });
 
   const donor = participants[0];
+
+  // send initial chat messages
   const data: IDataMessage = {
     type: DataMessageType.SYSTEM,
     room_sid: session.currentRoom.sid,
@@ -183,8 +222,25 @@ const onConnect = () => {
       msg: '',
     },
   };
-
   sendWebsocketMessage(JSON.stringify(data));
+
+  // send initial whiteboard elements
+  // this is also helpful if user got reconnect
+  const whiteboardElms: IDataMessage = {
+    type: DataMessageType.SYSTEM,
+    room_sid: session.currentRoom.sid,
+    message_id: '',
+    to: donor.sid,
+    body: {
+      type: SystemMsgType.INIT_WHITEBOARD,
+      from: {
+        sid: session.currenUser?.sid ?? '',
+        userId: session.currenUser?.userId ?? '',
+      },
+      msg: '',
+    },
+  };
+  sendWebsocketMessage(JSON.stringify(whiteboardElms));
 };
 
 const getURL = () => {

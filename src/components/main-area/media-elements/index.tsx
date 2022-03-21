@@ -12,7 +12,8 @@ import { RootState, store, useAppSelector } from '../../../store';
 import ScreenShareElements from './screenshare';
 import AudioElements from './audios';
 import VideoElements from './videos';
-import SharedNotepadElement from '../shared-notepad';
+import SharedNotepadElement from '../../shared-notepad';
+import Whiteboard from '../../whiteboard';
 
 interface MediaElementsComponentProps {
   currentRoom: Room;
@@ -31,15 +32,17 @@ const activateWebcamsViewSelector = createSelector(
   (state: RootState) => state.roomSettings.activateWebcamsView,
   (activateWebcamsView) => activateWebcamsView,
 );
-
 const activeScreenSharingViewSelector = createSelector(
   (state: RootState) => state.roomSettings.activeScreenSharingView,
   (activeScreenSharingView) => activeScreenSharingView,
 );
-
 const isActiveSharedNotePadSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
   (isActiveSharedNotePad) => isActiveSharedNotePad,
+);
+const isActiveWhiteboardSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
+  (isActiveWhiteboard) => isActiveWhiteboard,
 );
 
 const MediaElementsComponent = ({
@@ -53,6 +56,7 @@ const MediaElementsComponent = ({
     activeScreenSharingViewSelector,
   );
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
+  const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
     (window as any).NUMBER_OF_WEBCAMS_PER_PAGE_PC ?? 25,
   );
@@ -68,10 +72,16 @@ const MediaElementsComponent = ({
     if (!activateWebcamsView) {
       return false;
     }
-    if (!activeScreenSharingView && !isActiveSharedNotePad) {
+    if (
+      !activeScreenSharingView &&
+      !isActiveSharedNotePad &&
+      !isActiveWhiteboard
+    ) {
       return true;
     }
-    return !isActiveScreenSharing && !isActiveSharedNotePad;
+    return (
+      !isActiveScreenSharing && !isActiveSharedNotePad && !isActiveWhiteboard
+    );
   };
 
   const shouldShowScreenSharing = () => {
@@ -89,6 +99,14 @@ const MediaElementsComponent = ({
     return isActiveSharedNotePad;
   };
 
+  const shouldShowWhiteboard = () => {
+    if (isActiveScreenSharing) {
+      return false;
+    }
+
+    return isActiveWhiteboard;
+  };
+
   const render = () => {
     return (
       <React.Fragment>
@@ -100,6 +118,9 @@ const MediaElementsComponent = ({
         ) : null}
         {shouldShowSharedNotepad() ? (
           <SharedNotepadElement videoSubscribers={videoSubscribers} />
+        ) : null}
+        {shouldShowWhiteboard() ? (
+          <Whiteboard videoSubscribers={videoSubscribers} />
         ) : null}
         {shouldShowWebcams() && videoSubscribers ? (
           <VideoElements

@@ -2,31 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
-import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
-import VideoElements from '../media-elements/videos';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
+import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 
 interface ISharedNotepadProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
 }
 
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
-);
-const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
-);
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
-);
 const sharedNotepadFeaturesSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
@@ -35,12 +18,6 @@ const sharedNotepadFeaturesSelector = createSelector(
 
 const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const dispatch = useAppDispatch();
-
-  const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
-  );
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const currentUser = store.getState().session.currenUser;
   const [loaded, setLoaded] = useState<boolean>();
@@ -66,7 +43,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
       }
 
       return (
-        <div className="notepad-wrapper h-full w-full flex-1 sm:px-5">
+        <div className="notepad-wrapper h-[calc(100%-50px)] w-full flex-1 sm:px-5 mt-9">
           {!loaded ? (
             <div className="loading flex justify-center">
               <div className="lds-ripple">
@@ -83,21 +60,10 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
     }
   };
 
-  // we won't show video elements if both
-  // chat & participant panel active
-  const shouldShowVideoElems = (): boolean => {
-    if (!activateWebcamsView) {
-      return false;
-    }
-    return !(isActiveChatPanel && isActiveParticipantsPanel);
-  };
-
   return (
-    <div className="shared-notepad-wrapper h-full">
+    <div className="middle-fullscreen-wrapper h-full flex">
       {/*{if videoSubscribers has webcams}*/}
-      {videoSubscribers && shouldShowVideoElems() ? (
-        <VideoElements videoSubscribers={videoSubscribers} perPage={3} />
-      ) : null}
+      <VerticalWebcams videoSubscribers={videoSubscribers} />
 
       {render()}
     </div>

@@ -14,9 +14,11 @@ const initialState: IBottomIconsSlice = {
   isActiveRecording: false,
   isActiveScreenshare: false,
   isActiveSharedNotePad: false,
+  isActiveWhiteboard: false,
 
   isMicMuted: false,
   screenWidth: 1024,
+  screenHeight: 500,
 
   showMicrophoneModal: false,
   showVideoShareModal: false,
@@ -78,12 +80,35 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveScreenshare: (state, action: PayloadAction<boolean>) => {
       state.isActiveScreenshare = action.payload;
+
+      if (state.isActiveScreenshare) {
+        // in this case disable both
+        state.isActiveSharedNotePad = false;
+        state.isActiveWhiteboard = false;
+        state.isActiveParticipantsPanel = false;
+      }
     },
     updateIsActiveSharedNotePad: (state, action: PayloadAction<boolean>) => {
       state.isActiveSharedNotePad = action.payload;
+
+      if (state.isActiveSharedNotePad) {
+        state.isActiveWhiteboard = false;
+        state.isActiveParticipantsPanel = false;
+      }
+    },
+    updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
+      state.isActiveWhiteboard = action.payload;
+
+      if (state.isActiveWhiteboard) {
+        state.isActiveSharedNotePad = false;
+        state.isActiveParticipantsPanel = false;
+      }
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {
       state.screenWidth = action.payload;
+    },
+    updateScreenHeight: (state, action: PayloadAction<number>) => {
+      state.screenHeight = action.payload;
     },
 
     // modal related
@@ -124,11 +149,13 @@ export const {
   updateIsActiveRecording,
   updateIsActiveScreenshare,
   updateIsActiveSharedNotePad,
+  updateIsActiveWhiteboard,
   updateShowMicrophoneModal,
   updateShowVideoShareModal,
   updateShowLockSettingsModal,
   updateShowRtmpModal,
   updateScreenWidth,
+  updateScreenHeight,
   updateTotalUnreadChatMsgs,
   updateVirtualBackground,
 } = bottomIconsSlice.actions;

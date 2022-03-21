@@ -14,7 +14,9 @@
     "recording-ended-with-error": "Recording ended with error",
     "rtmp-started": "RTMP broadcasting started",
     "rtmp-ended": "RTMP broadcasting ended",
-    "rtmp-ended-with-error": "RTMP broadcasting ended with error"
+    "rtmp-ended-with-error": "RTMP broadcasting ended with error",
+    "file-type-not-allow": "{{filetype}} file type isn't allow",
+    "max-file-size-exceeds": "The maximum allowed file size exceeds"
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
@@ -125,7 +127,9 @@
       "stop-rtmp-broadcasting": "Stop RTMP broadcasting",
       "start-rtmp-broadcasting": "Start RTMP broadcasting",
       "show-shared-notepad": "Show shared notepad",
-      "hide-shared-notepad": "Hide shared notepad"
+      "hide-shared-notepad": "Hide shared notepad",
+      "show-whiteboard": "Show whiteboard",
+      "hide-whiteboard": "Hide whiteboard"
     },
     "menus": {
       "mute-all-users": "Mute all users",
