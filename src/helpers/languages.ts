@@ -4,16 +4,24 @@ const languages = [
     text: 'English',
   },
   {
-    code: 'es',
-    text: 'Spanish',
+    code: 'es-ES',
+    text: 'Español',
   },
   {
-    code: 'pt',
-    text: 'Portuguese',
+    code: 'fr-FR',
+    text: 'Français',
+  },
+  {
+    code: 'pt-PT',
+    text: 'Português',
   },
   {
     code: 'zh-CN',
-    text: 'Chinese simplified',
+    text: '简体中文',
+  },
+  {
+    code: 'zh-HK',
+    text: '繁體中文',
   },
 ];
 

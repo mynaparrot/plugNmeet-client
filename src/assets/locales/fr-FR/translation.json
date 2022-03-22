@@ -1,0 +1,166 @@
+{
+  "ok": "D'accord",
+  "close": "Fermer",
+  "cancel": "Annuler",
+  "join": "Rejoindre",
+  "share": "Partager",
+  "notifications": {
+    "room-not-active": "La salle n'est pas active.",
+    "recording-already-running": "l'enregistrement est déjà en cours",
+    "recording-not-running": "l'enregistrement ne fonctionne pas",
+    "no-recorder-available": "pas d'enregistreur disponible",
+    "recording-started": "l'enregistrement a commencé",
+    "recording-ended": "Enregistrement terminé",
+    "recording-ended-with-error": "Enregistrement terminé avec erreur",
+    "rtmp-started": "Le flux RTMP a démarré",
+    "rtmp-ended": "Flux RTMP terminé",
+    "rtmp-ended-with-error": "Le flux RTMP s'est terminé avec une erreur"
+  },
+  "room-metadata": {
+    "session-recording": "Cette séance est enregistrée",
+    "session-not-recording": "Cette session n'est plus enregistrée",
+    "rtmp-started": "Cette session est diffusée en utilisant RTMP",
+    "rtmp-stopped": "Cette session n'est plus diffusée en RTMP"
+  },
+  "header": {
+    "menus": {
+      "settings": "Réglages",
+      "logout": "Fermer la session",
+      "end": "Finir",
+      "alert": {
+        "confirm": "Tu es sûr?",
+        "logout": "Vous êtes sur le point de vous déconnecter.",
+        "end": "Vous êtes sur le point de terminer la session. Tous les utilisateurs seront déconnectés."
+      }
+    },
+    "room-settings": {
+      "title": "Configurations de salle",
+      "data-savings": "Sauvegarde des données",
+      "notifications": "Avis",
+      "show-webcams": "Montrer les webcams",
+      "show-screen-share": "Afficher l'écran partagé",
+      "allow-audio-notification": "Autoriser la notification audio"
+    }
+  },
+  "app": {
+    "how-to-join": "Comment souhaitez-vous rejoindre?",
+    "microphone": "Microphone",
+    "listen-only": "Écoutez",
+    "token-missing-title": "Jeton d'accès manquant",
+    "token-missing-des": "Jeton d'accès manquant requis",
+    "verification-failed-title": "Échec de la vérification!",
+    "token-not-valid": "Le jeton n'est pas valide!",
+    "connecting": "de liaison...",
+    "re-connecting": "se reconnecter...",
+    "checking": "vérification...",
+    "loading": "chargement en cours...",
+    "connected": "lié",
+    "ready": "prêt"
+  },
+  "left-panel": {
+    "participants": "Intervenants ({{total}})",
+    "menus": {
+      "items": {
+        "ask-to-share-microphone": "Demander à partager Microphone",
+        "share-microphone": "partager un micro",
+        "ask-to-unmute-mic": "Demande d'activation du microphone",
+        "unmute-mic": "Activer le micro",
+        "mute-mic": "Couper le micro",
+        "ask-to-share-webcam": "Demander à partager la webcam",
+        "ask-to-stop-webcam": "Demande d'arrêt de la webcam",
+        "share-webcam": "partager une webcam",
+        "stop-webcam": "arrêter la webcam",
+        "unlock-microphone": "Déverrouiller le microphone",
+        "lock-microphone": "Verrouiller le microphone",
+        "unlock-webcam": "Débloquer la webcam",
+        "lock-webcam": "Bloquer la webcam",
+        "unlock-screen-sharing": "Déverrouiller l'écran partagé",
+        "lock-screen-sharing": "Partager l'écran de verrouillage",
+        "unlock-chat": "Débloquer le chat",
+        "lock-chat": "Bloquer le chat",
+        "unlock-send-chat-message": "Débloquer l'envoi d'un message de chat",
+        "lock-send-chat-message": "Bloquer l'envoi d'un message de chat",
+        "unlock-send-file": "Déverrouiller le fichier d'envoi",
+        "lock-send-file": "Bloquer l'envoi du fichier",
+        "remove-participant": "Supprimer un participant"
+      },
+      "notice": {
+        "participant-removed": "Concurrent éliminé",
+        "confirm": "Êtes-vous sûr de vouloir supprimer {{name}}?",
+        "remove": "Supprimer",
+        "asked-you-to": "{{name}} vous a demandé ",
+        "you-have-asked": "Vous avez demandé à {{name}} pour ",
+        "you-have-muted-to": "Vous avez désactivé le microphone de {{name}}",
+        "applied-new-setting": "Nouveau paramètre de verrouillage appliqué"
+      }
+    }
+  },
+  "right-panel": {
+    "you": "You",
+    "uploading-file": "Chargement {{fileName}}",
+    "file-upload-success": "Le fichier a été téléchargé avec succès",
+    "chat-box-placeholder": "Écrire un message (nouvelle ligne: Shift + enter)"
+  },
+  "footer": {
+    "icons": {
+      "start-webcam": "Démarrer la webcam",
+      "leave-webcam": "Quitter la webcam",
+      "webcam-locked": "Webcam bloquée",
+      "start-microphone-sharing": "Commencez à partager le microphone",
+      "microphone-locked": "Microphone bloqué",
+      "leave-microphone": "Laisser le micro",
+      "hide-users-list": "Masquer la liste des utilisateurs",
+      "show-users-list": "Afficher la liste des utilisateurs",
+      "hide-chat-panel": "Masquer le panneau de chat",
+      "show-chat-panel": "Afficher le panneau de discussion",
+      "stop-screen-sharing": "Arrêter le partage d'écran",
+      "start-screen-sharing": "Démarrer le partage d'écran",
+      "screen-sharing-locked": "Partage d'écran verrouillé",
+      "lower-hand": "Main basse",
+      "raise-hand": "Lever la main",
+      "stop-recording": "Arrête d'enregistrer",
+      "start-recording": "Commencer l'enregistrement",
+      "stop-rtmp-broadcasting": "Arrêter la diffusion RTMP",
+      "start-rtmp-broadcasting": "Démarrer la diffusion RTMP"
+    },
+    "menus": {
+      "mute-all-users": "Désactiver tous les utilisateurs",
+      "room-lock-settings": "Paramètres de verrouillage de la pièce",
+      "mute-microphone": "Microphone coupé",
+      "unmute-microphone": "Activer le micro",
+      "leave-microphone": "Laisser le micro",
+      "leave-webcam": "Quitter la webcam"
+    },
+    "notice": {
+      "already-active-screen-sharing": "La session a déjà un partage d'écran actif",
+      "start-recording-progress": "Commencer à enregistrer le service en cours",
+      "recording-not-start": "l'enregistrement n'a pas démarré",
+      "stop-recording-service-in-progress": "Arrêter le service d'enregistrement en cours",
+      "recording-did-not-stop": "L'enregistrement ne s'est pas arrêté",
+      "has-raised-hand": "{{user}} a levé la main",
+      "you-raised-hand": "Tu as levé la main",
+      "muted-all-microphone": "Tous les microphones coupés",
+      "applied-settings": "Nouveau paramètre de verrouillage appliqué",
+      "rtmp-starting": "Le flux RTMP démarre. Attendez s'il vous plaît",
+      "rtmp-ending": "Le flux RTMP se termine. Attendez s'il vous plaît"
+    },
+    "modal": {
+      "lock-settings-title": "Paramètres de verrouillage de la pièce",
+      "lock-microphone": "Verrouiller le microphone",
+      "lock-webcams": "Bloquer les webcams",
+      "lock-screen-sharing": "Verrouiller le partage d'écran",
+      "lock-chat": "Bloquer le chat",
+      "lock-send-message": "Bloquer l'envoi du message",
+      "lock-chat-file-share": "Bloquer le partage de fichiers de chat",
+      "rtmp-title": "Flux RTMP",
+      "rtmp-select-provider": "Sélectionnez le fournisseur",
+      "rtmp-server-url": "URL du serveur",
+      "rtmp-stream-key": "Stream Key/Secret",
+      "rtmp-start-broadcast": "Commencer à diffuser",
+      "rtmp-close-confirm": "Êtes-vous sûr de mettre fin à la transmission?",
+      "rtmp-close-msg": "Vous êtes sur le point de fermer le flux RTMP",
+      "select-microphone": "Sélectionnez un micro",
+      "select-webcam": "Sélectionnez une webcam"
+    }
+  }
+}
