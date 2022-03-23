@@ -88,7 +88,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   useEffect(() => {
     if (!excalidrawAPI) {
-      if (currentUser?.metadata?.is_admin) {
+      if (currentUser?.metadata?.is_admin && !currentUser.isRecorder) {
         setViewModeEnabled(false);
       }
       setTheme('light');
