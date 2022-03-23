@@ -49,6 +49,8 @@ const MenusIcon = () => {
   const isActiveRtmpBroadcasting = useAppSelector(
     isActiveRtmpBroadcastingSelector,
   );
+  const roomFeatures =
+    store.getState().session.currentRoom?.metadata?.room_features;
 
   const muteAllUsers = async () => {
     const body = {
@@ -146,25 +148,27 @@ const MenusIcon = () => {
                   static
                   className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-56 bottom-[48px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                 >
-                  <div className="py-1" role="none">
-                    <Menu.Item>
-                      <button
-                        className="footer-podcast-button text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
-                        onClick={() => openRtmpModal()}
-                      >
-                        {isActiveRtmpBroadcasting ? (
-                          <div className="lds-ripple">
-                            <div></div>
-                            <div></div>
-                          </div>
-                        ) : null}
-                        <i className="pnm-broadcasting text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
-                        {isActiveRtmpBroadcasting
-                          ? t('footer.icons.stop-rtmp-broadcasting')
-                          : t('footer.icons.start-rtmp-broadcasting')}
-                      </button>
-                    </Menu.Item>
-                  </div>
+                  {roomFeatures?.allow_rtmp ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="footer-podcast-button text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                          onClick={() => openRtmpModal()}
+                        >
+                          {isActiveRtmpBroadcasting ? (
+                            <div className="lds-ripple">
+                              <div></div>
+                              <div></div>
+                            </div>
+                          ) : null}
+                          <i className="pnm-broadcasting text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                          {isActiveRtmpBroadcasting
+                            ? t('footer.icons.stop-rtmp-broadcasting')
+                            : t('footer.icons.start-rtmp-broadcasting')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
@@ -176,19 +180,22 @@ const MenusIcon = () => {
                       </button>
                     </Menu.Item>
                   </div>
-                  <div className="py-1" role="none">
-                    <Menu.Item>
-                      <button
-                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
-                        onClick={() => toggleSharedNotepad()}
-                      >
-                        <i className="pnm-notepad text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
-                        {sharedNotepadStatus
-                          ? t('footer.menus.disable-shared-notepad')
-                          : t('footer.menus.enable-shared-notepad')}
-                      </button>
-                    </Menu.Item>
-                  </div>
+                  {roomFeatures?.shared_note_pad_features
+                    .allowed_shared_note_pad ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                          onClick={() => toggleSharedNotepad()}
+                        >
+                          <i className="pnm-notepad text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                          {sharedNotepadStatus
+                            ? t('footer.menus.disable-shared-notepad')
+                            : t('footer.menus.enable-shared-notepad')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button

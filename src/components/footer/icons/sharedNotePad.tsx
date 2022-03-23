@@ -31,7 +31,7 @@ const isSharedNotepadVisibleSelector = createSelector(
   (visible) => visible,
 );
 
-const SharedNotePad = () => {
+const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -159,4 +159,4 @@ const SharedNotePad = () => {
   return <>{sharedNotepadStatus ? render() : null}</>;
 };
 
-export default SharedNotePad;
+export default SharedNotePadIcon;

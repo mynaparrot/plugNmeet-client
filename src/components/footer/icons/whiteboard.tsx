@@ -25,7 +25,7 @@ const isWhiteboardVisibleSelector = createSelector(
   (visible) => visible,
 );
 
-const Whiteboard = () => {
+const WhiteboardIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -149,4 +149,4 @@ const Whiteboard = () => {
   return <>{allowedWhiteboard ? render() : null}</>;
 };
 
-export default Whiteboard;
+export default WhiteboardIcon;

@@ -46,4 +46,4 @@ const VerticalWebcams = ({ videoSubscribers }: IVerticalWebcamsProps) => {
   );
 };
 
-export default VerticalWebcams;
+export default React.memo(VerticalWebcams);

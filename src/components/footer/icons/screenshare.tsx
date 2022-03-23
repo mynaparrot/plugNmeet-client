@@ -22,12 +22,10 @@ const isActiveScreenshareSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveScreenshare,
   (isActiveScreenshare) => isActiveScreenshare,
 );
-
 const sessionIsActiveScreenSharingSelector = createSelector(
   (state: RootState) => state.session.screenSharing,
   (screenSharing) => screenSharing.isActive,
 );
-
 const isScreenshareLockSelector = createSelector(
   (state: RootState) =>
     state.session.currenUser?.metadata?.lock_settings.lock_screen_sharing,
@@ -46,8 +44,8 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
   const isScreenshareLock = useAppSelector(isScreenshareLockSelector);
 
   const [iconCSS, setIconCSS] = useState<string>('brand-color1');
-  const [allowScreenSharing, setAllowScreenSharing] = useState<boolean>(true);
   const [lock, setLock] = useState<boolean>(false);
+  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   useEffect(() => {
     if (isActiveScreenshare) {
@@ -56,14 +54,6 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
       setIconCSS('brand-color1');
     }
   }, [isActiveScreenshare]);
-
-  useEffect(() => {
-    const metadata = store.getState().session.currentRoom
-      .metadata as IRoomMetadata;
-    if (!metadata.room_features?.allow_webcams) {
-      setAllowScreenSharing(false);
-    }
-  }, []);
 
   const endScreenShare = useCallback(() => {
     if (isActiveScreenshare) {
@@ -88,28 +78,17 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
 
   // for change in lock setting
   useEffect(() => {
+    if (isAdmin) {
+      return;
+    }
     if (isScreenshareLock) {
       setLock(true);
       endScreenShare();
-    } else {
+    } else if (!isScreenshareLock) {
       setLock(false);
     }
-  }, [dispatch, endScreenShare, isScreenshareLock]);
-
-  // default room lock settings
-  useEffect(() => {
-    const isLock =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_screen_sharing;
-    const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
-
-    if (isLock && !isAdmin) {
-      if (isScreenshareLock !== false) {
-        setLock(true);
-      }
-    }
-    // eslint-disable-next-line
-  }, []);
+    //eslint-disable-next-line
+  }, [endScreenShare, isScreenshareLock]);
 
   // for special case when user will cancel sharing from browser directly
   // we will check & disable button status.
@@ -163,6 +142,12 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     }
   };
 
+  const shouldShow = () => {
+    const session = store.getState().session;
+    const metadata = session.currentRoom.metadata as IRoomMetadata;
+    return metadata.room_features?.allow_screen_share;
+  };
+
   const render = () => {
     return (
       <div
@@ -188,7 +173,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     );
   };
 
-  return <>{allowScreenSharing ? render() : null}</>;
+  return <>{shouldShow() ? render() : null}</>;
 };
 
 export default ScrenshareIcon;

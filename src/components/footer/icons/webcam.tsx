@@ -22,7 +22,6 @@ import {
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam/shareWebcam';
 import WebcamMenu from './webcam-menu';
-import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
 import VirtualBackground from '../../virtual-background/virtualBackground';
@@ -66,26 +65,10 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const selectedVideoDevice = useAppSelector(selectedVideoDeviceSelector);
   const { t } = useTranslation();
 
-  const [allowWebcam, setAllowWebcam] = useState<boolean>(true);
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string>();
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [localTrack, setLocalTrack] = useState<LocalTrack>();
-
-  useEffect(() => {
-    const session = store.getState().session;
-    const metadata = session.currentRoom.metadata as IRoomMetadata;
-    const currentUser = session.currenUser;
-
-    if (!metadata.room_features?.allow_webcams) {
-      setAllowWebcam(false);
-    } else if (
-      metadata.room_features?.admin_only_webcams &&
-      !currentUser?.metadata?.is_admin
-    ) {
-      setAllowWebcam(false);
-    }
-  }, []);
 
   // for change in webcam lock setting
   useEffect(() => {
@@ -238,6 +221,23 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     });
   };
 
+  const shouldShow = () => {
+    const session = store.getState().session;
+    const room_features = session.currentRoom.metadata?.room_features;
+    const currentUser = session.currenUser;
+
+    if (!room_features?.allow_webcams) {
+      return false;
+    } else if (
+      room_features?.admin_only_webcams &&
+      !currentUser?.metadata?.is_admin
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
   const render = () => {
     return (
       <>
@@ -287,7 +287,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     );
   };
 
-  return <>{allowWebcam ? render() : null}</>;
+  return <>{shouldShow() ? render() : null}</>;
 };
 
 export default WebcamIcon;

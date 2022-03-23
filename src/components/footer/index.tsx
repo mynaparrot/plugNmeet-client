@@ -11,8 +11,8 @@ import RaiseHandIcon from './icons/raisehand';
 import ScreenshareIcon from './icons/screenshare';
 import RecordingIcon from './icons/recording';
 import MenusIcon from './icons/menus';
-import SharedNotePad from './icons/sharedNotePad';
-import Whiteboard from './icons/whiteboard';
+import SharedNotePadIcon from './icons/sharedNotePad';
+import WhiteboardIcon from './icons/whiteboard';
 
 interface IFooterProps {
   currentRoom: Room;
@@ -38,8 +38,8 @@ const Footer = ({ currentRoom }: IFooterProps) => {
           <ChatIcon />
           <ScreenshareIcon currentRoom={currentRoom} />
           <RaiseHandIcon currentRoom={currentRoom} />
-          <Whiteboard />
-          <SharedNotePad />
+          <WhiteboardIcon />
+          <SharedNotePadIcon />
           <RecordingIcon />
           {isAdmin ? <MenusIcon /> : null}
         </div>
