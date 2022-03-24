@@ -25,7 +25,7 @@ const isWhiteboardVisibleSelector = createSelector(
   (visible) => visible,
 );
 
-const Whiteboard = () => {
+const WhiteboardIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -38,6 +38,7 @@ const Whiteboard = () => {
     store.getState().session.currentRoom.metadata?.room_features
       .whiteboard_features.allowed_whiteboard;
   const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+  const isRecorder = store.getState().session.currenUser?.isRecorder;
 
   useEffect(() => {
     if (isActiveWhiteboard) {
@@ -64,7 +65,7 @@ const Whiteboard = () => {
   }, [isVisible]);
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!isAdmin || isRecorder) {
       return;
     }
     const currentRoom = store.getState().session.currentRoom;
@@ -149,4 +150,4 @@ const Whiteboard = () => {
   return <>{allowedWhiteboard ? render() : null}</>;
 };
 
-export default Whiteboard;
+export default WhiteboardIcon;

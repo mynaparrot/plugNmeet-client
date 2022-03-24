@@ -1,3 +1,8 @@
+// eslint-disable-next-line import/no-unresolved
+import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
+// eslint-disable-next-line import/no-unresolved
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
 import {
@@ -8,9 +13,10 @@ import {
   WhiteboardMsgType,
 } from '../../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../../helpers/websocketConnector';
-// eslint-disable-next-line import/no-unresolved
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
+import { BroadcastedExcalidrawElement } from './reconciliation';
+
+const broadcastedElementVersions: Map<string, number> = new Map();
 
 export const sendRequestedForWhiteboardData = () => {
   const session = store.getState().session;
@@ -64,22 +70,7 @@ export const sendWhiteboardData = (
   };
 
   if (elements.length) {
-    const info: WhiteboardMsg = {
-      type: WhiteboardMsgType.SCENE_UPDATE,
-      from,
-      msg: JSON.stringify(elements),
-    };
-
-    const data: IDataMessage = {
-      type: DataMessageType.WHITEBOARD,
-      room_sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      message_id: '',
-      body: info,
-      to: sendTo,
-    };
-
-    sendWebsocketMessage(JSON.stringify(data));
+    sendScreenDataBySocket(elements, sendTo);
   }
 
   // send whiteboard files
@@ -110,4 +101,66 @@ export const sendWhiteboardData = (
       sendTo: '',
     }),
   );
+};
+
+export const broadcastSceneOnChange = (
+  allElements: readonly ExcalidrawElement[],
+) => {
+  // sync out only the elements we think we need to to save bandwidth.
+  const syncableElements = allElements.reduce(
+    (acc, element: BroadcastedExcalidrawElement, idx, elements) => {
+      if (
+        !broadcastedElementVersions.has(element.id) ||
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        element.version > broadcastedElementVersions.get(element.id)!
+      ) {
+        acc.push({
+          ...element,
+          // z-index info for the reconciler
+          parent: idx === 0 ? '^' : elements[idx - 1]?.id,
+        });
+      }
+      return acc;
+    },
+    [] as BroadcastedExcalidrawElement[],
+  );
+
+  sendScreenDataBySocket(syncableElements, '');
+
+  for (const syncableElement of syncableElements) {
+    broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
+  }
+};
+
+export const sendScreenDataBySocket = (
+  elements: readonly ExcalidrawElement[],
+  sendTo: string,
+) => {
+  const session = store.getState().session;
+  const from = {
+    sid: session.currenUser?.sid ?? '',
+    userId: session.currenUser?.userId ?? '',
+  };
+
+  const msg = JSON.stringify(elements);
+
+  const info: WhiteboardMsg = {
+    type: WhiteboardMsgType.SCENE_UPDATE,
+    from,
+    msg: msg,
+  };
+
+  const data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    room_id: session.currentRoom.room_id,
+    message_id: '',
+    body: info,
+  };
+
+  if (sendTo !== '') {
+    data.to = sendTo;
+  }
+
+  sendWebsocketMessage(JSON.stringify(data));
 };

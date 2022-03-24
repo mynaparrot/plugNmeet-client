@@ -31,7 +31,7 @@ const isSharedNotepadVisibleSelector = createSelector(
   (visible) => visible,
 );
 
-const SharedNotePad = () => {
+const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -41,6 +41,7 @@ const SharedNotePad = () => {
   const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
   const [initiated, setInitiated] = useState<boolean>(false);
   const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+  const isRecorder = store.getState().session.currenUser?.isRecorder;
 
   useEffect(() => {
     // if not active then we can disable it.
@@ -76,7 +77,7 @@ const SharedNotePad = () => {
   }, [isVisible]);
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!isAdmin || isRecorder) {
       return;
     }
     const currentRoom = store.getState().session.currentRoom;
@@ -159,4 +160,4 @@ const SharedNotePad = () => {
   return <>{sharedNotepadStatus ? render() : null}</>;
 };
 
-export default SharedNotePad;
+export default SharedNotePadIcon;

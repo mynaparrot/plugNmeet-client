@@ -11,20 +11,22 @@ import RaiseHandIcon from './icons/raisehand';
 import ScreenshareIcon from './icons/screenshare';
 import RecordingIcon from './icons/recording';
 import MenusIcon from './icons/menus';
-import SharedNotePad from './icons/sharedNotePad';
-import Whiteboard from './icons/whiteboard';
+import SharedNotePadIcon from './icons/sharedNotePad';
+import WhiteboardIcon from './icons/whiteboard';
 
 interface IFooterProps {
   currentRoom: Room;
+  isRecorder: boolean;
 }
 
-const Footer = ({ currentRoom }: IFooterProps) => {
+const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   return (
     <footer
       id="main-footer"
       className="h-[55px] lg:h-[60px] px-4 shadow-footer flex items-center justify-between"
+      style={{ display: isRecorder ? 'none' : '' }}
     >
       <div className="footer-inner flex items-center justify-between w-full">
         <div className="footer-left w-52 flex items-center">
@@ -38,8 +40,8 @@ const Footer = ({ currentRoom }: IFooterProps) => {
           <ChatIcon />
           <ScreenshareIcon currentRoom={currentRoom} />
           <RaiseHandIcon currentRoom={currentRoom} />
-          <Whiteboard />
-          <SharedNotePad />
+          <WhiteboardIcon />
+          <SharedNotePadIcon />
           <RecordingIcon />
           {isAdmin ? <MenusIcon /> : null}
         </div>

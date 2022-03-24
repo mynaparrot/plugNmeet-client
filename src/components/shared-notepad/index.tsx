@@ -36,7 +36,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
       if (sharedNotepadFeatures.host.match('host.docker.internal')) {
         url = 'http://localhost:9001';
       }
-      if (currentUser?.metadata?.is_admin) {
+      if (currentUser?.metadata?.is_admin && !currentUser.isRecorder) {
         url = `${url}/p/${sharedNotepadFeatures.note_pad_id}?userName=${currentUser.name}`;
       } else {
         url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
