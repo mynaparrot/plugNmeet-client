@@ -38,6 +38,7 @@ import UploadFiles from './uploadFiles';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
+  broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
   sendWhiteboardData,
 } from './helpers/handleRequestedWhiteboardData';
@@ -278,26 +279,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
       if (getSceneVersion(elements) > lastBroadcastedOrReceivedSceneVersion) {
         lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
-        const msg = JSON.stringify(elements);
-
-        const info: WhiteboardMsg = {
-          type: WhiteboardMsgType.SCENE_UPDATE,
-          from: {
-            sid: currentUser.sid,
-            userId: currentUser.userId,
-          },
-          msg: msg,
-        };
-
-        const data: IDataMessage = {
-          type: DataMessageType.WHITEBOARD,
-          room_sid: currentRoom.sid,
-          room_id: currentRoom.room_id,
-          message_id: '',
-          body: info,
-        };
-
-        sendWebsocketMessage(JSON.stringify(data));
+        broadcastSceneOnChange(elements);
       }
     }
   };
@@ -367,7 +349,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper flex-1 w-full h-[calc(100%-50px)] sm:px-5 mt-9">
+      <div className="excalidraw-wrapper flex-1 w-full max-w-[900px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9">
         {render()}
       </div>
     </div>

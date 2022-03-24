@@ -824,3 +824,9 @@ button.previous-cam:hover, button.next-cam:hover {
     max-width: 100%;
   }
 }
+@media screen and (max-width:640px) {
+  .admin footer#main-footer .footer-icon {
+    height: 25px;
+    width: 25px;
+  }
+}
