@@ -100,11 +100,12 @@ const MainArea = ({
       ${isActiveWhiteboard ? 'showWhiteboard' : 'hideWhiteboard'}
       `}
     >
-      <img
-        className="absolute w-full h-full left-0 top-0 object-cover pointer-events-none"
-        src={`${assetPath}/imgs/app-banner.jpg`}
-        alt="AppBG"
-      />
+      <div
+        className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none `}
+        style={{
+          backgroundImage: `url("${`${assetPath}/imgs/app-banner.jpg`}")`,
+        }}
+      ></div>
       <div className="inner flex justify-between w-full">
         <Transition
           className="transition-left-panel"
