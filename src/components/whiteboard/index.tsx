@@ -38,6 +38,7 @@ import UploadFiles from './uploadFiles';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
+  broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
   sendWhiteboardData,
 } from './helpers/handleRequestedWhiteboardData';
@@ -278,26 +279,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
       if (getSceneVersion(elements) > lastBroadcastedOrReceivedSceneVersion) {
         lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
-        const msg = JSON.stringify(elements);
-
-        const info: WhiteboardMsg = {
-          type: WhiteboardMsgType.SCENE_UPDATE,
-          from: {
-            sid: currentUser.sid,
-            userId: currentUser.userId,
-          },
-          msg: msg,
-        };
-
-        const data: IDataMessage = {
-          type: DataMessageType.WHITEBOARD,
-          room_sid: currentRoom.sid,
-          room_id: currentRoom.room_id,
-          message_id: '',
-          body: info,
-        };
-
-        sendWebsocketMessage(JSON.stringify(data));
+        broadcastSceneOnChange(elements);
       }
     }
   };
