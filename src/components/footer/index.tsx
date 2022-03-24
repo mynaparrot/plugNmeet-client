@@ -16,15 +16,17 @@ import WhiteboardIcon from './icons/whiteboard';
 
 interface IFooterProps {
   currentRoom: Room;
+  isRecorder: boolean;
 }
 
-const Footer = ({ currentRoom }: IFooterProps) => {
+const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   return (
     <footer
       id="main-footer"
       className="h-[55px] lg:h-[60px] px-4 shadow-footer flex items-center justify-between"
+      style={{ display: isRecorder ? 'none' : '' }}
     >
       <div className="footer-inner flex items-center justify-between w-full">
         <div className="footer-left w-52 flex items-center">

@@ -210,7 +210,7 @@ const App = () => {
             screenShareTracks={screenShareTracks}
             isRecorder={isRecorder}
           />
-          {!isRecorder ? <Footer currentRoom={currentRoom} /> : null}
+          <Footer currentRoom={currentRoom} isRecorder={isRecorder} />
           <AudioNotification />
         </div>
       );
