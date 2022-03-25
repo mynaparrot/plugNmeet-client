@@ -405,6 +405,9 @@ button.previous-cam:hover, button.next-cam:hover {
 #main-area.isRecorder.hideParticipantsPanel.showScreenShare .all-webcam-wrapper {
   height: 100vh;
 }
+.plugNmeet-app #main-area.isRecorder .all-webcam-wrapper {
+  height: 100vh;
+}
 #main-area.hideParticipantsPanel.showScreenShare .share-screen-wrapper .screen-share-video {
   padding-bottom: calc(100vh - 210px);
 }
