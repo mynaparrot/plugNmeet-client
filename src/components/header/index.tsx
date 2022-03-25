@@ -159,25 +159,28 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         id="main-header"
         className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white"
       >
-        <img
-          className="absolute top-[-90px] left-[-35px] w-[300px] pointer-events-none"
-          src={`${assetPath}/imgs/header-before2.png`}
-          alt="BeforeBG"
-        />
+        <div
+          className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
+          style={{
+            backgroundImage: `url("${`${assetPath}/imgs/header-before2.png`}")`,
+          }}
+        ></div>
         <div className="logo w-28 relative z-20">
-          <img
-            className={(window as any).CUSTOM_LOGO ? 'h-8' : 'h-5'}
-            src={logo}
-            alt="logo"
-          />
+          <div
+            className={`${
+              (window as any).CUSTOM_LOGO ? 'h-8' : 'h-5'
+            } header-logo h-full bg-contain bg-no-repeat`}
+            style={{
+              backgroundImage: `url("${`${logo}`}")`,
+            }}
+          ></div>
         </div>
         <div className="middle flex-auto relative z-20">
-          <h2 className="text-base text-black leading-[1] text-center">
+          <h2 className="header-title text-base text-black leading-[1] text-center">
             {title}
           </h2>
         </div>
         <div className="dark w-28 flex items-center justify-end relative z-20 -right-3">
-          {/* <p className="text-sm text-black leading-[1] mr-1">Dark mode</p> */}
           <Menu>
             {({ open }) => (
               <>
@@ -203,11 +206,12 @@ const Header = ({ currentRoom }: IHeaderProps) => {
             )}
           </Menu>
         </div>
-        <img
-          className="absolute top-[-105px] right-[-100px] w-[350px] lg:w-[380px] rotate-[156deg] pointer-events-none"
-          src={`${assetPath}/imgs/header-before2.png`}
-          alt="BeforeBG"
-        />
+        <div
+          className={`header-before-end absolute top-0 right-[-100px] w-[350px] lg:w-[380px] rotate-[156deg] pointer-events-none bg-cover bg-center h-full`}
+          style={{
+            backgroundImage: `url("${`${assetPath}/imgs/header-before2.png`}")`,
+          }}
+        ></div>
         {showModal ? alertModal() : null}
       </header>
       <RoomSettings />
