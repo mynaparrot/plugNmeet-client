@@ -140,7 +140,8 @@ const getRealMimeType = (reader) => {
     case '3c737667':
       realMimeType = 'image/svg+xml';
       break;
-    default: // Or you can use the blob.type as fallback
+    default:
+      // Or you can use the blob.type as fallback
       realMimeType = 'unknown';
       break;
   }
