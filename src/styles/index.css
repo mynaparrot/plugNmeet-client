@@ -53,7 +53,7 @@ code {
 /* Message */
 .message-item p.message-content {
   padding: 10px;
-  border-radius: 0px 15px 15px 15px;
+  border-radius: 0 15px 15px;
   overflow-wrap: break-word;
 }
 .content.me p.message-content {
@@ -273,13 +273,13 @@ padding: 30px 0;
 }
 @keyframes pulse{
 	0%{
-		box-shadow: 0px 0px 5px 0px rgba(0,77,144, 0.3);
+		box-shadow: 0 0 5px 0 rgba(0,77,144, 0.3);
 	}
 	65%{
-		box-shadow: 0px 0px 5px 13px rgba(242,242,242);
+		box-shadow: 0 0 5px 13px rgba(242,242,242);
 	}
 	90%{
-		box-shadow: 0px 0px 5px 13px rgba(242,242,242);
+		box-shadow: 0 0 5px 13px rgba(242,242,242);
 	}
 }
 #main-area.hideParticipantsPanel.showScreenShare .active-speakers-wrap {
@@ -351,14 +351,11 @@ padding: 30px 0;
 .all-webcam-wrapper button.next-cam i {
     width: 20px;
     margin: auto;
+    transition: all 0.3s ease-in;
 }
 .all-webcam-wrapper button.previous-cam:hover i,
 .all-webcam-wrapper button.next-cam:hover i {
     color: #fff;
-}
-.all-webcam-wrapper button.previous-cam i,
-.all-webcam-wrapper button.next-cam i {
-    transition: all 0.3s ease-in;
 }
 .showScreenShare button.previous-cam, .showScreenShare button.next-cam {
   height: 100%;
@@ -490,7 +487,7 @@ button.previous-cam:hover, button.next-cam:hover {
 } */
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper .all-webcam-wrapper-inner {
   margin: 30px 0;
-  padding: 0px;
+  padding: 0;
 }
 .content.me p.message-content a {
   text-decoration: underline;
@@ -544,8 +541,8 @@ button.previous-cam:hover, button.next-cam:hover {
     opacity: 1;
   }
   100% {
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 30px;
     height: 30px;
     opacity: 0;
@@ -573,7 +570,7 @@ button.previous-cam:hover, button.next-cam:hover {
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .all-webcam-wrapper-inner,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper .all-webcam-wrapper-inner {
   margin: 30px 0;
-  padding: 0px;
+  padding: 0;
 }
 #main-area.hideParticipantsPanel.showSharedNotepad .all-webcam-wrapper .video-camera-item,
 #main-area.hideParticipantsPanel.showWhiteboard .all-webcam-wrapper .video-camera-item {
@@ -624,13 +621,13 @@ button.previous-cam:hover, button.next-cam:hover {
     height: auto;
     width: 100%;
     z-index: 9;
-    padding-top: 0px;
+    padding-top: 0;
     bottom: 0;
   }
   #main-area.showSharedNotepad .middle-fullscreen-wrapper .all-webcam-wrapper,
   #main-area.showWhiteboard .middle-fullscreen-wrapper .all-webcam-wrapper {
     bottom: 0;
-    padding-top: 0px;
+    padding-top: 0;
   }
   .share-screen-wrapper.is-share-screen-running {
     position: relative;
@@ -659,7 +656,7 @@ button.previous-cam:hover, button.next-cam:hover {
   .share-screen-wrapper.is-share-screen-running .screen-share-video video.video-player {
     width: calc(100% - 30px);
     height: calc(100% - 85px);
-    top: 0px;
+    top: 0;
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video button {
     bottom: 155px;
@@ -693,7 +690,7 @@ button.previous-cam:hover, button.next-cam:hover {
     left: 5px;
   }
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item .camera-video-player button {
-    right: 0px;
+    right: 0;
     top: 3px
   }
   #main-right-panel {
