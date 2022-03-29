@@ -254,11 +254,12 @@ export default class ConnectLivekit {
       adaptiveStream: true,
       dynacast: (window as any).ENABLE_DYNACAST ?? false,
       videoCaptureDefaults: {
-        resolution: VideoPresets.hd.resolution,
+        resolution: VideoPresets.h720.resolution,
       },
       publishDefaults: {
         simulcast: (window as any).ENABLE_SIMULCAST ?? false,
         stopMicTrackOnMute: (window as any).STOP_MIC_TRACK_ON_MUTE ?? false,
+        videoCodec: (window as any).VIDEO_CODEC ?? 'vp8',
       },
     });
 

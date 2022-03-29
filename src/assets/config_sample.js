@@ -14,6 +14,9 @@ Window.ENABLE_DYNACAST = true;
 //When using simulcast, LiveKit will publish up to three versions of the stream at various resolutions. Client can pickup most appropriate one.
 window.ENABLE_SIMULCAST = true;
 
+// Available options: 'vp8' | 'h264' | 'av1' | 'vp9'. Default: vp8
+window.VIDEO_CODEC = 'vp8';
+
 //For local tracks, stop the underlying MediaStreamTrack when the track is muted (or paused) on some platforms, this option is necessary to disable the microphone recording indicator. Note: when this is enabled, and BT devices are connected, they will transition between profiles (e.g. HFP to A2DP) and there will be an audible difference in playback.
 window.STOP_MIC_TRACK_ON_MUTE = true;
 
