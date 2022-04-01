@@ -62,6 +62,18 @@ code {
   background-color: #24aef7;
   color: #fff;
 }
+.message-item p.message-content i.pnm-download {
+  font-size: 16px;
+  position: absolute;
+  top: 1px;
+  margin-right: 2px;
+}
+.message-item p.message-content span.download {
+  position: relative;
+}
+.message-item p.message-content span.download a {
+  padding-left: 20px;
+}
 .content.me {
   text-align: right;
   width: 100%;
