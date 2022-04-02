@@ -31,6 +31,10 @@ i {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-download:before {
+    content: "\e91c";
+}
+
 .pnm-whiteboard:before {
     content: "\e91b";
 }
