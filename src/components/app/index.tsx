@@ -26,6 +26,7 @@ import {
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import useTFLite from '../virtual-background/hooks/useTFLite';
 import { defaultSegmentationConfig } from '../virtual-background/helpers/segmentationHelper';
+import useKeyboardShortcuts from '../../helpers/useKeyboardShortcuts';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -56,6 +57,7 @@ const App = () => {
   // elements as early as possible.
   useBodyPix();
   useTFLite(defaultSegmentationConfig);
+  useKeyboardShortcuts(currentRoom);
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
