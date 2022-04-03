@@ -155,7 +155,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
       setSourcePlayback({
         htmlElement: localTrack.attach() as HTMLVideoElement,
         width: localTrack.dimensions?.width ?? 320,
-        height: localTrack.dimensions?.height ?? 160,
+        height: localTrack.dimensions?.height ?? 180,
       });
     }
     return () => {
