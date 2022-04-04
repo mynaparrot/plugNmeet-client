@@ -19,7 +19,7 @@ const Avatar = ({ participant }: IAvatarProps) => {
     }
   };
   return (
-    <div className="thumb h-[22px] xl:h-[30px] w-[22px] xl:w-[30px] mr-2 rounded-full overflow-hidden bg-[rgba(0,69,131)] flex items-center justify-center text-white text-xs xl:text-sm">
+    <div className="thumb h-[22px] xl:h-[30px] w-[22px] xl:w-[30px] mr-2 rounded-full overflow-hidden brand-bg1 flex items-center justify-center text-white text-xs xl:text-sm">
       {render()}
     </div>
   );

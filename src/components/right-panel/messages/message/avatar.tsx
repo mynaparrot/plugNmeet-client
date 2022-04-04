@@ -22,7 +22,7 @@ const Avatar = ({ participant, from }: IAvatarProps) => {
     }
   };
   return (
-    <div className="avatar flex items-center justify-center text-white h-8 w-8 overflow-hidden rounded-full shadow-header bg-brandColor1">
+    <div className="avatar flex items-center justify-center text-white h-8 w-8 overflow-hidden rounded-full shadow-header brand-bg1">
       {render()}
     </div>
   );

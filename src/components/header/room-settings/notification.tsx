@@ -33,8 +33,8 @@ const Notification = () => {
             checked={allowPlayAudioNotification}
             onChange={toggleAudioNotification}
             className={`${
-              allowPlayAudioNotification ? 'bg-blue-600' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+              allowPlayAudioNotification ? 'brand-bg1' : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
           >
             <span
               className={`${

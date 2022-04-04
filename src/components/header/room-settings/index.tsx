@@ -54,7 +54,7 @@ const RoomSettings = () => {
     return (
       <div className="max-w-full">
         <Tab.Group vertical>
-          <Tab.List className="flex p-1 space-x-1 bg-blue-900 rounded-xl">
+          <Tab.List className="flex p-1 space-x-1 brand-bg1 rounded-xl">
             {Object.keys(categories).map((category) => (
               <Tab
                 key={category}
