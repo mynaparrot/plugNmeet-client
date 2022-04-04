@@ -215,7 +215,7 @@ const RtmpModal = () => {
                       <div className="px-4 py-3 bg-gray-50 text-right sm:px-6 mt-4">
                         <button
                           type="submit"
-                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white brand-bg1 hover:brand-bg2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2"
+                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brandColor1 hover:bg-brandColor2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2"
                         >
                           {t('footer.modal.rtmp-start-broadcast')}
                         </button>

@@ -63,8 +63,10 @@ const LockSettingsModal = () => {
             checked={roomLockSettings?.lock_microphone ?? false}
             onChange={(e) => updateLockSettings(e, 'mic')}
             className={`${
-              roomLockSettings?.lock_microphone ? 'brand-bg1' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
+              roomLockSettings?.lock_microphone
+                ? 'bg-brandColor1'
+                : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
           >
             <span
               className={`${
@@ -84,8 +86,8 @@ const LockSettingsModal = () => {
             checked={roomLockSettings?.lock_webcam ?? false}
             onChange={(e) => updateLockSettings(e, 'webcam')}
             className={`${
-              roomLockSettings?.lock_webcam ? 'brand-bg1' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
+              roomLockSettings?.lock_webcam ? 'bg-brandColor1' : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
           >
             <span
               className={`${
@@ -106,9 +108,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'screenShare')}
             className={`${
               roomLockSettings?.lock_screen_sharing
-                ? 'brand-bg1'
+                ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
           >
             <span
               className={`${
@@ -128,8 +130,8 @@ const LockSettingsModal = () => {
             checked={roomLockSettings?.lock_chat ?? false}
             onChange={(e) => updateLockSettings(e, 'chat')}
             className={`${
-              roomLockSettings?.lock_chat ? 'brand-bg1' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
+              roomLockSettings?.lock_chat ? 'bg-brandColor1' : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
           >
             <span
               className={`${
@@ -148,9 +150,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
             className={`${
               roomLockSettings?.lock_chat_send_message
-                ? 'brand-bg1'
+                ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
           >
             <span
               className={`${
@@ -171,9 +173,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'chatFile')}
             className={`${
               roomLockSettings?.lock_chat_file_share
-                ? 'brand-bg1'
+                ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:brand-bg2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
           >
             <span
               className={`${
