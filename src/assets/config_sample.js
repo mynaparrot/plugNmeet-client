@@ -17,6 +17,14 @@ window.ENABLE_SIMULCAST = true;
 // Available options: 'vp8' | 'h264' | 'av1' | 'vp9'. Default: vp8
 window.VIDEO_CODEC = 'vp8';
 
+// Available options: 'h90' | 'h180' | 'h216' | 'h360' | 'h540' | 'h720' | 'h1080' | 'h1440' | 'h2160'.
+// Default: h720
+window.DEFAULT_WEBCAM_RESOLUTION = 'h720';
+
+// Available options: 'h360fps3' | 'h720fps5' | 'h720fps15' | 'h1080fps15' | 'h1080fps30'.
+// Default: h1080fps15
+window.DEFAULT_SCREEN_SHARE_RESOLUTION = 'h1080fps15';
+
 //For local tracks, stop the underlying MediaStreamTrack when the track is muted (or paused) on some platforms, this option is necessary to disable the microphone recording indicator. Note: when this is enabled, and BT devices are connected, they will transition between profiles (e.g. HFP to A2DP) and there will be an audible difference in playback.
 window.STOP_MIC_TRACK_ON_MUTE = true;
 

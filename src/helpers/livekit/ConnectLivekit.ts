@@ -8,6 +8,7 @@ import {
   RemoteTrackPublication,
   Room,
   RoomEvent,
+  ScreenSharePresets,
   Track,
   VideoPresets,
 } from 'livekit-client';
@@ -258,6 +259,15 @@ export default class ConnectLivekit {
       },
       publishDefaults: {
         simulcast: (window as any).ENABLE_SIMULCAST ?? false,
+        videoSimulcastLayers: [
+          VideoPresets.h90,
+          VideoPresets.h180,
+          VideoPresets.h360,
+        ],
+        screenShareSimulcastLayers: [
+          ScreenSharePresets.h360fps3,
+          ScreenSharePresets.h720fps15,
+        ],
         stopMicTrackOnMute: (window as any).STOP_MIC_TRACK_ON_MUTE ?? false,
         videoCodec: (window as any).VIDEO_CODEC ?? 'vp8',
       },

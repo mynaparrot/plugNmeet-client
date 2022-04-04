@@ -7,7 +7,6 @@ import {
   Room,
   Track,
   VideoPreset,
-  VideoPresets,
 } from 'livekit-client';
 
 import {
@@ -26,6 +25,7 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
+import { getWebcamResolution } from '../../../helpers/utils';
 
 interface IWebcamIconProps {
   currentRoom: Room;
@@ -176,7 +176,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   };
 
   const createDeviceStream = async (deviceId) => {
-    let resolution = VideoPresets.h720.resolution;
+    let resolution = getWebcamResolution();
 
     // with virtual background don't need high resolution
     if (virtualBackground.type !== 'none') {

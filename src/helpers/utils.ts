@@ -1,3 +1,5 @@
+import { ScreenSharePresets, VideoPresets } from 'livekit-client';
+
 export async function getDevices(kind: MediaDeviceKind) {
   let constraints: MediaStreamConstraints = {
     audio: true,
@@ -50,4 +52,67 @@ export const randomInteger = (len = 10) => {
 
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const getWebcamResolution = () => {
+  const selected = (window as any).DEFAULT_WEBCAM_RESOLUTION ?? 'h720';
+  let resolution = VideoPresets.h720.resolution;
+
+  switch (selected) {
+    case 'h90':
+      resolution = VideoPresets.h90.resolution;
+      break;
+    case 'h180':
+      resolution = VideoPresets.h180.resolution;
+      break;
+    case 'h216':
+      resolution = VideoPresets.h216.resolution;
+      break;
+    case 'h360':
+      resolution = VideoPresets.h360.resolution;
+      break;
+    case 'h540':
+      resolution = VideoPresets.h540.resolution;
+      break;
+    case 'h720':
+      resolution = VideoPresets.h720.resolution;
+      break;
+    case 'h1080':
+      resolution = VideoPresets.h1080.resolution;
+      break;
+    case 'h1440':
+      resolution = VideoPresets.h1440.resolution;
+      break;
+    case 'h2160':
+      resolution = VideoPresets.h2160.resolution;
+      break;
+  }
+
+  return resolution;
+};
+
+export const getScreenShareResolution = () => {
+  const selected =
+    (window as any).DEFAULT_SCREEN_SHARE_RESOLUTION ?? 'h1080fps15';
+  let resolution = ScreenSharePresets.h1080fps15.resolution;
+
+  switch (selected) {
+    case 'h360fps3':
+      resolution = ScreenSharePresets.h360fps3.resolution;
+      break;
+    case 'h720fps5':
+      resolution = ScreenSharePresets.h720fps5.resolution;
+      break;
+    case 'h720fps15':
+      resolution = ScreenSharePresets.h720fps15.resolution;
+      break;
+    case 'h1080fps15':
+      resolution = ScreenSharePresets.h1080fps15.resolution;
+      break;
+    case 'h1080fps30':
+      resolution = ScreenSharePresets.h1080fps30.resolution;
+      break;
+  }
+
+  return resolution;
 };
