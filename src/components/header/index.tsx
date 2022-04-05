@@ -11,6 +11,7 @@ import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
 import './style.css';
+import KeyboardShortcuts from './keyboardShortcuts';
 
 interface IHeaderProps {
   currentRoom: Room;
@@ -162,18 +163,18 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         <div
           className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
           style={{
-            backgroundImage: `url("${`${assetPath}/imgs/header-before2.png`}")`,
+            backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
           }}
-        ></div>
+        />
         <div className="logo w-28 relative z-20">
           <div
             className={`${
               (window as any).CUSTOM_LOGO ? 'h-8' : 'h-5'
             } header-logo h-full bg-contain bg-no-repeat`}
             style={{
-              backgroundImage: `url("${`${logo}`}")`,
+              backgroundImage: `url("${logo}")`,
             }}
-          ></div>
+          />
         </div>
         <div className="middle flex-auto relative z-20">
           <h2 className="header-title text-base text-black leading-[1] text-center">
@@ -209,12 +210,13 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         <div
           className={`header-before-end absolute top-0 right-[-100px] w-[350px] lg:w-[380px] rotate-[156deg] pointer-events-none bg-cover bg-center h-full`}
           style={{
-            backgroundImage: `url("${`${assetPath}/imgs/header-before2.png`}")`,
+            backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
           }}
-        ></div>
+        />
         {showModal ? alertModal() : null}
       </header>
       <RoomSettings />
+      <KeyboardShortcuts />
     </>
   );
 };

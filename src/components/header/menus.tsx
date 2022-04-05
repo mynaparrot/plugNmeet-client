@@ -1,7 +1,10 @@
 import React from 'react';
 import { Menu } from '@headlessui/react';
 import { store, useAppDispatch } from '../../store';
-import { updateShowRoomSettingsModal } from '../../store/slices/roomSettingsSlice';
+import {
+  updateShowKeyboardShortcutsModal,
+  updateShowRoomSettingsModal,
+} from '../../store/slices/roomSettingsSlice';
 import { useTranslation } from 'react-i18next';
 
 interface IHeaderMenusProps {
@@ -24,6 +27,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
     dispatch(updateShowRoomSettingsModal(true));
   };
 
+  const showKeyboardShortcuts = () => {
+    dispatch(updateShowKeyboardShortcutsModal(true));
+  };
+
   const render = () => {
     return (
       <Menu.Items
@@ -38,6 +45,17 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
             >
               <i className="pnm-settings text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
               {t('header.menus.settings')}
+            </button>
+          </Menu.Item>
+        </div>
+        <div className="py-1" role="none">
+          <Menu.Item>
+            <button
+              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-brandColor2"
+              onClick={() => showKeyboardShortcuts()}
+            >
+              <i className="pnm-keyboard text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+              {t('header.menus.keyboard-shortcuts')}
             </button>
           </Menu.Item>
         </div>
