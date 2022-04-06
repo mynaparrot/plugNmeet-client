@@ -223,9 +223,10 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           },
         },
       };
-      navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
-        setVirtualBgLocalTrack(mediaStream);
-      });
+      const mediaStream = await navigator.mediaDevices.getUserMedia(
+        constraints,
+      );
+      setVirtualBgLocalTrack(mediaStream);
     }
 
     return;
