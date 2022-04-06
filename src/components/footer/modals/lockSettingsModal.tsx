@@ -66,7 +66,7 @@ const LockSettingsModal = () => {
               roomLockSettings?.lock_microphone
                 ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -87,7 +87,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'webcam')}
             className={`${
               roomLockSettings?.lock_webcam ? 'bg-brandColor1' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -110,7 +110,7 @@ const LockSettingsModal = () => {
               roomLockSettings?.lock_screen_sharing
                 ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -131,7 +131,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'chat')}
             className={`${
               roomLockSettings?.lock_chat ? 'bg-brandColor1' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -152,7 +152,7 @@ const LockSettingsModal = () => {
               roomLockSettings?.lock_chat_send_message
                 ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -175,7 +175,7 @@ const LockSettingsModal = () => {
               roomLockSettings?.lock_chat_file_share
                 ? 'bg-brandColor1'
                 : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${

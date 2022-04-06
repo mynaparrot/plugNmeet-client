@@ -34,7 +34,7 @@ const Notification = () => {
             onChange={toggleAudioNotification}
             className={`${
               allowPlayAudioNotification ? 'bg-brandColor1' : 'bg-gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
