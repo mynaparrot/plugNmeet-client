@@ -336,10 +336,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
         {virtualBgLocalTrack ? (
           <div style={{ display: 'none' }}>
             <video
-              className="my-5 w-full"
               ref={virtualBgVideoPlayer}
               autoPlay
-              height="50"
               onLoadedData={handleVirtualBgVideoOnLoad}
             />
           </div>
