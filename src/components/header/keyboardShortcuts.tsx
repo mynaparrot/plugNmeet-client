@@ -59,7 +59,7 @@ const KeyboardShortcuts = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full h-96 max-w-xl py-6 px-4 lg:px-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-xl py-6 px-4 lg:px-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
@@ -77,107 +77,111 @@ const KeyboardShortcuts = () => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    <table className="border-separate border border-slate-500">
+                    <table className="border-collapse border border-slate-500 w-full">
                       <thead>
                         <tr>
-                          <th className="border border-slate-600">
-                            {t('header.keyboard-shortcuts.key-comb')}
+                          <th className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
+                            <strong>
+                              {t('header.keyboard-shortcuts.key-comb')}
+                            </strong>
                           </th>
-                          <th className="border border-slate-600 ">
-                            {t('header.keyboard-shortcuts.actions')}
+                          <th className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
+                            <strong>
+                              {t('header.keyboard-shortcuts.actions')}
+                            </strong>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + m
                           </td>
-                          <td className="border border-slate-700 ">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base ">
                             {t('header.keyboard-shortcuts.mute-unmute')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + a
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.start-audio')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + o
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.leave-audio')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + v
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.start-webcam')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + x
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.leave-webcam')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + u
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.show-hide-user-list')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + c
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.show-hide-chat')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + l
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t(
                               'header.keyboard-shortcuts.show-hide-lock-settings',
                             )}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + s
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.show-hide-settings')}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + w
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-b border-slate-700 text-xs sm:text-sm md:text-base">
                             {t(
                               'header.keyboard-shortcuts.show-hide-whiteboard',
                             )}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-r border-slate-700 text-xs sm:text-sm md:text-base">
                             ctrl + alt/option + r
                           </td>
-                          <td className="border border-slate-700">
+                          <td className="pl-2 border-slate-700 text-xs sm:text-sm md:text-base">
                             {t('header.keyboard-shortcuts.show-hide-hand')}
                           </td>
                         </tr>
