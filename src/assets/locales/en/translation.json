@@ -120,6 +120,7 @@
     "you": "You",
     "uploading-file": "Uploading {{fileName}}",
     "file-upload-success": "File uploaded successfully",
+    "file-upload-default-error": "There was error during upload file",
     "chat-box-placeholder": "Write message (new line: Shift + enter)"
   },
   "footer": {

@@ -111,16 +111,22 @@ const FileSend = ({
     });
 
     r.on('fileError', function (file, message) {
-      const res = JSON.parse(message);
       setIsUploading(false);
 
       setTimeout(() => {
         toast.dismiss(toastId.current ?? '');
       }, 300);
 
-      toast(t(res.msg), {
-        type: toast.TYPE.ERROR,
-      });
+      try {
+        const res = JSON.parse(message);
+        toast(t(res.msg), {
+          type: toast.TYPE.ERROR,
+        });
+      } catch (e) {
+        toast(t('right-panel.file-upload-default-error'), {
+          type: toast.TYPE.ERROR,
+        });
+      }
     });
 
     r.on('uploadStart', function () {
