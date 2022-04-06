@@ -184,7 +184,10 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     }
 
     const track = await createLocalVideoTrack({
-      deviceId: deviceId,
+      deviceId: {
+        exact: deviceId,
+        ideal: deviceId,
+      },
       resolution,
     });
 
