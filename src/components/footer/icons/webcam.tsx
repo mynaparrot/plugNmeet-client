@@ -270,7 +270,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
   const showButtons = () => {
     return (
-      <div>
+      <div className="relative">
         <div
           className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
             showTooltip ? 'has-tooltip' : ''

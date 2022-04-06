@@ -11,13 +11,13 @@ interface IMicMenuProps {
 const MicMenu = ({ currentRoom }: IMicMenuProps) => {
   const render = () => {
     return (
-      <div>
+      <div className="absolute bottom-0 right-3 lg:right-6">
         <Menu>
           {({ open }) => (
             <>
               <Menu.Button>
                 <div className="arrow-down absolute -bottom-1 -right-1 w-[15px] h-[15px] rounded-full bg-white flex items-center justify-center">
-                  <i className="pnm-arrow-below text-[8px]" />
+                  <i className="pnm-arrow-below text-[10px] sm:text-[12px]" />
                 </div>
               </Menu.Button>
 
