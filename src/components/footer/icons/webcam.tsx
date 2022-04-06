@@ -6,7 +6,7 @@ import {
   LocalTrack,
   Room,
   Track,
-  VideoPreset,
+  VideoPresets,
 } from 'livekit-client';
 
 import {
@@ -180,8 +180,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
     // with virtual background don't need high resolution
     if (virtualBackground.type !== 'none') {
-      const preset = new VideoPreset(160, 96, 60_000, 15);
-      resolution = preset.resolution;
+      resolution = VideoPresets.h90.resolution;
     }
 
     const track = await createLocalVideoTrack({
