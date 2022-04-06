@@ -1,13 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  createLocalVideoTrack,
-  LocalTrack,
-  Room,
-  Track,
-  VideoPresets,
-} from 'livekit-client';
+import { createLocalVideoTrack, Room, Track } from 'livekit-client';
 
 import {
   RootState,
@@ -69,7 +63,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string>();
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
-  const [localTrack, setLocalTrack] = useState<LocalTrack>();
+  const [virtualBgLocalTrack, setVirtualBgLocalTrack] = useState<MediaStream>();
+  const virtualBgVideoPlayer = useRef<HTMLVideoElement>(null);
 
   // for change in webcam lock setting
   useEffect(() => {
@@ -113,8 +108,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
   // we should check & close track
   useEffect(() => {
-    if (!isActiveWebcam && localTrack && !selectedVideoDevice) {
-      localTrack.stop();
+    if (!isActiveWebcam && virtualBgLocalTrack && !selectedVideoDevice) {
+      virtualBgLocalTrack.getTracks().forEach((t) => t.stop());
     }
     if (!isActiveWebcam && !selectedVideoDevice && deviceId) {
       setDeviceId(undefined);
@@ -149,22 +144,33 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, [selectedVideoDevice]);
 
-  // localTrack only update when using virtual background
+  // virtualBgLocalTrack only update when using virtual background
   // need to stop previous track before starting new one
   useEffect(() => {
-    if (localTrack) {
-      setSourcePlayback({
-        htmlElement: localTrack.attach() as HTMLVideoElement,
-        width: localTrack.dimensions?.width ?? 320,
-        height: localTrack.dimensions?.height ?? 180,
-      });
+    if (virtualBgLocalTrack && virtualBgVideoPlayer) {
+      const el = virtualBgVideoPlayer.current;
+      if (el) {
+        el.srcObject = virtualBgLocalTrack;
+      }
     }
     return () => {
-      if (localTrack) {
-        localTrack.stop();
+      if (virtualBgLocalTrack) {
+        virtualBgLocalTrack.getTracks().forEach((t) => t.stop());
       }
     };
-  }, [localTrack]);
+  }, [virtualBgLocalTrack]);
+
+  // for virtual background
+  const handleVirtualBgVideoOnLoad = () => {
+    const el = virtualBgVideoPlayer.current;
+    if (el) {
+      setSourcePlayback({
+        htmlElement: el,
+        width: el.videoWidth ?? 320,
+        height: el.videoHeight ?? 180,
+      });
+    }
+  };
 
   const toggleWebcam = () => {
     if (lockWebcam) {
@@ -194,26 +200,32 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   };
 
   const createDeviceStream = async (deviceId) => {
-    let resolution = getWebcamResolution();
-
-    // with virtual background don't need high resolution
-    if (virtualBackground.type !== 'none') {
-      resolution = VideoPresets.h90.resolution;
-    }
-
-    const track = await createLocalVideoTrack({
-      deviceId: {
-        exact: deviceId,
-        ideal: deviceId,
-      },
-      resolution,
-    });
-
     if (virtualBackground.type === 'none') {
+      const resolution = getWebcamResolution();
+      const track = await createLocalVideoTrack({
+        deviceId: {
+          exact: deviceId,
+          ideal: deviceId,
+        },
+        resolution,
+      });
+
       await currentRoom.localParticipant.publishTrack(track);
       dispatch(updateIsActiveWebcam(true));
     } else {
-      setLocalTrack(track);
+      const constraints: MediaStreamConstraints = {
+        video: {
+          width: { min: 160, ideal: 320 },
+          height: { min: 90, ideal: 180 },
+          deviceId: {
+            exact: deviceId,
+            ideal: deviceId,
+          },
+        },
+      };
+      navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
+        setVirtualBgLocalTrack(mediaStream);
+      });
     }
 
     return;
@@ -311,6 +323,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
         ) : null}
 
+        {/*For virtual background*/}
         {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
           <div style={{ display: 'none' }}>
             <VirtualBackground
@@ -318,6 +331,17 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
               id={deviceId}
               backgroundConfig={virtualBackground}
               onCanvasRef={onCanvasRef}
+            />
+          </div>
+        ) : null}
+        {virtualBgLocalTrack ? (
+          <div style={{ display: 'none' }}>
+            <video
+              className="my-5 w-full"
+              ref={virtualBgVideoPlayer}
+              autoPlay
+              height="50"
+              onLoadedData={handleVirtualBgVideoOnLoad}
             />
           </div>
         ) : null}
