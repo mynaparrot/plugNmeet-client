@@ -215,8 +215,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     } else {
       const constraints: MediaStreamConstraints = {
         video: {
-          width: { min: 160, ideal: 320 },
-          height: { min: 90, ideal: 180 },
+          // width: { min: 160, ideal: 320 },
+          // height: { min: 90, ideal: 180 },
           deviceId: {
             exact: deviceId,
             ideal: deviceId,
