@@ -6,6 +6,7 @@ export interface IMediaDevice {
 }
 interface IRoomSettings {
   isShowRoomSettingsModal: boolean;
+  isShowKeyboardShortcuts: boolean;
 
   audioDevices: Array<IMediaDevice>;
   videoDevices: Array<IMediaDevice>;
@@ -19,6 +20,7 @@ interface IRoomSettings {
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
+  isShowKeyboardShortcuts: false,
 
   audioDevices: [],
   videoDevices: [],
@@ -36,6 +38,12 @@ const roomSettingsSlice = createSlice({
   reducers: {
     updateShowRoomSettingsModal: (state, action: PayloadAction<boolean>) => {
       state.isShowRoomSettingsModal = action.payload;
+    },
+    updateShowKeyboardShortcutsModal: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isShowKeyboardShortcuts = action.payload;
     },
     addAudioDevices: (state, action: PayloadAction<Array<IMediaDevice>>) => {
       state.audioDevices = action.payload;
@@ -77,6 +85,7 @@ export const {
   updateActivateWebcamsView,
   updateActiveScreenSharingView,
   updateAllowPlayAudioNotification,
+  updateShowKeyboardShortcutsModal,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

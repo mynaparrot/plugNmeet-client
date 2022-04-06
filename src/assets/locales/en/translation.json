@@ -27,6 +27,7 @@
   "header": {
     "menus": {
       "settings": "Settings",
+      "keyboard-shortcuts": "Keyboard Shortcuts",
       "logout": "Logout",
       "end": "End",
       "alert": {
@@ -44,6 +45,22 @@
       "allow-audio-notification": "Allow audio notification",
       "application": "Application settings",
       "language": "Language"
+    },
+    "keyboard-shortcuts": {
+      "title": "Keyboard shortcuts",
+      "key-comb": "Keys Combination",
+      "actions": "Actions",
+      "mute-unmute": "Mute/Unmute",
+      "start-audio": "Start Microphone (Audio call)",
+      "leave-audio": "Leave Microphone",
+      "start-webcam": "Start Webcam",
+      "leave-webcam": "Leave Webcam",
+      "show-hide-user-list": "Hide/Show Users' List",
+      "show-hide-chat": "Hide/Show Chat",
+      "show-hide-lock-settings": "Hide/Show Lock Settings",
+      "show-hide-settings": "Hide/Show Settings",
+      "show-hide-whiteboard": "Hide/Show Whiteboard",
+      "show-hide-hand": "Raise/Down hand"
     }
   },
   "app": {
@@ -103,6 +120,7 @@
     "you": "You",
     "uploading-file": "Uploading {{fileName}}",
     "file-upload-success": "File uploaded successfully",
+    "file-upload-default-error": "There was error during upload file",
     "chat-box-placeholder": "Write message (new line: Shift + enter)"
   },
   "footer": {

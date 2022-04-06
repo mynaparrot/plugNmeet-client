@@ -1,41 +1,23 @@
 import React from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { Room } from 'livekit-client';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../../../store';
 import MicMenuItems from './items';
 
 interface IMicMenuProps {
   currentRoom: Room;
 }
 
-const isMicMutedSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isMicMuted,
-  (isMicMuted) => isMicMuted,
-);
-
 const MicMenu = ({ currentRoom }: IMicMenuProps) => {
-  const isMicMuted = useAppSelector(isMicMutedSelector);
-
   const render = () => {
     return (
-      <div>
+      <div className="absolute bottom-0 right-3 lg:right-6">
         <Menu>
           {({ open }) => (
             <>
               <Menu.Button>
-                <div className="microphone relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
-                  {!isMicMuted ? (
-                    <i className="pnm-mic-unmute brand-color2 text-[10px] lg:text-[14px]" />
-                  ) : null}
-
-                  {isMicMuted ? (
-                    <i className="pnm-mic-mute brand-color2 text-[10px] lg:text-[14px]" />
-                  ) : null}
-                </div>
                 <div className="arrow-down absolute -bottom-1 -right-1 w-[15px] h-[15px] rounded-full bg-white flex items-center justify-center">
-                  <i className="pnm-arrow-below text-[8px]" />
+                  <i className="pnm-arrow-below text-[10px] sm:text-[12px]" />
                 </div>
               </Menu.Button>
 

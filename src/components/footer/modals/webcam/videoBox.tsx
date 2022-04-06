@@ -39,8 +39,8 @@ const VideoBox = ({
     const video = event.target as HTMLVideoElement;
     onSourcePlayback({
       htmlElement: video,
-      width: 330,
-      height: 200,
+      width: video.videoWidth ?? 330,
+      height: video.videoHeight ?? 200,
     });
   };
 

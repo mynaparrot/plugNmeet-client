@@ -31,6 +31,10 @@ i {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-keyboard:before {
+    content: "\e91d";
+}
+
 .pnm-download:before {
     content: "\e91c";
 }

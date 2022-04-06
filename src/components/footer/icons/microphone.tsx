@@ -25,16 +25,18 @@ const isActiveMicrophoneSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveMicrophone,
   (isActiveMicrophone) => isActiveMicrophone,
 );
-
 const showMicrophoneModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showMicrophoneModal,
   (showMicrophoneModal) => showMicrophoneModal,
 );
-
 const isMicLockSelector = createSelector(
   (state: RootState) =>
     state.session.currenUser?.metadata?.lock_settings.lock_microphone,
   (lock_microphone) => lock_microphone,
+);
+const isMicMutedSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isMicMuted,
+  (isMicMuted) => isMicMuted,
 );
 
 const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
@@ -45,6 +47,7 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
   const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
   const isActiveMicrophone = useAppSelector(isActiveMicrophoneSelector);
   const isMicLock = useAppSelector(isMicLockSelector);
+  const isMicMuted = useAppSelector(isMicMutedSelector);
 
   const [lockMic, setLockMic] = useState<boolean>(false);
 
@@ -93,17 +96,49 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
     // eslint-disable-next-line
   }, []);
 
-  const activateMic = () => {
-    if (lockMic) {
-      return;
-    }
-    if (!isActiveMicrophone) {
+  const muteUnmuteMic = () => {
+    currentRoom?.localParticipant.audioTracks.forEach(async (publication) => {
+      if (
+        publication.track &&
+        publication.track.source === Track.Source.Microphone
+      ) {
+        if (publication.isMuted) {
+          await publication.track.unmute();
+          dispatch(updateIsMicMuted(false));
+        } else {
+          await publication.track.mute();
+          dispatch(updateIsMicMuted(true));
+        }
+      }
+    });
+  };
+
+  const manageMic = () => {
+    if (!isActiveMicrophone && !lockMic) {
       dispatch(updateShowMicrophoneModal(true));
+    }
+
+    if (isActiveMicrophone) {
+      muteUnmuteMic();
+    }
+  };
+
+  const getTooltipText = () => {
+    if (!isActiveMicrophone && !lockMic) {
+      return t('footer.icons.start-microphone-sharing');
+    } else if (!isActiveMicrophone && lockMic) {
+      return t('footer.icons.microphone-locked');
+    }
+
+    if (isActiveMicrophone && !isMicMuted) {
+      return t('footer.menus.mute-microphone');
+    } else if (isActiveMicrophone && isMicMuted) {
+      return t('footer.menus.unmute-microphone');
     }
   };
 
   return (
-    <div>
+    <div className="relative">
       {showMicrophoneModal ? (
         <ShareMicrophoneModal currentRoom={currentRoom} />
       ) : null}
@@ -111,28 +146,33 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
         className={`microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
-        onClick={() => activateMic()}
+        onClick={() => manageMic()}
       >
+        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+          {getTooltipText()}
+        </span>
+
         {!isActiveMicrophone ? (
-          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
-            {!lockMic
-              ? t('footer.icons.start-microphone-sharing')
-              : t('footer.icons.microphone-locked')}
-          </span>
-        ) : null}
-        {!isActiveMicrophone ? (
-          <React.Fragment>
+          <>
             <i className="pnm-mic-unmute brand-color1 text-[10px] lg:text-[14px]" />
             {lockMic ? (
               <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
                 <i className="pnm-lock brand-color1" />
               </div>
             ) : null}
-          </React.Fragment>
+          </>
         ) : null}
 
-        {isActiveMicrophone ? <MicMenu currentRoom={currentRoom} /> : null}
+        {!isMicMuted && isActiveMicrophone ? (
+          <i className="pnm-mic-unmute brand-color2 text-[10px] lg:text-[14px]" />
+        ) : null}
+
+        {isMicMuted && isActiveMicrophone ? (
+          <i className="pnm-mic-mute brand-color2 text-[10px] lg:text-[14px]" />
+        ) : null}
       </div>
+
+      {isActiveMicrophone ? <MicMenu currentRoom={currentRoom} /> : null}
     </div>
   );
 };

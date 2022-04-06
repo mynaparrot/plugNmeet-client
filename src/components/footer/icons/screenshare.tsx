@@ -13,6 +13,7 @@ import {
 import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActivitySlice';
 import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
+import { getScreenShareResolution } from '../../../helpers/utils';
 
 interface IScrenshareIconProps {
   currentRoom: Room;
@@ -115,6 +116,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
 
       const localTracks = await createLocalScreenTracks({
         audio: true,
+        resolution: getScreenShareResolution(),
       });
       localTracks.forEach(async (track) => {
         await currentRoom.localParticipant.publishTrack(track);

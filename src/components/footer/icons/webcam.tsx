@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  createLocalVideoTrack,
-  LocalTrack,
-  Room,
-  Track,
-  VideoPreset,
-  VideoPresets,
-} from 'livekit-client';
+import { createLocalVideoTrack, Room, Track } from 'livekit-client';
 
 import {
   RootState,
@@ -19,6 +12,7 @@ import {
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
+  updateVirtualBackground,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam/shareWebcam';
 import WebcamMenu from './webcam-menu';
@@ -26,6 +20,7 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
+import { getWebcamResolution } from '../../../helpers/utils';
 
 interface IWebcamIconProps {
   currentRoom: Room;
@@ -68,7 +63,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string>();
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
-  const [localTrack, setLocalTrack] = useState<LocalTrack>();
+  const [virtualBgLocalTrack, setVirtualBgLocalTrack] = useState<MediaStream>();
+  const virtualBgVideoPlayer = useRef<HTMLVideoElement>(null);
 
   // for change in webcam lock setting
   useEffect(() => {
@@ -112,8 +108,8 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
   // we should check & close track
   useEffect(() => {
-    if (!isActiveWebcam && localTrack && !selectedVideoDevice) {
-      localTrack.stop();
+    if (!isActiveWebcam && virtualBgLocalTrack && !selectedVideoDevice) {
+      virtualBgLocalTrack.getTracks().forEach((t) => t.stop());
     }
     if (!isActiveWebcam && !selectedVideoDevice && deviceId) {
       setDeviceId(undefined);
@@ -148,22 +144,33 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     // eslint-disable-next-line
   }, [selectedVideoDevice]);
 
-  // localTrack only update when using virtual background
+  // virtualBgLocalTrack only update when using virtual background
   // need to stop previous track before starting new one
   useEffect(() => {
-    if (localTrack) {
-      setSourcePlayback({
-        htmlElement: localTrack.attach() as HTMLVideoElement,
-        width: 320,
-        height: 180,
-      });
+    if (virtualBgLocalTrack && virtualBgVideoPlayer) {
+      const el = virtualBgVideoPlayer.current;
+      if (el) {
+        el.srcObject = virtualBgLocalTrack;
+      }
     }
     return () => {
-      if (localTrack) {
-        localTrack.stop();
+      if (virtualBgLocalTrack) {
+        virtualBgLocalTrack.getTracks().forEach((t) => t.stop());
       }
     };
-  }, [localTrack]);
+  }, [virtualBgLocalTrack]);
+
+  // for virtual background
+  const handleVirtualBgVideoOnLoad = () => {
+    const el = virtualBgVideoPlayer.current;
+    if (el) {
+      setSourcePlayback({
+        htmlElement: el,
+        width: el.videoWidth ?? 320,
+        height: el.videoHeight ?? 180,
+      });
+    }
+  };
 
   const toggleWebcam = () => {
     if (lockWebcam) {
@@ -172,28 +179,54 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
     if (!isActiveWebcam) {
       dispatch(updateShowVideoShareModal(!isActiveWebcam));
+    } else if (isActiveWebcam) {
+      // leave webcam
+      currentRoom.localParticipant.videoTracks.forEach(async (publication) => {
+        if (
+          publication.track &&
+          publication.track.source === Track.Source.Camera
+        ) {
+          currentRoom.localParticipant.unpublishTrack(publication.track);
+        }
+      });
+      dispatch(updateIsActiveWebcam(false));
+      dispatch(updateSelectedVideoDevice(''));
+      dispatch(
+        updateVirtualBackground({
+          type: 'none',
+        }),
+      );
     }
   };
 
   const createDeviceStream = async (deviceId) => {
-    let resolution = VideoPresets.h720.resolution;
-
-    // with virtual background don't need high resolution
-    if (virtualBackground.type !== 'none') {
-      const preset = new VideoPreset(160, 96, 60_000, 15);
-      resolution = preset.resolution;
-    }
-
-    const track = await createLocalVideoTrack({
-      deviceId: deviceId,
-      resolution,
-    });
-
     if (virtualBackground.type === 'none') {
+      const resolution = getWebcamResolution();
+      const track = await createLocalVideoTrack({
+        deviceId: {
+          exact: deviceId,
+          ideal: deviceId,
+        },
+        resolution,
+      });
+
       await currentRoom.localParticipant.publishTrack(track);
       dispatch(updateIsActiveWebcam(true));
     } else {
-      setLocalTrack(track);
+      const constraints: MediaStreamConstraints = {
+        video: {
+          // width: { min: 160, ideal: 320 },
+          // height: { min: 90, ideal: 180 },
+          deviceId: {
+            exact: deviceId,
+            ideal: deviceId,
+          },
+        },
+      };
+      const mediaStream = await navigator.mediaDevices.getUserMedia(
+        constraints,
+      );
+      setVirtualBgLocalTrack(mediaStream);
     }
 
     return;
@@ -238,51 +271,77 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     return true;
   };
 
-  const render = () => {
+  const getTooltipText = () => {
+    if (!isActiveWebcam && !isWebcamLock) {
+      return t('footer.icons.start-webcam');
+    } else if (!isActiveWebcam && isWebcamLock) {
+      return t('footer.icons.webcam-locked');
+    } else if (isActiveWebcam) {
+      return t('footer.icons.leave-webcam');
+    }
+  };
+
+  const showButtons = () => {
     return (
-      <>
+      <div className="relative">
         <div
           className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
             showTooltip ? 'has-tooltip' : ''
           }`}
           onClick={() => toggleWebcam()}
         >
+          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+            {getTooltipText()}
+          </span>
+
           {!isActiveWebcam ? (
-            <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
-              {!isWebcamLock
-                ? t('footer.icons.start-webcam')
-                : t('footer.icons.webcam-locked')}
-            </span>
+            <i className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]" />
+          ) : null}
+          {lockWebcam ? (
+            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
+              <i className="pnm-lock brand-color1" />
+            </div>
           ) : null}
 
-          <>
-            {!isActiveWebcam ? (
-              <i className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]" />
-            ) : null}
-            {lockWebcam ? (
-              <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-                <i className="pnm-lock brand-color1" />
-              </div>
-            ) : null}
-          </>
-
-          {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
+          {isActiveWebcam ? (
+            <i className="pnm-webcam brand-color2 text-[10px] lg:text-[14px]" />
+          ) : null}
         </div>
+
+        {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
+      </div>
+    );
+  };
+
+  const render = () => {
+    return (
+      <>
+        {showButtons()}
+
         {showVideoShareModal ? (
           <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
         ) : null}
-        <>
-          {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
-            <div style={{ display: 'none' }}>
-              <VirtualBackground
-                sourcePlayback={sourcePlayback}
-                id={deviceId}
-                backgroundConfig={virtualBackground}
-                onCanvasRef={onCanvasRef}
-              />
-            </div>
-          ) : null}
-        </>
+
+        {/*For virtual background*/}
+        {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
+          <div style={{ display: 'none' }}>
+            <VirtualBackground
+              sourcePlayback={sourcePlayback}
+              id={deviceId}
+              backgroundConfig={virtualBackground}
+              onCanvasRef={onCanvasRef}
+            />
+          </div>
+        ) : null}
+        {virtualBgLocalTrack ? (
+          <div style={{ display: 'none' }}>
+            <video
+              ref={virtualBgVideoPlayer}
+              autoPlay
+              onLoadedData={handleVirtualBgVideoOnLoad}
+            />
+          </div>
+        ) : null}
       </>
     );
   };
