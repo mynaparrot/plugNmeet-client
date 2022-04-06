@@ -18,6 +18,7 @@ import {
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
+  updateVirtualBackground,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam/shareWebcam';
 import WebcamMenu from './webcam-menu';
@@ -172,6 +173,23 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
     if (!isActiveWebcam) {
       dispatch(updateShowVideoShareModal(!isActiveWebcam));
+    } else if (isActiveWebcam) {
+      // leave webcam
+      currentRoom.localParticipant.videoTracks.forEach(async (publication) => {
+        if (
+          publication.track &&
+          publication.track.source === Track.Source.Camera
+        ) {
+          currentRoom.localParticipant.unpublishTrack(publication.track);
+        }
+      });
+      dispatch(updateIsActiveWebcam(false));
+      dispatch(updateSelectedVideoDevice(''));
+      dispatch(
+        updateVirtualBackground({
+          type: 'none',
+        }),
+      );
     }
   };
 
@@ -247,7 +265,6 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
             showTooltip ? 'has-tooltip' : ''
           }`}
-          onClick={() => toggleWebcam()}
         >
           {!isActiveWebcam ? (
             <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
@@ -259,7 +276,10 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
           <>
             {!isActiveWebcam ? (
-              <i className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]" />
+              <i
+                className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]"
+                onClick={() => toggleWebcam()}
+              />
             ) : null}
             {lockWebcam ? (
               <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
@@ -268,7 +288,17 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
             ) : null}
           </>
 
-          {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
+          {isActiveWebcam ? (
+            <>
+              <div className="camera relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-brand-color2 hover:bg-brand-color2 flex items-center justify-center cursor-pointer has-tooltip">
+                <i
+                  className="pnm-webcam brand-color2 text-[10px] lg:text-[14px]"
+                  onClick={() => toggleWebcam()}
+                />
+              </div>
+              <WebcamMenu currentRoom={currentRoom} />
+            </>
+          ) : null}
         </div>
         {showVideoShareModal ? (
           <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
