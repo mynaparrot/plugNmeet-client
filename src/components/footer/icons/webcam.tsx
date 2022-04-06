@@ -289,11 +289,9 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           }`}
           onClick={() => toggleWebcam()}
         >
-          {!isActiveWebcam ? (
-            <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
-              {getTooltipText()}
-            </span>
-          ) : null}
+          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+            {getTooltipText()}
+          </span>
 
           {!isActiveWebcam ? (
             <i className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]" />

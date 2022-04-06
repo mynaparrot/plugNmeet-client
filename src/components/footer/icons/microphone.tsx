@@ -148,11 +148,9 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
         }`}
         onClick={() => manageMic()}
       >
-        {!isActiveMicrophone ? (
-          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
-            {getTooltipText()}
-          </span>
-        ) : null}
+        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+          {getTooltipText()}
+        </span>
 
         {!isActiveMicrophone ? (
           <>
