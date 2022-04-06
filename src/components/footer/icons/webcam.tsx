@@ -258,63 +258,69 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     return true;
   };
 
-  const render = () => {
+  const getTooltipText = () => {
+    if (!isActiveWebcam && !isWebcamLock) {
+      return t('footer.icons.start-webcam');
+    } else if (!isActiveWebcam && isWebcamLock) {
+      return t('footer.icons.webcam-locked');
+    } else if (isActiveWebcam) {
+      return t('footer.icons.leave-webcam');
+    }
+  };
+
+  const showButtons = () => {
     return (
-      <>
+      <div>
         <div
           className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
             showTooltip ? 'has-tooltip' : ''
           }`}
+          onClick={() => toggleWebcam()}
         >
           {!isActiveWebcam ? (
             <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
-              {!isWebcamLock
-                ? t('footer.icons.start-webcam')
-                : t('footer.icons.webcam-locked')}
+              {getTooltipText()}
             </span>
           ) : null}
 
-          <>
-            {!isActiveWebcam ? (
-              <i
-                className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]"
-                onClick={() => toggleWebcam()}
-              />
-            ) : null}
-            {lockWebcam ? (
-              <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-                <i className="pnm-lock brand-color1" />
-              </div>
-            ) : null}
-          </>
+          {!isActiveWebcam ? (
+            <i className="pnm-webcam brand-color1 text-[10px] lg:text-[14px]" />
+          ) : null}
+          {lockWebcam ? (
+            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
+              <i className="pnm-lock brand-color1" />
+            </div>
+          ) : null}
 
           {isActiveWebcam ? (
-            <>
-              <div className="camera relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-brand-color2 hover:bg-brand-color2 flex items-center justify-center cursor-pointer has-tooltip">
-                <i
-                  className="pnm-webcam brand-color2 text-[10px] lg:text-[14px]"
-                  onClick={() => toggleWebcam()}
-                />
-              </div>
-              <WebcamMenu currentRoom={currentRoom} />
-            </>
+            <i className="pnm-webcam brand-color2 text-[10px] lg:text-[14px]" />
           ) : null}
         </div>
+
+        {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
+      </div>
+    );
+  };
+
+  const render = () => {
+    return (
+      <>
+        {showButtons()}
+
         {showVideoShareModal ? (
           <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
         ) : null}
-        <>
-          {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
-            <div style={{ display: 'none' }}>
-              <VirtualBackground
-                sourcePlayback={sourcePlayback}
-                id={deviceId}
-                backgroundConfig={virtualBackground}
-                onCanvasRef={onCanvasRef}
-              />
-            </div>
-          ) : null}
-        </>
+
+        {sourcePlayback && deviceId && virtualBackground.type !== 'none' ? (
+          <div style={{ display: 'none' }}>
+            <VirtualBackground
+              sourcePlayback={sourcePlayback}
+              id={deviceId}
+              backgroundConfig={virtualBackground}
+              onCanvasRef={onCanvasRef}
+            />
+          </div>
+        ) : null}
       </>
     );
   };
