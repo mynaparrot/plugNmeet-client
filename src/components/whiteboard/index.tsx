@@ -63,6 +63,11 @@ const requestedWhiteboardDataSelector = createSelector(
   (state: RootState) => state.whiteboard.requestedWhiteboardData,
   (requestedWhiteboardData) => requestedWhiteboardData,
 );
+const lockWhiteboardSelector = createSelector(
+  (state: RootState) =>
+    state.session.currenUser?.metadata?.lock_settings?.lock_whiteboard,
+  (lock_whiteboard) => lock_whiteboard,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
@@ -86,13 +91,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const requestedWhiteboardData = useAppSelector(
     requestedWhiteboardDataSelector,
   );
+  const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
 
   useEffect(() => {
     if (!excalidrawAPI) {
-      if (currentUser?.metadata?.is_admin && !currentUser.isRecorder) {
+      setTheme('light');
+      if (
+        !currentUser?.isRecorder &&
+        !currentRoom.metadata?.default_lock_settings?.lock_whiteboard
+      ) {
         setViewModeEnabled(false);
       }
-      setTheme('light');
     }
 
     return () => {
@@ -136,6 +145,15 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     excalidrawAPI.updateScene({ collaborators });
     //eslint-disable-next-line
   }, [participants, excalidrawAPI]);
+
+  // looking lock settings
+  useEffect(() => {
+    if (typeof lockWhiteboard === 'undefined') {
+      return;
+    }
+
+    setViewModeEnabled(lockWhiteboard);
+  }, [lockWhiteboard]);
 
   // for handling draw elements
   useEffect(() => {

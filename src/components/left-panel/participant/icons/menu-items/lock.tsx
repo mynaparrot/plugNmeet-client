@@ -38,6 +38,14 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           ? 'unlock'
           : 'lock';
         break;
+      case 'whiteboard':
+        direction = metadata?.lock_settings.lock_whiteboard ? 'unlock' : 'lock';
+        break;
+      case 'sharedNotepad':
+        direction = metadata?.lock_settings.lock_shared_notepad
+          ? 'unlock'
+          : 'lock';
+        break;
       case 'chat':
         direction = metadata?.lock_settings.lock_chat ? 'unlock' : 'lock';
         break;
@@ -111,6 +119,34 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                   {participant?.metadata.lock_settings.lock_screen_sharing
                     ? t('left-panel.menus.items.unlock-screen-sharing')
                     : t('left-panel.menus.items.lock-screen-sharing')}
+                </button>
+              )}
+            </Menu.Item>
+          </div>
+        ) : null}
+
+        {roomFeatures?.whiteboard_features.allowed_whiteboard ? (
+          <div className="" role="none">
+            <Menu.Item onClick={() => onClick('whiteboard')}>
+              {() => (
+                <button className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-brandColor1 hover:text-white">
+                  {participant?.metadata.lock_settings.lock_whiteboard
+                    ? t('left-panel.menus.items.unlock-whiteboard')
+                    : t('left-panel.menus.items.lock-whiteboard')}
+                </button>
+              )}
+            </Menu.Item>
+          </div>
+        ) : null}
+
+        {roomFeatures?.shared_note_pad_features.allowed_shared_note_pad ? (
+          <div className="" role="none">
+            <Menu.Item onClick={() => onClick('sharedNotepad')}>
+              {() => (
+                <button className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-brandColor1 hover:text-white">
+                  {participant?.metadata.lock_settings.lock_shared_notepad
+                    ? t('left-panel.menus.items.unlock-shared-notepad')
+                    : t('left-panel.menus.items.lock-shared-notepad')}
                 </button>
               )}
             </Menu.Item>
