@@ -124,6 +124,52 @@ const LockSettingsModal = () => {
 
         <div className="flex items-center justify-between mb-4">
           <Switch.Label className="pr-4 w-full">
+            {t('footer.modal.lock-whiteboard')}
+          </Switch.Label>
+          <Switch
+            checked={roomLockSettings?.lock_whiteboard ?? false}
+            onChange={(e) => updateLockSettings(e, 'whiteboard')}
+            className={`${
+              roomLockSettings?.lock_whiteboard
+                ? 'bg-brandColor1'
+                : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            <span
+              className={`${
+                roomLockSettings?.lock_whiteboard
+                  ? 'translate-x-6'
+                  : 'translate-x-1'
+              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+            />
+          </Switch>
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
+            {t('footer.modal.lock-shared-notepad')}
+          </Switch.Label>
+          <Switch
+            checked={roomLockSettings?.lock_shared_notepad ?? false}
+            onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
+            className={`${
+              roomLockSettings?.lock_shared_notepad
+                ? 'bg-brandColor1'
+                : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            <span
+              className={`${
+                roomLockSettings?.lock_shared_notepad
+                  ? 'translate-x-6'
+                  : 'translate-x-1'
+              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+            />
+          </Switch>
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
             {t('footer.modal.lock-chat')}
           </Switch.Label>
           <Switch

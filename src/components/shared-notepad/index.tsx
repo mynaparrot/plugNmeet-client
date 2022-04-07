@@ -15,33 +15,55 @@ const sharedNotepadFeaturesSelector = createSelector(
     state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
   (shared_note_pad_features) => shared_note_pad_features,
 );
+const lockSharedNotepadSelector = createSelector(
+  (state: RootState) =>
+    state.session.currenUser?.metadata?.lock_settings?.lock_shared_notepad,
+  (lock_shared_notepad) => lock_shared_notepad,
+);
 
 const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const dispatch = useAppDispatch();
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
+  const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
   const currentUser = store.getState().session.currenUser;
   const [loaded, setLoaded] = useState<boolean>();
+  const [url, setUrl] = useState<string>();
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (sharedNotepadFeatures?.is_active && sharedNotepadFeatures.host) {
+      let url = sharedNotepadFeatures.host;
+      if (sharedNotepadFeatures.host.match('host.docker.internal')) {
+        url = 'http://localhost:9001';
+      }
+
+      if (currentUser?.isRecorder) {
+        setUrl(
+          `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`,
+        );
+        return;
+      }
+
+      if (!lockSharedNotepad) {
+        url = `${url}/p/${sharedNotepadFeatures.note_pad_id}?userName=${currentUser?.name}`;
+      } else {
+        url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
+      }
+
+      setUrl(url);
+    }
+    //eslint-disable-next-line
+  }, [sharedNotepadFeatures, lockSharedNotepad]);
 
   const onLoad = () => {
     setLoaded(true);
   };
 
   const render = () => {
-    if (sharedNotepadFeatures?.is_active && sharedNotepadFeatures.host) {
-      let url = sharedNotepadFeatures.host;
-      if (sharedNotepadFeatures.host.match('host.docker.internal')) {
-        url = 'http://localhost:9001';
-      }
-      if (currentUser?.metadata?.is_admin && !currentUser.isRecorder) {
-        url = `${url}/p/${sharedNotepadFeatures.note_pad_id}?userName=${currentUser.name}`;
-      } else {
-        url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
-      }
-
+    if (url) {
       return (
         <div className="notepad-wrapper h-[calc(100%-50px)] w-full flex-1 sm:px-5 mt-9">
           {!loaded ? (
