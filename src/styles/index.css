@@ -28,6 +28,12 @@ code {
 .brand-color2{
     color: #24AEF7;
 }
+.bg-brandColor1 {
+  background: #004D90;
+}
+.bg-brandColor2 {
+  background: #24AEF7;
+}
 
 .multi-gradient {
   background: rgb(235, 248, 255);
@@ -498,7 +504,7 @@ button.previous-cam:hover, button.next-cam:hover {
   border-color: #004E91;
 } */
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper .all-webcam-wrapper-inner {
-  margin: 30px 0;
+  /* margin: 30px 0; */
   padding: 0;
 }
 .content.me p.message-content a {
@@ -633,7 +639,7 @@ button.previous-cam:hover, button.next-cam:hover {
     height: auto;
     width: 100%;
     z-index: 9;
-    padding-top: 0;
+    padding: 0;
     bottom: 0;
   }
   #main-area.showSharedNotepad .middle-fullscreen-wrapper .all-webcam-wrapper,
@@ -830,15 +836,33 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 30px;
   }
 }
+@media screen and (max-width:640px) {
+  .admin footer#main-footer .footer-icon {
+    height: 25px;
+    width: 25px;
+  }
+  .header-logo {
+    height: 30px;
+  }
+}
 @media screen and (max-width:575px) {
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
     width: calc(32.5% - 10px);
     max-width: 100%;
   }
 }
-@media screen and (max-width:640px) {
-  .admin footer#main-footer .footer-icon {
-    height: 25px;
-    width: 25px;
+@media screen and (max-width:370px) {
+  .video-camera-item .name {
+    font-size: 10px;
+  }
+  header#main-header .middle h2 {
+    font-size: 12px;
+  }
+  .active-speakers-wrap div {
+    font-size: 10px;
+    padding: 0 5px;
+  }
+  .active-speakers-wrap div i {
+      font-size: 8px;
   }
 }

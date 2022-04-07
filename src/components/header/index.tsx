@@ -30,8 +30,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
   const [alertText, setAlertText] = useState('');
   const [task, setTask] = useState('');
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-  const logo =
-    (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/plugNmeet-logo.png`;
+  const logo = (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/main-logo.png`;
 
   useEffect(() => {
     if (roomMetadata) {
@@ -169,7 +168,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         <div className="logo w-28 relative z-20">
           <div
             className={`${
-              (window as any).CUSTOM_LOGO ? 'h-8' : 'h-5'
+              (window as any).CUSTOM_LOGO ? 'h-[45px]' : 'h-[45px]'
             } header-logo h-full bg-contain bg-no-repeat`}
             style={{
               backgroundImage: `url("${logo}")`,
