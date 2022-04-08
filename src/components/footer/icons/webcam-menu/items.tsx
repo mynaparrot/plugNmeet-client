@@ -43,7 +43,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
               <p
                 className={`${
                   selectedVideoDevice === device.id
-                    ? 'text-brandColor2'
+                    ? 'brand-color2'
                     : 'text-gray-700 dark:text-gray-400'
                 } rounded group flex items-center px-3 py-[0.4rem] text-[10px] lg:text-xs transition ease-in hover:bg-brandColor1 hover:text-white`}
                 onClick={() => setNewDevice(device.id)}

@@ -147,7 +147,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       <textarea
         name="message-textarea"
         id="message-textarea"
-        className="w-full bg-white h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm text-brandColor1 placeholder:text-brandColor1/70"
+        className="w-full bg-white h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm brand-color1 placeholder:text-brandColor1/70"
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
         disabled={!isChatServiceReady || lockSendMsg}

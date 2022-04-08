@@ -51,10 +51,10 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
             type="button"
             onClick={() => onClose()}
           >
-            <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 rotate-45" />
-            <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 -rotate-45" />
+            <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
+            <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
           </button>
-          <p className="text-base md:text-lg text-brandColor1 font-normal mb-5 text-center">
+          <p className="text-base md:text-lg brand-color1 font-normal mb-5 text-center">
             {t('app.how-to-join')}
           </p>
           <div className="btn flex justify-center">

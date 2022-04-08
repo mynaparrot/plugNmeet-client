@@ -156,8 +156,8 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
                 type="button"
                 onClick={() => onClose()}
               >
-                <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 -rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
               </button>
               <Dialog.Title className="mb-6">
                 {t('footer.modal.select-microphone')}
@@ -175,7 +175,7 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
 
               <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                 <button
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brandColor1 hover:bg-brandColor2 focus:outline-none"
                   onClick={() => shareMic()}
                 >
                   {t('join')}
