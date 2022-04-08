@@ -52,9 +52,7 @@ export const sendRequestedForWhiteboardData = () => {
       },
     };
 
-    setTimeout(() => {
-      sendWebsocketMessage(JSON.stringify(whiteboardElms));
-    }, 500);
+    sendWebsocketMessage(JSON.stringify(whiteboardElms));
   });
 };
 
