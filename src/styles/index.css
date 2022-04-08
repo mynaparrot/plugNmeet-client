@@ -65,8 +65,8 @@ code {
 .content.me p.message-content {
   margin-left: auto;
   border-radius: 15px 0 15px 15px;
-  background-color: #24aef7;
-  color: #fff;
+  /* background-color: #24aef7;
+  color: #fff; */
 }
 .message-item p.message-content i.pnm-download {
   font-size: 16px;
@@ -84,9 +84,9 @@ code {
   text-align: right;
   width: 100%;
 }
-.content.me p.name {
+/* .content.me p.name {
   color: #004e91;
-}
+} */
 /* Message */
 .all-webcam-wrapper {
   height: calc(100vh - 110px);
@@ -511,8 +511,8 @@ button.previous-cam:hover, button.next-cam:hover {
   text-decoration: underline;
 }
 .all-MessageModule-wrap .message-item .system p.message-content {
-  background-color: #004E91;
-  color: #fff;
+  /* background-color: #004E91;
+  color: #fff; */
   font-size: 14px;
   line-height: 20px;
 }

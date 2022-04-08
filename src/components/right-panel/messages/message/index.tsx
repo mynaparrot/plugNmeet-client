@@ -23,7 +23,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       return (
         <div className="content w-[calc(100%)] pt-2 system mb-2">
           <p
-            className="message-content max-w-fit bg-white shadow-footer text-xs"
+            className="message-content max-w-fit shadow-footer text-xs bg-brandColor1 text-white"
             dangerouslySetInnerHTML={{ __html: body.msg }}
           />
         </div>
@@ -31,9 +31,11 @@ const Message = ({ body, currentUser }: IMessageProps) => {
     } else if (currentUser?.userId === body.from.userId) {
       return (
         <div className="content me w-[calc(100%-2rem)] pt-2">
-          <p className="name pl-2 text-sm pb-1">{t('right-panel.you')}</p>
+          <p className="name pl-2 text-sm pb-1 brand-color1">
+            {t('right-panel.you')}
+          </p>
           <p
-            className="message-content max-w-fit bg-white shadow-footer text-xs"
+            className="message-content max-w-fit shadow-footer text-xs bg-brandColor2 text-white"
             dangerouslySetInnerHTML={{ __html: body.msg }}
           />
         </div>
