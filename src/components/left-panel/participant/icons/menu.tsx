@@ -78,8 +78,8 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                 type="button"
                 onClick={() => onCloseRemoveParticipantAlert()}
               >
-                <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 -rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
               </button>
               <Dialog.Title className="mb-4 md:mb-6 text-sm">
                 {t('left-panel.menus.notice.confirm', {

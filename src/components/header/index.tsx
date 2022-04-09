@@ -115,8 +115,8 @@ const Header = ({ currentRoom }: IHeaderProps) => {
                     type="button"
                     onClick={() => onCloseAlertModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-[#004D90] absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
