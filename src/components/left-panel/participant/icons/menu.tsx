@@ -95,7 +95,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
               </button>
 
               <button
-                className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium bg-brandColor1 hover:bg-brandColor2 text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                 onClick={() => onCloseRemoveParticipantAlert(false)}
               >
                 {t('cancel')}

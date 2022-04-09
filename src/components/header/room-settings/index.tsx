@@ -60,11 +60,11 @@ const RoomSettings = () => {
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-blue-700 rounded-lg outline-none',
+                    'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-brandColor2 rounded-lg outline-none',
                     'ring-white ring-opacity-60',
                     selected
-                      ? 'bg-white shadow'
-                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
+                      ? 'bg-white shadow text-brandColor1'
+                      : 'hover:bg-white/[0.12] hover:text-white',
                   )
                 }
               >
