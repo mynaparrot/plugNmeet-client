@@ -17,11 +17,8 @@ jobs:
         run: |
           npm install
           npm run build
-          
-          ## save latest version tag
-          TAG_NAME=$(curl -sL https://api.github.com/repos/mynaparrot/plugNmeet-client/releases/latest | jq -r ".tag_name")
-          echo $TAG_NAME > dist/version.txt
-          
+          timestamp=$(date +%s)
+          echo "dev-${timestamp}" > dist/version.txt
           mkdir -p tmp/client
           rsync -ar dist tmp/client/
           cd tmp
