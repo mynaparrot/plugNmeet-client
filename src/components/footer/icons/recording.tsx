@@ -60,6 +60,13 @@ const RecordingIcon = () => {
       task: 'start-recording',
       sid: store.getState().session.currentRoom.sid,
     };
+
+    if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
+      (body as any).custom_design = `${
+        (window as any).DESIGN_CUSTOMIZATION
+      }`.replace(/\s/g, '');
+    }
+
     const res = await sendAPIRequest('recording', body);
     let msg = 'footer.notice.start-recording-progress';
 

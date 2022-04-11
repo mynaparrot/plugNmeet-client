@@ -74,6 +74,13 @@ const RtmpModal = () => {
       sid: store.getState().session.currentRoom.sid,
       rtmp_url: url + '/' + serverKey,
     };
+
+    if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
+      (body as any).custom_design = `${
+        (window as any).DESIGN_CUSTOMIZATION
+      }`.replace(/\s/g, '');
+    }
+
     const res = await sendAPIRequest('rtmp', body);
     let msg = 'footer.notice.rtmp-starting';
 
