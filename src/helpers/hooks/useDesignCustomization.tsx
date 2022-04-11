@@ -88,15 +88,6 @@ const useDesignCustomization = () => {
         ' !important;}';
     }
 
-    if (designCustomParams.background_color) {
-      css += `.main-app-bg { 
-        background: ${designCustomParams.background_color} !important;
-        }`;
-      css += `.error-app-bg { 
-        background: ${designCustomParams.background_color} !important;
-        }`;
-    }
-
     if (designCustomParams.background_image) {
       css += `.main-app-bg { 
         background: url("${designCustomParams.background_image}") !important;
@@ -109,6 +100,13 @@ const useDesignCustomization = () => {
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
+        }`;
+    } else if (designCustomParams.background_color) {
+      css += `.main-app-bg { 
+        background: ${designCustomParams.background_color} !important;
+        }`;
+      css += `.error-app-bg { 
+        background: ${designCustomParams.background_color} !important;
         }`;
     }
 
