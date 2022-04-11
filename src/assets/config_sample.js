@@ -39,7 +39,7 @@ window.NUMBER_OF_WEBCAMS_PER_PAGE_MOBILE = 6;
 //   "primary_color": "#004D90",
 //   "secondary_color": "#24AEF7",
 //   "background_color": "#0b7db4",
-//   "background_image": "https:\/\/mydomain.com\/custom_bg.png", // for best result use 1,920px × 1,080px
+//   "background_image": "https:\/\/mydomain.com\/custom_bg.png",
 //   "header_bg_color": "#45b3ec",
 //   "footer_bg_color": "#45b3ec",
 //   "left_side_bg_color": "#04a2f3",
