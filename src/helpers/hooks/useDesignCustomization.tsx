@@ -48,7 +48,7 @@ const useDesignCustomization = () => {
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.hover:bg-primaryColor:hover { background: ' +
+        '.hover\\:bg-primaryColor:hover { background: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
@@ -82,7 +82,6 @@ const useDesignCustomization = () => {
         '.hover:bg-secondaryColor:hover { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
-
       css +=
         '.border-secondaryColor { border-color: ' +
         designCustomParams.secondary_color +
