@@ -158,7 +158,7 @@ const useDesignCustomization = () => {
 
     if (css !== '') {
       style = document.createElement('style');
-      style.id = 'plugNmeetCustomisation';
+      style.id = 'plugNmeetCustomization';
       style.textContent = css;
       head.appendChild(style);
     }
