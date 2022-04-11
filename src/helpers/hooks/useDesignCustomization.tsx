@@ -15,10 +15,17 @@ export interface ICustomDesignParams {
 const useDesignCustomization = () => {
   useEffect(() => {
     if (typeof (window as any).DESIGN_CUSTOMIZATION === 'undefined') {
-      return;
+      // we'll check from url if set by custom_design param
+      const urlParams = new URLSearchParams(window.location.search);
+      // value must be url encoded otherwise may not work.
+      if (urlParams.get('custom_design')) {
+        (window as any).DESIGN_CUSTOMIZATION = urlParams.get('custom_design');
+      } else {
+        return;
+      }
     }
-    let designCustomParams: ICustomDesignParams = {};
 
+    let designCustomParams: ICustomDesignParams = {};
     try {
       designCustomParams = JSON.parse((window as any).DESIGN_CUSTOMIZATION);
     } catch (e) {
