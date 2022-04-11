@@ -93,12 +93,10 @@ const useDesignCustomization = () => {
       !designCustomParams.background_image
     ) {
       css += `.main-app-bg { 
-        background-image: none !important;
-        background-color: ${designCustomParams.background_color};
+        background: ${designCustomParams.background_color} !important;
         }`;
       css += `.error-app-bg { 
-        background-image: none !important;
-        background-color: ${designCustomParams.background_color};
+        background: ${designCustomParams.background_color} !important;
         }`;
     }
 
@@ -107,10 +105,10 @@ const useDesignCustomization = () => {
       !designCustomParams.background_color
     ) {
       css += `.main-app-bg { 
-        background-image: url("${designCustomParams.background_image}") !important;
+        background: url("${designCustomParams.background_image}") !important;
         }`;
       css += `.error-app-bg { 
-        background-image: url("${designCustomParams.background_image}") !important;
+        background: url("${designCustomParams.background_image}") !important;
         }`;
     }
 
