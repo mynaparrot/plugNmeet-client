@@ -100,13 +100,13 @@ const useDesignCustomization = () => {
     if (designCustomParams.background_image) {
       css += `.main-app-bg { 
         background: url("${designCustomParams.background_image}") !important;
-        background-position: bottom center !important;
+        background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
       css += `.error-app-bg { 
         background: url("${designCustomParams.background_image}") !important;
-        background-position: bottom center !important;
+        background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
