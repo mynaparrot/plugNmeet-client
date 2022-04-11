@@ -154,21 +154,21 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
 
         {!isActiveMicrophone ? (
           <>
-            <i className="pnm-mic-unmute brand-color1 text-[10px] lg:text-[14px]" />
+            <i className="pnm-mic-unmute primaryColor text-[10px] lg:text-[14px]" />
             {lockMic ? (
               <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-                <i className="pnm-lock brand-color1" />
+                <i className="pnm-lock primaryColor" />
               </div>
             ) : null}
           </>
         ) : null}
 
         {!isMicMuted && isActiveMicrophone ? (
-          <i className="pnm-mic-unmute brand-color2 text-[10px] lg:text-[14px]" />
+          <i className="pnm-mic-unmute secondaryColor text-[10px] lg:text-[14px]" />
         ) : null}
 
         {isMicMuted && isActiveMicrophone ? (
-          <i className="pnm-mic-mute brand-color2 text-[10px] lg:text-[14px]" />
+          <i className="pnm-mic-mute secondaryColor text-[10px] lg:text-[14px]" />
         ) : null}
       </div>
 

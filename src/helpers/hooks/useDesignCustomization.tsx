@@ -36,55 +36,55 @@ const useDesignCustomization = () => {
     let css = '';
 
     if (designCustomParams.primary_color) {
-      css += '.brand-color1{ color: ' + designCustomParams.primary_color + '}';
+      css += '.primaryColor{ color: ' + designCustomParams.primary_color + '}';
       css +=
-        '.text-brandColor1 { color: ' + designCustomParams.primary_color + '}';
+        '.text-primaryColor { color: ' + designCustomParams.primary_color + '}';
       css +=
-        '.placeholder\\:text-brandColor1\\/70::placeholder { color: ' +
+        '.placeholder\\:text-primaryColor\\/70::placeholder { color: ' +
         designCustomParams.primary_color +
         '}';
       css +=
-        '.bg-brandColor1 { background: ' +
+        '.bg-primaryColor { background: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.hover:bg-brandColor1:hover { background: ' +
+        '.hover:bg-primaryColor:hover { background: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.border-brandColor1 { border-color: ' +
+        '.border-primaryColor { border-color: ' +
         designCustomParams.primary_color +
         ' !important;}';
     }
 
     if (designCustomParams.secondary_color) {
       css +=
-        '.brand-color2 { color: ' +
+        '.secondaryColor { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.text-brandColor2 { color: ' +
+        '.text-secondaryColor { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.hover\\:text-brandColor2:hover { color: ' +
+        '.hover\\:text-secondaryColor:hover { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.group:hover .group-hover\\:text-brandColor2 { color: ' +
+        '.group:hover .group-hover\\:text-secondaryColor { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.bg-brandColor2, .hover:bg-brandColor2:hover { background: ' +
+        '.bg-secondaryColor, .hover:bg-secondaryColor:hover { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.hover:bg-brandColor2:hover { background: ' +
+        '.hover:bg-secondaryColor:hover { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
 
       css +=
-        '.border-brandColor2 { border-color: ' +
+        '.border-secondaryColor { border-color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
     }

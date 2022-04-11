@@ -65,8 +65,8 @@ const KeyboardShortcuts = () => {
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title

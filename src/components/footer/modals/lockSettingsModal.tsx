@@ -64,7 +64,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'mic')}
             className={`${
               roomLockSettings?.lock_microphone
-                ? 'bg-brandColor1'
+                ? 'bg-primaryColor'
                 : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
@@ -86,7 +86,7 @@ const LockSettingsModal = () => {
             checked={roomLockSettings?.lock_webcam ?? false}
             onChange={(e) => updateLockSettings(e, 'webcam')}
             className={`${
-              roomLockSettings?.lock_webcam ? 'bg-brandColor1' : 'bg-gray-200'
+              roomLockSettings?.lock_webcam ? 'bg-primaryColor' : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
@@ -108,7 +108,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'screenShare')}
             className={`${
               roomLockSettings?.lock_screen_sharing
-                ? 'bg-brandColor1'
+                ? 'bg-primaryColor'
                 : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
@@ -131,7 +131,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'whiteboard')}
             className={`${
               roomLockSettings?.lock_whiteboard
-                ? 'bg-brandColor1'
+                ? 'bg-primaryColor'
                 : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
@@ -154,7 +154,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
             className={`${
               roomLockSettings?.lock_shared_notepad
-                ? 'bg-brandColor1'
+                ? 'bg-primaryColor'
                 : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
@@ -176,7 +176,7 @@ const LockSettingsModal = () => {
             checked={roomLockSettings?.lock_chat ?? false}
             onChange={(e) => updateLockSettings(e, 'chat')}
             className={`${
-              roomLockSettings?.lock_chat ? 'bg-brandColor1' : 'bg-gray-200'
+              roomLockSettings?.lock_chat ? 'bg-primaryColor' : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
@@ -196,7 +196,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
             className={`${
               roomLockSettings?.lock_chat_send_message
-                ? 'bg-brandColor1'
+                ? 'bg-primaryColor'
                 : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
@@ -219,7 +219,7 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'chatFile')}
             className={`${
               roomLockSettings?.lock_chat_file_share
-                ? 'bg-brandColor1'
+                ? 'bg-primaryColor'
                 : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
@@ -279,8 +279,8 @@ const LockSettingsModal = () => {
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title

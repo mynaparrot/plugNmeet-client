@@ -48,9 +48,9 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
               <p
                 className={`${
                   selectedAudioDevice === device.id
-                    ? 'brand-color2'
+                    ? 'secondaryColor'
                     : 'text-gray-700 dark:text-gray-400'
-                } rounded group flex items-center px-3 py-[0.4rem] text-[10px] lg:text-xs transition ease-in hover:bg-brandColor1 hover:text-white`}
+                } rounded group flex items-center px-3 py-[0.4rem] text-[10px] lg:text-xs transition ease-in hover:bg-primaryColor hover:text-white`}
                 onClick={() => setNewDevice(device.id)}
               >
                 {device.label}
@@ -112,7 +112,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
           <Menu.Item>
             {() => (
               <p
-                className="text-gray-700 dark:text-gray-400 rounded group flex items-center px-3 py-[0.4rem] text-xs transition ease-in hover:bg-brandColor1 hover:text-white border-t border-solid border-red-100"
+                className="text-gray-700 dark:text-gray-400 rounded group flex items-center px-3 py-[0.4rem] text-xs transition ease-in hover:bg-primaryColor hover:text-white border-t border-solid border-red-100"
                 onClick={() => muteUnmuteMic()}
               >
                 {isMicMuted

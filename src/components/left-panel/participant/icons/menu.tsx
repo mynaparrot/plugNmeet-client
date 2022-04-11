@@ -78,8 +78,8 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                 type="button"
                 onClick={() => onCloseRemoveParticipantAlert()}
               >
-                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
               </button>
               <Dialog.Title className="mb-4 md:mb-6 text-sm">
                 {t('left-panel.menus.notice.confirm', {
@@ -95,7 +95,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
               </button>
 
               <button
-                className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium bg-brandColor1 hover:bg-brandColor2 text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium bg-primaryColor hover:bg-secondaryColor text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                 onClick={() => onCloseRemoveParticipantAlert(false)}
               >
                 {t('cancel')}
@@ -114,7 +114,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
           {({ open }) => (
             <>
               <Menu.Button className="relative flex-shrink-0 mt-2">
-                <i className="pnm-menu-small brand-color1 opacity-50" />
+                <i className="pnm-menu-small primaryColor opacity-50" />
               </Menu.Button>
 
               {/* Use the Transition component. */}

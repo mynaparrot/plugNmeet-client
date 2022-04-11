@@ -44,15 +44,15 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
   );
   const isScreenshareLock = useAppSelector(isScreenshareLockSelector);
 
-  const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [lock, setLock] = useState<boolean>(false);
   const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
 
   useEffect(() => {
     if (isActiveScreenshare) {
-      setIconCSS('brand-color2');
+      setIconCSS('secondaryColor');
     } else {
-      setIconCSS('brand-color1');
+      setIconCSS('primaryColor');
     }
   }, [isActiveScreenshare]);
 
@@ -167,7 +167,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
           />
           {lock ? (
             <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-              <i className="pnm-lock brand-color1" />
+              <i className="pnm-lock primaryColor" />
             </div>
           ) : null}
         </React.Fragment>

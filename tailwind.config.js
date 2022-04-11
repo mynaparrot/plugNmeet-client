@@ -12,8 +12,8 @@ module.exports = {
         header: '0 4px 52px rgba(0, 0, 0, 0.15)',
       },
       colors: {
-        brandColor1: '#004D90',
-        brandColor2: '#24AEF7',
+        primaryColor: '#004D90',
+        secondaryColor: '#24AEF7',
         brandRed: '#ED2139',
       },
     },

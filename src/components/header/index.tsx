@@ -115,8 +115,8 @@ const Header = ({ currentRoom }: IHeaderProps) => {
                     type="button"
                     onClick={() => onCloseAlertModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
@@ -138,7 +138,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
                     </button>
                     <button
                       type="button"
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium bg-brandColor1 hover:bg-brandColor2 text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                      className="inline-flex justify-center px-4 py-2 text-sm font-medium bg-primaryColor hover:bg-secondaryColor text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                       onClick={() => onCloseAlertModal(false)}
                     >
                       {t('close')}

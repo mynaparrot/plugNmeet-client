@@ -28,14 +28,14 @@ const ChatIcon = () => {
 
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const totalUnreadChatMsgs = useAppSelector(totalUnreadChatMsgsSelector);
-  const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [allowChat, setAllowChat] = useState<boolean>(true);
 
   useEffect(() => {
     if (isActiveChatPanel) {
-      setIconCSS('brand-color2');
+      setIconCSS('secondaryColor');
     } else {
-      setIconCSS('brand-color1');
+      setIconCSS('primaryColor');
     }
   }, [isActiveChatPanel]);
 

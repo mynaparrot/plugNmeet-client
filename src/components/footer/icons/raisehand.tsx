@@ -28,13 +28,13 @@ const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const isActiveRaisehand = useAppSelector(isActiveRaisehandSelector);
-  const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
   useEffect(() => {
     if (isActiveRaisehand) {
-      setIconCSS('brand-color2');
+      setIconCSS('secondaryColor');
     } else {
-      setIconCSS('brand-color1');
+      setIconCSS('primaryColor');
     }
   }, [isActiveRaisehand]);
 

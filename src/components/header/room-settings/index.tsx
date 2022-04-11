@@ -54,16 +54,16 @@ const RoomSettings = () => {
     return (
       <div className="max-w-full">
         <Tab.Group vertical>
-          <Tab.List className="flex p-1 space-x-1 bg-brandColor1 rounded-xl">
+          <Tab.List className="flex p-1 space-x-1 bg-primaryColor rounded-xl">
             {Object.keys(categories).map((category) => (
               <Tab
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-brandColor2 rounded-lg outline-none',
+                    'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-secondaryColor rounded-lg outline-none',
                     'ring-white ring-opacity-60',
                     selected
-                      ? 'bg-white shadow text-brandColor1'
+                      ? 'bg-white shadow text-primaryColor'
                       : 'hover:bg-white/[0.12] hover:text-white',
                   )
                 }
@@ -131,8 +131,8 @@ const RoomSettings = () => {
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title

@@ -130,7 +130,7 @@ const RecordingIcon = () => {
             ? t('footer.icons.stop-recording')
             : t('footer.icons.start-recording')}
         </span>
-        <i className="pnm-rec brand-color1 text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+        <i className="pnm-rec primaryColor text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
       </button>
     );
   };

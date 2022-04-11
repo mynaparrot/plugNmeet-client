@@ -16,13 +16,13 @@ const MicIcon = ({ userId }: MicIconProps) => {
       if (participant.isMuted) {
         return (
           <div className="mic muted mr-2 cursor-pointer">
-            <i className="pnm-mic-mute brand-color2 opacity-50 text-[8px]" />
+            <i className="pnm-mic-mute secondaryColor opacity-50 text-[8px]" />
           </div>
         );
       }
       return (
         <div className="mic mr-2 cursor-pointer">
-          <i className="pnm-mic-unmute brand-color2 opacity-50 text-[8px]" />
+          <i className="pnm-mic-unmute secondaryColor opacity-50 text-[8px]" />
         </div>
       );
     }
