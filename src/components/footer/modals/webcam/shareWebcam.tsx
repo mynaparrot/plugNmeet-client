@@ -109,8 +109,8 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
                 type="button"
                 onClick={() => onClose()}
               >
-                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
               </button>
               <Dialog.Title className="mb-6">
                 {t('footer.modal.select-webcam')}
@@ -132,7 +132,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
 
               <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                 <button
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brandColor1 hover:bg-brandColor2 focus:outline-none"
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
                   onClick={() => shareWebcam()}
                 >
                   {t('share')}

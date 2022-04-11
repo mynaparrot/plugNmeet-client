@@ -60,6 +60,13 @@ const RecordingIcon = () => {
       task: 'start-recording',
       sid: store.getState().session.currentRoom.sid,
     };
+
+    if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
+      (body as any).custom_design = `${
+        (window as any).DESIGN_CUSTOMIZATION
+      }`.replace(/\s/g, '');
+    }
+
     const res = await sendAPIRequest('recording', body);
     let msg = 'footer.notice.start-recording-progress';
 
@@ -123,7 +130,7 @@ const RecordingIcon = () => {
             ? t('footer.icons.stop-recording')
             : t('footer.icons.start-recording')}
         </span>
-        <i className="pnm-rec brand-color1 text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+        <i className="pnm-rec primaryColor text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
       </button>
     );
   };

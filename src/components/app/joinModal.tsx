@@ -51,10 +51,10 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
             type="button"
             onClick={() => onClose()}
           >
-            <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-            <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+            <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+            <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
           </button>
-          <p className="text-base md:text-lg brand-color1 font-normal mb-5 text-center">
+          <p className="text-base md:text-lg primaryColor font-normal mb-5 text-center">
             {t('app.how-to-join')}
           </p>
           <div className="btn flex justify-center">
@@ -64,9 +64,9 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
               onClick={() => shareMic()}
             >
               <div className="h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mb-1 flex items-center justify-center cursor-pointer">
-                <i className="pnm-mic-unmute brand-color1 text-xl" />
+                <i className="pnm-mic-unmute primaryColor text-xl" />
               </div>
-              <p className="text-sm md:text-base brand-color1 font-normal">
+              <p className="text-sm md:text-base primaryColor font-normal">
                 {t('app.microphone')}
               </p>
             </button>
@@ -79,9 +79,9 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
                 className="camera h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mb-1 flex items-center justify-center cursor-pointer"
                 onClick={() => onClose()}
               >
-                <i className="pnm-listen-only brand-color1 text-xl" />
+                <i className="pnm-listen-only primaryColor text-xl" />
               </div>
-              <p className="text-sm md:text-base brand-color1 font-normal">
+              <p className="text-sm md:text-base primaryColor font-normal">
                 {t('app.listen-only')}
               </p>
             </button>

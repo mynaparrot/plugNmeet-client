@@ -29,7 +29,7 @@ const WhiteboardIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [initiated, setInitiated] = useState<boolean>(false);
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
   const isVisible = useAppSelector(isWhiteboardVisibleSelector);
@@ -42,12 +42,12 @@ const WhiteboardIcon = () => {
 
   useEffect(() => {
     if (isActiveWhiteboard) {
-      setIconCSS('brand-color2');
+      setIconCSS('secondaryColor');
       if (store.getState().bottomIconsActivity.isActiveSharedNotePad) {
         dispatch(updateIsActiveSharedNotePad(false));
       }
     } else {
-      setIconCSS('brand-color1');
+      setIconCSS('primaryColor');
     }
   }, [dispatch, isActiveWhiteboard]);
 

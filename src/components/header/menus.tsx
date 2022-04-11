@@ -40,10 +40,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <div className="py-1" role="none">
           <Menu.Item>
             <button
-              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-brandColor2"
+              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
               onClick={() => showRoomSettings()}
             >
-              <i className="pnm-settings text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+              <i className="pnm-settings text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
               {t('header.menus.settings')}
             </button>
           </Menu.Item>
@@ -51,10 +51,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <div className="py-1" role="none">
           <Menu.Item>
             <button
-              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-brandColor2"
+              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
               onClick={() => showKeyboardShortcuts()}
             >
-              <i className="pnm-keyboard text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+              <i className="pnm-keyboard text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
               {t('header.menus.keyboard-shortcuts')}
             </button>
           </Menu.Item>
@@ -62,10 +62,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <div className="py-1" role="none">
           <Menu.Item>
             <button
-              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-brandColor2"
+              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
               onClick={() => logout()}
             >
-              <i className="pnm-logout text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+              <i className="pnm-logout text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
               {t('header.menus.logout')}
             </button>
           </Menu.Item>

@@ -74,6 +74,13 @@ const RtmpModal = () => {
       sid: store.getState().session.currentRoom.sid,
       rtmp_url: url + '/' + serverKey,
     };
+
+    if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
+      (body as any).custom_design = `${
+        (window as any).DESIGN_CUSTOMIZATION
+      }`.replace(/\s/g, '');
+    }
+
     const res = await sendAPIRequest('rtmp', body);
     let msg = 'footer.notice.rtmp-starting';
 
@@ -132,8 +139,8 @@ const RtmpModal = () => {
                     type="button"
                     onClick={() => closeStartModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
@@ -215,7 +222,7 @@ const RtmpModal = () => {
                       <div className="px-4 py-3 bg-gray-50 text-right sm:px-6 mt-4">
                         <button
                           type="submit"
-                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brandColor1 hover:bg-brandColor2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-brandColor2"
+                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
                         >
                           {t('footer.modal.rtmp-start-broadcast')}
                         </button>
@@ -298,8 +305,8 @@ const RtmpModal = () => {
                     type="button"
                     onClick={() => onCloseAlertModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-brandColor1 absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title

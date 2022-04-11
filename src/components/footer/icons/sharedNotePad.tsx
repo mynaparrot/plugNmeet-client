@@ -35,7 +35,7 @@ const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
   const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
@@ -54,12 +54,12 @@ const SharedNotePadIcon = () => {
 
   useEffect(() => {
     if (isActiveSharedNotePad) {
-      setIconCSS('brand-color2');
+      setIconCSS('secondaryColor');
       if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
         dispatch(updateIsActiveWhiteboard(false));
       }
     } else {
-      setIconCSS('brand-color1');
+      setIconCSS('primaryColor');
     }
   }, [isActiveSharedNotePad, dispatch]);
 

@@ -23,13 +23,13 @@ const ParticipantIcon = () => {
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
   );
-  const [iconCSS, setIconCSS] = useState<string>('brand-color1');
+  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
   useEffect(() => {
     if (isActiveParticipantsPanel) {
-      setIconCSS('brand-color2');
+      setIconCSS('secondaryColor');
     } else {
-      setIconCSS('brand-color1');
+      setIconCSS('primaryColor');
     }
   }, [isActiveParticipantsPanel]);
 

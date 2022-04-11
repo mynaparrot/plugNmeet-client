@@ -26,7 +26,8 @@ import {
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import useTFLite from '../virtual-background/hooks/useTFLite';
 import { defaultSegmentationConfig } from '../virtual-background/helpers/segmentationHelper';
-import useKeyboardShortcuts from '../../helpers/useKeyboardShortcuts';
+import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
+import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -58,6 +59,7 @@ const App = () => {
   useBodyPix();
   useTFLite(defaultSegmentationConfig);
   useKeyboardShortcuts(currentRoom);
+  useDesignCustomization();
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);

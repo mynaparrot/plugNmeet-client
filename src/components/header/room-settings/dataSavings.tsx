@@ -47,7 +47,7 @@ const DataSavings = () => {
             checked={activateWebcamsView}
             onChange={toggleWebcamView}
             className={`${
-              activateWebcamsView ? 'bg-brandColor1' : 'bg-gray-200'
+              activateWebcamsView ? 'bg-primaryColor' : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
@@ -65,7 +65,7 @@ const DataSavings = () => {
             checked={activeScreenSharingView}
             onChange={toggleScreenShareView}
             className={`${
-              activeScreenSharingView ? 'bg-brandColor1' : 'bg-gray-200'
+              activeScreenSharingView ? 'bg-primaryColor' : 'bg-gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span

@@ -178,7 +178,7 @@ const UploadFiles = () => {
           onClick={() => openFileBrowser()}
           className="w-10 h-7 flex items-center justify-center"
         >
-          <i className="pnm-attachment brand-color1 text-[14px] opacity-50" />
+          <i className="pnm-attachment primaryColor text-[14px] opacity-50" />
         </button>
       </>
     );

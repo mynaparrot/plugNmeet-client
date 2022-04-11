@@ -130,7 +130,7 @@ const MenusIcon = () => {
           {({ open }) => (
             <>
               <Menu.Button className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
-                <i className="pnm-menu-horizontal brand-color1 text-[3px] lg:text-[5px]" />
+                <i className="pnm-menu-horizontal primaryColor text-[3px] lg:text-[5px]" />
               </Menu.Button>
 
               {/* Use the Transition component. */}
@@ -152,7 +152,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="footer-podcast-button text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                          className="footer-podcast-button text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
                           onClick={() => openRtmpModal()}
                         >
                           {isActiveRtmpBroadcasting ? (
@@ -161,7 +161,7 @@ const MenusIcon = () => {
                               <div></div>
                             </div>
                           ) : null}
-                          <i className="pnm-broadcasting text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                          <i className="pnm-broadcasting text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
                           {isActiveRtmpBroadcasting
                             ? t('footer.icons.stop-rtmp-broadcasting')
                             : t('footer.icons.start-rtmp-broadcasting')}
@@ -172,10 +172,10 @@ const MenusIcon = () => {
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
-                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
                         onClick={() => muteAllUsers()}
                       >
-                        <i className="pnm-mic-mute text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                        <i className="pnm-mic-mute text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
                         {t('footer.menus.mute-all-users')}
                       </button>
                     </Menu.Item>
@@ -185,10 +185,10 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
                           onClick={() => toggleSharedNotepad()}
                         >
-                          <i className="pnm-notepad text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                          <i className="pnm-notepad text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
                           {sharedNotepadStatus
                             ? t('footer.menus.disable-shared-notepad')
                             : t('footer.menus.enable-shared-notepad')}
@@ -199,10 +199,10 @@ const MenusIcon = () => {
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
-                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-brandColor2"
+                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
                         onClick={() => openLockSettingsModal()}
                       >
-                        <i className="pnm-lock text-brandColor1 mr-2 transition ease-in group-hover:text-brandColor2" />
+                        <i className="pnm-lock text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
                         {t('footer.menus.room-lock-settings')}
                       </button>
                     </Menu.Item>
