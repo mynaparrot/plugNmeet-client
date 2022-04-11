@@ -88,10 +88,7 @@ const useDesignCustomization = () => {
         ' !important;}';
     }
 
-    if (
-      designCustomParams.background_color &&
-      !designCustomParams.background_image
-    ) {
+    if (designCustomParams.background_color) {
       css += `.main-app-bg { 
         background: ${designCustomParams.background_color} !important;
         }`;
@@ -100,10 +97,7 @@ const useDesignCustomization = () => {
         }`;
     }
 
-    if (
-      designCustomParams.background_image &&
-      !designCustomParams.background_color
-    ) {
+    if (designCustomParams.background_image) {
       css += `.main-app-bg { 
         background: url("${designCustomParams.background_image}") !important;
         }`;
