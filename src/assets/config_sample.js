@@ -32,3 +32,17 @@ window.STOP_MIC_TRACK_ON_MUTE = true;
 window.NUMBER_OF_WEBCAMS_PER_PAGE_PC = 25;
 // for mobile
 window.NUMBER_OF_WEBCAMS_PER_PAGE_MOBILE = 6;
+
+// Design customization
+// in json format
+// window.DESIGN_CUSTOMIZATION = `{
+//   "primary_color": "#004D90",
+//   "secondary_color": "#24AEF7",
+//   "background_color": "#0b7db4",
+//   "background_image": "https:\/\/mydomain.com\/custom_bg.png", // for best result use 1,920px × 1,080px
+//   "header_bg_color": "#45b3ec",
+//   "footer_bg_color": "#45b3ec",
+//   "left_side_bg_color": "#04a2f3",
+//   "right_side_bg_color": "#04a2f3",
+//   "custom_css_url": "https:\/\/mydomain.com\/plugNmeet_desing.css"
+// }`;

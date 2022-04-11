@@ -3,7 +3,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppDispatch } from '../store';
+import { store, useAppDispatch } from '../../store';
 import {
   updateIsActiveChatPanel,
   updateIsActiveMicrophone,
@@ -16,14 +16,14 @@ import {
   updateShowMicrophoneModal,
   updateShowVideoShareModal,
   updateVirtualBackground,
-} from '../store/slices/bottomIconsActivitySlice';
+} from '../../store/slices/bottomIconsActivitySlice';
 import {
   updateSelectedAudioDevice,
   updateSelectedVideoDevice,
   updateShowRoomSettingsModal,
-} from '../store/slices/roomSettingsSlice';
-import { SystemMsgType } from '../store/slices/interfaces/dataMessages';
-import sendAPIRequest from './api/plugNmeetAPI';
+} from '../../store/slices/roomSettingsSlice';
+import { SystemMsgType } from '../../store/slices/interfaces/dataMessages';
+import sendAPIRequest from '../api/plugNmeetAPI';
 
 const useKeyboardShortcuts = (currentRoom?: Room) => {
   const dispatch = useAppDispatch();
