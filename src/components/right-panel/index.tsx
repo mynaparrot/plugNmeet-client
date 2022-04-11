@@ -56,7 +56,7 @@ const RightPanel = ({ currentRoom, isRecorder }: IRightPanelProps) => {
 
   return (
     <div id="main-right-panel" className="h-[calc(100%)]">
-      <div className="h-[calc(100%)] MessageModule-wrapper scrollBar relative z-10 right-0 top-0 w-[230px] xl:w-[300px] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto multi-gradient">
+      <div className="h-[calc(100%)] messageModule-wrapper scrollBar relative z-10 right-0 top-0 w-[230px] xl:w-[300px] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto multi-gradient">
         <div className="all-MessageModule-wrap">
           <Messages />
         </div>

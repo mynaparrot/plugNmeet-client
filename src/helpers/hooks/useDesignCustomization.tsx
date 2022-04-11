@@ -137,7 +137,7 @@ const useDesignCustomization = () => {
 
     if (designCustomParams.right_side_bg_color) {
       css +=
-        '.MessageModule-wrapper { background: ' +
+        '.messageModule-wrapper { background: ' +
         designCustomParams.right_side_bg_color +
         '; }';
     }

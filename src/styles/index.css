@@ -723,7 +723,7 @@ button.previous-cam:hover, button.next-cam:hover {
         position: absolute;
     }
 
-    .transition-right-panel .MessageModule-wrapper {
+    .transition-right-panel .messageModule-wrapper {
         height: calc(100% - 72px);
     }
 
@@ -901,7 +901,7 @@ button.previous-cam:hover, button.next-cam:hover {
         padding-bottom: 36.5%;
     }
 
-    .transition-right-panel .MessageModule-wrapper,
+    .transition-right-panel .messageModule-wrapper,
     .transition-right-panel,
     .transition-right-panel .message-form,
     .transition-left-panel,
