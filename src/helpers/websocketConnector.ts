@@ -38,9 +38,12 @@ const createWS = () => {
   ws = new WebSocket(url);
 
   ws.onopen = () => {
-    isConnected = true;
-    onConnect();
-    store.dispatch(updateIsChatServiceReady(true));
+    // wait few ms before process
+    setTimeout(() => {
+      isConnected = true;
+      onConnect();
+      store.dispatch(updateIsChatServiceReady(true));
+    }, 100);
 
     if (connectionInterval) {
       clearInterval(connectionInterval);
