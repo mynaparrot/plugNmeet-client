@@ -62,7 +62,7 @@ const RightPanel = ({ currentRoom, isRecorder }: IRightPanelProps) => {
         </div>
       </div>
       {isRecorder ? (
-        <div className="w-[10px] h-[10px] hiddenAnimation" />
+        <div className="w-[10px] h-[10px] hiddenAnimation absolute z-50 bottom-0" />
       ) : null}
       {show ? (
         <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[230px] xl:w-[300px] bg-white">
