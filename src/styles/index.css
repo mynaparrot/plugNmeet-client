@@ -486,7 +486,8 @@ button.previous-cam:hover, button.next-cam:hover {
     background: linear-gradient(0deg, rgba(214, 231, 255, 0.5) 67%, rgba(214, 231, 255, 1) 100%);
 }
 
-#main-area.isRecorder.hideParticipantsPanel.showScreenShare .all-webcam-wrapper {
+#main-area.isRecorder.hideParticipantsPanel.showScreenShare .all-webcam-wrapper,
+#main-area.isRecorder.hideParticipantsPanel .middle-fullscreen-wrapper .all-webcam-wrapper  {
     height: 100vh;
 }
 
