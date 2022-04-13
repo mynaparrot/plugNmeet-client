@@ -29,7 +29,7 @@ code {
 }
 
 .hiddenAnimation {
-    animation: refresh .01s infinite
+    animation: refresh .5s infinite
 }
 
 .primaryColor {
