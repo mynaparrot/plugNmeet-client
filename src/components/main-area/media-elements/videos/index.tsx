@@ -8,13 +8,18 @@ import useVideoParticipant from './useVideoParticipant';
 interface IVideoElementsProps {
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>;
   perPage?: number;
+  VerticalWebcam?: string;
 }
 export interface VideoParticipantType {
   isAdmin: boolean;
   isLocal: boolean;
 }
 
-const VideoElements = ({ videoSubscribers, perPage }: IVideoElementsProps) => {
+const VideoElements = ({
+  videoSubscribers,
+  perPage,
+  VerticalWebcam,
+}: IVideoElementsProps) => {
   const DEFAULT_PER_PAGE = perPage ?? 25;
   const dispatch = useAppDispatch();
 
@@ -114,7 +119,11 @@ const VideoElements = ({ videoSubscribers, perPage }: IVideoElementsProps) => {
   return (
     <React.Fragment>
       {totalNumWebcams > 0 ? (
-        <div className={`all-webcam-wrapper total-cam-${totalNumWebcams}`}>
+        <div
+          className={`all-webcam-wrapper total-cam-${totalNumWebcams} ${
+            VerticalWebcam ? VerticalWebcam : ''
+          }`}
+        >
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
