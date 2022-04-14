@@ -151,8 +151,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     if (typeof lockWhiteboard === 'undefined') {
       return;
     }
-
-    setViewModeEnabled(lockWhiteboard);
+    if (!currentUser?.isRecorder) {
+      setViewModeEnabled(lockWhiteboard);
+    }
+    //eslint-disable-next-line
   }, [lockWhiteboard]);
 
   // for handling draw elements
