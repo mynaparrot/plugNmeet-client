@@ -12,8 +12,8 @@ const Loading = ({ text }: ILoadingProps) => {
     >
       <div className="inner">
         <div className="lds-ripple">
-          <div></div>
-          <div></div>
+          <div className="border-secondaryColor"></div>
+          <div className="border-secondaryColor"></div>
         </div>
         <p className="block w-full text-center relative bottom-4 capitalize">
           {text}

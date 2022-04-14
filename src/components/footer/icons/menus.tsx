@@ -157,8 +157,8 @@ const MenusIcon = () => {
                         >
                           {isActiveRtmpBroadcasting ? (
                             <div className="lds-ripple">
-                              <div></div>
-                              <div></div>
+                              <div className="border-secondaryColor"></div>
+                              <div className="border-secondaryColor"></div>
                             </div>
                           ) : null}
                           <i className="pnm-broadcasting text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
