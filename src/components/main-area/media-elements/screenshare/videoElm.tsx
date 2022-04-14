@@ -45,8 +45,8 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       {!loaded ? (
         <div className="loading flex justify-center">
           <div className="lds-ripple">
-            <div className="border-secondaryColor"></div>
-            <div className="border-secondaryColor"></div>
+            <div className="border-secondaryColor" />
+            <div className="border-secondaryColor" />
           </div>
         </div>
       ) : null}
