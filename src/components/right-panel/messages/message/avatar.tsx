@@ -18,7 +18,7 @@ const Avatar = ({ participant, from }: IAvatarProps) => {
       if (participant?.name) {
         name = participant?.name;
       }
-      return <React.Fragment>{name?.slice(0, 2).toUpperCase()}</React.Fragment>;
+      return <>{name?.slice(0, 2).toUpperCase()}</>;
     }
   };
   return (

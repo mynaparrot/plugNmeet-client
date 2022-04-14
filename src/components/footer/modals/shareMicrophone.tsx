@@ -187,7 +187,7 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
       </Transition>
     );
   };
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default ShareMicrophoneModal;

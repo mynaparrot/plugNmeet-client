@@ -107,35 +107,31 @@ const MediaElementsComponent = ({
     return isActiveWhiteboard;
   };
 
-  const render = () => {
-    return (
-      <React.Fragment>
-        {shouldShowScreenSharing() && screenShareTracks ? (
-          <ScreenShareElements
-            videoSubscribers={videoSubscribers}
-            screenShareTracks={screenShareTracks}
-          />
-        ) : null}
-        {shouldShowSharedNotepad() ? (
-          <SharedNotepadElement videoSubscribers={videoSubscribers} />
-        ) : null}
-        {shouldShowWhiteboard() ? (
-          <Whiteboard videoSubscribers={videoSubscribers} />
-        ) : null}
-        {shouldShowWebcams() && videoSubscribers ? (
-          <VideoElements
-            videoSubscribers={videoSubscribers}
-            perPage={webcamPerPage}
-          />
-        ) : null}
-        {audioSubscribers ? (
-          <AudioElements audioSubscribers={audioSubscribers} />
-        ) : null}
-      </React.Fragment>
-    );
-  };
-
-  return <React.Fragment>{render()}</React.Fragment>;
+  return (
+    <>
+      {shouldShowScreenSharing() && screenShareTracks ? (
+        <ScreenShareElements
+          videoSubscribers={videoSubscribers}
+          screenShareTracks={screenShareTracks}
+        />
+      ) : null}
+      {shouldShowSharedNotepad() ? (
+        <SharedNotepadElement videoSubscribers={videoSubscribers} />
+      ) : null}
+      {shouldShowWhiteboard() ? (
+        <Whiteboard videoSubscribers={videoSubscribers} />
+      ) : null}
+      {shouldShowWebcams() && videoSubscribers ? (
+        <VideoElements
+          videoSubscribers={videoSubscribers}
+          perPage={webcamPerPage}
+        />
+      ) : null}
+      {audioSubscribers ? (
+        <AudioElements audioSubscribers={audioSubscribers} />
+      ) : null}
+    </>
+  );
 };
 
 export default MediaElementsComponent;

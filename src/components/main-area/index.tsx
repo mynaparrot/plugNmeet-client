@@ -68,6 +68,7 @@ const MainArea = ({
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
+  const [customCSS, setCustomCSS] = useState<string>();
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
@@ -80,32 +81,49 @@ const MainArea = ({
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    const css: Array<string> = [];
+
+    isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
+    isActiveParticipantsPanel
+      ? css.push('showParticipantsPanel')
+      : css.push('hideParticipantsPanel');
+
+    screenShareTracks?.size && activeScreenSharingView
+      ? css.push('showScreenShare')
+      : css.push('hideScreenShare');
+
+    isActiveSharedNotePad
+      ? css.push('showSharedNotepad')
+      : css.push('hideSharedNotepad');
+
+    isActiveWhiteboard
+      ? css.push('showWhiteboard')
+      : css.push('hideWhiteboard');
+
+    setCustomCSS(css.join(' '));
+  }, [
+    activeScreenSharingView,
+    isActiveChatPanel,
+    isActiveParticipantsPanel,
+    isActiveSharedNotePad,
+    isActiveWhiteboard,
+    screenShareTracks?.size,
+  ]);
+
   return (
     <div
       id="main-area"
       className={`${
         !isRecorder ? 'lg:h-[calc(100vh-110px)]' : 'h-[calc(100vh)] isRecorder'
-      }  plugNmeet-app-main-area overflow-hidden relative flex ${
-        !isActiveChatPanel ? 'hideChatPanel' : 'showChatPanel'
-      } ${
-        !isActiveParticipantsPanel
-          ? 'hideParticipantsPanel'
-          : 'showParticipantsPanel'
-      } ${
-        screenShareTracks?.size && activeScreenSharingView
-          ? 'showScreenShare'
-          : 'hideScreenShare'
-      }
-      ${isActiveSharedNotePad ? 'showSharedNotepad' : 'hideSharedNotepad'}
-      ${isActiveWhiteboard ? 'showWhiteboard' : 'hideWhiteboard'}
-      `}
+      }  plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
     >
       <div
         className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none `}
         style={{
-          backgroundImage: `url("${`${assetPath}/imgs/app-banner.jpg`}")`,
+          backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
         }}
-      ></div>
+      />
       <div className="inner flex justify-between w-full">
         <Transition
           className="transition-left-panel"

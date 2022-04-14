@@ -118,9 +118,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     );
   };
   return (
-    <React.Fragment>
-      {session.currenUser?.userId !== participant?.userId ? render() : null}
-    </React.Fragment>
+    <>{session.currenUser?.userId !== participant?.userId ? render() : null}</>
   );
 };
 

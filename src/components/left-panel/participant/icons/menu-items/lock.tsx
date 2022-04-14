@@ -84,7 +84,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
 
   const render = () => {
     return (
-      <React.Fragment>
+      <>
         <div className="" role="none">
           <Menu.Item onClick={() => onClick('mic')}>
             {() => (
@@ -154,7 +154,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
         ) : null}
 
         {roomFeatures?.chat_features.allow_chat ? (
-          <React.Fragment>
+          <>
             <div className="" role="none">
               <Menu.Item onClick={() => onClick('chat')}>
                 {() => (
@@ -192,13 +192,13 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                 </Menu.Item>
               </div>
             ) : null}
-          </React.Fragment>
+          </>
         ) : null}
-      </React.Fragment>
+      </>
     );
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default LockSettingMenuItem;

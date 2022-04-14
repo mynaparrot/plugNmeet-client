@@ -129,6 +129,10 @@ const useDesignCustomization = () => {
         '.participants-wrapper { background: ' +
         designCustomParams.left_side_bg_color +
         '; }';
+      css +=
+        '.vertical-webcams { background: ' +
+        designCustomParams.left_side_bg_color +
+        ' !important; }';
     }
 
     if (designCustomParams.right_side_bg_color) {

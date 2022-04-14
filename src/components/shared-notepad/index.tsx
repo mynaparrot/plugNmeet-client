@@ -65,12 +65,12 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const render = () => {
     if (url) {
       return (
-        <div className="notepad-wrapper h-[calc(100%-50px)] w-full flex-1 sm:px-5 mt-9">
+        <div className="notepad-wrapper relative h-[calc(100%-50px)] w-full flex-1 sm:px-5 mt-9">
           {!loaded ? (
-            <div className="loading flex justify-center">
+            <div className="loading absolute left-[50%] top-[40%] flex justify-center">
               <div className="lds-ripple">
-                <div></div>
-                <div></div>
+                <div className="border-secondaryColor"></div>
+                <div className="border-secondaryColor"></div>
               </div>
             </div>
           ) : null}

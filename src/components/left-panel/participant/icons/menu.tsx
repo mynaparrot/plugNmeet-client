@@ -109,7 +109,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
 
   const render = () => {
     return (
-      <React.Fragment>
+      <>
         <Menu>
           {({ open }) => (
             <>
@@ -146,11 +146,11 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
           )}
         </Menu>
         {removeParticipantAlertModal()}
-      </React.Fragment>
+      </>
     );
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default MenuIcon;

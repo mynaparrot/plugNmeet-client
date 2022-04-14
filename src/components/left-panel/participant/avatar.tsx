@@ -11,11 +11,7 @@ const Avatar = ({ participant }: IAvatarProps) => {
         <img src={participant.metadata.profile_pic} alt={participant.name} />
       );
     } else {
-      return (
-        <React.Fragment>
-          {participant.name.slice(0, 2).toUpperCase()}
-        </React.Fragment>
-      );
+      return <>{participant.name.slice(0, 2).toUpperCase()}</>;
     }
   };
   return (

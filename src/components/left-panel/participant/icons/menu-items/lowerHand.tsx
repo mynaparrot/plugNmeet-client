@@ -52,11 +52,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {participant?.metadata.raised_hand ? render() : null}
-    </React.Fragment>
-  );
+  return <>{participant?.metadata.raised_hand ? render() : null}</>;
 };
 
 export default LowerHandMenuItem;

@@ -23,7 +23,7 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
     return null;
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default WebcamIcon;

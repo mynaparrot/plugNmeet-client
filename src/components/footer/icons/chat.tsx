@@ -76,7 +76,7 @@ const ChatIcon = () => {
     );
   };
 
-  return <React.Fragment>{allowChat ? render() : null}</React.Fragment>;
+  return <>{allowChat ? render() : null}</>;
 };
 
 export default ChatIcon;
