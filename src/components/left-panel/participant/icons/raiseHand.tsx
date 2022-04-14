@@ -22,7 +22,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
     }
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default RaiseHandIcon;

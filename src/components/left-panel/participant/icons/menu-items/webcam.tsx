@@ -83,13 +83,13 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     );
   };
   return (
-    <React.Fragment>
+    <>
       {session.currenUser?.userId !== participant?.userId &&
       roomFeatures?.allow_webcams &&
       !roomFeatures.admin_only_webcams
         ? render()
         : null}
-    </React.Fragment>
+    </>
   );
 };
 

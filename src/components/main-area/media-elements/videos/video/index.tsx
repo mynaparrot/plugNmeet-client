@@ -11,11 +11,11 @@ export interface IVideoComponentProps {
 const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
   const render = () => {
     return (
-      <React.Fragment>
+      <>
         <ConnectionStatus userId={userId} />
         <MicStatus userId={userId} />
         <VideoElm track={track} />
-      </React.Fragment>
+      </>
     );
   };
   return <div className="camera-modules">{render()}</div>;

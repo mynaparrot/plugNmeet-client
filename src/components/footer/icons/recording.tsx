@@ -135,11 +135,7 @@ const RecordingIcon = () => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {allowRecording && isAdmin ? render() : null}
-    </React.Fragment>
-  );
+  return <>{allowRecording && isAdmin ? render() : null}</>;
 };
 
 export default RecordingIcon;

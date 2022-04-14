@@ -28,11 +28,11 @@ const MicStatus = ({ userId }: IMicStatusProps) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {participant?.audioTracks ? (
         <div className="mic-status">{render()}</div>
       ) : null}
-    </React.Fragment>
+    </>
   );
 };
 

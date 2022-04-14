@@ -161,7 +161,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
         <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
           {text()}
         </span>
-        <React.Fragment>
+        <>
           <i
             className={`pnm-screen-share ${iconCSS} text-[12px] lg:text-[16px]`}
           />
@@ -170,7 +170,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
               <i className="pnm-lock primaryColor" />
             </div>
           ) : null}
-        </React.Fragment>
+        </>
       </div>
     );
   };

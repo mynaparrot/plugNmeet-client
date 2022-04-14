@@ -39,7 +39,7 @@ const WebcamMenu = ({ currentRoom }: IWebcamMenuProps) => {
     );
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default WebcamMenu;

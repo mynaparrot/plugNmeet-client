@@ -19,7 +19,7 @@ const AudioElements = ({ audioSubscribers }: IAudioElementsProps) => {
     setElements(elm);
   }, [audioSubscribers]);
 
-  return <React.Fragment>{elements.length ? elements : null}</React.Fragment>;
+  return <>{elements.length ? elements : null}</>;
 };
 
 export default React.memo(AudioElements);

@@ -105,7 +105,7 @@ const VideoElements = ({
         ) : null}
 
         {/*all webcams*/}
-        <React.Fragment>{displayParticipants}</React.Fragment>
+        <>{displayParticipants}</>
 
         {showNext ? (
           <button type="button" className="next-cam" onClick={() => nextPage()}>

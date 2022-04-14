@@ -42,7 +42,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       );
     } else {
       return (
-        <React.Fragment>
+        <>
           <Avatar participant={participant} from={body.from} />
           <div className="content w-[calc(100%-2rem)] pt-2">
             <p className="name pl-2 text-sm pb-1">
@@ -56,7 +56,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
               dangerouslySetInnerHTML={{ __html: body.msg }}
             />
           </div>
-        </React.Fragment>
+        </>
       );
     }
   };

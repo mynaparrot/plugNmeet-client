@@ -30,7 +30,7 @@ const MicIcon = ({ userId }: MicIconProps) => {
     return null;
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default MicIcon;

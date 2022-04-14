@@ -19,7 +19,7 @@ const RemoveUserMenuItem = ({
 
   const render = () => {
     return (
-      <React.Fragment>
+      <>
         <div className="" role="none">
           <Menu.Item onClick={() => onClose()}>
             {() => (
@@ -29,10 +29,10 @@ const RemoveUserMenuItem = ({
             )}
           </Menu.Item>
         </div>
-      </React.Fragment>
+      </>
     );
   };
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default RemoveUserMenuItem;

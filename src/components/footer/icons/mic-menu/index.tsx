@@ -39,7 +39,7 @@ const MicMenu = ({ currentRoom }: IMicMenuProps) => {
     );
   };
 
-  return <React.Fragment>{render()}</React.Fragment>;
+  return <>{render()}</>;
 };
 
 export default MicMenu;
