@@ -8,7 +8,7 @@ import useVideoParticipant from './useVideoParticipant';
 interface IVideoElementsProps {
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>;
   perPage?: number;
-  VerticalWebcam?: string;
+  isVertical?: boolean;
 }
 export interface VideoParticipantType {
   isAdmin: boolean;
@@ -18,7 +18,7 @@ export interface VideoParticipantType {
 const VideoElements = ({
   videoSubscribers,
   perPage,
-  VerticalWebcam,
+  isVertical,
 }: IVideoElementsProps) => {
   const DEFAULT_PER_PAGE = perPage ?? 25;
   const dispatch = useAppDispatch();
@@ -93,7 +93,7 @@ const VideoElements = ({
 
   const render = () => {
     return (
-      <React.Fragment>
+      <>
         {showPre ? (
           <button
             type="button"
@@ -112,22 +112,22 @@ const VideoElements = ({
             <i className="pnm-arrow-down" />
           </button>
         ) : null}
-      </React.Fragment>
+      </>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {totalNumWebcams > 0 ? (
         <div
           className={`all-webcam-wrapper total-cam-${totalNumWebcams} ${
-            VerticalWebcam ? VerticalWebcam : ''
+            isVertical ? 'vertical-webcams' : ''
           }`}
         >
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
-    </React.Fragment>
+    </>
   );
 };
 

@@ -43,7 +43,7 @@ const VerticalWebcams = ({ videoSubscribers }: IVerticalWebcamsProps) => {
         <VideoElements
           videoSubscribers={videoSubscribers}
           perPage={3}
-          VerticalWebcam={'vertical-webcams'}
+          isVertical={true}
         />
       ) : null}
     </>
