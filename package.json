@@ -28,7 +28,8 @@
   },
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
-    "build": "NODE_ENV=production webpack --config webpack.prod.js"
+    "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.181",
