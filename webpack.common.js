@@ -9,6 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const pkg = require('./package.json');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -71,6 +72,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       IS_PRODUCTION: process.env.NODE_ENV === 'production',
+      PNM_VERSION: JSON.stringify(pkg.version),
     }),
     new MiniCssExtractPlugin({
       filename: 'assets/css/[name].[contenthash].css',

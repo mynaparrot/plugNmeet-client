@@ -9,6 +9,8 @@ import DataSavings from './dataSavings';
 import Notification from './notification';
 import ApplicationSettings from './application';
 
+declare const PNM_VERSION: string;
+
 const isShowRoomSettingsModalSelector = createSelector(
   (state: RootState) => state.roomSettings.isShowRoomSettingsModal,
   (isShowRoomSettingsModal) => isShowRoomSettingsModal,
@@ -143,6 +145,9 @@ const RoomSettings = () => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">{showTabItems()}</div>
+                  <div className="bottom-0">
+                    {t('version', { pnm_version: PNM_VERSION })}
+                  </div>
                 </div>
               </Transition.Child>
             </div>
