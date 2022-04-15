@@ -48,6 +48,14 @@ code {
     background: #24AEF7;
 }
 
+.border-primaryColor {
+    color: #004D90;
+}
+
+.border-secondaryColor {
+    color: #24AEF7;
+}
+
 .multi-gradient {
     background: rgb(235, 248, 255);
     background: linear-gradient(
@@ -487,7 +495,7 @@ button.previous-cam:hover, button.next-cam:hover {
 }
 
 #main-area.isRecorder.hideParticipantsPanel.showScreenShare .all-webcam-wrapper,
-#main-area.isRecorder.hideParticipantsPanel .middle-fullscreen-wrapper .all-webcam-wrapper  {
+#main-area.isRecorder.hideParticipantsPanel .middle-fullscreen-wrapper .all-webcam-wrapper {
     height: 100vh;
 }
 
