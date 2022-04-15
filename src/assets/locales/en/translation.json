@@ -4,7 +4,7 @@
   "cancel": "Cancel",
   "join": "Join",
   "share": "Share",
-  "version": "Version: {{pnm_version}}",
+  "version": "Version: {{pnm_version}}; Build: {{build}}",
   "notifications": {
     "room-not-active": "Room isn't active.",
     "recording-already-running": "recording already running",

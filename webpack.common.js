@@ -73,6 +73,7 @@ module.exports = {
     new webpack.DefinePlugin({
       IS_PRODUCTION: process.env.NODE_ENV === 'production',
       PNM_VERSION: JSON.stringify(pkg.version),
+      BUILD_TIME: Math.floor(Date.now() / 1000),
     }),
     new MiniCssExtractPlugin({
       filename: 'assets/css/[name].[contenthash].css',
