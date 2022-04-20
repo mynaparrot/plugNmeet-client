@@ -17,7 +17,10 @@ import {
   updateIsChatServiceReady,
 } from '../store/slices/sessionSlice';
 import { ISession } from '../store/slices/interfaces/session';
-import { participantsSelector } from '../store/slices/participantSlice';
+import {
+  participantsSelector,
+  updateParticipant,
+} from '../store/slices/participantSlice';
 import { updateTotalUnreadChatMsgs } from '../store/slices/bottomIconsActivitySlice';
 import {
   addWhiteboardFileAsJSON,
@@ -127,6 +130,9 @@ const handleSystemTypeData = (body: IDataMessage) => {
     case SystemMsgType.ALERT:
       handlePushMsgMsg(body);
       break;
+    case SystemMsgType.USER_VISIBILITY_CHANGE:
+      handleUserVisibility(body);
+      break;
   }
 };
 
@@ -192,6 +198,17 @@ const handleWhiteboardMsg = (data: WhiteboardMsg) => {
   } else if (data.type === 'ADD_WHITEBOARD_FILE') {
     store.dispatch(addWhiteboardFileAsJSON(data.msg));
   }
+};
+
+const handleUserVisibility = (data: IDataMessage) => {
+  store.dispatch(
+    updateParticipant({
+      id: data.body.from.userId,
+      changes: {
+        visibility: data.body.msg,
+      },
+    }),
+  );
 };
 
 const onConnect = () => {

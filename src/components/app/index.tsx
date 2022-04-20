@@ -19,9 +19,23 @@ import { defaultSegmentationConfig } from '../virtual-background/helpers/segment
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
+import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
 
 const App = () => {
   const dispatch = useAppDispatch();
+  const rootRef = useRef(null);
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState<boolean>(true);
+  // it could be recorder or RTMP bot
+  const [isRecorder, setIsRecorder] = useState<boolean>(false);
+  const [userTypeClass, setUserTypeClass] = useState('participant');
+
+  // we'll require making ready virtual background
+  // elements as early as possible.
+  useBodyPix();
+  useTFLite(defaultSegmentationConfig);
+
+  // some custom hooks
   const {
     error,
     setError,
@@ -34,21 +48,9 @@ const App = () => {
     startLivekitConnection,
   } = useLivekitConnect();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  // it could be recorder or RTMP bot
-  const [isRecorder, setIsRecorder] = useState<boolean>(false);
-  const [userTypeClass, setUserTypeClass] = useState('participant');
-  const rootRef = useRef(null);
-  const { t } = useTranslation();
-
-  // we'll require making ready virtual background
-  // elements as early as possible.
-  useBodyPix();
-  useTFLite(defaultSegmentationConfig);
-
-  // some custom hooks
   useKeyboardShortcuts(currentRoom);
   useDesignCustomization();
+  useWatchVisibilityChange();
   const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
     currentRoom,
     rootRef,

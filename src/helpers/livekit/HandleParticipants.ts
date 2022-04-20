@@ -81,6 +81,7 @@ export default class HandleParticipants {
         connectionQuality: participant.connectionQuality,
         isLocal: false,
         joinedAt: participant.joinedAt?.getTime() ?? Date.now(),
+        visibility: 'visible',
       }),
     );
 
