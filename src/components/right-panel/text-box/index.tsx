@@ -14,7 +14,7 @@ import {
 import {
   isSocketConnected,
   sendWebsocketMessage,
-} from '../../../helpers/websocketConnector';
+} from '../../../helpers/websocket/websocketConnector';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 

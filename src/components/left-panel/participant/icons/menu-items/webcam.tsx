@@ -10,7 +10,7 @@ import {
   IDataMessage,
   SystemMsgType,
 } from '../../../../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../../../../../helpers/websocketConnector';
+import { sendWebsocketMessage } from '../../../../../helpers/websocket/websocketConnector';
 
 interface IWebcamMenuItemProps {
   userId: string;

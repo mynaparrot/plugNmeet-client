@@ -26,7 +26,7 @@ import {
 import {
   isSocketConnected,
   sendWebsocketMessage,
-} from '../../helpers/websocketConnector';
+} from '../../helpers/websocket/websocketConnector';
 import {
   ReconciledElements,
   reconcileElements,

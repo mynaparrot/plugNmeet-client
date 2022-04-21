@@ -12,7 +12,7 @@ import {
   WhiteboardMsg,
   WhiteboardMsgType,
 } from '../../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../../../helpers/websocketConnector';
+import { sendWebsocketMessage } from '../../../helpers/websocket/websocketConnector';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 

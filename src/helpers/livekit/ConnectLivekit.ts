@@ -33,7 +33,7 @@ import {
   closeWebsocketConnection,
   openWebsocketConnection,
   sendWebsocketMessage,
-} from '../websocketConnector';
+} from '../websocket/websocketConnector';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import {
   DataMessageType,

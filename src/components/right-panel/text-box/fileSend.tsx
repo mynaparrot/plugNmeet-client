@@ -10,7 +10,7 @@ import { ISession } from '../../../store/slices/interfaces/session';
 import {
   isSocketConnected,
   sendWebsocketMessage,
-} from '../../../helpers/websocketConnector';
+} from '../../../helpers/websocket/websocketConnector';
 import {
   DataMessageType,
   IChatMsg,
