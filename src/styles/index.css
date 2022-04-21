@@ -705,6 +705,15 @@ button.previous-cam:hover, button.next-cam:hover {
     box-shadow: none;
     margin: 5px 10px;
 }
+.wb-page-navigation .pre {
+    margin-left: 0;
+}
+.wb-page-navigation .next {
+    margin-right: 0;
+}
+.wb-page-navigation button:disabled {
+    background-color: darkgray !important;
+}
 
 
 @media screen and (max-width: 1280px) {

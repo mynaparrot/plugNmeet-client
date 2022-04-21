@@ -128,39 +128,41 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
 
   const renderForAdmin = () => {
     return (
-      <div className="flex footerUI">
-        {!disablePre ? (
-          <button
-            className="pre w-10 flex items-center justify-center"
-            onClick={handlePre}
-          >
-            <i className="pnm-arrow-left-short primaryColor text-[14px] opacity-50" />
-          </button>
-        ) : null}
+      <div className="flex footerUI pt-1 wb-page-navigation">
+        {/* {!disablePre ? ( */}
+        <button
+          className="pre w-8 h-8 flex items-center justify-center"
+          onClick={handlePre}
+          disabled={disablePre}
+        >
+          <i className="pnm-arrow-left-short text-black text-xl opacity-50" />
+        </button>
+        {/* ) : null} */}
         <select
           id="pages"
           name="pages"
-          className="pagesOpts mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="pagesOpts block h-8 py-1 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           onChange={(e) => setCurrentPage(Number(e.currentTarget.value))}
           value={currentPage}
         >
           {options}
         </select>
-        {!disableNext ? (
-          <button
-            className="next w-10 flex items-center justify-center"
-            onClick={handleNext}
-          >
-            <i className="pnm-arrow-right-short primaryColor text-[14px] opacity-50" />
-          </button>
-        ) : null}
+        {/* {!disableNext ? ( */}
+        <button
+          className="next w-8 h-8 flex items-center justify-center"
+          onClick={handleNext}
+          disabled={disableNext}
+        >
+          <i className="pnm-arrow-right-short text-black text-xl opacity-50" />
+        </button>
+        {/* ) : null} */}
       </div>
     );
   };
 
   const renderForParticipant = () => {
     return (
-      <div className="flex footerUI">
+      <div className="flex footerUI text-sm pt-3">
         {t('whiteboard.page', { count: currentPage })}
       </div>
     );
