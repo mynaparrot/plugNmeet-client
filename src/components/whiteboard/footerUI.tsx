@@ -107,8 +107,13 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
       const elements = JSON.parse(data);
       if (elements.length) {
         excalidrawAPI.updateScene({ elements });
-        // better to broadcast full screen
-        broadcastScreenDataBySocket(elements);
+        if (
+          session.currenUser?.metadata?.is_admin &&
+          !session.currenUser.isRecorder
+        ) {
+          // better to broadcast full screen
+          broadcastScreenDataBySocket(elements);
+        }
       }
     }
   };
