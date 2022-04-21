@@ -7,6 +7,7 @@ import MicIcon from './icons/mic';
 import WebcamIcon from './icons/webcam';
 import MenuIcon from './icons/menu';
 import { store } from '../../../store';
+import VisibilityIcon from './icons/visibility';
 
 interface IParticipantComponentProps {
   participant: IParticipant;
@@ -26,6 +27,7 @@ const ParticipantComponent = ({ participant }: IParticipantComponentProps) => {
         </div>
         <div className="right ml-2 flex-auto flex items-center justify-end">
           <RaiseHandIcon userId={participant.userId} />
+          <VisibilityIcon userId={participant.userId} />
           <MicIcon userId={participant.userId} />
           <WebcamIcon userId={participant.userId} />
           {currentUser?.metadata?.is_admin &&

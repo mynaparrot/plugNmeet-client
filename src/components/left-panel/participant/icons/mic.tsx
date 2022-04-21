@@ -30,7 +30,7 @@ const MicIcon = ({ userId }: MicIconProps) => {
     return null;
   };
 
-  return <>{render()}</>;
+  return render();
 };
 
 export default MicIcon;

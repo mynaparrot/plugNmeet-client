@@ -13,4 +13,5 @@ export interface IParticipant {
   connectionQuality: ConnectionQuality;
   isLocal: boolean;
   joinedAt: number;
+  visibility: string;
 }

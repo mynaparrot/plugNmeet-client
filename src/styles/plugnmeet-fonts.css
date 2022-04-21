@@ -31,6 +31,10 @@ i {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-eye-slash:before {
+    content: "\e91e";
+}
+
 .pnm-keyboard:before {
     content: "\e91d";
 }

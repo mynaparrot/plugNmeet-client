@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import MobileDetect from 'mobile-detect';
 import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../extra-pages/Error';
@@ -10,27 +9,33 @@ import MainArea from '../main-area';
 
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { store, useAppDispatch } from '../../store';
-import {
-  addToken,
-  updateUserDeviceType,
-} from '../../store/slices/sessionSlice';
+import { addToken } from '../../store/slices/sessionSlice';
 import StartupJoinModal from './joinModal';
 import useLivekitConnect from '../../helpers/livekit/hooks/useLivekitConnect';
 import AudioNotification from './audioNotification';
-import {
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
-  updateScreenHeight,
-  updateScreenWidth,
-} from '../../store/slices/bottomIconsActivitySlice';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import useTFLite from '../virtual-background/hooks/useTFLite';
 import { defaultSegmentationConfig } from '../virtual-background/helpers/segmentationHelper';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
+import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
+import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
 
 const App = () => {
   const dispatch = useAppDispatch();
+  const rootRef = useRef(null);
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState<boolean>(true);
+  // it could be recorder or RTMP bot
+  const [isRecorder, setIsRecorder] = useState<boolean>(false);
+  const [userTypeClass, setUserTypeClass] = useState('participant');
+
+  // we'll require making ready virtual background
+  // elements as early as possible.
+  useBodyPix();
+  useTFLite(defaultSegmentationConfig);
+
+  // some custom hooks
   const {
     error,
     setError,
@@ -43,23 +48,13 @@ const App = () => {
     startLivekitConnection,
   } = useLivekitConnect();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  // it could be recorder or RTMP bot
-  const [isRecorder, setIsRecorder] = useState<boolean>(false);
-  const [deviceClass, setDeviceClass] = useState<string>('');
-  const [orientationClass, setOrientationClass] =
-    useState<string>('landscape-device');
-  const [screenHeight, setScreenHeight] = useState<string>('');
-  const [userTypeClass, setUserTypeClass] = useState('participant');
-  const ref = useRef(null);
-  const { t } = useTranslation();
-
-  // we'll require making ready virtual background
-  // elements as early as possible.
-  useBodyPix();
-  useTFLite(defaultSegmentationConfig);
   useKeyboardShortcuts(currentRoom);
   useDesignCustomization();
+  useWatchVisibilityChange();
+  const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
+    currentRoom,
+    rootRef,
+  );
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -131,81 +126,10 @@ const App = () => {
     }
   }, [currentRoom]);
 
-  // use for updating service based on screen size
-  useEffect(() => {
-    window.onresize = () => {
-      dispatch(updateScreenWidth(window.innerWidth));
-      dispatch(updateScreenHeight(window.innerHeight));
-      adjustScreenSize();
-
-      const isActiveChatPanel =
-        store.getState().bottomIconsActivity.isActiveChatPanel;
-      const isActiveParticipantsPanel =
-        store.getState().bottomIconsActivity.isActiveParticipantsPanel;
-      if (
-        window.innerWidth < 1024 &&
-        isActiveChatPanel &&
-        isActiveParticipantsPanel
-      ) {
-        // if both open better to close one
-        dispatch(updateIsActiveParticipantsPanel(false));
-      }
-    };
-
-    dispatch(updateScreenWidth(window.innerWidth));
-    dispatch(updateScreenHeight(window.innerHeight));
-
-    if (window.innerWidth < 1024) {
-      dispatch(updateIsActiveParticipantsPanel(false));
-      dispatch(updateIsActiveChatPanel(false));
-    }
-
-    let deviceClass = 'is-pc';
-    const md = new MobileDetect(window.navigator.userAgent);
-    if (md.mobile()) {
-      deviceClass = 'is-mobile ';
-      dispatch(updateUserDeviceType('mobile'));
-    } else if (md.tablet()) {
-      deviceClass = 'is-tablet ';
-      dispatch(updateUserDeviceType('tablet'));
-    }
-
-    const os = md.os();
-    if (os === 'AndroidOS') {
-      deviceClass += 'is-android';
-    } else if (os === 'iOS' || os === 'iPadOS') {
-      deviceClass += 'is-ios';
-    }
-    setDeviceClass(deviceClass);
-
-    const mql = window.matchMedia('(orientation: portrait)');
-    if (mql.matches) {
-      setOrientationClass('portrait-device');
-    }
-    mql.addEventListener('change', (m) => {
-      if (m.matches) {
-        setOrientationClass('portrait-device');
-      } else {
-        setOrientationClass('landscape-device');
-      }
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    adjustScreenSize();
-  }, [currentRoom?.state]);
-
-  const adjustScreenSize = () => {
-    const el: any = ref.current;
-    if (el) {
-      setScreenHeight(`${el.clientHeight}px`);
-    }
-  };
-
   const renderMainApp = () => {
     if (currentRoom) {
       return (
-        <div className="plugNmeet-app overflow-hidden" ref={ref}>
+        <div className="plugNmeet-app overflow-hidden" ref={rootRef}>
           {!isRecorder ? <Header currentRoom={currentRoom} /> : null}
           <MainArea
             currentRoom={currentRoom}
