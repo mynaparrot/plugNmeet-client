@@ -56,10 +56,13 @@ export const sendRequestedForWhiteboardData = () => {
   });
 };
 
-export const sendWhiteboardData = (
+export const sendWhiteboardDataAsDonor = (
   excalidrawAPI: ExcalidrawImperativeAPI,
   sendTo: string,
 ) => {
+  // send current page first
+  broadcastCurrentPageNumber(store.getState().whiteboard.currentPage, sendTo);
+
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   const session = store.getState().session;
   const from = {
@@ -68,7 +71,7 @@ export const sendWhiteboardData = (
   };
 
   if (elements.length) {
-    sendScreenDataBySocket(elements, sendTo);
+    broadcastScreenDataBySocket(elements, sendTo);
   }
 
   // send whiteboard files
@@ -92,7 +95,7 @@ export const sendWhiteboardData = (
     sendWebsocketMessage(JSON.stringify(data));
   }
 
-  // finally, change status
+  // finally, change status of request
   store.dispatch(
     updateRequestedWhiteboardData({
       requested: false,
@@ -123,14 +126,14 @@ export const broadcastSceneOnChange = (
     [] as BroadcastedExcalidrawElement[],
   );
 
-  sendScreenDataBySocket(syncableElements, '');
+  broadcastScreenDataBySocket(syncableElements, '');
 
   for (const syncableElement of syncableElements) {
     broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
   }
 };
 
-export const sendScreenDataBySocket = (
+export const broadcastScreenDataBySocket = (
   elements: readonly ExcalidrawElement[],
   sendTo: string,
 ) => {
@@ -154,6 +157,30 @@ export const sendScreenDataBySocket = (
     room_id: session.currentRoom.room_id,
     message_id: '',
     body: info,
+  };
+
+  if (sendTo !== '') {
+    data.to = sendTo;
+  }
+
+  sendWebsocketMessage(JSON.stringify(data));
+};
+
+export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
+  const session = store.getState().session;
+
+  const data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    message_id: '',
+    body: {
+      type: WhiteboardMsgType.PAGE_CHANGE,
+      from: {
+        sid: session.currenUser?.sid ?? '',
+        userId: session.currenUser?.userId ?? '',
+      },
+      msg: `${page}`,
+    },
   };
 
   if (sendTo !== '') {

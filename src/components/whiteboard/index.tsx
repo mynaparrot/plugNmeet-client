@@ -40,7 +40,7 @@ import { fetchFileWithElm } from './helpers/fileReader';
 import {
   broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
-  sendWhiteboardData,
+  sendWhiteboardDataAsDonor,
 } from './helpers/handleRequestedWhiteboardData';
 import FooterUI from './footerUI';
 
@@ -125,7 +125,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
 
     if (requestedWhiteboardData.requested && excalidrawAPI) {
-      sendWhiteboardData(excalidrawAPI, requestedWhiteboardData.sendTo);
+      sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
   }, [requestedWhiteboardData, excalidrawAPI]);
 

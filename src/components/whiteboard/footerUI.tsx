@@ -6,12 +6,7 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { createSelector } from '@reduxjs/toolkit';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { useTranslation } from 'react-i18next';
-import {
-  DataMessageType,
-  IDataMessage,
-  WhiteboardMsgType,
-} from '../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../../helpers/websocketConnector';
+import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -102,20 +97,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   };
 
   const setCurrentPage = (page: number) => {
-    const pageChange: IDataMessage = {
-      type: DataMessageType.WHITEBOARD,
-      room_sid: session.currentRoom.sid,
-      message_id: '',
-      body: {
-        type: WhiteboardMsgType.PAGE_CHANGE,
-        from: {
-          sid: session.currenUser?.sid ?? '',
-          userId: session.currenUser?.userId ?? '',
-        },
-        msg: `${page}`,
-      },
-    };
-    sendWebsocketMessage(JSON.stringify(pageChange));
+    broadcastCurrentPageNumber(page);
     dispatch(setWhiteboardCurrentPage(page));
 
     if (page > 1) {
