@@ -223,10 +223,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
 
       if (!hasFile) {
+        const appStat = excalidrawAPI.getAppState();
         const result = await fetchFileWithElm(
           url,
           file.id,
           lastBroadcastedOrReceivedSceneVersion,
+          appStat.height,
+          appStat.width,
         );
         if (result && excalidrawAPI) {
           fileReadImages.push(result.image);
@@ -369,7 +372,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper flex-1 w-full max-w-[900px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9">
+      <div className="excalidraw-wrapper flex-1 w-full max-w-[1050px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9">
         {render()}
       </div>
     </div>

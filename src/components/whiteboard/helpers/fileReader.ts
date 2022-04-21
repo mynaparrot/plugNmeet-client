@@ -14,9 +14,17 @@ let fileId = '',
   imgData = '',
   fileHeight = 50,
   fileWidth = 50,
-  lastVersion;
+  lastVersion,
+  excalidrawHeight,
+  excalidrawWidth;
 
-export const fetchFileWithElm = async (url, file_id, last_version) => {
+export const fetchFileWithElm = async (
+  url,
+  file_id,
+  last_version,
+  excalidraw_height,
+  excalidraw_width,
+) => {
   return new Promise<FileReaderResult>(async (resolve, reject) => {
     const res = await fetch(url);
     const imageData = await res.blob();
@@ -26,6 +34,8 @@ export const fetchFileWithElm = async (url, file_id, last_version) => {
 
     fileId = file_id;
     lastVersion = last_version;
+    excalidrawHeight = excalidraw_height;
+    excalidrawWidth = excalidraw_width;
     if (lastVersion < 0) {
       lastVersion = 1;
     }
@@ -50,13 +60,8 @@ export const fetchFileWithElm = async (url, file_id, last_version) => {
         const image = new Image();
         image.src = imgData;
 
-        image.onload = function () {
-          fileHeight = image.height;
-          fileWidth = image.width;
-          if (fileHeight > 100) {
-            fileHeight = image.height * 0.2;
-            fileWidth = image.width * 0.2;
-          }
+        image.onload = async function () {
+          await getFileDimension(image.height, image.width);
           const result = prepareForExcalidraw();
           resolve(result);
         };
@@ -75,12 +80,18 @@ const prepareForExcalidraw = (): FileReaderResult => {
     mimeType: fileMimeType as any,
     created: Date.now(),
   };
+  console.log(
+    'excalidrawHeight: ',
+    excalidrawHeight,
+    ' excalidrawWidth: ',
+    excalidrawWidth,
+  );
 
   const elm: ExcalidrawElement = {
     id: fileId,
     type: 'image',
-    x: 360,
-    y: 115,
+    x: excalidrawHeight - excalidrawHeight * 0.5,
+    y: excalidrawWidth - excalidrawWidth * 0.92,
     width: fileWidth,
     height: fileHeight,
     angle: 0,
@@ -147,4 +158,15 @@ const getRealMimeType = (reader) => {
   }
 
   return realMimeType;
+};
+
+const getFileDimension = async (height: number, width: number) => {
+  fileHeight = Number(`${height}`);
+  fileWidth = Number(`${width}`);
+  let reducedBy = 0.1;
+  while (fileHeight > excalidrawHeight) {
+    fileHeight -= fileHeight * reducedBy;
+    fileWidth -= fileWidth * reducedBy;
+    reducedBy += 0.1;
+  }
 };
