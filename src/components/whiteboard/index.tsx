@@ -70,6 +70,11 @@ const lockWhiteboardSelector = createSelector(
   (lock_whiteboard) => lock_whiteboard,
 );
 
+const currentPageSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentPage,
+  (currentPage) => currentPage,
+);
+
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
   const currentRoom = store.getState().session.currentRoom;
@@ -93,6 +98,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
+  const currentPage = useAppSelector(currentPageSelector);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -199,10 +205,16 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   useEffect(() => {
     if (whiteboardFiles && excalidrawAPI) {
       const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
-      handleExcalidrawAddFiles(excalidrawAPI, files);
+      if (files.length) {
+        const currentPageFiles = files.filter(
+          (file) => file.currenPage === currentPage,
+        );
+        console.log(currentPageFiles);
+        handleExcalidrawAddFiles(excalidrawAPI, currentPageFiles);
+      }
     }
     //eslint-disable-next-line
-  }, [whiteboardFiles, excalidrawAPI]);
+  }, [whiteboardFiles, excalidrawAPI, currentPage]);
 
   const handleExcalidrawAddFiles = async (
     excalidrawAPI: ExcalidrawImperativeAPI,
@@ -346,7 +358,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   );
 
   const renderTopRightUI = () => {
-    return <>{currentUser?.metadata?.is_admin ? <UploadFiles /> : null}</>;
+    return (
+      <>
+        {currentUser?.metadata?.is_admin ? (
+          <UploadFiles currenPage={currentPage} />
+        ) : null}
+      </>
+    );
   };
 
   const renderFooter = () => {

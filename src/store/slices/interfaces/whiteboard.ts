@@ -9,6 +9,7 @@ export interface IWhiteboardSlice {
 
 export interface IWhiteboardFile {
   id: string;
+  currenPage: number;
   filePath: string;
   fileName: string;
 }

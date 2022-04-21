@@ -6,7 +6,10 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { createSelector } from '@reduxjs/toolkit';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { useTranslation } from 'react-i18next';
-import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
+import {
+  broadcastCurrentPageNumber,
+  broadcastScreenDataBySocket,
+} from './helpers/handleRequestedWhiteboardData';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -32,21 +35,30 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   const session = store.getState().session;
 
   useEffect(() => {
-    if (currentPage > 1) {
-      setDisablePre(false);
-    }
-    if (currentPage === totalPages) {
-      setDisableNext(true);
-    }
-    //eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
     if (previousPage && currentPage !== previousPage && excalidrawAPI) {
       savePreviousPageData();
     }
     //eslint-disable-next-line
   }, [currentPage, previousPage, excalidrawAPI]);
+
+  useEffect(() => {
+    if (currentPage > 1) {
+      setDisablePre(false);
+    }
+    if (currentPage === 1) {
+      setDisablePre(true);
+    }
+
+    if (disableNext) {
+      if (currentPage !== totalPages) {
+        setDisableNext(false);
+      }
+    } else {
+      if (currentPage === totalPages) {
+        setDisableNext(true);
+      }
+    }
+  }, [currentPage, disableNext, totalPages]);
 
   useEffect(() => {
     const jxs: Array<JSX.Element> = [];
@@ -92,48 +104,29 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   const displayCurrentPageData = (currentPage) => {
     const data = sessionStorage.getItem(currentPage);
     if (data && excalidrawAPI) {
-      excalidrawAPI.updateScene({ elements: JSON.parse(data) });
+      const elements = JSON.parse(data);
+      if (elements.length) {
+        excalidrawAPI.updateScene({ elements });
+        // better to broadcast full screen
+        broadcastScreenDataBySocket(elements);
+      }
     }
   };
 
   const setCurrentPage = (page: number) => {
     broadcastCurrentPageNumber(page);
     dispatch(setWhiteboardCurrentPage(page));
-
-    if (page > 1) {
-      setDisablePre(false);
-    }
-    if (page === totalPages) {
-      setDisableNext(true);
-    }
-    if (page === 1) {
-      setDisablePre(true);
-    }
   };
 
   const handlePre = () => {
-    const prePage = currentPage - 1;
-    if (prePage === 1) {
-      setDisablePre(true);
-    }
-    if (prePage !== totalPages) {
-      setDisableNext(false);
-    }
-    setCurrentPage(prePage);
+    setCurrentPage(currentPage - 1);
   };
 
   const handleNext = () => {
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    if (nextPage === totalPages) {
-      setDisableNext(true);
-    }
-    if (nextPage > 1) {
-      setDisablePre(false);
-    }
+    setCurrentPage(currentPage + 1);
   };
 
-  const render = () => {
+  const renderForAdmin = () => {
     return (
       <div className="flex footerUI">
         {!disablePre ? (
@@ -165,7 +158,21 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     );
   };
 
-  return <>{session.currenUser?.metadata?.is_admin ? render() : null}</>;
+  const renderForParticipant = () => {
+    return (
+      <div className="flex footerUI">
+        {t('whiteboard.page', { count: currentPage })}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {session.currenUser?.metadata?.is_admin && !session.currenUser.isRecorder
+        ? renderForAdmin()
+        : renderForParticipant()}
+    </>
+  );
 };
 
 export default FooterUI;

@@ -107,7 +107,7 @@ export const sendWhiteboardDataAsDonor = (
 export const broadcastSceneOnChange = (
   allElements: readonly ExcalidrawElement[],
 ) => {
-  // sync out only the elements we think we need to to save bandwidth.
+  // sync out only the elements we think we need to save bandwidth.
   const syncableElements = allElements.reduce(
     (acc, element: BroadcastedExcalidrawElement, idx, elements) => {
       if (
@@ -135,7 +135,7 @@ export const broadcastSceneOnChange = (
 
 export const broadcastScreenDataBySocket = (
   elements: readonly ExcalidrawElement[],
-  sendTo: string,
+  sendTo?: string,
 ) => {
   const session = store.getState().session;
   const from = {
@@ -143,12 +143,10 @@ export const broadcastScreenDataBySocket = (
     userId: session.currenUser?.userId ?? '',
   };
 
-  const msg = JSON.stringify(elements);
-
   const info: WhiteboardMsg = {
     type: WhiteboardMsgType.SCENE_UPDATE,
     from,
-    msg: msg,
+    msg: JSON.stringify(elements),
   };
 
   const data: IDataMessage = {

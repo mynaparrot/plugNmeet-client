@@ -19,11 +19,11 @@ let fileId = '',
   excalidrawWidth;
 
 export const fetchFileWithElm = async (
-  url,
-  file_id,
-  last_version,
-  excalidraw_height,
-  excalidraw_width,
+  url: string,
+  file_id: string,
+  last_version: number,
+  excalidraw_height: number,
+  excalidraw_width: number,
 ) => {
   return new Promise<FileReaderResult>(async (resolve, reject) => {
     const res = await fetch(url);
