@@ -128,8 +128,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
 
   const renderForAdmin = () => {
     return (
-      <div className="flex footerUI pt-1 wb-page-navigation">
-        {/* {!disablePre ? ( */}
+      <div className="flex pt-1 wb-page-navigation">
         <button
           className="pre w-8 h-8 flex items-center justify-center"
           onClick={handlePre}
@@ -137,7 +136,6 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
         >
           <i className="pnm-arrow-left-short text-black text-xl opacity-50" />
         </button>
-        {/* ) : null} */}
         <select
           id="pages"
           name="pages"
@@ -147,7 +145,6 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
         >
           {options}
         </select>
-        {/* {!disableNext ? ( */}
         <button
           className="next w-8 h-8 flex items-center justify-center"
           onClick={handleNext}
@@ -155,14 +152,13 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
         >
           <i className="pnm-arrow-right-short text-black text-xl opacity-50" />
         </button>
-        {/* ) : null} */}
       </div>
     );
   };
 
   const renderForParticipant = () => {
     return (
-      <div className="flex footerUI text-sm pt-3">
+      <div className="flex text-sm pt-3">
         {t('whiteboard.page', { count: currentPage })}
       </div>
     );

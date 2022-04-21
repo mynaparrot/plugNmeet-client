@@ -46,6 +46,22 @@
     justify-content: start !important;
 }
 
-.footerUI button {
+.wb-page-navigation button {
     margin: 0 10px;
+}
+
+.wb-page-navigation .pre {
+    margin-left: 0;
+}
+
+.wb-page-navigation .next {
+    margin-right: 0;
+}
+
+.wb-page-navigation button:disabled {
+    background-color: #f4f4f4 !important;
+}
+
+.wb-page-navigation button:disabled i {
+    opacity: 0.2;
 }
