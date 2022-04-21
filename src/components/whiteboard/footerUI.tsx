@@ -61,15 +61,15 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   }, [currentPage, disableNext, totalPages]);
 
   useEffect(() => {
-    const jxs: Array<JSX.Element> = [];
+    const jsx: Array<JSX.Element> = [];
     for (let i = 0; i < totalPages; i++) {
-      jxs.push(
+      jsx.push(
         <option key={i} value={i + 1}>
           {t('whiteboard.page', { count: i + 1 })}
         </option>,
       );
     }
-    setOptions(jxs);
+    setOptions(jsx);
     //eslint-disable-next-line
   }, [totalPages]);
 
