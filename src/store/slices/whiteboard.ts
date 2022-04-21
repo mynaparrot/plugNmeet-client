@@ -6,6 +6,8 @@ import {
 } from './interfaces/whiteboard';
 
 const initialState: IWhiteboardSlice = {
+  totalPages: 10,
+  currentPage: 1,
   excalidrawElements: '',
   mousePointerLocation: '',
   whiteboardFiles: '',
@@ -42,6 +44,9 @@ const whiteboardSlice = createSlice({
     ) => {
       state.requestedWhiteboardData = action.payload;
     },
+    setWhiteboardCurrentPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload;
+    },
   },
 });
 
@@ -51,6 +56,7 @@ export const {
   addWhiteboardFile,
   addWhiteboardFileAsJSON,
   updateRequestedWhiteboardData,
+  setWhiteboardCurrentPage,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

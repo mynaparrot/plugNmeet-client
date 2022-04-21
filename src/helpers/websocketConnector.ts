@@ -24,6 +24,7 @@ import {
 import { updateTotalUnreadChatMsgs } from '../store/slices/bottomIconsActivitySlice';
 import {
   addWhiteboardFileAsJSON,
+  setWhiteboardCurrentPage,
   updateExcalidrawElements,
   updateMousePointerLocation,
   updateRequestedWhiteboardData,
@@ -197,6 +198,8 @@ const handleWhiteboardMsg = (data: WhiteboardMsg) => {
     store.dispatch(updateMousePointerLocation(data.msg));
   } else if (data.type === 'ADD_WHITEBOARD_FILE') {
     store.dispatch(addWhiteboardFileAsJSON(data.msg));
+  } else if (data.type === 'PAGE_CHANGE') {
+    store.dispatch(setWhiteboardCurrentPage(Number(data.msg)));
   }
 };
 

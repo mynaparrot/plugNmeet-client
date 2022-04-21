@@ -42,6 +42,7 @@ import {
   sendRequestedForWhiteboardData,
   sendWhiteboardData,
 } from './helpers/handleRequestedWhiteboardData';
+import FooterUI from './footerUI';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -348,6 +349,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     return <>{currentUser?.metadata?.is_admin ? <UploadFiles /> : null}</>;
   };
 
+  const renderFooter = () => {
+    return <FooterUI excalidrawAPI={excalidrawAPI} />;
+  };
+
   const render = () => {
     return (
       <Excalidraw
@@ -363,6 +368,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         detectScroll={true}
         langCode={i18n.languages[0]}
         renderTopRightUI={renderTopRightUI}
+        renderFooter={renderFooter}
       />
     );
   };
