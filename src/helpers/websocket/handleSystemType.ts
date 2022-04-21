@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import {
   DataMessageType,
   IDataMessage,
@@ -7,8 +9,7 @@ import { chatMessagesSelector } from '../../store/slices/chatMessagesSlice';
 import { store } from '../../store';
 import { updateRequestedWhiteboardData } from '../../store/slices/whiteboard';
 import { addToken } from '../../store/slices/sessionSlice';
-import { toast } from 'react-toastify';
-import { sendWebsocketMessage } from './websocketConnector';
+import { sendWebsocketMessage } from './index';
 import { updateParticipant } from '../../store/slices/participantSlice';
 
 export const handleSystemTypeData = (body: IDataMessage) => {

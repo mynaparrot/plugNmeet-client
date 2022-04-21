@@ -14,7 +14,7 @@ import {
   WhiteboardMsg,
   WhiteboardMsgType,
 } from '../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../../helpers/websocket/websocketConnector';
+import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString } from '../../helpers/utils';
 
 interface IUploadFilesProps {

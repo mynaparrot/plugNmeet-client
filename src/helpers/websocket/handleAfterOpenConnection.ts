@@ -5,7 +5,7 @@ import {
   IDataMessage,
   SystemMsgType,
 } from '../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from './websocketConnector';
+import { sendWebsocketMessage } from './index';
 
 export const onAfterOpenConnection = () => {
   const session = store.getState().session;
