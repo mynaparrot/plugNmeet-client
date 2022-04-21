@@ -80,12 +80,6 @@ const prepareForExcalidraw = (): FileReaderResult => {
     mimeType: fileMimeType as any,
     created: Date.now(),
   };
-  console.log(
-    'excalidrawHeight: ',
-    excalidrawHeight,
-    ' excalidrawWidth: ',
-    excalidrawWidth,
-  );
 
   const elm: ExcalidrawElement = {
     id: fileId,
