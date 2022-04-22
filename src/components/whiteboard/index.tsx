@@ -78,7 +78,6 @@ const currentPageSelector = createSelector(
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
   const currentRoom = store.getState().session.currentRoom;
-  let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
   const collaborators = new Map<string, Collaborator>();
   let fileReadImages: Array<BinaryFileData> = [];
@@ -86,13 +85,18 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const participants = useAppSelector(participantsSelector.selectAll);
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
   const [theme, setTheme] = useState('light');
+  const [
+    lastBroadcastOrReceivedSceneVersion,
+    setLastBroadcastOrReceivedSceneVersion,
+  ] = useState<number>(-1);
+
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
+  const participants = useAppSelector(participantsSelector.selectAll);
   const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
   const requestedWhiteboardData = useAppSelector(
     requestedWhiteboardDataSelector,
@@ -164,6 +168,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [lockWhiteboard]);
 
+  // if page change then we'll reset version
+  useEffect(() => {
+    setLastBroadcastOrReceivedSceneVersion(-1);
+  }, [currentPage]);
+
   // for handling draw elements
   useEffect(() => {
     if (excalidrawElements && excalidrawAPI) {
@@ -209,7 +218,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         const currentPageFiles = files.filter(
           (file) => file.currenPage === currentPage,
         );
-        console.log(currentPageFiles);
         handleExcalidrawAddFiles(excalidrawAPI, currentPageFiles);
       }
     }
@@ -240,7 +248,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         const result = await fetchFileWithElm(
           url,
           file.id,
-          lastBroadcastedOrReceivedSceneVersion,
+          lastBroadcastOrReceivedSceneVersion,
           appStat.height,
           appStat.width,
         );
@@ -294,7 +302,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       elements,
       commitToHistory: init,
     });
-    lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
+    setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
 
     // We haven't yet implemented multiplayer undo functionality, so we clear the undo stack
     // when we receive any messages from another peer. This UX can be pretty rough -- if you
@@ -313,8 +321,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (viewModeEnabled) {
         return;
       }
-      if (getSceneVersion(elements) > lastBroadcastedOrReceivedSceneVersion) {
-        lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
+      if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
+        setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
         broadcastSceneOnChange(elements);
       }
     }

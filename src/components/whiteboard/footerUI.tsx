@@ -33,6 +33,8 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const session = store.getState().session;
+  const isAdmin = session.currenUser?.metadata?.is_admin;
+  const isRecorder = session.currenUser?.isRecorder;
 
   useEffect(() => {
     if (previousPage && currentPage !== previousPage && excalidrawAPI) {
@@ -85,19 +87,19 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     };
   }, [excalidrawAPI]);
 
-  const savePreviousPageData = (displayPre = true) => {
+  const savePreviousPageData = () => {
     if (!excalidrawAPI) {
       return;
     }
-    const data = excalidrawAPI.getSceneElements();
-    if (data.length) {
-      sessionStorage.setItem(String(previousPage), JSON.stringify(data));
-    }
-    if (displayPre) {
-      excalidrawAPI.updateScene({
-        elements: [],
-      });
+    if (isAdmin && !isRecorder) {
+      const data = excalidrawAPI.getSceneElements();
+      if (data.length) {
+        sessionStorage.setItem(String(previousPage), JSON.stringify(data));
+      }
+      cleanExcalidraw();
       displayCurrentPageData(currentPage);
+    } else {
+      cleanExcalidraw();
     }
   };
 
@@ -107,10 +109,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
       const elements = JSON.parse(data);
       if (elements.length) {
         excalidrawAPI.updateScene({ elements });
-        if (
-          session.currenUser?.metadata?.is_admin &&
-          !session.currenUser.isRecorder
-        ) {
+        if (isAdmin && !isRecorder) {
           // better to broadcast full screen
           broadcastScreenDataBySocket(elements);
         }
@@ -118,9 +117,17 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     }
   };
 
+  const cleanExcalidraw = () => {
+    excalidrawAPI?.updateScene({
+      elements: [],
+    });
+  };
+
   const setCurrentPage = (page: number) => {
     broadcastCurrentPageNumber(page);
-    dispatch(setWhiteboardCurrentPage(page));
+    setTimeout(() => {
+      dispatch(setWhiteboardCurrentPage(page));
+    }, 500);
   };
 
   const handlePre = () => {
@@ -170,11 +177,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   };
 
   return (
-    <>
-      {session.currenUser?.metadata?.is_admin && !session.currenUser.isRecorder
-        ? renderForAdmin()
-        : renderForParticipant()}
-    </>
+    <>{isAdmin && !isRecorder ? renderForAdmin() : renderForParticipant()}</>
   );
 };
 
