@@ -14,10 +14,14 @@ import {
   WhiteboardMsg,
   WhiteboardMsgType,
 } from '../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../../helpers/websocketConnector';
+import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString } from '../../helpers/utils';
 
-const UploadFiles = () => {
+interface IUploadFilesProps {
+  currenPage: number;
+}
+
+const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const toastId = React.useRef<string>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -42,6 +46,7 @@ const UploadFiles = () => {
   const broadcastFile = (filePath, fileName) => {
     const file: IWhiteboardFile = {
       id: randomString(),
+      currenPage,
       filePath,
       fileName,
     };

@@ -33,7 +33,7 @@ import {
   closeWebsocketConnection,
   openWebsocketConnection,
   sendWebsocketMessage,
-} from '../websocketConnector';
+} from '../websocket';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import {
   DataMessageType,
@@ -136,7 +136,11 @@ export default class ConnectLivekit {
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
     this.roomConnectionStatusState('connecting');
+    // clean session data
+    sessionStorage.clear();
+    // configure room
     this._room = this.configureRoom();
+    // finally connect
     this.connect();
   }
 

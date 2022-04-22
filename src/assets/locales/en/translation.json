@@ -197,5 +197,8 @@
       "select-microphone": "Select one microphone",
       "select-webcam": "Select one webcam"
     }
+  },
+  "whiteboard": {
+    "page": "Page {{count}}"
   }
 }

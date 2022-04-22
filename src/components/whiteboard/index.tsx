@@ -26,7 +26,7 @@ import {
 import {
   isSocketConnected,
   sendWebsocketMessage,
-} from '../../helpers/websocketConnector';
+} from '../../helpers/websocket';
 import {
   ReconciledElements,
   reconcileElements,
@@ -40,8 +40,9 @@ import { fetchFileWithElm } from './helpers/fileReader';
 import {
   broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
-  sendWhiteboardData,
+  sendWhiteboardDataAsDonor,
 } from './helpers/handleRequestedWhiteboardData';
+import FooterUI from './footerUI';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -69,10 +70,14 @@ const lockWhiteboardSelector = createSelector(
   (lock_whiteboard) => lock_whiteboard,
 );
 
+const currentPageSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentPage,
+  (currentPage) => currentPage,
+);
+
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
   const currentRoom = store.getState().session.currentRoom;
-  let lastBroadcastedOrReceivedSceneVersion = -1;
   const CURSOR_SYNC_TIMEOUT = 33;
   const collaborators = new Map<string, Collaborator>();
   let fileReadImages: Array<BinaryFileData> = [];
@@ -80,18 +85,24 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const participants = useAppSelector(participantsSelector.selectAll);
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
   const [theme, setTheme] = useState('light');
+  const [
+    lastBroadcastOrReceivedSceneVersion,
+    setLastBroadcastOrReceivedSceneVersion,
+  ] = useState<number>(-1);
+
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
+  const participants = useAppSelector(participantsSelector.selectAll);
   const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
   const requestedWhiteboardData = useAppSelector(
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
+  const currentPage = useAppSelector(currentPageSelector);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -124,7 +135,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
 
     if (requestedWhiteboardData.requested && excalidrawAPI) {
-      sendWhiteboardData(excalidrawAPI, requestedWhiteboardData.sendTo);
+      sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
   }, [requestedWhiteboardData, excalidrawAPI]);
 
@@ -156,6 +167,18 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
     //eslint-disable-next-line
   }, [lockWhiteboard]);
+
+  // if page change then we'll reset version
+  useEffect(() => {
+    setLastBroadcastOrReceivedSceneVersion(-1);
+    // for recorder & other user we'll clean from here
+    if (!currentUser?.metadata?.is_admin || currentUser?.isRecorder) {
+      excalidrawAPI?.updateScene({
+        elements: [],
+      });
+    }
+    //eslint-disable-next-line
+  }, [currentPage, excalidrawAPI]);
 
   // for handling draw elements
   useEffect(() => {
@@ -198,10 +221,15 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   useEffect(() => {
     if (whiteboardFiles && excalidrawAPI) {
       const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
-      handleExcalidrawAddFiles(excalidrawAPI, files);
+      if (files.length) {
+        const currentPageFiles = files.filter(
+          (file) => file.currenPage === currentPage,
+        );
+        handleExcalidrawAddFiles(excalidrawAPI, currentPageFiles);
+      }
     }
     //eslint-disable-next-line
-  }, [whiteboardFiles, excalidrawAPI]);
+  }, [whiteboardFiles, excalidrawAPI, currentPage]);
 
   const handleExcalidrawAddFiles = async (
     excalidrawAPI: ExcalidrawImperativeAPI,
@@ -223,10 +251,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
 
       if (!hasFile) {
+        const appStat = excalidrawAPI.getAppState();
         const result = await fetchFileWithElm(
           url,
           file.id,
-          lastBroadcastedOrReceivedSceneVersion,
+          lastBroadcastOrReceivedSceneVersion,
+          appStat.height,
+          appStat.width,
         );
         if (result && excalidrawAPI) {
           fileReadImages.push(result.image);
@@ -278,7 +309,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       elements,
       commitToHistory: init,
     });
-    lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
+    setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
 
     // We haven't yet implemented multiplayer undo functionality, so we clear the undo stack
     // when we receive any messages from another peer. This UX can be pretty rough -- if you
@@ -297,8 +328,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (viewModeEnabled) {
         return;
       }
-      if (getSceneVersion(elements) > lastBroadcastedOrReceivedSceneVersion) {
-        lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
+      if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
+        setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
         broadcastSceneOnChange(elements);
       }
     }
@@ -342,7 +373,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   );
 
   const renderTopRightUI = () => {
-    return <>{currentUser?.metadata?.is_admin ? <UploadFiles /> : null}</>;
+    return (
+      <>
+        {currentUser?.metadata?.is_admin ? (
+          <UploadFiles currenPage={currentPage} />
+        ) : null}
+      </>
+    );
+  };
+
+  const renderFooter = () => {
+    return <FooterUI excalidrawAPI={excalidrawAPI} />;
   };
 
   const render = () => {
@@ -360,6 +401,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         detectScroll={true}
         langCode={i18n.languages[0]}
         renderTopRightUI={renderTopRightUI}
+        renderFooter={renderFooter}
       />
     );
   };
@@ -369,7 +411,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
 
-      <div className="excalidraw-wrapper flex-1 w-full max-w-[900px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9">
+      <div className="excalidraw-wrapper flex-1 w-full max-w-[1050px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9">
         {render()}
       </div>
     </div>

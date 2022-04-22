@@ -51,6 +51,14 @@ const bottomIconsSlice = createSlice({
       ) {
         state.isActiveParticipantsPanel = false;
       }
+      // logic for whiteboard
+      // we don't allow to open both
+      if (state.isActiveWhiteboard) {
+        if (state.isActiveParticipantsPanel) {
+          state.isActiveParticipantsPanel = false;
+        }
+      }
+
       state.isActiveChatPanel = action.payload;
 
       // if open then we'll make it 0
@@ -69,6 +77,13 @@ const bottomIconsSlice = createSlice({
         action.payload
       ) {
         state.isActiveChatPanel = false;
+      }
+      // logic for whiteboard
+      // we don't allow to open both
+      if (state.isActiveWhiteboard) {
+        if (state.isActiveChatPanel) {
+          state.isActiveChatPanel = false;
+        }
       }
       state.isActiveParticipantsPanel = action.payload;
     },

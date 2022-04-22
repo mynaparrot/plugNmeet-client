@@ -5,7 +5,7 @@ import {
   IDataMessage,
   SystemMsgType,
 } from '../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../websocketConnector';
+import { sendWebsocketMessage } from '../websocket';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
