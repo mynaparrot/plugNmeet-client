@@ -156,7 +156,7 @@ code {
 }
 
 .video-camera-item {
-    @apply w-[calc(16.66%-16px)] pb-[12%] m-[8px] rounded-2xl overflow-hidden;
+    @apply w-[calc(16.66%-16px)] pb-[12%] m-[8px] rounded-2xl overflow-hidden z-[1];
 }
 
 .hideChatPanel.hideParticipantsPanel .otherWebcams .video-camera-item {
@@ -219,28 +219,23 @@ code {
     display: none;
 }
 
-#main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper,
-#main-area.hideChatPanel.showScreenShare .all-webcam-wrapper,
-#main-area.hideChatPanel.showSharedNotepad .all-webcam-wrapper,
-#main-area.hideChatPanel.showWhiteboard .all-webcam-wrapper {
-    position: relative;
-    width: 250px;
+#main-area.SSS-SSN-SWB .all-webcam-wrapper {
+    position: absolute;
+    width: 270px;
     height: calc(100vh - 110px);
     display: block;
     background: rgb(235, 248, 255);
     background: linear-gradient(
             150deg, rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100%);
     padding: 30px 0;
+    z-index: 2;
 }
 
 #main-area.hideParticipantsPanel.showScreenShare .all-webcam-wrapper.total-cam-0 {
     display: none;
 }
 
-#main-area.hideParticipantsPanel.showScreenShare .middle-area,
-#main-area.hideChatPanel.showScreenShare .middle-area,
-#main-area.hideChatPanel.showSharedNotepad .middle-area,
-#main-area.hideChatPanel.showWhiteboard .middle-area {
+#main-area.SSS-SSN-SWB .middle-area {
     display: flex;
     flex-flow: row-reverse;
 }
@@ -521,35 +516,34 @@ button.previous-cam:hover, button.next-cam:hover {
     padding: 0 20px;
 }
 
-.hideParticipantsPanel .all-webcam-wrapper-inner .video-camera-item,
+/* .hideParticipantsPanel .all-webcam-wrapper-inner .video-camera-item,
 .hideChatPanel .all-webcam-wrapper-inner .video-camera-item {
     width: calc(14.28% - 16px);
     padding-bottom: 10%;
-}
+} */
 
-.hideChatPanel.hideParticipantsPanel .all-webcam-wrapper-inner .video-camera-item {
+/* .hideChatPanel.hideParticipantsPanel .all-webcam-wrapper-inner .video-camera-item {
     width: calc(12.5% - 16px);
     padding-bottom: 9%;
-}
+} */
 
 .all-webcam-wrapper.total-cam-1 .video-camera-item {
-    width: calc(75% - 16px);
-    padding-bottom: 55.5%;
-}
-
-.hideChatPanel .all-webcam-wrapper.total-cam-1 .video-camera-item,
-.hideParticipantsPanel .all-webcam-wrapper.total-cam-1 .video-camera-item {
-    width: calc(65% - 16px);
-    padding-bottom: 48%;
-}
-
-.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-1 .video-camera-item {
     width: calc(51% - 16px);
     padding-bottom: 38%;
 }
 
-.all-webcam-wrapper.total-cam-2 .video-camera-item,
-.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-2 .video-camera-item {
+/* .hideChatPanel .all-webcam-wrapper.total-cam-1 .video-camera-item,
+.hideParticipantsPanel .all-webcam-wrapper.total-cam-1 .video-camera-item {
+    width: calc(65% - 16px);
+    padding-bottom: 48%;
+} */
+
+/* .hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-1 .video-camera-item {
+    width: calc(51% - 16px);
+    padding-bottom: 38%;
+} */
+
+.all-webcam-wrapper.total-cam-2 .video-camera-item {
     width: calc(45% - 16px);
     padding-bottom: 33%;
 }
@@ -557,32 +551,34 @@ button.previous-cam:hover, button.next-cam:hover {
 .all-webcam-wrapper.total-cam-3 .video-camera-item,
 .all-webcam-wrapper.total-cam-4 .video-camera-item,
 .all-webcam-wrapper.total-cam-5 .video-camera-item,
-.all-webcam-wrapper.total-cam-6 .video-camera-item {
-    width: calc(33% - 16px);
-    padding-bottom: 24%;
-}
-
-.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .video-camera-item,
-.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-4 .video-camera-item,
-.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-5 .video-camera-item,
-.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-6 .video-camera-item {
-    width: calc(26% - 16px);
-    padding-bottom: 19%;
-}
-
+.all-webcam-wrapper.total-cam-6 .video-camera-item,
 .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .all-webcam-wrapper.total-cam-8 .video-camera-item {
     width: calc(25% - 16px);
     padding-bottom: 18%;
 }
 
-.hideChatPanel .all-webcam-wrapper.total-cam-7 .video-camera-item,
+/* .hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .video-camera-item,
+.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-4 .video-camera-item,
+.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-5 .video-camera-item,
+.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-6 .video-camera-item {
+    width: calc(26% - 16px);
+    padding-bottom: 19%;
+} */
+
+/* .all-webcam-wrapper.total-cam-7 .video-camera-item,
+.all-webcam-wrapper.total-cam-8 .video-camera-item {
+    width: calc(25% - 16px);
+    padding-bottom: 18%;
+} */
+
+/* .hideChatPanel .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .hideChatPanel .all-webcam-wrapper.total-cam-8 .video-camera-item,
 .hideParticipantsPanel .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .hideParticipantsPanel .all-webcam-wrapper.total-cam-8 .video-camera-item {
     width: calc(20% - 16px);
     padding-bottom: 14%;
-}
+} */
 
 .all-webcam-wrapper-inner .video-camera-item.admin {
     order: 1;
@@ -704,6 +700,20 @@ button.previous-cam:hover, button.next-cam:hover {
     padding-bottom: 68%;
     box-shadow: none;
     margin: 5px 10px;
+}
+
+.transition-left-panel {
+    position: absolute;
+    height: 100%;
+    box-shadow: 0px 0px 10px -7px rgb(0 0 0);
+    z-index: 2;
+}
+.transition-right-panel {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    box-shadow: 0px 0px 10px -7px rgb(0 0 0);
+    z-index: 2;
 }
 
 
