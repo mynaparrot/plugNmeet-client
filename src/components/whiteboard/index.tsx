@@ -171,7 +171,14 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   // if page change then we'll reset version
   useEffect(() => {
     setLastBroadcastOrReceivedSceneVersion(-1);
-  }, [currentPage]);
+    // for recorder & other user we'll clean from here
+    if (!currentUser?.metadata?.is_admin || currentUser?.isRecorder) {
+      excalidrawAPI?.updateScene({
+        elements: [],
+      });
+    }
+    //eslint-disable-next-line
+  }, [currentPage, excalidrawAPI]);
 
   // for handling draw elements
   useEffect(() => {

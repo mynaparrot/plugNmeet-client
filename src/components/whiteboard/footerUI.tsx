@@ -91,6 +91,9 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     if (!excalidrawAPI) {
       return;
     }
+    // for other user we'll clean from parent component
+    // because from mobile or small screen pagination part remain collapse
+    // no event will be run if this part don't show
     if (isAdmin && !isRecorder) {
       const data = excalidrawAPI.getSceneElements();
       if (data.length) {
@@ -98,8 +101,6 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
       }
       cleanExcalidraw();
       displayCurrentPageData(currentPage);
-    } else {
-      cleanExcalidraw();
     }
   };
 
