@@ -1,6 +1,7 @@
 .excalidraw .App-menu_top .buttonList {
     display: flex;
 }
+
 :root[dir="ltr"]
 .excalidraw
 .layer-ui__wrapper
@@ -40,6 +41,27 @@
 .HelpDialog--header {
     display: none !important;
 }
+
 .excalidraw .Stack_horizontal {
     justify-content: start !important;
+}
+
+.wb-page-navigation button {
+    margin: 0 10px !important;
+}
+
+.wb-page-navigation .pre {
+    margin-left: 0 !important;
+}
+
+.wb-page-navigation .next {
+    margin-right: 0 !important;
+}
+
+.wb-page-navigation button:disabled {
+    background-color: #f4f4f4 !important;
+}
+
+.wb-page-navigation button:disabled i {
+    opacity: 0.2;
 }

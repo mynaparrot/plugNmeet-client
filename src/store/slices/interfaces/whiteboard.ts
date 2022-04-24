@@ -1,4 +1,6 @@
 export interface IWhiteboardSlice {
+  totalPages: number;
+  currentPage: number;
   excalidrawElements: string;
   mousePointerLocation: string;
   whiteboardFiles: string;
@@ -7,6 +9,7 @@ export interface IWhiteboardSlice {
 
 export interface IWhiteboardFile {
   id: string;
+  currenPage: number;
   filePath: string;
   fileName: string;
 }

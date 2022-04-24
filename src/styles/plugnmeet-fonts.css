@@ -31,6 +31,14 @@ i {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-arrow-left-short:before {
+    content: "\e91f";
+}
+
+.pnm-arrow-right-short:before {
+    content: "\e920";
+}
+
 .pnm-eye-slash:before {
     content: "\e91e";
 }
