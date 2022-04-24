@@ -65,11 +65,13 @@ export const fetchFileWithElm = async (
           const result = prepareForExcalidraw();
           resolve(result);
         };
-      } else {
+      } else if (fileMimeType == 'image/svg+xml') {
         fileHeight = excalidrawHeight - excalidrawHeight * 0.2;
         fileWidth = excalidrawWidth - excalidrawWidth * 0.3;
         const result = prepareForExcalidraw();
         resolve(result);
+      } else {
+        reject('unsupported file');
       }
     };
   });
