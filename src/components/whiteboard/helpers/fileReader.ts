@@ -66,6 +66,8 @@ export const fetchFileWithElm = async (
           resolve(result);
         };
       } else {
+        fileHeight = excalidrawHeight - excalidrawHeight * 0.2;
+        fileWidth = excalidrawWidth - excalidrawWidth * 0.3;
         const result = prepareForExcalidraw();
         resolve(result);
       }
