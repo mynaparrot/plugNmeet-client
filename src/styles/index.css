@@ -229,6 +229,10 @@ code {
             150deg, rgba(235, 248, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(243, 237, 249, 1) 67%, rgba(214, 231, 255, 1) 100%);
     padding: 30px 0;
     z-index: 2;
+    left: 0;
+}
+#main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    padding-left: 260px;
 }
 #main-area.fullWidthMainArea.showScreenShare .all-webcam-wrapper {
     position: relative;
@@ -660,14 +664,14 @@ button.previous-cam:hover, button.next-cam:hover {
 .transition-left-panel {
     position: absolute;
     height: 100%;
-    box-shadow: 0px 0px 10px -7px rgb(0 0 0);
+    box-shadow: 0 0 10px -7px rgb(0 0 0);
     z-index: 3;
 }
 .transition-right-panel {
     position: absolute;
     right: 0;
     height: 100%;
-    box-shadow: 0px 0px 10px -7px rgb(0 0 0);
+    box-shadow: 0 0 10px -7px rgb(0 0 0);
     z-index: 2;
 }
 
@@ -679,6 +683,9 @@ button.previous-cam:hover, button.next-cam:hover {
     }
     #main-area.fullWidthMainArea .all-webcam-wrapper {
         width: 200px;
+    }
+    #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        padding-left: 200px;
     }
 }
 
@@ -862,6 +869,9 @@ button.previous-cam:hover, button.next-cam:hover {
         width: 100%;
         height: calc(100% - 105px) !important;
         top: 50px;
+    }
+    #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        padding-left: 0;
     }
 }
 
