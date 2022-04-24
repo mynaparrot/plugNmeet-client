@@ -90,15 +90,15 @@ const MainArea = ({
       : css.push('hideParticipantsPanel');
 
     screenShareTracks?.size && activeScreenSharingView
-      ? css.push('showScreenShare SSS-SSN-SWB')
+      ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
     isActiveSharedNotePad
-      ? css.push('showSharedNotepad SSS-SSN-SWB')
+      ? css.push('showSharedNotepad fullWidthMainArea')
       : css.push('hideSharedNotepad');
 
     isActiveWhiteboard
-      ? css.push('showWhiteboard SSS-SSN-SWB')
+      ? css.push('showWhiteboard fullWidthMainArea')
       : css.push('hideWhiteboard');
 
     setCustomCSS(css.join(' '));
