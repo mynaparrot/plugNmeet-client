@@ -43,6 +43,7 @@ import {
   sendWhiteboardDataAsDonor,
 } from './helpers/handleRequestedWhiteboardData';
 import FooterUI from './footerUI';
+import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -106,6 +107,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
   const currentPage = useAppSelector(currentPageSelector);
   const whiteboardFileId = useAppSelector(whiteboardFileIdSelector);
+  const previousFileId = usePreviousFileId(whiteboardFileId);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -145,7 +147,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   // if whiteboard file ID change this mean new office file was uploaded,
   // so we'll clean the canvas.
   useEffect(() => {
-    if (excalidrawAPI && whiteboardFileId !== 'default') {
+    if (excalidrawAPI && whiteboardFileId !== previousFileId) {
       setLastBroadcastOrReceivedSceneVersion(-1);
       excalidrawAPI.updateScene({
         elements: [],
@@ -154,7 +156,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       sessionStorage.clear();
     }
     //eslint-disable-next-line
-  }, [whiteboardFileId, excalidrawAPI]);
+  }, [whiteboardFileId, excalidrawAPI, previousFileId]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
