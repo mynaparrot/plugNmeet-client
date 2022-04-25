@@ -77,6 +77,10 @@ interface ISharedNotepadFeatures {
 interface IWhiteboardFeatures {
   allowed_whiteboard: boolean;
   visible: boolean;
+  whiteboard_file_id: string;
+  file_name: string;
+  file_path: string;
+  total_pages: number;
 }
 
 interface ILockSettings {

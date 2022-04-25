@@ -2,11 +2,11 @@ import { toast } from 'react-toastify';
 import { isEmpty } from 'validator';
 
 import { store } from '../../store';
+import i18n from '../i18n';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateCurrentRoomMetadata } from '../../store/slices/sessionSlice';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import i18n from '../i18n';
 
 export default class HandleRoomMetadata {
   private metadata: IRoomMetadata | null = null;

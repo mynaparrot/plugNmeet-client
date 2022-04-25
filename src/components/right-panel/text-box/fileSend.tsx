@@ -160,7 +160,9 @@ const FileSend = ({
     }
 
     const message = `<span class="download"> <i class="pnm-download"></i> <a href="${
-      (window as any).PLUG_N_MEET_SERVER_URL + '/download/chat/' + filePath
+      (window as any).PLUG_N_MEET_SERVER_URL +
+      '/download/uploadedFile/' +
+      filePath
     }" target="_blank">${fileName}</a></span>`;
 
     const info: IChatMsg = {

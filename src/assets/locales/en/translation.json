@@ -199,6 +199,8 @@
     }
   },
   "whiteboard": {
-    "page": "Page {{count}}"
+    "page": "Page {{count}}",
+    "converting": "Please wait file conversion in progress",
+    "file-ready": "File is ready"
   }
 }
