@@ -35,7 +35,8 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const allowedFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'pdf'];
+  // prettier-ignore
+  const allowedFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
 
   const openFileBrowser = () => {
     if (!isUploading) {
@@ -75,7 +76,7 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      maxFileSize: 2 * 1000000,
+      maxFileSize: 30 * 1000000,
       maxFileSizeErrorCallback() {
         toast(t('notifications.max-file-size-exceeds'), {
           type: toast.TYPE.ERROR,
@@ -157,14 +158,16 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
         });
         broadcastFile(filePath, fileName);
         break;
-      case 'pdf':
+      default:
         convertFile(session, filePath);
         break;
     }
   };
 
   const convertFile = async (session: ISession, filePath: string) => {
-    const id = toast.loading(t('whiteboard.converting'));
+    const id = toast.loading(t('whiteboard.converting'), {
+      type: 'info',
+    });
     const body: any = {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -173,7 +176,12 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
     };
     const res = await sendAPIRequest('convertWhiteboardFile', body);
     if (!res.status) {
-      toast.update(id, { render: t(res.msg), type: 'error', isLoading: false });
+      toast.update(id, {
+        render: t(res.msg),
+        type: 'error',
+        isLoading: false,
+        closeButton: true,
+      });
       return;
     }
     const files: Array<IWhiteboardFile> = [];
