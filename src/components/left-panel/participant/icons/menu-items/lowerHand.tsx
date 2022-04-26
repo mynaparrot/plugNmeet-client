@@ -41,9 +41,12 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
   const render = () => {
     return (
       <div className="" role="none">
-        <Menu.Item onClick={() => onClick()}>
+        <Menu.Item>
           {() => (
-            <button className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white">
+            <button
+              className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+              onClick={() => onClick()}
+            >
               {t('footer.icons.lower-hand')}
             </button>
           )}

@@ -21,9 +21,12 @@ const RemoveUserMenuItem = ({
     return (
       <>
         <div className="" role="none">
-          <Menu.Item onClick={() => onClose()}>
+          <Menu.Item>
             {() => (
-              <button className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-red-400 hover:text-white">
+              <button
+                className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-red-400 hover:text-white"
+                onClick={() => onClose()}
+              >
                 {t('left-panel.menus.items.remove-participant')}
               </button>
             )}
