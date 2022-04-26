@@ -79,9 +79,9 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     return () => {
       if (excalidrawAPI) {
         const lastPage = store.getState().whiteboard.currentPage;
-        const data = excalidrawAPI.getSceneElements();
-        if (data.length) {
-          sessionStorage.setItem(String(lastPage), JSON.stringify(data));
+        const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
+        if (elms.length) {
+          sessionStorage.setItem(String(lastPage), JSON.stringify(elms));
         }
       }
     };
@@ -95,9 +95,9 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     // because from mobile or small screen pagination part remain collapse
     // no event will be run if this part don't show
     if (isAdmin && !isRecorder) {
-      const data = excalidrawAPI.getSceneElements();
-      if (data.length) {
-        sessionStorage.setItem(String(previousPage), JSON.stringify(data));
+      const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
+      if (elms.length) {
+        sessionStorage.setItem(String(previousPage), JSON.stringify(elms));
       }
       cleanExcalidraw();
       displayCurrentPageData(currentPage);
