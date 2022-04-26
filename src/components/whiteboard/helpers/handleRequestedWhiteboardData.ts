@@ -15,6 +15,7 @@ import {
 import { sendWebsocketMessage } from '../../../helpers/websocket';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
 import { BroadcastedExcalidrawElement } from './reconciliation';
+import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 
 const broadcastedElementVersions: Map<string, number> = new Map();
 
@@ -60,39 +61,21 @@ export const sendWhiteboardDataAsDonor = (
   excalidrawAPI: ExcalidrawImperativeAPI,
   sendTo: string,
 ) => {
-  // send current page first
-  broadcastCurrentPageNumber(store.getState().whiteboard.currentPage, sendTo);
+  // broadcast page info first
+  const whiteboard = store.getState().whiteboard;
+  const newFile: IWhiteboardOfficeFile = {
+    fileId: whiteboard.whiteboardFileId,
+    fileName: whiteboard.fileName,
+    filePath: whiteboard.filePath,
+    totalPages: whiteboard.totalPages,
+    currenPage: whiteboard.currentPage,
+    pageFiles: whiteboard.whiteboardFiles,
+  };
+  broadcastWhiteboardOfficeFile(newFile, sendTo);
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
-  const session = store.getState().session;
-  const from = {
-    sid: session.currenUser?.sid ?? '',
-    userId: session.currenUser?.userId ?? '',
-  };
-
   if (elements.length) {
     broadcastScreenDataBySocket(elements, sendTo);
-  }
-
-  // send whiteboard files
-  const files = store.getState().whiteboard.whiteboardFiles;
-  if (files) {
-    const info: WhiteboardMsg = {
-      type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
-      from,
-      msg: files,
-    };
-
-    const data: IDataMessage = {
-      type: DataMessageType.WHITEBOARD,
-      room_sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      message_id: '',
-      body: info,
-      to: sendTo,
-    };
-
-    sendWebsocketMessage(JSON.stringify(data));
   }
 
   // finally, change status of request
@@ -179,6 +162,35 @@ export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
       },
       msg: `${page}`,
     },
+  };
+
+  if (sendTo !== '') {
+    data.to = sendTo;
+  }
+
+  sendWebsocketMessage(JSON.stringify(data));
+};
+
+export const broadcastWhiteboardOfficeFile = (
+  newFile: IWhiteboardOfficeFile,
+  sendTo?: string,
+) => {
+  const session = store.getState().session;
+  const info: WhiteboardMsg = {
+    type: WhiteboardMsgType.ADD_WHITEBOARD_OFFICE_FILE,
+    from: {
+      sid: session.currenUser?.sid ?? '',
+      userId: session.currenUser?.userId ?? '',
+    },
+    msg: JSON.stringify(newFile),
+  };
+
+  const data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    room_id: session.currentRoom.room_id,
+    message_id: '',
+    body: info,
   };
 
   if (sendTo !== '') {

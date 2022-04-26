@@ -43,6 +43,7 @@ import {
   sendWhiteboardDataAsDonor,
 } from './helpers/handleRequestedWhiteboardData';
 import FooterUI from './footerUI';
+import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -74,14 +75,16 @@ const currentPageSelector = createSelector(
   (state: RootState) => state.whiteboard.currentPage,
   (currentPage) => currentPage,
 );
+const whiteboardFileIdSelector = createSelector(
+  (state: RootState) => state.whiteboard.whiteboardFileId,
+  (whiteboardFileId) => whiteboardFileId,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
   const currentRoom = store.getState().session.currentRoom;
   const CURSOR_SYNC_TIMEOUT = 33;
   const collaborators = new Map<string, Collaborator>();
-  let fileReadImages: Array<BinaryFileData> = [];
-  let fileReadElms: Array<ExcalidrawElement> = [];
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
@@ -103,6 +106,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
   const currentPage = useAppSelector(currentPageSelector);
+  const whiteboardFileId = useAppSelector(whiteboardFileIdSelector);
+  const previousFileId = usePreviousFileId(whiteboardFileId);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -138,6 +143,20 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
   }, [requestedWhiteboardData, excalidrawAPI]);
+
+  // if whiteboard file ID change this mean new office file was uploaded,
+  // so we'll clean the canvas.
+  useEffect(() => {
+    if (excalidrawAPI && whiteboardFileId !== previousFileId) {
+      setLastBroadcastOrReceivedSceneVersion(-1);
+      excalidrawAPI.updateScene({
+        elements: [],
+      });
+      excalidrawAPI.addFiles([]);
+      sessionStorage.clear();
+    }
+    //eslint-disable-next-line
+  }, [whiteboardFileId, excalidrawAPI, previousFileId]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
@@ -176,6 +195,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       excalidrawAPI?.updateScene({
         elements: [],
       });
+      excalidrawAPI?.addFiles([]);
     }
     //eslint-disable-next-line
   }, [currentPage, excalidrawAPI]);
@@ -235,10 +255,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     excalidrawAPI: ExcalidrawImperativeAPI,
     files: Array<IWhiteboardFile>,
   ) => {
+    const fileReadImages: Array<BinaryFileData> = [];
+    const fileReadElms: Array<ExcalidrawElement> = [];
+
     for (const file of files) {
       const url =
         (window as any).PLUG_N_MEET_SERVER_URL +
-        '/download/chat/' +
+        '/download/uploadedFile/' +
         file.filePath;
 
       const canvasFiles = excalidrawAPI.getFiles();
@@ -291,10 +314,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         elements,
       });
     });
-
-    // memory cleanup
-    fileReadImages = [];
-    fileReadElms = [];
   };
 
   const handleRemoteSceneUpdate = (

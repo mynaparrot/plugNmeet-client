@@ -1,4 +1,7 @@
 export interface IWhiteboardSlice {
+  whiteboardFileId: string;
+  fileName: string;
+  filePath: string;
   totalPages: number;
   currentPage: number;
   excalidrawElements: string;
@@ -17,4 +20,13 @@ export interface IWhiteboardFile {
 export interface IRequestWhiteboardData {
   requested: boolean;
   sendTo: string;
+}
+
+export interface IWhiteboardOfficeFile {
+  fileId: string;
+  fileName: string;
+  filePath: string;
+  totalPages: number;
+  currenPage?: number;
+  pageFiles: string;
 }

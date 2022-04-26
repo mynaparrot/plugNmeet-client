@@ -2,10 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   IRequestWhiteboardData,
   IWhiteboardFile,
+  IWhiteboardOfficeFile,
   IWhiteboardSlice,
 } from './interfaces/whiteboard';
 
 const initialState: IWhiteboardSlice = {
+  whiteboardFileId: 'default',
+  fileName: 'default',
+  filePath: 'default',
   totalPages: 10,
   currentPage: 1,
   excalidrawElements: '',
@@ -47,6 +51,21 @@ const whiteboardSlice = createSlice({
     setWhiteboardCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
+    addWhiteboardOfficeFile: (
+      state,
+      action: PayloadAction<IWhiteboardOfficeFile>,
+    ) => {
+      state.whiteboardFileId = action.payload.fileId;
+      state.fileName = action.payload.fileName;
+      state.filePath = action.payload.filePath;
+      state.totalPages = action.payload.totalPages;
+      state.whiteboardFiles = action.payload.pageFiles;
+      if (action.payload.currenPage) {
+        state.currentPage = action.payload.currenPage;
+      } else {
+        state.currentPage = 1;
+      }
+    },
   },
 });
 
@@ -57,6 +76,7 @@ export const {
   addWhiteboardFileAsJSON,
   updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,
+  addWhiteboardOfficeFile,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

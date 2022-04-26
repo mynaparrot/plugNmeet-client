@@ -50,6 +50,10 @@ const initialState: ISession = {
         whiteboard_features: {
           allowed_whiteboard: true,
           visible: false,
+          whiteboard_file_id: 'default',
+          file_name: 'default',
+          file_path: 'default',
+          total_pages: 10,
         },
       },
     },
