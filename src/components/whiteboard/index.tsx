@@ -407,11 +407,14 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   return (
-    <div className="middle-fullscreen-wrapper h-full flex">
+    <div
+      className={`middle-fullscreen-wrapper h-full flex ${
+        videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+      }`}
+    >
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
-
-      <div className="excalidraw-wrapper flex-1 w-full max-w-[1050px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9">
+      <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[1]">
         {render()}
       </div>
     </div>
