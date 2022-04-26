@@ -20,6 +20,7 @@ export interface IBottomIconsSlice {
   showVideoShareModal: boolean;
   showLockSettingsModal: boolean;
   showRtmpModal: boolean;
+  showExternalMediaPlayerModal: boolean;
 
   totalUnreadChatMsgs: number;
   virtualBackground: BackgroundConfig;

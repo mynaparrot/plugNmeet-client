@@ -11,6 +11,10 @@ import { updateRequestedWhiteboardData } from '../../store/slices/whiteboard';
 import { addToken } from '../../store/slices/sessionSlice';
 import { sendWebsocketMessage } from './index';
 import { updateParticipant } from '../../store/slices/participantSlice';
+import {
+  addExternalMediaPlayerAction,
+  externalMediaPlayerSeekTo,
+} from '../../store/slices/externalMediaPlayer';
 
 export const handleSystemTypeData = (body: IDataMessage) => {
   switch (body.body.type) {
@@ -30,6 +34,9 @@ export const handleSystemTypeData = (body: IDataMessage) => {
       break;
     case SystemMsgType.USER_VISIBILITY_CHANGE:
       handleUserVisibility(body);
+      break;
+    case SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS:
+      handleExternalMediaPlayerEvents(body);
       break;
   }
 };
@@ -98,4 +105,12 @@ const handleUserVisibility = (data: IDataMessage) => {
       },
     }),
   );
+};
+
+const handleExternalMediaPlayerEvents = (data: IDataMessage) => {
+  const msg = JSON.parse(data.body.msg);
+  store.dispatch(addExternalMediaPlayerAction(msg.action));
+  if (typeof msg.seekTo !== 'undefined') {
+    store.dispatch(externalMediaPlayerSeekTo(msg.seekTo));
+  }
 };

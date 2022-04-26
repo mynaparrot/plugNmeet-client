@@ -6,6 +6,7 @@ import bottomIconsSlice from './slices/bottomIconsActivitySlice';
 import chatMessagesSlice from './slices/chatMessagesSlice';
 import roomSettingsSlice from './slices/roomSettingsSlice';
 import whiteboardSlice from './slices/whiteboard';
+import externalMediaPlayerSlice from './slices/externalMediaPlayer';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -18,6 +19,7 @@ export const store = configureStore({
     chatMessages: chatMessagesSlice,
     roomSettings: roomSettingsSlice,
     whiteboard: whiteboardSlice,
+    externalMediaPlayer: externalMediaPlayerSlice,
   },
   devTools: !IS_PRODUCTION,
 });

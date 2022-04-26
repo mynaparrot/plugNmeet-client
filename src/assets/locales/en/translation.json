@@ -162,7 +162,9 @@
       "mute-microphone": "Mute Microphone",
       "unmute-microphone": "Unmute Microphone",
       "leave-microphone": "Leave Microphone",
-      "leave-webcam": "Leave webcam"
+      "leave-webcam": "Leave webcam",
+      "start-external-media-player": "Start external Media Player",
+      "stop-external-media-player": "Stop external Media Player"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -175,7 +177,9 @@
       "muted-all-microphone": "Muted all microphone",
       "applied-settings": "Applied new lock setting",
       "rtmp-starting": "RTMP broadcasting is starting. Please wait",
-      "rtmp-ending": "RTMP broadcasting is starting. Please wait"
+      "rtmp-ending": "RTMP broadcasting is starting. Please wait",
+      "external-media-player-starting": "Please wait preparing playback",
+      "external-media-player-stopping": "Please wait stopping playback"
     },
     "modal": {
       "lock-settings-title": "Room Lock Settings",
@@ -195,7 +199,12 @@
       "rtmp-close-confirm": "Are you sure to end broadcasting?",
       "rtmp-close-msg": "You are about to close RTMP broadcasting",
       "select-microphone": "Select one microphone",
-      "select-webcam": "Select one webcam"
+      "select-webcam": "Select one webcam",
+      "external-media-player-title": "External Media Player",
+      "external-media-player-url": "Playback URL",
+      "external-media-player-play": "Play",
+      "external-media-player-close-confirm": "Are you sure to stop playback?",
+      "external-media-player-close-msg": "You are about to close playback"
     }
   },
   "whiteboard": {
