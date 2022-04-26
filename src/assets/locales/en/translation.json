@@ -178,6 +178,8 @@
       "applied-settings": "Applied new lock setting",
       "rtmp-starting": "RTMP broadcasting is starting. Please wait",
       "rtmp-ending": "RTMP broadcasting is starting. Please wait",
+      "external-media-player-url-required": "Valid URL required",
+      "external-media-player-url-invalid": "URL not valid or supported",
       "external-media-player-starting": "Please wait preparing playback",
       "external-media-player-stopping": "Please wait stopping playback"
     },

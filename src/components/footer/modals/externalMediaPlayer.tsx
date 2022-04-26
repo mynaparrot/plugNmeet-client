@@ -8,6 +8,7 @@ import { RootState, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowExternalMediaPlayerModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
+import ReactPlayer from 'react-player/lazy';
 
 const externalMediaPlayerIsActiveSelector = createSelector(
   (state: RootState) =>
@@ -23,6 +24,7 @@ const ExternalMediaPlayerModal = () => {
     externalMediaPlayerIsActiveSelector,
   );
   const [playBackUrl, setPlayBackUrl] = useState<string>('');
+  const [errorMsg, setErrorMsg] = useState<string>();
 
   const closeStartModal = () => {
     dispatch(updateShowExternalMediaPlayerModal(false));
@@ -30,15 +32,18 @@ const ExternalMediaPlayerModal = () => {
 
   const startPlayer = async (e) => {
     e.preventDefault();
+
     if (isEmpty(playBackUrl)) {
+      setErrorMsg(t('footer.notice.external-media-player-url-required'));
       return;
     }
-    try {
-      new URL(playBackUrl);
-    } catch (e) {
-      return false;
+
+    if (!ReactPlayer.canPlay(playBackUrl)) {
+      setErrorMsg(t('footer.notice.external-media-player-url-invalid'));
+      return;
     }
 
+    setErrorMsg(undefined);
     closeStartModal();
 
     const id = toast.loading(
@@ -178,6 +183,9 @@ const ExternalMediaPlayerModal = () => {
                               }
                               className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
                             />
+                            {errorMsg ? (
+                              <div className="error-msg">{errorMsg}</div>
+                            ) : null}
                           </div>
                         </div>
                       </div>

@@ -88,8 +88,8 @@ const prepareForExcalidraw = (): FileReaderResult => {
   const elm: ExcalidrawElement = {
     id: fileId,
     type: 'image',
-    x: excalidrawHeight - excalidrawHeight * 0.5,
-    y: excalidrawWidth - excalidrawWidth * 0.92,
+    x: excalidrawHeight * 0.4,
+    y: excalidrawWidth * 0.06,
     width: fileWidth,
     height: fileHeight,
     angle: 0,
