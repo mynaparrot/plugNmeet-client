@@ -147,7 +147,7 @@ const MenusIcon = () => {
 
   const render = () => {
     return (
-      <div className="menu relative">
+      <div className="menu relative z-10">
         <Menu>
           {({ open }) => (
             <>
@@ -168,7 +168,7 @@ const MenusIcon = () => {
                 {/* Mark this component as `static` */}
                 <Menu.Items
                   static
-                  className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-56 bottom-[48px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                  className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 bottom-[48px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                 >
                   {roomFeatures?.allow_rtmp ? (
                     <div className="py-1" role="none">

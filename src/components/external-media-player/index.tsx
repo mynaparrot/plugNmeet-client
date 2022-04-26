@@ -147,18 +147,20 @@ const ExternalMediaPlayer = ({
 
   const render = () => {
     return (
-      <div className="externalMediaPlayerWrapper m-auto h-[calc(100%-50px)] w-full max-w-[1000px] flex-1 sm:px-5 mt-9">
-        <ReactPlayer
-          ref={ref}
-          url={playBackUrl}
-          width={width * 0.7}
-          height={height * 0.7}
-          playing={playing}
-          controls={!!isAdmin}
-          onReady={onReady}
-          onPause={onPause}
-          onPlay={onPlay}
-        />
+      <div className="externalMediaPlayerWrapper m-auto w-full flex items-center justify-center max-w-[1000px] flex-1 p-4">
+        <div className="media-player-inner">
+          <ReactPlayer
+            ref={ref}
+            url={playBackUrl}
+            width={width * 0.7}
+            height={height * 0.7}
+            playing={playing}
+            controls={!!isAdmin}
+            onReady={onReady}
+            onPause={onPause}
+            onPlay={onPlay}
+          />
+        </div>
       </div>
     );
   };
