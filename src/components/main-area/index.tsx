@@ -112,7 +112,7 @@ const MainArea = ({
 
     isActiveExternalMediaPlayer
       ? css.push('showExternalMediaPlayer fullWidthMainArea')
-      : css.push('hideExternalMediaPlaye');
+      : css.push('hideExternalMediaPlayer');
 
     setCustomCSS(css.join(' '));
   }, [
