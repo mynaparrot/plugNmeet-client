@@ -52,13 +52,6 @@ const bottomIconsSlice = createSlice({
       ) {
         state.isActiveParticipantsPanel = false;
       }
-      // logic for whiteboard
-      // we don't allow to open both
-      if (state.isActiveWhiteboard) {
-        if (state.isActiveParticipantsPanel) {
-          state.isActiveParticipantsPanel = false;
-        }
-      }
 
       state.isActiveChatPanel = action.payload;
 
@@ -79,13 +72,6 @@ const bottomIconsSlice = createSlice({
       ) {
         state.isActiveChatPanel = false;
       }
-      // logic for whiteboard
-      // we don't allow to open both
-      if (state.isActiveWhiteboard) {
-        if (state.isActiveChatPanel) {
-          state.isActiveChatPanel = false;
-        }
-      }
       state.isActiveParticipantsPanel = action.payload;
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
@@ -102,6 +88,7 @@ const bottomIconsSlice = createSlice({
         state.isActiveSharedNotePad = false;
         state.isActiveWhiteboard = false;
         state.isActiveParticipantsPanel = false;
+        state.isActiveChatPanel = false;
       }
     },
     updateIsActiveSharedNotePad: (state, action: PayloadAction<boolean>) => {
@@ -109,6 +96,7 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveSharedNotePad) {
         state.isActiveParticipantsPanel = false;
+        state.isActiveChatPanel = false;
       }
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
@@ -116,6 +104,7 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveWhiteboard) {
         state.isActiveParticipantsPanel = false;
+        state.isActiveChatPanel = false;
       }
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {

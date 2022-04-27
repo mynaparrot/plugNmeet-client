@@ -26,6 +26,13 @@ const ExternalMediaPlayerModal = () => {
   const [playBackUrl, setPlayBackUrl] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>();
 
+  const onChangeUrl = (e) => {
+    if (errorMsg) {
+      setErrorMsg(undefined);
+    }
+    setPlayBackUrl(e.currentTarget.value);
+  };
+
   const closeStartModal = () => {
     dispatch(updateShowExternalMediaPlayerModal(false));
   };
@@ -178,9 +185,7 @@ const ExternalMediaPlayerModal = () => {
                               name="stream-key"
                               id="stream-key"
                               value={playBackUrl}
-                              onChange={(e) =>
-                                setPlayBackUrl(e.currentTarget.value)
-                              }
+                              onChange={onChangeUrl}
                               className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
                             />
                             {errorMsg ? (
