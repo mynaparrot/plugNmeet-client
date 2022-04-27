@@ -12,8 +12,8 @@ export interface FileReaderResult {
 let fileId = '',
   fileMimeType = '',
   imgData = '',
-  fileHeight = 50,
-  fileWidth = 50,
+  fileHeight: number,
+  fileWidth: number,
   lastVersion,
   excalidrawHeight,
   excalidrawWidth;
@@ -22,8 +22,8 @@ export const fetchFileWithElm = async (
   url: string,
   file_id: string,
   last_version: number,
-  excalidraw_height: number,
-  excalidraw_width: number,
+  uploaderWhiteboardHeight?: number,
+  uploaderWhiteboardWidth?: number,
 ) => {
   return new Promise<FileReaderResult>(async (resolve, reject) => {
     const res = await fetch(url);
@@ -34,8 +34,8 @@ export const fetchFileWithElm = async (
 
     fileId = file_id;
     lastVersion = last_version;
-    excalidrawHeight = excalidraw_height;
-    excalidrawWidth = excalidraw_width;
+    excalidrawHeight = uploaderWhiteboardHeight;
+    excalidrawWidth = uploaderWhiteboardWidth;
     if (lastVersion < 0) {
       lastVersion = 1;
     }
@@ -66,8 +66,8 @@ export const fetchFileWithElm = async (
           resolve(result);
         };
       } else if (fileMimeType == 'image/svg+xml') {
-        fileHeight = excalidrawHeight - excalidrawHeight * 0.2;
-        fileWidth = excalidrawWidth - excalidrawWidth * 0.3;
+        fileHeight = excalidrawHeight * 0.8;
+        fileWidth = excalidrawWidth * 0.7;
         const result = prepareForExcalidraw();
         resolve(result);
       } else {

@@ -23,12 +23,15 @@ import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
+// eslint-disable-next-line import/no-unresolved
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 interface IUploadFilesProps {
   currenPage: number;
+  excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
-const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
+const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<Array<File>>();
   const { t } = useTranslation();
@@ -109,6 +112,8 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
         currenPage: i + 1,
         filePath: res.file_path + '/' + fileName,
         fileName,
+        uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
+        uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
       };
       files.push(file);
     }
@@ -138,6 +143,8 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
       currenPage,
       filePath,
       fileName,
+      uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
+      uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
     };
     dispatch(addWhiteboardFile(file));
 
@@ -189,4 +196,4 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
   return <>{render()}</>;
 };
 
-export default UploadFiles;
+export default UploadFilesUI;
