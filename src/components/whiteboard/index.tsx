@@ -34,7 +34,7 @@ import {
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
 import { updateExcalidrawElements } from '../../store/slices/whiteboard';
-import UploadFiles from './uploadFiles';
+import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
@@ -274,13 +274,12 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
 
       if (!hasFile) {
-        const appStat = excalidrawAPI.getAppState();
         const result = await fetchFileWithElm(
           url,
           file.id,
           lastBroadcastOrReceivedSceneVersion,
-          appStat.height,
-          appStat.width,
+          file.uploaderWhiteboardHeight,
+          file.uploaderWhiteboardWidth,
         );
         if (result && excalidrawAPI) {
           fileReadImages.push(result.image);
@@ -394,8 +393,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const renderTopRightUI = () => {
     return (
       <>
-        {currentUser?.metadata?.is_admin ? (
-          <UploadFiles currenPage={currentPage} />
+        {currentUser?.metadata?.is_admin &&
+        !currentUser.isRecorder &&
+        excalidrawAPI ? (
+          <UploadFilesUI
+            currenPage={currentPage}
+            excalidrawAPI={excalidrawAPI}
+          />
         ) : null}
       </>
     );
@@ -433,7 +437,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     >
       {/*{if videoSubscribers has webcams}*/}
       <VerticalWebcams videoSubscribers={videoSubscribers} />
-      <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[1]">
+      <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[0]">
         {render()}
       </div>
     </div>

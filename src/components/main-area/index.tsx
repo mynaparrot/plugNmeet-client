@@ -49,6 +49,12 @@ const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
   (isActiveWhiteboard) => isActiveWhiteboard,
 );
+const isActiveExternalMediaPlayerSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features
+      .external_media_player_features.is_active,
+  (is_active) => is_active,
+);
 
 const MainArea = ({
   currentRoom,
@@ -65,6 +71,9 @@ const MainArea = ({
   );
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
+  const isActiveExternalMediaPlayer = useAppSelector(
+    isActiveExternalMediaPlayerSelector,
+  );
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
@@ -101,6 +110,10 @@ const MainArea = ({
       ? css.push('showWhiteboard fullWidthMainArea')
       : css.push('hideWhiteboard');
 
+    isActiveExternalMediaPlayer
+      ? css.push('showExternalMediaPlayer fullWidthMainArea')
+      : css.push('hideExternalMediaPlayer');
+
     setCustomCSS(css.join(' '));
   }, [
     activeScreenSharingView,
@@ -109,6 +122,7 @@ const MainArea = ({
     isActiveSharedNotePad,
     isActiveWhiteboard,
     screenShareTracks?.size,
+    isActiveExternalMediaPlayer,
   ]);
 
   return (

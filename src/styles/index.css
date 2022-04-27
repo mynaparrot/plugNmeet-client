@@ -448,9 +448,9 @@ button.previous-cam:hover, button.next-cam:hover {
     background: linear-gradient(0deg, rgba(214, 231, 255, 0.5) 67%, rgba(214, 231, 255, 1) 100%);
 }
 
-#main-area.isRecorder.hideParticipantsPanel.showScreenShare .all-webcam-wrapper,
-#main-area.isRecorder.hideParticipantsPanel .middle-fullscreen-wrapper .all-webcam-wrapper {
+#main-area.isRecorder .all-webcam-wrapper {
     height: 100vh;
+    position: relative;
 }
 
 .plugNmeet-app #main-area.isRecorder .all-webcam-wrapper {
@@ -675,6 +675,38 @@ button.previous-cam:hover, button.next-cam:hover {
     z-index: 2;
 }
 
+.media-player-inner {
+    position: relative;
+    width: 100% !important;
+    height: inherit !important;
+}
+.media-player-inner > div {
+    width: 100% !important;
+    height: inherit !important;
+}
+.media-player-inner > div > div {
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    position: relative;
+}
+.media-player-inner iframe {
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+#main-area.fullWidthMainArea.isRecorder .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    padding-left: 0;
+}
+.isRecorder .transition-right-panel {
+    position: relative;
+}
+.isRecorder.showScreenShare .middle-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 @media screen and (max-width: 1279px) {
     .all-MessageModule-wrap .message-item .system p.message-content {

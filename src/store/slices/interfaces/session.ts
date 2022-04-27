@@ -55,6 +55,7 @@ interface IRoomFeatures {
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
   whiteboard_features: IWhiteboardFeatures;
+  external_media_player_features: IExternalMediaPlayerFeatures;
 }
 
 interface IChatFeatures {
@@ -102,4 +103,11 @@ export interface IScreenSharing {
 export interface IRTMPBroadcasting {
   isActive: boolean;
   sharedBy: string;
+}
+
+export interface IExternalMediaPlayerFeatures {
+  allowed_external_media_player: boolean;
+  is_active: boolean;
+  shared_by?: string;
+  url?: string;
 }

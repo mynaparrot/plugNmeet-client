@@ -15,6 +15,8 @@ export interface IWhiteboardFile {
   currenPage: number;
   filePath: string;
   fileName: string;
+  uploaderWhiteboardHeight: number;
+  uploaderWhiteboardWidth: number;
 }
 
 export interface IRequestWhiteboardData {

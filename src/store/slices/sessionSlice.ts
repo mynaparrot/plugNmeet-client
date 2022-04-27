@@ -55,6 +55,10 @@ const initialState: ISession = {
           file_path: 'default',
           total_pages: 10,
         },
+        external_media_player_features: {
+          allowed_external_media_player: true,
+          is_active: false,
+        },
       },
     },
   },

@@ -14,10 +14,12 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import LockSettingsModal from '../modals/lockSettingsModal';
 import {
   updateIsActiveSharedNotePad,
+  updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
   updateShowRtmpModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import RtmpModal from '../modals/rtmpModal';
+import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -37,6 +39,16 @@ const sharedNotepadStatusSelector = createSelector(
       .is_active,
   (is_active) => is_active,
 );
+const externalMediaPlayerStatusSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features
+      .external_media_player_features.is_active,
+  (is_active) => is_active,
+);
+const showExternalMediaPlayerModalSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.showExternalMediaPlayerModal,
+  (showExternalMediaPlayerModal) => showExternalMediaPlayerModal,
+);
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -48,6 +60,12 @@ const MenusIcon = () => {
   const showRtmpModal = useAppSelector(showRtmpModalSelector);
   const isActiveRtmpBroadcasting = useAppSelector(
     isActiveRtmpBroadcastingSelector,
+  );
+  const externalMediaPlayerStatus = useAppSelector(
+    externalMediaPlayerStatusSelector,
+  );
+  const showExternalMediaPlayerModal = useAppSelector(
+    showExternalMediaPlayerModalSelector,
   );
   const roomFeatures =
     store.getState().session.currentRoom?.metadata?.room_features;
@@ -115,6 +133,10 @@ const MenusIcon = () => {
     }
   };
 
+  const toggleExternalMediaPlayer = async () => {
+    dispatch(updateShowExternalMediaPlayerModal(true));
+  };
+
   const openLockSettingsModal = () => {
     dispatch(updateShowLockSettingsModal(true));
   };
@@ -125,7 +147,7 @@ const MenusIcon = () => {
 
   const render = () => {
     return (
-      <div className="menu relative">
+      <div className="menu relative z-10">
         <Menu>
           {({ open }) => (
             <>
@@ -146,7 +168,7 @@ const MenusIcon = () => {
                 {/* Mark this component as `static` */}
                 <Menu.Items
                   static
-                  className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-56 bottom-[48px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                  className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 bottom-[48px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                 >
                   {roomFeatures?.allow_rtmp ? (
                     <div className="py-1" role="none">
@@ -196,6 +218,22 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
+                  {roomFeatures?.external_media_player_features
+                    .allowed_external_media_player ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+                          onClick={() => toggleExternalMediaPlayer()}
+                        >
+                          <i className="pnm-notepad text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          {externalMediaPlayerStatus
+                            ? t('footer.menus.stop-external-media-player')
+                            : t('footer.menus.start-external-media-player')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
@@ -218,8 +256,10 @@ const MenusIcon = () => {
 
   return (
     <>
-      {render()} {showLockSettingsModal ? <LockSettingsModal /> : null}{' '}
+      {render()}
+      {showLockSettingsModal ? <LockSettingsModal /> : null}
       {showRtmpModal ? <RtmpModal /> : null}
+      {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}
     </>
   );
 };

@@ -14,6 +14,7 @@ import AudioElements from './audios';
 import VideoElements from './videos';
 import SharedNotepadElement from '../../shared-notepad';
 import Whiteboard from '../../whiteboard';
+import ExternalMediaPlayer from '../../external-media-player';
 
 interface MediaElementsComponentProps {
   currentRoom: Room;
@@ -44,6 +45,12 @@ const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
   (isActiveWhiteboard) => isActiveWhiteboard,
 );
+const isActiveExternalMediaPlayerSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features
+      .external_media_player_features.is_active,
+  (is_active) => is_active,
+);
 
 const MediaElementsComponent = ({
   audioSubscribers,
@@ -57,6 +64,9 @@ const MediaElementsComponent = ({
   );
   const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
+  const isActiveExternalMediaPlayer = useAppSelector(
+    isActiveExternalMediaPlayerSelector,
+  );
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
     (window as any).NUMBER_OF_WEBCAMS_PER_PAGE_PC ?? 25,
   );
@@ -75,12 +85,16 @@ const MediaElementsComponent = ({
     if (
       !activeScreenSharingView &&
       !isActiveSharedNotePad &&
-      !isActiveWhiteboard
+      !isActiveWhiteboard &&
+      !isActiveExternalMediaPlayer
     ) {
       return true;
     }
     return (
-      !isActiveScreenSharing && !isActiveSharedNotePad && !isActiveWhiteboard
+      !isActiveScreenSharing &&
+      !isActiveSharedNotePad &&
+      !isActiveWhiteboard &&
+      !isActiveExternalMediaPlayer
     );
   };
 
@@ -107,6 +121,14 @@ const MediaElementsComponent = ({
     return isActiveWhiteboard;
   };
 
+  const shouldShowExternalMediaPlayer = () => {
+    if (isActiveScreenSharing) {
+      return false;
+    }
+
+    return isActiveExternalMediaPlayer;
+  };
+
   return (
     <>
       {shouldShowScreenSharing() && screenShareTracks ? (
@@ -120,6 +142,9 @@ const MediaElementsComponent = ({
       ) : null}
       {shouldShowWhiteboard() ? (
         <Whiteboard videoSubscribers={videoSubscribers} />
+      ) : null}
+      {shouldShowExternalMediaPlayer() ? (
+        <ExternalMediaPlayer videoSubscribers={videoSubscribers} />
       ) : null}
       {shouldShowWebcams() && videoSubscribers ? (
         <VideoElements

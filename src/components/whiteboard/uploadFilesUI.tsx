@@ -1,6 +1,4 @@
-import React, { useRef, useState } from 'react';
-import Resumable from 'resumablejs';
-import ResumableFile = Resumable.ResumableFile;
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
@@ -24,19 +22,36 @@ import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
+import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
+// eslint-disable-next-line import/no-unresolved
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 interface IUploadFilesProps {
   currenPage: number;
+  excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
-const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
+const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
-  const toastId = React.useRef<string>(null);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [files, setFiles] = useState<Array<File>>();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   // prettier-ignore
   const allowedFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
+  const session = store.getState().session;
+
+  const { isUploading, result } = useResumableFilesUpload({
+    allowedFileTypes,
+    maxFileSize: 30,
+    files,
+  });
+
+  useEffect(() => {
+    if (result && result.filePath) {
+      postUploadTask(result.filePath, result.fileName, result.fileExtension);
+    }
+    //eslint-disable-next-line
+  }, [result]);
 
   const openFileBrowser = () => {
     if (!isUploading) {
@@ -49,105 +64,10 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
     if (!files.length) {
       return;
     }
-    const session = store.getState().session;
-    sendFile(session, files);
+    setFiles([...files]);
   };
 
-  const sendFile = (session: ISession, files: Array<File>) => {
-    let fileName = '';
-
-    const r = new Resumable({
-      target: (window as any).PLUG_N_MEET_SERVER_URL + '/api/fileUpload',
-      uploadMethod: 'POST',
-      query: {
-        sid: session.currentRoom.sid,
-        roomId: session.currentRoom.room_id,
-        userId: session.currenUser?.userId,
-        resumable: true,
-      },
-      headers: {
-        Authorization: session.token,
-      },
-      fileType: allowedFileTypes,
-      fileTypeErrorCallback(file) {
-        toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
-          type: toast.TYPE.ERROR,
-        });
-      },
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      maxFileSize: 30 * 1000000,
-      maxFileSizeErrorCallback() {
-        toast(t('notifications.max-file-size-exceeds'), {
-          type: toast.TYPE.ERROR,
-        });
-      },
-    });
-
-    r.on('fileAdded', function (file) {
-      fileName = file.fileName;
-      if (!r.isUploading()) {
-        setIsUploading(true);
-        r.upload();
-      }
-    });
-
-    r.on('fileSuccess', function (file: ResumableFile, message: string) {
-      const res = JSON.parse(message);
-      setIsUploading(false);
-
-      setTimeout(() => {
-        toast.dismiss(toastId.current ?? '');
-      }, 300);
-
-      if (res.status) {
-        postUploadTask(session, res.filePath, res.fileName, res.fileExtension);
-      }
-    });
-
-    r.on('fileError', function (file, message) {
-      const res = JSON.parse(message);
-      setIsUploading(false);
-
-      setTimeout(() => {
-        toast.dismiss(toastId.current ?? '');
-      }, 300);
-
-      toast(t(res.msg), {
-        type: toast.TYPE.ERROR,
-      });
-    });
-
-    r.on('uploadStart', function () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      toastId.current = toast(
-        t('right-panel.uploading-file', {
-          fileName,
-        }),
-        {
-          closeButton: false,
-          progress: 0,
-        },
-      );
-    });
-
-    r.on('fileProgress', function (file) {
-      const progress = file.progress(false);
-      toast.update(toastId.current ?? '', {
-        progress: Number(progress),
-      });
-    });
-
-    r.addFiles(files);
-  };
-
-  const postUploadTask = (
-    session: ISession,
-    filePath,
-    fileName,
-    fileExtension,
-  ) => {
+  const postUploadTask = (filePath, fileName, fileExtension) => {
     switch (fileExtension) {
       case 'jpg':
       case 'jpeg':
@@ -192,6 +112,8 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
         currenPage: i + 1,
         filePath: res.file_path + '/' + fileName,
         fileName,
+        uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
+        uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
       };
       files.push(file);
     }
@@ -221,6 +143,8 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
       currenPage,
       filePath,
       fileName,
+      uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
+      uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
     };
     dispatch(addWhiteboardFile(file));
 
@@ -272,4 +196,4 @@ const UploadFiles = ({ currenPage }: IUploadFilesProps) => {
   return <>{render()}</>;
 };
 
-export default UploadFiles;
+export default UploadFilesUI;

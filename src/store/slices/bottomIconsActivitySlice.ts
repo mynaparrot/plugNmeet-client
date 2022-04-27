@@ -24,6 +24,7 @@ const initialState: IBottomIconsSlice = {
   showVideoShareModal: false,
   showLockSettingsModal: false,
   showRtmpModal: false,
+  showExternalMediaPlayerModal: false,
 
   totalUnreadChatMsgs: 0,
   virtualBackground: defaultBackgroundConfig,
@@ -51,13 +52,6 @@ const bottomIconsSlice = createSlice({
       ) {
         state.isActiveParticipantsPanel = false;
       }
-      // logic for whiteboard
-      // we don't allow to open both
-      if (state.isActiveWhiteboard) {
-        if (state.isActiveParticipantsPanel) {
-          state.isActiveParticipantsPanel = false;
-        }
-      }
 
       state.isActiveChatPanel = action.payload;
 
@@ -77,13 +71,6 @@ const bottomIconsSlice = createSlice({
         action.payload
       ) {
         state.isActiveChatPanel = false;
-      }
-      // logic for whiteboard
-      // we don't allow to open both
-      if (state.isActiveWhiteboard) {
-        if (state.isActiveChatPanel) {
-          state.isActiveChatPanel = false;
-        }
       }
       state.isActiveParticipantsPanel = action.payload;
     },
@@ -137,6 +124,12 @@ const bottomIconsSlice = createSlice({
     updateShowRtmpModal: (state, action: PayloadAction<boolean>) => {
       state.showRtmpModal = action.payload;
     },
+    updateShowExternalMediaPlayerModal: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.showExternalMediaPlayerModal = action.payload;
+    },
 
     updateTotalUnreadChatMsgs: (state) => {
       if (!state.isActiveChatPanel) {
@@ -167,6 +160,7 @@ export const {
   updateShowVideoShareModal,
   updateShowLockSettingsModal,
   updateShowRtmpModal,
+  updateShowExternalMediaPlayerModal,
   updateScreenWidth,
   updateScreenHeight,
   updateTotalUnreadChatMsgs,
