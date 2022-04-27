@@ -9,6 +9,7 @@ import {
   useAppSelector,
 } from '../../../store';
 import {
+  updateIsActiveChatPanel,
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
@@ -58,9 +59,13 @@ const SharedNotePadIcon = () => {
       if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
         dispatch(updateIsActiveWhiteboard(false));
       }
+      if (!isRecorder) {
+        dispatch(updateIsActiveChatPanel(false));
+      }
     } else {
       setIconCSS('primaryColor');
     }
+    //eslint-disable-next-line
   }, [isActiveSharedNotePad, dispatch]);
 
   useEffect(() => {

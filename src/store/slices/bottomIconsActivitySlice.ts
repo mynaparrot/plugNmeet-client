@@ -88,7 +88,6 @@ const bottomIconsSlice = createSlice({
         state.isActiveSharedNotePad = false;
         state.isActiveWhiteboard = false;
         state.isActiveParticipantsPanel = false;
-        state.isActiveChatPanel = false;
       }
     },
     updateIsActiveSharedNotePad: (state, action: PayloadAction<boolean>) => {
@@ -96,7 +95,6 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveSharedNotePad) {
         state.isActiveParticipantsPanel = false;
-        state.isActiveChatPanel = false;
       }
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
@@ -104,7 +102,6 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveWhiteboard) {
         state.isActiveParticipantsPanel = false;
-        state.isActiveChatPanel = false;
       }
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {

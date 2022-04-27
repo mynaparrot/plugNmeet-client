@@ -12,6 +12,10 @@ import {
   SystemMsgType,
 } from '../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../helpers/websocket';
+import {
+  updateIsActiveChatPanel,
+  updateIsActiveParticipantsPanel,
+} from '../../store/slices/bottomIconsActivitySlice';
 
 interface IExternalMediaPlayerProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -63,7 +67,16 @@ const ExternalMediaPlayer = ({
 
   const session = store.getState().session;
   const isAdmin = session.currenUser?.metadata?.is_admin;
+  const isRecorder = session.currenUser?.isRecorder;
   const player = useRef<ReactPlayer>();
+
+  useEffect(() => {
+    if (!isRecorder) {
+      dispatch(updateIsActiveChatPanel(false));
+      dispatch(updateIsActiveParticipantsPanel(false));
+    }
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (playBackUrl) {
