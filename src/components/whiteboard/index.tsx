@@ -44,6 +44,7 @@ import {
 } from './helpers/handleRequestedWhiteboardData';
 import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
+import usePreviousPage from './helpers/hooks/usePreviousPage';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -79,6 +80,10 @@ const whiteboardFileIdSelector = createSelector(
   (state: RootState) => state.whiteboard.whiteboardFileId,
   (whiteboardFileId) => whiteboardFileId,
 );
+const isPresenterSelector = createSelector(
+  (state: RootState) => state.session.currenUser?.metadata?.is_presenter,
+  (is_presenter) => is_presenter,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currenUser;
@@ -105,9 +110,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const currentPage = useAppSelector(currentPageSelector);
   const whiteboardFileId = useAppSelector(whiteboardFileIdSelector);
   const previousFileId = usePreviousFileId(whiteboardFileId);
+  const isPresenter = useAppSelector(isPresenterSelector);
+  const currentPage = useAppSelector(currentPageSelector);
+  const previousPage = usePreviousPage(currentPage);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -189,16 +196,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // if page change then we'll reset version
   useEffect(() => {
-    setLastBroadcastOrReceivedSceneVersion(-1);
+    if (currentPage !== previousPage) {
+      setLastBroadcastOrReceivedSceneVersion(-1);
+    }
     // for recorder & other user we'll clean from here
-    if (!currentUser?.metadata?.is_admin || currentUser?.isRecorder) {
+    if (!isPresenter && currentPage !== previousPage) {
       excalidrawAPI?.updateScene({
         elements: [],
       });
       excalidrawAPI?.addFiles([]);
     }
-    //eslint-disable-next-line
-  }, [currentPage, excalidrawAPI]);
+  }, [currentPage, previousPage, isPresenter, excalidrawAPI]);
 
   // for handling draw elements
   useEffect(() => {
@@ -393,9 +401,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const renderTopRightUI = () => {
     return (
       <>
-        {currentUser?.metadata?.is_admin &&
-        !currentUser.isRecorder &&
-        excalidrawAPI ? (
+        {isPresenter && excalidrawAPI ? (
           <UploadFilesUI
             currenPage={currentPage}
             excalidrawAPI={excalidrawAPI}
@@ -406,7 +412,12 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   const renderFooter = () => {
-    return <FooterUI excalidrawAPI={excalidrawAPI} />;
+    return (
+      <FooterUI
+        excalidrawAPI={excalidrawAPI}
+        isPresenter={isPresenter ?? false}
+      />
+    );
   };
 
   const render = () => {

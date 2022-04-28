@@ -24,6 +24,7 @@ export interface ICurrentUser {
 export interface ICurrentUserMetadata {
   profile_pic?: string;
   is_admin: boolean;
+  is_presenter: boolean;
   raised_hand: boolean;
   lock_settings: ILockSettings;
 }
