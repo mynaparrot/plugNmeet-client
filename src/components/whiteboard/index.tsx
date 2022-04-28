@@ -189,7 +189,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   useEffect(() => {
     if (isPresenter) {
       setViewModeEnabled(false);
-    } else {
+    } else if (!currentUser?.isRecorder) {
       setViewModeEnabled(
         currentUser?.metadata?.lock_settings.lock_whiteboard ?? true,
       );
@@ -410,7 +410,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         isCollaborating={true}
         theme={theme}
         name="plugNmeet whiteboard"
-        UIOptions={{ canvasActions: { loadScene: false, export: false } }}
+        UIOptions={{
+          canvasActions: {
+            loadScene: false,
+            export: false,
+            saveAsImage: !currentUser?.isRecorder,
+          },
+        }}
         autoFocus={true}
         detectScroll={true}
         langCode={i18n.languages[0]}
