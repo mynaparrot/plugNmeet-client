@@ -18,16 +18,6 @@ import './style.css';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
-  DataMessageType,
-  IDataMessage,
-  WhiteboardMsg,
-  WhiteboardMsgType,
-} from '../../store/slices/interfaces/dataMessages';
-import {
-  isSocketConnected,
-  sendWebsocketMessage,
-} from '../../helpers/websocket';
-import {
   ReconciledElements,
   reconcileElements,
 } from './helpers/reconciliation';
@@ -38,6 +28,7 @@ import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
+  broadcastMousePointerUpdate,
   broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
   sendWhiteboardDataAsDonor,
@@ -345,12 +336,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   const onChange = (elements: readonly ExcalidrawElement[]) => {
-    if (
-      excalidrawAPI &&
-      currentUser &&
-      elements.length &&
-      isSocketConnected()
-    ) {
+    if (excalidrawAPI && currentUser && elements.length) {
       if (viewModeEnabled) {
         return;
       }
@@ -366,7 +352,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (viewModeEnabled) {
         return;
       }
-      if (payload.pointersMap.size < 2 && currentUser && isSocketConnected()) {
+      if (payload.pointersMap.size < 2 && currentUser) {
         const msg = {
           pointer: payload.pointer,
           button: payload.button || 'up',
@@ -374,25 +360,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
           userId: currentUser.userId,
           name: currentUser.name,
         };
-
-        const info: WhiteboardMsg = {
-          type: WhiteboardMsgType.POINTER_UPDATE,
-          from: {
-            sid: currentUser.sid,
-            userId: currentUser.userId,
-          },
-          msg: JSON.stringify(msg),
-        };
-
-        const data: IDataMessage = {
-          type: DataMessageType.WHITEBOARD,
-          room_id: currentRoom.room_id,
-          room_sid: currentRoom.sid,
-          message_id: '',
-          body: info,
-        };
-
-        sendWebsocketMessage(JSON.stringify(data));
+        broadcastMousePointerUpdate(msg);
       }
     },
     CURSOR_SYNC_TIMEOUT,

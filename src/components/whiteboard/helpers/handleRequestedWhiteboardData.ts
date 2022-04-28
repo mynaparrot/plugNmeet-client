@@ -199,3 +199,25 @@ export const broadcastWhiteboardOfficeFile = (
 
   sendWebsocketMessage(JSON.stringify(data));
 };
+
+export const broadcastMousePointerUpdate = (msg: any) => {
+  const session = store.getState().session;
+  const info: WhiteboardMsg = {
+    type: WhiteboardMsgType.POINTER_UPDATE,
+    from: {
+      sid: session.currenUser?.sid ?? '',
+      userId: session.currenUser?.userId ?? '',
+    },
+    msg: JSON.stringify(msg),
+  };
+
+  const data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    room_id: session.currentRoom.room_id,
+    message_id: '',
+    body: info,
+  };
+
+  sendWebsocketMessage(JSON.stringify(data));
+};
