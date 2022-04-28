@@ -46,12 +46,12 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
       body: {
         type: SystemMsgType.INFO,
         from: {
-          sid: session.currenUser?.sid ?? '',
-          userId: session.currenUser?.userId ?? '',
+          sid: session.currentUser?.sid ?? '',
+          userId: session.currentUser?.userId ?? '',
         },
         msg:
           t('left-panel.menus.notice.asked-you-to', {
-            name: session.currenUser?.name,
+            name: session.currentUser?.name,
           }) + t(task),
       },
     };
@@ -87,7 +87,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   };
   return (
     <>
-      {session.currenUser?.userId !== participant?.userId &&
+      {session.currentUser?.userId !== participant?.userId &&
       roomFeatures?.allow_webcams &&
       !roomFeatures.admin_only_webcams
         ? render()

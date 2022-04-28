@@ -36,8 +36,8 @@ const useWatchVisibilityChange = () => {
       body: {
         type: SystemMsgType.USER_VISIBILITY_CHANGE,
         from: {
-          sid: session.currenUser?.sid ?? '',
-          userId: session.currenUser?.userId ?? '',
+          sid: session.currentUser?.sid ?? '',
+          userId: session.currentUser?.userId ?? '',
         },
         msg: hidden ? 'hidden' : 'visible',
       },

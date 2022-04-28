@@ -7,8 +7,8 @@ import Message from './message';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
 
 const currentUserSelector = createSelector(
-  (state: RootState) => state.session.currenUser,
-  (currenUser) => currenUser,
+  (state: RootState) => state.session.currentUser,
+  (currentUser) => currentUser,
 );
 
 const Messages = () => {

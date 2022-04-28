@@ -13,6 +13,7 @@ import {
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
+  isPresenter: boolean;
 }
 const totalPagesSelector = createSelector(
   (state: RootState) => state.whiteboard.totalPages,
@@ -23,7 +24,7 @@ const currentPageSelector = createSelector(
   (currentPage) => currentPage,
 );
 
-const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
+const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   const totalPages = useAppSelector(totalPagesSelector);
   const currentPage = useAppSelector(currentPageSelector);
   const [options, setOptions] = useState<Array<JSX.Element>>();
@@ -32,9 +33,6 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
   const previousPage = usePreviousPage(currentPage);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const session = store.getState().session;
-  const isAdmin = session.currenUser?.metadata?.is_admin;
-  const isRecorder = session.currenUser?.isRecorder;
 
   useEffect(() => {
     if (previousPage && currentPage !== previousPage && excalidrawAPI) {
@@ -94,7 +92,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     // for other user we'll clean from parent component
     // because from mobile or small screen pagination part remain collapse
     // no event will be run if this part don't show
-    if (isAdmin && !isRecorder) {
+    if (isPresenter) {
       const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
       if (elms.length) {
         sessionStorage.setItem(String(previousPage), JSON.stringify(elms));
@@ -110,7 +108,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
       const elements = JSON.parse(data);
       if (elements.length) {
         excalidrawAPI.updateScene({ elements });
-        if (isAdmin && !isRecorder) {
+        if (isPresenter) {
           // better to broadcast full screen
           broadcastScreenDataBySocket(elements);
         }
@@ -177,9 +175,7 @@ const FooterUI = ({ excalidrawAPI }: IFooterUIProps) => {
     );
   };
 
-  return (
-    <>{isAdmin && !isRecorder ? renderForAdmin() : renderForParticipant()}</>
-  );
+  return <>{isPresenter ? renderForAdmin() : renderForParticipant()}</>;
 };
 
-export default FooterUI;
+export default React.memo(FooterUI);

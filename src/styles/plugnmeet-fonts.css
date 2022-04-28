@@ -31,6 +31,10 @@ i {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-file-play:before {
+    content: "\e921";
+}
+
 .pnm-arrow-left-short:before {
     content: "\e91f";
 }

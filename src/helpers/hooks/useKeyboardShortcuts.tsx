@@ -155,7 +155,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
 
   // toggle locks options (ctrl+alt+l)
   useHotkeys('ctrl+alt+l', () => {
-    const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
     if (!isAdmin) {
       return;
     }

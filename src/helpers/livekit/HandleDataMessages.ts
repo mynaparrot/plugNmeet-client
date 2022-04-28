@@ -41,7 +41,7 @@ export default class HandleDataMessages {
 
     if (kind === DataPacket_Kind.RELIABLE) {
       if (data.type === 'SYSTEM') {
-        if (!store.getState().session.currenUser?.isRecorder) {
+        if (!store.getState().session.currentUser?.isRecorder) {
           this.handleSystemTypeData(data.body as ISystemMsg);
         }
       }

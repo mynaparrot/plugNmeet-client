@@ -29,7 +29,7 @@ const sessionIsActiveScreenSharingSelector = createSelector(
 );
 const isScreenshareLockSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings.lock_screen_sharing,
+    state.session.currentUser?.metadata?.lock_settings.lock_screen_sharing,
   (lock_screen_sharing) => lock_screen_sharing,
 );
 
@@ -46,7 +46,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
 
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [lock, setLock] = useState<boolean>(false);
-  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
   useEffect(() => {
     if (isActiveScreenshare) {

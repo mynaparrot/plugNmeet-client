@@ -13,7 +13,7 @@ interface IParticipantComponentProps {
   participant: IParticipant;
 }
 const ParticipantComponent = ({ participant }: IParticipantComponentProps) => {
-  const currentUser = store.getState().session.currenUser;
+  const currentUser = store.getState().session.currentUser;
 
   return (
     <li className="mb-3 w-full list-none">

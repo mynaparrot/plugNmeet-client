@@ -17,7 +17,7 @@ const sharedNotepadFeaturesSelector = createSelector(
 );
 const lockSharedNotepadSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings?.lock_shared_notepad,
+    state.session.currentUser?.metadata?.lock_settings?.lock_shared_notepad,
   (lock_shared_notepad) => lock_shared_notepad,
 );
 
@@ -25,7 +25,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const dispatch = useAppDispatch();
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
-  const currentUser = store.getState().session.currenUser;
+  const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
   const [url, setUrl] = useState<string>();
 

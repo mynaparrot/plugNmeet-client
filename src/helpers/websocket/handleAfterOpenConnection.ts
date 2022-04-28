@@ -11,7 +11,7 @@ export const onAfterOpenConnection = () => {
   const session = store.getState().session;
   const participants = participantsSelector
     .selectAll(store.getState())
-    .filter((participant) => participant.sid !== session.currenUser?.sid);
+    .filter((participant) => participant.sid !== session.currentUser?.sid);
 
   if (!participants.length) return;
 
@@ -30,8 +30,8 @@ export const onAfterOpenConnection = () => {
     body: {
       type: SystemMsgType.SEND_CHAT_MSGS,
       from: {
-        sid: session.currenUser?.sid ?? '',
-        userId: session.currenUser?.userId ?? '',
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
       },
       msg: '',
     },
@@ -48,8 +48,8 @@ export const onAfterOpenConnection = () => {
     body: {
       type: SystemMsgType.INIT_WHITEBOARD,
       from: {
-        sid: session.currenUser?.sid ?? '',
-        userId: session.currenUser?.userId ?? '',
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
       },
       msg: '',
     },

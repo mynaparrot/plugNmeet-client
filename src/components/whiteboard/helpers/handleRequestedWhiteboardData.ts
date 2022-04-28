@@ -23,7 +23,7 @@ export const sendRequestedForWhiteboardData = () => {
   const session = store.getState().session;
   const participants = participantsSelector
     .selectAll(store.getState())
-    .filter((participant) => participant.sid !== session.currenUser?.sid);
+    .filter((participant) => participant.sid !== session.currentUser?.sid);
 
   if (!participants.length) return;
 
@@ -46,8 +46,8 @@ export const sendRequestedForWhiteboardData = () => {
       body: {
         type: SystemMsgType.INIT_WHITEBOARD,
         from: {
-          sid: session.currenUser?.sid ?? '',
-          userId: session.currenUser?.userId ?? '',
+          sid: session.currentUser?.sid ?? '',
+          userId: session.currentUser?.userId ?? '',
         },
         msg: '',
       },
@@ -122,8 +122,8 @@ export const broadcastScreenDataBySocket = (
 ) => {
   const session = store.getState().session;
   const from = {
-    sid: session.currenUser?.sid ?? '',
-    userId: session.currenUser?.userId ?? '',
+    sid: session.currentUser?.sid ?? '',
+    userId: session.currentUser?.userId ?? '',
   };
 
   const info: WhiteboardMsg = {
@@ -157,8 +157,8 @@ export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
     body: {
       type: WhiteboardMsgType.PAGE_CHANGE,
       from: {
-        sid: session.currenUser?.sid ?? '',
-        userId: session.currenUser?.userId ?? '',
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
       },
       msg: `${page}`,
     },
@@ -179,8 +179,8 @@ export const broadcastWhiteboardOfficeFile = (
   const info: WhiteboardMsg = {
     type: WhiteboardMsgType.ADD_WHITEBOARD_OFFICE_FILE,
     from: {
-      sid: session.currenUser?.sid ?? '',
-      userId: session.currenUser?.userId ?? '',
+      sid: session.currentUser?.sid ?? '',
+      userId: session.currentUser?.userId ?? '',
     },
     msg: JSON.stringify(newFile),
   };
@@ -196,6 +196,28 @@ export const broadcastWhiteboardOfficeFile = (
   if (sendTo !== '') {
     data.to = sendTo;
   }
+
+  sendWebsocketMessage(JSON.stringify(data));
+};
+
+export const broadcastMousePointerUpdate = (msg: any) => {
+  const session = store.getState().session;
+  const info: WhiteboardMsg = {
+    type: WhiteboardMsgType.POINTER_UPDATE,
+    from: {
+      sid: session.currentUser?.sid ?? '',
+      userId: session.currentUser?.userId ?? '',
+    },
+    msg: JSON.stringify(msg),
+  };
+
+  const data: IDataMessage = {
+    type: DataMessageType.WHITEBOARD,
+    room_sid: session.currentRoom.sid,
+    room_id: session.currentRoom.room_id,
+    message_id: '',
+    body: info,
+  };
 
   sendWebsocketMessage(JSON.stringify(data));
 };

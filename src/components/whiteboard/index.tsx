@@ -18,16 +18,6 @@ import './style.css';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
-  DataMessageType,
-  IDataMessage,
-  WhiteboardMsg,
-  WhiteboardMsgType,
-} from '../../store/slices/interfaces/dataMessages';
-import {
-  isSocketConnected,
-  sendWebsocketMessage,
-} from '../../helpers/websocket';
-import {
   ReconciledElements,
   reconcileElements,
 } from './helpers/reconciliation';
@@ -38,12 +28,14 @@ import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
+  broadcastMousePointerUpdate,
   broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
   sendWhiteboardDataAsDonor,
 } from './helpers/handleRequestedWhiteboardData';
 import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
+import usePreviousPage from './helpers/hooks/usePreviousPage';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -67,7 +59,7 @@ const requestedWhiteboardDataSelector = createSelector(
 );
 const lockWhiteboardSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings?.lock_whiteboard,
+    state.session.currentUser?.metadata?.lock_settings?.lock_whiteboard,
   (lock_whiteboard) => lock_whiteboard,
 );
 
@@ -79,9 +71,13 @@ const whiteboardFileIdSelector = createSelector(
   (state: RootState) => state.whiteboard.whiteboardFileId,
   (whiteboardFileId) => whiteboardFileId,
 );
+const isPresenterSelector = createSelector(
+  (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
+  (is_presenter) => is_presenter,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
-  const currentUser = store.getState().session.currenUser;
+  const currentUser = store.getState().session.currentUser;
   const currentRoom = store.getState().session.currentRoom;
   const CURSOR_SYNC_TIMEOUT = 33;
   const collaborators = new Map<string, Collaborator>();
@@ -105,9 +101,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const currentPage = useAppSelector(currentPageSelector);
   const whiteboardFileId = useAppSelector(whiteboardFileIdSelector);
   const previousFileId = usePreviousFileId(whiteboardFileId);
+  const isPresenter = useAppSelector(isPresenterSelector);
+  const currentPage = useAppSelector(currentPageSelector);
+  const previousPage = usePreviousPage(currentPage);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -187,18 +185,31 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [lockWhiteboard]);
 
+  // watch presenter changes
+  useEffect(() => {
+    if (isPresenter) {
+      setViewModeEnabled(false);
+    } else if (!currentUser?.isRecorder) {
+      setViewModeEnabled(
+        currentUser?.metadata?.lock_settings.lock_whiteboard ?? true,
+      );
+    }
+    //eslint-disable-next-line
+  }, [isPresenter]);
+
   // if page change then we'll reset version
   useEffect(() => {
-    setLastBroadcastOrReceivedSceneVersion(-1);
+    if (currentPage !== previousPage) {
+      setLastBroadcastOrReceivedSceneVersion(-1);
+    }
     // for recorder & other user we'll clean from here
-    if (!currentUser?.metadata?.is_admin || currentUser?.isRecorder) {
+    if (!isPresenter && currentPage !== previousPage) {
       excalidrawAPI?.updateScene({
         elements: [],
       });
       excalidrawAPI?.addFiles([]);
     }
-    //eslint-disable-next-line
-  }, [currentPage, excalidrawAPI]);
+  }, [currentPage, previousPage, isPresenter, excalidrawAPI]);
 
   // for handling draw elements
   useEffect(() => {
@@ -337,12 +348,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   const onChange = (elements: readonly ExcalidrawElement[]) => {
-    if (
-      excalidrawAPI &&
-      currentUser &&
-      elements.length &&
-      isSocketConnected()
-    ) {
+    if (excalidrawAPI && currentUser && elements.length) {
       if (viewModeEnabled) {
         return;
       }
@@ -358,7 +364,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (viewModeEnabled) {
         return;
       }
-      if (payload.pointersMap.size < 2 && currentUser && isSocketConnected()) {
+      if (payload.pointersMap.size < 2 && currentUser) {
         const msg = {
           pointer: payload.pointer,
           button: payload.button || 'up',
@@ -366,25 +372,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
           userId: currentUser.userId,
           name: currentUser.name,
         };
-
-        const info: WhiteboardMsg = {
-          type: WhiteboardMsgType.POINTER_UPDATE,
-          from: {
-            sid: currentUser.sid,
-            userId: currentUser.userId,
-          },
-          msg: JSON.stringify(msg),
-        };
-
-        const data: IDataMessage = {
-          type: DataMessageType.WHITEBOARD,
-          room_id: currentRoom.room_id,
-          room_sid: currentRoom.sid,
-          message_id: '',
-          body: info,
-        };
-
-        sendWebsocketMessage(JSON.stringify(data));
+        broadcastMousePointerUpdate(msg);
       }
     },
     CURSOR_SYNC_TIMEOUT,
@@ -393,9 +381,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const renderTopRightUI = () => {
     return (
       <>
-        {currentUser?.metadata?.is_admin &&
-        !currentUser.isRecorder &&
-        excalidrawAPI ? (
+        {isPresenter && excalidrawAPI ? (
           <UploadFilesUI
             currenPage={currentPage}
             excalidrawAPI={excalidrawAPI}
@@ -406,7 +392,12 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   const renderFooter = () => {
-    return <FooterUI excalidrawAPI={excalidrawAPI} />;
+    return (
+      <FooterUI
+        excalidrawAPI={excalidrawAPI}
+        isPresenter={isPresenter ?? false}
+      />
+    );
   };
 
   const render = () => {
@@ -419,7 +410,13 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         isCollaborating={true}
         theme={theme}
         name="plugNmeet whiteboard"
-        UIOptions={{ canvasActions: { loadScene: false, export: false } }}
+        UIOptions={{
+          canvasActions: {
+            loadScene: false,
+            export: false,
+            saveAsImage: !currentUser?.isRecorder,
+          },
+        }}
         autoFocus={true}
         detectScroll={true}
         langCode={i18n.languages[0]}

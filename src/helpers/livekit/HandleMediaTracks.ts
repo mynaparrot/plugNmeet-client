@@ -68,7 +68,7 @@ export default class HandleMediaTracks {
       }),
     );
 
-    if (participant.identity === store.getState().session.currenUser?.userId) {
+    if (participant.identity === store.getState().session.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(true));
     }
   };
@@ -83,7 +83,7 @@ export default class HandleMediaTracks {
       }),
     );
 
-    if (participant.identity === store.getState().session.currenUser?.userId) {
+    if (participant.identity === store.getState().session.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(false));
     }
   };
@@ -115,7 +115,7 @@ export default class HandleMediaTracks {
         .metadata as IRoomMetadata;
     }
     if (!this.currentUser) {
-      this.currentUser = store.getState().session.currenUser;
+      this.currentUser = store.getState().session.currentUser;
     }
 
     if (
