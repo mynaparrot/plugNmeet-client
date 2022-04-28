@@ -19,7 +19,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>();
   const [mediaStream, setMediaStream] = useState<MediaStream>();
 
-  const currenUser = store.getState().session.currenUser?.userId;
+  const currentUser = store.getState().session.currentUser?.userId;
   const dispatch = useAppDispatch();
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -78,11 +78,11 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
           />
         </div>
       ) : null}
-      {show && sourcePlayback && currenUser && backgroundConfig ? (
+      {show && sourcePlayback && currentUser && backgroundConfig ? (
         <VirtualBackground
           sourcePlayback={sourcePlayback}
           backgroundConfig={backgroundConfig}
-          id={currenUser}
+          id={currentUser}
         />
       ) : null}
       {!isSafari ? <BackgroundItems onSelect={onSelectBg} /> : null}

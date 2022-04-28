@@ -20,7 +20,7 @@ interface IFooterProps {
 }
 
 const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
-  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
   return (
     <footer

@@ -1,6 +1,6 @@
 export interface ISession {
   token: string;
-  currenUser?: ICurrentUser;
+  currentUser?: ICurrentUser;
   currentRoom: ICurrentRoom;
   screenSharing: IScreenSharing;
   isActiveRtmpBroadcasting: boolean;

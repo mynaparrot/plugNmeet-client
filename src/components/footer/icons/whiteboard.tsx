@@ -38,8 +38,8 @@ const WhiteboardIcon = () => {
   const allowedWhiteboard =
     store.getState().session.currentRoom.metadata?.room_features
       .whiteboard_features.allowed_whiteboard;
-  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
-  const isRecorder = store.getState().session.currenUser?.isRecorder;
+  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
     if (isActiveWhiteboard) {

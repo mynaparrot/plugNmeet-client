@@ -66,8 +66,8 @@ const ExternalMediaPlayer = ({
   const dispatch = useAppDispatch();
 
   const session = store.getState().session;
-  const isAdmin = session.currenUser?.metadata?.is_admin;
-  const isRecorder = session.currenUser?.isRecorder;
+  const isAdmin = session.currentUser?.metadata?.is_admin;
+  const isRecorder = session.currentUser?.isRecorder;
   const player = useRef<ReactPlayer>();
 
   useEffect(() => {
@@ -118,8 +118,8 @@ const ExternalMediaPlayer = ({
         body: {
           type: SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS,
           from: {
-            sid: session.currenUser?.sid ?? '',
-            userId: session.currenUser?.userId ?? '',
+            sid: session.currentUser?.sid ?? '',
+            userId: session.currentUser?.userId ?? '',
           },
           msg,
         },

@@ -75,7 +75,7 @@ const sessionSlice = createSlice({
       state.isStartup = action.payload;
     },
     addCurrentUser: (state, action: PayloadAction<ICurrentUser>) => {
-      state.currenUser = action.payload;
+      state.currentUser = action.payload;
     },
     addCurrentRoom: (state, action: PayloadAction<ICurrentRoom>) => {
       state.currentRoom.room_id = action.payload.room_id;
@@ -94,8 +94,8 @@ const sessionSlice = createSlice({
       state,
       action: PayloadAction<ICurrentUserMetadata>,
     ) => {
-      if (state.currenUser) {
-        state.currenUser.metadata = action.payload;
+      if (state.currentUser) {
+        state.currentUser.metadata = action.payload;
       }
     },
     updateCurrentRoomMetadata: (

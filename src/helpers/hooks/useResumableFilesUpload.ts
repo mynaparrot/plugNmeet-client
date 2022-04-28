@@ -45,7 +45,7 @@ const useResumableFilesUpload = ({
       query: {
         sid: session.currentRoom.sid,
         roomId: session.currentRoom.room_id,
-        userId: session.currenUser?.userId,
+        userId: session.currentUser?.userId,
         resumable: true,
       },
       headers: {

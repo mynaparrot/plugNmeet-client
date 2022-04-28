@@ -13,7 +13,7 @@ interface IRightPanelProps {
 
 const isChatLockSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings.lock_chat,
+    state.session.currentUser?.metadata?.lock_settings.lock_chat,
   (lock_chat) => lock_chat,
 );
 
@@ -26,7 +26,7 @@ const RightPanel = ({ currentRoom, isRecorder }: IRightPanelProps) => {
     const isLock =
       store.getState().session.currentRoom.metadata?.default_lock_settings
         ?.lock_chat;
-    const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
     if (isLock && !isAdmin) {
       if (isChatLock !== false) {

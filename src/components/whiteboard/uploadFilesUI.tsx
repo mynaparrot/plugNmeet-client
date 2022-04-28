@@ -91,7 +91,7 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
     const body: any = {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
-      userId: session.currenUser?.userId,
+      userId: session.currentUser?.userId,
       file_path: filePath,
     };
     const res = await sendAPIRequest('convertWhiteboardFile', body);
@@ -154,8 +154,8 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
     const info: WhiteboardMsg = {
       type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
       from: {
-        sid: session.currenUser?.sid ?? '',
-        userId: session.currenUser?.userId ?? '',
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
       },
       msg: files,
     };

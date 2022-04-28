@@ -28,13 +28,13 @@ const isChatServiceReadySelector = createSelector(
 
 const isLockChatSendMsgSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings.lock_chat_send_message,
+    state.session.currentUser?.metadata?.lock_settings.lock_chat_send_message,
   (lock_chat_send_message) => lock_chat_send_message,
 );
 
 const isLockSendFileSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings.lock_chat_file_share,
+    state.session.currentUser?.metadata?.lock_settings.lock_chat_file_share,
   (lock_chat_file_share) => lock_chat_file_share,
 );
 
@@ -80,7 +80,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       store.getState().session.currentRoom.metadata?.default_lock_settings
         ?.lock_chat_file_share;
 
-    const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
     if (lock_chat_send_message && !isAdmin) {
       if (isLockChatSendMsg !== false) {

@@ -11,11 +11,11 @@ const LeftPanel = () => {
 
   const renderParticipants = () => {
     const session = store.getState().session;
-    const currentUserUserId = session.currenUser?.userId;
+    const currentUserUserId = session.currentUser?.userId;
     const allow_view_other_users_list =
       session.currentRoom.metadata?.room_features
         ?.allow_view_other_users_list ?? false;
-    const currentIsAdmin = session.currenUser?.metadata?.is_admin ?? false;
+    const currentIsAdmin = session.currentUser?.metadata?.is_admin ?? false;
 
     return participants.map((participant) => {
       if (!currentIsAdmin && !allow_view_other_users_list) {

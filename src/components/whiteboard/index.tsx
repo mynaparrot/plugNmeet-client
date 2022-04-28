@@ -59,7 +59,7 @@ const requestedWhiteboardDataSelector = createSelector(
 );
 const lockWhiteboardSelector = createSelector(
   (state: RootState) =>
-    state.session.currenUser?.metadata?.lock_settings?.lock_whiteboard,
+    state.session.currentUser?.metadata?.lock_settings?.lock_whiteboard,
   (lock_whiteboard) => lock_whiteboard,
 );
 
@@ -72,12 +72,12 @@ const whiteboardFileIdSelector = createSelector(
   (whiteboardFileId) => whiteboardFileId,
 );
 const isPresenterSelector = createSelector(
-  (state: RootState) => state.session.currenUser?.metadata?.is_presenter,
+  (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
   (is_presenter) => is_presenter,
 );
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
-  const currentUser = store.getState().session.currenUser;
+  const currentUser = store.getState().session.currentUser;
   const currentRoom = store.getState().session.currentRoom;
   const CURSOR_SYNC_TIMEOUT = 33;
   const collaborators = new Map<string, Collaborator>();

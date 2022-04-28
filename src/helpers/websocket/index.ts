@@ -93,7 +93,7 @@ const getURL = () => {
     webSocketUrl = webSocketUrl + url.pathname;
   }
   const token = session.token;
-  const currentUser = session.currenUser;
+  const currentUser = session.currentUser;
   const currentRoom = session.currentRoom;
 
   webSocketUrl =

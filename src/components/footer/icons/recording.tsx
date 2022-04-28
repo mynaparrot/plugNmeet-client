@@ -19,7 +19,7 @@ const RecordingIcon = () => {
   const [disable, setDisable] = useState<boolean>(false);
   const [running, setRunning] = useState<boolean>(false);
   const [allowRecording, setAllowRecording] = useState<boolean>(true);
-  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
   let timer: any = 0;
 
   useEffect(() => {

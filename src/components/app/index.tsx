@@ -120,7 +120,7 @@ const App = () => {
         setIsRecorder(true);
       }
 
-      if (store.getState().session.currenUser?.metadata?.is_admin) {
+      if (store.getState().session.currentUser?.metadata?.is_admin) {
         setUserTypeClass('admin');
       }
     }

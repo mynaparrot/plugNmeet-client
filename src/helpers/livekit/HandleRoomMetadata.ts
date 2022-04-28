@@ -33,7 +33,7 @@ export default class HandleRoomMetadata {
 
   private showRecordingNotification = () => {
     // we should avoid notification is user is recorder.
-    if (store.getState().session.currenUser?.isRecorder) {
+    if (store.getState().session.currentUser?.isRecorder) {
       return;
     }
 
@@ -51,7 +51,7 @@ export default class HandleRoomMetadata {
 
   private showRTMPNotification = () => {
     // we should avoid notification is user is recorder.
-    if (store.getState().session.currenUser?.isRecorder) {
+    if (store.getState().session.currentUser?.isRecorder) {
       return;
     }
 

@@ -52,12 +52,12 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
       body: {
         type: SystemMsgType.INFO,
         from: {
-          sid: session.currenUser?.sid ?? '',
-          userId: session.currenUser?.userId ?? '',
+          sid: session.currentUser?.sid ?? '',
+          userId: session.currentUser?.userId ?? '',
         },
         msg:
           t('left-panel.menus.notice.asked-you-to', {
-            name: session.currenUser?.name,
+            name: session.currentUser?.name,
           }) + t(task),
       },
     };
@@ -121,7 +121,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     );
   };
   return (
-    <>{session.currenUser?.userId !== participant?.userId ? render() : null}</>
+    <>{session.currentUser?.userId !== participant?.userId ? render() : null}</>
   );
 };
 

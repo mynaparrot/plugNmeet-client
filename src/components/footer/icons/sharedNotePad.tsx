@@ -41,8 +41,8 @@ const SharedNotePadIcon = () => {
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
   const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
   const [initiated, setInitiated] = useState<boolean>(false);
-  const isAdmin = store.getState().session.currenUser?.metadata?.is_admin;
-  const isRecorder = store.getState().session.currenUser?.isRecorder;
+  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
     // if not active then we can disable it.
