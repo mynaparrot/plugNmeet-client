@@ -178,4 +178,4 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   return <>{isPresenter ? renderForAdmin() : renderForParticipant()}</>;
 };
 
-export default FooterUI;
+export default React.memo(FooterUI);
