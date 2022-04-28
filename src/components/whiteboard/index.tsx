@@ -185,6 +185,18 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [lockWhiteboard]);
 
+  // watch presenter changes
+  useEffect(() => {
+    if (isPresenter) {
+      setViewModeEnabled(false);
+    } else {
+      setViewModeEnabled(
+        currentUser?.metadata?.lock_settings.lock_whiteboard ?? true,
+      );
+    }
+    //eslint-disable-next-line
+  }, [isPresenter]);
+
   // if page change then we'll reset version
   useEffect(() => {
     if (currentPage !== previousPage) {

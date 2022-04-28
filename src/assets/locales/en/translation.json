@@ -152,7 +152,9 @@
       "show-shared-notepad": "Show shared notepad",
       "hide-shared-notepad": "Hide shared notepad",
       "show-whiteboard": "Show whiteboard",
-      "hide-whiteboard": "Hide whiteboard"
+      "hide-whiteboard": "Hide whiteboard",
+      "promote-presenter": "Promote as presenter",
+      "demote-presenter": "Demote from presenter"
     },
     "menus": {
       "mute-all-users": "Mute all users",
@@ -181,7 +183,8 @@
       "external-media-player-url-required": "Valid URL required",
       "external-media-player-url-invalid": "URL not valid or supported",
       "external-media-player-starting": "Please wait preparing playback",
-      "external-media-player-stopping": "Please wait stopping playback"
+      "external-media-player-stopping": "Please wait stopping playback",
+      "new-setting-applied": "New setting applied successfully"
     },
     "modal": {
       "lock-settings-title": "Room Lock Settings",

@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { Dialog } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import MicMenuItem from './menu-items/mic';
 import WebcamMenuItem from './menu-items/webcam';
+import SwitchPresenterMenuItem from './menu-items/switchPresenter';
 import LowerHandMenuItem from './menu-items/lowerHand';
 import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { store } from '../../../../store';
-import { toast } from 'react-toastify';
 
 interface IMenuIconProps {
   userId: string;
@@ -134,6 +135,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                 >
                   <MicMenuItem userId={userId} />
                   <WebcamMenuItem userId={userId} />
+                  <SwitchPresenterMenuItem userId={userId} />
                   <LowerHandMenuItem userId={userId} />
                   <LockSettingMenuItem userId={userId} />
                   <RemoveUserMenuItem
