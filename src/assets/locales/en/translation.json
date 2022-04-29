@@ -117,7 +117,8 @@
         "asked-you-to": "{{name}} asked you to ",
         "you-have-asked": "You've asked {{name}} to ",
         "you-have-muted-to": "You've muted microphone for {{name}}",
-        "applied-new-setting": "Applied new lock setting"
+        "applied-new-setting": "Applied new lock setting",
+        "new-setting-applied": "New setting applied successfully"
       }
     }
   },
@@ -183,8 +184,7 @@
       "external-media-player-url-required": "Valid URL required",
       "external-media-player-url-invalid": "URL not valid or supported",
       "external-media-player-starting": "Please wait preparing playback",
-      "external-media-player-stopping": "Please wait stopping playback",
-      "new-setting-applied": "New setting applied successfully"
+      "external-media-player-stopping": "Please wait stopping playback"
     },
     "modal": {
       "lock-settings-title": "Room Lock Settings",

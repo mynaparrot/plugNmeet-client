@@ -161,10 +161,20 @@ const getRealMimeType = (reader) => {
 const getFileDimension = async (height: number, width: number) => {
   fileHeight = Number(`${height}`);
   fileWidth = Number(`${width}`);
-  let reducedBy = 0.1;
-  while (fileHeight > excalidrawHeight) {
+  const excalidrawActualHeight = excalidrawHeight - 40;
+  const excalidrawActualWidth = excalidrawWidth - 180;
+
+  let reducedBy = 0.01;
+  while (fileHeight > excalidrawActualHeight) {
     fileHeight -= fileHeight * reducedBy;
     fileWidth -= fileWidth * reducedBy;
-    reducedBy += 0.1;
+    reducedBy += 0.01;
+  }
+
+  reducedBy = 0.01;
+  while (fileHeight > excalidrawActualWidth) {
+    fileHeight -= fileHeight * reducedBy;
+    fileWidth -= fileWidth * reducedBy;
+    reducedBy += 0.01;
   }
 };
