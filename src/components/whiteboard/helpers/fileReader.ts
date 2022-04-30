@@ -85,10 +85,16 @@ const prepareForExcalidraw = (): FileReaderResult => {
     created: Date.now(),
   };
 
+  const percent = Math.round((fileWidth * 100) / excalidrawWidth);
+  let reducedBy = 0.4;
+  if (percent < 50) {
+    reducedBy = 0.7;
+  }
+
   const elm: ExcalidrawElement = {
     id: fileId,
     type: 'image',
-    x: excalidrawHeight * 0.4,
+    x: excalidrawHeight * reducedBy,
     y: excalidrawWidth * 0.06,
     width: fileWidth,
     height: fileHeight,
