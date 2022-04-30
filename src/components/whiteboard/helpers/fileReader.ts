@@ -178,7 +178,7 @@ const getFileDimension = async (height: number, width: number) => {
   }
 
   reducedBy = 0.01;
-  while (fileHeight > excalidrawActualWidth) {
+  while (fileWidth > excalidrawActualWidth) {
     fileHeight -= fileHeight * reducedBy;
     fileWidth -= fileWidth * reducedBy;
     reducedBy += 0.01;
