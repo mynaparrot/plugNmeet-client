@@ -27,6 +27,49 @@ const useWatchVisibilityChange = () => {
     };
   }, []);
 
+  // in mobile sometime above solution doesn't work properly
+  useEffect(() => {
+    let hidden, visibilityChange;
+    if (typeof document.hidden !== 'undefined') {
+      // Opera 12.10 and Firefox 18 and later support
+      hidden = 'hidden';
+      visibilityChange = 'visibilitychange';
+    } else if (typeof (document as any).msHidden !== 'undefined') {
+      hidden = 'msHidden';
+      visibilityChange = 'msvisibilitychange';
+    } else if (typeof (document as any).webkitHidden !== 'undefined') {
+      hidden = 'webkitHidden';
+      visibilityChange = 'webkitvisibilitychange';
+    }
+
+    const handleVisibilityChange = () => {
+      if (document[hidden]) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+    };
+
+    if (
+      typeof document.addEventListener !== 'undefined' ||
+      hidden !== undefined
+    ) {
+      document.addEventListener(
+        visibilityChange,
+        handleVisibilityChange,
+        false,
+      );
+    }
+    return () => {
+      if (
+        typeof document.addEventListener !== 'undefined' ||
+        hidden !== undefined
+      ) {
+        document.removeEventListener(visibilityChange, handleVisibilityChange);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const session = store.getState().session;
     const data: IDataMessage = {
