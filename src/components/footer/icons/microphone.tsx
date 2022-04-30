@@ -138,7 +138,7 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative z-10">
       {showMicrophoneModal ? (
         <ShareMicrophoneModal currentRoom={currentRoom} />
       ) : null}
