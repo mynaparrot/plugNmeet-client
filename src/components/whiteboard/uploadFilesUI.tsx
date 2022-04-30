@@ -106,7 +106,7 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
     }
     const files: Array<IWhiteboardFile> = [];
     for (let i = 0; i < res.total_pages; i++) {
-      const fileName = 'page_' + (i + 1) + '.svg';
+      const fileName = 'page_' + (i + 1) + '.png';
       const file: IWhiteboardFile = {
         id: randomString(),
         currenPage: i + 1,

@@ -25,7 +25,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
 
     const res = await sendAPIRequest('switchPresenter', body);
     if (res.status) {
-      toast(t('left-panel.menus.notice.new-setting-applied'), {
+      toast(t('left-panel.menus.notice.presenter-changed'), {
         toastId: 'lock-setting-status',
         type: 'info',
       });
