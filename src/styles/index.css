@@ -156,7 +156,11 @@ code {
 }
 
 .video-camera-item {
-    @apply w-[calc(16.66%-16px)] pb-[12%] m-[8px] rounded-2xl overflow-hidden z-[1];
+    @apply w-[calc(14.28%-16px)] pb-[10%] m-[8px] rounded-2xl overflow-hidden z-[1] bg-black;
+}
+.video-camera-item .loading {
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .hideChatPanel.hideParticipantsPanel .otherWebcams .video-camera-item {
@@ -507,14 +511,36 @@ button.previous-cam:hover, button.next-cam:hover {
     padding-bottom: 33%;
 }
 
-.all-webcam-wrapper.total-cam-3 .video-camera-item,
-.all-webcam-wrapper.total-cam-4 .video-camera-item,
+.all-webcam-wrapper.total-cam-3 .all-webcam-wrapper-inner, 
+.all-webcam-wrapper.total-cam-4 .all-webcam-wrapper-inner {
+    max-width: 80%;
+    margin: auto;
+}
+.all-webcam-wrapper.total-cam-3 .video-camera-item, 
+.all-webcam-wrapper.total-cam-4 .video-camera-item {
+    width: calc(35% - 16px);
+    padding-bottom: 25.5%;
+}
+
 .all-webcam-wrapper.total-cam-5 .video-camera-item,
 .all-webcam-wrapper.total-cam-6 .video-camera-item,
 .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .all-webcam-wrapper.total-cam-8 .video-camera-item {
     width: calc(25% - 16px);
     padding-bottom: 18%;
+}
+
+.all-webcam-wrapper.total-cam-9 .video-camera-item,
+.all-webcam-wrapper.total-cam-10 .video-camera-item,
+.all-webcam-wrapper.total-cam-11 .video-camera-item,
+.all-webcam-wrapper.total-cam-12 .video-camera-item,
+.all-webcam-wrapper.total-cam-13 .video-camera-item,
+.all-webcam-wrapper.total-cam-14 .video-camera-item,
+.all-webcam-wrapper.total-cam-15 .video-camera-item,
+.all-webcam-wrapper.total-cam-16 .video-camera-item,
+.all-webcam-wrapper.total-cam-17 .video-camera-item,
+.all-webcam-wrapper.total-cam-18 .video-camera-item {
+    @apply w-[calc(16.66%-16px)] pb-[12%];
 }
 
 /* .hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .video-camera-item,
