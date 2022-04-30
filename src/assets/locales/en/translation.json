@@ -118,7 +118,8 @@
         "you-have-asked": "You've asked {{name}} to ",
         "you-have-muted-to": "You've muted microphone for {{name}}",
         "applied-new-setting": "Applied new lock setting",
-        "new-setting-applied": "New setting applied successfully"
+        "presenter-changed": "Presenter has been changed successfully",
+        "you-are-presenter": "You are the presenter"
       }
     }
   },
