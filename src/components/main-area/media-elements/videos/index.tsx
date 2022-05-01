@@ -120,7 +120,7 @@ const VideoElements = ({
     <>
       {totalNumWebcams > 0 ? (
         <div
-          className={`all-webcam-wrapper total-cam-${totalNumWebcams} ${
+          className={`all-webcam-wrapper total-cam-${totalNumWebcams} page-${currentPage} ${
             isVertical ? 'vertical-webcams' : ''
           }`}
         >
