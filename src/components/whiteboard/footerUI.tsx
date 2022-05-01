@@ -10,6 +10,8 @@ import {
   broadcastCurrentPageNumber,
   broadcastScreenDataBySocket,
 } from './helpers/handleRequestedWhiteboardData';
+import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
+import { toast } from 'react-toastify';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -33,6 +35,9 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   const previousPage = usePreviousPage(currentPage);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const currentUser = store.getState().session.currentUser;
+  const isAdmin = currentUser?.metadata?.is_admin;
 
   useEffect(() => {
     if (previousPage && currentPage !== previousPage && excalidrawAPI) {
@@ -167,9 +172,37 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     );
   };
 
+  const takeOverPresenter = async () => {
+    const body = {
+      user_id: currentUser?.userId,
+      task: 'promote',
+    };
+
+    const res = await sendAPIRequest('switchPresenter', body);
+    if (res.status) {
+      toast(t('left-panel.menus.notice.presenter-changed'), {
+        toastId: 'lock-setting-status',
+        type: 'info',
+      });
+    } else {
+      toast(t(res.msg), {
+        toastId: 'lock-setting-status',
+        type: 'error',
+      });
+    }
+  };
+
   const renderForParticipant = () => {
     return (
-      <div className="flex text-sm pt-3">
+      <div className="flex text-sm items-center justify-center relative pt-3">
+        {isAdmin ? (
+          <button
+            className="w-10 h-8 flex items-center justify-center absolute left-0 top-[3px]"
+            onClick={takeOverPresenter}
+          >
+            <i className="pnm-presenter primaryColor text-[14px] opacity-50" />
+          </button>
+        ) : null}
         {t('whiteboard.page', { count: currentPage })}
       </div>
     );
