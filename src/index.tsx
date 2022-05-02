@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 
@@ -11,7 +11,11 @@ import { store } from './store';
 import App from './components/app';
 import Loading from './components/extra-pages/Loading';
 
-ReactDOM.render(
+const container = document.getElementById('plugNmeet-app');
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     <Provider store={store}>
       <Suspense fallback={<Loading text="" />}>
@@ -20,5 +24,4 @@ ReactDOM.render(
       <ToastContainer />
     </Provider>
   </React.StrictMode>,
-  document.getElementById('plugNmeet-app'),
 );
