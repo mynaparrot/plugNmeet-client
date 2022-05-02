@@ -79,6 +79,12 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   }, [totalPages]);
 
   useEffect(() => {
+    if (excalidrawAPI && isPresenter) {
+      setTimeout(() => {
+        const currentPage = store.getState().whiteboard.currentPage;
+        displayCurrentPageData(currentPage);
+      });
+    }
     return () => {
       if (excalidrawAPI) {
         const lastPage = store.getState().whiteboard.currentPage;
@@ -88,6 +94,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
         }
       }
     };
+    //eslint-disable-next-line
   }, [excalidrawAPI]);
 
   const savePreviousPageData = () => {
