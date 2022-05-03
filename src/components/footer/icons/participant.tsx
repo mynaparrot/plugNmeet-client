@@ -14,6 +14,10 @@ const isActiveParticipantsPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
   (isActiveParticipantsPanel) => isActiveParticipantsPanel,
 );
+const participantsSelector = createSelector(
+  (state: RootState) => state.participants,
+  (participants) => participants,
+);
 
 const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +27,7 @@ const ParticipantIcon = () => {
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
   );
+  const participants = useAppSelector(participantsSelector);
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
   useEffect(() => {
@@ -39,7 +44,7 @@ const ParticipantIcon = () => {
 
   return (
     <div
-      className={`participants footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] mr-3 lg:mr-6 overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer ${
+      className={`participants footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] mr-3 lg:mr-6 relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer ${
         showTooltip ? 'has-tooltip' : ''
       }`}
       onClick={() => toggleParticipantsPanel()}
@@ -51,6 +56,11 @@ const ParticipantIcon = () => {
       </span>
 
       <i className={`pnm-participant ${iconCSS} text-[12px] lg:text-[16px]`} />
+      {!isActiveParticipantsPanel ? (
+        <div className="unseen-message-count bg-brandRed w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
+          {participants.ids.length}
+        </div>
+      ) : null}
     </div>
   );
 };
