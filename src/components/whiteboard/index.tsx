@@ -14,7 +14,7 @@ import {
 } from '@excalidraw/excalidraw/types/types';
 
 import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
-import './style.css';
+import './style.scss';
 import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {

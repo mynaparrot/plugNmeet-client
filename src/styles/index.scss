@@ -1,11 +1,9 @@
-@import "plugnmeet-fonts.css";
+@import "plugnmeet-fonts.scss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-/* @import url('https://fonts.cdnfonts.com/css/sofia-pro'); */
-/*@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300;1,400;1,600;1,700&display=swap');*/
 body {
     margin: 0;
     font-family: 'Nunito Sans', sans-serif;
@@ -231,9 +229,11 @@ code {
     z-index: 2;
     left: 0;
 }
+
 #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     padding-left: 260px;
 }
+
 #main-area.fullWidthMainArea.showScreenShare .all-webcam-wrapper {
     position: relative;
 }
@@ -345,10 +345,10 @@ code {
         box-shadow: 0 0 5px 0 rgba(0, 77, 144, 0.3);
     }
     65% {
-        box-shadow: 0 0 5px 13px rgba(242, 242, 242);
+        box-shadow: 0 0 5px 13px rgb(242, 242, 242);
     }
     90% {
-        box-shadow: 0 0 5px 13px rgba(242, 242, 242);
+        box-shadow: 0 0 5px 13px rgb(242, 242, 242);
     }
 }
 
@@ -602,7 +602,7 @@ button.previous-cam:hover, button.next-cam:hover {
 }
 
 .footer-podcast-button .lds-ripple div {
-    border: 2px solid rgba(0, 77, 144);
+    border: 2px solid rgb(0, 77, 144);
     -webkit-animation: lds-ripple2 .8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
     animation: lds-ripple2 .8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
@@ -664,14 +664,15 @@ button.previous-cam:hover, button.next-cam:hover {
 .transition-left-panel {
     position: absolute;
     height: 100%;
-    box-shadow: 0 0 10px -7px rgb(0 0 0);
+    box-shadow: 0 0 10px -7px rgb(0, 0, 0);
     z-index: 3;
 }
+
 .transition-right-panel {
     position: absolute;
     right: 0;
     height: 100%;
-    box-shadow: 0 0 10px -7px rgb(0 0 0);
+    box-shadow: 0 0 10px -7px rgb(0, 0, 0);
     z-index: 2;
 }
 
@@ -680,15 +681,18 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 100% !important;
     height: inherit !important;
 }
+
 .media-player-inner > div {
     width: 100% !important;
     height: inherit !important;
 }
+
 .media-player-inner > div > div {
     overflow: hidden;
     padding-bottom: 56.25%;
     position: relative;
 }
+
 .media-player-inner iframe {
     left: 0;
     top: 0;
@@ -696,12 +700,15 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 100%;
     position: absolute;
 }
+
 #main-area.fullWidthMainArea.isRecorder .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     padding-left: 0;
 }
+
 .isRecorder .transition-right-panel {
     position: relative;
 }
+
 .isRecorder.showScreenShare .middle-area {
     display: flex;
     align-items: center;
@@ -713,9 +720,11 @@ button.previous-cam:hover, button.next-cam:hover {
         font-size: 12px;
         line-height: 16px;
     }
+
     #main-area.fullWidthMainArea .all-webcam-wrapper {
         width: 200px;
     }
+
     #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
         padding-left: 200px;
     }
@@ -902,6 +911,7 @@ button.previous-cam:hover, button.next-cam:hover {
         height: calc(100% - 105px) !important;
         top: 50px;
     }
+
     #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
         padding-left: 0;
     }

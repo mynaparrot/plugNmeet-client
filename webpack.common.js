@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const tailwindcss = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
+const postcssNested = require('postcss-nested');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -36,15 +37,16 @@ module.exports = {
             ? 'style-loader'
             : MiniCssExtractPlugin.loader,
           'css-loader',
-
           {
             loader: 'postcss-loader',
             options: {
+              sourceMap: true,
               postcssOptions: {
-                plugins: [tailwindcss, autoprefixer],
+                plugins: [tailwindcss, autoprefixer, postcssNested],
               },
             },
           },
+          'sass-loader',
         ],
       },
       {
