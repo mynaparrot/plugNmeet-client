@@ -772,6 +772,32 @@ button.previous-cam:hover, button.next-cam:hover {
     margin-left: 5px;
     outline: none;
 }
+.volume-popup-wrapper .range {
+    -webkit-appearance: none;
+    vertical-align: middle;
+    outline: none;
+    border: none;
+    padding: 0;
+    background: none;
+}
+.volume-popup-wrapper .range::-webkit-slider-runnable-track {
+    background-color: rgba(128, 128, 128, 0.5);
+    height: 10px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+}
+.volume-popup-wrapper .range::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    border-radius: 100%;
+    background-color: #0d6efd;
+    height: 18px;
+    width: 18px;
+    margin-top: -5px;
+}
+.volume-popup-wrapper .range:active::-webkit-slider-thumb {
+    outline: none;
+}
+  
 
 @media screen and (max-width: 1279px) {
     .all-MessageModule-wrap .message-item .system p.message-content {

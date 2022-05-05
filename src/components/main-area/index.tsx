@@ -163,9 +163,7 @@ const MainArea = ({
           <div className="select-camera-number">
             <label htmlFor="select-camera-num">Camera No:</label>
             <select name="select-camera-num" id="select-camera-num">
-              <option value="24" selected>
-                24
-              </option>
+              <option defaultValue="true">24</option>
               <option value="6">6</option>
               <option value="12">12</option>
               <option value="15">15</option>
