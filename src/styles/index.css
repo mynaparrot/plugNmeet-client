@@ -156,7 +156,7 @@ code {
 }
 
 .video-camera-item {
-    @apply w-[calc(14.28%-16px)] pb-[9.5%] m-[5px] rounded-2xl overflow-hidden z-[1] bg-black;
+    @apply w-[calc(15%-16px)] pb-[9.5%] m-[5px] rounded-2xl overflow-hidden z-[1] bg-black;
 }
 .video-camera-item .loading {
     top: 50%;
