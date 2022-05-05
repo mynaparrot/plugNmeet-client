@@ -38,6 +38,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
 
   const currentUser = store.getState().session.currentUser;
   const isAdmin = currentUser?.metadata?.is_admin;
+  const isRecorder = currentUser?.isRecorder;
 
   useEffect(() => {
     if (previousPage && currentPage !== previousPage && excalidrawAPI) {
@@ -79,6 +80,12 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   }, [totalPages]);
 
   useEffect(() => {
+    if (excalidrawAPI && isPresenter) {
+      setTimeout(() => {
+        const currentPage = store.getState().whiteboard.currentPage;
+        displayCurrentPageData(currentPage);
+      });
+    }
     return () => {
       if (excalidrawAPI) {
         const lastPage = store.getState().whiteboard.currentPage;
@@ -88,6 +95,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
         }
       }
     };
+    //eslint-disable-next-line
   }, [excalidrawAPI]);
 
   const savePreviousPageData = () => {
@@ -195,7 +203,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   const renderForParticipant = () => {
     return (
       <div className="flex text-sm items-center justify-center relative pt-3">
-        {isAdmin ? (
+        {isAdmin && !isRecorder ? (
           <button
             className="w-10 h-8 flex items-center justify-center absolute left-0 top-[3px]"
             onClick={takeOverPresenter}

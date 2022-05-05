@@ -15,7 +15,7 @@ import {
 
 import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import './style.css';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   ReconciledElements,
@@ -23,7 +23,6 @@ import {
 } from './helpers/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
-import { updateExcalidrawElements } from '../../store/slices/whiteboard';
 import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
@@ -83,7 +82,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const collaborators = new Map<string, Collaborator>();
 
   const { i18n } = useTranslation();
-  const dispatch = useAppDispatch();
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
@@ -117,15 +115,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         setViewModeEnabled(false);
       }
     }
-
-    return () => {
-      if (excalidrawAPI) {
-        const lastExcalidrawElements = JSON.stringify(
-          excalidrawAPI.getSceneElementsIncludingDeleted(),
-        );
-        dispatch(updateExcalidrawElements(lastExcalidrawElements));
-      }
-    };
     //eslint-disable-next-line
   }, [excalidrawAPI]);
 
@@ -199,11 +188,11 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // if page change then we'll reset version
   useEffect(() => {
-    if (currentPage !== previousPage) {
+    if (previousPage && currentPage !== previousPage) {
       setLastBroadcastOrReceivedSceneVersion(-1);
     }
     // for recorder & other user we'll clean from here
-    if (!isPresenter && currentPage !== previousPage) {
+    if (!isPresenter && previousPage && currentPage !== previousPage) {
       excalidrawAPI?.updateScene({
         elements: [],
       });

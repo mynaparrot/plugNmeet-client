@@ -15,7 +15,7 @@ jobs:
           node-version: "16.x"
       - name: Build project
         run: |
-          npm install
+          npm install --force
           npm run build
           timestamp=$(date +%s)
           echo "dev-${timestamp}" > dist/version.txt
