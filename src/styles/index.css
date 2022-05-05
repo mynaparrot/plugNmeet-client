@@ -156,7 +156,7 @@ code {
 }
 
 .video-camera-item {
-    @apply w-[calc(14.28%-16px)] pb-[10%] m-[5px] rounded-2xl overflow-hidden z-[1] bg-black;
+    @apply w-[calc(14.28%-16px)] pb-[9.5%] m-[5px] rounded-2xl overflow-hidden z-[1] bg-black;
 }
 .video-camera-item .loading {
     top: 50%;
@@ -523,14 +523,14 @@ button.previous-cam:hover, button.next-cam:hover {
 .all-webcam-wrapper.total-cam-28.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-29.page-2 .video-camera-item {
     width: calc(38% - 10px);
-    padding-bottom: 21%;
+    padding-bottom: 20%;
 }
 .all-webcam-wrapper.total-cam-5 .video-camera-item,
 .all-webcam-wrapper.total-cam-6 .video-camera-item,
 .all-webcam-wrapper.total-cam-30.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-31.page-2 .video-camera-item {
     width: calc(29% - 10px);
-    padding-bottom: 21%;
+    padding-bottom: 20%;
 }
 .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .all-webcam-wrapper.total-cam-8 .video-camera-item,
@@ -557,7 +557,7 @@ button.previous-cam:hover, button.next-cam:hover {
 .all-webcam-wrapper.total-cam-39.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-40.page-2 .video-camera-item {
     width: calc(20% - 16px);
-    padding-bottom: 14%;
+    padding-bottom: 13%;
 }
 .all-webcam-wrapper.total-cam-16 .video-camera-item,
 .all-webcam-wrapper.total-cam-17 .video-camera-item,
