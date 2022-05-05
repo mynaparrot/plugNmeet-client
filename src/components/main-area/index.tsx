@@ -160,6 +160,18 @@ const MainArea = ({
             videoSubscribers={videoSubscribers}
             screenShareTracks={screenShareTracks}
           />
+          <div className="select-camera-number">
+            <label htmlFor="select-camera-num">Camera No:</label>
+            <select name="select-camera-num" id="select-camera-num">
+              <option value="25" selected>
+                25
+              </option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </div>
         </div>
 
         {allowChat ? (

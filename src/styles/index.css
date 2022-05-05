@@ -520,17 +520,18 @@ button.previous-cam:hover, button.next-cam:hover {
 } */
 .all-webcam-wrapper.total-cam-3 .video-camera-item, 
 .all-webcam-wrapper.total-cam-4 .video-camera-item,
+.all-webcam-wrapper.total-cam-28.page-2 .video-camera-item,
+.all-webcam-wrapper.total-cam-29.page-2 .video-camera-item {
+    width: calc(38% - 10px);
+    padding-bottom: 21%;
+}
 .all-webcam-wrapper.total-cam-5 .video-camera-item,
 .all-webcam-wrapper.total-cam-6 .video-camera-item,
-.all-webcam-wrapper.total-cam-28.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-29.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-30.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-31.page-2 .video-camera-item {
     width: calc(29% - 10px);
     padding-bottom: 21%;
 }
-
-
 .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .all-webcam-wrapper.total-cam-8 .video-camera-item,
 .all-webcam-wrapper.total-cam-32.page-2 .video-camera-item,
@@ -538,7 +539,6 @@ button.previous-cam:hover, button.next-cam:hover {
     width: calc(25% - 16px);
     padding-bottom: 18%;
 }
-
 .all-webcam-wrapper.total-cam-9 .video-camera-item,
 .all-webcam-wrapper.total-cam-10 .video-camera-item,
 .all-webcam-wrapper.total-cam-11 .video-camera-item,
@@ -548,7 +548,7 @@ button.previous-cam:hover, button.next-cam:hover {
 .all-webcam-wrapper.total-cam-36.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-37.page-2 .video-camera-item {
     width: calc(22% - 16px);
-    padding-bottom: 14%;
+    padding-bottom: 13%;
 }
 .all-webcam-wrapper.total-cam-13 .video-camera-item,
 .all-webcam-wrapper.total-cam-14 .video-camera-item,
@@ -757,6 +757,20 @@ button.previous-cam:hover, button.next-cam:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.select-camera-number {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 5px;
+    font-size: 12px;
+    top: 5px;
+}
+.select-camera-number select#select-camera-num {
+    background-color: transparent;
+    border: 1px solid #333;
+    margin-left: 5px;
+    outline: none;
 }
 
 @media screen and (max-width: 1279px) {
