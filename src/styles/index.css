@@ -758,6 +758,9 @@ button.previous-cam:hover, button.next-cam:hover {
     align-items: center;
     justify-content: center;
 }
+.fullWidthMainArea .select-camera-number {
+    display: none;
+}
 .select-camera-number {
     display: flex;
     align-items: center;
@@ -786,6 +789,12 @@ button.previous-cam:hover, button.next-cam:hover {
     border-radius: 5px;
     border: 1px solid transparent;
 }
+.volume-popup-wrapper .range::-moz-range-track {
+    background-color: rgba(128, 128, 128, 0.5);
+    height: 10px;
+    border-radius: 5px;
+    border: none;
+}
 .volume-popup-wrapper .range::-webkit-slider-thumb {
     -webkit-appearance: none !important;
     border-radius: 100%;
@@ -794,7 +803,18 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 18px;
     margin-top: -5px;
 }
+.volume-popup-wrapper .range::-moz-range-thumb {
+    border-radius: 20px;
+    height: 18px;
+    width: 18px;
+    border: none;
+    background: none;
+    background-color: #0d6efd;
+}
 .volume-popup-wrapper .range:active::-webkit-slider-thumb {
+    outline: none;
+}
+.volume-popup-wrapper .range:active::-moz-range-thumb {
     outline: none;
 }
   
