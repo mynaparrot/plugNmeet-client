@@ -25,6 +25,7 @@
     "react-toastify": "^8.2.0",
     "resumablejs": "^1.1.0",
     "sanitize-html": "^2.7.0",
+    "sass": "^1.51.0",
     "validator": "^13.7.0"
   },
   "scripts": {
@@ -55,7 +56,6 @@
     "fork-ts-checker-webpack-plugin": "^7.2.11",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "2.6.0",
-    "node-sass": "^7.0.1",
     "postcss": "^8.4.13",
     "postcss-loader": "^6.2.1",
     "postcss-nested": "^5.0.6",
