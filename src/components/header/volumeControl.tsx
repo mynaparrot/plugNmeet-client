@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
-import { updateAudioVolume } from '../../store/slices/roomSettingsSlice';
-import { useAppDispatch } from '../../store';
+import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
+import { store, useAppDispatch } from '../../store';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();
-  const [volume, setVolume] = useState<number>(1);
+  const [volume, setVolume] = useState<number>(
+    store.getState().roomSettings.roomAudioVolume,
+  );
   const previousVolume = useStorePreviousInt(volume);
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume) {
-      dispatch(updateAudioVolume(volume));
+      dispatch(updateRoomAudioVolume(volume));
     }
   }, [volume, previousVolume, dispatch]);
 
@@ -23,7 +25,11 @@ const VolumeControl = () => {
           <>
             <Menu.Button className="relative flex-shrink-0 p-2">
               <div className="h-4 w-4">
-                <i className="pnm-speaker primaryColor" />
+                {volume > 0 ? (
+                  <i className="pnm-speaker primaryColor" />
+                ) : (
+                  <i className="pnm-speaker-muted primaryColor" />
+                )}
               </div>
             </Menu.Button>
 
@@ -57,7 +63,11 @@ const VolumeControl = () => {
                     {Math.round(volume * 100)}
                   </p>
                   <button className="w-5 h-5">
-                    <i className="pnm-speaker primaryColor" />
+                    {volume > 0 ? (
+                      <i className="pnm-speaker primaryColor" />
+                    ) : (
+                      <i className="pnm-speaker-muted primaryColor" />
+                    )}
                   </button>
                 </section>
               </Menu.Items>

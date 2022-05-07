@@ -77,7 +77,7 @@ const roomSettingsSlice = createSlice({
     ) => {
       state.allowPlayAudioNotification = action.payload;
     },
-    updateAudioVolume: (state, action: PayloadAction<number>) => {
+    updateRoomAudioVolume: (state, action: PayloadAction<number>) => {
       state.roomAudioVolume = action.payload;
     },
     updateRoomVideoQuality: (state, action: PayloadAction<VideoQuality>) => {
@@ -97,7 +97,7 @@ export const {
   updateActiveScreenSharingView,
   updateAllowPlayAudioNotification,
   updateShowKeyboardShortcutsModal,
-  updateAudioVolume,
+  updateRoomAudioVolume,
   updateRoomVideoQuality,
 } = roomSettingsSlice.actions;
 
