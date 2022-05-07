@@ -242,7 +242,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   // handle virtual background canvas
   const onCanvasRef = throttle(
     (canvasRef: React.MutableRefObject<HTMLCanvasElement>) => {
-      const stream = canvasRef.current.captureStream(15);
+      const stream = canvasRef.current.captureStream(25);
       stream.getTracks().forEach(async (track) => {
         if (track.kind === Track.Kind.Video) {
           await currentRoom.localParticipant.publishTrack(track, {
