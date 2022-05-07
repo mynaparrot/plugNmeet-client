@@ -120,11 +120,23 @@ const VideoElements = ({
     <>
       {totalNumWebcams > 0 ? (
         <div
-          className={`all-webcam-wrapper total-cam-${totalNumWebcams} ${
+          className={`all-webcam-wrapper total-cam-${totalNumWebcams} page-${currentPage} ${
             isVertical ? 'vertical-webcams' : ''
           }`}
         >
           <div className="all-webcam-wrapper-inner">{render()}</div>
+        </div>
+      ) : null}
+      {totalNumWebcams > 6 ? (
+        <div className="select-camera-number">
+          <label htmlFor="select-camera-num">Camera No:</label>
+          <select name="select-camera-num" id="select-camera-num">
+            <option defaultValue="true">24</option>
+            <option value="6">6</option>
+            <option value="12">12</option>
+            <option value="15">15</option>
+            <option value="18">18</option>
+          </select>
         </div>
       ) : null}
     </>
