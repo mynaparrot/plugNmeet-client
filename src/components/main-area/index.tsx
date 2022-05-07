@@ -149,7 +149,7 @@ const MainArea = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0 -translate-x-full"
         >
-          <LeftPanel />
+          <LeftPanel currentRoom={currentRoom} />
         </Transition>
 
         <div className="middle-area relative flex-auto">
