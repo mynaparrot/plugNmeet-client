@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { RemoteParticipant } from 'livekit-client';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { useAppSelector } from '../../../../store';
+import { RootState, useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
 
@@ -11,6 +12,11 @@ interface MicIconProps {
   remoteParticipant?: RemoteParticipant;
 }
 
+const roomAudioVolumeSelector = createSelector(
+  (state: RootState) => state.roomSettings.roomAudioVolume,
+  (roomAudioVolume) => roomAudioVolume,
+);
+
 const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
   const [volume, setVolume] = useState<number>(1);
   const previousVolume = useStorePreviousInt(volume);
@@ -18,10 +24,19 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
   const participant = useAppSelector((state) =>
     participantsSelector.selectById(state, userId),
   );
+  const roomAudioVolume = useAppSelector(roomAudioVolumeSelector);
+
+  useEffect(() => {
+    if (remoteParticipant) {
+      setVolume(roomAudioVolume);
+    }
+  }, [roomAudioVolume, remoteParticipant]);
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume && remoteParticipant) {
-      remoteParticipant.setVolume(volume);
+      if (remoteParticipant.getVolume() !== volume) {
+        remoteParticipant.setVolume(volume);
+      }
     }
   }, [volume, previousVolume, remoteParticipant]);
 

@@ -182,7 +182,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           </h2>
         </div>
         <div className="dark w-28 flex items-center justify-end relative z-20 -right-3">
-          <VolumeControl remoteParticipants={currentRoom.participants} />
+          <VolumeControl />
           <Menu>
             {({ open }) => (
               <>

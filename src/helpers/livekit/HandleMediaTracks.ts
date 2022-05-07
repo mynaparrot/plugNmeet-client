@@ -120,7 +120,7 @@ export default class HandleMediaTracks {
 
     if (participant instanceof RemoteParticipant) {
       // we'll set Volume for any new user
-      const roomVolume = store.getState().roomSettings.audioVolume;
+      const roomVolume = store.getState().roomSettings.roomAudioVolume;
       if (participant.getVolume() !== roomVolume) {
         participant.setVolume(roomVolume);
       }

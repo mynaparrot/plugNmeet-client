@@ -1,34 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import throttle from 'lodash/throttle';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
-import { RemoteParticipant } from 'livekit-client';
 import { updateAudioVolume } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
 
-interface IVolumeControlProps {
-  remoteParticipants?: Map<string, RemoteParticipant>;
-}
-
-const VolumeControl = ({ remoteParticipants }: IVolumeControlProps) => {
+const VolumeControl = () => {
   const dispatch = useAppDispatch();
   const [volume, setVolume] = useState<number>(1);
   const previousVolume = useStorePreviousInt(volume);
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume) {
-      if (remoteParticipants?.size) {
-        updateVolume();
-      }
       dispatch(updateAudioVolume(volume));
     }
-    //eslint-disable-next-line
-  }, [volume, previousVolume, remoteParticipants]);
-
-  const updateVolume = throttle(() => {
-    remoteParticipants?.forEach((participant) => participant.setVolume(volume));
-  }, 100);
+  }, [volume, previousVolume, dispatch]);
 
   const render = () => {
     return (
