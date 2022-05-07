@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
-import './styles/index.css';
+import './styles/index.scss';
 import './helpers/i18n';
 
 import { store } from './store';
