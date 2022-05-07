@@ -1,13 +1,29 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
-import './style.css';
+import { createSelector } from '@reduxjs/toolkit';
+
+import { RootState, useAppSelector } from '../../../../../store';
+import './style.scss';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
 }
+
+const roomVideoQualitySelector = createSelector(
+  (state: RootState) => state.roomSettings.roomVideoQuality,
+  (roomVideoQuality) => roomVideoQuality,
+);
+
 const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
+  const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
+
+  useEffect(() => {
+    if (track instanceof RemoteTrackPublication) {
+      track.setVideoQuality(roomVideoQuality);
+    }
+  }, [roomVideoQuality, track]);
 
   useEffect(() => {
     const el = ref.current;

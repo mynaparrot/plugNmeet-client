@@ -1,13 +1,32 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
-import './style.css';
+import { createSelector } from '@reduxjs/toolkit';
+
+import { RootState, useAppSelector } from '../../../../store';
+import './style.scss';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
 }
+
+const roomVideoQualitySelector = createSelector(
+  (state: RootState) => state.roomSettings.roomVideoQuality,
+  (roomVideoQuality) => roomVideoQuality,
+);
+
 const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
+  const [self, setSelf] = useState<boolean>(false);
+  const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
+
+  useEffect(() => {
+    if (track instanceof RemoteTrackPublication) {
+      track.setVideoQuality(roomVideoQuality);
+    } else {
+      setSelf(true);
+    }
+  }, [roomVideoQuality, track]);
 
   useEffect(() => {
     const el = ref.current;
@@ -59,7 +78,9 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       <video
         onLoadedData={onLoadedData}
         ref={ref}
-        className="video-player absolute"
+        className={`video-player absolute ${
+          self ? 'self-screen-share' : 'remote-screen-share'
+        }`}
       />
     </div>
   );

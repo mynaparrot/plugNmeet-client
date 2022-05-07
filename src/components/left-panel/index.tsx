@@ -4,8 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { store, useAppSelector } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import ParticipantComponent from './participant';
+import { Room } from 'livekit-client';
 
-const LeftPanel = () => {
+interface ILeftPanelProps {
+  currentRoom: Room;
+}
+
+const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   const participants = useAppSelector(participantsSelector.selectAll);
   const { t } = useTranslation();
 
@@ -18,6 +23,7 @@ const LeftPanel = () => {
     const currentIsAdmin = session.currentUser?.metadata?.is_admin ?? false;
 
     return participants.map((participant) => {
+      const remoteParticipant = currentRoom.participants.get(participant.sid);
       if (!currentIsAdmin && !allow_view_other_users_list) {
         if (
           !participant.metadata.is_admin &&
@@ -27,7 +33,11 @@ const LeftPanel = () => {
         }
       }
       return (
-        <ParticipantComponent key={participant.sid} participant={participant} />
+        <ParticipantComponent
+          key={participant.sid}
+          participant={participant}
+          remoteParticipant={remoteParticipant}
+        />
       );
     });
   };

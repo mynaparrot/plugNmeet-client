@@ -118,6 +118,14 @@ export default class HandleMediaTracks {
       this.currentUser = store.getState().session.currentUser;
     }
 
+    if (participant instanceof RemoteParticipant) {
+      // we'll set Volume for any new user
+      const roomVolume = store.getState().roomSettings.roomAudioVolume;
+      if (participant.getVolume() !== roomVolume) {
+        participant.setVolume(roomVolume);
+      }
+    }
+
     if (
       participant.identity !== this.currentUser?.userId &&
       track.source === Track.Source.Camera

@@ -25,7 +25,6 @@
     "react-toastify": "^9.0.1",
     "resumablejs": "^1.1.0",
     "sanitize-html": "^2.7.0",
-    "sass": "^1.51.0",
     "validator": "^13.7.0"
   },
   "scripts": {
@@ -60,6 +59,7 @@
     "postcss-loader": "^6.2.1",
     "postcss-nested": "^5.0.6",
     "prettier": "^2.6.2",
+    "sass": "^1.51.0",
     "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.0.24",

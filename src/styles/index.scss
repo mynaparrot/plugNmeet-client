@@ -508,7 +508,7 @@ button.previous-cam:hover, button.next-cam:hover {
 } */
 
 .all-webcam-wrapper.total-cam-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-27.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-26.page-2 .video-camera-item {
     width: calc(45% - 16px);
     padding-bottom: 33%;
 }
@@ -520,22 +520,23 @@ button.previous-cam:hover, button.next-cam:hover {
 } */
 .all-webcam-wrapper.total-cam-3 .video-camera-item, 
 .all-webcam-wrapper.total-cam-4 .video-camera-item,
-.all-webcam-wrapper.total-cam-28.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-29.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-27.page-2 .video-camera-item,
+.all-webcam-wrapper.total-cam-28.page-2 .video-camera-item {
     width: calc(38% - 10px);
     padding-bottom: 20%;
 }
+
 .all-webcam-wrapper.total-cam-5 .video-camera-item,
 .all-webcam-wrapper.total-cam-6 .video-camera-item,
-.all-webcam-wrapper.total-cam-30.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-31.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-29.page-2 .video-camera-item,
+.all-webcam-wrapper.total-cam-30.page-2 .video-camera-item {
     width: calc(29% - 10px);
     padding-bottom: 20%;
 }
 .all-webcam-wrapper.total-cam-7 .video-camera-item,
 .all-webcam-wrapper.total-cam-8 .video-camera-item,
-.all-webcam-wrapper.total-cam-32.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-33.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-31.page-2 .video-camera-item,
+.all-webcam-wrapper.total-cam-32.page-2 .video-camera-item {
     width: calc(25% - 16px);
     padding-bottom: 18%;
 }
@@ -543,29 +544,49 @@ button.previous-cam:hover, button.next-cam:hover {
 .all-webcam-wrapper.total-cam-10 .video-camera-item,
 .all-webcam-wrapper.total-cam-11 .video-camera-item,
 .all-webcam-wrapper.total-cam-12 .video-camera-item,
+.all-webcam-wrapper.total-cam-33.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-34.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-35.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-36.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-37.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-36.page-2 .video-camera-item {
     width: calc(22% - 16px);
     padding-bottom: 13%;
 }
 .all-webcam-wrapper.total-cam-13 .video-camera-item,
 .all-webcam-wrapper.total-cam-14 .video-camera-item,
 .all-webcam-wrapper.total-cam-15 .video-camera-item,
+.all-webcam-wrapper.total-cam-37.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-38.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-39.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-40.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-39.page-2 .video-camera-item {
     width: calc(20% - 16px);
     padding-bottom: 13%;
 }
 .all-webcam-wrapper.total-cam-16 .video-camera-item,
 .all-webcam-wrapper.total-cam-17 .video-camera-item,
 .all-webcam-wrapper.total-cam-18 .video-camera-item,
+.all-webcam-wrapper.total-cam-40.page-2 .video-camera-item,
 .all-webcam-wrapper.total-cam-41.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-42.page-2 .video-camera-item,
-.all-webcam-wrapper.total-cam-43.page-2 .video-camera-item {
+.all-webcam-wrapper.total-cam-42.page-2 .video-camera-item {
     @apply w-[calc(16.66%-16px)] pb-[12%];
+}
+.all-webcam-wrapper.selected-cam-6 .all-webcam-wrapper-inner .video-camera-item {
+    width: calc(29% - 10px);
+    padding-bottom: 20%;
+}
+.all-webcam-wrapper.selected-cam-8 .all-webcam-wrapper-inner .video-camera-item {
+    width: calc(25% - 16px);
+    padding-bottom: 18%;
+}
+.all-webcam-wrapper.selected-cam-12 .all-webcam-wrapper-inner .video-camera-item {
+    width: calc(22% - 16px);
+    padding-bottom: 13%;
+}
+.all-webcam-wrapper.selected-cam-15 .all-webcam-wrapper-inner .video-camera-item {
+    width: calc(20% - 16px);
+    padding-bottom: 13%;
+}
+.all-webcam-wrapper.selected-cam-18 .all-webcam-wrapper-inner .video-camera-item {
+    width: calc(16.66% - 16px);
+    padding-bottom: 12%;
 }
 
 /* .hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .video-camera-item,
@@ -789,6 +810,7 @@ button.previous-cam:hover, button.next-cam:hover {
     border: none;
     padding: 0;
     background: none;
+    width: 100%;
 }
 .volume-popup-wrapper .range::-webkit-slider-runnable-track {
     background-color: rgba(128, 128, 128, 0.5);
@@ -823,6 +845,12 @@ button.previous-cam:hover, button.next-cam:hover {
 }
 .volume-popup-wrapper .range:active::-moz-range-thumb {
     outline: none;
+}
+.share-screen-wrapper.is-share-screen-running .screen-share-video video.video-player.self-screen-share {
+    max-width: 30%;
+    margin: auto;
+    left: 0;
+    right: 0;
 }
   
 

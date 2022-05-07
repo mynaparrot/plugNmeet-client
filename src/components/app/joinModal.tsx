@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppSelector, RootState, useAppDispatch } from '../../store';
 import { toggleStartup } from '../../store/slices/sessionSlice';
 import { updateShowMicrophoneModal } from '../../store/slices/bottomIconsActivitySlice';
+import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
 
 interface StartupJoinModalProps {
   onCloseModal(): void;
@@ -20,9 +21,12 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const onClose = () => {
+  const onClose = (noAudio = false) => {
     setOpen(false);
     dispatch(toggleStartup(false));
+    if (noAudio) {
+      dispatch(updateRoomAudioVolume(0));
+    }
     onCloseModal();
   };
 
@@ -49,7 +53,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
           <button
             className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
             type="button"
-            onClick={() => onClose()}
+            onClick={() => onClose(true)}
           >
             <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
             <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />

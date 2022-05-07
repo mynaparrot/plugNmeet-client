@@ -24,7 +24,7 @@ export const defaultSegmentationConfig: SegmentationConfig = {
   model: 'meet',
   backend: 'wasmSimd',
   inputResolution: '160x96',
-  pipeline: 'webgl2',
+  pipeline: 'canvas2dCpu',
 };
 
 export function getTFLiteModelFileName(

@@ -28,7 +28,7 @@ const OutputViewer = ({
   id,
   onCanvasRef,
 }: OutputViewerProps) => {
-  const { pipeline, backgroundImageRef, canvasRef } = useRenderingPipeline(
+  const { pipeline, canvasRef } = useRenderingPipeline(
     sourcePlayback,
     backgroundConfig,
     segmentationConfig,
@@ -51,15 +51,6 @@ const OutputViewer = ({
 
   return (
     <div className="root preview-camera-webcam">
-      {backgroundConfig.type === 'image' && (
-        <img
-          ref={backgroundImageRef}
-          className="render"
-          src={backgroundConfig.url}
-          alt=""
-          hidden={segmentationConfig.pipeline === 'webgl2'}
-        />
-      )}
       <canvas
         key={segmentationConfig.pipeline}
         ref={canvasRef}
