@@ -4,6 +4,7 @@ import { RemoteParticipant } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
+import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
 
 interface MicIconProps {
   userId: string;
@@ -12,15 +13,17 @@ interface MicIconProps {
 
 const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
   const [volume, setVolume] = useState<number>(1);
+  const previousVolume = useStorePreviousInt(volume);
 
   const participant = useAppSelector((state) =>
     participantsSelector.selectById(state, userId),
   );
 
   useEffect(() => {
-    remoteParticipant?.setVolume(volume);
-    //eslint-disable-next-line
-  }, [volume]);
+    if (previousVolume && volume !== previousVolume && remoteParticipant) {
+      remoteParticipant.setVolume(volume);
+    }
+  }, [volume, previousVolume, remoteParticipant]);
 
   const renderUnmuteIcon = () => {
     return (
