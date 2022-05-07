@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { VideoQuality } from 'livekit-client';
 
 export interface IMediaDevice {
   id: string;
@@ -16,6 +17,8 @@ interface IRoomSettings {
   activateWebcamsView: boolean;
   activeScreenSharingView: boolean;
   allowPlayAudioNotification: boolean;
+  audioVolume: number;
+  videoQuality: VideoQuality;
 }
 
 const initialState: IRoomSettings = {
@@ -30,6 +33,8 @@ const initialState: IRoomSettings = {
   activateWebcamsView: true,
   activeScreenSharingView: true,
   allowPlayAudioNotification: true,
+  audioVolume: 1,
+  videoQuality: VideoQuality.HIGH,
 };
 
 const roomSettingsSlice = createSlice({
@@ -72,6 +77,12 @@ const roomSettingsSlice = createSlice({
     ) => {
       state.allowPlayAudioNotification = action.payload;
     },
+    updateAudioVolume: (state, action: PayloadAction<number>) => {
+      state.audioVolume = action.payload;
+    },
+    updateVideoQuality: (state, action: PayloadAction<VideoQuality>) => {
+      state.videoQuality = action.payload;
+    },
   },
 });
 
@@ -86,6 +97,8 @@ export const {
   updateActiveScreenSharingView,
   updateAllowPlayAudioNotification,
   updateShowKeyboardShortcutsModal,
+  updateAudioVolume,
+  updateVideoQuality,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;
