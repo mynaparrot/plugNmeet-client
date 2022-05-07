@@ -1,5 +1,5 @@
-@import "plugnmeet-fonts.scss";
-
+@import "plugnmeet-fonts";
+@import "variables";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -31,27 +31,27 @@ code {
 }
 
 .primaryColor {
-    color: #004D90;
+    color: $primaryColor;
 }
 
 .secondaryColor {
-    color: #24AEF7;
+    color: $secondaryColor;
 }
 
 .bg-primaryColor {
-    background: #004D90;
+    background: $primaryColor;
 }
 
 .bg-secondaryColor {
-    background: #24AEF7;
+    background: $secondaryColor;
 }
 
 .border-primaryColor {
-    color: #004D90;
+    color: $primaryColor;
 }
 
 .border-secondaryColor {
-    color: #24AEF7;
+    color: $secondaryColor;
 }
 
 .multi-gradient {
@@ -74,7 +74,7 @@ code {
 }
 
 .scrollBar::-webkit-scrollbar-thumb {
-    background-color: #24aef7;
+    background-color: $secondaryColor;
     border: none;
     border-radius: 5px;
 }
@@ -89,7 +89,7 @@ code {
 .content.me p.message-content {
     margin-left: auto;
     border-radius: 15px 0 15px 15px;
-    /* background-color: #24aef7;
+    /* background-color: $secondaryColor;
     color: #fff; */
 }
 
@@ -300,7 +300,7 @@ code {
 }
 
 .video-camera-item.speaking::before {
-    border-color: #24AEF7;
+    border-color: $secondaryColor;
 }
 
 .video-camera-item::after {
