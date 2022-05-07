@@ -45,7 +45,11 @@
       "show-screen-share": "Show Screen share",
       "allow-audio-notification": "Allow audio notification",
       "application": "Application settings",
-      "language": "Language"
+      "language": "Language",
+      "video-quality": "Video Quality",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",

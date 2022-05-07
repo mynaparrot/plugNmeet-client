@@ -23,9 +23,9 @@ const isActiveScreenshareSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveScreenshare,
   (isActiveScreenshare) => isActiveScreenshare,
 );
-const sessionIsActiveScreenSharingSelector = createSelector(
+const sessionScreenSharingSelector = createSelector(
   (state: RootState) => state.session.screenSharing,
-  (screenSharing) => screenSharing.isActive,
+  (screenSharing) => screenSharing,
 );
 const isScreenshareLockSelector = createSelector(
   (state: RootState) =>
@@ -39,9 +39,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
   const { t } = useTranslation();
 
   const isActiveScreenshare = useAppSelector(isActiveScreenshareSelector);
-  const sessionIsActiveScreensharing = useAppSelector(
-    sessionIsActiveScreenSharingSelector,
-  );
+  const sessionScreenSharing = useAppSelector(sessionScreenSharingSelector);
   const isScreenshareLock = useAppSelector(isScreenshareLockSelector);
 
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
@@ -49,12 +47,16 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
   useEffect(() => {
-    if (isActiveScreenshare) {
+    if (
+      sessionScreenSharing.isActive &&
+      sessionScreenSharing.sharedBy === currentRoom.localParticipant.identity
+    ) {
       setIconCSS('secondaryColor');
     } else {
       setIconCSS('primaryColor');
     }
-  }, [isActiveScreenshare]);
+    //eslint-disable-next-line
+  }, [sessionScreenSharing]);
 
   const endScreenShare = useCallback(() => {
     if (isActiveScreenshare) {
@@ -94,11 +96,11 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
   // for special case when user will cancel sharing from browser directly
   // we will check & disable button status.
   useEffect(() => {
-    if (!sessionIsActiveScreensharing && isActiveScreenshare) {
+    if (!sessionScreenSharing.isActive && isActiveScreenshare) {
       dispatch(updateIsActiveScreenshare(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionIsActiveScreensharing]);
+  }, [sessionScreenSharing]);
 
   const toggleScreenShare = async () => {
     if (lock) {
@@ -106,7 +108,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     }
 
     if (!isActiveScreenshare) {
-      if (sessionIsActiveScreensharing) {
+      if (sessionScreenSharing.isActive) {
         toast(t('footer.notice.already-active-screen-sharing'), {
           toastId: 'dup-screen-share',
           type: 'warning',

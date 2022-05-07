@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   LocalTrackPublication,
   RemoteTrackPublication,
@@ -9,8 +9,6 @@ import {
 
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
-import { useAppDispatch } from '../../../../store';
-import { updateIsActiveScreenshare } from '../../../../store/slices/bottomIconsActivitySlice';
 import VerticalWebcams from '../vertical-webcams';
 
 interface IScreenShareElementsProps {
@@ -25,15 +23,6 @@ const ScreenShareElements = ({
   screenShareTracks,
   videoSubscribers,
 }: IScreenShareElementsProps) => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    return () => {
-      // just for double check to make sure we disabled status of screen share
-      dispatch(updateIsActiveScreenshare(false));
-    };
-  }, [dispatch]);
-
   const render = () => {
     if (screenShareTracks) {
       const elm = Array<JSX.Element>();
