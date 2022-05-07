@@ -77,7 +77,8 @@
     "checking": "checking...",
     "loading": "loading...",
     "connected": "connected",
-    "ready": "ready"
+    "ready": "ready",
+    "webcams-per-page": "Display per page:"
   },
   "left-panel": {
     "participants": "Participants ({{total}})",

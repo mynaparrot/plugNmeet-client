@@ -4,6 +4,7 @@ import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { useAppDispatch } from '../../../../store';
 import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
 import useVideoParticipant from './useVideoParticipant';
+import { useTranslation } from 'react-i18next';
 
 interface IVideoElementsProps {
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>;
@@ -20,9 +21,8 @@ const VideoElements = ({
   perPage,
   isVertical,
 }: IVideoElementsProps) => {
-  const DEFAULT_PER_PAGE = perPage ?? 25;
   const dispatch = useAppDispatch();
-
+  const { t } = useTranslation();
   const { allParticipants, totalNumWebcams } =
     useVideoParticipant(videoSubscribers);
 
@@ -32,27 +32,28 @@ const VideoElements = ({
   >([]);
   const [showPre, setShowPre] = useState<boolean>(false);
   const [showNext, setShowNext] = useState<boolean>(false);
+  const [webcamPerPage, setWebcamPerPage] = useState<number>(perPage ?? 24);
 
   useEffect(() => {
-    if (allParticipants.length <= DEFAULT_PER_PAGE) {
+    if (allParticipants.length <= webcamPerPage) {
       // we don't need any pagination
       setDisplayParticipants(allParticipants);
     } else {
       setCurrentPage(1);
-      setParticipantToDisplay(allParticipants, 1, DEFAULT_PER_PAGE);
+      setParticipantToDisplay(allParticipants, 1, webcamPerPage);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allParticipants]);
+  }, [allParticipants, webcamPerPage]);
 
   useEffect(() => {
-    if (totalNumWebcams > DEFAULT_PER_PAGE) {
+    if (totalNumWebcams > webcamPerPage) {
       if (currentPage === 1) {
         setShowPre(false);
       } else {
         setShowPre(true);
       }
 
-      if (currentPage >= totalNumWebcams / DEFAULT_PER_PAGE) {
+      if (currentPage >= totalNumWebcams / webcamPerPage) {
         setShowNext(false);
       } else {
         setShowNext(true);
@@ -61,7 +62,7 @@ const VideoElements = ({
       setShowPre(false);
       setShowNext(false);
     }
-  }, [totalNumWebcams, currentPage, DEFAULT_PER_PAGE]);
+  }, [totalNumWebcams, currentPage, webcamPerPage]);
 
   const setParticipantToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -82,12 +83,12 @@ const VideoElements = ({
   };
 
   const prePage = () => {
-    setParticipantToDisplay(allParticipants, currentPage - 1, DEFAULT_PER_PAGE);
+    setParticipantToDisplay(allParticipants, currentPage - 1, webcamPerPage);
     setCurrentPage(currentPage - 1);
   };
 
   const nextPage = () => {
-    setParticipantToDisplay(allParticipants, currentPage + 1, DEFAULT_PER_PAGE);
+    setParticipantToDisplay(allParticipants, currentPage + 1, webcamPerPage);
     setCurrentPage(currentPage + 1);
   };
 
@@ -127,15 +128,20 @@ const VideoElements = ({
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
-      {totalNumWebcams > 6 ? (
+      {totalNumWebcams > 6 && !isVertical ? (
         <div className="select-camera-number">
-          <label htmlFor="select-camera-num">Camera No:</label>
-          <select name="select-camera-num" id="select-camera-num">
-            <option defaultValue="true">24</option>
+          <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
+          <select
+            name="select-camera-num"
+            id="select-camera-num"
+            onChange={(e) => setWebcamPerPage(Number(e.currentTarget.value))}
+          >
             <option value="6">6</option>
+            <option value="8">8</option>
             <option value="12">12</option>
             <option value="15">15</option>
             <option value="18">18</option>
+            <option selected>24</option>
           </select>
         </div>
       ) : null}

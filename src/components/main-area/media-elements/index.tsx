@@ -67,14 +67,12 @@ const MediaElementsComponent = ({
   const isActiveExternalMediaPlayer = useAppSelector(
     isActiveExternalMediaPlayerSelector,
   );
-  const [webcamPerPage, setWebcamPerPage] = useState<number>(
-    (window as any).NUMBER_OF_WEBCAMS_PER_PAGE_PC ?? 25,
-  );
+  const [webcamPerPage, setWebcamPerPage] = useState<number>(24);
 
   useEffect(() => {
     const deviceType = store.getState().session.userDeviceType;
     if (deviceType === 'mobile' || deviceType === 'tablet') {
-      setWebcamPerPage((window as any).NUMBER_OF_WEBCAMS_PER_PAGE_MOBILE ?? 6);
+      setWebcamPerPage(6);
     }
   }, []);
 

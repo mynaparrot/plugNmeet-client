@@ -28,11 +28,6 @@ window.DEFAULT_SCREEN_SHARE_RESOLUTION = 'h1080fps15';
 //For local tracks, stop the underlying MediaStreamTrack when the track is muted (or paused) on some platforms, this option is necessary to disable the microphone recording indicator. Note: when this is enabled, and BT devices are connected, they will transition between profiles (e.g. HFP to A2DP) and there will be an audible difference in playback.
 window.STOP_MIC_TRACK_ON_MUTE = true;
 
-// you can set the number of webcams per page for PC. Default 25
-window.NUMBER_OF_WEBCAMS_PER_PAGE_PC = 25;
-// for mobile
-window.NUMBER_OF_WEBCAMS_PER_PAGE_MOBILE = 6;
-
 // Design customization
 // in json format
 // window.DESIGN_CUSTOMIZATION = `{
