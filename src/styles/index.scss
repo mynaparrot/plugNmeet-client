@@ -810,6 +810,7 @@ button.previous-cam:hover, button.next-cam:hover {
     border: none;
     padding: 0;
     background: none;
+    width: 100%;
 }
 .volume-popup-wrapper .range::-webkit-slider-runnable-track {
     background-color: rgba(128, 128, 128, 0.5);
