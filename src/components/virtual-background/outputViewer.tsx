@@ -43,9 +43,19 @@ const OutputViewer = ({
   }, [pipeline, postProcessingConfig]);
 
   useEffect(() => {
-    if (onCanvasRef) {
-      onCanvasRef(canvasRef);
-    }
+    const sendCanvasRef = () => {
+      if (onCanvasRef && canvasRef) {
+        onCanvasRef(canvasRef);
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      sendCanvasRef();
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
     // eslint-disable-next-line
   }, [canvasRef]);
 

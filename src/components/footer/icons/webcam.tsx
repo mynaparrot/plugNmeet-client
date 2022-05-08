@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { createLocalVideoTrack, Room, Track } from 'livekit-client';
-import throttle from 'lodash/throttle';
 
 import {
   RootState,
@@ -240,22 +239,20 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
   };
 
   // handle virtual background canvas
-  const onCanvasRef = throttle(
-    (canvasRef: React.MutableRefObject<HTMLCanvasElement>) => {
-      const stream = canvasRef.current.captureStream(25);
-      stream.getTracks().forEach(async (track) => {
-        if (track.kind === Track.Kind.Video) {
-          await currentRoom.localParticipant.publishTrack(track, {
-            source: Track.Source.Camera,
-            name: 'canvas',
-          });
-          dispatch(updateIsActiveWebcam(true));
-        }
-      });
-    },
-    5000,
-    { trailing: false },
-  );
+  const onCanvasRef = (
+    canvasRef: React.MutableRefObject<HTMLCanvasElement>,
+  ) => {
+    const stream = canvasRef.current.captureStream(25);
+    stream.getTracks().forEach(async (track) => {
+      if (track.kind === Track.Kind.Video) {
+        await currentRoom.localParticipant.publishTrack(track, {
+          source: Track.Source.Camera,
+          name: 'canvas',
+        });
+        dispatch(updateIsActiveWebcam(true));
+      }
+    });
+  };
 
   const shouldShow = () => {
     const session = store.getState().session;
