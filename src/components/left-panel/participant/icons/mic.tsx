@@ -27,16 +27,21 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
   const roomAudioVolume = useAppSelector(roomAudioVolumeSelector);
 
   useEffect(() => {
-    if (remoteParticipant) {
+    if (remoteParticipant?.audioTracks.size) {
       setVolume(roomAudioVolume);
     }
   }, [roomAudioVolume, remoteParticipant]);
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume && remoteParticipant) {
-      if (remoteParticipant.getVolume() !== volume) {
-        remoteParticipant.setVolume(volume);
-      }
+      try {
+        if (
+          remoteParticipant.getVolume() !== volume &&
+          remoteParticipant.audioTracks.size > 0
+        ) {
+          remoteParticipant.setVolume(volume);
+        }
+      } catch (e) {}
     }
   }, [volume, previousVolume, remoteParticipant]);
 
