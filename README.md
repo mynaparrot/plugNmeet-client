@@ -1,4 +1,5 @@
 # plugNmeet-client
+Frontend UI for [plugNmeet-server](https://github.com/mynaparrot/plugNmeet-server).
 
 To download the latest version check [release page.](https://github.com/mynaparrot/plugNmeet-client/releases). After
 download unzip the file. Now rename `dist/assets/config_sample.js` to `dist/assets/config.js`. Change necessary
