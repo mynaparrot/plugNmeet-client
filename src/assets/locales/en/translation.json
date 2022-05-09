@@ -2,6 +2,8 @@
   "ok": "Ok",
   "close": "Close",
   "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
   "join": "Join",
   "share": "Share",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
@@ -126,7 +128,8 @@
         "you-have-muted-to": "You've muted microphone for {{name}}",
         "applied-new-setting": "Applied new lock setting",
         "presenter-changed": "Presenter has been changed successfully",
-        "you-are-presenter": "You are the presenter"
+        "you-are-presenter": "You are the presenter",
+        "want-to-block": "Do you want to block this user?"
       }
     }
   },

@@ -92,7 +92,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
               </Dialog.Title>
 
               <div className="mb-10">
-                <p>Do you want to block this user? </p>
+                <p>{t('left-panel.menus.notice.want-to-block')} </p>
                 <div>
                   <input
                     type="radio"
@@ -103,7 +103,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                       setBlockUser(Number(e.currentTarget.value))
                     }
                   />
-                  Yes
+                  {t('yes')}
                   <input
                     type="radio"
                     value="0"
@@ -113,7 +113,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                       setBlockUser(Number(e.currentTarget.value))
                     }
                   />
-                  No
+                  {t('no')}
                 </div>
               </div>
 
