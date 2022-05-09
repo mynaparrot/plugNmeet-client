@@ -827,7 +827,7 @@ button.previous-cam:hover, button.next-cam:hover {
 .volume-popup-wrapper .range::-webkit-slider-thumb {
     -webkit-appearance: none !important;
     border-radius: 100%;
-    background-color: #0d6efd;
+    background-color: $primaryColor;
     height: 18px;
     width: 18px;
     margin-top: -5px;
@@ -838,7 +838,7 @@ button.previous-cam:hover, button.next-cam:hover {
     width: 18px;
     border: none;
     background: none;
-    background-color: #0d6efd;
+    background-color: $primaryColor;
 }
 .volume-popup-wrapper .range:active::-webkit-slider-thumb {
     outline: none;

@@ -55,6 +55,18 @@ const useDesignCustomization = () => {
         '.border-primaryColor { border-color: ' +
         designCustomParams.primary_color +
         ' !important;}';
+      css +=
+        '.excalidraw {\n' +
+        '    --color-primary: ' +
+        designCustomParams.primary_color +
+        ';\n' +
+        '    --color-primary-darker: ' +
+        designCustomParams.primary_color +
+        ';\n' +
+        '    --color-primary-darkest: ' +
+        designCustomParams.primary_color +
+        ';\n' +
+        '}';
     }
 
     if (designCustomParams.secondary_color) {
@@ -86,6 +98,12 @@ const useDesignCustomization = () => {
         '.border-secondaryColor { border-color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
+      css +=
+        '.excalidraw {\n' +
+        '    --color-primary-light: ' +
+        designCustomParams.secondary_color +
+        ';\n' +
+        '}';
     }
 
     if (designCustomParams.background_image) {
