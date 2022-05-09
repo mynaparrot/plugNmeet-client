@@ -23,7 +23,6 @@ import {
   updateIsActiveParticipantsPanel,
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
-import { closeWebsocketConnection } from '../websocket';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
@@ -120,8 +119,6 @@ export default class HandleParticipants {
     this.that.updateAudioSubscribers(p, false);
     // check for screen sharing
     this.that.updateScreenShareOnUserDisconnect(p);
-    // close websocket as well as
-    closeWebsocketConnection();
   };
 
   public connectionQualityChanged = (
