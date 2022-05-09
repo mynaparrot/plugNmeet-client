@@ -18,7 +18,8 @@
     "rtmp-ended-with-error": "RTMP broadcasting ended with error",
     "file-type-not-allow": "{{filetype}} file type isn't allow",
     "max-file-size-exceeds": "The maximum allowed file size exceeds",
-    "you-have-removed": "You've been removed from this conference"
+    "you-have-removed": "You've been removed from this conference.",
+    "you-are-blocked": "You aren't allow to access this conference."
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
