@@ -1,6 +1,7 @@
 import * as tfBodyPix from '@tensorflow-models/body-pix';
 import * as tf from '@tensorflow/tfjs';
 import { useEffect, useState } from 'react';
+let bodyPixStore: tfBodyPix.BodyPix;
 
 function useBodyPix() {
   const [bodyPix, setBodyPix] = useState<tfBodyPix.BodyPix>();
@@ -9,11 +10,23 @@ function useBodyPix() {
     async function loadBodyPix() {
       console.log('Loading TensorFlow.js and BodyPix segmentation model');
       await tf.ready();
-      setBodyPix(await tfBodyPix.load());
+      bodyPixStore = await tfBodyPix.load();
+      setBodyPix(bodyPixStore);
       console.log('TensorFlow.js and BodyPix loaded');
     }
-
-    loadBodyPix();
+    let timeout;
+    if (!bodyPixStore) {
+      timeout = setTimeout(() => {
+        loadBodyPix();
+      }, 500);
+    } else {
+      setBodyPix(bodyPixStore);
+    }
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
   }, []);
 
   return bodyPix;
