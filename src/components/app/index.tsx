@@ -14,8 +14,6 @@ import StartupJoinModal from './joinModal';
 import useLivekitConnect from '../../helpers/livekit/hooks/useLivekitConnect';
 import AudioNotification from './audioNotification';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
-import useTFLite from '../virtual-background/hooks/useTFLite';
-import { defaultSegmentationConfig } from '../virtual-background/helpers/segmentationHelper';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
@@ -35,7 +33,6 @@ const App = () => {
   // we'll require making ready virtual background
   // elements as early as possible.
   useBodyPix();
-  useTFLite(defaultSegmentationConfig);
 
   // some custom hooks
   const {
