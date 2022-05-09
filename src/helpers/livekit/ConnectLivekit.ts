@@ -18,7 +18,6 @@ import { updateParticipant } from '../../store/slices/participantSlice';
 import {
   addCurrentRoom,
   addCurrentUser,
-  addToken,
   updateScreenSharing,
   updateTotalAudioSubscribers,
   updateTotalVideoSubscribers,
@@ -94,7 +93,7 @@ export default class ConnectLivekit {
   private errorState: Dispatch<IErrorPageProps>;
   private roomConnectionStatusState: Dispatch<connectionStatus>;
 
-  private token: string;
+  protected token: string;
   public _room: Room;
   private url = (window as any).LIVEKIT_SERVER_URL;
   private tokenRenewInterval: any;
@@ -106,6 +105,7 @@ export default class ConnectLivekit {
   private handleActiveSpeakers: HandleActiveSpeakers;
 
   constructor(
+    token: string,
     audioSubscribersState: Dispatch<Map<string, RemoteParticipant>>,
     mediaSubscribersState: Dispatch<
       Map<string, LocalParticipant | RemoteParticipant>
@@ -117,7 +117,7 @@ export default class ConnectLivekit {
       Map<string, LocalTrackPublication | RemoteTrackPublication>
     >,
   ) {
-    this.token = store.getState().session.token;
+    this.token = token;
     // audio Subscribers state
     this.audioSubscribersState = audioSubscribersState;
     // video Subscribers state
@@ -238,8 +238,6 @@ export default class ConnectLivekit {
   };
 
   private updateSession = async () => {
-    store.dispatch(addToken(this.token));
-
     store.dispatch(
       addCurrentRoom({
         sid: this._room.sid,
@@ -357,6 +355,8 @@ export default class ConnectLivekit {
     console.log(error);
   };
 
+  // this method basically update plugNmeet token
+  // livekit will renew token by itself automatically
   private startTokenRenewInterval = () => {
     this.tokenRenewInterval = setInterval(() => {
       // get current token that is store in redux

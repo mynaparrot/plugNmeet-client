@@ -23,7 +23,7 @@ export interface IUseLivekitConnect {
   screenShareTracks:
     | Map<string, LocalTrackPublication | RemoteTrackPublication>
     | undefined;
-  startLivekitConnection(): void;
+  startLivekitConnection(token: string): void;
 }
 
 const useLivekitConnect = (): IUseLivekitConnect => {
@@ -42,8 +42,9 @@ const useLivekitConnect = (): IUseLivekitConnect => {
   const [screenShareTracks, setScreenShareTracks] =
     useState<Map<string, LocalTrackPublication | RemoteTrackPublication>>();
 
-  const startLivekitConnection = () => {
+  const startLivekitConnection = (token: string) => {
     new ConnectLivekit(
+      token,
       setAudioSubscribers,
       setVideoSubscribers,
       setCurrentRoom,

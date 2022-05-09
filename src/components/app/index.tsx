@@ -29,6 +29,7 @@ const App = () => {
   // it could be recorder or RTMP bot
   const [isRecorder, setIsRecorder] = useState<boolean>(false);
   const [userTypeClass, setUserTypeClass] = useState('participant');
+  const [livekitToken, setLivekitToken] = useState<string>('');
 
   // we'll require making ready virtual background
   // elements as early as possible.
@@ -58,6 +59,7 @@ const App = () => {
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
+    let timeout;
     if (typeof params.access_token === 'undefined') {
       setLoading(false);
       setError({
@@ -84,7 +86,11 @@ const App = () => {
         setRoomConnectionStatus('ready');
         setLoading(false);
         if (res.status) {
+          // we'll store token that we received from URL
           dispatch(addToken(params.access_token));
+
+          // for livekit need to use generated token
+          setLivekitToken(res.token);
         } else {
           setError({
             title: t('app.verification-failed-title'),
@@ -95,9 +101,17 @@ const App = () => {
 
       if (!currentRoom) {
         setRoomConnectionStatus('checking');
-        verifyToken();
+        timeout = setTimeout(() => {
+          verifyToken();
+        }, 300);
       }
     }
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
   }, [t, dispatch, currentRoom, setError, setRoomConnectionStatus]);
 
   useEffect(() => {
@@ -149,7 +163,7 @@ const App = () => {
   };
 
   const onCloseStartupModal = () => {
-    startLivekitConnection();
+    startLivekitConnection(livekitToken);
   };
 
   const render = () => {
