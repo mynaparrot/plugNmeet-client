@@ -1,20 +1,14 @@
-import { createSelector } from '@reduxjs/toolkit';
 import React, { useEffect, useRef } from 'react';
 
-import { useAppSelector, RootState } from '../../../store';
+import { useAppSelector, store } from '../../../store';
 import { IChatMsg } from '../../../store/slices/interfaces/dataMessages';
 import Message from './message';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
 
-const currentUserSelector = createSelector(
-  (state: RootState) => state.session.currentUser,
-  (currentUser) => currentUser,
-);
-
 const Messages = () => {
   const messageRef = useRef<HTMLDivElement>(null);
   const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
-  const currentUser = useAppSelector(currentUserSelector);
+  const currentUser = store.getState().session.currentUser;
 
   useEffect(() => {
     if (messageRef.current) {

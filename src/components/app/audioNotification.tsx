@@ -45,7 +45,6 @@ const AudioNotification = () => {
     return () => {
       if (el) {
         el.pause();
-        el.src = '';
         el.removeEventListener('playing', () => setPlaying(true));
         el.removeEventListener('ended', () => setPlaying(false));
       }
