@@ -21,6 +21,8 @@ import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
 
+declare const IS_PRODUCTION: boolean;
+
 const App = () => {
   const dispatch = useAppDispatch();
   const rootRef = useRef(null);
@@ -69,7 +71,9 @@ const App = () => {
       const verifyToken = async () => {
         let res: any;
         try {
-          res = await sendAPIRequest('verifyToken', {});
+          res = await sendAPIRequest('verifyToken', {
+            is_production: IS_PRODUCTION,
+          });
         } catch (error: any) {
           setRoomConnectionStatus('ready');
           setLoading(false);
