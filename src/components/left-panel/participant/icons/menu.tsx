@@ -39,6 +39,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
       sid: session.currentRoom.sid,
       room_id: session.currentRoom.room_id,
       user_id: userId,
+      msg: t('notifications.you-have-removed'),
     };
 
     const res = await sendAPIRequest('removeParticipant', data);
