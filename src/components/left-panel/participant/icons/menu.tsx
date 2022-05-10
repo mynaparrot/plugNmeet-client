@@ -86,34 +86,54 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
               </button>
               <Dialog.Title className="mb-4 md:mb-6 text-sm">
-                {t('left-panel.menus.notice.confirm', {
-                  name,
-                })}
+                <legend className="text-base font-medium text-gray-900">
+                  {t('left-panel.menus.notice.confirm', {
+                    name,
+                  })}
+                </legend>
               </Dialog.Title>
 
-              <div className="mb-10">
-                <p>{t('left-panel.menus.notice.want-to-block')} </p>
-                <div>
-                  <input
-                    type="radio"
-                    value="1"
-                    name="block"
-                    checked={blockUser === 1}
-                    onChange={(e) =>
-                      setBlockUser(Number(e.currentTarget.value))
-                    }
-                  />
-                  {t('yes')}
-                  <input
-                    type="radio"
-                    value="0"
-                    name="block"
-                    checked={blockUser === 0}
-                    onChange={(e) =>
-                      setBlockUser(Number(e.currentTarget.value))
-                    }
-                  />
-                  {t('no')}
+              <div className="mb-10 pl-3">
+                <p className="text-sm text-gray-500">
+                  {t('left-panel.menus.notice.want-to-block')}
+                </p>
+                <div className="mt-4 pl-2 space-y-4">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      value="1"
+                      name="block"
+                      id="yes"
+                      checked={blockUser === 1}
+                      onChange={(e) =>
+                        setBlockUser(Number(e.currentTarget.value))
+                      }
+                    />
+                    <label
+                      htmlFor="yes"
+                      className="ml-3 block text-sm font-medium text-gray-700"
+                    >
+                      {t('yes')}
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      value="0"
+                      name="block"
+                      id="no"
+                      checked={blockUser === 0}
+                      onChange={(e) =>
+                        setBlockUser(Number(e.currentTarget.value))
+                      }
+                    />
+                    <label
+                      htmlFor="no"
+                      className="ml-3 block text-sm font-medium text-gray-700"
+                    >
+                      {t('no')}
+                    </label>
+                  </div>
                 </div>
               </div>
 
