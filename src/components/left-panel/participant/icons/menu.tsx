@@ -20,6 +20,7 @@ interface IMenuIconProps {
 
 const MenuIcon = ({ userId, name }: IMenuIconProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [blockUser, setBlockUser] = useState<number>(0);
   const { t } = useTranslation();
 
   const onOpenRemoveParticipantAlert = (user_id) => {
@@ -40,6 +41,7 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
       room_id: session.currentRoom.room_id,
       user_id: userId,
       msg: t('notifications.you-have-removed'),
+      block_user: blockUser === 1,
     };
 
     const res = await sendAPIRequest('removeParticipant', data);
@@ -88,6 +90,32 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
                   name,
                 })}
               </Dialog.Title>
+
+              <div className="mb-10">
+                <p>{t('left-panel.menus.notice.want-to-block')} </p>
+                <div>
+                  <input
+                    type="radio"
+                    value="1"
+                    name="block"
+                    checked={blockUser === 1}
+                    onChange={(e) =>
+                      setBlockUser(Number(e.currentTarget.value))
+                    }
+                  />
+                  {t('yes')}
+                  <input
+                    type="radio"
+                    value="0"
+                    name="block"
+                    checked={blockUser === 0}
+                    onChange={(e) =>
+                      setBlockUser(Number(e.currentTarget.value))
+                    }
+                  />
+                  {t('no')}
+                </div>
+              </div>
 
               <button
                 className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium text-white bg-red-600 mr-4 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"

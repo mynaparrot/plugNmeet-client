@@ -2,6 +2,8 @@
   "ok": "Ok",
   "close": "Close",
   "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
   "join": "Join",
   "share": "Share",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
@@ -18,7 +20,8 @@
     "rtmp-ended-with-error": "RTMP broadcasting ended with error",
     "file-type-not-allow": "{{filetype}} file type isn't allow",
     "max-file-size-exceeds": "The maximum allowed file size exceeds",
-    "you-have-removed": "You've been removed from this conference"
+    "you-have-removed": "You've been removed from this conference.",
+    "you-are-blocked": "You aren't allow to access this conference."
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
@@ -125,7 +128,8 @@
         "you-have-muted-to": "You've muted microphone for {{name}}",
         "applied-new-setting": "Applied new lock setting",
         "presenter-changed": "Presenter has been changed successfully",
-        "you-are-presenter": "You are the presenter"
+        "you-are-presenter": "You are the presenter",
+        "want-to-block": "Do you want to block this user?"
       }
     }
   },
