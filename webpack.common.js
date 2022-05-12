@@ -9,7 +9,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
 const pkg = require('./package.json');
 
 module.exports = {
@@ -107,11 +106,6 @@ module.exports = {
           },
         },
       ],
-    }),
-    new ESLintPlugin({
-      extensions: ['js', 'ts', 'tsx', 'jsx'],
-      fix: true,
-      exclude: ['node_modules'],
     }),
   ],
 };

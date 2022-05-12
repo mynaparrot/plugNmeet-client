@@ -1,67 +1,67 @@
 .excalidraw .App-menu_top .buttonList {
-    display: flex;
+  display: flex;
 }
 
-:root[dir="ltr"]
-.excalidraw
-.layer-ui__wrapper
-.zen-mode-transition.App-menu_bottom--transition-left {
-    transform: none;
+:root[dir='ltr']
+  .excalidraw
+  .layer-ui__wrapper
+  .zen-mode-transition.App-menu_bottom--transition-left {
+  transform: none;
 }
 
 .excalidraw .panelColumn {
-    text-align: left;
+  text-align: left;
 }
 
 .export-wrapper {
-    display: flex;
-    flex-direction: column;
-    margin: 50px;
+  display: flex;
+  flex-direction: column;
+  margin: 50px;
 
-    /*&__checkbox {*/
-    /*     display: flex;*/
-    /* }*/
+  /*&__checkbox {*/
+  /*     display: flex;*/
+  /* }*/
 }
 
 .excalidraw {
-    --color-primary: #004D90;
-    --color-primary-darker: #004D90;
-    --color-primary-darkest: #004D90;
-    --color-primary-light: #24AEF7;
+  --color-primary: #004d90;
+  --color-primary-darker: #004d90;
+  --color-primary-darkest: #004d90;
+  --color-primary-light: #24aef7;
 }
 
 .ToolIcon__library {
-    display: none !important;
+  display: none !important;
 }
 
 .App-toolbar label:last-child {
-    display: none !important;
+  display: none !important;
 }
 
 .HelpDialog--header {
-    display: none !important;
+  display: none !important;
 }
 
 .excalidraw .Stack_horizontal {
-    justify-content: start !important;
+  justify-content: start !important;
 }
 
 .wb-page-navigation button {
-    margin: 0 10px !important;
+  margin: 0 10px !important;
 }
 
 .wb-page-navigation .pre {
-    margin-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 .wb-page-navigation .next {
-    margin-right: 0 !important;
+  margin-right: 0 !important;
 }
 
 .wb-page-navigation button:disabled {
-    background-color: #f4f4f4 !important;
+  background-color: #f4f4f4 !important;
 }
 
 .wb-page-navigation button:disabled i {
-    opacity: 0.2;
+  opacity: 0.2;
 }

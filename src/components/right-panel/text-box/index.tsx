@@ -93,7 +93,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       }
     }
     // eslint-disable-next-line
-    }, []);
+  }, []);
 
   const cleanHtml = (rawText) => {
     return sanitizeHtml(rawText, {
