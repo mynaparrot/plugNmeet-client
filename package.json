@@ -9,6 +9,7 @@
     "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js",
     "lint": "prettier --write \"./src/**/*.{ts,tsx,scss}\" && eslint --fix --ext .tsx,.ts src/",
     "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/",
+    "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -57,6 +58,7 @@
     "fork-ts-checker-webpack-plugin": "^7.2.11",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^8.0.0",
+    "lint-staged": "^12.4.1",
     "mini-css-extract-plugin": "2.6.0",
     "postcss": "^8.4.13",
     "postcss-loader": "^6.2.1",
