@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import {
   BackgroundConfig,
   backgroundImageUrls,
   defaultBackgroundConfig,
 } from '../../../virtual-background/helpers/backgroundHelper';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
-import { useTranslation } from 'react-i18next';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
