@@ -2,8 +2,11 @@
   "ok": "是",
   "close": "关闭",
   "cancel": "取消",
+  "yes": "Yes",
+  "no": "No",
   "join": "加入",
   "share": "分享",
+  "version": "Version: {{pnm_version}}; Build: {{build}}",
   "notifications": {
     "room-not-active": "房间没有激活",
     "recording-already-running": "录制程序已经在运行",
@@ -14,7 +17,11 @@
     "recording-ended-with-error": "录制结束错误",
     "rtmp-started": "RTMP 直播开始",
     "rtmp-ended": "RTMP 直播结束",
-    "rtmp-ended-with-error": "直播结束错误"
+    "rtmp-ended-with-error": "直播结束错误",
+    "file-type-not-allow": "{{filetype}} file type isn't allow",
+    "max-file-size-exceeds": "The maximum allowed file size exceeds",
+    "you-have-removed": "You've been removed from this conference.",
+    "you-are-blocked": "You aren't allow to access this conference."
   },
   "room-metadata": {
     "session-recording": "此会议正在被录制",
@@ -25,6 +32,7 @@
   "header": {
     "menus": {
       "settings": "设置",
+      "keyboard-shortcuts": "Keyboard Shortcuts",
       "logout": "登出",
       "end": "结束",
       "alert": {
@@ -39,7 +47,29 @@
       "notifications": "提醒",
       "show-webcams": "显示摄像头",
       "show-screen-share": "显示屏幕分享",
-      "allow-audio-notification": "允许声音提醒"
+      "allow-audio-notification": "允许声音提醒",
+      "application": "Application settings",
+      "language": "Language",
+      "video-quality": "Video Quality",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "keyboard-shortcuts": {
+      "title": "Keyboard shortcuts",
+      "key-comb": "Keys Combination",
+      "actions": "Actions",
+      "mute-unmute": "Mute/Unmute",
+      "start-audio": "Start Microphone (Audio call)",
+      "leave-audio": "Leave Microphone",
+      "start-webcam": "Start Webcam",
+      "leave-webcam": "Leave Webcam",
+      "show-hide-user-list": "Hide/Show Users' List",
+      "show-hide-chat": "Hide/Show Chat",
+      "show-hide-lock-settings": "Hide/Show Lock Settings",
+      "show-hide-settings": "Hide/Show Settings",
+      "show-hide-whiteboard": "Hide/Show Whiteboard",
+      "show-hide-hand": "Raise/Down hand"
     }
   },
   "app": {
@@ -55,7 +85,8 @@
     "checking": "检测中...",
     "loading": "下载中...",
     "connected": "已连接",
-    "ready": "就绪"
+    "ready": "就绪",
+    "webcams-per-page": "Display per page:"
   },
   "left-panel": {
     "participants": "参会人员 ({{total}})",
@@ -76,6 +107,10 @@
         "lock-webcam": "禁用摄像头",
         "unlock-screen-sharing": "解锁屏幕分享",
         "lock-screen-sharing": "禁用屏幕分享",
+        "unlock-whiteboard": "Unlock whiteboard",
+        "lock-whiteboard": "Lock whiteboard",
+        "unlock-shared-notepad": "Unlock shared notepad",
+        "lock-shared-notepad": "Lock shared notepad",
         "unlock-chat": "解锁聊天",
         "lock-chat": "禁用聊天",
         "unlock-send-chat-message": "解锁发送聊天消息",
@@ -91,7 +126,10 @@
         "asked-you-to": "{{name}} 请求你 ",
         "you-have-asked": "你请求 {{name}} 去 ",
         "you-have-muted-to": "你已经将 {{name}} 设置为静音",
-        "applied-new-setting": "应用了新的禁用设置"
+        "applied-new-setting": "应用了新的禁用设置",
+        "presenter-changed": "Presenter has been changed successfully",
+        "you-are-presenter": "You are the presenter",
+        "want-to-block": "Do you want to block this user?"
       }
     }
   },
@@ -99,6 +137,7 @@
     "you": "You",
     "uploading-file": "上传中 {{fileName}}",
     "file-upload-success": "文件上传成功",
+    "file-upload-default-error": "There was error during upload file",
     "chat-box-placeholder": "写消息 (换行: Shift + enter)"
   },
   "footer": {
@@ -121,15 +160,25 @@
       "stop-recording": "结束录制",
       "start-recording": "开始录制",
       "stop-rtmp-broadcasting": "结束 RTMP 直播",
-      "start-rtmp-broadcasting": "开始 RTMP 直播"
+      "start-rtmp-broadcasting": "开始 RTMP 直播",
+      "show-shared-notepad": "Show shared notepad",
+      "hide-shared-notepad": "Hide shared notepad",
+      "show-whiteboard": "Show whiteboard",
+      "hide-whiteboard": "Hide whiteboard",
+      "promote-presenter": "Promote as presenter",
+      "demote-presenter": "Demote from presenter"
     },
     "menus": {
       "mute-all-users": "静音所有用户",
       "room-lock-settings": "会议室禁用设置",
+      "enable-shared-notepad": "Enable Shared Notepad",
+      "disable-shared-notepad": "Disable Shared Notepad",
       "mute-microphone": "静音麦克风",
       "unmute-microphone": "取消静音麦克风",
       "leave-microphone": "关闭麦克风",
-      "leave-webcam": "关闭摄像头"
+      "leave-webcam": "关闭摄像头",
+      "start-external-media-player": "Start external Media Player",
+      "stop-external-media-player": "Stop external Media Player"
     },
     "notice": {
       "already-active-screen-sharing": "已经有一个屏幕在分享",
@@ -142,13 +191,19 @@
       "muted-all-microphone": "所有麦克风静音",
       "applied-settings": "应用新的禁用设置",
       "rtmp-starting": "RTMP 直播启动中，请等待",
-      "rtmp-ending": "RTMP 直播关闭中. 请等待"
+      "rtmp-ending": "RTMP 直播关闭中. 请等待",
+      "external-media-player-url-required": "Valid URL required",
+      "external-media-player-url-invalid": "URL not valid or supported",
+      "external-media-player-starting": "Please wait preparing playback",
+      "external-media-player-stopping": "Please wait stopping playback"
     },
     "modal": {
       "lock-settings-title": "会议室禁用功能设置",
       "lock-microphone": "禁用麦克风",
       "lock-webcams": "禁用摄像头",
       "lock-screen-sharing": "禁用屏幕分享",
+      "lock-whiteboard": "Lock Whiteboard",
+      "lock-shared-notepad": "Lock Shared Notepad",
       "lock-chat": "禁用聊天",
       "lock-send-message": "禁用发送消息",
       "lock-chat-file-share": "禁用发送文件",
@@ -160,7 +215,17 @@
       "rtmp-close-confirm": "确定要结束直播?",
       "rtmp-close-msg": "你将要结束RTMP直播",
       "select-microphone": "选择一个麦克风",
-      "select-webcam": "选择一个摄像头"
+      "select-webcam": "选择一个摄像头",
+      "external-media-player-title": "External Media Player",
+      "external-media-player-url": "Playback URL",
+      "external-media-player-play": "Play",
+      "external-media-player-close-confirm": "Are you sure to stop playback?",
+      "external-media-player-close-msg": "You are about to close playback"
     }
+  },
+  "whiteboard": {
+    "page": "Page {{count}}",
+    "converting": "Please wait file conversion in progress",
+    "file-ready": "File is ready"
   }
 }
