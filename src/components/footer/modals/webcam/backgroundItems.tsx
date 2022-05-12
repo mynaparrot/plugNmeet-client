@@ -1,18 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
 import {
   BackgroundConfig,
   backgroundImageUrls,
   defaultBackgroundConfig,
 } from '../../../virtual-background/helpers/backgroundHelper';
+import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
+import { useTranslation } from 'react-i18next';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
 }
 
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
+  const allowedFileTypes = ['jpg', 'jpeg', 'png'];
+  const { t } = useTranslation();
+
   const [selectedBg, setSelectedBg] = useState<BackgroundConfig>(
     defaultBackgroundConfig,
   );
+  const [bgImgs, setBgImgs] = useState<Array<string>>(backgroundImageUrls);
+  const [files, setFiles] = useState<Array<File>>();
+  const customFileRef = useRef<HTMLInputElement>(null);
+
+  const { isUploading, result } = useResumableFilesUpload({
+    allowedFileTypes,
+    maxFileSize: 30,
+    files,
+  });
+
+  useEffect(() => {
+    if (result && result.filePath) {
+      const path =
+        (window as any).PLUG_N_MEET_SERVER_URL +
+        '/download/uploadedFile/' +
+        result.filePath;
+
+      const newBgImgs = [...bgImgs];
+      newBgImgs.push(path);
+      setBgImgs([...newBgImgs]);
+
+      const el = customFileRef.current;
+      if (el) {
+        el.value = '';
+      }
+    }
+    //eslint-disable-next-line
+  }, [result, customFileRef]);
 
   const handleOnClick = (type, url) => {
     const bg = {
@@ -21,6 +54,17 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
     };
     setSelectedBg(bg);
     onSelect(bg);
+  };
+
+  const customBgImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (isUploading) {
+      return;
+    }
+    const files = e.target.files;
+    if (!files) {
+      return;
+    }
+    setFiles([...files]);
   };
 
   return (
@@ -41,7 +85,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
       >
         <i className="pnm-blur" />
       </div>
-      {backgroundImageUrls.map((imageUrl) => {
+      {bgImgs.map((imageUrl) => {
         return (
           <div
             className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center transition transform scale-90 hover:scale-95 ease-in border-2 border-solid border-transparent ${
@@ -60,6 +104,15 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
           </div>
         );
       })}
+      <div>
+        {t('footer.modal.upload-background-image')}
+        <input
+          ref={customFileRef}
+          type="file"
+          onChange={customBgImage}
+          accept={allowedFileTypes.map((file) => '.' + file).join(',')}
+        />
+      </div>
     </div>
   );
 };

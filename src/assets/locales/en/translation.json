@@ -220,7 +220,8 @@
       "external-media-player-url": "Playback URL",
       "external-media-player-play": "Play",
       "external-media-player-close-confirm": "Are you sure to stop playback?",
-      "external-media-player-close-msg": "You are about to close playback"
+      "external-media-player-close-msg": "You are about to close playback",
+      "upload-background-image": "Upload background image"
     }
   },
   "whiteboard": {
