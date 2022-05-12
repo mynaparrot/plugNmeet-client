@@ -7,7 +7,7 @@
     "start": "webpack serve --config webpack.dev.js",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
     "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js",
-    "lint": "prettier --write \"./src/**/*.{ts,tsx,scss}\" && eslint --fix --ext .tsx,.ts src/",
+    "lint": "lint-staged",
     "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/"
   },
   "dependencies": {
@@ -71,5 +71,13 @@
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.9.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,scss}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   }
 }
