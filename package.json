@@ -3,6 +3,13 @@
   "version": "1.0.6",
   "author": "Jibon L. Costa",
   "license": "MIT",
+  "scripts": {
+    "start": "webpack serve --config webpack.dev.js",
+    "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js",
+    "lint": "prettier --write \"./src/**/*.{ts,tsx,scss}\" && eslint --fix --ext .tsx,.ts src/",
+    "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/"
+  },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.11.0",
     "@headlessui/react": "^1.6.1",
@@ -27,11 +34,6 @@
     "sanitize-html": "^2.7.0",
     "validator": "^13.7.0"
   },
-  "scripts": {
-    "start": "webpack serve --config webpack.dev.js",
-    "build": "NODE_ENV=production webpack --config webpack.prod.js",
-    "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js"
-  },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
     "@types/react": "^18.0.9",
@@ -51,9 +53,9 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
-    "eslint-webpack-plugin": "^3.1.1",
     "fork-ts-checker-webpack-plugin": "^7.2.11",
     "html-webpack-plugin": "^5.5.0",
+    "husky": "^8.0.0",
     "mini-css-extract-plugin": "2.6.0",
     "postcss": "^8.4.13",
     "postcss-loader": "^6.2.1",

@@ -92,28 +92,28 @@ function useRenderingPipeline(
     }
 
     render();
-    if(!IS_PRODUCTION){
+    if (!IS_PRODUCTION) {
       console.log(
-          'Animation started:',
-          sourcePlayback,
-          backgroundConfig,
-          segmentationConfig,
+        'Animation started:',
+        sourcePlayback,
+        backgroundConfig,
+        segmentationConfig,
       );
     }
-    
+
     setPipeline(newPipeline);
 
     return () => {
       shouldRender = false;
       cancelAnimationFrame(renderRequestId);
       newPipeline.cleanUp();
-      
-      if(!IS_PRODUCTION){
+
+      if (!IS_PRODUCTION) {
         console.log(
-            'Animation stopped:',
-            sourcePlayback,
-            backgroundConfig,
-            segmentationConfig,
+          'Animation stopped:',
+          sourcePlayback,
+          backgroundConfig,
+          segmentationConfig,
         );
       }
 
