@@ -8,7 +8,8 @@
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
     "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js",
     "lint": "prettier --write \"./src/**/*.{ts,tsx,scss}\" && eslint --fix --ext .tsx,.ts src/",
-    "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/"
+    "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.11.0",
