@@ -106,7 +106,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         );
       })}
       <div className="upload-btn-wrapper relative overflow-hidden inline-block cursor-pointer pt-2 w-full">
-        <button className="btn border border-dotted border-secondaryColor bg-transparent py-2 px-2 rounded text-xs text-secondaryColor cursor-pointer">
+        <button className="btn border border-dotted border-secondaryColor bg-transparent py-2 px-4 rounded text-xs text-secondaryColor cursor-pointer">
           {t('footer.modal.upload-background-image')}
         </button>
         <input
