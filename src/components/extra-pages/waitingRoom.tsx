@@ -7,7 +7,12 @@ const WaitingRoom = () => {
   const { t } = useTranslation();
   return (
     <>
-      <div className="guest-lobby flex items-center justify-center w-full h-screen">
+      <div
+        className="guest-lobby flex items-center justify-center w-full h-screen"
+        style={{
+          backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
+        }}
+      >
         <div className="guest-lobby-inner">
           <div className="logo w-40 m-auto relative z-20">
             <div
