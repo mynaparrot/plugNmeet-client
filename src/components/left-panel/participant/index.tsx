@@ -172,7 +172,7 @@ const ParticipantComponent = ({
   return (
     <>
       <li className="mb-3 w-full list-none">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative">
           <div className="left flex items-center ">
             <Avatar participant={participant} />
             <ParticipantName
@@ -197,7 +197,7 @@ const ParticipantComponent = ({
               />
             ) : null}
           </div>
-          <div>
+          <div className="approve-wrap absolute right-0 top-5">
             <WaitingApproval
               userId={participant.userId}
               name={participant.name}

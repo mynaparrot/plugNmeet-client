@@ -46,9 +46,19 @@ const WaitingApproval = ({
   const render = () => {
     if (participant?.metadata.wait_for_approval) {
       return (
-        <div>
-          <button onClick={approve}>{t('left-panel.approve')}</button>
-          <button onClick={reject}>{t('left-panel.reject')}</button>
+        <div className="approve-btn-wrap">
+          <button
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
+            onClick={approve}
+          >
+            {t('left-panel.approve')}
+          </button>
+          <button
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ml-2"
+            onClick={reject}
+          >
+            {t('left-panel.reject')}
+          </button>
         </div>
       );
     }
