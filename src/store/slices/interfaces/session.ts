@@ -26,6 +26,7 @@ export interface ICurrentUserMetadata {
   is_admin: boolean;
   is_presenter: boolean;
   raised_hand: boolean;
+  wait_for_approval: boolean;
   lock_settings: ILockSettings;
 }
 

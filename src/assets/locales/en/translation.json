@@ -21,7 +21,9 @@
     "file-type-not-allow": "{{filetype}} file type isn't allow",
     "max-file-size-exceeds": "The maximum allowed file size exceeds",
     "you-have-removed": "You've been removed from this conference.",
-    "you-are-blocked": "You aren't allow to access this conference."
+    "you-are-blocked": "You aren't allow to access this conference.",
+    "you-have-reject": "You've been rejected to join this conference",
+    "waiting-for-approval": "Please wait until a moderator will approve you."
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
@@ -90,6 +92,8 @@
   },
   "left-panel": {
     "participants": "Participants ({{total}})",
+    "approve": "Approve",
+    "reject": "Reject",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Ask to share Microphone",
@@ -129,7 +133,8 @@
         "applied-new-setting": "Applied new lock setting",
         "presenter-changed": "Presenter has been changed successfully",
         "you-are-presenter": "You are the presenter",
-        "want-to-block": "Do you want to block this user?"
+        "want-to-block": "Do you want to block this user?",
+        "user-approved": "You've approved {{name}}"
       }
     }
   },
