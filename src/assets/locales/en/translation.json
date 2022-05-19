@@ -183,7 +183,8 @@
       "leave-microphone": "Leave Microphone",
       "leave-webcam": "Leave webcam",
       "start-external-media-player": "Start external Media Player",
-      "stop-external-media-player": "Stop external Media Player"
+      "stop-external-media-player": "Stop external Media Player",
+      "manage-waiting-room": "Manage waiting room"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -233,5 +234,14 @@
     "page": "Page {{count}}",
     "converting": "Please wait file conversion in progress",
     "file-ready": "File is ready"
+  },
+  "waiting-room": {
+    "modal-title": "Manage waiting room",
+    "update-waiting-message": "Update waiting room message",
+    "update-msg": "Update",
+    "updated-msg": "Room message has been updated",
+    "accept-all": "Accept everyone",
+    "reject-all": "Reject everyone",
+    "list-waiting-participants": "Waiting Participants"
   }
 }

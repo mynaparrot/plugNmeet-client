@@ -59,6 +59,10 @@ const initialState: ISession = {
           allowed_external_media_player: true,
           is_active: false,
         },
+        waiting_room_features: {
+          is_active: false,
+          waiting_room_msg: '',
+        },
       },
     },
   },

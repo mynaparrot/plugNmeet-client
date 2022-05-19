@@ -58,6 +58,7 @@ interface IRoomFeatures {
   shared_note_pad_features: ISharedNotepadFeatures;
   whiteboard_features: IWhiteboardFeatures;
   external_media_player_features: IExternalMediaPlayerFeatures;
+  waiting_room_features: IWaitingRoomFeatures;
 }
 
 interface IChatFeatures {
@@ -112,4 +113,9 @@ export interface IExternalMediaPlayerFeatures {
   is_active: boolean;
   shared_by?: string;
   url?: string;
+}
+
+export interface IWaitingRoomFeatures {
+  is_active: boolean;
+  waiting_room_msg: string;
 }

@@ -19,7 +19,7 @@ import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
-import WaitingRoom from '../extra-pages/waitingRoom';
+import WaitingRoomPage from '../waiting-room/waitingRoomPage';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -180,7 +180,7 @@ const App = () => {
       return <ErrorPage title={error.title} text={error.text} />;
     } else if (currentRoom?.state === 'connected') {
       if (waitForApproval) {
-        return <WaitingRoom />;
+        return <WaitingRoomPage />;
       }
       return renderMainApp();
     } else if (roomConnectionStatus === 'ready') {

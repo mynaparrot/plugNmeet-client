@@ -1,19 +1,32 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { createSelector } from '@reduxjs/toolkit';
+import { isEmpty } from 'lodash';
 
-const WaitingRoom = () => {
+import { RootState, useAppSelector } from '../../store';
+
+const waitingRoomMessageSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.waiting_room_features
+      .waiting_room_msg,
+  (waiting_room_msg) => waiting_room_msg,
+);
+
+const WaitingRoomPage = () => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   const logo = (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/main-logo.png`;
   const { t } = useTranslation();
+  const waitingRoomMessage = useAppSelector(waitingRoomMessageSelector);
+
   return (
     <>
       <div
-        className="guest-lobby flex items-center justify-center w-full h-screen"
+        className="waiting-room flex items-center justify-center w-full h-screen"
         style={{
           backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
         }}
       >
-        <div className="guest-lobby-inner">
+        <div className="waiting-room-inner">
           <div className="logo w-40 m-auto relative z-20">
             <div
               className={`${
@@ -33,11 +46,15 @@ const WaitingRoom = () => {
               </div>
             </div>
           </div>
-          <p className="text-3xl">{t('notifications.waiting-for-approval')}</p>
+          <p className="text-3xl">
+            {isEmpty(waitingRoomMessage)
+              ? t('notifications.waiting-for-approval')
+              : waitingRoomMessage}
+          </p>
         </div>
       </div>
     </>
   );
 };
 
-export default WaitingRoom;
+export default WaitingRoomPage;
