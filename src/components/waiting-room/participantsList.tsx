@@ -30,14 +30,14 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
     }
   };
 
-  const rejectUser = async (userId: string) => {
+  const rejectUser = async (userId: string, block: boolean) => {
     const session = store.getState().session;
     const data = {
       sid: session.currentRoom.sid,
       room_id: session.currentRoom.room_id,
       user_id: userId,
       msg: t('notifications.you-have-reject'),
-      block_user: false,
+      block_user: block,
     };
 
     const res = await sendAPIRequest('removeParticipant', data);
@@ -61,8 +61,11 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
           <button onClick={() => acceptUser(p.userId)}>
             {t('left-panel.approve')}
           </button>
-          <button onClick={() => rejectUser(p.userId)}>
+          <button onClick={() => rejectUser(p.userId, false)}>
             {t('left-panel.reject')}
+          </button>
+          <button onClick={() => rejectUser(p.userId, true)}>
+            {t('waiting-room.reject-and-block-user')}
           </button>
         </div>
       );
@@ -71,7 +74,11 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
 
   return (
     <div className="m-10">
-      <p>{t('waiting-room.list-waiting-participants')}</p>
+      <p>
+        {t('waiting-room.list-waiting-participants', {
+          count: waitingParticipants.length,
+        })}
+      </p>
       <div>{renderWaitingParticipants()}</div>
     </div>
   );

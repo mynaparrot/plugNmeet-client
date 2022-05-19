@@ -242,6 +242,7 @@
     "updated-msg": "Room message has been updated",
     "accept-all": "Accept everyone",
     "reject-all": "Reject everyone",
-    "list-waiting-participants": "Waiting Participants"
+    "list-waiting-participants": "Waiting participants list ({{count}})",
+    "reject-and-block-user": "Reject & Block"
   }
 }
