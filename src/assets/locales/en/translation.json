@@ -244,5 +244,14 @@
     "reject-all": "Reject everyone",
     "list-waiting-participants": "Waiting participants list ({{count}})",
     "reject-and-block-user": "Reject & Block"
+  },
+  "polls": {
+    "create": "Create new poll",
+    "question": "Enter question",
+    "option": "Option {{count}}",
+    "remove-option": "Remove",
+    "add-new-option": "Add new option",
+    "create-poll": "Create poll",
+    "created-successfully": "Poll has been created"
   }
 }
