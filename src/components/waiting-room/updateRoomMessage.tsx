@@ -40,13 +40,21 @@ const UpdateRoomMessage = () => {
   };
 
   return (
-    <div className="m-10">
-      <p>{t('waiting-room.update-waiting-message')}</p>
+    <div className="mb-4 text-right">
+      <p className="text-sm text-black capitalize mb-2 block text-left">
+        {t('waiting-room.update-waiting-message')}
+      </p>
       <textarea
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
+        className="border border-solid border-primaryColor/20 h-20 w-full block p-3 rounded-xl outline-none text-sm"
       ></textarea>
-      <button onClick={updateRoomMsg}>{t('waiting-room.update-msg')}</button>
+      <button
+        onClick={updateRoomMsg}
+        className="py-1 px-6 mt-2 rounded-xl text-white text-sm inline-block mr-0 ml-auto transition ease-in bg-primaryColor hover:bg-secondaryColor"
+      >
+        {t('waiting-room.update-msg')}
+      </button>
     </div>
   );
 };

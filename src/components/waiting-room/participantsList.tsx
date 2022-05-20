@@ -56,15 +56,27 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
   const renderWaitingParticipants = () => {
     return waitingParticipants.map((p) => {
       return (
-        <div className="" key={p.userId}>
-          <p>{p.name}</p>
-          <button onClick={() => acceptUser(p.userId)}>
+        <div
+          className="waiting-list-item mb-2 pb-2 border-b border-solid border-primaryColor w-full max-w-max"
+          key={p.userId}
+        >
+          <p className="text-base text-black">{p.name}</p>
+          <button
+            onClick={() => acceptUser(p.userId)}
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
+          >
             {t('left-panel.approve')}
           </button>
-          <button onClick={() => rejectUser(p.userId, false)}>
+          <button
+            onClick={() => rejectUser(p.userId, false)}
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ml-2"
+          >
             {t('left-panel.reject')}
           </button>
-          <button onClick={() => rejectUser(p.userId, true)}>
+          <button
+            onClick={() => rejectUser(p.userId, true)}
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ml-2"
+          >
             {t('waiting-room.reject-and-block-user')}
           </button>
         </div>
@@ -73,13 +85,15 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
   };
 
   return (
-    <div className="m-10">
-      <p>
+    <div className="waiting-list-wrap">
+      <p className="text-lg my-4 text-black font-bold">
         {t('waiting-room.list-waiting-participants', {
           count: waitingParticipants.length,
         })}
       </p>
-      <div>{renderWaitingParticipants()}</div>
+      <div className="waiting-list scrollBar h-[130px] overflow-auto">
+        <div className="waiting-list-inner">{renderWaitingParticipants()}</div>
+      </div>
     </div>
   );
 };
