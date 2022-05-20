@@ -13,14 +13,48 @@ export const pollsApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['List', 'Count', 'Selected', 'Single'],
   endpoints: (builder) => ({
-    getPollLists: builder.query<void, string>({
-      query: (user_id) => `listPolls/${user_id}`,
+    getPollLists: builder.query<void, void>({
+      query: () => `listPolls`,
+      providesTags: ['List'],
+    }),
+    getCountTotalResponses: builder.query<void, string>({
+      query: (poll_id) => `countTotalResponses/${poll_id}`,
+      providesTags: (result) => {
+        return (result as any).status
+          ? ['Count', { type: 'Count' as const, id: (result as any).poll_id }]
+          : ['Count'];
+      },
+    }),
+    getUserSelectedOption: builder.query<
+      void,
+      { pollId: string; userId: string }
+    >({
+      query: ({ pollId, userId }) => `userSelectedOption/${pollId}/${userId}`,
+      providesTags: (result) => {
+        return (result as any).status
+          ? [
+              'Selected',
+              { type: 'Selected' as const, id: (result as any).poll_id },
+            ]
+          : ['Selected'];
+      },
     }),
     getPollResponses: builder.query<void, string>({
       query: (poll_id) => `pollResponses/${poll_id}`,
+      providesTags: (result) => {
+        return (result as any).status
+          ? ['Single', { type: 'Single' as const, id: (result as any).poll_id }]
+          : ['Single'];
+      },
     }),
   }),
 });
 
-export const { useGetPollListsQuery, useGetPollResponsesQuery } = pollsApi;
+export const {
+  useGetPollListsQuery,
+  useGetCountTotalResponsesQuery,
+  useGetUserSelectedOptionQuery,
+  useGetPollResponsesQuery,
+} = pollsApi;
