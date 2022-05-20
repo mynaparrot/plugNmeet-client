@@ -4,8 +4,9 @@ export interface PollLists {
 
 export interface PollListItem {
   id: string;
+  roomId: string;
   question: string;
-  total_responses: number;
+  options: any;
   is_published: boolean;
-  voted: boolean;
+  created: number;
 }
