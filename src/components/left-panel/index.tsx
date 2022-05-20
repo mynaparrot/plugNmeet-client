@@ -27,20 +27,17 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   return (
     <div
       id="main-left-panel"
-      className="participants-wrapper scrollBar relative z-10 left-0 top-0 h-full w-[200px] xl:w-[270px] px-2 xl:px-4 pt-2 xl:pt-5 overflow-auto multi-gradient"
+      className="participants-wrapper relative z-10 left-0 top-0 h-full w-[200px] xl:w-[270px] multi-gradient"
     >
       <Tab.Group vertical>
-        <Tab.List className="flex p-1 space-x-1 bg-primaryColor rounded-xl">
+        <Tab.List className="flex">
           {Object.keys(items).map((item) => (
             <Tab
               key={item}
               className={({ selected }) =>
                 classNames(
-                  'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-secondaryColor rounded-lg outline-none',
-                  'ring-white ring-opacity-60',
-                  selected
-                    ? 'bg-white shadow text-primaryColor'
-                    : 'hover:bg-white/[0.12] hover:text-white',
+                  'w-full py-2 text-sm sm:text-base text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
+                  selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
                 )
               }
             >
@@ -48,9 +45,16 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className="mt-2">
+        <Tab.Panels className="relative h-[calc(100%-45px)]">
           {Object.values(items).map((item, idx) => (
-            <Tab.Panel key={idx} className="bg-white rounded-xl p-3">
+            <Tab.Panel
+              key={idx}
+              className={`${
+                idx === 1
+                  ? 'polls h-full'
+                  : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
+              }`}
+            >
               <>{item.elm}</>
             </Tab.Panel>
           ))}

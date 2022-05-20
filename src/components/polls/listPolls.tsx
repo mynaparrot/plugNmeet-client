@@ -22,7 +22,11 @@ const ListPolls = () => {
     });
   };
 
-  return <div className="m-10">{renderPolls()}</div>;
+  return (
+    <div className="polls-list-wrapper h-[calc(100%-48px)] overflow-auto scrollBar px-2 xl:px-4 pt-2 xl:pt-5">
+      <div className="polls-list-wrap-inner">{renderPolls()}</div>
+    </div>
+  );
 };
 
 export default ListPolls;

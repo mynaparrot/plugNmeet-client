@@ -9,10 +9,14 @@ interface IPollPros {
 
 const Poll = ({ item }: IPollPros) => {
   return (
-    <div className="">
-      <div className="">{item.question}</div>
+    <div className="poll-item border border-solid border-primaryColor/70 p-2 rounded-lg mb-4 transition ease-in hover:shadow-md">
+      <div className="poll-title text-lg font-bold text-primaryColor capitalize">
+        {item.question}
+      </div>
       <TotalResponses pollId={item.id} />
-      <div className="">{item.is_published ? 'published' : 'running'}</div>
+      <div className="status">
+        {item.is_published ? 'published' : 'running'}
+      </div>
       <MyVoteStatus pollId={item.id} />
     </div>
   );

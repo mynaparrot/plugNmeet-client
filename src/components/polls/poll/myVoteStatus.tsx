@@ -20,7 +20,7 @@ const MyVoteStatus = ({ pollId }: IMyVoteStatusProps) => {
     }
   }, [data, isLoading]);
 
-  return <div className="">{hasVoted ? 'You voted' : 'Not voted'}</div>;
+  return <div className="is-voted">{hasVoted ? 'You voted' : 'Not voted'}</div>;
 };
 
 export default MyVoteStatus;

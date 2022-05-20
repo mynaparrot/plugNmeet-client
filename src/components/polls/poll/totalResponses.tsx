@@ -17,7 +17,7 @@ const TotalResponses = ({ pollId }: ITotalResponsesProps) => {
     }
   }, [data, isLoading]);
 
-  return <div className="">Total {total}</div>;
+  return <div className="total-vote">Total {total}</div>;
 };
 
 export default TotalResponses;
