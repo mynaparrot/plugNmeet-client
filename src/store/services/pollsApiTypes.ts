@@ -24,7 +24,7 @@ export interface PollListItem {
   roomId: string;
   question: string;
   options: CreatePollOptions[];
-  is_published: boolean;
+  is_running: boolean;
   created: number;
   created_by: string;
 }

@@ -259,6 +259,8 @@
     "select-option": "Select an option",
     "submit": "Submit",
     "response-added": "Your submission has been added successfully",
-    "new-poll": "New poll has been started"
+    "new-poll": "New poll has been started",
+    "poll-running": "Running",
+    "poll-closed": "Closed"
   }
 }
