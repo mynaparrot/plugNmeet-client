@@ -23,7 +23,7 @@ export const pollsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['List', 'Count', 'Selected', 'Single'],
+  tagTypes: ['List', 'Count', 'Selected', 'SinglePoll'],
   endpoints: (builder) => ({
     getPollLists: builder.query<PollLists, void>({
       query: () => `listPolls`,
@@ -52,8 +52,8 @@ export const pollsApi = createApi({
       query: (poll_id) => `pollResponses/${poll_id}`,
       providesTags: (result) => {
         return result?.status
-          ? ['Single', { type: 'Single' as const, id: result.poll_id }]
-          : ['Single'];
+          ? ['SinglePoll', { type: 'SinglePoll' as const, id: result.poll_id }]
+          : ['SinglePoll'];
       },
     }),
     createPoll: builder.mutation<CreatePollRes, CreatePoll>({
@@ -77,6 +77,7 @@ export const pollsApi = createApi({
       invalidatesTags: (result, error, { poll_id }) => [
         { type: 'Count', id: poll_id },
         { type: 'Selected', id: poll_id },
+        { type: 'SinglePoll', id: poll_id },
       ],
     }),
   }),

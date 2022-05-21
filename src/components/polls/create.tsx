@@ -82,7 +82,7 @@ const Create = () => {
     return (
       <form onSubmit={onSubmit}>
         <label className="text-sm text-black block mb-1">
-          {t('polls.question')}
+          {t('polls.enter-question')}
         </label>
         <input
           type="text"
@@ -93,7 +93,7 @@ const Create = () => {
           placeholder="Ask a question"
           className="text-black placeholder:text-black/50 py-2 px-4 text-sm w-full border border-solid border-primaryColor outline-none rounded-lg mb-4"
         />
-
+        <p>{t('polls.options')}</p>
         {options.map((elm, index) => (
           <div className="form-inline mb-4" key={elm.id}>
             <label className="text-sm text-black block mb-1">

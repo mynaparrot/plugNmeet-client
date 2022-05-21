@@ -247,8 +247,11 @@
   },
   "polls": {
     "create": "Create new poll",
-    "question": "Enter question",
+    "enter-question": "Enter question",
+    "question": "Question",
+    "options": "Options",
     "option": "Option {{count}}",
+    "total-responses": "Total responses: {{count}}",
     "remove-option": "Remove",
     "add-new-option": "Add new option",
     "create-poll": "Create poll",
@@ -261,6 +264,10 @@
     "response-added": "Your submission has been added successfully",
     "new-poll": "New poll has been started",
     "poll-running": "Running",
-    "poll-closed": "Closed"
+    "poll-closed": "Closed",
+    "view-details": "View details",
+    "view-result": "View result",
+    "view-details-title": "Poll information",
+    "end-poll": "End poll"
   }
 }

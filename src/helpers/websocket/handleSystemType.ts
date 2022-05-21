@@ -133,6 +133,7 @@ const handlePollsNotifications = (data: IDataMessage) => {
       pollsApi.util.invalidateTags([
         { type: 'Count', id: data.body.msg },
         { type: 'Selected', id: data.body.msg },
+        { type: 'SinglePoll', id: data.body.msg },
       ]),
     );
   }
