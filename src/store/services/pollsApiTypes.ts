@@ -26,6 +26,7 @@ export interface PollListItem {
   options: CreatePollOptions[];
   is_published: boolean;
   created: number;
+  created_by: string;
 }
 
 export interface TotalResponses {
