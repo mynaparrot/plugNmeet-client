@@ -258,6 +258,7 @@
     "submit-vote-form-title": "Submit your vote",
     "select-option": "Select an option",
     "submit": "Submit",
-    "response-added": "Your submission has been added successfully"
+    "response-added": "Your submission has been added successfully",
+    "new-poll": "New poll has been started"
   }
 }
