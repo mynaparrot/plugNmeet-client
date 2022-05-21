@@ -7,7 +7,7 @@ const ListPolls = () => {
   const { data } = useGetPollListsQuery();
 
   const sortedPolls = useMemo(() => {
-    if (data) {
+    if (data && data.polls !== null) {
       const sortedPolls = data.polls.slice();
       sortedPolls.sort((a, b) => b.created - a.created);
       return sortedPolls;
