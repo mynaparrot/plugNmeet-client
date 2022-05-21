@@ -1,7 +1,10 @@
 import React, { Fragment, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { useGetPollListsQuery } from '../../store/services/pollsApi';
+import {
+  useGetPollListsQuery,
+  useGetPollResponsesQuery,
+} from '../../store/services/pollsApi';
 
 interface IViewResultProps {
   onCloseViewResult(): void;
@@ -16,11 +19,29 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
       post: data?.polls.find((poll) => poll.id === pollId),
     }),
   });
+  const { data: pollResponses } = useGetPollResponsesQuery(pollId);
 
   const closeModal = () => {
-    console.log(poll);
     setIsOpen(false);
     onCloseViewResult();
+  };
+
+  const getOptSelectedCount = (id) => {
+    if (typeof pollResponses?.responses[id + '_count'] !== 'undefined') {
+      return pollResponses?.responses[id + '_count'];
+    } else {
+      return 0;
+    }
+  };
+
+  const renderOptions = () => {
+    return poll?.options.map((o) => {
+      return (
+        <p className="" key={o.id}>
+          {o.text} ({getOptSelectedCount(o.id)})
+        </p>
+      );
+    });
   };
 
   const renderModal = () => {
@@ -74,10 +95,24 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
                   >
-                    {t('polls.submit-vote-form-title')}
+                    {t('polls.view-result-title')}
                   </Dialog.Title>
                   <hr />
-                  <div className="mt-6">Info here</div>
+                  <div className="mt-6">
+                    <label className="text-sm text-black block mb-1">
+                      {t('polls.question')}
+                    </label>
+                    <p>{poll?.question}</p>
+                    <p>
+                      {t('polls.total-responses', {
+                        count: pollResponses?.responses.total_resp,
+                      })}
+                    </p>
+                    <div className="">
+                      <p>{t('polls.options')}</p>
+                      <div className="">{renderOptions()}</div>
+                    </div>
+                  </div>
                 </div>
               </Transition.Child>
             </div>
