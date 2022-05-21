@@ -54,6 +54,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
     addResponse({
       poll_id: pollId,
       user_id: store.getState().session.currentUser?.userId ?? '',
+      name: store.getState().session.currentUser?.name ?? '',
       selected_option: selectedOption,
     });
   };

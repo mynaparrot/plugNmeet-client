@@ -50,10 +50,10 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
       );
 
       return respondents.map((r, i) => {
-        // format userId:selected_id
+        // format userId:option_id:name
         const data = r.split(':');
         if (Number(data[1]) === id) {
-          return <p key={i}>{data[0]}</p>;
+          return <p key={i}>{data[2]}</p>;
         }
       });
     }

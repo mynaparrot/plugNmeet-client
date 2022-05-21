@@ -53,6 +53,7 @@ export interface PollResponses {
 export interface SubmitResponse {
   poll_id: string;
   user_id: string;
+  name: string;
   selected_option: number;
 }
 
