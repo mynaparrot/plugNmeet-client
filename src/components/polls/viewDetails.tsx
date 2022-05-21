@@ -1,14 +1,24 @@
-import React, { Fragment, useState, useMemo, useEffect } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { useTranslation } from 'react-i18next';
-import { Disclosure } from '@headlessui/react';
+import { Dialog, Disclosure, Transition } from '@headlessui/react';
 
 import {
   useClosePollMutation,
   useGetPollListsQuery,
   useGetPollResponsesQuery,
 } from '../../store/services/pollsApi';
-import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
+import {
+  DataMessageType,
+  IChatMsg,
+  IDataMessage,
+} from '../../store/slices/interfaces/dataMessages';
+import {
+  isSocketConnected,
+  sendWebsocketMessage,
+} from '../../helpers/websocket';
+import { store } from '../../store';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -53,6 +63,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
         toast(t('polls.end-poll-success'), {
           type: 'info',
         });
+        publishPollResultByChat();
       } else {
         toast(t(closePollRes.msg), {
           type: 'error',
@@ -107,6 +118,46 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
         </div>
       );
     });
+  };
+
+  const publishPollResultByChat = () => {
+    const session = store.getState().session;
+    const elm = ReactDOMServer.renderToString(
+      <>
+        <p>{poll?.question}</p>
+        <p>
+          {t('polls.total-responses', {
+            count: pollResponses?.responses.total_resp,
+          })}
+        </p>
+        {poll?.options.map((o) => {
+          return <p key={o.id}>{`${o.text} (${getOptSelectedCount(o.id)})`}</p>;
+        })}
+      </>,
+    );
+    const info: IChatMsg = {
+      type: 'CHAT',
+      isPrivate: false,
+      time: '',
+      message_id: '',
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+        name: session.currentUser?.name,
+      },
+      msg: elm,
+    };
+
+    const data: IDataMessage = {
+      type: DataMessageType.USER,
+      room_sid: session.currentRoom.sid,
+      message_id: '',
+      body: info,
+    };
+
+    if (isSocketConnected()) {
+      sendWebsocketMessage(JSON.stringify(data));
+    }
   };
 
   const renderModal = () => {
