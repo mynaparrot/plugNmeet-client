@@ -62,3 +62,13 @@ export interface SubmitResponseRes {
   msg: string;
   poll_id?: string;
 }
+
+export interface ClosePoll {
+  poll_id: string;
+}
+
+export interface ClosePollRes {
+  status: boolean;
+  msg: string;
+  poll_id?: string;
+}

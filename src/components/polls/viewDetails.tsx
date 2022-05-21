@@ -1,12 +1,14 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Disclosure } from '@headlessui/react';
 
 import {
+  useClosePollMutation,
   useGetPollListsQuery,
   useGetPollResponsesQuery,
 } from '../../store/services/pollsApi';
 import { Dialog, Transition } from '@headlessui/react';
+import { toast } from 'react-toastify';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -22,6 +24,44 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
     }),
   });
   const { data: pollResponses } = useGetPollResponsesQuery(pollId);
+  const [closePoll, { isLoading, data: closePollRes }] = useClosePollMutation();
+
+  const respondents = useMemo(() => {
+    const obj = {};
+    if (
+      pollResponses?.responses.all_respondents &&
+      pollResponses?.responses.all_respondents !== ''
+    ) {
+      const respondents: Array<string> = JSON.parse(
+        pollResponses?.responses.all_respondents,
+      );
+      respondents.forEach((r) => {
+        const data = r.split(':');
+        if (typeof obj[data[1]] === 'undefined') {
+          obj[data[1]] = [];
+        }
+        obj[data[1]].push(data[2]);
+      });
+    }
+
+    return obj;
+  }, [pollResponses]);
+
+  useEffect(() => {
+    if (!isLoading && closePollRes) {
+      if (closePollRes.status) {
+        toast(t('polls.end-poll-success'), {
+          type: 'info',
+        });
+      } else {
+        toast(t(closePollRes.msg), {
+          type: 'error',
+        });
+      }
+      closeModal();
+    }
+    //eslint-disable-next-line
+  }, [isLoading, closePollRes]);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -29,7 +69,9 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
   };
 
   const endPoll = () => {
-    // we'll end
+    closePoll({
+      poll_id: pollId,
+    });
   };
 
   const getOptSelectedCount = (id) => {
@@ -41,20 +83,9 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
   };
 
   const getRespondentsById = (id) => {
-    if (
-      pollResponses?.responses.all_respondents &&
-      pollResponses?.responses.all_respondents !== ''
-    ) {
-      const respondents: Array<string> = JSON.parse(
-        pollResponses?.responses.all_respondents,
-      );
-
-      return respondents.map((r, i) => {
-        // format userId:option_id:name
-        const data = r.split(':');
-        if (Number(data[1]) === id) {
-          return <p key={i}>{data[2]}</p>;
-        }
+    if (typeof respondents[id] !== 'undefined') {
+      return respondents[id].map((r, i) => {
+        return <p key={i}>{r}</p>;
       });
     }
 
@@ -134,7 +165,9 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                   <hr />
                   <div className="mt-6">
                     <div className="mb-10">
-                      <button onClick={endPoll}>{t('polls.end-poll')}</button>
+                      {poll?.is_running ? (
+                        <button onClick={endPoll}>{t('polls.end-poll')}</button>
+                      ) : null}
                     </div>
 
                     <label className="text-sm text-black block mb-1">

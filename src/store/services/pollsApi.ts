@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
+  ClosePoll,
+  ClosePollRes,
   CreatePoll,
   CreatePollRes,
   PollLists,
@@ -80,6 +82,16 @@ export const pollsApi = createApi({
         { type: 'SinglePoll', id: poll_id },
       ],
     }),
+    closePoll: builder.mutation<ClosePollRes, ClosePoll>({
+      query(body) {
+        return {
+          url: 'closePoll',
+          method: 'POST',
+          body,
+        };
+      },
+      invalidatesTags: ['List'],
+    }),
   }),
 });
 
@@ -90,4 +102,5 @@ export const {
   useGetPollResponsesQuery,
   useCreatePollMutation,
   useAddResponseMutation,
+  useClosePollMutation,
 } = pollsApi;

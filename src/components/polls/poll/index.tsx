@@ -26,7 +26,9 @@ const Poll = ({ item }: IPollPros) => {
       <div className="status">
         {item.is_running ? t('polls.poll-running') : t('polls.poll-closed')}
       </div>
-      <MyVoteStatus pollId={item.id} />
+
+      {item.is_running ? <MyVoteStatus pollId={item.id} /> : null}
+
       {isAdmin ? (
         <button onClick={() => setViewDetails(true)}>
           {t('polls.view-details')}
