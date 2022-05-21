@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { useGetPollListsQuery } from '../../store/services/pollsApi';
-import { PollListItem } from '../../store/services/pollsApiTypes';
 import Poll from './poll';
 
 const ListPolls = () => {
-  const { data, isLoading } = useGetPollListsQuery();
-  const [polls, setPolls] = useState<PollListItem[]>([]);
+  const { data } = useGetPollListsQuery();
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      if ((data as any).status) {
-        setPolls((data as any).polls);
-      }
+  const sortedPolls = useMemo(() => {
+    if (data) {
+      const sortedPolls = data.polls.slice();
+      sortedPolls.sort((a, b) => b.created - a.created);
+      return sortedPolls;
     }
-  }, [data, isLoading]);
+  }, [data]);
 
   const renderPolls = () => {
-    return polls.map((p) => {
+    return sortedPolls?.map((p) => {
       return <Poll key={p.id} item={p} />;
     });
   };

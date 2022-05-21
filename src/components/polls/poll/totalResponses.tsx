@@ -11,8 +11,8 @@ const TotalResponses = ({ pollId }: ITotalResponsesProps) => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      if ((data as any).status) {
-        setTotal((data as any).total_responses);
+      if (data.status) {
+        setTotal(data.total_responses ?? 0);
       }
     }
   }, [data, isLoading]);

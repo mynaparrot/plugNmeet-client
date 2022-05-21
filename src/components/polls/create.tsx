@@ -1,26 +1,40 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
+import { useCreatePollMutation } from '../../store/services/pollsApi';
+import { CreatePollOptions } from '../../store/services/pollsApiTypes';
 
-interface IOptions {
-  id: number;
-  text: string;
-}
 const Create = () => {
   const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [question, setQuestion] = useState<string>('');
+  const [createPoll, { isLoading, data }] = useCreatePollMutation();
 
-  const [options, setOptions] = useState<IOptions[]>([
+  const [options, setOptions] = useState<CreatePollOptions[]>([
     {
       id: 1,
       text: '',
     },
   ]);
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      if (data.status) {
+        toast(t('polls.created-successfully'), {
+          type: 'info',
+        });
+      } else {
+        toast(t(data.msg), {
+          type: 'error',
+        });
+      }
+      closeModal();
+    }
+    //eslint-disable-next-line
+  }, [isLoading, data]);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -33,25 +47,13 @@ const Create = () => {
     ]);
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     const body = {
       question,
       options,
     };
-
-    const res = await sendAPIRequest('/polls/create', body);
-    if (res.status) {
-      toast(t('polls.created-successfully'), {
-        type: 'info',
-      });
-    } else {
-      toast(t(res.msg), {
-        type: 'error',
-      });
-    }
-
-    closeModal();
+    createPoll(body);
   };
 
   const onChange = (index, e) => {

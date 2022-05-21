@@ -252,6 +252,12 @@
     "remove-option": "Remove",
     "add-new-option": "Add new option",
     "create-poll": "Create poll",
-    "created-successfully": "Poll has been created"
+    "created-successfully": "Poll has been created",
+    "you-voted": "You voted",
+    "vote": "Vote",
+    "submit-vote-form-title": "Submit your vote",
+    "select-option": "Select an option",
+    "submit": "Submit",
+    "response-added": "Your submission has been added successfully"
   }
 }
