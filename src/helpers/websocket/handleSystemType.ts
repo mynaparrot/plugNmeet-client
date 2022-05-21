@@ -41,6 +41,7 @@ export const handleSystemTypeData = (body: IDataMessage) => {
       handleExternalMediaPlayerEvents(body);
       break;
     case SystemMsgType.POLL_CREATED:
+    case SystemMsgType.POLL_CLOSED:
     case SystemMsgType.NEW_POLL_RESPONSE:
       handlePollsNotifications(body);
       break;
