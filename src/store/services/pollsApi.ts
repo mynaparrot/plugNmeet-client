@@ -1,15 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
-  ClosePoll,
+  ClosePollReq,
   ClosePollRes,
-  CreatePoll,
+  CreatePollReq,
   CreatePollRes,
-  PollLists,
-  PollResponses,
-  SubmitResponse,
+  PollListsRes,
+  PollResponsesRes,
+  SubmitResponseReq,
   SubmitResponseRes,
-  TotalResponses,
-  UserSelectedOption,
+  TotalResponsesRes,
+  UserSelectedOptionRes,
 } from './pollsApiTypes';
 
 export const pollsApi = createApi({
@@ -27,11 +27,11 @@ export const pollsApi = createApi({
   }),
   tagTypes: ['List', 'Count', 'Selected', 'SinglePoll'],
   endpoints: (builder) => ({
-    getPollLists: builder.query<PollLists, void>({
+    getPollLists: builder.query<PollListsRes, void>({
       query: () => `listPolls`,
       providesTags: ['List'],
     }),
-    getCountTotalResponses: builder.query<TotalResponses, string>({
+    getCountTotalResponses: builder.query<TotalResponsesRes, string>({
       query: (poll_id) => `countTotalResponses/${poll_id}`,
       providesTags: (result) => {
         return (result as any).status
@@ -40,7 +40,7 @@ export const pollsApi = createApi({
       },
     }),
     getUserSelectedOption: builder.query<
-      UserSelectedOption,
+      UserSelectedOptionRes,
       { pollId: string; userId: string }
     >({
       query: ({ pollId, userId }) => `userSelectedOption/${pollId}/${userId}`,
@@ -50,7 +50,7 @@ export const pollsApi = createApi({
           : ['Selected'];
       },
     }),
-    getPollResponses: builder.query<PollResponses, string>({
+    getPollResponses: builder.query<PollResponsesRes, string>({
       query: (poll_id) => `pollResponses/${poll_id}`,
       providesTags: (result) => {
         return result?.status
@@ -58,7 +58,7 @@ export const pollsApi = createApi({
           : ['SinglePoll'];
       },
     }),
-    createPoll: builder.mutation<CreatePollRes, CreatePoll>({
+    createPoll: builder.mutation<CreatePollRes, CreatePollReq>({
       query(body) {
         return {
           url: 'create',
@@ -68,7 +68,7 @@ export const pollsApi = createApi({
       },
       invalidatesTags: ['List'],
     }),
-    addResponse: builder.mutation<SubmitResponseRes, SubmitResponse>({
+    addResponse: builder.mutation<SubmitResponseRes, SubmitResponseReq>({
       query(body) {
         return {
           url: 'submitResponse',
@@ -82,7 +82,7 @@ export const pollsApi = createApi({
         { type: 'SinglePoll', id: poll_id },
       ],
     }),
-    closePoll: builder.mutation<ClosePollRes, ClosePoll>({
+    closePoll: builder.mutation<ClosePollRes, ClosePollReq>({
       query(body) {
         return {
           url: 'closePoll',

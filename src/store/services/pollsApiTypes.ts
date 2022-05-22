@@ -1,4 +1,4 @@
-export interface CreatePoll {
+export interface CreatePollReq {
   question: string;
   options: CreatePollOptions[];
 }
@@ -13,7 +13,7 @@ export interface CreatePollRes {
   msg: string;
 }
 
-export interface PollLists {
+export interface PollListsRes {
   status: boolean;
   msg: string;
   polls: PollListItem[];
@@ -29,28 +29,28 @@ export interface PollListItem {
   created_by: string;
 }
 
-export interface TotalResponses {
+export interface TotalResponsesRes {
   status: boolean;
   msg: string;
   poll_id?: string;
   total_responses?: number;
 }
 
-export interface UserSelectedOption {
+export interface UserSelectedOptionRes {
   status: boolean;
   msg: string;
   poll_id?: string;
   voted?: number;
 }
 
-export interface PollResponses {
+export interface PollResponsesRes {
   status: boolean;
   msg: string;
   poll_id?: string;
   responses?: any;
 }
 
-export interface SubmitResponse {
+export interface SubmitResponseReq {
   poll_id: string;
   user_id: string;
   name: string;
@@ -63,7 +63,7 @@ export interface SubmitResponseRes {
   poll_id?: string;
 }
 
-export interface ClosePoll {
+export interface ClosePollReq {
   poll_id: string;
 }
 
