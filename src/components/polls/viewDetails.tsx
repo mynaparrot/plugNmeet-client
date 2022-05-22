@@ -6,7 +6,7 @@ import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import {
   useClosePollMutation,
   useGetPollListsQuery,
-  useGetPollResponsesQuery,
+  useGetPollResponsesDetailsQuery,
 } from '../../store/services/pollsApi';
 import { toast } from 'react-toastify';
 import {
@@ -33,7 +33,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
       post: data?.polls.find((poll) => poll.id === pollId),
     }),
   });
-  const { data: pollResponses } = useGetPollResponsesQuery(pollId);
+  const { data: pollResponses } = useGetPollResponsesDetailsQuery(pollId);
   const [closePoll, { isLoading, data: closePollRes }] = useClosePollMutation();
 
   const respondents = useMemo(() => {

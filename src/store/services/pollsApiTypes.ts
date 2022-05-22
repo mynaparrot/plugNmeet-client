@@ -72,3 +72,22 @@ export interface ClosePollRes {
   msg: string;
   poll_id?: string;
 }
+
+export interface PollResponsesResultRes {
+  status: boolean;
+  msg: string;
+  poll_id?: string;
+  result?: PollResponsesResult;
+}
+
+export interface PollResponsesResult {
+  question: string;
+  total_responses: number;
+  options: PollResponsesResultOptions[];
+}
+
+export interface PollResponsesResultOptions {
+  id: number;
+  text: string;
+  vote_count: number;
+}

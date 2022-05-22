@@ -133,7 +133,7 @@ const handlePollsNotifications = (data: IDataMessage) => {
     store.dispatch(
       pollsApi.util.invalidateTags([
         { type: 'Count', id: data.body.msg },
-        { type: 'SinglePoll', id: data.body.msg },
+        { type: 'PollDetails', id: data.body.msg },
       ]),
     );
   } else if (data.body.type === SystemMsgType.POLL_CLOSED) {

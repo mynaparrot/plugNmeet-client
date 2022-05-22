@@ -6,6 +6,7 @@ import {
   CreatePollRes,
   PollListsRes,
   PollResponsesRes,
+  PollResponsesResultRes,
   SubmitResponseReq,
   SubmitResponseRes,
   TotalResponsesRes,
@@ -25,7 +26,7 @@ export const pollsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['List', 'Count', 'Selected', 'SinglePoll'],
+  tagTypes: ['List', 'Count', 'Selected', 'PollDetails', 'PollResult'],
   endpoints: (builder) => ({
     getPollLists: builder.query<PollListsRes, void>({
       query: () => `listPolls`,
@@ -50,12 +51,23 @@ export const pollsApi = createApi({
           : ['Selected'];
       },
     }),
-    getPollResponses: builder.query<PollResponsesRes, string>({
-      query: (poll_id) => `pollResponses/${poll_id}`,
+    getPollResponsesDetails: builder.query<PollResponsesRes, string>({
+      query: (poll_id) => `pollResponsesDetails/${poll_id}`,
       providesTags: (result) => {
         return result?.status
-          ? ['SinglePoll', { type: 'SinglePoll' as const, id: result.poll_id }]
-          : ['SinglePoll'];
+          ? [
+              'PollDetails',
+              { type: 'PollDetails' as const, id: result.poll_id },
+            ]
+          : ['PollDetails'];
+      },
+    }),
+    getPollResponsesResult: builder.query<PollResponsesResultRes, string>({
+      query: (poll_id) => `pollResponsesResult/${poll_id}`,
+      providesTags: (result) => {
+        return result?.status
+          ? ['PollResult', { type: 'PollResult' as const, id: result.poll_id }]
+          : ['PollResult'];
       },
     }),
     createPoll: builder.mutation<CreatePollRes, CreatePollReq>({
@@ -79,7 +91,7 @@ export const pollsApi = createApi({
       invalidatesTags: (result, error, { poll_id }) => [
         { type: 'Count', id: poll_id },
         { type: 'Selected', id: poll_id },
-        { type: 'SinglePoll', id: poll_id },
+        { type: 'PollDetails', id: poll_id },
       ],
     }),
     closePoll: builder.mutation<ClosePollRes, ClosePollReq>({
@@ -99,8 +111,9 @@ export const {
   useGetPollListsQuery,
   useGetCountTotalResponsesQuery,
   useGetUserSelectedOptionQuery,
-  useGetPollResponsesQuery,
+  useGetPollResponsesDetailsQuery,
   useCreatePollMutation,
   useAddResponseMutation,
   useClosePollMutation,
+  useGetPollResponsesResultQuery,
 } = pollsApi;

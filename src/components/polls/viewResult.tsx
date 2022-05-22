@@ -1,10 +1,7 @@
 import React, { Fragment, useState } from 'react';
-import { Dialog, Disclosure, Transition } from '@headlessui/react';
+import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import {
-  useGetPollListsQuery,
-  useGetPollResponsesQuery,
-} from '../../store/services/pollsApi';
+import { useGetPollResponsesResultQuery } from '../../store/services/pollsApi';
 
 interface IViewResultProps {
   onCloseViewResult(): void;
@@ -14,34 +11,11 @@ interface IViewResultProps {
 const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const { t } = useTranslation();
-  const { post: poll } = useGetPollListsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      post: data?.polls.find((poll) => poll.id === pollId),
-    }),
-  });
-  const { data: pollResponses } = useGetPollResponsesQuery(pollId);
+  const { data } = useGetPollResponsesResultQuery(pollId);
 
   const closeModal = () => {
     setIsOpen(false);
     onCloseViewResult();
-  };
-
-  const getOptSelectedCount = (id) => {
-    if (typeof pollResponses?.responses[id + '_count'] !== 'undefined') {
-      return pollResponses?.responses[id + '_count'];
-    } else {
-      return 0;
-    }
-  };
-
-  const renderOptions = () => {
-    return poll?.options.map((o) => {
-      return (
-        <p className="" key={o.id}>
-          {o.text} ({getOptSelectedCount(o.id)})
-        </p>
-      );
-    });
   };
 
   const renderModal = () => {
@@ -102,15 +76,23 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                     <label className="text-sm text-black block mb-1">
                       {t('polls.question')}
                     </label>
-                    <p>{poll?.question}</p>
+                    <p>{data?.result?.question}</p>
                     <p>
                       {t('polls.total-responses', {
-                        count: pollResponses?.responses.total_resp,
+                        count: data?.result?.total_responses,
                       })}
                     </p>
                     <div className="">
                       <p>{t('polls.options')}</p>
-                      <div className="">{renderOptions()}</div>
+                      <div className="">
+                        {data?.result?.options?.map((o) => {
+                          return (
+                            <p className="" key={o.id}>
+                              {o.text} ({o.vote_count})
+                            </p>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
