@@ -70,7 +70,10 @@ export default class HandleParticipants {
     let metadata;
     if (participant.metadata) {
       const m: ICurrentUserMetadata = JSON.parse(participant.metadata);
-      if (m.wait_for_approval) {
+      if (
+        m.wait_for_approval &&
+        store.getState().session.currentUser?.metadata?.is_admin
+      ) {
         toast(
           i18n
             .t('waiting-room.user-waiting', {
