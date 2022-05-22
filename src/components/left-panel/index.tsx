@@ -36,7 +36,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
               key={item}
               className={({ selected }) =>
                 classNames(
-                  'w-full py-2 text-sm sm:text-base text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
+                  'w-full py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
                   selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
                 )
               }

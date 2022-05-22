@@ -18,28 +18,36 @@ const Poll = ({ item }: IPollPros) => {
   const [viewResult, setViewResult] = useState<boolean>(false);
 
   return (
-    <div className="poll-item border border-solid border-primaryColor/70 p-2 rounded-lg mb-4 transition ease-in hover:shadow-md">
+    <div className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md">
       <div className="poll-title text-lg font-bold text-primaryColor capitalize">
         {item.question}
       </div>
       <TotalResponses pollId={item.id} />
-      <div className="status">
+      <div className="status absolute top-0 left-0 bg-primaryColor text-[10px] text-white py-1 px-3 uppercase rounded-br-lg">
         {item.is_running ? t('polls.poll-running') : t('polls.poll-closed')}
       </div>
 
-      {item.is_running ? <MyVoteStatus pollId={item.id} /> : null}
+      <div className="btn">
+        {item.is_running ? <MyVoteStatus pollId={item.id} /> : null}
 
-      {isAdmin ? (
-        <button onClick={() => setViewDetails(true)}>
-          {t('polls.view-details')}
-        </button>
-      ) : null}
+        {isAdmin ? (
+          <button
+            onClick={() => setViewDetails(true)}
+            className="absolute right-0 bottom-0 transition ease-in bg-primaryColor hover:bg-secondaryColor text-[10px] text-white pt-1 pb-[2px] px-3 uppercase rounded-tl-lg"
+          >
+            {t('polls.view-details')}
+          </button>
+        ) : null}
 
-      {!isAdmin && !item.is_running ? (
-        <button onClick={() => setViewResult(true)}>
-          {t('polls.view-result')}
-        </button>
-      ) : null}
+        {!isAdmin && !item.is_running ? (
+          <button
+            onClick={() => setViewResult(true)}
+            className="absolute right-0 bottom-0 transition ease-in bg-primaryColor hover:bg-secondaryColor text-[10px] text-white pt-1 pb-[2px] px-3 uppercase rounded-tl-lg"
+          >
+            {t('polls.view-result')}
+          </button>
+        ) : null}
+      </div>
 
       <>
         {isAdmin && viewDetails ? (

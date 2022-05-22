@@ -17,7 +17,11 @@ const TotalResponses = ({ pollId }: ITotalResponsesProps) => {
     }
   }, [data, isLoading]);
 
-  return <div className="total-vote">Total {total}</div>;
+  return (
+    <div className="total-vote rounded-bl-lg bg-primaryColor absolute top-0 right-0 text-white text-[10px] py-1 px-3 uppercase">
+      <strong>Total: </strong> {total}
+    </div>
+  );
 };
 
 export default TotalResponses;

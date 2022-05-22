@@ -62,25 +62,30 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
   const renderForm = () => {
     return (
       <form onSubmit={onSubmit}>
-        <label className="text-sm text-black block mb-1">
-          {poll?.question}
+        <label className="text-base text-black block mb-2">
+          <span className="text-primaryColor">Q:</span> {poll?.question}
         </label>
         <div className="">
-          <p>{t('polls.select-option')}</p>
-          <div className="">
+          <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
+            {t('polls.select-option')}
+          </p>
+          <div className="mb-2">
             {poll?.options.map((o) => {
               return (
-                <div key={o.id} className="">
+                <div key={o.id} className="flex items-center">
                   <input
                     type="radio"
+                    id={`option-${o.id}`}
                     value={o.id}
-                    name="option"
+                    name={`option-${o.id}`}
                     checked={selectedOption === o.id}
                     onChange={(e) =>
                       setSelectedOption(Number(e.currentTarget.value))
                     }
                   />
-                  {o.text}
+                  <label className="ml-2" htmlFor={`option-${o.id}`}>
+                    {o.text}
+                  </label>
                 </div>
               );
             })}
@@ -89,7 +94,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
 
         <div className="button-section flex items-center justify-between">
           <button
-            className="h-8 px-6 leading-[32px] ml-2 text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
+            className="h-7 px-6 leading-[28px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
             type="submit"
           >
             {t('polls.submit')}
@@ -153,7 +158,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
                     {t('polls.submit-vote-form-title')}
                   </Dialog.Title>
                   <hr />
-                  <div className="mt-6">{renderForm()}</div>
+                  <div className="mt-2">{renderForm()}</div>
                 </div>
               </Transition.Child>
             </div>

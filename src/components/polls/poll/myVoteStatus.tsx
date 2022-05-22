@@ -37,9 +37,16 @@ const MyVoteStatus = ({ pollId }: IMyVoteStatusProps) => {
     <>
       <div className="has-voted">
         {hasVoted ? (
-          t('polls.you-voted')
+          <p className="absolute left-2 bottom-2 text-xs">
+            {t('polls.you-voted')}
+          </p>
         ) : (
-          <button onClick={() => vote()}>{t('polls.vote')}</button>
+          <button
+            className="absolute left-0 bottom-0 transition ease-in bg-primaryColor hover:bg-secondaryColor text-[10px] text-white pt-1 pb-[2px] px-3 uppercase rounded-tr-lg"
+            onClick={() => vote()}
+          >
+            {t('polls.vote')}
+          </button>
         )}
       </div>
       {showVoteForm ? (

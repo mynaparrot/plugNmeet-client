@@ -72,23 +72,35 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                     {t('polls.view-result-title')}
                   </Dialog.Title>
                   <hr />
-                  <div className="mt-6">
-                    <label className="text-sm text-black block mb-1">
+                  <div className="mt-2">
+                    <label className="text-base text-primaryColor block mb-1">
                       {t('polls.question')}
                     </label>
-                    <p>{data?.result?.question}</p>
-                    <p>
+                    <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
+                      {data?.result?.question}
+                    </p>
+                    <p className="text-lg text-primaryColor block mb-2 pb-2">
                       {t('polls.total-responses', {
                         count: data?.result?.total_responses,
                       })}
                     </p>
                     <div className="">
-                      <p>{t('polls.options')}</p>
+                      <p className="text-base text-black block mb-2 pb-2 border-b border-solid border-primaryColor/20">
+                        {t('polls.options')}
+                      </p>
                       <div className="">
                         {data?.result?.options?.map((o) => {
                           return (
-                            <p className="" key={o.id}>
-                              {o.text} ({o.vote_count})
+                            <p
+                              className="relative w-full flex items-center justify-between"
+                              key={o.id}
+                            >
+                              <span className="bg-white inline-block py-1 pr-2">
+                                {o.text}
+                              </span>
+                              <span className="bg-white inline-block py-1 pl-2">
+                                ({o.vote_count})
+                              </span>
                             </p>
                           );
                         })}

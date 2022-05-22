@@ -2,9 +2,11 @@ import React, { useMemo } from 'react';
 
 import { useGetPollListsQuery } from '../../store/services/pollsApi';
 import Poll from './poll';
+import { store } from '../../store';
 
 const ListPolls = () => {
   const { data } = useGetPollListsQuery();
+  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
   const sortedPolls = useMemo(() => {
     if (data && data.polls !== null) {
@@ -21,7 +23,10 @@ const ListPolls = () => {
   };
 
   return (
-    <div className="polls-list-wrapper h-[calc(100%-48px)] overflow-auto scrollBar px-2 xl:px-4 pt-2 xl:pt-5">
+    <div
+      className={`polls-list-wrapper  overflow-auto scrollBar px-2 pt-2 xl:pt-3
+      ${isAdmin ? 'h-[calc(100%-48px)]' : 'h-full'}`}
+    >
       <div className="polls-list-wrap-inner">{renderPolls()}</div>
     </div>
   );
