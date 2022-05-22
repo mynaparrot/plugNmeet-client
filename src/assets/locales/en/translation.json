@@ -243,7 +243,8 @@
     "accept-all": "Accept everyone",
     "reject-all": "Reject everyone",
     "list-waiting-participants": "Waiting participants list ({{count}})",
-    "reject-and-block-user": "Reject & Block"
+    "reject-and-block-user": "Reject & Block",
+    "user-waiting": "{{name}} is waiting for approval"
   },
   "polls": {
     "create": "Create new poll",

@@ -23,6 +23,7 @@ import {
   updateIsActiveParticipantsPanel,
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
+import i18n from '../i18n';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
@@ -66,14 +67,31 @@ export default class HandleParticipants {
   public addParticipant = (
     participant: RemoteParticipant | LocalParticipant,
   ) => {
+    let metadata;
+    if (participant.metadata) {
+      const m: ICurrentUserMetadata = JSON.parse(participant.metadata);
+      if (m.wait_for_approval) {
+        toast(
+          i18n
+            .t('waiting-room.user-waiting', {
+              name: participant.name,
+            })
+            .toString(),
+          {
+            type: 'info',
+            toastId: 'user-waiting',
+          },
+        );
+      }
+      metadata = m;
+    }
+
     store.dispatch(
       addParticipant({
         sid: participant.sid,
         userId: participant.identity,
         name: participant.name ?? '',
-        metadata: participant.metadata
-          ? JSON.parse(participant.metadata)
-          : null,
+        metadata: metadata ? metadata : null,
         audioTracks: participant.audioTracks.size,
         videoTracks: participant.videoTracks.size,
         screenShareTrack: 0,
