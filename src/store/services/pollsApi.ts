@@ -7,6 +7,7 @@ import {
   PollListsRes,
   PollResponsesRes,
   PollResponsesResultRes,
+  PollsStatsRes,
   SubmitResponseReq,
   SubmitResponseRes,
   TotalResponsesRes,
@@ -26,7 +27,14 @@ export const pollsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['List', 'Count', 'Selected', 'PollDetails', 'PollResult'],
+  tagTypes: [
+    'List',
+    'PollsStats',
+    'Count',
+    'Selected',
+    'PollDetails',
+    'PollResult',
+  ],
   endpoints: (builder) => ({
     getPollLists: builder.query<PollListsRes, void>({
       query: () => `listPolls`,
@@ -70,6 +78,10 @@ export const pollsApi = createApi({
           : ['PollResult'];
       },
     }),
+    getPollsStats: builder.query<PollsStatsRes, void>({
+      query: () => 'pollsStats',
+      providesTags: ['PollsStats'],
+    }),
     createPoll: builder.mutation<CreatePollRes, CreatePollReq>({
       query(body) {
         return {
@@ -78,7 +90,7 @@ export const pollsApi = createApi({
           body,
         };
       },
-      invalidatesTags: ['List'],
+      invalidatesTags: ['List', 'PollsStats'],
     }),
     addResponse: builder.mutation<SubmitResponseRes, SubmitResponseReq>({
       query(body) {
@@ -102,7 +114,7 @@ export const pollsApi = createApi({
           body,
         };
       },
-      invalidatesTags: ['List'],
+      invalidatesTags: ['List', 'PollsStats'],
     }),
   }),
 });
@@ -116,4 +128,5 @@ export const {
   useAddResponseMutation,
   useClosePollMutation,
   useGetPollResponsesResultQuery,
+  useGetPollsStatsQuery,
 } = pollsApi;

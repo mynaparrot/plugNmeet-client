@@ -91,3 +91,14 @@ export interface PollResponsesResultOptions {
   text: string;
   vote_count: number;
 }
+
+export interface PollsStatsRes {
+  status: boolean;
+  msg: string;
+  stats?: PollsStats;
+}
+
+export interface PollsStats {
+  total_polls: number;
+  total_running: number;
+}

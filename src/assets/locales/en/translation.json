@@ -94,6 +94,8 @@
     "participants": "Participants ({{total}})",
     "approve": "Approve",
     "reject": "Reject",
+    "participants-tab": "Participants",
+    "polls-tab": "Polls",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Ask to share Microphone",

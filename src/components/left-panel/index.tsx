@@ -1,24 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Room } from 'livekit-client';
 import { Tab } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import ParticipantsComponent from '../participants';
 import PollsComponent from '../polls';
+import { useGetPollsStatsQuery } from '../../store/services/pollsApi';
 
 interface ILeftPanelProps {
   currentRoom: Room;
 }
 
 const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
+  const { data } = useGetPollsStatsQuery();
+  const { t } = useTranslation();
+
   const [items] = useState({
-    Participants: {
+    'left-panel.participants-tab': {
       elm: <ParticipantsComponent currentRoom={currentRoom} />,
     },
 
-    Polls: {
+    'left-panel.polls-tab': {
       elm: <PollsComponent />,
     },
   });
+
+  useEffect(() => {
+    if (data && data.status) {
+      console.log(data);
+    }
+  }, [data]);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -41,7 +52,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
                 )
               }
             >
-              {item}
+              {t(item)}
             </Tab>
           ))}
         </Tab.List>

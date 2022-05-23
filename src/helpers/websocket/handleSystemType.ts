@@ -128,7 +128,7 @@ const handlePollsNotifications = (data: IDataMessage) => {
       toastId: 'info-status',
       type: 'info',
     });
-    store.dispatch(pollsApi.util.invalidateTags(['List']));
+    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   } else if (data.body.type === SystemMsgType.NEW_POLL_RESPONSE) {
     store.dispatch(
       pollsApi.util.invalidateTags([
@@ -137,6 +137,6 @@ const handlePollsNotifications = (data: IDataMessage) => {
       ]),
     );
   } else if (data.body.type === SystemMsgType.POLL_CLOSED) {
-    store.dispatch(pollsApi.util.invalidateTags(['List']));
+    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   }
 };
