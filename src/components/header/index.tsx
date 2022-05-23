@@ -13,18 +13,25 @@ import RoomSettings from './room-settings';
 import './style.css';
 import KeyboardShortcuts from './keyboardShortcuts';
 import VolumeControl from './volumeControl';
+import DurationView from './durationView';
 
 interface IHeaderProps {
   currentRoom: Room;
 }
 
-const roomMetadataSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata,
+const roomTitleSelector = createSelector(
+  (state: RootState) => state.session.currentRoom.metadata?.room_title,
+  (room_title) => room_title,
+);
+const roomDurationSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.room_duration,
+  (room_duration) => room_duration,
 );
 
 const Header = ({ currentRoom }: IHeaderProps) => {
-  const roomMetadata = useAppSelector(roomMetadataSelector);
+  const roomTitle = useAppSelector(roomTitleSelector);
+  const roomDuration = useAppSelector(roomDurationSelector);
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -34,10 +41,10 @@ const Header = ({ currentRoom }: IHeaderProps) => {
   const logo = (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/main-logo.png`;
 
   useEffect(() => {
-    if (roomMetadata) {
-      setTitle(roomMetadata.room_title);
+    if (roomTitle) {
+      setTitle(roomTitle);
     }
-  }, [roomMetadata]);
+  }, [roomTitle]);
 
   const onOpenAlert = (task) => {
     setTask(task);
@@ -179,6 +186,9 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         <div className="middle flex-auto relative z-20">
           <h2 className="header-title text-base text-black leading-[1] text-center">
             {title}
+            {roomDuration && roomDuration > 0 ? (
+              <DurationView duration={roomDuration} />
+            ) : null}
           </h2>
         </div>
         <div className="dark w-28 flex items-center justify-end relative z-20 -right-3">

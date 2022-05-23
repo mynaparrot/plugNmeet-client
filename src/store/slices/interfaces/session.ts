@@ -41,6 +41,7 @@ export interface IRoomMetadata {
   welcome_message?: string;
   is_recording: boolean;
   is_active_rtmp: boolean;
+  started_at: number;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
 }
@@ -54,6 +55,7 @@ interface IRoomFeatures {
   allow_view_other_webcams: boolean;
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
+  room_duration: number;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
   whiteboard_features: IWhiteboardFeatures;
