@@ -62,14 +62,14 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
   const renderForm = () => {
     return (
       <form onSubmit={onSubmit}>
-        <label className="text-base text-black block mb-2">
+        <label className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
           <span className="text-primaryColor">Q:</span> {poll?.question}
         </label>
         <div className="">
           <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
             {t('polls.select-option')}
           </p>
-          <div className="mb-2 relative">
+          <div className="mb-2 relative min-h-[75px]">
             {poll?.options.map((o) => {
               return (
                 <div key={o.id} className="flex items-center">

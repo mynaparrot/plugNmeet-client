@@ -117,7 +117,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
           <Disclosure>
             {({ open }) => (
               <>
-                <Disclosure.Button className="flex w-full justify-between rounded-lg bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200 outline-none">
+                <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor/70 px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
                   <span>
                     {o.text} ({getOptSelectedCount(o.id)})
                   </span>
@@ -125,7 +125,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${
                       open ? 'rotate-180 transform' : ''
-                    } h-5 w-5 text-purple-500`}
+                    } h-5 w-5 text-white`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -248,7 +248,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       {t('polls.question')}
                     </label> */}
                     <div className="headline flex flex-wrap pb-5">
-                      <p className="w-full text-lg font-bold text-black capitalize mb-1">
+                      <p className="w-full text-lg font-bold text-black capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20">
                         <span className="text-primaryColor">Q: </span>
                         {poll?.question}
                       </p>
@@ -262,7 +262,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
                         {t('polls.options')}
                       </p>
-                      <div className="relative">
+                      <div className="relative min-h-[75px]">
                         {renderOptions()}
                         {/* {!loaded ? ( */}
                         <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">

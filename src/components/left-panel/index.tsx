@@ -52,7 +52,12 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
                 )
               }
             >
-              {t(item)}
+              <div className="name relative inline-block">
+                {t(item)}
+                <span className="absolute -right-[20px] -top-[7px] w-5 h-5 bg-primaryColor rounded-full text-white text-[10px]">
+                  20
+                </span>
+              </div>
             </Tab>
           ))}
         </Tab.List>

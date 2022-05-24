@@ -76,7 +76,7 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                     {/* <label className="text-base text-primaryColor block mb-1">
                       {t('polls.question')}
                     </label> */}
-                    <p className="w-full text-lg font-bold text-black capitalize mb-1">
+                    <p className="w-full text-lg font-bold text-black capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20">
                       <span className="text-primaryColor">Q: </span>
                       {data?.result?.question}
                     </p>
@@ -89,7 +89,7 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                       <p className="text-base text-black block mb-2 pb-2 border-b border-solid border-primaryColor/20">
                         {t('polls.options')}
                       </p>
-                      <div className="relative">
+                      <div className="relative min-h-[75px]">
                         {data?.result?.options?.map((o) => {
                           return (
                             <p
