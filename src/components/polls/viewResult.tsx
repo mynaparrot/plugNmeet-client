@@ -73,22 +73,23 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    <label className="text-base text-primaryColor block mb-1">
+                    {/* <label className="text-base text-primaryColor block mb-1">
                       {t('polls.question')}
-                    </label>
-                    <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
+                    </label> */}
+                    <p className="w-full text-lg font-bold text-black capitalize mb-1">
+                      <span className="text-primaryColor">Q: </span>
                       {data?.result?.question}
                     </p>
-                    <p className="text-lg text-primaryColor block mb-2 pb-2">
+                    <p className="w-full text-base">
                       {t('polls.total-responses', {
                         count: data?.result?.total_responses,
                       })}
                     </p>
-                    <div className="">
+                    <div className="pt-5">
                       <p className="text-base text-black block mb-2 pb-2 border-b border-solid border-primaryColor/20">
                         {t('polls.options')}
                       </p>
-                      <div className="">
+                      <div className="relative">
                         {data?.result?.options?.map((o) => {
                           return (
                             <p
@@ -104,6 +105,14 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                             </p>
                           );
                         })}
+                        {/* {!loaded ? ( */}
+                        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+                          <div className="lds-ripple">
+                            <div className="border-secondaryColor" />
+                            <div className="border-secondaryColor" />
+                          </div>
+                        </div>
+                        {/* ) : null} */}
                       </div>
                     </div>
                   </div>

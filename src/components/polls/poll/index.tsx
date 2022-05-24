@@ -23,7 +23,7 @@ const Poll = ({ item }: IPollPros) => {
         {item.question}
       </div>
       <TotalResponses pollId={item.id} />
-      <div className="status absolute top-0 left-0 bg-primaryColor text-[10px] text-white py-1 px-3 uppercase rounded-br-lg">
+      <div className="status absolute top-0 left-0 bg-secondaryColor text-[10px] text-white py-1 px-3 uppercase rounded-br-lg">
         {item.is_running ? t('polls.poll-running') : t('polls.poll-closed')}
       </div>
 

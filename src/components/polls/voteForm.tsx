@@ -69,7 +69,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
           <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
             {t('polls.select-option')}
           </p>
-          <div className="mb-2">
+          <div className="mb-2 relative">
             {poll?.options.map((o) => {
               return (
                 <div key={o.id} className="flex items-center">
@@ -89,10 +89,18 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
                 </div>
               );
             })}
+            {/* {!loaded ? ( */}
+            <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+              <div className="lds-ripple">
+                <div className="border-secondaryColor" />
+                <div className="border-secondaryColor" />
+              </div>
+            </div>
+            {/* ) : null} */}
           </div>
         </div>
 
-        <div className="button-section flex items-center justify-between">
+        <div className="button-section flex items-center justify-end">
           <button
             className="h-7 px-6 leading-[28px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
             type="submit"

@@ -113,14 +113,36 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
   const renderOptions = () => {
     return poll?.options.map((o) => {
       return (
-        <div className="" key={o.id}>
+        <div className="mb-1" key={o.id}>
           <Disclosure>
-            <Disclosure.Button className="py-2 w-full flex items-center justify-between">
-              <span>{o.text}</span> <span>({getOptSelectedCount(o.id)})</span>
-            </Disclosure.Button>
-            <Disclosure.Panel className="text-gray-500">
-              {getRespondentsById(o.id)}
-            </Disclosure.Panel>
+            {({ open }) => (
+              <>
+                <Disclosure.Button className="flex w-full justify-between rounded-lg bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200 outline-none">
+                  <span>
+                    {o.text} ({getOptSelectedCount(o.id)})
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`${
+                      open ? 'rotate-180 transform' : ''
+                    } h-5 w-5 text-purple-500`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </Disclosure.Button>
+                <Disclosure.Panel className="px-4 py-2 text-sm text-gray-500">
+                  {getRespondentsById(o.id)}
+                </Disclosure.Panel>
+              </>
+            )}
           </Disclosure>
         </div>
       );
@@ -222,25 +244,15 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    <div className="pb-1 text-right">
-                      {poll?.is_running ? (
-                        <button
-                          className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
-                          onClick={endPoll}
-                        >
-                          {t('polls.end-poll')}
-                        </button>
-                      ) : null}
-                    </div>
-
-                    <label className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
+                    {/* <label className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
                       {t('polls.question')}
-                    </label>
-                    <div className="headline flex items-center flex-wrap sm:flex-nowrap sm:justify-between pb-5">
-                      <p className="w-full text-lg font-bold text-primaryColor capitalize">
+                    </label> */}
+                    <div className="headline flex flex-wrap pb-5">
+                      <p className="w-full text-lg font-bold text-black capitalize mb-1">
+                        <span className="text-primaryColor">Q: </span>
                         {poll?.question}
                       </p>
-                      <p className="w-full sm:text-right">
+                      <p className="w-full text-base">
                         {t('polls.total-responses', {
                           count: pollResponses?.responses.total_resp,
                         })}
@@ -250,7 +262,27 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
                         {t('polls.options')}
                       </p>
-                      <div className="">{renderOptions()}</div>
+                      <div className="relative">
+                        {renderOptions()}
+                        {/* {!loaded ? ( */}
+                        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+                          <div className="lds-ripple">
+                            <div className="border-secondaryColor" />
+                            <div className="border-secondaryColor" />
+                          </div>
+                        </div>
+                        {/* ) : null} */}
+                      </div>
+                    </div>
+                    <div className="pt-3 text-right">
+                      {poll?.is_running ? (
+                        <button
+                          className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
+                          onClick={endPoll}
+                        >
+                          {t('polls.end-poll')}
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 </div>

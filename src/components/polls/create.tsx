@@ -101,8 +101,10 @@ const Create = () => {
           placeholder="Ask a question"
           className="text-black placeholder:text-black/50 py-2 px-4 text-base w-full border border-solid border-primaryColor outline-none rounded-lg mb-4"
         />
-        <div className="flex items-center justify-between pb-2">
-          <p className="text-lg text-black block">{t('polls.options')}</p>
+        <div className="flex items-start justify-between pb-2 pt-4 border-t border-solid border-primaryColor/20">
+          <p className="text-lg text-black block leading-4">
+            {t('polls.options')}
+          </p>
           <button
             className="h-7 px-3 leading-[28px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-sm font-semibold rounded-lg"
             type="button"
@@ -111,7 +113,7 @@ const Create = () => {
             {t('polls.add-new-option')}
           </button>
         </div>
-        <div className="option-field-wrapper overflow-auto h-[175px] scrollBar scrollBar2">
+        <div className="option-field-wrapper overflow-auto h-full max-h-[345px] scrollBar scrollBar2">
           <div className="option-field-inner">
             {options.map((elm, index) => (
               <div className="form-inline mb-4" key={elm.id}>
@@ -125,7 +127,7 @@ const Create = () => {
                     name={`opt_${elm.id}`}
                     value={elm.text}
                     onChange={(e) => onChange(index, e)}
-                    placeholder={`Option ${index + 1}`}
+                    placeholder={t('polls.option', { count: index + 1 })}
                     className="text-black placeholder:text-black/50 py-2 px-4 text-base w-[calc(100%-36px)] border border-solid border-primaryColor outline-none rounded-lg"
                   />
                   {index ? (
@@ -164,9 +166,9 @@ const Create = () => {
             ))}
           </div>
         </div>
-        <div className="button-section flex items-center justify-between">
+        <div className="button-section flex items-center justify-end">
           <button
-            className="h-8 px-6 leading-[32px] ml-2 text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
+            className="h-8 px-6 leading-[32px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
             type="submit"
           >
             {t('polls.create-poll')}
