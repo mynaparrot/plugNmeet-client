@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Room } from 'livekit-client';
 import { Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import ParticipantsComponent from '../participants';
 import PollsComponent from '../polls';
 import { useGetPollsStatsQuery } from '../../store/services/pollsApi';
+import { store } from '../../store';
 
 interface ILeftPanelProps {
   currentRoom: Room;
@@ -14,26 +15,42 @@ interface ILeftPanelProps {
 const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   const { data } = useGetPollsStatsQuery();
   const { t } = useTranslation();
+  const allow_polls =
+    store.getState().session.currentRoom.metadata?.room_features.allow_polls;
 
-  const [items] = useState({
-    'left-panel.participants-tab': {
-      elm: <ParticipantsComponent currentRoom={currentRoom} />,
-    },
-
-    'left-panel.polls-tab': {
-      elm: <PollsComponent />,
-    },
-  });
-
-  useEffect(() => {
-    if (data && data.status) {
-      console.log(data);
+  const items = useMemo(() => {
+    const total_running = data?.stats?.total_running ?? 0;
+    const items = [
+      {
+        id: 1,
+        title: <>{t('left-panel.participants-tab')}</>,
+        elm: <ParticipantsComponent currentRoom={currentRoom} />,
+      },
+    ];
+    if (allow_polls) {
+      items.push({
+        id: 2,
+        title: (
+          <>
+            {t('left-panel.polls-tab')}
+            {total_running > 0 ? (
+              <span className="absolute -right-[20px] -top-[7px] w-5 h-5 bg-primaryColor rounded-full text-white text-[10px]">
+                {total_running ?? 0}
+              </span>
+            ) : null}
+          </>
+        ),
+        elm: <PollsComponent />,
+      });
     }
+
+    return items;
+    //eslint-disable-next-line
   }, [data]);
 
-  function classNames(...classes) {
+  const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ');
-  }
+  };
 
   return (
     <div
@@ -42,9 +59,9 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
     >
       <Tab.Group vertical>
         <Tab.List className="flex">
-          {Object.keys(items).map((item) => (
+          {items.map((item) => (
             <Tab
-              key={item}
+              key={item.id}
               className={({ selected }) =>
                 classNames(
                   'w-full py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
@@ -52,21 +69,16 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
                 )
               }
             >
-              <div className="name relative inline-block">
-                {t(item)}
-                <span className="absolute -right-[20px] -top-[7px] w-5 h-5 bg-primaryColor rounded-full text-white text-[10px]">
-                  20
-                </span>
-              </div>
+              <div className="name relative inline-block">{item.title}</div>
             </Tab>
           ))}
         </Tab.List>
         <Tab.Panels className="relative h-[calc(100%-45px)]">
-          {Object.values(items).map((item, idx) => (
+          {items.map((item) => (
             <Tab.Panel
-              key={idx}
+              key={item.id}
               className={`${
-                idx === 1
+                item.id === 2
                   ? 'polls h-full'
                   : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
               }`}

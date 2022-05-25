@@ -39,6 +39,7 @@ const initialState: ISession = {
         allow_view_other_webcams: true,
         allow_view_other_users_list: true,
         admin_only_webcams: false,
+        allow_polls: true,
         room_duration: 0,
         chat_features: {
           allow_chat: true,

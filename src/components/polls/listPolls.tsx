@@ -5,7 +5,7 @@ import Poll from './poll';
 import { store } from '../../store';
 
 const ListPolls = () => {
-  const { data } = useGetPollListsQuery();
+  const { data, isLoading } = useGetPollListsQuery();
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
   const sortedPolls = useMemo(() => {
@@ -29,14 +29,14 @@ const ListPolls = () => {
     >
       <div className="polls-list-wrap-inner">
         {renderPolls()}
-        {/* {!loaded ? ( */}
-        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-          <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
+        {isLoading ? (
+          <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+            <div className="lds-ripple">
+              <div className="border-secondaryColor" />
+              <div className="border-secondaryColor" />
+            </div>
           </div>
-        </div>
-        {/* ) : null} */}
+        ) : null}
       </div>
     </div>
   );

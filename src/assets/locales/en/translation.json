@@ -256,7 +256,7 @@
     "option": "Option {{count}}",
     "total-responses": "Total responses: {{count}}",
     "remove-option": "Remove",
-    "add-new-option": "Add new option",
+    "add-new-option": "Add more option",
     "create-poll": "Create poll",
     "created-successfully": "Poll has been created",
     "you-voted": "You voted",
@@ -273,6 +273,8 @@
     "view-details-title": "Poll information",
     "view-result-title": "Poll result",
     "end-poll": "End poll",
-    "end-poll-success": "Poll was ended successfully"
+    "end-poll-success": "Poll was ended successfully",
+    "publish-result": "Publish result",
+    "total": "Total"
   }
 }

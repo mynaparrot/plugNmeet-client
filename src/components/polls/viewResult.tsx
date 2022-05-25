@@ -11,7 +11,7 @@ interface IViewResultProps {
 const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const { t } = useTranslation();
-  const { data } = useGetPollResponsesResultQuery(pollId);
+  const { data, isLoading } = useGetPollResponsesResultQuery(pollId);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -73,9 +73,6 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    {/* <label className="text-base text-primaryColor block mb-1">
-                      {t('polls.question')}
-                    </label> */}
                     <p className="w-full text-lg font-bold text-black capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20">
                       <span className="text-primaryColor">Q: </span>
                       {data?.result?.question}
@@ -105,14 +102,14 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                             </p>
                           );
                         })}
-                        {/* {!loaded ? ( */}
-                        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-                          <div className="lds-ripple">
-                            <div className="border-secondaryColor" />
-                            <div className="border-secondaryColor" />
+                        {isLoading ? (
+                          <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+                            <div className="lds-ripple">
+                              <div className="border-secondaryColor" />
+                              <div className="border-secondaryColor" />
+                            </div>
                           </div>
-                        </div>
-                        {/* ) : null} */}
+                        ) : null}
                       </div>
                     </div>
                   </div>

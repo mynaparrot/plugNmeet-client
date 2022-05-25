@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useGetCountTotalResponsesQuery } from '../../../store/services/pollsApi';
 
@@ -8,6 +9,7 @@ interface ITotalResponsesProps {
 const TotalResponses = ({ pollId }: ITotalResponsesProps) => {
   const { data, isLoading } = useGetCountTotalResponsesQuery(pollId);
   const [total, setTotal] = useState<number>(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -19,7 +21,7 @@ const TotalResponses = ({ pollId }: ITotalResponsesProps) => {
 
   return (
     <div className="total-vote rounded-bl-lg bg-secondaryColor absolute top-0 right-0 text-white text-[10px] py-1 px-3 uppercase">
-      <strong>Total: </strong> {total}
+      <strong>{t('polls.total')}: </strong> {total}
     </div>
   );
 };

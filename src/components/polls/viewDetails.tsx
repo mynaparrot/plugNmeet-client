@@ -63,13 +63,11 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
         toast(t('polls.end-poll-success'), {
           type: 'info',
         });
-        publishPollResultByChat();
       } else {
         toast(t(closePollRes.msg), {
           type: 'error',
         });
       }
-      closeModal();
     }
     //eslint-disable-next-line
   }, [isLoading, closePollRes]);
@@ -150,6 +148,9 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
   };
 
   const publishPollResultByChat = () => {
+    if (isLoading) {
+      return;
+    }
     const session = store.getState().session;
     const elm = ReactDOMServer.renderToString(
       <>
@@ -187,6 +188,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
     if (isSocketConnected()) {
       sendWebsocketMessage(JSON.stringify(data));
     }
+    closeModal();
   };
 
   const renderModal = () => {
@@ -244,9 +246,6 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    {/* <label className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
-                      {t('polls.question')}
-                    </label> */}
                     <div className="headline flex flex-wrap pb-5">
                       <p className="w-full text-lg font-bold text-black capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20">
                         <span className="text-primaryColor">Q: </span>
@@ -264,17 +263,17 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       </p>
                       <div className="relative min-h-[75px]">
                         {renderOptions()}
-                        {/* {!loaded ? ( */}
-                        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-                          <div className="lds-ripple">
-                            <div className="border-secondaryColor" />
-                            <div className="border-secondaryColor" />
+                        {isLoading ? (
+                          <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+                            <div className="lds-ripple">
+                              <div className="border-secondaryColor" />
+                              <div className="border-secondaryColor" />
+                            </div>
                           </div>
-                        </div>
-                        {/* ) : null} */}
+                        ) : null}
                       </div>
                     </div>
-                    <div className="pt-3 text-right">
+                    <div className="pt-10 text-right">
                       {poll?.is_running ? (
                         <button
                           className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
@@ -282,7 +281,14 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                         >
                           {t('polls.end-poll')}
                         </button>
-                      ) : null}
+                      ) : (
+                        <button
+                          className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
+                          onClick={() => publishPollResultByChat()}
+                        >
+                          {t('polls.publish-result')}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

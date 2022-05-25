@@ -31,6 +31,9 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-delete:before {
+  content: '\e927';
+}
 .pnm-poll:before {
   content: '\e925';
 }

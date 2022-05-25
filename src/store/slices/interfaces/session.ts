@@ -55,6 +55,7 @@ interface IRoomFeatures {
   allow_view_other_webcams: boolean;
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
+  allow_polls: boolean;
   room_duration: number;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
