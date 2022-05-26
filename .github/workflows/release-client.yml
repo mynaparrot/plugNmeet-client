@@ -22,7 +22,7 @@ jobs:
           echo $TAG_NAME > dist/version.txt
           
           mkdir -p tmp/client
-          rsync -ar dist tmp/client/
+          rsync -ar LICENSE dist tmp/client/
           cd tmp
           zip -X -r client.zip client
       - name: Upload artifact
