@@ -115,7 +115,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
           <Disclosure>
             {({ open }) => (
               <>
-                <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor/70 px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
+                <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
                   <span>
                     {o.text} ({getOptSelectedCount(o.id)})
                   </span>

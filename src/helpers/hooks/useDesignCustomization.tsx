@@ -79,6 +79,10 @@ const useDesignCustomization = () => {
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
+        '.bg-secondaryColor { background: ' +
+        designCustomParams.secondary_color +
+        ' !important;}';
+      css +=
         '.hover\\:text-secondaryColor:hover { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
