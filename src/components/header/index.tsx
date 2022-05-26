@@ -186,12 +186,12 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         <div className="middle flex-auto relative z-20">
           <h2 className="header-title text-base text-black leading-[1] text-center">
             {title}
-            {roomDuration && roomDuration > 0 ? (
-              <DurationView duration={roomDuration} />
-            ) : null}
           </h2>
         </div>
         <div className="dark w-28 flex items-center justify-end relative z-20 -right-3">
+          {roomDuration && roomDuration > 0 ? (
+            <DurationView duration={roomDuration} />
+          ) : null}
           <VolumeControl currentRoom={currentRoom} />
           <Menu>
             {({ open }) => (

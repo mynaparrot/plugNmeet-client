@@ -276,7 +276,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                     <div className="pt-10 text-right">
                       {poll?.is_running ? (
                         <button
-                          className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
+                          className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
                           onClick={endPoll}
                         >
                           {t('polls.end-poll')}
