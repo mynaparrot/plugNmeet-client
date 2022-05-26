@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createSelector } from '@reduxjs/toolkit';
 
 import ErrorPage from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
@@ -8,7 +9,7 @@ import Header from '../header';
 import MainArea from '../main-area';
 
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import { store, useAppDispatch } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { addToken } from '../../store/slices/sessionSlice';
 import StartupJoinModal from './joinModal';
 import useLivekitConnect from '../../helpers/livekit/hooks/useLivekitConnect';
@@ -18,8 +19,13 @@ import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
+import WaitingRoomPage from '../waiting-room/waitingRoomPage';
 
 declare const IS_PRODUCTION: boolean;
+const waitingForApprovalSelector = createSelector(
+  (state: RootState) => state.session.currentUser?.metadata?.wait_for_approval,
+  (wait_for_approval) => wait_for_approval,
+);
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +36,7 @@ const App = () => {
   const [isRecorder, setIsRecorder] = useState<boolean>(false);
   const [userTypeClass, setUserTypeClass] = useState('participant');
   const [livekitToken, setLivekitToken] = useState<string>('');
+  const waitForApproval = useAppSelector(waitingForApprovalSelector);
 
   // we'll require making ready virtual background
   // elements as early as possible.
@@ -172,6 +179,9 @@ const App = () => {
     } else if (error && !loading) {
       return <ErrorPage title={error.title} text={error.text} />;
     } else if (currentRoom?.state === 'connected') {
+      if (waitForApproval) {
+        return <WaitingRoomPage />;
+      }
       return renderMainApp();
     } else if (roomConnectionStatus === 'ready') {
       return <StartupJoinModal onCloseModal={onCloseStartupModal} />;

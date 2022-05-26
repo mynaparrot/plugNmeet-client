@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 interface IRemoveUserMenuItemProps {
   userId: string;
-  onOpenAlert(userId: string): void;
+  onOpenAlert(userId: string, type: string): void;
 }
 
 const RemoveUserMenuItem = ({
@@ -14,7 +14,7 @@ const RemoveUserMenuItem = ({
   const { t } = useTranslation();
 
   const onClose = () => {
-    onOpenAlert(userId);
+    onOpenAlert(userId, 'remove');
   };
 
   const render = () => {

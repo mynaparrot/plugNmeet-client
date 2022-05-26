@@ -72,6 +72,9 @@ code {
 .scrollBar::-webkit-scrollbar {
   width: 8px;
 }
+.scrollBar2::-webkit-scrollbar {
+  width: 2px;
+}
 
 .scrollBar::-webkit-scrollbar-thumb {
   background-color: $secondaryColor;

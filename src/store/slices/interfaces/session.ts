@@ -26,6 +26,7 @@ export interface ICurrentUserMetadata {
   is_admin: boolean;
   is_presenter: boolean;
   raised_hand: boolean;
+  wait_for_approval: boolean;
   lock_settings: ILockSettings;
 }
 
@@ -40,6 +41,7 @@ export interface IRoomMetadata {
   welcome_message?: string;
   is_recording: boolean;
   is_active_rtmp: boolean;
+  started_at: number;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
 }
@@ -53,10 +55,13 @@ interface IRoomFeatures {
   allow_view_other_webcams: boolean;
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
+  allow_polls: boolean;
+  room_duration: number;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
   whiteboard_features: IWhiteboardFeatures;
   external_media_player_features: IExternalMediaPlayerFeatures;
+  waiting_room_features: IWaitingRoomFeatures;
 }
 
 interface IChatFeatures {
@@ -111,4 +116,9 @@ export interface IExternalMediaPlayerFeatures {
   is_active: boolean;
   shared_by?: string;
   url?: string;
+}
+
+export interface IWaitingRoomFeatures {
+  is_active: boolean;
+  waiting_room_msg: string;
 }

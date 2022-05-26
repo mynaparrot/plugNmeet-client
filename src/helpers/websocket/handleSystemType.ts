@@ -15,6 +15,8 @@ import {
   addExternalMediaPlayerAction,
   externalMediaPlayerSeekTo,
 } from '../../store/slices/externalMediaPlayer';
+import i18n from '../i18n';
+import { pollsApi } from '../../store/services/pollsApi';
 
 export const handleSystemTypeData = (body: IDataMessage) => {
   switch (body.body.type) {
@@ -37,6 +39,11 @@ export const handleSystemTypeData = (body: IDataMessage) => {
       break;
     case SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS:
       handleExternalMediaPlayerEvents(body);
+      break;
+    case SystemMsgType.POLL_CREATED:
+    case SystemMsgType.POLL_CLOSED:
+    case SystemMsgType.NEW_POLL_RESPONSE:
+      handlePollsNotifications(body);
       break;
   }
 };
@@ -112,5 +119,24 @@ const handleExternalMediaPlayerEvents = (data: IDataMessage) => {
   store.dispatch(addExternalMediaPlayerAction(msg.action));
   if (typeof msg.seekTo !== 'undefined') {
     store.dispatch(externalMediaPlayerSeekTo(msg.seekTo));
+  }
+};
+
+const handlePollsNotifications = (data: IDataMessage) => {
+  if (data.body.type === SystemMsgType.POLL_CREATED) {
+    toast(i18n.t('polls.new-poll').toString(), {
+      toastId: 'info-status',
+      type: 'info',
+    });
+    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+  } else if (data.body.type === SystemMsgType.NEW_POLL_RESPONSE) {
+    store.dispatch(
+      pollsApi.util.invalidateTags([
+        { type: 'Count', id: data.body.msg },
+        { type: 'PollDetails', id: data.body.msg },
+      ]),
+    );
+  } else if (data.body.type === SystemMsgType.POLL_CLOSED) {
+    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   }
 };

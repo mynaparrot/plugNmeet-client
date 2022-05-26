@@ -119,11 +119,20 @@ const useDesignCustomization = () => {
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
+      css += `.waiting-room { 
+        background: url("${designCustomParams.background_image}") !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        }`;
     } else if (designCustomParams.background_color) {
       css += `.main-app-bg { 
         background: ${designCustomParams.background_color} !important;
         }`;
       css += `.error-app-bg { 
+        background: ${designCustomParams.background_color} !important;
+        }`;
+      css += `.waiting-room { 
         background: ${designCustomParams.background_color} !important;
         }`;
     }

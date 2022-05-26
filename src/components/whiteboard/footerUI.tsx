@@ -84,10 +84,10 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
       setTimeout(() => {
         const currentPage = store.getState().whiteboard.currentPage;
         displayCurrentPageData(currentPage);
-      });
+      }, 100);
     }
     return () => {
-      if (excalidrawAPI) {
+      if (excalidrawAPI && isPresenter) {
         const lastPage = store.getState().whiteboard.currentPage;
         const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
         if (elms.length) {

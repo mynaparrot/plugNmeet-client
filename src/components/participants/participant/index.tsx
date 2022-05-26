@@ -1,30 +1,39 @@
 import React, { useState } from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import { Dialog } from '@headlessui/react';
-import { useTranslation } from 'react-i18next';
+import { RemoteParticipant } from 'livekit-client';
 import { toast } from 'react-toastify';
+import { Dialog, Transition } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
-import MicMenuItem from './menu-items/mic';
-import WebcamMenuItem from './menu-items/webcam';
-import SwitchPresenterMenuItem from './menu-items/switchPresenter';
-import LowerHandMenuItem from './menu-items/lowerHand';
-import LockSettingMenuItem from './menu-items/lock';
-import RemoveUserMenuItem from './menu-items/removeUser';
-import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
-import { store } from '../../../../store';
+import { IParticipant } from '../../../store/slices/interfaces/participant';
+import Avatar from './avatar';
+import ParticipantName from './name';
+import RaiseHandIcon from './icons/raiseHand';
+import MicIcon from './icons/mic';
+import WebcamIcon from './icons/webcam';
+import MenuIcon from './icons/menu';
+import { store } from '../../../store';
+import VisibilityIcon from './icons/visibility';
+import PresenterIcon from './icons/presenterIcon';
+import WaitingApproval from './waitingApproval';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
-interface IMenuIconProps {
-  userId: string;
-  name: string;
+interface IParticipantComponentProps {
+  participant: IParticipant;
+  remoteParticipant?: RemoteParticipant;
 }
-
-const MenuIcon = ({ userId, name }: IMenuIconProps) => {
+const ParticipantComponent = ({
+  participant,
+  remoteParticipant,
+}: IParticipantComponentProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [blockUser, setBlockUser] = useState<number>(0);
+  const [removeType, setRemoveType] = useState<string>('remove');
+  const currentUser = store.getState().session.currentUser;
   const { t } = useTranslation();
 
-  const onOpenRemoveParticipantAlert = (user_id) => {
-    if (user_id === userId) {
+  const onOpenRemoveParticipantAlert = (user_id: string, type: string) => {
+    if (user_id === participant.userId) {
+      setRemoveType(type);
       setShowModal(true);
     }
   };
@@ -39,8 +48,11 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
     const data = {
       sid: session.currentRoom.sid,
       room_id: session.currentRoom.room_id,
-      user_id: userId,
-      msg: t('notifications.you-have-removed'),
+      user_id: participant.userId,
+      msg:
+        removeType === 'remove'
+          ? t('notifications.you-have-removed')
+          : t('notifications.you-have-reject'),
       block_user: blockUser === 1,
     };
 
@@ -157,51 +169,46 @@ const MenuIcon = ({ userId, name }: IMenuIconProps) => {
     );
   };
 
-  const render = () => {
-    return (
-      <>
-        <Menu>
-          {({ open }) => (
-            <>
-              <Menu.Button className="relative flex-shrink-0 mt-2">
-                <i className="pnm-menu-small primaryColor opacity-50" />
-              </Menu.Button>
-
-              {/* Use the Transition component. */}
-              <Transition
-                show={open}
-                enter="transition duration-100 ease-out"
-                enterFrom="transform scale-95 opacity-0"
-                enterTo="transform scale-100 opacity-100"
-                leave="transition duration-75 ease-out"
-                leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-95 opacity-0"
-              >
-                {/* Mark this component as `static` */}
-                <Menu.Items
-                  static
-                  className="origin-top-right z-10 absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
-                >
-                  <MicMenuItem userId={userId} />
-                  <WebcamMenuItem userId={userId} />
-                  <SwitchPresenterMenuItem userId={userId} />
-                  <LowerHandMenuItem userId={userId} />
-                  <LockSettingMenuItem userId={userId} />
-                  <RemoveUserMenuItem
-                    onOpenAlert={onOpenRemoveParticipantAlert}
-                    userId={userId}
-                  />
-                </Menu.Items>
-              </Transition>
-            </>
-          )}
-        </Menu>
-        {removeParticipantAlertModal()}
-      </>
-    );
-  };
-
-  return <>{render()}</>;
+  return (
+    <>
+      <li className="mb-3 w-full list-none">
+        <div className="flex items-center justify-between relative">
+          <div className="left flex items-center ">
+            <Avatar participant={participant} />
+            <ParticipantName
+              name={participant.name}
+              isCurrentUser={currentUser?.userId === participant.userId}
+            />
+          </div>
+          <div className="right ml-2 flex-auto flex items-center justify-end">
+            <RaiseHandIcon userId={participant.userId} />
+            <VisibilityIcon userId={participant.userId} />
+            <PresenterIcon userId={participant.userId} />
+            <WebcamIcon userId={participant.userId} />
+            <MicIcon
+              userId={participant.userId}
+              remoteParticipant={remoteParticipant}
+            />
+            {currentUser?.metadata?.is_admin &&
+            currentUser.userId !== participant.userId ? (
+              <MenuIcon
+                userId={participant.userId}
+                openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+              />
+            ) : null}
+          </div>
+          <div className="approve-wrap absolute right-0 top-5">
+            <WaitingApproval
+              userId={participant.userId}
+              name={participant.name}
+              openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+            />
+          </div>
+        </div>
+      </li>
+      {removeParticipantAlertModal()}
+    </>
+  );
 };
 
-export default MenuIcon;
+export default ParticipantComponent;

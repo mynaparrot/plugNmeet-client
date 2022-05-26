@@ -1,63 +1,93 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Room } from 'livekit-client';
+import { Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../store';
-import { participantsSelector } from '../../store/slices/participantSlice';
-import ParticipantComponent from './participant';
-import { Room } from 'livekit-client';
+import ParticipantsComponent from '../participants';
+import PollsComponent from '../polls';
+import { useGetPollsStatsQuery } from '../../store/services/pollsApi';
+import { store } from '../../store';
 
 interface ILeftPanelProps {
   currentRoom: Room;
 }
 
 const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
-  const participants = useAppSelector(participantsSelector.selectAll);
+  const { data } = useGetPollsStatsQuery();
   const { t } = useTranslation();
+  const allow_polls =
+    store.getState().session.currentRoom.metadata?.room_features.allow_polls;
 
-  const renderParticipants = () => {
-    const session = store.getState().session;
-    const currentUserUserId = session.currentUser?.userId;
-    const allow_view_other_users_list =
-      session.currentRoom.metadata?.room_features
-        ?.allow_view_other_users_list ?? false;
-    const currentIsAdmin = session.currentUser?.metadata?.is_admin ?? false;
+  const items = useMemo(() => {
+    const total_running = data?.stats?.total_running ?? 0;
+    const items = [
+      {
+        id: 1,
+        title: <>{t('left-panel.participants-tab')}</>,
+        elm: <ParticipantsComponent currentRoom={currentRoom} />,
+      },
+    ];
+    if (allow_polls) {
+      items.push({
+        id: 2,
+        title: (
+          <>
+            {t('left-panel.polls-tab')}
+            {total_running > 0 ? (
+              <span className="absolute -right-[20px] -top-[7px] w-5 h-5 bg-primaryColor rounded-full text-white text-[10px]">
+                {total_running ?? 0}
+              </span>
+            ) : null}
+          </>
+        ),
+        elm: <PollsComponent />,
+      });
+    }
 
-    return participants.map((participant) => {
-      const remoteParticipant = currentRoom.participants.get(participant.sid);
-      if (!currentIsAdmin && !allow_view_other_users_list) {
-        if (
-          !participant.metadata.is_admin &&
-          currentUserUserId !== participant.userId
-        ) {
-          return;
-        }
-      }
-      return (
-        <ParticipantComponent
-          key={participant.sid}
-          participant={participant}
-          remoteParticipant={remoteParticipant}
-        />
-      );
-    });
+    return items;
+    //eslint-disable-next-line
+  }, [data]);
+
+  const classNames = (...classes) => {
+    return classes.filter(Boolean).join(' ');
   };
 
   return (
     <div
       id="main-left-panel"
-      className="participants-wrapper scrollBar relative z-10 left-0 top-0 h-full w-[200px] xl:w-[270px] px-2 xl:px-4 pt-2 xl:pt-5 overflow-auto multi-gradient"
+      className="participants-wrapper relative z-10 left-0 top-0 h-full w-[200px] xl:w-[270px] multi-gradient"
     >
-      <div className="inner-wrapper relative z-20">
-        <div className="top flex items-center justify-between font-medium mb-3 xl:mb-5">
-          <p className="text-sm text-black">
-            {t('left-panel.participants', {
-              total: participants.length,
-            })}
-          </p>
-        </div>
-
-        <div className="all-participants-wrap">{renderParticipants()}</div>
-      </div>
+      <Tab.Group vertical>
+        <Tab.List className="flex">
+          {items.map((item) => (
+            <Tab
+              key={item.id}
+              className={({ selected }) =>
+                classNames(
+                  'w-full py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
+                  selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
+                )
+              }
+            >
+              <div className="name relative inline-block">{item.title}</div>
+            </Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels className="relative h-[calc(100%-45px)]">
+          {items.map((item) => (
+            <Tab.Panel
+              key={item.id}
+              className={`${
+                item.id === 2
+                  ? 'polls h-full'
+                  : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
+              }`}
+            >
+              <>{item.elm}</>
+            </Tab.Panel>
+          ))}
+        </Tab.Panels>
+      </Tab.Group>
     </div>
   );
 };

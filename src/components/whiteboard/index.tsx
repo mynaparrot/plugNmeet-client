@@ -104,6 +104,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const isPresenter = useAppSelector(isPresenterSelector);
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
+  const [fetchedData, setFetchedData] = useState<boolean>(false);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -120,16 +121,30 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // keep looking for request from other users & send data
   useEffect(() => {
-    if (!excalidrawAPI) {
+    let timeout;
+    if (!fetchedData) {
       // get initial data from other users
       // who had joined before me
       sendRequestedForWhiteboardData();
+      timeout = setTimeout(() => {
+        // let's wait before showing data
+        // otherwise may not show all data
+        if (!fetchedData) {
+          setFetchedData(true);
+        }
+      }, 500);
     }
 
     if (requestedWhiteboardData.requested && excalidrawAPI) {
       sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
-  }, [requestedWhiteboardData, excalidrawAPI]);
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [requestedWhiteboardData, excalidrawAPI, fetchedData]);
 
   // if whiteboard file ID change this mean new office file was uploaded,
   // so we'll clean the canvas.
@@ -202,7 +217,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // for handling draw elements
   useEffect(() => {
-    if (excalidrawElements && excalidrawAPI) {
+    // let's wait until fetchedData value change
+    // otherwise data won't show correctly.
+    if (excalidrawElements && excalidrawAPI && fetchedData) {
       const elements = JSON.parse(excalidrawElements);
       const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
       const appState = excalidrawAPI.getAppState();
@@ -216,7 +233,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       handleRemoteSceneUpdate(reconciledElements);
     }
     //eslint-disable-next-line
-  }, [excalidrawElements, excalidrawAPI]);
+  }, [excalidrawElements, excalidrawAPI, fetchedData]);
 
   // for handling mouse pointer location
   useEffect(() => {

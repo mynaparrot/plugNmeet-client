@@ -29,6 +29,7 @@ const initialState: ISession = {
       room_title: 'plugNmeet',
       is_recording: false,
       is_active_rtmp: false,
+      started_at: Date.now(),
       room_features: {
         allow_webcams: true,
         mute_on_start: false,
@@ -38,6 +39,8 @@ const initialState: ISession = {
         allow_view_other_webcams: true,
         allow_view_other_users_list: true,
         admin_only_webcams: false,
+        allow_polls: true,
+        room_duration: 0,
         chat_features: {
           allow_chat: true,
           allow_file_upload: true,
@@ -58,6 +61,10 @@ const initialState: ISession = {
         external_media_player_features: {
           allowed_external_media_player: true,
           is_active: false,
+        },
+        waiting_room_features: {
+          is_active: false,
+          waiting_room_msg: '',
         },
       },
     },

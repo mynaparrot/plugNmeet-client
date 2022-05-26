@@ -16,10 +16,12 @@ import {
   updateIsActiveSharedNotePad,
   updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
+  updateShowManageWaitingRoomModal,
   updateShowRtmpModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import RtmpModal from '../modals/rtmpModal';
 import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
+import ManageWaitingRoom from '../../waiting-room';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -49,6 +51,10 @@ const showExternalMediaPlayerModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showExternalMediaPlayerModal,
   (showExternalMediaPlayerModal) => showExternalMediaPlayerModal,
 );
+const showManageWaitingRoomModalSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.showManageWaitingRoomModal,
+  (showManageWaitingRoomModal) => showManageWaitingRoomModal,
+);
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -66,6 +72,9 @@ const MenusIcon = () => {
   );
   const showExternalMediaPlayerModal = useAppSelector(
     showExternalMediaPlayerModalSelector,
+  );
+  const showManageWaitingRoomModal = useAppSelector(
+    showManageWaitingRoomModalSelector,
   );
   const roomFeatures =
     store.getState().session.currentRoom?.metadata?.room_features;
@@ -143,6 +152,10 @@ const MenusIcon = () => {
 
   const openRtmpModal = () => {
     dispatch(updateShowRtmpModal(true));
+  };
+
+  const openManageWaitingRoomModal = () => {
+    dispatch(updateShowManageWaitingRoomModal(true));
   };
 
   const render = () => {
@@ -238,6 +251,17 @@ const MenusIcon = () => {
                     <Menu.Item>
                       <button
                         className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+                        onClick={() => openManageWaitingRoomModal()}
+                      >
+                        <i className="pnm-waiting-room text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                        {t('footer.menus.manage-waiting-room')}
+                      </button>
+                    </Menu.Item>
+                  </div>
+                  <div className="py-1" role="none">
+                    <Menu.Item>
+                      <button
+                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
                         onClick={() => openLockSettingsModal()}
                       >
                         <i className="pnm-lock text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
@@ -260,6 +284,7 @@ const MenusIcon = () => {
       {showLockSettingsModal ? <LockSettingsModal /> : null}
       {showRtmpModal ? <RtmpModal /> : null}
       {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}
+      {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
     </>
   );
 };
