@@ -22,10 +22,10 @@ const NewPollMsg = ({ closeToast }: INewPollMsgProps) => {
   };
   return (
     <>
-      {t('polls.new-poll')}
-      <div className="button-section flex items-center justify-end">
+      <span className="text-black">{t('polls.new-poll')}</span>
+      <div className="button-section flex items-center justify-start">
         <button
-          className="h-7 px-6 leading-[28px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
+          className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
           onClick={openPoll}
         >
           {t('open')}
