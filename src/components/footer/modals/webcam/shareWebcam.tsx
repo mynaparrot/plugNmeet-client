@@ -10,10 +10,8 @@ import {
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { getDevices } from '../../../../helpers/utils';
 import PreviewWebcam from './previewWebcam';
-import {
-  addVideoDevices,
-  IMediaDevice,
-} from '../../../../store/slices/roomSettingsSlice';
+import { addVideoDevices } from '../../../../store/slices/roomSettingsSlice';
+import { IMediaDevice } from '../../../../store/slices/interfaces/roomSettings';
 
 interface IShareWebcamModal {
   onSelectedDevice: (deviceId: string) => void;

@@ -7,6 +7,7 @@
   "join": "Join",
   "share": "Share",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
+  "open": "Open",
   "notifications": {
     "room-not-active": "Room isn't active.",
     "recording-already-running": "recording already running",

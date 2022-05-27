@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
 
-export interface IMediaDevice {
-  id: string;
-  label: string;
-}
+import { IMediaDevice } from './interfaces/roomSettings';
+
 interface IRoomSettings {
   isShowRoomSettingsModal: boolean;
   isShowKeyboardShortcuts: boolean;
@@ -19,6 +17,8 @@ interface IRoomSettings {
   allowPlayAudioNotification: boolean;
   roomAudioVolume: number;
   roomVideoQuality: VideoQuality;
+
+  selectedTabLeftPanel: number;
 }
 
 const initialState: IRoomSettings = {
@@ -35,6 +35,7 @@ const initialState: IRoomSettings = {
   allowPlayAudioNotification: true,
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
+  selectedTabLeftPanel: 0,
 };
 
 const roomSettingsSlice = createSlice({
@@ -83,6 +84,9 @@ const roomSettingsSlice = createSlice({
     updateRoomVideoQuality: (state, action: PayloadAction<VideoQuality>) => {
       state.roomVideoQuality = action.payload;
     },
+    updateSelectedTabLeftPanel: (state, action: PayloadAction<number>) => {
+      state.selectedTabLeftPanel = action.payload;
+    },
   },
 });
 
@@ -99,6 +103,7 @@ export const {
   updateShowKeyboardShortcutsModal,
   updateRoomAudioVolume,
   updateRoomVideoQuality,
+  updateSelectedTabLeftPanel,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

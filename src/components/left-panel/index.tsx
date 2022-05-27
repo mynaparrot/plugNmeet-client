@@ -2,21 +2,30 @@ import React, { useMemo } from 'react';
 import { Room } from 'livekit-client';
 import { Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { createSelector } from '@reduxjs/toolkit';
 
 import ParticipantsComponent from '../participants';
 import PollsComponent from '../polls';
 import { useGetPollsStatsQuery } from '../../store/services/pollsApi';
-import { store } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { updateSelectedTabLeftPanel } from '../../store/slices/roomSettingsSlice';
 
 interface ILeftPanelProps {
   currentRoom: Room;
 }
 
+const selectedTabLeftPanelSelector = createSelector(
+  (state: RootState) => state.roomSettings.selectedTabLeftPanel,
+  (isActiveChatPanel) => isActiveChatPanel,
+);
+
 const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   const { data } = useGetPollsStatsQuery();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const allow_polls =
     store.getState().session.currentRoom.metadata?.room_features.allow_polls;
+  const selectedTabLeftPanel = useAppSelector(selectedTabLeftPanelSelector);
 
   const items = useMemo(() => {
     const total_running = data?.stats?.total_running ?? 0;
@@ -48,6 +57,10 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
     //eslint-disable-next-line
   }, [data]);
 
+  const changeTabIndex = (i) => {
+    dispatch(updateSelectedTabLeftPanel(i));
+  };
+
   const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ');
   };
@@ -57,7 +70,11 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
       id="main-left-panel"
       className="participants-wrapper relative z-10 left-0 top-0 h-full w-[200px] xl:w-[270px] multi-gradient"
     >
-      <Tab.Group vertical>
+      <Tab.Group
+        vertical
+        selectedIndex={selectedTabLeftPanel}
+        onChange={changeTabIndex}
+      >
         <Tab.List className="flex">
           {items.map((item) => (
             <Tab

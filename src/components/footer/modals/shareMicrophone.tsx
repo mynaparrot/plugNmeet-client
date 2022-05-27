@@ -18,10 +18,10 @@ import {
 import { getDevices } from '../../../helpers/utils';
 import {
   addAudioDevices,
-  IMediaDevice,
   updateSelectedAudioDevice,
 } from '../../../store/slices/roomSettingsSlice';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
+import { IMediaDevice } from '../../../store/slices/interfaces/roomSettings';
 
 interface IMicrophoneIconProps {
   currentRoom?: Room;

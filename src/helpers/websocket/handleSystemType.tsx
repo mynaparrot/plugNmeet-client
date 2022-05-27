@@ -1,3 +1,4 @@
+import React from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -15,8 +16,8 @@ import {
   addExternalMediaPlayerAction,
   externalMediaPlayerSeekTo,
 } from '../../store/slices/externalMediaPlayer';
-import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
+import NewPollMsg from '../../components/extra-pages/newPollMsg';
 
 export const handleSystemTypeData = (body: IDataMessage) => {
   switch (body.body.type) {
@@ -124,9 +125,10 @@ const handleExternalMediaPlayerEvents = (data: IDataMessage) => {
 
 const handlePollsNotifications = (data: IDataMessage) => {
   if (data.body.type === SystemMsgType.POLL_CREATED) {
-    toast(i18n.t('polls.new-poll').toString(), {
+    toast(<NewPollMsg />, {
       toastId: 'info-status',
       type: 'info',
+      autoClose: false,
     });
     store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   } else if (data.body.type === SystemMsgType.NEW_POLL_RESPONSE) {
