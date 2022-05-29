@@ -375,9 +375,9 @@ code {
   }
 }
 
-#main-area.hideParticipantsPanel.showScreenShare .active-speakers-wrap {
-  @apply pl-[280px];
-}
+// #main-area.hideParticipantsPanel.showScreenShare .active-speakers-wrap {
+//   @apply pl-[280px];
+// }
 
 #main-area.fullWidthMainArea .all-webcam-wrapper button.previous-cam,
 #main-area.fullWidthMainArea .all-webcam-wrapper button.next-cam {
@@ -892,6 +892,9 @@ button.next-cam:hover {
   margin: auto;
   left: 0;
   right: 0;
+}
+.showParticipantsPanel .active-speakers-wrap {
+  z-index: 2;
 }
 
 @media screen and (max-width: 1279px) {
