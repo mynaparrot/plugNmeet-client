@@ -7,6 +7,7 @@
   "join": "Rejoindre",
   "share": "Partager",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
+  "open": "Open",
   "notifications": {
     "room-not-active": "La salle n'est pas active.",
     "recording-already-running": "l'enregistrement est déjà en cours",
@@ -21,7 +22,9 @@
     "file-type-not-allow": "{{filetype}} file type isn't allow",
     "max-file-size-exceeds": "The maximum allowed file size exceeds",
     "you-have-removed": "You've been removed from this conference.",
-    "you-are-blocked": "You aren't allow to access this conference."
+    "you-are-blocked": "You aren't allow to access this conference.",
+    "you-have-reject": "You've been rejected to join this conference",
+    "waiting-for-approval": "Please wait until a moderator will approve you."
   },
   "room-metadata": {
     "session-recording": "Cette séance est enregistrée",
@@ -90,6 +93,10 @@
   },
   "left-panel": {
     "participants": "Intervenants ({{total}})",
+    "approve": "Approve",
+    "reject": "Reject",
+    "participants-tab": "Participants",
+    "polls-tab": "Polls",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Demander à partager Microphone",
@@ -129,7 +136,8 @@
         "applied-new-setting": "Nouveau paramètre de verrouillage appliqué",
         "presenter-changed": "Presenter has been changed successfully",
         "you-are-presenter": "You are the presenter",
-        "want-to-block": "Do you want to block this user?"
+        "want-to-block": "Do you want to block this user?",
+        "user-approved": "You've approved {{name}}"
       }
     }
   },
@@ -178,7 +186,8 @@
       "leave-microphone": "Laisser le micro",
       "leave-webcam": "Quitter la webcam",
       "start-external-media-player": "Start external Media Player",
-      "stop-external-media-player": "Stop external Media Player"
+      "stop-external-media-player": "Stop external Media Player",
+      "manage-waiting-room": "Manage waiting room"
     },
     "notice": {
       "already-active-screen-sharing": "La session a déjà un partage d'écran actif",
@@ -220,12 +229,53 @@
       "external-media-player-url": "Playback URL",
       "external-media-player-play": "Play",
       "external-media-player-close-confirm": "Are you sure to stop playback?",
-      "external-media-player-close-msg": "You are about to close playback"
+      "external-media-player-close-msg": "You are about to close playback",
+      "upload-background-image": "Upload background image"
     }
   },
   "whiteboard": {
     "page": "Page {{count}}",
     "converting": "Please wait file conversion in progress",
     "file-ready": "File is ready"
+  },
+  "waiting-room": {
+    "modal-title": "Manage waiting room",
+    "update-waiting-message": "Update waiting room message",
+    "update-msg": "Update",
+    "updated-msg": "Room message has been updated",
+    "accept-all": "Accept everyone",
+    "reject-all": "Reject everyone",
+    "list-waiting-participants": "Waiting participants list ({{count}})",
+    "reject-and-block-user": "Reject & Block",
+    "user-waiting": "{{name}} is waiting for approval"
+  },
+  "polls": {
+    "create": "Create new poll",
+    "enter-question": "Enter question",
+    "question": "Question",
+    "options": "Options",
+    "option": "Option {{count}}",
+    "total-responses": "Total responses: {{count}}",
+    "remove-option": "Remove",
+    "add-new-option": "Add more option",
+    "create-poll": "Create poll",
+    "created-successfully": "Poll has been created",
+    "you-voted": "You voted",
+    "vote": "Vote",
+    "submit-vote-form-title": "Submit your vote",
+    "select-option": "Select an option",
+    "submit": "Submit",
+    "response-added": "Your submission has been added successfully",
+    "new-poll": "New poll has been started",
+    "poll-running": "Running",
+    "poll-closed": "Closed",
+    "view-details": "View details",
+    "view-result": "View result",
+    "view-details-title": "Poll information",
+    "view-result-title": "Poll result",
+    "end-poll": "End poll",
+    "end-poll-success": "Poll was ended successfully",
+    "publish-result": "Publish result",
+    "total": "Total"
   }
 }
