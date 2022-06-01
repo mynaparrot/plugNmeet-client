@@ -18,6 +18,7 @@ import {
 } from '../../store/slices/externalMediaPlayer';
 import { pollsApi } from '../../store/services/pollsApi';
 import NewPollMsg from '../../components/extra-pages/newPollMsg';
+import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 
 export const handleSystemTypeData = (body: IDataMessage) => {
   switch (body.body.type) {
@@ -45,6 +46,9 @@ export const handleSystemTypeData = (body: IDataMessage) => {
     case SystemMsgType.POLL_CLOSED:
     case SystemMsgType.NEW_POLL_RESPONSE:
       handlePollsNotifications(body);
+      break;
+    case SystemMsgType.JOIN_BREAKOUT_ROOM:
+      handleBreakoutRoomNotifications(body);
       break;
   }
 };
@@ -141,4 +145,9 @@ const handlePollsNotifications = (data: IDataMessage) => {
   } else if (data.body.type === SystemMsgType.POLL_CLOSED) {
     store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   }
+};
+
+const handleBreakoutRoomNotifications = (data: IDataMessage) => {
+  console.log(data);
+  store.dispatch(updateReceivedInvitationFor(data.body.msg));
 };

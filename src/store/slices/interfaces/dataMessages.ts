@@ -47,6 +47,7 @@ export enum SystemMsgType {
   POLL_CREATED = 'POLL_CREATED',
   NEW_POLL_RESPONSE = 'NEW_POLL_RESPONSE',
   POLL_CLOSED = 'POLL_CLOSED',
+  JOIN_BREAKOUT_ROOM = 'JOIN_BREAKOUT_ROOM',
 }
 
 export interface WhiteboardMsg {

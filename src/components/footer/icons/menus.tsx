@@ -16,12 +16,14 @@ import {
   updateIsActiveSharedNotePad,
   updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
+  updateShowManageBreakoutRoomModal,
   updateShowManageWaitingRoomModal,
   updateShowRtmpModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import RtmpModal from '../modals/rtmpModal';
 import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
+import BreakoutRoom from '../../breakout-room';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -55,6 +57,10 @@ const showManageWaitingRoomModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showManageWaitingRoomModal,
   (showManageWaitingRoomModal) => showManageWaitingRoomModal,
 );
+const showManageBreakoutRoomModalSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.showManageBreakoutRoomModal,
+  (showManageBreakoutRoomModal) => showManageBreakoutRoomModal,
+);
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -75,6 +81,9 @@ const MenusIcon = () => {
   );
   const showManageWaitingRoomModal = useAppSelector(
     showManageWaitingRoomModalSelector,
+  );
+  const showManageBreakoutRoomModal = useAppSelector(
+    showManageBreakoutRoomModalSelector,
   );
   const roomFeatures =
     store.getState().session.currentRoom?.metadata?.room_features;
@@ -156,6 +165,10 @@ const MenusIcon = () => {
 
   const openManageWaitingRoomModal = () => {
     dispatch(updateShowManageWaitingRoomModal(true));
+  };
+
+  const openManageBreakoutRoomModal = () => {
+    dispatch(updateShowManageBreakoutRoomModal(true));
   };
 
   const render = () => {
@@ -247,17 +260,32 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  <div className="py-1" role="none">
-                    <Menu.Item>
-                      <button
-                        className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
-                        onClick={() => openManageWaitingRoomModal()}
-                      >
-                        <i className="pnm-waiting-room text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
-                        {t('footer.menus.manage-waiting-room')}
-                      </button>
-                    </Menu.Item>
-                  </div>
+                  {roomFeatures?.waiting_room_features.is_active ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+                          onClick={() => openManageWaitingRoomModal()}
+                        >
+                          <i className="pnm-waiting-room text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          {t('footer.menus.manage-waiting-room')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
+                  {roomFeatures?.breakout_room_features.is_allow ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+                          onClick={() => openManageBreakoutRoomModal()}
+                        >
+                          <i className="pnm-waiting-room text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          {t('footer.menus.manage-breakout-room')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
@@ -285,6 +313,7 @@ const MenusIcon = () => {
       {showRtmpModal ? <RtmpModal /> : null}
       {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}
       {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
+      {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
     </>
   );
 };

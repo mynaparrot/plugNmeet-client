@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/index.scss';
@@ -18,10 +20,12 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Suspense fallback={<Loading text="" />}>
-        <App />
-      </Suspense>
-      <ToastContainer />
+      <DndProvider backend={HTML5Backend}>
+        <Suspense fallback={<Loading text="" />}>
+          <App />
+        </Suspense>
+        <ToastContainer />
+      </DndProvider>
     </Provider>
   </React.StrictMode>,
 );

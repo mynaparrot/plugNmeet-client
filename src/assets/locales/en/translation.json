@@ -187,7 +187,8 @@
       "leave-webcam": "Leave webcam",
       "start-external-media-player": "Start external Media Player",
       "stop-external-media-player": "Stop external Media Player",
-      "manage-waiting-room": "Manage waiting room"
+      "manage-waiting-room": "Manage waiting room",
+      "manage-breakout-room": "Manage breakout room"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -277,5 +278,17 @@
     "end-poll-success": "Poll was ended successfully",
     "publish-result": "Publish result",
     "total": "Total"
+  },
+  "breakout-room": {
+    "modal-title": "Manage breakout rooms",
+    "num-rooms": "Number of room",
+    "duration": "Duration",
+    "random-selection": "Random Selection",
+    "main-room": "Main room",
+    "new-room": "Room {{num}}",
+    "start": "Start breakout rooms",
+    "rooms-created": "Rooms created successfully",
+    "invitation-msg": "You has been invited to join breakout room",
+    "join": "Join"
   }
 }

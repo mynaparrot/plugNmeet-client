@@ -41,6 +41,7 @@ export interface IRoomMetadata {
   welcome_message?: string;
   is_recording: boolean;
   is_active_rtmp: boolean;
+  is_breakout_room: boolean;
   started_at: number;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
@@ -62,6 +63,7 @@ interface IRoomFeatures {
   whiteboard_features: IWhiteboardFeatures;
   external_media_player_features: IExternalMediaPlayerFeatures;
   waiting_room_features: IWaitingRoomFeatures;
+  breakout_room_features: IBreakoutRoomFeatures;
 }
 
 interface IChatFeatures {
@@ -121,4 +123,10 @@ export interface IExternalMediaPlayerFeatures {
 export interface IWaitingRoomFeatures {
   is_active: boolean;
   waiting_room_msg: string;
+}
+
+export interface IBreakoutRoomFeatures {
+  is_allow: boolean;
+  is_active: boolean;
+  allowed_number_rooms: number;
 }
