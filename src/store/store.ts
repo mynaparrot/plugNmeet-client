@@ -30,7 +30,10 @@ export const store = configureStore({
     [breakoutRoomApi.reducerPath]: breakoutRoomApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pollsApi.middleware),
+    getDefaultMiddleware().concat(
+      pollsApi.middleware,
+      breakoutRoomApi.middleware,
+    ),
   devTools: !IS_PRODUCTION,
 });
 

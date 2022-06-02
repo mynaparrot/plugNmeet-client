@@ -194,6 +194,7 @@ const FromElems = () => {
             id: `${r.id}`,
             title: r.name,
             users: u,
+            duration: roomDuration,
           };
           tmp.push(room);
         }

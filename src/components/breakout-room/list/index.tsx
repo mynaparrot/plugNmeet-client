@@ -1,19 +1,56 @@
-import React, { useMemo } from 'react';
-import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import BroadcastingMsg from './broadcastingMsg';
+import RoomLists from './roomLists';
+import { useEndAllRoomsMutation } from '../../../store/services/breakoutRoomApi';
 
 const BreakoutRoomLists = () => {
-  const { data, isLoading } = useGetBreakoutRoomsQuery();
+  const { t } = useTranslation();
+  const [disable, setDisable] = useState<boolean>(false);
+  const [endAllRooms, { isLoading, data }] = useEndAllRoomsMutation();
 
-  const sortedRooms = useMemo(() => {
-    if (data && data.rooms) {
-      const sortedRooms = data.rooms.slice();
-      sortedRooms.sort((a, b) => b.title.localeCompare(a.title));
-      console.log(sortedRooms);
-      return sortedRooms;
+  useEffect(() => {
+    setDisable(!!isLoading);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (data) {
+      if (data.status) {
+        toast(t('breakout-room.end-all-success'), {
+          type: 'info',
+        });
+      } else {
+        toast(t(data.msg), {
+          type: 'error',
+        });
+      }
     }
+    //eslint-disable-next-line
   }, [data]);
 
-  return <div>BreakoutRoomLists</div>;
+  const endAll = () => {
+    endAllRooms();
+  };
+
+  const render = () => {
+    return (
+      <div className="">
+        <BroadcastingMsg />
+        <RoomLists />
+        <button
+          className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
+          onClick={() => endAll()}
+          disabled={disable}
+        >
+          {t('breakout-room.end-all')}
+        </button>
+      </div>
+    );
+  };
+
+  return render();
 };
 
 export default BreakoutRoomLists;

@@ -291,6 +291,15 @@
     "rooms-created": "Rooms created successfully",
     "invitation-msg": "You has been invited to join breakout room",
     "join": "Join",
-    "need-one-user": "Need at least one user in any breakout room"
+    "need-one-user": "Need at least one user in any breakout room",
+    "end-all": "End all rooms",
+    "end-all-success": "All rooms are ended",
+    "end-room": "End room",
+    "room-ended": "Room ended",
+    "open-tab-error": "Can't open link in new tab",
+    "extend-duration": "Extend duration",
+    "duration-extended": "Duration was extended successfully",
+    "broadcast-msg": "Broadcast message",
+    "broadcast-msg-success": "Broadcast message was successful"
   }
 }

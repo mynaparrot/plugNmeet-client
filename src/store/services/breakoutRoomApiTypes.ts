@@ -10,11 +10,13 @@ export interface BreakoutRoomListsRes extends CommonRes {
 export interface BreakoutRoom {
   id: string;
   title: string;
+  duration: number;
   users: Array<BreakoutRoomUser>;
 }
 
 export interface BreakoutRoomUser {
   id: string;
+  name: string;
 }
 
 export interface CreateBreakoutRoomReq {
@@ -24,7 +26,7 @@ export interface CreateBreakoutRoomReq {
 }
 
 export interface BreakoutRoomDurationReq {
-  id: string;
+  breakout_room_id: string;
   duration: number;
 }
 

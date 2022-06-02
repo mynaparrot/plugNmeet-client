@@ -95,4 +95,5 @@ export const {
   useJoinRoomMutation,
   useEndSingleRoomMutation,
   useEndAllRoomsMutation,
+  useSendMsgMutation,
 } = breakoutRoomApi;
