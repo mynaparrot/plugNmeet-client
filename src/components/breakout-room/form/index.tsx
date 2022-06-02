@@ -3,24 +3,30 @@ import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
-import { RoomBox } from './roomBox';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import {
+  RootState,
+  store,
+  useAppDispatch,
+  useAppSelector,
+} from '../../../store';
 import { RoomType, UserType } from './types';
-import { participantsSelector } from '../../store/slices/participantSlice';
-import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
-import { updateBreakoutRoomDroppedUser } from '../../store/slices/breakoutRoomSlice';
+import { participantsSelector } from '../../../store/slices/participantSlice';
+import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
+import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
 import {
   BreakoutRoom,
   CreateBreakoutRoomReq,
-} from '../../store/services/breakoutRoomApiTypes';
-import { useCreateBreakoutRoomsMutation } from '../../store/services/breakoutRoomApi';
+} from '../../../store/services/breakoutRoomApiTypes';
+import { useCreateBreakoutRoomsMutation } from '../../../store/services/breakoutRoomApi';
+import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
+import { RoomBox } from './roomBox';
 
 const droppedUserSelector = createSelector(
   (state: RootState) => state.breakoutRoom.droppedUser,
   (droppedUser) => droppedUser,
 );
 
-const FormElms = () => {
+const FromElems = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const participants = useAppSelector(participantsSelector.selectAll);
@@ -29,6 +35,9 @@ const FormElms = () => {
   const [totalRooms, setTotalRooms] = useState<number>(1);
   const preTotalRooms = useStorePreviousInt(totalRooms);
   const [roomDuration, setRoomDuration] = useState<number>(15);
+  const [welcomeMsg, setWelcomeMsg] = useState<string>(
+    store.getState().session.currentRoom.metadata?.welcome_message ?? '',
+  );
   const [rooms, setRooms] = useState<Array<RoomType>>();
   const [users, setUsers] = useState<Array<UserType>>([]);
   const [createBreakoutRoom, { isLoading, data }] =
@@ -125,6 +134,7 @@ const FormElms = () => {
         toast(t('breakout-room.rooms-created'), {
           type: 'info',
         });
+        dispatch(updateShowManageBreakoutRoomModal(false));
       } else {
         toast(t(data.msg), {
           type: 'error',
@@ -182,6 +192,7 @@ const FormElms = () => {
         if (u.length) {
           const room: BreakoutRoom = {
             id: `${r.id}`,
+            title: r.name,
             users: u,
           };
           tmp.push(room);
@@ -190,16 +201,17 @@ const FormElms = () => {
     });
 
     if (!tmp.length) {
-      console.log('need at least one user in the room');
+      toast(t('breakout-room.need-one-user'), {
+        type: 'error',
+      });
       return;
     }
 
     const req: CreateBreakoutRoomReq = {
       duration: roomDuration,
+      welcome_msg: welcomeMsg,
       rooms: tmp,
     };
-
-    console.log(req);
     createBreakoutRoom(req);
   };
 
@@ -214,6 +226,13 @@ const FormElms = () => {
             value={roomDuration}
             onChange={(e) => setRoomDuration(Number(e.currentTarget.value))}
           />
+        </div>
+        <div className="">
+          <label>{t('breakout-room.welcome-msg')}</label>
+          <textarea
+            onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
+            value={welcomeMsg}
+          ></textarea>
         </div>
         <div className="">
           <button onClick={randomSelection}>
@@ -246,4 +265,4 @@ const FormElms = () => {
   );
 };
 
-export default FormElms;
+export default FromElems;

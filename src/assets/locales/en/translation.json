@@ -283,12 +283,14 @@
     "modal-title": "Manage breakout rooms",
     "num-rooms": "Number of room",
     "duration": "Duration",
+    "welcome-msg": "Welcome message",
     "random-selection": "Random Selection",
     "main-room": "Main room",
     "new-room": "Room {{num}}",
     "start": "Start breakout rooms",
     "rooms-created": "Rooms created successfully",
     "invitation-msg": "You has been invited to join breakout room",
-    "join": "Join"
+    "join": "Join",
+    "need-one-user": "Need at least one user in any breakout room"
   }
 }

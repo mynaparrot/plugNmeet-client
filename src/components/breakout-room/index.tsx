@@ -2,13 +2,17 @@ import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch } from '../../store';
+import { store, useAppDispatch } from '../../store';
 import { updateShowManageBreakoutRoomModal } from '../../store/slices/bottomIconsActivitySlice';
-import FormElms from './formElms';
+import FromElems from './form';
+import BreakoutRoomLists from './list';
 
 const BreakoutRoom = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const breakoutRoomIsActive =
+    store.getState().session.currentRoom.metadata?.room_features
+      .breakout_room_features.is_active;
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const closeModal = () => {
@@ -72,7 +76,11 @@ const BreakoutRoom = () => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-6">
-                    <FormElms />
+                    {breakoutRoomIsActive ? (
+                      <BreakoutRoomLists />
+                    ) : (
+                      <FromElems />
+                    )}
                   </div>
                 </div>
               </Transition.Child>

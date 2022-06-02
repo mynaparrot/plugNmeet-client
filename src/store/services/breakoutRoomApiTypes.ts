@@ -9,6 +9,7 @@ export interface BreakoutRoomListsRes extends CommonRes {
 
 export interface BreakoutRoom {
   id: string;
+  title: string;
   users: Array<BreakoutRoomUser>;
 }
 
@@ -18,6 +19,7 @@ export interface BreakoutRoomUser {
 
 export interface CreateBreakoutRoomReq {
   duration: number;
+  welcome_msg: string;
   rooms: Array<BreakoutRoom>;
 }
 
@@ -33,4 +35,8 @@ export interface JoinRoomReq {
 
 export interface JoinRoomRes extends CommonRes {
   token?: string;
+}
+
+export interface SendMsgReq {
+  msg: string;
 }

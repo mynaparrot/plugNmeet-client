@@ -1,11 +1,11 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 
-import './style.scss';
+import '../style.scss';
 import UserBox from './userBox';
 import { UserType, ItemTypes } from './types';
-import { useAppDispatch } from '../../store';
-import { updateBreakoutRoomDroppedUser } from '../../store/slices/breakoutRoomSlice';
+import { useAppDispatch } from '../../../store';
+import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
 
 interface IRoomBoxProps {
   roomId: number;
