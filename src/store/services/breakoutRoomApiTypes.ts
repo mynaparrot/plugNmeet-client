@@ -11,6 +11,7 @@ export interface BreakoutRoom {
   id: string;
   title: string;
   duration: number;
+  created: number;
   users: Array<BreakoutRoomUser>;
 }
 
@@ -33,6 +34,7 @@ export interface BreakoutRoomDurationReq {
 export interface JoinRoomReq {
   breakout_room_id: string;
   user_id: string;
+  is_admin: boolean;
 }
 
 export interface JoinRoomRes extends CommonRes {

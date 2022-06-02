@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { Room, Track } from 'livekit-client';
+import { Dialog, Transition } from '@headlessui/react';
+import { toast } from 'react-toastify';
+import copy from 'copy-text-to-clipboard';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
@@ -28,22 +30,13 @@ const BreakoutRoomInvitation = ({
 }: IBreakoutRoomInvitationProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const toastId = useRef<string>(null);
   const receivedInvitationFor = useAppSelector(receivedInvitationForSelector);
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
-
-  useEffect(() => {
-    if (receivedInvitationFor !== '') {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      toastId.current = toast(renderInvitationMsg(), {
-        autoClose: false,
-        closeButton: false,
-        position: 'bottom-right',
-      });
-    }
-    //eslint-disable-next-line
-  }, [receivedInvitationFor]);
+  const [joinLink, setJoinLink] = useState<string>('');
+  const [copyText, setCopyText] = useState<string>(
+    t('breakout-room.copy').toString(),
+  );
+  const [token, setToken] = useState<string>('');
 
   const closeLocalTracks = useCallback(() => {
     currentRoom.localParticipant.tracks.forEach(async (publication) => {
@@ -76,8 +69,15 @@ const BreakoutRoomInvitation = ({
         });
         return;
       }
+      setToken(data.token ?? '');
+    }
+    //eslint-disable-next-line
+  }, [isLoading, data]);
+
+  useEffect(() => {
+    if (token !== '') {
       const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('access_token', data.token ?? '');
+      searchParams.set('access_token', token);
       const url =
         location.protocol +
         '//' +
@@ -87,42 +87,128 @@ const BreakoutRoomInvitation = ({
         searchParams.toString();
 
       const opened = window.open(url, '_blank');
+      setJoinLink(url);
+
       if (!opened) {
+        setJoinLink(url);
         return;
       }
 
-      toast.dismiss(toastId.current ?? '');
       dispatch(updateReceivedInvitationFor(''));
       // we should disable running tracks
       closeLocalTracks();
     }
     //eslint-disable-next-line
-  }, [isLoading, data]);
+  }, [token]);
+
+  const closeModal = () => {
+    dispatch(updateReceivedInvitationFor(''));
+    // we should disable running tracks
+    closeLocalTracks();
+  };
 
   const join = () => {
     joinRoom({
       breakout_room_id: receivedInvitationFor,
       user_id: currentRoom.localParticipant.identity,
+      is_admin: false,
     });
   };
 
-  const renderInvitationMsg = () => {
+  const copyUrl = () => {
+    copy(joinLink);
+    setCopyText(t('breakout-room.copied').toString());
+  };
+
+  const renderModal = () => {
     return (
       <>
-        <span className="text-black">{t('breakout-room.invitation-msg')}</span>
-        <div className="button-section flex items-center justify-start">
-          <button
-            className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
-            onClick={join}
+        <Transition appear show={receivedInvitationFor !== ''} as={Fragment}>
+          <Dialog
+            as="div"
+            className="fixed inset-0 z-[9999] overflow-y-auto"
+            onClose={() => false}
+            static={false}
           >
-            {t('breakout-room.join')}
-          </button>
-        </div>
+            <div className="min-h-screen px-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+              </Transition.Child>
+
+              <span
+                className="inline-block h-screen align-middle"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <div className="inline-block w-full max-w-full h-full p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                  {joinLink !== '' ? (
+                    <button
+                      className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                      type="button"
+                      onClick={() => closeModal()}
+                    >
+                      <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                      <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    </button>
+                  ) : null}
+
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                  >
+                    {t('breakout-room.invitation-title')}
+                  </Dialog.Title>
+                  <hr />
+                  <div className="mt-6">
+                    <span className="text-black">
+                      {t('breakout-room.invitation-msg')}
+                    </span>
+
+                    {joinLink !== '' ? (
+                      <div className="">
+                        <label>{t('breakout-room.join-text-label')}</label>
+                        <input type="text" readOnly={true} value={joinLink} />
+                        <button onClick={copyUrl}>{copyText}</button>
+                      </div>
+                    ) : null}
+
+                    <div className="button-section flex items-center justify-start">
+                      <button
+                        className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+                        onClick={join}
+                      >
+                        {t('breakout-room.join')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
       </>
     );
   };
 
-  return null;
+  return receivedInvitationFor !== '' ? renderModal() : null;
 };
 
 export default React.memo(BreakoutRoomInvitation);

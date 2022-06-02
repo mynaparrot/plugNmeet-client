@@ -5,9 +5,12 @@ import { toast } from 'react-toastify';
 import BroadcastingMsg from './broadcastingMsg';
 import RoomLists from './roomLists';
 import { useEndAllRoomsMutation } from '../../../store/services/breakoutRoomApi';
+import { useAppDispatch } from '../../../store';
+import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 
 const BreakoutRoomLists = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [disable, setDisable] = useState<boolean>(false);
   const [endAllRooms, { isLoading, data }] = useEndAllRoomsMutation();
 
@@ -21,6 +24,7 @@ const BreakoutRoomLists = () => {
         toast(t('breakout-room.end-all-success'), {
           type: 'info',
         });
+        dispatch(updateShowManageBreakoutRoomModal(false));
       } else {
         toast(t(data.msg), {
           type: 'error',

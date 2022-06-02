@@ -300,6 +300,10 @@
     "extend-duration": "Extend duration",
     "duration-extended": "Duration was extended successfully",
     "broadcast-msg": "Broadcast message",
-    "broadcast-msg-success": "Broadcast message was successful"
+    "broadcast-msg-success": "Broadcast message was successful",
+    "invitation-title": "Breakout room Join",
+    "join-text-label": "Join link",
+    "copy": "Copy",
+    "copied": "Copied"
   }
 }

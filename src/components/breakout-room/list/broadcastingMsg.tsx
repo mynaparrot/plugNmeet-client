@@ -19,6 +19,7 @@ const BroadcastingMsg = () => {
         toast(t('breakout-room.broadcast-msg-success'), {
           type: 'info',
         });
+        setMsg('');
       } else {
         toast(t(data.msg), {
           type: 'error',

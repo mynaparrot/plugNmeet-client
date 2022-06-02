@@ -19,6 +19,7 @@
     "@tensorflow-models/body-pix": "^2.2.0",
     "@tensorflow/tfjs": "^3.18.0",
     "axios": "^0.27.2",
+    "copy-text-to-clipboard": "^3.0.1",
     "i18next": "^21.8.4",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",

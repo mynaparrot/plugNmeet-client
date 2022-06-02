@@ -31,7 +31,7 @@ const DurationView = ({ duration }: IDurationViewProps) => {
       timer();
     }, 1000);
 
-    () => {
+    return () => {
       if (interval) {
         clearInterval(interval);
       }

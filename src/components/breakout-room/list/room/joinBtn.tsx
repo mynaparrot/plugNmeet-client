@@ -12,6 +12,7 @@ interface IJoinBtnProps {
 const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
   const { t } = useTranslation();
   const [disable, setDisable] = useState<boolean>(false);
+  const [token, setToken] = useState<string>('');
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
 
   useEffect(() => {
@@ -19,15 +20,23 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
   }, [isLoading]);
 
   useEffect(() => {
-    if (data) {
+    if (!isLoading && data) {
       if (!data.status) {
         toast(t(data.msg), {
           type: 'error',
         });
         return;
       }
+
+      setToken(data.token ?? '');
+    }
+    //eslint-disable-next-line
+  }, [data, isLoading]);
+
+  useEffect(() => {
+    if (token !== '') {
       const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('access_token', data.token ?? '');
+      searchParams.set('access_token', token);
       const url =
         location.protocol +
         '//' +
@@ -44,12 +53,13 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
       }
     }
     //eslint-disable-next-line
-  }, [data]);
+  }, [token]);
 
   const join = () => {
     joinRoom({
       breakout_room_id: breakoutRoomId,
       user_id: store.getState().session.currentUser?.userId ?? '',
+      is_admin: true,
     });
   };
 

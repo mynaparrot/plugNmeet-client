@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { store } from '../../../../store';
 
 interface IDurationProps {
   duration: number;
+  created: number;
 }
-const BreakoutRoomDuration = ({ duration }: IDurationProps) => {
+const BreakoutRoomDuration = ({ duration, created }: IDurationProps) => {
   const [remaining, setRemaining] = useState<string>('00:00');
 
   useEffect(() => {
-    const startedAt = store.getState().session.currentRoom.metadata?.started_at;
-    const start = startedAt ? startedAt * 1000 : Date.now();
+    const start = created * 1000;
     let diff, minutes, seconds;
 
     const timer = () => {
@@ -30,12 +29,12 @@ const BreakoutRoomDuration = ({ duration }: IDurationProps) => {
       timer();
     }, 1000);
 
-    () => {
+    return () => {
       if (interval) {
         clearInterval(interval);
       }
     };
-  }, [duration]);
+  }, [duration, created]);
 
   return (
     <>
