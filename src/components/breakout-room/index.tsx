@@ -30,7 +30,7 @@ const BreakoutRoom = () => {
             onClose={() => false}
             static={false}
           >
-            <div className="min-h-screen px-4 text-center">
+            <div className="min-h-screen px-4 text-center flex items-center justify-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -58,7 +58,7 @@ const BreakoutRoom = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-full h-full p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-5xl h-full p-6 my-8 overflow-hidden text-left transition-all transform bg-white shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"

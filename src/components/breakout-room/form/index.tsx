@@ -159,9 +159,18 @@ const FromElems = () => {
     }
 
     return (
-      <div className="">
-        <label>{t('breakout-room.num-rooms')}</label>
-        <select onChange={(e) => setTotalRooms(Number(e.currentTarget.value))}>
+      <div className="numbers-of-room w-56 mb-4 mr-10">
+        <label
+          className="block text-base text-black mb-1"
+          htmlFor="breakout-room-number"
+        >
+          {t('breakout-room.num-rooms')}
+        </label>
+        <select
+          className="w-full block outline-none border border-solid rounded p-1 h-9"
+          id="breakout-room-number"
+          onChange={(e) => setTotalRooms(Number(e.currentTarget.value))}
+        >
           {options}
         </select>
       </div>
@@ -218,42 +227,59 @@ const FromElems = () => {
   };
 
   return (
-    <div className="">
-      <div className="">
+    <div className="break-out-room-main-area">
+      <div className="row flex flex-wrap justify-start items-end">
         {renderBreakoutRoomNumbers()}
-        <div className="">
-          <label>{t('breakout-room.duration')}</label>
+        <div className="room-durations w-56 mb-4 mr-10">
+          <label
+            className="block text-base text-black mb-1"
+            htmlFor="breakout-room-duration"
+          >
+            {t('breakout-room.duration')}
+          </label>
           <input
+            className="w-full block outline-none border border-solid rounded p-1 h-9"
+            id="breakout-room-duration"
             type="number"
             value={roomDuration}
             onChange={(e) => setRoomDuration(Number(e.currentTarget.value))}
           />
         </div>
-        <div className="">
-          <label>{t('breakout-room.welcome-msg')}</label>
-          <textarea
-            onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
-            value={welcomeMsg}
-          ></textarea>
-        </div>
-        <div className="">
-          <button onClick={randomSelection}>
+        <div className="random-room-select mb-6">
+          <button
+            className="text-base text-primaryColor"
+            onClick={randomSelection}
+          >
             {t('breakout-room.random-selection')}
           </button>
         </div>
-        <div className="" style={{ overflow: 'hidden', clear: 'both' }}>
-          {rooms?.map((room) => {
-            return (
-              <div key={room.id}>
-                <RoomBox
-                  roomId={room.id}
-                  name={room.name}
-                  users={users.filter((user) => user.roomId === room.id)}
-                />
-              </div>
-            );
-          })}
-        </div>
+      </div>
+      <div className="room-welcome-messages w-full mb-4">
+        <label
+          className="block text-base text-black mb-1"
+          htmlFor="breakout-room-welcome"
+        >
+          {t('breakout-room.welcome-msg')}
+        </label>
+        <textarea
+          className="w-full max-w-2xl block outline-none border border-solid rounded p-2 min-h-[60px]"
+          id="breakout-room-welcome"
+          onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
+          value={welcomeMsg}
+        ></textarea>
+      </div>
+      <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
+        {rooms?.map((room) => {
+          return (
+            <div className="room-box-wrap" key={room.id}>
+              <RoomBox
+                roomId={room.id}
+                name={room.name}
+                users={users.filter((user) => user.roomId === room.id)}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="pb-3 pt-4 bg-gray-50 text-right mt-4">
         <button

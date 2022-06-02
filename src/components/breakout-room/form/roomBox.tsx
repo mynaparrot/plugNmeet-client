@@ -33,16 +33,29 @@ export const RoomBox = ({ roomId, name, users }: IRoomBoxProps) => {
   }));
 
   const isActive = canDrop && isOver;
-  let backgroundColor = '#222';
+  let backgroundColor = '#fff';
   if (isActive) {
-    backgroundColor = 'darkgreen';
+    backgroundColor = '#004D90';
   } else if (canDrop) {
-    backgroundColor = 'darkkhaki';
+    backgroundColor = '#24AEF7';
   }
 
   return (
-    <div ref={drop} style={{ backgroundColor }} className="roomBox">
-      {name}
+    <div
+      ref={drop}
+      style={{ backgroundColor }}
+      className="roomBox scrollBar scrollBar2 overflow-hidden overflow-y-auto h-60 w-52 mr-6 mb-6  border border-solid border-black"
+    >
+      <p
+        className={`text-base  px-2 py-1 border-b-2 border-solid
+        ${
+          isActive || canDrop
+            ? 'text-white border-white'
+            : 'text-black border-black'
+        }`}
+      >
+        {name}
+      </p>
       {users.map((user) => {
         return (
           <div key={user.id}>
