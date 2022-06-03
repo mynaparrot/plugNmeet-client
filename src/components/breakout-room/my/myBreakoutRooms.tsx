@@ -53,7 +53,6 @@ const MyBreakoutRooms = () => {
     joinRoom({
       breakout_room_id: myRooms?.room?.id ?? '',
       user_id: store.getState().session.currentUser?.userId ?? '',
-      is_admin: false,
     });
   };
 

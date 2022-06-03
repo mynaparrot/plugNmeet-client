@@ -111,7 +111,6 @@ const BreakoutRoomInvitation = ({
     joinRoom({
       breakout_room_id: receivedInvitationFor,
       user_id: currentRoom.localParticipant.identity,
-      is_admin: false,
     });
   };
 

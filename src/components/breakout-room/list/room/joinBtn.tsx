@@ -59,7 +59,6 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
     joinRoom({
       breakout_room_id: breakoutRoomId,
       user_id: store.getState().session.currentUser?.userId ?? '',
-      is_admin: true,
     });
   };
 
