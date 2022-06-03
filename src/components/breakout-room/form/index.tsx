@@ -233,7 +233,7 @@ const FromElems = () => {
     <div className="break-out-room-main-area">
       <div className="row flex flex-wrap justify-start items-end">
         {renderBreakoutRoomNumbers()}
-        <div className="room-durations w-56 mb-4 mr-10">
+        <div className="room-durations w-56 mb-4">
           <label
             className="block text-base text-black mb-1"
             htmlFor="breakout-room-duration"
@@ -248,7 +248,23 @@ const FromElems = () => {
             onChange={(e) => setRoomDuration(Number(e.currentTarget.value))}
           />
         </div>
-        <div className="random-room-select mb-6">
+      </div>
+      <div className="row flex flex-wrap justify-between items-end">
+        <div className="room-welcome-messages w-full max-w-[30.5rem] mb-4 mr-10">
+          <label
+            className="block text-base text-black mb-1"
+            htmlFor="breakout-room-welcome"
+          >
+            {t('breakout-room.welcome-msg')}
+          </label>
+          <textarea
+            className="w-full block outline-none border border-solid rounded p-2 min-h-[60px]"
+            id="breakout-room-welcome"
+            onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
+            value={welcomeMsg}
+          ></textarea>
+        </div>
+        <div className="random-room-select mb-4 mr-6">
           <button
             className="text-base text-primaryColor"
             onClick={randomSelection}
@@ -256,20 +272,6 @@ const FromElems = () => {
             {t('breakout-room.random-selection')}
           </button>
         </div>
-      </div>
-      <div className="room-welcome-messages w-full mb-4">
-        <label
-          className="block text-base text-black mb-1"
-          htmlFor="breakout-room-welcome"
-        >
-          {t('breakout-room.welcome-msg')}
-        </label>
-        <textarea
-          className="w-full max-w-2xl block outline-none border border-solid rounded p-2 min-h-[60px]"
-          id="breakout-room-welcome"
-          onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
-          value={welcomeMsg}
-        ></textarea>
       </div>
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
         {rooms?.map((room) => {
