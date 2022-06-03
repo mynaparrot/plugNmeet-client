@@ -4,6 +4,7 @@ import {
   BreakoutRoomListsRes,
   CommonRes,
   CreateBreakoutRoomReq,
+  GetMyRoomsRes,
   JoinRoomReq,
   JoinRoomRes,
   SendMsgReq,
@@ -22,7 +23,7 @@ export const breakoutRoomApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['List'],
+  tagTypes: ['List', 'My_Rooms'],
   endpoints: (builder) => ({
     getBreakoutRooms: builder.query<BreakoutRoomListsRes, void>({
       query: () => 'listRooms',
@@ -66,6 +67,10 @@ export const breakoutRoomApi = createApi({
         };
       },
     }),
+    getMyBreakoutRooms: builder.query<GetMyRoomsRes, void>({
+      query: () => `myRooms`,
+      providesTags: ['My_Rooms'],
+    }),
     endSingleRoom: builder.mutation<CommonRes, string>({
       query(breakout_room_id) {
         return {
@@ -96,4 +101,5 @@ export const {
   useEndSingleRoomMutation,
   useEndAllRoomsMutation,
   useSendMsgMutation,
+  useGetMyBreakoutRoomsQuery,
 } = breakoutRoomApi;

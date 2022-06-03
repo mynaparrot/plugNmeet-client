@@ -159,16 +159,14 @@ const BreakoutRoomInvitation = ({
                 leaveTo="opacity-0 scale-95"
               >
                 <div className="inline-block w-full max-w-full h-full p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                  {joinLink !== '' ? (
-                    <button
-                      className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
-                      type="button"
-                      onClick={() => closeModal()}
-                    >
-                      <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                      <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
-                    </button>
-                  ) : null}
+                  <button
+                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                    type="button"
+                    onClick={() => closeModal()}
+                  >
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                  </button>
 
                   <Dialog.Title
                     as="h3"

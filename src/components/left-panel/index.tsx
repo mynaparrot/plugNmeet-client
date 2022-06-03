@@ -9,6 +9,8 @@ import PollsComponent from '../polls';
 import { useGetPollsStatsQuery } from '../../store/services/pollsApi';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateSelectedTabLeftPanel } from '../../store/slices/roomSettingsSlice';
+import { useGetMyBreakoutRoomsQuery } from '../../store/services/breakoutRoomApi';
+import MyBreakoutRooms from '../breakout-room/my/myBreakoutRooms';
 
 interface ILeftPanelProps {
   currentRoom: Room;
@@ -21,6 +23,7 @@ const selectedTabLeftPanelSelector = createSelector(
 
 const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   const { data } = useGetPollsStatsQuery();
+  const { data: myRooms } = useGetMyBreakoutRoomsQuery();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const allow_polls =
@@ -53,9 +56,17 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
       });
     }
 
+    if (myRooms?.status) {
+      items.push({
+        id: 3,
+        title: <>{t('left-panel.breakout-room-tab')}</>,
+        elm: <MyBreakoutRooms />,
+      });
+    }
+
     return items;
     //eslint-disable-next-line
-  }, [data]);
+  }, [data, myRooms]);
 
   const changeTabIndex = (i) => {
     dispatch(updateSelectedTabLeftPanel(i));
@@ -95,7 +106,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
             <Tab.Panel
               key={item.id}
               className={`${
-                item.id === 2
+                item.id === 2 || item.id === 3
                   ? 'polls h-full'
                   : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
               }`}

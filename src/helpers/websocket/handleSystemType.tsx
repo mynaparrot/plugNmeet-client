@@ -19,6 +19,7 @@ import {
 import { pollsApi } from '../../store/services/pollsApi';
 import NewPollMsg from '../../components/extra-pages/newPollMsg';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
+import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 
 export const handleSystemTypeData = (body: IDataMessage) => {
   switch (body.body.type) {
@@ -148,6 +149,6 @@ const handlePollsNotifications = (data: IDataMessage) => {
 };
 
 const handleBreakoutRoomNotifications = (data: IDataMessage) => {
-  console.log(data);
   store.dispatch(updateReceivedInvitationFor(data.body.msg));
+  store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
 };

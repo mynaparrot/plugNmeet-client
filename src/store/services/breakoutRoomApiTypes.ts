@@ -44,3 +44,7 @@ export interface JoinRoomRes extends CommonRes {
 export interface SendMsgReq {
   msg: string;
 }
+
+export interface GetMyRoomsRes extends CommonRes {
+  room?: BreakoutRoom;
+}
