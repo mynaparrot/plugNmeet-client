@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Disclosure } from '@headlessui/react';
 
 import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
@@ -16,7 +16,6 @@ const RoomLists = () => {
     if (data && data.rooms) {
       const sortedRooms = data.rooms.slice();
       sortedRooms.sort((a, b) => b.title.localeCompare(a.title));
-      console.log(sortedRooms);
       return sortedRooms;
     }
   }, [data]);
@@ -29,10 +28,12 @@ const RoomLists = () => {
             <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
               <span>
                 {room.title}
-                <BreakoutRoomDuration
-                  duration={room.duration}
-                  created={room.created}
-                />
+                {room.started ? (
+                  <BreakoutRoomDuration
+                    duration={room.duration}
+                    created={room.created}
+                  />
+                ) : null}
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

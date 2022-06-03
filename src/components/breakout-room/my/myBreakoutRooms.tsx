@@ -11,19 +11,10 @@ import Duration from '../list/room/duration';
 
 const MyBreakoutRooms = () => {
   const { t } = useTranslation();
-  const {
-    data: myRooms,
-    isLoading: isLoadingMyRooms,
-    refetch,
-  } = useGetMyBreakoutRoomsQuery();
+  const { data: myRooms, isLoading: isLoadingMyRooms } =
+    useGetMyBreakoutRoomsQuery();
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
   const [token, setToken] = useState<string>('');
-
-  // better to always fetch to get the latest data
-  useEffect(() => {
-    refetch();
-    //eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -76,12 +67,14 @@ const MyBreakoutRooms = () => {
           <strong>{t('polls.total')}: </strong> {myRooms.room?.users.length}
         </div>
 
-        <div className="status absolute top-0 left-0 text-[10px] text-white">
-          <Duration
-            duration={myRooms.room?.duration ?? 5}
-            created={myRooms.room?.created ?? Date.now()}
-          />
-        </div>
+        {myRooms.room?.started ? (
+          <div className="status absolute top-0 left-0 text-[10px] text-white">
+            <Duration
+              duration={myRooms.room?.duration ?? 5}
+              created={myRooms.room?.created ?? Date.now()}
+            />
+          </div>
+        ) : null}
 
         <div className="btn">
           <button

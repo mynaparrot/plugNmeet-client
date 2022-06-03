@@ -11,6 +11,7 @@ export interface BreakoutRoom {
   id: string;
   title: string;
   duration: number;
+  started: boolean;
   created: number;
   users: Array<BreakoutRoomUser>;
 }
