@@ -12,7 +12,9 @@ import Duration from '../list/room/duration';
 const MyBreakoutRooms = () => {
   const { t } = useTranslation();
   const { data: myRooms, isLoading: isLoadingMyRooms } =
-    useGetMyBreakoutRoomsQuery();
+    useGetMyBreakoutRoomsQuery(undefined, {
+      pollingInterval: 10000,
+    });
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
   const [token, setToken] = useState<string>('');
   const userId = store.getState().session.currentUser?.userId ?? '';

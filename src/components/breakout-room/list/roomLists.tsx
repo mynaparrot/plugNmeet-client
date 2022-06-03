@@ -12,7 +12,9 @@ import ExtendDuration from './room/extendDuration';
 
 const RoomLists = () => {
   const { t } = useTranslation();
-  const { data, isLoading } = useGetBreakoutRoomsQuery();
+  const { data, isLoading } = useGetBreakoutRoomsQuery(undefined, {
+    pollingInterval: 10000,
+  });
 
   const sortedRooms = useMemo(() => {
     if (data && data.rooms) {
