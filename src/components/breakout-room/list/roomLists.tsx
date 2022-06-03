@@ -1,5 +1,6 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Disclosure } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
 import { BreakoutRoom } from '../../../store/services/breakoutRoomApiTypes';
@@ -10,6 +11,7 @@ import JoinBtn from './room/joinBtn';
 import ExtendDuration from './room/extendDuration';
 
 const RoomLists = () => {
+  const { t } = useTranslation();
   const { data, isLoading } = useGetBreakoutRoomsQuery();
 
   const sortedRooms = useMemo(() => {
@@ -33,7 +35,9 @@ const RoomLists = () => {
                     duration={room.duration}
                     created={room.created}
                   />
-                ) : null}
+                ) : (
+                  t('breakout-room.not-started')
+                )}
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

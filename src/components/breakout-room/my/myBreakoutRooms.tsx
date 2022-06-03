@@ -74,7 +74,11 @@ const MyBreakoutRooms = () => {
               created={myRooms.room?.created ?? Date.now()}
             />
           </div>
-        ) : null}
+        ) : (
+          <div className="status absolute top-0 left-0 bg-secondaryColor text-[10px] text-white py-1 px-3 uppercase rounded-br-lg">
+            {t('breakout-room.not-started')}
+          </div>
+        )}
 
         <div className="btn">
           <button

@@ -23,7 +23,6 @@ export const breakoutRoomApi = createApi({
       return headers;
     },
   }),
-  keepUnusedDataFor: 10,
   refetchOnMountOrArgChange: true,
   tagTypes: ['List', 'My_Rooms'],
   endpoints: (builder) => ({

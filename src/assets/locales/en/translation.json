@@ -305,6 +305,7 @@
     "invitation-title": "Breakout room Join",
     "join-text-label": "Join link",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "not-started": "Not started"
   }
 }
