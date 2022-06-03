@@ -15,6 +15,7 @@ const MyBreakoutRooms = () => {
     useGetMyBreakoutRoomsQuery();
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
   const [token, setToken] = useState<string>('');
+  const userId = store.getState().session.currentUser?.userId ?? '';
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -81,6 +82,13 @@ const MyBreakoutRooms = () => {
         )}
 
         <div className="btn">
+          <p className="absolute left-2 bottom-2 text-xs">
+            {myRooms.room?.users.filter(
+              (u) => u.joined === true && u.id === userId,
+            ).length
+              ? t('breakout-room.user-joined')
+              : t('breakout-room.not-joined')}
+          </p>
           <button
             onClick={join}
             className="absolute right-0 bottom-0 transition ease-in bg-primaryColor hover:bg-secondaryColor text-[10px] text-white pt-1 pb-[2px] px-3 uppercase rounded-tl-lg"

@@ -19,6 +19,7 @@ export interface BreakoutRoom {
 export interface BreakoutRoomUser {
   id: string;
   name: string;
+  joined: boolean;
 }
 
 export interface CreateBreakoutRoomReq {

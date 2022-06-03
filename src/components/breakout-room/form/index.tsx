@@ -71,6 +71,7 @@ const FromElems = () => {
           id: p.userId,
           name: p.name,
           roomId: 0,
+          joined: false,
         });
       }
     });
@@ -91,6 +92,7 @@ const FromElems = () => {
         id: p.userId,
         name: p.name,
         roomId: 0,
+        joined: false,
       });
     });
     setUsers(users);

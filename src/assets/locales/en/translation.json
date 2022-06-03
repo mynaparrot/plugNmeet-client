@@ -306,6 +306,8 @@
     "join-text-label": "Join link",
     "copy": "Copy",
     "copied": "Copied",
-    "not-started": "Not started"
+    "not-started": "Not started",
+    "user-joined": "Joined",
+    "not-joined": "Not joined"
   }
 }

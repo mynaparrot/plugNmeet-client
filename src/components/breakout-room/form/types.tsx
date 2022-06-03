@@ -6,6 +6,7 @@ export interface UserType {
   id: string;
   name: string;
   roomId: number;
+  joined: boolean;
 }
 
 export interface RoomType {
