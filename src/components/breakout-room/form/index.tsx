@@ -161,7 +161,7 @@ const FromElems = () => {
     }
 
     return (
-      <div className="numbers-of-room w-56 mb-4 mr-10">
+      <div className="numbers-of-room w-full sm:w-56 mb-4 sm:mr-10">
         <label
           className="block text-base text-black mb-1"
           htmlFor="breakout-room-number"
@@ -233,7 +233,7 @@ const FromElems = () => {
     <div className="break-out-room-main-area">
       <div className="row flex flex-wrap justify-start items-end">
         {renderBreakoutRoomNumbers()}
-        <div className="room-durations w-56 mb-4">
+        <div className="room-durations w-full sm:w-56 mb-4">
           <label
             className="block text-base text-black mb-1"
             htmlFor="breakout-room-duration"
@@ -250,7 +250,7 @@ const FromElems = () => {
         </div>
       </div>
       <div className="row flex flex-wrap justify-between items-end">
-        <div className="room-welcome-messages w-full max-w-[30.5rem] mb-4 mr-10">
+        <div className="room-welcome-messages w-full sm:max-w-[30.5rem] mb-4 sm:mr-10">
           <label
             className="block text-base text-black mb-1"
             htmlFor="breakout-room-welcome"
@@ -276,7 +276,10 @@ const FromElems = () => {
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
         {rooms?.map((room) => {
           return (
-            <div className="room-box-wrap" key={room.id}>
+            <div
+              className="room-box-wrap w-[calc(50%-6px)] m-[3px] sm:m-0 sm:w-auto"
+              key={room.id}
+            >
               <RoomBox
                 roomId={room.id}
                 name={room.name}

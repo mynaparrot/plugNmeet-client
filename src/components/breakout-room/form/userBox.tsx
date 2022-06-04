@@ -22,7 +22,7 @@ const UserBox = ({ name, id }: IUserBoxProps) => {
     <div
       ref={drag}
       style={{ opacity }}
-      className="userBox text-base text-black bg-white border-b border-solid border-black/80 w-full px-2 py-1 cursor-move"
+      className="userBox text-sm sm:text-base text-black bg-white border-b border-solid border-black/80 w-full px-2 py-1 cursor-move"
     >
       {name}
     </div>

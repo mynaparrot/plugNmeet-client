@@ -58,7 +58,7 @@ const BreakoutRoom = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-5xl h-full p-6 my-8 overflow-hidden text-left transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-5xl h-full p-4 md:p-6 my-16 overflow-hidden text-left transition-all transform bg-white shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"

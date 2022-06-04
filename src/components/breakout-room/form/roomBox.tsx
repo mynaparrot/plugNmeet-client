@@ -44,10 +44,10 @@ export const RoomBox = ({ roomId, name, users }: IRoomBoxProps) => {
     <div
       ref={drop}
       style={{ backgroundColor }}
-      className="roomBox scrollBar scrollBar2 overflow-hidden overflow-y-auto h-60 w-[13.75rem] mr-6 mb-6  border border-solid border-black"
+      className="roomBox scrollBar scrollBar2 overflow-hidden overflow-y-auto h-60 w-full sm:w-[13rem] lg:w-[13.2rem] xl:w-[13.75rem] mr-4 lg:mr-6 mb-2 sm:mb-6  border border-solid border-black"
     >
       <p
-        className={`text-base  px-2 py-1 border-b-2 border-solid
+        className={`text-sm sm:text-base  px-2 py-1 border-b-2 border-solid
         ${
           isActive || canDrop
             ? 'text-white border-white'
