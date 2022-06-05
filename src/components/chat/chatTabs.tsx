@@ -136,7 +136,7 @@ const ChatTabs = () => {
   };
 
   return (
-    <div className="">
+    <div className="h-full">
       <Tab.Group
         vertical
         selectedIndex={selectedTabIndex}
@@ -158,7 +158,7 @@ const ChatTabs = () => {
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className="relative h-[calc(100%-45px)]">
+        <Tab.Panels className="relative h-[calc(100%-45px)] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar">
           {items.map((item) => (
             <Tab.Panel key={item.id}>
               <>{item.elm}</>

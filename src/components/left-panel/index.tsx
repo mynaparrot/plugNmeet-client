@@ -79,7 +79,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   return (
     <div
       id="main-left-panel"
-      className="participants-wrapper relative z-10 left-0 top-0 h-full w-[200px] xl:w-[270px] multi-gradient"
+      className="participants-wrapper relative z-10 left-0 top-0 h-full w-[200px] xl:w-[300px] multi-gradient"
     >
       <Tab.Group
         vertical
@@ -92,7 +92,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
               key={item.id}
               className={({ selected }) =>
                 classNames(
-                  'w-full py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
+                  'w-full py-2 text-xs text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
                   selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
                 )
               }

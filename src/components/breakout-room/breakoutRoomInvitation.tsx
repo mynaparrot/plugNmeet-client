@@ -129,7 +129,7 @@ const BreakoutRoomInvitation = ({
             onClose={() => false}
             static={false}
           >
-            <div className="min-h-screen px-4 text-center">
+            <div className="min-h-screen px-4 text-center flex items-end justify-end">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -157,7 +157,7 @@ const BreakoutRoomInvitation = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-full h-full p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-max h-full p-6 my-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
@@ -169,21 +169,33 @@ const BreakoutRoomInvitation = ({
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-base font-medium leading-6 text-gray-900 text-left mb-2"
                   >
                     {t('breakout-room.invitation-title')}
                   </Dialog.Title>
                   <hr />
-                  <div className="mt-6">
-                    <span className="text-black">
+                  <div className="mt-2">
+                    <span className="text-black text-sm">
                       {t('breakout-room.invitation-msg')}
                     </span>
 
                     {joinLink !== '' ? (
-                      <div className="">
-                        <label>{t('breakout-room.join-text-label')}</label>
-                        <input type="text" readOnly={true} value={joinLink} />
-                        <button onClick={copyUrl}>{copyText}</button>
+                      <div className="invite-link">
+                        <label className="text-black text-sm">
+                          {t('breakout-room.join-text-label')}
+                        </label>
+                        <input
+                          type="text"
+                          readOnly={true}
+                          value={joinLink}
+                          className="inline-block outline-none border border-solid rounded p-1 h-7 text-sm mx-1"
+                        />
+                        <button
+                          onClick={copyUrl}
+                          className="text-center py-1 px-3 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+                        >
+                          {copyText}
+                        </button>
                       </div>
                     ) : null}
 

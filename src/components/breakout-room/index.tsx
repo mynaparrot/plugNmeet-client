@@ -75,7 +75,7 @@ const BreakoutRoom = () => {
                     {t('breakout-room.modal-title')}
                   </Dialog.Title>
                   <hr />
-                  <div className="mt-6">
+                  <div className="mt-2">
                     {breakoutRoomIsActive ? (
                       <BreakoutRoomLists />
                     ) : (

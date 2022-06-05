@@ -30,8 +30,8 @@ const RoomLists = () => {
         {({ open }) => (
           <>
             <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
-              <span>
-                {room.title}
+              <p className="flex items-center">
+                {room.title} <span>&nbsp;-&nbsp;</span>
                 {room.started ? (
                   <BreakoutRoomDuration
                     duration={room.duration}
@@ -40,7 +40,7 @@ const RoomLists = () => {
                 ) : (
                   t('breakout-room.not-started')
                 )}
-              </span>
+              </p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`${
@@ -58,9 +58,11 @@ const RoomLists = () => {
                 />
               </svg>
             </Disclosure.Button>
-            <Disclosure.Panel className="px-4 py-2 text-sm text-gray-500">
-              <JoinBtn breakoutRoomId={room.id} />
-              <EndBtn breakoutRoomId={room.id} />
+            <Disclosure.Panel className="px-4 py-6 text-sm text-gray-500">
+              <div className="row flex">
+                <JoinBtn breakoutRoomId={room.id} />
+                <EndBtn breakoutRoomId={room.id} />
+              </div>
               <ExtendDuration breakoutRoomId={room.id} />
               <BreakoutRoomUsers users={room.users} />
             </Disclosure.Panel>
@@ -71,10 +73,21 @@ const RoomLists = () => {
   };
 
   return (
-    <div className="">
-      <>{isLoading ? 'Loading..' : null}</>
+    <div className="breakout-room-list-wrapper min-h-[90px] relative">
+      {isLoading ? (
+        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <div className="lds-ripple">
+            <div className="border-secondaryColor" />
+            <div className="border-secondaryColor" />
+          </div>
+        </div>
+      ) : null}
       {sortedRooms?.map((room) => {
-        return <div key={room.id}> {renderDisclosure(room)} </div>;
+        return (
+          <div className="breakout-room-list-item my-1" key={room.id}>
+            {renderDisclosure(room)}
+          </div>
+        );
       })}
     </div>
   );

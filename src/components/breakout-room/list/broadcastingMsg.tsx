@@ -39,12 +39,17 @@ const BroadcastingMsg = () => {
   };
 
   return (
-    <div className="">
+    <div className="broadcasting-message pb-4 mb-4 border-b border-solid border-primaryColor/50">
       <textarea
         value={msg}
         onChange={(e) => setMsg(e.currentTarget.value)}
+        className="w-full block outline-none border border-solid border-primaryColor rounded p-2 min-h-[60px] mb-2"
       ></textarea>
-      <button onClick={send} disabled={disable}>
+      <button
+        onClick={send}
+        disabled={disable}
+        className="inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
+      >
         {t('breakout-room.broadcast-msg')}
       </button>
     </div>

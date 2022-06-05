@@ -36,8 +36,12 @@ const EndBtn = ({ breakoutRoomId }: IEndBtnProps) => {
   };
 
   return (
-    <div className="">
-      <button className="" onClick={endRoom} disabled={disable}>
+    <div className="end-room-btn">
+      <button
+        className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-brandRed hover:bg-brandRed/90 text-white font-semibold rounded-lg"
+        onClick={endRoom}
+        disabled={disable}
+      >
         {t('breakout-room.end-room')}
       </button>
     </div>
