@@ -11,6 +11,7 @@ import {
   updateUnreadPrivateMsgFrom,
 } from '../../store/slices/roomSettingsSlice';
 import { participantsSelector } from '../../store/slices/participantSlice';
+import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 
 const selectedChatTabSelector = createSelector(
   (state: RootState) => state.roomSettings.selectedChatTab,
@@ -29,6 +30,7 @@ const ChatTabs = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const selectedChatTab = useAppSelector(selectedChatTabSelector);
+  const lastSelectedTab = useStorePreviousInt(selectedChatTab.index);
   const initiatePrivateChat = useAppSelector(initiatePrivateChatSelector);
   const unreadPrivateMsgFrom = useAppSelector(unreadPrivateMsgFromSelector);
   const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
@@ -36,6 +38,7 @@ const ChatTabs = () => {
     new Map(),
   );
   const currentUser = store.getState().session.currentUser;
+  const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
 
   useEffect(() => {
     if (initiatePrivateChat.userId !== '') {
@@ -44,29 +47,29 @@ const ChatTabs = () => {
         initiatePrivateChat.name,
       );
       setPrivateChatUsers(new Map(privateChatUsers));
-    } else {
-      chatMessages.forEach((m) => {
-        if (m.isPrivate) {
-          if (m.from.userId !== currentUser?.userId) {
-            if (!privateChatUsers.has(m.from.userId)) {
-              privateChatUsers.set(m.from.userId, m.from.name ?? '');
+    }
+    chatMessages.forEach((m) => {
+      if (m.isPrivate) {
+        if (m.from.userId !== currentUser?.userId) {
+          if (!privateChatUsers.has(m.from.userId)) {
+            privateChatUsers.set(m.from.userId, m.from.name ?? '');
+            setPrivateChatUsers(new Map(privateChatUsers));
+          }
+        } else if (m.from.userId === currentUser?.userId && m.to) {
+          if (!privateChatUsers.has(m.to)) {
+            const user = participantsSelector.selectById(
+              store.getState(),
+              m.to,
+            );
+            if (user) {
+              privateChatUsers.set(user.userId, user.name);
               setPrivateChatUsers(new Map(privateChatUsers));
-            }
-          } else if (m.from.userId === currentUser?.userId && m.to) {
-            if (!privateChatUsers.has(m.to)) {
-              const user = participantsSelector.selectById(
-                store.getState(),
-                m.to,
-              );
-              if (user) {
-                privateChatUsers.set(user.userId, user.name);
-                setPrivateChatUsers(new Map(privateChatUsers));
-              }
             }
           }
         }
-      });
-    }
+      }
+    });
+
     //eslint-disable-next-line
   }, [initiatePrivateChat, chatMessages]);
 
@@ -110,6 +113,12 @@ const ChatTabs = () => {
     //eslint-disable-next-line
   }, [initiatePrivateChat, items]);
 
+  useEffect(() => {
+    if (selectedChatTab.index !== lastSelectedTab) {
+      setSelectedTabIndex(selectedChatTab.index);
+    }
+  }, [selectedChatTab, lastSelectedTab, items]);
+
   const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ');
   };
@@ -130,7 +139,7 @@ const ChatTabs = () => {
     <div className="">
       <Tab.Group
         vertical
-        selectedIndex={selectedChatTab.index}
+        selectedIndex={selectedTabIndex}
         onChange={changeTabIndex}
       >
         <Tab.List className="flex">
