@@ -22,6 +22,7 @@ export interface IChatMsg {
   time: string;
   isPrivate: boolean;
   from: ICurrentUser;
+  to?: string;
   msg: string;
 }
 

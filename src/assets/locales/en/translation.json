@@ -98,6 +98,7 @@
     "participants-tab": "Participants",
     "polls-tab": "Polls",
     "breakout-room-tab": "Breakout rooms",
+    "public-chat": "Public",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Ask to share Microphone",
@@ -125,7 +126,8 @@
         "lock-send-chat-message": "Lock send chat message",
         "unlock-send-file": "Unlock send file",
         "lock-send-file": "Lock send file",
-        "remove-participant": "Remove participant"
+        "remove-participant": "Remove participant",
+        "private-chat": "Send private message" 
       },
       "notice": {
         "participant-removed": "Participant removed",
@@ -216,6 +218,7 @@
       "lock-whiteboard": "Lock Whiteboard",
       "lock-shared-notepad": "Lock Shared Notepad",
       "lock-chat": "Lock Chat",
+      "lock-private-chat": "Lock private chat",
       "lock-send-message": "Lock send message",
       "lock-chat-file-share": "Lock chat file share",
       "rtmp-title": "RTMP Broadcasting",

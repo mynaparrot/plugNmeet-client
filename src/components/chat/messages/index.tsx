@@ -1,14 +1,33 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { useAppSelector, store } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { IChatMsg } from '../../../store/slices/interfaces/dataMessages';
 import Message from './message';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
 
-const Messages = () => {
+interface IMessagesProps {
+  userId: string;
+}
+const Messages = ({ userId }: IMessagesProps) => {
+  const allMessages = useAppSelector(chatMessagesSelector.selectAll);
   const messageRef = useRef<HTMLDivElement>(null);
-  const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
   const currentUser = store.getState().session.currentUser;
+  const [chatMessages, setChatMessages] = useState<Array<IChatMsg>>([]);
+
+  useEffect(() => {
+    let chatMessages: IChatMsg[] = [];
+    if (userId === 'public') {
+      chatMessages = allMessages.filter((m) => !m.isPrivate);
+    } else {
+      chatMessages = allMessages.filter(
+        (m) => m.from.userId === userId || m.to === userId,
+      );
+    }
+
+    if (chatMessages.length) {
+      setChatMessages(chatMessages);
+    }
+  }, [allMessages, userId]);
 
   useEffect(() => {
     if (messageRef.current) {
@@ -18,7 +37,7 @@ const Messages = () => {
         inline: 'nearest',
       });
     }
-  });
+  }, [chatMessages]);
 
   const render = () => {
     return chatMessages.map((msg) => {

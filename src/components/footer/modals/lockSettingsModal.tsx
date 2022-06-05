@@ -232,6 +232,29 @@ const LockSettingsModal = () => {
             />
           </Switch>
         </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <Switch.Label className="pr-4 w-full">
+            {t('footer.modal.lock-private-chat')}
+          </Switch.Label>
+          <Switch
+            checked={roomLockSettings?.lock_private_chat ?? false}
+            onChange={(e) => updateLockSettings(e, 'privateChat')}
+            className={`${
+              roomLockSettings?.lock_private_chat
+                ? 'bg-primaryColor'
+                : 'bg-gray-200'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            <span
+              className={`${
+                roomLockSettings?.lock_private_chat
+                  ? 'translate-x-6'
+                  : 'translate-x-1'
+              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+            />
+          </Switch>
+        </div>
       </Switch.Group>
     );
   };

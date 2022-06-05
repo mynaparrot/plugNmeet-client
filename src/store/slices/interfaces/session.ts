@@ -99,6 +99,7 @@ interface ILockSettings {
   lock_chat: boolean;
   lock_chat_send_message: boolean;
   lock_chat_file_share: boolean;
+  lock_private_chat: boolean;
   lock_whiteboard: boolean;
   lock_shared_notepad: boolean;
 }
