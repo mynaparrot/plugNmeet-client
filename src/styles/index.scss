@@ -75,6 +75,14 @@ code {
 .scrollBar2::-webkit-scrollbar {
   width: 2px;
 }
+.scrollBar3::-webkit-scrollbar {
+  height: 8px;
+  width: 100%;
+}
+.private-m-tab,
+.private-m-tab .inner {
+  transform: rotateX(180deg);
+}
 
 .scrollBar::-webkit-scrollbar-thumb {
   background-color: $secondaryColor;

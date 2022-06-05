@@ -40,17 +40,17 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
   };
 
   return (
-    <div className="extend-time-wrapper flex items-center my-3">
+    <div className="extend-time-wrapper flex items-center">
       <input
         value={duration}
         onChange={(e) => setDuration(Number(e.currentTarget.value))}
         placeholder={t('breakout-room.extend-duration')}
-        className="w-full max-w-[180px] block outline-none border border-solid rounded py-1 px-2 h-9"
+        className="w-full max-w-[100px] sm:max-w-[140px] block outline-none border border-solid rounded py-1 px-2 h-9"
       />
       <button
         onClick={extendDuration}
         disabled={disable}
-        className="ml-4 text-center py-1 px-3 h-8 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+        className="ml-2 sm:ml-4 w-[120px] text-center py-1 px-3 h-8 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
       >
         {t('breakout-room.extend-duration')}
       </button>

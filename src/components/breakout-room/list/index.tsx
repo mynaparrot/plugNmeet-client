@@ -43,13 +43,15 @@ const BreakoutRoomLists = () => {
       <div className="manage-breakout-room-wrap">
         <BroadcastingMsg />
         <RoomLists />
-        <button
-          className="mt-4 inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
-          onClick={() => endAll()}
-          disabled={disable}
-        >
-          {t('breakout-room.end-all')}
-        </button>
+        <div className="btn flex items-end justify-end">
+          <button
+            className="mt-4 inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
+            onClick={() => endAll()}
+            disabled={disable}
+          >
+            {t('breakout-room.end-all')}
+          </button>
+        </div>
       </div>
     );
   };

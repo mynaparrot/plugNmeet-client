@@ -142,21 +142,26 @@ const ChatTabs = () => {
         selectedIndex={selectedTabIndex}
         onChange={changeTabIndex}
       >
-        <Tab.List className="flex">
-          {items.map((item) => (
-            <Tab
-              key={item.id}
-              className={({ selected }) =>
-                classNames(
-                  'w-full py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
-                  selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
-                  unreadPrivateMsgFrom === item.id ? 'border-[red]' : '',
-                )
-              }
-            >
-              <div className="name relative inline-block">{item.title}</div>
-            </Tab>
-          ))}
+        <Tab.List
+          className={`private-m-tab overflow-x-auto scrollBar scrollBar3 item-${items.length}`}
+        >
+          <div className="inner flex">
+            {items.map((item) => (
+              <Tab
+                key={item.id}
+                className={({ selected }) =>
+                  classNames(
+                    'py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0',
+                    selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
+                    unreadPrivateMsgFrom === item.id ? 'border-[red]' : '',
+                    items.length === 1 ? 'w-full' : 'w-[115px] xl:w-[150px]',
+                  )
+                }
+              >
+                <div className="name relative inline-block">{item.title}</div>
+              </Tab>
+            ))}
+          </div>
         </Tab.List>
         <Tab.Panels className="relative h-[calc(100%-45px)] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar">
           {items.map((item) => (
