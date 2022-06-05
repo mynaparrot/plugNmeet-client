@@ -79,7 +79,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   return (
     <div
       id="main-left-panel"
-      className="participants-wrapper relative z-10 left-0 top-0 h-full w-[200px] xl:w-[300px] multi-gradient"
+      className="participants-wrapper relative z-10 left-0 top-0 h-full w-[270px] xl:w-[300px] multi-gradient"
     >
       <Tab.Group
         vertical

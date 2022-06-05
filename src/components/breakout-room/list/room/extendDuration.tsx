@@ -40,7 +40,7 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
   };
 
   return (
-    <div className="extend-time-wrapper flex items-center">
+    <div className="extend-time-wrapper flex items-center mr-2 mb-2">
       <input
         value={duration}
         onChange={(e) => setDuration(Number(e.currentTarget.value))}

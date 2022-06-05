@@ -60,11 +60,11 @@ const RoomLists = () => {
             </Disclosure.Button>
             <Disclosure.Panel className="sm:px-4 py-6 text-sm text-gray-500">
               <div className="row flex flex-wrap items-center justify-between mb-4">
-                <div className="row flex mb-2 mr-4">
+                <ExtendDuration breakoutRoomId={room.id} />
+                <div className="row flex mb-2">
                   <JoinBtn breakoutRoomId={room.id} />
                   <EndBtn breakoutRoomId={room.id} />
                 </div>
-                <ExtendDuration breakoutRoomId={room.id} />
               </div>
               <BreakoutRoomUsers users={room.users} />
             </Disclosure.Panel>

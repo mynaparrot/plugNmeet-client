@@ -143,7 +143,7 @@ const ChatTabs = () => {
         onChange={changeTabIndex}
       >
         <Tab.List
-          className={`private-m-tab overflow-x-auto scrollBar scrollBar3 item-${items.length}`}
+          className={`private-m-tab relative overflow-x-auto scrollBar scrollBar3 item-${items.length}`}
         >
           <div className="inner flex">
             {items.map((item) => (
