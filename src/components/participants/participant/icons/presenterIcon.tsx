@@ -16,7 +16,7 @@ const PresenterIcon = ({ userId }: IPresenterIconProps) => {
     if (participant?.metadata.is_presenter) {
       return (
         <div className="presenter mr-2 cursor-pointer">
-          <i className="pnm-presenter secondaryColor text-[8px]" />
+          <i className="pnm-presenter secondaryColor text-[10px]" />
         </div>
       );
     }

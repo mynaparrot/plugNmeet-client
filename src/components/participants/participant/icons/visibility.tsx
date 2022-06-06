@@ -14,8 +14,8 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
   const render = () => {
     if (participant?.visibility === 'hidden') {
       return (
-        <div className="visibility mr-2 cursor-pointer">
-          <i className="pnm-eye-slash secondaryColor text-[8px]" />
+        <div className="visibility mr-2 cursor-pointer mt-[2px]">
+          <i className="pnm-eye-slash secondaryColor text-xs" />
         </div>
       );
     }
