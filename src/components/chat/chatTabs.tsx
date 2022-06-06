@@ -152,8 +152,10 @@ const ChatTabs = () => {
                 className={({ selected }) =>
                   classNames(
                     'py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0',
-                    selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
-                    unreadPrivateMsgFrom === item.id ? 'border-[red]' : '',
+                    selected ? 'border-primaryColor' : '',
+                    unreadPrivateMsgFrom === item.id
+                      ? 'border-secondaryColor'
+                      : '',
                     items.length === 1 ? 'w-full' : 'w-[115px] xl:w-[150px]',
                   )
                 }

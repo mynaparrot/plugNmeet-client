@@ -43,9 +43,9 @@ const BreakoutRoomLists = () => {
       <div className="manage-breakout-room-wrap">
         <BroadcastingMsg />
         <RoomLists />
-        <div className="btn flex items-end justify-end">
+        <div className="btn pb-3 pt-4 bg-gray-50 flex items-end justify-end">
           <button
-            className="mt-4 inline-flex justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
             onClick={() => endAll()}
             disabled={disable}
           >

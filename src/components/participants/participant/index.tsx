@@ -3,7 +3,6 @@ import { RemoteParticipant } from 'livekit-client';
 import { toast } from 'react-toastify';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 
 import { IParticipant } from '../../../store/slices/interfaces/participant';
 import Avatar from './avatar';
@@ -12,7 +11,7 @@ import RaiseHandIcon from './icons/raiseHand';
 import MicIcon from './icons/mic';
 import WebcamIcon from './icons/webcam';
 import MenuIcon from './icons/menu';
-import { RootState, store, useAppSelector } from '../../../store';
+import { store } from '../../../store';
 import VisibilityIcon from './icons/visibility';
 import PresenterIcon from './icons/presenterIcon';
 import WaitingApproval from './waitingApproval';
