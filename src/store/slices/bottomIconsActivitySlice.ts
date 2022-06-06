@@ -26,6 +26,7 @@ const initialState: IBottomIconsSlice = {
   showRtmpModal: false,
   showExternalMediaPlayerModal: false,
   showManageWaitingRoomModal: false,
+  showManageBreakoutRoomModal: false,
 
   totalUnreadChatMsgs: 0,
   virtualBackground: defaultBackgroundConfig,
@@ -137,6 +138,12 @@ const bottomIconsSlice = createSlice({
     ) => {
       state.showManageWaitingRoomModal = action.payload;
     },
+    updateShowManageBreakoutRoomModal: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.showManageBreakoutRoomModal = action.payload;
+    },
 
     updateTotalUnreadChatMsgs: (state) => {
       if (!state.isActiveChatPanel) {
@@ -169,6 +176,7 @@ export const {
   updateShowManageWaitingRoomModal,
   updateShowRtmpModal,
   updateShowExternalMediaPlayerModal,
+  updateShowManageBreakoutRoomModal,
   updateScreenWidth,
   updateScreenHeight,
   updateTotalUnreadChatMsgs,

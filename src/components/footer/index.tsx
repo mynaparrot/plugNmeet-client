@@ -13,6 +13,7 @@ import RecordingIcon from './icons/recording';
 import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
+import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 
 interface IFooterProps {
   currentRoom: Room;
@@ -47,6 +48,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
         </div>
 
         <div className="footer-right w-52 hidden sm:flex items-center" />
+        <BreakoutRoomInvitation currentRoom={currentRoom} />
       </div>
     </footer>
   );

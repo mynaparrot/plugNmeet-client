@@ -69,7 +69,7 @@ const onMessage = (event: any) => {
     }
 
     if (data.type === 'USER') {
-      handleUserTypeData(data.body as IChatMsg, data.message_id);
+      handleUserTypeData(data.body as IChatMsg, data.message_id, data.to);
     } else if (data.type === 'SYSTEM') {
       handleSystemTypeData(data);
     } else if (data.type === 'WHITEBOARD') {

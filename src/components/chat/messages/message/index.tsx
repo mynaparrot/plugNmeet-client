@@ -46,7 +46,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
           <Avatar participant={participant} from={body.from} />
           <div className="content w-[calc(100%-2rem)] pt-2">
             <p className="name pl-2 text-sm pb-1">
-              {body.from.name ? body.from.name : participant?.name}{' '}
+              {body.from.name ? body.from.name : participant?.name}
               <span style={{ fontSize: '10px' }}>
                 {participant ? null : ' (offline)'}
               </span>

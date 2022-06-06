@@ -1,25 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
 
-import { IMediaDevice } from './interfaces/roomSettings';
-
-interface IRoomSettings {
-  isShowRoomSettingsModal: boolean;
-  isShowKeyboardShortcuts: boolean;
-
-  audioDevices: Array<IMediaDevice>;
-  videoDevices: Array<IMediaDevice>;
-  selectedAudioDevice: string;
-  selectedVideoDevice: string;
-  playAudioNotification: boolean;
-  activateWebcamsView: boolean;
-  activeScreenSharingView: boolean;
-  allowPlayAudioNotification: boolean;
-  roomAudioVolume: number;
-  roomVideoQuality: VideoQuality;
-
-  selectedTabLeftPanel: number;
-}
+import {
+  IRoomSettings,
+  IMediaDevice,
+  SelectedChatTab,
+  InitiatePrivateChat,
+} from './interfaces/roomSettings';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
@@ -36,6 +23,15 @@ const initialState: IRoomSettings = {
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
   selectedTabLeftPanel: 0,
+  selectedChatTab: {
+    index: 0,
+    userId: 'public',
+  },
+  initiatePrivateChat: {
+    name: '',
+    userId: '',
+  },
+  unreadPrivateMsgFrom: '',
 };
 
 const roomSettingsSlice = createSlice({
@@ -87,6 +83,18 @@ const roomSettingsSlice = createSlice({
     updateSelectedTabLeftPanel: (state, action: PayloadAction<number>) => {
       state.selectedTabLeftPanel = action.payload;
     },
+    updateSelectedChatTab: (state, action: PayloadAction<SelectedChatTab>) => {
+      state.selectedChatTab = action.payload;
+    },
+    updateInitiatePrivateChat: (
+      state,
+      action: PayloadAction<InitiatePrivateChat>,
+    ) => {
+      state.initiatePrivateChat = action.payload;
+    },
+    updateUnreadPrivateMsgFrom: (state, action: PayloadAction<string>) => {
+      state.unreadPrivateMsgFrom = action.payload;
+    },
   },
 });
 
@@ -104,6 +112,9 @@ export const {
   updateRoomAudioVolume,
   updateRoomVideoQuality,
   updateSelectedTabLeftPanel,
+  updateSelectedChatTab,
+  updateInitiatePrivateChat,
+  updateUnreadPrivateMsgFrom,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

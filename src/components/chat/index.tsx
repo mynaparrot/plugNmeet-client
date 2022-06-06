@@ -3,8 +3,8 @@ import { Room } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, store, useAppSelector } from '../../store';
-import Messages from './messages';
 import TextBoxArea from './text-box';
+import ChatTabs from './chatTabs';
 
 interface IChatComponentProps {
   currentRoom: Room;
@@ -56,9 +56,9 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
 
   return (
     <>
-      <div className="h-[calc(100%)] messageModule-wrapper scrollBar relative z-10 right-0 top-0 w-[230px] xl:w-[300px] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto multi-gradient">
-        <div className="all-MessageModule-wrap">
-          <Messages />
+      <div className="h-[calc(100%)] messageModule-wrapper relative z-10 right-0 top-0 w-[230px] xl:w-[300px] multi-gradient">
+        <div className="all-MessageModule-wrap h-full">
+          <ChatTabs />
         </div>
       </div>
       {isRecorder ? (

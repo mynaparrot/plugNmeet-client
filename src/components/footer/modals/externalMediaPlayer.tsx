@@ -3,12 +3,12 @@ import { Transition, Dialog } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
+import ReactPlayer from 'react-player/lazy';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowExternalMediaPlayerModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { toast } from 'react-toastify';
-import ReactPlayer from 'react-player/lazy';
 
 const externalMediaPlayerIsActiveSelector = createSelector(
   (state: RootState) =>

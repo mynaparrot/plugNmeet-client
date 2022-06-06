@@ -7,13 +7,71 @@ import SwitchPresenterMenuItem from './menu-items/switchPresenter';
 import LowerHandMenuItem from './menu-items/lowerHand';
 import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
+import PrivateChatMenuItem from './menu-items/privateChatMenuItem';
+import { createSelector } from '@reduxjs/toolkit';
+import { RootState, store, useAppSelector } from '../../../../store';
 
 interface IMenuIconProps {
   userId: string;
+  name: string;
+  isAdmin: boolean;
   openRemoveParticipantAlert(userId: string, type: string): void;
 }
 
-const MenuIcon = ({ userId, openRemoveParticipantAlert }: IMenuIconProps) => {
+const defaultLockSettingsSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.default_lock_settings,
+  (default_lock_settings) => default_lock_settings,
+);
+
+const MenuIcon = ({
+  userId,
+  name,
+  isAdmin,
+  openRemoveParticipantAlert,
+}: IMenuIconProps) => {
+  const defaultLockSettings = useAppSelector(defaultLockSettingsSelector);
+  const currentUser = store.getState().session.currentUser;
+
+  const renderMenuItems = () => {
+    if (currentUser?.metadata?.is_admin) {
+      return (
+        <>
+          <MicMenuItem userId={userId} />
+          <WebcamMenuItem userId={userId} />
+          <PrivateChatMenuItem userId={userId} name={name} />
+          <SwitchPresenterMenuItem userId={userId} />
+          <LowerHandMenuItem userId={userId} />
+          <LockSettingMenuItem userId={userId} />
+          <RemoveUserMenuItem
+            onOpenAlert={openRemoveParticipantAlert}
+            userId={userId}
+          />
+        </>
+      );
+    }
+
+    // if lock then user won't be able to send private messages to each other
+    if (
+      !currentUser?.metadata?.is_admin &&
+      !defaultLockSettings?.lock_chat &&
+      !defaultLockSettings?.lock_private_chat
+    ) {
+      return <PrivateChatMenuItem userId={userId} name={name} />;
+    }
+
+    // user can always send private messages to admin if chat isn't lock
+    if (
+      !defaultLockSettings?.lock_chat &&
+      defaultLockSettings?.lock_private_chat &&
+      isAdmin
+    ) {
+      return <PrivateChatMenuItem userId={userId} name={name} />;
+    }
+
+    return null;
+  };
+
   const render = () => {
     return (
       <>
@@ -39,15 +97,7 @@ const MenuIcon = ({ userId, openRemoveParticipantAlert }: IMenuIconProps) => {
                   static
                   className="origin-top-right z-10 absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                 >
-                  <MicMenuItem userId={userId} />
-                  <WebcamMenuItem userId={userId} />
-                  <SwitchPresenterMenuItem userId={userId} />
-                  <LowerHandMenuItem userId={userId} />
-                  <LockSettingMenuItem userId={userId} />
-                  <RemoveUserMenuItem
-                    onOpenAlert={openRemoveParticipantAlert}
-                    userId={userId}
-                  />
+                  {renderMenuItems()}
                 </Menu.Items>
               </Transition>
             </>
@@ -57,7 +107,7 @@ const MenuIcon = ({ userId, openRemoveParticipantAlert }: IMenuIconProps) => {
     );
   };
 
-  return <>{render()}</>;
+  return <>{renderMenuItems() !== null ? render() : null}</>;
 };
 
 export default MenuIcon;

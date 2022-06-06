@@ -10,6 +10,8 @@ import roomSettingsSlice from './slices/roomSettingsSlice';
 import whiteboardSlice from './slices/whiteboard';
 import externalMediaPlayerSlice from './slices/externalMediaPlayer';
 import { pollsApi } from './services/pollsApi';
+import breakoutRoomSlice from './slices/breakoutRoomSlice';
+import { breakoutRoomApi } from './services/breakoutRoomApi';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -23,10 +25,15 @@ export const store = configureStore({
     roomSettings: roomSettingsSlice,
     whiteboard: whiteboardSlice,
     externalMediaPlayer: externalMediaPlayerSlice,
+    breakoutRoom: breakoutRoomSlice,
     [pollsApi.reducerPath]: pollsApi.reducer,
+    [breakoutRoomApi.reducerPath]: breakoutRoomApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pollsApi.middleware),
+    getDefaultMiddleware().concat(
+      pollsApi.middleware,
+      breakoutRoomApi.middleware,
+    ),
   devTools: !IS_PRODUCTION,
 });
 

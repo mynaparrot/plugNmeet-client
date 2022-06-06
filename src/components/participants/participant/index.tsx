@@ -21,6 +21,7 @@ interface IParticipantComponentProps {
   participant: IParticipant;
   remoteParticipant?: RemoteParticipant;
 }
+
 const ParticipantComponent = ({
   participant,
   remoteParticipant,
@@ -189,10 +190,11 @@ const ParticipantComponent = ({
               userId={participant.userId}
               remoteParticipant={remoteParticipant}
             />
-            {currentUser?.metadata?.is_admin &&
-            currentUser.userId !== participant.userId ? (
+            {currentUser?.userId !== participant.userId ? (
               <MenuIcon
                 userId={participant.userId}
+                name={participant.name}
+                isAdmin={participant.metadata.is_admin}
                 openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
               />
             ) : null}

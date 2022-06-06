@@ -29,6 +29,7 @@ const initialState: ISession = {
       room_title: 'plugNmeet',
       is_recording: false,
       is_active_rtmp: false,
+      is_breakout_room: false,
       started_at: Date.now(),
       room_features: {
         allow_webcams: true,
@@ -65,6 +66,11 @@ const initialState: ISession = {
         waiting_room_features: {
           is_active: false,
           waiting_room_msg: '',
+        },
+        breakout_room_features: {
+          is_allow: true,
+          is_active: false,
+          allowed_number_rooms: 6,
         },
       },
     },
