@@ -66,7 +66,6 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
   const [lockSendFile, setLockSendFile] = useState<boolean>(false);
   const [showSendFile, setShowSendFile] = useState<boolean>(true);
   const [message, setMessage] = useState<string>('');
-  const [sendTo, setSendTo] = useState<string>('public');
 
   useEffect(() => {
     const metadata = store.getState().session.currentRoom
@@ -76,14 +75,6 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       setShowSendFile(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (initiatePrivateChat.userId !== '') {
-      setSendTo(initiatePrivateChat.userId);
-    } else {
-      setSendTo(selectedChatTab.userId);
-    }
-  }, [selectedChatTab, initiatePrivateChat]);
 
   useEffect(() => {
     if (isLockChatSendMsg) {
@@ -138,7 +129,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
 
     const info: IChatMsg = {
       type: 'CHAT',
-      isPrivate: sendTo !== 'public',
+      isPrivate: selectedChatTab.userId !== 'public',
       time: '',
       message_id: '',
       from: {
@@ -152,7 +143,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
     const data: IDataMessage = {
       type: DataMessageType.USER,
       room_sid: currentRoom.sid,
-      to: sendTo !== 'public' ? sendTo : '',
+      to: selectedChatTab.userId !== 'public' ? selectedChatTab.userId : '',
       message_id: '',
       body: info,
     };
@@ -160,7 +151,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
     if (isSocketConnected()) {
       sendWebsocketMessage(JSON.stringify(data));
       setMessage('');
-      if (initiatePrivateChat.userId !== '') {
+      if (initiatePrivateChat.userId === selectedChatTab.userId) {
         dispatch(
           updateInitiatePrivateChat({
             userId: '',

@@ -20,7 +20,7 @@ const Messages = ({ userId }: IMessagesProps) => {
       chatMessages = allMessages.filter((m) => !m.isPrivate);
     } else {
       chatMessages = allMessages.filter(
-        (m) => m.from.userId === userId || m.to === userId,
+        (m) => m.isPrivate && (m.from.userId === userId || m.to === userId),
       );
     }
 
