@@ -241,7 +241,8 @@
   "whiteboard": {
     "page": "Page {{count}}",
     "converting": "Please wait file conversion in progress",
-    "file-ready": "File is ready"
+    "file-ready": "File is ready",
+    "upload-file": "Upload file"
   },
   "waiting-room": {
     "modal-title": "Manage waiting room",

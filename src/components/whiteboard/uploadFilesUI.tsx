@@ -187,8 +187,8 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
           onClick={() => openFileBrowser()}
           className="w-[90px] text-xs h-7 flex items-center justify-center"
         >
-          <i className="pnm-attachment primaryColor text-[14px] opacity-50 mr-1" />
-          Upload File
+          <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+          {t('whiteboard.upload-file')}
         </button>
       </>
     );
