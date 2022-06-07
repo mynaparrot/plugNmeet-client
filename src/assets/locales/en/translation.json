@@ -287,7 +287,7 @@
   "breakout-room": {
     "modal-title": "Manage breakout rooms",
     "num-rooms": "Number of room",
-    "duration": "Duration",
+    "duration": "Duration (minutes)",
     "welcome-msg": "Welcome message",
     "random-selection": "Random Selection",
     "main-room": "Main room",
@@ -302,7 +302,7 @@
     "end-room": "End room",
     "room-ended": "Room ended",
     "open-tab-error": "Can't open link in new tab",
-    "extend-duration": "Extend duration",
+    "extend-duration": "Extend duration (minutes)",
     "duration-extended": "Duration was extended successfully",
     "broadcast-msg": "Broadcast message",
     "broadcast-msg-success": "Broadcast message was successful",
