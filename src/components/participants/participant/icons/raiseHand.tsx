@@ -14,7 +14,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
     if (participant?.metadata.raised_hand) {
       return (
         <div className="hand mr-2 cursor-pointer">
-          <i className="pnm-raise-hand text-[#ffbd40] text-[8px]" />
+          <i className="pnm-raise-hand text-[#ffbd40] text-[10px]" />
         </div>
       );
     } else {

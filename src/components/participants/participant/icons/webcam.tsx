@@ -16,7 +16,7 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
     if (participant?.videoTracks) {
       return (
         <div className="mic mr-2 cursor-pointer">
-          <i className="pnm-webcam secondaryColor opacity-50 text-[8px]" />
+          <i className="pnm-webcam secondaryColor text-[10px]" />
         </div>
       );
     }

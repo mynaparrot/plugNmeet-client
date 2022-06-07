@@ -52,7 +52,7 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
           {({ open }) => (
             <>
               <Menu.Button>
-                <i className="pnm-mic-unmute secondaryColor opacity-50 text-[8px]" />
+                <i className="pnm-mic-unmute secondaryColor text-[10px]" />
               </Menu.Button>
 
               <Transition
@@ -101,7 +101,7 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
       if (participant.isMuted) {
         return (
           <div className="mic muted mr-2 cursor-pointer">
-            <i className="pnm-mic-mute secondaryColor opacity-50 text-[8px]" />
+            <i className="pnm-mic-mute secondaryColor text-[10px]" />
           </div>
         );
       }
@@ -112,7 +112,7 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
       // for local user don't need
       return (
         <div className="mic mr-2 cursor-pointer">
-          <i className="pnm-mic-unmute secondaryColor opacity-50 text-[8px]" />
+          <i className="pnm-mic-unmute secondaryColor text-[10px]" />
         </div>
       );
     }
