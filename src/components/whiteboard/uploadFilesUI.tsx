@@ -185,9 +185,10 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
         <button
           disabled={isUploading}
           onClick={() => openFileBrowser()}
-          className="w-10 h-7 flex items-center justify-center"
+          className="w-[90px] text-xs h-7 flex items-center justify-center"
         >
-          <i className="pnm-attachment primaryColor text-[14px] opacity-50" />
+          <i className="pnm-attachment primaryColor text-[14px] opacity-50 mr-1" />
+          Upload File
         </button>
       </>
     );
