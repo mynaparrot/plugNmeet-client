@@ -145,27 +145,29 @@ const ChatTabs = () => {
         <Tab.List
           className={`private-m-tab relative overflow-x-auto scrollBar scrollBar3 item-${items.length}`}
         >
-          <div className="inner flex">
-            {items.map((item) => (
-              <Tab
-                key={item.id}
-                className={({ selected }) =>
-                  classNames(
-                    'py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0',
-                    selected ? 'border-primaryColor' : '',
-                    unreadPrivateMsgFrom === item.id
-                      ? 'border-secondaryColor'
-                      : '',
-                    items.length === 1 ? 'w-full' : 'w-[115px] xl:w-[150px]',
-                  )
-                }
-              >
-                <div className="name relative inline-block">{item.title}</div>
-              </Tab>
-            ))}
+          <div className="inner">
+            <div className="inner2 flex">
+              {items.map((item) => (
+                <Tab
+                  key={item.id}
+                  className={({ selected }) =>
+                    classNames(
+                      'py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0',
+                      selected ? 'border-primaryColor' : '',
+                      unreadPrivateMsgFrom === item.id
+                        ? 'border-secondaryColor'
+                        : '',
+                      items.length === 1 ? 'w-full' : 'w-[115px] xl:w-[150px]',
+                    )
+                  }
+                >
+                  <div className="name relative inline-block">{item.title}</div>
+                </Tab>
+              ))}
+            </div>
           </div>
         </Tab.List>
-        <Tab.Panels className="relative h-[calc(100%-55px)] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar">
+        <Tab.Panels className="relative h-full px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar">
           {items.map((item) => (
             <Tab.Panel key={item.id}>
               <>{item.elm}</>

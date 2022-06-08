@@ -79,11 +79,33 @@ code {
   height: 8px;
   width: 100%;
 }
-.private-m-tab,
-.private-m-tab .inner {
-  transform: rotateX(180deg);
+.private-m-tab {
+  position: absolute;
+  transform: rotate(-90deg) scaleX(-1);
+  transform-origin: top left;
+  left: 0;
+  top: 0;
+  width: calc(100vh - 109px);
 }
-
+.private-m-tab .inner {
+  transform: scaleX(-1);
+  overflow: hidden;
+}
+.private-m-tab .inner2 {
+  flex-flow: row-reverse;
+}
+.private-m-tab .inner button {
+  width: max-content;
+  padding: 6px 15px;
+}
+.private-m-tab::before {
+  position: absolute;
+  content: '';
+  height: 4px;
+  width: 100%;
+  bottom: 0;
+  background-color: rgba(224, 226, 231);
+}
 .scrollBar::-webkit-scrollbar-thumb {
   background-color: $secondaryColor;
   border: none;
