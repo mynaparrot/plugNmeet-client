@@ -12,7 +12,9 @@ import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { addToken } from '../../store/slices/sessionSlice';
 import StartupJoinModal from './joinModal';
-import useLivekitConnect from '../../helpers/livekit/hooks/useLivekitConnect';
+import useLivekitConnect, {
+  LivekitInfo,
+} from '../../helpers/livekit/hooks/useLivekitConnect';
 import AudioNotification from './audioNotification';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
@@ -35,7 +37,7 @@ const App = () => {
   // it could be recorder or RTMP bot
   const [isRecorder, setIsRecorder] = useState<boolean>(false);
   const [userTypeClass, setUserTypeClass] = useState('participant');
-  const [livekitToken, setLivekitToken] = useState<string>('');
+  const [livekitInfo, setLivekitInfo] = useState<LivekitInfo>();
   const waitForApproval = useAppSelector(waitingForApprovalSelector);
 
   // we'll require making ready virtual background
@@ -96,8 +98,11 @@ const App = () => {
           // we'll store token that we received from URL
           dispatch(addToken(params.access_token));
 
-          // for livekit need to use generated token
-          setLivekitToken(res.token);
+          // for livekit need to use generated token & host
+          setLivekitInfo({
+            livekit_host: res.livekit_host,
+            token: res.token,
+          });
         } else {
           setError({
             title: t('app.verification-failed-title'),
@@ -170,7 +175,9 @@ const App = () => {
   };
 
   const onCloseStartupModal = () => {
-    startLivekitConnection(livekitToken);
+    if (livekitInfo) {
+      startLivekitConnection(livekitInfo);
+    }
   };
 
   const render = () => {

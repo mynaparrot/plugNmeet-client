@@ -1,5 +1,4 @@
 window.PLUG_N_MEET_SERVER_URL = 'http://localhost:8080';
-window.LIVEKIT_SERVER_URL = 'http://localhost:7880';
 
 // this is helpful for external plugin development where images or other files located
 // in other place.

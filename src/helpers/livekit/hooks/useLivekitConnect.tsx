@@ -10,6 +10,11 @@ import {
 import { IErrorPageProps } from '../../../components/extra-pages/Error';
 import ConnectLivekit from '../ConnectLivekit';
 
+export interface LivekitInfo {
+  livekit_host: string;
+  token: string;
+}
+
 export interface IUseLivekitConnect {
   error: IErrorPageProps | undefined;
   setError: React.Dispatch<React.SetStateAction<IErrorPageProps | undefined>>;
@@ -23,7 +28,7 @@ export interface IUseLivekitConnect {
   screenShareTracks:
     | Map<string, LocalTrackPublication | RemoteTrackPublication>
     | undefined;
-  startLivekitConnection(token: string): void;
+  startLivekitConnection(info: LivekitInfo): void;
 }
 
 const useLivekitConnect = (): IUseLivekitConnect => {
@@ -42,9 +47,9 @@ const useLivekitConnect = (): IUseLivekitConnect => {
   const [screenShareTracks, setScreenShareTracks] =
     useState<Map<string, LocalTrackPublication | RemoteTrackPublication>>();
 
-  const startLivekitConnection = (token: string) => {
+  const startLivekitConnection = (info: LivekitInfo) => {
     new ConnectLivekit(
-      token,
+      info,
       setAudioSubscribers,
       setVideoSubscribers,
       setCurrentRoom,

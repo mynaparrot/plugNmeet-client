@@ -39,6 +39,7 @@ import {
   IDataMessage,
   SystemMsgType,
 } from '../../store/slices/interfaces/dataMessages';
+import { LivekitInfo } from './hooks/useLivekitConnect';
 
 type connectionStatus =
   | 'connecting'
@@ -95,7 +96,7 @@ export default class ConnectLivekit {
 
   protected token: string;
   public _room: Room;
-  private url = (window as any).LIVEKIT_SERVER_URL;
+  private url: string;
   private tokenRenewInterval: any;
 
   private handleParticipant: HandleParticipants;
@@ -105,7 +106,7 @@ export default class ConnectLivekit {
   private handleActiveSpeakers: HandleActiveSpeakers;
 
   constructor(
-    token: string,
+    livekitInfo: LivekitInfo,
     audioSubscribersState: Dispatch<Map<string, RemoteParticipant>>,
     mediaSubscribersState: Dispatch<
       Map<string, LocalParticipant | RemoteParticipant>
@@ -117,7 +118,8 @@ export default class ConnectLivekit {
       Map<string, LocalTrackPublication | RemoteTrackPublication>
     >,
   ) {
-    this.token = token;
+    this.token = livekitInfo.token;
+    this.url = livekitInfo.livekit_host;
     // audio Subscribers state
     this.audioSubscribersState = audioSubscribersState;
     // video Subscribers state
