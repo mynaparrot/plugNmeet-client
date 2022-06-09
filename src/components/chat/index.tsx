@@ -56,7 +56,7 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
 
   return (
     <>
-      <div className="h-[calc(100%)] messageModule-wrapper relative z-10 right-0 top-0 w-[260px] xl:w-[330px] multi-gradient pl-[30px]">
+      <div className="h-[calc(100%)] messageModule-wrapper relative z-10 right-0 top-0 w-[270px] xl:w-[330px] multi-gradient pr-[45px]">
         <div className="all-MessageModule-wrap h-full">
           <ChatTabs />
         </div>
@@ -65,7 +65,7 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
         <div className="w-[100%] h-[1px] hiddenAnimation absolute z-50 bottom-0 bg-gradient-to-r from-primaryColor to-secondaryColor" />
       ) : null}
       {show ? (
-        <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[230px] xl:w-[300px] bg-white">
+        <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[230px] xl:w-[330px] bg-white">
           <TextBoxArea currentRoom={currentRoom} />
         </div>
       ) : null}

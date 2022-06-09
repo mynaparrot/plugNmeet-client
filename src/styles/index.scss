@@ -65,38 +65,49 @@ code {
   );
 }
 
+.scrollBar::-webkit-scrollbar-thumb {
+  background-color: $secondaryColor;
+  border: none;
+  border-radius: 5px;
+}
 .scrollBar::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.15);
 }
-
 .scrollBar::-webkit-scrollbar {
   width: 8px;
 }
 .scrollBar2::-webkit-scrollbar {
   width: 2px;
 }
+.scrollBar4::-webkit-scrollbar {
+  width: 4px;
+}
 .scrollBar3::-webkit-scrollbar {
   height: 8px;
   width: 100%;
 }
 .private-m-tab {
-  position: absolute;
-  transform: rotate(-90deg) scaleX(-1);
-  transform-origin: top left;
-  left: 0;
-  top: 0;
   width: calc(100vh - 109px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: rotate(90deg) scaleX(-1);
+  transform-origin: top right;
 }
 .private-m-tab .inner {
   transform: scaleX(-1);
-  overflow: hidden;
 }
 .private-m-tab .inner2 {
-  flex-flow: row-reverse;
+  overflow: hidden;
+  overflow-x: auto;
 }
+// .private-m-tab .inner2 {
+//   flex-flow: row-reverse;
+// }
 .private-m-tab .inner button {
   width: max-content;
   padding: 6px 15px;
+  text-transform: capitalize;
 }
 .private-m-tab::before {
   position: absolute;
@@ -106,7 +117,13 @@ code {
   bottom: 0;
   background-color: rgba(224, 226, 231);
 }
-.scrollBar::-webkit-scrollbar-thumb {
+.private-m-tab .inner2::-webkit-scrollbar-track {
+  background-color: rgb(224, 226, 231);
+}
+.private-m-tab .inner2::-webkit-scrollbar {
+  height: 5px;
+}
+.private-m-tab .inner2::-webkit-scrollbar-thumb {
   background-color: $secondaryColor;
   border: none;
   border-radius: 5px;
@@ -1187,6 +1204,9 @@ button.next-cam:hover {
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     padding-left: 0;
+  }
+  .private-m-tab {
+    width: calc(100vh - 180px);
   }
 }
 
