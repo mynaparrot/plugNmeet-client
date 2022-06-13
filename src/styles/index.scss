@@ -86,37 +86,37 @@ code {
   height: 8px;
   width: 100%;
 }
-.private-m-tab {
-  width: calc(100vh - 109px);
-  position: absolute;
-  top: 0;
-  right: 0;
-  transform: rotate(90deg) scaleX(-1);
-  transform-origin: top right;
-}
-.private-m-tab .inner {
-  transform: scaleX(-1);
-}
-.private-m-tab .inner2 {
-  overflow: hidden;
-  overflow-x: auto;
-}
+// .private-m-tab {
+//   width: calc(100vh - 109px);
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   transform: rotate(90deg) scaleX(-1);
+//   transform-origin: top right;
+// }
+// .private-m-tab .inner {
+//   transform: scaleX(-1);
+// }
+// .private-m-tab .inner2 {
+//   overflow: hidden;
+//   overflow-x: auto;
+// }
 // .private-m-tab .inner2 {
 //   flex-flow: row-reverse;
 // }
-.private-m-tab .inner button {
-  width: max-content;
-  padding: 6px 15px;
-  text-transform: capitalize;
-}
-.private-m-tab::before {
-  position: absolute;
-  content: '';
-  height: 4px;
-  width: 100%;
-  bottom: 0;
-  background-color: rgba(224, 226, 231);
-}
+// .private-m-tab .inner button {
+//   width: max-content;
+//   padding: 6px 15px;
+//   text-transform: capitalize;
+// }
+// .private-m-tab::before {
+//   position: absolute;
+//   content: '';
+//   height: 4px;
+//   width: 100%;
+//   bottom: 0;
+//   background-color: rgba(224, 226, 231);
+// }
 .private-m-tab .inner2::-webkit-scrollbar-track {
   background-color: rgb(224, 226, 231);
 }
