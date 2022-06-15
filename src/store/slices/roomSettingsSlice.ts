@@ -5,6 +5,7 @@ import {
   IRoomSettings,
   IMediaDevice,
   InitiatePrivateChat,
+  UnreadMsgFromPayload,
 } from './interfaces/roomSettings';
 
 const initialState: IRoomSettings = {
@@ -27,7 +28,7 @@ const initialState: IRoomSettings = {
     name: '',
     userId: '',
   },
-  unreadPrivateMsgFrom: '',
+  unreadMsgFrom: [],
 };
 
 const roomSettingsSlice = createSlice({
@@ -88,8 +89,20 @@ const roomSettingsSlice = createSlice({
     ) => {
       state.initiatePrivateChat = action.payload;
     },
-    updateUnreadPrivateMsgFrom: (state, action: PayloadAction<string>) => {
-      state.unreadPrivateMsgFrom = action.payload;
+    updateUnreadMsgFrom: (
+      state,
+      action: PayloadAction<UnreadMsgFromPayload>,
+    ) => {
+      const tmp = [...state.unreadMsgFrom];
+      if (action.payload.task === 'ADD') {
+        const exist = tmp.filter((id) => id === action.payload.id);
+        if (!exist.length) {
+          tmp.push(action.payload.id);
+          state.unreadMsgFrom = tmp;
+        }
+      } else if (action.payload.task === 'DEL') {
+        state.unreadMsgFrom = tmp.filter((id) => id !== action.payload.id);
+      }
     },
   },
 });
@@ -110,7 +123,7 @@ export const {
   updateSelectedTabLeftPanel,
   updateSelectedChatOption,
   updateInitiatePrivateChat,
-  updateUnreadPrivateMsgFrom,
+  updateUnreadMsgFrom,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

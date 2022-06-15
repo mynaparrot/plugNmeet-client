@@ -18,7 +18,7 @@ export interface IRoomSettings {
   selectedTabLeftPanel: number;
   selectedChatOption: string;
   initiatePrivateChat: InitiatePrivateChat;
-  unreadPrivateMsgFrom: string;
+  unreadMsgFrom: Array<string>;
 }
 
 export interface IMediaDevice {
@@ -29,4 +29,9 @@ export interface IMediaDevice {
 export interface InitiatePrivateChat {
   name: string;
   userId: string;
+}
+
+export interface UnreadMsgFromPayload {
+  task: 'ADD' | 'DEL';
+  id: string;
 }
