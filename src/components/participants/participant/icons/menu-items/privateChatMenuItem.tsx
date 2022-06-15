@@ -3,7 +3,10 @@ import { Menu } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch } from '../../../../../store';
-import { updateInitiatePrivateChat } from '../../../../../store/slices/roomSettingsSlice';
+import {
+  updateInitiatePrivateChat,
+  updateSelectedChatOption,
+} from '../../../../../store/slices/roomSettingsSlice';
 import { updateIsActiveChatPanel } from '../../../../../store/slices/bottomIconsActivitySlice';
 
 interface IChatMenuItemProps {
@@ -22,6 +25,7 @@ const PrivateChatMenuItem = ({ name, userId }: IChatMenuItemProps) => {
         userId,
       }),
     );
+    dispatch(updateSelectedChatOption(userId));
   };
   return (
     <div className="" role="none">

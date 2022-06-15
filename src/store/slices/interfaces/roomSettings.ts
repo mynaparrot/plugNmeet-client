@@ -16,9 +16,9 @@ export interface IRoomSettings {
   roomVideoQuality: VideoQuality;
 
   selectedTabLeftPanel: number;
-  selectedChatTab: SelectedChatTab;
+  selectedChatOption: string;
   initiatePrivateChat: InitiatePrivateChat;
-  unreadPrivateMsgFrom: string;
+  unreadMsgFrom: Array<string>;
 }
 
 export interface IMediaDevice {
@@ -26,12 +26,12 @@ export interface IMediaDevice {
   label: string;
 }
 
-export interface SelectedChatTab {
-  index: number;
-  userId: string;
-}
-
 export interface InitiatePrivateChat {
   name: string;
   userId: string;
+}
+
+export interface UnreadMsgFromPayload {
+  task: 'ADD' | 'DEL';
+  id: string;
 }

@@ -1,44 +1,56 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tab } from '@headlessui/react';
+import { Listbox, Transition } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { chatMessagesSelector } from '../../store/slices/chatMessagesSlice';
 import Messages from './messages';
-import {
-  updateSelectedChatTab,
-  updateUnreadPrivateMsgFrom,
-} from '../../store/slices/roomSettingsSlice';
 import { participantsSelector } from '../../store/slices/participantSlice';
-import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
+import {
+  updateSelectedChatOption,
+  updateUnreadMsgFrom,
+} from '../../store/slices/roomSettingsSlice';
 
-const selectedChatTabSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedChatTab,
-  (selectedChatTab) => selectedChatTab,
+const selectedChatOptionSelector = createSelector(
+  (state: RootState) => state.roomSettings.selectedChatOption,
+  (selectedChatOption) => selectedChatOption,
 );
 const initiatePrivateChatSelector = createSelector(
   (state: RootState) => state.roomSettings.initiatePrivateChat,
   (initiatePrivateChat) => initiatePrivateChat,
 );
-const unreadPrivateMsgFromSelector = createSelector(
-  (state: RootState) => state.roomSettings.unreadPrivateMsgFrom,
-  (unreadPrivateMsgFrom) => unreadPrivateMsgFrom,
+const unreadMsgFromSelector = createSelector(
+  (state: RootState) => state.roomSettings.unreadMsgFrom,
+  (unreadMsgFrom) => unreadMsgFrom,
 );
+
+interface IChatOptions {
+  id: string;
+  title: string;
+}
 
 const ChatTabs = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const selectedChatTab = useAppSelector(selectedChatTabSelector);
-  const lastSelectedTab = useStorePreviousInt(selectedChatTab.index);
   const initiatePrivateChat = useAppSelector(initiatePrivateChatSelector);
-  const unreadPrivateMsgFrom = useAppSelector(unreadPrivateMsgFromSelector);
   const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
   const [privateChatUsers, setPrivateChatUsers] = useState<Map<string, string>>(
     new Map(),
   );
   const currentUser = store.getState().session.currentUser;
-  const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
+  const unreadMsgFrom = useAppSelector(unreadMsgFromSelector);
+  const selectedChatOption = useAppSelector(selectedChatOptionSelector);
+
+  const [chatOptions, setChatOptions] = useState<IChatOptions[]>([
+    {
+      id: 'public',
+      title: t('left-panel.public-chat'),
+    },
+  ]);
+  const [selectedTitle, setSelectedTitle] = useState<string>(
+    t('left-panel.public-chat'),
+  );
 
   useEffect(() => {
     if (initiatePrivateChat.userId !== '') {
@@ -73,106 +85,126 @@ const ChatTabs = () => {
     //eslint-disable-next-line
   }, [initiatePrivateChat, chatMessages]);
 
-  const items = useMemo(() => {
-    const items = [
+  useEffect(() => {
+    const options = [
       {
         id: 'public',
         title: t('left-panel.public-chat'),
-        elm: <Messages userId="public" />,
       },
     ];
-
     privateChatUsers.forEach((u, id) => {
-      items.push({
+      options.push({
         id,
         title: u,
-        elm: <Messages userId={id} />,
       });
     });
-
-    return items;
+    setChatOptions(options);
   }, [privateChatUsers, t]);
 
   useEffect(() => {
-    if (initiatePrivateChat.userId !== '') {
-      let index = 0;
-      items.forEach((item, i) => {
-        if (item.id === initiatePrivateChat.userId) {
-          index = i;
-        }
-      });
-      if (index > 0) {
-        dispatch(
-          updateSelectedChatTab({
-            index: index,
-            userId: initiatePrivateChat.userId,
-          }),
-        );
-      }
+    const tmp = chatOptions.filter((o) => o.id === selectedChatOption);
+    if (tmp.length) {
+      setSelectedTitle(tmp[0].title);
     }
-    //eslint-disable-next-line
-  }, [initiatePrivateChat, items]);
+  }, [selectedChatOption, chatOptions]);
 
-  useEffect(() => {
-    if (selectedChatTab.index !== lastSelectedTab) {
-      setSelectedTabIndex(selectedChatTab.index);
-    }
-  }, [selectedChatTab, lastSelectedTab, items]);
-
-  const classNames = (...classes) => {
-    return classes.filter(Boolean).join(' ');
-  };
-
-  const changeTabIndex = (i) => {
+  const onChange = (id) => {
+    dispatch(updateSelectedChatOption(id));
     dispatch(
-      updateSelectedChatTab({
-        index: i,
-        userId: items[i].id,
+      updateUnreadMsgFrom({
+        task: 'DEL',
+        id: id,
       }),
     );
-    if (items[i].id === unreadPrivateMsgFrom) {
-      dispatch(updateUnreadPrivateMsgFrom(''));
-    }
   };
 
   return (
     <div className="h-full">
-      <Tab.Group
-        vertical
-        selectedIndex={selectedTabIndex}
-        onChange={changeTabIndex}
-      >
-        <Tab.List
-          className={`private-m-tab relative overflow-x-auto scrollBar scrollBar3 item-${items.length}`}
-        >
-          <div className="inner flex">
-            {items.map((item) => (
-              <Tab
-                key={item.id}
-                className={({ selected }) =>
-                  classNames(
-                    'py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0',
-                    selected ? 'border-primaryColor' : '',
-                    unreadPrivateMsgFrom === item.id
-                      ? 'border-secondaryColor'
-                      : '',
-                    items.length === 1 ? 'w-full' : 'w-[115px] xl:w-[150px]',
-                  )
-                }
+      <Listbox value={selectedChatOption} onChange={onChange}>
+        <div className="relative h-10 z-10">
+          <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
+            <span className="block truncate pl-4">{selectedTitle}</span>
+            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              {unreadMsgFrom.length ? (
+                <span className="shake pr-1 -mb-1">
+                  <i className="pnm-chat shake" />
+                </span>
+              ) : null}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                <div className="name relative inline-block">{item.title}</div>
-              </Tab>
-            ))}
-          </div>
-        </Tab.List>
-        <Tab.Panels className="relative h-[calc(100%-55px)] px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar">
-          {items.map((item) => (
-            <Tab.Panel key={item.id}>
-              <>{item.elm}</>
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
+                <path
+                  fillRule="evenodd"
+                  d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100 z-90"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              {chatOptions.map((option) => (
+                <Listbox.Option
+                  key={option.id}
+                  className={({ active }) =>
+                    `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                      active ? 'bg-primaryColor text-white' : 'text-gray-900'
+                    }`
+                  }
+                  value={option.id}
+                >
+                  {({ selected }) => (
+                    <>
+                      <span
+                        className={`flex truncate items-center justify-between ${
+                          selected ? 'font-medium' : 'font-normal'
+                        }`}
+                      >
+                        {option.title}
+                        {unreadMsgFrom.filter((id) => id === option.id)
+                          .length ? (
+                          <span className="shake pr-1">
+                            <i className="pnm-chat shake" />
+                          </span>
+                        ) : null}
+                      </span>
+                      {selected ? (
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-secondaryColor">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </div>
+      </Listbox>
+      <div className="h-[calc(100%-40px)]">
+        <Messages userId={selectedChatOption} />
+      </div>
     </div>
   );
 };

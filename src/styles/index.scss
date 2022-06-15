@@ -25,6 +25,88 @@ code {
     opacity: 0.5;
   }
 }
+@-webkit-keyframes wobble {
+  0% {
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  15% {
+    -webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+    transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+  }
+
+  30% {
+    -webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+    transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+  }
+
+  45% {
+    -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+    transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+  }
+
+  60% {
+    -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+    transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+  }
+
+  75% {
+    -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+    transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+
+  100% {
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+@keyframes wobble {
+  0% {
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  15% {
+    -webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+    transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+  }
+
+  30% {
+    -webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+    transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+  }
+
+  45% {
+    -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+    transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+  }
+
+  60% {
+    -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+    transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+  }
+
+  75% {
+    -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+    transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+
+  100% {
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+.shake {
+  -webkit-animation-name: wobble;
+  animation-name: wobble;
+  -webkit-animation-duration: 0.8s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -webkit-transform-origin: 50% 100%;
+  display: inline-block;
+}
 
 .hiddenAnimation {
   animation: refresh 0.5s infinite;
@@ -65,26 +147,65 @@ code {
   );
 }
 
+.scrollBar::-webkit-scrollbar-thumb {
+  background-color: $secondaryColor;
+  border: none;
+  border-radius: 5px;
+}
 .scrollBar::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.15);
 }
-
 .scrollBar::-webkit-scrollbar {
   width: 8px;
 }
 .scrollBar2::-webkit-scrollbar {
   width: 2px;
 }
+.scrollBar4::-webkit-scrollbar {
+  width: 4px;
+}
 .scrollBar3::-webkit-scrollbar {
   height: 8px;
   width: 100%;
 }
-.private-m-tab,
-.private-m-tab .inner {
-  transform: rotateX(180deg);
+// .private-m-tab {
+//   width: calc(100vh - 109px);
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   transform: rotate(90deg) scaleX(-1);
+//   transform-origin: top right;
+// }
+// .private-m-tab .inner {
+//   transform: scaleX(-1);
+// }
+// .private-m-tab .inner2 {
+//   overflow: hidden;
+//   overflow-x: auto;
+// }
+// .private-m-tab .inner2 {
+//   flex-flow: row-reverse;
+// }
+// .private-m-tab .inner button {
+//   width: max-content;
+//   padding: 6px 15px;
+//   text-transform: capitalize;
+// }
+// .private-m-tab::before {
+//   position: absolute;
+//   content: '';
+//   height: 4px;
+//   width: 100%;
+//   bottom: 0;
+//   background-color: rgba(224, 226, 231);
+// }
+.private-m-tab .inner2::-webkit-scrollbar-track {
+  background-color: rgb(224, 226, 231);
 }
-
-.scrollBar::-webkit-scrollbar-thumb {
+.private-m-tab .inner2::-webkit-scrollbar {
+  height: 5px;
+}
+.private-m-tab .inner2::-webkit-scrollbar-thumb {
   background-color: $secondaryColor;
   border: none;
   border-radius: 5px;
@@ -901,7 +1022,8 @@ button.next-cam:hover {
   left: 0;
   right: 0;
 }
-.showParticipantsPanel .active-speakers-wrap {
+.showParticipantsPanel .active-speakers-wrap,
+.showChatPanel .active-speakers-wrap {
   z-index: 2;
 }
 .breakout-room-list-item .timer {
@@ -1165,6 +1287,9 @@ button.next-cam:hover {
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     padding-left: 0;
+  }
+  .private-m-tab {
+    width: calc(100vh - 180px);
   }
 }
 

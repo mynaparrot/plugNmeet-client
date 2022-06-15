@@ -2,7 +2,7 @@ import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { store } from '../../store';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { updateTotalUnreadChatMsgs } from '../../store/slices/bottomIconsActivitySlice';
-import { updateUnreadPrivateMsgFrom } from '../../store/slices/roomSettingsSlice';
+import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 
 export const handleUserTypeData = (
   body: IChatMsg,
@@ -21,13 +21,26 @@ export const handleUserTypeData = (
     if (!isActiveChatPanel) {
       store.dispatch(updateTotalUnreadChatMsgs());
     }
-    const selectedTab = store.getState().roomSettings.selectedChatTab;
-    if (body.isPrivate) {
-      if (!isActiveChatPanel) {
-        store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
-      } else if (selectedTab.userId !== body.from.userId) {
-        store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
-      }
+    const selectedChatOption = store.getState().roomSettings.selectedChatOption;
+    const currentUser = store.getState().session.currentUser;
+    if (!body.isPrivate && selectedChatOption !== 'public') {
+      store.dispatch(
+        updateUnreadMsgFrom({
+          task: 'ADD',
+          id: 'public',
+        }),
+      );
+    } else if (
+      body.isPrivate &&
+      selectedChatOption !== body.from.userId &&
+      body.from.userId !== currentUser?.userId
+    ) {
+      store.dispatch(
+        updateUnreadMsgFrom({
+          task: 'ADD',
+          id: body.from.userId,
+        }),
+      );
     }
   }
 };

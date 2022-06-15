@@ -24,9 +24,7 @@ const Messages = ({ userId }: IMessagesProps) => {
       );
     }
 
-    if (chatMessages.length) {
-      setChatMessages(chatMessages);
-    }
+    setChatMessages(chatMessages);
   }, [allMessages, userId]);
 
   useEffect(() => {
@@ -49,8 +47,10 @@ const Messages = ({ userId }: IMessagesProps) => {
   };
 
   return (
-    <div className="pb-3" ref={messageRef}>
-      {render()}
+    <div className="relative h-full px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar scrollBar4 messages-item-wrap">
+      <div className="inner" ref={messageRef}>
+        {render()}
+      </div>
     </div>
   );
 };

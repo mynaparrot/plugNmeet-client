@@ -4,8 +4,8 @@ import { VideoQuality } from 'livekit-client';
 import {
   IRoomSettings,
   IMediaDevice,
-  SelectedChatTab,
   InitiatePrivateChat,
+  UnreadMsgFromPayload,
 } from './interfaces/roomSettings';
 
 const initialState: IRoomSettings = {
@@ -23,15 +23,12 @@ const initialState: IRoomSettings = {
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
   selectedTabLeftPanel: 0,
-  selectedChatTab: {
-    index: 0,
-    userId: 'public',
-  },
+  selectedChatOption: 'public',
   initiatePrivateChat: {
     name: '',
     userId: '',
   },
-  unreadPrivateMsgFrom: '',
+  unreadMsgFrom: [],
 };
 
 const roomSettingsSlice = createSlice({
@@ -83,8 +80,8 @@ const roomSettingsSlice = createSlice({
     updateSelectedTabLeftPanel: (state, action: PayloadAction<number>) => {
       state.selectedTabLeftPanel = action.payload;
     },
-    updateSelectedChatTab: (state, action: PayloadAction<SelectedChatTab>) => {
-      state.selectedChatTab = action.payload;
+    updateSelectedChatOption: (state, action: PayloadAction<string>) => {
+      state.selectedChatOption = action.payload;
     },
     updateInitiatePrivateChat: (
       state,
@@ -92,8 +89,20 @@ const roomSettingsSlice = createSlice({
     ) => {
       state.initiatePrivateChat = action.payload;
     },
-    updateUnreadPrivateMsgFrom: (state, action: PayloadAction<string>) => {
-      state.unreadPrivateMsgFrom = action.payload;
+    updateUnreadMsgFrom: (
+      state,
+      action: PayloadAction<UnreadMsgFromPayload>,
+    ) => {
+      const tmp = [...state.unreadMsgFrom];
+      if (action.payload.task === 'ADD') {
+        const exist = tmp.filter((id) => id === action.payload.id);
+        if (!exist.length) {
+          tmp.push(action.payload.id);
+          state.unreadMsgFrom = tmp;
+        }
+      } else if (action.payload.task === 'DEL') {
+        state.unreadMsgFrom = tmp.filter((id) => id !== action.payload.id);
+      }
     },
   },
 });
@@ -112,9 +121,9 @@ export const {
   updateRoomAudioVolume,
   updateRoomVideoQuality,
   updateSelectedTabLeftPanel,
-  updateSelectedChatTab,
+  updateSelectedChatOption,
   updateInitiatePrivateChat,
-  updateUnreadPrivateMsgFrom,
+  updateUnreadMsgFrom,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;
