@@ -122,9 +122,11 @@ const ChatTabs = () => {
           <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
             <span className="block truncate pl-4">{selectedTitle}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <div className="messages-count w-6 h-6 rounded-full bg-primaryColor text-white text-xs flex items-center justify-center mr-2">
-                20
-              </div>
+              {unreadPrivateMsgFrom ? (
+                <span className="shake pr-1 -mb-1">
+                  <i className="pnm-chat shake" />
+                </span>
+              ) : null}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -159,13 +161,15 @@ const ChatTabs = () => {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
+                        className={`flex truncate items-center justify-between ${
                           selected ? 'font-medium' : 'font-normal'
                         }`}
                       >
                         {option.title}
                         {unreadPrivateMsgFrom === option.id ? (
-                          <i className="pnm-chat" />
+                          <span className="shake pr-1">
+                            <i className="pnm-chat shake" />
+                          </span>
                         ) : null}
                       </span>
                       {selected ? (
