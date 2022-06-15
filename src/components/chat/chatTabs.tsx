@@ -122,7 +122,8 @@ const ChatTabs = () => {
           <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
             <span className="block truncate pl-4">{selectedTitle}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              {unreadPrivateMsgFrom ? (
+              {unreadPrivateMsgFrom !== '' &&
+              unreadPrivateMsgFrom !== currentUser?.userId ? (
                 <span className="shake pr-1 -mb-1">
                   <i className="pnm-chat shake" />
                 </span>
@@ -152,7 +153,7 @@ const ChatTabs = () => {
                 <Listbox.Option
                   key={option.id}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
                       active ? 'bg-primaryColor text-white' : 'text-gray-900'
                     }`
                   }

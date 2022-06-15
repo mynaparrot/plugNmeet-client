@@ -22,12 +22,10 @@ export const handleUserTypeData = (
       store.dispatch(updateTotalUnreadChatMsgs());
     }
     const selectedChatOption = store.getState().roomSettings.selectedChatOption;
-    if (body.isPrivate) {
-      if (!isActiveChatPanel) {
-        store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
-      } else if (selectedChatOption !== body.from.userId) {
-        store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
-      }
+    if (!body.isPrivate && selectedChatOption !== 'public') {
+      store.dispatch(updateUnreadPrivateMsgFrom('public'));
+    } else if (body.isPrivate && selectedChatOption !== body.from.userId) {
+      store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
     }
   }
 };
