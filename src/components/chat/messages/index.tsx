@@ -24,9 +24,7 @@ const Messages = ({ userId }: IMessagesProps) => {
       );
     }
 
-    if (chatMessages.length) {
-      setChatMessages(chatMessages);
-    }
+    setChatMessages(chatMessages);
   }, [allMessages, userId]);
 
   useEffect(() => {

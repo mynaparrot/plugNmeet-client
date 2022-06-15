@@ -21,11 +21,11 @@ export const handleUserTypeData = (
     if (!isActiveChatPanel) {
       store.dispatch(updateTotalUnreadChatMsgs());
     }
-    const selectedTab = store.getState().roomSettings.selectedChatTab;
+    const selectedChatOption = store.getState().roomSettings.selectedChatOption;
     if (body.isPrivate) {
       if (!isActiveChatPanel) {
         store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
-      } else if (selectedTab.userId !== body.from.userId) {
+      } else if (selectedChatOption !== body.from.userId) {
         store.dispatch(updateUnreadPrivateMsgFrom(body.from.userId));
       }
     }

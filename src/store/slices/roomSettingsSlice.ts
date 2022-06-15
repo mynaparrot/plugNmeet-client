@@ -4,7 +4,7 @@ import { VideoQuality } from 'livekit-client';
 import {
   IRoomSettings,
   IMediaDevice,
-  SelectedChatTab,
+  SelectedChatOption,
   InitiatePrivateChat,
 } from './interfaces/roomSettings';
 
@@ -23,10 +23,7 @@ const initialState: IRoomSettings = {
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
   selectedTabLeftPanel: 0,
-  selectedChatTab: {
-    index: 0,
-    userId: 'public',
-  },
+  selectedChatOption: 'public',
   initiatePrivateChat: {
     name: '',
     userId: '',
@@ -83,8 +80,8 @@ const roomSettingsSlice = createSlice({
     updateSelectedTabLeftPanel: (state, action: PayloadAction<number>) => {
       state.selectedTabLeftPanel = action.payload;
     },
-    updateSelectedChatTab: (state, action: PayloadAction<SelectedChatTab>) => {
-      state.selectedChatTab = action.payload;
+    updateSelectedChatOption: (state, action: PayloadAction<string>) => {
+      state.selectedChatOption = action.payload;
     },
     updateInitiatePrivateChat: (
       state,
@@ -112,7 +109,7 @@ export const {
   updateRoomAudioVolume,
   updateRoomVideoQuality,
   updateSelectedTabLeftPanel,
-  updateSelectedChatTab,
+  updateSelectedChatOption,
   updateInitiatePrivateChat,
   updateUnreadPrivateMsgFrom,
 } = roomSettingsSlice.actions;

@@ -22,7 +22,6 @@ import {
 } from '../../../helpers/websocket';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
-import { updateInitiatePrivateChat } from '../../../store/slices/roomSettingsSlice';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
@@ -44,21 +43,16 @@ const isLockSendFileSelector = createSelector(
   (lock_chat_file_share) => lock_chat_file_share,
 );
 
-const selectedChatTabSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedChatTab,
-  (selectedChatTab) => selectedChatTab,
-);
-const initiatePrivateChatSelector = createSelector(
-  (state: RootState) => state.roomSettings.initiatePrivateChat,
-  (initiatePrivateChat) => initiatePrivateChat,
+const selectedChatOptionSelector = createSelector(
+  (state: RootState) => state.roomSettings.selectedChatOption,
+  (selectedChatOption) => selectedChatOption,
 );
 
 const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
   const isChatServiceReady = useAppSelector(isChatServiceReadySelector);
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
-  const selectedChatTab = useAppSelector(selectedChatTabSelector);
-  const initiatePrivateChat = useAppSelector(initiatePrivateChatSelector);
+  const selectedChatOption = useAppSelector(selectedChatOptionSelector);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -129,7 +123,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
 
     const info: IChatMsg = {
       type: 'CHAT',
-      isPrivate: selectedChatTab.userId !== 'public',
+      isPrivate: selectedChatOption !== 'public',
       time: '',
       message_id: '',
       from: {
@@ -143,7 +137,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
     const data: IDataMessage = {
       type: DataMessageType.USER,
       room_sid: currentRoom.sid,
-      to: selectedChatTab.userId !== 'public' ? selectedChatTab.userId : '',
+      to: selectedChatOption !== 'public' ? selectedChatOption : '',
       message_id: '',
       body: info,
     };
@@ -151,14 +145,6 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
     if (isSocketConnected()) {
       sendWebsocketMessage(JSON.stringify(data));
       setMessage('');
-      if (initiatePrivateChat.userId === selectedChatTab.userId) {
-        dispatch(
-          updateInitiatePrivateChat({
-            userId: '',
-            name: '',
-          }),
-        );
-      }
     }
   };
 

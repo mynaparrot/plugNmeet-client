@@ -4,12 +4,7 @@ import { Room } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { RootState, store, useAppSelector } from '../../../store';
 import {
   isSocketConnected,
   sendWebsocketMessage,
@@ -20,7 +15,6 @@ import {
   IDataMessage,
 } from '../../../store/slices/interfaces/dataMessages';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
-import { updateInitiatePrivateChat } from '../../../store/slices/roomSettingsSlice';
 
 interface IFileSendProps {
   isChatServiceReady: boolean;
@@ -28,13 +22,9 @@ interface IFileSendProps {
   currentRoom: Room;
 }
 
-const selectedChatTabSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedChatTab,
-  (selectedChatTab) => selectedChatTab,
-);
-const initiatePrivateChatSelector = createSelector(
-  (state: RootState) => state.roomSettings.initiatePrivateChat,
-  (initiatePrivateChat) => initiatePrivateChat,
+const selectedChatOptionSelector = createSelector(
+  (state: RootState) => state.roomSettings.selectedChatOption,
+  (selectedChatOption) => selectedChatOption,
 );
 
 const FileSend = ({
@@ -44,11 +34,8 @@ const FileSend = ({
 }: IFileSendProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const [files, setFiles] = useState<Array<File>>();
-  const selectedChatTab = useAppSelector(selectedChatTabSelector);
-  const initiatePrivateChat = useAppSelector(initiatePrivateChatSelector);
-  const [sendTo, setSendTo] = useState<string>('public');
+  const selectedChatOption = useAppSelector(selectedChatOptionSelector);
 
   const chat_features =
     store.getState().session.currentRoom.metadata?.room_features.chat_features;
@@ -74,14 +61,6 @@ const FileSend = ({
     }
     //eslint-disable-next-line
   }, [result]);
-
-  useEffect(() => {
-    if (initiatePrivateChat.userId !== '') {
-      setSendTo(initiatePrivateChat.userId);
-    } else {
-      setSendTo(selectedChatTab.userId);
-    }
-  }, [selectedChatTab, initiatePrivateChat]);
 
   const openFileBrowser = () => {
     if (!isUploading) {
@@ -110,7 +89,7 @@ const FileSend = ({
 
     const info: IChatMsg = {
       type: 'CHAT',
-      isPrivate: sendTo !== 'public',
+      isPrivate: selectedChatOption !== 'public',
       time: '',
       message_id: '',
       from: {
@@ -124,20 +103,12 @@ const FileSend = ({
     const data: IDataMessage = {
       type: DataMessageType.USER,
       room_sid: currentRoom.sid,
-      to: sendTo !== 'public' ? sendTo : '',
+      to: selectedChatOption !== 'public' ? selectedChatOption : '',
       message_id: '',
       body: info,
     };
 
     sendWebsocketMessage(JSON.stringify(data));
-    if (initiatePrivateChat.userId !== '') {
-      dispatch(
-        updateInitiatePrivateChat({
-          userId: '',
-          name: '',
-        }),
-      );
-    }
   };
 
   const render = () => {
