@@ -118,10 +118,13 @@ const ChatTabs = () => {
   return (
     <div className="h-full">
       <Listbox value={selectedChatOption} onChange={onChange}>
-        <div className="relative mt-1">
-          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-            <span className="block truncate">{selectedTitle}</span>
+        <div className="relative h-10 z-10">
+          <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
+            <span className="block truncate pl-4">{selectedTitle}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              <div className="messages-count w-6 h-6 rounded-full bg-primaryColor text-white text-xs flex items-center justify-center mr-2">
+                20
+              </div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -142,13 +145,13 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {chatOptions.map((option) => (
                 <Listbox.Option
                   key={option.id}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                      active ? 'bg-primaryColor text-white' : 'text-gray-900'
                     }`
                   }
                   value={option.id}
@@ -166,7 +169,7 @@ const ChatTabs = () => {
                         ) : null}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-secondaryColor">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-5"
@@ -191,7 +194,7 @@ const ChatTabs = () => {
           </Transition>
         </div>
       </Listbox>
-      <div className="">
+      <div className="h-[calc(100%-40px)]">
         <Messages userId={selectedChatOption} />
       </div>
     </div>

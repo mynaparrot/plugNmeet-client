@@ -940,7 +940,8 @@ button.next-cam:hover {
   left: 0;
   right: 0;
 }
-.showParticipantsPanel .active-speakers-wrap {
+.showParticipantsPanel .active-speakers-wrap,
+.showChatPanel .active-speakers-wrap {
   z-index: 2;
 }
 .breakout-room-list-item .timer {
