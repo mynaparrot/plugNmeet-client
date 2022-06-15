@@ -26,11 +26,6 @@ export interface IMediaDevice {
   label: string;
 }
 
-export interface SelectedChatOption {
-  id: string;
-  title: string;
-}
-
 export interface InitiatePrivateChat {
   name: string;
   userId: string;

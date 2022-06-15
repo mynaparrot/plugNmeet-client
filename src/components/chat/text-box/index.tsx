@@ -5,12 +5,7 @@ import { Room } from 'livekit-client';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useAppSelector,
-  RootState,
-  store,
-  useAppDispatch,
-} from '../../../store';
+import { useAppSelector, RootState, store } from '../../../store';
 import {
   DataMessageType,
   IChatMsg,
@@ -54,7 +49,6 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
   const [lockSendFile, setLockSendFile] = useState<boolean>(false);

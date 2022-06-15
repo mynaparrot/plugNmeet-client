@@ -4,7 +4,6 @@ import { VideoQuality } from 'livekit-client';
 import {
   IRoomSettings,
   IMediaDevice,
-  SelectedChatOption,
   InitiatePrivateChat,
 } from './interfaces/roomSettings';
 
