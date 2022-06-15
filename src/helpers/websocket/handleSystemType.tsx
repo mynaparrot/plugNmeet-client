@@ -65,7 +65,7 @@ const handleSendChatMsg = (mainBody: IDataMessage) => {
       const data: IDataMessage = {
         type: DataMessageType.USER,
         body,
-        to: mainBody.body.from.sid,
+        to: mainBody.body.from.userId,
         room_sid: session.currentRoom.sid,
         message_id: '',
       };
