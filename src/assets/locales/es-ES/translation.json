@@ -97,6 +97,8 @@
     "reject": "Reject",
     "participants-tab": "Participants",
     "polls-tab": "Polls",
+    "breakout-room-tab": "Breakout rooms",
+    "public-chat": "Public chat",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Pedir compartir Micrófono",
@@ -124,7 +126,8 @@
         "lock-send-chat-message": "Bloquear enviar mensaje de chat",
         "unlock-send-file": "Desbloquear enviar archivo",
         "lock-send-file": "Bloquear enviar archivo",
-        "remove-participant": "Quitar participante"
+        "remove-participant": "Quitar participante",
+        "private-chat": "Send private message"
       },
       "notice": {
         "participant-removed": "Participante eliminado",
@@ -187,7 +190,8 @@
       "leave-webcam": "Dejar cámara web",
       "start-external-media-player": "Start external Media Player",
       "stop-external-media-player": "Stop external Media Player",
-      "manage-waiting-room": "Manage waiting room"
+      "manage-waiting-room": "Manage waiting room",
+      "manage-breakout-room": "Manage breakout room"
     },
     "notice": {
       "already-active-screen-sharing": "La sesión ya tiene un uso compartido de pantalla activo",
@@ -214,6 +218,7 @@
       "lock-whiteboard": "Lock Whiteboard",
       "lock-shared-notepad": "Lock Shared Notepad",
       "lock-chat": "Bloquear chat",
+      "lock-private-chat": "Lock private chat",
       "lock-send-message": "Bloquear enviar mensaje",
       "lock-chat-file-share": "Bloquear el uso compartido de archivos de chat",
       "rtmp-title": "Transmisión RTMP",
@@ -236,7 +241,8 @@
   "whiteboard": {
     "page": "Page {{count}}",
     "converting": "Please wait file conversion in progress",
-    "file-ready": "File is ready"
+    "file-ready": "File is ready",
+    "upload-file": "Upload file"
   },
   "waiting-room": {
     "modal-title": "Manage waiting room",
@@ -277,5 +283,35 @@
     "end-poll-success": "Poll was ended successfully",
     "publish-result": "Publish result",
     "total": "Total"
+  },
+  "breakout-room": {
+    "modal-title": "Manage breakout rooms",
+    "num-rooms": "Number of room",
+    "duration": "Duration (minutes)",
+    "welcome-msg": "Welcome message",
+    "random-selection": "Random Selection",
+    "main-room": "Main room",
+    "new-room": "Room {{num}}",
+    "start": "Start breakout rooms",
+    "rooms-created": "Rooms created successfully",
+    "invitation-msg": "You has been invited to join breakout room",
+    "join": "Join",
+    "need-one-user": "Need at least one user in any breakout room",
+    "end-all": "End all rooms",
+    "end-all-success": "All rooms are ended",
+    "end-room": "End room",
+    "room-ended": "Room ended",
+    "open-tab-error": "Can't open link in new tab",
+    "extend-duration": "Extend duration (minutes)",
+    "duration-extended": "Duration was extended successfully",
+    "broadcast-msg": "Broadcast message",
+    "broadcast-msg-success": "Broadcast message was successful",
+    "invitation-title": "Breakout room Join",
+    "join-text-label": "Join link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "not-started": "Not started",
+    "user-joined": "Joined",
+    "not-joined": "Not joined"
   }
 }
