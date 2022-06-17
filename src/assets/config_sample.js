@@ -8,7 +8,7 @@ window.PLUG_N_MEET_SERVER_URL = 'http://localhost:8080';
 // window.CUSTOM_LOGO = '';
 
 //With Dynacast dynamically pauses video layers that are not being consumed by any subscribers, significantly reducing publishing CPU and bandwidth usage.
-Window.ENABLE_DYNACAST = true;
+window.ENABLE_DYNACAST = true;
 
 //When using simulcast, LiveKit will publish up to three versions of the stream at various resolutions. Client can pickup most appropriate one.
 window.ENABLE_SIMULCAST = true;
