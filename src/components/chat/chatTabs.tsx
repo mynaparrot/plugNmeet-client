@@ -123,7 +123,7 @@ const ChatTabs = () => {
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative h-10 z-10">
           <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
-            <span className="block truncate pl-4 md:pl-8">{selectedTitle}</span>
+            <span className="block truncate pl-4 md:pl-6">{selectedTitle}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               {unreadMsgFrom.length ? (
                 <span className="shake pr-1 -mb-1">
