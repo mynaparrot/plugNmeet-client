@@ -11,6 +11,7 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateSelectedTabLeftPanel } from '../../store/slices/roomSettingsSlice';
 import { useGetMyBreakoutRoomsQuery } from '../../store/services/breakoutRoomApi';
 import MyBreakoutRooms from '../breakout-room/my/myBreakoutRooms';
+import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 interface ILeftPanelProps {
   currentRoom: Room;
@@ -76,12 +77,19 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
     return classes.filter(Boolean).join(' ');
   };
 
+  const closePanel = () => {
+    dispatch(updateIsActiveParticipantsPanel(false));
+  };
+
   return (
     <div
       id="main-left-panel"
       className="participants-wrapper relative z-10 left-0 top-0 h-full w-[270px] xl:w-[300px] multi-gradient"
     >
-      <div className="hidden md:inline-block close absolute -right-[14px] top-1 w-7 h-7 rounded-full border border-solid border-primaryColor bg-white cursor-pointer">
+      <div
+        className="hidden md:inline-block close absolute -right-[14px] top-1 w-7 h-7 rounded-full border border-solid border-primaryColor bg-white cursor-pointer"
+        onClick={closePanel}
+      >
         <span className="inline-block w-5 h-[1px] bg-primaryColor absolute rotate-45 top-[13px] left-[3px]"></span>
         <span className="inline-block w-5 h-[1px] bg-primaryColor absolute -rotate-45 top-[13px] right-[3px]"></span>
       </div>
