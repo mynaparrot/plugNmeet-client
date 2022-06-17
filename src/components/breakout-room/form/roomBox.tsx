@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 
-import '../style.scss';
 import UserBox from './userBox';
 import { UserType, ItemTypes } from './types';
 import { useAppDispatch } from '../../../store';
