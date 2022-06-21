@@ -199,13 +199,15 @@ const ParticipantComponent = ({
               />
             ) : null}
           </div>
-          <div className="approve-wrap absolute right-0 top-5">
-            <WaitingApproval
-              userId={participant.userId}
-              name={participant.name}
-              openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
-            />
-          </div>
+          {currentUser?.metadata?.is_admin ? (
+            <div className="approve-wrap absolute right-0 top-5">
+              <WaitingApproval
+                userId={participant.userId}
+                name={participant.name}
+                openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+              />
+            </div>
+          ) : null}
         </div>
       </li>
       {removeParticipantAlertModal()}
