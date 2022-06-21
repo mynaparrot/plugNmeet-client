@@ -160,6 +160,11 @@ ul.pagination li.active {
     color: #fff;
 }
 
+ul.pagination button:disabled{
+    background-color: #c7ddf3;
+    color: #171616;
+}
+
 .join-area a {
     font-size: 16px;
     text-decoration: none;
