@@ -157,7 +157,7 @@ async function sendAPIRequest(path, body) {
         });
         return res.data;
     } catch (e) {
-        output.msg = e.response;
+        output.msg = e.message;
     }
 
     return output;
