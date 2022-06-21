@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" type="text/css" href="/assets/lti/css/style.css"/>
+</head>
+<body>
+<div class="plugnmeet-lti">
+    <div class="container">
+        <div class="column-full join-area">
+            <a href="#" class="join">Join</a>
+            <a href="#" class="end" style="display: none">End</a>
+        </div>
+        <div class="column column-full">
+            <h1 class="headline">Recordings</h1>
+            <div class="br">
+                <div class="br-inner"></div>
+            </div>
+            <div class="recording-table">
+                <div class="table-inner">
+                    <div class="table-head">
+                        <div class="recording-date"><strong>Recording date</strong></div>
+                        <div class="meeting-date"><strong>Meeting date</strong></div>
+                        <div class="file-size"><strong>File size (MB)</strong></div>
+                        <div class="action"></div>
+                    </div>
+                    <div class="table-item">
+                        <div class="recording-date">225/02/2022, 09:45:25</div>
+                        <div class="meeting-date">225/02/2022, 09:45:25</div>
+                        <div class="file-size">1.6MB</div>
+                        <div class="action">
+                            <a href="#" class="download">Download</a>
+                            <a href="#" class="delete">Delete</a>
+                        </div>
+                    </div>
+                    <div class="table-item">
+                        <div class="recording-date">225/02/2022, 09:45:25</div>
+                        <div class="meeting-date">225/02/2022, 09:45:25</div>
+                        <div class="file-size">1.6MB</div>
+                        <div class="action">
+                            <a href="#" class="download">Download</a>
+                            <a href="#" class="delete">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul class="pagination">
+            <button>Prev</button>
+            <li>1</li>
+            <li class="active">2</li>
+            <li>3</li>
+            <li>4</li>
+            <button>Next</button>
+        </ul>
+    </div>
+</div>
+<script>
+    const TOKEN = '{{.Token}}';
+    const IS_ADMIN= {{.IsAdmin}};
+</script>
+
+<script src="/assets/config.js"></script>
+<script src="/assets/lti/js/axios.min.js"></script>
+<script src="/assets/lti/js/v1.js"></script>
+</body>
+</html>
