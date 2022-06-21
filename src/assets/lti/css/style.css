@@ -160,7 +160,7 @@ ul.pagination li.active {
     color: #fff;
 }
 
-ul.pagination button:disabled{
+ul.pagination button:disabled {
     background-color: #c7ddf3;
     color: #171616;
 }
