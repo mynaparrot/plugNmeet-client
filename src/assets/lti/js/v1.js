@@ -203,6 +203,7 @@ function displayRecordings(recordings) {
 function showPagination() {
   currentPage = 1;
   document.querySelector('.pagination').style.display = '';
+  paginate(currentPage);
 }
 
 function paginate(currentPage) {

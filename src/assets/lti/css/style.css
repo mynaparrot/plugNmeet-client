@@ -163,6 +163,8 @@ ul.pagination li.active {
 ul.pagination button:disabled {
     background-color: #c7ddf3;
     color: #171616;
+    cursor: default;
+    border: none;
 }
 
 .join-area a {
