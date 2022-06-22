@@ -13,7 +13,7 @@ window.addEventListener('load', async () => {
     }, 1000 * 60 * 5);
   }
 
-  // intial call
+  // initial call
   fetchRecordings();
 
   document.querySelector('.join').addEventListener('click', (e) => {
