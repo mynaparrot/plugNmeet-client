@@ -1,7 +1,7 @@
 let isShowingPagination = false,
   totalRecordings = 0,
   currentPage = 1,
-  limitPerPage = 20,
+  limitPerPage = 10,
   showPre = false,
   showNext = true;
 
@@ -80,7 +80,7 @@ async function isSessionActive() {
   }
 }
 
-async function fetchRecordings(from = 0, limit = 20, order_by = 'DESC') {
+async function fetchRecordings(from = 0, limit = 10, order_by = 'DESC') {
   const res = await sendAPIRequest('/recording/fetch', {
     from,
     limit,
