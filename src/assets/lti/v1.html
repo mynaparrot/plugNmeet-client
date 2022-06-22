@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" type="text/css" href="/assets/lti/css/style.css"/>
+</head>
+<body>
+<div class="plugnmeet-lti">
+    <div class="container">
+        <div class="column-full join-area">
+            <a href="#" class="join">Join</a>
+            <a href="#" class="end" style="display: none">End</a>
+        </div>
+        <div class="column column-full">
+            <h1 class="headline">Recordings</h1>
+            <div class="br">
+                <div class="br-inner"></div>
+            </div>
+            <div class="recording-table">
+                <div class="table-inner">
+                    <div class="table-head">
+                        <div class="recording-date"><strong>Recording date</strong></div>
+                        <div class="meeting-date"><strong>Meeting date</strong></div>
+                        <div class="file-size"><strong>File size (MB)</strong></div>
+                        <div class="action"></div>
+                    </div>
+                    <div id="recordingListsBody"></div>
+                </div>
+            </div>
+        </div>
+        <ul class="pagination" style="display: none">
+            <button id="backward">Prev</button>
+            <button id="forward">Next</button>
+        </ul>
+    </div>
+</div>
+<script>
+    const TOKEN = '{{.Token}}';
+    const IS_ADMIN = {{.IsAdmin}};
+</script>
+
+<script src="/assets/config.js"></script>
+<script src="/assets/lti/js/axios.min.js"></script>
+<script src="/assets/lti/js/v1.js"></script>
+</body>
+</html>

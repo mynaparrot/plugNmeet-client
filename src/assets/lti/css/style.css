@@ -1,0 +1,233 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.plugnmeet-lti {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column {
+    margin: 15px;
+    border: 1px solid rgb(0 0 0 / 15%);
+    box-shadow: 0 4px 52px rgb(0 0 0 / 15%);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.column-full {
+    width: calc(100% - 30px);
+}
+
+h1.headline {
+    margin: 0;
+    font-size: 20px;
+}
+
+.br {
+    width: 100%;
+    border-top: 1px solid #000;
+    position: relative;
+    margin: 15px 0;
+}
+
+.br .br-inner {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45px;
+    height: 30px;
+    background-color: #fff;
+    top: -15px;
+}
+
+.br::before, .br::after {
+    left: 51%;
+    position: absolute;
+    content: "";
+    width: 1px;
+    height: 25px;
+    background-color: #000;
+    transform: rotate(15deg);
+    top: -13px;
+    z-index: 9;
+}
+
+.br::after {
+    left: 49%;
+}
+
+.table-head {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}
+
+.table-head div, .table-item div {
+    width: 25%;
+}
+
+.recording-table {
+    padding: 15px 0;
+}
+
+.table-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.03);
+    margin-top: 2px;
+    transition: all 0.3s ease-in;
+    cursor: pointer;
+}
+
+.table-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-item .action a {
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 7px 15px;
+    color: #fff;
+    border-radius: 5px;
+    transition: all 0.3s ease-in;
+}
+
+.table-item .action a.download {
+    background-color: #24AEF7;
+    margin-right: 10px;
+}
+
+.table-item .action a.delete {
+    background-color: rgba(220, 38, 38);
+}
+
+.table-item .action a.download:hover {
+    background-color: rgba(0, 69, 131);
+}
+
+ul.pagination {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    list-style: none;
+    margin-right: 15px;
+    margin-bottom: 30px;
+}
+
+ul.pagination li,
+ul.pagination button {
+    display: inline-flex;
+    height: 28px;
+    width: 28px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #24AEF7;
+    margin-left: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s ease-in;
+    cursor: pointer;
+}
+
+ul.pagination button {
+    width: auto;
+    padding: 0 10px;
+    background-color: transparent;
+}
+
+ul.pagination li:hover,
+ul.pagination button:hover,
+ul.pagination li.active {
+    background-color: #24AEF7;
+    color: #fff;
+}
+
+ul.pagination button:disabled {
+    background-color: #c7ddf3;
+    color: #171616;
+    cursor: default;
+    border: none;
+}
+
+.join-area a {
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 7px 40px;
+    color: #fff;
+    border-radius: 5px;
+    transition: all 0.3s ease-in;
+}
+
+.join-area {
+    margin-left: 15px;
+}
+
+.join-area a.join {
+    background-color: #24AEF7;
+    margin-right: 10px;
+}
+
+.join-area a.end {
+    background-color: rgba(220, 38, 38);
+}
+
+.join-area a.join:hover {
+    background-color: rgba(0, 69, 131);
+}
+
+@media screen and (max-width: 1023px) {
+    .table-item .action a {
+        font-size: 12px;
+    }
+
+    .table-head div,
+    .table-item div {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .br {
+        margin: 10px 0;
+    }
+
+    .br::before, .br::after {
+        height: 15px;
+        top: -8px;
+    }
+
+    .column {
+        padding: 15px;
+    }
+
+    h1.headline {
+        font-size: 18px;
+    }
+
+    .recording-table {
+        overflow-x: auto;
+    }
+
+    .recording-table .table-inner {
+        width: 689px;
+    }
+}
