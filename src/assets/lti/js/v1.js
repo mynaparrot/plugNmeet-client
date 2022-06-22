@@ -193,8 +193,6 @@ function displayRecordings(recordings) {
     html += '</div>';
 
     html += '</div>';
-
-    document.getElementById('recordingListsBody').innerHTML = html;
   }
 
   document.getElementById('recordingListsBody').innerHTML = html;
