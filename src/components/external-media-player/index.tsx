@@ -90,12 +90,16 @@ const ExternalMediaPlayer = ({
   }, [dispatch, playBackUrl]);
 
   useEffect(() => {
+    if (isPresenter) {
+      return;
+    }
+
     if (action === 'play') {
       setPlaying(true);
     } else if (action === 'pause') {
       setPlaying(false);
     }
-  }, [action]);
+  }, [action, isPresenter]);
 
   useEffect(() => {
     if (!isReady) {
