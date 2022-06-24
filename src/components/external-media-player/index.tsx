@@ -49,6 +49,10 @@ const widthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
   (screenWidth) => screenWidth,
 );
+const isPresenterSelector = createSelector(
+  (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
+  (is_presenter) => is_presenter,
+);
 
 const ExternalMediaPlayer = ({
   videoSubscribers,
@@ -63,10 +67,10 @@ const ExternalMediaPlayer = ({
   const seekTo = useAppSelector(seekToSelector);
   const height = useAppSelector(heightSelector);
   const width = useAppSelector(widthSelector);
+  const isPresenter = useAppSelector(isPresenterSelector);
   const dispatch = useAppDispatch();
 
   const session = store.getState().session;
-  const isAdmin = session.currentUser?.metadata?.is_admin;
   const isRecorder = session.currentUser?.isRecorder;
   const player = useRef<ReactPlayer>();
 
@@ -86,25 +90,29 @@ const ExternalMediaPlayer = ({
   }, [dispatch, playBackUrl]);
 
   useEffect(() => {
+    if (isPresenter) {
+      return;
+    }
+
     if (action === 'play') {
       setPlaying(true);
     } else if (action === 'pause') {
       setPlaying(false);
     }
-  }, [action]);
+  }, [action, isPresenter]);
 
   useEffect(() => {
     if (!isReady) {
       return;
     }
 
-    if (seekTo > 1 && player) {
+    if (!isPresenter && seekTo > 1 && player) {
       player.current?.seekTo(seekTo);
     }
-  }, [seekTo, player, isReady]);
+  }, [seekTo, player, isReady, isPresenter]);
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!isPresenter) {
       return;
     }
     if (!isReady || !player) {
@@ -140,7 +148,7 @@ const ExternalMediaPlayer = ({
       broadcast(JSON.stringify(msg));
     }
     //eslint-disable-next-line
-  }, [isReady, paused, player]);
+  }, [isReady, paused, player, isPresenter]);
 
   const onReady = () => {
     setIsReady(true);
@@ -168,7 +176,7 @@ const ExternalMediaPlayer = ({
             width={width * 0.7}
             height={height * 0.7}
             playing={playing}
-            controls={!!isAdmin}
+            controls={!!isPresenter}
             onReady={onReady}
             onPause={onPause}
             onPlay={onPlay}
