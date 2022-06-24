@@ -102,10 +102,10 @@ const ExternalMediaPlayer = ({
       return;
     }
 
-    if (seekTo > 1 && player) {
+    if (!isPresenter && seekTo > 1 && player) {
       player.current?.seekTo(seekTo);
     }
-  }, [seekTo, player, isReady]);
+  }, [seekTo, player, isReady, isPresenter]);
 
   useEffect(() => {
     if (!isPresenter) {
@@ -144,7 +144,7 @@ const ExternalMediaPlayer = ({
       broadcast(JSON.stringify(msg));
     }
     //eslint-disable-next-line
-  }, [isReady, paused, player]);
+  }, [isReady, paused, player, isPresenter]);
 
   const onReady = () => {
     setIsReady(true);
