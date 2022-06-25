@@ -48,9 +48,9 @@ const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
 );
-const whiteboardFilesSelector = createSelector(
-  (state: RootState) => state.whiteboard.whiteboardFiles,
-  (whiteboardFiles) => whiteboardFiles,
+const currentWhiteboardOfficeFilePagesSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFilePages,
+  (currentWhiteboardOfficeFilePages) => currentWhiteboardOfficeFilePages,
 );
 const requestedWhiteboardDataSelector = createSelector(
   (state: RootState) => state.whiteboard.requestedWhiteboardData,
@@ -66,9 +66,9 @@ const currentPageSelector = createSelector(
   (state: RootState) => state.whiteboard.currentPage,
   (currentPage) => currentPage,
 );
-const whiteboardFileIdSelector = createSelector(
-  (state: RootState) => state.whiteboard.whiteboardFileId,
-  (whiteboardFileId) => whiteboardFileId,
+const currentWhiteboardOfficeFileIdSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFileId,
+  (currentWhiteboardOfficeFileId) => currentWhiteboardOfficeFileId,
 );
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
@@ -94,13 +94,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
-  const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
+  const currentWhiteboardOfficeFilePages = useAppSelector(
+    currentWhiteboardOfficeFilePagesSelector,
+  );
   const requestedWhiteboardData = useAppSelector(
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const whiteboardFileId = useAppSelector(whiteboardFileIdSelector);
-  const previousFileId = usePreviousFileId(whiteboardFileId);
+  const currentWhiteboardOfficeFileIdId = useAppSelector(
+    currentWhiteboardOfficeFileIdSelector,
+  );
+  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileIdId);
   const isPresenter = useAppSelector(isPresenterSelector);
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
@@ -149,7 +153,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   // if whiteboard file ID change this mean new office file was uploaded,
   // so we'll clean the canvas.
   useEffect(() => {
-    if (excalidrawAPI && whiteboardFileId !== previousFileId) {
+    if (excalidrawAPI && currentWhiteboardOfficeFileIdId !== previousFileId) {
       setLastBroadcastOrReceivedSceneVersion(-1);
       excalidrawAPI.updateScene({
         elements: [],
@@ -158,7 +162,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       sessionStorage.clear();
     }
     //eslint-disable-next-line
-  }, [whiteboardFileId, excalidrawAPI, previousFileId]);
+  }, [currentWhiteboardOfficeFileIdId, excalidrawAPI, previousFileId]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
@@ -256,8 +260,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // for handling files
   useEffect(() => {
-    if (whiteboardFiles && excalidrawAPI) {
-      const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
+    if (currentWhiteboardOfficeFilePages && excalidrawAPI) {
+      const files: Array<IWhiteboardFile> = JSON.parse(
+        currentWhiteboardOfficeFilePages,
+      );
       if (files.length) {
         const currentPageFiles = files.filter(
           (file) => file.currentPage === currentPage,
@@ -266,7 +272,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
     }
     //eslint-disable-next-line
-  }, [whiteboardFiles, excalidrawAPI, currentPage]);
+  }, [currentWhiteboardOfficeFilePages, excalidrawAPI, currentPage]);
 
   const handleExcalidrawAddFiles = async (
     excalidrawAPI: ExcalidrawImperativeAPI,

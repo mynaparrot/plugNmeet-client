@@ -98,11 +98,16 @@ const whiteboardSlice = createSlice({
         tmp.push(action.payload);
         state.whiteboardUploadedOfficeFiles = tmp;
       }
+
       // set new file as current selected
       state.currentWhiteboardOfficeFileId = action.payload.fileId;
-
       // update current file pages
       state.currentWhiteboardOfficeFilePages = action.payload.pageFiles;
+
+      // update current page
+      state.currentPage = 1;
+      // update total page
+      state.totalPages = action.payload.totalPages;
     },
   },
 });
