@@ -4,7 +4,6 @@ export interface IWhiteboardSlice {
   excalidrawElements: string;
   mousePointerLocation: string;
   requestedWhiteboardData: IRequestWhiteboardData;
-
   currentWhiteboardOfficeFileId: string;
   whiteboardOfficeFilePagesAndOtherImages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;

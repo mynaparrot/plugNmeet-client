@@ -15,7 +15,6 @@ const initialState: IWhiteboardSlice = {
     requested: false,
     sendTo: '',
   },
-
   currentWhiteboardOfficeFileId: 'default',
   whiteboardOfficeFilePagesAndOtherImages: '',
   whiteboardUploadedOfficeFiles: [
