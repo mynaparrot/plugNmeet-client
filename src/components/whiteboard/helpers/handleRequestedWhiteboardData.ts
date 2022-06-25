@@ -63,14 +63,22 @@ export const sendWhiteboardDataAsDonor = (
 ) => {
   // broadcast page info first
   const whiteboard = store.getState().whiteboard;
+  const currentFile = whiteboard.whiteboardUploadedOfficeFiles.filter(
+    (f) => f.fileId === whiteboard.currentWhiteboardOfficeFileId,
+  );
+  if (!currentFile.length) {
+    return;
+  }
+
   const newFile: IWhiteboardOfficeFile = {
-    fileId: whiteboard.whiteboardFileId,
-    fileName: whiteboard.fileName,
-    filePath: whiteboard.filePath,
-    totalPages: whiteboard.totalPages,
+    fileId: currentFile[0].fileId,
+    fileName: currentFile[0].fileName,
+    filePath: currentFile[0].filePath,
+    totalPages: currentFile[0].totalPages,
     currentPage: whiteboard.currentPage,
-    pageFiles: whiteboard.whiteboardFiles,
+    pageFiles: whiteboard.whiteboardOfficeFilePagesAndOtherImages,
   };
+
   broadcastWhiteboardOfficeFile(newFile, sendTo);
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();

@@ -9,7 +9,7 @@ import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard'
 import { useAppDispatch } from '../../store';
 import { sleep } from '../../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
-import { addWhiteboardOfficeFile } from '../../store/slices/whiteboard';
+import { addWhiteboardUploadedOfficeFiles } from '../../store/slices/whiteboard';
 
 interface IManageFilesProps {
   currentPage: number;
@@ -35,7 +35,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
       pageFiles: '',
     };
 
-    dispatch(addWhiteboardOfficeFile(newFile));
+    dispatch(addWhiteboardUploadedOfficeFiles(newFile));
 
     await sleep(500);
     broadcastWhiteboardOfficeFile(newFile);

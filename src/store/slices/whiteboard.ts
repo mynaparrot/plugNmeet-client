@@ -7,21 +7,17 @@ import {
 } from './interfaces/whiteboard';
 
 const initialState: IWhiteboardSlice = {
-  whiteboardFileId: 'default',
-  fileName: 'default',
-  filePath: 'default',
   totalPages: 10,
   currentPage: 1,
   excalidrawElements: '',
   mousePointerLocation: '',
-  whiteboardFiles: '',
   requestedWhiteboardData: {
     requested: false,
     sendTo: '',
   },
 
   currentWhiteboardOfficeFileId: 'default',
-  currentWhiteboardOfficeFilePages: '',
+  whiteboardOfficeFilePagesAndOtherImages: '',
   whiteboardUploadedOfficeFiles: [
     {
       fileId: 'default',
@@ -44,16 +40,19 @@ const whiteboardSlice = createSlice({
     updateMousePointerLocation: (state, action: PayloadAction<string>) => {
       state.mousePointerLocation = action.payload;
     },
-    addWhiteboardFile: (state, action: PayloadAction<IWhiteboardFile>) => {
+    addWhiteboardOtherImageFile: (
+      state,
+      action: PayloadAction<IWhiteboardFile>,
+    ) => {
       let files: Array<IWhiteboardFile> = [];
-      if (state.whiteboardFiles) {
-        files = JSON.parse(state.whiteboardFiles);
+      if (state.whiteboardOfficeFilePagesAndOtherImages) {
+        files = JSON.parse(state.whiteboardOfficeFilePagesAndOtherImages);
       }
       files.push(action.payload);
-      state.whiteboardFiles = JSON.stringify(files);
+      state.whiteboardOfficeFilePagesAndOtherImages = JSON.stringify(files);
     },
     addWhiteboardFileAsJSON: (state, action: PayloadAction<string>) => {
-      state.whiteboardFiles = action.payload;
+      state.whiteboardOfficeFilePagesAndOtherImages = action.payload;
     },
     updateRequestedWhiteboardData: (
       state,
@@ -64,22 +63,6 @@ const whiteboardSlice = createSlice({
     setWhiteboardCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
-    addWhiteboardOfficeFile: (
-      state,
-      action: PayloadAction<IWhiteboardOfficeFile>,
-    ) => {
-      state.whiteboardFileId = action.payload.fileId;
-      state.fileName = action.payload.fileName;
-      state.filePath = action.payload.filePath;
-      state.totalPages = action.payload.totalPages;
-      state.whiteboardFiles = action.payload.pageFiles;
-      if (action.payload.currentPage) {
-        state.currentPage = action.payload.currentPage;
-      } else {
-        state.currentPage = 1;
-      }
-    },
-
     updateCurrentWhiteboardOfficeFileId: (
       state,
       action: PayloadAction<string>,
@@ -102,10 +85,14 @@ const whiteboardSlice = createSlice({
       // set new file as current selected
       state.currentWhiteboardOfficeFileId = action.payload.fileId;
       // update current file pages
-      state.currentWhiteboardOfficeFilePages = action.payload.pageFiles;
+      state.whiteboardOfficeFilePagesAndOtherImages = action.payload.pageFiles;
 
       // update current page
-      state.currentPage = 1;
+      if (action.payload.currentPage) {
+        state.currentPage = action.payload.currentPage;
+      } else {
+        state.currentPage = 1;
+      }
       // update total page
       state.totalPages = action.payload.totalPages;
     },
@@ -115,11 +102,10 @@ const whiteboardSlice = createSlice({
 export const {
   updateExcalidrawElements,
   updateMousePointerLocation,
-  addWhiteboardFile,
-  addWhiteboardFileAsJSON,
+  addWhiteboardOtherImageFile,
   updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,
-  addWhiteboardOfficeFile,
+  addWhiteboardFileAsJSON,
   updateCurrentWhiteboardOfficeFileId,
   addWhiteboardUploadedOfficeFiles,
 } = whiteboardSlice.actions;

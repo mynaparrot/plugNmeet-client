@@ -9,8 +9,7 @@ import {
   IWhiteboardOfficeFile,
 } from '../../store/slices/interfaces/whiteboard';
 import {
-  addWhiteboardFile,
-  addWhiteboardOfficeFile,
+  addWhiteboardOtherImageFile,
   addWhiteboardUploadedOfficeFiles,
 } from '../../store/slices/whiteboard';
 import {
@@ -159,9 +158,10 @@ const UploadFilesUI = ({
       uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
       uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
     };
-    dispatch(addWhiteboardFile(file));
+    dispatch(addWhiteboardOtherImageFile(file));
 
-    const files = store.getState().whiteboard.whiteboardFiles;
+    const files =
+      store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
     const session = store.getState().session;
 
     const info: WhiteboardMsg = {

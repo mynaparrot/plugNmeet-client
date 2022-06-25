@@ -48,9 +48,11 @@ const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
 );
-const currentWhiteboardOfficeFilePagesSelector = createSelector(
-  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFilePages,
-  (currentWhiteboardOfficeFilePages) => currentWhiteboardOfficeFilePages,
+const whiteboardOfficeFilePagesAndOtherImagesSelector = createSelector(
+  (state: RootState) =>
+    state.whiteboard.whiteboardOfficeFilePagesAndOtherImages,
+  (whiteboardOfficeFilePagesAndOtherImages) =>
+    whiteboardOfficeFilePagesAndOtherImages,
 );
 const requestedWhiteboardDataSelector = createSelector(
   (state: RootState) => state.whiteboard.requestedWhiteboardData,
@@ -94,8 +96,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
-  const currentWhiteboardOfficeFilePages = useAppSelector(
-    currentWhiteboardOfficeFilePagesSelector,
+  const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
+    whiteboardOfficeFilePagesAndOtherImagesSelector,
   );
   const requestedWhiteboardData = useAppSelector(
     requestedWhiteboardDataSelector,
@@ -125,29 +127,16 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // keep looking for request from other users & send data
   useEffect(() => {
-    let timeout;
     if (!fetchedData) {
       // get initial data from other users
       // who had joined before me
       sendRequestedForWhiteboardData();
-      timeout = setTimeout(() => {
-        // let's wait before showing data
-        // otherwise may not show all data
-        if (!fetchedData) {
-          setFetchedData(true);
-        }
-      }, 500);
+      setFetchedData(true);
     }
 
     if (requestedWhiteboardData.requested && excalidrawAPI) {
       sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
   }, [requestedWhiteboardData, excalidrawAPI, fetchedData]);
 
   // if whiteboard file ID change this mean new office file was uploaded,
@@ -260,9 +249,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // for handling files
   useEffect(() => {
-    if (currentWhiteboardOfficeFilePages && excalidrawAPI) {
+    if (whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
       const files: Array<IWhiteboardFile> = JSON.parse(
-        currentWhiteboardOfficeFilePages,
+        whiteboardOfficeFilePagesAndOtherImages,
       );
       if (files.length) {
         const currentPageFiles = files.filter(
@@ -272,7 +261,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       }
     }
     //eslint-disable-next-line
-  }, [currentWhiteboardOfficeFilePages, excalidrawAPI, currentPage]);
+  }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
 
   const handleExcalidrawAddFiles = async (
     excalidrawAPI: ExcalidrawImperativeAPI,

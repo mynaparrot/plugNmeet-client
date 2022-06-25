@@ -1,16 +1,12 @@
 export interface IWhiteboardSlice {
-  whiteboardFileId: string;
-  fileName: string;
-  filePath: string;
   totalPages: number;
   currentPage: number;
   excalidrawElements: string;
   mousePointerLocation: string;
-  whiteboardFiles: string;
   requestedWhiteboardData: IRequestWhiteboardData;
 
   currentWhiteboardOfficeFileId: string;
-  currentWhiteboardOfficeFilePages: string;
+  whiteboardOfficeFilePagesAndOtherImages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
 }
 
