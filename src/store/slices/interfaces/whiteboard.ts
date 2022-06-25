@@ -12,7 +12,7 @@ export interface IWhiteboardSlice {
 
 export interface IWhiteboardFile {
   id: string;
-  currenPage: number;
+  currentPage: number;
   filePath: string;
   fileName: string;
   uploaderWhiteboardHeight: number;
@@ -29,6 +29,6 @@ export interface IWhiteboardOfficeFile {
   fileName: string;
   filePath: string;
   totalPages: number;
-  currenPage?: number;
+  currentPage?: number;
   pageFiles: string;
 }

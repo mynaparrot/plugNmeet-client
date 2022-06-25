@@ -25,13 +25,19 @@ import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboa
 import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 
 interface IUploadFilesProps {
-  currenPage: number;
+  refreshFileBrowser: number;
+  currentPage: number;
   excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
-const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
+const UploadFilesUI = ({
+  refreshFileBrowser,
+  currentPage,
+  excalidrawAPI,
+}: IUploadFilesProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<Array<File>>();
   const { t } = useTranslation();
@@ -39,6 +45,7 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
   // prettier-ignore
   const allowedFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
   const session = store.getState().session;
+  const preRefreshFileBrowser = useStorePreviousInt(refreshFileBrowser);
 
   const { isUploading, result } = useResumableFilesUpload({
     allowedFileTypes,
@@ -53,11 +60,15 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
     //eslint-disable-next-line
   }, [result]);
 
-  const openFileBrowser = () => {
-    if (!isUploading) {
+  useEffect(() => {
+    if (
+      !isUploading &&
+      refreshFileBrowser > 0 &&
+      preRefreshFileBrowser !== refreshFileBrowser
+    ) {
       inputFile.current?.click();
     }
-  };
+  }, [refreshFileBrowser, isUploading, preRefreshFileBrowser]);
 
   const onChange = (e) => {
     const files = e.target.files;
@@ -109,7 +120,7 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
       const fileName = 'page_' + (i + 1) + '.png';
       const file: IWhiteboardFile = {
         id: randomString(),
-        currenPage: i + 1,
+        currentPage: i + 1,
         filePath: res.file_path + '/' + fileName,
         fileName,
         uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
@@ -140,7 +151,7 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
   const broadcastFile = (filePath, fileName) => {
     const file: IWhiteboardFile = {
       id: randomString(),
-      currenPage,
+      currentPage,
       filePath,
       fileName,
       uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
@@ -182,14 +193,6 @@ const UploadFilesUI = ({ currenPage, excalidrawAPI }: IUploadFilesProps) => {
           onChange={(e) => onChange(e)}
           accept={allowedFileTypes.map((file) => '.' + file).join(',')}
         />
-        <button
-          disabled={isUploading}
-          onClick={() => openFileBrowser()}
-          className="w-[90px] text-xs h-7 flex items-center justify-center"
-        >
-          <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
-          {t('whiteboard.upload-file')}
-        </button>
       </>
     );
   };

@@ -23,7 +23,6 @@ import {
 } from './helpers/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
-import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
@@ -35,6 +34,7 @@ import {
 import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
+import ManageFiles from './manageFiles';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -260,7 +260,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
       if (files.length) {
         const currentPageFiles = files.filter(
-          (file) => file.currenPage === currentPage,
+          (file) => file.currentPage === currentPage,
         );
         handleExcalidrawAddFiles(excalidrawAPI, currentPageFiles);
       }
@@ -388,9 +388,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     return (
       <>
         {isPresenter && excalidrawAPI ? (
-          <UploadFilesUI
-            currenPage={currentPage}
+          <ManageFiles
             excalidrawAPI={excalidrawAPI}
+            currentPage={currentPage}
           />
         ) : null}
       </>

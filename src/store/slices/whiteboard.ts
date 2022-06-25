@@ -60,8 +60,8 @@ const whiteboardSlice = createSlice({
       state.filePath = action.payload.filePath;
       state.totalPages = action.payload.totalPages;
       state.whiteboardFiles = action.payload.pageFiles;
-      if (action.payload.currenPage) {
-        state.currentPage = action.payload.currenPage;
+      if (action.payload.currentPage) {
+        state.currentPage = action.payload.currentPage;
       } else {
         state.currentPage = 1;
       }

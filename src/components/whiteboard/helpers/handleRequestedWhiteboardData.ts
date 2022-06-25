@@ -68,7 +68,7 @@ export const sendWhiteboardDataAsDonor = (
     fileName: whiteboard.fileName,
     filePath: whiteboard.filePath,
     totalPages: whiteboard.totalPages,
-    currenPage: whiteboard.currentPage,
+    currentPage: whiteboard.currentPage,
     pageFiles: whiteboard.whiteboardFiles,
   };
   broadcastWhiteboardOfficeFile(newFile, sendTo);
