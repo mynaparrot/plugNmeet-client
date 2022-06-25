@@ -1,0 +1,110 @@
+import React, { useState } from 'react';
+import { isEmpty } from 'lodash';
+import ReactPlayer from 'react-player/lazy';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+
+import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
+import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
+import { useAppDispatch } from '../../../../store';
+
+const DirectLink = () => {
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
+  const [playBackUrl, setPlayBackUrl] = useState<string>('');
+  const [errorMsg, setErrorMsg] = useState<string>();
+
+  const onChangeUrl = (e) => {
+    if (errorMsg) {
+      setErrorMsg(undefined);
+    }
+    setPlayBackUrl(e.currentTarget.value);
+  };
+
+  const startPlayer = async (e) => {
+    e.preventDefault();
+
+    if (isEmpty(playBackUrl)) {
+      setErrorMsg(t('footer.notice.external-media-player-url-required'));
+      return;
+    }
+
+    if (!ReactPlayer.canPlay(playBackUrl)) {
+      setErrorMsg(t('footer.notice.external-media-player-url-invalid'));
+      return;
+    }
+
+    setErrorMsg(undefined);
+    dispatch(updateShowExternalMediaPlayerModal(false));
+
+    const id = toast.loading(
+      t('footer.notice.external-media-player-starting'),
+      {
+        type: 'info',
+      },
+    );
+
+    const body = {
+      task: 'start-playback',
+      url: playBackUrl,
+    };
+    const res = await sendAPIRequest('externalMediaPlayer', body);
+
+    if (!res.status) {
+      toast.update(id, {
+        render: t(res.msg),
+        type: 'error',
+        isLoading: false,
+        autoClose: 1000,
+      });
+    }
+
+    toast.dismiss(id);
+    dispatch(updateShowExternalMediaPlayerModal(false));
+  };
+
+  return (
+    <form
+      action="src/components/footer/modals/externalMediaPlayer/externalMediaPlayer#"
+      method="POST"
+      onSubmit={(e) => startPlayer(e)}
+    >
+      <div className="s">
+        <div className="">
+          <div className="">
+            <label
+              htmlFor="stream-key"
+              className="block text-sm font-medium text-gray-700"
+            >
+              {t('footer.modal.external-media-player-url')}
+            </label>
+            <input
+              type="text"
+              name="stream-key"
+              id="stream-key"
+              value={playBackUrl}
+              onChange={onChangeUrl}
+              className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
+            />
+            {errorMsg ? (
+              <div className="error-msg absolute text-xs text-red-600 py-2">
+                {errorMsg}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+      <div className="pb-3 pt-4 bg-gray-50 text-right mt-4">
+        <button
+          type="submit"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+        >
+          {t('footer.modal.external-media-player-play')}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default DirectLink;
