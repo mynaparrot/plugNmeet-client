@@ -67,7 +67,15 @@ const whiteboardSlice = createSlice({
       state,
       action: PayloadAction<string>,
     ) => {
-      state.currentWhiteboardOfficeFileId = action.payload;
+      const file = state.whiteboardUploadedOfficeFiles.filter(
+        (f) => f.fileId === action.payload,
+      );
+      if (file.length) {
+        state.currentPage = 1;
+        state.totalPages = file[0].totalPages;
+        state.whiteboardOfficeFilePagesAndOtherImages = file[0].pageFiles;
+        state.currentWhiteboardOfficeFileId = file[0].fileId;
+      }
     },
     addWhiteboardUploadedOfficeFiles: (
       state,

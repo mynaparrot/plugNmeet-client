@@ -245,7 +245,8 @@
     "page": "Page {{count}}",
     "converting": "Please wait file conversion in progress",
     "file-ready": "File is ready",
-    "upload-file": "Upload file"
+    "upload-file": "Upload file",
+    "manage-files": "Manage files"
   },
   "waiting-room": {
     "modal-title": "Manage waiting room",

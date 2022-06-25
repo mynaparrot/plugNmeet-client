@@ -1,44 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { createSelector } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
-import { useAppDispatch } from '../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { sleep } from '../../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
-import { addWhiteboardUploadedOfficeFiles } from '../../store/slices/whiteboard';
+import { updateCurrentWhiteboardOfficeFileId } from '../../store/slices/whiteboard';
 
 interface IManageFilesProps {
   currentPage: number;
   excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
+const whiteboardUploadedOfficeFilesSelector = createSelector(
+  (state: RootState) => state.whiteboard.whiteboardUploadedOfficeFiles,
+  (whiteboardUploadedOfficeFiles) => whiteboardUploadedOfficeFiles,
+);
+
 const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const whiteboardUploadedOfficeFiles = useAppSelector(
+    whiteboardUploadedOfficeFilesSelector,
+  );
   const [refreshFileBrowser, setRefreshFileBrowser] = useState<number>(0);
+  const [menuItems, setMenuItems] = useState<JSX.Element[]>([]);
+
+  useEffect(() => {
+    const elms = whiteboardUploadedOfficeFiles.map((f) => {
+      return (
+        <div role="none" key={f.fileId}>
+          <Menu.Item>
+            <button
+              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+              onClick={() => switchOfficeFile(f)}
+            >
+              {f.fileName}
+            </button>
+          </Menu.Item>
+        </div>
+      );
+    });
+    setMenuItems(elms);
+    //eslint-disable-next-line
+  }, [whiteboardUploadedOfficeFiles]);
 
   const openFileBrowser = () => {
     setRefreshFileBrowser(refreshFileBrowser + 1);
   };
 
-  const defaultFile = async () => {
-    const newFile: IWhiteboardOfficeFile = {
-      fileId: 'default',
-      fileName: 'default',
-      filePath: 'default',
-      totalPages: 10,
-      currentPage: 1,
-      pageFiles: '',
-    };
-
-    dispatch(addWhiteboardUploadedOfficeFiles(newFile));
-
+  const switchOfficeFile = async (f: IWhiteboardOfficeFile) => {
+    dispatch(updateCurrentWhiteboardOfficeFileId(f.fileId));
     await sleep(500);
-    broadcastWhiteboardOfficeFile(newFile);
+    broadcastWhiteboardOfficeFile(f);
   };
 
   const render = () => {
@@ -49,7 +68,10 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
             {({ open }) => (
               <>
                 <Menu.Button className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
-                  <i className="pnm-menu-horizontal primaryColor text-[3px] lg:text-[5px]" />
+                  <>
+                    <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+                    {t('whiteboard.manage-files')}
+                  </>
                 </Menu.Button>
 
                 {/* Use the Transition component. */}
@@ -67,16 +89,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                     static
                     className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                   >
-                    <div role="none">
-                      <Menu.Item>
-                        <button
-                          className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
-                          onClick={() => defaultFile()}
-                        >
-                          Default
-                        </button>
-                      </Menu.Item>
-                    </div>
+                    {menuItems}
                     <div className="" role="none">
                       <Menu.Item>
                         <button

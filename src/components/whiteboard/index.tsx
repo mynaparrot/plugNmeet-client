@@ -277,11 +277,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         file.filePath;
 
       const canvasFiles = excalidrawAPI.getFiles();
+      const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
       let hasFile = false;
+
       for (const canvasFile in canvasFiles) {
         if (canvasFiles[canvasFile].id === file.id) {
-          hasFile = true;
-          break;
+          // further check if element exist
+          const hasElm = elms.filter((el) => el.id === file.id);
+          if (hasElm.length) {
+            hasFile = true;
+            break;
+          }
         }
       }
 
