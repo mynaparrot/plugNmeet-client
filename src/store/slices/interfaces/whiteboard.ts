@@ -8,6 +8,10 @@ export interface IWhiteboardSlice {
   mousePointerLocation: string;
   whiteboardFiles: string;
   requestedWhiteboardData: IRequestWhiteboardData;
+
+  currentWhiteboardOfficeFileId: string;
+  currentWhiteboardOfficeFilePages: string;
+  whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
 }
 
 export interface IWhiteboardFile {

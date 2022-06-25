@@ -11,6 +11,7 @@ import {
 import {
   addWhiteboardFile,
   addWhiteboardOfficeFile,
+  addWhiteboardUploadedOfficeFiles,
 } from '../../store/slices/whiteboard';
 import {
   DataMessageType,
@@ -137,7 +138,8 @@ const UploadFilesUI = ({
       pageFiles: JSON.stringify(files),
     };
 
-    store.dispatch(addWhiteboardOfficeFile(newFile));
+    store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
+
     await sleep(500);
     broadcastWhiteboardOfficeFile(newFile);
     toast.update(id, {

@@ -2,7 +2,7 @@ import { WhiteboardMsg } from '../../store/slices/interfaces/dataMessages';
 import { store } from '../../store';
 import {
   addWhiteboardFileAsJSON,
-  addWhiteboardOfficeFile,
+  addWhiteboardUploadedOfficeFiles,
   setWhiteboardCurrentPage,
   updateExcalidrawElements,
   updateMousePointerLocation,
@@ -25,5 +25,5 @@ export const handleWhiteboardMsg = (data: WhiteboardMsg) => {
 
 const handleAddWhiteboardOfficeFile = (msg: string) => {
   const newFile: IWhiteboardOfficeFile = JSON.parse(msg);
-  store.dispatch(addWhiteboardOfficeFile(newFile));
+  store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
 };

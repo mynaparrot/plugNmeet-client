@@ -19,6 +19,19 @@ const initialState: IWhiteboardSlice = {
     requested: false,
     sendTo: '',
   },
+
+  currentWhiteboardOfficeFileId: 'default',
+  currentWhiteboardOfficeFilePages: '',
+  whiteboardUploadedOfficeFiles: [
+    {
+      fileId: 'default',
+      fileName: 'default',
+      filePath: 'default',
+      totalPages: 10,
+      currentPage: 1,
+      pageFiles: '',
+    },
+  ],
 };
 
 const whiteboardSlice = createSlice({
@@ -66,6 +79,31 @@ const whiteboardSlice = createSlice({
         state.currentPage = 1;
       }
     },
+
+    updateCurrentWhiteboardOfficeFileId: (
+      state,
+      action: PayloadAction<string>,
+    ) => {
+      state.currentWhiteboardOfficeFileId = action.payload;
+    },
+    addWhiteboardUploadedOfficeFiles: (
+      state,
+      action: PayloadAction<IWhiteboardOfficeFile>,
+    ) => {
+      const exist = state.whiteboardUploadedOfficeFiles.filter(
+        (f) => f.fileId === action.payload.fileId,
+      );
+      if (!exist.length) {
+        const tmp = [...state.whiteboardUploadedOfficeFiles];
+        tmp.push(action.payload);
+        state.whiteboardUploadedOfficeFiles = tmp;
+      }
+      // set new file as current selected
+      state.currentWhiteboardOfficeFileId = action.payload.fileId;
+
+      // update current file pages
+      state.currentWhiteboardOfficeFilePages = action.payload.pageFiles;
+    },
   },
 });
 
@@ -77,6 +115,8 @@ export const {
   updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,
   addWhiteboardOfficeFile,
+  updateCurrentWhiteboardOfficeFileId,
+  addWhiteboardUploadedOfficeFiles,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;
