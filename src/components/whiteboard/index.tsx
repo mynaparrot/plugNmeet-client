@@ -127,7 +127,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // keep looking for request from other users & send data
   useEffect(() => {
-    if (!fetchedData) {
+    if (!fetchedData && excalidrawAPI) {
       // get initial data from other users
       // who had joined before me
       sendRequestedForWhiteboardData();
