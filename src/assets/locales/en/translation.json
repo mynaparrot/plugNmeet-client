@@ -237,6 +237,7 @@
       "external-media-player-close-msg": "You are about to close playback",
       "external-media-player-direct-link": "Direct link",
       "external-media-player-upload-file": "Upload",
+      "external-media-player-upload-file-play": "Upload and play",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
       "upload-background-image": "Upload background image"
     }

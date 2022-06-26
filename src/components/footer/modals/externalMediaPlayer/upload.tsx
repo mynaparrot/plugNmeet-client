@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
@@ -11,8 +11,8 @@ const Upload = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const inputFile = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<Array<File>>();
+  const [tmpFiles, setTmpFiles] = useState<Array<File>>();
   const allowedFileTypes = ['mp4', 'mp3', 'webm'];
 
   const { isUploading, result } = useResumableFilesUpload({
@@ -60,9 +60,9 @@ const Upload = () => {
     //eslint-disable-next-line
   }, [result]);
 
-  const openFileBrowser = () => {
-    if (!isUploading) {
-      inputFile.current?.click();
+  const upload = () => {
+    if (!isUploading && tmpFiles) {
+      setFiles([...tmpFiles]);
     }
   };
 
@@ -71,7 +71,7 @@ const Upload = () => {
     if (!files.length) {
       return;
     }
-    setFiles([...files]);
+    setTmpFiles([...files]);
   };
 
   return (
@@ -84,18 +84,18 @@ const Upload = () => {
       <input
         type="file"
         id="chat-file"
-        ref={inputFile}
         accept={allowedFileTypes.map((type) => '.' + type).join(',')}
-        style={{ display: 'none' }}
         onChange={(e) => onChange(e)}
       />
-      <button
-        disabled={isUploading}
-        onClick={() => openFileBrowser()}
-        className="w-4 h-6 px-2"
-      >
-        {t('footer.modal.external-media-player-upload-file')}
-      </button>
+      <div className="pb-3 pt-4 bg-gray-50 text-right mt-4">
+        <button
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+          disabled={isUploading}
+          onClick={() => upload()}
+        >
+          {t('footer.modal.external-media-player-upload-file-play')}
+        </button>
+      </div>
     </>
   );
 };
