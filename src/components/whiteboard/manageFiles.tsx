@@ -100,9 +100,9 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                       <Menu.Item>
                         <button
                           onClick={() => openFileBrowser()}
-                          className="w-[90px] !m-auto text-xs h-7 flex items-center justify-center"
+                          className="w-[100px] !m-auto text-xs h-7 flex items-center justify-center !bg-primaryColor hover:!bg-secondaryColor text-white"
                         >
-                          <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+                          <i className="pnm-attachment text-white text-[14px] opacity-50 mr-1" />
                           {t('whiteboard.upload-file')}
                         </button>
                       </Menu.Item>
