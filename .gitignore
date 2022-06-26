@@ -7,3 +7,4 @@ src/assets/config.js
 .idea/
 dist
 node_modules/
+yarn.lock
