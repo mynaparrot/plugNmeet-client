@@ -67,7 +67,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
           <Menu>
             {({ open }) => (
               <>
-                <Menu.Button className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
+                <Menu.Button className="manage-icon h-[35px] lg:h-[40px] max-w !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
                   <>
                     <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
                     {t('whiteboard.manage-files')}
