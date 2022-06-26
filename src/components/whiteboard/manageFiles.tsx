@@ -34,10 +34,14 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   useEffect(() => {
     const elms = whiteboardUploadedOfficeFiles.map((f) => {
       return (
-        <div role="none" key={f.fileId}>
+        <div
+          role="none"
+          className="border-b border-solid border-primaryColor/10 last:border-none"
+          key={f.fileId}
+        >
           <Menu.Item>
             <button
-              className="text-gray-700 rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+              className="!rounded !w-full flex items-center !px-3 !py-[0.4rem] !text-[10px] lg:!text-xs transition ease-in !bg-transparent hover:!bg-primaryColor hover:text-white text-gray-700"
               onClick={() => switchOfficeFile(f)}
             >
               {f.fileName}
@@ -89,12 +93,14 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                     static
                     className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                   >
-                    {menuItems}
-                    <div className="" role="none">
+                    <div className="item-wrapper-uploaded-file overflow-y-auto max-h-[170px] scrollBar scrollBar2">
+                      {menuItems}
+                    </div>
+                    <div className="py-3 !border-t-2 border-solid !border-primaryColor !mt-2">
                       <Menu.Item>
                         <button
                           onClick={() => openFileBrowser()}
-                          className="w-[90px] text-xs h-7 flex items-center justify-center"
+                          className="w-[90px] !m-auto text-xs h-7 flex items-center justify-center"
                         >
                           <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
                           {t('whiteboard.upload-file')}
