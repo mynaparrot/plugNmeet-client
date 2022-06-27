@@ -23,7 +23,6 @@ import {
 } from './helpers/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
-import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
@@ -35,6 +34,7 @@ import {
 import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
+import ManageFiles from './manageFiles';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -48,9 +48,11 @@ const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
 );
-const whiteboardFilesSelector = createSelector(
-  (state: RootState) => state.whiteboard.whiteboardFiles,
-  (whiteboardFiles) => whiteboardFiles,
+const whiteboardOfficeFilePagesAndOtherImagesSelector = createSelector(
+  (state: RootState) =>
+    state.whiteboard.whiteboardOfficeFilePagesAndOtherImages,
+  (whiteboardOfficeFilePagesAndOtherImages) =>
+    whiteboardOfficeFilePagesAndOtherImages,
 );
 const requestedWhiteboardDataSelector = createSelector(
   (state: RootState) => state.whiteboard.requestedWhiteboardData,
@@ -66,9 +68,9 @@ const currentPageSelector = createSelector(
   (state: RootState) => state.whiteboard.currentPage,
   (currentPage) => currentPage,
 );
-const whiteboardFileIdSelector = createSelector(
-  (state: RootState) => state.whiteboard.whiteboardFileId,
-  (whiteboardFileId) => whiteboardFileId,
+const currentWhiteboardOfficeFileIdSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFileId,
+  (currentWhiteboardOfficeFileId) => currentWhiteboardOfficeFileId,
 );
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
@@ -94,13 +96,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
-  const whiteboardFiles = useAppSelector(whiteboardFilesSelector);
+  const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
+    whiteboardOfficeFilePagesAndOtherImagesSelector,
+  );
   const requestedWhiteboardData = useAppSelector(
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const whiteboardFileId = useAppSelector(whiteboardFileIdSelector);
-  const previousFileId = usePreviousFileId(whiteboardFileId);
+  const currentWhiteboardOfficeFileIdId = useAppSelector(
+    currentWhiteboardOfficeFileIdSelector,
+  );
+  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileIdId);
   const isPresenter = useAppSelector(isPresenterSelector);
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
@@ -121,35 +127,22 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // keep looking for request from other users & send data
   useEffect(() => {
-    let timeout;
-    if (!fetchedData) {
+    if (!fetchedData && excalidrawAPI) {
       // get initial data from other users
       // who had joined before me
       sendRequestedForWhiteboardData();
-      timeout = setTimeout(() => {
-        // let's wait before showing data
-        // otherwise may not show all data
-        if (!fetchedData) {
-          setFetchedData(true);
-        }
-      }, 500);
+      setFetchedData(true);
     }
 
     if (requestedWhiteboardData.requested && excalidrawAPI) {
       sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
     }
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
   }, [requestedWhiteboardData, excalidrawAPI, fetchedData]);
 
   // if whiteboard file ID change this mean new office file was uploaded,
   // so we'll clean the canvas.
   useEffect(() => {
-    if (excalidrawAPI && whiteboardFileId !== previousFileId) {
+    if (excalidrawAPI && currentWhiteboardOfficeFileIdId !== previousFileId) {
       setLastBroadcastOrReceivedSceneVersion(-1);
       excalidrawAPI.updateScene({
         elements: [],
@@ -158,7 +151,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       sessionStorage.clear();
     }
     //eslint-disable-next-line
-  }, [whiteboardFileId, excalidrawAPI, previousFileId]);
+  }, [currentWhiteboardOfficeFileIdId, excalidrawAPI, previousFileId]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
@@ -256,17 +249,19 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // for handling files
   useEffect(() => {
-    if (whiteboardFiles && excalidrawAPI) {
-      const files: Array<IWhiteboardFile> = JSON.parse(whiteboardFiles);
+    if (whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
+      const files: Array<IWhiteboardFile> = JSON.parse(
+        whiteboardOfficeFilePagesAndOtherImages,
+      );
       if (files.length) {
         const currentPageFiles = files.filter(
-          (file) => file.currenPage === currentPage,
+          (file) => file.currentPage === currentPage,
         );
         handleExcalidrawAddFiles(excalidrawAPI, currentPageFiles);
       }
     }
     //eslint-disable-next-line
-  }, [whiteboardFiles, excalidrawAPI, currentPage]);
+  }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
 
   const handleExcalidrawAddFiles = async (
     excalidrawAPI: ExcalidrawImperativeAPI,
@@ -282,11 +277,17 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         file.filePath;
 
       const canvasFiles = excalidrawAPI.getFiles();
+      const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
       let hasFile = false;
+
       for (const canvasFile in canvasFiles) {
         if (canvasFiles[canvasFile].id === file.id) {
-          hasFile = true;
-          break;
+          // further check if element exist
+          const hasElm = elms.filter((el) => el.id === file.id);
+          if (hasElm.length) {
+            hasFile = true;
+            break;
+          }
         }
       }
 
@@ -388,9 +389,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     return (
       <>
         {isPresenter && excalidrawAPI ? (
-          <UploadFilesUI
-            currenPage={currentPage}
+          <ManageFiles
             excalidrawAPI={excalidrawAPI}
+            currentPage={currentPage}
           />
         ) : null}
       </>

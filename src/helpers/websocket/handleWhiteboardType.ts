@@ -2,7 +2,7 @@ import { WhiteboardMsg } from '../../store/slices/interfaces/dataMessages';
 import { store } from '../../store';
 import {
   addWhiteboardFileAsJSON,
-  addWhiteboardOfficeFile,
+  addWhiteboardUploadedOfficeFiles,
   setWhiteboardCurrentPage,
   updateExcalidrawElements,
   updateMousePointerLocation,
@@ -10,6 +10,9 @@ import {
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
 
 export const handleWhiteboardMsg = (data: WhiteboardMsg) => {
+  const isPresenter =
+    store.getState().session.currentUser?.metadata?.is_presenter;
+
   if (data.type === 'SCENE_UPDATE') {
     store.dispatch(updateExcalidrawElements(data.msg));
   } else if (data.type === 'POINTER_UPDATE') {
@@ -17,7 +20,9 @@ export const handleWhiteboardMsg = (data: WhiteboardMsg) => {
   } else if (data.type === 'ADD_WHITEBOARD_FILE') {
     store.dispatch(addWhiteboardFileAsJSON(data.msg));
   } else if (data.type === 'PAGE_CHANGE') {
-    store.dispatch(setWhiteboardCurrentPage(Number(data.msg)));
+    if (!isPresenter) {
+      store.dispatch(setWhiteboardCurrentPage(Number(data.msg)));
+    }
   } else if (data.type === 'ADD_WHITEBOARD_OFFICE_FILE') {
     handleAddWhiteboardOfficeFile(data.msg);
   }
@@ -25,5 +30,5 @@ export const handleWhiteboardMsg = (data: WhiteboardMsg) => {
 
 const handleAddWhiteboardOfficeFile = (msg: string) => {
   const newFile: IWhiteboardOfficeFile = JSON.parse(msg);
-  store.dispatch(addWhiteboardOfficeFile(newFile));
+  store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
 };

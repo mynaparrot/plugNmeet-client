@@ -1,18 +1,17 @@
 export interface IWhiteboardSlice {
-  whiteboardFileId: string;
-  fileName: string;
-  filePath: string;
   totalPages: number;
   currentPage: number;
   excalidrawElements: string;
   mousePointerLocation: string;
-  whiteboardFiles: string;
   requestedWhiteboardData: IRequestWhiteboardData;
+  currentWhiteboardOfficeFileId: string;
+  whiteboardOfficeFilePagesAndOtherImages: string;
+  whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
 }
 
 export interface IWhiteboardFile {
   id: string;
-  currenPage: number;
+  currentPage: number;
   filePath: string;
   fileName: string;
   uploaderWhiteboardHeight: number;
@@ -29,6 +28,6 @@ export interface IWhiteboardOfficeFile {
   fileName: string;
   filePath: string;
   totalPages: number;
-  currenPage?: number;
+  currentPage?: number;
   pageFiles: string;
 }
