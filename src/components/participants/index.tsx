@@ -34,6 +34,14 @@ const ParticipantsComponent = ({
           return;
         }
       }
+      // by default recorder won't be listed as it's hidden user
+      // still we'll use extra layer for checking.
+      if (
+        participant.userId === 'RECORDER_BOT' ||
+        participant.userId === 'RTMP_BOT'
+      ) {
+        return;
+      }
       return (
         <ParticipantComponent
           key={participant.sid}
@@ -49,7 +57,7 @@ const ParticipantsComponent = ({
       <div className="top flex items-center justify-between font-medium mb-3 xl:mb-5">
         <p className="text-sm text-black">
           {t('left-panel.participants', {
-            total: participants.length,
+            total: renderParticipants().length,
           })}
         </p>
       </div>
