@@ -1032,8 +1032,18 @@ button.next-cam:hover {
   border-radius: 8px;
   margin-left: 5px;
 }
-.ex-m-p-file-upload [type='file']::-webkit-file-upload-button {
-  display: none;
+// .ex-m-p-file-upload [type='file']::-webkit-file-upload-button,
+// .ex-m-p-file-upload [type='file']::file-selector-button {
+//   display: none;
+// }
+.react-js-player-wrap .video-js {
+  padding-top: 0 !important;
+}
+.react-js-player-wrap .video-js button.vjs-big-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 @media only screen and (max-height: 720px) {
   .externalMediaPlayerWrapper {

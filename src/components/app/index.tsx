@@ -22,6 +22,7 @@ import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
 import WaitingRoomPage from '../waiting-room/waitingRoomPage';
+import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -145,13 +146,14 @@ const App = () => {
         currentRoom.localParticipant.identity === 'RTMP_BOT'
       ) {
         setIsRecorder(true);
+        dispatch(updateIsActiveChatPanel(false));
       }
 
       if (store.getState().session.currentUser?.metadata?.is_admin) {
         setUserTypeClass('admin');
       }
     }
-  }, [currentRoom]);
+  }, [currentRoom, dispatch]);
 
   const renderMainApp = () => {
     if (currentRoom) {

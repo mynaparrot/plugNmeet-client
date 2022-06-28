@@ -1,21 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import ReactPlayer from 'react-player/lazy';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import { resetExternalMediaPlayer } from '../../store/slices/externalMediaPlayer';
 import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
-import { sendWebsocketMessage } from '../../helpers/websocket';
-import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
 } from '../../store/slices/bottomIconsActivitySlice';
+import VideoJsPlayerComponent from './video-js';
+import ReactPlayerComponent from './reactPlayerComponent';
 
 interface IExternalMediaPlayerProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -41,14 +36,7 @@ const seekToSelector = createSelector(
   (state: RootState) => state.externalMediaPlayer.seekTo,
   (seekTo) => seekTo,
 );
-const heightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenHeight,
-  (screenHeight) => screenHeight,
-);
-const widthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenWidth,
-  (screenWidth) => screenWidth,
-);
+
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
   (is_presenter) => is_presenter,
@@ -57,22 +45,21 @@ const isPresenterSelector = createSelector(
 const ExternalMediaPlayer = ({
   videoSubscribers,
 }: IExternalMediaPlayerProps) => {
-  const [paused, setPaused] = useState<boolean>(true);
-  const [isReady, setIsReady] = useState<boolean>(false);
-  const [playing, setPlaying] = useState<boolean>(false);
-
   const playBackUrl = useAppSelector(playBackUrlSelector);
   const isActive = useAppSelector(isActiveSelector);
   const action = useAppSelector(actionSelector);
   const seekTo = useAppSelector(seekToSelector);
-  const height = useAppSelector(heightSelector);
-  const width = useAppSelector(widthSelector);
+  const [showVideoJsPlayer, setShowVideoJsPlayer] = useState<boolean>(false);
+
   const isPresenter = useAppSelector(isPresenterSelector);
   const dispatch = useAppDispatch();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
-  const session = store.getState().session;
-  const isRecorder = session.currentUser?.isRecorder;
-  const player = useRef<ReactPlayer>();
+  const AUDIO_EXTENSIONS =
+    /\.(m4a|m4b|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx)($|\?)/i;
+  const VIDEO_EXTENSIONS = /\.(mp4|og[gv]|webm|mov|m4v)(#t=[,\d+]+)?($|\?)/i;
+  const HLS_EXTENSIONS = /\.(m3u8)($|\?)/i;
+  const DASH_EXTENSIONS = /\.(mpd)($|\?)/i;
 
   useEffect(() => {
     if (!isRecorder) {
@@ -85,102 +72,35 @@ const ExternalMediaPlayer = ({
   useEffect(() => {
     if (playBackUrl) {
       dispatch(resetExternalMediaPlayer());
-      setPlaying(false);
-    }
-  }, [dispatch, playBackUrl]);
-
-  useEffect(() => {
-    if (isPresenter) {
-      return;
-    }
-
-    if (action === 'play') {
-      setPlaying(true);
-    } else if (action === 'pause') {
-      setPlaying(false);
-    }
-  }, [action, isPresenter]);
-
-  useEffect(() => {
-    if (!isReady) {
-      return;
-    }
-
-    if (!isPresenter && seekTo > 1 && player) {
-      player.current?.seekTo(seekTo);
-    }
-  }, [seekTo, player, isReady, isPresenter]);
-
-  useEffect(() => {
-    if (!isPresenter) {
-      return;
-    }
-    if (!isReady || !player) {
-      return;
-    }
-    const broadcast = (msg: string) => {
-      const data: IDataMessage = {
-        type: DataMessageType.SYSTEM,
-        room_sid: session.currentRoom.sid,
-        message_id: '',
-        body: {
-          type: SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS,
-          from: {
-            sid: session.currentUser?.sid ?? '',
-            userId: session.currentUser?.userId ?? '',
-          },
-          msg,
-        },
-      };
-      sendWebsocketMessage(JSON.stringify(data));
-    };
-
-    if (paused) {
-      const msg = {
-        action: 'pause',
-      };
-      broadcast(JSON.stringify(msg));
-    } else {
-      const msg = {
-        action: 'play',
-        seekTo: player.current?.getCurrentTime(),
-      };
-      broadcast(JSON.stringify(msg));
+      setShowVideoJsPlayer(
+        AUDIO_EXTENSIONS.test(playBackUrl) ||
+          VIDEO_EXTENSIONS.test(playBackUrl) ||
+          HLS_EXTENSIONS.test(playBackUrl) ||
+          DASH_EXTENSIONS.test(playBackUrl),
+      );
     }
     //eslint-disable-next-line
-  }, [isReady, paused, player, isPresenter]);
-
-  const onReady = () => {
-    setIsReady(true);
-  };
-
-  const onPause = () => {
-    setPaused(true);
-  };
-
-  const onPlay = () => {
-    setPaused(false);
-  };
-
-  const ref = (_player) => {
-    player.current = _player;
-  };
+  }, [dispatch, playBackUrl]);
 
   const render = () => {
     return (
       <div className="externalMediaPlayerWrapper m-auto w-full flex items-center justify-center max-w-[1000px] flex-1 p-4">
         <div className="media-player-inner">
-          <ReactPlayer
-            ref={ref}
-            url={playBackUrl}
-            width={width * 0.7}
-            height={height * 0.7}
-            playing={playing}
-            controls={!!isPresenter}
-            onReady={onReady}
-            onPause={onPause}
-            onPlay={onPlay}
-          />
+          {showVideoJsPlayer ? (
+            <VideoJsPlayerComponent
+              src={playBackUrl ?? ''}
+              action={action}
+              isPresenter={!!isPresenter}
+              seekTo={seekTo}
+            />
+          ) : (
+            <ReactPlayerComponent
+              src={playBackUrl ?? ''}
+              action={action}
+              isPresenter={!!isPresenter}
+              seekTo={seekTo}
+            />
+          )}
         </div>
       </div>
     );
