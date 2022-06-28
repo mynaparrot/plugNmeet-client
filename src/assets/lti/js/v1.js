@@ -15,6 +15,8 @@ window.addEventListener('load', async () => {
 
   // initial call
   fetchRecordings();
+  // design customization
+  designCustomization();
 
   document.querySelector('.join').addEventListener('click', (e) => {
     e.preventDefault();
@@ -229,4 +231,55 @@ function paginate(currentPage) {
 
 function showMessage(msg) {
   document.getElementById('recordingListsBody').innerHTML = msg;
+}
+
+function designCustomization() {
+  if (window.DESIGN_CUSTOMIZATION === 'undefined') {
+    return;
+  }
+
+  let designCustomParams = {};
+  try {
+    designCustomParams = JSON.parse(window.DESIGN_CUSTOMIZATION);
+  } catch (e) {
+    console.log("can't parse custom design params");
+    return;
+  }
+
+  let css = '';
+  if (designCustomParams.primary_color) {
+    css +=
+      '.join-area a.join{ background-color: ' +
+      designCustomParams.primary_color +
+      '}';
+    css +=
+      '.table-item .action a.download{ background-color: ' +
+      designCustomParams.primary_color +
+      '}';
+    css +=
+      'ul.pagination li, ul.pagination button { border-color: ' +
+      designCustomParams.primary_color +
+      '}';
+  }
+
+  if (designCustomParams.secondary_color) {
+    css +=
+      '.join-area a.join:hover{ background-color: ' +
+      designCustomParams.secondary_color +
+      '}';
+    css +=
+      '.table-item .action a.download:hover{ background-color: ' +
+      designCustomParams.secondary_color +
+      '}';
+    css +=
+      'ul.pagination li:hover, ul.pagination button:hover, ul.pagination li.active { background-color: ' +
+      designCustomParams.secondary_color +
+      '}';
+  }
+
+  if (css !== '') {
+    const style = document.createElement('style');
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
 }
