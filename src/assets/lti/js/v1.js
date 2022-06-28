@@ -234,7 +234,7 @@ function showMessage(msg) {
 }
 
 function designCustomization() {
-  if (window.DESIGN_CUSTOMIZATION === 'undefined') {
+  if (typeof window.DESIGN_CUSTOMIZATION === 'undefined') {
     return;
   }
 
