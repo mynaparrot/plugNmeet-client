@@ -118,7 +118,7 @@ const ReactPlayerComponent = ({
   };
 
   return (
-    <div className="">
+    <>
       <ReactPlayer
         ref={ref}
         url={src}
@@ -130,7 +130,7 @@ const ReactPlayerComponent = ({
         onPause={onPause}
         onPlay={onPlay}
       />
-    </div>
+    </>
   );
 };
 

@@ -85,22 +85,23 @@ const ExternalMediaPlayer = ({
   const render = () => {
     return (
       <div className="externalMediaPlayerWrapper m-auto w-full flex items-center justify-center max-w-[1000px] flex-1 p-4">
-        <div className="media-player-inner"></div>
-        {showVideoJsPlayer ? (
-          <VideoJsPlayerComponent
-            src={playBackUrl ?? ''}
-            action={action}
-            isPresenter={!!isPresenter}
-            seekTo={seekTo}
-          />
-        ) : (
-          <ReactPlayerComponent
-            src={playBackUrl ?? ''}
-            action={action}
-            isPresenter={!!isPresenter}
-            seekTo={seekTo}
-          />
-        )}
+        <div className="media-player-inner">
+          {showVideoJsPlayer ? (
+            <VideoJsPlayerComponent
+              src={playBackUrl ?? ''}
+              action={action}
+              isPresenter={!!isPresenter}
+              seekTo={seekTo}
+            />
+          ) : (
+            <ReactPlayerComponent
+              src={playBackUrl ?? ''}
+              action={action}
+              isPresenter={!!isPresenter}
+              seekTo={seekTo}
+            />
+          )}
+        </div>
       </div>
     );
   };
