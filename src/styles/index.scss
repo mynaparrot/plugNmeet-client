@@ -1032,10 +1032,10 @@ button.next-cam:hover {
   border-radius: 8px;
   margin-left: 5px;
 }
-.ex-m-p-file-upload [type='file']::-webkit-file-upload-button,
-.ex-m-p-file-upload [type='file']::file-selector-button {
-  display: none;
-}
+// .ex-m-p-file-upload [type='file']::-webkit-file-upload-button,
+// .ex-m-p-file-upload [type='file']::file-selector-button {
+//   display: none;
+// }
 .react-js-player-wrap .video-js {
   padding-top: 0 !important;
 }
