@@ -1,6 +1,7 @@
 import { Dispatch } from 'react';
 import { isEmpty } from 'validator';
 import {
+  DisconnectReason,
   LocalParticipant,
   LocalTrackPublication,
   Participant,
@@ -40,6 +41,7 @@ import {
   SystemMsgType,
 } from '../../store/slices/interfaces/dataMessages';
 import { LivekitInfo } from './hooks/useLivekitConnect';
+import i18n from '../i18n';
 
 type connectionStatus =
   | 'connecting'
@@ -340,16 +342,45 @@ export default class ConnectLivekit {
     return room;
   };
 
-  private onDisconnected = () => {
+  private onDisconnected = (reason?: DisconnectReason) => {
     this.errorState({
-      title: 'Room disconnected',
-      text: 'Room was closed or disconnected. ',
+      title: i18n.t('notifications.room-disconnected-title'),
+      text: this.getDisconnectErrorReasonText(reason),
     });
     this.roomConnectionStatusState('disconnected');
     closeWebsocketConnection();
     this.handleActiveSpeakers.onLivekitDisconnect();
     clearInterval(this.tokenRenewInterval);
     this.handleParticipant.clearParticipantCounterInterval();
+  };
+
+  private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {
+    let msg = 'CLOSED';
+
+    switch (reason) {
+      case DisconnectReason.CLIENT_INITIATED:
+        msg = 'CLIENT_INITIATED';
+        break;
+      case DisconnectReason.DUPLICATE_IDENTITY:
+        msg = 'DUPLICATE_IDENTITY';
+        break;
+      case DisconnectReason.SERVER_SHUTDOWN:
+        msg = 'SERVER_SHUTDOWN';
+        break;
+      case DisconnectReason.PARTICIPANT_REMOVED:
+        msg = 'PARTICIPANT_REMOVED';
+        break;
+      case DisconnectReason.ROOM_DELETED:
+        msg = 'ROOM_ENDED';
+        break;
+      case DisconnectReason.STATE_MISMATCH:
+        msg = 'STATE_MISMATCH';
+        break;
+    }
+
+    return i18n.t('notifications.room-disconnected-reason', {
+      reason: msg,
+    });
   };
 
   private mediaDevicesError = (error: Error) => {
