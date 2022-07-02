@@ -10,6 +10,7 @@ export interface ICustomDesignParams {
   left_side_bg_color?: string;
   right_side_bg_color?: string;
   custom_css_url?: string;
+  custom_logo?: string;
 }
 
 const useDesignCustomization = () => {
@@ -171,6 +172,12 @@ const useDesignCustomization = () => {
         '.messageModule-wrapper { background: ' +
         designCustomParams.right_side_bg_color +
         '; }';
+    }
+
+    if (typeof (window as any).CUSTOM_LOGO === 'undefined') {
+      if (designCustomParams.custom_logo) {
+        (window as any).CUSTOM_LOGO = designCustomParams.custom_logo;
+      }
     }
 
     const head = document.head;
