@@ -52,7 +52,11 @@ window.addEventListener('load', async () => {
 async function joinSession() {
   const res = await sendAPIRequest('/room/join', {});
   if (res.status) {
-    const url = window.PLUG_N_MEET_SERVER_URL + '/?access_token=' + res.token;
+    let url = window.PLUG_N_MEET_SERVER_URL + '/?access_token=' + res.token;
+    if (typeof window.DESIGN_CUSTOMIZATION !== 'undefined') {
+      url +=
+        '&custom_design=' + encodeURIComponent(window.DESIGN_CUSTOMIZATION);
+    }
     window.open(url, '_blank');
 
     if (IS_ADMIN) {

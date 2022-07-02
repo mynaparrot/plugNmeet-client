@@ -37,9 +37,14 @@
         </ul>
     </div>
 </div>
-<script>
+
+<script type="text/javascript">
     const TOKEN = '{{.Token}}';
     const IS_ADMIN = {{.IsAdmin}};
+    const DESIGN_CUSTOMIZATION = '{{.CustomDesign}}';
+    if (DESIGN_CUSTOMIZATION !== "") {
+        window.DESIGN_CUSTOMIZATION = DESIGN_CUSTOMIZATION;
+    }
 </script>
 
 <script src="/assets/config.js"></script>
