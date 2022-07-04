@@ -30,6 +30,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   );
   const [refreshFileBrowser, setRefreshFileBrowser] = useState<number>(0);
   const [menuItems, setMenuItems] = useState<JSX.Element[]>([]);
+  const [fileType, setFileType] = useState<Array<string>>([]);
 
   useEffect(() => {
     const elms = whiteboardUploadedOfficeFiles.map((f) => {
@@ -54,8 +55,14 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
     //eslint-disable-next-line
   }, [whiteboardUploadedOfficeFiles]);
 
-  const openFileBrowser = () => {
+  const openFileBrowser = (type) => {
+    let fileType = ['jpg', 'jpeg', 'png', 'svg'];
+    if (type === 'office') {
+      // prettier-ignore
+      fileType = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html']
+    }
     setRefreshFileBrowser(refreshFileBrowser + 1);
+    setFileType([...fileType]);
   };
 
   const switchOfficeFile = async (f: IWhiteboardOfficeFile) => {
@@ -67,6 +74,9 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   const render = () => {
     return (
       <>
+        <button onClick={() => openFileBrowser('image')}>
+          {t('whiteboard.upload-image')}
+        </button>
         <div className="menu relative z-10">
           <Menu>
             {({ open }) => (
@@ -99,7 +109,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                     <div className="py-3 !border-t-2 border-solid !border-primaryColor !mt-2">
                       <Menu.Item>
                         <button
-                          onClick={() => openFileBrowser()}
+                          onClick={() => openFileBrowser('office')}
                           className="w-[100px] !m-auto text-xs h-7 flex items-center justify-center !bg-primaryColor hover:!bg-secondaryColor text-white"
                         >
                           <i className="pnm-attachment text-white text-[14px] opacity-50 mr-1" />
@@ -115,6 +125,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
         </div>
         <UploadFilesUI
           refreshFileBrowser={refreshFileBrowser}
+          allowedFileTypes={fileType}
           currentPage={currentPage}
           excalidrawAPI={excalidrawAPI}
         />
