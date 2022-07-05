@@ -79,7 +79,10 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
           onClick={() => openFileBrowser('image')}
         >
           <i className="pnm-blank-img primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
-          {t('whiteboard.upload-image')}
+          <span className="hidden lg:inline-block">
+            {t('whiteboard.upload-image')}
+          </span>
+          <span className="inline-block lg:hidden">image</span>
         </button>
         <div className="menu relative z-10">
           <Menu>
@@ -88,7 +91,10 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                 <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
                   <>
                     <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
-                    {t('whiteboard.manage-files')}
+                    <span className="hidden lg:inline-block">
+                      {t('whiteboard.manage-files')}
+                    </span>
+                    <span className="inline-block lg:hidden">file</span>
                   </>
                 </Menu.Button>
 
