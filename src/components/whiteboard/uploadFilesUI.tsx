@@ -199,7 +199,7 @@ const UploadFilesUI = ({
     );
   };
 
-  return <>{render()}</>;
+  return render();
 };
 
 export default UploadFilesUI;
