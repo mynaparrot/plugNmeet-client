@@ -249,8 +249,8 @@
     "converting": "Please wait file conversion in progress",
     "file-ready": "File is ready",
     "upload-file": "Upload file",
-    "manage-files": "Manage files",
-    "upload-image": "Upload image"
+    "manage-files": "Files",
+    "upload-image": "Image"
   },
   "waiting-room": {
     "modal-title": "Manage waiting room",
