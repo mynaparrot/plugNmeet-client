@@ -64,7 +64,8 @@ export const fetchFileWithElm = async (
         };
 
         image.onerror = async function () {
-          reject('can not open image file');
+          console.error('can not open image file');
+          reject(null);
         };
       } else if (fileMimeType == 'image/svg+xml') {
         fileHeight = excalidrawHeight * 0.8;
@@ -72,7 +73,8 @@ export const fetchFileWithElm = async (
         const result = prepareForExcalidraw();
         resolve(result);
       } else {
-        reject('unsupported file');
+        console.error('unsupported file');
+        reject(null);
       }
     };
   });
