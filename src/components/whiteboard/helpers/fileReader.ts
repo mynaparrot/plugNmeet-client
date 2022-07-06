@@ -39,24 +39,21 @@ export const fetchFileWithElm = async (
     if (lastVersion < 0) {
       lastVersion = 1;
     }
-    const reader = new FileReader();
     const readerBase64 = new FileReader();
-
-    reader.onloadend = () => {
-      fileMimeType = getRealMimeType(reader);
-      if (fileMimeType !== 'unknown') {
-        readerBase64.readAsDataURL(imageData);
-      } else {
-        reject(null);
-      }
-    };
-    reader.readAsArrayBuffer(imageData);
+    readerBase64.readAsDataURL(imageData);
 
     readerBase64.onload = () => {
       imgData = readerBase64.result as string;
-      imgData = imgData.replace('application/octet-stream', fileMimeType);
+      fileMimeType = imgData.substring(
+        'data:'.length,
+        imgData.indexOf(';base64'),
+      );
 
-      if (fileMimeType !== 'image/svg+xml') {
+      if (
+        fileMimeType === 'image/png' ||
+        fileMimeType === 'image/jpeg' ||
+        fileMimeType === 'image/jpg'
+      ) {
         const image = new Image();
         image.src = imgData;
 
@@ -65,13 +62,19 @@ export const fetchFileWithElm = async (
           const result = prepareForExcalidraw();
           resolve(result);
         };
+
+        image.onerror = async function () {
+          console.error('can not open image file');
+          reject(null);
+        };
       } else if (fileMimeType == 'image/svg+xml') {
         fileHeight = excalidrawHeight * 0.8;
         fileWidth = excalidrawWidth * 0.7;
         const result = prepareForExcalidraw();
         resolve(result);
       } else {
-        reject('unsupported file');
+        console.error('unsupported file');
+        reject(null);
       }
     };
   });
@@ -124,44 +127,6 @@ const prepareForExcalidraw = (): FileReaderResult => {
     image,
     elm,
   };
-};
-
-const getRealMimeType = (reader) => {
-  const arr = new Uint8Array(reader.result).subarray(0, 4);
-  let header = '';
-  let realMimeType;
-
-  for (let i = 0; i < arr.length; i++) {
-    header += arr[i].toString(16);
-  }
-
-  // magic numbers: http://www.garykessler.net/library/file_sigs.html
-  switch (header) {
-    case '89504e47':
-      realMimeType = 'image/png';
-      break;
-    case '47494638':
-      realMimeType = 'image/gif';
-      break;
-    case 'ffd8ffDB':
-    case 'ffd8ffe0':
-    case 'ffd8ffe1':
-    case 'ffd8ffe2':
-    case 'ffd8ffe3':
-    case 'ffd8ffe8':
-      realMimeType = 'image/jpeg';
-      break;
-    case '3c3f786d':
-    case '3c737667':
-      realMimeType = 'image/svg+xml';
-      break;
-    default:
-      // Or you can use the blob.type as fallback
-      realMimeType = 'unknown';
-      break;
-  }
-
-  return realMimeType;
 };
 
 const getFileDimension = async (height: number, width: number) => {
