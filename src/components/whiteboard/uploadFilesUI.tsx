@@ -29,12 +29,14 @@ import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
+  allowedFileTypes: Array<string>;
   currentPage: number;
   excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
 const UploadFilesUI = ({
   refreshFileBrowser,
+  allowedFileTypes,
   currentPage,
   excalidrawAPI,
 }: IUploadFilesProps) => {
@@ -42,8 +44,6 @@ const UploadFilesUI = ({
   const [files, setFiles] = useState<Array<File>>();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  // prettier-ignore
-  const allowedFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
   const session = store.getState().session;
   const preRefreshFileBrowser = useStorePreviousInt(refreshFileBrowser);
 
@@ -199,7 +199,7 @@ const UploadFilesUI = ({
     );
   };
 
-  return <>{render()}</>;
+  return render();
 };
 
 export default UploadFilesUI;

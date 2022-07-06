@@ -30,6 +30,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   );
   const [refreshFileBrowser, setRefreshFileBrowser] = useState<number>(0);
   const [menuItems, setMenuItems] = useState<JSX.Element[]>([]);
+  const [fileType, setFileType] = useState<Array<string>>([]);
 
   useEffect(() => {
     const elms = whiteboardUploadedOfficeFiles.map((f) => {
@@ -54,8 +55,14 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
     //eslint-disable-next-line
   }, [whiteboardUploadedOfficeFiles]);
 
-  const openFileBrowser = () => {
+  const openFileBrowser = (type) => {
+    let fileType = ['jpg', 'jpeg', 'png', 'svg'];
+    if (type === 'office') {
+      // prettier-ignore
+      fileType = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html']
+    }
     setRefreshFileBrowser(refreshFileBrowser + 1);
+    setFileType([...fileType]);
   };
 
   const switchOfficeFile = async (f: IWhiteboardOfficeFile) => {
@@ -67,11 +74,18 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   const render = () => {
     return (
       <>
+        <button
+          className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] !mr-2 flex items-center justify-center cursor-pointer"
+          onClick={() => openFileBrowser('image')}
+        >
+          <i className="pnm-blank-img primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+          {t('whiteboard.upload-image')}
+        </button>
         <div className="menu relative z-10">
           <Menu>
             {({ open }) => (
               <>
-                <Menu.Button className="manage-icon h-[35px] lg:h-[40px] max-w !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
+                <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
                   <>
                     <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
                     {t('whiteboard.manage-files')}
@@ -93,13 +107,13 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                     static
                     className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                   >
-                    <div className="item-wrapper-uploaded-file overflow-y-auto max-h-[170px] scrollBar scrollBar2">
+                    <div className="item-wrapper-uploaded-file overflow-x-hidden overflow-y-auto max-h-[170px] scrollBar scrollBar2">
                       {menuItems}
                     </div>
                     <div className="py-3 !border-t-2 border-solid !border-primaryColor !mt-2">
                       <Menu.Item>
                         <button
-                          onClick={() => openFileBrowser()}
+                          onClick={() => openFileBrowser('office')}
                           className="w-[100px] !m-auto text-xs h-7 flex items-center justify-center !bg-primaryColor hover:!bg-secondaryColor text-white"
                         >
                           <i className="pnm-attachment text-white text-[14px] opacity-50 mr-1" />
@@ -115,6 +129,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
         </div>
         <UploadFilesUI
           refreshFileBrowser={refreshFileBrowser}
+          allowedFileTypes={fileType}
           currentPage={currentPage}
           excalidrawAPI={excalidrawAPI}
         />
