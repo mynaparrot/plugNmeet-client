@@ -193,7 +193,9 @@
       "start-external-media-player": "Start external Media Player",
       "stop-external-media-player": "Stop external Media Player",
       "manage-waiting-room": "Manage waiting room",
-      "manage-breakout-room": "Manage breakout room"
+      "manage-breakout-room": "Manage breakout room",
+      "start-display-external-link": "Display external link",
+      "stop-display-external-link": "Stop display external link"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -241,7 +243,11 @@
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Upload and play",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
-      "upload-background-image": "Upload background image"
+      "upload-background-image": "Upload background image",
+      "external-display-link-title": "Display external link (iFrame)",
+      "external-display-link-url": "Url",
+      "external-display-link-display": "Display",
+      "external-display-link-empty": "Link can not be empty"
     }
   },
   "whiteboard": {

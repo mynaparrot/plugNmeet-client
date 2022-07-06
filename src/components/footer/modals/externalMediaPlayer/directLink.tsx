@@ -65,11 +65,7 @@ const DirectLink = () => {
   };
 
   return (
-    <form
-      action="src/components/footer/modals/externalMediaPlayer/externalMediaPlayer#"
-      method="POST"
-      onSubmit={(e) => startPlayer(e)}
-    >
+    <form method="POST" onSubmit={(e) => startPlayer(e)}>
       <div className="s">
         <div className="">
           <div className="">
