@@ -246,12 +246,7 @@
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Upload and play",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
-      "upload-background-image": "Upload background image",
-      "external-display-link-title": "Display external link (iframe)",
-      "external-display-link-url": "Url",
-      "external-display-link-display": "Display",
-      "external-display-link-invalid": "Link not valid",
-      "external-display-link-note": "Note: Make sure the URL has permission to open inside an iframe. Example: https://www.gameflare.com/embed/mini-survival"
+      "upload-background-image": "Upload background image"
     }
   },
   "whiteboard": {
@@ -331,5 +326,21 @@
     "not-started": "Not started",
     "user-joined": "Joined",
     "not-joined": "Not joined"
+  },
+  "external-display-link-display": {
+    "modal-title": "Display external link (iframe)",
+    "url": "Url",
+    "display": "Display",
+    "link-invalid": "Link not valid",
+    "note": "Note: Make sure the URL has permission to open inside an iframe. Example: https://www.gameflare.com/embed/mini-survival",
+    "send-extra-values": "Send Extra values",
+    "name": "Name",
+    "name-des": "User's full name",
+    "user-id": "User Id",
+    "user-id-des": "User's unique Id",
+    "meeting-id": "Meeting Id",
+    "meeting-id-des": "Meeting's origin ID",
+    "user-role": "User role",
+    "user-role-des": "User's current role. Either admin or participant"
   }
 }
