@@ -43,7 +43,6 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   }, [track]);
 
   const onLoadedData = () => {
-    console.log('onPlaying');
     setLoaded(true);
   };
 
