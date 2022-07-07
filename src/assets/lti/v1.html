@@ -42,7 +42,7 @@
     const TOKEN = '{{.Token}}';
     const IS_ADMIN = {{.IsAdmin}};
     const DESIGN_CUSTOMIZATION = '{{.CustomDesign}}';
-    if (DESIGN_CUSTOMIZATION !== "") {
+    if (DESIGN_CUSTOMIZATION !== "" || DESIGN_CUSTOMIZATION !== "{}") {
         window.DESIGN_CUSTOMIZATION = DESIGN_CUSTOMIZATION;
     }
 </script>
