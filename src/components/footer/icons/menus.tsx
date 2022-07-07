@@ -313,7 +313,7 @@ const MenusIcon = () => {
                           className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
                           onClick={() => toggleDisplayExternalLinkModal()}
                         >
-                          <i className="pnm-file-play text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          <i className="pnm-display text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
                           {isActiveDisplayExternalLink
                             ? t('footer.menus.stop-display-external-link')
                             : t('footer.menus.start-display-external-link')}
