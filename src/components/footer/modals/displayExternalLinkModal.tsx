@@ -188,7 +188,7 @@ const DisplayExternalLinkModal = () => {
                                   type="checkbox"
                                   checked={extraValues.name}
                                   onChange={() => {
-                                    const tmp = structuredClone(extraValues);
+                                    const tmp = Object.assign({}, extraValues);
                                     tmp.name = !extraValues.name;
                                     setExtraValues(tmp);
                                   }}
@@ -215,7 +215,7 @@ const DisplayExternalLinkModal = () => {
                                   type="checkbox"
                                   checked={extraValues.userId}
                                   onChange={() => {
-                                    const tmp = structuredClone(extraValues);
+                                    const tmp = Object.assign({}, extraValues);
                                     tmp.userId = !extraValues.userId;
                                     setExtraValues(tmp);
                                   }}
@@ -244,7 +244,7 @@ const DisplayExternalLinkModal = () => {
                                   type="checkbox"
                                   checked={extraValues.role}
                                   onChange={() => {
-                                    const tmp = structuredClone(extraValues);
+                                    const tmp = Object.assign({}, extraValues);
                                     tmp.role = !extraValues.role;
                                     setExtraValues(tmp);
                                   }}
@@ -273,7 +273,7 @@ const DisplayExternalLinkModal = () => {
                                   type="checkbox"
                                   checked={extraValues.meetingId}
                                   onChange={() => {
-                                    const tmp = structuredClone(extraValues);
+                                    const tmp = Object.assign({}, extraValues);
                                     tmp.meetingId = !extraValues.meetingId;
                                     setExtraValues(tmp);
                                   }}
