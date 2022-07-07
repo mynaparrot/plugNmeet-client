@@ -375,7 +375,6 @@ const MenusIcon = () => {
       {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}
       {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
       {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
-      {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
       {showDisplayExternalLinkModal ? <DisplayExternalLinkModal /> : null}
     </>
   );
