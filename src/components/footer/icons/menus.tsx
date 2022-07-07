@@ -190,7 +190,31 @@ const MenusIcon = () => {
   };
 
   const toggleDisplayExternalLinkModal = async () => {
-    dispatch(updateDisplayExternalLinkRoomModal(true));
+    if (!isActiveDisplayExternalLink) {
+      dispatch(updateDisplayExternalLinkRoomModal(true));
+      return;
+    }
+    const body = {
+      task: 'end',
+      sid: store.getState().session.currentRoom.sid,
+    };
+
+    const id = toast.loading(t('please-wait'), {
+      type: 'info',
+    });
+
+    const res = await sendAPIRequest('externalDisplayLink', body);
+
+    if (!res.status) {
+      toast.update(id, {
+        render: t(res.msg),
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } else {
+      toast.dismiss(id);
+    }
   };
 
   const render = () => {

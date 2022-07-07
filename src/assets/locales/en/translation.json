@@ -8,6 +8,9 @@
   "share": "Share",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
   "open": "Open",
+  "please-wait": "Please wait...",
+  "are-you-sure-to-close": "Are you sure to close?",
+  "you-are-about-to-close": "You are about to close",
   "notifications": {
     "room-not-active": "Room isn't active.",
     "recording-already-running": "recording already running",
@@ -244,10 +247,11 @@
       "external-media-player-upload-file-play": "Upload and play",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
       "upload-background-image": "Upload background image",
-      "external-display-link-title": "Display external link (iFrame)",
+      "external-display-link-title": "Display external link (iframe)",
       "external-display-link-url": "Url",
       "external-display-link-display": "Display",
-      "external-display-link-empty": "Link can not be empty"
+      "external-display-link-invalid": "Link not valid",
+      "external-display-link-note": "Note: Make sure the URL has permission to open inside an iframe. Example: https://www.gameflare.com/embed/mini-survival"
     }
   },
   "whiteboard": {
