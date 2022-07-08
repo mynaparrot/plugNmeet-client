@@ -137,4 +137,5 @@ export interface IDisplayExternalLinkFeatures {
   is_allow: boolean;
   is_active: boolean;
   link?: string;
+  shared_by?: string;
 }
