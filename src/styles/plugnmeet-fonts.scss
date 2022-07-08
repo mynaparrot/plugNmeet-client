@@ -31,6 +31,9 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-display:before {
+  content: '\e92a';
+}
 .pnm-blank-img:before {
   content: '\e929';
 }

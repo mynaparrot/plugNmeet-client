@@ -64,6 +64,7 @@ interface IRoomFeatures {
   external_media_player_features: IExternalMediaPlayerFeatures;
   waiting_room_features: IWaitingRoomFeatures;
   breakout_room_features: IBreakoutRoomFeatures;
+  display_external_link_features: IDisplayExternalLinkFeatures;
 }
 
 interface IChatFeatures {
@@ -130,4 +131,11 @@ export interface IBreakoutRoomFeatures {
   is_allow: boolean;
   is_active: boolean;
   allowed_number_rooms: number;
+}
+
+export interface IDisplayExternalLinkFeatures {
+  is_allow: boolean;
+  is_active: boolean;
+  link?: string;
+  shared_by?: string;
 }

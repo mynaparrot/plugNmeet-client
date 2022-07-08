@@ -9,7 +9,11 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshTypeScript = require('react-refresh-typescript');
 const pkg = require('./package.json');
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: './src/index.tsx',
@@ -26,6 +30,9 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         options: {
+          getCustomTransformers: () => ({
+            before: [!isProduction && ReactRefreshTypeScript()].filter(Boolean),
+          }),
           transpileOnly: true,
         },
       },
@@ -72,10 +79,11 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      IS_PRODUCTION: process.env.NODE_ENV === 'production',
+      IS_PRODUCTION: isProduction,
       PNM_VERSION: JSON.stringify(pkg.version),
       BUILD_TIME: Math.floor(Date.now() / 1000),
     }),
+    !isProduction && new ReactRefreshWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'assets/css/[name].[contenthash].css',
     }),
@@ -107,5 +115,5 @@ module.exports = {
         },
       ],
     }),
-  ],
+  ].filter(Boolean),
 };

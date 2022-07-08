@@ -55,6 +55,12 @@ const isActiveExternalMediaPlayerSelector = createSelector(
       .external_media_player_features.is_active,
   (is_active) => is_active,
 );
+const isActiveDisplayExternalLinkSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features
+      .display_external_link_features.is_active,
+  (is_active) => is_active,
+);
 
 const MainArea = ({
   currentRoom,
@@ -73,6 +79,9 @@ const MainArea = ({
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
   const isActiveExternalMediaPlayer = useAppSelector(
     isActiveExternalMediaPlayerSelector,
+  );
+  const isActiveDisplayExternalLink = useAppSelector(
+    isActiveDisplayExternalLinkSelector,
   );
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
@@ -114,6 +123,10 @@ const MainArea = ({
       ? css.push('showExternalMediaPlayer fullWidthMainArea')
       : css.push('hideExternalMediaPlayer');
 
+    isActiveDisplayExternalLink
+      ? css.push('showDisplayExternalLink fullWidthMainArea')
+      : css.push('hideDisplayExternalLink');
+
     setCustomCSS(css.join(' '));
   }, [
     activeScreenSharingView,
@@ -123,6 +136,7 @@ const MainArea = ({
     isActiveWhiteboard,
     screenShareTracks?.size,
     isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
   ]);
 
   return (

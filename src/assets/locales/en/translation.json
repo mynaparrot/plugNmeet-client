@@ -8,6 +8,9 @@
   "share": "Share",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
   "open": "Open",
+  "please-wait": "Please wait...",
+  "are-you-sure-to-close": "Are you sure to close?",
+  "you-are-about-to-close": "You are about to close",
   "notifications": {
     "room-not-active": "Room isn't active.",
     "recording-already-running": "recording already running",
@@ -193,7 +196,9 @@
       "start-external-media-player": "Start external Media Player",
       "stop-external-media-player": "Stop external Media Player",
       "manage-waiting-room": "Manage waiting room",
-      "manage-breakout-room": "Manage breakout room"
+      "manage-breakout-room": "Manage breakout room",
+      "start-display-external-link": "Display external link",
+      "stop-display-external-link": "Stop display external link"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -321,5 +326,21 @@
     "not-started": "Not started",
     "user-joined": "Joined",
     "not-joined": "Not joined"
+  },
+  "external-display-link-display": {
+    "modal-title": "Display external link (iframe)",
+    "url": "Url",
+    "display": "Display",
+    "link-invalid": "Link not valid",
+    "note": "Note: Make sure the URL has permission to open inside an iframe. Example: https://www.gameflare.com/embed/mini-survival",
+    "send-extra-values": "Send Extra values",
+    "name": "Name",
+    "name-des": "User's full name",
+    "user-id": "User Id",
+    "user-id-des": "User's unique Id",
+    "meeting-id": "Meeting Id",
+    "meeting-id-des": "Meeting's origin ID",
+    "user-role": "User role",
+    "user-role-des": "User's current role. Either admin or participant"
   }
 }

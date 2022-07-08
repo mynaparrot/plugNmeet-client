@@ -385,7 +385,7 @@ export default class ConnectLivekit {
 
   private mediaDevicesError = (error: Error) => {
     // to do
-    console.log(error);
+    console.error(error);
   };
 
   // this method basically update plugNmeet token
@@ -423,7 +423,6 @@ export default class ConnectLivekit {
     participant: LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
-    console.log('=== setScreenShareTrack ===', track.source);
     if (add) {
       this._screenShareTracksMap.set(participant.identity, track);
     } else {
@@ -469,7 +468,6 @@ export default class ConnectLivekit {
     add = true,
   ) => {
     if (typeof participant.identity === 'undefined') {
-      console.log('participant.identity undefined');
       return;
     }
 
@@ -506,9 +504,7 @@ export default class ConnectLivekit {
     participant: Participant | LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
-    console.log('==== updateVideoSubscribers ====');
     if (typeof participant.identity === 'undefined') {
-      console.log('participant.identity undefined');
       return;
     }
 
@@ -516,7 +512,6 @@ export default class ConnectLivekit {
       this._videoSubscribersMap.set(participant.identity, participant);
     } else {
       if (this._videoSubscribersMap.has(participant.identity)) {
-        console.log('removing..', participant.identity);
         this._videoSubscribersMap.delete(participant.identity);
       }
     }
@@ -570,7 +565,5 @@ export default class ConnectLivekit {
     }
 
     this.videoSubscribersState(new Map(withoutLocalSubscriber as any));
-
-    console.log('===ended update ====');
   };
 }

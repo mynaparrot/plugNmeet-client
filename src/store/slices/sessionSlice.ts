@@ -72,6 +72,10 @@ const initialState: ISession = {
           is_active: false,
           allowed_number_rooms: 6,
         },
+        display_external_link_features: {
+          is_allow: true,
+          is_active: false,
+        },
       },
     },
   },

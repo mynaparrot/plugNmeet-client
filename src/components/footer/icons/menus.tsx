@@ -13,6 +13,7 @@ import {
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import LockSettingsModal from '../modals/lockSettingsModal';
 import {
+  updateDisplayExternalLinkRoomModal,
   updateIsActiveSharedNotePad,
   updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
@@ -24,6 +25,7 @@ import RtmpModal from '../modals/rtmpModal';
 import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
+import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -61,6 +63,16 @@ const showManageBreakoutRoomModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showManageBreakoutRoomModal,
   (showManageBreakoutRoomModal) => showManageBreakoutRoomModal,
 );
+const isActiveDisplayExternalLinkSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features
+      .display_external_link_features.is_active,
+  (is_active) => is_active,
+);
+const showDisplayExternalLinkModalModalSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.showDisplayExternalLinkModal,
+  (showDisplayExternalLinkModal) => showDisplayExternalLinkModal,
+);
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -84,6 +96,12 @@ const MenusIcon = () => {
   );
   const showManageBreakoutRoomModal = useAppSelector(
     showManageBreakoutRoomModalSelector,
+  );
+  const isActiveDisplayExternalLink = useAppSelector(
+    isActiveDisplayExternalLinkSelector,
+  );
+  const showDisplayExternalLinkModal = useAppSelector(
+    showDisplayExternalLinkModalModalSelector,
   );
   const roomFeatures =
     store.getState().session.currentRoom?.metadata?.room_features;
@@ -169,6 +187,34 @@ const MenusIcon = () => {
 
   const openManageBreakoutRoomModal = () => {
     dispatch(updateShowManageBreakoutRoomModal(true));
+  };
+
+  const toggleDisplayExternalLinkModal = async () => {
+    if (!isActiveDisplayExternalLink) {
+      dispatch(updateDisplayExternalLinkRoomModal(true));
+      return;
+    }
+    const body = {
+      task: 'end',
+      sid: store.getState().session.currentRoom.sid,
+    };
+
+    const id = toast.loading(t('please-wait'), {
+      type: 'info',
+    });
+
+    const res = await sendAPIRequest('externalDisplayLink', body);
+
+    if (!res.status) {
+      toast.update(id, {
+        render: t(res.msg),
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } else {
+      toast.dismiss(id);
+    }
   };
 
   const render = () => {
@@ -260,6 +306,21 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
+                  {roomFeatures?.display_external_link_features.is_allow ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="text-gray-700 dark:text-gray-400 rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+                          onClick={() => toggleDisplayExternalLinkModal()}
+                        >
+                          <i className="pnm-display text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          {isActiveDisplayExternalLink
+                            ? t('footer.menus.stop-display-external-link')
+                            : t('footer.menus.start-display-external-link')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
                   {roomFeatures?.waiting_room_features.is_active ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
@@ -314,6 +375,7 @@ const MenusIcon = () => {
       {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}
       {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
       {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
+      {showDisplayExternalLinkModal ? <DisplayExternalLinkModal /> : null}
     </>
   );
 };
