@@ -158,16 +158,16 @@ const DisplayExternalLinkModal = () => {
                           id="stream-key"
                           value={link}
                           onChange={(e) => setLink(e.currentTarget.value)}
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
+                          className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
                         />
-                        <div className="text-xs py-2">
-                          {t('external-display-link-display.note')}
-                        </div>
                         {errorMsg ? (
-                          <div className="error-msg absolute text-xs text-red-600 py-2">
+                          <div className="error-msg text-xs text-red-600 py-2">
                             {errorMsg}
                           </div>
                         ) : null}
+                        <div className="text-xs py-2">
+                          {t('external-display-link-display.note')}
+                        </div>
                       </div>
                       <div className="mt-4">
                         <fieldset>
