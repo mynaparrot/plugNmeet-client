@@ -126,7 +126,7 @@ const DisplayExternalLinkModal = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
@@ -160,7 +160,7 @@ const DisplayExternalLinkModal = () => {
                           onChange={(e) => setLink(e.currentTarget.value)}
                           className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
                         />
-                        <div className="absolute text-xs py-2">
+                        <div className="text-xs py-2">
                           {t('external-display-link-display.note')}
                         </div>
                         {errorMsg ? (
@@ -169,7 +169,7 @@ const DisplayExternalLinkModal = () => {
                           </div>
                         ) : null}
                       </div>
-                      <div className="mt-10">
+                      <div className="mt-4">
                         <fieldset>
                           <div
                             className="text-base font-medium text-gray-900"
@@ -179,9 +179,9 @@ const DisplayExternalLinkModal = () => {
                               'external-display-link-display.send-extra-values',
                             )}
                           </div>
-                          <div className="mt-4 space-y-4">
-                            <div className="flex items-start">
-                              <div className="flex items-center h-5">
+                          <div className="mt-4 flex flex-wrap justify-between">
+                            <div className="w-1/2 md:w-1/4 mb-4">
+                              <div className="flex items-center w-full justify-center mb-2">
                                 <input
                                   id="name"
                                   name="name"
@@ -195,7 +195,7 @@ const DisplayExternalLinkModal = () => {
                                   className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                 />
                               </div>
-                              <div className="ml-3 text-sm">
+                              <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="name"
                                   className="font-medium text-gray-700"
@@ -207,8 +207,8 @@ const DisplayExternalLinkModal = () => {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-start">
-                              <div className="flex items-center h-5">
+                            <div className="w-1/2 md:w-1/4 mb-4">
+                              <div className="flex items-center w-full justify-center mb-2">
                                 <input
                                   id="user-id"
                                   name="user-id"
@@ -222,7 +222,7 @@ const DisplayExternalLinkModal = () => {
                                   className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                 />
                               </div>
-                              <div className="ml-3 text-sm">
+                              <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="user-id"
                                   className="font-medium text-gray-700"
@@ -236,8 +236,8 @@ const DisplayExternalLinkModal = () => {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-start">
-                              <div className="flex items-center h-5">
+                            <div className="w-1/2 md:w-1/4 mb-4">
+                              <div className="flex items-center w-full justify-center mb-2">
                                 <input
                                   id="user-role"
                                   name="user-role"
@@ -251,7 +251,7 @@ const DisplayExternalLinkModal = () => {
                                   className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                 />
                               </div>
-                              <div className="ml-3 text-sm">
+                              <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="user-role"
                                   className="font-medium text-gray-700"
@@ -265,8 +265,8 @@ const DisplayExternalLinkModal = () => {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-start">
-                              <div className="flex items-center h-5">
+                            <div className="w-1/2 md:w-1/4 mb-4">
+                              <div className="flex items-center w-full justify-center mb-2">
                                 <input
                                   id="meeting-id"
                                   name="meeting-id"
@@ -280,7 +280,7 @@ const DisplayExternalLinkModal = () => {
                                   className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                 />
                               </div>
-                              <div className="ml-3 text-sm">
+                              <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="meeting-id"
                                   className="font-medium text-gray-700"
