@@ -8,6 +8,9 @@
   "share": "Share",
   "version": "Version: {{pnm_version}}; Build: {{build}}",
   "open": "Open",
+  "please-wait": "Please wait...",
+  "are-you-sure-to-close": "Are you sure to close?",
+  "you-are-about-to-close": "You are about to close",
   "notifications": {
     "room-not-active": "Room isn't active.",
     "recording-already-running": "recording already running",
@@ -26,7 +29,13 @@
     "you-have-reject": "You've been rejected to join this conference",
     "waiting-for-approval": "Please wait until a moderator will approve you.",
     "room-disconnected-title": "Room disconnected",
-    "room-disconnected-reason": "The room has been disconnected. Reason: {{reason}}"
+    "room-disconnected-unknown": "The room has been disconnected. Code: {{code}}",
+    "room-disconnected-client-initiated": "Client has been initiated. Code: {{code}}",
+    "room-disconnected-duplicate-entry": "Other user with same userId has been joined. Code: {{code}}",
+    "room-disconnected-server-shutdown": "Server shutdown. Code: {{code}}",
+    "room-disconnected-participant-removed": "You have been removed from this conference. Code: {{code}}",
+    "room-disconnected-room-ended": "The room has been closed. Code: {{code}}",
+    "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}"
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
@@ -193,7 +202,9 @@
       "start-external-media-player": "Start external Media Player",
       "stop-external-media-player": "Stop external Media Player",
       "manage-waiting-room": "Manage waiting room",
-      "manage-breakout-room": "Manage breakout room"
+      "manage-breakout-room": "Manage breakout room",
+      "start-display-external-link": "Display external link",
+      "stop-display-external-link": "Stop display external link"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -209,8 +220,7 @@
       "rtmp-ending": "RTMP broadcasting is starting. Please wait",
       "external-media-player-url-required": "Valid URL required",
       "external-media-player-url-invalid": "URL not valid or supported",
-      "external-media-player-starting": "Please wait preparing playback",
-      "external-media-player-stopping": "Please wait stopping playback"
+      "external-media-player-starting": "Please wait preparing playback"
     },
     "modal": {
       "lock-settings-title": "Room Lock Settings",
@@ -235,8 +245,6 @@
       "external-media-player-title": "External Media Player",
       "external-media-player-url": "Playback URL",
       "external-media-player-play": "Play",
-      "external-media-player-close-confirm": "Are you sure to stop playback?",
-      "external-media-player-close-msg": "You are about to close playback",
       "external-media-player-direct-link": "Direct link",
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Upload and play",
@@ -321,5 +329,21 @@
     "not-started": "Not started",
     "user-joined": "Joined",
     "not-joined": "Not joined"
+  },
+  "external-display-link-display": {
+    "modal-title": "Display external link (iframe)",
+    "url": "Url",
+    "display": "Display",
+    "link-invalid": "Link not valid",
+    "note": "Note: Make sure the URL has permission to open inside an iframe. Example: https://www.gameflare.com/embed/mini-survival",
+    "send-extra-values": "Send Extra values",
+    "name": "Name",
+    "name-des": "User's full name",
+    "user-id": "User Id",
+    "user-id-des": "User's unique Id",
+    "meeting-id": "Meeting Id",
+    "meeting-id-des": "Meeting's origin ID",
+    "user-role": "User role",
+    "user-role-des": "User's current role. Either admin or participant"
   }
 }
