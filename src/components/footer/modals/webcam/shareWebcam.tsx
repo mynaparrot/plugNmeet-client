@@ -95,7 +95,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
       >
         <Dialog
           open={isOpen}
-          onClose={() => onClose()}
+          onClose={() => false}
           className="share-webcam-popup-wrap fixed z-[99999] inset-0 overflow-y-auto"
         >
           <div className="flex items-center justify-center min-h-screen">

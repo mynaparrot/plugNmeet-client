@@ -45,7 +45,7 @@ const sharedNotepadStatusSelector = createSelector(
       .is_active,
   (is_active) => is_active,
 );
-const externalMediaPlayerStatusSelector = createSelector(
+const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
       .external_media_player_features.is_active,
@@ -85,8 +85,8 @@ const MenusIcon = () => {
   const isActiveRtmpBroadcasting = useAppSelector(
     isActiveRtmpBroadcastingSelector,
   );
-  const externalMediaPlayerStatus = useAppSelector(
-    externalMediaPlayerStatusSelector,
+  const isActiveExternalMediaPlayer = useAppSelector(
+    isActiveExternalMediaPlayerSelector,
   );
   const showExternalMediaPlayerModal = useAppSelector(
     showExternalMediaPlayerModalSelector,
@@ -170,23 +170,30 @@ const MenusIcon = () => {
   };
 
   const toggleExternalMediaPlayer = async () => {
-    dispatch(updateShowExternalMediaPlayerModal(true));
-  };
+    if (!isActiveExternalMediaPlayer) {
+      dispatch(updateShowExternalMediaPlayerModal(true));
+      return;
+    }
 
-  const openLockSettingsModal = () => {
-    dispatch(updateShowLockSettingsModal(true));
-  };
+    const id = toast.loading(t('please-wait'), {
+      type: 'info',
+    });
 
-  const openRtmpModal = () => {
-    dispatch(updateShowRtmpModal(true));
-  };
+    const body = {
+      task: 'end-playback',
+    };
+    const res = await sendAPIRequest('externalMediaPlayer', body);
 
-  const openManageWaitingRoomModal = () => {
-    dispatch(updateShowManageWaitingRoomModal(true));
-  };
-
-  const openManageBreakoutRoomModal = () => {
-    dispatch(updateShowManageBreakoutRoomModal(true));
+    if (!res.status) {
+      toast.update(id, {
+        render: t('res.msg'),
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } else {
+      toast.dismiss(id);
+    }
   };
 
   const toggleDisplayExternalLinkModal = async () => {
@@ -196,7 +203,6 @@ const MenusIcon = () => {
     }
     const body = {
       task: 'end',
-      sid: store.getState().session.currentRoom.sid,
     };
 
     const id = toast.loading(t('please-wait'), {
@@ -215,6 +221,22 @@ const MenusIcon = () => {
     } else {
       toast.dismiss(id);
     }
+  };
+
+  const openLockSettingsModal = () => {
+    dispatch(updateShowLockSettingsModal(true));
+  };
+
+  const openRtmpModal = () => {
+    dispatch(updateShowRtmpModal(true));
+  };
+
+  const openManageWaitingRoomModal = () => {
+    dispatch(updateShowManageWaitingRoomModal(true));
+  };
+
+  const openManageBreakoutRoomModal = () => {
+    dispatch(updateShowManageBreakoutRoomModal(true));
   };
 
   const render = () => {
@@ -299,7 +321,7 @@ const MenusIcon = () => {
                           onClick={() => toggleExternalMediaPlayer()}
                         >
                           <i className="pnm-file-play text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
-                          {externalMediaPlayerStatus
+                          {isActiveExternalMediaPlayer
                             ? t('footer.menus.stop-external-media-player')
                             : t('footer.menus.start-external-media-player')}
                         </button>

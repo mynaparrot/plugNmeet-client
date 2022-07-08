@@ -214,8 +214,7 @@
       "rtmp-ending": "RTMP broadcasting is starting. Please wait",
       "external-media-player-url-required": "Valid URL required",
       "external-media-player-url-invalid": "URL not valid or supported",
-      "external-media-player-starting": "Please wait preparing playback",
-      "external-media-player-stopping": "Please wait stopping playback"
+      "external-media-player-starting": "Please wait preparing playback"
     },
     "modal": {
       "lock-settings-title": "Room Lock Settings",
@@ -240,8 +239,6 @@
       "external-media-player-title": "External Media Player",
       "external-media-player-url": "Playback URL",
       "external-media-player-play": "Play",
-      "external-media-player-close-confirm": "Are you sure to stop playback?",
-      "external-media-player-close-msg": "You are about to close playback",
       "external-media-player-direct-link": "Direct link",
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Upload and play",

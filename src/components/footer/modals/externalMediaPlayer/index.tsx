@@ -3,7 +3,6 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppSelector } from '../../../../store';
 import StartPlaybackModal from './start';
-import ShowAlertModal from './stop';
 
 const externalMediaPlayerIsActiveSelector = createSelector(
   (state: RootState) =>
@@ -21,9 +20,7 @@ const ExternalMediaPlayerModal = () => {
     <>
       {!externalMediaPlayerIsActive ? (
         <StartPlaybackModal isActive={externalMediaPlayerIsActive ?? false} />
-      ) : (
-        <ShowAlertModal isActive={externalMediaPlayerIsActive ?? false} />
-      )}
+      ) : null}
     </>
   );
 };
