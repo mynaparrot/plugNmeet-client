@@ -125,6 +125,7 @@ const UploadFilesUI = ({
         fileName,
         uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
         uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
+        isOfficeFile: true,
       };
       files.push(file);
     }
@@ -157,6 +158,7 @@ const UploadFilesUI = ({
       fileName,
       uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
       uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
+      isOfficeFile: false,
     };
     dispatch(addWhiteboardOtherImageFile(file));
 

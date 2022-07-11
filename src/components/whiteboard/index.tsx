@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
-import Excalidraw, { getSceneVersion } from '@excalidraw/excalidraw';
+import { Excalidraw, getSceneVersion } from '@excalidraw/excalidraw';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
@@ -240,6 +240,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       user.button = button;
       user.selectedElementIds = selectedElementIds;
       user.username = name;
+      user.id = userId;
       tmp.set(userId, user);
 
       excalidrawAPI?.updateScene({ collaborators: tmp });
@@ -257,81 +258,85 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         const currentPageFiles = files.filter(
           (file) => file.currentPage === currentPage,
         );
-        handleExcalidrawAddFiles(excalidrawAPI, currentPageFiles);
+        handleExcalidrawAddFiles(currentPageFiles);
       }
     }
     //eslint-disable-next-line
   }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
 
-  const handleExcalidrawAddFiles = async (
-    excalidrawAPI: ExcalidrawImperativeAPI,
-    files: Array<IWhiteboardFile>,
-  ) => {
-    const fileReadImages: Array<BinaryFileData> = [];
-    const fileReadElms: Array<ExcalidrawElement> = [];
+  const handleExcalidrawAddFiles = useCallback(
+    async (files: Array<IWhiteboardFile>) => {
+      if (!excalidrawAPI) {
+        return;
+      }
+      const fileReadImages: Array<BinaryFileData> = [];
+      const fileReadElms: Array<ExcalidrawElement> = [];
 
-    for (const file of files) {
-      const url =
-        (window as any).PLUG_N_MEET_SERVER_URL +
-        '/download/uploadedFile/' +
-        file.filePath;
+      for (const file of files) {
+        const url =
+          (window as any).PLUG_N_MEET_SERVER_URL +
+          '/download/uploadedFile/' +
+          file.filePath;
 
-      const canvasFiles = excalidrawAPI.getFiles();
-      const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-      let hasFile = false;
+        const canvasFiles = excalidrawAPI.getFiles();
+        const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
+        let hasFile = false;
 
-      for (const canvasFile in canvasFiles) {
-        if (canvasFiles[canvasFile].id === file.id) {
-          // further check if element exist
-          const hasElm = elms.filter((el) => el.id === file.id);
-          if (hasElm.length) {
-            hasFile = true;
-            break;
+        for (const canvasFile in canvasFiles) {
+          if (canvasFiles[canvasFile].id === file.id) {
+            // further check if element exist
+            const hasElm = elms.filter((el) => el.id === file.id);
+            if (hasElm.length) {
+              hasFile = true;
+              break;
+            }
+          }
+        }
+
+        if (!hasFile) {
+          const result = await fetchFileWithElm(
+            url,
+            file.id,
+            lastBroadcastOrReceivedSceneVersion,
+            file.isOfficeFile,
+            file.uploaderWhiteboardHeight,
+            file.uploaderWhiteboardWidth,
+          );
+          if (result && excalidrawAPI) {
+            fileReadImages.push(result.image);
+            fileReadElms.push(result.elm);
           }
         }
       }
 
-      if (!hasFile) {
-        const result = await fetchFileWithElm(
-          url,
-          file.id,
-          lastBroadcastOrReceivedSceneVersion,
-          file.uploaderWhiteboardHeight,
-          file.uploaderWhiteboardWidth,
-        );
-        if (result && excalidrawAPI) {
-          fileReadImages.push(result.image);
-          fileReadElms.push(result.elm);
+      if (!fileReadImages.length) {
+        return;
+      }
+      // need to add all the files at a same time
+      // we can't add one by one otherwise file will be missing
+      excalidrawAPI.addFiles(fileReadImages);
+
+      fileReadElms.forEach((element) => {
+        // it's important to add existing elements too
+        // otherwise element will be missing
+        const elements = excalidrawAPI
+          .getSceneElementsIncludingDeleted()
+          .slice(0);
+        const hasElm = elements.filter((elm) => elm.id === element.id);
+
+        if (!hasElm.length) {
+          // we shouldn't push if element already there.
+          // otherwise, it will override if element's position was changed
+          elements.push(element);
         }
-      }
-    }
 
-    if (!fileReadImages.length) {
-      return;
-    }
-    // need to add all the files at a same time
-    // we can't add one by one otherwise file will be missing
-    excalidrawAPI.addFiles(fileReadImages);
-
-    fileReadElms.forEach((element) => {
-      // it's important to add existing elements too
-      // otherwise element will be missing
-      const elements = excalidrawAPI
-        .getSceneElementsIncludingDeleted()
-        .slice(0);
-      const hasElm = elements.filter((elm) => elm.id === element.id);
-
-      if (!hasElm.length) {
-        // we shouldn't push if element already there.
-        // otherwise, it will override if element's position was changed
-        elements.push(element);
-      }
-
-      excalidrawAPI.updateScene({
-        elements,
+        excalidrawAPI.updateScene({
+          elements,
+        });
       });
-    });
-  };
+    },
+    [excalidrawAPI, lastBroadcastOrReceivedSceneVersion],
+  );
 
   const handleRemoteSceneUpdate = (
     elements: ReconciledElements,

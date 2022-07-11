@@ -16,7 +16,7 @@ const shouldDiscardRemoteElement = (
   local: ExcalidrawElement | undefined,
   remote: BroadcastedExcalidrawElement,
 ): boolean => {
-  if (
+  return !!(
     local &&
     // local element is being edited
     (local.id === localAppState.editingElement?.id ||
@@ -28,10 +28,7 @@ const shouldDiscardRemoteElement = (
       // the lowest versionNonce
       (local.version === remote.version &&
         local.versionNonce < remote.versionNonce))
-  ) {
-    return true;
-  }
-  return false;
+  );
 };
 
 const getElementsMapWithIndex = <T extends ExcalidrawElement>(
@@ -80,8 +77,14 @@ export const reconcileElements = (
       continue;
     }
 
+    // Mark duplicate for removal as it'll be replaced with the remote element
     if (local) {
-      // mark for removal since it'll be replaced with the remote element
+      // Unless the ramote and local elements are the same element in which case
+      // we need to keep it as we'd otherwise discard it from the resulting
+      // array.
+      if (local[0] === remoteElement) {
+        continue;
+      }
       duplicates.set(local[0], true);
     }
 
