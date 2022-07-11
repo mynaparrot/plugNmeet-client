@@ -16,6 +16,7 @@ export interface IWhiteboardFile {
   fileName: string;
   uploaderWhiteboardHeight: number;
   uploaderWhiteboardWidth: number;
+  isOfficeFile: boolean;
 }
 
 export interface IRequestWhiteboardData {
