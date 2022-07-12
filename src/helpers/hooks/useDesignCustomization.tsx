@@ -15,22 +15,23 @@ export interface ICustomDesignParams {
 
 const useDesignCustomization = () => {
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const custom_design = urlParams.get('custom_design');
+
+    if (custom_design && custom_design !== '' && custom_design !== '{}') {
+      // we'll override if custom design sent by URL
+      (window as any).DESIGN_CUSTOMIZATION = custom_design;
+    }
+
     if (typeof (window as any).DESIGN_CUSTOMIZATION === 'undefined') {
-      // we'll check from url if set by custom_design param
-      const urlParams = new URLSearchParams(window.location.search);
-      // value must be url encoded otherwise may not work.
-      if (urlParams.get('custom_design')) {
-        (window as any).DESIGN_CUSTOMIZATION = urlParams.get('custom_design');
-      } else {
-        return;
-      }
+      return;
     }
 
     let designCustomParams: ICustomDesignParams = {};
     try {
       designCustomParams = JSON.parse((window as any).DESIGN_CUSTOMIZATION);
     } catch (e) {
-      console.log("can't parse custom design params");
+      console.error("can't parse custom design params");
       return;
     }
 

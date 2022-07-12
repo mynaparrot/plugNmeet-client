@@ -13,8 +13,7 @@ const getToken = () => {
 
   // this mostly happened first time.
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const params = Object.fromEntries(urlSearchParams.entries());
-  return params.access_token;
+  return urlSearchParams.get('access_token') ?? '';
 };
 
 const sendAPIRequest = async (path: string, body: any) => {
