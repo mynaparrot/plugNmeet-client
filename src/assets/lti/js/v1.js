@@ -49,7 +49,7 @@ window.addEventListener('load', async () => {
   });
 });
 
-async function joinSession() {
+const joinSession = async () => {
   const res = await sendAPIRequest('/room/join', {});
   if (res.status) {
     let url = window.PLUG_N_MEET_SERVER_URL + '/?access_token=' + res.token;
@@ -65,18 +65,18 @@ async function joinSession() {
   } else {
     alert(res.msg);
   }
-}
+};
 
-async function endSession() {
+const endSession = async () => {
   const res = await sendAPIRequest('/room/end', {});
   if (res.status) {
     document.querySelector('.end').style.display = 'none';
   } else {
     alert(res.msg);
   }
-}
+};
 
-async function isSessionActive() {
+const isSessionActive = async () => {
   const res = await sendAPIRequest('/room/isActive', {});
   const btn = document.querySelector('.end');
   if (res.status) {
@@ -84,9 +84,9 @@ async function isSessionActive() {
   } else {
     btn.style.display = 'none';
   }
-}
+};
 
-async function fetchRecordings(from = 0, limit = 10, order_by = 'DESC') {
+const fetchRecordings = async (from = 0, limit = 10, order_by = 'DESC') => {
   const res = await sendAPIRequest('/recording/fetch', {
     from,
     limit,
@@ -111,9 +111,9 @@ async function fetchRecordings(from = 0, limit = 10, order_by = 'DESC') {
   } else {
     showMessage(res.msg);
   }
-}
+};
 
-async function downloadRecording(e) {
+const downloadRecording = async (e) => {
   e.preventDefault();
   const recordId = e.target.attributes.getNamedItem('data-recording').value;
 
@@ -128,9 +128,9 @@ async function downloadRecording(e) {
   } else {
     alert(res.msg);
   }
-}
+};
 
-async function deleteRecording(e) {
+const deleteRecording = async (e) => {
   e.preventDefault();
 
   if (confirm('Are you sure to delete?') !== true) {
@@ -147,30 +147,41 @@ async function deleteRecording(e) {
   } else {
     alert(res.msg);
   }
-}
+};
 
-async function sendAPIRequest(path, body) {
+const sendAPIRequest = async (path, body) => {
   const url = window.PLUG_N_MEET_SERVER_URL + '/lti/v1/api' + path;
   const output = {
     status: false,
     msg: '',
   };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: TOKEN,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    console.error(res.status, res.statusText);
+    output.msg = res.statusText;
+    return output;
+  }
+
   try {
-    const res = await axios.post(url, JSON.stringify(body), {
-      headers: {
-        Authorization: TOKEN,
-        'Content-Type': 'application/json',
-      },
-    });
-    return res.data;
+    return await res.json();
   } catch (e) {
-    output.msg = e.message;
+    console.error(e);
+    output.msg = e;
   }
 
   return output;
-}
+};
 
-function displayRecordings(recordings) {
+const displayRecordings = (recordings) => {
   let html = '';
   for (let i = 0; i < recordings.length; i++) {
     const recording = recordings[i];
@@ -202,15 +213,15 @@ function displayRecordings(recordings) {
   }
 
   document.getElementById('recordingListsBody').innerHTML = html;
-}
+};
 
-function showPagination() {
+const showPagination = () => {
   currentPage = 1;
   document.querySelector('.pagination').style.display = '';
   paginate(currentPage);
-}
+};
 
-function paginate(currentPage) {
+const paginate = (currentPage) => {
   document.getElementById('recordingListsBody').innerHTML = '';
   const from = (currentPage - 1) * limitPerPage;
 
@@ -231,13 +242,13 @@ function paginate(currentPage) {
   }
 
   fetchRecordings(from, limitPerPage);
-}
+};
 
-function showMessage(msg) {
+const showMessage = (msg) => {
   document.getElementById('recordingListsBody').innerHTML = msg;
-}
+};
 
-function designCustomization() {
+const designCustomization = () => {
   if (typeof window.DESIGN_CUSTOMIZATION === 'undefined') {
     return;
   }
@@ -286,4 +297,4 @@ function designCustomization() {
     style.textContent = css;
     document.head.appendChild(style);
   }
-}
+};
