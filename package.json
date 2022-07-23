@@ -17,7 +17,7 @@
     "@headlessui/react": "1.6.6",
     "@reduxjs/toolkit": "1.8.3",
     "@tensorflow-models/body-pix": "2.2.0",
-    "@tensorflow/tfjs": "3.18.0",
+    "@tensorflow/tfjs": "3.19.0",
     "axios": "0.27.2",
     "copy-text-to-clipboard": "3.0.1",
     "i18next": "21.8.14",
