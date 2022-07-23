@@ -5,6 +5,7 @@
   ],
   "packageRules": [
     {
+      "matchDepTypes": ["peerDependencies","devDependencies"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
       "schedule": ["every weekend"]
