@@ -985,12 +985,14 @@ button.next-cam:hover {
   height: 10px;
   border-radius: 5px;
   border: 1px solid transparent;
+  @apply dark:bg-secondaryColor/90;
 }
 .volume-popup-wrapper .range::-moz-range-track {
   background-color: rgba(128, 128, 128, 0.5);
   height: 10px;
   border-radius: 5px;
   border: none;
+  @apply dark:bg-secondaryColor/90;
 }
 .volume-popup-wrapper .range::-webkit-slider-thumb {
   -webkit-appearance: none !important;
@@ -999,6 +1001,7 @@ button.next-cam:hover {
   height: 18px;
   width: 18px;
   margin-top: -5px;
+  @apply dark:bg-white;
 }
 .volume-popup-wrapper .range::-moz-range-thumb {
   border-radius: 20px;

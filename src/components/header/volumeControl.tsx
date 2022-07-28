@@ -49,9 +49,9 @@ const VolumeControl = ({ currentRoom }: IVolumeControlProps) => {
             <Menu.Button className="relative flex-shrink-0 p-2">
               <div className="h-4 w-4 -mt-[2px]">
                 {volume > 0 ? (
-                  <i className="pnm-speaker primaryColor" />
+                  <i className="pnm-speaker primaryColor dark:text-secondaryColor" />
                 ) : (
-                  <i className="pnm-speaker-muted primaryColor" />
+                  <i className="pnm-speaker-muted primaryColor dark:text-secondaryColor" />
                 )}
               </div>
             </Menu.Button>
@@ -68,7 +68,7 @@ const VolumeControl = ({ currentRoom }: IVolumeControlProps) => {
             >
               <Menu.Items
                 static
-                className="volume-popup-wrapper origin-top-right z-10 absolute right-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                className="volume-popup-wrapper origin-top-right z-10 absolute right-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-brandDark/90 ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
               >
                 <section className="flex items-center">
                   <input
@@ -82,14 +82,14 @@ const VolumeControl = ({ currentRoom }: IVolumeControlProps) => {
                     }}
                     className="range flex-1"
                   />
-                  <p className="w-10 text-center text-sm">
+                  <p className="w-10 text-center text-sm dark:text-white">
                     {Math.round(volume * 100)}
                   </p>
                   <button className="w-5 h-5">
                     {volume > 0 ? (
-                      <i className="pnm-speaker primaryColor" />
+                      <i className="pnm-speaker primaryColor dark:text-secondaryColor" />
                     ) : (
-                      <i className="pnm-speaker-muted primaryColor" />
+                      <i className="pnm-speaker-muted primaryColor dark:text-secondaryColor" />
                     )}
                   </button>
                 </section>

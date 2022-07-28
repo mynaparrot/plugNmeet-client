@@ -165,7 +165,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     <>
       <header
         id="main-header"
-        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white"
+        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white dark:bg-brandDark"
       >
         <div
           className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
@@ -184,7 +184,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           />
         </div>
         <div className="middle flex-auto relative z-20">
-          <h2 className="header-title text-base text-black leading-[1] text-center">
+          <h2 className="header-title text-base text-black dark:text-white leading-[1] text-center">
             {title}
           </h2>
         </div>
@@ -198,7 +198,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
               <>
                 <Menu.Button className="relative flex-shrink-0 p-2">
                   <div className="h-5 w-5 rotate-90 ">
-                    <i className="pnm-menu-small" />
+                    <i className="pnm-menu-small dark:text-secondaryColor" />
                   </div>
                 </Menu.Button>
 
