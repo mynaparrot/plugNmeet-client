@@ -31,7 +31,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
     } else if (currentUser?.userId === body.from.userId) {
       return (
         <div className="content me w-[calc(100%-2rem)] pt-2">
-          <p className="name pl-2 text-sm pb-1 primaryColor">
+          <p className="name pl-2 text-sm pb-1 primaryColor dark:text-darkText">
             {t('right-panel.you')}
           </p>
           <p
@@ -45,7 +45,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
         <>
           <Avatar participant={participant} from={body.from} />
           <div className="content w-[calc(100%-2rem)] pt-2">
-            <p className="name pl-2 text-sm pb-1">
+            <p className="name pl-2 text-sm pb-1 dark:text-darkText">
               {body.from.name ? body.from.name : participant?.name}
               <span style={{ fontSize: '10px' }}>
                 {participant ? null : ' (offline)'}

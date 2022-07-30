@@ -16,6 +16,7 @@ module.exports = {
         secondaryColor: '#24AEF7',
         brandRed: '#ED2139',
         brandDark: '#01102B',
+        brandDark2: '#001222',
         darkText: '#A7CCED',
       },
     },

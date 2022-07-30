@@ -87,11 +87,11 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
       className="participants-wrapper relative z-10 left-0 top-0 h-full w-[330px] multi-gradient"
     >
       <div
-        className="hidden md:inline-block close absolute z-10 -right-[14px] top-1 w-6 h-6 rounded-full border border-solid border-primaryColor bg-white cursor-pointer"
+        className="hidden md:inline-block close absolute z-10 -right-[14px] top-1 w-6 h-6 rounded-full border border-solid border-primaryColor dark:border-darkText bg-white dark:bg-brandDark cursor-pointer"
         onClick={closePanel}
       >
-        <span className="inline-block w-[18px] h-[1px] bg-primaryColor absolute rotate-45 top-[11px] left-[2px]"></span>
-        <span className="inline-block w-[18px] h-[1px] bg-primaryColor absolute -rotate-45 top-[11px] right-[2px]"></span>
+        <span className="inline-block w-[18px] h-[1px] bg-primaryColor dark:bg-darkText absolute rotate-45 top-[11px] left-[2px]"></span>
+        <span className="inline-block w-[18px] h-[1px] bg-primaryColor dark:bg-darkText absolute -rotate-45 top-[11px] right-[2px]"></span>
       </div>
       <Tab.Group
         vertical
@@ -104,7 +104,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
               key={item.id}
               className={({ selected }) =>
                 classNames(
-                  'w-full py-2 text-xs text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
+                  'w-full py-2 text-xs text-black dark:text-white font-bold leading-5 border-b-4 border-solid transition ease-in',
                   selected ? 'border-[#004d90]' : 'border-[#004d90]/20',
                 )
               }

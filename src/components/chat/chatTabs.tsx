@@ -122,7 +122,7 @@ const ChatTabs = () => {
     <div className="h-full">
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative h-10 z-10">
-          <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
+          <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black dark:text-darkText font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
             <span className="block truncate pl-4 md:pl-6">{selectedTitle}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               {unreadMsgFrom.length ? (
@@ -150,13 +150,15 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-brandDark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {chatOptions.map((option) => (
                 <Listbox.Option
                   key={option.id}
                   className={({ active }) =>
                     `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-primaryColor text-white' : 'text-gray-900'
+                      active
+                        ? 'bg-primaryColor text-white'
+                        : 'text-gray-900 dark:text-darkText'
                     }`
                   }
                   value={option.id}
