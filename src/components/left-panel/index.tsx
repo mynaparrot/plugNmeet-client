@@ -87,7 +87,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
       className="participants-wrapper relative z-10 left-0 top-0 h-full w-[330px] multi-gradient"
     >
       <div
-        className="hidden md:inline-block close absolute z-10 -right-[14px] top-1 w-6 h-6 rounded-full border border-solid border-primaryColor dark:border-darkText bg-white dark:bg-brandDark cursor-pointer"
+        className="hidden md:inline-block close absolute z-10 -right-[14px] top-1 w-6 h-6 rounded-full border border-solid border-primaryColor dark:border-darkText bg-white dark:bg-darkPrimary cursor-pointer"
         onClick={closePanel}
       >
         <span className="inline-block w-[18px] h-[1px] bg-primaryColor dark:bg-darkText absolute rotate-45 top-[11px] left-[2px]"></span>

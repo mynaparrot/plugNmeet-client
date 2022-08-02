@@ -154,7 +154,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       <textarea
         name="message-textarea"
         id="message-textarea"
-        className="w-full bg-white h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor placeholder:text-primaryColor/70"
+        className="w-full bg-white dark:bg-darkSecondary2 h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor dark:text-white placeholder:text-primaryColor/70 dark:placeholder:text-white/70"
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
         disabled={!isChatServiceReady || lockSendMsg}
@@ -167,7 +167,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
           onClick={() => sendMsg()}
           className="w-4 h-6 p-2"
         >
-          <i className="pnm-send primaryColor text-[20px]" />
+          <i className="pnm-send primaryColor text-[20px] dark:text-secondaryColor" />
         </button>
 
         {showSendFile ? (

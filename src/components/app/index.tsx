@@ -201,7 +201,7 @@ const App = () => {
 
   return (
     <div
-      className={`${orientationClass} ${deviceClass} ${userTypeClass} dark`}
+      className={`${orientationClass} ${deviceClass} ${userTypeClass}`}
       style={{ height: screenHeight }}
     >
       {render()}

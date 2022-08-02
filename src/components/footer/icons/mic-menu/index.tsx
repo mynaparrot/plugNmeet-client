@@ -16,8 +16,8 @@ const MicMenu = ({ currentRoom }: IMicMenuProps) => {
           {({ open }) => (
             <>
               <Menu.Button>
-                <div className="arrow-down absolute -bottom-1 -right-1 w-[15px] h-[15px] rounded-full bg-white flex items-center justify-center">
-                  <i className="pnm-arrow-below text-[10px] sm:text-[12px]" />
+                <div className="arrow-down absolute -bottom-1 -right-1 w-[15px] h-[15px] rounded-full bg-white dark:bg-secondaryColor flex items-center justify-center">
+                  <i className="pnm-arrow-below text-[10px] dark:text-darkPrimary sm:text-[12px]" />
                 </div>
               </Menu.Button>
 

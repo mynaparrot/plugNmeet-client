@@ -165,7 +165,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     <>
       <header
         id="main-header"
-        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white dark:bg-brandDark"
+        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary"
       >
         <div
           className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}

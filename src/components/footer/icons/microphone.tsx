@@ -143,32 +143,32 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
         <ShareMicrophoneModal currentRoom={currentRoom} />
       ) : null}
       <div
-        className={`microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
+        className={`microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => manageMic()}
       >
-        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
           {getTooltipText()}
         </span>
 
         {!isActiveMicrophone ? (
           <>
-            <i className="pnm-mic-unmute primaryColor text-[10px] lg:text-[14px]" />
+            <i className="pnm-mic-unmute primaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
             {lockMic ? (
-              <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-                <i className="pnm-lock primaryColor" />
+              <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
+                <i className="pnm-lock primaryColor dark:text-darkText" />
               </div>
             ) : null}
           </>
         ) : null}
 
         {!isMicMuted && isActiveMicrophone ? (
-          <i className="pnm-mic-unmute secondaryColor text-[10px] lg:text-[14px]" />
+          <i className="pnm-mic-unmute secondaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
         ) : null}
 
         {isMicMuted && isActiveMicrophone ? (
-          <i className="pnm-mic-mute secondaryColor text-[10px] lg:text-[14px]" />
+          <i className="pnm-mic-mute secondaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
         ) : null}
       </div>
 

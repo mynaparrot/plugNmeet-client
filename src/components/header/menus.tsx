@@ -35,7 +35,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
     return (
       <Menu.Items
         static
-        className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-brandDark ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+        className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
       >
         <div className="py-1" role="none">
           <Menu.Item>

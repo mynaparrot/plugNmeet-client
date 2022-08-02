@@ -1050,7 +1050,8 @@ button.next-cam:hover {
 }
 
 // dark mode custom css
-.dark .main-app-bg::before {
+.dark .main-app-bg::before,
+.dark .error-app-bg::before {
   position: absolute;
   content: '';
   width: 100%;
@@ -1058,15 +1059,19 @@ button.next-cam:hover {
   background-color: #001222;
   opacity: 0.7;
 }
-.dark .multi-gradient {
-  background: rgb(1, 16, 43);
-  background: linear-gradient(
-    150deg,
-    rgba(1, 16, 43, 0.9) 0%,
-    rgba(1, 16, 43, 0.9) 10%,
-    rgba(1, 16, 43, 0.7) 67%,
-    rgba(1, 16, 43, 0.5) 100%
-  );
+.dark .multi-gradient,
+#main-area.fullWidthMainArea .all-webcam-wrapper {
+  background: #031a3e;
+}
+.dark .message-form {
+  background: transparent;
+}
+.dark .Toastify__toast {
+  background: #222;
+  color: #fff;
+}
+.dark button.Toastify__close-button svg path {
+  fill: #fff;
 }
 //  dark mode custom css
 

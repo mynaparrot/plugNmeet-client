@@ -44,8 +44,8 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
                 className={`${
                   selectedVideoDevice === device.id
                     ? 'secondaryColor'
-                    : 'text-gray-700 dark:text-gray-400'
-                } rounded group flex items-center px-3 py-[0.4rem] text-[10px] lg:text-xs transition ease-in hover:bg-primaryColor hover:text-white`}
+                    : 'text-gray-700 dark:text-darkText'
+                } rounded group flex items-center px-3 py-[0.4rem] text-[10px] lg:text-xs transition ease-in hover:bg-primaryColor hover:text-white cursor-pointer`}
                 onClick={() => setNewDevice(device.id)}
               >
                 {device.label}
@@ -85,14 +85,14 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   return (
     <Menu.Items
       static
-      className="origin-bottom-right z-[9999] absolute left-0 mt-2 w-40 bottom-[40px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+      className="origin-bottom-right z-[9999] absolute left-0 mt-2 w-40 bottom-[40px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
     >
       {devicesMenu}
       <div className="" role="none">
         <Menu.Item>
           {() => (
             <p
-              className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs transition ease-in hover:bg-red-400 hover:text-white"
+              className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs transition ease-in hover:bg-red-400 hover:text-white cursor-pointer"
               onClick={() => leaveWebcam()}
             >
               {t('footer.menus.leave-webcam')}

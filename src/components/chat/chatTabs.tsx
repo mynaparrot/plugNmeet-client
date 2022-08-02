@@ -150,7 +150,7 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-brandDark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-darkPrimary py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {chatOptions.map((option) => (
                 <Listbox.Option
                   key={option.id}
