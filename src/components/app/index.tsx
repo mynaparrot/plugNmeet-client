@@ -29,6 +29,10 @@ const waitingForApprovalSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.wait_for_approval,
   (wait_for_approval) => wait_for_approval,
 );
+const enabledDarkModeSelector = createSelector(
+  (state: RootState) => state.roomSettings.enabledDarkMode,
+  (enabledDarkMode) => enabledDarkMode,
+);
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +44,7 @@ const App = () => {
   const [userTypeClass, setUserTypeClass] = useState('participant');
   const [livekitInfo, setLivekitInfo] = useState<LivekitInfo>();
   const waitForApproval = useAppSelector(waitingForApprovalSelector);
+  const enabledDarkMode = useAppSelector(enabledDarkModeSelector);
 
   // we'll require making ready virtual background
   // elements as early as possible.
@@ -154,6 +159,14 @@ const App = () => {
       }
     }
   }, [currentRoom, dispatch]);
+
+  useEffect(() => {
+    if (enabledDarkMode) {
+      document.querySelector('body')?.classList.add('dark');
+    } else {
+      document.querySelector('body')?.classList.remove('dark');
+    }
+  }, [enabledDarkMode]);
 
   const renderMainApp = () => {
     if (currentRoom) {

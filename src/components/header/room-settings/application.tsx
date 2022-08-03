@@ -1,10 +1,25 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Switch } from '@headlessui/react';
+import { createSelector } from '@reduxjs/toolkit';
 
 import languages from '../../../helpers/languages';
+import { RootState, useAppDispatch, useAppSelector } from '../../../store';
+import { updateEnabledDarkMode } from '../../../store/slices/roomSettingsSlice';
+
+const enabledDarkModeSelector = createSelector(
+  (state: RootState) => state.roomSettings.enabledDarkMode,
+  (enabledDarkMode) => enabledDarkMode,
+);
 
 const ApplicationSettings = () => {
   const { t, i18n } = useTranslation();
+  const dispatch = useAppDispatch();
+  const enabledDarkMode = useAppSelector(enabledDarkModeSelector);
+
+  const toggleEnabledDarkMode = () => {
+    dispatch(updateEnabledDarkMode(!enabledDarkMode));
+  };
 
   const render = () => {
     return (
@@ -34,6 +49,26 @@ const ApplicationSettings = () => {
             </select>
           </div>
         </div>
+        <Switch.Group>
+          <div className="flex items-center justify-between mb-2">
+            <Switch.Label className="pr-4 w-full">
+              {t('header.room-settings.enable-dark-theme')}
+            </Switch.Label>
+            <Switch
+              checked={enabledDarkMode}
+              onChange={toggleEnabledDarkMode}
+              className={`${
+                enabledDarkMode ? 'bg-primaryColor' : 'bg-gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  enabledDarkMode ? 'translate-x-6' : 'translate-x-1'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Switch.Group>
       </div>
     );
   };

@@ -22,6 +22,8 @@ const initialState: IRoomSettings = {
   allowPlayAudioNotification: true,
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
+  enabledDarkMode: true,
+
   selectedTabLeftPanel: 0,
   selectedChatOption: 'public',
   initiatePrivateChat: {
@@ -77,6 +79,9 @@ const roomSettingsSlice = createSlice({
     updateRoomVideoQuality: (state, action: PayloadAction<VideoQuality>) => {
       state.roomVideoQuality = action.payload;
     },
+    updateEnabledDarkMode: (state, action: PayloadAction<boolean>) => {
+      state.enabledDarkMode = action.payload;
+    },
     updateSelectedTabLeftPanel: (state, action: PayloadAction<number>) => {
       state.selectedTabLeftPanel = action.payload;
     },
@@ -120,6 +125,7 @@ export const {
   updateShowKeyboardShortcutsModal,
   updateRoomAudioVolume,
   updateRoomVideoQuality,
+  updateEnabledDarkMode,
   updateSelectedTabLeftPanel,
   updateSelectedChatOption,
   updateInitiatePrivateChat,
