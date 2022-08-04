@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
+import { isEmpty } from 'lodash';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
@@ -20,6 +21,10 @@ const lockSharedNotepadSelector = createSelector(
     state.session.currentUser?.metadata?.lock_settings?.lock_shared_notepad,
   (lock_shared_notepad) => lock_shared_notepad,
 );
+const enabledDarkModeSelector = createSelector(
+  (state: RootState) => state.roomSettings.enabledDarkMode,
+  (enabledDarkMode) => enabledDarkMode,
+);
 
 const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const dispatch = useAppDispatch();
@@ -28,6 +33,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
   const [url, setUrl] = useState<string>();
+  const enabledDarkMode = useAppSelector(enabledDarkModeSelector);
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
@@ -53,10 +59,16 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
         url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
       }
 
+      if (enabledDarkMode) {
+        url += '&theme=monokai';
+      } else {
+        url += '&theme=normal';
+      }
+
       setUrl(url);
     }
     //eslint-disable-next-line
-  }, [sharedNotepadFeatures, lockSharedNotepad]);
+  }, [sharedNotepadFeatures, lockSharedNotepad, enabledDarkMode]);
 
   const onLoad = () => {
     setLoaded(true);
