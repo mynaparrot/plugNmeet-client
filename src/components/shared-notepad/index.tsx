@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
-import { isEmpty } from 'lodash';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
