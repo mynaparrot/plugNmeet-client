@@ -1,4 +1,3 @@
-import { WhiteboardMsg } from '../../store/slices/interfaces/dataMessages';
 import { store } from '../../store';
 import {
   addWhiteboardFileAsJSON,
@@ -8,23 +7,24 @@ import {
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
+import { DataMsgBody, DataMsgBodyType } from '../proto/plugnmeet_datamessage';
 
-export const handleWhiteboardMsg = (data: WhiteboardMsg) => {
+export const handleWhiteboardMsg = (body: DataMsgBody) => {
   const isPresenter =
     store.getState().session.currentUser?.metadata?.is_presenter;
 
-  if (data.type === 'SCENE_UPDATE') {
-    store.dispatch(updateExcalidrawElements(data.msg));
-  } else if (data.type === 'POINTER_UPDATE') {
-    store.dispatch(updateMousePointerLocation(data.msg));
-  } else if (data.type === 'ADD_WHITEBOARD_FILE') {
-    store.dispatch(addWhiteboardFileAsJSON(data.msg));
-  } else if (data.type === 'PAGE_CHANGE') {
+  if (body.type === DataMsgBodyType.SCENE_UPDATE) {
+    store.dispatch(updateExcalidrawElements(body.msg));
+  } else if (body.type === DataMsgBodyType.POINTER_UPDATE) {
+    store.dispatch(updateMousePointerLocation(body.msg));
+  } else if (body.type === DataMsgBodyType.ADD_WHITEBOARD_FILE) {
+    store.dispatch(addWhiteboardFileAsJSON(body.msg));
+  } else if (body.type === DataMsgBodyType.PAGE_CHANGE) {
     if (!isPresenter) {
-      store.dispatch(setWhiteboardCurrentPage(Number(data.msg)));
+      store.dispatch(setWhiteboardCurrentPage(Number(body.msg)));
     }
-  } else if (data.type === 'ADD_WHITEBOARD_OFFICE_FILE') {
-    handleAddWhiteboardOfficeFile(data.msg);
+  } else if (body.type === DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE) {
+    handleAddWhiteboardOfficeFile(body.msg);
   }
 };
 

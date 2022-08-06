@@ -1,11 +1,6 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { chatMessagesSelector } from '../../store/slices/chatMessagesSlice';
 import { store } from '../../store';
 import { updateRequestedWhiteboardData } from '../../store/slices/whiteboard';
@@ -20,60 +15,76 @@ import { pollsApi } from '../../store/services/pollsApi';
 import NewPollMsg from '../../components/extra-pages/newPollMsg';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
+import {
+  DataMessage,
+  DataMsgBody,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../proto/plugnmeet_datamessage';
 
-export const handleSystemTypeData = (body: IDataMessage) => {
-  switch (body.body.type) {
+export const handleSystemTypeData = (body: DataMessage) => {
+  switch (body.body?.type) {
     // got request to send previous chat messages. We'll send last 30 messages
-    case SystemMsgType.SEND_CHAT_MSGS:
+    case DataMsgBodyType.SEND_CHAT_MSGS:
       handleSendChatMsg(body);
       break;
-    case SystemMsgType.INIT_WHITEBOARD:
+    case DataMsgBodyType.INIT_WHITEBOARD:
       handleSendInitWhiteboard(body);
       break;
-    case SystemMsgType.RENEW_TOKEN:
+    case DataMsgBodyType.RENEW_TOKEN:
       handleRenewToken(body);
       break;
-    case SystemMsgType.INFO:
-    case SystemMsgType.ALERT:
+    case DataMsgBodyType.INFO:
+    case DataMsgBodyType.ALERT:
       handlePushMsgMsg(body);
       break;
-    case SystemMsgType.USER_VISIBILITY_CHANGE:
+    case DataMsgBodyType.USER_VISIBILITY_CHANGE:
       handleUserVisibility(body);
       break;
-    case SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS:
+    case DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS:
       handleExternalMediaPlayerEvents(body);
       break;
-    case SystemMsgType.POLL_CREATED:
-    case SystemMsgType.POLL_CLOSED:
-    case SystemMsgType.NEW_POLL_RESPONSE:
+    case DataMsgBodyType.POLL_CREATED:
+    case DataMsgBodyType.POLL_CLOSED:
+    case DataMsgBodyType.NEW_POLL_RESPONSE:
       handlePollsNotifications(body);
       break;
-    case SystemMsgType.JOIN_BREAKOUT_ROOM:
+    case DataMsgBodyType.JOIN_BREAKOUT_ROOM:
       handleBreakoutRoomNotifications(body);
       break;
   }
 };
 
-const handleSendChatMsg = (mainBody: IDataMessage) => {
+const handleSendChatMsg = (mainBody: DataMessage) => {
   const messages = chatMessagesSelector.selectAll(store.getState());
   const session = store.getState().session;
   messages
     .filter((msg) => msg.from.sid !== 'system')
     .slice(-30)
     .map(async (msg) => {
-      const body = msg;
-      const data: IDataMessage = {
-        type: DataMessageType.USER,
-        body,
-        to: mainBody.body.from.userId,
-        room_sid: session.currentRoom.sid,
-        message_id: '',
+      const body: DataMsgBody = {
+        type: DataMsgBodyType.CHAT,
+        messageId: msg.message_id,
+        time: msg.time,
+        from: msg.from,
+        msg: msg.msg,
+        isPrivate: msg.isPrivate,
       };
+
+      const data: DataMessage = {
+        type: DataMsgType.USER,
+        body,
+        to: mainBody.body?.from?.userId,
+        roomId: session.currentRoom.room_id,
+        roomSid: session.currentRoom.sid,
+        messageId: '',
+      };
+
       sendWebsocketMessage(JSON.stringify(data));
     });
 };
 
-const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
+const handleSendInitWhiteboard = (mainBody: DataMessage) => {
   if (store.getState().whiteboard.requestedWhiteboardData.requested) {
     // already have one request
     return;
@@ -83,24 +94,24 @@ const handleSendInitWhiteboard = (mainBody: IDataMessage) => {
   store.dispatch(
     updateRequestedWhiteboardData({
       requested: true,
-      sendTo: mainBody.body.from.sid,
+      sendTo: mainBody.body?.from?.sid ?? '',
     }),
   );
 };
 
-const handleRenewToken = (mainBody: IDataMessage) => {
-  store.dispatch(addToken(mainBody.body.msg));
+const handleRenewToken = (mainBody: DataMessage) => {
+  store.dispatch(addToken(mainBody.body?.msg ?? ''));
 };
 
-const handlePushMsgMsg = (mainBody: IDataMessage) => {
-  switch (mainBody.body.type) {
-    case SystemMsgType.INFO:
+const handlePushMsgMsg = (mainBody: DataMessage) => {
+  switch (mainBody.body?.type) {
+    case DataMsgBodyType.INFO:
       toast(mainBody.body.msg, {
         toastId: 'info-status',
         type: 'info',
       });
       break;
-    case SystemMsgType.ALERT:
+    case DataMsgBodyType.ALERT:
       toast(mainBody.body.msg, {
         toastId: 'alert-status',
         type: 'warning',
@@ -109,18 +120,21 @@ const handlePushMsgMsg = (mainBody: IDataMessage) => {
   }
 };
 
-const handleUserVisibility = (data: IDataMessage) => {
+const handleUserVisibility = (data: DataMessage) => {
   store.dispatch(
     updateParticipant({
-      id: data.body.from.userId,
+      id: data.body?.from?.userId ?? '',
       changes: {
-        visibility: data.body.msg,
+        visibility: data.body?.msg,
       },
     }),
   );
 };
 
-const handleExternalMediaPlayerEvents = (data: IDataMessage) => {
+const handleExternalMediaPlayerEvents = (data: DataMessage) => {
+  if (!data.body) {
+    return;
+  }
   const msg = JSON.parse(data.body.msg);
   store.dispatch(addExternalMediaPlayerAction(msg.action));
   if (typeof msg.seekTo !== 'undefined') {
@@ -128,27 +142,30 @@ const handleExternalMediaPlayerEvents = (data: IDataMessage) => {
   }
 };
 
-const handlePollsNotifications = (data: IDataMessage) => {
-  if (data.body.type === SystemMsgType.POLL_CREATED) {
+const handlePollsNotifications = (data: DataMessage) => {
+  if (data.body?.type === DataMsgBodyType.POLL_CREATED) {
     toast(<NewPollMsg />, {
       toastId: 'info-status',
       type: 'info',
       autoClose: false,
     });
     store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
-  } else if (data.body.type === SystemMsgType.NEW_POLL_RESPONSE) {
+  } else if (data.body?.type === DataMsgBodyType.NEW_POLL_RESPONSE) {
     store.dispatch(
       pollsApi.util.invalidateTags([
         { type: 'Count', id: data.body.msg },
         { type: 'PollDetails', id: data.body.msg },
       ]),
     );
-  } else if (data.body.type === SystemMsgType.POLL_CLOSED) {
+  } else if (data.body?.type === DataMsgBodyType.POLL_CLOSED) {
     store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   }
 };
 
-const handleBreakoutRoomNotifications = (data: IDataMessage) => {
+const handleBreakoutRoomNotifications = (data: DataMessage) => {
+  if (!data.body) {
+    return;
+  }
   store.dispatch(updateReceivedInvitationFor(data.body.msg));
   store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
 };

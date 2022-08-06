@@ -1,14 +1,10 @@
 import { store } from '../../store';
-import {
-  IChatMsg,
-  IDataMessage,
-  WhiteboardMsg,
-} from '../../store/slices/interfaces/dataMessages';
 import { updateIsChatServiceReady } from '../../store/slices/sessionSlice';
 import { handleSystemTypeData } from './handleSystemType';
 import { handleUserTypeData } from './handleUserType';
 import { handleWhiteboardMsg } from './handleWhiteboardType';
 import { onAfterOpenConnection } from './handleAfterOpenConnection';
+import { DataMessage, DataMsgType } from '../proto/plugnmeet_datamessage';
 
 let isConnected = false;
 let ws: WebSocket | undefined;
@@ -60,20 +56,22 @@ const createWS = () => {
 
 const onMessage = (event: any) => {
   if (event.data) {
-    let data: IDataMessage;
+    let data: DataMessage;
     try {
-      data = JSON.parse(event.data);
+      data = DataMessage.decode(event.data);
     } catch (e) {
       console.log(event.data);
       return;
     }
 
-    if (data.type === 'USER') {
-      handleUserTypeData(data.body as IChatMsg, data.message_id, data.to);
-    } else if (data.type === 'SYSTEM') {
+    if (data.type === DataMsgType.USER && data.body) {
+      handleUserTypeData(data.body, data.messageId, data.to);
+    } else if (data.type === DataMsgType.SYSTEM) {
       handleSystemTypeData(data);
-    } else if (data.type === 'WHITEBOARD') {
-      handleWhiteboardMsg(data.body as WhiteboardMsg);
+    } else if (data.type === DataMsgType.WHITEBOARD) {
+      if (data.body) {
+        handleWhiteboardMsg(data.body);
+      }
     }
   }
 };
