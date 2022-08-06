@@ -123,7 +123,6 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
     const body: DataMsgBody = {
       type: DataMsgBodyType.CHAT,
       isPrivate: selectedChatOption !== 'public',
-      time: '',
       from: {
         sid: currentRoom.localParticipant.sid,
         userId: currentRoom.localParticipant.identity,
@@ -141,9 +140,7 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
     };
 
     if (isSocketConnected()) {
-      const data = DataMessage.encode(dataMsg).finish();
-      console.log(data);
-      sendWebsocketMessage(data);
+      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
       setMessage('');
     }
   };

@@ -9,12 +9,13 @@ import {
   isSocketConnected,
   sendWebsocketMessage,
 } from '../../../helpers/websocket';
-import {
-  DataMessageType,
-  IChatMsg,
-  IDataMessage,
-} from '../../../store/slices/interfaces/dataMessages';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
+import {
+  DataMessage,
+  DataMsgBody,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../../helpers/proto/plugnmeet_datamessage';
 
 interface IFileSendProps {
   isChatServiceReady: boolean;
@@ -87,11 +88,9 @@ const FileSend = ({
       filePath
     }" target="_blank">${fileName}</a></span>`;
 
-    const info: IChatMsg = {
-      type: 'CHAT',
+    const body: DataMsgBody = {
+      type: DataMsgBodyType.CHAT,
       isPrivate: selectedChatOption !== 'public',
-      time: '',
-      message_id: '',
       from: {
         sid: currentRoom.localParticipant.sid,
         userId: currentRoom.localParticipant.identity,
@@ -100,15 +99,15 @@ const FileSend = ({
       msg: message,
     };
 
-    const data: IDataMessage = {
-      type: DataMessageType.USER,
-      room_sid: currentRoom.sid,
+    const dataMsg: DataMessage = {
+      type: DataMsgType.USER,
+      roomSid: currentRoom.sid,
+      roomId: currentRoom.name,
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      message_id: '',
-      body: info,
+      body: body,
     };
 
-    sendWebsocketMessage(JSON.stringify(data));
+    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
   };
 
   const render = () => {

@@ -23,6 +23,7 @@ import {
 } from '../proto/plugnmeet_datamessage';
 
 export const handleSystemTypeData = (body: DataMessage) => {
+  console.log(body.body?.type);
   switch (body.body?.type) {
     // got request to send previous chat messages. We'll send last 30 messages
     case DataMsgBodyType.SEND_CHAT_MSGS:
@@ -71,7 +72,7 @@ const handleSendChatMsg = (mainBody: DataMessage) => {
         isPrivate: msg.isPrivate,
       };
 
-      const data: DataMessage = {
+      const dataMsg: DataMessage = {
         type: DataMsgType.USER,
         body,
         to: mainBody.body?.from?.userId,
@@ -80,7 +81,7 @@ const handleSendChatMsg = (mainBody: DataMessage) => {
         messageId: '',
       };
 
-      sendWebsocketMessage(JSON.stringify(data));
+      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
     });
 };
 

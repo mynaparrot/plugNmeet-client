@@ -64,6 +64,7 @@ const onMessage = (event: any) => {
       console.error(e);
       return;
     }
+    console.log(data);
 
     if (data.type === DataMsgType.USER && data.body) {
       handleUserTypeData(data.body, data.messageId, data.to);
