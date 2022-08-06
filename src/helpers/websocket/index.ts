@@ -15,6 +15,7 @@ let isNormalClose = false;
 const createWS = () => {
   const url = getURL();
   ws = new WebSocket(url);
+  ws.binaryType = 'arraybuffer';
 
   ws.onopen = () => {
     isConnected = true;
@@ -58,9 +59,9 @@ const onMessage = (event: any) => {
   if (event.data) {
     let data: DataMessage;
     try {
-      data = DataMessage.decode(event.data);
+      data = DataMessage.decode(new Uint8Array(event.data));
     } catch (e) {
-      console.log(event.data);
+      console.error(e);
       return;
     }
 

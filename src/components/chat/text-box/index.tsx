@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import sanitizeHtml from 'sanitize-html';
 import { Room } from 'livekit-client';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, store } from '../../../store';
+import { RootState, store, useAppSelector } from '../../../store';
 import {
   DataMessageType,
-  IChatMsg,
   IDataMessage,
 } from '../../../store/slices/interfaces/dataMessages';
 import {
@@ -17,6 +16,12 @@ import {
 } from '../../../helpers/websocket';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
+import {
+  DataMessage,
+  DataMsgBody,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../../helpers/proto/plugnmeet_datamessage';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
@@ -115,11 +120,10 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       return;
     }
 
-    const info: IChatMsg = {
-      type: 'CHAT',
+    const body: DataMsgBody = {
+      type: DataMsgBodyType.CHAT,
       isPrivate: selectedChatOption !== 'public',
       time: '',
-      message_id: '',
       from: {
         sid: currentRoom.localParticipant.sid,
         userId: currentRoom.localParticipant.identity,
@@ -128,16 +132,18 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       msg: msg.replace(/\r?\n/g, '<br />'),
     };
 
-    const data: IDataMessage = {
-      type: DataMessageType.USER,
-      room_sid: currentRoom.sid,
+    const dataMsg: DataMessage = {
+      type: DataMsgType.USER,
+      roomSid: currentRoom.sid,
+      roomId: currentRoom.name,
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      message_id: '',
-      body: info,
+      body: body,
     };
 
     if (isSocketConnected()) {
-      sendWebsocketMessage(JSON.stringify(data));
+      const data = DataMessage.encode(dataMsg).finish();
+      console.log(data);
+      sendWebsocketMessage(data);
       setMessage('');
     }
   };
