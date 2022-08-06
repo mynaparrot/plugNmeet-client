@@ -89,7 +89,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           <Menu.Item>
             {() => (
               <button
-                className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                 onClick={() => onClick('mic')}
               >
                 {participant?.metadata.lock_settings.lock_microphone
@@ -105,7 +105,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
             <Menu.Item>
               {() => (
                 <button
-                  className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                  className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('webcam')}
                 >
                   {participant?.metadata.lock_settings.lock_webcam
@@ -122,7 +122,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
             <Menu.Item>
               {() => (
                 <button
-                  className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                  className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('screenShare')}
                 >
                   {participant?.metadata.lock_settings.lock_screen_sharing
@@ -139,7 +139,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
             <Menu.Item>
               {() => (
                 <button
-                  className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                  className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('whiteboard')}
                 >
                   {participant?.metadata.lock_settings.lock_whiteboard
@@ -156,7 +156,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
             <Menu.Item>
               {() => (
                 <button
-                  className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                  className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('sharedNotepad')}
                 >
                   {participant?.metadata.lock_settings.lock_shared_notepad
@@ -174,7 +174,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
               <Menu.Item>
                 {() => (
                   <button
-                    className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                    className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                     onClick={() => onClick('chat')}
                   >
                     {participant?.metadata.lock_settings.lock_chat
@@ -189,7 +189,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
               <Menu.Item>
                 {() => (
                   <button
-                    className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                    className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                     onClick={() => onClick('sendChatMsg')}
                   >
                     {participant?.metadata.lock_settings.lock_chat_send_message
@@ -205,7 +205,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                 <Menu.Item>
                   {() => (
                     <button
-                      className="text-gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+                      className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                       onClick={() => onClick('chatFile')}
                     >
                       {participant?.metadata.lock_settings.lock_chat_file_share

@@ -19,7 +19,7 @@ const Poll = ({ item }: IPollPros) => {
 
   return (
     <div className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md">
-      <div className="poll-title text-md text-primaryColor">
+      <div className="poll-title text-md text-primaryColor dark:text-darkText">
         {item.question}
       </div>
       <TotalResponses pollId={item.id} />

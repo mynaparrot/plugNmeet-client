@@ -60,7 +60,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
           className="waiting-list-item mb-2 pb-2 border-b border-solid border-primaryColor w-full max-w-max"
           key={p.userId}
         >
-          <p className="text-base text-black">{p.name}</p>
+          <p className="text-base text-black dark:text-darkText">{p.name}</p>
           <button
             onClick={() => acceptUser(p.userId)}
             className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
@@ -86,7 +86,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
 
   return (
     <div className="waiting-list-wrap">
-      <p className="text-lg my-4 text-black font-bold">
+      <p className="text-lg my-4 text-black dark:text-white font-bold">
         {t('waiting-room.list-waiting-participants', {
           count: waitingParticipants.length,
         })}

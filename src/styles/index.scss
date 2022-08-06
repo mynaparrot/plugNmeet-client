@@ -1051,6 +1051,7 @@ button.next-cam:hover {
 
 // dark mode custom css
 .dark .main-app-bg::before,
+.dark .waiting-room::before,
 .dark .error-app-bg::before {
   position: absolute;
   content: '';
@@ -1072,6 +1073,15 @@ button.next-cam:hover {
 }
 .dark button.Toastify__close-button svg path {
   fill: #fff;
+}
+.dark .wb-page-navigation button:disabled {
+  background-color: var(--button-gray-1) !important;
+}
+.dark .header-before-start {
+  opacity: 0.4;
+}
+.dark .header-before-end {
+  opacity: 0.1;
 }
 //  dark mode custom css
 

@@ -157,38 +157,38 @@ const BreakoutRoomInvitation = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-max h-full p-6 my-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+                <div className="inline-block w-max h-full p-6 my-4 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-lg">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-base font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-base font-medium leading-6 text-gray-900 dark:text-darkText text-left mb-2"
                   >
                     {t('breakout-room.invitation-title')}
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    <span className="text-black text-sm">
+                    <span className="text-black dark:text-darkText text-sm">
                       {t('breakout-room.invitation-msg')}
                     </span>
 
                     {joinLink !== '' ? (
                       <div className="invite-link">
-                        <label className="text-black text-sm">
+                        <label className="text-black dark:text-darkText text-sm">
                           {t('breakout-room.join-text-label')}
                         </label>
                         <input
                           type="text"
                           readOnly={true}
                           value={joinLink}
-                          className="inline-block outline-none border border-solid rounded p-1 h-7 text-sm mx-1"
+                          className="inline-block outline-none border border-solid rounded p-1 h-7 text-sm mx-1 bg-transparent dark:text-darkText dark:border-darkText"
                         />
                         <button
                           onClick={copyUrl}

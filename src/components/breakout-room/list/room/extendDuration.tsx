@@ -45,7 +45,7 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
         value={duration}
         onChange={(e) => setDuration(Number(e.currentTarget.value))}
         placeholder={t('breakout-room.extend-duration')}
-        className="w-full max-w-[100px] sm:max-w-[140px] block outline-none border border-solid border-secondaryColor rounded py-1 px-2 h-9"
+        className="w-full max-w-[100px] sm:max-w-[140px] block outline-none border border-solid border-secondaryColor rounded py-1 px-2 h-9 bg-transparent dark:text-darkText dark:border-darkText"
       />
       <button
         onClick={extendDuration}

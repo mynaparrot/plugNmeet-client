@@ -158,12 +158,12 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
           onClick={handlePre}
           disabled={disablePre}
         >
-          <i className="pnm-arrow-left-short text-black text-xl opacity-50" />
+          <i className="pnm-arrow-left-short text-black dark:text-white text-xl opacity-50" />
         </button>
         <select
           id="pages"
           name="pages"
-          className="pagesOpts block h-8 py-1 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="pagesOpts block h-8 py-1 px-3 border border-gray-300 bg-white dark:bg-darkSecondary rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           onChange={(e) => setCurrentPage(Number(e.currentTarget.value))}
           value={currentPage}
         >
@@ -174,7 +174,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
           onClick={handleNext}
           disabled={disableNext}
         >
-          <i className="pnm-arrow-right-short text-black text-xl opacity-50" />
+          <i className="pnm-arrow-right-short text-black dark:text-white text-xl opacity-50" />
         </button>
       </div>
     );

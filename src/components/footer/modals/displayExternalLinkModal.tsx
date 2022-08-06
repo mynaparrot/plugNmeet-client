@@ -126,19 +126,19 @@ const DisplayExternalLinkModal = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeStartModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                   >
                     {t('external-display-link-display.modal-title')}
                   </Dialog.Title>
@@ -148,7 +148,7 @@ const DisplayExternalLinkModal = () => {
                       <div className="">
                         <label
                           htmlFor="stream-key"
-                          className="block text-sm font-medium text-gray-700"
+                          className="block text-sm font-medium text-gray-700 dark:text-darkText"
                         >
                           {t('external-display-link-display.url')}
                         </label>
@@ -158,21 +158,21 @@ const DisplayExternalLinkModal = () => {
                           id="stream-key"
                           value={link}
                           onChange={(e) => setLink(e.currentTarget.value)}
-                          className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
+                          className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
                         />
                         {errorMsg ? (
                           <div className="error-msg text-xs text-red-600 py-2">
                             {errorMsg}
                           </div>
                         ) : null}
-                        <div className="text-xs py-2">
+                        <div className="text-xs py-2 dark:text-darkText">
                           {t('external-display-link-display.note')}
                         </div>
                       </div>
                       <div className="mt-4">
                         <fieldset>
                           <div
-                            className="text-base font-medium text-gray-900"
+                            className="text-base font-medium text-gray-900 dark:text-white"
                             aria-hidden="true"
                           >
                             {t(
@@ -198,11 +198,11 @@ const DisplayExternalLinkModal = () => {
                               <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="name"
-                                  className="font-medium text-gray-700"
+                                  className="font-medium text-gray-700 dark:text-darkText"
                                 >
                                   {t('external-display-link-display.name')}
                                 </label>
-                                <p className="text-gray-500">
+                                <p className="text-gray-500 dark:text-darkText/60">
                                   {t('external-display-link-display.name-des')}
                                 </p>
                               </div>
@@ -225,11 +225,11 @@ const DisplayExternalLinkModal = () => {
                               <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="user-id"
-                                  className="font-medium text-gray-700"
+                                  className="font-medium text-gray-700 dark:text-darkText"
                                 >
                                   {t('external-display-link-display.user-id')}
                                 </label>
-                                <p className="text-gray-500">
+                                <p className="text-gray-500 dark:text-darkText/60">
                                   {t(
                                     'external-display-link-display.user-id-des',
                                   )}
@@ -254,11 +254,11 @@ const DisplayExternalLinkModal = () => {
                               <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="user-role"
-                                  className="font-medium text-gray-700"
+                                  className="font-medium text-gray-700 dark:text-darkText"
                                 >
                                   {t('external-display-link-display.user-role')}
                                 </label>
-                                <p className="text-gray-500">
+                                <p className="text-gray-500 dark:text-darkText/60">
                                   {t(
                                     'external-display-link-display.user-role-des',
                                   )}
@@ -283,13 +283,13 @@ const DisplayExternalLinkModal = () => {
                               <div className="text-sm w-full text-center">
                                 <label
                                   htmlFor="meeting-id"
-                                  className="font-medium text-gray-700"
+                                  className="font-medium text-gray-700 dark:text-darkText"
                                 >
                                   {t(
                                     'external-display-link-display.meeting-id',
                                   )}
                                 </label>
-                                <p className="text-gray-500">
+                                <p className="text-gray-500 dark:text-darkText/60">
                                   {t(
                                     'external-display-link-display.meeting-id-des',
                                   )}
@@ -299,7 +299,7 @@ const DisplayExternalLinkModal = () => {
                           </div>
                         </fieldset>
                       </div>
-                      <div className="pb-3 pt-4 bg-gray-50 text-right mt-4">
+                      <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
                         <button
                           type="submit"
                           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"

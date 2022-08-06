@@ -89,17 +89,17 @@ const ParticipantComponent = ({
           <div className="flex items-center justify-center min-h-screen">
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-            <div className="popup-inner bg-white w-full max-w-sm rounded-3xl shadow-header relative px-4 lg:px-6 py-12 lg:py-14">
+            <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-sm rounded-3xl shadow-header relative px-4 lg:px-6 py-12 lg:py-14">
               <button
                 className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                 type="button"
                 onClick={() => onCloseRemoveParticipantAlert()}
               >
-                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
               </button>
               <Dialog.Title className="mb-4 md:mb-6 text-sm">
-                <legend className="text-base font-medium text-gray-900">
+                <legend className="text-base font-medium text-gray-900 dark:text-white">
                   {t('left-panel.menus.notice.confirm', {
                     name,
                   })}
@@ -107,7 +107,7 @@ const ParticipantComponent = ({
               </Dialog.Title>
 
               <div className="mb-10 pl-3">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-darkText">
                   {t('left-panel.menus.notice.want-to-block')}
                 </p>
                 <div className="mt-4 pl-2 space-y-4">
@@ -124,7 +124,7 @@ const ParticipantComponent = ({
                     />
                     <label
                       htmlFor="yes"
-                      className="ml-3 block text-sm font-medium text-gray-700"
+                      className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
                     >
                       {t('yes')}
                     </label>
@@ -142,7 +142,7 @@ const ParticipantComponent = ({
                     />
                     <label
                       htmlFor="no"
-                      className="ml-3 block text-sm font-medium text-gray-700"
+                      className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
                     >
                       {t('no')}
                     </label>

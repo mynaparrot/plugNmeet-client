@@ -79,7 +79,7 @@ const MenuIcon = ({
           {({ open }) => (
             <>
               <Menu.Button className="relative flex-shrink-0 mt-2">
-                <i className="pnm-menu-small primaryColor opacity-50" />
+                <i className="pnm-menu-small primaryColor dark:text-secondaryColor opacity-50" />
               </Menu.Button>
 
               {/* Use the Transition component. */}
@@ -95,7 +95,7 @@ const MenuIcon = ({
                 {/* Mark this component as `static` */}
                 <Menu.Items
                   static
-                  className="origin-top-right z-10 absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                  className="origin-top-right z-10 absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
                   {renderMenuItems()}
                 </Menu.Items>

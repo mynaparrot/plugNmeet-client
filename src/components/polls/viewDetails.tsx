@@ -136,7 +136,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                     />
                   </svg>
                 </Disclosure.Button>
-                <Disclosure.Panel className="px-4 py-2 text-sm text-gray-500">
+                <Disclosure.Panel className="px-4 py-2 text-sm text-gray-500 dark:text-darkText">
                   {getRespondentsById(o.id)}
                 </Disclosure.Panel>
               </>
@@ -228,37 +228,39 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                   >
                     {t('polls.view-details-title')}
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
                     <div className="headline flex flex-wrap pb-5">
-                      <p className="w-full text-lg font-bold text-black capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20">
-                        <span className="text-primaryColor">Q: </span>
+                      <p className="w-full text-lg font-bold text-black dark:text-darkText capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20 dark:border-darkText/20">
+                        <span className="text-primaryColor dark:text-secondaryColor">
+                          Q:{' '}
+                        </span>
                         {poll?.question}
                       </p>
-                      <p className="w-full text-base">
+                      <p className="w-full text-base dark:text-darkText">
                         {t('polls.total-responses', {
                           count: pollResponses?.responses.total_resp,
                         })}
                       </p>
                     </div>
                     <div className="">
-                      <p className="text-base text-black block mb-2 pb-1 border-b border-solid border-primaryColor/20">
+                      <p className="text-base text-black dark:text-darkText block mb-2 pb-1 border-b border-solid border-primaryColor/20 dark:border-darkText/20">
                         {t('polls.options')}
                       </p>
                       <div className="relative min-h-[75px]">

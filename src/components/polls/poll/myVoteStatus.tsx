@@ -37,7 +37,7 @@ const MyVoteStatus = ({ pollId }: IMyVoteStatusProps) => {
     <>
       <div className="has-voted">
         {hasVoted ? (
-          <p className="absolute left-2 bottom-2 text-xs">
+          <p className="absolute left-2 bottom-2 text-xs dark:text-white">
             {t('polls.you-voted')}
           </p>
         ) : (

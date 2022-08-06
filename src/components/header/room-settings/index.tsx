@@ -65,7 +65,7 @@ const RoomSettings = () => {
                     'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-secondaryColor rounded-lg outline-none',
                     'ring-white ring-opacity-60',
                     selected
-                      ? 'bg-white shadow text-primaryColor'
+                      ? 'bg-white dark:bg-secondaryColor shadow text-primaryColor dark:text-white'
                       : 'hover:bg-white/[0.12] hover:text-white',
                   )
                 }
@@ -76,7 +76,7 @@ const RoomSettings = () => {
           </Tab.List>
           <Tab.Panels className="mt-2">
             {Object.values(categories).map((posts, idx) => (
-              <Tab.Panel key={idx} className="bg-white rounded-xl p-3">
+              <Tab.Panel key={idx} className="bg-transparent rounded-xl p-3">
                 <ul>
                   {posts.map((post) => (
                     <li key={post.id}>{post.elm}</li>
@@ -127,25 +127,25 @@ const RoomSettings = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full h-96 max-w-xl py-6 px-4 lg:px-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full h-96 max-w-xl py-6 px-4 lg:px-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2"
                   >
                     {t('header.room-settings.title')}
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">{showTabItems()}</div>
-                  <div className="absolute inset-x-0 bottom-0 text-center text-xs">
+                  <div className="absolute inset-x-0 bottom-0 text-center text-xs dark:text-darkText">
                     {t('version', {
                       pnm_version: PNM_VERSION,
                       build: BUILD_TIME,

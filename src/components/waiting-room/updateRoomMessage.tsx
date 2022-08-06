@@ -41,13 +41,13 @@ const UpdateRoomMessage = () => {
 
   return (
     <div className="mb-4 text-right">
-      <p className="text-sm text-black capitalize mb-2 block text-left">
+      <p className="text-sm text-black dark:text-darkText capitalize mb-2 block text-left">
         {t('waiting-room.update-waiting-message')}
       </p>
       <textarea
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
-        className="border border-solid border-primaryColor/20 h-20 w-full block p-3 rounded-xl outline-none text-sm"
+        className="border border-solid border-primaryColor/20 dark:border-darkText bg-transparent h-20 w-full block p-3 rounded-xl outline-none text-sm dark:text-darkText"
       ></textarea>
       <button
         onClick={updateRoomMsg}
