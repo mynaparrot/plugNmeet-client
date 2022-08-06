@@ -4,7 +4,7 @@ import { handleSystemTypeData } from './handleSystemType';
 import { handleUserTypeData } from './handleUserType';
 import { handleWhiteboardMsg } from './handleWhiteboardType';
 import { onAfterOpenConnection } from './handleAfterOpenConnection';
-import { DataMessage, DataMsgType } from '../proto/plugnmeet_datamessage';
+import { DataMessage, DataMsgType } from '../proto/plugnmeet_datamessage_pb';
 
 let isConnected = false;
 let ws: WebSocket | undefined;
@@ -59,12 +59,11 @@ const onMessage = (event: any) => {
   if (event.data) {
     let data: DataMessage;
     try {
-      data = DataMessage.decode(new Uint8Array(event.data));
+      data = DataMessage.fromBinary(new Uint8Array(event.data));
     } catch (e) {
       console.error(e);
       return;
     }
-    console.log(data);
 
     if (data.type === DataMsgType.USER && data.body) {
       handleUserTypeData(data.body, data.messageId, data.to);

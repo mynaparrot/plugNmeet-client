@@ -12,10 +12,9 @@ import {
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
 import {
   DataMessage,
-  DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage';
+} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IFileSendProps {
   isChatServiceReady: boolean;
@@ -88,26 +87,24 @@ const FileSend = ({
       filePath
     }" target="_blank">${fileName}</a></span>`;
 
-    const body: DataMsgBody = {
-      type: DataMsgBodyType.CHAT,
-      isPrivate: selectedChatOption !== 'public' ? 1 : 0,
-      from: {
-        sid: currentRoom.localParticipant.sid,
-        userId: currentRoom.localParticipant.identity,
-        name: currentRoom.localParticipant.name,
-      },
-      msg: message,
-    };
-
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.USER,
       roomSid: currentRoom.sid,
       roomId: currentRoom.name,
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      body: body,
-    };
+      body: {
+        type: DataMsgBodyType.CHAT,
+        isPrivate: selectedChatOption !== 'public' ? 1 : 0,
+        from: {
+          sid: currentRoom.localParticipant.sid,
+          userId: currentRoom.localParticipant.identity,
+          name: currentRoom.localParticipant.name,
+        },
+        msg: message,
+      },
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
   };
 
   const render = () => {

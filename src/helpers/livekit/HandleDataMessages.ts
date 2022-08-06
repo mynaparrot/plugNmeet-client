@@ -10,7 +10,7 @@ import {
   DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
-} from '../proto/plugnmeet_datamessage';
+} from '../proto/plugnmeet_datamessage_pb';
 
 export default class HandleDataMessages {
   private that: IConnectLivekit;
@@ -28,7 +28,7 @@ export default class HandleDataMessages {
     this.requestedParticipant = participant;
     let data: DataMessage;
     try {
-      data = DataMessage.decode(new Uint8Array(payload));
+      data = DataMessage.fromBinary(new Uint8Array(payload));
     } catch (error) {
       console.error(error);
       return;

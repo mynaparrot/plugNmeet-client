@@ -8,7 +8,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage';
+} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IVideoJsPlayerComponentProps {
   src: string;
@@ -61,7 +61,7 @@ const VideoJsPlayerComponent = ({
 
   useEffect(() => {
     const broadcast = (msg: string) => {
-      const dataMsg: DataMessage = {
+      const dataMsg = new DataMessage({
         type: DataMsgType.SYSTEM,
         roomSid: session.currentRoom.sid,
         roomId: session.currentRoom.room_id,
@@ -73,9 +73,9 @@ const VideoJsPlayerComponent = ({
           },
           msg,
         },
-      };
+      });
 
-      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+      sendWebsocketMessage(dataMsg.toBinary());
     };
 
     if (player) {

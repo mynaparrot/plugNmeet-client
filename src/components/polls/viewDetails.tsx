@@ -15,7 +15,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage';
+} from '../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -163,7 +163,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
       </>,
     );
 
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.USER,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -176,9 +176,9 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
         },
         msg: elm,
       },
-    };
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
     closeModal();
   };
 

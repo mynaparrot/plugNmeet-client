@@ -20,7 +20,7 @@ import {
   DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
-} from '../proto/plugnmeet_datamessage';
+} from '../proto/plugnmeet_datamessage_pb';
 
 export const handleSystemTypeData = (body: DataMessage) => {
   console.log(body.body?.type);
@@ -63,29 +63,27 @@ const handleSendChatMsg = (mainBody: DataMessage) => {
     .filter((msg) => msg.from.sid !== 'system')
     .slice(-30)
     .map(async (msg) => {
-      const body: DataMsgBody = {
-        type: DataMsgBodyType.CHAT,
-        messageId: msg.message_id,
-        time: msg.time,
-        from: {
-          sid: msg.from.sid,
-          userId: msg.from.userId,
-          name: msg.from.name,
-        },
-        msg: msg.msg,
-        isPrivate: msg.isPrivate ? 1 : 0,
-      };
-
-      const dataMsg: DataMessage = {
+      const dataMsg: DataMessage = new DataMessage({
         type: DataMsgType.USER,
-        body,
         to: mainBody.body?.from?.userId,
         roomId: session.currentRoom.room_id,
         roomSid: session.currentRoom.sid,
         messageId: '',
-      };
+        body: {
+          type: DataMsgBodyType.CHAT,
+          messageId: msg.message_id,
+          time: msg.time,
+          from: {
+            sid: msg.from.sid,
+            userId: msg.from.userId,
+            name: msg.from.name,
+          },
+          msg: msg.msg,
+          isPrivate: msg.isPrivate ? 1 : 0,
+        },
+      });
 
-      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+      sendWebsocketMessage(dataMsg.toBinary());
     });
 };
 

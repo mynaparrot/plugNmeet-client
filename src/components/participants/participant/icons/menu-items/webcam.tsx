@@ -10,7 +10,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../../../../helpers/proto/plugnmeet_datamessage';
+} from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IWebcamMenuItemProps {
   userId: string;
@@ -38,7 +38,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   }, [t, participant?.videoTracks]);
 
   const onClick = () => {
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.SYSTEM,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -53,9 +53,9 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
             name: session.currentUser?.name,
           }) + t(task),
       },
-    };
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {

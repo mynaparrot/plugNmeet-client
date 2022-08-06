@@ -7,7 +7,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage';
+} from '../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IReactPlayerComponentProps {
   src: string;
@@ -70,7 +70,7 @@ const ReactPlayerComponent = ({
       return;
     }
     const broadcast = (msg: string) => {
-      const dataMsg: DataMessage = {
+      const dataMsg = new DataMessage({
         type: DataMsgType.SYSTEM,
         roomSid: session.currentRoom.sid,
         roomId: session.currentRoom.room_id,
@@ -82,9 +82,9 @@ const ReactPlayerComponent = ({
           },
           msg,
         },
-      };
+      });
 
-      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+      sendWebsocketMessage(dataMsg.toBinary());
     };
 
     if (paused) {

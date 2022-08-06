@@ -5,7 +5,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../proto/plugnmeet_datamessage';
+} from '../proto/plugnmeet_datamessage_pb';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
@@ -72,7 +72,7 @@ const useWatchVisibilityChange = () => {
 
   useEffect(() => {
     const session = store.getState().session;
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.SYSTEM,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -84,9 +84,9 @@ const useWatchVisibilityChange = () => {
         },
         msg: hidden ? 'hidden' : 'visible',
       },
-    };
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
   }, [hidden]);
 };
 

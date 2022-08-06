@@ -3,10 +3,9 @@ import { store } from '../../store';
 import { sendWebsocketMessage } from './index';
 import {
   DataMessage,
-  DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
-} from '../proto/plugnmeet_datamessage';
+} from '../proto/plugnmeet_datamessage_pb';
 
 export const onAfterOpenConnection = () => {
   const session = store.getState().session;
@@ -22,43 +21,39 @@ export const onAfterOpenConnection = () => {
 
   const donor = participants[0];
   // send initial chat messages
-  const body: DataMsgBody = {
-    type: DataMsgBodyType.SEND_CHAT_MSGS,
-    from: {
-      sid: session.currentUser?.sid ?? '',
-      userId: session.currentUser?.userId ?? '',
-    },
-    msg: '',
-  };
-
-  const dataMsg: DataMessage = {
+  const dataMsg = new DataMessage({
     type: DataMsgType.SYSTEM,
     roomSid: session.currentRoom.sid,
     roomId: session.currentRoom.room_id,
     to: donor.sid,
-    body: body,
-  };
+    body: {
+      type: DataMsgBodyType.SEND_CHAT_MSGS,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: '',
+    },
+  });
 
-  sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+  sendWebsocketMessage(dataMsg.toBinary());
 
   // send initial whiteboard elements
   // this is also helpful if user got reconnect
-  const whiteboardBody: DataMsgBody = {
-    type: DataMsgBodyType.INIT_WHITEBOARD,
-    from: {
-      sid: session.currentUser?.sid ?? '',
-      userId: session.currentUser?.userId ?? '',
-    },
-    msg: '',
-  };
-
-  const whiteboardElms: DataMessage = {
+  const whiteboardElms = new DataMessage({
     type: DataMsgType.SYSTEM,
     roomSid: session.currentRoom.sid,
     roomId: session.currentRoom.room_id,
     to: donor.sid,
-    body: whiteboardBody,
-  };
+    body: {
+      type: DataMsgBodyType.INIT_WHITEBOARD,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: '',
+    },
+  });
 
-  sendWebsocketMessage(DataMessage.encode(whiteboardElms).finish());
+  sendWebsocketMessage(whiteboardElms.toBinary());
 };

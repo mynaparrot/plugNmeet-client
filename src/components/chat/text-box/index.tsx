@@ -14,10 +14,9 @@ import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 import {
   DataMessage,
-  DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage';
+} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
@@ -116,27 +115,25 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       return;
     }
 
-    const body: DataMsgBody = {
-      type: DataMsgBodyType.CHAT,
-      isPrivate: selectedChatOption !== 'public' ? 1 : 0,
-      from: {
-        sid: currentRoom.localParticipant.sid,
-        userId: currentRoom.localParticipant.identity,
-        name: currentRoom.localParticipant.name,
-      },
-      msg: msg.replace(/\r?\n/g, '<br />'),
-    };
-
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.USER,
       roomSid: currentRoom.sid,
       roomId: currentRoom.name,
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      body: body,
-    };
+      body: {
+        type: DataMsgBodyType.CHAT,
+        isPrivate: selectedChatOption !== 'public' ? 1 : 0,
+        from: {
+          sid: currentRoom.localParticipant.sid,
+          userId: currentRoom.localParticipant.identity,
+          name: currentRoom.localParticipant.name,
+        },
+        msg: msg.replace(/\r?\n/g, '<br />'),
+      },
+    });
 
     if (isSocketConnected()) {
-      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+      sendWebsocketMessage(dataMsg.toBinary());
       setMessage('');
     }
   };

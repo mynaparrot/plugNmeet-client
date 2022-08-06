@@ -24,7 +24,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage';
+} from '../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -164,7 +164,7 @@ const UploadFilesUI = ({
     const files =
       store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
     const session = store.getState().session;
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.WHITEBOARD,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -176,9 +176,9 @@ const UploadFilesUI = ({
         },
         msg: files,
       },
-    };
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
   };
 
   const render = () => {

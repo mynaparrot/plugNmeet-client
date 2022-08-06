@@ -5,7 +5,10 @@ import {
   updateTotalUnreadChatMsgs,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
-import { DataMsgBody, DataMsgBodyType } from '../proto/plugnmeet_datamessage';
+import {
+  DataMsgBody,
+  DataMsgBodyType,
+} from '../proto/plugnmeet_datamessage_pb';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 
 export const handleUserTypeData = (

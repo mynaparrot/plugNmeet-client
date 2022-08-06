@@ -13,7 +13,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage';
+} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 const broadcastedElementVersions: Map<string, number> = new Map();
 
@@ -36,7 +36,7 @@ export const sendRequestedForWhiteboardData = () => {
   }
 
   donors.forEach((donor) => {
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.SYSTEM,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -49,9 +49,9 @@ export const sendRequestedForWhiteboardData = () => {
         },
         msg: '',
       },
-    };
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
   });
 };
 
@@ -127,7 +127,7 @@ export const broadcastScreenDataBySocket = (
   sendTo?: string,
 ) => {
   const session = store.getState().session;
-  const dataMsg: DataMessage = {
+  const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
     roomSid: session.currentRoom.sid,
     roomId: session.currentRoom.room_id,
@@ -139,18 +139,18 @@ export const broadcastScreenDataBySocket = (
       },
       msg: JSON.stringify(elements),
     },
-  };
+  });
 
   if (sendTo !== '') {
     dataMsg.to = sendTo;
   }
 
-  sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
   const session = store.getState().session;
-  const dataMsg: DataMessage = {
+  const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
     roomSid: session.currentRoom.sid,
     roomId: session.currentRoom.room_id,
@@ -162,13 +162,13 @@ export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
       },
       msg: `${page}`,
     },
-  };
+  });
 
   if (sendTo !== '') {
     dataMsg.to = sendTo;
   }
 
-  sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const broadcastWhiteboardOfficeFile = (
@@ -176,7 +176,7 @@ export const broadcastWhiteboardOfficeFile = (
   sendTo?: string,
 ) => {
   const session = store.getState().session;
-  const dataMsg: DataMessage = {
+  const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
     roomSid: session.currentRoom.sid,
     roomId: session.currentRoom.room_id,
@@ -188,18 +188,18 @@ export const broadcastWhiteboardOfficeFile = (
       },
       msg: JSON.stringify(newFile),
     },
-  };
+  });
 
   if (sendTo !== '') {
     dataMsg.to = sendTo;
   }
 
-  sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const broadcastMousePointerUpdate = (msg: any) => {
   const session = store.getState().session;
-  const dataMsg: DataMessage = {
+  const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
     roomSid: session.currentRoom.sid,
     roomId: session.currentRoom.room_id,
@@ -211,7 +211,7 @@ export const broadcastMousePointerUpdate = (msg: any) => {
       },
       msg: JSON.stringify(msg),
     },
-  };
+  });
 
-  sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+  sendWebsocketMessage(dataMsg.toBinary());
 };

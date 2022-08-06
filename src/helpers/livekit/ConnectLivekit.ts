@@ -41,7 +41,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../proto/plugnmeet_datamessage';
+} from '../proto/plugnmeet_datamessage_pb';
 
 type connectionStatus =
   | 'connecting'
@@ -406,7 +406,7 @@ export default class ConnectLivekit {
     this.tokenRenewInterval = setInterval(() => {
       // get current token that is store in redux
       const token = store.getState().session.token;
-      const msg: DataMessage = {
+      const dataMsg = new DataMessage({
         type: DataMsgType.SYSTEM,
         roomSid: this._room.sid,
         roomId: this._room.name,
@@ -419,10 +419,9 @@ export default class ConnectLivekit {
           isPrivate: 1,
           msg: token,
         },
-      };
+      });
 
-      const encoded = DataMessage.encode(msg).finish();
-      sendWebsocketMessage(encoded);
+      sendWebsocketMessage(dataMsg.toBinary());
     }, 5 * 60 * 1000);
   };
 

@@ -11,7 +11,7 @@ import {
   DataMessage,
   DataMsgBodyType,
   DataMsgType,
-} from '../../../../../helpers/proto/plugnmeet_datamessage';
+} from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IMicMenuItemProps {
   userId: string;
@@ -44,7 +44,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
       return;
     }
 
-    const dataMsg: DataMessage = {
+    const dataMsg = new DataMessage({
       type: DataMsgType.SYSTEM,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
@@ -59,9 +59,9 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
             name: session.currentUser?.name,
           }) + t(task),
       },
-    };
+    });
 
-    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
+    sendWebsocketMessage(dataMsg.toBinary());
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {

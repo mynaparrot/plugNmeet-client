@@ -7,7 +7,10 @@ import {
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
-import { DataMsgBody, DataMsgBodyType } from '../proto/plugnmeet_datamessage';
+import {
+  DataMsgBody,
+  DataMsgBodyType,
+} from '../proto/plugnmeet_datamessage_pb';
 
 export const handleWhiteboardMsg = (body: DataMsgBody) => {
   const isPresenter =
