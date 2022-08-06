@@ -35,11 +35,6 @@ import {
   sendWebsocketMessage,
 } from '../websocket';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { LivekitInfo } from './hooks/useLivekitConnect';
 import i18n from '../i18n';
 import {

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { store } from '../../store';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../websocket';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../proto/plugnmeet_datamessage';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
@@ -72,12 +72,12 @@ const useWatchVisibilityChange = () => {
 
   useEffect(() => {
     const session = store.getState().session;
-    const data: IDataMessage = {
-      type: DataMessageType.SYSTEM,
-      room_sid: session.currentRoom.sid,
-      message_id: '',
+    const dataMsg: DataMessage = {
+      type: DataMsgType.SYSTEM,
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
       body: {
-        type: SystemMsgType.USER_VISIBILITY_CHANGE,
+        type: DataMsgBodyType.USER_VISIBILITY_CHANGE,
         from: {
           sid: session.currentUser?.sid ?? '',
           userId: session.currentUser?.userId ?? '',
@@ -85,7 +85,8 @@ const useWatchVisibilityChange = () => {
         msg: hidden ? 'hidden' : 'visible',
       },
     };
-    sendWebsocketMessage(JSON.stringify(data));
+
+    sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
   }, [hidden]);
 };
 

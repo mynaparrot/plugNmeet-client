@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
 
 import { store } from '../../../store';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../../helpers/websocket';
 import PlayerComponent from './player';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../../helpers/proto/plugnmeet_datamessage';
 
 interface IVideoJsPlayerComponentProps {
   src: string;
@@ -61,12 +61,12 @@ const VideoJsPlayerComponent = ({
 
   useEffect(() => {
     const broadcast = (msg: string) => {
-      const data: IDataMessage = {
-        type: DataMessageType.SYSTEM,
-        room_sid: session.currentRoom.sid,
-        message_id: '',
+      const dataMsg: DataMessage = {
+        type: DataMsgType.SYSTEM,
+        roomSid: session.currentRoom.sid,
+        roomId: session.currentRoom.room_id,
         body: {
-          type: SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS,
+          type: DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
           from: {
             sid: session.currentUser?.sid ?? '',
             userId: session.currentUser?.userId ?? '',
@@ -74,7 +74,8 @@ const VideoJsPlayerComponent = ({
           msg,
         },
       };
-      sendWebsocketMessage(JSON.stringify(data));
+
+      sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
     };
 
     if (player) {

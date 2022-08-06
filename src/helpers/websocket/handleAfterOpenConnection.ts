@@ -21,8 +21,6 @@ export const onAfterOpenConnection = () => {
   });
 
   const donor = participants[0];
-  console.log(donor);
-
   // send initial chat messages
   const body: DataMsgBody = {
     type: DataMsgBodyType.SEND_CHAT_MSGS,

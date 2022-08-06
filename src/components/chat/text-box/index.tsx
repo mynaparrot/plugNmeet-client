@@ -7,10 +7,6 @@ import { useTranslation } from 'react-i18next';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import {
-  DataMessageType,
-  IDataMessage,
-} from '../../../store/slices/interfaces/dataMessages';
-import {
   isSocketConnected,
   sendWebsocketMessage,
 } from '../../../helpers/websocket';
@@ -138,8 +134,6 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
       body: body,
     };
-
-    console.log(typeof body.isPrivate);
 
     if (isSocketConnected()) {
       sendWebsocketMessage(DataMessage.encode(dataMsg).finish());
