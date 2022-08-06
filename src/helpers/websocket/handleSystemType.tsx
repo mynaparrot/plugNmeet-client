@@ -69,7 +69,7 @@ const handleSendChatMsg = (mainBody: DataMessage) => {
         time: msg.time,
         from: msg.from,
         msg: msg.msg,
-        isPrivate: msg.isPrivate,
+        isPrivate: msg.isPrivate ? 1 : 0,
       };
 
       const dataMsg: DataMessage = {

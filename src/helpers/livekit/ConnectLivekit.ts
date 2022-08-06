@@ -421,7 +421,7 @@ export default class ConnectLivekit {
             sid: this._room.localParticipant.sid,
             userId: this._room.localParticipant.identity,
           },
-          isPrivate: true,
+          isPrivate: 1,
           msg: token,
         },
       };

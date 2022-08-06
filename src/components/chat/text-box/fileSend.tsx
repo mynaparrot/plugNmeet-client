@@ -90,7 +90,7 @@ const FileSend = ({
 
     const body: DataMsgBody = {
       type: DataMsgBodyType.CHAT,
-      isPrivate: selectedChatOption !== 'public',
+      isPrivate: selectedChatOption !== 'public' ? 1 : 0,
       from: {
         sid: currentRoom.localParticipant.sid,
         userId: currentRoom.localParticipant.identity,

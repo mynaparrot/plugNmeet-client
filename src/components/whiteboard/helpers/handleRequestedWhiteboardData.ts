@@ -47,7 +47,6 @@ export const sendRequestedForWhiteboardData = () => {
           sid: session.currentUser?.sid ?? '',
           userId: session.currentUser?.userId ?? '',
         },
-        isPrivate: false,
         msg: '',
       },
     };
@@ -138,7 +137,6 @@ export const broadcastScreenDataBySocket = (
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
-      isPrivate: false,
       msg: JSON.stringify(elements),
     },
   };
@@ -162,7 +160,6 @@ export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
-      isPrivate: false,
       msg: `${page}`,
     },
   };
@@ -189,7 +186,6 @@ export const broadcastWhiteboardOfficeFile = (
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
-      isPrivate: false,
       msg: JSON.stringify(newFile),
     },
   };
@@ -213,7 +209,6 @@ export const broadcastMousePointerUpdate = (msg: any) => {
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
-      isPrivate: false,
       msg: JSON.stringify(msg),
     },
   };

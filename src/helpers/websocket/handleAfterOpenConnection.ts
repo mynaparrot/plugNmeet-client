@@ -26,7 +26,6 @@ export const onAfterOpenConnection = () => {
   // send initial chat messages
   const body: DataMsgBody = {
     type: DataMsgBodyType.SEND_CHAT_MSGS,
-    isPrivate: false,
     from: {
       sid: session.currentUser?.sid ?? '',
       userId: session.currentUser?.userId ?? '',
@@ -48,7 +47,6 @@ export const onAfterOpenConnection = () => {
   // this is also helpful if user got reconnect
   const whiteboardBody: DataMsgBody = {
     type: DataMsgBodyType.INIT_WHITEBOARD,
-    isPrivate: false,
     from: {
       sid: session.currentUser?.sid ?? '',
       userId: session.currentUser?.userId ?? '',

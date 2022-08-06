@@ -213,7 +213,7 @@ export interface DataMsgBody {
   time?: string | undefined;
   from: DataMsgReqFrom | undefined;
   msg: string;
-  isPrivate: boolean;
+  isPrivate?: number | undefined;
 }
 
 export interface DataMsgReqFrom {
@@ -339,7 +339,7 @@ function createBaseDataMsgBody(): DataMsgBody {
     time: undefined,
     from: undefined,
     msg: '',
-    isPrivate: false,
+    isPrivate: undefined,
   };
 }
 
@@ -363,8 +363,8 @@ export const DataMsgBody = {
     if (message.msg !== '') {
       writer.uint32(42).string(message.msg);
     }
-    if (message.isPrivate === true) {
-      writer.uint32(48).bool(message.isPrivate);
+    if (message.isPrivate !== undefined) {
+      writer.uint32(48).uint32(message.isPrivate);
     }
     return writer;
   },
@@ -392,7 +392,7 @@ export const DataMsgBody = {
           message.msg = reader.string();
           break;
         case 6:
-          message.isPrivate = reader.bool();
+          message.isPrivate = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -411,7 +411,7 @@ export const DataMsgBody = {
         ? DataMsgReqFrom.fromJSON(object.from)
         : undefined,
       msg: isSet(object.msg) ? String(object.msg) : '',
-      isPrivate: isSet(object.isPrivate) ? Boolean(object.isPrivate) : false,
+      isPrivate: isSet(object.isPrivate) ? Number(object.isPrivate) : undefined,
     };
   },
 
@@ -426,7 +426,8 @@ export const DataMsgBody = {
         ? DataMsgReqFrom.toJSON(message.from)
         : undefined);
     message.msg !== undefined && (obj.msg = message.msg);
-    message.isPrivate !== undefined && (obj.isPrivate = message.isPrivate);
+    message.isPrivate !== undefined &&
+      (obj.isPrivate = Math.round(message.isPrivate));
     return obj;
   },
 
@@ -442,7 +443,7 @@ export const DataMsgBody = {
         ? DataMsgReqFrom.fromPartial(object.from)
         : undefined;
     message.msg = object.msg ?? '';
-    message.isPrivate = object.isPrivate ?? false;
+    message.isPrivate = object.isPrivate ?? undefined;
     return message;
   },
 };

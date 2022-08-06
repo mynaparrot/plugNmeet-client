@@ -174,7 +174,6 @@ const UploadFilesUI = ({
           sid: session.currentUser?.sid ?? '',
           userId: session.currentUser?.userId ?? '',
         },
-        isPrivate: false,
         msg: files,
       },
     };
