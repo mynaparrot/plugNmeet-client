@@ -24,6 +24,7 @@ export const handleUserTypeData = (
       from: {
         sid: body.from?.sid ?? '',
         userId: body.from?.userId ?? '',
+        name: body.from?.name,
       },
       isPrivate: body.isPrivate === 1,
       msg: body.msg,

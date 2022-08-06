@@ -67,7 +67,11 @@ const handleSendChatMsg = (mainBody: DataMessage) => {
         type: DataMsgBodyType.CHAT,
         messageId: msg.message_id,
         time: msg.time,
-        from: msg.from,
+        from: {
+          sid: msg.from.sid,
+          userId: msg.from.userId,
+          name: msg.from.name,
+        },
         msg: msg.msg,
         isPrivate: msg.isPrivate ? 1 : 0,
       };
