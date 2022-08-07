@@ -1,11 +1,11 @@
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { store } from '../../store';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from './index';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../proto/plugnmeet_datamessage_pb';
 
 export const onAfterOpenConnection = () => {
   const session = store.getState().session;
@@ -20,39 +20,40 @@ export const onAfterOpenConnection = () => {
   });
 
   const donor = participants[0];
-
   // send initial chat messages
-  const data: IDataMessage = {
-    type: DataMessageType.SYSTEM,
-    room_sid: session.currentRoom.sid,
-    message_id: '',
+  const dataMsg = new DataMessage({
+    type: DataMsgType.SYSTEM,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
     to: donor.sid,
     body: {
-      type: SystemMsgType.SEND_CHAT_MSGS,
+      type: DataMsgBodyType.SEND_CHAT_MSGS,
       from: {
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
       msg: '',
     },
-  };
-  sendWebsocketMessage(JSON.stringify(data));
+  });
+
+  sendWebsocketMessage(dataMsg.toBinary());
 
   // send initial whiteboard elements
   // this is also helpful if user got reconnect
-  const whiteboardElms: IDataMessage = {
-    type: DataMessageType.SYSTEM,
-    room_sid: session.currentRoom.sid,
-    message_id: '',
+  const whiteboardElms = new DataMessage({
+    type: DataMsgType.SYSTEM,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
     to: donor.sid,
     body: {
-      type: SystemMsgType.INIT_WHITEBOARD,
+      type: DataMsgBodyType.INIT_WHITEBOARD,
       from: {
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
       msg: '',
     },
-  };
-  sendWebsocketMessage(JSON.stringify(whiteboardElms));
+  });
+
+  sendWebsocketMessage(whiteboardElms.toBinary());
 };

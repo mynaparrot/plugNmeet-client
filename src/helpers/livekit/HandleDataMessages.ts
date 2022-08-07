@@ -3,15 +3,14 @@ import { toast } from 'react-toastify';
 import i18n from '../i18n';
 
 import { IConnectLivekit } from './ConnectLivekit';
-import {
-  IDataMessage,
-  ISystemMsg,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { store } from '../../store';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
-
-const textDecoder = new TextDecoder();
+import {
+  DataMessage,
+  DataMsgBody,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../proto/plugnmeet_datamessage_pb';
 
 export default class HandleDataMessages {
   private that: IConnectLivekit;
@@ -27,38 +26,36 @@ export default class HandleDataMessages {
     kind?: DataPacket_Kind,
   ) => {
     this.requestedParticipant = participant;
-    const decodedText = textDecoder.decode(payload);
-    if (!decodedText) {
-      return;
-    }
-
-    let data: IDataMessage;
+    let data: DataMessage;
     try {
-      data = JSON.parse(decodedText);
+      data = DataMessage.fromBinary(new Uint8Array(payload));
     } catch (error) {
+      console.error(error);
       return;
     }
 
     if (kind === DataPacket_Kind.RELIABLE) {
-      if (data.type === 'SYSTEM') {
+      if (data.type === DataMsgType.SYSTEM) {
         if (!store.getState().session.currentUser?.isRecorder) {
-          this.handleSystemTypeData(data.body as ISystemMsg);
+          if (data.body) {
+            this.handleSystemTypeData(data.body);
+          }
         }
       }
     }
   };
 
-  private handleSystemTypeData = (body: ISystemMsg) => {
+  private handleSystemTypeData = (body: DataMsgBody) => {
     switch (body.type) {
-      case SystemMsgType.RAISE_HAND:
-      case SystemMsgType.INFO:
+      case DataMsgBodyType.RAISE_HAND:
+      case DataMsgBodyType.INFO:
         toast(i18n.t(body.msg).toString(), {
           type: 'info',
         });
         this.playNotification(body.type);
         break;
 
-      case SystemMsgType.ALERT:
+      case DataMsgBodyType.ALERT:
         toast(i18n.t(body.msg).toString(), {
           type: 'error',
         });
@@ -67,8 +64,8 @@ export default class HandleDataMessages {
     }
   };
 
-  private playNotification = (type: SystemMsgType) => {
-    if (type === SystemMsgType.RAISE_HAND || type === SystemMsgType.ALERT) {
+  private playNotification = (type: DataMsgBodyType) => {
+    if (type === DataMsgBodyType.RAISE_HAND || type === DataMsgBodyType.ALERT) {
       store.dispatch(updatePlayAudioNotification(true));
     }
   };

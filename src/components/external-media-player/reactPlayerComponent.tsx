@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player/lazy';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../helpers/websocket';
 import { RootState, store, useAppSelector } from '../../store';
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IReactPlayerComponentProps {
   src: string;
@@ -70,20 +70,21 @@ const ReactPlayerComponent = ({
       return;
     }
     const broadcast = (msg: string) => {
-      const data: IDataMessage = {
-        type: DataMessageType.SYSTEM,
-        room_sid: session.currentRoom.sid,
-        message_id: '',
+      const dataMsg = new DataMessage({
+        type: DataMsgType.SYSTEM,
+        roomSid: session.currentRoom.sid,
+        roomId: session.currentRoom.room_id,
         body: {
-          type: SystemMsgType.EXTERNAL_MEDIA_PLAYER_EVENTS,
+          type: DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
           from: {
             sid: session.currentUser?.sid ?? '',
             userId: session.currentUser?.userId ?? '',
           },
           msg,
         },
-      };
-      sendWebsocketMessage(JSON.stringify(data));
+      });
+
+      sendWebsocketMessage(dataMsg.toBinary());
     };
 
     if (paused) {
