@@ -42,7 +42,7 @@
     "video.js": "7.20.1"
   },
   "devDependencies": {
-    "@bufbuild/protoc-gen-es": "^0.0.10",
+    "@bufbuild/protoc-gen-es": "0.0.10",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.7",
     "@types/lodash": "4.14.182",
     "@types/react": "18.0.15",
