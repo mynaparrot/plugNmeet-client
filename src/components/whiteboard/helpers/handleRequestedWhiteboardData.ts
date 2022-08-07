@@ -5,17 +5,15 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-  WhiteboardMsg,
-  WhiteboardMsgType,
-} from '../../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../../helpers/websocket';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 const broadcastedElementVersions: Map<string, number> = new Map();
 
@@ -38,22 +36,22 @@ export const sendRequestedForWhiteboardData = () => {
   }
 
   donors.forEach((donor) => {
-    const whiteboardElms: IDataMessage = {
-      type: DataMessageType.SYSTEM,
-      room_sid: session.currentRoom.sid,
-      message_id: '',
+    const dataMsg = new DataMessage({
+      type: DataMsgType.SYSTEM,
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
       to: donor.sid,
       body: {
-        type: SystemMsgType.INIT_WHITEBOARD,
+        type: DataMsgBodyType.INIT_WHITEBOARD,
         from: {
           sid: session.currentUser?.sid ?? '',
           userId: session.currentUser?.userId ?? '',
         },
         msg: '',
       },
-    };
+    });
 
-    sendWebsocketMessage(JSON.stringify(whiteboardElms));
+    sendWebsocketMessage(dataMsg.toBinary());
   });
 };
 
@@ -129,54 +127,48 @@ export const broadcastScreenDataBySocket = (
   sendTo?: string,
 ) => {
   const session = store.getState().session;
-  const from = {
-    sid: session.currentUser?.sid ?? '',
-    userId: session.currentUser?.userId ?? '',
-  };
-
-  const info: WhiteboardMsg = {
-    type: WhiteboardMsgType.SCENE_UPDATE,
-    from,
-    msg: JSON.stringify(elements),
-  };
-
-  const data: IDataMessage = {
-    type: DataMessageType.WHITEBOARD,
-    room_sid: session.currentRoom.sid,
-    room_id: session.currentRoom.room_id,
-    message_id: '',
-    body: info,
-  };
+  const dataMsg = new DataMessage({
+    type: DataMsgType.WHITEBOARD,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
+    body: {
+      type: DataMsgBodyType.SCENE_UPDATE,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: JSON.stringify(elements),
+    },
+  });
 
   if (sendTo !== '') {
-    data.to = sendTo;
+    dataMsg.to = sendTo;
   }
 
-  sendWebsocketMessage(JSON.stringify(data));
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
   const session = store.getState().session;
-
-  const data: IDataMessage = {
-    type: DataMessageType.WHITEBOARD,
-    room_sid: session.currentRoom.sid,
-    message_id: '',
+  const dataMsg = new DataMessage({
+    type: DataMsgType.WHITEBOARD,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
     body: {
-      type: WhiteboardMsgType.PAGE_CHANGE,
+      type: DataMsgBodyType.PAGE_CHANGE,
       from: {
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
       msg: `${page}`,
     },
-  };
+  });
 
   if (sendTo !== '') {
-    data.to = sendTo;
+    dataMsg.to = sendTo;
   }
 
-  sendWebsocketMessage(JSON.stringify(data));
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const broadcastWhiteboardOfficeFile = (
@@ -184,48 +176,42 @@ export const broadcastWhiteboardOfficeFile = (
   sendTo?: string,
 ) => {
   const session = store.getState().session;
-  const info: WhiteboardMsg = {
-    type: WhiteboardMsgType.ADD_WHITEBOARD_OFFICE_FILE,
-    from: {
-      sid: session.currentUser?.sid ?? '',
-      userId: session.currentUser?.userId ?? '',
+  const dataMsg = new DataMessage({
+    type: DataMsgType.WHITEBOARD,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
+    body: {
+      type: DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: JSON.stringify(newFile),
     },
-    msg: JSON.stringify(newFile),
-  };
-
-  const data: IDataMessage = {
-    type: DataMessageType.WHITEBOARD,
-    room_sid: session.currentRoom.sid,
-    room_id: session.currentRoom.room_id,
-    message_id: '',
-    body: info,
-  };
+  });
 
   if (sendTo !== '') {
-    data.to = sendTo;
+    dataMsg.to = sendTo;
   }
 
-  sendWebsocketMessage(JSON.stringify(data));
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const broadcastMousePointerUpdate = (msg: any) => {
   const session = store.getState().session;
-  const info: WhiteboardMsg = {
-    type: WhiteboardMsgType.POINTER_UPDATE,
-    from: {
-      sid: session.currentUser?.sid ?? '',
-      userId: session.currentUser?.userId ?? '',
+  const dataMsg = new DataMessage({
+    type: DataMsgType.WHITEBOARD,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
+    body: {
+      type: DataMsgBodyType.POINTER_UPDATE,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: JSON.stringify(msg),
     },
-    msg: JSON.stringify(msg),
-  };
+  });
 
-  const data: IDataMessage = {
-    type: DataMessageType.WHITEBOARD,
-    room_sid: session.currentRoom.sid,
-    room_id: session.currentRoom.room_id,
-    message_id: '',
-    body: info,
-  };
-
-  sendWebsocketMessage(JSON.stringify(data));
+  sendWebsocketMessage(dataMsg.toBinary());
 };

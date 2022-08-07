@@ -1,21 +1,5 @@
 import { ICurrentUser } from './session';
 
-export interface IDataMessage {
-  type: DataMessageType;
-  message_id: string;
-  room_sid: string;
-  room_id?: string;
-  to?: string; // user sid
-  body: ISystemMsg | IChatMsg | WhiteboardMsg;
-}
-
-export interface ISystemMsg {
-  type: SystemMsgType;
-  time?: string;
-  from: ICurrentUser;
-  msg: string;
-}
-
 export interface IChatMsg {
   type: 'CHAT';
   message_id: string;
@@ -24,12 +8,6 @@ export interface IChatMsg {
   from: ICurrentUser;
   to?: string;
   msg: string;
-}
-
-export enum DataMessageType {
-  USER = 'USER',
-  SYSTEM = 'SYSTEM',
-  WHITEBOARD = 'WHITEBOARD',
 }
 
 export enum SystemMsgType {
@@ -49,19 +27,4 @@ export enum SystemMsgType {
   NEW_POLL_RESPONSE = 'NEW_POLL_RESPONSE',
   POLL_CLOSED = 'POLL_CLOSED',
   JOIN_BREAKOUT_ROOM = 'JOIN_BREAKOUT_ROOM',
-}
-
-export interface WhiteboardMsg {
-  type: WhiteboardMsgType;
-  time?: string;
-  from: ICurrentUser;
-  msg: string;
-}
-
-export enum WhiteboardMsgType {
-  SCENE_UPDATE = 'SCENE_UPDATE',
-  POINTER_UPDATE = 'POINTER_UPDATE',
-  ADD_WHITEBOARD_FILE = 'ADD_WHITEBOARD_FILE',
-  ADD_WHITEBOARD_OFFICE_FILE = 'ADD_WHITEBOARD_OFFICE_FILE',
-  PAGE_CHANGE = 'PAGE_CHANGE',
 }

@@ -12,12 +12,6 @@ import {
   addWhiteboardOtherImageFile,
   addWhiteboardUploadedOfficeFiles,
 } from '../../store/slices/whiteboard';
-import {
-  DataMessageType,
-  IDataMessage,
-  WhiteboardMsg,
-  WhiteboardMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
@@ -26,6 +20,11 @@ import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -165,25 +164,21 @@ const UploadFilesUI = ({
     const files =
       store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
     const session = store.getState().session;
-
-    const info: WhiteboardMsg = {
-      type: WhiteboardMsgType.ADD_WHITEBOARD_FILE,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
+    const dataMsg = new DataMessage({
+      type: DataMsgType.WHITEBOARD,
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
+      body: {
+        type: DataMsgBodyType.ADD_WHITEBOARD_FILE,
+        from: {
+          sid: session.currentUser?.sid ?? '',
+          userId: session.currentUser?.userId ?? '',
+        },
+        msg: files,
       },
-      msg: files,
-    };
+    });
 
-    const data: IDataMessage = {
-      type: DataMessageType.WHITEBOARD,
-      room_sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      message_id: '',
-      body: info,
-    };
-
-    sendWebsocketMessage(JSON.stringify(data));
+    sendWebsocketMessage(dataMsg.toBinary());
   };
 
   const render = () => {

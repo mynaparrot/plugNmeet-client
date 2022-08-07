@@ -1,4 +1,3 @@
-import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { store } from '../../store';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
@@ -6,19 +5,39 @@ import {
   updateTotalUnreadChatMsgs,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
+import {
+  DataMsgBody,
+  DataMsgBodyType,
+} from '../proto/plugnmeet_datamessage_pb';
+import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 
 export const handleUserTypeData = (
-  body: IChatMsg,
-  message_id: string,
+  body: DataMsgBody,
+  message_id?: string,
   to?: string,
 ) => {
-  if (body.type === 'CHAT') {
-    if (!body.message_id) {
-      body.message_id = message_id;
+  if (body.type === DataMsgBodyType.CHAT) {
+    if (!body.messageId) {
+      body.messageId = message_id;
     }
-    body.to = to;
-    store.dispatch(addChatMessage(body));
+    const chatMsg: IChatMsg = {
+      type: 'CHAT',
+      message_id: body.messageId ?? '',
+      time: body.time ?? '',
+      from: {
+        sid: body.from?.sid ?? '',
+        userId: body.from?.userId ?? '',
+        name: body.from?.name,
+      },
+      isPrivate: body.isPrivate === 1,
+      msg: body.msg,
+    };
 
+    if (to) {
+      chatMsg.to = to;
+    }
+
+    store.dispatch(addChatMessage(chatMsg));
     const isActiveChatPanel =
       store.getState().bottomIconsActivity.isActiveChatPanel;
     const selectedChatOption = store.getState().roomSettings.selectedChatOption;
@@ -45,13 +64,13 @@ export const handleUserTypeData = (
       );
     } else if (
       body.isPrivate &&
-      selectedChatOption !== body.from.userId &&
-      body.from.userId !== currentUser?.userId
+      selectedChatOption !== body.from?.userId &&
+      body.from?.userId !== currentUser?.userId
     ) {
       store.dispatch(
         updateUnreadMsgFrom({
           task: 'ADD',
-          id: body.from.userId,
+          id: body.from?.userId ?? '',
         }),
       );
     }

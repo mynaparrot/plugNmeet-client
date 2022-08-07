@@ -67,7 +67,11 @@ const ChatTabs = () => {
             privateChatUsers.set(m.from.userId, m.from.name ?? '');
             setPrivateChatUsers(new Map(privateChatUsers));
           }
-        } else if (m.from.userId === currentUser?.userId && m.to) {
+        } else if (
+          m.from.userId === currentUser?.userId &&
+          m.to &&
+          m.to !== currentUser?.userId
+        ) {
           if (!privateChatUsers.has(m.to)) {
             const user = participantsSelector.selectById(
               store.getState(),

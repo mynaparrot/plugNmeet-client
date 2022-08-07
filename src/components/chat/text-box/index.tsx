@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import sanitizeHtml from 'sanitize-html';
 import { Room } from 'livekit-client';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, store } from '../../../store';
-import {
-  DataMessageType,
-  IChatMsg,
-  IDataMessage,
-} from '../../../store/slices/interfaces/dataMessages';
+import { RootState, store, useAppSelector } from '../../../store';
 import {
   isSocketConnected,
   sendWebsocketMessage,
 } from '../../../helpers/websocket';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
@@ -115,29 +115,25 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
       return;
     }
 
-    const info: IChatMsg = {
-      type: 'CHAT',
-      isPrivate: selectedChatOption !== 'public',
-      time: '',
-      message_id: '',
-      from: {
-        sid: currentRoom.localParticipant.sid,
-        userId: currentRoom.localParticipant.identity,
-        name: currentRoom.localParticipant.name,
-      },
-      msg: msg.replace(/\r?\n/g, '<br />'),
-    };
-
-    const data: IDataMessage = {
-      type: DataMessageType.USER,
-      room_sid: currentRoom.sid,
+    const dataMsg = new DataMessage({
+      type: DataMsgType.USER,
+      roomSid: currentRoom.sid,
+      roomId: currentRoom.name,
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      message_id: '',
-      body: info,
-    };
+      body: {
+        type: DataMsgBodyType.CHAT,
+        isPrivate: selectedChatOption !== 'public' ? 1 : 0,
+        from: {
+          sid: currentRoom.localParticipant.sid,
+          userId: currentRoom.localParticipant.identity,
+          name: currentRoom.localParticipant.name,
+        },
+        msg: msg.replace(/\r?\n/g, '<br />'),
+      },
+    });
 
     if (isSocketConnected()) {
-      sendWebsocketMessage(JSON.stringify(data));
+      sendWebsocketMessage(dataMsg.toBinary());
       setMessage('');
     }
   };

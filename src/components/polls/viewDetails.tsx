@@ -9,16 +9,13 @@ import {
   useGetPollResponsesDetailsQuery,
 } from '../../store/services/pollsApi';
 import { toast } from 'react-toastify';
-import {
-  DataMessageType,
-  IChatMsg,
-  IDataMessage,
-} from '../../store/slices/interfaces/dataMessages';
-import {
-  isSocketConnected,
-  sendWebsocketMessage,
-} from '../../helpers/websocket';
+import { sendWebsocketMessage } from '../../helpers/websocket';
 import { store } from '../../store';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -165,29 +162,23 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
         })}
       </>,
     );
-    const info: IChatMsg = {
-      type: 'CHAT',
-      isPrivate: false,
-      time: '',
-      message_id: '',
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-        name: session.currentUser?.name,
+
+    const dataMsg = new DataMessage({
+      type: DataMsgType.USER,
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
+      body: {
+        type: DataMsgBodyType.CHAT,
+        from: {
+          sid: session.currentUser?.sid ?? '',
+          userId: session.currentUser?.userId ?? '',
+          name: session.currentUser?.name,
+        },
+        msg: elm,
       },
-      msg: elm,
-    };
+    });
 
-    const data: IDataMessage = {
-      type: DataMessageType.USER,
-      room_sid: session.currentRoom.sid,
-      message_id: '',
-      body: info,
-    };
-
-    if (isSocketConnected()) {
-      sendWebsocketMessage(JSON.stringify(data));
-    }
+    sendWebsocketMessage(dataMsg.toBinary());
     closeModal();
   };
 

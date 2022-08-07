@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../../../../store/slices/interfaces/dataMessages';
 import { sendWebsocketMessage } from '../../../../../helpers/websocket';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IMicMenuItemProps {
   userId: string;
@@ -44,13 +44,12 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
       return;
     }
 
-    const msg: IDataMessage = {
-      type: DataMessageType.SYSTEM,
-      room_sid: session.currentRoom.sid,
-      message_id: '',
-      to: participant?.sid,
+    const dataMsg = new DataMessage({
+      type: DataMsgType.SYSTEM,
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
       body: {
-        type: SystemMsgType.INFO,
+        type: DataMsgBodyType.INFO,
         from: {
           sid: session.currentUser?.sid ?? '',
           userId: session.currentUser?.userId ?? '',
@@ -60,9 +59,9 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
             name: session.currentUser?.name,
           }) + t(task),
       },
-    };
+    });
 
-    sendWebsocketMessage(JSON.stringify(msg));
+    sendWebsocketMessage(dataMsg.toBinary());
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {

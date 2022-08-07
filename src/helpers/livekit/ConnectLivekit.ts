@@ -35,13 +35,13 @@ import {
   sendWebsocketMessage,
 } from '../websocket';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
-import {
-  DataMessageType,
-  IDataMessage,
-  SystemMsgType,
-} from '../../store/slices/interfaces/dataMessages';
 import { LivekitInfo } from './hooks/useLivekitConnect';
 import i18n from '../i18n';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../proto/plugnmeet_datamessage_pb';
 
 type connectionStatus =
   | 'connecting'
@@ -406,21 +406,22 @@ export default class ConnectLivekit {
     this.tokenRenewInterval = setInterval(() => {
       // get current token that is store in redux
       const token = store.getState().session.token;
-      const msg: IDataMessage = {
-        type: DataMessageType.SYSTEM,
-        message_id: '',
-        room_sid: this._room.sid,
-        room_id: this._room.name,
+      const dataMsg = new DataMessage({
+        type: DataMsgType.SYSTEM,
+        roomSid: this._room.sid,
+        roomId: this._room.name,
         body: {
-          type: SystemMsgType.RENEW_TOKEN,
+          type: DataMsgBodyType.RENEW_TOKEN,
           from: {
             sid: this._room.localParticipant.sid,
             userId: this._room.localParticipant.identity,
           },
+          isPrivate: 1,
           msg: token,
         },
-      };
-      sendWebsocketMessage(JSON.stringify(msg));
+      });
+
+      sendWebsocketMessage(dataMsg.toBinary());
     }, 5 * 60 * 1000);
   };
 
