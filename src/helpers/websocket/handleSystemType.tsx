@@ -23,7 +23,6 @@ import {
 } from '../proto/plugnmeet_datamessage_pb';
 
 export const handleSystemTypeData = (body: DataMessage) => {
-  console.log(body.body?.type);
   switch (body.body?.type) {
     // got request to send previous chat messages. We'll send last 30 messages
     case DataMsgBodyType.SEND_CHAT_MSGS:
