@@ -13,6 +13,7 @@ export default class HandleRoomMetadata {
   private welcomeMessage: string | undefined = undefined;
 
   public setRoomMetadata = (metadata: string) => {
+    console.log(metadata);
     if (!isEmpty(metadata)) {
       this.metadata = JSON.parse(metadata);
 
