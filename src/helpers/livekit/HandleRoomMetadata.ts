@@ -13,9 +13,13 @@ export default class HandleRoomMetadata {
   private welcomeMessage: string | undefined = undefined;
 
   public setRoomMetadata = (metadata: string) => {
-    console.log(metadata);
     if (!isEmpty(metadata)) {
-      this.metadata = JSON.parse(metadata);
+      try {
+        this.metadata = JSON.parse(metadata);
+      } catch (e) {
+        console.error(e);
+        return;
+      }
 
       if (this.metadata) {
         this.setWindowTitle(this.metadata.room_title);
@@ -74,6 +78,10 @@ export default class HandleRoomMetadata {
       return;
     }
 
+    if (!this.metadata?.welcome_message) {
+      this.welcomeMessage = '';
+      return;
+    }
     if (isEmpty(this.metadata?.welcome_message)) {
       this.welcomeMessage = '';
       return;
