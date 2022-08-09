@@ -121,8 +121,8 @@ const sessionSlice = createSlice({
     ) => {
       if (state.currentRoom) {
         state.currentRoom.metadata = action.payload;
-        state.isActiveRtmpBroadcasting = action.payload.is_active_rtmp;
-        state.isActiveRecording = action.payload.is_recording;
+        state.isActiveRtmpBroadcasting = action.payload.is_active_rtmp ?? false;
+        state.isActiveRecording = action.payload.is_recording ?? false;
       }
     },
     updateIsChatServiceReady: (state, action: PayloadAction<boolean>) => {

@@ -11,7 +11,7 @@
     "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
-    "proto": "protoc --es_opt=target=ts --plugin=protoc-gen-es=./node_modules/.bin/protoc-gen-es --es_out=./src/helpers/proto --proto_path=./protocol/proto_files ./protocol/proto_files/plugnmeet_datamessage.proto"
+    "proto": "protoc --es_opt=target=js+dts --plugin=protoc-gen-es=./node_modules/.bin/protoc-gen-es --es_out=./src/helpers/proto -I ${GOPATH}/pkg/mod --proto_path=./protocol/proto_files plugnmeet_datamessage.proto plugnmeet_recorder.proto plugnmeet_recording.proto"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "0.12.0",

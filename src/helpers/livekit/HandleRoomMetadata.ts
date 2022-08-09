@@ -14,7 +14,12 @@ export default class HandleRoomMetadata {
 
   public setRoomMetadata = (metadata: string) => {
     if (!isEmpty(metadata)) {
-      this.metadata = JSON.parse(metadata);
+      try {
+        this.metadata = JSON.parse(metadata);
+      } catch (e) {
+        console.error(e);
+        return;
+      }
 
       if (this.metadata) {
         this.setWindowTitle(this.metadata.room_title);
@@ -73,6 +78,10 @@ export default class HandleRoomMetadata {
       return;
     }
 
+    if (!this.metadata?.welcome_message) {
+      this.welcomeMessage = '';
+      return;
+    }
     if (isEmpty(this.metadata?.welcome_message)) {
       this.welcomeMessage = '';
       return;
