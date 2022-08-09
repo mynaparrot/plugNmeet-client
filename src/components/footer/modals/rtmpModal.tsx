@@ -13,6 +13,7 @@ import {
 } from '../../../store';
 import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { RecordingTasks } from '../../../helpers/proto/plugnmeet_recorder_pb';
 
 const isActiveRtmpBroadcastingSelector = createSelector(
   (state: RootState) => state.session.isActiveRtmpBroadcasting,
@@ -70,13 +71,13 @@ const RtmpModal = () => {
     }
 
     const body = {
-      task: 'start-rtmp',
+      task: RecordingTasks.START_RTMP,
       sid: store.getState().session.currentRoom.sid,
-      rtmp_url: url + '/' + serverKey,
+      rtmpUrl: url + '/' + serverKey,
     };
 
     if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
-      (body as any).custom_design = `${
+      (body as any).customDesign = `${
         (window as any).DESIGN_CUSTOMIZATION
       }`.replace(/\s/g, '');
     }
@@ -245,7 +246,7 @@ const RtmpModal = () => {
     }
 
     const body = {
-      task: 'stop-rtmp',
+      task: RecordingTasks.STOP_RTMP,
       sid: store.getState().session.currentRoom.sid,
     };
 
