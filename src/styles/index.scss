@@ -1279,6 +1279,9 @@ button.next-cam:hover {
       rgba(214, 231, 255, 1) 100%
     );
   }
+  .dark #main-right-panel {
+    background: #001222;
+  }
 
   #main-area.fullWidthMainArea .all-webcam-wrapper-inner button.next-cam {
     right: -5px;
@@ -1330,7 +1333,7 @@ button.next-cam:hover {
   .plugNmeet-app footer#main-footer {
     position: fixed;
     width: 100%;
-    background-color: #fff;
+    // background-color: #fff;
     bottom: 0;
     z-index: 99999;
   }
@@ -1427,12 +1430,12 @@ button.next-cam:hover {
   }
 
   header#main-header .logo,
-  header#main-header .dark {
+  header#main-header .dark-area {
     width: 50%;
     order: 1;
   }
 
-  header#main-header .dark {
+  header#main-header .dark-area {
     height: 20px;
   }
 

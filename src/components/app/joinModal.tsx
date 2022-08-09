@@ -47,7 +47,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
           open
             ? 'opacity-1 pointer-events-auto'
             : 'pointer-events-none opacity-0'
-        } join-the-audio-popup fixed transition ease-in top-0 left-0 w-full h-full z-[999] bg-white/80 dark:bg-darkPrimary/90 px-6 flex items-center justify-center`}
+        } join-the-audio-popup absolute transition ease-in top-0 left-0 w-full h-full z-[999] bg-white/80 dark:bg-darkPrimary/90 px-6 flex items-center justify-center`}
       >
         <div className="popup-inner bg-white dark:bg-darkPrimary/90 w-full max-w-md rounded-2xl shadow-header relative px-6 py-14">
           <button
@@ -95,7 +95,9 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
     );
   };
 
-  return <div>{render()}</div>;
+  return (
+    <div className="absolute z-50 w-full h-full top-0 left-0">{render()}</div>
+  );
 };
 
 export default StartupJoinModal;

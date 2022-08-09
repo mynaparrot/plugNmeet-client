@@ -29,7 +29,7 @@ const RoomLists = () => {
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
+            <Disclosure.Button className="flex items-center w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
               <p>{room.title}</p>
               <div className="flex items-center">
                 {room.started ? (
