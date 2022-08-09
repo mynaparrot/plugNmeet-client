@@ -16,17 +16,25 @@ const getToken = () => {
   return urlSearchParams.get('access_token') ?? '';
 };
 
-const sendAPIRequest = async (path: string, body: any) => {
+const sendAPIRequest = async (
+  path: string,
+  body: any,
+  json_encode = true,
+  content_type = 'application/json',
+) => {
   try {
-    const res = await API.post(path, JSON.stringify(body), {
+    if (json_encode) {
+      body = JSON.stringify(body);
+    }
+    const res = await API.post(path, body, {
       headers: {
         Authorization: getToken(),
-        'Content-Type': 'application/json',
+        'Content-Type': content_type,
       },
     });
     return res.data;
   } catch (e: any) {
-    throw e.response;
+    console.error(e.response);
   }
 };
 
