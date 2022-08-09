@@ -170,6 +170,7 @@ export default class ConnectLivekit {
       // start token renew interval
       this.startTokenRenewInterval();
     } catch (error) {
+      console.error(error);
       this.roomConnectionStatusState('error');
       this.errorState({
         title: 'Error',
