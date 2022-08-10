@@ -1061,7 +1061,7 @@ button.next-cam:hover {
   opacity: 0.7;
 }
 .dark .multi-gradient,
-#main-area.fullWidthMainArea .all-webcam-wrapper {
+.dark #main-area.fullWidthMainArea .all-webcam-wrapper {
   background: #031a3e;
 }
 .dark .message-form {
@@ -1084,6 +1084,9 @@ button.next-cam:hover {
   opacity: 0.1;
 }
 //  dark mode custom css
+.showChatPanel .screen-share-video button {
+  right: 300px;
+}
 
 @media only screen and (max-height: 720px) {
   .externalMediaPlayerWrapper {
@@ -1104,6 +1107,9 @@ button.next-cam:hover {
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     padding-left: 200px;
+  }
+  .showChatPanel .screen-share-video button {
+    right: 250px;
   }
 }
 
