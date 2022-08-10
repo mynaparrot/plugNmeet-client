@@ -31,6 +31,12 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-moon:before {
+  content: '\e92b';
+}
+.pnm-sun:before {
+  content: '\e92c';
+}
 .pnm-display:before {
   content: '\e92a';
 }
