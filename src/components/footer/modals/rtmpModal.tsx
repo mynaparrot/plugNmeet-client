@@ -14,6 +14,7 @@ import {
 import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { RecordingTasks } from '../../../helpers/proto/plugnmeet_recorder_pb';
+import { RecordingReq } from '../../../helpers/proto/plugnmeet_recording_pb';
 
 const isActiveRtmpBroadcastingSelector = createSelector(
   (state: RootState) => state.session.isActiveRtmpBroadcasting,
@@ -70,19 +71,25 @@ const RtmpModal = () => {
       return;
     }
 
-    const body = {
+    const body = new RecordingReq({
       task: RecordingTasks.START_RTMP,
       sid: store.getState().session.currentRoom.sid,
       rtmpUrl: url + '/' + serverKey,
-    };
+    });
 
     if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
-      (body as any).customDesign = `${
-        (window as any).DESIGN_CUSTOMIZATION
-      }`.replace(/\s/g, '');
+      body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
+        /\s/g,
+        '',
+      );
     }
 
-    const res = await sendAPIRequest('rtmp', body);
+    const res = await sendAPIRequest(
+      'rtmp',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+    );
     let msg = 'footer.notice.rtmp-starting';
 
     if (!res.status) {
@@ -245,12 +252,17 @@ const RtmpModal = () => {
       return;
     }
 
-    const body = {
+    const body = new RecordingReq({
       task: RecordingTasks.STOP_RTMP,
       sid: store.getState().session.currentRoom.sid,
-    };
+    });
 
-    const res = await sendAPIRequest('rtmp', body);
+    const res = await sendAPIRequest(
+      'rtmp',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+    );
     let msg = t('footer.notice.rtmp-ending');
 
     if (!res.status) {

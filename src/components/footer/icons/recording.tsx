@@ -7,6 +7,7 @@ import { RootState, store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { RecordingTasks } from '../../../helpers/proto/plugnmeet_recorder_pb';
+import { RecordingReq } from '../../../helpers/proto/plugnmeet_recording_pb';
 
 const isRecordingSelector = createSelector(
   (state: RootState) => state.session.isActiveRecording,
@@ -57,18 +58,24 @@ const RecordingIcon = () => {
   };
 
   const startRecording = async () => {
-    const body = {
+    const body = new RecordingReq({
       task: RecordingTasks.START_RECORDING,
       sid: store.getState().session.currentRoom.sid,
-    };
+    });
 
     if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
-      (body as any).customDesign = `${
-        (window as any).DESIGN_CUSTOMIZATION
-      }`.replace(/\s/g, '');
+      body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
+        /\s/g,
+        '',
+      );
     }
 
-    const res = await sendAPIRequest('recording', body);
+    const res = await sendAPIRequest(
+      'recording',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+    );
     let msg = 'footer.notice.start-recording-progress';
 
     if (!res.status) {
@@ -90,11 +97,16 @@ const RecordingIcon = () => {
   };
 
   const stopRecording = async () => {
-    const body = {
+    const body = new RecordingReq({
       task: RecordingTasks.STOP_RECORDING,
       sid: store.getState().session.currentRoom.sid,
-    };
-    const res = await sendAPIRequest('recording', body);
+    });
+    const res = await sendAPIRequest(
+      'recording',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+    );
     let msg = 'footer.notice.stop-recording-service-in-progress';
 
     if (!res.status) {
