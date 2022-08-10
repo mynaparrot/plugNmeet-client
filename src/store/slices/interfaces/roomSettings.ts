@@ -14,7 +14,7 @@ export interface IRoomSettings {
   allowPlayAudioNotification: boolean;
   roomAudioVolume: number;
   roomVideoQuality: VideoQuality;
-  enabledDarkMode: boolean;
+  theme: string;
 
   selectedTabLeftPanel: number;
   selectedChatOption: string;

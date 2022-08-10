@@ -20,9 +20,9 @@ const lockSharedNotepadSelector = createSelector(
     state.session.currentUser?.metadata?.lock_settings?.lock_shared_notepad,
   (lock_shared_notepad) => lock_shared_notepad,
 );
-const enabledDarkModeSelector = createSelector(
-  (state: RootState) => state.roomSettings.enabledDarkMode,
-  (enabledDarkMode) => enabledDarkMode,
+const themeSelector = createSelector(
+  (state: RootState) => state.roomSettings.theme,
+  (theme) => theme,
 );
 
 const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
@@ -32,7 +32,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
   const [url, setUrl] = useState<string>();
-  const enabledDarkMode = useAppSelector(enabledDarkModeSelector);
+  const theme = useAppSelector(themeSelector);
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
@@ -58,7 +58,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
         url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
       }
 
-      if (enabledDarkMode) {
+      if (theme === 'dark') {
         url += '&theme=monokai';
       } else {
         url += '&theme=normal';
@@ -67,7 +67,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
       setUrl(url);
     }
     //eslint-disable-next-line
-  }, [sharedNotepadFeatures, lockSharedNotepad, enabledDarkMode]);
+  }, [sharedNotepadFeatures, lockSharedNotepad, theme]);
 
   const onLoad = () => {
     setLoaded(true);

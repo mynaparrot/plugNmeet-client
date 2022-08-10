@@ -5,20 +5,20 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import languages from '../../../helpers/languages';
 import { RootState, useAppDispatch, useAppSelector } from '../../../store';
-import { updateEnabledDarkMode } from '../../../store/slices/roomSettingsSlice';
+import { updateTheme } from '../../../store/slices/roomSettingsSlice';
 
-const enabledDarkModeSelector = createSelector(
-  (state: RootState) => state.roomSettings.enabledDarkMode,
-  (enabledDarkMode) => enabledDarkMode,
+const themeSelector = createSelector(
+  (state: RootState) => state.roomSettings.theme,
+  (theme) => theme,
 );
 
 const ApplicationSettings = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const enabledDarkMode = useAppSelector(enabledDarkModeSelector);
+  const theme = useAppSelector(themeSelector);
 
-  const toggleEnabledDarkMode = () => {
-    dispatch(updateEnabledDarkMode(!enabledDarkMode));
+  const toggleTheme = () => {
+    dispatch(updateTheme(theme === 'light' ? 'dark' : 'light'));
   };
 
   const render = () => {
@@ -55,17 +55,17 @@ const ApplicationSettings = () => {
               {t('header.room-settings.enable-dark-theme')}
             </Switch.Label>
             <Switch
-              checked={enabledDarkMode}
-              onChange={toggleEnabledDarkMode}
+              checked={theme === 'dark'}
+              onChange={toggleTheme}
               className={`${
-                enabledDarkMode
+                theme === 'dark'
                   ? 'bg-primaryColor dark:bg-darkSecondary2'
                   : 'bg-gray-200 dark:bg-secondaryColor'
               } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
-                  enabledDarkMode ? 'translate-x-6' : 'translate-x-1'
+                  theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
                 } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
               />
             </Switch>

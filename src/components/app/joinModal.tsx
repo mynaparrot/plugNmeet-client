@@ -36,10 +36,6 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
   };
 
   const render = () => {
-    if (!isStartup) {
-      return null;
-    }
-
     return (
       <div
         id="startupJoinModal"
@@ -95,9 +91,9 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
     );
   };
 
-  return (
+  return isStartup ? (
     <div className="absolute z-50 w-full h-full top-0 left-0">{render()}</div>
-  );
+  ) : null;
 };
 
 export default StartupJoinModal;

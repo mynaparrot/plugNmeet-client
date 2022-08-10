@@ -76,9 +76,9 @@ const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
   (is_presenter) => is_presenter,
 );
-const enabledDarkModeSelector = createSelector(
-  (state: RootState) => state.roomSettings.enabledDarkMode,
-  (enabledDarkMode) => enabledDarkMode,
+const themeSelector = createSelector(
+  (state: RootState) => state.roomSettings.theme,
+  (theme) => theme,
 );
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
@@ -91,7 +91,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
-  const enabledDarkMode = useAppSelector(enabledDarkModeSelector);
+  const theme = useAppSelector(themeSelector);
   const [
     lastBroadcastOrReceivedSceneVersion,
     setLastBroadcastOrReceivedSceneVersion,
@@ -423,7 +423,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         onPointerUpdate={onPointerUpdate}
         viewModeEnabled={viewModeEnabled}
         isCollaborating={true}
-        theme={enabledDarkMode ? 'dark' : 'light'}
+        theme={theme}
         name="plugNmeet whiteboard"
         UIOptions={{
           canvasActions: {
