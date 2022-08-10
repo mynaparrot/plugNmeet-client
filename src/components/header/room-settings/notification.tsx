@@ -26,14 +26,16 @@ const Notification = () => {
     return (
       <Switch.Group>
         <div className="flex items-center justify-between mb-2">
-          <Switch.Label className="pr-4 w-full">
+          <Switch.Label className="pr-4 w-full dark:text-darkText">
             {t('header.room-settings.allow-audio-notification')}
           </Switch.Label>
           <Switch
             checked={allowPlayAudioNotification}
             onChange={toggleAudioNotification}
             className={`${
-              allowPlayAudioNotification ? 'bg-primaryColor' : 'bg-gray-200'
+              allowPlayAudioNotification
+                ? 'bg-primaryColor dark:bg-darkSecondary2'
+                : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span

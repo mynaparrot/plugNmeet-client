@@ -132,18 +132,18 @@ const RecordingIcon = () => {
       <button
         className={`${
           isRecording ? 'record' : ''
-        } footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
+        } footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => onClick()}
         disabled={disable}
       >
-        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
           {isRecording
             ? t('footer.icons.stop-recording')
             : t('footer.icons.start-recording')}
         </span>
-        <i className="pnm-rec primaryColor text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+        <i className="pnm-rec primaryColor dark:text-darkText text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
       </button>
     );
   };

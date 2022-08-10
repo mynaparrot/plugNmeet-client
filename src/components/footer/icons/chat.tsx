@@ -35,7 +35,7 @@ const ChatIcon = () => {
     if (isActiveChatPanel) {
       setIconCSS('secondaryColor');
     } else {
-      setIconCSS('primaryColor');
+      setIconCSS('primaryColor dark:text-darkText');
     }
   }, [isActiveChatPanel]);
 
@@ -55,12 +55,12 @@ const ChatIcon = () => {
   const render = () => {
     return (
       <div
-        className={`message footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
+        className={`message footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleChatPanel()}
       >
-        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
           {isActiveChatPanel
             ? t('footer.icons.hide-chat-panel')
             : t('footer.icons.show-chat-panel')}

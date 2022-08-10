@@ -72,19 +72,19 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                 <button
                   className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                   type="button"
                   onClick={() => closeStartModal()}
                 >
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                 </button>
 
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                 >
                   {t('footer.modal.external-media-player-title')}
                 </Dialog.Title>
@@ -97,7 +97,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                           key={item.id}
                           className={({ selected }) =>
                             classNames(
-                              'w-full py-2 text-xs text-black font-bold leading-5 border-b-4 border-solid transition ease-in',
+                              'w-full py-2 text-xs text-black dark:text-darkText font-bold leading-5 border-b-4 border-solid transition ease-in',
                               selected
                                 ? 'border-[#004d90]'
                                 : 'border-[#004d90]/20',

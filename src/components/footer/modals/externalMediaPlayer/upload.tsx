@@ -77,7 +77,7 @@ const Upload = () => {
   return (
     <>
       <div className="ex-m-p-file-upload relative h-[80px] mt-[10px] mb-[50px]">
-        <div className="absolute -bottom-[30px]">
+        <div className="absolute -bottom-[30px] dark:text-darkText">
           {t('footer.modal.external-media-player-upload-supported-files', {
             files: allowedFileTypes.map((type) => '.' + type).join(', '),
           })}
@@ -87,10 +87,10 @@ const Upload = () => {
           id="chat-file"
           accept={allowedFileTypes.map((type) => '.' + type).join(',')}
           onChange={(e) => onChange(e)}
-          className="absolute w-full h-full top-0 py-[28px] px-5 border border-dashed border-primaryColor cursor-pointer rounded"
+          className="absolute w-full h-full top-0 py-[28px] px-5 border border-dashed border-primaryColor dark:border-darkText dark:text-darkText cursor-pointer rounded"
         />
       </div>
-      <div className="pb-3 pt-4 bg-gray-50 text-right mt-4">
+      <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
         <button
           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
           disabled={isUploading}

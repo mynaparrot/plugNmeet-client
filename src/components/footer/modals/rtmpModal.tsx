@@ -141,19 +141,19 @@ const RtmpModal = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeStartModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                   >
                     {t('footer.modal.rtmp-title')}
                   </Dialog.Title>
@@ -169,14 +169,14 @@ const RtmpModal = () => {
                           <div className="col-span-6 sm:col-span-4">
                             <label
                               htmlFor="provider"
-                              className="block text-sm font-medium text-gray-700"
+                              className="block text-sm font-medium text-gray-700 dark:text-darkText"
                             >
                               {t('footer.modal.rtmp-select-provider')}
                             </label>
                             <select
                               id="provider"
                               name="provider"
-                              className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                              className="mt-1 block w-full py-2 px-3 bg-transparent border border-gray-300 dark:border-darkText rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-darkText"
                               onChange={(e) =>
                                 setProvider(e.currentTarget.value)
                               }
@@ -191,7 +191,7 @@ const RtmpModal = () => {
                             <div className="col-span-6 sm:col-span-4">
                               <label
                                 htmlFor="stream-url"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-gray-700 dark:text-darkText"
                               >
                                 {t('footer.modal.rtmp-server-url')}
                               </label>
@@ -203,14 +203,14 @@ const RtmpModal = () => {
                                 onChange={(e) =>
                                   setServerUrl(e.currentTarget.value)
                                 }
-                                className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
+                                className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-darkText rounded-md h-10 border border-solid border-black/50 bg-transparent dark:text-darkText"
                               />
                             </div>
                           ) : null}
                           <div className="col-span-6 sm:col-span-4">
                             <label
                               htmlFor="stream-key"
-                              className="block text-sm font-medium text-gray-700"
+                              className="block text-sm font-medium text-gray-700 dark:text-darkText"
                             >
                               {t('footer.modal.rtmp-stream-key')}
                             </label>
@@ -222,12 +222,12 @@ const RtmpModal = () => {
                               onChange={(e) =>
                                 setServerKey(e.currentTarget.value)
                               }
-                              className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-10 border border-solid border-black/50"
+                              className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-darkText rounded-md h-10 border border-solid border-black/50 bg-transparent dark:text-darkText"
                             />
                           </div>
                         </div>
                       </div>
-                      <div className="px-4 py-3 bg-gray-50 text-right sm:px-6 mt-4">
+                      <div className="px-4 py-3 bg-gray-50 dark:bg-transparent text-right sm:px-6 mt-4">
                         <button
                           type="submit"
                           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"

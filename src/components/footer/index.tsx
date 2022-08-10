@@ -26,7 +26,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   return (
     <footer
       id="main-footer"
-      className="h-[55px] lg:h-[60px] px-4 shadow-footer flex items-center justify-between"
+      className="h-[55px] lg:h-[60px] px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary"
       style={{ display: isRecorder ? 'none' : '' }}
     >
       <div className="footer-inner flex items-center justify-between w-full">

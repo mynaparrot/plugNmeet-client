@@ -55,48 +55,50 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                   >
                     {t('polls.view-result-title')}
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">
-                    <p className="w-full text-lg font-bold text-black capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20">
-                      <span className="text-primaryColor">Q: </span>
+                    <p className="w-full text-lg font-bold text-black dark:text-darkText capitalize mb-2 pb-1 border-b border-solid border-primaryColor/20 dark:dark:border-darkText/20">
+                      <span className="text-primaryColor dark:text-secondaryColor">
+                        Q:{' '}
+                      </span>
                       {data?.result?.question}
                     </p>
-                    <p className="w-full text-base">
+                    <p className="w-full text-base dark:text-darkText">
                       {t('polls.total-responses', {
                         count: data?.result?.total_responses,
                       })}
                     </p>
                     <div className="pt-5">
-                      <p className="text-base text-black block mb-2 pb-2 border-b border-solid border-primaryColor/20">
+                      <p className="text-base text-black dark:text-white block mb-2 pb-2 border-b border-solid border-primaryColor/20 dark:dark:border-darkText/20">
                         {t('polls.options')}
                       </p>
                       <div className="relative min-h-[75px]">
                         {data?.result?.options?.map((o) => {
                           return (
                             <p
-                              className="relative w-full flex items-center justify-between"
+                              className="relative w-full flex items-center justify-between dark:text-darkText"
                               key={o.id}
                             >
-                              <span className="bg-white inline-block py-1 pr-2">
+                              <span className="bg-white dark:bg-darkPrimary inline-block py-1 pr-2">
                                 {o.text}
                               </span>
-                              <span className="bg-white inline-block py-1 pl-2">
+                              <span className="bg-white dark:bg-darkPrimary inline-block py-1 pl-2">
                                 ({o.vote_count})
                               </span>
                             </p>

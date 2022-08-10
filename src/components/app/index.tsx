@@ -23,6 +23,7 @@ import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
 import WaitingRoomPage from '../waiting-room/waitingRoomPage';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
+import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -65,6 +66,7 @@ const App = () => {
     currentRoom,
     rootRef,
   );
+  useThemeSettings();
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -201,7 +203,7 @@ const App = () => {
 
   return (
     <div
-      className={`${orientationClass} ${deviceClass} ${userTypeClass}`}
+      className={`${orientationClass} ${deviceClass} ${userTypeClass} h-screen dark:bg-darkPrimary/70`}
       style={{ height: screenHeight }}
     >
       {render()}

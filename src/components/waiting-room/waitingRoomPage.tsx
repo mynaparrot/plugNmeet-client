@@ -21,12 +21,12 @@ const WaitingRoomPage = () => {
   return (
     <>
       <div
-        className="waiting-room flex items-center justify-center w-full h-screen"
+        className="waiting-room relative flex items-center justify-center w-full h-screen"
         style={{
           backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
         }}
       >
-        <div className="waiting-room-inner">
+        <div className="waiting-room-inner relative z-10">
           <div className="logo w-40 m-auto relative z-20">
             <div
               className={`${
@@ -37,7 +37,7 @@ const WaitingRoomPage = () => {
               }}
             />
           </div>
-          <div className="divider my-5 h-[2px] w-full max-w-[50px] bg-primaryColor m-auto"></div>
+          <div className="divider my-5 h-[2px] w-full max-w-[50px] bg-primaryColor dark:bg-darkText m-auto"></div>
           <div className="loading-wrap relative h-24">
             <div className="loading absolute text-center top-3 z-[999] left-0 right-0 m-auto">
               <div className="lds-ripple">
@@ -46,7 +46,7 @@ const WaitingRoomPage = () => {
               </div>
             </div>
           </div>
-          <p className="text-3xl">
+          <p className="text-3xl dark:text-darkText w-full max-w-5xl m-auto text-center leading-normal">
             {isEmpty(waitingRoomMessage)
               ? t('notifications.waiting-for-approval')
               : waitingRoomMessage}

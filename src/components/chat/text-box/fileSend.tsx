@@ -123,7 +123,7 @@ const FileSend = ({
           onClick={() => openFileBrowser()}
           className="w-4 h-6 px-2"
         >
-          <i className="pnm-attachment primaryColor text-[20px] opacity-50" />
+          <i className="pnm-attachment primaryColor text-[20px] opacity-50 dark:text-secondaryColor" />
         </button>
       </>
     );

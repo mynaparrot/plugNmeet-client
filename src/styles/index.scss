@@ -985,12 +985,14 @@ button.next-cam:hover {
   height: 10px;
   border-radius: 5px;
   border: 1px solid transparent;
+  @apply dark:bg-secondaryColor/90;
 }
 .volume-popup-wrapper .range::-moz-range-track {
   background-color: rgba(128, 128, 128, 0.5);
   height: 10px;
   border-radius: 5px;
   border: none;
+  @apply dark:bg-secondaryColor/90;
 }
 .volume-popup-wrapper .range::-webkit-slider-thumb {
   -webkit-appearance: none !important;
@@ -999,6 +1001,7 @@ button.next-cam:hover {
   height: 18px;
   width: 18px;
   margin-top: -5px;
+  @apply dark:bg-white;
 }
 .volume-popup-wrapper .range::-moz-range-thumb {
   border-radius: 20px;
@@ -1045,6 +1048,43 @@ button.next-cam:hover {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+// dark mode custom css
+.dark .main-app-bg::before,
+.dark .waiting-room::before,
+.dark .error-app-bg::before {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  background-color: #001222;
+  opacity: 0.7;
+}
+.dark .multi-gradient,
+#main-area.fullWidthMainArea .all-webcam-wrapper {
+  background: #031a3e;
+}
+.dark .message-form {
+  background: transparent;
+}
+.dark .Toastify__toast {
+  background: #222;
+  color: #fff;
+}
+.dark button.Toastify__close-button svg path {
+  fill: #fff;
+}
+.dark .wb-page-navigation button:disabled {
+  background-color: var(--button-gray-1) !important;
+}
+.dark .header-before-start {
+  opacity: 0.4;
+}
+.dark .header-before-end {
+  opacity: 0.1;
+}
+//  dark mode custom css
+
 @media only screen and (max-height: 720px) {
   .externalMediaPlayerWrapper {
     max-width: 900px;
@@ -1239,6 +1279,9 @@ button.next-cam:hover {
       rgba(214, 231, 255, 1) 100%
     );
   }
+  .dark #main-right-panel {
+    background: #001222;
+  }
 
   #main-area.fullWidthMainArea .all-webcam-wrapper-inner button.next-cam {
     right: -5px;
@@ -1290,7 +1333,7 @@ button.next-cam:hover {
   .plugNmeet-app footer#main-footer {
     position: fixed;
     width: 100%;
-    background-color: #fff;
+    // background-color: #fff;
     bottom: 0;
     z-index: 99999;
   }
@@ -1387,12 +1430,12 @@ button.next-cam:hover {
   }
 
   header#main-header .logo,
-  header#main-header .dark {
+  header#main-header .dark-area {
     width: 50%;
     order: 1;
   }
 
-  header#main-header .dark {
+  header#main-header .dark-area {
     height: 20px;
   }
 

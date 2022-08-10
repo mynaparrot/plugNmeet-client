@@ -61,8 +61,8 @@ const MyBreakoutRooms = () => {
       return null;
     }
     return (
-      <div className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md">
-        <div className="poll-title text-md text-primaryColor">
+      <div className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 dark:border-darkText/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md">
+        <div className="poll-title text-md text-primaryColor dark:text-darkText">
           {myRooms.room?.title}
         </div>
         <div className="total-vote rounded-bl-lg bg-secondaryColor absolute top-0 right-0 text-white text-[10px] py-1 px-3 uppercase">
@@ -83,7 +83,7 @@ const MyBreakoutRooms = () => {
         )}
 
         <div className="btn">
-          <p className="absolute left-2 bottom-2 text-xs">
+          <p className="absolute left-2 bottom-2 text-xs dark:text-secondaryColor">
             {myRooms.room?.users.filter(
               (u) => u.joined === true && u.id === userId,
             ).length

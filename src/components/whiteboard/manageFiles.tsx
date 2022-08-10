@@ -42,7 +42,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
         >
           <Menu.Item>
             <button
-              className="!rounded !w-full flex items-center !px-3 !py-[0.4rem] !text-[10px] lg:!text-xs transition ease-in !bg-transparent hover:!bg-primaryColor hover:text-white text-gray-700"
+              className="!rounded !w-full flex items-center !px-3 !py-[0.4rem] !text-[10px] lg:!text-xs transition ease-in !bg-transparent hover:!bg-primaryColor hover:text-white text-gray-700 dark:text-darkText"
               onClick={() => switchOfficeFile(f)}
             >
               {f.fileName}
@@ -78,7 +78,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
           className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] !mr-2 flex items-center justify-center cursor-pointer"
           onClick={() => openFileBrowser('image')}
         >
-          <i className="pnm-blank-img primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+          <i className="pnm-blank-img primaryColor dark:text-secondaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
           {t('whiteboard.upload-image')}
         </button>
         <div className="menu relative z-10">
@@ -87,7 +87,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
               <>
                 <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
                   <>
-                    <i className="pnm-attachment primaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+                    <i className="pnm-attachment primaryColor dark:text-secondaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
                     {t('whiteboard.manage-files')}
                   </>
                 </Menu.Button>
@@ -105,7 +105,7 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
                   {/* Mark this component as `static` */}
                   <Menu.Items
                     static
-                    className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                    className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                   >
                     <div className="item-wrapper-uploaded-file overflow-x-hidden overflow-y-auto max-h-[170px] scrollBar scrollBar2">
                       {menuItems}

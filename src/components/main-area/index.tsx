@@ -147,7 +147,7 @@ const MainArea = ({
       }  plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
     >
       <div
-        className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none `}
+        className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none bg-cover bg-center bg-no-repeat`}
         style={{
           backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
         }}

@@ -29,7 +29,7 @@ const RoomLists = () => {
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
+            <Disclosure.Button className="flex items-center w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
               <p>{room.title}</p>
               <div className="flex items-center">
                 {room.started ? (
@@ -58,7 +58,7 @@ const RoomLists = () => {
                 </svg>
               </div>
             </Disclosure.Button>
-            <Disclosure.Panel className="sm:px-4 py-6 text-sm text-gray-500">
+            <Disclosure.Panel className="sm:px-4 py-6 text-sm text-gray-500 dark:text-darkText">
               <div className="row flex flex-wrap items-center justify-between mb-4">
                 <ExtendDuration breakoutRoomId={room.id} />
                 <div className="row flex mb-2">

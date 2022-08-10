@@ -14,6 +14,7 @@ import './style.css';
 import KeyboardShortcuts from './keyboardShortcuts';
 import VolumeControl from './volumeControl';
 import DurationView from './durationView';
+import DarkThemeSwitcher from './darkThemeSwitcher';
 
 interface IHeaderProps {
   currentRoom: Room;
@@ -117,24 +118,26 @@ const Header = ({ currentRoom }: IHeaderProps) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => onCloseAlertModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
                   >
                     {t('header.menus.alert.confirm')}
                   </Dialog.Title>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">{alertText}</p>
+                    <p className="text-sm text-gray-500 dark:text-darkText">
+                      {alertText}
+                    </p>
                   </div>
 
                   <div className="mt-4">
@@ -165,7 +168,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     <>
       <header
         id="main-header"
-        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white"
+        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary"
       >
         <div
           className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
@@ -184,11 +187,12 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           />
         </div>
         <div className="middle flex-auto relative z-20">
-          <h2 className="header-title text-base text-black leading-[1] text-center">
+          <h2 className="header-title text-base text-black dark:text-white leading-[1] text-center">
             {title}
           </h2>
         </div>
-        <div className="dark w-28 flex items-center justify-end relative z-20 -right-3">
+        <div className="dark-area w-28 flex items-center justify-end relative z-20 -right-3">
+          <DarkThemeSwitcher />
           {roomDuration && roomDuration > 0 ? (
             <DurationView duration={roomDuration} />
           ) : null}
@@ -198,7 +202,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
               <>
                 <Menu.Button className="relative flex-shrink-0 p-2">
                   <div className="h-5 w-5 rotate-90 ">
-                    <i className="pnm-menu-small" />
+                    <i className="pnm-menu-small dark:text-secondaryColor" />
                   </div>
                 </Menu.Button>
 

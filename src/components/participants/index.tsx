@@ -66,7 +66,7 @@ const ParticipantsComponent = ({
     return (
       <div className="inner-wrapper relative z-20">
         <div className="top flex items-center justify-between font-medium mb-3 xl:mb-5">
-          <p className="text-sm text-black">
+          <p className="text-sm text-black dark:text-white">
             {t('left-panel.participants', {
               total: participantElms.length,
             })}

@@ -101,16 +101,16 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
           <div className="flex items-center justify-center min-h-screen">
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-            <div className="popup-inner bg-white w-full max-w-md rounded-3xl shadow-header relative px-6 py-14">
+            <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-md rounded-3xl shadow-header relative px-6 py-14">
               <button
                 className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                 type="button"
                 onClick={() => onClose()}
               >
-                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
               </button>
-              <Dialog.Title className="mb-6">
+              <Dialog.Title className="mb-6 dark:text-darkText">
                 {t('footer.modal.select-webcam')}
               </Dialog.Title>
 
@@ -118,7 +118,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
                 <select
                   value={selectedWebcam}
                   onChange={(e) => setSelectWebcam(e.target.value)}
-                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-transparent dark:border-darkText dark:text-darkText rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
                   {devices}
                 </select>
@@ -128,7 +128,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
                 <PreviewWebcam deviceId={selectedWebcam} />
               </div>
 
-              <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+              <div className="py-3 bg-gray-50 dark:bg-transparent text-right">
                 <button
                   className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
                   onClick={() => shareWebcam()}

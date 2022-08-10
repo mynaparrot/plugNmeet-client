@@ -20,6 +20,10 @@ const lockSharedNotepadSelector = createSelector(
     state.session.currentUser?.metadata?.lock_settings?.lock_shared_notepad,
   (lock_shared_notepad) => lock_shared_notepad,
 );
+const themeSelector = createSelector(
+  (state: RootState) => state.roomSettings.theme,
+  (theme) => theme,
+);
 
 const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const dispatch = useAppDispatch();
@@ -28,6 +32,7 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
   const [url, setUrl] = useState<string>();
+  const theme = useAppSelector(themeSelector);
 
   useEffect(() => {
     dispatch(updateIsActiveParticipantsPanel(false));
@@ -53,10 +58,16 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
         url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
       }
 
+      if (theme === 'dark') {
+        url += '&theme=monokai';
+      } else {
+        url += '&theme=normal';
+      }
+
       setUrl(url);
     }
     //eslint-disable-next-line
-  }, [sharedNotepadFeatures, lockSharedNotepad]);
+  }, [sharedNotepadFeatures, lockSharedNotepad, theme]);
 
   const onLoad = () => {
     setLoaded(true);

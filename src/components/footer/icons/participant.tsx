@@ -34,7 +34,7 @@ const ParticipantIcon = () => {
     if (isActiveParticipantsPanel) {
       setIconCSS('secondaryColor');
     } else {
-      setIconCSS('primaryColor');
+      setIconCSS('primaryColor dark:text-darkText');
     }
   }, [isActiveParticipantsPanel]);
 
@@ -44,12 +44,12 @@ const ParticipantIcon = () => {
 
   return (
     <div
-      className={`participants footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] mr-3 lg:mr-6 relative rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer ${
+      className={`participants footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] mr-3 lg:mr-6 relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer ${
         showTooltip ? 'has-tooltip' : ''
       }`}
       onClick={() => toggleParticipantsPanel()}
     >
-      <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+      <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
         {isActiveParticipantsPanel
           ? t('footer.icons.hide-users-list')
           : t('footer.icons.show-users-list')}

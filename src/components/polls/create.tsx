@@ -89,7 +89,7 @@ const Create = () => {
   const renderForm = () => {
     return (
       <form onSubmit={onSubmit}>
-        <label className="text-base text-black block mb-1">
+        <label className="text-base text-black dark:text-darkText block mb-1">
           {t('polls.enter-question')}
         </label>
         <input
@@ -99,10 +99,10 @@ const Create = () => {
           required={true}
           onChange={(e) => setQuestion(e.currentTarget.value)}
           placeholder="Ask a question"
-          className="text-black placeholder:text-black/50 py-2 px-4 text-base w-full border border-solid border-primaryColor outline-none rounded-lg mb-4"
+          className="text-black placeholder:text-black/50 py-2 px-4 text-base w-full border border-solid border-primaryColor outline-none rounded-lg mb-4 bg-transparent dark:border-darkText dark:text-darkText placeholder:text-darkText"
         />
-        <div className="flex items-start justify-between pb-2 pt-4 border-t border-solid border-primaryColor/20">
-          <p className="text-lg text-black block leading-4">
+        <div className="flex items-start justify-between pb-2 pt-4 border-t border-solid border-primaryColor/20 dark:border-darkText/30">
+          <p className="text-lg text-black dark:text-darkText block leading-4">
             {t('polls.options')}
           </p>
           <button
@@ -125,7 +125,7 @@ const Create = () => {
                     value={elm.text}
                     onChange={(e) => onChange(index, e)}
                     placeholder={t('polls.option', { count: index + 1 })}
-                    className="text-black placeholder:text-black/50 py-2 px-4 text-base w-[calc(100%-36px)] border border-solid border-primaryColor outline-none rounded-lg"
+                    className="text-black placeholder:text-black/50 py-2 px-4 text-base w-[calc(100%-36px)] border border-solid border-primaryColor outline-none rounded-lg bg-transparent dark:text-darkText dark:border-darkText placeholder:text-darkText"
                   />
                   {index ? (
                     <button
@@ -133,7 +133,7 @@ const Create = () => {
                       className="ml-2 p-1"
                       onClick={() => removeOption(index)}
                     >
-                      <i className="pnm-delete w-5 h-5" />
+                      <i className="pnm-delete w-5 h-5 dark:text-secondaryColor" />
                     </button>
                   ) : null}
                 </div>
@@ -198,19 +198,19 @@ const Create = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
                     className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                   >
                     {t('polls.create')}
                   </Dialog.Title>

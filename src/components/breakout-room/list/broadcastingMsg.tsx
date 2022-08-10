@@ -43,7 +43,7 @@ const BroadcastingMsg = () => {
       <textarea
         value={msg}
         onChange={(e) => setMsg(e.currentTarget.value)}
-        className="w-full sm:w-[calc(100%-12rem)] block outline-none border border-solid border-primaryColor rounded p-2 min-h-[60px]"
+        className="w-full sm:w-[calc(100%-12rem)] block outline-none border border-solid border-primaryColor dark:border-darkText rounded p-2 min-h-[60px] bg-transparent dark:text-darkText"
       ></textarea>
       <button
         onClick={send}

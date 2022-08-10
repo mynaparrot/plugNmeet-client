@@ -76,6 +76,10 @@ const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
   (is_presenter) => is_presenter,
 );
+const themeSelector = createSelector(
+  (state: RootState) => state.roomSettings.theme,
+  (theme) => theme,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currentUser;
@@ -87,7 +91,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
-  const [theme, setTheme] = useState('light');
+  const theme = useAppSelector(themeSelector);
   const [
     lastBroadcastOrReceivedSceneVersion,
     setLastBroadcastOrReceivedSceneVersion,
@@ -114,7 +118,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   useEffect(() => {
     if (!excalidrawAPI) {
-      setTheme('light');
       if (
         !currentUser?.isRecorder &&
         !currentRoom.metadata?.default_lock_settings?.lock_whiteboard

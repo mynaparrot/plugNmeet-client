@@ -285,26 +285,26 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     return (
       <div className="relative z-10">
         <div
-          className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
+          className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
             showTooltip ? 'has-tooltip' : ''
           }`}
           onClick={() => toggleWebcam()}
         >
-          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 text-red-500 -mt-16 text-[10px] w-max">
+          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
             {getTooltipText()}
           </span>
 
           {!isActiveWebcam ? (
-            <i className="pnm-webcam primaryColor text-[10px] lg:text-[14px]" />
+            <i className="pnm-webcam primaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
           ) : null}
           {lockWebcam ? (
-            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-              <i className="pnm-lock primaryColor" />
+            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
+              <i className="pnm-lock primaryColor dark:text-darkText" />
             </div>
           ) : null}
 
           {isActiveWebcam ? (
-            <i className="pnm-webcam secondaryColor text-[10px] lg:text-[14px]" />
+            <i className="pnm-webcam secondaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
           ) : null}
         </div>
 

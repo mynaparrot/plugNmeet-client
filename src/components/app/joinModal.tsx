@@ -36,10 +36,6 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
   };
 
   const render = () => {
-    if (!isStartup) {
-      return null;
-    }
-
     return (
       <div
         id="startupJoinModal"
@@ -47,18 +43,18 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
           open
             ? 'opacity-1 pointer-events-auto'
             : 'pointer-events-none opacity-0'
-        } join-the-audio-popup fixed transition ease-in top-0 left-0 w-full h-full z-[999] bg-white/80 px-6 flex items-center justify-center`}
+        } join-the-audio-popup absolute transition ease-in top-0 left-0 w-full h-full z-[999] bg-white/80 dark:bg-darkPrimary/90 px-6 flex items-center justify-center`}
       >
-        <div className="popup-inner bg-white w-full max-w-md rounded-2xl shadow-header relative px-6 py-14">
+        <div className="popup-inner bg-white dark:bg-darkPrimary/90 w-full max-w-md rounded-2xl shadow-header relative px-6 py-14">
           <button
             className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
             type="button"
             onClick={() => onClose(true)}
           >
-            <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 rotate-45" />
-            <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
+            <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+            <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
           </button>
-          <p className="text-base md:text-lg primaryColor font-normal mb-5 text-center">
+          <p className="text-base md:text-lg primaryColor dark:text-darkText font-normal mb-5 text-center">
             {t('app.how-to-join')}
           </p>
           <div className="btn flex justify-center">
@@ -67,10 +63,10 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
               className="microphone bg-transparent mr-4 text-center"
               onClick={() => shareMic()}
             >
-              <div className="h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mb-1 flex items-center justify-center cursor-pointer">
-                <i className="pnm-mic-unmute primaryColor text-xl" />
+              <div className="h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary3 hover:bg-[#ECF4FF] hover:dark:bg-darkSecondary2 mb-1 flex items-center justify-center cursor-pointer">
+                <i className="pnm-mic-unmute primaryColor dark:text-secondaryColor text-xl" />
               </div>
-              <p className="text-sm md:text-base primaryColor font-normal">
+              <p className="text-sm md:text-base primaryColor dark:text-darkText font-normal">
                 {t('app.microphone')}
               </p>
             </button>
@@ -80,12 +76,12 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
               className="headphone bg-transparent ml-4 text-center"
             >
               <div
-                className="camera h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] mb-1 flex items-center justify-center cursor-pointer"
+                className="camera h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary3 hover:bg-[#ECF4FF] hover:dark:bg-darkSecondary2 mb-1 flex items-center justify-center cursor-pointer"
                 onClick={() => onClose()}
               >
-                <i className="pnm-listen-only primaryColor text-xl" />
+                <i className="pnm-listen-only primaryColor dark:text-secondaryColor text-xl" />
               </div>
-              <p className="text-sm md:text-base primaryColor font-normal">
+              <p className="text-sm md:text-base primaryColor dark:text-darkText font-normal">
                 {t('app.listen-only')}
               </p>
             </button>
@@ -95,7 +91,9 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
     );
   };
 
-  return <div>{render()}</div>;
+  return isStartup ? (
+    <div className="absolute z-50 w-full h-full top-0 left-0">{render()}</div>
+  ) : null;
 };
 
 export default StartupJoinModal;

@@ -54,13 +54,13 @@ const DataSavings = () => {
     return (
       <>
         <div className="flex items-center justify-between mb-2">
-          <label htmlFor="quality" className="pr-4 w-full">
+          <label htmlFor="quality" className="pr-4 w-full dark:text-darkText">
             {t('header.room-settings.video-quality')}
           </label>
           <select
             id="quality"
             name="quality"
-            className="mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             value={videoQuality}
             onChange={(e) => setVideoQuality(Number(e.target.value))}
           >
@@ -78,14 +78,16 @@ const DataSavings = () => {
 
         <Switch.Group>
           <div className="flex items-center justify-between mb-2">
-            <Switch.Label className="pr-4 w-full">
+            <Switch.Label className="pr-4 w-full dark:text-darkText">
               {t('header.room-settings.show-webcams')}
             </Switch.Label>
             <Switch
               checked={activateWebcamsView}
               onChange={toggleWebcamView}
               className={`${
-                activateWebcamsView ? 'bg-primaryColor' : 'bg-gray-200'
+                activateWebcamsView
+                  ? 'bg-primaryColor dark:bg-darkSecondary2'
+                  : 'bg-gray-200 dark:bg-secondaryColor'
               } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >
               <span
@@ -96,14 +98,16 @@ const DataSavings = () => {
             </Switch>
           </div>
           <div className="flex items-center justify-between">
-            <Switch.Label className="pr-4 w-full">
+            <Switch.Label className="pr-4 w-full dark:text-darkText">
               {t('header.room-settings.show-screen-share')}
             </Switch.Label>
             <Switch
               checked={activeScreenSharingView}
               onChange={toggleScreenShareView}
               className={`${
-                activeScreenSharingView ? 'bg-primaryColor' : 'bg-gray-200'
+                activeScreenSharingView
+                  ? 'bg-primaryColor dark:bg-darkSecondary2'
+                  : 'bg-gray-200 dark:bg-secondaryColor'
               } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >
               <span
