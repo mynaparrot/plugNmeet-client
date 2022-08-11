@@ -13,6 +13,8 @@ import {
   TotalResponsesRes,
   UserSelectedOptionRes,
 } from './pollsApiTypes';
+import { PollResponse } from '../../helpers/proto/plugnmeet_polls_pb';
+import { BreakoutRoomRes } from '../../helpers/proto/plugnmeet_breakout_room_pb';
 
 export const pollsApi = createApi({
   reducerPath: 'pollsApi',
@@ -36,12 +38,28 @@ export const pollsApi = createApi({
     'PollResult',
   ],
   endpoints: (builder) => ({
-    getPollLists: builder.query<PollListsRes, void>({
-      query: () => `listPolls`,
+    getPollLists: builder.query<PollResponse, void>({
+      query: () => {
+        return {
+          url: 'listPolls',
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+          },
+        };
+      },
       providesTags: ['List'],
     }),
-    getCountTotalResponses: builder.query<TotalResponsesRes, string>({
-      query: (poll_id) => `countTotalResponses/${poll_id}`,
+    getCountTotalResponses: builder.query<PollResponse, string>({
+      query: (poll_id) => {
+        return {
+          url: `countTotalResponses/${poll_id}`,
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+          },
+        };
+      },
       providesTags: (result) => {
         return (result as any).status
           ? ['Count', { type: 'Count' as const, id: (result as any).poll_id }]

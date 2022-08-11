@@ -267,7 +267,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       </div>
                     </div>
                     <div className="pt-10 text-right">
-                      {poll?.is_running ? (
+                      {poll?.isRunning ? (
                         <button
                           className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
                           onClick={endPoll}
