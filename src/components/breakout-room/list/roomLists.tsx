@@ -3,12 +3,12 @@ import { Disclosure } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
-import { BreakoutRoom } from '../../../store/services/breakoutRoomApiTypes';
 import EndBtn from './room/endBtn';
 import BreakoutRoomUsers from './room/users';
 import BreakoutRoomDuration from './room/duration';
 import JoinBtn from './room/joinBtn';
 import ExtendDuration from './room/extendDuration';
+import { BreakoutRoom } from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const RoomLists = () => {
   const { t } = useTranslation();

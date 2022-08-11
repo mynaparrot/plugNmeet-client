@@ -15,6 +15,7 @@ import {
   updateVirtualBackground,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
+import { JoinBreakoutRoomReq } from '../../helpers/proto/plugnmeet_breakout_room_pb';
 
 interface IBreakoutRoomInvitationProps {
   currentRoom: Room;
@@ -108,10 +109,12 @@ const BreakoutRoomInvitation = ({
   };
 
   const join = () => {
-    joinRoom({
-      breakout_room_id: receivedInvitationFor,
-      user_id: currentRoom.localParticipant.identity,
-    });
+    joinRoom(
+      new JoinBreakoutRoomReq({
+        breakoutRoomId: receivedInvitationFor,
+        userId: currentRoom.localParticipant.identity,
+      }),
+    );
   };
 
   const copyUrl = () => {

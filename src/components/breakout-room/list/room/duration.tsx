@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 interface IDurationProps {
-  duration: number;
-  created: number;
+  duration: bigint;
+  created: bigint;
 }
 const BreakoutRoomDuration = ({ duration, created }: IDurationProps) => {
   const [remaining, setRemaining] = useState<string>('00:00');
 
   useEffect(() => {
-    const start = created * 1000;
+    const start = Number(created) * 1000;
     let diff, minutes, seconds;
 
     const timer = () => {
-      diff = duration * 60 - (((Date.now() - start) / 1000) | 0);
+      diff = Number(duration) * 60 - (((Date.now() - start) / 1000) | 0);
 
       minutes = (diff / 60) | 0;
       seconds = diff % 60 | 0;

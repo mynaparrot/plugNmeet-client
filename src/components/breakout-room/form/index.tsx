@@ -13,13 +13,13 @@ import { RoomType, UserType } from './types';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
-import {
-  BreakoutRoom,
-  CreateBreakoutRoomReq,
-} from '../../../store/services/breakoutRoomApiTypes';
 import { useCreateBreakoutRoomsMutation } from '../../../store/services/breakoutRoomApi';
 import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { RoomBox } from './roomBox';
+import {
+  CreateBreakoutRoomsReq,
+  BreakoutRoom,
+} from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const droppedUserSelector = createSelector(
   (state: RootState) => state.breakoutRoom.droppedUser,
@@ -201,14 +201,14 @@ const FromElems = () => {
       if (r.id !== 0) {
         const u = users.filter((u) => u.roomId === r.id);
         if (u.length) {
-          const room: BreakoutRoom = {
+          const room = new BreakoutRoom({
             id: `${r.id}`,
             title: r.name,
             users: u,
-            duration: roomDuration,
+            duration: BigInt(roomDuration),
             started: false,
-            created: Date.now(),
-          };
+            created: BigInt(Date.now()),
+          });
           tmp.push(room);
         }
       }
@@ -221,11 +221,11 @@ const FromElems = () => {
       return;
     }
 
-    const req: CreateBreakoutRoomReq = {
-      duration: roomDuration,
-      welcome_msg: welcomeMsg,
+    const req = new CreateBreakoutRoomsReq({
+      duration: BigInt(roomDuration),
+      welcomeMsg: welcomeMsg,
       rooms: tmp,
-    };
+    });
     createBreakoutRoom(req);
   };
 

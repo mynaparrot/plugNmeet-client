@@ -8,6 +8,7 @@ import {
 } from '../../../store/services/breakoutRoomApi';
 import { store } from '../../../store';
 import Duration from '../list/room/duration';
+import { JoinBreakoutRoomReq } from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const MyBreakoutRooms = () => {
   const { t } = useTranslation();
@@ -50,10 +51,12 @@ const MyBreakoutRooms = () => {
   }, [token]);
 
   const join = () => {
-    joinRoom({
-      breakout_room_id: myRooms?.room?.id ?? '',
-      user_id: store.getState().session.currentUser?.userId ?? '',
-    });
+    joinRoom(
+      new JoinBreakoutRoomReq({
+        breakoutRoomId: myRooms?.room?.id ?? '',
+        userId: store.getState().session.currentUser?.userId ?? '',
+      }),
+    );
   };
 
   const render = () => {

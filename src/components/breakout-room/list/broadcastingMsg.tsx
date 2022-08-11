@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSendMsgMutation } from '../../../store/services/breakoutRoomApi';
+import { useBroadcastBreakoutRoomMsgMutation } from '../../../store/services/breakoutRoomApi';
 import { toast } from 'react-toastify';
+import { BroadcastBreakoutRoomMsgReq } from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const BroadcastingMsg = () => {
   const { t } = useTranslation();
   const [msg, setMsg] = useState<string>('');
   const [disable, setDisable] = useState<boolean>(false);
-  const [broadcastMsg, { isLoading, data }] = useSendMsgMutation();
+  const [broadcastMsg, { isLoading, data }] =
+    useBroadcastBreakoutRoomMsgMutation();
 
   useEffect(() => {
     setDisable(!!isLoading);
@@ -33,9 +35,11 @@ const BroadcastingMsg = () => {
     if (msg === '') {
       return;
     }
-    broadcastMsg({
-      msg,
-    });
+    broadcastMsg(
+      new BroadcastBreakoutRoomMsgReq({
+        msg,
+      }),
+    );
   };
 
   return (

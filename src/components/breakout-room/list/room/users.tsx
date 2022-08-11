@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { BreakoutRoomUser } from '../../../../store/services/breakoutRoomApiTypes';
+import { BreakoutRoomUser } from '../../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 interface IBreakoutRoomUsersProps {
   users: Array<BreakoutRoomUser>;

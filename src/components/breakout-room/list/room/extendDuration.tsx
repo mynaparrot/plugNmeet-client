@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { useIncreaseDurationMutation } from '../../../../store/services/breakoutRoomApi';
+import { IncreaseBreakoutRoomDurationReq } from '../../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 interface IExtendTimeProps {
   breakoutRoomId: string;
@@ -33,10 +34,12 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
   }, [data]);
 
   const extendDuration = () => {
-    increaseDuration({
-      breakout_room_id: breakoutRoomId,
-      duration,
-    });
+    increaseDuration(
+      new IncreaseBreakoutRoomDurationReq({
+        breakoutRoomId: breakoutRoomId,
+        duration: BigInt(duration),
+      }),
+    );
   };
 
   return (

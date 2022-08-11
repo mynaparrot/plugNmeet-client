@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 import { useJoinRoomMutation } from '../../../../store/services/breakoutRoomApi';
 import { store } from '../../../../store';
+import { JoinBreakoutRoomReq } from '../../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 interface IJoinBtnProps {
   breakoutRoomId: string;
@@ -56,10 +57,12 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
   }, [token]);
 
   const join = () => {
-    joinRoom({
-      breakout_room_id: breakoutRoomId,
-      user_id: store.getState().session.currentUser?.userId ?? '',
-    });
+    joinRoom(
+      new JoinBreakoutRoomReq({
+        breakoutRoomId: breakoutRoomId,
+        userId: store.getState().session.currentUser?.userId ?? '',
+      }),
+    );
   };
 
   return (

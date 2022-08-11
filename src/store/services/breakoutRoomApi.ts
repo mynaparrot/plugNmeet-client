@@ -1,14 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
-  BreakoutRoomDurationReq,
-  BreakoutRoomListsRes,
-  CommonRes,
-  CreateBreakoutRoomReq,
-  GetMyRoomsRes,
-  JoinRoomReq,
-  JoinRoomRes,
-  SendMsgReq,
-} from './breakoutRoomApiTypes';
+  CreateBreakoutRoomsReq,
+  BreakoutRoomRes,
+  IncreaseBreakoutRoomDurationReq,
+  BroadcastBreakoutRoomMsgReq,
+  JoinBreakoutRoomReq,
+  EndBreakoutRoomReq,
+} from '../../helpers/proto/plugnmeet_breakout_room_pb';
 
 export const breakoutRoomApi = createApi({
   reducerPath: 'breakoutRoomApi',
@@ -19,70 +17,79 @@ export const breakoutRoomApi = createApi({
       // @ts-ignore
       const token = api.getState().session.token;
       headers.append('Authorization', token);
-      headers.append('Content-Type', 'application/json');
+      headers.append('Content-Type', 'application/protobuf');
       return headers;
     },
   }),
   refetchOnMountOrArgChange: true,
   tagTypes: ['List', 'My_Rooms'],
   endpoints: (builder) => ({
-    getBreakoutRooms: builder.query<BreakoutRoomListsRes, void>({
+    getBreakoutRooms: builder.query<BreakoutRoomRes, void>({
       query: () => 'listRooms',
       providesTags: ['List'],
     }),
-    createBreakoutRooms: builder.mutation<CommonRes, CreateBreakoutRoomReq>({
+    createBreakoutRooms: builder.mutation<
+      BreakoutRoomRes,
+      CreateBreakoutRoomsReq
+    >({
       query(body) {
         return {
           url: 'create',
           method: 'POST',
-          body,
+          body: body.toBinary(),
         };
       },
       invalidatesTags: ['List'],
     }),
-    increaseDuration: builder.mutation<CommonRes, BreakoutRoomDurationReq>({
+    increaseDuration: builder.mutation<
+      BreakoutRoomRes,
+      IncreaseBreakoutRoomDurationReq
+    >({
       query(body) {
         return {
           url: 'increaseDuration',
           method: 'POST',
-          body,
+          body: body.toBinary(),
         };
       },
       invalidatesTags: ['List'],
     }),
-    sendMsg: builder.mutation<CommonRes, SendMsgReq>({
+    broadcastBreakoutRoomMsg: builder.mutation<
+      BreakoutRoomRes,
+      BroadcastBreakoutRoomMsgReq
+    >({
       query(body) {
         return {
           url: 'sendMsg',
           method: 'POST',
-          body,
+          body: body.toBinary(),
         };
       },
     }),
-    joinRoom: builder.mutation<JoinRoomRes, JoinRoomReq>({
+    joinRoom: builder.mutation<BreakoutRoomRes, JoinBreakoutRoomReq>({
       query(body) {
         return {
           url: 'join',
           method: 'POST',
-          body,
+          body: body.toBinary(),
         };
       },
     }),
-    getMyBreakoutRooms: builder.query<GetMyRoomsRes, void>({
+    getMyBreakoutRooms: builder.query<BreakoutRoomRes, void>({
       query: () => `myRooms`,
       providesTags: ['My_Rooms'],
     }),
-    endSingleRoom: builder.mutation<CommonRes, string>({
-      query(breakout_room_id) {
+    endSingleRoom: builder.mutation<BreakoutRoomRes, EndBreakoutRoomReq>({
+      query(body) {
         return {
           url: 'endRoom',
           method: 'POST',
-          body: { breakout_room_id },
+          body: body.toBinary(),
         };
       },
       invalidatesTags: ['List'],
     }),
-    endAllRooms: builder.mutation<CommonRes, void>({
+    endAllRooms: builder.mutation<BreakoutRoomRes, void>({
       query() {
         return {
           url: 'endAllRooms',
@@ -101,6 +108,6 @@ export const {
   useJoinRoomMutation,
   useEndSingleRoomMutation,
   useEndAllRoomsMutation,
-  useSendMsgMutation,
+  useBroadcastBreakoutRoomMsgMutation,
   useGetMyBreakoutRoomsQuery,
 } = breakoutRoomApi;
