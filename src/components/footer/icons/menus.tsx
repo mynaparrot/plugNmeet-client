@@ -28,6 +28,8 @@ import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import {
   CommonResponse,
+  ExternalMediaPlayerReq,
+  ExternalMediaPlayerTask,
   MuteUnMuteTrackReq,
 } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
@@ -191,10 +193,17 @@ const MenusIcon = () => {
       type: 'info',
     });
 
-    const body = {
-      task: 'end-playback',
-    };
-    const res = await sendAPIRequest('externalMediaPlayer', body);
+    const body = new ExternalMediaPlayerReq({
+      task: ExternalMediaPlayerTask.END_PLAYBACK,
+    });
+    const r = await sendAPIRequest(
+      'externalMediaPlayer',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {

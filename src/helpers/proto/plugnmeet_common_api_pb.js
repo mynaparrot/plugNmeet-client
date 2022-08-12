@@ -18,6 +18,17 @@ export const SwitchPresenterTask = proto3.makeEnum(
 );
 
 /**
+ * @generated from enum plugnmeet.ExternalMediaPlayerTask
+ */
+export const ExternalMediaPlayerTask = proto3.makeEnum(
+  "plugnmeet.ExternalMediaPlayerTask",
+  [
+    {no: 0, name: "START_PLAYBACK"},
+    {no: 1, name: "END_PLAYBACK"},
+  ],
+);
+
+/**
  * @generated from message plugnmeet.CommonResponse
  */
 export const CommonResponse = proto3.makeMessageType(
@@ -130,6 +141,20 @@ export const SwitchPresenterReq = proto3.makeMessageType(
     { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "Requested_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.ExternalMediaPlayerReq
+ */
+export const ExternalMediaPlayerReq = proto3.makeMessageType(
+  "plugnmeet.ExternalMediaPlayerReq",
+  () => [
+    { no: 1, name: "task", kind: "enum", T: proto3.getEnumType(ExternalMediaPlayerTask) },
+    { no: 2, name: "url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 3, name: "seek_to", kind: "scalar", T: 1 /* ScalarType.DOUBLE */, opt: true },
+    { no: 4, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ],
 );
 

@@ -30,6 +30,21 @@ export declare enum SwitchPresenterTask {
 }
 
 /**
+ * @generated from enum plugnmeet.ExternalMediaPlayerTask
+ */
+export declare enum ExternalMediaPlayerTask {
+  /**
+   * @generated from enum value: START_PLAYBACK = 0;
+   */
+  START_PLAYBACK = 0,
+
+  /**
+   * @generated from enum value: END_PLAYBACK = 1;
+   */
+  END_PLAYBACK = 1,
+}
+
+/**
  * @generated from message plugnmeet.CommonResponse
  */
 export declare class CommonResponse extends Message<CommonResponse> {
@@ -480,5 +495,67 @@ export declare class SwitchPresenterReq extends Message<SwitchPresenterReq> {
   static equals(
     a: SwitchPresenterReq | PlainMessage<SwitchPresenterReq> | undefined,
     b: SwitchPresenterReq | PlainMessage<SwitchPresenterReq> | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.ExternalMediaPlayerReq
+ */
+export declare class ExternalMediaPlayerReq extends Message<ExternalMediaPlayerReq> {
+  /**
+   * @generated from field: plugnmeet.ExternalMediaPlayerTask task = 1;
+   */
+  task: ExternalMediaPlayerTask;
+
+  /**
+   * @generated from field: optional string url = 2;
+   */
+  url?: string;
+
+  /**
+   * @generated from field: optional double seek_to = 3;
+   */
+  seekTo?: number;
+
+  /**
+   * @generated from field: string room_id = 4;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string user_id = 5;
+   */
+  userId: string;
+
+  constructor(data?: PartialMessage<ExternalMediaPlayerReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.ExternalMediaPlayerReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): ExternalMediaPlayerReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): ExternalMediaPlayerReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): ExternalMediaPlayerReq;
+
+  static equals(
+    a:
+      | ExternalMediaPlayerReq
+      | PlainMessage<ExternalMediaPlayerReq>
+      | undefined,
+    b:
+      | ExternalMediaPlayerReq
+      | PlainMessage<ExternalMediaPlayerReq>
+      | undefined,
   ): boolean;
 }
