@@ -781,3 +781,97 @@ export declare class ChangeEtherpadStatusReq extends Message<ChangeEtherpadStatu
       | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.ApproveWaitingUsersReq
+ */
+export declare class ApproveWaitingUsersReq extends Message<ApproveWaitingUsersReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string user_id = 2;
+   */
+  userId: string;
+
+  constructor(data?: PartialMessage<ApproveWaitingUsersReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.ApproveWaitingUsersReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): ApproveWaitingUsersReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): ApproveWaitingUsersReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): ApproveWaitingUsersReq;
+
+  static equals(
+    a:
+      | ApproveWaitingUsersReq
+      | PlainMessage<ApproveWaitingUsersReq>
+      | undefined,
+    b:
+      | ApproveWaitingUsersReq
+      | PlainMessage<ApproveWaitingUsersReq>
+      | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.UpdateWaitingRoomMessageReq
+ */
+export declare class UpdateWaitingRoomMessageReq extends Message<UpdateWaitingRoomMessageReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string msg = 2;
+   */
+  msg: string;
+
+  constructor(data?: PartialMessage<UpdateWaitingRoomMessageReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.UpdateWaitingRoomMessageReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): UpdateWaitingRoomMessageReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): UpdateWaitingRoomMessageReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): UpdateWaitingRoomMessageReq;
+
+  static equals(
+    a:
+      | UpdateWaitingRoomMessageReq
+      | PlainMessage<UpdateWaitingRoomMessageReq>
+      | undefined,
+    b:
+      | UpdateWaitingRoomMessageReq
+      | PlainMessage<UpdateWaitingRoomMessageReq>
+      | undefined,
+  ): boolean;
+}

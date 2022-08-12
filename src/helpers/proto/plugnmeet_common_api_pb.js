@@ -218,3 +218,25 @@ export const ChangeEtherpadStatusReq = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.ApproveWaitingUsersReq
+ */
+export const ApproveWaitingUsersReq = proto3.makeMessageType(
+  "plugnmeet.ApproveWaitingUsersReq",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.UpdateWaitingRoomMessageReq
+ */
+export const UpdateWaitingRoomMessageReq = proto3.makeMessageType(
+  "plugnmeet.UpdateWaitingRoomMessageReq",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+

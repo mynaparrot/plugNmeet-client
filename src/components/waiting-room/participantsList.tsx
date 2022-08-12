@@ -6,6 +6,7 @@ import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
 import { store } from '../../store';
 import {
+  ApproveWaitingUsersReq,
   CommonResponse,
   RemoveParticipantReq,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
@@ -18,11 +19,19 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
   const { t } = useTranslation();
 
   const acceptUser = async (userId: string) => {
-    const data = {
-      user_id: userId,
-    };
+    const body = new ApproveWaitingUsersReq({
+      userId: userId,
+    });
 
-    const res = await sendAPIRequest('waitingRoom/approveUsers', data);
+    const r = await sendAPIRequest(
+      'waitingRoom/approveUsers',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('left-panel.menus.notice.user-approved', { name: name }), {
         type: 'info',
