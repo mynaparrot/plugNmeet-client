@@ -29,6 +29,17 @@ export const ExternalMediaPlayerTask = proto3.makeEnum(
 );
 
 /**
+ * @generated from enum plugnmeet.ExternalDisplayLinkTask
+ */
+export const ExternalDisplayLinkTask = proto3.makeEnum(
+  "plugnmeet.ExternalDisplayLinkTask",
+  [
+    {no: 0, name: "START_EXTERNAL_LINK"},
+    {no: 1, name: "STOP_EXTERNAL_LINK"},
+  ],
+);
+
+/**
  * @generated from message plugnmeet.CommonResponse
  */
 export const CommonResponse = proto3.makeMessageType(
@@ -153,6 +164,19 @@ export const ExternalMediaPlayerReq = proto3.makeMessageType(
     { no: 1, name: "task", kind: "enum", T: proto3.getEnumType(ExternalMediaPlayerTask) },
     { no: 2, name: "url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 3, name: "seek_to", kind: "scalar", T: 1 /* ScalarType.DOUBLE */, opt: true },
+    { no: 4, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.ExternalDisplayLinkReq
+ */
+export const ExternalDisplayLinkReq = proto3.makeMessageType(
+  "plugnmeet.ExternalDisplayLinkReq",
+  () => [
+    { no: 1, name: "task", kind: "enum", T: proto3.getEnumType(ExternalDisplayLinkTask) },
+    { no: 2, name: "url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 4, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 5, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ],

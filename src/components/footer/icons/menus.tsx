@@ -28,6 +28,8 @@ import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import {
   CommonResponse,
+  ExternalDisplayLinkReq,
+  ExternalDisplayLinkTask,
   ExternalMediaPlayerReq,
   ExternalMediaPlayerTask,
   MuteUnMuteTrackReq,
@@ -222,15 +224,22 @@ const MenusIcon = () => {
       dispatch(updateDisplayExternalLinkRoomModal(true));
       return;
     }
-    const body = {
-      task: 'end',
-    };
+    const body = new ExternalDisplayLinkReq({
+      task: ExternalDisplayLinkTask.STOP_EXTERNAL_LINK,
+    });
 
     const id = toast.loading(t('please-wait'), {
       type: 'info',
     });
 
-    const res = await sendAPIRequest('externalDisplayLink', body);
+    const r = await sendAPIRequest(
+      'externalDisplayLink',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {

@@ -45,6 +45,21 @@ export declare enum ExternalMediaPlayerTask {
 }
 
 /**
+ * @generated from enum plugnmeet.ExternalDisplayLinkTask
+ */
+export declare enum ExternalDisplayLinkTask {
+  /**
+   * @generated from enum value: START_EXTERNAL_LINK = 0;
+   */
+  START_EXTERNAL_LINK = 0,
+
+  /**
+   * @generated from enum value: STOP_EXTERNAL_LINK = 1;
+   */
+  STOP_EXTERNAL_LINK = 1,
+}
+
+/**
  * @generated from message plugnmeet.CommonResponse
  */
 export declare class CommonResponse extends Message<CommonResponse> {
@@ -556,6 +571,63 @@ export declare class ExternalMediaPlayerReq extends Message<ExternalMediaPlayerR
     b:
       | ExternalMediaPlayerReq
       | PlainMessage<ExternalMediaPlayerReq>
+      | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.ExternalDisplayLinkReq
+ */
+export declare class ExternalDisplayLinkReq extends Message<ExternalDisplayLinkReq> {
+  /**
+   * @generated from field: plugnmeet.ExternalDisplayLinkTask task = 1;
+   */
+  task: ExternalDisplayLinkTask;
+
+  /**
+   * @generated from field: optional string url = 2;
+   */
+  url?: string;
+
+  /**
+   * @generated from field: string room_id = 4;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string user_id = 5;
+   */
+  userId: string;
+
+  constructor(data?: PartialMessage<ExternalDisplayLinkReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.ExternalDisplayLinkReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): ExternalDisplayLinkReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): ExternalDisplayLinkReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): ExternalDisplayLinkReq;
+
+  static equals(
+    a:
+      | ExternalDisplayLinkReq
+      | PlainMessage<ExternalDisplayLinkReq>
+      | undefined,
+    b:
+      | ExternalDisplayLinkReq
+      | PlainMessage<ExternalDisplayLinkReq>
       | undefined,
   ): boolean;
 }
