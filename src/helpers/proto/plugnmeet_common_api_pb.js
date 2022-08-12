@@ -7,6 +7,17 @@ import {proto3} from "@bufbuild/protobuf";
 import {DataMsgBodyType} from "./plugnmeet_datamessage_pb.js";
 
 /**
+ * @generated from enum plugnmeet.SwitchPresenterTask
+ */
+export const SwitchPresenterTask = proto3.makeEnum(
+  "plugnmeet.SwitchPresenterTask",
+  [
+    {no: 0, name: "PROMOTE"},
+    {no: 1, name: "DEMOTE"},
+  ],
+);
+
+/**
  * @generated from message plugnmeet.CommonResponse
  */
 export const CommonResponse = proto3.makeMessageType(
@@ -106,6 +117,19 @@ export const ChangeVisibilityRes = proto3.makeMessageType(
     { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "visible_notepad", kind: "scalar", T: 8 /* ScalarType.BOOL */, opt: true },
     { no: 3, name: "visible_white_board", kind: "scalar", T: 8 /* ScalarType.BOOL */, opt: true },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.SwitchPresenterReq
+ */
+export const SwitchPresenterReq = proto3.makeMessageType(
+  "plugnmeet.SwitchPresenterReq",
+  () => [
+    { no: 1, name: "task", kind: "enum", T: proto3.getEnumType(SwitchPresenterTask) },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "Requested_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ],
 );
 

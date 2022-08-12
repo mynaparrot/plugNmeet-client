@@ -15,6 +15,21 @@ import { Message, proto3 } from '@bufbuild/protobuf';
 import type { DataMsgBodyType } from './plugnmeet_datamessage_pb.js';
 
 /**
+ * @generated from enum plugnmeet.SwitchPresenterTask
+ */
+export declare enum SwitchPresenterTask {
+  /**
+   * @generated from enum value: PROMOTE = 0;
+   */
+  PROMOTE = 0,
+
+  /**
+   * @generated from enum value: DEMOTE = 1;
+   */
+  DEMOTE = 1,
+}
+
+/**
  * @generated from message plugnmeet.CommonResponse
  */
 export declare class CommonResponse extends Message<CommonResponse> {
@@ -414,5 +429,56 @@ export declare class ChangeVisibilityRes extends Message<ChangeVisibilityRes> {
   static equals(
     a: ChangeVisibilityRes | PlainMessage<ChangeVisibilityRes> | undefined,
     b: ChangeVisibilityRes | PlainMessage<ChangeVisibilityRes> | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.SwitchPresenterReq
+ */
+export declare class SwitchPresenterReq extends Message<SwitchPresenterReq> {
+  /**
+   * @generated from field: plugnmeet.SwitchPresenterTask task = 1;
+   */
+  task: SwitchPresenterTask;
+
+  /**
+   * @generated from field: string user_id = 2;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: string room_id = 3;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string Requested_user_id = 4;
+   */
+  RequestedUserId: string;
+
+  constructor(data?: PartialMessage<SwitchPresenterReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.SwitchPresenterReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): SwitchPresenterReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): SwitchPresenterReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): SwitchPresenterReq;
+
+  static equals(
+    a: SwitchPresenterReq | PlainMessage<SwitchPresenterReq> | undefined,
+    b: SwitchPresenterReq | PlainMessage<SwitchPresenterReq> | undefined,
   ): boolean;
 }

@@ -6,6 +6,11 @@ import { toast } from 'react-toastify';
 import { useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
+import {
+  CommonResponse,
+  SwitchPresenterReq,
+  SwitchPresenterTask,
+} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface ISwitchPresenterMenuItemProps {
   userId: string;
@@ -18,12 +23,22 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
   const { t } = useTranslation();
 
   const onClick = async () => {
-    const body = {
-      user_id: participant?.userId,
-      task: participant?.metadata.is_presenter ? 'demote' : 'promote',
-    };
+    const body = new SwitchPresenterReq({
+      userId: participant?.userId,
+      task: participant?.metadata.is_presenter
+        ? SwitchPresenterTask.DEMOTE
+        : SwitchPresenterTask.PROMOTE,
+    });
 
-    const res = await sendAPIRequest('switchPresenter', body);
+    const r = await sendAPIRequest(
+      'switchPresenter',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('left-panel.menus.notice.presenter-changed'), {
         toastId: 'lock-setting-status',
