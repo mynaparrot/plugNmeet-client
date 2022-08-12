@@ -201,3 +201,59 @@ export declare class MuteUnMuteTrackReq extends Message<MuteUnMuteTrackReq> {
     b: MuteUnMuteTrackReq | PlainMessage<MuteUnMuteTrackReq> | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.RemoveParticipantReq
+ */
+export declare class RemoveParticipantReq extends Message<RemoveParticipantReq> {
+  /**
+   * @generated from field: string sid = 1;
+   */
+  sid: string;
+
+  /**
+   * @generated from field: string room_id = 2;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string user_id = 3;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: string msg = 4;
+   */
+  msg: string;
+
+  /**
+   * @generated from field: bool block_user = 5;
+   */
+  blockUser: boolean;
+
+  constructor(data?: PartialMessage<RemoveParticipantReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.RemoveParticipantReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): RemoveParticipantReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): RemoveParticipantReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): RemoveParticipantReq;
+
+  static equals(
+    a: RemoveParticipantReq | PlainMessage<RemoveParticipantReq> | undefined,
+    b: RemoveParticipantReq | PlainMessage<RemoveParticipantReq> | undefined,
+  ): boolean;
+}

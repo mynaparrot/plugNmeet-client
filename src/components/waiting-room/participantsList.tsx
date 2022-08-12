@@ -5,6 +5,10 @@ import { IParticipant } from '../../store/slices/interfaces/participant';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
 import { store } from '../../store';
+import {
+  CommonResponse,
+  RemoveParticipantReq,
+} from '../../helpers/proto/plugnmeet_common_api_pb';
 
 interface IParticipantsListProps {
   waitingParticipants: IParticipant[];
@@ -32,15 +36,23 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
 
   const rejectUser = async (userId: string, block: boolean) => {
     const session = store.getState().session;
-    const data = {
+    const body = new RemoveParticipantReq({
       sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: userId,
+      roomId: session.currentRoom.room_id,
+      userId: userId,
       msg: t('notifications.you-have-reject'),
-      block_user: block,
-    };
+      blockUser: block,
+    });
 
-    const res = await sendAPIRequest('removeParticipant', data);
+    const r = await sendAPIRequest(
+      'removeParticipant',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('left-panel.menus.notice.participant-removed'), {
         toastId: 'user-remove-status',

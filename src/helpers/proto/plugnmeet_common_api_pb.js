@@ -54,3 +54,17 @@ export const MuteUnMuteTrackReq = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.RemoveParticipantReq
+ */
+export const RemoveParticipantReq = proto3.makeMessageType(
+  "plugnmeet.RemoveParticipantReq",
+  () => [
+    { no: 1, name: "sid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "block_user", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ],
+);
+

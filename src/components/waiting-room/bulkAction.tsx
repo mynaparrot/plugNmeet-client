@@ -5,6 +5,10 @@ import { IParticipant } from '../../store/slices/interfaces/participant';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
 import { store } from '../../store';
+import {
+  CommonResponse,
+  RemoveParticipantReq,
+} from '../../helpers/proto/plugnmeet_common_api_pb';
 
 interface IBulkActionProps {
   waitingParticipants: IParticipant[];
@@ -30,16 +34,24 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
 
   const rejectEveryone = () => {
     const session = store.getState().session;
-    const data: any = {
+    const body = new RemoveParticipantReq({
       sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-    };
+      roomId: session.currentRoom.room_id,
+    });
     waitingParticipants.forEach(async (p) => {
-      data.user_id = p.userId;
-      data.msg = t('notifications.you-have-reject');
-      data.block_user = false;
+      body.userId = p.userId;
+      body.msg = t('notifications.you-have-reject');
+      body.blockUser = false;
 
-      const res = await sendAPIRequest('removeParticipant', data);
+      const r = await sendAPIRequest(
+        'removeParticipant',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CommonResponse.fromBinary(new Uint8Array(r));
+
       if (!res.status) {
         toast(t(res.msg), {
           type: 'error',

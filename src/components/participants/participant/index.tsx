@@ -16,6 +16,10 @@ import VisibilityIcon from './icons/visibility';
 import PresenterIcon from './icons/presenterIcon';
 import WaitingApproval from './waitingApproval';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import {
+  CommonResponse,
+  RemoveParticipantReq,
+} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface IParticipantComponentProps {
   participant: IParticipant;
@@ -46,18 +50,26 @@ const ParticipantComponent = ({
     }
 
     const session = store.getState().session;
-    const data = {
+    const body = new RemoveParticipantReq({
       sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: participant.userId,
+      roomId: session.currentRoom.room_id,
+      userId: participant.userId,
       msg:
         removeType === 'remove'
           ? t('notifications.you-have-removed')
           : t('notifications.you-have-reject'),
-      block_user: blockUser === 1,
-    };
+      blockUser: blockUser === 1,
+    });
 
-    const res = await sendAPIRequest('removeParticipant', data);
+    const r = await sendAPIRequest(
+      'removeParticipant',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('left-panel.menus.notice.participant-removed'), {
         toastId: 'user-remove-status',
