@@ -39,3 +39,18 @@ export const VerifyTokenRes = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.MuteUnMuteTrackReq
+ */
+export const MuteUnMuteTrackReq = proto3.makeMessageType(
+  "plugnmeet.MuteUnMuteTrackReq",
+  () => [
+    { no: 1, name: "sid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "track_sid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "muted", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: "Requested_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+

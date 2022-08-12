@@ -140,3 +140,64 @@ export declare class VerifyTokenRes extends Message<VerifyTokenRes> {
     b: VerifyTokenRes | PlainMessage<VerifyTokenRes> | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.MuteUnMuteTrackReq
+ */
+export declare class MuteUnMuteTrackReq extends Message<MuteUnMuteTrackReq> {
+  /**
+   * @generated from field: string sid = 1;
+   */
+  sid: string;
+
+  /**
+   * @generated from field: string room_id = 2;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string user_id = 3;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: string track_sid = 4;
+   */
+  trackSid: string;
+
+  /**
+   * @generated from field: bool muted = 5;
+   */
+  muted: boolean;
+
+  /**
+   * @generated from field: string Requested_user_id = 6;
+   */
+  RequestedUserId: string;
+
+  constructor(data?: PartialMessage<MuteUnMuteTrackReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.MuteUnMuteTrackReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): MuteUnMuteTrackReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): MuteUnMuteTrackReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): MuteUnMuteTrackReq;
+
+  static equals(
+    a: MuteUnMuteTrackReq | PlainMessage<MuteUnMuteTrackReq> | undefined,
+    b: MuteUnMuteTrackReq | PlainMessage<MuteUnMuteTrackReq> | undefined,
+  ): boolean;
+}

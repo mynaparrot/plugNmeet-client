@@ -26,6 +26,10 @@ import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
+import {
+  CommonResponse,
+  MuteUnMuteTrackReq,
+} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -107,13 +111,21 @@ const MenusIcon = () => {
     store.getState().session.currentRoom?.metadata?.room_features;
 
   const muteAllUsers = async () => {
-    const body = {
+    const body = new MuteUnMuteTrackReq({
       sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: 'all',
+      roomId: session.currentRoom.room_id,
+      userId: 'all',
       muted: true,
-    };
-    const res = await sendAPIRequest('muteUnmuteTrack', body);
+    });
+
+    const r = await sendAPIRequest(
+      'muteUnmuteTrack',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (res.status) {
       toast(t('footer.notice.muted-all-microphone'), {
