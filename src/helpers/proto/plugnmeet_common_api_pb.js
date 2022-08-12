@@ -87,3 +87,13 @@ export const DataMessageReq = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.RoomEndAPIReq
+ */
+export const RoomEndAPIReq = proto3.makeMessageType(
+  "plugnmeet.RoomEndAPIReq",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+

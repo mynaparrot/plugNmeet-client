@@ -334,3 +334,39 @@ export declare class DataMessageReq extends Message<DataMessageReq> {
     b: DataMessageReq | PlainMessage<DataMessageReq> | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.RoomEndAPIReq
+ */
+export declare class RoomEndAPIReq extends Message<RoomEndAPIReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  constructor(data?: PartialMessage<RoomEndAPIReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.RoomEndAPIReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): RoomEndAPIReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): RoomEndAPIReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): RoomEndAPIReq;
+
+  static equals(
+    a: RoomEndAPIReq | PlainMessage<RoomEndAPIReq> | undefined,
+    b: RoomEndAPIReq | PlainMessage<RoomEndAPIReq> | undefined,
+  ): boolean;
+}
