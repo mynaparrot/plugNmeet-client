@@ -27,7 +27,9 @@ import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import {
+  ChangeEtherpadStatusReq,
   CommonResponse,
+  CreateEtherpadSessionRes,
   ExternalDisplayLinkReq,
   ExternalDisplayLinkTask,
   ExternalMediaPlayerReq,
@@ -150,7 +152,14 @@ const MenusIcon = () => {
         .shared_note_pad_features.host;
 
     if (!host && !sharedNotepadStatus) {
-      const res = await sendAPIRequest('etherpad/create', {});
+      const r = await sendAPIRequest(
+        'etherpad/create',
+        {},
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -159,10 +168,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && !sharedNotepadStatus) {
-      const res = await sendAPIRequest('etherpad/changeStatus', {
-        room_id: store.getState().session.currentRoom.room_id,
-        is_active: true,
+      const body = new ChangeEtherpadStatusReq({
+        roomId: store.getState().session.currentRoom.room_id,
+        isActive: true,
       });
+      const r = await sendAPIRequest(
+        'etherpad/changeStatus',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -171,10 +188,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && sharedNotepadStatus) {
-      const res = await sendAPIRequest('etherpad/changeStatus', {
-        room_id: store.getState().session.currentRoom.room_id,
-        is_active: false,
+      const body = new ChangeEtherpadStatusReq({
+        roomId: store.getState().session.currentRoom.room_id,
+        isActive: false,
       });
+      const r = await sendAPIRequest(
+        'etherpad/changeStatus',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(false));
       } else {

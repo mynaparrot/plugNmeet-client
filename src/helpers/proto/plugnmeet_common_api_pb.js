@@ -182,3 +182,39 @@ export const ExternalDisplayLinkReq = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.CreateEtherpadSessionRes
+ */
+export const CreateEtherpadSessionRes = proto3.makeMessageType(
+  "plugnmeet.CreateEtherpadSessionRes",
+  () => [
+    { no: 1, name: "status", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 2, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "pad_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 4, name: "readonly_pad_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.CleanEtherpadReq
+ */
+export const CleanEtherpadReq = proto3.makeMessageType(
+  "plugnmeet.CleanEtherpadReq",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "node_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "pad_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.ChangeEtherpadStatusReq
+ */
+export const ChangeEtherpadStatusReq = proto3.makeMessageType(
+  "plugnmeet.ChangeEtherpadStatusReq",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "is_active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ],
+);
+

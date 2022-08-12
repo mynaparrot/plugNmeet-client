@@ -631,3 +631,153 @@ export declare class ExternalDisplayLinkReq extends Message<ExternalDisplayLinkR
       | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.CreateEtherpadSessionRes
+ */
+export declare class CreateEtherpadSessionRes extends Message<CreateEtherpadSessionRes> {
+  /**
+   * @generated from field: bool status = 1;
+   */
+  status: boolean;
+
+  /**
+   * @generated from field: string msg = 2;
+   */
+  msg: string;
+
+  /**
+   * @generated from field: optional string pad_id = 3;
+   */
+  padId?: string;
+
+  /**
+   * @generated from field: optional string readonly_pad_id = 4;
+   */
+  readonlyPadId?: string;
+
+  constructor(data?: PartialMessage<CreateEtherpadSessionRes>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.CreateEtherpadSessionRes';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): CreateEtherpadSessionRes;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): CreateEtherpadSessionRes;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): CreateEtherpadSessionRes;
+
+  static equals(
+    a:
+      | CreateEtherpadSessionRes
+      | PlainMessage<CreateEtherpadSessionRes>
+      | undefined,
+    b:
+      | CreateEtherpadSessionRes
+      | PlainMessage<CreateEtherpadSessionRes>
+      | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.CleanEtherpadReq
+ */
+export declare class CleanEtherpadReq extends Message<CleanEtherpadReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string node_id = 2;
+   */
+  nodeId: string;
+
+  /**
+   * @generated from field: string pad_id = 3;
+   */
+  padId: string;
+
+  constructor(data?: PartialMessage<CleanEtherpadReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.CleanEtherpadReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): CleanEtherpadReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): CleanEtherpadReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): CleanEtherpadReq;
+
+  static equals(
+    a: CleanEtherpadReq | PlainMessage<CleanEtherpadReq> | undefined,
+    b: CleanEtherpadReq | PlainMessage<CleanEtherpadReq> | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.ChangeEtherpadStatusReq
+ */
+export declare class ChangeEtherpadStatusReq extends Message<ChangeEtherpadStatusReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: bool is_active = 2;
+   */
+  isActive: boolean;
+
+  constructor(data?: PartialMessage<ChangeEtherpadStatusReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.ChangeEtherpadStatusReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): ChangeEtherpadStatusReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): ChangeEtherpadStatusReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): ChangeEtherpadStatusReq;
+
+  static equals(
+    a:
+      | ChangeEtherpadStatusReq
+      | PlainMessage<ChangeEtherpadStatusReq>
+      | undefined,
+    b:
+      | ChangeEtherpadStatusReq
+      | PlainMessage<ChangeEtherpadStatusReq>
+      | undefined,
+  ): boolean;
+}
