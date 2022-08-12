@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { ResponseType } from 'axios';
 import { store } from '../../store';
 
 const API = axios.create({
@@ -21,6 +21,7 @@ const sendAPIRequest = async (
   body: any,
   json_encode = true,
   content_type = 'application/json',
+  response_type: ResponseType = 'json',
 ) => {
   try {
     if (json_encode) {
@@ -31,6 +32,7 @@ const sendAPIRequest = async (
         Authorization: getToken(),
         'Content-Type': content_type,
       },
+      responseType: response_type,
     });
     return res.data;
   } catch (e: any) {

@@ -15,6 +15,7 @@ import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySl
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { RecordingTasks } from '../../../helpers/proto/plugnmeet_recorder_pb';
 import { RecordingReq } from '../../../helpers/proto/plugnmeet_recording_pb';
+import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveRtmpBroadcastingSelector = createSelector(
   (state: RootState) => state.session.isActiveRtmpBroadcasting,
@@ -84,12 +85,14 @@ const RtmpModal = () => {
       );
     }
 
-    const res = await sendAPIRequest(
+    const r = await sendAPIRequest(
       'rtmp',
       body.toBinary(),
       false,
       'application/protobuf',
+      'arraybuffer',
     );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
     let msg = 'footer.notice.rtmp-starting';
 
     if (!res.status) {
@@ -257,12 +260,14 @@ const RtmpModal = () => {
       sid: store.getState().session.currentRoom.sid,
     });
 
-    const res = await sendAPIRequest(
+    const r = await sendAPIRequest(
       'rtmp',
       body.toBinary(),
       false,
       'application/protobuf',
+      'arraybuffer',
     );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
     let msg = t('footer.notice.rtmp-ending');
 
     if (!res.status) {

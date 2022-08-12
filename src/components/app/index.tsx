@@ -24,6 +24,10 @@ import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChan
 import WaitingRoomPage from '../waiting-room/waitingRoomPage';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
+import {
+  VerifyTokenReq,
+  VerifyTokenRes,
+} from '../../helpers/proto/plugnmeet_common_api_pb';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -80,12 +84,21 @@ const App = () => {
       });
     } else {
       const verifyToken = async () => {
-        let res: any;
+        let res: VerifyTokenRes;
         try {
-          res = await sendAPIRequest('verifyToken', {
-            is_production: IS_PRODUCTION,
-          });
+          const r = await sendAPIRequest(
+            'verifyToken',
+            new VerifyTokenReq({
+              isProduction: IS_PRODUCTION,
+            }).toBinary(),
+            false,
+            'application/protobuf',
+            'arraybuffer',
+          );
+          res = VerifyTokenRes.fromBinary(new Uint8Array(r));
         } catch (error: any) {
+          console.error(error);
+
           setRoomConnectionStatus('ready');
           setLoading(false);
           setError({
@@ -97,13 +110,13 @@ const App = () => {
 
         setRoomConnectionStatus('ready');
         setLoading(false);
-        if (res.status) {
+        if (res.status && res.livekitHost && res.token) {
           // we'll store token that we received from URL
           dispatch(addToken(params.access_token));
 
           // for livekit need to use generated token & host
           setLivekitInfo({
-            livekit_host: res.livekit_host,
+            livekit_host: res.livekitHost,
             token: res.token,
           });
         } else {
