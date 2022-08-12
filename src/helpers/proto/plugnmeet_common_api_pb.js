@@ -97,3 +97,15 @@ export const RoomEndAPIReq = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.ChangeVisibilityRes
+ */
+export const ChangeVisibilityRes = proto3.makeMessageType(
+  "plugnmeet.ChangeVisibilityRes",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "visible_notepad", kind: "scalar", T: 8 /* ScalarType.BOOL */, opt: true },
+    { no: 3, name: "visible_white_board", kind: "scalar", T: 8 /* ScalarType.BOOL */, opt: true },
+  ],
+);
+

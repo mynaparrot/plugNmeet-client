@@ -370,3 +370,49 @@ export declare class RoomEndAPIReq extends Message<RoomEndAPIReq> {
     b: RoomEndAPIReq | PlainMessage<RoomEndAPIReq> | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.ChangeVisibilityRes
+ */
+export declare class ChangeVisibilityRes extends Message<ChangeVisibilityRes> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: optional bool visible_notepad = 2;
+   */
+  visibleNotepad?: boolean;
+
+  /**
+   * @generated from field: optional bool visible_white_board = 3;
+   */
+  visibleWhiteBoard?: boolean;
+
+  constructor(data?: PartialMessage<ChangeVisibilityRes>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.ChangeVisibilityRes';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): ChangeVisibilityRes;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): ChangeVisibilityRes;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): ChangeVisibilityRes;
+
+  static equals(
+    a: ChangeVisibilityRes | PlainMessage<ChangeVisibilityRes> | undefined,
+    b: ChangeVisibilityRes | PlainMessage<ChangeVisibilityRes> | undefined,
+  ): boolean;
+}

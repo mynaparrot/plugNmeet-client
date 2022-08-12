@@ -14,6 +14,7 @@ import {
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveSharedNotePadSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
@@ -97,19 +98,24 @@ const SharedNotePadIcon = () => {
       setInitiated(true);
     }
 
-    const sendRequest = async (body) => {
-      await sendAPIRequest('changeVisibility', body);
+    const sendRequest = async (body: ChangeVisibilityRes) => {
+      await sendAPIRequest(
+        'changeVisibility',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+      );
     };
 
     if (
       isActiveSharedNotePad &&
       !currentRoom.metadata?.room_features.shared_note_pad_features.visible
     ) {
-      const body: any = {
-        room_id: currentRoom.room_id,
-        visible_white_board: false,
-        visible_notepad: true,
-      };
+      const body = new ChangeVisibilityRes({
+        roomId: currentRoom.room_id,
+        visibleWhiteBoard: false,
+        visibleNotepad: true,
+      });
       // wait little bit before change visibility
       setTimeout(() => {
         sendRequest(body);
@@ -118,10 +124,10 @@ const SharedNotePadIcon = () => {
       !isActiveSharedNotePad &&
       currentRoom.metadata?.room_features.shared_note_pad_features.visible
     ) {
-      const body: any = {
-        room_id: currentRoom.room_id,
-        visible_notepad: false,
-      };
+      const body = new ChangeVisibilityRes({
+        roomId: currentRoom.room_id,
+        visibleNotepad: false,
+      });
       sendRequest(body);
     }
     //eslint-disable-next-line

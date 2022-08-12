@@ -14,6 +14,7 @@ import {
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
@@ -85,19 +86,24 @@ const WhiteboardIcon = () => {
       setInitiated(true);
     }
 
-    const sendRequest = async (body) => {
-      await sendAPIRequest('changeVisibility', body);
+    const sendRequest = async (body: ChangeVisibilityRes) => {
+      await sendAPIRequest(
+        'changeVisibility',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+      );
     };
 
     if (
       isActiveWhiteboard &&
       !currentRoom.metadata?.room_features.whiteboard_features.visible
     ) {
-      const body: any = {
-        room_id: currentRoom.room_id,
-        visible_white_board: true,
-        visible_notepad: false,
-      };
+      const body = new ChangeVisibilityRes({
+        roomId: currentRoom.room_id,
+        visibleWhiteBoard: true,
+        visibleNotepad: false,
+      });
       // wait little bit before change visibility
       setTimeout(() => {
         sendRequest(body);
@@ -106,10 +112,10 @@ const WhiteboardIcon = () => {
       !isActiveWhiteboard &&
       currentRoom.metadata?.room_features.whiteboard_features.visible
     ) {
-      const body: any = {
-        room_id: currentRoom.room_id,
-        visible_white_board: false,
-      };
+      const body = new ChangeVisibilityRes({
+        roomId: currentRoom.room_id,
+        visibleWhiteBoard: false,
+      });
       sendRequest(body);
     }
     //eslint-disable-next-line
