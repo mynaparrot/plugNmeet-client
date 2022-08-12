@@ -6,6 +6,11 @@ import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFiles
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch } from '../../../../store';
+import {
+  CommonResponse,
+  ExternalMediaPlayerReq,
+  ExternalMediaPlayerTask,
+} from '../../../../helpers/proto/plugnmeet_common_api_pb';
 
 const Upload = () => {
   const { t } = useTranslation();
@@ -30,11 +35,18 @@ const Upload = () => {
         },
       );
 
-      const body = {
-        task: 'start-playback',
+      const body = new ExternalMediaPlayerReq({
+        task: ExternalMediaPlayerTask.START_PLAYBACK,
         url: playBackUrl,
-      };
-      const res = await sendAPIRequest('externalMediaPlayer', body);
+      });
+      const r = await sendAPIRequest(
+        'externalMediaPlayer',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CommonResponse.fromBinary(new Uint8Array(r));
 
       if (!res.status) {
         toast.update(id, {

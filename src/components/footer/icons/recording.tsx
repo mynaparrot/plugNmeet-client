@@ -8,6 +8,7 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { RecordingTasks } from '../../../helpers/proto/plugnmeet_recorder_pb';
 import { RecordingReq } from '../../../helpers/proto/plugnmeet_recording_pb';
+import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isRecordingSelector = createSelector(
   (state: RootState) => state.session.isActiveRecording,
@@ -70,12 +71,14 @@ const RecordingIcon = () => {
       );
     }
 
-    const res = await sendAPIRequest(
+    const r = await sendAPIRequest(
       'recording',
       body.toBinary(),
       false,
       'application/protobuf',
+      'arraybuffer',
     );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
     let msg = 'footer.notice.start-recording-progress';
 
     if (!res.status) {
@@ -101,12 +104,14 @@ const RecordingIcon = () => {
       task: RecordingTasks.STOP_RECORDING,
       sid: store.getState().session.currentRoom.sid,
     });
-    const res = await sendAPIRequest(
+    const r = await sendAPIRequest(
       'recording',
       body.toBinary(),
       false,
       'application/protobuf',
+      'arraybuffer',
     );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
     let msg = 'footer.notice.stop-recording-service-in-progress';
 
     if (!res.status) {

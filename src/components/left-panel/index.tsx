@@ -32,7 +32,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
   const selectedTabLeftPanel = useAppSelector(selectedTabLeftPanelSelector);
 
   const items = useMemo(() => {
-    const total_running = data?.stats?.total_running ?? 0;
+    const total_running = Number(data?.stats?.totalRunning) ?? 0;
     const items = [
       {
         id: 1,

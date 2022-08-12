@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { useCreatePollMutation } from '../../store/services/pollsApi';
-import { CreatePollOptions } from '../../store/services/pollsApiTypes';
+import { CreatePollReq } from '../../helpers/proto/plugnmeet_polls_pb';
+
+interface CreatePollOptions {
+  id: number;
+  text: string;
+}
 
 const Create = () => {
   const { t } = useTranslation();
@@ -57,10 +62,10 @@ const Create = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const body = {
+    const body = new CreatePollReq({
       question,
       options,
-    };
+    });
     createPoll(body);
   };
 

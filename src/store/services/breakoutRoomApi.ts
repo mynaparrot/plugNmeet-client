@@ -25,7 +25,15 @@ export const breakoutRoomApi = createApi({
   tagTypes: ['List', 'My_Rooms'],
   endpoints: (builder) => ({
     getBreakoutRooms: builder.query<BreakoutRoomRes, void>({
-      query: () => 'listRooms',
+      query: () => {
+        return {
+          url: 'listRooms',
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
+        };
+      },
       providesTags: ['List'],
     }),
     createBreakoutRooms: builder.mutation<
@@ -37,6 +45,10 @@ export const breakoutRoomApi = createApi({
           url: 'create',
           method: 'POST',
           body: body.toBinary(),
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
         };
       },
       invalidatesTags: ['List'],
@@ -50,6 +62,10 @@ export const breakoutRoomApi = createApi({
           url: 'increaseDuration',
           method: 'POST',
           body: body.toBinary(),
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
         };
       },
       invalidatesTags: ['List'],
@@ -63,6 +79,10 @@ export const breakoutRoomApi = createApi({
           url: 'sendMsg',
           method: 'POST',
           body: body.toBinary(),
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
         };
       },
     }),
@@ -72,11 +92,23 @@ export const breakoutRoomApi = createApi({
           url: 'join',
           method: 'POST',
           body: body.toBinary(),
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
         };
       },
     }),
     getMyBreakoutRooms: builder.query<BreakoutRoomRes, void>({
-      query: () => `myRooms`,
+      query: () => {
+        return {
+          url: 'myRooms',
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
+        };
+      },
       providesTags: ['My_Rooms'],
     }),
     endSingleRoom: builder.mutation<BreakoutRoomRes, EndBreakoutRoomReq>({
@@ -85,6 +117,10 @@ export const breakoutRoomApi = createApi({
           url: 'endRoom',
           method: 'POST',
           body: body.toBinary(),
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
         };
       },
       invalidatesTags: ['List'],
@@ -94,6 +130,10 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'endAllRooms',
           method: 'POST',
+          responseHandler: async (res) => {
+            const buf = await res.arrayBuffer();
+            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+          },
         };
       },
       invalidatesTags: ['List'],

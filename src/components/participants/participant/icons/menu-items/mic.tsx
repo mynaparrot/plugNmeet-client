@@ -12,6 +12,10 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
+import {
+  CommonResponse,
+  MuteUnMuteTrackReq,
+} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface IMicMenuItemProps {
   userId: string;
@@ -77,13 +81,20 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
   const muteAudio = async () => {
     const session = store.getState().session;
 
-    const body = {
+    const body = new MuteUnMuteTrackReq({
       sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: participant?.userId,
+      roomId: session.currentRoom.room_id,
+      userId: participant?.userId,
       muted: true,
-    };
-    const res = await sendAPIRequest('muteUnmuteTrack', body);
+    });
+    const r = await sendAPIRequest(
+      'muteUnmuteTrack',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (res.status) {
       toast(

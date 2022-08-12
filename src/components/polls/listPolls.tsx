@@ -9,9 +9,9 @@ const ListPolls = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
 
   const sortedPolls = useMemo(() => {
-    if (data && data.polls !== null) {
+    if (data && data.polls) {
       const sortedPolls = data.polls.slice();
-      sortedPolls.sort((a, b) => b.created - a.created);
+      sortedPolls.sort((a, b) => Number(b.created) - Number(a.created));
       return sortedPolls;
     }
   }, [data]);

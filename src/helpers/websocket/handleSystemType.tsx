@@ -17,7 +17,6 @@ import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlic
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import {
   DataMessage,
-  DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
 } from '../proto/plugnmeet_datamessage_pb';

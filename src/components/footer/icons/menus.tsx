@@ -26,6 +26,16 @@ import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
+import {
+  ChangeEtherpadStatusReq,
+  CommonResponse,
+  CreateEtherpadSessionRes,
+  ExternalDisplayLinkReq,
+  ExternalDisplayLinkTask,
+  ExternalMediaPlayerReq,
+  ExternalMediaPlayerTask,
+  MuteUnMuteTrackReq,
+} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -107,13 +117,21 @@ const MenusIcon = () => {
     store.getState().session.currentRoom?.metadata?.room_features;
 
   const muteAllUsers = async () => {
-    const body = {
+    const body = new MuteUnMuteTrackReq({
       sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: 'all',
+      roomId: session.currentRoom.room_id,
+      userId: 'all',
       muted: true,
-    };
-    const res = await sendAPIRequest('muteUnmuteTrack', body);
+    });
+
+    const r = await sendAPIRequest(
+      'muteUnmuteTrack',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (res.status) {
       toast(t('footer.notice.muted-all-microphone'), {
@@ -134,7 +152,14 @@ const MenusIcon = () => {
         .shared_note_pad_features.host;
 
     if (!host && !sharedNotepadStatus) {
-      const res = await sendAPIRequest('etherpad/create', {});
+      const r = await sendAPIRequest(
+        'etherpad/create',
+        {},
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -143,10 +168,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && !sharedNotepadStatus) {
-      const res = await sendAPIRequest('etherpad/changeStatus', {
-        room_id: store.getState().session.currentRoom.room_id,
-        is_active: true,
+      const body = new ChangeEtherpadStatusReq({
+        roomId: store.getState().session.currentRoom.room_id,
+        isActive: true,
       });
+      const r = await sendAPIRequest(
+        'etherpad/changeStatus',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -155,10 +188,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && sharedNotepadStatus) {
-      const res = await sendAPIRequest('etherpad/changeStatus', {
-        room_id: store.getState().session.currentRoom.room_id,
-        is_active: false,
+      const body = new ChangeEtherpadStatusReq({
+        roomId: store.getState().session.currentRoom.room_id,
+        isActive: false,
       });
+      const r = await sendAPIRequest(
+        'etherpad/changeStatus',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(false));
       } else {
@@ -179,10 +220,17 @@ const MenusIcon = () => {
       type: 'info',
     });
 
-    const body = {
-      task: 'end-playback',
-    };
-    const res = await sendAPIRequest('externalMediaPlayer', body);
+    const body = new ExternalMediaPlayerReq({
+      task: ExternalMediaPlayerTask.END_PLAYBACK,
+    });
+    const r = await sendAPIRequest(
+      'externalMediaPlayer',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {
@@ -201,15 +249,22 @@ const MenusIcon = () => {
       dispatch(updateDisplayExternalLinkRoomModal(true));
       return;
     }
-    const body = {
-      task: 'end',
-    };
+    const body = new ExternalDisplayLinkReq({
+      task: ExternalDisplayLinkTask.STOP_EXTERNAL_LINK,
+    });
 
     const id = toast.loading(t('please-wait'), {
       type: 'info',
     });
 
-    const res = await sendAPIRequest('externalDisplayLink', body);
+    const r = await sendAPIRequest(
+      'externalDisplayLink',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {

@@ -7,6 +7,10 @@ import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
 import { ICurrentUserMetadata } from '../../../../../store/slices/interfaces/session';
+import {
+  CommonResponse,
+  UpdateUserLockSettingsReq,
+} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface ILockSettingMenuItemProps {
   userId: string;
@@ -61,15 +65,23 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
         break;
     }
 
-    const data = {
-      sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: participant?.userId,
+    const body = new UpdateUserLockSettingsReq({
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
+      userId: participant?.userId,
       service,
       direction,
-    };
+    });
 
-    const res = await sendAPIRequest('updateLockSettings', data);
+    const r = await sendAPIRequest(
+      'updateLockSettings',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('left-panel.menus.notice.applied-new-setting'), {
         toastId: 'lock-setting-status',

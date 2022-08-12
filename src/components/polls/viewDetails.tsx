@@ -16,6 +16,7 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../helpers/proto/plugnmeet_datamessage_pb';
+import { ClosePollReq } from '../../helpers/proto/plugnmeet_polls_pb';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -75,9 +76,11 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
   };
 
   const endPoll = () => {
-    closePoll({
-      poll_id: pollId,
-    });
+    closePoll(
+      new ClosePollReq({
+        pollId: pollId,
+      }),
+    );
   };
 
   const getOptSelectedCount = (id) => {
@@ -148,13 +151,14 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
     if (isLoading) {
       return;
     }
+    const totalRes: any = pollResponses?.responses['total_resp'] ?? '0';
     const session = store.getState().session;
     const elm = ReactDOMServer.renderToString(
       <>
         <p>{poll?.question}</p>
         <p>
           {t('polls.total-responses', {
-            count: pollResponses?.responses.total_resp,
+            count: totalRes,
           })}
         </p>
         {poll?.options.map((o) => {
@@ -246,7 +250,9 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       </p>
                       <p className="w-full text-base dark:text-darkText">
                         {t('polls.total-responses', {
-                          count: pollResponses?.responses.total_resp,
+                          count:
+                            (pollResponses as any)?.responses['total_resp'] ??
+                            0,
                         })}
                       </p>
                     </div>
@@ -267,7 +273,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                       </div>
                     </div>
                     <div className="pt-10 text-right">
-                      {poll?.is_running ? (
+                      {poll?.isRunning ? (
                         <button
                           className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
                           onClick={endPoll}

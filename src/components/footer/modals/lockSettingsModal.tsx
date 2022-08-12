@@ -12,6 +12,10 @@ import {
 } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import {
+  CommonResponse,
+  UpdateUserLockSettingsReq,
+} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const roomLockSettingsSelector = createSelector(
   (state: RootState) =>
@@ -27,15 +31,23 @@ const LockSettingsModal = () => {
   const updateLockSettings = async (status, service: string) => {
     const direction = status ? 'lock' : 'unlock';
 
-    const data = {
-      sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      user_id: 'all',
+    const body = new UpdateUserLockSettingsReq({
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
+      userId: 'all',
       service,
       direction,
-    };
+    });
 
-    const res = await sendAPIRequest('updateLockSettings', data);
+    const r = await sendAPIRequest(
+      'updateLockSettings',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('footer.notice.applied-settings'), {
         toastId: 'lock-setting-status',

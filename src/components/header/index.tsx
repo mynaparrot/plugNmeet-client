@@ -15,6 +15,10 @@ import KeyboardShortcuts from './keyboardShortcuts';
 import VolumeControl from './volumeControl';
 import DurationView from './durationView';
 import DarkThemeSwitcher from './darkThemeSwitcher';
+import {
+  CommonResponse,
+  RoomEndAPIReq,
+} from '../../helpers/proto/plugnmeet_common_api_pb';
 
 interface IHeaderProps {
   currentRoom: Room;
@@ -68,11 +72,18 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     } else if (task === 'end Room') {
       const session = store.getState().session;
 
-      const data = {
-        room_id: session.currentRoom.room_id,
-      };
+      const body = new RoomEndAPIReq({
+        roomId: session.currentRoom.room_id,
+      });
 
-      const res = await sendAPIRequest('endRoom', data);
+      const r = await sendAPIRequest(
+        'endRoom',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CommonResponse.fromBinary(new Uint8Array(r));
       if (!res.status) {
         toast(res.msg, {
           type: 'error',

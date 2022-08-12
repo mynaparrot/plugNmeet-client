@@ -6,6 +6,10 @@ import { toast } from 'react-toastify';
 
 import { RootState, useAppSelector } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
+import {
+  CommonResponse,
+  UpdateWaitingRoomMessageReq,
+} from '../../helpers/proto/plugnmeet_common_api_pb';
 
 const waitingRoomMessageSelector = createSelector(
   (state: RootState) =>
@@ -23,11 +27,19 @@ const UpdateRoomMessage = () => {
     if (isEmpty(message)) {
       return;
     }
-    const data = {
+    const body = new UpdateWaitingRoomMessageReq({
       msg: message,
-    };
+    });
 
-    const res = await sendAPIRequest('waitingRoom/updateMsg', data);
+    const r = await sendAPIRequest(
+      'waitingRoom/updateMsg',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       toast(t('waiting-room.updated-msg'), {
         type: 'info',

@@ -12,6 +12,11 @@ import {
 } from '../../../store';
 import { updateDisplayExternalLinkRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import {
+  CommonResponse,
+  ExternalDisplayLinkReq,
+  ExternalDisplayLinkTask,
+} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
@@ -70,11 +75,18 @@ const DisplayExternalLinkModal = () => {
       type: 'info',
     });
 
-    const body = {
-      task: 'start',
+    const body = new ExternalDisplayLinkReq({
+      task: ExternalDisplayLinkTask.START_EXTERNAL_LINK,
       url: url.toString(),
-    };
-    const res = await sendAPIRequest('externalDisplayLink', body);
+    });
+    const r = await sendAPIRequest(
+      'externalDisplayLink',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {

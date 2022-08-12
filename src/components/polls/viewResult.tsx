@@ -77,11 +77,13 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                       <span className="text-primaryColor dark:text-secondaryColor">
                         Q:{' '}
                       </span>
-                      {data?.result?.question}
+                      {data?.pollResponsesResult?.question}
                     </p>
                     <p className="w-full text-base dark:text-darkText">
                       {t('polls.total-responses', {
-                        count: data?.result?.total_responses,
+                        count: Number(
+                          data?.pollResponsesResult?.totalResponses,
+                        ),
                       })}
                     </p>
                     <div className="pt-5">
@@ -89,17 +91,17 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                         {t('polls.options')}
                       </p>
                       <div className="relative min-h-[75px]">
-                        {data?.result?.options?.map((o) => {
+                        {data?.pollResponsesResult?.options?.map((o) => {
                           return (
                             <p
                               className="relative w-full flex items-center justify-between dark:text-darkText"
-                              key={o.id}
+                              key={Number(o.id)}
                             >
                               <span className="bg-white dark:bg-darkPrimary inline-block py-1 pr-2">
                                 {o.text}
                               </span>
                               <span className="bg-white dark:bg-darkPrimary inline-block py-1 pl-2">
-                                ({o.vote_count})
+                                ({Number(o.voteCount)})
                               </span>
                             </p>
                           );
