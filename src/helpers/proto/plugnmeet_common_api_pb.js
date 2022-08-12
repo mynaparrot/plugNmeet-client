@@ -240,3 +240,18 @@ export const UpdateWaitingRoomMessageReq = proto3.makeMessageType(
   ],
 );
 
+/**
+ * @generated from message plugnmeet.UpdateUserLockSettingsReq
+ */
+export const UpdateUserLockSettingsReq = proto3.makeMessageType(
+  "plugnmeet.UpdateUserLockSettingsReq",
+  () => [
+    { no: 1, name: "room_sid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "service", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "direction", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "Requested_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+

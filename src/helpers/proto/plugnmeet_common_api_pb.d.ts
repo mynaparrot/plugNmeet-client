@@ -875,3 +875,70 @@ export declare class UpdateWaitingRoomMessageReq extends Message<UpdateWaitingRo
       | undefined,
   ): boolean;
 }
+
+/**
+ * @generated from message plugnmeet.UpdateUserLockSettingsReq
+ */
+export declare class UpdateUserLockSettingsReq extends Message<UpdateUserLockSettingsReq> {
+  /**
+   * @generated from field: string room_sid = 1;
+   */
+  roomSid: string;
+
+  /**
+   * @generated from field: string room_id = 2;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string user_id = 3;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: string service = 4;
+   */
+  service: string;
+
+  /**
+   * @generated from field: string direction = 5;
+   */
+  direction: string;
+
+  /**
+   * @generated from field: string Requested_user_id = 6;
+   */
+  RequestedUserId: string;
+
+  constructor(data?: PartialMessage<UpdateUserLockSettingsReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.UpdateUserLockSettingsReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): UpdateUserLockSettingsReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): UpdateUserLockSettingsReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): UpdateUserLockSettingsReq;
+
+  static equals(
+    a:
+      | UpdateUserLockSettingsReq
+      | PlainMessage<UpdateUserLockSettingsReq>
+      | undefined,
+    b:
+      | UpdateUserLockSettingsReq
+      | PlainMessage<UpdateUserLockSettingsReq>
+      | undefined,
+  ): boolean;
+}
