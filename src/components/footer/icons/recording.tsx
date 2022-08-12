@@ -90,15 +90,13 @@ const RecordingIcon = () => {
       type: 'info',
     });
 
-    if (res.status) {
-      timer = setTimeout(() => {
-        setDisable(false);
-        toast(t('footer.notice.recording-not-start'), {
-          toastId: 'recording-status',
-          type: 'error',
-        });
-      }, 30000);
-    }
+    timer = setTimeout(() => {
+      setDisable(false);
+      toast(t('footer.notice.recording-not-start'), {
+        toastId: 'recording-status',
+        type: 'error',
+      });
+    }, 30000);
   };
 
   const stopRecording = async () => {

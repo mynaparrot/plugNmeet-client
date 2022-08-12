@@ -7,6 +7,11 @@ import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
 import { updateIsActiveRaisehand } from '../../../../../store/slices/bottomIconsActivitySlice';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponse,
+  DataMessageReq,
+} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
+import { DataMsgBodyType } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface ILowerHandMenuItemProps {
   userId: string;
@@ -21,14 +26,22 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
 
   const onClick = async () => {
     const session = store.getState().session;
-    const body = {
-      sid: session.currentRoom.sid,
-      room_id: session.currentRoom.room_id,
-      msg_type: SystemMsgType.OTHER_USER_LOWER_HAND,
+    const body = new DataMessageReq({
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.room_id,
+      msgBodyType: DataMsgBodyType.OTHER_USER_LOWER_HAND,
       msg: participant?.userId,
-    };
+    });
 
-    const res = await sendAPIRequest('dataMessage', body);
+    const r = await sendAPIRequest(
+      'dataMessage',
+      body.toBinary(),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
     if (res.status) {
       dispatch(updateIsActiveRaisehand(false));
     } else {

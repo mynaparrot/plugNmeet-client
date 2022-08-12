@@ -12,6 +12,7 @@ import type {
   PlainMessage,
 } from '@bufbuild/protobuf';
 import { Message, proto3 } from '@bufbuild/protobuf';
+import type { DataMsgBodyType } from './plugnmeet_datamessage_pb.js';
 
 /**
  * @generated from message plugnmeet.CommonResponse
@@ -255,5 +256,81 @@ export declare class RemoveParticipantReq extends Message<RemoveParticipantReq> 
   static equals(
     a: RemoveParticipantReq | PlainMessage<RemoveParticipantReq> | undefined,
     b: RemoveParticipantReq | PlainMessage<RemoveParticipantReq> | undefined,
+  ): boolean;
+}
+
+/**
+ * @generated from message plugnmeet.DataMessageReq
+ */
+export declare class DataMessageReq extends Message<DataMessageReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string room_sid = 2;
+   */
+  roomSid: string;
+
+  /**
+   * @generated from field: string user_id = 3;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: string user_sid = 4;
+   */
+  userSid: string;
+
+  /**
+   * @generated from field: plugnmeet.DataMsgBodyType msg_body_type = 5;
+   */
+  msgBodyType: DataMsgBodyType;
+
+  /**
+   * @generated from field: string msg = 6;
+   */
+  msg: string;
+
+  /**
+   * @generated from field: string Requested_user_id = 7;
+   */
+  RequestedUserId: string;
+
+  /**
+   * @generated from field: repeated string send_to = 8;
+   */
+  sendTo: string[];
+
+  /**
+   * @generated from field: bool is_admin = 9;
+   */
+  isAdmin: boolean;
+
+  constructor(data?: PartialMessage<DataMessageReq>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = 'plugnmeet.DataMessageReq';
+  static readonly fields: FieldList;
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): DataMessageReq;
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): DataMessageReq;
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): DataMessageReq;
+
+  static equals(
+    a: DataMessageReq | PlainMessage<DataMessageReq> | undefined,
+    b: DataMessageReq | PlainMessage<DataMessageReq> | undefined,
   ): boolean;
 }

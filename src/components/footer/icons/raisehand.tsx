@@ -13,6 +13,11 @@ import {
 } from '../../../store';
 import { updateIsActiveRaisehand } from '../../../store/slices/bottomIconsActivitySlice';
 import { SystemMsgType } from '../../../store/slices/interfaces/dataMessages';
+import {
+  CommonResponse,
+  DataMessageReq,
+} from '../../../helpers/proto/plugnmeet_common_api_pb';
+import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 interface IRaiseHandIconProps {
   currentRoom: Room;
@@ -40,16 +45,24 @@ const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
 
   const toggleRaiseHand = async () => {
     if (!isActiveRaisehand) {
-      const body = {
-        sid: currentRoom.sid,
-        room_id: currentRoom.name,
-        msg_type: SystemMsgType.RAISE_HAND,
+      const body = new DataMessageReq({
+        roomSid: currentRoom.sid,
+        roomId: currentRoom.name,
+        msgBodyType: DataMsgBodyType.RAISE_HAND,
         msg: t('footer.notice.has-raised-hand', {
           user: currentRoom.localParticipant.name,
         }),
-      };
+      });
 
-      const res = await sendAPIRequest('dataMessage', body);
+      const r = await sendAPIRequest(
+        'dataMessage',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CommonResponse.fromBinary(new Uint8Array(r));
+
       if (res.status) {
         dispatch(updateIsActiveRaisehand(true));
 
@@ -62,14 +75,21 @@ const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
         });
       }
     } else {
-      const body = {
-        sid: currentRoom.sid,
-        room_id: currentRoom.name,
-        msg_type: SystemMsgType.LOWER_HAND,
+      const body = new DataMessageReq({
+        roomSid: currentRoom.sid,
+        roomId: currentRoom.name,
+        msgBodyType: DataMsgBodyType.LOWER_HAND,
         msg: SystemMsgType.LOWER_HAND,
-      };
+      });
 
-      const res = await sendAPIRequest('dataMessage', body);
+      const r = await sendAPIRequest(
+        'dataMessage',
+        body.toBinary(),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = CommonResponse.fromBinary(new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveRaisehand(false));
       } else {

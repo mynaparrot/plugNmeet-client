@@ -4,6 +4,7 @@
 /* @ts-nocheck */
 
 import {proto3} from "@bufbuild/protobuf";
+import {DataMsgBodyType} from "./plugnmeet_datamessage_pb.js";
 
 /**
  * @generated from message plugnmeet.CommonResponse
@@ -65,6 +66,24 @@ export const RemoveParticipantReq = proto3.makeMessageType(
     { no: 3, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 5, name: "block_user", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ],
+);
+
+/**
+ * @generated from message plugnmeet.DataMessageReq
+ */
+export const DataMessageReq = proto3.makeMessageType(
+  "plugnmeet.DataMessageReq",
+  () => [
+    { no: 1, name: "room_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "room_sid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "user_sid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "msg_body_type", kind: "enum", T: proto3.getEnumType(DataMsgBodyType) },
+    { no: 6, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "Requested_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 8, name: "send_to", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 9, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ],
 );
 
