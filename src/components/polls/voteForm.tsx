@@ -7,6 +7,7 @@ import {
 } from '../../store/services/pollsApi';
 import { store } from '../../store';
 import { toast } from 'react-toastify';
+import { SubmitPollResponseReq } from '../../helpers/proto/plugnmeet_polls_pb';
 
 interface IVoteFormProps {
   onCloseForm(): void;
@@ -51,12 +52,14 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
     if (selectedOption === 0) {
       return;
     }
-    addResponse({
-      poll_id: pollId,
-      user_id: store.getState().session.currentUser?.userId ?? '',
-      name: store.getState().session.currentUser?.name ?? '',
-      selected_option: selectedOption,
-    });
+    addResponse(
+      new SubmitPollResponseReq({
+        pollId: pollId,
+        userId: store.getState().session.currentUser?.userId ?? '',
+        name: store.getState().session.currentUser?.name ?? '',
+        selectedOption: BigInt(selectedOption),
+      }),
+    );
   };
 
   const renderForm = () => {

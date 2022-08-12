@@ -121,9 +121,10 @@ export const PollResponse = proto3.makeMessageType(
     { no: 5, name: "voted", kind: "scalar", T: 4 /* ScalarType.UINT64 */, opt: true },
     { no: 6, name: "responses", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
     { no: 7, name: "polls", kind: "message", T: PollInfo, repeated: true },
-    { no: 8, name: "stats", kind: "message", T: PollsStats, repeated: true },
+    { no: 8, name: "stats", kind: "message", T: PollsStats, opt: true },
     { no: 9, name: "total_polls", kind: "scalar", T: 4 /* ScalarType.UINT64 */, opt: true },
     { no: 10, name: "total_running", kind: "scalar", T: 4 /* ScalarType.UINT64 */, opt: true },
+    { no: 11, name: "poll_responses_result", kind: "message", T: PollResponsesResult, opt: true },
   ],
 );
 

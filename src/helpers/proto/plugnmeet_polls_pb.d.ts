@@ -462,9 +462,9 @@ export declare class PollResponse extends Message<PollResponse> {
   polls: PollInfo[];
 
   /**
-   * @generated from field: repeated plugnmeet.PollsStats stats = 8;
+   * @generated from field: optional plugnmeet.PollsStats stats = 8;
    */
-  stats: PollsStats[];
+  stats?: PollsStats;
 
   /**
    * @generated from field: optional uint64 total_polls = 9;
@@ -475,6 +475,11 @@ export declare class PollResponse extends Message<PollResponse> {
    * @generated from field: optional uint64 total_running = 10;
    */
   totalRunning?: bigint;
+
+  /**
+   * @generated from field: optional plugnmeet.PollResponsesResult poll_responses_result = 11;
+   */
+  pollResponsesResult?: PollResponsesResult;
 
   constructor(data?: PartialMessage<PollResponse>);
 
