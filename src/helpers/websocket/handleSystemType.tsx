@@ -144,6 +144,10 @@ const handleExternalMediaPlayerEvents = (data: DataMessage) => {
 };
 
 const handlePollsNotifications = (data: DataMessage) => {
+  // for recorder don't need to show anything
+  if (store.getState().session.currentUser?.isRecorder) {
+    return;
+  }
   if (data.body?.type === DataMsgBodyType.POLL_CREATED) {
     toast(<NewPollMsg />, {
       toastId: 'info-status',

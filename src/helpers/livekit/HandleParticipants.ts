@@ -69,24 +69,8 @@ export default class HandleParticipants {
   ) => {
     let metadata;
     if (participant.metadata) {
-      const m: ICurrentUserMetadata = JSON.parse(participant.metadata);
-      if (
-        m.wait_for_approval &&
-        store.getState().session.currentUser?.metadata?.is_admin
-      ) {
-        toast(
-          i18n
-            .t('waiting-room.user-waiting', {
-              name: participant.name,
-            })
-            .toString(),
-          {
-            type: 'info',
-            toastId: 'user-waiting',
-          },
-        );
-      }
-      metadata = m;
+      metadata = JSON.parse(participant.metadata);
+      this.notificationForWaitingUser(metadata, participant.name);
     }
 
     store.dispatch(
@@ -177,6 +161,8 @@ export default class HandleParticipants {
   ) => {
     if (participant.metadata) {
       const metadata: ICurrentUserMetadata = JSON.parse(participant.metadata);
+      this.notificationForWaitingUser(metadata, participant.name);
+
       store.dispatch(
         updateParticipant({
           id: participant.identity,
@@ -192,4 +178,23 @@ export default class HandleParticipants {
       }
     }
   };
+
+  private notificationForWaitingUser(metadata: ICurrentUserMetadata, name) {
+    if (
+      metadata.wait_for_approval &&
+      store.getState().session.currentUser?.metadata?.is_admin
+    ) {
+      toast(
+        i18n
+          .t('waiting-room.user-waiting', {
+            name: name,
+          })
+          .toString(),
+        {
+          type: 'info',
+          toastId: 'user-waiting',
+        },
+      );
+    }
+  }
 }
