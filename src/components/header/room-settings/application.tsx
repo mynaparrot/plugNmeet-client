@@ -28,7 +28,7 @@ const ApplicationSettings = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="language"
-              className="w-2/5 block text-sm font-medium text-gray-700 dark:text-darkText mr-5"
+              className="pr-4 w-full dark:text-darkText"
             >
               {t('header.room-settings.language')}
             </label>
