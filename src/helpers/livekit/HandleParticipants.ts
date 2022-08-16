@@ -161,8 +161,6 @@ export default class HandleParticipants {
   ) => {
     if (participant.metadata) {
       const metadata: ICurrentUserMetadata = JSON.parse(participant.metadata);
-      this.notificationForWaitingUser(metadata, participant.name);
-
       store.dispatch(
         updateParticipant({
           id: participant.identity,
