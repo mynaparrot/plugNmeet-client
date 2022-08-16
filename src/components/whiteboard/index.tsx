@@ -115,6 +115,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
   const [fetchedData, setFetchedData] = useState<boolean>(false);
+  const [refreshed, setRefreshed] = useState<boolean>(false);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -266,6 +267,20 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
     //eslint-disable-next-line
   }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
+
+  // call refresh when page size change due to display webcams
+  useEffect(() => {
+    if (!excalidrawAPI) {
+      return;
+    }
+    if (!refreshed && videoSubscribers?.size) {
+      excalidrawAPI.refresh();
+      setRefreshed(true);
+    } else if (refreshed && videoSubscribers?.size === 0) {
+      excalidrawAPI.refresh();
+      setRefreshed(false);
+    }
+  }, [videoSubscribers?.size, excalidrawAPI, refreshed]);
 
   const handleExcalidrawAddFiles = useCallback(
     async (files: Array<IWhiteboardFile>) => {
