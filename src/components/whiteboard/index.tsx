@@ -274,11 +274,15 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       return;
     }
     if (!refreshed && videoSubscribers?.size) {
-      excalidrawAPI.refresh();
       setRefreshed(true);
+      setTimeout(() => {
+        excalidrawAPI.refresh();
+      }, 500);
     } else if (refreshed && videoSubscribers?.size === 0) {
-      excalidrawAPI.refresh();
       setRefreshed(false);
+      setTimeout(() => {
+        excalidrawAPI.refresh();
+      }, 500);
     }
   }, [videoSubscribers?.size, excalidrawAPI, refreshed]);
 
