@@ -203,10 +203,10 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           </h2>
         </div>
         <div className="dark-area w-28 flex items-center justify-end relative z-20 -right-3">
-          <DarkThemeSwitcher />
           {roomDuration && roomDuration > 0 ? (
             <DurationView duration={roomDuration} />
           ) : null}
+          <DarkThemeSwitcher />
           <VolumeControl currentRoom={currentRoom} />
           <Menu>
             {({ open }) => (

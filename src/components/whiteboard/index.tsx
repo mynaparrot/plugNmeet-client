@@ -35,6 +35,7 @@ import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
 import ManageFiles from './manageFiles';
+import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -80,6 +81,10 @@ const themeSelector = createSelector(
   (state: RootState) => state.roomSettings.theme,
   (theme) => theme,
 );
+const screenWidthSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenWidth,
+  (screenWidth) => screenWidth,
+);
 
 const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentUser = store.getState().session.currentUser;
@@ -116,6 +121,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const previousPage = usePreviousPage(currentPage);
   const [fetchedData, setFetchedData] = useState<boolean>(false);
   const [refreshed, setRefreshed] = useState<boolean>(false);
+  const screenWidth = useAppSelector(screenWidthSelector);
+  const preScreenWidth = useStorePreviousInt(screenWidth);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -274,13 +281,36 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       return;
     }
     if (!refreshed && videoSubscribers?.size) {
-      excalidrawAPI.refresh();
       setRefreshed(true);
+      setTimeout(() => {
+        excalidrawAPI.refresh();
+      }, 500);
     } else if (refreshed && videoSubscribers?.size === 0) {
-      excalidrawAPI.refresh();
       setRefreshed(false);
+      setTimeout(() => {
+        excalidrawAPI.refresh();
+      }, 500);
     }
   }, [videoSubscribers?.size, excalidrawAPI, refreshed]);
+
+  // watch screen width changes
+  useEffect(() => {
+    if (!excalidrawAPI) {
+      return;
+    }
+
+    const doRefresh = throttle(
+      () => {
+        excalidrawAPI.refresh();
+      },
+      500,
+      { trailing: false },
+    );
+
+    if (preScreenWidth && preScreenWidth !== screenWidth) {
+      doRefresh();
+    }
+  }, [preScreenWidth, screenWidth, excalidrawAPI]);
 
   const handleExcalidrawAddFiles = useCallback(
     async (files: Array<IWhiteboardFile>) => {
