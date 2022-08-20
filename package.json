@@ -16,7 +16,7 @@
   "dependencies": {
     "@excalidraw/excalidraw": "0.12.0",
     "@headlessui/react": "1.6.6",
-    "@reduxjs/toolkit": "1.8.4",
+    "@reduxjs/toolkit": "1.8.5",
     "@tensorflow-models/body-pix": "2.2.0",
     "@tensorflow/tfjs": "3.19.0",
     "axios": "0.27.2",
