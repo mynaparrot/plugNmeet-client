@@ -20,6 +20,7 @@ import {
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
+  chosenEmoji: any;
 }
 const isChatServiceReadySelector = createSelector(
   (state: RootState) => state.session.isChatServiceReady,
@@ -43,7 +44,10 @@ const selectedChatOptionSelector = createSelector(
   (selectedChatOption) => selectedChatOption,
 );
 
-const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
+const TextBoxArea = (
+  { currentRoom }: ITextBoxAreaProps,
+  { chosenEmoji }: ITextBoxAreaProps,
+) => {
   const isChatServiceReady = useAppSelector(isChatServiceReadySelector);
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
@@ -146,35 +150,39 @@ const TextBoxArea = ({ currentRoom }: ITextBoxAreaProps) => {
   };
 
   return (
-    <div className="flex items-start justify-between h-[4.5rem] p-2">
-      <textarea
-        name="message-textarea"
-        id="message-textarea"
-        className="w-full bg-white dark:bg-darkSecondary2 h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor dark:text-white placeholder:text-primaryColor/70 dark:placeholder:text-white/70"
-        value={message}
-        onChange={(e) => setMessage(e.currentTarget.value)}
-        disabled={!isChatServiceReady || lockSendMsg}
-        placeholder={t('right-panel.chat-box-placeholder')}
-        onKeyDown={(e) => onEnterPress(e)}
-      />
-      <div className="btns">
-        <button
+    <>
+      {/* {console.log(chosenEmoji.emoji)} */}
+      {/* <p>{chosenEmoji.emoji}</p> */}
+      <div className="flex items-start justify-between h-[4.5rem] p-2 pl-10 md:pl-0">
+        <textarea
+          name="message-textarea"
+          id="message-textarea"
+          className="w-full bg-white dark:bg-darkSecondary2 h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor dark:text-white placeholder:text-primaryColor/70 dark:placeholder:text-white/70"
+          value={message}
+          onChange={(e) => setMessage(e.currentTarget.value)}
           disabled={!isChatServiceReady || lockSendMsg}
-          onClick={() => sendMsg()}
-          className="w-4 h-6 p-2"
-        >
-          <i className="pnm-send primaryColor text-[20px] dark:text-secondaryColor" />
-        </button>
+          placeholder={t('right-panel.chat-box-placeholder')}
+          onKeyDown={(e) => onEnterPress(e)}
+        />
+        <div className="btns">
+          <button
+            disabled={!isChatServiceReady || lockSendMsg}
+            onClick={() => sendMsg()}
+            className="w-4 h-6 p-2"
+          >
+            <i className="pnm-send primaryColor text-[20px] dark:text-secondaryColor" />
+          </button>
 
-        {showSendFile ? (
-          <FileSend
-            isChatServiceReady={isChatServiceReady}
-            lockSendFile={lockSendFile}
-            currentRoom={currentRoom}
-          />
-        ) : null}
+          {showSendFile ? (
+            <FileSend
+              isChatServiceReady={isChatServiceReady}
+              lockSendFile={lockSendFile}
+              currentRoom={currentRoom}
+            />
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
