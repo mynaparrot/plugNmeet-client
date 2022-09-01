@@ -57,7 +57,7 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
     }
   }, [isChatLock, isRecorder]);
 
-  const onEmojiClick = (event, data: IEmojiData) => {
+  const onEmojiClick = (_event: any, data: IEmojiData) => {
     setChosenEmoji(data.emoji);
   };
 
