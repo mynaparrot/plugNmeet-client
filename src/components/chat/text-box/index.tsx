@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import sanitizeHtml from 'sanitize-html';
 import { Room } from 'livekit-client';
@@ -20,7 +20,8 @@ import {
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
-  chosenEmoji: any;
+  chosenEmoji: string | null;
+  onAfterSendMessage(): void;
 }
 const isChatServiceReadySelector = createSelector(
   (state: RootState) => state.session.isChatServiceReady,
@@ -44,10 +45,11 @@ const selectedChatOptionSelector = createSelector(
   (selectedChatOption) => selectedChatOption,
 );
 
-const TextBoxArea = (
-  { currentRoom }: ITextBoxAreaProps,
-  { chosenEmoji }: ITextBoxAreaProps,
-) => {
+const TextBoxArea = ({
+  currentRoom,
+  chosenEmoji,
+  onAfterSendMessage,
+}: ITextBoxAreaProps) => {
   const isChatServiceReady = useAppSelector(isChatServiceReadySelector);
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
@@ -105,6 +107,21 @@ const TextBoxArea = (
     // eslint-disable-next-line
   }, []);
 
+  const addEmoji = useCallback(
+    (emoji: string) => {
+      const msg = message + emoji;
+      setMessage(msg);
+    },
+    [message],
+  );
+
+  useEffect(() => {
+    if (chosenEmoji) {
+      addEmoji(chosenEmoji);
+    }
+    //eslint-disable-next-line
+  }, [chosenEmoji]);
+
   const cleanHtml = (rawText) => {
     return sanitizeHtml(rawText, {
       allowedTags: ['b', 'i', 'strong', 'br'],
@@ -114,7 +131,6 @@ const TextBoxArea = (
 
   const sendMsg = async () => {
     const msg = cleanHtml(message);
-
     if (isEmpty(msg)) {
       return;
     }
@@ -140,6 +156,7 @@ const TextBoxArea = (
       sendWebsocketMessage(dataMsg.toBinary());
       setMessage('');
     }
+    onAfterSendMessage();
   };
 
   const onEnterPress = (e) => {
@@ -151,8 +168,6 @@ const TextBoxArea = (
 
   return (
     <>
-      {/* {console.log(chosenEmoji.emoji)} */}
-      {/* <p>{chosenEmoji.emoji}</p> */}
       <div className="flex items-start justify-between h-[4.5rem] p-2 pl-10 md:pl-0">
         <textarea
           name="message-textarea"
