@@ -14,7 +14,7 @@
     "proto": "protoc --es_opt=target=js+dts --plugin=protoc-gen-es=./node_modules/.bin/protoc-gen-es --es_out=./src/helpers/proto --proto_path=./protocol/proto_files plugnmeet_datamessage.proto plugnmeet_recorder.proto plugnmeet_recording.proto plugnmeet_breakout_room.proto plugnmeet_polls.proto plugnmeet_common_api.proto"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "0.1.0",
+    "@bufbuild/protobuf": "0.1.1",
     "@excalidraw/excalidraw": "0.12.0",
     "@headlessui/react": "1.6.6",
     "@reduxjs/toolkit": "1.8.5",
