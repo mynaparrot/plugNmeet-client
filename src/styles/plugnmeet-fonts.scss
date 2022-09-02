@@ -31,6 +31,12 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-emoji:before {
+  content: '\e92d';
+}
+.pnm-cross:before {
+  content: '\e92e';
+}
 .pnm-moon:before {
   content: '\e92b';
 }

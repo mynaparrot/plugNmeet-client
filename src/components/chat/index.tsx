@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Room } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
+import EmojiPicker, { IEmojiData } from 'emoji-picker-react';
 
 import { RootState, store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
@@ -20,6 +21,8 @@ const isChatLockSelector = createSelector(
 const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
   const isChatLock = useAppSelector(isChatLockSelector);
   const [show, setShow] = useState<boolean>(false);
+  const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
+  const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);
 
   // default room lock settings
   useEffect(() => {
@@ -54,6 +57,16 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
     }
   }, [isChatLock, isRecorder]);
 
+  const onEmojiClick = (_event: any, data: IEmojiData) => {
+    setChosenEmoji(`${data.emoji}`);
+  };
+
+  const onAfterSendMessage = () => {
+    if (isOpenEmojiPanel) {
+      setIsOpenEmojiPanel(false);
+    }
+  };
+
   return (
     <>
       <div className="h-[calc(100%)] messageModule-wrapper relative z-10 right-0 top-0 w-[250px] xl:w-[300px] multi-gradient">
@@ -65,9 +78,36 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
         <div className="w-[100%] h-[1px] hiddenAnimation absolute z-50 bottom-0 bg-gradient-to-r from-primaryColor to-secondaryColor" />
       ) : null}
       {show ? (
-        <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[230px] xl:w-[300px] bg-white">
-          <TextBoxArea currentRoom={currentRoom} />
-        </div>
+        <>
+          <div
+            className={`emoji-selection-wrap w-[250px] xl:w-[300px] fixed z-[99] bottom-[120px] lg:bottom-[65px] right-0 left-10 md:left-auto transition ease-in ${
+              isOpenEmojiPanel
+                ? 'emoji-active opacity-100 visible pointer-events-auto'
+                : 'opacity-0 invisible pointer-events-none'
+            }`}
+          >
+            <EmojiPicker onEmojiClick={onEmojiClick} />
+          </div>
+          <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[300px] bg-white">
+            <TextBoxArea
+              currentRoom={currentRoom}
+              chosenEmoji={chosenEmoji}
+              onAfterSendMessage={onAfterSendMessage}
+            />
+            <div
+              className={`emoji-picker absolute left-2 md:-left-6 bottom-5 w-5 h-5 cursor-pointer text-secondaryColor dark:text-darkText ${
+                isOpenEmojiPanel ? 'emoji-active' : ''
+              }`}
+              onClick={() => setIsOpenEmojiPanel(!isOpenEmojiPanel)}
+            >
+              {isOpenEmojiPanel ? (
+                <i className="pnm-cross" />
+              ) : (
+                <i className="pnm-emoji" />
+              )}
+            </div>
+          </div>
+        </>
       ) : null}
     </>
   );
