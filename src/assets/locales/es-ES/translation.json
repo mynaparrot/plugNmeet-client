@@ -67,7 +67,8 @@
       "video-quality": "Calidad del vídeo",
       "high": "Alto",
       "medium": "Medio",
-      "low": "Bajo"
+      "low": "Bajo",
+      "enable-dark-theme": "Enable dark theme"
     },
     "keyboard-shortcuts": {
       "title": "Atajos de teclado",
