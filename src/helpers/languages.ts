@@ -16,6 +16,10 @@ const languages = [
     text: 'Português',
   },
   {
+    code: 'ja-JP',
+    text: '日本語',
+  },
+  {
     code: 'zh-CN',
     text: '简体中文',
   },
