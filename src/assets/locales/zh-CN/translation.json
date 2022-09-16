@@ -67,7 +67,8 @@
       "video-quality": "视频质量",
       "high": "高",
       "medium": "中等",
-      "low": "低"
+      "low": "低",
+      "enable-dark-theme": "Enable dark theme"
     },
     "keyboard-shortcuts": {
       "title": "键盘快捷键",
