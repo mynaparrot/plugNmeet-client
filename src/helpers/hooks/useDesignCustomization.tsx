@@ -131,6 +131,14 @@ const useDesignCustomization = () => {
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
+      css += `.main-app-bg::before, .waiting-room::before, .error-app-bg::before {
+          position: absolute;
+          content: "";
+          width: 100%;
+          height: 100%;
+          background-color: #001222;
+          opacity: 0.7;
+      }`;
     } else if (designCustomParams.background_color) {
       css += `.main-app-bg { 
         background: ${designCustomParams.background_color} !important;
