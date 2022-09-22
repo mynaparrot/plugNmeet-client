@@ -8,9 +8,9 @@
   "share": "Compartir",
   "version": "Versión: {{pnm_version}}; Construcción: {{build}}",
   "open": "Abrir",
-  "please-wait": "Please wait...",
-  "are-you-sure-to-close": "Are you sure to close?",
-  "you-are-about-to-close": "You are about to close",
+  "please-wait": "Espere, por favor...",
+  "are-you-sure-to-close": "¿Estás seguro de cerrar?",
+  "you-are-about-to-close": "Estás a punto de cerrar",
   "notifications": {
     "room-not-active": "La sala no está activa.",
     "recording-already-running": "la grabación ya se está ejecutando",
@@ -29,13 +29,13 @@
     "you-have-reject": "Usted ha sido eliminado de la conferencia",
     "waiting-for-approval": "Por favor, espera hasta que un moderador te apruebe.",
     "room-disconnected-title": "Sala desconectada",
-    "room-disconnected-unknown": "The room has been disconnected. Code: {{code}}",
-    "room-disconnected-client-initiated": "Client has been initiated. Code: {{code}}",
-    "room-disconnected-duplicate-entry": "Other user with same userId has been joined. Code: {{code}}",
-    "room-disconnected-server-shutdown": "Server shutdown. Code: {{code}}",
-    "room-disconnected-participant-removed": "You have been removed from this conference. Code: {{code}}",
-    "room-disconnected-room-ended": "The room has been closed. Code: {{code}}",
-    "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}"
+    "room-disconnected-unknown": "La sala ha sido desconectada. Motivo: {{code}}",
+    "room-disconnected-client-initiated": "El cliente ha sido iniciado. Código: {{code}}",
+    "room-disconnected-duplicate-entry": "Otro usuario con el mismo userId se ha unido. Código: {{code}}",
+    "room-disconnected-server-shutdown": "El servidor se cayó. Código: {{code}}",
+    "room-disconnected-participant-removed": "Ha sido eliminado de esta conferencia. Código: {{code}}",
+    "room-disconnected-room-ended": "La sala ha sido cerrada. Código: {{code}}",
+    "room-disconnected-state-mismatch": "El estado no coincide. Código: {{code}}"
   },
   "room-metadata": {
     "session-recording": "Esta sesión se está grabando",
@@ -68,7 +68,7 @@
       "high": "Alto",
       "medium": "Medio",
       "low": "Bajo",
-      "enable-dark-theme": "Enable dark theme"
+      "enable-dark-theme": "Activar tema oscuro"
     },
     "keyboard-shortcuts": {
       "title": "Atajos de teclado",
@@ -204,8 +204,8 @@
       "stop-external-media-player": "Detener reproductor multimedia externo",
       "manage-waiting-room": "Administrar sala de espera",
       "manage-breakout-room": "Gestionar Grupos de Trabajo",
-      "start-display-external-link": "Display external link",
-      "stop-display-external-link": "Stop display external link"
+      "start-display-external-link": "Mostrar enlace externo",
+      "stop-display-external-link": "Dejar de mostrar enlace externo"
     },
     "notice": {
       "already-active-screen-sharing": "La sesión ya tiene un uso compartido de pantalla activo",
@@ -332,19 +332,19 @@
     "not-joined": "No se ha unido"
   },
   "external-display-link-display": {
-    "modal-title": "Display external link (iframe)",
+    "modal-title": "Mostrar enlace externo (iframe)",
     "url": "Url",
-    "display": "Display",
-    "link-invalid": "Link not valid",
-    "note": "Note: Make sure the URL has permission to open inside an iframe. Example: https://www.gameflare.com/embed/mini-survival",
-    "send-extra-values": "Send Extra values",
-    "name": "Name",
-    "name-des": "User's full name",
-    "user-id": "User Id",
-    "user-id-des": "User's unique Id",
-    "meeting-id": "Meeting Id",
-    "meeting-id-des": "Meeting's origin ID",
-    "user-role": "User role",
-    "user-role-des": "User's current role. Either admin or participant"
+    "display": "Mostrar",
+    "link-invalid": "El enlace no es válido",
+    "note": "Nota: Asegúrese de que la URL tiene permiso para abrir dentro de un iframe. Ejemplo: https://www.gameflare.com/embed/mini-survival",
+    "send-extra-values": "Enviar valores extra",
+    "name": "Nombre",
+    "name-des": "Nombre completo del usuario",
+    "user-id": "Id de Usuario",
+    "user-id-des": "Id único del usuario",
+    "meeting-id": "ID de Reunión",
+    "meeting-id-des": "ID de origen de la reunión",
+    "user-role": "Rol del usuario",
+    "user-role-des": "Rol actual del usuario. Administrador o participante"
   }
 }
