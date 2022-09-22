@@ -1145,6 +1145,19 @@ button.next-cam:hover {
     left: 0;
     width: 100%;
   }
+  .landscape-device
+    .share-screen-wrapper.is-share-screen-running
+    .screen-share-video
+    button {
+    bottom: 55px;
+  }
+  .landscape-device
+    .share-screen-wrapper.is-share-screen-running
+    .screen-share-video
+    video.video-player {
+    height: calc(100% - 20px);
+    top: 10px;
+  }
 }
 
 @media only screen and (max-height: 720px) {
@@ -1411,6 +1424,9 @@ button.next-cam:hover {
   .excalidraw-wrapper {
     margin-top: 1rem;
     height: calc(100% - 30px);
+  }
+  .share-screen-wrapper.is-share-screen-running .screen-share-video {
+    padding-bottom: calc(100vh - 105px) !important;
   }
 }
 
