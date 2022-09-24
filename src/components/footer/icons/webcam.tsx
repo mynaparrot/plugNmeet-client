@@ -295,16 +295,16 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           </span>
 
           {!isActiveWebcam ? (
-            <i className="pnm-webcam primaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
+            <i className="pnm-webcam primaryColor text-[10px] lg:text-[14px]" />
           ) : null}
           {lockWebcam ? (
             <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
-              <i className="pnm-lock primaryColor dark:text-darkText" />
+              <i className="pnm-lock primaryColor" />
             </div>
           ) : null}
 
           {isActiveWebcam ? (
-            <i className="pnm-webcam secondaryColor dark:text-darkText text-[10px] lg:text-[14px]" />
+            <i className="pnm-webcam secondaryColor text-[10px] lg:text-[14px]" />
           ) : null}
         </div>
 
