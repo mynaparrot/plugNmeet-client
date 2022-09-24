@@ -38,6 +38,7 @@ import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
 import ManageFiles from './manageFiles';
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
+import { addPreloadedLibraryItems } from './helpers/handleLibrary';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -206,15 +207,20 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // watch presenter changes
   useEffect(() => {
+    if (!excalidrawAPI) {
+      return;
+    }
+
     if (isPresenter) {
       setViewModeEnabled(false);
+      addPreloadedLibraryItems(excalidrawAPI);
     } else if (!currentUser?.isRecorder) {
       setViewModeEnabled(
         currentUser?.metadata?.lock_settings.lock_whiteboard ?? true,
       );
     }
     //eslint-disable-next-line
-  }, [isPresenter]);
+  }, [isPresenter, excalidrawAPI]);
 
   // if page change then we'll reset version
   useEffect(() => {
@@ -534,6 +540,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         langCode={i18n.languages[0]}
         renderTopRightUI={renderTopRightUI}
         renderFooter={renderFooter}
+        libraryReturnUrl=""
       />
     );
   };

@@ -41,3 +41,13 @@ window.STOP_MIC_TRACK_ON_MUTE = true;
 //   "custom_css_url": "https:\/\/mydomain.com\/plugNmeet_desing.css",
 //   "custom_logo": "https:\/\/mydomain.com\/logo.png",
 // }`;
+
+// Whiteboard PreloadedLibraryItems which should an array of full library direct URL
+// You can get items from here: https://libraries.excalidraw.com
+// window.WHITEBOARD_PRELOADED_LIBRARY_ITEMS = [
+//   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
+//   'https://libraries.excalidraw.com/libraries/aretecode/decision-flow-control.excalidrawlib',
+//   'https://libraries.excalidraw.com/libraries/dbssticky/data-viz.excalidrawlib',
+//   'https://libraries.excalidraw.com/libraries/pgilfernandez/basic-shapes.excalidrawlib',
+//   'https://libraries.excalidraw.com/libraries/ocapraro/bubbles.excalidrawlib',
+// ];
