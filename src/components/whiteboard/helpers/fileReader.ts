@@ -89,7 +89,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
   };
 
   const percent = Math.round((fileWidth * 100) / excalidrawWidth);
-  let reducedBy = 0.4;
+  let reducedBy = 0.45;
   if (percent < 50) {
     reducedBy = 0.7;
   }
