@@ -457,7 +457,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
       // broadcast AppState Changes
       if (isPresenter) {
-        console.log(appState.height, appState.width);
         broadcastAppStateChanges(
           appState.height,
           appState.width,
