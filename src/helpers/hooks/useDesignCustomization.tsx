@@ -137,7 +137,7 @@ const useDesignCustomization = () => {
           width: 100%;
           height: 100%;
           background-color: #001222;
-          opacity: 0.7;
+          opacity: 0.5;
       }`;
     } else if (designCustomParams.background_color) {
       css += `.main-app-bg { 
