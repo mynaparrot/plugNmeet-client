@@ -10,6 +10,7 @@ import {
   Gesture,
   Collaborator,
   BinaryFileData,
+  AppState,
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
@@ -26,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
+  broadcastAppStateChanges,
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
@@ -48,6 +50,10 @@ const excalidrawElementsSelector = createSelector(
 const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
+);
+const whiteboardAppStateSelector = createSelector(
+  (state: RootState) => state.whiteboard.whiteboardAppState,
+  (whiteboardAppState) => whiteboardAppState,
 );
 const whiteboardOfficeFilePagesAndOtherImagesSelector = createSelector(
   (state: RootState) =>
@@ -104,6 +110,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
+  const whiteboardAppState = useAppSelector(whiteboardAppStateSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
   const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
     whiteboardOfficeFilePagesAndOtherImagesSelector,
@@ -259,6 +266,22 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [mousePointerLocation]);
 
+  // for handling AppState changes
+  useEffect(() => {
+    if (excalidrawAPI && whiteboardAppState) {
+      excalidrawAPI.updateScene({
+        appState: {
+          scrollX: whiteboardAppState.scrollX,
+          scrollY: whiteboardAppState.scrollY,
+          theme: whiteboardAppState.theme,
+          viewBackgroundColor: whiteboardAppState.viewBackgroundColor,
+          zenModeEnabled: whiteboardAppState.zenModeEnabled,
+          gridSize: whiteboardAppState.gridSize,
+        },
+      });
+    }
+  }, [excalidrawAPI, whiteboardAppState]);
+
   // for handling files
   useEffect(() => {
     if (whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
@@ -346,7 +369,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
             url,
             file.id,
             lastBroadcastOrReceivedSceneVersion,
-            file.isOfficeFile,
             file.uploaderWhiteboardHeight,
             file.uploaderWhiteboardWidth,
           );
@@ -407,7 +429,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     excalidrawAPI?.history.clear();
   };
 
-  const onChange = (elements: readonly ExcalidrawElement[]) => {
+  const onChange = (
+    elements: readonly ExcalidrawElement[],
+    appState: AppState,
+  ) => {
     if (excalidrawAPI && currentUser && elements.length) {
       if (viewModeEnabled) {
         return;
@@ -415,6 +440,18 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
         setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
         broadcastSceneOnChange(elements);
+      }
+
+      // broadcast AppState Changes
+      if (isPresenter) {
+        broadcastAppStateChanges(
+          appState.scrollX,
+          appState.scrollY,
+          appState.theme,
+          appState.viewBackgroundColor,
+          appState.zenModeEnabled,
+          appState.gridSize,
+        );
       }
     }
   };

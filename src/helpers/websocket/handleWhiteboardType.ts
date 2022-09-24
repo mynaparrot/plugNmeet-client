@@ -4,6 +4,7 @@ import {
   addWhiteboardUploadedOfficeFiles,
   setWhiteboardCurrentPage,
   updateExcalidrawElements,
+  updateMouseAppStateChanges,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
@@ -28,6 +29,10 @@ export const handleWhiteboardMsg = (body: DataMsgBody) => {
     }
   } else if (body.type === DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE) {
     handleAddWhiteboardOfficeFile(body.msg);
+  } else if (body.type === DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE) {
+    if (!isPresenter) {
+      store.dispatch(updateMouseAppStateChanges(JSON.parse(body.msg)));
+    }
   }
 };
 

@@ -3,6 +3,7 @@ export interface IWhiteboardSlice {
   currentPage: number;
   excalidrawElements: string;
   mousePointerLocation: string;
+  whiteboardAppState: IWhiteboardAppState | null;
   requestedWhiteboardData: IRequestWhiteboardData;
   currentWhiteboardOfficeFileId: string;
   whiteboardOfficeFilePagesAndOtherImages: string;
@@ -31,4 +32,13 @@ export interface IWhiteboardOfficeFile {
   totalPages: number;
   currentPage?: number;
   pageFiles: string;
+}
+
+export interface IWhiteboardAppState {
+  scrollX: number;
+  scrollY: number;
+  theme: string;
+  viewBackgroundColor: string;
+  zenModeEnabled: boolean;
+  gridSize: number | null;
 }

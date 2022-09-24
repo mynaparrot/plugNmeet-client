@@ -215,3 +215,36 @@ export const broadcastMousePointerUpdate = (msg: any) => {
 
   sendWebsocketMessage(dataMsg.toBinary());
 };
+
+export const broadcastAppStateChanges = (
+  scrollX: number,
+  scrollY: number,
+  theme: string,
+  viewBackgroundColor: string,
+  zenModeEnabled: boolean,
+  gridSize: number | null,
+) => {
+  const session = store.getState().session;
+  const dataMsg = new DataMessage({
+    type: DataMsgType.WHITEBOARD,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
+    body: {
+      type: DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: JSON.stringify({
+        scrollX,
+        scrollY,
+        theme,
+        viewBackgroundColor,
+        zenModeEnabled,
+        gridSize,
+      }),
+    },
+  });
+
+  sendWebsocketMessage(dataMsg.toBinary());
+};
