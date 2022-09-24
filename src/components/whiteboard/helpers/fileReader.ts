@@ -16,12 +16,14 @@ let fileId = '',
   fileWidth: number,
   lastVersion,
   excalidrawHeight,
-  excalidrawWidth;
+  excalidrawWidth,
+  isOfficeFile = false;
 
 export const fetchFileWithElm = async (
   url: string,
   file_id: string,
   last_version: number,
+  is_office_file: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
 ) => {
@@ -36,6 +38,7 @@ export const fetchFileWithElm = async (
     lastVersion = last_version;
     excalidrawHeight = uploaderWhiteboardHeight;
     excalidrawWidth = uploaderWhiteboardWidth;
+    isOfficeFile = is_office_file;
     if (lastVersion < 0) {
       lastVersion = 1;
     }
@@ -89,7 +92,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
   };
 
   const percent = Math.round((fileWidth * 100) / excalidrawWidth);
-  let reducedBy = 0.45;
+  let reducedBy = 0.4;
   if (percent < 50) {
     reducedBy = 0.7;
   }
@@ -121,7 +124,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     status: 'pending',
     fileId: fileId as any,
     scale: [1, 1],
-    locked: false,
+    locked: isOfficeFile, // if office file then lock it by default.
   };
 
   return {
@@ -134,7 +137,7 @@ const getFileDimension = async (height: number, width: number) => {
   fileHeight = Number(`${height}`);
   fileWidth = Number(`${width}`);
 
-  const excalidrawActualWidth = excalidrawWidth - 180;
+  const excalidrawActualWidth = excalidrawWidth - 150;
   const reducedBy = 0.01;
 
   while (fileWidth > excalidrawActualWidth) {

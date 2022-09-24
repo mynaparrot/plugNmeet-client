@@ -391,6 +391,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
             url,
             file.id,
             lastBroadcastOrReceivedSceneVersion,
+            file.isOfficeFile,
             file.uploaderWhiteboardHeight,
             file.uploaderWhiteboardWidth,
           );
