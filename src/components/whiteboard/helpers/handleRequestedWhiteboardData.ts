@@ -16,6 +16,8 @@ import {
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 const broadcastedElementVersions: Map<string, number> = new Map();
+let preScrollX = 0,
+  preScrollY = 0;
 
 export const sendRequestedForWhiteboardData = () => {
   const session = store.getState().session;
@@ -217,6 +219,8 @@ export const broadcastMousePointerUpdate = (msg: any) => {
 };
 
 export const broadcastAppStateChanges = (
+  height: number,
+  width: number,
   scrollX: number,
   scrollY: number,
   theme: string,
@@ -224,6 +228,14 @@ export const broadcastAppStateChanges = (
   zenModeEnabled: boolean,
   gridSize: number | null,
 ) => {
+  if (preScrollX === scrollX && preScrollY === scrollY) {
+    // if both same then we don't need to update
+    return;
+  } else {
+    preScrollX = scrollX;
+    preScrollY = scrollY;
+  }
+
   const session = store.getState().session;
   const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
@@ -236,6 +248,8 @@ export const broadcastAppStateChanges = (
         userId: session.currentUser?.userId ?? '',
       },
       msg: JSON.stringify({
+        height,
+        width,
         scrollX,
         scrollY,
         theme,
