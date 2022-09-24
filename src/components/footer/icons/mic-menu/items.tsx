@@ -93,7 +93,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
   const leaveMic = () => {
     currentRoom?.localParticipant.audioTracks.forEach(async (publication) => {
       if (publication.track && publication.kind === Track.Kind.Audio) {
-        currentRoom.localParticipant.unpublishTrack(publication.track);
+        currentRoom.localParticipant.unpublishTrack(publication.track, true);
       }
     });
     dispatch(updateIsActiveMicrophone(false));

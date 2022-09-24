@@ -71,7 +71,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     const closeMicOnLock = () => {
       currentRoom?.localParticipant.videoTracks.forEach((publication) => {
         if (publication.track && publication.source === Track.Source.Camera) {
-          currentRoom.localParticipant.unpublishTrack(publication.track);
+          currentRoom.localParticipant.unpublishTrack(publication.track, true);
         }
       });
       dispatch(updateIsActiveWebcam(false));
@@ -186,7 +186,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
           publication.track &&
           publication.track.source === Track.Source.Camera
         ) {
-          currentRoom.localParticipant.unpublishTrack(publication.track);
+          currentRoom.localParticipant.unpublishTrack(publication.track, true);
         }
       });
       dispatch(updateIsActiveWebcam(false));

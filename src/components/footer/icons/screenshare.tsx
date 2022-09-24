@@ -66,7 +66,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
             publication.source === Track.Source.ScreenShareAudio) &&
           publication.track
         ) {
-          currentRoom.localParticipant.unpublishTrack(publication.track);
+          currentRoom.localParticipant.unpublishTrack(publication.track, true);
         }
       });
       dispatch(updateIsActiveScreenshare(false));
