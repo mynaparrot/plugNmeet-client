@@ -35,6 +35,8 @@ export interface IWhiteboardOfficeFile {
 }
 
 export interface IWhiteboardAppState {
+  height: number;
+  width: number;
   scrollX: number;
   scrollY: number;
   theme: string;

@@ -130,6 +130,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const [refreshed, setRefreshed] = useState<boolean>(false);
   const screenWidth = useAppSelector(screenWidthSelector);
   const preScreenWidth = useStorePreviousInt(screenWidth);
+  const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
+    useState<number>(0);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -139,6 +141,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       ) {
         setViewModeEnabled(false);
       }
+    } else {
+      setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
     }
     //eslint-disable-next-line
   }, [excalidrawAPI]);
@@ -267,19 +271,27 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   }, [mousePointerLocation]);
 
   // for handling AppState changes
+  // websocket will update changes only if current user isn't presenter
   useEffect(() => {
     if (excalidrawAPI && whiteboardAppState) {
+      const appState: any = {
+        theme: whiteboardAppState.theme,
+        viewBackgroundColor: whiteboardAppState.viewBackgroundColor,
+        zenModeEnabled: whiteboardAppState.zenModeEnabled,
+        gridSize: whiteboardAppState.gridSize,
+      };
+
+      // if width isn't same then we will avoid changes
+      // otherwise in small devices it will be problem.
+      if (currentWhiteboardWidth >= whiteboardAppState.width) {
+        appState.scrollX = whiteboardAppState.scrollX;
+        appState.scrollY = whiteboardAppState.scrollY;
+      }
       excalidrawAPI.updateScene({
-        appState: {
-          scrollX: whiteboardAppState.scrollX,
-          scrollY: whiteboardAppState.scrollY,
-          theme: whiteboardAppState.theme,
-          viewBackgroundColor: whiteboardAppState.viewBackgroundColor,
-          zenModeEnabled: whiteboardAppState.zenModeEnabled,
-          gridSize: whiteboardAppState.gridSize,
-        },
+        appState,
       });
     }
+    // eslint-disable-next-line
   }, [excalidrawAPI, whiteboardAppState]);
 
   // for handling files
@@ -325,6 +337,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     const doRefresh = throttle(
       () => {
         excalidrawAPI.refresh();
+        setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
       },
       500,
       { trailing: false },
@@ -444,7 +457,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
       // broadcast AppState Changes
       if (isPresenter) {
+        console.log(appState.height, appState.width);
         broadcastAppStateChanges(
+          appState.height,
+          appState.width,
           appState.scrollX,
           appState.scrollY,
           appState.theme,
