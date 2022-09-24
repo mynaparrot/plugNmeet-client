@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-unresolved
+import { NormalizedZoomValue } from '@excalidraw/excalidraw/types/types';
+
 export interface IWhiteboardSlice {
   totalPages: number;
   currentPage: number;
@@ -39,6 +42,7 @@ export interface IWhiteboardAppState {
   width: number;
   scrollX: number;
   scrollY: number;
+  zoomValue: NormalizedZoomValue;
   theme: string;
   viewBackgroundColor: string;
   zenModeEnabled: boolean;

@@ -1,7 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
-// eslint-disable-next-line import/no-unresolved
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import {
+  ExcalidrawImperativeAPI,
+  NormalizedZoomValue,
+  // eslint-disable-next-line import/no-unresolved
+} from '@excalidraw/excalidraw/types/types';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
@@ -223,6 +226,7 @@ export const broadcastAppStateChanges = (
   width: number,
   scrollX: number,
   scrollY: number,
+  zoomValue: NormalizedZoomValue,
   theme: string,
   viewBackgroundColor: string,
   zenModeEnabled: boolean,
@@ -252,6 +256,7 @@ export const broadcastAppStateChanges = (
         width,
         scrollX,
         scrollY,
+        zoomValue,
         theme,
         viewBackgroundColor,
         zenModeEnabled,

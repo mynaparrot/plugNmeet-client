@@ -292,6 +292,9 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (currentWhiteboardWidth >= whiteboardAppState.width) {
         appState.scrollX = whiteboardAppState.scrollX;
         appState.scrollY = whiteboardAppState.scrollY;
+        appState.zoom = {
+          value: whiteboardAppState.zoomValue,
+        };
       }
       excalidrawAPI.updateScene({
         appState,
@@ -468,6 +471,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
           appState.width,
           appState.scrollX,
           appState.scrollY,
+          appState.zoom.value,
           appState.theme,
           appState.viewBackgroundColor,
           appState.zenModeEnabled,
