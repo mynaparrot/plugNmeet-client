@@ -10,6 +10,7 @@ import {
   Gesture,
   Collaborator,
   BinaryFileData,
+  AppState,
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
@@ -26,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from './helpers/fileReader';
 import {
+  broadcastAppStateChanges,
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
   sendRequestedForWhiteboardData,
@@ -36,6 +38,7 @@ import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
 import ManageFiles from './manageFiles';
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
+import { addPreloadedLibraryItems } from './helpers/handleLibrary';
 
 interface IWhiteboardProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -48,6 +51,10 @@ const excalidrawElementsSelector = createSelector(
 const mousePointerLocationSelector = createSelector(
   (state: RootState) => state.whiteboard.mousePointerLocation,
   (mousePointerLocation) => mousePointerLocation,
+);
+const whiteboardAppStateSelector = createSelector(
+  (state: RootState) => state.whiteboard.whiteboardAppState,
+  (whiteboardAppState) => whiteboardAppState,
 );
 const whiteboardOfficeFilePagesAndOtherImagesSelector = createSelector(
   (state: RootState) =>
@@ -104,6 +111,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   const excalidrawElements = useAppSelector(excalidrawElementsSelector);
   const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
+  const whiteboardAppState = useAppSelector(whiteboardAppStateSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
   const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
     whiteboardOfficeFilePagesAndOtherImagesSelector,
@@ -123,6 +131,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const [refreshed, setRefreshed] = useState<boolean>(false);
   const screenWidth = useAppSelector(screenWidthSelector);
   const preScreenWidth = useStorePreviousInt(screenWidth);
+  const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
+    useState<number>(0);
 
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -132,6 +142,8 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       ) {
         setViewModeEnabled(false);
       }
+    } else {
+      setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
     }
     //eslint-disable-next-line
   }, [excalidrawAPI]);
@@ -195,15 +207,20 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
 
   // watch presenter changes
   useEffect(() => {
+    if (!excalidrawAPI) {
+      return;
+    }
+
     if (isPresenter) {
       setViewModeEnabled(false);
+      addPreloadedLibraryItems(excalidrawAPI);
     } else if (!currentUser?.isRecorder) {
       setViewModeEnabled(
         currentUser?.metadata?.lock_settings.lock_whiteboard ?? true,
       );
     }
     //eslint-disable-next-line
-  }, [isPresenter]);
+  }, [isPresenter, excalidrawAPI]);
 
   // if page change then we'll reset version
   useEffect(() => {
@@ -259,6 +276,33 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     //eslint-disable-next-line
   }, [mousePointerLocation]);
 
+  // for handling AppState changes
+  // websocket will update changes only if current user isn't presenter
+  useEffect(() => {
+    if (excalidrawAPI && whiteboardAppState) {
+      const appState: any = {
+        theme: whiteboardAppState.theme,
+        viewBackgroundColor: whiteboardAppState.viewBackgroundColor,
+        zenModeEnabled: whiteboardAppState.zenModeEnabled,
+        gridSize: whiteboardAppState.gridSize,
+      };
+
+      // if width isn't same then we will avoid changes
+      // otherwise in small devices it will be problem.
+      if (currentWhiteboardWidth >= whiteboardAppState.width) {
+        appState.scrollX = whiteboardAppState.scrollX;
+        appState.scrollY = whiteboardAppState.scrollY;
+        appState.zoom = {
+          value: whiteboardAppState.zoomValue,
+        };
+      }
+      excalidrawAPI.updateScene({
+        appState,
+      });
+    }
+    // eslint-disable-next-line
+  }, [excalidrawAPI, whiteboardAppState]);
+
   // for handling files
   useEffect(() => {
     if (whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
@@ -302,6 +346,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     const doRefresh = throttle(
       () => {
         excalidrawAPI.refresh();
+        setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
       },
       500,
       { trailing: false },
@@ -407,7 +452,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     excalidrawAPI?.history.clear();
   };
 
-  const onChange = (elements: readonly ExcalidrawElement[]) => {
+  const onChange = (
+    elements: readonly ExcalidrawElement[],
+    appState: AppState,
+  ) => {
     if (excalidrawAPI && currentUser && elements.length) {
       if (viewModeEnabled) {
         return;
@@ -415,6 +463,21 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
       if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
         setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
         broadcastSceneOnChange(elements);
+      }
+
+      // broadcast AppState Changes
+      if (isPresenter) {
+        broadcastAppStateChanges(
+          appState.height,
+          appState.width,
+          appState.scrollX,
+          appState.scrollY,
+          appState.zoom.value,
+          appState.theme,
+          appState.viewBackgroundColor,
+          appState.zenModeEnabled,
+          appState.gridSize,
+        );
       }
     }
   };
@@ -482,6 +545,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         langCode={i18n.languages[0]}
         renderTopRightUI={renderTopRightUI}
         renderFooter={renderFooter}
+        libraryReturnUrl=""
       />
     );
   };

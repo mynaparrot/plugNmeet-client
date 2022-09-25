@@ -70,7 +70,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
         publication.track &&
         publication.track.source === Track.Source.Camera
       ) {
-        currentRoom.localParticipant.unpublishTrack(publication.track);
+        currentRoom.localParticipant.unpublishTrack(publication.track, true);
       }
     });
     dispatch(updateIsActiveWebcam(false));

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   IRequestWhiteboardData,
+  IWhiteboardAppState,
   IWhiteboardFile,
   IWhiteboardOfficeFile,
   IWhiteboardSlice,
@@ -11,6 +12,7 @@ const initialState: IWhiteboardSlice = {
   currentPage: 1,
   excalidrawElements: '',
   mousePointerLocation: '',
+  whiteboardAppState: null,
   requestedWhiteboardData: {
     requested: false,
     sendTo: '',
@@ -38,6 +40,12 @@ const whiteboardSlice = createSlice({
     },
     updateMousePointerLocation: (state, action: PayloadAction<string>) => {
       state.mousePointerLocation = action.payload;
+    },
+    updateMouseAppStateChanges: (
+      state,
+      action: PayloadAction<IWhiteboardAppState>,
+    ) => {
+      state.whiteboardAppState = action.payload;
     },
     addWhiteboardOtherImageFile: (
       state,
@@ -109,6 +117,7 @@ const whiteboardSlice = createSlice({
 export const {
   updateExcalidrawElements,
   updateMousePointerLocation,
+  updateMouseAppStateChanges,
   addWhiteboardOtherImageFile,
   updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,

@@ -1,7 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
-// eslint-disable-next-line import/no-unresolved
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import {
+  ExcalidrawImperativeAPI,
+  NormalizedZoomValue,
+  // eslint-disable-next-line import/no-unresolved
+} from '@excalidraw/excalidraw/types/types';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
@@ -16,6 +19,8 @@ import {
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 const broadcastedElementVersions: Map<string, number> = new Map();
+let preScrollX = 0,
+  preScrollY = 0;
 
 export const sendRequestedForWhiteboardData = () => {
   const session = store.getState().session;
@@ -210,6 +215,53 @@ export const broadcastMousePointerUpdate = (msg: any) => {
         userId: session.currentUser?.userId ?? '',
       },
       msg: JSON.stringify(msg),
+    },
+  });
+
+  sendWebsocketMessage(dataMsg.toBinary());
+};
+
+export const broadcastAppStateChanges = (
+  height: number,
+  width: number,
+  scrollX: number,
+  scrollY: number,
+  zoomValue: NormalizedZoomValue,
+  theme: string,
+  viewBackgroundColor: string,
+  zenModeEnabled: boolean,
+  gridSize: number | null,
+) => {
+  if (preScrollX === scrollX && preScrollY === scrollY) {
+    // if both same then we don't need to update
+    return;
+  } else {
+    preScrollX = scrollX;
+    preScrollY = scrollY;
+  }
+
+  const session = store.getState().session;
+  const dataMsg = new DataMessage({
+    type: DataMsgType.WHITEBOARD,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
+    body: {
+      type: DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: JSON.stringify({
+        height,
+        width,
+        scrollX,
+        scrollY,
+        zoomValue,
+        theme,
+        viewBackgroundColor,
+        zenModeEnabled,
+        gridSize,
+      }),
     },
   });
 

@@ -80,7 +80,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
   const leaveMic = (currentRoom: Room) => {
     currentRoom.localParticipant.audioTracks.forEach(async (publication) => {
       if (publication.track && publication.kind === Track.Kind.Audio) {
-        currentRoom.localParticipant.unpublishTrack(publication.track);
+        currentRoom.localParticipant.unpublishTrack(publication.track, true);
       }
     });
     dispatch(updateIsActiveMicrophone(false));
@@ -117,7 +117,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
         publication.track &&
         publication.track.source === Track.Source.Camera
       ) {
-        currentRoom.localParticipant.unpublishTrack(publication.track);
+        currentRoom.localParticipant.unpublishTrack(publication.track, true);
       }
     });
     dispatch(updateIsActiveWebcam(false));

@@ -136,20 +136,12 @@ const prepareForExcalidraw = (): FileReaderResult => {
 const getFileDimension = async (height: number, width: number) => {
   fileHeight = Number(`${height}`);
   fileWidth = Number(`${width}`);
-  const excalidrawActualHeight = excalidrawHeight - 40;
-  const excalidrawActualWidth = excalidrawWidth - 180;
 
-  let reducedBy = 0.01;
-  while (fileHeight > excalidrawActualHeight) {
-    fileHeight -= fileHeight * reducedBy;
-    fileWidth -= fileWidth * reducedBy;
-    reducedBy += 0.01;
-  }
+  const excalidrawActualWidth = excalidrawWidth - 150;
+  const reducedBy = 0.01;
 
-  reducedBy = 0.01;
   while (fileWidth > excalidrawActualWidth) {
     fileHeight -= fileHeight * reducedBy;
     fileWidth -= fileWidth * reducedBy;
-    reducedBy += 0.01;
   }
 };

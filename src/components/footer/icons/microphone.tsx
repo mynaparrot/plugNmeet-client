@@ -59,7 +59,7 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
           publication.track &&
           publication.source === Track.Source.Microphone
         ) {
-          currentRoom.localParticipant.unpublishTrack(publication.track);
+          currentRoom.localParticipant.unpublishTrack(publication.track, true);
         }
       });
       dispatch(updateIsActiveMicrophone(false));

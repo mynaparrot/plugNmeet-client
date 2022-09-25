@@ -45,7 +45,7 @@ const BreakoutRoomInvitation = ({
         return;
       }
       if (publication.track.source === Track.Source.Camera) {
-        currentRoom.localParticipant.unpublishTrack(publication.track);
+        currentRoom.localParticipant.unpublishTrack(publication.track, true);
         dispatch(updateIsActiveWebcam(false));
         dispatch(updateSelectedVideoDevice(''));
         dispatch(
