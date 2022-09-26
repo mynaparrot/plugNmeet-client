@@ -149,7 +149,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     const data = sessionStorage.getItem(formatStorageKey(currentPage));
     if (data && excalidrawAPI) {
       const elements = JSON.parse(data);
-      if (elements.length) {
+      if (Array.isArray(elements) && elements.length) {
         excalidrawAPI.updateScene({ elements });
         if (isPresenter) {
           // better to broadcast full screen

@@ -171,6 +171,7 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
         elements: [],
       });
       excalidrawAPI.addFiles([]);
+      excalidrawAPI.history.clear();
     }
     //eslint-disable-next-line
   }, [currentWhiteboardOfficeFileId, excalidrawAPI, previousFileId]);
