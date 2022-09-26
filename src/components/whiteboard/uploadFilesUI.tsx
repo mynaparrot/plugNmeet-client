@@ -25,6 +25,7 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../helpers/proto/plugnmeet_datamessage_pb';
+import { formatStorageKey } from './helpers/fileReader';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -136,11 +137,13 @@ const UploadFilesUI = ({
       totalPages: res.total_pages,
       pageFiles: JSON.stringify(files),
     };
-
+    // save current page state before changes
+    await saveCurrentPageData();
     store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
 
     await sleep(500);
     broadcastWhiteboardOfficeFile(newFile);
+
     toast.update(id, {
       render: t('whiteboard.file-ready'),
       type: 'success',
@@ -179,6 +182,20 @@ const UploadFilesUI = ({
     });
 
     sendWebsocketMessage(dataMsg.toBinary());
+  };
+
+  const saveCurrentPageData = async () => {
+    if (!excalidrawAPI) {
+      return;
+    }
+    const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
+    if (elms.length) {
+      const currentPageNumber = store.getState().whiteboard.currentPage;
+      sessionStorage.setItem(
+        formatStorageKey(currentPageNumber),
+        JSON.stringify(elms),
+      );
+    }
   };
 
   const render = () => {
