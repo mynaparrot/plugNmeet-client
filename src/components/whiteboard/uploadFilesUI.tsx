@@ -137,11 +137,11 @@ const UploadFilesUI = ({
       totalPages: res.total_pages,
       pageFiles: JSON.stringify(files),
     };
-
+    // save current page state before changes
+    await saveCurrentPageData();
     store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
 
     await sleep(500);
-    await saveCurrentPageData();
     broadcastWhiteboardOfficeFile(newFile);
 
     toast.update(id, {
