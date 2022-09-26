@@ -7,10 +7,11 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { sleep } from '../../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import { updateCurrentWhiteboardOfficeFileId } from '../../store/slices/whiteboard';
+import { formatStorageKey } from './helpers/fileReader';
 
 interface IManageFilesProps {
   currentPage: number;
@@ -66,9 +67,24 @@ const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
   };
 
   const switchOfficeFile = async (f: IWhiteboardOfficeFile) => {
+    await saveCurrentPageData();
     dispatch(updateCurrentWhiteboardOfficeFileId(f.fileId));
     await sleep(500);
     broadcastWhiteboardOfficeFile(f);
+  };
+
+  const saveCurrentPageData = async () => {
+    if (!excalidrawAPI) {
+      return;
+    }
+    const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
+    if (elms.length) {
+      const currentPageNumber = store.getState().whiteboard.currentPage;
+      sessionStorage.setItem(
+        formatStorageKey(currentPageNumber),
+        JSON.stringify(elms),
+      );
+    }
   };
 
   const render = () => {

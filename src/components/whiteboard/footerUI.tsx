@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
@@ -17,6 +17,8 @@ import {
   SwitchPresenterReq,
   SwitchPresenterTask,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
+import usePreviousFileId from './helpers/hooks/usePreviousFileId';
+import { formatStorageKey } from './helpers/fileReader';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -30,10 +32,18 @@ const currentPageSelector = createSelector(
   (state: RootState) => state.whiteboard.currentPage,
   (currentPage) => currentPage,
 );
+const currentWhiteboardOfficeFileIdSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFileId,
+  (currentWhiteboardOfficeFileId) => currentWhiteboardOfficeFileId,
+);
 
 const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   const totalPages = useAppSelector(totalPagesSelector);
   const currentPage = useAppSelector(currentPageSelector);
+  const currentWhiteboardOfficeFileId = useAppSelector(
+    currentWhiteboardOfficeFileIdSelector,
+  );
+  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const [options, setOptions] = useState<Array<JSX.Element>>();
   const [disablePre, setDisablePre] = useState(true);
   const [disableNext, setDisableNext] = useState(false);
@@ -96,12 +106,24 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
         const lastPage = store.getState().whiteboard.currentPage;
         const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
         if (elms.length) {
-          sessionStorage.setItem(String(lastPage), JSON.stringify(elms));
+          sessionStorage.setItem(
+            formatStorageKey(lastPage),
+            JSON.stringify(elms),
+          );
         }
       }
     };
     //eslint-disable-next-line
   }, [excalidrawAPI]);
+
+  useEffect(() => {
+    if (currentWhiteboardOfficeFileId !== previousFileId && isPresenter) {
+      setTimeout(() => {
+        displayCurrentPageData(currentPage);
+      }, 500);
+    }
+    //eslint-disable-next-line
+  }, [currentWhiteboardOfficeFileId, previousFileId, currentPage]);
 
   const savePreviousPageData = () => {
     if (!excalidrawAPI) {
@@ -113,7 +135,10 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     if (isPresenter) {
       const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
       if (elms.length) {
-        sessionStorage.setItem(String(previousPage), JSON.stringify(elms));
+        sessionStorage.setItem(
+          formatStorageKey(previousPage),
+          JSON.stringify(elms),
+        );
       }
       cleanExcalidraw();
       displayCurrentPageData(currentPage);
@@ -121,7 +146,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   };
 
   const displayCurrentPageData = (currentPage) => {
-    const data = sessionStorage.getItem(currentPage);
+    const data = sessionStorage.getItem(formatStorageKey(currentPage));
     if (data && excalidrawAPI) {
       const elements = JSON.parse(data);
       if (elements.length) {

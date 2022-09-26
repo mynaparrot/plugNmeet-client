@@ -3,6 +3,7 @@ import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types/types';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import { randomInteger } from '../../../helpers/utils';
+import { store } from '../../../store';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -144,4 +145,10 @@ const getFileDimension = async (height: number, width: number) => {
     fileHeight -= fileHeight * reducedBy;
     fileWidth -= fileWidth * reducedBy;
   }
+};
+
+export const formatStorageKey = (pageNumber) => {
+  const currentFileId =
+    store.getState().whiteboard.currentWhiteboardOfficeFileId;
+  return `${currentFileId}_${pageNumber}`;
 };

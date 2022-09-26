@@ -120,10 +120,10 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     requestedWhiteboardDataSelector,
   );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const currentWhiteboardOfficeFileIdId = useAppSelector(
+  const currentWhiteboardOfficeFileId = useAppSelector(
     currentWhiteboardOfficeFileIdSelector,
   );
-  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileIdId);
+  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const isPresenter = useAppSelector(isPresenterSelector);
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
@@ -165,16 +165,16 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   // if whiteboard file ID change this mean new office file was uploaded,
   // so we'll clean the canvas.
   useEffect(() => {
-    if (excalidrawAPI && currentWhiteboardOfficeFileIdId !== previousFileId) {
+    if (excalidrawAPI && currentWhiteboardOfficeFileId !== previousFileId) {
       setLastBroadcastOrReceivedSceneVersion(-1);
       excalidrawAPI.updateScene({
         elements: [],
       });
       excalidrawAPI.addFiles([]);
-      sessionStorage.clear();
+      //sessionStorage.clear();
     }
     //eslint-disable-next-line
-  }, [currentWhiteboardOfficeFileIdId, excalidrawAPI, previousFileId]);
+  }, [currentWhiteboardOfficeFileId, excalidrawAPI, previousFileId]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
