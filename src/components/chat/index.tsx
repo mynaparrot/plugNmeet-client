@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Room } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
-import EmojiPicker, { IEmojiData } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
 import { RootState, store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
@@ -17,9 +17,14 @@ const isChatLockSelector = createSelector(
     state.session.currentUser?.metadata?.lock_settings.lock_chat,
   (lock_chat) => lock_chat,
 );
+const themeSelector = createSelector(
+  (state: RootState) => state.roomSettings.theme,
+  (theme) => theme,
+);
 
 const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
   const isChatLock = useAppSelector(isChatLockSelector);
+  const theme = useAppSelector(themeSelector);
   const [show, setShow] = useState<boolean>(false);
   const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
   const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);
@@ -57,7 +62,7 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
     }
   }, [isChatLock, isRecorder]);
 
-  const onEmojiClick = (_event: any, data: IEmojiData) => {
+  const onEmojiClick = (data: EmojiClickData) => {
     setChosenEmoji(`${data.emoji}`);
   };
 
@@ -86,7 +91,11 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
                 : 'opacity-0 invisible pointer-events-none'
             }`}
           >
-            <EmojiPicker onEmojiClick={onEmojiClick} />
+            <EmojiPicker
+              onEmojiClick={onEmojiClick}
+              lazyLoadEmojis={true}
+              theme={theme === 'dark' ? Theme.DARK : Theme.LIGHT}
+            />
           </div>
           <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[300px] bg-white">
             <TextBoxArea
