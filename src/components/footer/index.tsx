@@ -43,7 +43,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
           <RaiseHandIcon currentRoom={currentRoom} />
           <WhiteboardIcon />
           <SharedNotePadIcon />
-          <RecordingIcon />
+          <RecordingIcon currentRoom={currentRoom} />
           {isAdmin ? <MenusIcon /> : null}
         </div>
 

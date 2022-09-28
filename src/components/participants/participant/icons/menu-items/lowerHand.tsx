@@ -2,7 +2,6 @@ import React from 'react';
 import { Menu } from '@headlessui/react';
 import { store, useAppDispatch, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import { SystemMsgType } from '../../../../../store/slices/interfaces/dataMessages';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
 import { updateIsActiveRaisehand } from '../../../../../store/slices/bottomIconsActivitySlice';
 import { toast } from 'react-toastify';
