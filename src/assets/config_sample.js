@@ -13,7 +13,7 @@ window.ENABLE_DYNACAST = true;
 //When using simulcast, LiveKit will publish up to three versions of the stream at various resolutions. Client can pickup most appropriate one.
 window.ENABLE_SIMULCAST = true;
 
-// Available options: 'vp8' | 'h264' | 'av1' | 'vp9'. Default: vp8
+// Available options: 'vp8' | 'h264' | 'av1' Default: vp8
 window.VIDEO_CODEC = 'vp8';
 
 // Available options: 'h90' | 'h180' | 'h216' | 'h360' | 'h540' | 'h720' | 'h1080' | 'h1440' | 'h2160'.
