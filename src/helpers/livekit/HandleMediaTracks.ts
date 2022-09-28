@@ -169,35 +169,35 @@ export default class HandleMediaTracks {
         }),
       );
       this.that.setScreenShareTrack(track, participant, true);
-    } else {
+    } else if (track.source === Track.Source.Microphone) {
+      this.that.updateAudioSubscribers(participant);
+      const count = participant
+        .getTracks()
+        .filter((track) => track.source === Track.Source.Microphone).length;
+      // now update store
       store.dispatch(
         updateParticipant({
           id: participant.identity,
           changes: {
-            videoTracks: participant
-              .getTracks()
-              .filter((track) => track.source === Track.Source.Camera).length,
-            audioTracks: participant
-              .getTracks()
-              .filter((track) => track.source === Track.Source.Microphone)
-              .length,
+            audioTracks: count === 0 ? 1 : count,
+            isMuted: track.audioTrack?.isMuted ?? false,
           },
         }),
       );
-
-      if (track.source === Track.Source.Microphone) {
-        this.that.updateAudioSubscribers(participant);
-        store.dispatch(
-          updateParticipant({
-            id: participant.identity,
-            changes: {
-              isMuted: track.audioTrack?.isMuted,
-            },
-          }),
-        );
-      } else if (track.source === Track.Source.Camera) {
-        this.that.updateVideoSubscribers(participant);
-      }
+    } else if (track.source === Track.Source.Camera) {
+      this.that.updateVideoSubscribers(participant);
+      const count = participant
+        .getTracks()
+        .filter((track) => track.source === Track.Source.Camera).length;
+      // now update store
+      store.dispatch(
+        updateParticipant({
+          id: participant.identity,
+          changes: {
+            videoTracks: count === 0 ? 1 : count,
+          },
+        }),
+      );
     }
   }
 
@@ -224,28 +224,36 @@ export default class HandleMediaTracks {
         }),
       );
       this.that.setScreenShareTrack(track, participant, false);
-    } else {
+    } else if (track.source === Track.Source.Microphone) {
+      this.that.updateAudioSubscribers(participant, false);
       store.dispatch(
         updateParticipant({
           id: participant.identity,
           changes: {
-            videoTracks: participant
-              .getTracks()
-              .filter((track) => track.source === Track.Source.Camera).length,
-            audioTracks: participant
-              .getTracks()
-              .filter((track) => track.source === Track.Source.Microphone)
-              .length,
-            isMuted: track.audioTrack?.isMuted,
+            audioTracks:
+              participant
+                .getTracks()
+                .filter((track) => track.source === Track.Source.Microphone)
+                .length ?? 0,
+            isMuted: track.audioTrack?.isMuted ?? false,
           },
         }),
       );
-
-      if (track.source === Track.Source.Microphone) {
-        this.that.updateAudioSubscribers(participant, false);
-      } else if (track.source === Track.Source.Camera) {
-        this.that.updateVideoSubscribers(participant, false);
-      }
+    } else if (track.source === Track.Source.Camera) {
+      this.that.updateVideoSubscribers(participant, false);
+      // now update store
+      store.dispatch(
+        updateParticipant({
+          id: participant.identity,
+          changes: {
+            videoTracks:
+              participant
+                .getTracks()
+                .filter((track) => track.source === Track.Source.Camera)
+                .length ?? 0,
+          },
+        }),
+      );
     }
   }
 }
