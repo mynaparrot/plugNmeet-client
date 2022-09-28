@@ -12,8 +12,10 @@ const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
   const render = () => {
     return (
       <>
-        <ConnectionStatus userId={userId} />
-        <MicStatus userId={userId} />
+        <div className="status">
+          <ConnectionStatus userId={userId} />
+          <MicStatus userId={userId} />
+        </div>
         <VideoElm track={track} />
       </>
     );
