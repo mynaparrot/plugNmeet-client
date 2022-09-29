@@ -126,7 +126,7 @@ const VideoElements = ({
       });
     }
     return elms;
-  }, [displayParticipants]);
+  }, [displayParticipants, isVertical]);
 
   const render = () => {
     return (
