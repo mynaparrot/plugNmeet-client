@@ -44,6 +44,17 @@ const useVideoParticipant = (
 
     setTotalNumWebcams(totalNumWebcams);
     setAllParticipants(participants);
+    const timer = setInterval(() => {
+      const tmp: Array<JSX.Element> = participants;
+      const pp = participants[0];
+      tmp.push(pp);
+      totalNumWebcams += 1;
+      setTotalNumWebcams(Number(`${totalNumWebcams}`));
+      setAllParticipants([...tmp]);
+      if (tmp.length === 30) {
+        clearInterval(timer);
+      }
+    }, 5000);
   }, [videoSubscribers]);
 
   return {

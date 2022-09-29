@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
+import { chunk } from 'lodash';
 
 import { useAppDispatch } from '../../../../store';
 import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
@@ -92,6 +93,41 @@ const VideoElements = ({
     setCurrentPage(currentPage + 1);
   };
 
+  const videoElms = useMemo(() => {
+    if (isVertical) {
+      return displayParticipants;
+    }
+    const elms: Array<JSX.Element> = [];
+    const length = displayParticipants.length;
+    if (length < 4) {
+      elms.push(
+        <div className={`camera-row-0 items-${length}`}>
+          {displayParticipants}
+        </div>,
+      );
+    } else if (length >= 4 && length <= 10) {
+      const c = chunk(displayParticipants, Math.ceil(length / 2));
+      c.forEach((el, i) => {
+        elms.push(
+          <div className={`camera-row-${i} items-${el.length} items-${length}`}>
+            {el}
+          </div>,
+        );
+      });
+    } else {
+      const c = chunk(displayParticipants, Math.ceil(length / 3));
+      console.log('row 3', c.length);
+      c.forEach((el, i) => {
+        elms.push(
+          <div className={`camera-row-${i} items-${el.length} items-${length}`}>
+            {el}
+          </div>,
+        );
+      });
+    }
+    return elms;
+  }, [displayParticipants]);
+
   const render = () => {
     return (
       <>
@@ -106,7 +142,7 @@ const VideoElements = ({
         ) : null}
 
         {/*all webcams*/}
-        <>{displayParticipants}</>
+        <>{videoElms}</>
 
         {showNext ? (
           <button type="button" className="next-cam" onClick={() => nextPage()}>
