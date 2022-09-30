@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { chunk } from 'lodash';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { useAppDispatch } from '../../../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
 import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
 import useVideoParticipant from './useVideoParticipant';
 
@@ -17,6 +18,11 @@ export interface VideoParticipantType {
   isLocal: boolean;
 }
 
+const screenWidthSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenWidth,
+  (screenWidth) => screenWidth,
+);
+
 const VideoElements = ({
   videoSubscribers,
   perPage,
@@ -26,6 +32,7 @@ const VideoElements = ({
   const { t } = useTranslation();
   const { allParticipants, totalNumWebcams } =
     useVideoParticipant(videoSubscribers);
+  const screenWidth = useAppSelector(screenWidthSelector);
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -34,6 +41,7 @@ const VideoElements = ({
   const [showPre, setShowPre] = useState<boolean>(false);
   const [showNext, setShowNext] = useState<boolean>(false);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(perPage ?? 24);
+  const [isSmallDevice, setIsSmallDevice] = useState<boolean>(false);
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -82,6 +90,22 @@ const VideoElements = ({
       setShowNext(false);
     }
   }, [totalNumWebcams, currentPage, webcamPerPage]);
+
+  useEffect(() => {
+    if (!screenWidth || isVertical) {
+      return;
+    }
+    if (screenWidth >= 320 && screenWidth <= 640) {
+      setWebcamPerPage(6);
+      setIsSmallDevice(true);
+    } else if (screenWidth >= 641 && screenWidth <= 1025) {
+      setWebcamPerPage(10);
+      setIsSmallDevice(true);
+    } else {
+      setWebcamPerPage(24);
+      setIsSmallDevice(false);
+    }
+  }, [screenWidth, isVertical]);
 
   const prePage = () => {
     setParticipantsToDisplay(allParticipants, currentPage - 1, webcamPerPage);
@@ -163,7 +187,7 @@ const VideoElements = ({
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
-      {totalNumWebcams > 6 && !isVertical ? (
+      {totalNumWebcams > 6 && !isVertical && !isSmallDevice ? (
         <div className="select-camera-number">
           <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
           <select
