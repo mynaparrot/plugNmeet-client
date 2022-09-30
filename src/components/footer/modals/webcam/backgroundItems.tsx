@@ -90,7 +90,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
       >
         <i className="pnm-blur dark:text-darkSecondary2" />
       </div>
-      {bgImgs.map((imageUrl) => {
+      {bgImgs.map((imageUrl, i) => {
         return (
           <div
             className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center transition transform scale-90 hover:scale-95 ease-in border-2 border-solid border-transparent ${
@@ -101,7 +101,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
           >
             <img
               src={imageUrl}
-              alt={imageUrl}
+              alt={`bg-${i + 1}`}
               className={`object-cover w-full h-full`}
             />
           </div>
