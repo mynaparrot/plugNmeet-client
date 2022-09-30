@@ -53,6 +53,8 @@ const useLocalRecording = (
         toastId: 'recording-status',
         type: 'error',
       });
+      setHasError(true);
+      setCaptureStream(null);
     }
   };
 
@@ -77,8 +79,13 @@ const useLocalRecording = (
       streams.push(...localTrack.audioTrack?.mediaStream?.getTracks());
     }
 
+    let mimeType = 'video/webm';
+    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+      mimeType = 'video/mp4';
+    }
+
     const recorder = new MediaRecorder(new MediaStream(streams), {
-      mimeType: 'video/webm',
+      mimeType,
     });
 
     recorder.onstart = () => {
@@ -95,7 +102,7 @@ const useLocalRecording = (
       setRecordingEvent(RecordingEvent.STOPPED_RECORDING);
       setHasError(false);
 
-      const blobData = new Blob(recordingData, { type: 'video/webm' });
+      const blobData = new Blob(recordingData, { type: mimeType });
       const url = URL.createObjectURL(blobData);
       const a: any = document.createElement('a');
       document.body.appendChild(a);
@@ -158,12 +165,19 @@ const useLocalRecording = (
     sendWebsocketMessage(dataMsg.toBinary());
   };
 
+  const resetError = () => {
+    if (hasError) {
+      setHasError(false);
+    }
+  };
+
   return {
     TYPE_OF_RECORDING,
     recordingEvent,
     hasError,
     startRecording,
     stopRecording,
+    resetError,
   };
 };
 
