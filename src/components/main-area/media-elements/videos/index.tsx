@@ -28,20 +28,38 @@ const VideoElements = ({
     useVideoParticipant(videoSubscribers);
 
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [displayParticipants, setDisplayParticipants] = useState<
+  const [participantsToRender, setParticipantsToRender] = useState<
     Array<JSX.Element>
   >([]);
   const [showPre, setShowPre] = useState<boolean>(false);
   const [showNext, setShowNext] = useState<boolean>(false);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(perPage ?? 24);
 
-  useEffect(() => {
+  const setParticipantsToDisplay = (
+    [...allParticipants]: Array<JSX.Element>,
+    page_number: number,
+    per_page: number,
+  ) => {
+    const display = allParticipants.slice(
+      (page_number - 1) * per_page,
+      page_number * per_page,
+    );
+
+    setParticipantsToRender(display);
+    if (page_number === 1) {
+      dispatch(setWebcamPaginating(false));
+    } else {
+      dispatch(setWebcamPaginating(true));
+    }
+  };
+
+  useMemo(() => {
     if (allParticipants.length <= webcamPerPage) {
       // we don't need any pagination
-      setDisplayParticipants(allParticipants);
+      setParticipantsToRender(allParticipants);
     } else {
       setCurrentPage(1);
-      setParticipantToDisplay(allParticipants, 1, webcamPerPage);
+      setParticipantsToDisplay(allParticipants, 1, webcamPerPage);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allParticipants, webcamPerPage]);
@@ -65,48 +83,30 @@ const VideoElements = ({
     }
   }, [totalNumWebcams, currentPage, webcamPerPage]);
 
-  const setParticipantToDisplay = (
-    [...allParticipants]: Array<JSX.Element>,
-    page_number: number,
-    per_page: number,
-  ) => {
-    const display = allParticipants.slice(
-      (page_number - 1) * per_page,
-      page_number * per_page,
-    );
-
-    setDisplayParticipants(display);
-    if (page_number === 1) {
-      dispatch(setWebcamPaginating(false));
-    } else {
-      dispatch(setWebcamPaginating(true));
-    }
-  };
-
   const prePage = () => {
-    setParticipantToDisplay(allParticipants, currentPage - 1, webcamPerPage);
+    setParticipantsToDisplay(allParticipants, currentPage - 1, webcamPerPage);
     setCurrentPage(currentPage - 1);
   };
 
   const nextPage = () => {
-    setParticipantToDisplay(allParticipants, currentPage + 1, webcamPerPage);
+    setParticipantsToDisplay(allParticipants, currentPage + 1, webcamPerPage);
     setCurrentPage(currentPage + 1);
   };
 
-  const videoElms = useMemo(() => {
+  const videoParticipantsElms = useMemo(() => {
     if (isVertical) {
-      return displayParticipants;
+      return participantsToRender;
     }
     const elms: Array<JSX.Element> = [];
-    const length = displayParticipants.length;
+    const length = participantsToRender.length;
     if (length < 4) {
       elms.push(
         <div className={`camera-row-0 items-${length}`}>
-          {displayParticipants}
+          {participantsToRender}
         </div>,
       );
     } else if (length >= 4 && length <= 10) {
-      const c = chunk(displayParticipants, Math.ceil(length / 2));
+      const c = chunk(participantsToRender, Math.ceil(length / 2));
       c.forEach((el, i) => {
         elms.push(
           <div className={`camera-row-${i} items-${el.length} items-${length}`}>
@@ -115,8 +115,7 @@ const VideoElements = ({
         );
       });
     } else {
-      const c = chunk(displayParticipants, Math.ceil(length / 3));
-      console.log('row 3', c.length);
+      const c = chunk(participantsToRender, Math.ceil(length / 3));
       c.forEach((el, i) => {
         elms.push(
           <div className={`camera-row-${i} items-${el.length} items-${length}`}>
@@ -126,7 +125,7 @@ const VideoElements = ({
       });
     }
     return elms;
-  }, [displayParticipants, isVertical]);
+  }, [participantsToRender, isVertical]);
 
   const render = () => {
     return (
@@ -142,7 +141,7 @@ const VideoElements = ({
         ) : null}
 
         {/*all webcams*/}
-        <>{videoElms}</>
+        <>{videoParticipantsElms}</>
 
         {showNext ? (
           <button type="button" className="next-cam" onClick={() => nextPage()}>

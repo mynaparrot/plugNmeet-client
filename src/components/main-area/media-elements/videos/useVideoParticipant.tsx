@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { ICurrentUserMetadata } from '../../../../store/slices/interfaces/session';
 import VideoParticipant from './videoParticipant';
@@ -12,7 +12,7 @@ const useVideoParticipant = (
   );
   const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
 
-  useEffect(() => {
+  useMemo(() => {
     let totalNumWebcams = 0;
     const participants: Array<JSX.Element> = [];
 
