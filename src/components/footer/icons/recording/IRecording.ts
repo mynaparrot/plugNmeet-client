@@ -17,6 +17,7 @@ export interface IUseLocalRecordingReturn {
   hasError: boolean;
   startRecording: () => void;
   stopRecording: () => void;
+  resetError: () => void;
 }
 
 export interface IUseCloudRecordingReturn {

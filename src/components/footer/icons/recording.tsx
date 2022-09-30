@@ -22,9 +22,11 @@ const isRecordingSelector = createSelector(
 const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const {
+    hasError: localRecordingError,
     recordingEvent: localRecordingEvent,
     startRecording: startLocalRecording,
     stopRecording: stopLocalRecording,
+    resetError: resetLocalRecordingError,
   } = useLocalRecording(currentRoom.localParticipant, currentRoom.name);
 
   const {
@@ -108,17 +110,24 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
   }, [localRecordingEvent]);
 
   useEffect(() => {
-    if (hasCloudRecordingError) {
+    const reset = () => {
       setDisable(false);
       setIsRecording(false);
-      resetCloudRecordingError();
-
       if (timer) {
         clearTimeout(timer);
       }
+    };
+
+    if (hasCloudRecordingError) {
+      reset();
+      resetCloudRecordingError();
+    }
+    if (localRecordingError) {
+      reset();
+      resetLocalRecordingError();
     }
     //eslint-disable-next-line
-  }, [hasCloudRecordingError]);
+  }, [hasCloudRecordingError, localRecordingError]);
 
   const onClickRecordingBtn = () => {
     if (!isRecording) {
