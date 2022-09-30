@@ -10,8 +10,14 @@ export const defaultBackgroundConfig: BackgroundConfig = {
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
 export const backgroundImageUrls = [
-  'architecture-5082700_1280',
-  'porch-691330_1280',
-  'saxon-switzerland-539418_1280',
-  'shibuyasky-4768679_1280',
+  'kenny-eliason-Wp7t4cWN-68-unsplash',
+  'jonny-caspari-KuudDjBHIlA-unsplash',
+  'roman-bozhko-PypjzKTUqLo-unsplash',
+  'vinicius-amnx-amano-17NCG_wOkMY-unsplash',
+  'dmytro-tolokonov-Jq3WI9IQgEs-unsplash',
+  'andrew-ridley-jR4Zf-riEjI-unsplash',
+  'annie-spratt-OWq8w3BYMFY-unsplash',
+  'evelyn-bertrand-GrIf347OtnY-unsplash',
+  'steve-richey-6xqAK6oAeHA-unsplash',
+  'erol-ahmed-IHL-Jbawvvo-unsplash',
 ].map((imageName) => `${assetPath}/backgrounds/${imageName}.jpg`);
