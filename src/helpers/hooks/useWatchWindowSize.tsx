@@ -3,6 +3,7 @@ import MobileDetect from 'mobile-detect';
 import { Room } from 'livekit-client';
 
 import {
+  updateDeviceOrientation,
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
   updateScreenHeight,
@@ -70,12 +71,15 @@ const useWatchWindowSize = (
     const mql = window.matchMedia('(orientation: portrait)');
     if (mql.matches) {
       setOrientationClass('portrait-device');
+      dispatch(updateDeviceOrientation('portrait'));
     }
     mql.addEventListener('change', (m) => {
       if (m.matches) {
         setOrientationClass('portrait-device');
+        dispatch(updateDeviceOrientation('portrait'));
       } else {
         setOrientationClass('landscape-device');
+        dispatch(updateDeviceOrientation('landscape'));
       }
     });
     //eslint-disable-next-line
