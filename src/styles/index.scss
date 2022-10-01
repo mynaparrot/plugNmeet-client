@@ -552,7 +552,10 @@ code {
 }
 
 .camera-modules .status {
-  @apply absolute z-[999] rounded-full bg-black/20 bottom-3 right-3 flex items-center justify-center gap-3;
+  @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
+}
+.camera-modules .status > div {
+  @apply rounded-full bg-black/20 p-2 h-5 flex justify-center items-center;
 }
 
 .tooltip {
@@ -1660,4 +1663,60 @@ button.next-cam:hover {
 aside {
   box-shadow: 0 2px 5px #efefefdb !important;
   width: 100% !important;
+}
+@media screen and (max-width: 1025px) and (min-width: 641px) {
+  .camera-row-1.items-5.items-2 .video-camera-item {
+    width: 50%;
+  }
+  .camera-row-2.items-5.items-1 .video-camera-item {
+    width: 50%;
+  }
+  .camera-row-1.items-7.items-3 .video-camera-item,
+  .camera-row-2.items-7.items-1 .video-camera-item,
+  .camera-row-2.items-8.items-2 .video-camera-item,
+  .camera-row-2.items-9.items-3 .video-camera-item {
+    width: 33.33%;
+  }
+}
+@media screen and (max-width: 640px) {
+  .camera-row-0.items-2,
+  .camera-row-0.items-3 {
+    flex-wrap: wrap;
+  }
+  .camera-row-0.items-2 .video-camera-item {
+    width: 100%;
+    height: 50%;
+  }
+  .camera-row-0.items-3 .video-camera-item {
+    width: 100%;
+    height: 33.33%;
+  }
+  .camera-row-0.items-4.items-2 .video-camera-item {
+    width: 50%;
+    height: 100%;
+  }
+  .camera-row-0.items-4.items-2 {
+    flex-wrap: nowrap;
+  }
+  .camera-row-0.items-5.items-2 {
+    flex-wrap: nowrap;
+  }
+  .camera-row-0.items-5.items-2 .video-camera-item {
+    width: 50%;
+    height: 100%;
+  }
+  .camera-row-1.items-5.items-2 .video-camera-item {
+    width: 50%;
+  }
+  .camera-row-2.items-5.items-1 .video-camera-item,
+  .camera-row-2.items-6.items-1 .video-camera-item {
+    width: 50%;
+  }
+  .camera-row-0.items-6.items-2 .video-camera-item {
+    width: 50%;
+    height: 100%;
+  }
+  .camera-row-0.items-6.items-2 {
+    flex-wrap: nowrap;
+  }
 }

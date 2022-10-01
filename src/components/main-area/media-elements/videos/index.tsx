@@ -99,7 +99,7 @@ const VideoElements = ({
       setWebcamPerPage(6);
       setIsSmallDevice(true);
     } else if (screenWidth > 640 && screenWidth <= 1025) {
-      setWebcamPerPage(8);
+      setWebcamPerPage(9);
       setIsSmallDevice(true);
     } else {
       setWebcamPerPage(24);
@@ -125,24 +125,32 @@ const VideoElements = ({
     const elms: Array<JSX.Element> = [];
 
     if (isSmallDevice) {
-      if (length <= 2) {
+      if (length <= 3) {
         elms.push(
           <div className={`camera-row-0 items-${length}`}>
             {participantsToRender}
           </div>,
         );
-      } else if (length > 2 && length <= 4) {
+      } else if (length > 3 && length <= 4) {
         const c = chunk(participantsToRender, Math.ceil(length / 2));
         c.forEach((el, i) => {
           elms.push(
-            <div className={`camera-row-${i} items-${el.length}`}>{el}</div>,
+            <div
+              className={`camera-row-${i} items-${length} items-${el.length}`}
+            >
+              {el}
+            </div>,
           );
         });
       } else {
         const c = chunk(participantsToRender, Math.ceil(length / 3));
         c.forEach((el, i) => {
           elms.push(
-            <div className={`camera-row-${i} items-${el.length}`}>{el}</div>,
+            <div
+              className={`camera-row-${i} items-${length} items-${el.length}`}
+            >
+              {el}
+            </div>,
           );
         });
       }
@@ -157,14 +165,22 @@ const VideoElements = ({
         const c = chunk(participantsToRender, Math.ceil(length / 2));
         c.forEach((el, i) => {
           elms.push(
-            <div className={`camera-row-${i} items-${el.length}`}>{el}</div>,
+            <div
+              className={`camera-row-${i} items-${length} items-${el.length}`}
+            >
+              {el}
+            </div>,
           );
         });
       } else {
         const c = chunk(participantsToRender, Math.ceil(length / 3));
         c.forEach((el, i) => {
           elms.push(
-            <div className={`camera-row-${i} items-${el.length}`}>{el}</div>,
+            <div
+              className={`camera-row-${i} items-${length} items-${el.length}`}
+            >
+              {el}
+            </div>,
           );
         });
       }
