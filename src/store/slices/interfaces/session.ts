@@ -1,3 +1,9 @@
+export enum UserDeviceType {
+  MOBILE = 'mobile',
+  TABLET = 'tablet',
+  DESKTOP = 'desktop',
+}
+
 export interface ISession {
   token: string;
   currentUser?: ICurrentUser;
@@ -10,7 +16,7 @@ export interface ISession {
   isChatServiceReady: boolean;
   totalVideoSubscribers: number;
   totalAudioSubscribers: number;
-  userDeviceType?: string;
+  userDeviceType: UserDeviceType;
 }
 
 export interface ICurrentUser {

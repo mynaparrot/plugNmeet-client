@@ -1,12 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
-import { chunk } from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
+import { chunk } from 'lodash';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
+import {
+  RootState,
+  store,
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../store';
 import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
 import useVideoParticipant from './useVideoParticipant';
+import { UserDeviceType } from '../../../../store/slices/interfaces/session';
 
 interface IVideoElementsProps {
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>;
@@ -17,11 +23,10 @@ export interface VideoParticipantType {
   isAdmin: boolean;
   isLocal: boolean;
 }
-enum DeviceType {
-  MOBILE = 'mobile',
-  TABLET = 'tablet',
-  PC = 'pc',
-}
+
+const MOBILE_PER_PAGE = 6,
+  TABLET_PER_PAGE = 9,
+  DESKTOP_PER_PAGE = 24;
 
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
@@ -43,6 +48,7 @@ const VideoElements = ({
     useVideoParticipant(videoSubscribers);
   const screenWidth = useAppSelector(screenWidthSelector);
   const deviceOrientation = useAppSelector(deviceOrientationSelector);
+  const deviceType = store.getState().session.userDeviceType;
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -50,8 +56,9 @@ const VideoElements = ({
   >([]);
   const [showPre, setShowPre] = useState<boolean>(false);
   const [showNext, setShowNext] = useState<boolean>(false);
-  const [webcamPerPage, setWebcamPerPage] = useState<number>(perPage ?? 24);
-  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.PC);
+  const [webcamPerPage, setWebcamPerPage] = useState<number>(
+    perPage ?? DESKTOP_PER_PAGE,
+  );
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -106,15 +113,17 @@ const VideoElements = ({
       return;
     }
     if (screenWidth <= 640) {
-      setWebcamPerPage(6);
-      setDeviceType(DeviceType.MOBILE);
+      setWebcamPerPage(MOBILE_PER_PAGE);
     } else if (screenWidth > 640 && screenWidth <= 1025) {
-      setWebcamPerPage(9);
-      setDeviceType(DeviceType.TABLET);
+      if (deviceType === UserDeviceType.MOBILE) {
+        setWebcamPerPage(MOBILE_PER_PAGE);
+      } else {
+        setWebcamPerPage(TABLET_PER_PAGE);
+      }
     } else {
-      setWebcamPerPage(24);
-      setDeviceType(DeviceType.PC);
+      setWebcamPerPage(DESKTOP_PER_PAGE);
     }
+    //eslint-disable-next-line
   }, [screenWidth, isVertical]);
 
   const prePage = () => {
@@ -226,13 +235,16 @@ const VideoElements = ({
     if (isVertical) {
       return participantsToRender;
     }
-    let elms: Array<JSX.Element> = [];
+    let elms: Array<JSX.Element>;
 
-    if (deviceType === DeviceType.MOBILE && deviceOrientation === 'landscape') {
+    if (
+      deviceType === UserDeviceType.MOBILE &&
+      deviceOrientation === 'landscape'
+    ) {
       elms = setForMobileLandscape(participantsToRender);
     } else if (
-      deviceType === DeviceType.MOBILE ||
-      deviceType === DeviceType.TABLET
+      deviceType === UserDeviceType.MOBILE ||
+      deviceType === UserDeviceType.TABLET
     ) {
       // for mobile & tablet
       elms = setForMobileAndTablet(participantsToRender);
@@ -281,7 +293,9 @@ const VideoElements = ({
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
-      {totalNumWebcams > 6 && !isVertical && deviceType === DeviceType.PC ? (
+      {deviceType === UserDeviceType.DESKTOP &&
+      totalNumWebcams > 6 &&
+      !isVertical ? (
         <div className="select-camera-number">
           <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
           <select

@@ -11,6 +11,7 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { store, useAppDispatch } from '../../store';
 import { updateUserDeviceType } from '../../store/slices/sessionSlice';
+import { UserDeviceType } from '../../store/slices/interfaces/session';
 
 const useWatchWindowSize = (
   currentRoom: Room | undefined,
@@ -54,10 +55,10 @@ const useWatchWindowSize = (
     const md = new MobileDetect(window.navigator.userAgent);
     if (md.mobile()) {
       deviceClass = 'is-mobile ';
-      dispatch(updateUserDeviceType('mobile'));
+      dispatch(updateUserDeviceType(UserDeviceType.MOBILE));
     } else if (md.tablet()) {
       deviceClass = 'is-tablet ';
-      dispatch(updateUserDeviceType('tablet'));
+      dispatch(updateUserDeviceType(UserDeviceType.TABLET));
     }
 
     const os = md.os();
