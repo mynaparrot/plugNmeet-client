@@ -131,10 +131,52 @@ const VideoElements = ({
     if (isVertical) {
       return participantsToRender;
     }
-    const length = participantsToRender.length;
     const elms: Array<JSX.Element> = [];
 
     if (deviceType === DeviceType.MOBILE && deviceOrientation === 'landscape') {
+      setForMobileLandscape(participantsToRender, elms);
+    } else if (
+      deviceType === DeviceType.MOBILE ||
+      deviceType === DeviceType.TABLET
+    ) {
+      // for mobile & tablet
+      setForMobileAndTablet(participantsToRender, elms);
+    } else {
+      // for PC
+      setForPC(participantsToRender, elms);
+    }
+
+    return elms;
+    //eslint-disable-next-line
+  }, [participantsToRender, deviceOrientation]);
+
+  const setForMobileLandscape = (
+    participantsToRender: JSX.Element[],
+    elms: JSX.Element[],
+  ) => {
+    const length = participantsToRender.length;
+    const c = chunk(participantsToRender, Math.ceil(length / 2));
+    c.forEach((el, i) => {
+      elms.push(
+        <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+          {el}
+        </div>,
+      );
+    });
+  };
+
+  const setForMobileAndTablet = (
+    participantsToRender: JSX.Element[],
+    elms: JSX.Element[],
+  ) => {
+    const length = participantsToRender.length;
+    if (length <= 3) {
+      elms.push(
+        <div className={`camera-row-0 items-${length}`}>
+          {participantsToRender}
+        </div>,
+      );
+    } else if (length > 3 && length <= 4) {
       const c = chunk(participantsToRender, Math.ceil(length / 2));
       c.forEach((el, i) => {
         elms.push(
@@ -143,76 +185,54 @@ const VideoElements = ({
           </div>,
         );
       });
-    } else if (
-      deviceType === DeviceType.MOBILE ||
-      deviceType === DeviceType.TABLET
-    ) {
-      // for mobile & tablet
-      if (length <= 3) {
-        elms.push(
-          <div className={`camera-row-0 items-${length}`}>
-            {participantsToRender}
-          </div>,
-        );
-      } else if (length > 3 && length <= 4) {
-        const c = chunk(participantsToRender, Math.ceil(length / 2));
-        c.forEach((el, i) => {
-          elms.push(
-            <div
-              className={`camera-row-${i} items-${length} items-${el.length}`}
-            >
-              {el}
-            </div>,
-          );
-        });
-      } else {
-        const c = chunk(participantsToRender, Math.ceil(length / 3));
-        c.forEach((el, i) => {
-          elms.push(
-            <div
-              className={`camera-row-${i} items-${length} items-${el.length}`}
-            >
-              {el}
-            </div>,
-          );
-        });
-      }
     } else {
-      // for PC
-      if (length < 4) {
+      const c = chunk(participantsToRender, Math.ceil(length / 3));
+      c.forEach((el, i) => {
         elms.push(
-          <div className={`camera-row-0 items-${length}`}>
-            {participantsToRender}
+          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+            {el}
           </div>,
         );
-      } else if (length >= 4 && length <= 10) {
-        const c = chunk(participantsToRender, Math.ceil(length / 2));
-        c.forEach((el, i) => {
-          elms.push(
-            <div
-              className={`camera-row-${i} items-${length} items-${el.length}`}
-            >
-              {el}
-            </div>,
-          );
-        });
-      } else {
-        const c = chunk(participantsToRender, Math.ceil(length / 3));
-        c.forEach((el, i) => {
-          elms.push(
-            <div
-              className={`camera-row-${i} items-${length} items-${el.length}`}
-            >
-              {el}
-            </div>,
-          );
-        });
-      }
+      });
     }
+  };
 
-    return elms;
-    //eslint-disable-next-line
-  }, [participantsToRender]);
+  /*
+   * For PC,
+   * Upto 3 webcam, 1 row
+   * From 4 to 10, 2 rows
+   * More than 10, 3 rows
+   */
+  const setForPC = (
+    participantsToRender: JSX.Element[],
+    elms: JSX.Element[],
+  ) => {
+    if (length < 4) {
+      elms.push(
+        <div className={`camera-row-0 items-${length}`}>
+          {participantsToRender}
+        </div>,
+      );
+    } else if (length >= 4 && length <= 10) {
+      const c = chunk(participantsToRender, Math.ceil(length / 2));
+      c.forEach((el, i) => {
+        elms.push(
+          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+            {el}
+          </div>,
+        );
+      });
+    } else {
+      const c = chunk(participantsToRender, Math.ceil(length / 3));
+      c.forEach((el, i) => {
+        elms.push(
+          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+            {el}
+          </div>,
+        );
+      });
+    }
+  };
 
   const render = () => {
     return (
