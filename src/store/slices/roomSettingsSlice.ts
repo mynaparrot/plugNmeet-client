@@ -6,6 +6,7 @@ import {
   IMediaDevice,
   InitiatePrivateChat,
   UnreadMsgFromPayload,
+  VideoObjectFit,
 } from './interfaces/roomSettings';
 
 const initialState: IRoomSettings = {
@@ -23,6 +24,7 @@ const initialState: IRoomSettings = {
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
   theme: 'light',
+  videoObjectFit: VideoObjectFit.COVER,
 
   selectedTabLeftPanel: 0,
   selectedChatOption: 'public',
@@ -82,6 +84,9 @@ const roomSettingsSlice = createSlice({
     updateTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
     },
+    updateVideoObjectFit: (state, action: PayloadAction<VideoObjectFit>) => {
+      state.videoObjectFit = action.payload;
+    },
     updateSelectedTabLeftPanel: (state, action: PayloadAction<number>) => {
       state.selectedTabLeftPanel = action.payload;
     },
@@ -126,6 +131,7 @@ export const {
   updateRoomAudioVolume,
   updateRoomVideoQuality,
   updateTheme,
+  updateVideoObjectFit,
   updateSelectedTabLeftPanel,
   updateSelectedChatOption,
   updateInitiatePrivateChat,
