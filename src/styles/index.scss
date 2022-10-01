@@ -285,7 +285,7 @@ code {
 // }
 
 .all-webcam-wrapper-inner {
-  @apply w-full h-full py-7 px-3 grid gap-2;
+  @apply w-full h-full p-5 lg:p-7 grid gap-2;
 }
 .camera-row-0,
 .camera-row-1,
@@ -548,7 +548,7 @@ code {
   @apply flex w-full h-full absolute;
 }
 .video-camera-item video.camera-video {
-  @apply w-full h-full object-cover;
+  @apply w-full h-full;
 }
 
 .camera-modules .status {
@@ -1287,15 +1287,15 @@ button.next-cam:hover {
     height: calc(100% - 72px);
   }
 
-  #main-area .all-webcam-wrapper.total-cam-1 .video-camera-item {
-    width: calc(80% - 16px);
-    padding-bottom: 58%;
-  }
+  // #main-area .all-webcam-wrapper.total-cam-1 .video-camera-item {
+  //   width: calc(80% - 16px);
+  //   padding-bottom: 58%;
+  // }
 
-  #main-area .all-webcam-wrapper .video-camera-item {
-    width: calc(33.33% - 16px);
-    padding-bottom: 23.5%;
-  }
+  // #main-area .all-webcam-wrapper .video-camera-item {
+  //   width: calc(33.33% - 16px);
+  //   padding-bottom: 23.5%;
+  // }
 
   #main-area .share-screen-wrapper.is-share-screen-running .all-webcam-wrapper,
   #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper {
@@ -1511,10 +1511,10 @@ button.next-cam:hover {
 }
 
 @media screen and (max-width: 767px) {
-  #main-area .all-webcam-wrapper .video-camera-item {
-    width: calc(50% - 16px);
-    padding-bottom: 36.5%;
-  }
+  // #main-area .all-webcam-wrapper .video-camera-item {
+  //   width: calc(50% - 16px);
+  //   padding-bottom: 36.5%;
+  // }
 
   .transition-right-panel .messageModule-wrapper,
   .transition-right-panel,
@@ -1550,20 +1550,20 @@ button.next-cam:hover {
     font-size: 18px;
   }
 
-  #main-area .all-webcam-wrapper.total-cam-2 .video-camera-item,
-  #main-area .all-webcam-wrapper.total-cam-1 .video-camera-item {
-    width: calc(100% - 16px);
-    padding-bottom: 60%;
-  }
+  // #main-area .all-webcam-wrapper.total-cam-2 .video-camera-item,
+  // #main-area .all-webcam-wrapper.total-cam-1 .video-camera-item {
+  //   width: calc(100% - 16px);
+  //   padding-bottom: 60%;
+  // }
 
-  #main-area .all-webcam-wrapper.total-cam-3 .video-camera-item {
-    width: calc(85% - 16px);
-    padding-bottom: 46%;
-  }
+  // #main-area .all-webcam-wrapper.total-cam-3 .video-camera-item {
+  //   width: calc(85% - 16px);
+  //   padding-bottom: 46%;
+  // }
 
-  .all-webcam-wrapper-inner {
-    padding: 0 5px;
-  }
+  // .all-webcam-wrapper-inner {
+  //   padding: 0 5px;
+  // }
   .private-m-tab::before {
     position: absolute;
     content: '';
