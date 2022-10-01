@@ -1,5 +1,7 @@
 import { BackgroundConfig } from '../../../components/virtual-background/helpers/backgroundHelper';
 
+export type DeviceOrientation = 'landscape' | 'portrait';
+
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;
   isActiveWebcam: boolean;
@@ -14,6 +16,7 @@ export interface IBottomIconsSlice {
   isMicMuted: boolean;
   screenWidth: number;
   screenHeight: number;
+  deviceOrientation: DeviceOrientation;
 
   // modal related
   showMicrophoneModal: boolean;

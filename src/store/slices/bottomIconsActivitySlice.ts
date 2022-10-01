@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IBottomIconsSlice } from './interfaces/bottomIcons';
+import { DeviceOrientation, IBottomIconsSlice } from './interfaces/bottomIcons';
 import {
   BackgroundConfig,
   defaultBackgroundConfig,
@@ -19,6 +19,7 @@ const initialState: IBottomIconsSlice = {
   isMicMuted: false,
   screenWidth: 1024,
   screenHeight: 500,
+  deviceOrientation: 'portrait',
 
   showMicrophoneModal: false,
   showVideoShareModal: false,
@@ -113,6 +114,12 @@ const bottomIconsSlice = createSlice({
     updateScreenHeight: (state, action: PayloadAction<number>) => {
       state.screenHeight = action.payload;
     },
+    updateDeviceOrientation: (
+      state,
+      action: PayloadAction<DeviceOrientation>,
+    ) => {
+      state.deviceOrientation = action.payload;
+    },
 
     // modal related
     updateShowMicrophoneModal: (state, action: PayloadAction<boolean>) => {
@@ -187,6 +194,7 @@ export const {
   updateDisplayExternalLinkRoomModal,
   updateScreenWidth,
   updateScreenHeight,
+  updateDeviceOrientation,
   updateTotalUnreadChatMsgs,
   updateVirtualBackground,
 } = bottomIconsSlice.actions;
