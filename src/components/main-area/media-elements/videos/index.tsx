@@ -17,10 +17,19 @@ export interface VideoParticipantType {
   isAdmin: boolean;
   isLocal: boolean;
 }
+enum DeviceType {
+  MOBILE = 'mobile',
+  TABLET = 'tablet',
+  PC = 'pc',
+}
 
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
   (screenWidth) => screenWidth,
+);
+const deviceOrientationSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.deviceOrientation,
+  (deviceOrientation) => deviceOrientation,
 );
 
 const VideoElements = ({
@@ -33,6 +42,7 @@ const VideoElements = ({
   const { allParticipants, totalNumWebcams } =
     useVideoParticipant(videoSubscribers);
   const screenWidth = useAppSelector(screenWidthSelector);
+  const deviceOrientation = useAppSelector(deviceOrientationSelector);
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -41,7 +51,7 @@ const VideoElements = ({
   const [showPre, setShowPre] = useState<boolean>(false);
   const [showNext, setShowNext] = useState<boolean>(false);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(perPage ?? 24);
-  const [isSmallDevice, setIsSmallDevice] = useState<boolean>(false);
+  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.PC);
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -97,13 +107,13 @@ const VideoElements = ({
     }
     if (screenWidth <= 640) {
       setWebcamPerPage(6);
-      setIsSmallDevice(true);
+      setDeviceType(DeviceType.MOBILE);
     } else if (screenWidth > 640 && screenWidth <= 1025) {
       setWebcamPerPage(9);
-      setIsSmallDevice(true);
+      setDeviceType(DeviceType.TABLET);
     } else {
       setWebcamPerPage(24);
-      setIsSmallDevice(false);
+      setDeviceType(DeviceType.PC);
     }
   }, [screenWidth, isVertical]);
 
@@ -124,7 +134,20 @@ const VideoElements = ({
     const length = participantsToRender.length;
     const elms: Array<JSX.Element> = [];
 
-    if (isSmallDevice) {
+    if (deviceType === DeviceType.MOBILE && deviceOrientation === 'landscape') {
+      const c = chunk(participantsToRender, Math.ceil(length / 2));
+      c.forEach((el, i) => {
+        elms.push(
+          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+            {el}
+          </div>,
+        );
+      });
+    } else if (
+      deviceType === DeviceType.MOBILE ||
+      deviceType === DeviceType.TABLET
+    ) {
+      // for mobile & tablet
       if (length <= 3) {
         elms.push(
           <div className={`camera-row-0 items-${length}`}>
@@ -155,6 +178,7 @@ const VideoElements = ({
         });
       }
     } else {
+      // for PC
       if (length < 4) {
         elms.push(
           <div className={`camera-row-0 items-${length}`}>
@@ -226,7 +250,7 @@ const VideoElements = ({
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
-      {totalNumWebcams > 6 && !isVertical && !isSmallDevice ? (
+      {totalNumWebcams > 6 && !isVertical && deviceType === DeviceType.PC ? (
         <div className="select-camera-number">
           <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
           <select
