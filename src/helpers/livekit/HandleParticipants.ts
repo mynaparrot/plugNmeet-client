@@ -24,6 +24,7 @@ import {
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
 import i18n from '../i18n';
+import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
@@ -117,6 +118,9 @@ export default class HandleParticipants {
     }
     // now remove user.
     store.dispatch(removeParticipant(p.identity));
+
+    // remove if in active speaker
+    store.dispatch(removeOneSpeaker(p.identity));
 
     // now remove webcam
     this.that.updateVideoSubscribers(p, false);
