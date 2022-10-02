@@ -33,13 +33,13 @@ export default class HandleActiveSpeakers {
 
       participants.forEach((participant) => {
         // we won't update if user is paginating & viewing webcams from other pages.
-        if (!isPaginating && this.that.videoSubscribersMap.size > 2) {
+        if (!isPaginating && this.that.videoSubscribersMap.size > 1) {
           // we'll wait little bit before changing
           const last =
             this.lastActiveWebcamChanged +
             ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION;
           if (now > last) {
-            if (this.that.videoSubscribersMap.has(participant.sid)) {
+            if (this.that.videoSubscribersMap.has(participant.identity)) {
               this.that.updateVideoSubscribers(participant);
               this.lastActiveWebcamChanged = now;
             }

@@ -12,7 +12,10 @@ export const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
   const c = chunk(participantsToRender, Math.ceil(length / 2));
   c.forEach((el, i) => {
     elms.push(
-      <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+      <div
+        key={i}
+        className={`camera-row-${i} items-${length} items-${el.length}`}
+      >
         {el}
       </div>,
     );
@@ -32,7 +35,7 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
 
   if (length <= 3) {
     elms.push(
-      <div className={`camera-row-0 items-${length}`}>
+      <div key={0} className={`camera-row-0 items-${length}`}>
         {participantsToRender}
       </div>,
     );
@@ -40,7 +43,10 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
     const c = chunk(participantsToRender, Math.ceil(length / 2));
     c.forEach((el, i) => {
       elms.push(
-        <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+        <div
+          key={i}
+          className={`camera-row-${i} items-${length} items-${el.length}`}
+        >
           {el}
         </div>,
       );
@@ -49,7 +55,10 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
     const c = chunk(participantsToRender, Math.ceil(length / 3));
     c.forEach((el, i) => {
       elms.push(
-        <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+        <div
+          key={i}
+          className={`camera-row-${i} items-${length} items-${el.length}`}
+        >
           {el}
         </div>,
       );
@@ -70,7 +79,7 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
 
   if (length < 4) {
     elms.push(
-      <div className={`camera-row-0 items-${length}`}>
+      <div key={0} className={`camera-row-0 items-${length}`}>
         {participantsToRender}
       </div>,
     );
@@ -78,7 +87,10 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
     const c = chunk(participantsToRender, Math.ceil(length / 2));
     c.forEach((el, i) => {
       elms.push(
-        <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+        <div
+          key={i}
+          className={`camera-row-${i} items-${length} items-${el.length}`}
+        >
           {el}
         </div>,
       );
@@ -87,7 +99,10 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
     const c = chunk(participantsToRender, Math.ceil(length / 3));
     c.forEach((el, i) => {
       elms.push(
-        <div className={`camera-row-${i} items-${length} items-${el.length}`}>
+        <div
+          key={i}
+          className={`camera-row-${i} items-${length} items-${el.length}`}
+        >
           {el}
         </div>,
       );

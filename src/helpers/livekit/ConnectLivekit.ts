@@ -535,12 +535,7 @@ export default class ConnectLivekit {
     }
 
     const mediaSubscribersToArray = Array.from(this._videoSubscribersMap);
-    const withoutLocalSubscriber = mediaSubscribersToArray.filter(
-      (participants) =>
-        participants[0] !== this._room.localParticipant?.identity,
-    );
-
-    withoutLocalSubscriber.sort((a, b) => {
+    mediaSubscribersToArray.sort((a, b) => {
       const aPrt = a[1];
       const bPart = b[1];
 
@@ -566,14 +561,6 @@ export default class ConnectLivekit {
       return (aPrt.joinedAt?.getTime() ?? 0) - (bPart.joinedAt?.getTime() ?? 0);
     });
 
-    if (this._room.localParticipant.getTracks().length) {
-      const localUser = [
-        this._room.localParticipant.sid,
-        this._room.localParticipant,
-      ];
-      withoutLocalSubscriber.unshift(localUser as any);
-    }
-
-    this.videoSubscribersState(new Map(withoutLocalSubscriber as any));
+    this.videoSubscribersState(new Map(mediaSubscribersToArray as any));
   };
 }

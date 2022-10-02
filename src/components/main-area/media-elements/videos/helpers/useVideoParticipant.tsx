@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { concat, isEmpty } from 'lodash';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
 import VideoParticipant from '../videoParticipant';
@@ -15,39 +16,61 @@ const useVideoParticipant = (
 
   useMemo(() => {
     let totalNumWebcams = 0;
-    const participants: Array<JSX.Element> = [];
+    const localSubscribers: Array<JSX.Element> = [];
+    const adminSubscribers: Array<JSX.Element> = [];
+    const otherSubscribers: Array<JSX.Element> = [];
 
     videoSubscribers.forEach((participant) => {
-      if (participant.metadata) {
-        const metadata: ICurrentUserMetadata = JSON.parse(participant.metadata);
+      // we will only take if source from Camera
+      const videoTracks = participant
+        .getTracks()
+        .filter((track) => track.source === Track.Source.Camera);
+
+      if (videoTracks.length) {
+        let isAdmin = false;
+        if (participant.metadata && !isEmpty(participant.metadata)) {
+          const metadata: ICurrentUserMetadata = JSON.parse(
+            participant.metadata,
+          );
+          isAdmin = metadata.is_admin;
+        }
 
         const participantType: VideoParticipantType = {
-          isAdmin: metadata.is_admin ?? false,
+          isAdmin,
           isLocal: participant instanceof LocalParticipant,
         };
-        const videoTracks = participant
-          .getTracks()
-          .filter((track) => track.source === Track.Source.Camera);
 
         totalNumWebcams = totalNumWebcams + videoTracks.length;
-        if (videoTracks.length) {
-          const elm = (
-            <VideoParticipant
-              key={participant.sid}
-              participantType={participantType}
-              participant={participant}
-            />
-          );
-          participants.push(elm);
+        const elm = (
+          <VideoParticipant
+            key={participant.sid}
+            participantType={participantType}
+            participant={participant}
+          />
+        );
+
+        if (isAdmin) {
+          adminSubscribers.push(elm);
+        } else {
+          if (participant instanceof LocalParticipant) {
+            localSubscribers.push(elm);
+          } else {
+            otherSubscribers.push(elm);
+          }
         }
       }
     });
 
+    if (localSubscribers.length) {
+      otherSubscribers.unshift(...localSubscribers);
+    }
+    const allSubscribers = concat(adminSubscribers, otherSubscribers);
     setTotalNumWebcams(totalNumWebcams);
-    setAllParticipants(participants);
+    setAllParticipants(allSubscribers);
+
     const timer = setInterval(() => {
-      const tmp: Array<JSX.Element> = participants;
-      const pp = participants[0];
+      const tmp: Array<JSX.Element> = allSubscribers;
+      const pp = allSubscribers[0];
       tmp.push(pp);
       totalNumWebcams += 1;
       setTotalNumWebcams(Number(`${totalNumWebcams}`));
