@@ -59,6 +59,7 @@ const VideoElements = ({
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
     perPage ?? DESKTOP_PER_PAGE,
   );
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -114,14 +115,17 @@ const VideoElements = ({
     }
     if (screenWidth <= 640) {
       setWebcamPerPage(MOBILE_PER_PAGE);
+      setIsSmallScreen(true);
     } else if (screenWidth > 640 && screenWidth <= 1025) {
       if (deviceType === UserDeviceType.MOBILE) {
         setWebcamPerPage(MOBILE_PER_PAGE);
       } else {
         setWebcamPerPage(TABLET_PER_PAGE);
       }
+      setIsSmallScreen(true);
     } else {
       setWebcamPerPage(DESKTOP_PER_PAGE);
+      setIsSmallScreen(false);
     }
     //eslint-disable-next-line
   }, [screenWidth, isVertical]);
@@ -244,9 +248,11 @@ const VideoElements = ({
       elms = setForMobileLandscape(participantsToRender);
     } else if (
       deviceType === UserDeviceType.MOBILE ||
-      deviceType === UserDeviceType.TABLET
+      deviceType === UserDeviceType.TABLET ||
+      isSmallScreen
     ) {
       // for mobile & tablet
+      // at present we can use same logic for small screen of desktop
       elms = setForMobileAndTablet(participantsToRender);
     } else {
       // for PC
