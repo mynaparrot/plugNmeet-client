@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-import { chunk } from 'lodash';
 
 import {
   RootState,
@@ -11,8 +10,13 @@ import {
   useAppSelector,
 } from '../../../../store';
 import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
-import useVideoParticipant from './useVideoParticipant';
+import useVideoParticipant from './helpers/useVideoParticipant';
 import { UserDeviceType } from '../../../../store/slices/interfaces/session';
+import {
+  setForMobileAndTablet,
+  setForMobileLandscape,
+  setForPC,
+} from './helpers/utils';
 
 interface IVideoElementsProps {
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>;
@@ -138,101 +142,6 @@ const VideoElements = ({
   const nextPage = () => {
     setParticipantsToDisplay(allParticipants, currentPage + 1, webcamPerPage);
     setCurrentPage(currentPage + 1);
-  };
-
-  /*
-   * For Mobile landscape mode,
-   * 2 rows for any number
-   */
-  const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
-    const length = participantsToRender.length;
-    const elms: Array<JSX.Element> = [];
-
-    const c = chunk(participantsToRender, Math.ceil(length / 2));
-    c.forEach((el, i) => {
-      elms.push(
-        <div className={`camera-row-${i} items-${length} items-${el.length}`}>
-          {el}
-        </div>,
-      );
-    });
-    return elms;
-  };
-
-  /*
-   * For Mobile & Tablet in normal mode,
-   * Upto 3 webcam, 1 row
-   * From 4 webcam,  2 rows
-   * More than 4, 3 rows
-   */
-  const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
-    const length = participantsToRender.length;
-    const elms: Array<JSX.Element> = [];
-
-    if (length <= 3) {
-      elms.push(
-        <div className={`camera-row-0 items-${length}`}>
-          {participantsToRender}
-        </div>,
-      );
-    } else if (length > 3 && length <= 4) {
-      const c = chunk(participantsToRender, Math.ceil(length / 2));
-      c.forEach((el, i) => {
-        elms.push(
-          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
-            {el}
-          </div>,
-        );
-      });
-    } else {
-      const c = chunk(participantsToRender, Math.ceil(length / 3));
-      c.forEach((el, i) => {
-        elms.push(
-          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
-            {el}
-          </div>,
-        );
-      });
-    }
-    return elms;
-  };
-
-  /*
-   * For PC,
-   * Upto 3 webcam, 1 row
-   * From 4 to 10, 2 rows
-   * More than 10, 3 rows
-   */
-  const setForPC = (participantsToRender: JSX.Element[]) => {
-    const length = participantsToRender.length;
-    const elms: Array<JSX.Element> = [];
-
-    if (length < 4) {
-      elms.push(
-        <div className={`camera-row-0 items-${length}`}>
-          {participantsToRender}
-        </div>,
-      );
-    } else if (length >= 4 && length <= 10) {
-      const c = chunk(participantsToRender, Math.ceil(length / 2));
-      c.forEach((el, i) => {
-        elms.push(
-          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
-            {el}
-          </div>,
-        );
-      });
-    } else {
-      const c = chunk(participantsToRender, Math.ceil(length / 3));
-      c.forEach((el, i) => {
-        elms.push(
-          <div className={`camera-row-${i} items-${length} items-${el.length}`}>
-            {el}
-          </div>,
-        );
-      });
-    }
-    return elms;
   };
 
   const videoParticipantsElms = useMemo(() => {

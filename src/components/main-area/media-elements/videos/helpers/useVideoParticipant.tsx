@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
-import { ICurrentUserMetadata } from '../../../../store/slices/interfaces/session';
-import VideoParticipant from './videoParticipant';
-import { VideoParticipantType } from './index';
+
+import VideoParticipant from '../videoParticipant';
+import { VideoParticipantType } from '../index';
+import { ICurrentUserMetadata } from '../../../../../store/slices/interfaces/session';
 
 const useVideoParticipant = (
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>,
