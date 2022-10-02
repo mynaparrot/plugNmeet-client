@@ -61,10 +61,11 @@ const useVideoParticipant = (
       }
     });
 
-    if (localSubscribers.length) {
-      otherSubscribers.unshift(...localSubscribers);
-    }
-    const allSubscribers = concat(adminSubscribers, otherSubscribers);
+    const allSubscribers = concat(
+      adminSubscribers,
+      localSubscribers,
+      otherSubscribers,
+    );
     setTotalNumWebcams(totalNumWebcams);
     setAllParticipants(allSubscribers);
 
