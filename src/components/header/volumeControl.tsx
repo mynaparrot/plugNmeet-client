@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Room } from 'livekit-client';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-
-interface IVolumeControlProps {
-  currentRoom: Room;
-}
+import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const isActiveParticipantsPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
   (isActiveParticipantsPanel) => isActiveParticipantsPanel,
 );
 
-const VolumeControl = ({ currentRoom }: IVolumeControlProps) => {
+const VolumeControl = () => {
   const dispatch = useAppDispatch();
   const [volume, setVolume] = useState<number>(
     store.getState().roomSettings.roomAudioVolume,
@@ -28,18 +24,13 @@ const VolumeControl = ({ currentRoom }: IVolumeControlProps) => {
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume) {
-      if (isActiveParticipantsPanel) {
-        dispatch(updateRoomAudioVolume(volume));
-      } else {
-        currentRoom.participants.forEach((p) => {
-          if (p.audioTracks.size > 0) {
-            p.setVolume(volume);
-          }
-        });
+      if (!isActiveParticipantsPanel) {
+        dispatch(updateIsActiveParticipantsPanel(true));
       }
+      dispatch(updateRoomAudioVolume(volume));
     }
     //eslint-disable-next-line
-  }, [volume, previousVolume, dispatch, isActiveParticipantsPanel]);
+  }, [volume, previousVolume, isActiveParticipantsPanel]);
 
   const render = () => {
     return (
