@@ -53,12 +53,17 @@ const useWatchWindowSize = (
 
     let deviceClass = 'is-pc';
     const md = new MobileDetect(window.navigator.userAgent);
-    if (md.mobile()) {
-      deviceClass = 'is-mobile ';
-      dispatch(updateUserDeviceType(UserDeviceType.MOBILE));
-    } else if (md.tablet()) {
+    const isIpad =
+      /Macintosh/i.test(navigator.userAgent) &&
+      navigator.maxTouchPoints &&
+      navigator.maxTouchPoints > 1;
+
+    if (isIpad || md.tablet()) {
       deviceClass = 'is-tablet ';
       dispatch(updateUserDeviceType(UserDeviceType.TABLET));
+    } else if (md.mobile()) {
+      deviceClass = 'is-mobile ';
+      dispatch(updateUserDeviceType(UserDeviceType.MOBILE));
     }
 
     const os = md.os();
