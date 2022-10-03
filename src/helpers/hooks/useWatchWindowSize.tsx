@@ -78,7 +78,11 @@ const useWatchWindowSize = (
     if (mql.matches) {
       setOrientationClass('portrait-device');
       dispatch(updateDeviceOrientation('portrait'));
+    } else {
+      setOrientationClass('landscape-device');
+      dispatch(updateDeviceOrientation('landscape'));
     }
+
     mql.addEventListener('change', (m) => {
       if (m.matches) {
         setOrientationClass('portrait-device');
