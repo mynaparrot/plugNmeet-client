@@ -16,6 +16,7 @@ import SharedNotepadElement from '../../shared-notepad';
 import Whiteboard from '../../whiteboard';
 import ExternalMediaPlayer from '../../external-media-player';
 import DisplayExternalLink from '../../display-external-link';
+import VerticalWebcams from './vertical-webcams/index';
 
 interface MediaElementsComponentProps {
   currentRoom: Room;
@@ -129,22 +130,53 @@ const MediaElementsComponent = ({
   return (
     <>
       {shouldShowScreenSharing() && screenShareTracks ? (
-        <ScreenShareElements
-          videoSubscribers={videoSubscribers}
-          screenShareTracks={screenShareTracks}
-        />
+        <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
+          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          <ScreenShareElements
+            // videoSubscribers={videoSubscribers}
+            screenShareTracks={screenShareTracks}
+          />
+        </div>
       ) : null}
       {shouldShowSharedNotepad() ? (
-        <SharedNotepadElement videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          <SharedNotepadElement videoSubscribers={videoSubscribers} />
+        </div>
       ) : null}
       {shouldShowWhiteboard() ? (
-        <Whiteboard videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          <Whiteboard videoSubscribers={videoSubscribers} />
+        </div>
       ) : null}
       {shouldShowExternalMediaPlayer() ? (
-        <ExternalMediaPlayer videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          <ExternalMediaPlayer videoSubscribers={videoSubscribers} />
+        </div>
       ) : null}
       {shouldDisplayExternalLink() ? (
-        <DisplayExternalLink videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          <DisplayExternalLink videoSubscribers={videoSubscribers} />
+        </div>
       ) : null}
       {shouldShowWebcams() && videoSubscribers ? (
         <VideoElements videoSubscribers={videoSubscribers} />

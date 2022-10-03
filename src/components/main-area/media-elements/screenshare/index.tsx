@@ -47,12 +47,12 @@ const ScreenShareElements = ({
   };
 
   return (
-    <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
+    <>
       {/*{if videoSubscribers has webcams}*/}
-      <VerticalWebcams videoSubscribers={videoSubscribers} />
+      {/* <VerticalWebcams videoSubscribers={videoSubscribers} /> */}
 
       {render()}
-    </div>
+    </>
   );
 };
 

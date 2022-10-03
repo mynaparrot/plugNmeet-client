@@ -94,16 +94,12 @@ const SharedNotepadElement = ({ videoSubscribers }: ISharedNotepadProps) => {
   };
 
   return (
-    <div
-      className={`middle-fullscreen-wrapper h-full flex ${
-        videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
-      }`}
-    >
+    <>
       {/*{if videoSubscribers has webcams}*/}
-      <VerticalWebcams videoSubscribers={videoSubscribers} />
+      {/* <VerticalWebcams videoSubscribers={videoSubscribers} /> */}
 
       {render()}
-    </div>
+    </>
   );
 };
 

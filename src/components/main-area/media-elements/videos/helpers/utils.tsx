@@ -9,17 +9,25 @@ export const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
   const length = participantsToRender.length;
   const elms: Array<JSX.Element> = [];
 
-  const c = chunk(participantsToRender, Math.ceil(length / 2));
-  c.forEach((el, i) => {
+  if (length <= 3) {
     elms.push(
-      <div
-        key={i}
-        className={`camera-row-${i} items-${length} items-${el.length}`}
-      >
-        {el}
+      <div key={0} className={`camera-row-0 items-${length} items-${length}`}>
+        {participantsToRender}
       </div>,
     );
-  });
+  } else {
+    const c = chunk(participantsToRender, Math.ceil(length / 2));
+    c.forEach((el, i) => {
+      elms.push(
+        <div
+          key={i}
+          className={`camera-row-${i} items-${length} items-${el.length}`}
+        >
+          {el}
+        </div>,
+      );
+    });
+  }
   return elms;
 };
 

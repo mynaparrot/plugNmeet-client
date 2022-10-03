@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
-import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
+// import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import {
   updateIsActiveChatPanel,
@@ -65,16 +65,12 @@ const DisplayExternalLink = ({
   return (
     <>
       {isActive ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
+        <>
           {/*{if videoSubscribers has webcams}*/}
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          {/* <VerticalWebcams videoSubscribers={videoSubscribers} /> */}
 
           {render()}
-        </div>
+        </>
       ) : null}
     </>
   );

@@ -109,16 +109,12 @@ const ExternalMediaPlayer = ({
   return (
     <>
       {isActive ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
+        <>
           {/*{if videoSubscribers has webcams}*/}
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
+          {/* <VerticalWebcams videoSubscribers={videoSubscribers} /> */}
 
           {playBackUrl ? render() : null}
-        </div>
+        </>
       ) : null}
     </>
   );
