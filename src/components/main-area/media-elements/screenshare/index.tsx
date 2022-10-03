@@ -3,16 +3,12 @@ import {
   LocalTrackPublication,
   RemoteTrackPublication,
   Track,
-  LocalParticipant,
-  RemoteParticipant,
 } from 'livekit-client';
 
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
-import VerticalWebcams from '../vertical-webcams';
 
 interface IScreenShareElementsProps {
-  videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
   screenShareTracks: Map<
     string,
     LocalTrackPublication | RemoteTrackPublication
@@ -21,7 +17,6 @@ interface IScreenShareElementsProps {
 
 const ScreenShareElements = ({
   screenShareTracks,
-  videoSubscribers,
 }: IScreenShareElementsProps) => {
   const render = () => {
     if (screenShareTracks) {
@@ -46,14 +41,7 @@ const ScreenShareElements = ({
     }
   };
 
-  return (
-    <>
-      {/*{if videoSubscribers has webcams}*/}
-      {/* <VerticalWebcams videoSubscribers={videoSubscribers} /> */}
-
-      {render()}
-    </>
-  );
+  return <>{render()}</>;
 };
 
-export default React.memo(ScreenShareElements);
+export default ScreenShareElements;

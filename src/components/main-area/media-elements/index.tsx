@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   LocalParticipant,
@@ -78,19 +78,43 @@ const MediaElementsComponent = ({
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
+  const [showFullWebcamView, setShowFullWebcamView] = useState<boolean>(false);
+  const [showVerticalWebcamView, setShowVerticalWebcamView] =
+    useState<boolean>(false);
+  const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);
 
-  const shouldShowWebcams = () => {
+  useEffect(() => {
     if (!activateWebcamsView) {
-      return false;
+      setShowFullWebcamView(false);
+      setShowVerticalWebcamView(false);
+      setHasVideoElms(false);
+      return;
+    } else if (activateWebcamsView && videoSubscribers?.size) {
+      setHasVideoElms(true);
     }
-    return (
+
+    if (
       !isActiveScreenSharing &&
       !isActiveSharedNotePad &&
       !isActiveWhiteboard &&
       !isActiveExternalMediaPlayer &&
       !isActiveDisplayExternalLink
-    );
-  };
+    ) {
+      setShowFullWebcamView(true);
+      setShowVerticalWebcamView(false);
+    } else {
+      setShowFullWebcamView(false);
+      setShowVerticalWebcamView(true);
+    }
+  }, [
+    videoSubscribers?.size,
+    activateWebcamsView,
+    isActiveScreenSharing,
+    isActiveSharedNotePad,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+  ]);
 
   const shouldShowScreenSharing = () => {
     if (!activeScreenSharingView) {
@@ -127,60 +151,73 @@ const MediaElementsComponent = ({
     return isActiveDisplayExternalLink;
   };
 
+  const videoSubscriberElms = useMemo(() => {
+    if (!videoSubscribers?.size) {
+      setHasVideoElms(false);
+      return null;
+    }
+
+    if (showFullWebcamView) {
+      return <VideoElements videoSubscribers={videoSubscribers} />;
+    } else if (showVerticalWebcamView) {
+      return <VerticalWebcams videoSubscribers={videoSubscribers} />;
+    } else {
+      return null;
+    }
+  }, [videoSubscribers, showFullWebcamView, showVerticalWebcamView]);
+
   return (
     <>
       {shouldShowScreenSharing() && screenShareTracks ? (
         <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-          <ScreenShareElements
-            // videoSubscribers={videoSubscribers}
-            screenShareTracks={screenShareTracks}
-          />
+          {videoSubscriberElms}
+          <ScreenShareElements screenShareTracks={screenShareTracks} />
         </div>
       ) : null}
       {shouldShowSharedNotepad() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-          <SharedNotepadElement videoSubscribers={videoSubscribers} />
+          {videoSubscriberElms}
+          <SharedNotepadElement />
         </div>
       ) : null}
       {shouldShowWhiteboard() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-          <Whiteboard videoSubscribers={videoSubscribers} />
+          {videoSubscriberElms}
+          <Whiteboard />
         </div>
       ) : null}
       {shouldShowExternalMediaPlayer() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-          <ExternalMediaPlayer videoSubscribers={videoSubscribers} />
+          {videoSubscriberElms}
+          <ExternalMediaPlayer />
         </div>
       ) : null}
       {shouldDisplayExternalLink() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-          <DisplayExternalLink videoSubscribers={videoSubscribers} />
+          {videoSubscriberElms}
+          <DisplayExternalLink />
         </div>
       ) : null}
-      {shouldShowWebcams() && videoSubscribers ? (
-        <VideoElements videoSubscribers={videoSubscribers} />
-      ) : null}
+      {
+        // for webcams in full view
+        videoSubscriberElms
+      }
       {audioSubscribers ? (
         <AudioElements audioSubscribers={audioSubscribers} />
       ) : null}
