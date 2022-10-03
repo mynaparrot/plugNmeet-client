@@ -231,4 +231,4 @@ const VideoElements = ({
   );
 };
 
-export default React.memo(VideoElements);
+export default VideoElements;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
 import { VideoParticipantType } from './index';
@@ -18,7 +18,7 @@ const VideoParticipant = ({
     activeSpeakersSelector.selectById(state, participant.identity),
   );
 
-  const render = () => {
+  const renderVideoElms = useMemo(() => {
     const elements: Array<JSX.Element> = [];
     participant.tracks.forEach((track) => {
       if (track.source === Track.Source.Camera) {
@@ -34,7 +34,8 @@ const VideoParticipant = ({
       }
     });
     return elements;
-  };
+    //eslint-disable-next-line
+  }, [participant]);
 
   return (
     <div
@@ -42,7 +43,7 @@ const VideoParticipant = ({
         participantType.isAdmin ? 'admin' : 'participants'
       }`}
     >
-      {render()}
+      {renderVideoElms}
     </div>
   );
 };

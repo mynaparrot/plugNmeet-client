@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   LocalParticipant,
@@ -8,7 +8,7 @@ import {
   Room,
 } from 'livekit-client';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { RootState, useAppSelector } from '../../../store';
 import ScreenShareElements from './screenshare';
 import AudioElements from './audios';
 import VideoElements from './videos';
@@ -77,27 +77,10 @@ const MediaElementsComponent = ({
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
-  const [webcamPerPage, setWebcamPerPage] = useState<number>(24);
-
-  useEffect(() => {
-    const deviceType = store.getState().session.userDeviceType;
-    if (deviceType === 'mobile' || deviceType === 'tablet') {
-      setWebcamPerPage(6);
-    }
-  }, []);
 
   const shouldShowWebcams = () => {
     if (!activateWebcamsView) {
       return false;
-    }
-    if (
-      !activeScreenSharingView &&
-      !isActiveSharedNotePad &&
-      !isActiveWhiteboard &&
-      !isActiveExternalMediaPlayer &&
-      !isActiveDisplayExternalLink
-    ) {
-      return true;
     }
     return (
       !isActiveScreenSharing &&
@@ -119,7 +102,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveSharedNotePad;
   };
 
@@ -127,7 +109,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveWhiteboard;
   };
 
@@ -135,7 +116,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveExternalMediaPlayer;
   };
 
@@ -143,7 +123,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveDisplayExternalLink;
   };
 
@@ -168,10 +147,7 @@ const MediaElementsComponent = ({
         <DisplayExternalLink videoSubscribers={videoSubscribers} />
       ) : null}
       {shouldShowWebcams() && videoSubscribers ? (
-        <VideoElements
-          videoSubscribers={videoSubscribers}
-          perPage={webcamPerPage}
-        />
+        <VideoElements videoSubscribers={videoSubscribers} />
       ) : null}
       {audioSubscribers ? (
         <AudioElements audioSubscribers={audioSubscribers} />
