@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
-
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
-);
+import { store, useAppDispatch } from '../../store';
+import { updateParticipant } from '../../store/slices/participantSlice';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();
@@ -18,19 +12,25 @@ const VolumeControl = () => {
     store.getState().roomSettings.roomAudioVolume,
   );
   const previousVolume = useStorePreviousInt(volume);
-  const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
-  );
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume) {
-      if (!isActiveParticipantsPanel) {
-        dispatch(updateIsActiveParticipantsPanel(true));
-      }
       dispatch(updateRoomAudioVolume(volume));
+
+      const participantIds = store.getState().participants.ids;
+      participantIds.forEach((id) => {
+        dispatch(
+          updateParticipant({
+            id: id,
+            changes: {
+              audioVolume: volume,
+            },
+          }),
+        );
+      });
     }
     //eslint-disable-next-line
-  }, [volume, previousVolume, isActiveParticipantsPanel]);
+  }, [volume, previousVolume]);
 
   const render = () => {
     return (

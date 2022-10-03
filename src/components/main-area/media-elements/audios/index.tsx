@@ -12,7 +12,13 @@ const AudioElements = ({ audioSubscribers }: IAudioElementsProps) => {
     const elm: Array<JSX.Element> = [];
     audioSubscribers.forEach((participant) => {
       participant.tracks.forEach((track) => {
-        elm.push(<AudioElm track={track} key={track.trackSid} />);
+        elm.push(
+          <AudioElm
+            userId={participant.identity}
+            track={track}
+            key={track.trackSid}
+          />,
+        );
       });
     });
 

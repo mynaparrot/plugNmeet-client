@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { RemoteParticipant } from 'livekit-client';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../../../store';
-import { participantsSelector } from '../../../../store/slices/participantSlice';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import {
+  participantsSelector,
+  updateParticipant,
+} from '../../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
 
 interface MicIconProps {
@@ -12,38 +14,34 @@ interface MicIconProps {
   remoteParticipant?: RemoteParticipant;
 }
 
-const roomAudioVolumeSelector = createSelector(
-  (state: RootState) => state.roomSettings.roomAudioVolume,
-  (roomAudioVolume) => roomAudioVolume,
-);
-
 const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
-  const [volume, setVolume] = useState<number>(1);
-  const previousVolume = useStorePreviousInt(volume);
-
   const participant = useAppSelector((state) =>
     participantsSelector.selectById(state, userId),
   );
-  const roomAudioVolume = useAppSelector(roomAudioVolumeSelector);
+
+  const [volume, setVolume] = useState<number>(participant?.audioVolume ?? 1);
+  const previousVolume = useStorePreviousInt(volume);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (remoteParticipant?.audioTracks.size) {
-      setVolume(roomAudioVolume);
+    if (typeof participant?.audioVolume !== 'undefined') {
+      setVolume(participant?.audioVolume);
     }
-  }, [roomAudioVolume, remoteParticipant]);
+  }, [participant?.audioVolume]);
 
   useEffect(() => {
-    if (previousVolume && volume !== previousVolume && remoteParticipant) {
-      try {
-        if (
-          remoteParticipant.getVolume() !== volume &&
-          remoteParticipant.audioTracks.size > 0
-        ) {
-          remoteParticipant.setVolume(volume);
-        }
-      } catch (e) {}
+    if (previousVolume && volume !== previousVolume) {
+      dispatch(
+        updateParticipant({
+          id: userId,
+          changes: {
+            audioVolume: volume,
+          },
+        }),
+      );
     }
-  }, [volume, previousVolume, remoteParticipant]);
+    //eslint-disable-next-line
+  }, [volume, previousVolume]);
 
   const renderUnmuteIcon = () => {
     return (
