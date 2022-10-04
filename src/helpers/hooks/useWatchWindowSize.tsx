@@ -13,10 +13,7 @@ import { store, useAppDispatch } from '../../store';
 import { updateUserDeviceType } from '../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../store/slices/interfaces/session';
 
-const useWatchWindowSize = (
-  currentRoom: Room | undefined,
-  rootRef: React.MutableRefObject<null>,
-) => {
+const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
   const [deviceClass, setDeviceClass] = useState<string>('');
   const [orientationClass, setOrientationClass] =
@@ -24,10 +21,7 @@ const useWatchWindowSize = (
   const [screenHeight, setScreenHeight] = useState<string>('');
 
   const adjustScreenSize = () => {
-    const el: any = rootRef.current;
-    if (el) {
-      setScreenHeight(`${window.innerHeight}px`);
-    }
+    setScreenHeight(`${window.innerHeight}px`);
   };
 
   useEffect(() => {
@@ -40,7 +34,7 @@ const useWatchWindowSize = (
       }
     };
     //eslint-disable-next-line
-  }, [rootRef, currentRoom?.state]);
+  }, [currentRoom?.state]);
 
   useEffect(() => {
     window.onresize = () => {

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -43,7 +37,6 @@ const waitingForApprovalSelector = createSelector(
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const rootRef = useRef(null);
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
@@ -72,10 +65,8 @@ const App = () => {
   useKeyboardShortcuts(currentRoom);
   useDesignCustomization();
   useWatchVisibilityChange();
-  const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
-    currentRoom,
-    rootRef,
-  );
+  const { deviceClass, orientationClass, screenHeight } =
+    useWatchWindowSize(currentRoom);
   useThemeSettings();
 
   useEffect(() => {
@@ -179,7 +170,7 @@ const App = () => {
   const renderMainApp = useCallback(() => {
     if (currentRoom) {
       return (
-        <div className="plugNmeet-app overflow-hidden" ref={rootRef}>
+        <div className="plugNmeet-app overflow-hidden">
           {!isRecorder ? <Header currentRoom={currentRoom} /> : null}
           <MainArea
             currentRoom={currentRoom}
