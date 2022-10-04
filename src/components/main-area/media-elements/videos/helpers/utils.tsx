@@ -11,7 +11,7 @@ export const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
 
   if (length <= 3) {
     elms.push(
-      <div key={0} className={`camera-row-0 items-${length} items-${length}`}>
+      <div key={0} className={`camera-row-0 total-items-${length}`}>
         {participantsToRender}
       </div>,
     );
@@ -21,7 +21,7 @@ export const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
       elms.push(
         <div
           key={i}
-          className={`camera-row-${i} items-${length} items-${el.length}`}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
         </div>,
@@ -43,7 +43,7 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
 
   if (length <= 3) {
     elms.push(
-      <div key={0} className={`camera-row-0 items-${length}`}>
+      <div key={0} className={`camera-row-0 total-items-${length}`}>
         {participantsToRender}
       </div>,
     );
@@ -53,7 +53,7 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
       elms.push(
         <div
           key={i}
-          className={`camera-row-${i} items-${length} items-${el.length}`}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
         </div>,
@@ -65,7 +65,7 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
       elms.push(
         <div
           key={i}
-          className={`camera-row-${i} items-${length} items-${el.length}`}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
         </div>,
@@ -87,7 +87,7 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
 
   if (length < 4) {
     elms.push(
-      <div key={0} className={`camera-row-0 items-${length}`}>
+      <div key={0} className={`camera-row-0 total-items-${length}`}>
         {participantsToRender}
       </div>,
     );
@@ -97,7 +97,7 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
       elms.push(
         <div
           key={i}
-          className={`camera-row-${i} items-${length} items-${el.length}`}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
         </div>,
@@ -109,7 +109,7 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
       elms.push(
         <div
           key={i}
-          className={`camera-row-${i} items-${length} items-${el.length}`}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
         </div>,

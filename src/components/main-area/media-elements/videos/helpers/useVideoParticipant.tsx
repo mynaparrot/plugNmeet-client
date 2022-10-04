@@ -76,7 +76,7 @@ const useVideoParticipant = (
       totalNumWebcams += 1;
       setTotalNumWebcams(Number(`${totalNumWebcams}`));
       setAllParticipants([...tmp]);
-      if (tmp.length === 30) {
+      if (tmp.length === 15) {
         clearInterval(timer);
       }
     }, 5000);

@@ -292,44 +292,44 @@ code {
 .camera-row-2 {
   @apply flex gap-2 justify-center;
 }
-.camera-row-0.items-2 .video-camera-item,
-.camera-row-1.items-2 .video-camera-item {
+.camera-row-0.total-items-2 .video-camera-item,
+.camera-row-1.total-items-2 .video-camera-item {
   @apply w-1/2;
 }
-.camera-row-0.items-3 .video-camera-item,
-.camera-row-1.items-3 .video-camera-item,
-.camera-row-1.items-2.items-5 .video-camera-item {
+.camera-row-0.total-items-3 .video-camera-item,
+.camera-row-1.total-items-3 .video-camera-item,
+.camera-row-1.total-items-2.inner-items-5 .video-camera-item {
   @apply w-1/3;
 }
-.camera-row-0.items-4.items-7 .video-camera-item,
-.camera-row-1.items-3.items-7 .video-camera-item,
-.camera-row-1.items-4.items-8 .video-camera-item,
-.camera-row-2.items-3.items-11 .video-camera-item,
-.camera-row-2.items-2.items-10 .video-camera-item {
+.camera-row-0.total-items-4.inner-items-7 .video-camera-item,
+.camera-row-1.total-items-3.inner-items-7 .video-camera-item,
+.camera-row-1.total-items-4.inner-items-8 .video-camera-item,
+.camera-row-2.total-items-3.inner-items-11 .video-camera-item,
+.camera-row-2.total-items-2.inner-items-10 .video-camera-item {
   @apply w-1/4;
 }
-.camera-row-2.items-3.items-13 .video-camera-item,
-.camera-row-2.items-4.items-14 .video-camera-item,
-.camera-row-2.items-5.items-15 .video-camera-item {
+.camera-row-2.total-items-3.inner-items-13 .video-camera-item,
+.camera-row-2.total-items-4.inner-items-14 .video-camera-item,
+.camera-row-2.total-items-5.inner-items-15 .video-camera-item {
   @apply w-1/5;
 }
-.camera-row-2.items-4.items-16 .video-camera-item,
-.camera-row-2.items-5.items-17 .video-camera-item,
-.camera-row-2.items-6.items-18 .video-camera-item {
+.camera-row-2.total-items-4.inner-items-16 .video-camera-item,
+.camera-row-2.total-items-5.inner-items-17 .video-camera-item,
+.camera-row-2.total-items-6.inner-items-18 .video-camera-item {
   width: 16.3%;
 }
-.camera-row-2.items-5.items-19 .video-camera-item,
-.camera-row-2.items-6.items-20 .video-camera-item,
-.camera-row-2.items-7.items-21 .video-camera-item {
+.camera-row-2.total-items-5.inner-items-19 .video-camera-item,
+.camera-row-2.total-items-6.inner-items-20 .video-camera-item,
+.camera-row-2.total-items-7.inner-items-21 .video-camera-item {
   width: 13.95%;
 }
-.camera-row-2.items-6.items-22 .video-camera-item,
-.camera-row-2.items-7.items-23 .video-camera-item,
-.camera-row-2.items-8.items-24 .video-camera-item {
+.camera-row-2.total-items-6.inner-items-22 .video-camera-item,
+.camera-row-2.total-items-7.inner-items-23 .video-camera-item,
+.camera-row-2.total-items-8.inner-items-24 .video-camera-item {
   width: 12.15%;
 }
-.camera-row-1.items-4.items-9 .video-camera-item,
-.camera-row-1.items-5.items-10 .video-camera-item {
+.camera-row-1.total-items-4.inner-items-9 .video-camera-item,
+.camera-row-1.total-items-5.inner-items-10 .video-camera-item {
   width: 20%;
 }
 // .total-cam-1 .all-webcam-wrapper-inner {
@@ -1185,13 +1185,15 @@ button.previous-cam {
     width: 140px;
     left: 0;
     height: 100%;
+    padding: 20px 0;
   }
   .landscape-device
     #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper
     .all-webcam-wrapper
     .all-webcam-wrapper-inner {
-    flex-wrap: wrap;
+    display: block !important;
+    padding: 0 5px;
   }
 
   .landscape-device
@@ -1200,9 +1202,8 @@ button.previous-cam {
     .all-webcam-wrapper
     .all-webcam-wrapper-inner
     .video-camera-item {
-    max-width: 100%;
-    height: 80px;
-    margin: 5px;
+    height: 31.33%;
+    margin: 4px 0px;
   }
 
   .landscape-device
@@ -1329,8 +1330,9 @@ button.previous-cam {
     .all-webcam-wrapper
     .all-webcam-wrapper-inner {
     margin: 0;
-    padding: 0 5px;
+    padding: 0 15px;
     flex-wrap: nowrap;
+    gap: 0;
   }
   #main-area.fullWidthMainArea
     .all-webcam-wrapper.vertical-webcams
@@ -1451,19 +1453,19 @@ button.previous-cam {
   }
 
   #main-area.fullWidthMainArea .all-webcam-wrapper-inner button.next-cam {
-    right: -38px;
+    right: -42px;
     width: 100px;
     left: auto;
-    height: 25px;
-    top: 40%;
+    height: 20px;
+    top: 45px;
     transform: rotate(-90deg);
   }
-  #main-area.fullWidthMainArea
-    .all-webcam-wrapper
-    .all-webcam-wrapper-inner
-    button:hover {
-    background-color: transparent;
-  }
+  // #main-area.fullWidthMainArea
+  //   .all-webcam-wrapper
+  //   .all-webcam-wrapper-inner
+  //   button:hover {
+  //   background-color: transparent;
+  // }
 
   #main-area.fullWidthMainArea
     .all-webcam-wrapper
@@ -1471,9 +1473,9 @@ button.previous-cam {
     button.previous-cam {
     right: auto;
     width: 100px;
-    left: -38px;
-    height: 25px;
-    top: 37px;
+    left: -42px;
+    height: 20px;
+    top: 45px;
     transform: rotate(-90deg);
   }
 
@@ -1689,58 +1691,86 @@ aside {
   }
 }
 @media screen and (max-width: 1025px) and (min-width: 641px) {
-  .camera-row-1.items-5.items-2 .video-camera-item {
+  .camera-row-1.total-items-5.inner-items-2 .video-camera-item {
     width: 50%;
   }
-  .camera-row-2.items-5.items-1 .video-camera-item {
+  .camera-row-2.total-items-5.inner-items-1 .video-camera-item {
     width: 50%;
   }
-  .camera-row-1.items-7.items-3 .video-camera-item,
-  .camera-row-2.items-7.items-1 .video-camera-item,
-  .camera-row-2.items-8.items-2 .video-camera-item,
-  .camera-row-2.items-9.items-3 .video-camera-item {
+  .camera-row-1.total-items-7.inner-items-3 .video-camera-item,
+  .camera-row-2.total-items-7.inner-items-1 .video-camera-item,
+  .camera-row-2.total-items-8.inner-items-2 .video-camera-item,
+  .camera-row-2.total-items-9.inner-items-3 .video-camera-item {
     width: 33.33%;
   }
 }
 @media screen and (max-width: 640px) {
-  .camera-row-0.items-2,
-  .camera-row-0.items-3 {
+  .camera-row-0.total-items-2,
+  .camera-row-0.total-items-3 {
     flex-wrap: wrap;
   }
-  .camera-row-0.items-2 .video-camera-item {
+  .camera-row-0.total-items-2 .video-camera-item {
     width: 100%;
     height: 50%;
   }
-  .camera-row-0.items-3 .video-camera-item {
+  .camera-row-0.total-items-3 .video-camera-item {
     width: 100%;
     height: 33.33%;
   }
-  .camera-row-0.items-4.items-2 .video-camera-item {
+  .camera-row-0.total-items-4.inner-items-2 .video-camera-item {
     width: 50%;
     height: 100%;
   }
-  .camera-row-0.items-4.items-2 {
+  .camera-row-0.total-items-4.inner-items-2 {
     flex-wrap: nowrap;
   }
-  .camera-row-0.items-5.items-2 {
+  .camera-row-0.total-items-5.inner-items-2 {
     flex-wrap: nowrap;
   }
-  .camera-row-0.items-5.items-2 .video-camera-item {
+  .camera-row-0.total-items-5.inner-items-2 .video-camera-item {
     width: 50%;
     height: 100%;
   }
-  .camera-row-1.items-5.items-2 .video-camera-item {
+  .camera-row-1.total-items-5.inner-items-2 .video-camera-item {
     width: 50%;
   }
-  .camera-row-2.items-5.items-1 .video-camera-item,
-  .camera-row-2.items-6.items-1 .video-camera-item {
+  .camera-row-2.total-items-5.inner-items-1 .video-camera-item,
+  .camera-row-2.total-items-6.inner-items-1 .video-camera-item {
     width: 50%;
   }
-  .camera-row-0.items-6.items-2 .video-camera-item {
+  .camera-row-0.total-items-6.inner-items-2 .video-camera-item {
     width: 50%;
     height: 100%;
   }
-  .camera-row-0.items-6.items-2 {
+  .camera-row-0.total-items-6.inner-items-2 {
     flex-wrap: nowrap;
   }
+}
+.landscape-device.is-mobile
+  .camera-row-1.total-items-5.inner-items-2
+  .video-camera-item {
+  width: 33.33%;
+}
+.landscape-device.is-tablet
+  .camera-row-1.total-items-5.inner-items-2
+  .video-camera-item {
+  width: 50%;
+}
+.landscape-device.is-tablet
+  .camera-row-2.total-items-5.inner-items-1
+  .video-camera-item {
+  width: 50%;
+}
+.landscape-device.is-tablet
+  .camera-row-1.total-items-7.inner-items-3
+  .video-camera-item {
+  width: 33.33%;
+}
+.landscape-device.is-tablet
+  .camera-row-2.total-items-7.inner-items-1
+  .video-camera-item,
+.landscape-device.is-tablet
+  .camera-row-2.total-items-8.inner-items-2
+  .video-camera-item {
+  width: 33.33%;
 }
