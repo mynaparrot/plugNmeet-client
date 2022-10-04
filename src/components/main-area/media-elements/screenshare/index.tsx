@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   LocalTrackPublication,
   RemoteTrackPublication,
@@ -18,7 +18,7 @@ interface IScreenShareElementsProps {
 const ScreenShareElements = ({
   screenShareTracks,
 }: IScreenShareElementsProps) => {
-  const render = () => {
+  const renderElms = useMemo(() => {
     if (screenShareTracks) {
       const elm = Array<JSX.Element>();
 
@@ -39,9 +39,9 @@ const ScreenShareElements = ({
     } else {
       return null;
     }
-  };
+  }, [screenShareTracks]);
 
-  return <>{render()}</>;
+  return <>{renderElms ?? null}</>;
 };
 
 export default ScreenShareElements;

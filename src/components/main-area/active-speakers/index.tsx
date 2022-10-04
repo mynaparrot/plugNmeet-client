@@ -1,22 +1,24 @@
 import React, { useMemo } from 'react';
 
-import { store, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlice';
+import { participantsSelector } from '../../../store/slices/participantSlice';
 import SpeakerComponent from './speaker';
 
 const ActiveSpeakers = () => {
   const activeSpeakers = useAppSelector(activeSpeakersSelector.selectAll);
+  const participantIds = useAppSelector(participantsSelector.selectIds);
 
   const activeSpeakersElms = useMemo(() => {
     if (!activeSpeakers.length) {
       return null;
     }
-    const participantIds = store.getState().participants.ids;
     return activeSpeakers.map((speaker) => {
       if (participantIds.find((p) => p === String(speaker.userId))) {
-        return <SpeakerComponent key={speaker.sid} speaker={speaker} />;
+        return <SpeakerComponent key={speaker.userId} speaker={speaker} />;
       }
     });
+    //eslint-disable-next-line
   }, [activeSpeakers]);
 
   return activeSpeakersElms ? (
