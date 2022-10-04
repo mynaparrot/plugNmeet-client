@@ -249,6 +249,9 @@ code {
   color: #004e91;
 } */
 /* Message */
+.is-ios .all-webcam-wrapper {
+  height: calc(100vh - 130px);
+}
 .all-webcam-wrapper {
   height: calc(100vh - 110px);
   display: flex;
@@ -298,38 +301,38 @@ code {
 }
 .camera-row-0.total-items-3 .video-camera-item,
 .camera-row-1.total-items-3 .video-camera-item,
-.camera-row-1.total-items-2.inner-items-5 .video-camera-item {
+.camera-row-1.total-items-5.inner-items-2 .video-camera-item {
   @apply w-1/3;
 }
-.camera-row-0.total-items-4.inner-items-7 .video-camera-item,
-.camera-row-1.total-items-3.inner-items-7 .video-camera-item,
-.camera-row-1.total-items-4.inner-items-8 .video-camera-item,
-.camera-row-2.total-items-3.inner-items-11 .video-camera-item,
-.camera-row-2.total-items-2.inner-items-10 .video-camera-item {
+.camera-row-0.total-items-7.inner-items-4 .video-camera-item,
+.camera-row-1.total-items-7.inner-items-3 .video-camera-item,
+.camera-row-1.total-items-8.inner-items-4 .video-camera-item,
+.camera-row-2.total-items-11.inner-items-3 .video-camera-item,
+.camera-row-2.total-items-10.inner-items-2 .video-camera-item {
   @apply w-1/4;
 }
-.camera-row-2.total-items-3.inner-items-13 .video-camera-item,
-.camera-row-2.total-items-4.inner-items-14 .video-camera-item,
-.camera-row-2.total-items-5.inner-items-15 .video-camera-item {
+.camera-row-2.total-items-13.inner-items-3 .video-camera-item,
+.camera-row-2.total-items-14.inner-items-4 .video-camera-item,
+.camera-row-2.total-items-15.inner-items-5 .video-camera-item {
   @apply w-1/5;
 }
-.camera-row-2.total-items-4.inner-items-16 .video-camera-item,
-.camera-row-2.total-items-5.inner-items-17 .video-camera-item,
-.camera-row-2.total-items-6.inner-items-18 .video-camera-item {
+.camera-row-2.total-items-16.inner-items-4 .video-camera-item,
+.camera-row-2.total-items-17.inner-items-5 .video-camera-item,
+.camera-row-2.total-items-18.inner-items-6 .video-camera-item {
   width: 16.3%;
 }
-.camera-row-2.total-items-5.inner-items-19 .video-camera-item,
-.camera-row-2.total-items-6.inner-items-20 .video-camera-item,
-.camera-row-2.total-items-7.inner-items-21 .video-camera-item {
+.camera-row-2.total-items-19.inner-items-5 .video-camera-item,
+.camera-row-2.total-items-20.inner-items-6 .video-camera-item,
+.camera-row-2.total-items-21.inner-items-7 .video-camera-item {
   width: 13.95%;
 }
-.camera-row-2.total-items-6.inner-items-22 .video-camera-item,
-.camera-row-2.total-items-7.inner-items-23 .video-camera-item,
-.camera-row-2.total-items-8.inner-items-24 .video-camera-item {
+.camera-row-2.total-items-22.inner-items-6 .video-camera-item,
+.camera-row-2.total-items-23.inner-items-7 .video-camera-item,
+.camera-row-2.total-items-24.inner-items-8 .video-camera-item {
   width: 12.15%;
 }
-.camera-row-1.total-items-4.inner-items-9 .video-camera-item,
-.camera-row-1.total-items-5.inner-items-10 .video-camera-item {
+.camera-row-1.total-items-9.inner-items-4 .video-camera-item,
+.camera-row-1.total-items-10.inner-items-5 .video-camera-item {
   width: 20%;
 }
 // .total-cam-1 .all-webcam-wrapper-inner {
