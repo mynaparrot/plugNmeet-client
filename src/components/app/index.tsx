@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -170,7 +176,7 @@ const App = () => {
     }
   }, [currentRoom, dispatch]);
 
-  const renderMainApp = () => {
+  const renderMainApp = useCallback(() => {
     if (currentRoom) {
       return (
         <div className="plugNmeet-app overflow-hidden" ref={rootRef}>
@@ -187,9 +193,14 @@ const App = () => {
         </div>
       );
     }
-
     return null;
-  };
+  }, [
+    isRecorder,
+    currentRoom,
+    audioSubscribers,
+    videoSubscribers,
+    screenShareTracks,
+  ]);
 
   const onCloseStartupModal = () => {
     if (livekitInfo) {
@@ -197,7 +208,7 @@ const App = () => {
     }
   };
 
-  const render = () => {
+  const renderElms = useMemo(() => {
     if (loading) {
       return <Loading text={t('app.' + roomConnectionStatus)} />;
     } else if (error && !loading) {
@@ -212,14 +223,15 @@ const App = () => {
     } else {
       return null;
     }
-  };
+    //eslint-disable-next-line
+  }, [loading, error, roomConnectionStatus, waitForApproval, renderMainApp]);
 
   return (
     <div
       className={`${orientationClass} ${deviceClass} ${userTypeClass} h-screen dark:bg-darkPrimary/70`}
       style={{ height: screenHeight }}
     >
-      {render()}
+      {renderElms}
     </div>
   );
 };

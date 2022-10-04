@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
 import {
@@ -139,6 +139,55 @@ const MainArea = ({
     isActiveDisplayExternalLink,
   ]);
 
+  const renderLeftPanel = useMemo(() => {
+    return (
+      <Transition
+        className="transition-left-panel"
+        show={isActiveParticipantsPanel}
+        enter="transform transition duration-[400ms]"
+        enterFrom="opacity-0 translate-x-0"
+        enterTo="opacity-100"
+        leave="transform transition duration-[400ms]"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0 -translate-x-full"
+      >
+        <LeftPanel currentRoom={currentRoom} />
+      </Transition>
+    );
+  }, [isActiveParticipantsPanel, currentRoom]);
+
+  const renderMedialElms = useMemo(() => {
+    return (
+      <MediaElementsComponent
+        currentRoom={currentRoom}
+        audioSubscribers={audioSubscribers}
+        videoSubscribers={videoSubscribers}
+        screenShareTracks={screenShareTracks}
+      />
+    );
+  }, [currentRoom, audioSubscribers, videoSubscribers, screenShareTracks]);
+
+  const renderRightPanel = useMemo(() => {
+    if (allowChat) {
+      return (
+        <Transition
+          className="transition-right-panel"
+          show={isActiveChatPanel}
+          enter="transform transition duration-[400ms]"
+          enterFrom="opacity-0 translate-x-0"
+          enterTo="opacity-100"
+          leave="transform transition duration-[400ms]"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0 translate-x-full"
+        >
+          <RightPanel currentRoom={currentRoom} isRecorder={isRecorder} />
+        </Transition>
+      );
+    }
+    return null;
+    //eslint-disable-next-line
+  }, [currentRoom, isActiveChatPanel]);
+
   return (
     <div
       id="main-area"
@@ -153,43 +202,14 @@ const MainArea = ({
         }}
       />
       <div className="inner flex justify-between w-full">
-        <Transition
-          className="transition-left-panel"
-          show={isActiveParticipantsPanel}
-          enter="transform transition duration-[400ms]"
-          enterFrom="opacity-0 translate-x-0"
-          enterTo="opacity-100"
-          leave="transform transition duration-[400ms]"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0 -translate-x-full"
-        >
-          <LeftPanel currentRoom={currentRoom} />
-        </Transition>
+        {renderLeftPanel}
 
         <div className="middle-area relative flex-auto">
           <ActiveSpeakers />
-          <MediaElementsComponent
-            currentRoom={currentRoom}
-            audioSubscribers={audioSubscribers}
-            videoSubscribers={videoSubscribers}
-            screenShareTracks={screenShareTracks}
-          />
+          {renderMedialElms}
         </div>
 
-        {allowChat ? (
-          <Transition
-            className="transition-right-panel"
-            show={isActiveChatPanel}
-            enter="transform transition duration-[400ms]"
-            enterFrom="opacity-0 translate-x-0"
-            enterTo="opacity-100"
-            leave="transform transition duration-[400ms]"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0 translate-x-full"
-          >
-            <RightPanel currentRoom={currentRoom} isRecorder={isRecorder} />
-          </Transition>
-        ) : null}
+        {renderRightPanel}
       </div>
     </div>
   );
