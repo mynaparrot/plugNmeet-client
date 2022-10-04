@@ -73,7 +73,7 @@ const useWatchWindowSize = (
     let deviceClass = 'is-pc';
     const md = new MobileDetect(window.navigator.userAgent);
     const isIpad =
-      /Macintosh/i.test(navigator.userAgent) &&
+      /Macintosh/i.test(window.navigator.userAgent) &&
       navigator.maxTouchPoints &&
       navigator.maxTouchPoints > 1;
 
@@ -89,6 +89,8 @@ const useWatchWindowSize = (
     if (os === 'AndroidOS') {
       deviceClass += 'is-android';
     } else if (os === 'iOS' || os === 'iPadOS') {
+      deviceClass += 'is-ios';
+    } else if (!os && isIpad) {
       deviceClass += 'is-ios';
     }
     setDeviceClass(deviceClass);
