@@ -61,6 +61,10 @@ const isActiveDisplayExternalLinkSelector = createSelector(
       .display_external_link_features.is_active,
   (is_active) => is_active,
 );
+const screenHeightSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenHeight,
+  (screenHeight) => screenHeight,
+);
 
 const MainArea = ({
   currentRoom,
@@ -83,6 +87,7 @@ const MainArea = ({
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
+  const screenHeight = useAppSelector(screenHeightSelector);
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
@@ -191,9 +196,12 @@ const MainArea = ({
   return (
     <div
       id="main-area"
-      className={`${
-        !isRecorder ? 'lg:h-[calc(100vh-110px)]' : 'h-[calc(100vh)] isRecorder'
-      }  plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
+      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
+      style={
+        !isRecorder
+          ? { height: `${screenHeight - 110}px` }
+          : { height: `${screenHeight}px` }
+      }
     >
       <div
         className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none bg-cover bg-center bg-no-repeat`}

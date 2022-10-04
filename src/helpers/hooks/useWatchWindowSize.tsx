@@ -26,7 +26,7 @@ const useWatchWindowSize = (
   const adjustScreenSize = () => {
     const el: any = rootRef.current;
     if (el) {
-      setScreenHeight(`${el.clientHeight}px`);
+      setScreenHeight(`${window.innerHeight}px`);
     }
   };
 
