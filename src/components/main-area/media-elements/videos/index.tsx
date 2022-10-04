@@ -120,7 +120,7 @@ const VideoElements = ({
     if (screenWidth <= 640) {
       setWebcamPerPage(MOBILE_PER_PAGE);
       setIsSmallScreen(true);
-    } else if (screenWidth > 640 && screenWidth <= 1025) {
+    } else if (screenWidth > 640 && screenWidth <= 1024) {
       if (deviceType === UserDeviceType.MOBILE) {
         setWebcamPerPage(MOBILE_PER_PAGE);
       } else {
@@ -128,8 +128,13 @@ const VideoElements = ({
       }
       setIsSmallScreen(true);
     } else {
-      setWebcamPerPage(DESKTOP_PER_PAGE);
-      setIsSmallScreen(false);
+      if (deviceType === UserDeviceType.TABLET) {
+        setWebcamPerPage(TABLET_PER_PAGE);
+        setIsSmallScreen(true);
+      } else {
+        setWebcamPerPage(DESKTOP_PER_PAGE);
+        setIsSmallScreen(false);
+      }
     }
     //eslint-disable-next-line
   }, [screenWidth, isVertical]);

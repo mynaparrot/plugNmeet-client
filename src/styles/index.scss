@@ -1443,3 +1443,15 @@ aside {
   .video-camera-item {
   width: 33.33%;
 }
+.portrait-device.is-tablet .camera-row-0.total-items-2 .video-camera-item {
+  width: 100%;
+  height: 50%;
+}
+.portrait-device.is-tablet .camera-row-0.total-items-3 .video-camera-item {
+  width: 100%;
+  height: 33.33%;
+}
+.portrait-device.is-tablet .camera-row-0.total-items-2,
+.portrait-device.is-tablet .camera-row-0.total-items-3 {
+  flex-wrap: wrap;
+}
