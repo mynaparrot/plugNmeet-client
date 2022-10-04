@@ -23,6 +23,25 @@ const useWatchWindowSize = (
     useState<string>('landscape-device');
   const [screenHeight, setScreenHeight] = useState<string>('');
 
+  const adjustScreenSize = () => {
+    const el: any = rootRef.current;
+    if (el) {
+      setScreenHeight(`${el.clientHeight}px`);
+    }
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      adjustScreenSize();
+    }, 500);
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+    //eslint-disable-next-line
+  }, [rootRef, currentRoom?.state]);
+
   useEffect(() => {
     window.onresize = () => {
       dispatch(updateScreenWidth(window.innerWidth));
@@ -94,18 +113,6 @@ const useWatchWindowSize = (
     });
     //eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    adjustScreenSize();
-    //eslint-disable-next-line
-  }, [currentRoom?.state]);
-
-  const adjustScreenSize = () => {
-    const el: any = rootRef.current;
-    if (el) {
-      setScreenHeight(`${el.clientHeight}px`);
-    }
-  };
 
   return {
     deviceClass,
