@@ -23,4 +23,4 @@ const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
   return <div className="camera-modules">{render()}</div>;
 };
 
-export default React.memo(VideoComponent);
+export default VideoComponent;

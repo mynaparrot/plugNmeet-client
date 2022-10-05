@@ -1,14 +1,9 @@
 import { useState } from 'react';
-import {
-  Room,
-  LocalParticipant,
-  RemoteParticipant,
-  LocalTrackPublication,
-  RemoteTrackPublication,
-} from 'livekit-client';
+import { Room } from 'livekit-client';
 
 import { IErrorPageProps } from '../../../components/extra-pages/Error';
 import ConnectLivekit from '../ConnectLivekit';
+import { IConnectLivekit } from '../types';
 
 export interface LivekitInfo {
   livekit_host: string;
@@ -21,14 +16,7 @@ export interface IUseLivekitConnect {
   roomConnectionStatus: string;
   setRoomConnectionStatus: React.Dispatch<React.SetStateAction<string>>;
   currentRoom: Room | undefined;
-  audioSubscribers: Map<string, RemoteParticipant> | undefined;
-  videoSubscribers:
-    | Map<string, RemoteParticipant | LocalParticipant>
-    | undefined;
-  screenShareTracks:
-    | Map<string, LocalTrackPublication | RemoteTrackPublication>
-    | undefined;
-  startLivekitConnection(info: LivekitInfo): void;
+  startLivekitConnection(info: LivekitInfo): IConnectLivekit;
 }
 
 const useLivekitConnect = (): IUseLivekitConnect => {
@@ -37,25 +25,12 @@ const useLivekitConnect = (): IUseLivekitConnect => {
   const [roomConnectionStatus, setRoomConnectionStatus] =
     useState<string>('loading');
 
-  // audio subscribers
-  const [audioSubscribers, setAudioSubscribers] =
-    useState<Map<string, RemoteParticipant>>();
-  // video/webcam subscribers
-  const [videoSubscribers, setVideoSubscribers] =
-    useState<Map<string, LocalParticipant | RemoteParticipant>>();
-  // screen share
-  const [screenShareTracks, setScreenShareTracks] =
-    useState<Map<string, LocalTrackPublication | RemoteTrackPublication>>();
-
-  const startLivekitConnection = (info: LivekitInfo) => {
-    new ConnectLivekit(
+  const startLivekitConnection = (info: LivekitInfo): IConnectLivekit => {
+    return new ConnectLivekit(
       info,
-      setAudioSubscribers,
-      setVideoSubscribers,
       setCurrentRoom,
       setError,
       setRoomConnectionStatus,
-      setScreenShareTracks,
     );
   };
 
@@ -65,9 +40,6 @@ const useLivekitConnect = (): IUseLivekitConnect => {
     roomConnectionStatus,
     setRoomConnectionStatus,
     currentRoom,
-    audioSubscribers,
-    videoSubscribers,
-    screenShareTracks,
     startLivekitConnection,
   };
 };

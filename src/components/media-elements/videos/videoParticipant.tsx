@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
-import { VideoParticipantType } from './index';
 import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
 import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlice';
+import { VideoParticipantType } from './videosComponentElms';
 
 interface VideoParticipantProps {
   participantType: VideoParticipantType;

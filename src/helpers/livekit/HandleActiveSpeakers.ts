@@ -1,7 +1,7 @@
 import { Participant } from 'livekit-client';
 import { isEqual, clone } from 'lodash';
 
-import { IConnectLivekit } from './ConnectLivekit';
+import { IConnectLivekit } from './types';
 import { store } from '../../store';
 import {
   activeSpeakersSelector,

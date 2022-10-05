@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   LocalTrackPublication,
   RemoteTrackPublication,
@@ -7,17 +7,37 @@ import {
 
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
+import {
+  CurrentConnectionEvents,
+  IConnectLivekit,
+} from '../../../helpers/livekit/types';
 
 interface IScreenShareElementsProps {
-  screenShareTracks: Map<
-    string,
-    LocalTrackPublication | RemoteTrackPublication
-  >;
+  currentConnection: IConnectLivekit;
 }
 
 const ScreenShareElements = ({
-  screenShareTracks,
+  currentConnection,
 }: IScreenShareElementsProps) => {
+  const [screenShareTracks, setScreenShareTracks] =
+    useState<Map<string, LocalTrackPublication | RemoteTrackPublication>>();
+
+  useEffect(() => {
+    if (currentConnection.screenShareTracksMap.size) {
+      setScreenShareTracks(currentConnection.screenShareTracksMap);
+    }
+    currentConnection.on(
+      CurrentConnectionEvents.ScreenShareTracks,
+      setScreenShareTracks,
+    );
+    return () => {
+      currentConnection.off(
+        CurrentConnectionEvents.ScreenShareTracks,
+        setScreenShareTracks,
+      );
+    };
+  }, [currentConnection]);
+
   const renderElms = useMemo(() => {
     if (screenShareTracks) {
       const elm = Array<JSX.Element>();

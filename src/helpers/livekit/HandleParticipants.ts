@@ -18,7 +18,7 @@ import {
   updateScreenSharing,
   updateCurrentUserMetadata,
 } from '../../store/slices/sessionSlice';
-import { IConnectLivekit } from './ConnectLivekit';
+import { IConnectLivekit } from './types';
 import {
   updateIsActiveParticipantsPanel,
   updateIsActiveRaisehand,

@@ -1,15 +1,39 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { concat, isEmpty } from 'lodash';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
 import VideoParticipant from '../videoParticipant';
-import { VideoParticipantType } from '../index';
 import { ICurrentUserMetadata } from '../../../../store/slices/interfaces/session';
+import {
+  CurrentConnectionEvents,
+  IConnectLivekit,
+} from '../../../../helpers/livekit/types';
+import { VideoParticipantType } from '../videosComponentElms';
 
-const useVideoParticipant = (
-  videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>,
-) => {
+const useVideoParticipant = (currentConnection: IConnectLivekit) => {
+  const [videoSubscribers, setVideoSubscribers] =
+    useState<Map<string, LocalParticipant | RemoteParticipant>>();
+
+  useEffect(() => {
+    if (currentConnection.videoSubscribersMap.size) {
+      setVideoSubscribers(currentConnection.videoSubscribersMap as any);
+    }
+    currentConnection.on(
+      CurrentConnectionEvents.VideoSubscribers,
+      setVideoSubscribers,
+    );
+    return () => {
+      currentConnection.off(
+        CurrentConnectionEvents.VideoSubscribers,
+        setVideoSubscribers,
+      );
+    };
+  }, [currentConnection]);
+
   const [allParticipants, totalNumWebcams] = useMemo(() => {
+    if (!videoSubscribers) {
+      return [[], 0];
+    }
     let totalNumWebcams = 0;
     const localSubscribers: Array<JSX.Element> = [];
     const adminSubscribers: Array<JSX.Element> = [];
