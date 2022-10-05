@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
-import { RootState, useAppSelector } from '../../../../store';
+import { RootState, useAppSelector } from '../../../store';
 import VideoElements from '../videos';
 
 interface IVerticalWebcamsProps {

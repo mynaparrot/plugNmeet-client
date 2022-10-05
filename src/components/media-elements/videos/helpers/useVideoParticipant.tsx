@@ -1,20 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { concat, isEmpty } from 'lodash';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
 import VideoParticipant from '../videoParticipant';
 import { VideoParticipantType } from '../index';
-import { ICurrentUserMetadata } from '../../../../../store/slices/interfaces/session';
+import { ICurrentUserMetadata } from '../../../../store/slices/interfaces/session';
 
 const useVideoParticipant = (
   videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>,
 ) => {
-  const [allParticipants, setAllParticipants] = useState<Array<JSX.Element>>(
-    [],
-  );
-  const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
-
-  useMemo(() => {
+  const [allParticipants, totalNumWebcams] = useMemo(() => {
     let totalNumWebcams = 0;
     const localSubscribers: Array<JSX.Element> = [];
     const adminSubscribers: Array<JSX.Element> = [];
@@ -61,25 +56,12 @@ const useVideoParticipant = (
       }
     });
 
-    const allSubscribers = concat(
+    const allParticipants = concat(
       adminSubscribers,
       localSubscribers,
       otherSubscribers,
     );
-    setTotalNumWebcams(totalNumWebcams);
-    setAllParticipants(allSubscribers);
-
-    const timer = setInterval(() => {
-      const tmp: Array<JSX.Element> = allSubscribers;
-      const pp = allSubscribers[0];
-      tmp.push(pp);
-      totalNumWebcams += 1;
-      setTotalNumWebcams(Number(`${totalNumWebcams}`));
-      setAllParticipants([...tmp]);
-      if (tmp.length === 30) {
-        clearInterval(timer);
-      }
-    }, 5000);
+    return [allParticipants, totalNumWebcams];
   }, [videoSubscribers]);
 
   return {

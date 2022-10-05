@@ -13,8 +13,8 @@ import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
 
 import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
-import ActiveSpeakers from './active-speakers';
-import MediaElementsComponent from './media-elements';
+import ActiveSpeakers from '../active-speakers';
+import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 
@@ -163,7 +163,7 @@ const MainArea = ({
 
   const renderMedialElms = useMemo(() => {
     return (
-      <MediaElementsComponent
+      <MainComponents
         currentRoom={currentRoom}
         audioSubscribers={audioSubscribers}
         videoSubscribers={videoSubscribers}

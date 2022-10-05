@@ -8,10 +8,10 @@ import {
   store,
   useAppDispatch,
   useAppSelector,
-} from '../../../../store';
-import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
+} from '../../../store';
+import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
 import useVideoParticipant from './helpers/useVideoParticipant';
-import { UserDeviceType } from '../../../../store/slices/interfaces/session';
+import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import {
   setForMobileAndTablet,
   setForMobileLandscape,

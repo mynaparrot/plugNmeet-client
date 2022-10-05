@@ -8,17 +8,17 @@ import {
   Room,
 } from 'livekit-client';
 
-import { RootState, useAppSelector } from '../../../store';
-import ScreenShareElements from './screenshare';
-import AudioElements from './audios';
-import VideoElements from './videos';
-import SharedNotepadElement from '../../shared-notepad';
-import Whiteboard from '../../whiteboard';
-import ExternalMediaPlayer from '../../external-media-player';
-import DisplayExternalLink from '../../display-external-link';
-import VerticalWebcams from './vertical-webcams/index';
+import { RootState, useAppSelector } from '../../store';
+import ScreenShareElements from '../media-elements/screenshare';
+import AudioElements from '../media-elements/audios';
+import VideoElements from '../media-elements/videos';
+import SharedNotepadElement from '../shared-notepad';
+import Whiteboard from '../whiteboard';
+import ExternalMediaPlayer from '../external-media-player';
+import DisplayExternalLink from '../display-external-link';
+import VerticalWebcams from '../media-elements/vertical-webcams';
 
-interface MediaElementsComponentProps {
+interface IMainComponentsProps {
   currentRoom: Room;
   audioSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -60,11 +60,11 @@ const isActiveDisplayExternalLinkSelector = createSelector(
   (is_active) => is_active,
 );
 
-const MediaElementsComponent = ({
+const MainComponents = ({
   audioSubscribers,
   videoSubscribers,
   screenShareTracks,
-}: MediaElementsComponentProps) => {
+}: IMainComponentsProps) => {
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const activeScreenSharingView = useAppSelector(
@@ -225,4 +225,4 @@ const MediaElementsComponent = ({
   );
 };
 
-export default MediaElementsComponent;
+export default MainComponents;

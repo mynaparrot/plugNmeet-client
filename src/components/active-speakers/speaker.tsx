@@ -1,5 +1,5 @@
 import React from 'react';
-import { IActiveSpeaker } from '../../../store/slices/interfaces/activeSpeakers';
+import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
 interface ISpeakerProps {
   speaker: IActiveSpeaker;

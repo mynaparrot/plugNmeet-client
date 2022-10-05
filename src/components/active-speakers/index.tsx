@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { useAppSelector } from '../../../store';
-import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlice';
-import { participantsSelector } from '../../../store/slices/participantSlice';
+import { useAppSelector } from '../../store';
+import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
+import { participantsSelector } from '../../store/slices/participantSlice';
 import SpeakerComponent from './speaker';
 
 const ActiveSpeakers = () => {
