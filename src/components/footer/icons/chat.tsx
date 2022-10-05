@@ -66,7 +66,7 @@ const ChatIcon = () => {
             : t('footer.icons.show-chat-panel')}
         </span>
 
-        <i className={`pnm-chat ${iconCSS} text-[12px] lg:text-[16px]`} />
+        <i className={`pnm-chat ${iconCSS} text-[14px] lg:text-[16px]`} />
         {!isActiveChatPanel && totalUnreadChatMsgs > 0 ? (
           <div className="unseen-message-count bg-brandRed w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
             {totalUnreadChatMsgs}

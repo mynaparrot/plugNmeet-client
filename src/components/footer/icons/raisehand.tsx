@@ -112,7 +112,7 @@ const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
           ? t('footer.icons.lower-hand')
           : t('footer.icons.raise-hand')}
       </span>
-      <i className={`pnm-raise-hand ${iconCSS} text-[12px] lg:text-[16px]`} />
+      <i className={`pnm-raise-hand ${iconCSS} text-[14px] lg:text-[16px]`} />
     </div>
   );
 };

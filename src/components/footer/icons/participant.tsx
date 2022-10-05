@@ -55,7 +55,7 @@ const ParticipantIcon = () => {
           : t('footer.icons.show-users-list')}
       </span>
 
-      <i className={`pnm-participant ${iconCSS} text-[12px] lg:text-[16px]`} />
+      <i className={`pnm-participant ${iconCSS} text-[14px] lg:text-[16px]`} />
       {!isActiveParticipantsPanel ? (
         <div className="unseen-message-count bg-secondaryColor w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
           {participants.ids.length}

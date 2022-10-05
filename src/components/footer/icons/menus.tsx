@@ -301,7 +301,7 @@ const MenusIcon = () => {
           {({ open }) => (
             <>
               <Menu.Button className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
-                <i className="pnm-menu-horizontal primaryColor dark:text-darkText text-[3px] lg:text-[5px]" />
+                <i className="pnm-menu-horizontal primaryColor dark:text-darkText text-[5px] lg:text-[5px]" />
               </Menu.Button>
 
               {/* Use the Transition component. */}

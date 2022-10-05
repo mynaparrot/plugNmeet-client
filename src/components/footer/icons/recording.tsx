@@ -199,7 +199,7 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
               ? t('footer.icons.stop-recording')
               : t('footer.icons.start-recording')}
           </span>
-          <i className="pnm-rec primaryColor dark:text-darkText text-[10px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+          <i className="pnm-rec primaryColor dark:text-darkText text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
         </button>
       </>
     );

@@ -192,7 +192,9 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   return (
     <div
       id="main-area"
-      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
+      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS} ${
+        isRecorder ? 'isRecorder' : ''
+      }`}
       style={
         !isRecorder
           ? { height: `${screenHeight - 110}px` }

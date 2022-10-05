@@ -162,7 +162,7 @@ const SharedNotePadIcon = () => {
           {text()}
         </span>
         <>
-          <i className={`pnm-notepad ${iconCSS} text-[12px] lg:text-[16px]`} />
+          <i className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`} />
         </>
       </div>
     );
