@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Room } from 'livekit-client';
 
 import { RootState, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
@@ -16,7 +15,6 @@ import {
 import VideosComponent from '../media-elements/videos';
 
 interface IMainComponentsProps {
-  currentRoom: Room;
   currentConnection: IConnectLivekit;
 }
 const isActiveScreenSharingSelector = createSelector(

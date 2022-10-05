@@ -62,7 +62,6 @@ export default class ConnectLivekit
     LocalTrackPublication | RemoteTrackPublication
   >();
 
-  private currentRoomState: Dispatch<Room>;
   private errorState: Dispatch<IErrorPageProps>;
   private roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
@@ -79,7 +78,6 @@ export default class ConnectLivekit
 
   constructor(
     livekitInfo: LivekitInfo,
-    currentRoomState: Dispatch<Room>,
     errorState: Dispatch<IErrorPageProps>,
     roomConnectionStatusState: Dispatch<ConnectionStatus>,
   ) {
@@ -87,7 +85,6 @@ export default class ConnectLivekit
     this.token = livekitInfo.token;
     this.url = livekitInfo.livekit_host;
 
-    this.currentRoomState = currentRoomState;
     this.errorState = errorState;
     this.roomConnectionStatusState = roomConnectionStatusState;
 
@@ -132,7 +129,6 @@ export default class ConnectLivekit
       openWebsocketConnection();
       // finally
       this.roomConnectionStatusState('connected');
-      this.currentRoomState(this._room);
       // start token renew interval
       this.startTokenRenewInterval();
     } catch (error) {

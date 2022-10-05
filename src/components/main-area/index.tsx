@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
-import { Room } from 'livekit-client';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -17,7 +16,6 @@ import {
 } from '../../helpers/livekit/types';
 
 interface IMainAreaProps {
-  currentRoom: Room;
   isRecorder: boolean; // it could be recorder or RTMP bot.
   currentConnection: IConnectLivekit;
 }
@@ -59,11 +57,7 @@ const screenHeightSelector = createSelector(
   (screenHeight) => screenHeight,
 );
 
-const MainArea = ({
-  currentRoom,
-  isRecorder,
-  currentConnection,
-}: IMainAreaProps) => {
+const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
   );
@@ -162,19 +156,14 @@ const MainArea = ({
         leaveFrom="opacity-100"
         leaveTo="opacity-0 -translate-x-full"
       >
-        <LeftPanel currentRoom={currentRoom} />
+        <LeftPanel currentRoom={currentConnection.room} />
       </Transition>
     );
-  }, [isActiveParticipantsPanel, currentRoom]);
+  }, [isActiveParticipantsPanel, currentConnection]);
 
   const renderMedialElms = useMemo(() => {
-    return (
-      <MainComponents
-        currentRoom={currentRoom}
-        currentConnection={currentConnection}
-      />
-    );
-  }, [currentRoom, currentConnection]);
+    return <MainComponents currentConnection={currentConnection} />;
+  }, [currentConnection]);
 
   const renderRightPanel = useMemo(() => {
     if (allowChat) {
@@ -189,13 +178,16 @@ const MainArea = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0 translate-x-full"
         >
-          <RightPanel currentRoom={currentRoom} isRecorder={isRecorder} />
+          <RightPanel
+            currentRoom={currentConnection.room}
+            isRecorder={isRecorder}
+          />
         </Transition>
       );
     }
     return null;
     //eslint-disable-next-line
-  }, [currentRoom, isActiveChatPanel]);
+  }, [currentConnection, isActiveChatPanel]);
 
   return (
     <div

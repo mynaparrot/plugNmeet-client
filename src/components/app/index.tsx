@@ -57,15 +57,15 @@ const App = () => {
     setError,
     roomConnectionStatus,
     setRoomConnectionStatus,
-    currentRoom,
     startLivekitConnection,
   } = useLivekitConnect();
 
-  useKeyboardShortcuts(currentRoom);
+  useKeyboardShortcuts(currentConnection?.room);
   useDesignCustomization();
   useWatchVisibilityChange();
-  const { deviceClass, orientationClass, screenHeight } =
-    useWatchWindowSize(currentRoom);
+  const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
+    currentConnection?.room,
+  );
   useThemeSettings();
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const App = () => {
         }
       };
 
-      if (!currentRoom) {
+      if (!currentConnection) {
         setRoomConnectionStatus('checking');
         timeout = setTimeout(() => {
           verifyToken();
@@ -136,7 +136,7 @@ const App = () => {
         clearTimeout(timeout);
       }
     };
-  }, [t, dispatch, currentRoom, setError, setRoomConnectionStatus]);
+  }, [t, dispatch, currentConnection, setError, setRoomConnectionStatus]);
 
   useEffect(() => {
     if (
@@ -151,10 +151,10 @@ const App = () => {
   }, [roomConnectionStatus]);
 
   useEffect(() => {
-    if (currentRoom) {
+    if (roomConnectionStatus === 'connected') {
       if (
-        currentRoom.localParticipant.identity === 'RECORDER_BOT' ||
-        currentRoom.localParticipant.identity === 'RTMP_BOT'
+        currentConnection?.room.localParticipant.identity === 'RECORDER_BOT' ||
+        currentConnection?.room.localParticipant.identity === 'RTMP_BOT'
       ) {
         setIsRecorder(true);
         dispatch(updateIsActiveChatPanel(false));
@@ -164,25 +164,28 @@ const App = () => {
         setUserTypeClass('admin');
       }
     }
-  }, [currentRoom, dispatch]);
+    //eslint-disable-next-line
+  }, [roomConnectionStatus]);
 
   const renderMainApp = useCallback(() => {
-    if (currentRoom && currentConnection) {
+    if (currentConnection) {
       return (
         <div className="plugNmeet-app overflow-hidden">
-          {!isRecorder ? <Header currentRoom={currentRoom} /> : null}
+          {!isRecorder ? <Header currentRoom={currentConnection.room} /> : null}
           <MainArea
-            currentRoom={currentRoom}
             isRecorder={isRecorder}
             currentConnection={currentConnection}
           />
-          <Footer currentRoom={currentRoom} isRecorder={isRecorder} />
+          <Footer
+            currentRoom={currentConnection.room}
+            isRecorder={isRecorder}
+          />
           <AudioNotification />
         </div>
       );
     }
     return null;
-  }, [isRecorder, currentRoom, currentConnection]);
+  }, [isRecorder, currentConnection]);
 
   const onCloseStartupModal = () => {
     if (livekitInfo) {
@@ -196,7 +199,7 @@ const App = () => {
       return <Loading text={t('app.' + roomConnectionStatus)} />;
     } else if (error && !loading) {
       return <ErrorPage title={error.title} text={error.text} />;
-    } else if (currentRoom?.state === 'connected') {
+    } else if (roomConnectionStatus === 'connected') {
       if (waitForApproval) {
         return <WaitingRoomPage />;
       }
