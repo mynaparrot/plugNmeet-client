@@ -1,18 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  CurrentConnectionEvents,
-  IConnectLivekit,
-} from '../../../helpers/livekit/types';
-import { LocalParticipant, RemoteParticipant } from 'livekit-client';
+import React, { useMemo } from 'react';
+import { IConnectLivekit } from '../../../helpers/livekit/types';
 import { createSelector } from '@reduxjs/toolkit';
 
-import MainVideoView from './main-video-view';
-import VerticalVideoView from './vertical-video-view';
-
 import { RootState, useAppSelector } from '../../../store';
+import VideosComponentElms from './videosComponentElms';
 
 interface IVideosComponentProps {
-  currentConnection?: IConnectLivekit;
+  currentConnection: IConnectLivekit;
   isVertical?: boolean;
 }
 
@@ -26,35 +20,16 @@ const VideosComponent = ({
   isVertical,
 }: IVideosComponentProps) => {
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
-  const [videoSubscribers, setVideoSubscribers] =
-    useState<Map<string, LocalParticipant | RemoteParticipant>>();
-
-  useEffect(() => {
-    if (currentConnection?.videoSubscribersMap.size) {
-      setVideoSubscribers(currentConnection.videoSubscribersMap as any);
-    }
-    currentConnection?.on(
-      CurrentConnectionEvents.VideoSubscribers,
-      setVideoSubscribers,
-    );
-    return () => {
-      currentConnection?.off(
-        CurrentConnectionEvents.VideoSubscribers,
-        setVideoSubscribers,
-      );
-    };
-  }, [currentConnection]);
 
   const videoSubscriberElms = useMemo(() => {
-    if (!videoSubscribers?.size) {
-      return null;
-    }
-    if (isVertical) {
-      return <VerticalVideoView videoSubscribers={videoSubscribers} />;
-    } else {
-      return <MainVideoView videoSubscribers={videoSubscribers} />;
-    }
-  }, [videoSubscribers, isVertical]);
+    return (
+      <VideosComponentElms
+        currentConnection={currentConnection}
+        perPage={isVertical ? 3 : undefined}
+        isVertical={isVertical}
+      />
+    );
+  }, [currentConnection, isVertical]);
 
   return <>{activateWebcamsView ? videoSubscriberElms : null}</>;
 };

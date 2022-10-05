@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -8,18 +7,19 @@ import {
   store,
   useAppDispatch,
   useAppSelector,
-} from '../../../../store';
-import { setWebcamPaginating } from '../../../../store/slices/sessionSlice';
-import useVideoParticipant from '../helpers/useVideoParticipant';
-import { UserDeviceType } from '../../../../store/slices/interfaces/session';
+} from '../../../store';
+import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
+import useVideoParticipant from './helpers/useVideoParticipant';
+import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import {
   setForMobileAndTablet,
   setForMobileLandscape,
   setForPC,
-} from '../helpers/utils';
+} from './helpers/utils';
+import { IConnectLivekit } from '../../../helpers/livekit/types';
 
-interface IMainVideoViewProps {
-  videoSubscribers: Map<string, LocalParticipant | RemoteParticipant>;
+interface IVideosComponentElmsProps {
+  currentConnection: IConnectLivekit;
   perPage?: number;
   isVertical?: boolean;
 }
@@ -41,15 +41,15 @@ const deviceOrientationSelector = createSelector(
   (deviceOrientation) => deviceOrientation,
 );
 
-const MainVideoView = ({
-  videoSubscribers,
+const VideosComponentElms = ({
+  currentConnection,
   perPage,
   isVertical,
-}: IMainVideoViewProps) => {
+}: IVideosComponentElmsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { allParticipants, totalNumWebcams } =
-    useVideoParticipant(videoSubscribers);
+    useVideoParticipant(currentConnection);
   const screenWidth = useAppSelector(screenWidthSelector);
   const deviceOrientation = useAppSelector(deviceOrientationSelector);
   const deviceType = store.getState().session.userDeviceType;
@@ -236,4 +236,4 @@ const MainVideoView = ({
   );
 };
 
-export default MainVideoView;
+export default VideosComponentElms;
