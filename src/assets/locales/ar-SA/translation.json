@@ -19,6 +19,8 @@
     "recording-started": "بدأت عملية التسجيل",
     "recording-ended": "انتهت عملية التسجيل",
     "recording-ended-with-error": "انتهت عملية التسجيل بخطأ",
+    "local-recording-started": "{{name}} has started local recording.",
+    "local-recording-ended": "{{name}} has ended local recording.",
     "rtmp-started": "بدأ بث RTMP",
     "rtmp-ended": "RTMP broadcasting ended",
     "rtmp-ended-with-error": "انتهى بث RTMP بخطأ",
@@ -68,7 +70,10 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low",
-      "enable-dark-theme": "Enable dark theme"
+      "enable-dark-theme": "Enable dark theme",
+      "video-object-fit": "Video object fit",
+      "video-object-fit-cover": "Cover",
+      "video-object-fit-contain": "Contain"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
@@ -182,6 +187,10 @@
       "raise-hand": "Raise hand",
       "stop-recording": "Stop recording",
       "start-recording": "Start recording",
+      "how-to-record": "How you would like to record?",
+      "recording-types-des": "You can select any of the following recording types. Use Google Chrome to get best result for Local recording",
+      "local-recording": "Local recording",
+      "cloud-recording": "Cloud recording",
       "stop-rtmp-broadcasting": "Stop RTMP broadcasting",
       "start-rtmp-broadcasting": "Start RTMP broadcasting",
       "show-shared-notepad": "Show shared notepad",

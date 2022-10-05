@@ -19,6 +19,8 @@
     "recording-started": "Aufnahme gestartet",
     "recording-ended": "Aufnahme beendet",
     "recording-ended-with-error": "Aufzeichnung mit Fehler beendet",
+    "local-recording-started": "{{name}} hat die lokale Aufzeichnung gestartet.",
+    "local-recording-ended": "{{name}} hat die lokale Aufzeichnung beendet.",
     "rtmp-started": "RTMP-Übertragung gestartet",
     "rtmp-ended": "RTMP-Übertragung beendet",
     "rtmp-ended-with-error": "RTMP-Übertragung mit Fehler beendet",
@@ -68,7 +70,10 @@
       "high": "Hoch",
       "medium": "Mittel",
       "low": "Niedrig",
-      "enable-dark-theme": "Dunkles Design aktivieren"
+      "enable-dark-theme": "Dunkles Design aktivieren",
+      "video-object-fit": "Video object fit",
+      "video-object-fit-cover": "Cover",
+      "video-object-fit-contain": "Contain"
     },
     "keyboard-shortcuts": {
       "title": "Tastaturkürzel",
@@ -182,6 +187,10 @@
       "raise-hand": "Hand heben",
       "stop-recording": "Aufnahme beenden",
       "start-recording": "Aufnahme starten",
+      "how-to-record": "Wie möchten Sie aufnehmen?",
+      "recording-types-des": "Sie können einen der folgenden Aufnahmetypen auswählen. Verwenden Sie Google Chrome, um das beste Ergebnis für die lokale Aufzeichnung zu erzielen",
+      "local-recording": "Lokale Aufnahme",
+      "cloud-recording": "Cloud-Aufzeichnung",
       "stop-rtmp-broadcasting": "RTMP-Übertragung beenden",
       "start-rtmp-broadcasting": "RTMP-Broadcasting beginnen",
       "show-shared-notepad": "Gemeinsames Notepad anzeigen",

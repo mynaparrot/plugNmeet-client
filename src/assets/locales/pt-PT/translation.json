@@ -19,6 +19,8 @@
     "recording-started": "gravação iniciada",
     "recording-ended": "gravação finalizada",
     "recording-ended-with-error": "Gravação finalizada com erro",
+    "local-recording-started": "{{name}} começou a gravação local.",
+    "local-recording-ended": "{{name}} terminou a gravação local.",
     "rtmp-started": "Fluxo RTMP iniciado",
     "rtmp-ended": "Fluxo RTMP encerrado",
     "rtmp-ended-with-error": "O fluxo RTMP terminou com um erro",
@@ -68,7 +70,10 @@
       "high": "Alto",
       "medium": "Médio",
       "low": "Baixo",
-      "enable-dark-theme": "Ativar o Tema Escuro"
+      "enable-dark-theme": "Ativar o Tema Escuro",
+      "video-object-fit": "Video object fit",
+      "video-object-fit-cover": "Cover",
+      "video-object-fit-contain": "Contain"
     },
     "keyboard-shortcuts": {
       "title": "Atalhos de teclado",
@@ -182,6 +187,10 @@
       "raise-hand": "Levantar a mão",
       "stop-recording": "Pare de gravar",
       "start-recording": "Comece a gravar",
+      "how-to-record": "Como você gostaria de registrar?",
+      "recording-types-des": "Você pode selecionar qualquer um dos seguintes tipos de gravação. Use o Google Chrome para obter o melhor resultado para gravação local",
+      "local-recording": "Gravação Local",
+      "cloud-recording": "Gravação para cloud",
       "stop-rtmp-broadcasting": "Parar transmissão RTMP",
       "start-rtmp-broadcasting": "Iniciar fluxo RTMP",
       "show-shared-notepad": "Mostrar bloco de notas compartilhado",

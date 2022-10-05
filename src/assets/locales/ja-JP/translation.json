@@ -19,6 +19,8 @@
     "recording-started": "録画を開始しました",
     "recording-ended": "録画を終了しました",
     "recording-ended-with-error": "録画はエラーで終了しました",
+    "local-recording-started": "{{name}} has started local recording.",
+    "local-recording-ended": "{{name}} has ended local recording.",
     "rtmp-started": "RTMPストリーミングを開始しました",
     "rtmp-ended": "RTMPストリーミングを終了しました",
     "rtmp-ended-with-error": "RTMPストリーミングはエラーで終了しました",
@@ -68,7 +70,10 @@
       "high": "高",
       "medium": "中",
       "low": "低",
-      "enable-dark-theme": "Enable dark theme"
+      "enable-dark-theme": "Enable dark theme",
+      "video-object-fit": "Video object fit",
+      "video-object-fit-cover": "Cover",
+      "video-object-fit-contain": "Contain"
     },
     "keyboard-shortcuts": {
       "title": "キーボードショートカット",
@@ -182,6 +187,10 @@
       "raise-hand": "Raise hand",
       "stop-recording": "Stop recording",
       "start-recording": "Start recording",
+      "how-to-record": "How you would like to record?",
+      "recording-types-des": "You can select any of the following recording types. Use Google Chrome to get best result for Local recording",
+      "local-recording": "Local recording",
+      "cloud-recording": "Cloud recording",
       "stop-rtmp-broadcasting": "Stop RTMP broadcasting",
       "start-rtmp-broadcasting": "Start RTMP broadcasting",
       "show-shared-notepad": "Show shared notepad",

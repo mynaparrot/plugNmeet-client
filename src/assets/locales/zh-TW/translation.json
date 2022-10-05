@@ -19,6 +19,8 @@
     "recording-started": "錄制開始",
     "recording-ended": "錄制結束",
     "recording-ended-with-error": "錄制結束錯誤",
+    "local-recording-started": "{{name}} has started local recording.",
+    "local-recording-ended": "{{name}} has ended local recording.",
     "rtmp-started": "RTMP 直播開始",
     "rtmp-ended": "RTMP 直播結束",
     "rtmp-ended-with-error": "直播結束錯誤",
@@ -68,7 +70,10 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low",
-      "enable-dark-theme": "Enable dark theme"
+      "enable-dark-theme": "Enable dark theme",
+      "video-object-fit": "Video object fit",
+      "video-object-fit-cover": "Cover",
+      "video-object-fit-contain": "Contain"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
@@ -182,6 +187,10 @@
       "raise-hand": "舉手",
       "stop-recording": "結束錄制",
       "start-recording": "開始錄制",
+      "how-to-record": "How you would like to record?",
+      "recording-types-des": "You can select any of the following recording types. Use Google Chrome to get best result for Local recording",
+      "local-recording": "Local recording",
+      "cloud-recording": "Cloud recording",
       "stop-rtmp-broadcasting": "結束 RTMP 直播",
       "start-rtmp-broadcasting": "開始 RTMP 直播",
       "show-shared-notepad": "Show shared notepad",
