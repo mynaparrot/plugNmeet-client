@@ -336,6 +336,24 @@ const Whiteboard = () => {
     }
   }, [preScreenWidth, screenWidth, excalidrawAPI]);
 
+  // for refreshing in various reason
+  useEffect(() => {
+    const doRefresh = throttle(
+      () => {
+        excalidrawAPI?.refresh();
+      },
+      500,
+      { trailing: false },
+    );
+
+    if (refreshWhiteboard > 0) {
+      if (excalidrawAPI) {
+        doRefresh();
+      }
+    }
+    //eslint-disable-next-line
+  }, [refreshWhiteboard]);
+
   const handleExcalidrawAddFiles = useCallback(
     async (files: Array<IWhiteboardFile>) => {
       if (!excalidrawAPI) {
@@ -409,15 +427,6 @@ const Whiteboard = () => {
     },
     [excalidrawAPI, lastBroadcastOrReceivedSceneVersion],
   );
-  // for refreshing in various reason
-  useEffect(() => {
-    if (refreshWhiteboard > 0) {
-      if (excalidrawAPI) {
-        excalidrawAPI.refresh();
-      }
-    }
-    //eslint-disable-next-line
-  }, [refreshWhiteboard]);
 
   const handleRemoteSceneUpdate = (
     elements: ReconciledElements,
