@@ -167,7 +167,7 @@ const App = () => {
   }, [currentRoom, dispatch]);
 
   const renderMainApp = useCallback(() => {
-    if (currentRoom) {
+    if (currentRoom && currentConnection) {
       return (
         <div className="plugNmeet-app overflow-hidden">
           {!isRecorder ? <Header currentRoom={currentRoom} /> : null}

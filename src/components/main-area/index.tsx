@@ -19,7 +19,7 @@ import {
 interface IMainAreaProps {
   currentRoom: Room;
   isRecorder: boolean; // it could be recorder or RTMP bot.
-  currentConnection?: IConnectLivekit;
+  currentConnection: IConnectLivekit;
 }
 
 const isActiveParticipantsPanelSelector = createSelector(
@@ -98,12 +98,12 @@ const MainArea = ({
   }, [dispatch]);
 
   useEffect(() => {
-    currentConnection?.on(
+    currentConnection.on(
       CurrentConnectionEvents.ScreenShareStatus,
       setIsActiveScreenShare,
     );
     return () => {
-      currentConnection?.off(
+      currentConnection.off(
         CurrentConnectionEvents.ScreenShareStatus,
         setIsActiveScreenShare,
       );
@@ -168,9 +168,6 @@ const MainArea = ({
   }, [isActiveParticipantsPanel, currentRoom]);
 
   const renderMedialElms = useMemo(() => {
-    if (!currentConnection) {
-      return;
-    }
     return (
       <MainComponents
         currentRoom={currentRoom}
