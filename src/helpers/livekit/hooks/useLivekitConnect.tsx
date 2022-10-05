@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Room } from 'livekit-client';
 
 import { IErrorPageProps } from '../../../components/extra-pages/Error';
 import ConnectLivekit from '../ConnectLivekit';
@@ -15,23 +14,16 @@ export interface IUseLivekitConnect {
   setError: React.Dispatch<React.SetStateAction<IErrorPageProps | undefined>>;
   roomConnectionStatus: string;
   setRoomConnectionStatus: React.Dispatch<React.SetStateAction<string>>;
-  currentRoom: Room | undefined;
   startLivekitConnection(info: LivekitInfo): IConnectLivekit;
 }
 
 const useLivekitConnect = (): IUseLivekitConnect => {
   const [error, setError] = useState<IErrorPageProps | undefined>();
-  const [currentRoom, setCurrentRoom] = useState<Room>();
   const [roomConnectionStatus, setRoomConnectionStatus] =
     useState<string>('loading');
 
   const startLivekitConnection = (info: LivekitInfo): IConnectLivekit => {
-    return new ConnectLivekit(
-      info,
-      setCurrentRoom,
-      setError,
-      setRoomConnectionStatus,
-    );
+    return new ConnectLivekit(info, setError, setRoomConnectionStatus);
   };
 
   return {
@@ -39,7 +31,6 @@ const useLivekitConnect = (): IUseLivekitConnect => {
     setError,
     roomConnectionStatus,
     setRoomConnectionStatus,
-    currentRoom,
     startLivekitConnection,
   };
 };
