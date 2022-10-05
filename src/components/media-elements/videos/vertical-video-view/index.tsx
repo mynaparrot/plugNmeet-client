@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
-import { RootState, useAppSelector } from '../../../store';
-import VideoElements from '../videos';
+import { RootState, useAppSelector } from '../../../../store';
+import MainVideoView from '../main-video-view';
 
 interface IVerticalWebcamsProps {
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -12,7 +12,7 @@ const activateWebcamsViewSelector = createSelector(
   (state: RootState) => state.roomSettings.activateWebcamsView,
   (activateWebcamsView) => activateWebcamsView,
 );
-const VerticalWebcams = ({ videoSubscribers }: IVerticalWebcamsProps) => {
+const VerticalVideoView = ({ videoSubscribers }: IVerticalWebcamsProps) => {
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
 
   const renderElms = useMemo(() => {
@@ -20,7 +20,7 @@ const VerticalWebcams = ({ videoSubscribers }: IVerticalWebcamsProps) => {
       return null;
     }
     return (
-      <VideoElements
+      <MainVideoView
         videoSubscribers={videoSubscribers}
         perPage={3}
         isVertical={true}
@@ -31,4 +31,4 @@ const VerticalWebcams = ({ videoSubscribers }: IVerticalWebcamsProps) => {
   return activateWebcamsView ? renderElms : null;
 };
 
-export default VerticalWebcams;
+export default VerticalVideoView;

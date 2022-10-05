@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { concat, isEmpty } from 'lodash';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
-import VideoParticipant from '../videoParticipant';
-import { VideoParticipantType } from '../index';
+import VideoParticipant from '../main-video-view/videoParticipant';
+import { VideoParticipantType } from '../main-video-view';
 import { ICurrentUserMetadata } from '../../../../store/slices/interfaces/session';
 
 const useVideoParticipant = (

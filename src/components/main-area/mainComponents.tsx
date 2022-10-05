@@ -13,7 +13,7 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from '../../helpers/livekit/types';
-import VideoComponent from '../media-elements/videos/videoComponent';
+import VideosComponent from '../media-elements/videos';
 
 interface IMainComponentsProps {
   currentRoom: Room;
@@ -133,7 +133,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     <>
       {shouldShowScreenSharing() ? (
         <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
-          <VideoComponent
+          <VideosComponent
             currentConnection={currentConnection}
             isVertical={true}
           />
@@ -146,7 +146,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VideoComponent
+          <VideosComponent
             currentConnection={currentConnection}
             isVertical={true}
           />
@@ -159,7 +159,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VideoComponent
+          <VideosComponent
             currentConnection={currentConnection}
             isVertical={true}
           />
@@ -172,7 +172,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VideoComponent
+          <VideosComponent
             currentConnection={currentConnection}
             isVertical={true}
           />
@@ -185,7 +185,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          <VideoComponent
+          <VideosComponent
             currentConnection={currentConnection}
             isVertical={true}
           />
@@ -193,7 +193,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
         </div>
       ) : null}
       {showFullWebcamView ? (
-        <VideoComponent
+        <VideosComponent
           currentConnection={currentConnection}
           isVertical={false}
         />
