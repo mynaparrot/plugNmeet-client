@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
-import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import { Excalidraw, getSceneVersion } from '@excalidraw/excalidraw';
 // eslint-disable-next-line import/no-unresolved
@@ -14,7 +13,6 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
-import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import './style.scss';
 import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
@@ -39,10 +37,6 @@ import usePreviousPage from './helpers/hooks/usePreviousPage';
 import ManageFiles from './manageFiles';
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import { addPreloadedLibraryItems } from './helpers/handleLibrary';
-
-interface IWhiteboardProps {
-  videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-}
 
 const excalidrawElementsSelector = createSelector(
   (state: RootState) => state.whiteboard.excalidrawElements,
@@ -93,7 +87,7 @@ const screenWidthSelector = createSelector(
   (screenWidth) => screenWidth,
 );
 
-const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
+const Whiteboard = () => {
   const currentUser = store.getState().session.currentUser;
   const currentRoom = store.getState().session.currentRoom;
   const CURSOR_SYNC_TIMEOUT = 33;
@@ -128,7 +122,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
   const [fetchedData, setFetchedData] = useState<boolean>(false);
-  const [refreshed, setRefreshed] = useState<boolean>(false);
   const screenWidth = useAppSelector(screenWidthSelector);
   const preScreenWidth = useStorePreviousInt(screenWidth);
   const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
@@ -318,24 +311,6 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
     }
     //eslint-disable-next-line
   }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
-
-  // call refresh when page size change due to display webcams
-  useEffect(() => {
-    if (!excalidrawAPI) {
-      return;
-    }
-    if (!refreshed && videoSubscribers?.size) {
-      setRefreshed(true);
-      setTimeout(() => {
-        excalidrawAPI.refresh();
-      }, 500);
-    } else if (refreshed && videoSubscribers?.size === 0) {
-      setRefreshed(false);
-      setTimeout(() => {
-        excalidrawAPI.refresh();
-      }, 500);
-    }
-  }, [videoSubscribers?.size, excalidrawAPI, refreshed]);
 
   // watch screen width changes
   useEffect(() => {
@@ -551,18 +526,12 @@ const Whiteboard = ({ videoSubscribers }: IWhiteboardProps) => {
   };
 
   return (
-    <div
-      className={`middle-fullscreen-wrapper h-full flex ${
-        videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
-      }`}
-    >
-      {/*{if videoSubscribers has webcams}*/}
-      <VerticalWebcams videoSubscribers={videoSubscribers} />
+    <>
       <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[0]">
         {render()}
       </div>
-    </div>
+    </>
   );
 };
 
-export default React.memo(Whiteboard);
+export default Whiteboard;

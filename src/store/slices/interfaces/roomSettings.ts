@@ -1,5 +1,10 @@
 import { VideoQuality } from 'livekit-client';
 
+export enum VideoObjectFit {
+  COVER = 'cover',
+  CONTAIN = 'contain',
+}
+
 export interface IRoomSettings {
   isShowRoomSettingsModal: boolean;
   isShowKeyboardShortcuts: boolean;
@@ -15,6 +20,7 @@ export interface IRoomSettings {
   roomAudioVolume: number;
   roomVideoQuality: VideoQuality;
   theme: string;
+  videoObjectFit: VideoObjectFit;
 
   selectedTabLeftPanel: number;
   selectedChatOption: string;

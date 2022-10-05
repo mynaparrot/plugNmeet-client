@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Room } from 'livekit-client';
 
 import { store } from '../../store';
@@ -22,36 +22,37 @@ interface IFooterProps {
 
 const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  return useMemo(() => {
+    return (
+      <footer
+        id="main-footer"
+        className="h-[55px] lg:h-[60px] px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary"
+        style={{ display: isRecorder ? 'none' : '' }}
+      >
+        <div className="footer-inner flex items-center justify-between w-full">
+          <div className="footer-left w-52 flex items-center">
+            <WebcamIcon currentRoom={currentRoom} />
+            <MicrophoneIcon currentRoom={currentRoom} />
+          </div>
 
-  return (
-    <footer
-      id="main-footer"
-      className="h-[55px] lg:h-[60px] px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary"
-      style={{ display: isRecorder ? 'none' : '' }}
-    >
-      <div className="footer-inner flex items-center justify-between w-full">
-        <div className="footer-left w-52 flex items-center">
-          <WebcamIcon currentRoom={currentRoom} />
-          <MicrophoneIcon currentRoom={currentRoom} />
-          {/* <EndSessionIcon /> */}
+          <div className="footer-middle flex items-center">
+            <ParticipantIcon />
+            <ChatIcon />
+            <ScreenshareIcon currentRoom={currentRoom} />
+            <RaiseHandIcon currentRoom={currentRoom} />
+            <WhiteboardIcon />
+            <SharedNotePadIcon />
+            <RecordingIcon currentRoom={currentRoom} />
+            {isAdmin ? <MenusIcon /> : null}
+          </div>
+
+          <div className="footer-right w-52 hidden sm:flex items-center" />
+          <BreakoutRoomInvitation currentRoom={currentRoom} />
         </div>
-
-        <div className="footer-middle flex items-center">
-          <ParticipantIcon />
-          <ChatIcon />
-          <ScreenshareIcon currentRoom={currentRoom} />
-          <RaiseHandIcon currentRoom={currentRoom} />
-          <WhiteboardIcon />
-          <SharedNotePadIcon />
-          <RecordingIcon currentRoom={currentRoom} />
-          {isAdmin ? <MenusIcon /> : null}
-        </div>
-
-        <div className="footer-right w-52 hidden sm:flex items-center" />
-        <BreakoutRoomInvitation currentRoom={currentRoom} />
-      </div>
-    </footer>
-  );
+      </footer>
+    );
+    //eslint-disable-next-line
+  }, [currentRoom]);
 };
 
-export default React.memo(Footer);
+export default Footer;

@@ -1,4 +1,5 @@
 import { Participant } from 'livekit-client';
+import { isEqual, clone } from 'lodash';
 
 import { IConnectLivekit } from './ConnectLivekit';
 import { store } from '../../store';
@@ -17,6 +18,7 @@ export default class HandleActiveSpeakers {
   private that: IConnectLivekit;
   private lastActiveWebcamChanged: number = Date.now();
   private activeSpeakers: Array<IActiveSpeaker> = [];
+  private previousSpeakers: Array<IActiveSpeaker> = [];
   private interval: any;
 
   constructor(that: IConnectLivekit) {
@@ -33,13 +35,13 @@ export default class HandleActiveSpeakers {
 
       participants.forEach((participant) => {
         // we won't update if user is paginating & viewing webcams from other pages.
-        if (!isPaginating && this.that.videoSubscribersMap.size > 2) {
+        if (!isPaginating && this.that.videoSubscribersMap.size > 1) {
           // we'll wait little bit before changing
           const last =
             this.lastActiveWebcamChanged +
             ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION;
           if (now > last) {
-            if (this.that.videoSubscribersMap.has(participant.sid)) {
+            if (this.that.videoSubscribersMap.has(participant.identity)) {
               this.that.updateVideoSubscribers(participant);
               this.lastActiveWebcamChanged = now;
             }
@@ -68,7 +70,10 @@ export default class HandleActiveSpeakers {
           store.dispatch(removeSpeakers());
         }
       } else {
-        store.dispatch(setAllSpeakers(this.activeSpeakers));
+        if (!isEqual(this.activeSpeakers, this.previousSpeakers)) {
+          store.dispatch(setAllSpeakers(this.activeSpeakers));
+          this.previousSpeakers = clone(this.activeSpeakers);
+        }
       }
     }, ACTIVE_SPEAKER_LIST_CHANGE_DURATION);
   };

@@ -10,7 +10,7 @@ interface IWebcamMenuProps {
 const WebcamMenu = ({ currentRoom }: IWebcamMenuProps) => {
   const render = () => {
     return (
-      <div className="absolute bottom-0 right-3 lg:right-6">
+      <div className="absolute -bottom-[3px] md:bottom-0 right-3 lg:right-6">
         <Menu>
           {({ open }) => (
             <>

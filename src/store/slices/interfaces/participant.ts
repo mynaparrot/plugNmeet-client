@@ -7,6 +7,7 @@ export interface IParticipant {
   name: string;
   metadata: ICurrentUserMetadata;
   audioTracks: number;
+  audioVolume?: number;
   videoTracks: number;
   screenShareTrack: number;
   isMuted: boolean;

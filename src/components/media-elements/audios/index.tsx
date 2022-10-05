@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { RemoteParticipant, LocalParticipant } from 'livekit-client';
 import AudioElm from './audio';
 
@@ -6,20 +6,24 @@ interface IAudioElementsProps {
   audioSubscribers: Map<string, RemoteParticipant | LocalParticipant>;
 }
 const AudioElements = ({ audioSubscribers }: IAudioElementsProps) => {
-  const [elements, setElements] = useState<Array<JSX.Element>>([]);
-
-  useEffect(() => {
-    const elm: Array<JSX.Element> = [];
+  const renderElms = useMemo(() => {
+    const elms: Array<JSX.Element> = [];
     audioSubscribers.forEach((participant) => {
       participant.tracks.forEach((track) => {
-        elm.push(<AudioElm track={track} key={track.trackSid} />);
+        elms.push(
+          <AudioElm
+            userId={participant.identity}
+            track={track}
+            key={track.trackSid}
+          />,
+        );
       });
     });
 
-    setElements(elm);
+    return elms;
   }, [audioSubscribers]);
 
-  return <>{elements.length ? elements : null}</>;
+  return <>{renderElms}</>;
 };
 
-export default React.memo(AudioElements);
+export default AudioElements;

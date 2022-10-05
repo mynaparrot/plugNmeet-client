@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -37,7 +37,6 @@ const waitingForApprovalSelector = createSelector(
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const rootRef = useRef(null);
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
@@ -66,10 +65,8 @@ const App = () => {
   useKeyboardShortcuts(currentRoom);
   useDesignCustomization();
   useWatchVisibilityChange();
-  const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
-    currentRoom,
-    rootRef,
-  );
+  const { deviceClass, orientationClass, screenHeight } =
+    useWatchWindowSize(currentRoom);
   useThemeSettings();
 
   useEffect(() => {
@@ -170,10 +167,10 @@ const App = () => {
     }
   }, [currentRoom, dispatch]);
 
-  const renderMainApp = () => {
+  const renderMainApp = useCallback(() => {
     if (currentRoom) {
       return (
-        <div className="plugNmeet-app overflow-hidden" ref={rootRef}>
+        <div className="plugNmeet-app overflow-hidden">
           {!isRecorder ? <Header currentRoom={currentRoom} /> : null}
           <MainArea
             currentRoom={currentRoom}
@@ -187,9 +184,14 @@ const App = () => {
         </div>
       );
     }
-
     return null;
-  };
+  }, [
+    isRecorder,
+    currentRoom,
+    audioSubscribers,
+    videoSubscribers,
+    screenShareTracks,
+  ]);
 
   const onCloseStartupModal = () => {
     if (livekitInfo) {
@@ -197,7 +199,7 @@ const App = () => {
     }
   };
 
-  const render = () => {
+  const renderElms = useMemo(() => {
     if (loading) {
       return <Loading text={t('app.' + roomConnectionStatus)} />;
     } else if (error && !loading) {
@@ -212,14 +214,15 @@ const App = () => {
     } else {
       return null;
     }
-  };
+    //eslint-disable-next-line
+  }, [loading, error, roomConnectionStatus, waitForApproval, renderMainApp]);
 
   return (
     <div
-      className={`${orientationClass} ${deviceClass} ${userTypeClass} h-screen dark:bg-darkPrimary/70`}
+      className={`${orientationClass} ${deviceClass} ${userTypeClass} dark:bg-darkPrimary/70`}
       style={{ height: screenHeight }}
     >
-      {render()}
+      {renderElms}
     </div>
   );
 };

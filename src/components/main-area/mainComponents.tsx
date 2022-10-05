@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   LocalParticipant,
@@ -8,16 +8,17 @@ import {
   Room,
 } from 'livekit-client';
 
-import { RootState, store, useAppSelector } from '../../../store';
-import ScreenShareElements from './screenshare';
-import AudioElements from './audios';
-import VideoElements from './videos';
-import SharedNotepadElement from '../../shared-notepad';
-import Whiteboard from '../../whiteboard';
-import ExternalMediaPlayer from '../../external-media-player';
-import DisplayExternalLink from '../../display-external-link';
+import { RootState, useAppSelector } from '../../store';
+import ScreenShareElements from '../media-elements/screenshare';
+import AudioElements from '../media-elements/audios';
+import VideoElements from '../media-elements/videos';
+import SharedNotepadElement from '../shared-notepad';
+import Whiteboard from '../whiteboard';
+import ExternalMediaPlayer from '../external-media-player';
+import DisplayExternalLink from '../display-external-link';
+import VerticalWebcams from '../media-elements/vertical-webcams';
 
-interface MediaElementsComponentProps {
+interface IMainComponentsProps {
   currentRoom: Room;
   audioSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
   videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
@@ -59,11 +60,11 @@ const isActiveDisplayExternalLinkSelector = createSelector(
   (is_active) => is_active,
 );
 
-const MediaElementsComponent = ({
+const MainComponents = ({
   audioSubscribers,
   videoSubscribers,
   screenShareTracks,
-}: MediaElementsComponentProps) => {
+}: IMainComponentsProps) => {
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const activeScreenSharingView = useAppSelector(
@@ -77,36 +78,43 @@ const MediaElementsComponent = ({
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
-  const [webcamPerPage, setWebcamPerPage] = useState<number>(24);
+  const [showFullWebcamView, setShowFullWebcamView] = useState<boolean>(false);
+  const [showVerticalWebcamView, setShowVerticalWebcamView] =
+    useState<boolean>(false);
+  const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);
 
   useEffect(() => {
-    const deviceType = store.getState().session.userDeviceType;
-    if (deviceType === 'mobile' || deviceType === 'tablet') {
-      setWebcamPerPage(6);
-    }
-  }, []);
-
-  const shouldShowWebcams = () => {
     if (!activateWebcamsView) {
-      return false;
+      setShowFullWebcamView(false);
+      setShowVerticalWebcamView(false);
+      setHasVideoElms(false);
+      return;
+    } else if (activateWebcamsView && videoSubscribers?.size) {
+      setHasVideoElms(true);
     }
+
     if (
-      !activeScreenSharingView &&
-      !isActiveSharedNotePad &&
-      !isActiveWhiteboard &&
-      !isActiveExternalMediaPlayer &&
-      !isActiveDisplayExternalLink
-    ) {
-      return true;
-    }
-    return (
       !isActiveScreenSharing &&
       !isActiveSharedNotePad &&
       !isActiveWhiteboard &&
       !isActiveExternalMediaPlayer &&
       !isActiveDisplayExternalLink
-    );
-  };
+    ) {
+      setShowFullWebcamView(true);
+      setShowVerticalWebcamView(false);
+    } else {
+      setShowFullWebcamView(false);
+      setShowVerticalWebcamView(true);
+    }
+  }, [
+    videoSubscribers?.size,
+    activateWebcamsView,
+    isActiveScreenSharing,
+    isActiveSharedNotePad,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+  ]);
 
   const shouldShowScreenSharing = () => {
     if (!activeScreenSharingView) {
@@ -119,7 +127,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveSharedNotePad;
   };
 
@@ -127,7 +134,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveWhiteboard;
   };
 
@@ -135,7 +141,6 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveExternalMediaPlayer;
   };
 
@@ -143,36 +148,76 @@ const MediaElementsComponent = ({
     if (isActiveScreenSharing) {
       return false;
     }
-
     return isActiveDisplayExternalLink;
   };
+
+  const videoSubscriberElms = useMemo(() => {
+    if (!videoSubscribers?.size) {
+      setHasVideoElms(false);
+      return null;
+    }
+
+    if (showFullWebcamView) {
+      return <VideoElements videoSubscribers={videoSubscribers} />;
+    } else if (showVerticalWebcamView) {
+      return <VerticalWebcams videoSubscribers={videoSubscribers} />;
+    } else {
+      return null;
+    }
+  }, [videoSubscribers, showFullWebcamView, showVerticalWebcamView]);
 
   return (
     <>
       {shouldShowScreenSharing() && screenShareTracks ? (
-        <ScreenShareElements
-          videoSubscribers={videoSubscribers}
-          screenShareTracks={screenShareTracks}
-        />
+        <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
+          {videoSubscriberElms}
+          <ScreenShareElements screenShareTracks={screenShareTracks} />
+        </div>
       ) : null}
       {shouldShowSharedNotepad() ? (
-        <SharedNotepadElement videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          {videoSubscriberElms}
+          <SharedNotepadElement />
+        </div>
       ) : null}
       {shouldShowWhiteboard() ? (
-        <Whiteboard videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          {videoSubscriberElms}
+          <Whiteboard />
+        </div>
       ) : null}
       {shouldShowExternalMediaPlayer() ? (
-        <ExternalMediaPlayer videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          {videoSubscriberElms}
+          <ExternalMediaPlayer />
+        </div>
       ) : null}
       {shouldDisplayExternalLink() ? (
-        <DisplayExternalLink videoSubscribers={videoSubscribers} />
+        <div
+          className={`middle-fullscreen-wrapper h-full flex ${
+            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+          }`}
+        >
+          {videoSubscriberElms}
+          <DisplayExternalLink />
+        </div>
       ) : null}
-      {shouldShowWebcams() && videoSubscribers ? (
-        <VideoElements
-          videoSubscribers={videoSubscribers}
-          perPage={webcamPerPage}
-        />
-      ) : null}
+      {
+        // for webcams in full view
+        videoSubscriberElms
+      }
       {audioSubscribers ? (
         <AudioElements audioSubscribers={audioSubscribers} />
       ) : null}
@@ -180,4 +225,4 @@ const MediaElementsComponent = ({
   );
 };
 
-export default MediaElementsComponent;
+export default MainComponents;

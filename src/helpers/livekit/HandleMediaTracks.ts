@@ -94,7 +94,7 @@ export default class HandleMediaTracks {
   ) => {
     // To do
     console.log('==== trackSubscriptionFailed ====');
-    console.log(track_sid, participant);
+    console.log(participant.name, track_sid);
   };
 
   public trackStreamStateChanged = (
@@ -103,7 +103,8 @@ export default class HandleMediaTracks {
     participant: RemoteParticipant,
   ) => {
     // to do
-    console.log(streamState, participant.name);
+    console.log('==== trackStreamStateChanged ====');
+    console.log(participant.name, streamState);
   };
 
   private addSubscriber(
@@ -116,14 +117,6 @@ export default class HandleMediaTracks {
     }
     if (!this.currentUser) {
       this.currentUser = store.getState().session.currentUser;
-    }
-
-    if (participant instanceof RemoteParticipant && track.audioTrack) {
-      // we'll set Volume for any new audio track
-      const roomVolume = store.getState().roomSettings.roomAudioVolume;
-      if (participant.getVolume() !== roomVolume) {
-        participant.setVolume(roomVolume);
-      }
     }
 
     if (
@@ -181,6 +174,7 @@ export default class HandleMediaTracks {
           changes: {
             audioTracks: count === 0 ? 1 : count,
             isMuted: track.audioTrack?.isMuted ?? false,
+            audioVolume: store.getState().roomSettings.roomAudioVolume,
           },
         }),
       );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
 import {
@@ -13,8 +13,8 @@ import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
 
 import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
-import ActiveSpeakers from './active-speakers';
-import MediaElementsComponent from './media-elements';
+import ActiveSpeakers from '../active-speakers';
+import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 
@@ -61,6 +61,10 @@ const isActiveDisplayExternalLinkSelector = createSelector(
       .display_external_link_features.is_active,
   (is_active) => is_active,
 );
+const screenHeightSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenHeight,
+  (screenHeight) => screenHeight,
+);
 
 const MainArea = ({
   currentRoom,
@@ -83,6 +87,7 @@ const MainArea = ({
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
+  const screenHeight = useAppSelector(screenHeightSelector);
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
@@ -139,12 +144,64 @@ const MainArea = ({
     isActiveDisplayExternalLink,
   ]);
 
+  const renderLeftPanel = useMemo(() => {
+    return (
+      <Transition
+        className="transition-left-panel"
+        show={isActiveParticipantsPanel}
+        enter="transform transition duration-[400ms]"
+        enterFrom="opacity-0 translate-x-0"
+        enterTo="opacity-100"
+        leave="transform transition duration-[400ms]"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0 -translate-x-full"
+      >
+        <LeftPanel currentRoom={currentRoom} />
+      </Transition>
+    );
+  }, [isActiveParticipantsPanel, currentRoom]);
+
+  const renderMedialElms = useMemo(() => {
+    return (
+      <MainComponents
+        currentRoom={currentRoom}
+        audioSubscribers={audioSubscribers}
+        videoSubscribers={videoSubscribers}
+        screenShareTracks={screenShareTracks}
+      />
+    );
+  }, [currentRoom, audioSubscribers, videoSubscribers, screenShareTracks]);
+
+  const renderRightPanel = useMemo(() => {
+    if (allowChat) {
+      return (
+        <Transition
+          className="transition-right-panel"
+          show={isActiveChatPanel}
+          enter="transform transition duration-[400ms]"
+          enterFrom="opacity-0 translate-x-0"
+          enterTo="opacity-100"
+          leave="transform transition duration-[400ms]"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0 translate-x-full"
+        >
+          <RightPanel currentRoom={currentRoom} isRecorder={isRecorder} />
+        </Transition>
+      );
+    }
+    return null;
+    //eslint-disable-next-line
+  }, [currentRoom, isActiveChatPanel]);
+
   return (
     <div
       id="main-area"
-      className={`${
-        !isRecorder ? 'lg:h-[calc(100vh-110px)]' : 'h-[calc(100vh)] isRecorder'
-      }  plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
+      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
+      style={
+        !isRecorder
+          ? { height: `${screenHeight - 110}px` }
+          : { height: `${screenHeight}px` }
+      }
     >
       <div
         className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none bg-cover bg-center bg-no-repeat`}
@@ -153,43 +210,14 @@ const MainArea = ({
         }}
       />
       <div className="inner flex justify-between w-full">
-        <Transition
-          className="transition-left-panel"
-          show={isActiveParticipantsPanel}
-          enter="transform transition duration-[400ms]"
-          enterFrom="opacity-0 translate-x-0"
-          enterTo="opacity-100"
-          leave="transform transition duration-[400ms]"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0 -translate-x-full"
-        >
-          <LeftPanel currentRoom={currentRoom} />
-        </Transition>
+        {renderLeftPanel}
 
         <div className="middle-area relative flex-auto">
           <ActiveSpeakers />
-          <MediaElementsComponent
-            currentRoom={currentRoom}
-            audioSubscribers={audioSubscribers}
-            videoSubscribers={videoSubscribers}
-            screenShareTracks={screenShareTracks}
-          />
+          {renderMedialElms}
         </div>
 
-        {allowChat ? (
-          <Transition
-            className="transition-right-panel"
-            show={isActiveChatPanel}
-            enter="transform transition duration-[400ms]"
-            enterFrom="opacity-0 translate-x-0"
-            enterTo="opacity-100"
-            leave="transform transition duration-[400ms]"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0 translate-x-full"
-          >
-            <RightPanel currentRoom={currentRoom} isRecorder={isRecorder} />
-          </Transition>
-        ) : null}
+        {renderRightPanel}
       </div>
     </div>
   );

@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
-import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
 } from '../../store/slices/bottomIconsActivitySlice';
-
-interface IDisplayExternalLinkProps {
-  videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-}
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
@@ -26,9 +20,7 @@ const linkSelector = createSelector(
   (url) => url,
 );
 
-const DisplayExternalLink = ({
-  videoSubscribers,
-}: IDisplayExternalLinkProps) => {
+const DisplayExternalLink = () => {
   const link = useAppSelector(linkSelector);
   const isActive = useAppSelector(isActiveSelector);
   const dispatch = useAppDispatch();
@@ -62,22 +54,7 @@ const DisplayExternalLink = ({
     );
   };
 
-  return (
-    <>
-      {isActive ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
-          {/*{if videoSubscribers has webcams}*/}
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-
-          {render()}
-        </div>
-      ) : null}
-    </>
-  );
+  return <>{isActive ? render() : null}</>;
 };
 
 export default DisplayExternalLink;

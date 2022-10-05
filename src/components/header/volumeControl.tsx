@@ -1,45 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
-import { Room } from 'livekit-client';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch } from '../../store';
+import { updateParticipant } from '../../store/slices/participantSlice';
 
-interface IVolumeControlProps {
-  currentRoom: Room;
-}
-
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
-);
-
-const VolumeControl = ({ currentRoom }: IVolumeControlProps) => {
+const VolumeControl = () => {
   const dispatch = useAppDispatch();
   const [volume, setVolume] = useState<number>(
     store.getState().roomSettings.roomAudioVolume,
   );
   const previousVolume = useStorePreviousInt(volume);
-  const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
-  );
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume) {
-      if (isActiveParticipantsPanel) {
-        dispatch(updateRoomAudioVolume(volume));
-      } else {
-        currentRoom.participants.forEach((p) => {
-          if (p.audioTracks.size > 0) {
-            p.setVolume(volume);
-          }
-        });
-      }
+      dispatch(updateRoomAudioVolume(volume));
+
+      const participantIds = store.getState().participants.ids;
+      participantIds.forEach((id) => {
+        dispatch(
+          updateParticipant({
+            id: id,
+            changes: {
+              audioVolume: volume,
+            },
+          }),
+        );
+      });
     }
     //eslint-disable-next-line
-  }, [volume, previousVolume, dispatch, isActiveParticipantsPanel]);
+  }, [volume, previousVolume]);
 
   const render = () => {
     return (

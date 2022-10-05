@@ -6,6 +6,7 @@ import {
   ICurrentUserMetadata,
   IRoomMetadata,
   IScreenSharing,
+  UserDeviceType,
 } from './interfaces/session';
 
 const initialState: ISession = {
@@ -21,7 +22,7 @@ const initialState: ISession = {
   isChatServiceReady: false,
   totalAudioSubscribers: 0,
   totalVideoSubscribers: 0,
-  userDeviceType: 'desktop',
+  userDeviceType: UserDeviceType.DESKTOP,
   currentRoom: {
     sid: '',
     room_id: '',
@@ -139,7 +140,7 @@ const sessionSlice = createSlice({
         state.currentRoom.metadata.room_features.mute_on_start = action.payload;
       }
     },
-    updateUserDeviceType: (state, action: PayloadAction<string>) => {
+    updateUserDeviceType: (state, action: PayloadAction<UserDeviceType>) => {
       state.userDeviceType = action.payload;
     },
   },

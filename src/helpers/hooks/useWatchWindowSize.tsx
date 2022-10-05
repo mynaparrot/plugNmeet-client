@@ -3,6 +3,7 @@ import MobileDetect from 'mobile-detect';
 import { Room } from 'livekit-client';
 
 import {
+  updateDeviceOrientation,
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
   updateScreenHeight,
@@ -10,16 +11,30 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { store, useAppDispatch } from '../../store';
 import { updateUserDeviceType } from '../../store/slices/sessionSlice';
+import { UserDeviceType } from '../../store/slices/interfaces/session';
 
-const useWatchWindowSize = (
-  currentRoom: Room | undefined,
-  rootRef: React.MutableRefObject<null>,
-) => {
+const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
   const [deviceClass, setDeviceClass] = useState<string>('');
   const [orientationClass, setOrientationClass] =
     useState<string>('landscape-device');
   const [screenHeight, setScreenHeight] = useState<string>('');
+
+  const adjustScreenSize = () => {
+    setScreenHeight(`${window.innerHeight}px`);
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      adjustScreenSize();
+    }, 500);
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+    //eslint-disable-next-line
+  }, [currentRoom?.state]);
 
   useEffect(() => {
     window.onresize = () => {
@@ -51,12 +66,17 @@ const useWatchWindowSize = (
 
     let deviceClass = 'is-pc';
     const md = new MobileDetect(window.navigator.userAgent);
-    if (md.mobile()) {
-      deviceClass = 'is-mobile ';
-      dispatch(updateUserDeviceType('mobile'));
-    } else if (md.tablet()) {
+    const isIpad =
+      /Macintosh/i.test(window.navigator.userAgent) &&
+      navigator.maxTouchPoints &&
+      navigator.maxTouchPoints > 1;
+
+    if (isIpad || md.tablet()) {
       deviceClass = 'is-tablet ';
-      dispatch(updateUserDeviceType('tablet'));
+      dispatch(updateUserDeviceType(UserDeviceType.TABLET));
+    } else if (md.mobile()) {
+      deviceClass = 'is-mobile ';
+      dispatch(updateUserDeviceType(UserDeviceType.MOBILE));
     }
 
     const os = md.os();
@@ -64,34 +84,31 @@ const useWatchWindowSize = (
       deviceClass += 'is-android';
     } else if (os === 'iOS' || os === 'iPadOS') {
       deviceClass += 'is-ios';
+    } else if (!os && isIpad) {
+      deviceClass += 'is-ios';
     }
     setDeviceClass(deviceClass);
 
     const mql = window.matchMedia('(orientation: portrait)');
     if (mql.matches) {
       setOrientationClass('portrait-device');
+      dispatch(updateDeviceOrientation('portrait'));
+    } else {
+      setOrientationClass('landscape-device');
+      dispatch(updateDeviceOrientation('landscape'));
     }
+
     mql.addEventListener('change', (m) => {
       if (m.matches) {
         setOrientationClass('portrait-device');
+        dispatch(updateDeviceOrientation('portrait'));
       } else {
         setOrientationClass('landscape-device');
+        dispatch(updateDeviceOrientation('landscape'));
       }
     });
     //eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    adjustScreenSize();
-    //eslint-disable-next-line
-  }, [currentRoom?.state]);
-
-  const adjustScreenSize = () => {
-    const el: any = rootRef.current;
-    if (el) {
-      setScreenHeight(`${el.clientHeight}px`);
-    }
-  };
 
   return {
     deviceClass,

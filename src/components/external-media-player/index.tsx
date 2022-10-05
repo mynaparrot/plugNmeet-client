@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { LocalParticipant, RemoteParticipant } from 'livekit-client';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-import VerticalWebcams from '../main-area/media-elements/vertical-webcams';
 import { resetExternalMediaPlayer } from '../../store/slices/externalMediaPlayer';
 import {
   updateIsActiveChatPanel,
@@ -11,10 +9,6 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import VideoJsPlayerComponent from './video-js';
 import ReactPlayerComponent from './reactPlayerComponent';
-
-interface IExternalMediaPlayerProps {
-  videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-}
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
@@ -42,9 +36,7 @@ const isPresenterSelector = createSelector(
   (is_presenter) => is_presenter,
 );
 
-const ExternalMediaPlayer = ({
-  videoSubscribers,
-}: IExternalMediaPlayerProps) => {
+const ExternalMediaPlayer = () => {
   const playBackUrl = useAppSelector(playBackUrlSelector);
   const isActive = useAppSelector(isActiveSelector);
   const action = useAppSelector(actionSelector);
@@ -106,22 +98,7 @@ const ExternalMediaPlayer = ({
     );
   };
 
-  return (
-    <>
-      {isActive ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            videoSubscribers?.size ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
-          {/*{if videoSubscribers has webcams}*/}
-          <VerticalWebcams videoSubscribers={videoSubscribers} />
-
-          {playBackUrl ? render() : null}
-        </div>
-      ) : null}
-    </>
-  );
+  return <>{isActive && playBackUrl ? render() : null}</>;
 };
 
 export default ExternalMediaPlayer;

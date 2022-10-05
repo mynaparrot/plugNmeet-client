@@ -91,11 +91,13 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
                 : 'opacity-0 invisible pointer-events-none'
             }`}
           >
-            <EmojiPicker
-              onEmojiClick={onEmojiClick}
-              lazyLoadEmojis={true}
-              theme={theme === 'dark' ? Theme.DARK : Theme.LIGHT}
-            />
+            {isOpenEmojiPanel ? (
+              <EmojiPicker
+                onEmojiClick={onEmojiClick}
+                lazyLoadEmojis={true}
+                theme={theme === 'dark' ? Theme.DARK : Theme.LIGHT}
+              />
+            ) : null}
           </div>
           <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[300px] bg-white">
             <TextBoxArea

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../../../../store';
+import { RootState, useAppSelector } from '../../../../store';
 import './style.scss';
 
 interface IVideoElmProps {
@@ -13,21 +13,20 @@ const roomVideoQualitySelector = createSelector(
   (state: RootState) => state.roomSettings.roomVideoQuality,
   (roomVideoQuality) => roomVideoQuality,
 );
+const videoObjectFitSelector = createSelector(
+  (state: RootState) => state.roomSettings.videoObjectFit,
+  (videoObjectFit) => videoObjectFit,
+);
 
 const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
   const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
-
-  useEffect(() => {
-    if (track instanceof RemoteTrackPublication) {
-      track.setVideoQuality(roomVideoQuality);
-    }
-  }, [roomVideoQuality, track]);
+  const videoObjectFit = useAppSelector(videoObjectFitSelector);
+  const [videoFit, setVideoFit] = useState<any>(videoObjectFit);
 
   useEffect(() => {
     const el = ref.current;
-
     if (el) {
       track.videoTrack?.attach(el);
     }
@@ -38,6 +37,20 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       }
     };
   }, [track]);
+
+  useEffect(() => {
+    if (track instanceof RemoteTrackPublication) {
+      track.setVideoQuality(roomVideoQuality);
+    }
+  }, [roomVideoQuality, track]);
+
+  useEffect(() => {
+    if (track.trackName === 'canvas') {
+      setVideoFit('contain');
+    } else {
+      setVideoFit(videoObjectFit);
+    }
+  }, [track, videoObjectFit]);
 
   const onLoadedData = () => {
     setLoaded(true);
@@ -75,8 +88,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         className="camera-video"
         onLoadedData={onLoadedData}
         ref={ref}
-        height="200px"
-        width="200px"
+        style={{ objectFit: videoFit }}
       />
     </div>
   );
