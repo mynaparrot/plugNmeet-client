@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Room } from 'livekit-client';
 
@@ -47,6 +47,10 @@ const isActiveDisplayExternalLinkSelector = createSelector(
       .display_external_link_features.is_active,
   (is_active) => is_active,
 );
+const activateWebcamsViewSelector = createSelector(
+  (state: RootState) => state.roomSettings.activateWebcamsView,
+  (activateWebcamsView) => activateWebcamsView,
+);
 
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
@@ -61,6 +65,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
+  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const [showFullVideoView, setShowFullVideoView] = useState<boolean>(false);
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
@@ -98,40 +103,47 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [currentConnection]);
 
-  const shouldShowScreenSharing = () => {
+  const shouldShowVideoElms = useCallback(() => {
+    if (!activateWebcamsView) {
+      return false;
+    }
+    return hasVideoElms;
+  }, [activateWebcamsView, hasVideoElms]);
+
+  const shouldShowScreenSharing = useCallback(() => {
     if (!activeScreenSharingView) {
       return false;
     }
     return isActiveScreenSharing;
-  };
+  }, [activeScreenSharingView, isActiveScreenSharing]);
 
-  const shouldShowSharedNotepad = () => {
+  const shouldShowSharedNotepad = useCallback(() => {
     if (isActiveScreenSharing) {
       return false;
     }
     return isActiveSharedNotePad;
-  };
+  }, [isActiveScreenSharing, isActiveSharedNotePad]);
 
-  const shouldShowWhiteboard = () => {
+  const shouldShowWhiteboard = useCallback(() => {
     if (isActiveScreenSharing) {
       return false;
     }
     return isActiveWhiteboard;
-  };
+  }, [isActiveScreenSharing, isActiveWhiteboard]);
 
-  const shouldShowExternalMediaPlayer = () => {
+  const shouldShowExternalMediaPlayer = useCallback(() => {
     if (isActiveScreenSharing) {
       return false;
     }
     return isActiveExternalMediaPlayer;
-  };
+  }, [isActiveScreenSharing, isActiveExternalMediaPlayer]);
 
-  const shouldDisplayExternalLink = () => {
+  const shouldDisplayExternalLink = useCallback(() => {
     if (isActiveScreenSharing) {
       return false;
     }
     return isActiveDisplayExternalLink;
-  };
+  }, [isActiveScreenSharing, isActiveDisplayExternalLink]);
 
   const videoElms = useMemo(() => {
     return (
@@ -153,7 +165,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       {shouldShowSharedNotepad() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
           }`}
         >
           {videoElms}
@@ -163,7 +175,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       {shouldShowWhiteboard() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
           }`}
         >
           {videoElms}
@@ -173,7 +185,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       {shouldShowExternalMediaPlayer() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
           }`}
         >
           {videoElms}
@@ -183,7 +195,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       {shouldDisplayExternalLink() ? (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            hasVideoElms ? 'verticalsWebcamsActivated' : ''
+            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
           }`}
         >
           {videoElms}
