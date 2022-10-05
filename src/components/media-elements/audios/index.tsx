@@ -1,12 +1,39 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { RemoteParticipant, LocalParticipant } from 'livekit-client';
+
 import AudioElm from './audio';
+import {
+  CurrentConnectionEvents,
+  IConnectLivekit,
+} from '../../../helpers/livekit/types';
 
 interface IAudioElementsProps {
-  audioSubscribers: Map<string, RemoteParticipant | LocalParticipant>;
+  currentConnection: IConnectLivekit;
 }
-const AudioElements = ({ audioSubscribers }: IAudioElementsProps) => {
+const AudioElements = ({ currentConnection }: IAudioElementsProps) => {
+  const [audioSubscribers, setAudioSubscribers] =
+    useState<Map<string, RemoteParticipant | LocalParticipant>>();
+
+  useEffect(() => {
+    if (currentConnection.audioSubscribersMap.size) {
+      setAudioSubscribers(currentConnection.audioSubscribersMap);
+    }
+    currentConnection.on(
+      CurrentConnectionEvents.AudioSubscribers,
+      setAudioSubscribers,
+    );
+    return () => {
+      currentConnection.off(
+        CurrentConnectionEvents.AudioSubscribers,
+        setAudioSubscribers,
+      );
+    };
+  }, [currentConnection]);
+
   const renderElms = useMemo(() => {
+    if (!audioSubscribers) {
+      return null;
+    }
     const elms: Array<JSX.Element> = [];
     audioSubscribers.forEach((participant) => {
       participant.tracks.forEach((track) => {

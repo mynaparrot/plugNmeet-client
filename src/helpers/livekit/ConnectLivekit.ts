@@ -12,6 +12,7 @@ import {
   Track,
   VideoPresets,
 } from 'livekit-client';
+import { EventEmitter } from 'events';
 
 import { store } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
@@ -41,59 +42,29 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../proto/plugnmeet_datamessage_pb';
+import {
+  ConnectionStatus,
+  CurrentConnectionEvents,
+  IConnectLivekit,
+} from './types';
 
-type connectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'disconnected'
-  | 're-connecting'
-  | 'error';
-
-export interface IConnectLivekit {
-  get room(): Room;
-  get videoSubscribersMap(): Map<
-    string,
-    Participant | LocalParticipant | RemoteParticipant
-  >;
-  updateVideoSubscribers(
-    participant: Participant | LocalParticipant | RemoteParticipant,
-    add?: boolean,
-  ): void;
-  updateAudioSubscribers(
-    participant: Participant | LocalParticipant | RemoteParticipant,
-    add?: boolean,
-  ): void;
-  setScreenShareTrack(
-    track: LocalTrackPublication | RemoteTrackPublication | undefined,
-    participant: LocalParticipant | RemoteParticipant,
-    add?: boolean,
-  ): void;
-  updateScreenShareOnUserDisconnect(participant: RemoteParticipant): void;
-}
-
-export default class ConnectLivekit {
+export default class ConnectLivekit
+  extends EventEmitter
+  implements IConnectLivekit
+{
   private _audioSubscribersMap = new Map<string, RemoteParticipant>();
-  private audioSubscribersState: Dispatch<Map<string, RemoteParticipant>>;
-
   private _videoSubscribersMap = new Map<
     string,
     Participant | LocalParticipant | RemoteParticipant
   >();
-  private videoSubscribersState: Dispatch<
-    Map<string, LocalParticipant | RemoteParticipant>
-  >;
-
   private _screenShareTracksMap = new Map<
     string,
     LocalTrackPublication | RemoteTrackPublication
   >();
-  private screenShareTracksState: Dispatch<
-    Map<string, LocalTrackPublication | RemoteTrackPublication>
-  >;
 
   private currentRoomState: Dispatch<Room>;
   private errorState: Dispatch<IErrorPageProps>;
-  private roomConnectionStatusState: Dispatch<connectionStatus>;
+  private roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
   protected token: string;
   public _room: Room;
@@ -108,25 +79,13 @@ export default class ConnectLivekit {
 
   constructor(
     livekitInfo: LivekitInfo,
-    audioSubscribersState: Dispatch<Map<string, RemoteParticipant>>,
-    mediaSubscribersState: Dispatch<
-      Map<string, LocalParticipant | RemoteParticipant>
-    >,
     currentRoomState: Dispatch<Room>,
     errorState: Dispatch<IErrorPageProps>,
-    roomConnectionStatusState: Dispatch<connectionStatus>,
-    screenShareTracksState: Dispatch<
-      Map<string, LocalTrackPublication | RemoteTrackPublication>
-    >,
+    roomConnectionStatusState: Dispatch<ConnectionStatus>,
   ) {
+    super();
     this.token = livekitInfo.token;
     this.url = livekitInfo.livekit_host;
-    // audio Subscribers state
-    this.audioSubscribersState = audioSubscribersState;
-    // video Subscribers state
-    this.videoSubscribersState = mediaSubscribersState;
-    // screen share state
-    this.screenShareTracksState = screenShareTracksState;
 
     this.currentRoomState = currentRoomState;
     this.errorState = errorState;
@@ -149,6 +108,14 @@ export default class ConnectLivekit {
 
   public get videoSubscribersMap() {
     return this._videoSubscribersMap;
+  }
+
+  public get audioSubscribersMap() {
+    return this._audioSubscribersMap;
+  }
+
+  public get screenShareTracksMap() {
+    return this._screenShareTracksMap;
   }
 
   public get room() {
@@ -438,8 +405,13 @@ export default class ConnectLivekit {
     } else {
       this._screenShareTracksMap.delete(participant.identity);
     }
-
-    this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
+    if (this._screenShareTracksMap.size) {
+      this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
+    } else {
+      this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
+    }
+    const screenShareTracks = new Map(this._screenShareTracksMap) as any;
+    this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
   };
 
   /**
@@ -453,7 +425,9 @@ export default class ConnectLivekit {
     if (this._screenShareTracksMap.size) {
       if (this._screenShareTracksMap.has(participant.identity)) {
         this._screenShareTracksMap.delete(participant.identity);
-        this.screenShareTracksState(new Map(this._screenShareTracksMap as any));
+
+        const screenShareTracks = new Map(this._screenShareTracksMap) as any;
+        this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
 
         // update status too
         if (!this._screenShareTracksMap.size) {
@@ -463,6 +437,9 @@ export default class ConnectLivekit {
               sharedBy: '',
             }),
           );
+          this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
+        } else {
+          this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
         }
       }
     }
@@ -496,12 +473,10 @@ export default class ConnectLivekit {
         this._audioSubscribersMap.delete(participant.identity);
       }
     }
-
-    this.audioSubscribersState(new Map(this._audioSubscribersMap as any));
+    const audioSubscribers = new Map(this._audioSubscribersMap) as any;
+    this.emit(CurrentConnectionEvents.AudioSubscribers, audioSubscribers);
     // update session reducer
-    store.dispatch(
-      updateTotalAudioSubscribers(this.audioSubscribersState.length),
-    );
+    store.dispatch(updateTotalAudioSubscribers(audioSubscribers.size));
   };
 
   /**
@@ -528,9 +503,15 @@ export default class ConnectLivekit {
 
     // update session reducer
     store.dispatch(updateTotalVideoSubscribers(this._videoSubscribersMap.size));
+    if (this._videoSubscribersMap.size) {
+      this.emit(CurrentConnectionEvents.VideoStatus, true);
+    } else {
+      this.emit(CurrentConnectionEvents.VideoStatus, false);
+    }
 
     if (this._videoSubscribersMap.size <= 1) {
-      this.videoSubscribersState(new Map(this._videoSubscribersMap as any));
+      const subscribers = new Map(this._videoSubscribersMap) as any;
+      this.emit(CurrentConnectionEvents.VideoSubscribers, subscribers);
       return;
     }
 
@@ -561,6 +542,7 @@ export default class ConnectLivekit {
       return (aPrt.joinedAt?.getTime() ?? 0) - (bPart.joinedAt?.getTime() ?? 0);
     });
 
-    this.videoSubscribersState(new Map(mediaSubscribersToArray as any));
+    const subscribers = new Map(mediaSubscribersToArray) as any;
+    this.emit(CurrentConnectionEvents.VideoSubscribers, subscribers);
   };
 }

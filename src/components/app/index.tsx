@@ -28,6 +28,7 @@ import {
   VerifyTokenReq,
   VerifyTokenRes,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
+import { IConnectLivekit } from '../../helpers/livekit/types';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -43,6 +44,7 @@ const App = () => {
   const [isRecorder, setIsRecorder] = useState<boolean>(false);
   const [userTypeClass, setUserTypeClass] = useState('participant');
   const [livekitInfo, setLivekitInfo] = useState<LivekitInfo>();
+  const [currentConnection, setCurrentConnection] = useState<IConnectLivekit>();
   const waitForApproval = useAppSelector(waitingForApprovalSelector);
 
   // we'll require making ready virtual background
@@ -56,9 +58,6 @@ const App = () => {
     roomConnectionStatus,
     setRoomConnectionStatus,
     currentRoom,
-    audioSubscribers,
-    videoSubscribers,
-    screenShareTracks,
     startLivekitConnection,
   } = useLivekitConnect();
 
@@ -174,10 +173,8 @@ const App = () => {
           {!isRecorder ? <Header currentRoom={currentRoom} /> : null}
           <MainArea
             currentRoom={currentRoom}
-            audioSubscribers={audioSubscribers}
-            videoSubscribers={videoSubscribers}
-            screenShareTracks={screenShareTracks}
             isRecorder={isRecorder}
+            currentConnection={currentConnection}
           />
           <Footer currentRoom={currentRoom} isRecorder={isRecorder} />
           <AudioNotification />
@@ -185,17 +182,12 @@ const App = () => {
       );
     }
     return null;
-  }, [
-    isRecorder,
-    currentRoom,
-    audioSubscribers,
-    videoSubscribers,
-    screenShareTracks,
-  ]);
+  }, [isRecorder, currentRoom, currentConnection]);
 
   const onCloseStartupModal = () => {
     if (livekitInfo) {
-      startLivekitConnection(livekitInfo);
+      const currentConnection = startLivekitConnection(livekitInfo);
+      setCurrentConnection(currentConnection);
     }
   };
 

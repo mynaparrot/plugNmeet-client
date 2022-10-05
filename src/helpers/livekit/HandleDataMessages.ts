@@ -2,7 +2,7 @@ import { DataPacket_Kind, Participant } from 'livekit-client';
 import { toast } from 'react-toastify';
 import i18n from '../i18n';
 
-import { IConnectLivekit } from './ConnectLivekit';
+import { IConnectLivekit } from './types';
 import { store } from '../../store';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 import {

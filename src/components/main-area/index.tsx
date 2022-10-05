@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
-import {
-  LocalParticipant,
-  Room,
-  RemoteParticipant,
-  LocalTrackPublication,
-  RemoteTrackPublication,
-} from 'livekit-client';
+import { Room } from 'livekit-client';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -17,16 +11,15 @@ import ActiveSpeakers from '../active-speakers';
 import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
+import {
+  CurrentConnectionEvents,
+  IConnectLivekit,
+} from '../../helpers/livekit/types';
 
 interface IMainAreaProps {
   currentRoom: Room;
-  videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  audioSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  screenShareTracks?: Map<
-    string,
-    LocalTrackPublication | RemoteTrackPublication
-  >;
   isRecorder: boolean; // it could be recorder or RTMP bot.
+  currentConnection?: IConnectLivekit;
 }
 
 const isActiveParticipantsPanelSelector = createSelector(
@@ -68,10 +61,8 @@ const screenHeightSelector = createSelector(
 
 const MainArea = ({
   currentRoom,
-  audioSubscribers,
-  videoSubscribers,
-  screenShareTracks,
   isRecorder,
+  currentConnection,
 }: IMainAreaProps) => {
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
@@ -92,6 +83,8 @@ const MainArea = ({
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
   const [customCSS, setCustomCSS] = useState<string>();
+  const [isActiveScreenShare, setIsActiveScreenShare] =
+    useState<boolean>(false);
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
@@ -105,6 +98,19 @@ const MainArea = ({
   }, [dispatch]);
 
   useEffect(() => {
+    currentConnection?.on(
+      CurrentConnectionEvents.ScreenShareStatus,
+      setIsActiveScreenShare,
+    );
+    return () => {
+      currentConnection?.off(
+        CurrentConnectionEvents.ScreenShareStatus,
+        setIsActiveScreenShare,
+      );
+    };
+  }, [currentConnection]);
+
+  useEffect(() => {
     const css: Array<string> = [];
 
     isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
@@ -112,7 +118,7 @@ const MainArea = ({
       ? css.push('showParticipantsPanel')
       : css.push('hideParticipantsPanel');
 
-    screenShareTracks?.size && activeScreenSharingView
+    activeScreenSharingView && isActiveScreenShare
       ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
@@ -135,11 +141,11 @@ const MainArea = ({
     setCustomCSS(css.join(' '));
   }, [
     activeScreenSharingView,
+    isActiveScreenShare,
     isActiveChatPanel,
     isActiveParticipantsPanel,
     isActiveSharedNotePad,
     isActiveWhiteboard,
-    screenShareTracks?.size,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
   ]);
@@ -162,15 +168,16 @@ const MainArea = ({
   }, [isActiveParticipantsPanel, currentRoom]);
 
   const renderMedialElms = useMemo(() => {
+    if (!currentConnection) {
+      return;
+    }
     return (
       <MainComponents
         currentRoom={currentRoom}
-        audioSubscribers={audioSubscribers}
-        videoSubscribers={videoSubscribers}
-        screenShareTracks={screenShareTracks}
+        currentConnection={currentConnection}
       />
     );
-  }, [currentRoom, audioSubscribers, videoSubscribers, screenShareTracks]);
+  }, [currentRoom, currentConnection]);
 
   const renderRightPanel = useMemo(() => {
     if (allowChat) {

@@ -1,39 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  LocalParticipant,
-  LocalTrackPublication,
-  RemoteParticipant,
-  RemoteTrackPublication,
-  Room,
-} from 'livekit-client';
+import { Room } from 'livekit-client';
 
 import { RootState, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
 import AudioElements from '../media-elements/audios';
-import VideoElements from '../media-elements/videos';
 import SharedNotepadElement from '../shared-notepad';
 import Whiteboard from '../whiteboard';
 import ExternalMediaPlayer from '../external-media-player';
 import DisplayExternalLink from '../display-external-link';
-import VerticalWebcams from '../media-elements/vertical-webcams';
+import {
+  CurrentConnectionEvents,
+  IConnectLivekit,
+} from '../../helpers/livekit/types';
+import VideoComponent from '../media-elements/videos/videoComponent';
 
 interface IMainComponentsProps {
   currentRoom: Room;
-  audioSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  videoSubscribers?: Map<string, LocalParticipant | RemoteParticipant>;
-  screenShareTracks?: Map<
-    string,
-    LocalTrackPublication | RemoteTrackPublication
-  >;
+  currentConnection: IConnectLivekit;
 }
 const isActiveScreenSharingSelector = createSelector(
   (state: RootState) => state.session.screenSharing,
   (screenSharing) => screenSharing.isActive,
-);
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
 );
 const activeScreenSharingViewSelector = createSelector(
   (state: RootState) => state.roomSettings.activeScreenSharingView,
@@ -60,13 +48,8 @@ const isActiveDisplayExternalLinkSelector = createSelector(
   (is_active) => is_active,
 );
 
-const MainComponents = ({
-  audioSubscribers,
-  videoSubscribers,
-  screenShareTracks,
-}: IMainComponentsProps) => {
+const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const activeScreenSharingView = useAppSelector(
     activeScreenSharingViewSelector,
   );
@@ -79,20 +62,9 @@ const MainComponents = ({
     isActiveDisplayExternalLinkSelector,
   );
   const [showFullWebcamView, setShowFullWebcamView] = useState<boolean>(false);
-  const [showVerticalWebcamView, setShowVerticalWebcamView] =
-    useState<boolean>(false);
   const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!activateWebcamsView) {
-      setShowFullWebcamView(false);
-      setShowVerticalWebcamView(false);
-      setHasVideoElms(false);
-      return;
-    } else if (activateWebcamsView && videoSubscribers?.size) {
-      setHasVideoElms(true);
-    }
-
     if (
       !isActiveScreenSharing &&
       !isActiveSharedNotePad &&
@@ -101,20 +73,26 @@ const MainComponents = ({
       !isActiveDisplayExternalLink
     ) {
       setShowFullWebcamView(true);
-      setShowVerticalWebcamView(false);
     } else {
       setShowFullWebcamView(false);
-      setShowVerticalWebcamView(true);
     }
   }, [
-    videoSubscribers?.size,
-    activateWebcamsView,
     isActiveScreenSharing,
     isActiveSharedNotePad,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
   ]);
+
+  useEffect(() => {
+    currentConnection.on(CurrentConnectionEvents.VideoStatus, setHasVideoElms);
+    return () => {
+      currentConnection.off(
+        CurrentConnectionEvents.VideoStatus,
+        setHasVideoElms,
+      );
+    };
+  }, [currentConnection]);
 
   const shouldShowScreenSharing = () => {
     if (!activeScreenSharingView) {
@@ -151,27 +129,15 @@ const MainComponents = ({
     return isActiveDisplayExternalLink;
   };
 
-  const videoSubscriberElms = useMemo(() => {
-    if (!videoSubscribers?.size) {
-      setHasVideoElms(false);
-      return null;
-    }
-
-    if (showFullWebcamView) {
-      return <VideoElements videoSubscribers={videoSubscribers} />;
-    } else if (showVerticalWebcamView) {
-      return <VerticalWebcams videoSubscribers={videoSubscribers} />;
-    } else {
-      return null;
-    }
-  }, [videoSubscribers, showFullWebcamView, showVerticalWebcamView]);
-
   return (
     <>
-      {shouldShowScreenSharing() && screenShareTracks ? (
+      {shouldShowScreenSharing() ? (
         <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
-          {videoSubscriberElms}
-          <ScreenShareElements screenShareTracks={screenShareTracks} />
+          <VideoComponent
+            currentConnection={currentConnection}
+            isVertical={true}
+          />
+          <ScreenShareElements currentConnection={currentConnection} />
         </div>
       ) : null}
       {shouldShowSharedNotepad() ? (
@@ -180,7 +146,10 @@ const MainComponents = ({
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          {videoSubscriberElms}
+          <VideoComponent
+            currentConnection={currentConnection}
+            isVertical={true}
+          />
           <SharedNotepadElement />
         </div>
       ) : null}
@@ -190,7 +159,10 @@ const MainComponents = ({
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          {videoSubscriberElms}
+          <VideoComponent
+            currentConnection={currentConnection}
+            isVertical={true}
+          />
           <Whiteboard />
         </div>
       ) : null}
@@ -200,7 +172,10 @@ const MainComponents = ({
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          {videoSubscriberElms}
+          <VideoComponent
+            currentConnection={currentConnection}
+            isVertical={true}
+          />
           <ExternalMediaPlayer />
         </div>
       ) : null}
@@ -210,17 +185,20 @@ const MainComponents = ({
             hasVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
-          {videoSubscriberElms}
+          <VideoComponent
+            currentConnection={currentConnection}
+            isVertical={true}
+          />
           <DisplayExternalLink />
         </div>
       ) : null}
-      {
-        // for webcams in full view
-        videoSubscriberElms
-      }
-      {audioSubscribers ? (
-        <AudioElements audioSubscribers={audioSubscribers} />
+      {showFullWebcamView ? (
+        <VideoComponent
+          currentConnection={currentConnection}
+          isVertical={false}
+        />
       ) : null}
+      <AudioElements currentConnection={currentConnection} />
     </>
   );
 };

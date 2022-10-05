@@ -9,7 +9,7 @@ import {
   TrackPublication,
 } from 'livekit-client';
 
-import { IConnectLivekit } from './ConnectLivekit';
+import { IConnectLivekit } from './types';
 import { store } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { updateScreenSharing } from '../../store/slices/sessionSlice';
