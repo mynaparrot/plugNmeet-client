@@ -70,7 +70,10 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low",
-      "enable-dark-theme": "Enable dark theme"
+      "enable-dark-theme": "Enable dark theme",
+      "video-object-fit": "Video object fit",
+      "video-object-fit-cover": "Cover",
+      "video-object-fit-contain": "Contain"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
