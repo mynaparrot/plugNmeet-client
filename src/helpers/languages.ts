@@ -20,6 +20,10 @@ const languages = [
     text: 'Português',
   },
   {
+    code: 'it-IT',
+    text: 'Italiano',
+  },
+  {
     code: 'ar-SA',
     text: 'اللغة العربية',
   },
