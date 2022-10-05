@@ -1,12 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { throttle } from 'lodash';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
@@ -60,15 +53,16 @@ const activateWebcamsViewSelector = createSelector(
 
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
-  const refreshWhiteboard = useRef(
-    throttle(
-      () => {
-        dispatch(doRefreshWhiteboard(Date.now()));
-      },
-      2000,
-      { leading: false, trailing: false },
-    ),
-  );
+  // const refreshWhiteboard = useRef(
+  //   throttle(
+  //     () => {
+  //       console.log("im here")
+  //       dispatch(doRefreshWhiteboard(Date.now()));
+  //     },
+  //     2000,
+  //     { leading: false, trailing: false },
+  //   ),
+  // );
 
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activeScreenSharingView = useAppSelector(
@@ -87,6 +81,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
   const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);
+  const [showVideoElms, setShowVideoElms] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -120,16 +115,26 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [currentConnection]);
 
-  const shouldShowVideoElms = useCallback(() => {
-    //without refreshing whiteboard in larger display it will be out of sync.
-    refreshWhiteboard.current();
-
+  useEffect(() => {
     if (!activateWebcamsView) {
-      return false;
+      setShowVideoElms(false);
+      return;
     }
-    return hasVideoElms;
-    //eslint-disable-next-line
+    setShowVideoElms(hasVideoElms);
   }, [activateWebcamsView, hasVideoElms]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isActiveWhiteboard) {
+        dispatch(doRefreshWhiteboard(Date.now()));
+      } else {
+        dispatch(doRefreshWhiteboard(0));
+      }
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
   const shouldShowScreenSharing = useCallback(() => {
     if (!activeScreenSharingView) {
@@ -188,7 +193,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       ) : (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
+            showVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
           {videoElms}
