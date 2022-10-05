@@ -65,7 +65,6 @@ const lockWhiteboardSelector = createSelector(
     state.session.currentUser?.metadata?.lock_settings?.lock_whiteboard,
   (lock_whiteboard) => lock_whiteboard,
 );
-
 const currentPageSelector = createSelector(
   (state: RootState) => state.whiteboard.currentPage,
   (currentPage) => currentPage,
@@ -85,6 +84,10 @@ const themeSelector = createSelector(
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
   (screenWidth) => screenWidth,
+);
+const refreshWhiteboardSelector = createSelector(
+  (state: RootState) => state.whiteboard.refreshWhiteboard,
+  (refreshWhiteboard) => refreshWhiteboard,
 );
 
 const Whiteboard = () => {
@@ -117,6 +120,7 @@ const Whiteboard = () => {
   const currentWhiteboardOfficeFileId = useAppSelector(
     currentWhiteboardOfficeFileIdSelector,
   );
+  const refreshWhiteboard = useAppSelector(refreshWhiteboardSelector);
   const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const isPresenter = useAppSelector(isPresenterSelector);
   const currentPage = useAppSelector(currentPageSelector);
@@ -405,6 +409,15 @@ const Whiteboard = () => {
     },
     [excalidrawAPI, lastBroadcastOrReceivedSceneVersion],
   );
+  // for refreshing in various reason
+  useEffect(() => {
+    if (refreshWhiteboard > 0) {
+      if (excalidrawAPI) {
+        excalidrawAPI.refresh();
+      }
+    }
+    //eslint-disable-next-line
+  }, [refreshWhiteboard]);
 
   const handleRemoteSceneUpdate = (
     elements: ReconciledElements,

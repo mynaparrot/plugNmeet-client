@@ -11,6 +11,7 @@ export interface IWhiteboardSlice {
   currentWhiteboardOfficeFileId: string;
   whiteboardOfficeFilePagesAndOtherImages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
+  refreshWhiteboard: number;
 }
 
 export interface IWhiteboardFile {
