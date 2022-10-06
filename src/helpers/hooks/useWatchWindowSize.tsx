@@ -12,6 +12,8 @@ import {
 import { store, useAppDispatch } from '../../store';
 import { updateUserDeviceType } from '../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../store/slices/interfaces/session';
+import useStorePreviousInt from './useStorePreviousInt';
+import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
@@ -19,6 +21,8 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const [orientationClass, setOrientationClass] =
     useState<string>('landscape-device');
   const [screenHeight, setScreenHeight] = useState<string>('');
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+  const preScreenWidth = useStorePreviousInt(screenWidth);
 
   const adjustScreenSize = () => {
     setScreenHeight(`${window.innerHeight}px`);
@@ -37,8 +41,18 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
   }, [currentRoom?.state]);
 
   useEffect(() => {
-    window.onresize = () => {
+    if (preScreenWidth && preScreenWidth !== screenWidth) {
       dispatch(updateScreenWidth(window.innerWidth));
+      if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
+        dispatch(doRefreshWhiteboard(Date.now()));
+      }
+    }
+    //eslint-disable-next-line
+  }, [preScreenWidth, screenWidth]);
+
+  useEffect(() => {
+    window.onresize = () => {
+      setScreenWidth(window.innerWidth);
       dispatch(updateScreenHeight(window.innerHeight));
       adjustScreenSize();
 
@@ -56,7 +70,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       }
     };
 
-    dispatch(updateScreenWidth(window.innerWidth));
+    setScreenWidth(window.innerWidth);
     dispatch(updateScreenHeight(window.innerHeight));
 
     if (window.innerWidth < 1024) {
