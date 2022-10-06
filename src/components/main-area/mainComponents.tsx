@@ -14,6 +14,10 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from '../../helpers/livekit/types';
+import {
+  updateIsActiveSharedNotePad,
+  updateIsActiveWhiteboard,
+} from '../../store/slices/bottomIconsActivitySlice';
 
 interface IMainComponentsProps {
   currentConnection: IConnectLivekit;
@@ -74,6 +78,24 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const [showVideoElms, setShowVideoElms] = useState<boolean>(false);
 
   useEffect(() => {
+    setHasVideoElms(currentConnection.videoSubscribersMap.size > 0);
+    currentConnection.on(CurrentConnectionEvents.VideoStatus, setHasVideoElms);
+    return () => {
+      currentConnection.off(
+        CurrentConnectionEvents.VideoStatus,
+        setHasVideoElms,
+      );
+    };
+  }, [currentConnection]);
+
+  useEffect(() => {
+    if (isActiveDisplayExternalLink || isActiveExternalMediaPlayer) {
+      dispatch(updateIsActiveSharedNotePad(false));
+      dispatch(updateIsActiveWhiteboard(false));
+    }
+  }, [isActiveExternalMediaPlayer, isActiveDisplayExternalLink, dispatch]);
+
+  useEffect(() => {
     if (
       !isActiveScreenSharing &&
       !isActiveSharedNotePad &&
@@ -96,16 +118,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   ]);
 
   useEffect(() => {
-    currentConnection.on(CurrentConnectionEvents.VideoStatus, setHasVideoElms);
-    return () => {
-      currentConnection.off(
-        CurrentConnectionEvents.VideoStatus,
-        setHasVideoElms,
-      );
-    };
-  }, [currentConnection]);
-
-  useEffect(() => {
     if (!activateWebcamsView) {
       setShowVideoElms(false);
       return;
@@ -124,40 +136,47 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
-  const shouldShowScreenSharing = useCallback(() => {
-    if (!activeScreenSharingView) {
-      return false;
-    }
-    return isActiveScreenSharing;
-  }, [activeScreenSharingView, isActiveScreenSharing]);
+  const shouldShow = useCallback(
+    (type: string) => {
+      if (type === 'screen_share') {
+        return activeScreenSharingView && isActiveScreenSharing;
+      } else if (type === 'shared_notepad') {
+        return (
+          !isActiveScreenSharing &&
+          !isActiveExternalMediaPlayer &&
+          !isActiveDisplayExternalLink &&
+          isActiveSharedNotePad
+        );
+      } else if (type === 'whiteboard') {
+        return (
+          !isActiveScreenSharing &&
+          !isActiveExternalMediaPlayer &&
+          !isActiveDisplayExternalLink &&
+          isActiveWhiteboard
+        );
+      } else if (type === 'external-media-player') {
+        // we can't disable to show both external player & link.
+        // So, external-media-player will be first priority
+        return !isActiveScreenSharing && isActiveExternalMediaPlayer;
+      } else if (type === 'display-external-link') {
+        return (
+          !isActiveScreenSharing &&
+          !isActiveExternalMediaPlayer &&
+          isActiveDisplayExternalLink
+        );
+      }
 
-  const shouldShowSharedNotepad = useCallback(() => {
-    if (isActiveScreenSharing) {
       return false;
-    }
-    return isActiveSharedNotePad;
-  }, [isActiveScreenSharing, isActiveSharedNotePad]);
-
-  const shouldShowWhiteboard = useCallback(() => {
-    if (isActiveScreenSharing) {
-      return false;
-    }
-    return isActiveWhiteboard;
-  }, [isActiveScreenSharing, isActiveWhiteboard]);
-
-  const shouldShowExternalMediaPlayer = useCallback(() => {
-    if (isActiveScreenSharing) {
-      return false;
-    }
-    return isActiveExternalMediaPlayer;
-  }, [isActiveScreenSharing, isActiveExternalMediaPlayer]);
-
-  const shouldDisplayExternalLink = useCallback(() => {
-    if (isActiveScreenSharing) {
-      return false;
-    }
-    return isActiveDisplayExternalLink;
-  }, [isActiveScreenSharing, isActiveDisplayExternalLink]);
+    },
+    [
+      activeScreenSharingView,
+      isActiveScreenSharing,
+      isActiveSharedNotePad,
+      isActiveWhiteboard,
+      isActiveExternalMediaPlayer,
+      isActiveDisplayExternalLink,
+    ],
+  );
 
   const videoElms = useMemo(() => {
     return (
@@ -170,7 +189,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
 
   const cssClasses = useMemo(() => {
     const cssClasses = ['middle-fullscreen-wrapper'];
-    if (shouldShowScreenSharing()) {
+    if (shouldShow('screen_share')) {
       cssClasses.push('share-screen-wrapper is-share-screen-running');
     } else {
       cssClasses.push('h-full flex');
@@ -179,7 +198,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       }
     }
     return cssClasses.join(' ');
-  }, [shouldShowScreenSharing, showVideoElms, showVerticalVideoView]);
+  }, [shouldShow, showVideoElms, showVerticalVideoView]);
 
   return (
     <>
@@ -188,13 +207,13 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       ) : (
         <div className={cssClasses}>
           {videoElms}
-          {shouldShowScreenSharing() ? (
+          {shouldShow('screen_share') ? (
             <ScreenShareElements currentConnection={currentConnection} />
           ) : null}
-          {shouldShowSharedNotepad() ? <SharedNotepadElement /> : null}
-          {shouldShowWhiteboard() ? <Whiteboard /> : null}
-          {shouldShowExternalMediaPlayer() ? <ExternalMediaPlayer /> : null}
-          {shouldDisplayExternalLink() ? <DisplayExternalLink /> : null}
+          {shouldShow('shared_notepad') ? <SharedNotepadElement /> : null}
+          {shouldShow('whiteboard') ? <Whiteboard /> : null}
+          {shouldShow('external-media-player') ? <ExternalMediaPlayer /> : null}
+          {shouldShow('display-external-link') ? <DisplayExternalLink /> : null}
         </div>
       )}
       <AudioElements currentConnection={currentConnection} />
