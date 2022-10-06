@@ -118,7 +118,6 @@ const VideosComponent = ({
       <VideosComponentElms
         allParticipants={allParticipants}
         totalNumWebcams={totalNumWebcams}
-        perPage={isVertical ? 3 : undefined}
         isVertical={isVertical}
       />
     );
