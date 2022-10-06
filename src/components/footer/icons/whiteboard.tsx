@@ -151,7 +151,7 @@ const WhiteboardIcon = () => {
         </span>
         <>
           <i
-            className={`pnm-whiteboard ${iconCSS} text-[12px] lg:text-[16px]`}
+            className={`pnm-whiteboard ${iconCSS} text-[14px] lg:text-[16px]`}
           />
         </>
       </div>

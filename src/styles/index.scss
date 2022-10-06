@@ -1198,15 +1198,24 @@ button.previous-cam {
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     padding-left: 0;
   }
+  .landscape-device.is-mobile
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    padding-left: 130px;
+  }
   .private-m-tab {
     width: calc(100vh - 180px);
   }
   .excalidraw-wrapper {
-    margin-top: 1rem;
-    height: calc(100% - 30px);
+    margin-top: 0.5rem;
+    height: calc(100% - 20px);
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video {
     padding-bottom: calc(100vh - 105px) !important;
+  }
+  .plugNmeet-app #main-area.isRecorder {
+    height: 100% !important;
+    top: 0;
   }
 }
 
@@ -1287,9 +1296,10 @@ button.previous-cam {
     word-break: break-all;
   }
 
-  .admin footer#main-footer .footer-icon {
-    height: 30px;
-    width: 30px;
+  footer#main-footer .footer-icon,
+  footer#main-footer .whiteboard,
+  footer#main-footer .shared-notepad {
+    margin-right: 5px;
   }
   .excalidraw-wrapper .excalidraw .Stack_horizontal {
     display: flex !important;
@@ -1299,10 +1309,10 @@ button.previous-cam {
 }
 
 @media screen and (max-width: 640px) {
-  .admin footer#main-footer .footer-icon {
-    height: 25px;
-    width: 25px;
-  }
+  // .admin footer#main-footer .footer-icon {
+  //   height: 25px;
+  //   width: 25px;
+  // }
 
   .header-logo {
     height: 30px;
@@ -1455,4 +1465,59 @@ aside {
 .portrait-device.is-tablet .camera-row-0.total-items-2,
 .portrait-device.is-tablet .camera-row-0.total-items-3 {
   flex-wrap: wrap;
+}
+.portrait-device.is-tablet
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper {
+  bottom: 0;
+  padding-top: 0;
+}
+.portrait-device.is-tablet
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper {
+  position: absolute;
+  height: auto;
+  width: 100%;
+  z-index: 9;
+  padding: 0;
+  bottom: -5px;
+}
+.portrait-device.is-tablet
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  padding-left: 0;
+}
+.portrait-device.is-tablet
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper
+  .all-webcam-wrapper-inner {
+  margin: 0;
+  padding: 0 15px;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+.portrait-device.is-tablet
+  #main-area.fullWidthMainArea
+  .all-webcam-wrapper.vertical-webcams
+  .all-webcam-wrapper-inner {
+  display: flex !important;
+  justify-content: center;
+}
+.portrait-device.is-tablet
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  width: 100%;
+  margin: 5px;
+  height: 100px;
+  padding-bottom: 0;
+  max-width: 150px;
+}
+.portrait-device.is-tablet .excalidraw-wrapper {
+  margin-top: 1rem;
 }

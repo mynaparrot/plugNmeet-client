@@ -76,7 +76,6 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const dispatch = useAppDispatch();
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const [allowChat, setAllowChat] = useState<boolean>(true);
-  const [customCSS, setCustomCSS] = useState<string>();
   const [isActiveScreenShare, setIsActiveScreenShare] =
     useState<boolean>(false);
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
@@ -104,7 +103,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
     };
   }, [currentConnection]);
 
-  useEffect(() => {
+  const customCSS = useMemo(() => {
     const css: Array<string> = [];
 
     isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
@@ -132,7 +131,9 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
       ? css.push('showDisplayExternalLink fullWidthMainArea')
       : css.push('hideDisplayExternalLink');
 
-    setCustomCSS(css.join(' '));
+    isRecorder ? css.push(`isRecorder`) : null;
+
+    return css.join(' ');
   }, [
     activeScreenSharingView,
     isActiveScreenShare,
@@ -142,6 +143,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
+    isRecorder,
   ]);
 
   const renderLeftPanel = useMemo(() => {

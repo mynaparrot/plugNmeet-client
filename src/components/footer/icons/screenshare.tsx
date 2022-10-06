@@ -165,7 +165,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
         </span>
         <>
           <i
-            className={`pnm-screen-share ${iconCSS} text-[12px] lg:text-[16px]`}
+            className={`pnm-screen-share ${iconCSS} text-[14px] lg:text-[16px]`}
           />
           {lock ? (
             <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
