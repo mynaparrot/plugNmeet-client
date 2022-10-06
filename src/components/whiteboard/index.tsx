@@ -14,7 +14,7 @@ import {
 } from '@excalidraw/excalidraw/types/types';
 
 import './style.scss';
-import { RootState, store, useAppSelector } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   ReconciledElements,
@@ -35,8 +35,8 @@ import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
 import ManageFiles from './manageFiles';
-import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import { addPreloadedLibraryItems } from './helpers/handleLibrary';
+import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 const excalidrawElementsSelector = createSelector(
   (state: RootState) => state.whiteboard.excalidrawElements,
@@ -81,10 +81,6 @@ const themeSelector = createSelector(
   (state: RootState) => state.roomSettings.theme,
   (theme) => theme,
 );
-const screenWidthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenWidth,
-  (screenWidth) => screenWidth,
-);
 const refreshWhiteboardSelector = createSelector(
   (state: RootState) => state.whiteboard.refreshWhiteboard,
   (refreshWhiteboard) => refreshWhiteboard,
@@ -97,6 +93,7 @@ const Whiteboard = () => {
   const collaborators = new Map<string, Collaborator>();
 
   const { i18n } = useTranslation();
+  const dispatch = useAppDispatch();
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
@@ -126,8 +123,6 @@ const Whiteboard = () => {
   const currentPage = useAppSelector(currentPageSelector);
   const previousPage = usePreviousPage(currentPage);
   const [fetchedData, setFetchedData] = useState<boolean>(false);
-  const screenWidth = useAppSelector(screenWidthSelector);
-  const preScreenWidth = useStorePreviousInt(screenWidth);
   const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
     useState<number>(0);
 
@@ -316,33 +311,14 @@ const Whiteboard = () => {
     //eslint-disable-next-line
   }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
 
-  // watch screen width changes
-  useEffect(() => {
-    if (!excalidrawAPI) {
-      return;
-    }
-
-    const doRefresh = throttle(
-      () => {
-        excalidrawAPI.refresh();
-        setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
-      },
-      500,
-      { trailing: false },
-    );
-
-    if (preScreenWidth && preScreenWidth !== screenWidth) {
-      doRefresh();
-    }
-  }, [preScreenWidth, screenWidth, excalidrawAPI]);
-
   // for refreshing in various reason
   useEffect(() => {
     const doRefresh = throttle(
       () => {
         excalidrawAPI?.refresh();
+        dispatch(doRefreshWhiteboard(0));
       },
-      500,
+      1000,
       { trailing: false },
     );
 

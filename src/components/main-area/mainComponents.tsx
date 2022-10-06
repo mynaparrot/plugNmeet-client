@@ -117,8 +117,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     const timeout = setTimeout(() => {
       if (isActiveWhiteboard) {
         dispatch(doRefreshWhiteboard(Date.now()));
-      } else {
-        dispatch(doRefreshWhiteboard(0));
       }
     }, 1000);
     return () => {
