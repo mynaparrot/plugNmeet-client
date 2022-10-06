@@ -9,17 +9,16 @@ import {
   useAppSelector,
 } from '../../../store';
 import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
-import useVideoParticipant from './helpers/useVideoParticipant';
 import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import {
   setForMobileAndTablet,
   setForMobileLandscape,
   setForPC,
 } from './helpers/utils';
-import { IConnectLivekit } from '../../../helpers/livekit/types';
 
 interface IVideosComponentElmsProps {
-  currentConnection: IConnectLivekit;
+  allParticipants: JSX.Element[];
+  totalNumWebcams: number;
   perPage?: number;
   isVertical?: boolean;
 }
@@ -42,27 +41,27 @@ const deviceOrientationSelector = createSelector(
 );
 
 const VideosComponentElms = ({
-  currentConnection,
+  allParticipants,
+  totalNumWebcams,
   perPage,
   isVertical,
 }: IVideosComponentElmsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { allParticipants, totalNumWebcams } =
-    useVideoParticipant(currentConnection);
   const screenWidth = useAppSelector(screenWidthSelector);
   const deviceOrientation = useAppSelector(deviceOrientationSelector);
   const deviceType = store.getState().session.userDeviceType;
 
-  const [currentPage, setCurrentPage] = useState<number>(0);
   const [participantsToRender, setParticipantsToRender] = useState<
     Array<JSX.Element>
   >([]);
-  const [showPre, setShowPre] = useState<boolean>(false);
-  const [showNext, setShowNext] = useState<boolean>(false);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
     perPage ?? DESKTOP_PER_PAGE,
   );
+
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [showPre, setShowPre] = useState<boolean>(false);
+  const [showNext, setShowNext] = useState<boolean>(false);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
   const setParticipantsToDisplay = (
@@ -83,7 +82,7 @@ const VideosComponentElms = ({
     }
   };
 
-  useMemo(() => {
+  useEffect(() => {
     if (allParticipants.length <= webcamPerPage) {
       // we don't need any pagination
       setParticipantsToRender(allParticipants);
@@ -91,7 +90,7 @@ const VideosComponentElms = ({
       setCurrentPage(1);
       setParticipantsToDisplay(allParticipants, 1, webcamPerPage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [allParticipants, webcamPerPage]);
 
   useEffect(() => {
@@ -113,7 +112,7 @@ const VideosComponentElms = ({
     }
   }, [totalNumWebcams, currentPage, webcamPerPage]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (!screenWidth || isVertical) {
       return;
     }
@@ -137,7 +136,7 @@ const VideosComponentElms = ({
       }
     }
     //eslint-disable-next-line
-  }, [screenWidth, isVertical]);
+  }, [screenWidth]);
 
   const prePage = () => {
     setParticipantsToDisplay(allParticipants, currentPage - 1, webcamPerPage);

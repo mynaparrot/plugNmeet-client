@@ -8,12 +8,12 @@ import SharedNotepadElement from '../shared-notepad';
 import Whiteboard from '../whiteboard';
 import ExternalMediaPlayer from '../external-media-player';
 import DisplayExternalLink from '../display-external-link';
+import VideosComponent from '../media-elements/videos';
+import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from '../../helpers/livekit/types';
-import VideosComponent from '../media-elements/videos';
-import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 interface IMainComponentsProps {
   currentConnection: IConnectLivekit;
@@ -53,16 +53,6 @@ const activateWebcamsViewSelector = createSelector(
 
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
-  // const refreshWhiteboard = useRef(
-  //   throttle(
-  //     () => {
-  //       console.log("im here")
-  //       dispatch(doRefreshWhiteboard(Date.now()));
-  //     },
-  //     2000,
-  //     { leading: false, trailing: false },
-  //   ),
-  // );
 
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activeScreenSharingView = useAppSelector(
@@ -180,23 +170,29 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     );
   }, [currentConnection, showVerticalVideoView]);
 
+  const cssClasses = useMemo(() => {
+    const cssClasses = ['middle-fullscreen-wrapper'];
+    if (shouldShowScreenSharing()) {
+      cssClasses.push('share-screen-wrapper is-share-screen-running');
+    } else {
+      cssClasses.push('h-full flex');
+      if (showVideoElms && showVerticalVideoView) {
+        cssClasses.push('verticalsWebcamsActivated');
+      }
+    }
+    return cssClasses.join(' ');
+  }, [shouldShowScreenSharing, showVideoElms, showVerticalVideoView]);
+
   return (
     <>
-      {shouldShowScreenSharing() ? (
-        <div className="middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running">
-          {videoElms}
-          <ScreenShareElements currentConnection={currentConnection} />
-        </div>
-      ) : null}
       {showFullVideoView ? (
         videoElms
       ) : (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            showVideoElms ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
+        <div className={cssClasses}>
           {videoElms}
+          {shouldShowScreenSharing() ? (
+            <ScreenShareElements currentConnection={currentConnection} />
+          ) : null}
           {shouldShowSharedNotepad() ? <SharedNotepadElement /> : null}
           {shouldShowWhiteboard() ? <Whiteboard /> : null}
           {shouldShowExternalMediaPlayer() ? <ExternalMediaPlayer /> : null}
