@@ -71,6 +71,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     };
 
     setScreenWidth(window.innerWidth);
+    dispatch(updateScreenWidth(window.innerWidth));
     dispatch(updateScreenHeight(window.innerHeight));
 
     if (window.innerWidth < 1024) {

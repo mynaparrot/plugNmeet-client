@@ -71,7 +71,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     isActiveDisplayExternalLinkSelector,
   );
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
-  const [showFullVideoView, setShowFullVideoView] = useState<boolean>(false);
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
   const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);
@@ -103,10 +102,8 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       !isActiveExternalMediaPlayer &&
       !isActiveDisplayExternalLink
     ) {
-      setShowFullVideoView(true);
       setShowVerticalVideoView(false);
     } else {
-      setShowFullVideoView(false);
       setShowVerticalVideoView(true);
     }
   }, [
@@ -188,13 +185,20 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   }, [currentConnection, showVerticalVideoView]);
 
   const cssClasses = useMemo(() => {
-    const cssClasses = ['middle-fullscreen-wrapper'];
+    const cssClasses: Array<string> = [];
     if (shouldShow('screen_share')) {
-      cssClasses.push('share-screen-wrapper is-share-screen-running');
+      cssClasses.push(
+        'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
+      );
     } else {
-      cssClasses.push('h-full flex');
-      if (showVideoElms && showVerticalVideoView) {
-        cssClasses.push('verticalsWebcamsActivated');
+      if (showVideoElms && !showVerticalVideoView) {
+        cssClasses.push('h-full');
+      } else if (showVideoElms && showVerticalVideoView) {
+        cssClasses.push(
+          'middle-fullscreen-wrapper h-full flex verticalsWebcamsActivated',
+        );
+      } else {
+        cssClasses.push('middle-fullscreen-wrapper h-full flex');
       }
     }
     return cssClasses.join(' ');
@@ -202,20 +206,16 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
 
   return (
     <>
-      {showFullVideoView ? (
-        videoElms
-      ) : (
-        <div className={cssClasses}>
-          {videoElms}
-          {shouldShow('screen_share') ? (
-            <ScreenShareElements currentConnection={currentConnection} />
-          ) : null}
-          {shouldShow('shared_notepad') ? <SharedNotepadElement /> : null}
-          {shouldShow('whiteboard') ? <Whiteboard /> : null}
-          {shouldShow('external-media-player') ? <ExternalMediaPlayer /> : null}
-          {shouldShow('display-external-link') ? <DisplayExternalLink /> : null}
-        </div>
-      )}
+      <div className={cssClasses}>
+        {videoElms}
+        {shouldShow('screen_share') ? (
+          <ScreenShareElements currentConnection={currentConnection} />
+        ) : null}
+        {shouldShow('shared_notepad') ? <SharedNotepadElement /> : null}
+        {shouldShow('whiteboard') ? <Whiteboard /> : null}
+        {shouldShow('external-media-player') ? <ExternalMediaPlayer /> : null}
+        {shouldShow('display-external-link') ? <DisplayExternalLink /> : null}
+      </div>
       <AudioElements currentConnection={currentConnection} />
     </>
   );

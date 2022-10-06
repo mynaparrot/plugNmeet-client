@@ -19,7 +19,6 @@ import {
 interface IVideosComponentElmsProps {
   allParticipants: JSX.Element[];
   totalNumWebcams: number;
-  perPage?: number;
   isVertical?: boolean;
 }
 export interface VideoParticipantType {
@@ -29,7 +28,8 @@ export interface VideoParticipantType {
 
 const MOBILE_PER_PAGE = 6,
   TABLET_PER_PAGE = 9,
-  DESKTOP_PER_PAGE = 24;
+  DESKTOP_PER_PAGE = 24,
+  VERTICAL_PER_PAGE = 3;
 
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
@@ -43,7 +43,6 @@ const deviceOrientationSelector = createSelector(
 const VideosComponentElms = ({
   allParticipants,
   totalNumWebcams,
-  perPage,
   isVertical,
 }: IVideosComponentElmsProps) => {
   const dispatch = useAppDispatch();
@@ -56,13 +55,43 @@ const VideosComponentElms = ({
     Array<JSX.Element>
   >([]);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
-    perPage ?? DESKTOP_PER_PAGE,
+    isVertical ? VERTICAL_PER_PAGE : DESKTOP_PER_PAGE,
   );
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [showPre, setShowPre] = useState<boolean>(false);
   const [showNext, setShowNext] = useState<boolean>(false);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isVertical) {
+      setWebcamPerPage(VERTICAL_PER_PAGE);
+      return;
+    }
+    if (!screenWidth) {
+      return;
+    }
+    if (screenWidth <= 640) {
+      setWebcamPerPage(MOBILE_PER_PAGE);
+      setIsSmallScreen(true);
+    } else if (screenWidth > 640 && screenWidth <= 1024) {
+      if (deviceType === UserDeviceType.MOBILE) {
+        setWebcamPerPage(MOBILE_PER_PAGE);
+      } else {
+        setWebcamPerPage(TABLET_PER_PAGE);
+      }
+      setIsSmallScreen(true);
+    } else {
+      if (deviceType === UserDeviceType.TABLET) {
+        setWebcamPerPage(TABLET_PER_PAGE);
+        setIsSmallScreen(true);
+      } else {
+        setWebcamPerPage(DESKTOP_PER_PAGE);
+        setIsSmallScreen(false);
+      }
+    }
+    //eslint-disable-next-line
+  }, [isVertical, screenWidth]);
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -112,32 +141,6 @@ const VideosComponentElms = ({
     }
   }, [totalNumWebcams, currentPage, webcamPerPage]);
 
-  useMemo(() => {
-    if (!screenWidth || isVertical) {
-      return;
-    }
-    if (screenWidth <= 640) {
-      setWebcamPerPage(MOBILE_PER_PAGE);
-      setIsSmallScreen(true);
-    } else if (screenWidth > 640 && screenWidth <= 1024) {
-      if (deviceType === UserDeviceType.MOBILE) {
-        setWebcamPerPage(MOBILE_PER_PAGE);
-      } else {
-        setWebcamPerPage(TABLET_PER_PAGE);
-      }
-      setIsSmallScreen(true);
-    } else {
-      if (deviceType === UserDeviceType.TABLET) {
-        setWebcamPerPage(TABLET_PER_PAGE);
-        setIsSmallScreen(true);
-      } else {
-        setWebcamPerPage(DESKTOP_PER_PAGE);
-        setIsSmallScreen(false);
-      }
-    }
-    //eslint-disable-next-line
-  }, [screenWidth]);
-
   const prePage = () => {
     setParticipantsToDisplay(allParticipants, currentPage - 1, webcamPerPage);
     setCurrentPage(currentPage - 1);
@@ -174,7 +177,7 @@ const VideosComponentElms = ({
 
     return elms;
     //eslint-disable-next-line
-  }, [participantsToRender, deviceOrientation]);
+  }, [isVertical, participantsToRender, deviceOrientation]);
 
   const render = () => {
     return (
@@ -220,6 +223,7 @@ const VideosComponentElms = ({
           <select
             name="select-camera-num"
             id="select-camera-num"
+            defaultValue="24"
             onChange={(e) => setWebcamPerPage(Number(e.currentTarget.value))}
           >
             <option value="6">6</option>
@@ -227,7 +231,7 @@ const VideosComponentElms = ({
             <option value="12">12</option>
             <option value="15">15</option>
             <option value="18">18</option>
-            <option selected>24</option>
+            <option value="24">24</option>
           </select>
         </div>
       ) : null}
