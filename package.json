@@ -22,7 +22,7 @@
     "@tensorflow/tfjs": "3.21.0",
     "axios": "1.0.0",
     "copy-text-to-clipboard": "3.0.1",
-    "emoji-picker-react": "4.0.8",
+    "emoji-picker-react": "4.1.1",
     "events": "3.3.0",
     "i18next": "21.9.2",
     "i18next-browser-languagedetector": "6.1.5",
