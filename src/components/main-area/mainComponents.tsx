@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
 import AudioElements from '../media-elements/audios';
 import SharedNotepadElement from '../shared-notepad';
@@ -13,6 +13,7 @@ import {
   IConnectLivekit,
 } from '../../helpers/livekit/types';
 import VideosComponent from '../media-elements/videos';
+import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 interface IMainComponentsProps {
   currentConnection: IConnectLivekit;
@@ -51,6 +52,18 @@ const activateWebcamsViewSelector = createSelector(
 );
 
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
+  const dispatch = useAppDispatch();
+  // const refreshWhiteboard = useRef(
+  //   throttle(
+  //     () => {
+  //       console.log("im here")
+  //       dispatch(doRefreshWhiteboard(Date.now()));
+  //     },
+  //     2000,
+  //     { leading: false, trailing: false },
+  //   ),
+  // );
+
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activeScreenSharingView = useAppSelector(
     activeScreenSharingViewSelector,
@@ -68,6 +81,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
   const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);
+  const [showVideoElms, setShowVideoElms] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -101,12 +115,26 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [currentConnection]);
 
-  const shouldShowVideoElms = useCallback(() => {
+  useEffect(() => {
     if (!activateWebcamsView) {
-      return false;
+      setShowVideoElms(false);
+      return;
     }
-    return hasVideoElms;
+    setShowVideoElms(hasVideoElms);
   }, [activateWebcamsView, hasVideoElms]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isActiveWhiteboard) {
+        dispatch(doRefreshWhiteboard(Date.now()));
+      } else {
+        dispatch(doRefreshWhiteboard(0));
+      }
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
   const shouldShowScreenSharing = useCallback(() => {
     if (!activeScreenSharingView) {
@@ -160,47 +188,21 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
           <ScreenShareElements currentConnection={currentConnection} />
         </div>
       ) : null}
-      {shouldShowSharedNotepad() ? (
+      {showFullVideoView ? (
+        videoElms
+      ) : (
         <div
           className={`middle-fullscreen-wrapper h-full flex ${
-            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
+            showVideoElms ? 'verticalsWebcamsActivated' : ''
           }`}
         >
           {videoElms}
-          <SharedNotepadElement />
+          {shouldShowSharedNotepad() ? <SharedNotepadElement /> : null}
+          {shouldShowWhiteboard() ? <Whiteboard /> : null}
+          {shouldShowExternalMediaPlayer() ? <ExternalMediaPlayer /> : null}
+          {shouldDisplayExternalLink() ? <DisplayExternalLink /> : null}
         </div>
-      ) : null}
-      {shouldShowWhiteboard() ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
-          {videoElms}
-          <Whiteboard />
-        </div>
-      ) : null}
-      {shouldShowExternalMediaPlayer() ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
-          {videoElms}
-          <ExternalMediaPlayer />
-        </div>
-      ) : null}
-      {shouldDisplayExternalLink() ? (
-        <div
-          className={`middle-fullscreen-wrapper h-full flex ${
-            shouldShowVideoElms() ? 'verticalsWebcamsActivated' : ''
-          }`}
-        >
-          {videoElms}
-          <DisplayExternalLink />
-        </div>
-      ) : null}
-      {showFullVideoView ? videoElms : null}
+      )}
       <AudioElements currentConnection={currentConnection} />
     </>
   );

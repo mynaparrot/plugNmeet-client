@@ -29,6 +29,7 @@ const initialState: IWhiteboardSlice = {
       pageFiles: '',
     },
   ],
+  refreshWhiteboard: 0,
 };
 
 const whiteboardSlice = createSlice({
@@ -111,6 +112,9 @@ const whiteboardSlice = createSlice({
       // update total page
       state.totalPages = action.payload.totalPages;
     },
+    doRefreshWhiteboard: (state, action: PayloadAction<number>) => {
+      state.refreshWhiteboard = action.payload;
+    },
   },
 });
 
@@ -124,6 +128,7 @@ export const {
   addWhiteboardFileAsJSON,
   updateCurrentWhiteboardOfficeFileId,
   addWhiteboardUploadedOfficeFiles,
+  doRefreshWhiteboard,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

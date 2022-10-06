@@ -65,7 +65,6 @@ const lockWhiteboardSelector = createSelector(
     state.session.currentUser?.metadata?.lock_settings?.lock_whiteboard,
   (lock_whiteboard) => lock_whiteboard,
 );
-
 const currentPageSelector = createSelector(
   (state: RootState) => state.whiteboard.currentPage,
   (currentPage) => currentPage,
@@ -85,6 +84,10 @@ const themeSelector = createSelector(
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
   (screenWidth) => screenWidth,
+);
+const refreshWhiteboardSelector = createSelector(
+  (state: RootState) => state.whiteboard.refreshWhiteboard,
+  (refreshWhiteboard) => refreshWhiteboard,
 );
 
 const Whiteboard = () => {
@@ -117,6 +120,7 @@ const Whiteboard = () => {
   const currentWhiteboardOfficeFileId = useAppSelector(
     currentWhiteboardOfficeFileIdSelector,
   );
+  const refreshWhiteboard = useAppSelector(refreshWhiteboardSelector);
   const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const isPresenter = useAppSelector(isPresenterSelector);
   const currentPage = useAppSelector(currentPageSelector);
@@ -331,6 +335,24 @@ const Whiteboard = () => {
       doRefresh();
     }
   }, [preScreenWidth, screenWidth, excalidrawAPI]);
+
+  // for refreshing in various reason
+  useEffect(() => {
+    const doRefresh = throttle(
+      () => {
+        excalidrawAPI?.refresh();
+      },
+      500,
+      { trailing: false },
+    );
+
+    if (refreshWhiteboard > 0) {
+      if (excalidrawAPI) {
+        doRefresh();
+      }
+    }
+    //eslint-disable-next-line
+  }, [refreshWhiteboard]);
 
   const handleExcalidrawAddFiles = useCallback(
     async (files: Array<IWhiteboardFile>) => {
