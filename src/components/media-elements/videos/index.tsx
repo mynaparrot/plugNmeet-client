@@ -30,8 +30,6 @@ const VideosComponent = ({
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
-  const [allParticipants, setAllParticipants] = useState<JSX.Element[]>([]);
-  const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
 
   useEffect(() => {
     if (currentConnection.videoSubscribersMap.size) {
@@ -49,12 +47,9 @@ const VideosComponent = ({
     };
   }, [currentConnection]);
 
-  useMemo(() => {
-    if (!videoSubscribers) {
-      return;
-    } else if (!videoSubscribers.size) {
-      setTotalNumWebcams(0);
-      setAllParticipants([]);
+  const [allParticipants, totalNumWebcams] = useMemo(() => {
+    if (!videoSubscribers || !videoSubscribers.size) {
+      return [[], 0];
     }
 
     let totalNumWebcams = 0;
@@ -109,8 +104,7 @@ const VideosComponent = ({
       otherSubscribers,
     );
 
-    setTotalNumWebcams(totalNumWebcams);
-    setAllParticipants(allParticipants);
+    return [allParticipants, totalNumWebcams];
   }, [videoSubscribers]);
 
   const videoSubscriberElms = useMemo(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Room } from 'livekit-client';
 
@@ -15,7 +15,6 @@ const ParticipantsComponent = ({
 }: IParticipantsComponentProps) => {
   const participants = useAppSelector(participantsSelector.selectAll);
   const { t } = useTranslation();
-  const [participantElms, setParticipantElms] = useState<JSX.Element[]>([]);
 
   const session = store.getState().session;
   const currentUserUserId = session.currentUser?.userId;
@@ -24,13 +23,13 @@ const ParticipantsComponent = ({
     false;
   const currentIsAdmin = session.currentUser?.metadata?.is_admin ?? false;
 
-  useEffect(() => {
+  const participantElms = useMemo(() => {
     const tmp = participants.filter(
       (p) =>
         p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
     if (!tmp.length) {
-      return;
+      return [];
     }
 
     const elms: JSX.Element[] = [];
@@ -53,13 +52,11 @@ const ParticipantsComponent = ({
       );
     });
 
-    if (elms.length) {
-      setParticipantElms(elms);
-    }
+    return elms;
     //eslint-disable-next-line
   }, [participants]);
 
-  const render = () => {
+  const render = useCallback(() => {
     if (!participantElms.length) {
       return null;
     }
@@ -76,7 +73,8 @@ const ParticipantsComponent = ({
         <div className="all-participants-wrap">{participantElms}</div>
       </div>
     );
-  };
+    //eslint-disable-next-line
+  }, [participantElms]);
 
   return render();
 };

@@ -194,6 +194,10 @@ export default class ConnectLivekit
                 sharedBy: participant.identity,
               }),
             );
+            this.setScreenShareTrack(
+              track as RemoteTrackPublication,
+              participant,
+            );
           } else {
             this.updateVideoSubscribers(participant);
           }
@@ -212,7 +216,7 @@ export default class ConnectLivekit
       }),
     );
 
-    if (!isEmpty(this._room.metadata) && this._room.metadata) {
+    if (this._room.metadata && !isEmpty(this._room.metadata)) {
       this.handleRoomMetadata.setRoomMetadata(this._room.metadata);
     }
 
@@ -401,11 +405,15 @@ export default class ConnectLivekit
     } else {
       this._screenShareTracksMap.delete(participant.identity);
     }
+
+    // notify about status
     if (this._screenShareTracksMap.size) {
       this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
     } else {
       this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
     }
+
+    // emit new tracks map
     const screenShareTracks = new Map(this._screenShareTracksMap) as any;
     this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
   };
