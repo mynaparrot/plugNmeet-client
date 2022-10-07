@@ -12,8 +12,7 @@ let isConnected = false;
 let ws: ReconnectingWebSocket;
 
 const createWS = () => {
-  const url = getURL();
-  ws = new ReconnectingWebSocket(url, [], {
+  ws = new ReconnectingWebSocket(getURL, [], {
     maxRetries: 10,
     connectionTimeout: 1000,
   });
