@@ -37,7 +37,8 @@
     "room-disconnected-server-shutdown": "إيقاف تشغيل الخادم. الرمز: {{code}}",
     "room-disconnected-participant-removed": "لقد تمت إزالتك من هذا المؤتمر. الرمز: {{code}}",
     "room-disconnected-room-ended": "تم إغلاق الغرفة. الكود: {{code}}",
-    "room-disconnected-state-mismatch": "عدم تطابق. الرمز: {{code}}"
+    "room-disconnected-state-mismatch": "عدم تطابق. الرمز: {{code}}",
+    "your-connection-quality-not-good": "Your connection quality isn't good enough"
   },
   "room-metadata": {
     "session-recording": "يجري تسجيل هذه الجلسة",
