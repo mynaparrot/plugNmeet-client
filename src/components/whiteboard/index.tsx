@@ -35,7 +35,11 @@ import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
 import ManageFiles from './manageFiles';
-import { addPreloadedLibraryItems } from './helpers/handleLibrary';
+import {
+  addPreloadedLibraryItems,
+  displaySavedPageData,
+  savePageData,
+} from './helpers/utils';
 import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 const whiteboardSelector = createSelector(
@@ -90,12 +94,31 @@ const Whiteboard = () => {
   useEffect(() => {
     if (excalidrawAPI) {
       setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
+      if (isPresenter) {
+        // if presenter then we'll fetch storage to display after initialize excalidraw
+        setTimeout(() => {
+          const currentPage = store.getState().whiteboard.currentPage;
+          displaySavedPageData(excalidrawAPI, isPresenter, currentPage);
+        }, 100);
+      }
     } else if (
       !currentUser?.isRecorder &&
       !currentRoom.metadata?.default_lock_settings?.lock_whiteboard
     ) {
       setViewModeEnabled(false);
     }
+
+    return () => {
+      if (excalidrawAPI) {
+        // during unmount we can store curren state
+        const s = store.getState();
+        const isPresenter = s.session.currentUser?.metadata?.is_presenter;
+        if (isPresenter) {
+          const lastPage = s.whiteboard.currentPage;
+          savePageData(excalidrawAPI, lastPage);
+        }
+      }
+    };
     //eslint-disable-next-line
   }, [excalidrawAPI]);
 
