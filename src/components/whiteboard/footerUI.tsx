@@ -6,10 +6,7 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { createSelector } from '@reduxjs/toolkit';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { useTranslation } from 'react-i18next';
-import {
-  broadcastCurrentPageNumber,
-  broadcastScreenDataBySocket,
-} from './helpers/handleRequestedWhiteboardData';
+import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
 import {
@@ -18,7 +15,7 @@ import {
   SwitchPresenterTask,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
-import { formatStorageKey } from './helpers/fileReader';
+import { displaySavedPageData, savePageData } from './helpers/utils';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -95,31 +92,11 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   }, [totalPages]);
 
   useEffect(() => {
-    if (excalidrawAPI && isPresenter) {
-      setTimeout(() => {
-        const currentPage = store.getState().whiteboard.currentPage;
-        displayCurrentPageData(currentPage);
-      }, 100);
-    }
-    return () => {
-      if (excalidrawAPI && isPresenter) {
-        const lastPage = store.getState().whiteboard.currentPage;
-        const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-        if (elms.length) {
-          sessionStorage.setItem(
-            formatStorageKey(lastPage),
-            JSON.stringify(elms),
-          );
-        }
-      }
-    };
-    //eslint-disable-next-line
-  }, [excalidrawAPI]);
-
-  useEffect(() => {
     if (currentWhiteboardOfficeFileId !== previousFileId && isPresenter) {
       setTimeout(() => {
-        displayCurrentPageData(currentPage);
+        if (excalidrawAPI) {
+          displaySavedPageData(excalidrawAPI, isPresenter, currentPage);
+        }
       }, 500);
     }
     //eslint-disable-next-line
@@ -133,29 +110,11 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     // because from mobile or small screen pagination part remain collapse
     // no event will be run if this part don't show
     if (isPresenter) {
-      const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-      if (elms.length) {
-        sessionStorage.setItem(
-          formatStorageKey(previousPage),
-          JSON.stringify(elms),
-        );
+      if (previousPage) {
+        savePageData(excalidrawAPI, previousPage);
       }
       cleanExcalidraw();
-      displayCurrentPageData(currentPage);
-    }
-  };
-
-  const displayCurrentPageData = (currentPage) => {
-    const data = sessionStorage.getItem(formatStorageKey(currentPage));
-    if (data && excalidrawAPI) {
-      const elements = JSON.parse(data);
-      if (Array.isArray(elements) && elements.length) {
-        excalidrawAPI.updateScene({ elements });
-        if (isPresenter) {
-          // better to broadcast full screen
-          broadcastScreenDataBySocket(elements);
-        }
-      }
+      displaySavedPageData(excalidrawAPI, isPresenter, currentPage);
     }
   };
 

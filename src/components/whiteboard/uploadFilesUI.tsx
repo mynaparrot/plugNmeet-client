@@ -25,7 +25,7 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../helpers/proto/plugnmeet_datamessage_pb';
-import { formatStorageKey } from './helpers/fileReader';
+import { formatStorageKey } from './helpers/utils';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;

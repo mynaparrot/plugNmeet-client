@@ -11,7 +11,7 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { sleep } from '../../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import { updateCurrentWhiteboardOfficeFileId } from '../../store/slices/whiteboard';
-import { formatStorageKey } from './helpers/fileReader';
+import { formatStorageKey } from './helpers/utils';
 
 interface IManageFilesProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
