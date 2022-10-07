@@ -37,7 +37,8 @@
     "room-disconnected-server-shutdown": "El servidor se cayó. Código: {{code}}",
     "room-disconnected-participant-removed": "Ha sido eliminado de esta conferencia. Código: {{code}}",
     "room-disconnected-room-ended": "La sala ha sido cerrada. Código: {{code}}",
-    "room-disconnected-state-mismatch": "El estado no coincide. Código: {{code}}"
+    "room-disconnected-state-mismatch": "El estado no coincide. Código: {{code}}",
+    "your-connection-quality-not-good": "Your connection quality isn't good enough"
   },
   "room-metadata": {
     "session-recording": "Esta sesión se está grabando",
