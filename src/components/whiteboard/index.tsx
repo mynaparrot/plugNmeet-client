@@ -38,40 +38,14 @@ import ManageFiles from './manageFiles';
 import { addPreloadedLibraryItems } from './helpers/handleLibrary';
 import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
-const excalidrawElementsSelector = createSelector(
-  (state: RootState) => state.whiteboard.excalidrawElements,
-  (excalidrawElements) => excalidrawElements,
-);
-const mousePointerLocationSelector = createSelector(
-  (state: RootState) => state.whiteboard.mousePointerLocation,
-  (mousePointerLocation) => mousePointerLocation,
-);
-const whiteboardAppStateSelector = createSelector(
-  (state: RootState) => state.whiteboard.whiteboardAppState,
-  (whiteboardAppState) => whiteboardAppState,
-);
-const whiteboardOfficeFilePagesAndOtherImagesSelector = createSelector(
-  (state: RootState) =>
-    state.whiteboard.whiteboardOfficeFilePagesAndOtherImages,
-  (whiteboardOfficeFilePagesAndOtherImages) =>
-    whiteboardOfficeFilePagesAndOtherImages,
-);
-const requestedWhiteboardDataSelector = createSelector(
-  (state: RootState) => state.whiteboard.requestedWhiteboardData,
-  (requestedWhiteboardData) => requestedWhiteboardData,
+const whiteboardSelector = createSelector(
+  (state: RootState) => state.whiteboard,
+  (whiteboard) => whiteboard,
 );
 const lockWhiteboardSelector = createSelector(
   (state: RootState) =>
     state.session.currentUser?.metadata?.lock_settings?.lock_whiteboard,
   (lock_whiteboard) => lock_whiteboard,
-);
-const currentPageSelector = createSelector(
-  (state: RootState) => state.whiteboard.currentPage,
-  (currentPage) => currentPage,
-);
-const currentWhiteboardOfficeFileIdSelector = createSelector(
-  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFileId,
-  (currentWhiteboardOfficeFileId) => currentWhiteboardOfficeFileId,
 );
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
@@ -80,10 +54,6 @@ const isPresenterSelector = createSelector(
 const themeSelector = createSelector(
   (state: RootState) => state.roomSettings.theme,
   (theme) => theme,
-);
-const refreshWhiteboardSelector = createSelector(
-  (state: RootState) => state.whiteboard.refreshWhiteboard,
-  (refreshWhiteboard) => refreshWhiteboard,
 );
 
 const Whiteboard = () => {
@@ -103,39 +73,28 @@ const Whiteboard = () => {
     setLastBroadcastOrReceivedSceneVersion,
   ] = useState<number>(-1);
 
-  const excalidrawElements = useAppSelector(excalidrawElementsSelector);
-  const mousePointerLocation = useAppSelector(mousePointerLocationSelector);
-  const whiteboardAppState = useAppSelector(whiteboardAppStateSelector);
+  const whiteboard = useAppSelector(whiteboardSelector);
+  const previousFileId = usePreviousFileId(
+    whiteboard.currentWhiteboardOfficeFileId,
+  );
+  const previousPage = usePreviousPage(whiteboard.currentPage);
+
   const participants = useAppSelector(participantsSelector.selectAll);
-  const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
-    whiteboardOfficeFilePagesAndOtherImagesSelector,
-  );
-  const requestedWhiteboardData = useAppSelector(
-    requestedWhiteboardDataSelector,
-  );
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const currentWhiteboardOfficeFileId = useAppSelector(
-    currentWhiteboardOfficeFileIdSelector,
-  );
-  const refreshWhiteboard = useAppSelector(refreshWhiteboardSelector);
-  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const isPresenter = useAppSelector(isPresenterSelector);
-  const currentPage = useAppSelector(currentPageSelector);
-  const previousPage = usePreviousPage(currentPage);
+
   const [fetchedData, setFetchedData] = useState<boolean>(false);
   const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
     useState<number>(0);
 
   useEffect(() => {
-    if (!excalidrawAPI) {
-      if (
-        !currentUser?.isRecorder &&
-        !currentRoom.metadata?.default_lock_settings?.lock_whiteboard
-      ) {
-        setViewModeEnabled(false);
-      }
-    } else {
+    if (excalidrawAPI) {
       setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
+    } else if (
+      !currentUser?.isRecorder &&
+      !currentRoom.metadata?.default_lock_settings?.lock_whiteboard
+    ) {
+      setViewModeEnabled(false);
     }
     //eslint-disable-next-line
   }, [excalidrawAPI]);
@@ -149,15 +108,21 @@ const Whiteboard = () => {
       setFetchedData(true);
     }
 
-    if (requestedWhiteboardData.requested && excalidrawAPI) {
-      sendWhiteboardDataAsDonor(excalidrawAPI, requestedWhiteboardData.sendTo);
+    if (whiteboard.requestedWhiteboardData.requested && excalidrawAPI) {
+      sendWhiteboardDataAsDonor(
+        excalidrawAPI,
+        whiteboard.requestedWhiteboardData.sendTo,
+      );
     }
-  }, [requestedWhiteboardData, excalidrawAPI, fetchedData]);
+  }, [excalidrawAPI, whiteboard.requestedWhiteboardData, fetchedData]);
 
   // if whiteboard file ID change this mean new office file was uploaded,
   // so we'll clean the canvas.
   useEffect(() => {
-    if (excalidrawAPI && currentWhiteboardOfficeFileId !== previousFileId) {
+    if (
+      excalidrawAPI &&
+      whiteboard.currentWhiteboardOfficeFileId !== previousFileId
+    ) {
       setLastBroadcastOrReceivedSceneVersion(-1);
       excalidrawAPI.updateScene({
         elements: [],
@@ -166,14 +131,13 @@ const Whiteboard = () => {
       excalidrawAPI.history.clear();
     }
     //eslint-disable-next-line
-  }, [currentWhiteboardOfficeFileId, excalidrawAPI, previousFileId]);
+  }, [excalidrawAPI, whiteboard.currentWhiteboardOfficeFileId, previousFileId]);
 
   // for adding users to canvas as collaborators
   useEffect(() => {
     if (!excalidrawAPI) {
       return;
     }
-
     participants.forEach((participant) => {
       if (participant.metadata.is_admin) {
         if (!collaborators.has(participant.userId)) {
@@ -182,9 +146,16 @@ const Whiteboard = () => {
       }
     });
 
+    // now check if any user still exist after disconnected
+    collaborators.forEach((_, i) => {
+      const found = participants.find((p) => p.userId === i);
+      if (!found) {
+        collaborators.delete(i);
+      }
+    });
     excalidrawAPI.updateScene({ collaborators });
     //eslint-disable-next-line
-  }, [participants, excalidrawAPI]);
+  }, [excalidrawAPI, participants]);
 
   // looking lock settings
   useEffect(() => {
@@ -212,28 +183,53 @@ const Whiteboard = () => {
       );
     }
     //eslint-disable-next-line
-  }, [isPresenter, excalidrawAPI]);
+  }, [excalidrawAPI, isPresenter]);
 
   // if page change then we'll reset version
   useEffect(() => {
-    if (previousPage && currentPage !== previousPage) {
+    if (previousPage && whiteboard.currentPage !== previousPage) {
       setLastBroadcastOrReceivedSceneVersion(-1);
     }
     // for recorder & other user we'll clean from here
-    if (!isPresenter && previousPage && currentPage !== previousPage) {
+    if (
+      !isPresenter &&
+      previousPage &&
+      whiteboard.currentPage !== previousPage
+    ) {
       excalidrawAPI?.updateScene({
         elements: [],
       });
       excalidrawAPI?.addFiles([]);
     }
-  }, [currentPage, previousPage, isPresenter, excalidrawAPI]);
+  }, [excalidrawAPI, whiteboard.currentPage, previousPage, isPresenter]);
+
+  const handleRemoteSceneUpdate = (
+    elements: ReconciledElements,
+    { init = false }: { init?: boolean } = {},
+  ) => {
+    if (!elements.length) {
+      return;
+    }
+
+    excalidrawAPI?.updateScene({
+      elements,
+      commitToHistory: init,
+    });
+    setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
+
+    // We haven't yet implemented multiplayer undo functionality, so we clear the undo stack
+    // when we receive any messages from another peer. This UX can be pretty rough -- if you
+    // undo, a user makes a change, and then try to redo, your element(s) will be lost. However,
+    // right now we think this is the right tradeoff.
+    excalidrawAPI?.history.clear();
+  };
 
   // for handling draw elements
   useEffect(() => {
     // let's wait until fetchedData value change
     // otherwise data won't show correctly.
-    if (excalidrawElements && excalidrawAPI && fetchedData) {
-      const elements = JSON.parse(excalidrawElements);
+    if (whiteboard.excalidrawElements && excalidrawAPI && fetchedData) {
+      const elements = JSON.parse(whiteboard.excalidrawElements);
       const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
       const appState = excalidrawAPI.getAppState();
 
@@ -246,13 +242,14 @@ const Whiteboard = () => {
       handleRemoteSceneUpdate(reconciledElements);
     }
     //eslint-disable-next-line
-  }, [excalidrawElements, excalidrawAPI, fetchedData]);
+  }, [excalidrawAPI, whiteboard.excalidrawElements, fetchedData]);
 
   // for handling mouse pointer location
   useEffect(() => {
-    if (mousePointerLocation) {
-      const { pointer, button, name, userId, selectedElementIds } =
-        JSON.parse(mousePointerLocation);
+    if (whiteboard.mousePointerLocation) {
+      const { pointer, button, name, userId, selectedElementIds } = JSON.parse(
+        whiteboard.mousePointerLocation,
+      );
 
       const tmp: any = new Map(collaborators);
       const user = tmp.get(userId) ?? {};
@@ -266,26 +263,26 @@ const Whiteboard = () => {
       excalidrawAPI?.updateScene({ collaborators: tmp });
     }
     //eslint-disable-next-line
-  }, [mousePointerLocation]);
+  }, [whiteboard.mousePointerLocation]);
 
   // for handling AppState changes
   // websocket will update changes only if current user isn't presenter
   useEffect(() => {
-    if (excalidrawAPI && whiteboardAppState) {
+    if (excalidrawAPI && whiteboard.whiteboardAppState) {
       const appState: any = {
-        theme: whiteboardAppState.theme,
-        viewBackgroundColor: whiteboardAppState.viewBackgroundColor,
-        zenModeEnabled: whiteboardAppState.zenModeEnabled,
-        gridSize: whiteboardAppState.gridSize,
+        theme: whiteboard.whiteboardAppState.theme,
+        viewBackgroundColor: whiteboard.whiteboardAppState.viewBackgroundColor,
+        zenModeEnabled: whiteboard.whiteboardAppState.zenModeEnabled,
+        gridSize: whiteboard.whiteboardAppState.gridSize,
       };
 
       // if width isn't same then we will avoid changes
       // otherwise in small devices it will be problem.
-      if (currentWhiteboardWidth >= whiteboardAppState.width) {
-        appState.scrollX = whiteboardAppState.scrollX;
-        appState.scrollY = whiteboardAppState.scrollY;
+      if (currentWhiteboardWidth >= whiteboard.whiteboardAppState.width) {
+        appState.scrollX = whiteboard.whiteboardAppState.scrollX;
+        appState.scrollY = whiteboard.whiteboardAppState.scrollY;
         appState.zoom = {
-          value: whiteboardAppState.zoomValue,
+          value: whiteboard.whiteboardAppState.zoomValue,
         };
       }
       excalidrawAPI.updateScene({
@@ -293,42 +290,7 @@ const Whiteboard = () => {
       });
     }
     // eslint-disable-next-line
-  }, [excalidrawAPI, whiteboardAppState]);
-
-  // for handling files
-  useEffect(() => {
-    if (whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
-      const files: Array<IWhiteboardFile> = JSON.parse(
-        whiteboardOfficeFilePagesAndOtherImages,
-      );
-      if (files.length) {
-        const currentPageFiles = files.filter(
-          (file) => file.currentPage === currentPage,
-        );
-        handleExcalidrawAddFiles(currentPageFiles);
-      }
-    }
-    //eslint-disable-next-line
-  }, [whiteboardOfficeFilePagesAndOtherImages, excalidrawAPI, currentPage]);
-
-  // for refreshing in various reason
-  useEffect(() => {
-    const doRefresh = throttle(
-      () => {
-        excalidrawAPI?.refresh();
-        dispatch(doRefreshWhiteboard(0));
-      },
-      1000,
-      { trailing: false },
-    );
-
-    if (refreshWhiteboard > 0) {
-      if (excalidrawAPI) {
-        doRefresh();
-      }
-    }
-    //eslint-disable-next-line
-  }, [refreshWhiteboard]);
+  }, [excalidrawAPI, whiteboard.whiteboardAppState]);
 
   const handleExcalidrawAddFiles = useCallback(
     async (files: Array<IWhiteboardFile>) => {
@@ -403,27 +365,44 @@ const Whiteboard = () => {
     },
     [excalidrawAPI, lastBroadcastOrReceivedSceneVersion],
   );
-
-  const handleRemoteSceneUpdate = (
-    elements: ReconciledElements,
-    { init = false }: { init?: boolean } = {},
-  ) => {
-    if (!elements.length) {
-      return;
+  // for handling files
+  useEffect(() => {
+    if (whiteboard.whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
+      const files: Array<IWhiteboardFile> = JSON.parse(
+        whiteboard.whiteboardOfficeFilePagesAndOtherImages,
+      );
+      if (files.length) {
+        const currentPageFiles = files.filter(
+          (file) => file.currentPage === whiteboard.currentPage,
+        );
+        handleExcalidrawAddFiles(currentPageFiles);
+      }
     }
+    //eslint-disable-next-line
+  }, [
+    excalidrawAPI,
+    whiteboard.whiteboardOfficeFilePagesAndOtherImages,
+    whiteboard.currentPage,
+  ]);
 
-    excalidrawAPI?.updateScene({
-      elements,
-      commitToHistory: init,
-    });
-    setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
+  // for refreshing in various reason
+  useEffect(() => {
+    const doRefresh = throttle(
+      () => {
+        excalidrawAPI?.refresh();
+        dispatch(doRefreshWhiteboard(0));
+      },
+      1000,
+      { trailing: false },
+    );
 
-    // We haven't yet implemented multiplayer undo functionality, so we clear the undo stack
-    // when we receive any messages from another peer. This UX can be pretty rough -- if you
-    // undo, a user makes a change, and then try to redo, your element(s) will be lost. However,
-    // right now we think this is the right tradeoff.
-    excalidrawAPI?.history.clear();
-  };
+    if (whiteboard.refreshWhiteboard > 0) {
+      if (excalidrawAPI) {
+        doRefresh();
+      }
+    }
+    //eslint-disable-next-line
+  }, [whiteboard.refreshWhiteboard]);
 
   const onChange = (
     elements: readonly ExcalidrawElement[],
@@ -478,10 +457,7 @@ const Whiteboard = () => {
     return (
       <>
         {isPresenter && excalidrawAPI ? (
-          <ManageFiles
-            excalidrawAPI={excalidrawAPI}
-            currentPage={currentPage}
-          />
+          <ManageFiles excalidrawAPI={excalidrawAPI} />
         ) : null}
       </>
     );
@@ -496,37 +472,31 @@ const Whiteboard = () => {
     );
   };
 
-  const render = () => {
-    return (
-      <Excalidraw
-        ref={excalidrawRefCallback as any}
-        onChange={onChange}
-        onPointerUpdate={onPointerUpdate}
-        viewModeEnabled={viewModeEnabled}
-        isCollaborating={true}
-        theme={theme}
-        name="plugNmeet whiteboard"
-        UIOptions={{
-          canvasActions: {
-            loadScene: false,
-            export: false,
-            saveAsImage: !currentUser?.isRecorder,
-          },
-        }}
-        autoFocus={true}
-        detectScroll={true}
-        langCode={i18n.languages[0]}
-        renderTopRightUI={renderTopRightUI}
-        renderFooter={renderFooter}
-        libraryReturnUrl=""
-      />
-    );
-  };
-
   return (
     <>
       <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[0]">
-        {render()}
+        <Excalidraw
+          ref={excalidrawRefCallback as any}
+          onChange={onChange}
+          onPointerUpdate={onPointerUpdate}
+          viewModeEnabled={viewModeEnabled}
+          isCollaborating={true}
+          theme={theme}
+          name="plugNmeet whiteboard"
+          UIOptions={{
+            canvasActions: {
+              loadScene: false,
+              export: false,
+              saveAsImage: !currentUser?.isRecorder,
+            },
+          }}
+          autoFocus={true}
+          detectScroll={true}
+          langCode={i18n.languages[0]}
+          renderTopRightUI={renderTopRightUI}
+          renderFooter={renderFooter}
+          libraryReturnUrl=""
+        />
       </div>
     </>
   );

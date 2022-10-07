@@ -14,18 +14,23 @@ import { updateCurrentWhiteboardOfficeFileId } from '../../store/slices/whiteboa
 import { formatStorageKey } from './helpers/fileReader';
 
 interface IManageFilesProps {
-  currentPage: number;
   excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
+const currentPageSelector = createSelector(
+  (state: RootState) => state.whiteboard.currentPage,
+  (currentPage) => currentPage,
+);
 const whiteboardUploadedOfficeFilesSelector = createSelector(
   (state: RootState) => state.whiteboard.whiteboardUploadedOfficeFiles,
   (whiteboardUploadedOfficeFiles) => whiteboardUploadedOfficeFiles,
 );
 
-const ManageFiles = ({ currentPage, excalidrawAPI }: IManageFilesProps) => {
+const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
+  const currentPage = useAppSelector(currentPageSelector);
   const whiteboardUploadedOfficeFiles = useAppSelector(
     whiteboardUploadedOfficeFilesSelector,
   );
