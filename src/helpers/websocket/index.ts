@@ -1,3 +1,5 @@
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
 import { store } from '../../store';
 import { updateIsChatServiceReady } from '../../store/slices/sessionSlice';
 import { handleSystemTypeData } from './handleSystemType';
@@ -7,43 +9,25 @@ import { onAfterOpenConnection } from './handleAfterOpenConnection';
 import { DataMessage, DataMsgType } from '../proto/plugnmeet_datamessage_pb';
 
 let isConnected = false;
-let ws: WebSocket | undefined;
-let connectionInterval: any;
-let reTried = 0;
-let isNormalClose = false;
+let ws: ReconnectingWebSocket;
 
 const createWS = () => {
   const url = getURL();
-  ws = new WebSocket(url);
+  ws = new ReconnectingWebSocket(url, [], {
+    maxRetries: 10,
+    connectionTimeout: 1000,
+  });
   ws.binaryType = 'arraybuffer';
 
   ws.onopen = () => {
     isConnected = true;
     onAfterOpenConnection();
     store.dispatch(updateIsChatServiceReady(true));
-
-    if (connectionInterval) {
-      clearInterval(connectionInterval);
-      connectionInterval = 0;
-      reTried = 0;
-    }
   };
 
   ws.onclose = () => {
     isConnected = false;
     store.dispatch(updateIsChatServiceReady(false));
-
-    if (!connectionInterval && !isNormalClose) {
-      connectionInterval = setInterval(() => {
-        if (reTried > 10) {
-          clearInterval(connectionInterval);
-          reTried = 0;
-        }
-        ws = undefined;
-        createWS();
-        reTried++;
-      }, 2000);
-    }
   };
 
   ws.onerror = () => {
@@ -126,6 +110,5 @@ export const sendWebsocketMessage = (msg) => {
 export const closeWebsocketConnection = () => {
   if (isConnected) {
     ws?.close();
-    isNormalClose = true;
   }
 };
