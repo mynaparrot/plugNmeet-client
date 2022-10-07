@@ -37,7 +37,8 @@
     "room-disconnected-server-shutdown": "সার্ভার শাটডাউন। কোডঃ {{code}}",
     "room-disconnected-participant-removed": "আপনাকে এই সম্মেলন থেকে সরানো হয়েছে। কোড: {{code}}",
     "room-disconnected-room-ended": "রুম থেকে সংযোগ বিচ্ছিন্ন হয়েছে। কোডঃ {{code}}",
-    "room-disconnected-state-mismatch": "State মিলছে না। কোডঃ {{code}}"
+    "room-disconnected-state-mismatch": "State মিলছে না। কোডঃ {{code}}",
+    "your-connection-quality-not-good": "Your connection quality isn't good enough"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
