@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { RemoteParticipant } from 'livekit-client';
 
@@ -43,7 +43,7 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
     //eslint-disable-next-line
   }, [volume, previousVolume]);
 
-  const renderUnmuteIcon = () => {
+  const renderUnmuteIcon = useCallback(() => {
     return (
       <div className="mic mr-2 cursor-pointer">
         <Menu>
@@ -92,9 +92,9 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
         </Menu>
       </div>
     );
-  };
+  }, [volume]);
 
-  const render = () => {
+  const render = useMemo(() => {
     if (participant?.audioTracks) {
       if (participant.isMuted) {
         return (
@@ -116,9 +116,14 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
     }
 
     return null;
-  };
+  }, [
+    remoteParticipant,
+    renderUnmuteIcon,
+    participant?.audioTracks,
+    participant?.isMuted,
+  ]);
 
-  return render();
+  return <>{render}</>;
 };
 
 export default MicIcon;

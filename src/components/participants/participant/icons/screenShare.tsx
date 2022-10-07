@@ -1,28 +1,29 @@
 import React, { useMemo } from 'react';
+
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 
-interface IRaiseHandIconProps {
+interface IScreenShareIconProps {
   userId: string;
 }
-const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
+
+const ScreenShareIcon = ({ userId }: IScreenShareIconProps) => {
   const participant = useAppSelector((state) =>
     participantsSelector.selectById(state, userId),
   );
 
   const render = useMemo(() => {
-    if (participant?.metadata.raised_hand) {
+    if (participant?.screenShareTrack) {
       return (
-        <div className="hand mr-2 cursor-pointer">
-          <i className="pnm-raise-hand text-[#ffbd40] text-[10px]" />
+        <div className="screen-share mr-2 cursor-pointer">
+          <i className="pnm-screen-share secondaryColor text-[10px]" />
         </div>
       );
-    } else {
-      return null;
     }
-  }, [participant?.metadata.raised_hand]);
+    return null;
+  }, [participant?.screenShareTrack]);
 
   return <>{render}</>;
 };
 
-export default RaiseHandIcon;
+export default ScreenShareIcon;

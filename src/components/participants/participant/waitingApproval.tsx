@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
 import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-import { useTranslation } from 'react-i18next';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { toast } from 'react-toastify';
 import {
   ApproveWaitingUsersReq,
   CommonResponse,
@@ -53,7 +54,7 @@ const WaitingApproval = ({
     openRemoveParticipantAlert(userId, 'reject');
   };
 
-  const render = () => {
+  const render = useMemo(() => {
     if (participant?.metadata.wait_for_approval) {
       return (
         <div className="approve-btn-wrap">
@@ -74,9 +75,10 @@ const WaitingApproval = ({
     }
 
     return null;
-  };
+    //eslint-disable-next-line
+  }, [participant?.metadata.wait_for_approval]);
 
-  return render();
+  return <>{render}</>;
 };
 
 export default WaitingApproval;
