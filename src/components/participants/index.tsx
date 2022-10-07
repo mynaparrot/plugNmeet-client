@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Room } from 'livekit-client';
 
@@ -56,7 +56,7 @@ const ParticipantsComponent = ({
     //eslint-disable-next-line
   }, [participants]);
 
-  const render = useCallback(() => {
+  const render = useMemo(() => {
     if (!participantElms.length) {
       return null;
     }
@@ -76,7 +76,7 @@ const ParticipantsComponent = ({
     //eslint-disable-next-line
   }, [participantElms]);
 
-  return render();
+  return <>{render}</>;
 };
 
 export default ParticipantsComponent;
