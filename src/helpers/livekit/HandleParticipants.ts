@@ -3,10 +3,12 @@ import {
   LocalParticipant,
   Participant,
   RemoteParticipant,
+  Track,
 } from 'livekit-client';
 import { toast } from 'react-toastify';
 
 import { store } from '../../store';
+import i18n from '../i18n';
 import {
   addParticipant,
   participantsSelector,
@@ -23,7 +25,6 @@ import {
   updateIsActiveParticipantsPanel,
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
-import i18n from '../i18n';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 
 export default class HandleParticipants {
@@ -70,9 +71,29 @@ export default class HandleParticipants {
   ) => {
     let metadata;
     if (participant.metadata) {
-      metadata = JSON.parse(participant.metadata);
-      this.notificationForWaitingUser(metadata, participant.name);
+      try {
+        metadata = JSON.parse(participant.metadata);
+        this.notificationForWaitingUser(metadata, participant.name);
+      } catch (e) {}
     }
+
+    let videoTracksCount = 0,
+      audioTracksCount = 0,
+      screenShareTrackCount = 0,
+      isMuted = false;
+    participant.getTracks().forEach((t) => {
+      if (t.source === Track.Source.Camera) {
+        videoTracksCount += 1;
+      } else if (t.source === Track.Source.Microphone) {
+        audioTracksCount += 1;
+        isMuted = t.isMuted;
+      } else if (
+        t.source === Track.Source.ScreenShare ||
+        t.source === Track.Source.ScreenShareAudio
+      ) {
+        screenShareTrackCount = 1;
+      }
+    });
 
     store.dispatch(
       addParticipant({
@@ -80,10 +101,10 @@ export default class HandleParticipants {
         userId: participant.identity,
         name: participant.name ?? '',
         metadata: metadata ? metadata : null,
-        audioTracks: participant.audioTracks.size,
-        videoTracks: participant.videoTracks.size,
-        screenShareTrack: 0,
-        isMuted: false,
+        audioTracks: audioTracksCount,
+        videoTracks: videoTracksCount,
+        screenShareTrack: screenShareTrackCount,
+        isMuted: isMuted,
         connectionQuality: participant.connectionQuality,
         isLocal: false,
         joinedAt: participant.joinedAt?.getTime() ?? Date.now(),
@@ -151,10 +172,13 @@ export default class HandleParticipants {
           participant.identity === 'RTMP_BOT'
         )
       ) {
-        toast("Your connection quality isn't good enough", {
-          toastId: 'connection-status',
-          type: 'error',
-        });
+        toast(
+          i18n.t('notifications.your-connection-quality-not-good').toString(),
+          {
+            toastId: 'connection-status',
+            type: 'error',
+          },
+        );
       }
     }
   };
