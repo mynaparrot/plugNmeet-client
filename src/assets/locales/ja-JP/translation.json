@@ -37,7 +37,8 @@
     "room-disconnected-server-shutdown": "Server shutdown. Code: {{code}}",
     "room-disconnected-participant-removed": "You have been removed from this conference. Code: {{code}}",
     "room-disconnected-room-ended": "The room has been closed. Code: {{code}}",
-    "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}"
+    "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
+    "your-connection-quality-not-good": "Your connection quality isn't good enough"
   },
   "room-metadata": {
     "session-recording": "このセッションは録画されています",
