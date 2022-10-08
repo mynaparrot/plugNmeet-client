@@ -6,7 +6,7 @@
   "no": "No",
   "join": "Unirse",
   "share": "Compartir",
-  "version": "Versión: {{pnm_version}}; Construcción: {{build}}",
+  "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Abrir",
   "please-wait": "Espere, por favor...",
   "are-you-sure-to-close": "¿Estás seguro de cerrar?",
