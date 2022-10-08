@@ -48,6 +48,8 @@ import {
   IConnectLivekit,
 } from './types';
 
+const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
+
 export default class ConnectLivekit
   extends EventEmitter
   implements IConnectLivekit
@@ -386,7 +388,7 @@ export default class ConnectLivekit
       });
 
       sendWebsocketMessage(dataMsg.toBinary());
-    }, 5 * 60 * 1000);
+    }, RENEW_TOKEN_FREQUENT);
   };
 
   /**
