@@ -70,6 +70,7 @@ export const VerifyTokenRes = proto3.makeMessageType(
     { no: 2, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "livekit_host", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 4, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 5, name: "server_version", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ],
 );
 

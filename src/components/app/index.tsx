@@ -10,7 +10,7 @@ import MainArea from '../main-area';
 
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-import { addToken } from '../../store/slices/sessionSlice';
+import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import StartupJoinModal from './joinModal';
 import useLivekitConnect, {
   LivekitInfo,
@@ -109,6 +109,7 @@ const App = () => {
         if (res.status && res.livekitHost && res.token) {
           // we'll store token that we received from URL
           dispatch(addToken(params.access_token));
+          dispatch(addServerVersion(res.serverVersion ?? ''));
 
           // for livekit need to use generated token & host
           setLivekitInfo({
