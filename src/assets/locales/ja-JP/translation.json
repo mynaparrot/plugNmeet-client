@@ -6,7 +6,7 @@
   "no": "いいえ",
   "join": "参加",
   "share": "共有",
-  "version": "バージョン: {{pnm_version}}; ビルド: {{build}}",
+  "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Open",
   "please-wait": "Please wait...",
   "are-you-sure-to-close": "Are you sure to close?",
