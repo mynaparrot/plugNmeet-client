@@ -160,6 +160,11 @@ export declare class VerifyTokenRes extends Message<VerifyTokenRes> {
    */
   token?: string;
 
+  /**
+   * @generated from field: optional string server_version = 5;
+   */
+  serverVersion?: string;
+
   constructor(data?: PartialMessage<VerifyTokenRes>);
 
   static readonly runtime: typeof proto3;

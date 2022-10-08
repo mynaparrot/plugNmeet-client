@@ -89,6 +89,9 @@ const sessionSlice = createSlice({
     addToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
     },
+    addServerVersion: (state, action: PayloadAction<string>) => {
+      state.serverVersion = action.payload;
+    },
     toggleStartup: (state, action: PayloadAction<boolean>) => {
       state.isStartup = action.payload;
     },
@@ -148,6 +151,7 @@ const sessionSlice = createSlice({
 
 export const {
   addToken,
+  addServerVersion,
   toggleStartup,
   addCurrentUser,
   addCurrentRoom,
