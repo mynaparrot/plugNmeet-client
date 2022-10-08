@@ -6,7 +6,7 @@
   "no": "取消",
   "join": "加入",
   "share": "分享",
-  "version": "版本: {{pnm_version}}; Build: {{build}}",
+  "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "開啟",
   "please-wait": "請稍候。。。",
   "are-you-sure-to-close": "確定要移除?",
