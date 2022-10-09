@@ -3,6 +3,7 @@ import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import VideoElm from './videoElm';
 import ConnectionStatus from './connectionStatus';
 import MicStatus from './micStatus';
+import PinWebcam from './pinWebcam';
 
 export interface IVideoComponentProps {
   userId: string;
@@ -13,6 +14,7 @@ const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
     return (
       <>
         <div className="status">
+          <PinWebcam userId={userId} />
           <ConnectionStatus userId={userId} />
           <MicStatus userId={userId} />
         </div>

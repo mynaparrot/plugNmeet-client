@@ -33,6 +33,7 @@ const initialState: IRoomSettings = {
     userId: '',
   },
   unreadMsgFrom: [],
+  refreshWebcams: 0,
 };
 
 const roomSettingsSlice = createSlice({
@@ -114,6 +115,9 @@ const roomSettingsSlice = createSlice({
         state.unreadMsgFrom = tmp.filter((id) => id !== action.payload.id);
       }
     },
+    doRefreshWebcams: (state) => {
+      state.refreshWebcams = Date.now();
+    },
   },
 });
 
@@ -136,6 +140,7 @@ export const {
   updateSelectedChatOption,
   updateInitiatePrivateChat,
   updateUnreadMsgFrom,
+  doRefreshWebcams,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

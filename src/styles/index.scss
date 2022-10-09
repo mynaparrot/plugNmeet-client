@@ -405,6 +405,7 @@ code {
   .all-webcam-wrapper
   .video-camera-item
   .connection-status,
+.pin-webcam,
 #main-area.fullWidthMainArea
   .all-webcam-wrapper
   .video-camera-item
@@ -1099,7 +1100,8 @@ button.previous-cam {
     .all-webcam-wrapper
     .all-webcam-wrapper-inner
     .video-camera-item
-    .connection-status {
+    .connection-status,
+  .pin-webcam {
     display: none;
   }
 

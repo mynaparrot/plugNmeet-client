@@ -26,6 +26,7 @@ export interface IRoomSettings {
   selectedChatOption: string;
   initiatePrivateChat: InitiatePrivateChat;
   unreadMsgFrom: Array<string>;
+  refreshWebcams: number;
 }
 
 export interface IMediaDevice {
