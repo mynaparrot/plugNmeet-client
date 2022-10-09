@@ -18,8 +18,7 @@ const ActiveSpeakers = () => {
         return <SpeakerComponent key={speaker.userId} speaker={speaker} />;
       }
     });
-    //eslint-disable-next-line
-  }, [activeSpeakers]);
+  }, [activeSpeakers, participantIds]);
 
   return activeSpeakersElms ? (
     <div className="active-speakers-wrap flex w-full items-center justify-center absolute top-0 left-0 z-[9999]">
