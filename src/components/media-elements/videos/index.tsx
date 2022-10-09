@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import { concat, isEmpty } from 'lodash';
 
+import { RootState, useAppSelector } from '../../../store';
+import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
+import { participantsSelector } from '../../../store/slices/participantSlice';
 import VideosComponentElms, {
   VideoParticipantType,
 } from './videosComponentElms';
@@ -11,19 +14,12 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from '../../../helpers/livekit/types';
-import { RootState, useAppSelector } from '../../../store';
-import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
-import { participantsSelector } from '../../../store/slices/participantSlice';
 
 interface IVideosComponentProps {
   currentConnection: IConnectLivekit;
   isVertical?: boolean;
 }
 
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
-);
 const refreshWebcamsSelector = createSelector(
   (state: RootState) => state.roomSettings.refreshWebcams,
   (refreshWebcams) => refreshWebcams,
@@ -33,11 +29,14 @@ const VideosComponent = ({
   currentConnection,
   isVertical,
 }: IVideosComponentProps) => {
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const participants = useAppSelector(participantsSelector.selectAll);
   const refreshWebcams = useAppSelector(refreshWebcamsSelector);
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
+  const [allParticipants, setAllParticipants] = useState<Array<JSX.Element>>(
+    [],
+  );
+  const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
 
   useEffect(() => {
     if (currentConnection.videoSubscribersMap.size) {
@@ -55,9 +54,9 @@ const VideosComponent = ({
     };
   }, [currentConnection]);
 
-  const [allParticipants, totalNumWebcams] = useMemo(() => {
-    if (!videoSubscribers || !videoSubscribers.size) {
-      return [[], 0];
+  useEffect(() => {
+    if (!videoSubscribers) {
+      return;
     }
 
     let totalNumWebcams = 0;
@@ -122,22 +121,18 @@ const VideosComponent = ({
       otherSubscribers,
     );
 
-    return [allParticipants, totalNumWebcams];
+    setAllParticipants(allParticipants);
+    setTotalNumWebcams(totalNumWebcams);
     //eslint-disable-next-line
   }, [videoSubscribers, refreshWebcams]);
 
-  const videoSubscriberElms = useMemo(() => {
-    return (
-      <VideosComponentElms
-        allParticipants={allParticipants}
-        totalNumWebcams={totalNumWebcams}
-        isVertical={isVertical}
-      />
-    );
-    //eslint-disable-next-line
-  }, [allParticipants, isVertical]);
-
-  return <>{activateWebcamsView ? videoSubscriberElms : null}</>;
+  return (
+    <VideosComponentElms
+      allParticipants={allParticipants}
+      totalNumWebcams={totalNumWebcams}
+      isVertical={isVertical}
+    />
+  );
 };
 
 export default VideosComponent;

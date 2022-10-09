@@ -1,5 +1,4 @@
 import { Participant } from 'livekit-client';
-import { isEqual, clone } from 'lodash';
 
 import { IConnectLivekit } from './types';
 import { store } from '../../store';
@@ -18,7 +17,6 @@ export default class HandleActiveSpeakers {
   private that: IConnectLivekit;
   private lastActiveWebcamChanged: number = Date.now();
   private activeSpeakers: Array<IActiveSpeaker> = [];
-  private previousSpeakers: Array<IActiveSpeaker> = [];
   private interval: any;
 
   constructor(that: IConnectLivekit) {
@@ -70,10 +68,7 @@ export default class HandleActiveSpeakers {
           store.dispatch(removeSpeakers());
         }
       } else {
-        if (!isEqual(this.activeSpeakers, this.previousSpeakers)) {
-          store.dispatch(setAllSpeakers(this.activeSpeakers));
-          this.previousSpeakers = clone(this.activeSpeakers);
-        }
+        store.dispatch(setAllSpeakers(this.activeSpeakers));
       }
     }, ACTIVE_SPEAKER_LIST_CHANGE_DURATION);
   };
