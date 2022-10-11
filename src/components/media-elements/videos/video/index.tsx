@@ -14,9 +14,11 @@ const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
     return (
       <>
         <div className="status">
-          <PinWebcam userId={userId} />
           <ConnectionStatus userId={userId} />
           <MicStatus userId={userId} />
+        </div>
+        <div className="status PinWebcam">
+          <PinWebcam userId={userId} />
         </div>
         <VideoElm track={track} />
       </>

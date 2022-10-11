@@ -458,6 +458,9 @@ code {
 .camera-modules .status {
   @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
 }
+.camera-modules .status.PinWebcam {
+  @apply right-auto left-3 top-3 items-start;
+}
 .camera-modules .status > div {
   @apply rounded-full bg-black/20 p-2 h-5 flex justify-center items-center;
 }
