@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 
@@ -11,7 +11,7 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
     participantsSelector.selectById(state, userId),
   );
 
-  const render = () => {
+  const render = useMemo(() => {
     if (participant?.visibility === 'hidden') {
       return (
         <div className="visibility mr-2 cursor-pointer mt-[2px]">
@@ -21,9 +21,9 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
     }
 
     return null;
-  };
+  }, [participant?.visibility]);
 
-  return render();
+  return <>{render}</>;
 };
 
 export default VisibilityIcon;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
@@ -12,7 +12,7 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
     participantsSelector.selectById(state, userId),
   );
 
-  const render = () => {
+  const render = useMemo(() => {
     if (participant?.videoTracks) {
       return (
         <div className="mic mr-2 cursor-pointer">
@@ -21,9 +21,9 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
       );
     }
     return null;
-  };
+  }, [participant?.videoTracks]);
 
-  return <>{render()}</>;
+  return <>{render}</>;
 };
 
 export default WebcamIcon;

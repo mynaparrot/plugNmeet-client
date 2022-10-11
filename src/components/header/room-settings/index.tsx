@@ -3,13 +3,18 @@ import { createSelector } from '@reduxjs/toolkit';
 import { Transition, Dialog, Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../../store';
+import {
+  RootState,
+  store,
+  useAppDispatch,
+  useAppSelector,
+} from '../../../store';
 import { updateShowRoomSettingsModal } from '../../../store/slices/roomSettingsSlice';
 import DataSavings from './dataSavings';
 import Notification from './notification';
 import ApplicationSettings from './application';
 
-declare const PNM_VERSION: string, BUILD_TIME: string;
+declare const PNM_VERSION: string;
 
 const isShowRoomSettingsModalSelector = createSelector(
   (state: RootState) => state.roomSettings.isShowRoomSettingsModal,
@@ -18,6 +23,7 @@ const isShowRoomSettingsModalSelector = createSelector(
 const RoomSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const serverVersion = store.getState().session.serverVersion;
 
   const isShowRoomSettingsModal = useAppSelector(
     isShowRoomSettingsModalSelector,
@@ -146,9 +152,9 @@ const RoomSettings = () => {
                   <hr />
                   <div className="mt-2">{showTabItems()}</div>
                   <div className="absolute inset-x-0 bottom-0 text-center text-xs dark:text-darkText">
-                    {t('version', {
-                      pnm_version: PNM_VERSION,
-                      build: BUILD_TIME,
+                    {t('plugnmeet-server-client-version', {
+                      server: serverVersion,
+                      client: PNM_VERSION,
                     })}
                   </div>
                 </div>

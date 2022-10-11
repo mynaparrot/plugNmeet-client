@@ -16,11 +16,11 @@ const ListPolls = () => {
     }
   }, [data]);
 
-  const renderPolls = () => {
+  const renderPolls = useMemo(() => {
     return sortedPolls?.map((p) => {
       return <Poll key={p.id} item={p} />;
     });
-  };
+  }, [sortedPolls]);
 
   return (
     <div
@@ -28,7 +28,7 @@ const ListPolls = () => {
       ${isAdmin ? 'h-[calc(100%-48px)]' : 'h-full'}`}
     >
       <div className="polls-list-wrap-inner">
-        {renderPolls()}
+        {renderPolls}
         {isLoading ? (
           <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
             <div className="lds-ripple">

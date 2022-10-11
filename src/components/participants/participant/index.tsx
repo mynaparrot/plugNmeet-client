@@ -10,6 +10,7 @@ import ParticipantName from './name';
 import RaiseHandIcon from './icons/raiseHand';
 import MicIcon from './icons/mic';
 import WebcamIcon from './icons/webcam';
+import ScreenShareIcon from './icons/screenShare';
 import MenuIcon from './icons/menu';
 import { store } from '../../../store';
 import VisibilityIcon from './icons/visibility';
@@ -198,6 +199,7 @@ const ParticipantComponent = ({
             <VisibilityIcon userId={participant.userId} />
             <PresenterIcon userId={participant.userId} />
             <WebcamIcon userId={participant.userId} />
+            <ScreenShareIcon userId={participant.userId} />
             <MicIcon
               userId={participant.userId}
               remoteParticipant={remoteParticipant}

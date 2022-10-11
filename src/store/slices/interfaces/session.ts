@@ -6,6 +6,7 @@ export enum UserDeviceType {
 
 export interface ISession {
   token: string;
+  serverVersion?: string;
   currentUser?: ICurrentUser;
   currentRoom: ICurrentRoom;
   screenSharing: IScreenSharing;
