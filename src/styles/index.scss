@@ -1523,3 +1523,12 @@ aside {
 .portrait-device.is-tablet .excalidraw-wrapper {
   margin-top: 1rem;
 }
+.vertical-webcams {
+  resize: horizontal;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.video-camera-item {
+  resize: both;
+  overflow: auto;
+}
