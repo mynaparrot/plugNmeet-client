@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import { concat, isEmpty } from 'lodash';
 
+import { RootState, useAppSelector } from '../../../store';
+import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
+import { participantsSelector } from '../../../store/slices/participantSlice';
 import VideosComponentElms, {
   VideoParticipantType,
 } from './videosComponentElms';
@@ -11,25 +14,29 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from '../../../helpers/livekit/types';
-import { RootState, useAppSelector } from '../../../store';
-import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
 
 interface IVideosComponentProps {
   currentConnection: IConnectLivekit;
   isVertical?: boolean;
 }
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
+
+const refreshWebcamsSelector = createSelector(
+  (state: RootState) => state.roomSettings.refreshWebcams,
+  (refreshWebcams) => refreshWebcams,
 );
 
 const VideosComponent = ({
   currentConnection,
   isVertical,
 }: IVideosComponentProps) => {
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
+  const participants = useAppSelector(participantsSelector.selectAll);
+  const refreshWebcams = useAppSelector(refreshWebcamsSelector);
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
+  const [allParticipants, setAllParticipants] = useState<Array<JSX.Element>>(
+    [],
+  );
+  const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
 
   useEffect(() => {
     if (currentConnection.videoSubscribersMap.size) {
@@ -47,14 +54,16 @@ const VideosComponent = ({
     };
   }, [currentConnection]);
 
-  const [allParticipants, totalNumWebcams] = useMemo(() => {
-    if (!videoSubscribers || !videoSubscribers.size) {
-      return [[], 0];
+  useEffect(() => {
+    if (!videoSubscribers) {
+      return;
     }
 
     let totalNumWebcams = 0;
     const localSubscribers: Array<JSX.Element> = [];
+    const adminPinSubscribers: Array<JSX.Element> = [];
     const adminSubscribers: Array<JSX.Element> = [];
+    const otherPinSubscribers: Array<JSX.Element> = [];
     const otherSubscribers: Array<JSX.Element> = [];
 
     videoSubscribers.forEach((participant) => {
@@ -65,6 +74,10 @@ const VideosComponent = ({
 
       if (videoTracks.length) {
         let isAdmin = false;
+        const pinWebcam = participants.find(
+          (p) => p.userId === participant.identity && p.pinWebcam,
+        );
+
         if (participant.metadata && !isEmpty(participant.metadata)) {
           const metadata: ICurrentUserMetadata = JSON.parse(
             participant.metadata,
@@ -86,39 +99,40 @@ const VideosComponent = ({
           />
         );
 
-        if (isAdmin) {
+        if (isAdmin && pinWebcam) {
+          adminPinSubscribers.push(elm);
+        } else if (isAdmin) {
           adminSubscribers.push(elm);
+        } else if (pinWebcam) {
+          otherPinSubscribers.push(elm);
+        } else if (participant instanceof LocalParticipant) {
+          localSubscribers.push(elm);
         } else {
-          if (participant instanceof LocalParticipant) {
-            localSubscribers.push(elm);
-          } else {
-            otherSubscribers.push(elm);
-          }
+          otherSubscribers.push(elm);
         }
       }
     });
 
     const allParticipants = concat(
+      adminPinSubscribers,
       adminSubscribers,
+      otherPinSubscribers,
       localSubscribers,
       otherSubscribers,
     );
 
-    return [allParticipants, totalNumWebcams];
-  }, [videoSubscribers]);
-
-  const videoSubscriberElms = useMemo(() => {
-    return (
-      <VideosComponentElms
-        allParticipants={allParticipants}
-        totalNumWebcams={totalNumWebcams}
-        isVertical={isVertical}
-      />
-    );
+    setAllParticipants(allParticipants);
+    setTotalNumWebcams(totalNumWebcams);
     //eslint-disable-next-line
-  }, [allParticipants, isVertical]);
+  }, [videoSubscribers, refreshWebcams]);
 
-  return <>{activateWebcamsView ? videoSubscriberElms : null}</>;
+  return (
+    <VideosComponentElms
+      allParticipants={allParticipants}
+      totalNumWebcams={totalNumWebcams}
+      isVertical={isVertical}
+    />
+  );
 };
 
 export default VideosComponent;

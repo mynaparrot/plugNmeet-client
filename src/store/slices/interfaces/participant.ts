@@ -15,4 +15,5 @@ export interface IParticipant {
   isLocal: boolean;
   joinedAt: number;
   visibility: string;
+  pinWebcam?: boolean;
 }

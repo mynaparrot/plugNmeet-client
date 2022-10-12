@@ -175,15 +175,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     ],
   );
 
-  const videoElms = useMemo(() => {
-    return (
-      <VideosComponent
-        currentConnection={currentConnection}
-        isVertical={showVerticalVideoView}
-      />
-    );
-  }, [currentConnection, showVerticalVideoView]);
-
   const cssClasses = useMemo(() => {
     const cssClasses: Array<string> = [];
     if (shouldShow('screen_share')) {
@@ -207,7 +198,12 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   return (
     <>
       <div className={cssClasses}>
-        {videoElms}
+        {activateWebcamsView ? (
+          <VideosComponent
+            currentConnection={currentConnection}
+            isVertical={showVerticalVideoView}
+          />
+        ) : null}
         {shouldShow('screen_share') ? (
           <ScreenShareElements currentConnection={currentConnection} />
         ) : null}
