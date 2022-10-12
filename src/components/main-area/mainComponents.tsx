@@ -87,12 +87,12 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [currentConnection]);
 
-  useEffect(() => {
-    if (isActiveDisplayExternalLink || isActiveExternalMediaPlayer) {
-      dispatch(updateIsActiveSharedNotePad(false));
-      dispatch(updateIsActiveWhiteboard(false));
-    }
-  }, [isActiveExternalMediaPlayer, isActiveDisplayExternalLink, dispatch]);
+  // useEffect(() => {
+  //   if (isActiveDisplayExternalLink || isActiveExternalMediaPlayer) {
+  //     dispatch(updateIsActiveSharedNotePad(false));
+  //     dispatch(updateIsActiveWhiteboard(false));
+  //   }
+  // }, [isActiveExternalMediaPlayer, isActiveDisplayExternalLink, dispatch]);
 
   useEffect(() => {
     if (
@@ -140,15 +140,15 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       } else if (type === 'shared_notepad') {
         return (
           !isActiveScreenSharing &&
-          !isActiveExternalMediaPlayer &&
-          !isActiveDisplayExternalLink &&
+          // !isActiveExternalMediaPlayer &&
+          // !isActiveDisplayExternalLink &&
           isActiveSharedNotePad
         );
       } else if (type === 'whiteboard') {
         return (
           !isActiveScreenSharing &&
-          !isActiveExternalMediaPlayer &&
-          !isActiveDisplayExternalLink &&
+          // !isActiveExternalMediaPlayer &&
+          // !isActiveDisplayExternalLink &&
           isActiveWhiteboard
         );
       } else if (type === 'external-media-player') {
