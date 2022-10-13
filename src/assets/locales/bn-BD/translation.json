@@ -6,7 +6,7 @@
   "no": "না",
   "join": "যুক্ত হোন",
   "share": "শেয়ার করুন",
-  "version": "ভার্সন: {{pnm_version}}; বিল্ড: {{build}}",
+  "plugnmeet-server-client-version": "সার্ভারঃ v{{server}}; ক্লাইন্টঃ v{{client}}",
   "open": "খুলুন",
   "please-wait": "দয়া করে অপেক্ষা করুন...",
   "are-you-sure-to-close": "আপনি কি বন্ধ করবেন?",
@@ -19,8 +19,8 @@
     "recording-started": "রেকর্ডিং শুরু  হয়েছে",
     "recording-ended": "রেকর্ডিং শেষ হয়েছে",
     "recording-ended-with-error": "সমস্যাসহ রেকর্ডিং শেষ হয়েছে",
-    "local-recording-started": "{{name}} লোকাল রেকর্ডিং শুরু করেছেন",
-    "local-recording-ended": "{{name}} লোকাল রেকর্ডিং শেষ করেছেন",
+    "local-recording-started": "{{name}} লোকাল রেকর্ডিং শুরু করেছেন।",
+    "local-recording-ended": "{{name}} লোকাল রেকর্ডিং শেষ করেছেন।",
     "rtmp-started": "RTMP চালু হয়েছে",
     "rtmp-ended": "RTMP শেষ হয়েছে",
     "rtmp-ended-with-error": "RTMP সমস্যাসহ শেষ হয়েছে",
@@ -37,7 +37,8 @@
     "room-disconnected-server-shutdown": "সার্ভার শাটডাউন। কোডঃ {{code}}",
     "room-disconnected-participant-removed": "আপনাকে এই সম্মেলন থেকে সরানো হয়েছে। কোড: {{code}}",
     "room-disconnected-room-ended": "রুম থেকে সংযোগ বিচ্ছিন্ন হয়েছে। কোডঃ {{code}}",
-    "room-disconnected-state-mismatch": "State মিলছে না। কোডঃ {{code}}"
+    "room-disconnected-state-mismatch": "State মিলছে না। কোডঃ {{code}}",
+    "your-connection-quality-not-good": "আপনার ইন্টারনেট সংযোগের মান ভালো না"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
@@ -71,9 +72,9 @@
       "medium": "মধ্যবর্তী",
       "low": "নিম্ন",
       "enable-dark-theme": "অন্ধকার থিম চালু করুন",
-      "video-object-fit": "Video object fit",
-      "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit": "ভিডিও object fit",
+      "video-object-fit-cover": "কভার",
+      "video-object-fit-contain": "অন্তর্ভুক্ত"
     },
     "keyboard-shortcuts": {
       "title": "কীবোর্ড শর্টকাট",

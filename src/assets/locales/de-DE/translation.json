@@ -6,7 +6,7 @@
   "no": "Nein",
   "join": "Beitreten",
   "share": "Teilen",
-  "version": "Version: {{pnm_version}}; Build: {{build}}",
+  "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Öffnen",
   "please-wait": "Bitte warten...",
   "are-you-sure-to-close": "Möchten Sie wirklich schließen?",
@@ -37,7 +37,8 @@
     "room-disconnected-server-shutdown": "Server shutdown. Code: {{code}}",
     "room-disconnected-participant-removed": "Sie wurden aus dieser Konferenz entfernt. Code: {{code}}",
     "room-disconnected-room-ended": "Der Raum wurde geschlossen. Code: {{code}}",
-    "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}"
+    "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
+    "your-connection-quality-not-good": "Your connection quality isn't good enough"
   },
   "room-metadata": {
     "session-recording": "Diese Sitzung wird aufgezeichnet",
