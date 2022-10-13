@@ -6,7 +6,7 @@
   "no": "না",
   "join": "যুক্ত হোন",
   "share": "শেয়ার করুন",
-  "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
+  "plugnmeet-server-client-version": "সার্ভারঃ v{{server}}; ক্লাইন্টঃ v{{client}}",
   "open": "খুলুন",
   "please-wait": "দয়া করে অপেক্ষা করুন...",
   "are-you-sure-to-close": "আপনি কি বন্ধ করবেন?",
