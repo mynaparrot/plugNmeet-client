@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
 import AudioElements from '../media-elements/audios';
 import SharedNotepadElement from '../shared-notepad';
@@ -15,8 +15,8 @@ import {
   IConnectLivekit,
 } from '../../helpers/livekit/types';
 import {
-  updateIsActiveSharedNotePad,
-  updateIsActiveWhiteboard,
+  updateIsActiveChatPanel,
+  updateIsActiveParticipantsPanel,
 } from '../../store/slices/bottomIconsActivitySlice';
 
 interface IMainComponentsProps {
@@ -57,6 +57,7 @@ const activateWebcamsViewSelector = createSelector(
 
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const isActiveScreenSharing = useAppSelector(isActiveScreenSharingSelector);
   const activeScreenSharingView = useAppSelector(
@@ -86,13 +87,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       );
     };
   }, [currentConnection]);
-
-  // useEffect(() => {
-  //   if (isActiveDisplayExternalLink || isActiveExternalMediaPlayer) {
-  //     dispatch(updateIsActiveSharedNotePad(false));
-  //     dispatch(updateIsActiveWhiteboard(false));
-  //   }
-  // }, [isActiveExternalMediaPlayer, isActiveDisplayExternalLink, dispatch]);
 
   useEffect(() => {
     if (
@@ -133,46 +127,102 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
+  const notepadElm = useMemo(() => {
+    let classNames = 'hidden';
+    if (activeScreenSharingView && isActiveScreenSharing) {
+      classNames = 'hidden';
+    } else if (isActiveSharedNotePad) {
+      dispatch(updateIsActiveParticipantsPanel(false));
+      classNames = 'w-full';
+    }
+
+    return (
+      <div className={classNames}>
+        <SharedNotepadElement />
+      </div>
+    );
+  }, [
+    dispatch,
+    activeScreenSharingView,
+    isActiveScreenSharing,
+    isActiveSharedNotePad,
+  ]);
+
+  // we can't disable to show both external player & link.
+  // So, external-media-player will be first priority
+  const externalMediaPlayerElm = useMemo(() => {
+    let classNames = 'hidden';
+    if (
+      (activeScreenSharingView && isActiveScreenSharing) ||
+      isActiveWhiteboard ||
+      isActiveSharedNotePad
+    ) {
+      classNames = 'hidden';
+    } else if (isActiveExternalMediaPlayer) {
+      if (!isRecorder) {
+        dispatch(updateIsActiveChatPanel(false));
+        dispatch(updateIsActiveParticipantsPanel(false));
+      }
+      classNames = 'w-full';
+    }
+
+    return (
+      <div className={classNames}>
+        <ExternalMediaPlayer />
+      </div>
+    );
+    //eslint-disable-next-line
+  }, [
+    activeScreenSharingView,
+    isActiveScreenSharing,
+    isActiveSharedNotePad,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+  ]);
+
+  const displayExternalLinkElm = useMemo(() => {
+    let classNames = 'hidden';
+    if (
+      (activeScreenSharingView && isActiveScreenSharing) ||
+      isActiveWhiteboard ||
+      isActiveSharedNotePad ||
+      isActiveExternalMediaPlayer
+    ) {
+      classNames = 'hidden';
+    } else if (isActiveDisplayExternalLink) {
+      if (!isRecorder) {
+        dispatch(updateIsActiveChatPanel(false));
+        dispatch(updateIsActiveParticipantsPanel(false));
+      }
+      classNames = 'w-full';
+    }
+
+    return (
+      <div className={classNames}>
+        <DisplayExternalLink />
+      </div>
+    );
+    //eslint-disable-next-line
+  }, [
+    activeScreenSharingView,
+    isActiveScreenSharing,
+    isActiveSharedNotePad,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+  ]);
+
   const shouldShow = useCallback(
     (type: string) => {
       if (type === 'screen_share') {
         return activeScreenSharingView && isActiveScreenSharing;
-      } else if (type === 'shared_notepad') {
-        return (
-          !isActiveScreenSharing &&
-          // !isActiveExternalMediaPlayer &&
-          // !isActiveDisplayExternalLink &&
-          isActiveSharedNotePad
-        );
       } else if (type === 'whiteboard') {
-        return (
-          !isActiveScreenSharing &&
-          // !isActiveExternalMediaPlayer &&
-          // !isActiveDisplayExternalLink &&
-          isActiveWhiteboard
-        );
-      } else if (type === 'external-media-player') {
-        // we can't disable to show both external player & link.
-        // So, external-media-player will be first priority
-        return !isActiveScreenSharing && isActiveExternalMediaPlayer;
-      } else if (type === 'display-external-link') {
-        return (
-          !isActiveScreenSharing &&
-          !isActiveExternalMediaPlayer &&
-          isActiveDisplayExternalLink
-        );
+        return !isActiveScreenSharing && isActiveWhiteboard;
       }
 
       return false;
     },
-    [
-      activeScreenSharingView,
-      isActiveScreenSharing,
-      isActiveSharedNotePad,
-      isActiveWhiteboard,
-      isActiveExternalMediaPlayer,
-      isActiveDisplayExternalLink,
-    ],
+    [activeScreenSharingView, isActiveScreenSharing, isActiveWhiteboard],
   );
 
   const cssClasses = useMemo(() => {
@@ -204,13 +254,19 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
             isVertical={showVerticalVideoView}
           />
         ) : null}
-        {shouldShow('screen_share') ? (
-          <ScreenShareElements currentConnection={currentConnection} />
-        ) : null}
-        {shouldShow('shared_notepad') ? <SharedNotepadElement /> : null}
-        {shouldShow('whiteboard') ? <Whiteboard /> : null}
-        {shouldShow('external-media-player') ? <ExternalMediaPlayer /> : null}
-        {shouldShow('display-external-link') ? <DisplayExternalLink /> : null}
+        {
+          // for screenShare, it's better to null not hide
+          shouldShow('screen_share') ? (
+            <ScreenShareElements currentConnection={currentConnection} />
+          ) : null
+        }
+        {
+          // for whiteboard, it's better to null not hide
+          shouldShow('whiteboard') ? <Whiteboard /> : null
+        }
+        {notepadElm}
+        {externalMediaPlayerElm}
+        {displayExternalLinkElm}
       </div>
       <AudioElements currentConnection={currentConnection} />
     </>

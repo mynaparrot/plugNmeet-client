@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
+import { RootState, store, useAppSelector } from '../../store';
 
 const sharedNotepadFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -20,17 +19,12 @@ const themeSelector = createSelector(
 );
 
 const SharedNotepadElement = () => {
-  const dispatch = useAppDispatch();
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
-  const [url, setUrl] = useState<string>();
+  const [url, setUrl] = useState<string | null>();
   const theme = useAppSelector(themeSelector);
-
-  useEffect(() => {
-    dispatch(updateIsActiveParticipantsPanel(false));
-  }, [dispatch]);
 
   useEffect(() => {
     if (sharedNotepadFeatures?.is_active && sharedNotepadFeatures.host) {
@@ -59,6 +53,8 @@ const SharedNotepadElement = () => {
       }
 
       setUrl(url);
+    } else {
+      setUrl(null);
     }
     //eslint-disable-next-line
   }, [sharedNotepadFeatures, lockSharedNotepad, theme]);
