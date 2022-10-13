@@ -44,7 +44,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     if (preScreenWidth && preScreenWidth !== screenWidth) {
       dispatch(updateScreenWidth(window.innerWidth));
       if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
-        dispatch(doRefreshWhiteboard(Date.now()));
+        dispatch(doRefreshWhiteboard());
       }
     }
     //eslint-disable-next-line

@@ -14,7 +14,7 @@ import {
 } from '@excalidraw/excalidraw/types/types';
 
 import './style.scss';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   ReconciledElements,
@@ -40,7 +40,6 @@ import {
   displaySavedPageData,
   savePageData,
 } from './helpers/utils';
-import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 const whiteboardSelector = createSelector(
   (state: RootState) => state.whiteboard,
@@ -67,7 +66,6 @@ const Whiteboard = () => {
   const collaborators = new Map<string, Collaborator>();
 
   const { i18n } = useTranslation();
-  const dispatch = useAppDispatch();
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
@@ -413,7 +411,6 @@ const Whiteboard = () => {
     const doRefresh = throttle(
       () => {
         excalidrawAPI?.refresh();
-        dispatch(doRefreshWhiteboard(0));
       },
       1000,
       { trailing: false },

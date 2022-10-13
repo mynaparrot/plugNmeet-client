@@ -112,8 +112,8 @@ const whiteboardSlice = createSlice({
       // update total page
       state.totalPages = action.payload.totalPages;
     },
-    doRefreshWhiteboard: (state, action: PayloadAction<number>) => {
-      state.refreshWhiteboard = action.payload;
+    doRefreshWhiteboard: (state) => {
+      state.refreshWhiteboard = Date.now();
     },
   },
 });

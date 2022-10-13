@@ -119,7 +119,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (isActiveWhiteboard) {
-        dispatch(doRefreshWhiteboard(Date.now()));
+        dispatch(doRefreshWhiteboard());
       }
     }, 1000);
     return () => {
