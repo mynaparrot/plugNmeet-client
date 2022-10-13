@@ -27,7 +27,7 @@
     "i18next": "21.10.0",
     "i18next-browser-languagedetector": "6.1.8",
     "i18next-http-backend": "1.4.4",
-    "livekit-client": "1.4.2",
+    "livekit-client": "1.4.3",
     "lodash": "4.17.21",
     "mobile-detect": "1.4.5",
     "react": "18.2.0",
