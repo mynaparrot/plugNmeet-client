@@ -24,6 +24,10 @@ const languages = [
     text: 'Italiano',
   },
   {
+    code: 'tr-TR',
+    text: 'Türkçe',
+  },
+  {
     code: 'ar-SA',
     text: 'اللغة العربية',
   },
