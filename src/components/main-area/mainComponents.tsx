@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
@@ -127,6 +127,11 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     };
   }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
+  const whiteboardElm = useMemo(() => {
+    // for whiteboard, it's better to null not hide
+    return !isActiveScreenSharing && isActiveWhiteboard ? <Whiteboard /> : null;
+  }, [isActiveScreenSharing, isActiveWhiteboard]);
+
   const notepadElm = useMemo(() => {
     let classNames = 'hidden';
     if (activeScreenSharingView && isActiveScreenSharing) {
@@ -212,22 +217,9 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     isActiveDisplayExternalLink,
   ]);
 
-  const shouldShow = useCallback(
-    (type: string) => {
-      if (type === 'screen_share') {
-        return activeScreenSharingView && isActiveScreenSharing;
-      } else if (type === 'whiteboard') {
-        return !isActiveScreenSharing && isActiveWhiteboard;
-      }
-
-      return false;
-    },
-    [activeScreenSharingView, isActiveScreenSharing, isActiveWhiteboard],
-  );
-
   const cssClasses = useMemo(() => {
     const cssClasses: Array<string> = [];
-    if (shouldShow('screen_share')) {
+    if (activeScreenSharingView && isActiveScreenSharing) {
       cssClasses.push(
         'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
       );
@@ -243,7 +235,12 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       }
     }
     return cssClasses.join(' ');
-  }, [shouldShow, showVideoElms, showVerticalVideoView]);
+  }, [
+    activeScreenSharingView,
+    isActiveScreenSharing,
+    showVideoElms,
+    showVerticalVideoView,
+  ]);
 
   return (
     <>
@@ -254,16 +251,10 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
             isVertical={showVerticalVideoView}
           />
         ) : null}
-        {
-          // for screenShare, it's better to null not hide
-          shouldShow('screen_share') ? (
-            <ScreenShareElements currentConnection={currentConnection} />
-          ) : null
-        }
-        {
-          // for whiteboard, it's better to null not hide
-          shouldShow('whiteboard') ? <Whiteboard /> : null
-        }
+        {activeScreenSharingView ? (
+          <ScreenShareElements currentConnection={currentConnection} />
+        ) : null}
+        {whiteboardElm}
         {notepadElm}
         {externalMediaPlayerElm}
         {displayExternalLinkElm}
