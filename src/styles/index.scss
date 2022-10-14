@@ -887,10 +887,15 @@ button.previous-cam {
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
+.landscape-device.is-mobile #main-area.fullWidthMainArea .share-screen-wrapper {
+  padding-left: 140px;
+  height: 100%;
+}
 .landscape-device.is-mobile
   #main-area.fullWidthMainArea
-  .share-screen-wrapper:has(.vertical-webcams) {
-  padding-left: 140px;
+  .share-screen-wrapper
+  .screen-share-video {
+  padding: 0 !important;
 }
 @media only screen and (max-width: 980px) and (max-height: 450px) {
   .landscape-device
