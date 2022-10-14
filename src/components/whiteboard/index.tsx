@@ -90,12 +90,14 @@ const Whiteboard = () => {
     useState<number>(0);
 
   useEffect(() => {
+    const s = store.getState();
+    const isPresenter = s.session.currentUser?.metadata?.is_presenter;
+
     if (excalidrawAPI) {
-      setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
       if (isPresenter) {
         // if presenter then we'll fetch storage to display after initialize excalidraw
         setTimeout(() => {
-          const currentPage = store.getState().whiteboard.currentPage;
+          const currentPage = s.whiteboard.currentPage;
           displaySavedPageData(excalidrawAPI, isPresenter, currentPage);
         }, 100);
       }
@@ -109,8 +111,6 @@ const Whiteboard = () => {
     return () => {
       if (excalidrawAPI) {
         // during unmount we can store curren state
-        const s = store.getState();
-        const isPresenter = s.session.currentUser?.metadata?.is_presenter;
         if (isPresenter) {
           const lastPage = s.whiteboard.currentPage;
           savePageData(excalidrawAPI, lastPage);
@@ -410,7 +410,10 @@ const Whiteboard = () => {
   useEffect(() => {
     const doRefresh = throttle(
       () => {
-        excalidrawAPI?.refresh();
+        if (excalidrawAPI) {
+          excalidrawAPI.refresh();
+          setCurrentWhiteboardWidth(excalidrawAPI.getAppState().width);
+        }
       },
       1000,
       { trailing: false },
