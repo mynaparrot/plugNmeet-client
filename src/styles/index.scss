@@ -905,6 +905,25 @@ button.previous-cam {
   width: 100%;
   padding: 0 10px;
 }
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .excalidraw-wrapper,
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .notepad-wrapper,
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .externalMediaPlayerWrapper,
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .external-display-link-wrapper {
+  height: calc(100% - 120px);
+  margin-top: 10px;
+}
 @media only screen and (max-width: 980px) and (max-height: 450px) {
   .landscape-device
     #main-area.fullWidthMainArea
