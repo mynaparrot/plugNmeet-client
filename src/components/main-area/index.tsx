@@ -91,6 +91,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   }, [dispatch]);
 
   useEffect(() => {
+    setIsActiveScreenShare(currentConnection.screenShareTracksMap.size > 0);
     currentConnection.on(
       CurrentConnectionEvents.ScreenShareStatus,
       setIsActiveScreenShare,
