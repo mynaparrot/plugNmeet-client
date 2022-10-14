@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
-import {
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
-} from '../../store/slices/bottomIconsActivitySlice';
+import { RootState, useAppSelector } from '../../store';
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
@@ -23,13 +19,7 @@ const linkSelector = createSelector(
 const DisplayExternalLink = () => {
   const link = useAppSelector(linkSelector);
   const isActive = useAppSelector(isActiveSelector);
-  const dispatch = useAppDispatch();
   const [loaded, setLoaded] = useState<boolean>();
-
-  useEffect(() => {
-    dispatch(updateIsActiveChatPanel(false));
-    dispatch(updateIsActiveParticipantsPanel(false));
-  }, [dispatch]);
 
   const onLoad = () => {
     setLoaded(true);

@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { resetExternalMediaPlayer } from '../../store/slices/externalMediaPlayer';
-import {
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
-} from '../../store/slices/bottomIconsActivitySlice';
 import VideoJsPlayerComponent from './video-js';
 import ReactPlayerComponent from './reactPlayerComponent';
 
@@ -45,21 +41,12 @@ const ExternalMediaPlayer = () => {
 
   const isPresenter = useAppSelector(isPresenterSelector);
   const dispatch = useAppDispatch();
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const AUDIO_EXTENSIONS =
     /\.(m4a|m4b|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx)($|\?)/i;
   const VIDEO_EXTENSIONS = /\.(mp4|og[gv]|webm|mov|m4v)(#t=[,\d+]+)?($|\?)/i;
   const HLS_EXTENSIONS = /\.(m3u8)($|\?)/i;
   const DASH_EXTENSIONS = /\.(mpd)($|\?)/i;
-
-  useEffect(() => {
-    if (!isRecorder) {
-      dispatch(updateIsActiveChatPanel(false));
-      dispatch(updateIsActiveParticipantsPanel(false));
-    }
-    //eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     if (playBackUrl) {

@@ -887,6 +887,43 @@ button.previous-cam {
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
+.landscape-device.is-mobile #main-area.fullWidthMainArea .share-screen-wrapper {
+  padding-left: 140px;
+  height: 100%;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .share-screen-wrapper
+  .screen-share-video {
+  padding: 0 !important;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .share-screen-wrapper
+  .screen-share-video
+  video.video-player {
+  width: 100%;
+  padding: 0 10px;
+}
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .excalidraw-wrapper,
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .notepad-wrapper,
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .externalMediaPlayerWrapper,
+.portrait-device.is-mobile
+  #main-area.fullWidthMainArea
+  .verticalsWebcamsActivated
+  .external-display-link-wrapper {
+  height: calc(100% - 120px);
+  margin-top: 10px;
+}
 @media only screen and (max-width: 980px) and (max-height: 450px) {
   .landscape-device
     #main-area.fullWidthMainArea

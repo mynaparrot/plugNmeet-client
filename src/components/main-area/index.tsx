@@ -91,6 +91,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   }, [dispatch]);
 
   useEffect(() => {
+    setIsActiveScreenShare(currentConnection.screenShareTracksMap.size > 0);
     currentConnection.on(
       CurrentConnectionEvents.ScreenShareStatus,
       setIsActiveScreenShare,
@@ -163,7 +164,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
     );
   }, [isActiveParticipantsPanel, currentConnection]);
 
-  const renderMedialElms = useMemo(() => {
+  const renderMainComponentElms = useMemo(() => {
     return <MainComponents currentConnection={currentConnection} />;
   }, [currentConnection]);
 
@@ -212,7 +213,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
 
         <div className="middle-area relative flex-auto">
           <ActiveSpeakers />
-          {renderMedialElms}
+          {renderMainComponentElms}
         </div>
 
         {renderRightPanel}
