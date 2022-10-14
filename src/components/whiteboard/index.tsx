@@ -109,12 +109,9 @@ const Whiteboard = () => {
     }
 
     return () => {
-      if (excalidrawAPI) {
-        // during unmount we can store curren state
-        if (isPresenter) {
-          const lastPage = s.whiteboard.currentPage;
-          savePageData(excalidrawAPI, lastPage);
-        }
+      if (excalidrawAPI && isPresenter) {
+        const lastPage = s.whiteboard.currentPage;
+        savePageData(excalidrawAPI, lastPage);
       }
     };
     //eslint-disable-next-line
