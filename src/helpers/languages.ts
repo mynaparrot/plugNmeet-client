@@ -40,6 +40,10 @@ const languages = [
     text: '日本語',
   },
   {
+    code: 'uk-UA',
+    text: 'Українська',
+  },
+  {
     code: 'zh-CN',
     text: '简体中文',
   },
