@@ -212,7 +212,13 @@ const MenusIcon = () => {
 
   const toggleExternalMediaPlayer = async () => {
     if (!isActiveExternalMediaPlayer) {
-      dispatch(updateShowExternalMediaPlayerModal(true));
+      if (isActiveDisplayExternalLink) {
+        toast(t('notifications.need-to-disable-display-external-link'), {
+          type: 'error',
+        });
+      } else {
+        dispatch(updateShowExternalMediaPlayerModal(true));
+      }
       return;
     }
 
@@ -246,7 +252,13 @@ const MenusIcon = () => {
 
   const toggleDisplayExternalLinkModal = async () => {
     if (!isActiveDisplayExternalLink) {
-      dispatch(updateDisplayExternalLinkRoomModal(true));
+      if (isActiveExternalMediaPlayer) {
+        toast(t('notifications.need-to-disable-external-media-player'), {
+          type: 'error',
+        });
+      } else {
+        dispatch(updateDisplayExternalLinkRoomModal(true));
+      }
       return;
     }
     const body = new ExternalDisplayLinkReq({
