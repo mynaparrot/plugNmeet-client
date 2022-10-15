@@ -38,7 +38,9 @@
     "room-disconnected-participant-removed": "Вас вилучено з цієї конференції. Код: {{code}}",
     "room-disconnected-room-ended": "Сесію закрито. Код: {{code}}",
     "room-disconnected-state-mismatch": "Невідповідність стану. Код: {{code}}",
-    "your-connection-quality-not-good": "Якість з’єднання недостатньо висока"
+    "your-connection-quality-not-good": "Якість з’єднання недостатньо висока",
+    "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
   },
   "room-metadata": {
     "session-recording": "Цей сеанс записується",
@@ -213,7 +215,7 @@
       "start-external-media-player": "Ввімкнути медіаплеєр",
       "stop-external-media-player": "Вимкнути медіаплеєр",
       "manage-waiting-room": "Керувати залом очікування",
-      "manage-breakout-room": "Керувати кімнатою підгрупи",
+      "manage-breakout-room": "Керувати підгрупою",
       "start-display-external-link": "Зовнішнє посилання",
       "stop-display-external-link": "Вимк. зовнішнє посилання"
     },
@@ -267,7 +269,7 @@
     "page": "Сторінка {{count}}",
     "converting": "Зачекайте, триває перетворення файлу",
     "file-ready": "Файл готовий",
-    "upload-file": "Завантажити файл",
+    "upload-file": "Завантажити",
     "manage-files": "Файли",
     "upload-image": "Зображення"
   },
@@ -312,7 +314,7 @@
     "total": "Усього"
   },
   "breakout-room": {
-    "modal-title": "Керуйте кімнатами підгруп",
+    "modal-title": "Керувати підгрупами",
     "num-rooms": "Кількість кімнат",
     "duration": "Тривалість (хв)",
     "welcome-msg": "Привітання",
