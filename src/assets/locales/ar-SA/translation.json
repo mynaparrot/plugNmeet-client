@@ -38,7 +38,9 @@
     "room-disconnected-participant-removed": "لقد تمت إزالتك من هذا المؤتمر. الرمز: {{code}}",
     "room-disconnected-room-ended": "تم إغلاق الغرفة. الكود: {{code}}",
     "room-disconnected-state-mismatch": "عدم تطابق. الرمز: {{code}}",
-    "your-connection-quality-not-good": "Your connection quality isn't good enough"
+    "your-connection-quality-not-good": "Your connection quality isn't good enough",
+    "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
   },
   "room-metadata": {
     "session-recording": "يجري تسجيل هذه الجلسة",
