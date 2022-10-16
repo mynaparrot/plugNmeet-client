@@ -38,7 +38,9 @@
     "room-disconnected-participant-removed": "আপনাকে এই সম্মেলন থেকে সরানো হয়েছে। কোড: {{code}}",
     "room-disconnected-room-ended": "রুম থেকে সংযোগ বিচ্ছিন্ন হয়েছে। কোডঃ {{code}}",
     "room-disconnected-state-mismatch": "State মিলছে না। কোডঃ {{code}}",
-    "your-connection-quality-not-good": "আপনার ইন্টারনেট সংযোগের মান ভালো না"
+    "your-connection-quality-not-good": "আপনার ইন্টারনেট সংযোগের মান ভালো না",
+    "need-to-disable-display-external-link": "ডিসপ্লে এক্সটারনাল লিংক চালু আছে। এক্সটার্নাল মিডিয়া প্লেয়ার চালু করার আগে এটি বন্ধ করুন।",
+    "need-to-disable-external-media-player": "এক্সটার্নাল মিডিয়া প্লেয়ার চালু আছে। ডিসপ্লে এক্সটার্নাল লিংক চালু করার আগে এটি বন্ধ করুন।"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",

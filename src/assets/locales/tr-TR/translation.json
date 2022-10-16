@@ -38,7 +38,9 @@
     "room-disconnected-participant-removed": "Bu konferanstan çıkarıldınız. Kod: {{code}}",
     "room-disconnected-room-ended": "Oda kapatıldı. Kod: {{code}}",
     "room-disconnected-state-mismatch": "Durum uyuşmazlığı. Kod: {{code}}",
-    "your-connection-quality-not-good": "Bağlantı kaliteniz yeterince iyi değil"
+    "your-connection-quality-not-good": "Bağlantı kaliteniz yeterince iyi değil",
+    "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
   },
   "room-metadata": {
     "session-recording": "Bu oturum kaydediliyor",
