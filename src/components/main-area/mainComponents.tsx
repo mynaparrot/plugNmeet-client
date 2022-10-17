@@ -225,11 +225,17 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   ]);
 
   const cssClasses = useMemo(() => {
-    const cssClasses: Array<string> = [];
+    let cssClasses: Array<string> = [];
     if (activeScreenSharingView && isActiveScreenShare) {
-      cssClasses.push(
-        'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
-      );
+      if (showVideoElms && showVerticalVideoView) {
+        cssClasses = [
+          'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running verticalsWebcamsActivated',
+        ];
+      } else {
+        cssClasses = [
+          'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
+        ];
+      }
     } else {
       if (showVideoElms && !showVerticalVideoView) {
         cssClasses.push('h-full');

@@ -335,9 +335,9 @@ code {
   padding-left: 260px;
 }
 
-#main-area.fullWidthMainArea.showScreenShare .all-webcam-wrapper {
-  position: relative;
-}
+// #main-area.fullWidthMainArea.showScreenShare .all-webcam-wrapper {
+//   position: relative;
+// }
 
 #main-area.hideParticipantsPanel.showScreenShare
   .all-webcam-wrapper.total-cam-0 {
@@ -885,12 +885,9 @@ button.previous-cam {
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
-
 .landscape-device.is-mobile #main-area.fullWidthMainArea .share-screen-wrapper {
-  padding-left: 140px;
   height: 100%;
 }
-
 .landscape-device.is-mobile
   #main-area.fullWidthMainArea
   .share-screen-wrapper
@@ -1401,7 +1398,14 @@ aside {
 
 @media screen and (min-width: 1800px) {
   #main-area.fullWidthMainArea .all-webcam-wrapper {
-    width: 330px;
+    width: 440px;
+  }
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    padding-left: 440px;
+  }
+  #main-left-panel {
+    width: 440px;
   }
 }
 
