@@ -1586,3 +1586,66 @@ aside {
 .portrait-device.is-tablet .excalidraw-wrapper {
   margin-top: 1rem;
 }
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-1,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-2,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-3 {
+  padding: 0;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-1
+  .all-webcam-wrapper-inner,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-2
+  .all-webcam-wrapper-inner,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-3
+  .all-webcam-wrapper-inner {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  width: 100%;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-1
+  .all-webcam-wrapper-inner
+  .video-camera-item,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-2
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  height: 45%;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-3
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  height: 30%;
+}
