@@ -24,6 +24,8 @@ const RoomSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const serverVersion = store.getState().session.serverVersion;
+  const copyright_conf =
+    store.getState().session.currentRoom?.metadata?.copyright_conf;
 
   const isShowRoomSettingsModal = useAppSelector(
     isShowRoomSettingsModalSelector,
@@ -54,9 +56,23 @@ const RoomSettings = () => {
     dispatch(updateShowRoomSettingsModal(false));
   };
 
-  function classNames(...classes) {
+  const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ');
-  }
+  };
+
+  const displayBottomText = () => {
+    let text = copyright_conf?.display ? `${copyright_conf?.text}&nbsp;` : '';
+    text += t('plugnmeet-server-client-version', {
+      server: serverVersion,
+      client: PNM_VERSION,
+    });
+    return (
+      <div
+        className="absolute inset-x-0 bottom-0 text-center text-xs dark:text-darkText"
+        dangerouslySetInnerHTML={{ __html: text }}
+      ></div>
+    );
+  };
 
   const showTabItems = () => {
     return (
@@ -151,12 +167,7 @@ const RoomSettings = () => {
                   </Dialog.Title>
                   <hr />
                   <div className="mt-2">{showTabItems()}</div>
-                  <div className="absolute inset-x-0 bottom-0 text-center text-xs dark:text-darkText">
-                    {t('plugnmeet-server-client-version', {
-                      server: serverVersion,
-                      client: PNM_VERSION,
-                    })}
-                  </div>
+                  {displayBottomText()}
                 </div>
               </Transition.Child>
             </div>

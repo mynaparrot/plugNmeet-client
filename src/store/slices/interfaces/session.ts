@@ -52,6 +52,7 @@ export interface IRoomMetadata {
   started_at: number;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
+  copyright_conf: ICopyright_conf;
 }
 
 interface IRoomFeatures {
@@ -145,4 +146,9 @@ export interface IDisplayExternalLinkFeatures {
   is_active: boolean;
   link?: string;
   shared_by?: string;
+}
+
+export interface ICopyright_conf {
+  display: boolean;
+  text: string;
 }
