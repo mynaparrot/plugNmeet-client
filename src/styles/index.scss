@@ -195,6 +195,7 @@ code {
   padding: 10px;
   border-radius: 0 15px 15px;
   overflow-wrap: break-word;
+  font-size: 14px;
 }
 
 .content.me p.message-content {
@@ -335,9 +336,9 @@ code {
   padding-left: 260px;
 }
 
-#main-area.fullWidthMainArea.showScreenShare .all-webcam-wrapper {
-  position: relative;
-}
+// #main-area.fullWidthMainArea.showScreenShare .all-webcam-wrapper {
+//   position: relative;
+// }
 
 #main-area.hideParticipantsPanel.showScreenShare
   .all-webcam-wrapper.total-cam-0 {
@@ -592,7 +593,7 @@ button.previous-cam {
 .all-MessageModule-wrap .message-item .system p.message-content {
   /* background-color: #004E91;
     color: #fff; */
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
 }
 
@@ -885,12 +886,9 @@ button.previous-cam {
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
-
 .landscape-device.is-mobile #main-area.fullWidthMainArea .share-screen-wrapper {
-  padding-left: 140px;
   height: 100%;
 }
-
 .landscape-device.is-mobile
   #main-area.fullWidthMainArea
   .share-screen-wrapper
@@ -1005,7 +1003,7 @@ button.previous-cam {
 
 @media screen and (max-width: 1279px) {
   .all-MessageModule-wrap .message-item .system p.message-content {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 16px;
   }
 
@@ -1401,7 +1399,14 @@ aside {
 
 @media screen and (min-width: 1800px) {
   #main-area.fullWidthMainArea .all-webcam-wrapper {
-    width: 330px;
+    width: 440px;
+  }
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    padding-left: 440px;
+  }
+  #main-area.fullWidthMainArea #main-left-panel {
+    width: 440px;
   }
 }
 
@@ -1585,4 +1590,67 @@ aside {
 
 .portrait-device.is-tablet .excalidraw-wrapper {
   margin-top: 1rem;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-1,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-2,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-3 {
+  padding: 0;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-1
+  .all-webcam-wrapper-inner,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-2
+  .all-webcam-wrapper-inner,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-3
+  .all-webcam-wrapper-inner {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  width: 100%;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-1
+  .all-webcam-wrapper-inner
+  .video-camera-item,
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-2
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  height: 45%;
+}
+.landscape-device.is-mobile
+  #main-area.fullWidthMainArea
+  .middle-fullscreen-wrapper
+  .all-webcam-wrapper.vertical-webcams.total-cam-3
+  .all-webcam-wrapper-inner
+  .video-camera-item {
+  height: 30%;
 }

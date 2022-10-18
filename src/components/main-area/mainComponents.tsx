@@ -230,6 +230,9 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       cssClasses.push(
         'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
       );
+      if (showVideoElms && showVerticalVideoView) {
+        cssClasses.push('verticalsWebcamsActivated');
+      }
     } else {
       if (showVideoElms && !showVerticalVideoView) {
         cssClasses.push('h-full');
