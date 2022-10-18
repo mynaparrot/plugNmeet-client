@@ -74,7 +74,7 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
 
   return (
     <>
-      <div className="h-[calc(100%)] messageModule-wrapper relative z-10 right-0 top-0 w-[250px] xl:w-[300px] multi-gradient">
+      <div className="h-[calc(100%)] messageModule-wrapper relative z-10 right-0 top-0 w-[250px] xl:w-[320px] multi-gradient">
         <div className="all-MessageModule-wrap h-full">
           <ChatTabs />
         </div>
