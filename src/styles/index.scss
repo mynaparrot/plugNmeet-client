@@ -195,6 +195,7 @@ code {
   padding: 10px;
   border-radius: 0 15px 15px;
   overflow-wrap: break-word;
+  font-size: 14px;
 }
 
 .content.me p.message-content {
@@ -592,7 +593,7 @@ button.previous-cam {
 .all-MessageModule-wrap .message-item .system p.message-content {
   /* background-color: #004E91;
     color: #fff; */
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
 }
 
@@ -1002,7 +1003,7 @@ button.previous-cam {
 
 @media screen and (max-width: 1279px) {
   .all-MessageModule-wrap .message-item .system p.message-content {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 16px;
   }
 
@@ -1406,6 +1407,9 @@ aside {
   }
   #main-area.fullWidthMainArea #main-left-panel {
     width: 440px;
+  }
+  .messageModule-wrapper {
+    width: 320px;
   }
 }
 
