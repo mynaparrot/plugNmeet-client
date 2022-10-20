@@ -162,7 +162,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
         <LeftPanel />
       </Transition>
     );
-  }, [isActiveParticipantsPanel, currentConnection]);
+  }, [isActiveParticipantsPanel]);
 
   const renderMainComponentElms = useMemo(() => {
     return <MainComponents currentConnection={currentConnection} />;

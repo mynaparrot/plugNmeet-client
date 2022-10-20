@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { RemoteParticipant } from 'livekit-client';
 import { toast } from 'react-toastify';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';

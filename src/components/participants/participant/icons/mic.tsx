@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { RemoteParticipant } from 'livekit-client';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import {

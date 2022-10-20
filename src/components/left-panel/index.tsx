@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Room } from 'livekit-client';
 import { Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
