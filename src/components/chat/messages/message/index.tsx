@@ -60,11 +60,8 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       );
     }
   };
-  return (
-    <div className="message-item mb-2 xl:mb-3">
-      <div className="wrapper flex ">{render()}</div>
-    </div>
-  );
+
+  return <div className="wrapper flex ">{render()}</div>;
 };
 
-export default React.memo(Message);
+export default Message;
