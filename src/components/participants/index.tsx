@@ -78,8 +78,12 @@ const ParticipantsComponent = () => {
       <div
         ref={outerRef as any}
         style={{ height: screenHeight - 215, overflow: 'auto' }}
+        className="-mx-2 xl:-mx-4 scrollBar"
       >
-        <div className="all-participants-wrap" ref={innerRef as any}>
+        <div
+          className="all-participants-wrap px-2 xl:px-4"
+          ref={innerRef as any}
+        >
           {items.map(({ index, measureRef }) => (
             <div key={index} ref={measureRef} id={`par-${index}`}>
               {renderParticipant(index)}
