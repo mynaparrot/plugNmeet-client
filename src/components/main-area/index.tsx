@@ -159,7 +159,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0 -translate-x-full"
       >
-        <LeftPanel currentRoom={currentConnection.room} />
+        <LeftPanel />
       </Transition>
     );
   }, [isActiveParticipantsPanel, currentConnection]);

@@ -13,16 +13,12 @@ import { useGetMyBreakoutRoomsQuery } from '../../store/services/breakoutRoomApi
 import MyBreakoutRooms from '../breakout-room/my/myBreakoutRooms';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
-interface ILeftPanelProps {
-  currentRoom: Room;
-}
-
 const selectedTabLeftPanelSelector = createSelector(
   (state: RootState) => state.roomSettings.selectedTabLeftPanel,
   (isActiveChatPanel) => isActiveChatPanel,
 );
 
-const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
+const LeftPanel = () => {
   const { data } = useGetPollsStatsQuery();
   const { data: myRooms } = useGetMyBreakoutRoomsQuery();
   const { t } = useTranslation();
@@ -37,7 +33,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
       {
         id: 1,
         title: <>{t('left-panel.participants-tab')}</>,
-        elm: <ParticipantsComponent currentRoom={currentRoom} />,
+        elm: <ParticipantsComponent />,
       },
     ];
     if (allow_polls) {

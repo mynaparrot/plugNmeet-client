@@ -24,12 +24,12 @@ import {
 
 interface IParticipantComponentProps {
   participant: IParticipant;
-  remoteParticipant?: RemoteParticipant;
+  isRemoteParticipant: boolean;
 }
 
 const ParticipantComponent = ({
   participant,
-  remoteParticipant,
+  isRemoteParticipant,
 }: IParticipantComponentProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [blockUser, setBlockUser] = useState<number>(0);
@@ -202,7 +202,7 @@ const ParticipantComponent = ({
             <ScreenShareIcon userId={participant.userId} />
             <MicIcon
               userId={participant.userId}
-              remoteParticipant={remoteParticipant}
+              isRemoteParticipant={isRemoteParticipant}
             />
             {currentUser?.userId !== participant.userId ? (
               <MenuIcon
