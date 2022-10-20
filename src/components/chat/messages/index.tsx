@@ -60,6 +60,9 @@ const Messages = ({ userId }: IMessagesProps) => {
   }, [chatMessages.length]);
 
   const renderMsg = (index) => {
+    if (!chatMessages.length || typeof chatMessages[index] === 'undefined') {
+      return null;
+    }
     const body = chatMessages[index] as IChatMsg;
     return (
       <Message key={body.message_id} body={body} currentUser={currentUser} />
