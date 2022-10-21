@@ -45,7 +45,11 @@ const ListPolls = () => {
     >
       <div className="polls-list-wrap-inner" ref={innerRef as any}>
         {items.map(({ index, measureRef }) => (
-          <div key={index} ref={measureRef}>
+          <div
+            key={index}
+            ref={measureRef}
+            className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md"
+          >
             {renderPoll(index)}
           </div>
         ))}
