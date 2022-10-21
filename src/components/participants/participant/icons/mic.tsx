@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { RemoteParticipant } from 'livekit-client';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import {
@@ -11,10 +10,10 @@ import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
 
 interface MicIconProps {
   userId: string;
-  remoteParticipant?: RemoteParticipant;
+  isRemoteParticipant: boolean;
 }
 
-const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
+const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
   const participant = useAppSelector((state) =>
     participantsSelector.selectById(state, userId),
   );
@@ -104,7 +103,7 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
         );
       }
       // if this user is a remote Participant then we can control volume.
-      if (remoteParticipant) {
+      if (isRemoteParticipant) {
         return renderUnmuteIcon();
       }
       // for local user don't need
@@ -117,7 +116,7 @@ const MicIcon = ({ userId, remoteParticipant }: MicIconProps) => {
 
     return null;
   }, [
-    remoteParticipant,
+    isRemoteParticipant,
     renderUnmuteIcon,
     participant?.audioTracks,
     participant?.isMuted,

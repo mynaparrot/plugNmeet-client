@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Room } from 'livekit-client';
 import { Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
@@ -13,16 +12,12 @@ import { useGetMyBreakoutRoomsQuery } from '../../store/services/breakoutRoomApi
 import MyBreakoutRooms from '../breakout-room/my/myBreakoutRooms';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
-interface ILeftPanelProps {
-  currentRoom: Room;
-}
-
 const selectedTabLeftPanelSelector = createSelector(
   (state: RootState) => state.roomSettings.selectedTabLeftPanel,
   (isActiveChatPanel) => isActiveChatPanel,
 );
 
-const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
+const LeftPanel = () => {
   const { data } = useGetPollsStatsQuery();
   const { data: myRooms } = useGetMyBreakoutRoomsQuery();
   const { t } = useTranslation();
@@ -37,7 +32,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
       {
         id: 1,
         title: <>{t('left-panel.participants-tab')}</>,
-        elm: <ParticipantsComponent currentRoom={currentRoom} />,
+        elm: <ParticipantsComponent />,
       },
     ];
     if (allow_polls) {
@@ -120,7 +115,7 @@ const LeftPanel = ({ currentRoom }: ILeftPanelProps) => {
               className={`${
                 item.id === 2 || item.id === 3
                   ? 'polls h-full'
-                  : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
+                  : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full'
               }`}
             >
               <>{item.elm}</>
