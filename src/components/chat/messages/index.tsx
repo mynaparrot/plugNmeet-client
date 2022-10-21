@@ -1,16 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import useVirtual from 'react-cool-virtual';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { store, useAppSelector } from '../../../store';
+import { RootState, store, useAppSelector } from '../../../store';
 import { IChatMsg } from '../../../store/slices/interfaces/dataMessages';
-import Message from './message';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
+import Message from './message';
 
 interface IMessagesProps {
   userId: string;
 }
+
+const isActiveChatPanelSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
+  (isActiveChatPanel) => isActiveChatPanel,
+);
+
 const Messages = ({ userId }: IMessagesProps) => {
   const allMessages = useAppSelector(chatMessagesSelector.selectAll);
+  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
+
   const scrollToRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;
   const [chatMessages, setChatMessages] = useState<Array<IChatMsg>>([]);
@@ -58,6 +67,21 @@ const Messages = ({ userId }: IMessagesProps) => {
     };
     //eslint-disable-next-line
   }, [chatMessages.length]);
+
+  // if we don't do this then scrolling won't go to bottom
+  useEffect(() => {
+    if (isActiveChatPanel) {
+      setTimeout(() => {
+        if (scrollToRef.current) {
+          scrollToRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+            inline: 'nearest',
+          });
+        }
+      }, 500);
+    }
+  }, [scrollToRef, isActiveChatPanel]);
 
   const renderMsg = (index) => {
     if (!chatMessages.length || typeof chatMessages[index] === 'undefined') {

@@ -72,9 +72,10 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const isActiveDisplayExternalLink = useAppSelector(
     isActiveDisplayExternalLinkSelector,
   );
+  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const screenHeight = useAppSelector(screenHeightSelector);
   const dispatch = useAppDispatch();
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
+
   const [allowChat, setAllowChat] = useState<boolean>(true);
   const [isActiveScreenShare, setIsActiveScreenShare] =
     useState<boolean>(false);
@@ -152,6 +153,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
       <Transition
         className="transition-left-panel"
         show={isActiveParticipantsPanel}
+        unmount={false}
         enter="transform transition duration-[400ms]"
         enterFrom="opacity-0 translate-x-0"
         enterTo="opacity-100"
@@ -174,6 +176,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
         <Transition
           className="transition-right-panel"
           show={isActiveChatPanel}
+          unmount={false}
           enter="transform transition duration-[400ms]"
           enterFrom="opacity-0 translate-x-0"
           enterTo="opacity-100"
