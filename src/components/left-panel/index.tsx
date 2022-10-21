@@ -115,7 +115,7 @@ const LeftPanel = () => {
               className={`${
                 item.id === 2 || item.id === 3
                   ? 'polls h-full'
-                  : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
+                  : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full'
               }`}
             >
               <>{item.elm}</>
