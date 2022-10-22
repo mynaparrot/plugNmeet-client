@@ -23,9 +23,17 @@ const Messages = ({ userId }: IMessagesProps) => {
   const scrollToRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;
   const [chatMessages, setChatMessages] = useState<Array<IChatMsg>>([]);
+  const [autoScrollToBottom, setAutoScrollToBottom] = useState<boolean>(true);
 
   const { outerRef, innerRef, items, scrollToItem } = useVirtual({
     itemCount: chatMessages.length,
+    onScroll: (event) => {
+      if (event.visibleStopIndex === chatMessages.length - 1) {
+        setAutoScrollToBottom(true);
+      } else {
+        setAutoScrollToBottom(false);
+      }
+    },
   });
 
   useEffect(() => {
@@ -41,11 +49,11 @@ const Messages = ({ userId }: IMessagesProps) => {
     setChatMessages(chatMessages);
   }, [allMessages, userId]);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!chatMessages.length) {
-        return;
-      }
+  const scrollToBottom = () => {
+    if (!chatMessages.length || !autoScrollToBottom) {
+      return;
+    }
+    if (scrollToRef.current) {
       scrollToItem(
         {
           index: chatMessages.length - 1,
@@ -61,6 +69,12 @@ const Messages = ({ userId }: IMessagesProps) => {
           }
         },
       );
+    }
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      scrollToBottom();
     }, 500);
     return () => {
       clearTimeout(timeout);
@@ -72,16 +86,11 @@ const Messages = ({ userId }: IMessagesProps) => {
   useEffect(() => {
     if (isActiveChatPanel) {
       setTimeout(() => {
-        if (scrollToRef.current) {
-          scrollToRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'end',
-            inline: 'nearest',
-          });
-        }
+        scrollToBottom();
       }, 500);
     }
-  }, [scrollToRef, isActiveChatPanel]);
+    //eslint-disable-next-line
+  }, [isActiveChatPanel]);
 
   const renderMsg = (index) => {
     if (!chatMessages.length || typeof chatMessages[index] === 'undefined') {
