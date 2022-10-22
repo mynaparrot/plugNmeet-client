@@ -119,7 +119,7 @@ const App = () => {
         } else {
           setError({
             title: t('app.verification-failed-title'),
-            text: t(res.msg),
+            text: t(res.msg as any),
           });
         }
       };
@@ -197,7 +197,7 @@ const App = () => {
 
   const renderElms = useMemo(() => {
     if (loading) {
-      return <Loading text={t('app.' + roomConnectionStatus)} />;
+      return <Loading text={t(('app.' + roomConnectionStatus) as any)} />;
     } else if (error && !loading) {
       return <ErrorPage title={error.title} text={error.text} />;
     } else if (roomConnectionStatus === 'connected') {

@@ -33,7 +33,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
           type: 'info',
         });
       } else {
-        toast(t(data.msg), {
+        toast(t(data.msg as any), {
           type: 'error',
         });
       }

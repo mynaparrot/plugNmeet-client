@@ -24,7 +24,7 @@ const EndBtn = ({ breakoutRoomId }: IEndBtnProps) => {
           type: 'info',
         });
       } else {
-        toast(t(data.msg), {
+        toast(t(data.msg as any), {
           type: 'error',
         });
       }

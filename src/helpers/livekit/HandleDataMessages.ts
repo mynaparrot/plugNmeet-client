@@ -49,14 +49,14 @@ export default class HandleDataMessages {
     switch (body.type) {
       case DataMsgBodyType.RAISE_HAND:
       case DataMsgBodyType.INFO:
-        toast(i18n.t(body.msg).toString(), {
+        toast(i18n.t(body.msg as any), {
           type: 'info',
         });
         this.playNotification(body.type);
         break;
 
       case DataMsgBodyType.ALERT:
-        toast(i18n.t(body.msg).toString(), {
+        toast(i18n.t(body.msg as any), {
           type: 'error',
         });
         this.playNotification(body.type);

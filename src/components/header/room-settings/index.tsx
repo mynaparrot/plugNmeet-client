@@ -92,7 +92,7 @@ const RoomSettings = () => {
                   )
                 }
               >
-                {t(category)}
+                {t(category as any)}
               </Tab>
             ))}
           </Tab.List>
