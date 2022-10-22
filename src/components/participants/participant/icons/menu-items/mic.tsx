@@ -52,6 +52,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
       type: DataMsgType.SYSTEM,
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
+      to: userId,
       body: {
         type: DataMsgBodyType.INFO,
         from: {
