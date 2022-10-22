@@ -139,7 +139,7 @@ const MenusIcon = () => {
         type: 'info',
       });
     } else {
-      toast(t(res.msg), {
+      toast(t(res.msg as any), {
         toastId: 'asked-status',
         type: 'error',
       });
@@ -163,7 +163,7 @@ const MenusIcon = () => {
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
-        toast(t(res.msg), {
+        toast(t(res.msg as any), {
           type: 'error',
         });
       }
@@ -183,7 +183,7 @@ const MenusIcon = () => {
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
-        toast(t(res.msg), {
+        toast(t(res.msg as any), {
           type: 'error',
         });
       }
@@ -203,7 +203,7 @@ const MenusIcon = () => {
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(false));
       } else {
-        toast(t(res.msg), {
+        toast(t(res.msg as any), {
           type: 'error',
         });
       }
@@ -240,7 +240,7 @@ const MenusIcon = () => {
 
     if (!res.status) {
       toast.update(id, {
-        render: t('res.msg'),
+        render: t(res.msg as any),
         type: 'error',
         isLoading: false,
         autoClose: 3000,
@@ -280,7 +280,7 @@ const MenusIcon = () => {
 
     if (!res.status) {
       toast.update(id, {
-        render: t(res.msg),
+        render: t(res.msg as any),
         type: 'error',
         isLoading: false,
         autoClose: 3000,

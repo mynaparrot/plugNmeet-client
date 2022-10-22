@@ -51,7 +51,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
         msg:
           t('left-panel.menus.notice.asked-you-to', {
             name: session.currentUser?.name,
-          }) + t(task),
+          }) + t(task as any),
       },
     });
 
@@ -60,7 +60,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     toast(
       t('left-panel.menus.notice.you-have-asked', {
         name: participant?.name,
-      }) + t(task),
+      }) + t(task as any),
       {
         toastId: 'asked-status',
         type: 'info',

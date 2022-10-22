@@ -62,7 +62,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
           type: 'info',
         });
       } else {
-        toast(t(closePollRes.msg), {
+        toast(t(closePollRes.msg as any), {
           type: 'error',
         });
       }

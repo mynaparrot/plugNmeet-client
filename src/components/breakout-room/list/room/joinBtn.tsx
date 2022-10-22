@@ -23,7 +23,7 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
   useEffect(() => {
     if (!isLoading && data) {
       if (!data.status) {
-        toast(t(data.msg), {
+        toast(t(data.msg as any), {
           type: 'error',
         });
         return;

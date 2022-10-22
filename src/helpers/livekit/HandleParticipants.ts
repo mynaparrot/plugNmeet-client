@@ -172,13 +172,10 @@ export default class HandleParticipants {
           participant.identity === 'RTMP_BOT'
         )
       ) {
-        toast(
-          i18n.t('notifications.your-connection-quality-not-good').toString(),
-          {
-            toastId: 'connection-status',
-            type: 'error',
-          },
-        );
+        toast(i18n.t('notifications.your-connection-quality-not-good' as any), {
+          toastId: 'connection-status',
+          type: 'error',
+        });
       }
     }
   };
@@ -211,11 +208,9 @@ export default class HandleParticipants {
       store.getState().session.currentUser?.metadata?.is_admin
     ) {
       toast(
-        i18n
-          .t('waiting-room.user-waiting', {
-            name: name,
-          })
-          .toString(),
+        i18n.t('waiting-room.user-waiting' as any, {
+          name: name,
+        }),
         {
           type: 'info',
           toastId: 'user-waiting',

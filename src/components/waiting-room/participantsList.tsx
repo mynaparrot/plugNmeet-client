@@ -37,7 +37,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
         type: 'info',
       });
     } else {
-      toast(t(res.msg), {
+      toast(t(res.msg as any), {
         type: 'error',
       });
     }
@@ -68,7 +68,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
         type: 'info',
       });
     } else {
-      toast(t(res.msg), {
+      toast(t(res.msg as any), {
         type: 'error',
       });
     }

@@ -45,7 +45,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     if (res.status) {
       dispatch(updateIsActiveRaisehand(false));
     } else {
-      toast(t(res.msg), {
+      toast(t(res.msg as any), {
         type: 'error',
       });
     }

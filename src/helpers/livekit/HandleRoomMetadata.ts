@@ -44,11 +44,11 @@ export default class HandleRoomMetadata {
 
     const isActiveRecording = store.getState().session.isActiveRecording;
     if (!isActiveRecording && this.metadata?.is_recording) {
-      toast(i18n.t('room-metadata.session-recording').toString(), {
+      toast(i18n.t('room-metadata.session-recording' as any), {
         type: 'info',
       });
     } else if (isActiveRecording && !this.metadata?.is_recording) {
-      toast(i18n.t('room-metadata.session-not-recording').toString(), {
+      toast(i18n.t('room-metadata.session-not-recording' as any), {
         type: 'info',
       });
     }
@@ -63,11 +63,11 @@ export default class HandleRoomMetadata {
     const isActiveRtmpBroadcasting =
       store.getState().session.isActiveRtmpBroadcasting;
     if (!isActiveRtmpBroadcasting && this.metadata?.is_active_rtmp) {
-      toast(i18n.t('room-metadata.rtmp-started').toString(), {
+      toast(i18n.t('room-metadata.rtmp-started' as any), {
         type: 'info',
       });
     } else if (isActiveRtmpBroadcasting && !this.metadata?.is_active_rtmp) {
-      toast(i18n.t('room-metadata.rtmp-stopped').toString(), {
+      toast(i18n.t('room-metadata.rtmp-stopped' as any), {
         type: 'info',
       });
     }
