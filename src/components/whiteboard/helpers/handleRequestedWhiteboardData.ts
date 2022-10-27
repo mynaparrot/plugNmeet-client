@@ -5,6 +5,7 @@ import {
   NormalizedZoomValue,
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
+import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
@@ -20,7 +21,6 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
-import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 24 * 60 * 60 * 1000; // 1 day
