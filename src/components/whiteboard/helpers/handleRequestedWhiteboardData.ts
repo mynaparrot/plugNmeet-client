@@ -23,7 +23,7 @@ import {
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
-  DELETED_ELEMENT_TIMEOUT = 60 * 60 * 1000; // 1 hour
+  DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
 let preScrollX = 0,
   preScrollY = 0;
 
