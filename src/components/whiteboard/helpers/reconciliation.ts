@@ -1,14 +1,16 @@
-// eslint-disable-next-line
+// eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
-// eslint-disable-next-line
+// eslint-disable-next-line import/no-unresolved
 import { AppState } from '@excalidraw/excalidraw/types/types';
+
+export const PRECEDING_ELEMENT_KEY = '__precedingElement__';
 
 export type ReconciledElements = readonly ExcalidrawElement[] & {
   _brand: 'reconciledElements';
 };
 
 export type BroadcastedExcalidrawElement = ExcalidrawElement & {
-  parent?: string;
+  [PRECEDING_ELEMENT_KEY]?: string;
 };
 
 const shouldDiscardRemoteElement = (
@@ -16,7 +18,7 @@ const shouldDiscardRemoteElement = (
   local: ExcalidrawElement | undefined,
   remote: BroadcastedExcalidrawElement,
 ): boolean => {
-  return !!(
+  if (
     local &&
     // local element is being edited
     (local.id === localAppState.editingElement?.id ||
@@ -28,7 +30,10 @@ const shouldDiscardRemoteElement = (
       // the lowest versionNonce
       (local.version === remote.version &&
         local.versionNonce < remote.versionNonce))
-  );
+  ) {
+    return true;
+  }
+  return false;
 };
 
 const getElementsMapWithIndex = <T extends ExcalidrawElement>(
@@ -70,8 +75,8 @@ export const reconcileElements = (
     const local = localElementsData[remoteElement.id];
 
     if (shouldDiscardRemoteElement(localAppState, local?.[0], remoteElement)) {
-      if (remoteElement.parent) {
-        delete remoteElement.parent;
+      if (remoteElement[PRECEDING_ELEMENT_KEY]) {
+        delete remoteElement[PRECEDING_ELEMENT_KEY];
       }
 
       continue;
@@ -91,10 +96,12 @@ export const reconcileElements = (
     // parent may not be defined in case the remote client is running an older
     // excalidraw version
     const parent =
-      remoteElement.parent || remoteElements[remoteElementIdx - 1]?.id || null;
+      remoteElement[PRECEDING_ELEMENT_KEY] ||
+      remoteElements[remoteElementIdx - 1]?.id ||
+      null;
 
     if (parent != null) {
-      delete remoteElement.parent;
+      delete remoteElement[PRECEDING_ELEMENT_KEY];
 
       // ^ indicates the element is the first in elements array
       if (parent === '^') {
@@ -115,7 +122,8 @@ export const reconcileElements = (
         }
       } else {
         let idx = localElementsData[parent]
-          ? localElementsData[parent]?.[1]
+          ? //eslint-disable-next-line
+            localElementsData[parent]![1]
           : null;
         if (idx != null) {
           idx += offset;
