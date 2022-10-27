@@ -91,7 +91,7 @@ export const sendWhiteboardDataAsDonor = (
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
-    broadcastScreenDataBySocket(elements, sendTo);
+    broadcastSceneOnChange(elements, true, sendTo);
   }
 
   // finally, change status of request
@@ -112,12 +112,15 @@ export const isSyncableElement = (element: ExcalidrawElement) => {
 
 export const broadcastSceneOnChange = (
   allElements: readonly ExcalidrawElement[],
+  syncAll: boolean,
+  sendTo?: string,
 ) => {
   // sync out only the elements we think we need to save bandwidth.
   const syncableElements = allElements.reduce(
     (acc, element: BroadcastedExcalidrawElement, idx, elements) => {
       if (
-        (!broadcastedElementVersions.has(element.id) ||
+        (syncAll ||
+          !broadcastedElementVersions.has(element.id) ||
           //eslint-disable-next-line
           element.version > broadcastedElementVersions.get(element.id)!) &&
         isSyncableElement(element)
@@ -137,7 +140,7 @@ export const broadcastSceneOnChange = (
     broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
   }
 
-  broadcastScreenDataBySocket(syncableElements, '');
+  broadcastScreenDataBySocket(syncableElements, sendTo);
 };
 
 export const broadcastScreenDataBySocket = (
@@ -159,7 +162,7 @@ export const broadcastScreenDataBySocket = (
     },
   });
 
-  if (sendTo !== '') {
+  if (sendTo && sendTo !== '') {
     dataMsg.to = sendTo;
   }
 

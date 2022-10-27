@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
-import { broadcastScreenDataBySocket } from './handleRequestedWhiteboardData';
+import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 
 const defaultPreloadedLibraryItems = [
@@ -66,7 +66,7 @@ export const displaySavedPageData = (
       excalidrawAPI.updateScene({ elements });
       if (isPresenter) {
         // better to broadcast full screen
-        broadcastScreenDataBySocket(elements);
+        broadcastSceneOnChange(elements, true);
       }
     }
   }

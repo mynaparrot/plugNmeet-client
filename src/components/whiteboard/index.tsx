@@ -434,7 +434,7 @@ const Whiteboard = () => {
       }
       if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
         setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
-        broadcastSceneOnChange(elements);
+        broadcastSceneOnChange(elements, false);
       }
 
       // broadcast AppState Changes
