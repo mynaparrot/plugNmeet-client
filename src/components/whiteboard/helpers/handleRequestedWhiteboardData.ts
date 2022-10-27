@@ -5,12 +5,16 @@ import {
   NormalizedZoomValue,
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
+import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
 import { sendWebsocketMessage } from '../../../helpers/websocket';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
-import { BroadcastedExcalidrawElement } from './reconciliation';
+import {
+  BroadcastedExcalidrawElement,
+  PRECEDING_ELEMENT_KEY,
+} from './reconciliation';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import {
   DataMessage,
@@ -18,7 +22,8 @@ import {
   DataMsgType,
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 
-const broadcastedElementVersions: Map<string, number> = new Map();
+const broadcastedElementVersions: Map<string, number> = new Map(),
+  DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
 let preScrollX = 0,
   preScrollY = 0;
 
@@ -86,7 +91,7 @@ export const sendWhiteboardDataAsDonor = (
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
-    broadcastScreenDataBySocket(elements, sendTo);
+    broadcastSceneOnChange(elements, true, sendTo);
   }
 
   // finally, change status of request
@@ -98,21 +103,32 @@ export const sendWhiteboardDataAsDonor = (
   );
 };
 
+export const isSyncableElement = (element: ExcalidrawElement) => {
+  if (element.isDeleted) {
+    return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
+  }
+  return !isInvisiblySmallElement(element);
+};
+
 export const broadcastSceneOnChange = (
   allElements: readonly ExcalidrawElement[],
+  syncAll: boolean,
+  sendTo?: string,
 ) => {
   // sync out only the elements we think we need to save bandwidth.
   const syncableElements = allElements.reduce(
     (acc, element: BroadcastedExcalidrawElement, idx, elements) => {
       if (
-        !broadcastedElementVersions.has(element.id) ||
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        element.version > broadcastedElementVersions.get(element.id)!
+        (syncAll ||
+          !broadcastedElementVersions.has(element.id) ||
+          //eslint-disable-next-line
+          element.version > broadcastedElementVersions.get(element.id)!) &&
+        isSyncableElement(element)
       ) {
         acc.push({
           ...element,
           // z-index info for the reconciler
-          parent: idx === 0 ? '^' : elements[idx - 1]?.id,
+          [PRECEDING_ELEMENT_KEY]: idx === 0 ? '^' : elements[idx - 1]?.id,
         });
       }
       return acc;
@@ -120,11 +136,11 @@ export const broadcastSceneOnChange = (
     [] as BroadcastedExcalidrawElement[],
   );
 
-  broadcastScreenDataBySocket(syncableElements, '');
-
   for (const syncableElement of syncableElements) {
     broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
   }
+
+  broadcastScreenDataBySocket(syncableElements, sendTo);
 };
 
 export const broadcastScreenDataBySocket = (
@@ -146,7 +162,7 @@ export const broadcastScreenDataBySocket = (
     },
   });
 
-  if (sendTo !== '') {
+  if (sendTo && sendTo !== '') {
     dataMsg.to = sendTo;
   }
 
