@@ -2323,11 +2323,11 @@ code {
     align-items: flex-start;
   }
 }
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+}
 .has-tooltip {
-  .tooltip {
-    visibility: hidden;
-    position: absolute;
-  }
   &:hover {
     .tooltip {
       visibility: visible;
