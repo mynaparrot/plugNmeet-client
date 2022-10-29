@@ -24,7 +24,7 @@
     "copy-text-to-clipboard": "3.0.1",
     "emoji-picker-react": "4.4.3",
     "events": "3.3.0",
-    "i18next": "22.0.3",
+    "i18next": "22.0.4",
     "i18next-browser-languagedetector": "7.0.0",
     "i18next-http-backend": "2.0.0",
     "livekit-client": "1.5.0",
