@@ -31,12 +31,16 @@ const DirectLink = () => {
     e.preventDefault();
 
     if (isEmpty(playBackUrl)) {
-      setErrorMsg(t('footer.notice.external-media-player-url-required'));
+      setErrorMsg(
+        t('footer.notice.external-media-player-url-required').toString(),
+      );
       return;
     }
 
     if (!ReactPlayer.canPlay(playBackUrl)) {
-      setErrorMsg(t('footer.notice.external-media-player-url-invalid'));
+      setErrorMsg(
+        t('footer.notice.external-media-player-url-invalid').toString(),
+      );
       return;
     }
 

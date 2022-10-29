@@ -31,13 +31,13 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
 
   useEffect(() => {
     if (participant?.audioTracks === 0) {
-      setText(t('left-panel.menus.items.ask-to-share-microphone'));
+      setText(t('left-panel.menus.items.ask-to-share-microphone').toString());
       setTask('left-panel.menus.items.share-microphone');
     } else if (participant?.isMuted) {
-      setText(t('left-panel.menus.items.ask-to-unmute-mic'));
+      setText(t('left-panel.menus.items.ask-to-unmute-mic').toString());
       setTask('left-panel.menus.items.unmute-mic');
     } else if (participant?.audioTracks) {
-      setText(t('left-panel.menus.items.mute-mic'));
+      setText(t('left-panel.menus.items.mute-mic').toString());
       setTask('mute');
     }
   }, [t, participant?.isMuted, participant?.audioTracks]);

@@ -29,10 +29,10 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
 
   useEffect(() => {
     if (participant?.videoTracks === 0) {
-      setText(t('left-panel.menus.items.ask-to-share-webcam'));
+      setText(t('left-panel.menus.items.ask-to-share-webcam').toString());
       setTask('left-panel.menus.items.share-webcam');
     } else {
-      setText(t('left-panel.menus.items.ask-to-stop-webcam'));
+      setText(t('left-panel.menus.items.ask-to-stop-webcam').toString());
       setTask('left-panel.menus.items.stop-webcam');
     }
   }, [t, participant?.videoTracks]);
