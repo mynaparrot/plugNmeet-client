@@ -13,7 +13,8 @@ let ws: ReconnectingWebSocket;
 
 const createWS = () => {
   ws = new ReconnectingWebSocket(getURL, [], {
-    connectionTimeout: 1000,
+    connectionTimeout: 4000,
+    maxRetries: 20,
   });
   ws.binaryType = 'arraybuffer';
 
