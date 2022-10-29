@@ -1,0 +1,48 @@
+@media only screen and (max-width: 980px) and (max-height: 450px) {
+  .landscape-device {
+    #main-area.fullWidthMainArea {
+      .middle-fullscreen-wrapper {
+        .all-webcam-wrapper {
+          bottom: auto;
+          right: auto;
+          width: 140px;
+          left: 0;
+          height: 100%;
+          padding: 20px 0;
+          .all-webcam-wrapper-inner {
+            display: block !important;
+            padding: 0 5px;
+            .video-camera-item {
+              height: 31.33%;
+              margin: 4px 0px;
+            }
+            button.next-cam {
+              top: auto;
+              bottom: 0;
+              transform: rotate(0deg);
+              left: 0;
+              width: 100%;
+            }
+            button.previous-cam {
+              top: 0;
+              transform: rotate(0deg);
+              left: 0;
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+    .share-screen-wrapper.is-share-screen-running {
+      .screen-share-video {
+        button {
+          bottom: 55px;
+        }
+        video.video-player {
+          height: calc(100% - 20px);
+          top: 10px;
+        }
+      }
+    }
+  }
+}

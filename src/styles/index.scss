@@ -1672,21 +1672,21 @@
 //   height: 30%;
 // }
 
-$text_white: #fff;
-$text_light: #a7cced;
-$font_Nunito: 'Nunito Sans', sans-serif;
-$background_black_15: rgba(0, 0, 0, 0.15);
-$background_black: #000;
-$background_transparent: transparent;
-$background_black_20: rgb(0 0 0 / 0.2);
-$background_black_50: rgba(0, 0, 0, 0.5);
-$background_gray_50: rgba(128, 128, 128, 0.5);
-$background_dark_blue: #001222;
-$background_gray: var(--button-gray-1);
-$background_blue_normal: rgb(0 77 144 / 0.2);
-$border_blue: #004e91;
-$border_white: #fff;
-$border_light: #a7cced;
+// $text_white: #fff;
+// $text_light: #a7cced;
+// $font_Nunito: 'Nunito Sans', sans-serif;
+// $background_black_15: rgba(0, 0, 0, 0.15);
+// $background_black: #000;
+// $background_transparent: transparent;
+// $background_black_20: rgb(0 0 0 / 0.2);
+// $background_black_50: rgba(0, 0, 0, 0.5);
+// $background_gray_50: rgba(128, 128, 128, 0.5);
+// $background_dark_blue: #001222;
+// $background_gray: var(--button-gray-1);
+// $background_blue_normal: rgb(0 77 144 / 0.2);
+// $border_blue: #004e91;
+// $border_white: #fff;
+// $border_light: #a7cced;
 
 @keyframes refresh {
   0% {
@@ -1785,13 +1785,13 @@ $border_light: #a7cced;
 }
 body {
   margin: 0;
-  font-family: $font_Nunito;
+  font-family: 'Nunito Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
 }
 code {
-  font-family: $font_Nunito;
+  font-family: 'Nunito Sans', sans-serif;
 }
 .shake {
   -webkit-animation-name: wobble;
@@ -1840,7 +1840,7 @@ code {
     border-radius: 5px;
   }
   &::-webkit-scrollbar-track {
-    background-color: $background_black_15;
+    background-color: rgba(0, 0, 0, 0.15);
   }
   &::-webkit-scrollbar {
     width: 8px;
@@ -1924,11 +1924,11 @@ code {
       width: 20px;
       margin: auto;
       transition: all 0.3s ease-in;
-      color: $text_white;
+      color: #fff;
     }
     &:hover {
       i {
-        color: $text_white;
+        color: #fff;
       }
     }
   }
@@ -1937,11 +1937,11 @@ code {
       width: 20px;
       margin: auto;
       transition: all 0.3s ease-in;
-      color: $text_white;
+      color: #fff;
     }
     &:hover {
       i {
-        color: $text_white;
+        color: #fff;
       }
     }
   }
@@ -1970,7 +1970,7 @@ code {
   }
   .video-camera-item.admin.speaking {
     &::before {
-      border-color: $border_blue;
+      border-color: #004e91;
     }
   }
 }
@@ -2115,7 +2115,7 @@ code {
   border-radius: 1rem;
   overflow: hidden;
   z-index: 1;
-  background-color: $background_black;
+  background-color: #000;
   .loading {
     top: 50%;
     transform: translateY(-50%);
@@ -2146,7 +2146,7 @@ code {
     position: absolute;
     bottom: 10px;
     z-index: 999;
-    color: $text_white;
+    color: #fff;
     left: 0.75rem;
     font-size: 0.875rem;
     line-height: 1;
@@ -2200,7 +2200,7 @@ code {
     }
     .video-camera-item {
       &::after {
-        background-color: $background_transparent;
+        background-color: transparent;
         opacity: 1;
       }
       .name {
@@ -2223,27 +2223,26 @@ code {
       z-index: 9999;
       left: 0;
       right: 0;
-      background-color: $background_black_50;
+      background-color: rgba(0, 0, 0, 0.5);
       text-align: center;
       transition: all 0.3s ease-in;
       transform: rotate(0deg);
       i {
         transform: rotate(0deg);
-        color: $text_white;
+        color: #fff;
       }
       &:hover {
-        background-color: $background_black_50;
+        background-color: rgba(0, 0, 0, 0.5);
       }
     }
     button.next-cam {
       position: absolute;
-      top: 0;
       width: 100%;
       height: 32px;
       z-index: 9999;
       left: 0;
       right: 0;
-      background-color: $background_black_50;
+      background-color: rgba(0, 0, 0, 0.5);
       text-align: center;
       transition: all 0.3s ease-in;
       transform: rotate(0deg);
@@ -2251,10 +2250,10 @@ code {
       top: auto;
       i {
         transform: rotate(0deg);
-        color: $text_white;
+        color: #fff;
       }
       &:hover {
-        background-color: $background_black_50;
+        background-color: rgba(0, 0, 0, 0.5);
       }
     }
     .all-webcam-wrapper-inner {
@@ -2308,7 +2307,7 @@ code {
     justify-content: center;
     > div {
       border-radius: 9999px;
-      background-color: $background_black_20;
+      background-color: rgb(0 0 0 / 0.2);
       padding: 0.5rem;
       height: 1.25rem;
       display: flex;
@@ -2349,8 +2348,7 @@ button.previous-cam {
   width: 120px;
   height: 30px;
   z-index: 1;
-  left: -8px;
-  background-color: $background_black_50;
+  background-color: rgba(0, 0, 0, 0.5);
   text-align: center;
   transition: all 0.3s ease-in;
   transform: rotate(-90deg);
@@ -2363,8 +2361,7 @@ button.next-cam {
   width: 120px;
   height: 30px;
   z-index: 1;
-  left: -8px;
-  background-color: $background_black_50;
+  background-color: rgba(0, 0, 0, 0.5);
   text-align: center;
   transition: all 0.3s ease-in;
   transform: rotate(-90deg);
@@ -2531,7 +2528,7 @@ button.next-cam {
   font-size: 12px;
   top: 5px;
   select#select-camera-num {
-    background-color: $background_transparent;
+    background-color: transparent;
     border: 1px solid #333;
     margin-left: 5px;
     outline: none;
@@ -2547,14 +2544,14 @@ button.next-cam {
     background: none;
     width: 100%;
     &::-webkit-slider-runnable-track {
-      background-color: $background_gray_50;
+      background-color: rgba(128, 128, 128, 0.5);
       height: 10px;
       border-radius: 5px;
       border: 1px solid transparent;
       @apply dark:bg-secondaryColor/90;
     }
     &::-moz-range-track {
-      background-color: $background_gray_50;
+      background-color: rgba(128, 128, 128, 0.5);
       height: 10px;
       border-radius: 5px;
       border: none;
@@ -2604,8 +2601,8 @@ button.next-cam {
 }
 .breakout-room-list-item {
   .timer {
-    border-color: $border_white;
-    color: $text_white;
+    border-color: #fff;
+    color: #fff;
     border-radius: 8px;
     margin-left: 5px;
   }
@@ -2628,7 +2625,7 @@ button.next-cam {
       content: '';
       width: 100%;
       height: 100%;
-      background-color: $background_dark_blue;
+      background-color: #001222;
       opacity: 0.7;
     }
   }
@@ -2638,7 +2635,7 @@ button.next-cam {
       content: '';
       width: 100%;
       height: 100%;
-      background-color: $background_dark_blue;
+      background-color: #001222;
       opacity: 0.7;
     }
   }
@@ -2648,7 +2645,7 @@ button.next-cam {
       content: '';
       width: 100%;
       height: 100%;
-      background-color: $background_dark_blue;
+      background-color: #001222;
       opacity: 0.7;
     }
   }
@@ -2665,7 +2662,7 @@ button.next-cam {
   }
   .Toastify__toast {
     background: #222;
-    color: $text_white;
+    color: #fff;
   }
   button.Toastify__close-button {
     svg {
@@ -2677,7 +2674,7 @@ button.next-cam {
   .wb-page-navigation {
     button {
       &:disabled {
-        background-color: $background_gray !important;
+        background-color: var(--button-gray-1) !important;
       }
     }
   }
@@ -2688,9 +2685,9 @@ button.next-cam {
     opacity: 0.1;
   }
   .select-camera-number {
-    color: $text_light;
+    color: #a7cced;
     select#select-camera-num {
-      border-color: $border_light;
+      border-color: #a7cced;
     }
   }
 }
@@ -2829,8 +2826,6 @@ aside {
   #main-area.fullWidthMainArea {
     .middle-fullscreen-wrapper {
       .all-webcam-wrapper {
-        bottom: 0;
-        padding-top: 0;
         position: absolute;
         height: auto;
         width: 100%;
@@ -3203,7 +3198,7 @@ aside {
       content: '';
       height: 4px;
       width: 100%;
-      background-color: $background_blue_normal;
+      background-color: rgb(0 77 144 / 0.2);
     }
   }
 }

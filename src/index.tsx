@@ -7,6 +7,19 @@ import { DndProvider } from 'react-dnd';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/index.scss';
+import './styles/min_1024.scss';
+import './styles/max_w_980_max_h_450.scss';
+import './styles/max_h_720.scss';
+import './styles/max_1279.scss';
+import './styles/max_1023.scss';
+import './styles/max_767.scss';
+import './styles/min_641.scss';
+import './styles/max_640.scss';
+import './styles/max_575.scss';
+import './styles/max_370.scss';
+import './styles/min_1800.scss';
+import './styles/max_1025.scss';
+import './styles/min_641_max_1025.scss';
 import './helpers/i18n';
 
 import { store } from './store';

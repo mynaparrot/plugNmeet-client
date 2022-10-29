@@ -1,0 +1,44 @@
+@media screen and (max-width: 767px) {
+  .transition-right-panel {
+    .messageModule-wrapper {
+      width: 100%;
+    }
+    width: 100%;
+    .message-form {
+      width: 100%;
+    }
+  }
+  .transition-left-panel {
+    width: 100%;
+    #main-left-panel {
+      width: 100%;
+    }
+  }
+  .is-mobile.portrait-device {
+    #main-area {
+      height: calc(100vh - 180px);
+    }
+  }
+  .message-form {
+    .btns {
+      width: 70px;
+      padding: 5px 0;
+      button {
+        width: 50px;
+        margin-bottom: 10px;
+        i {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+  .private-m-tab {
+    &::before {
+      position: absolute;
+      content: '';
+      height: 4px;
+      width: 100%;
+      background-color: rgb(0 77 144 / 0.2);
+    }
+  }
+}

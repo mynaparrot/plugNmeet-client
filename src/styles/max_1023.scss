@@ -1,0 +1,212 @@
+@media screen and (max-width: 1023px) {
+  .transition-left-panel {
+    position: absolute;
+    height: 100%;
+    z-index: 9999;
+  }
+  .transition-right-panel {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    z-index: 9999;
+    .message-form {
+      position: absolute;
+    }
+    .messageModule-wrapper {
+      height: calc(100% - 72px);
+    }
+  }
+  #main-area {
+    .share-screen-wrapper.is-share-screen-running {
+      .all-webcam-wrapper {
+        position: absolute;
+        height: auto;
+        width: 100%;
+        z-index: 9;
+        padding: 0;
+        bottom: -5px;
+        .all-webcam-wrapper-inner {
+          margin: 0;
+          padding: 0 15px;
+          flex-wrap: nowrap;
+          gap: 0;
+          .video-camera-item {
+            width: 100%;
+            margin: 5px;
+            height: 100px;
+            padding-bottom: 0;
+            max-width: 150px;
+            .connection-status {
+              display: none;
+            }
+            .mic-status {
+              display: none;
+            }
+            .name {
+              font-size: 12px;
+              left: 5px;
+            }
+            .camera-video-player {
+              button {
+                right: 0;
+                top: 3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #main-area.fullWidthMainArea {
+    .middle-fullscreen-wrapper {
+      .all-webcam-wrapper {
+        position: absolute;
+        height: auto;
+        width: 100%;
+        z-index: 9;
+        padding: 0;
+        bottom: -5px;
+        bottom: 0;
+        padding-top: 0;
+        .all-webcam-wrapper-inner {
+          margin: 0;
+          padding: 0 15px;
+          flex-wrap: nowrap;
+          gap: 0;
+          .video-camera-item {
+            width: 100%;
+            margin: 5px;
+            height: 100px;
+            padding-bottom: 0;
+            max-width: 150px;
+          }
+        }
+      }
+    }
+    .all-webcam-wrapper.vertical-webcams {
+      .all-webcam-wrapper-inner {
+        display: flex !important;
+        justify-content: center;
+      }
+    }
+    .all-webcam-wrapper-inner {
+      button.next-cam {
+        right: -42px;
+        width: 100px;
+        left: auto;
+        height: 20px;
+        top: 45px;
+        transform: rotate(-90deg);
+      }
+    }
+    .all-webcam-wrapper {
+      .all-webcam-wrapper-inner {
+        button.previous-cam {
+          right: auto;
+          width: 100px;
+          left: -42px;
+          height: 20px;
+          top: 45px;
+          transform: rotate(-90deg);
+        }
+      }
+    }
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      padding-left: 0;
+    }
+  }
+  .share-screen-wrapper.is-share-screen-running {
+    position: relative;
+    .screen-share-video {
+      padding-left: 15px;
+      padding-bottom: calc(100vh - 105px) !important;
+      video.video-player {
+        width: calc(100% - 30px);
+        height: calc(100% - 85px);
+        top: 0;
+      }
+      button {
+        bottom: 155px;
+        position: fixed;
+      }
+    }
+  }
+  .Toastify__toast-container {
+    .Toastify__toast-body {
+      padding: 0;
+    }
+    .Toastify__toast {
+      min-height: 40px;
+      font-size: 14px;
+    }
+  }
+  #main-area.hideParticipantsPanel.showScreenShare {
+    .active-speakers-wrap {
+      padding: 0;
+      flex-wrap: wrap;
+      div {
+        font-size: 10px;
+        i {
+          font-size: 7px;
+        }
+      }
+    }
+  }
+  .pin-webcam {
+    display: none;
+  }
+  #main-right-panel {
+    background: rgb(235, 248, 255);
+    background: linear-gradient(
+      150deg,
+      rgba(235, 248, 255, 1) 0%,
+      rgba(255, 255, 255, 1) 10%,
+      rgba(243, 237, 249, 1) 67%,
+      rgba(214, 231, 255, 1) 100%
+    );
+  }
+  .dark {
+    #main-right-panel {
+      background: #001222;
+    }
+  }
+  .plugNmeet-app {
+    header#main-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+    position: relative;
+    height: 100vh;
+    footer#main-footer {
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      z-index: 99999;
+    }
+    #main-area {
+      position: fixed;
+      width: 100%;
+      height: calc(100% - 105px) !important;
+      top: 50px;
+    }
+    #main-area.isRecorder {
+      height: 100% !important;
+      top: 0;
+    }
+  }
+  .landscape-device.is-mobile {
+    #main-area.fullWidthMainArea {
+      .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        padding-left: 130px;
+      }
+    }
+  }
+  .private-m-tab {
+    width: calc(100vh - 180px);
+  }
+  .excalidraw-wrapper {
+    margin-top: 0.5rem;
+    height: calc(100% - 20px);
+  }
+}
