@@ -119,7 +119,7 @@ const App = () => {
         } else {
           setError({
             title: t('app.verification-failed-title'),
-            text: t(res.msg as any),
+            text: t(res.msg),
           });
         }
       };

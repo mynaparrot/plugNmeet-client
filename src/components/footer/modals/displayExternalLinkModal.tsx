@@ -50,7 +50,7 @@ const DisplayExternalLinkModal = () => {
     try {
       url = new URL(link);
     } catch (_) {
-      setErrorMsg(t('external-display-link-display.link-invalid'));
+      setErrorMsg(t('external-display-link-display.link-invalid').toString());
       return;
     }
 
@@ -90,7 +90,7 @@ const DisplayExternalLinkModal = () => {
 
     if (!res.status) {
       toast.update(id, {
-        render: t(res.msg as any),
+        render: t(res.msg),
         type: 'error',
         isLoading: false,
         autoClose: 1000,

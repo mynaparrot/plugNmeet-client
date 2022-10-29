@@ -310,7 +310,7 @@ export default class ConnectLivekit
 
   private onDisconnected = (reason?: DisconnectReason) => {
     this.errorState({
-      title: i18n.t('notifications.room-disconnected-title' as any),
+      title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
     this.roomConnectionStatusState('disconnected');
@@ -321,44 +321,38 @@ export default class ConnectLivekit
   };
 
   private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {
-    let msg = i18n.t('notifications.room-disconnected-unknown' as any, {
+    let msg = i18n.t('notifications.room-disconnected-unknown', {
       code: 'UNKNOWN_REASON',
     });
 
     switch (reason) {
       case DisconnectReason.CLIENT_INITIATED:
-        msg = i18n.t(
-          'notifications.room-disconnected-client-initiated' as any,
-          {
-            code: 'CLIENT_INITIATED',
-          },
-        );
+        msg = i18n.t('notifications.room-disconnected-client-initiated', {
+          code: 'CLIENT_INITIATED',
+        });
         break;
       case DisconnectReason.DUPLICATE_IDENTITY:
-        msg = i18n.t('notifications.room-disconnected-duplicate-entry' as any, {
+        msg = i18n.t('notifications.room-disconnected-duplicate-entry', {
           code: 'DUPLICATE_IDENTITY',
         });
         break;
       case DisconnectReason.SERVER_SHUTDOWN:
-        msg = i18n.t('notifications.room-disconnected-server-shutdown' as any, {
+        msg = i18n.t('notifications.room-disconnected-server-shutdown', {
           code: 'SERVER_SHUTDOWN',
         });
         break;
       case DisconnectReason.PARTICIPANT_REMOVED:
-        msg = i18n.t(
-          'notifications.room-disconnected-participant-removed' as any,
-          {
-            code: 'PARTICIPANT_REMOVED',
-          },
-        );
+        msg = i18n.t('notifications.room-disconnected-participant-removed', {
+          code: 'PARTICIPANT_REMOVED',
+        });
         break;
       case DisconnectReason.ROOM_DELETED:
-        msg = i18n.t('notifications.room-disconnected-room-ended' as any, {
+        msg = i18n.t('notifications.room-disconnected-room-ended', {
           code: 'ROOM_ENDED',
         });
         break;
       case DisconnectReason.STATE_MISMATCH:
-        msg = i18n.t('notifications.room-disconnected-state-mismatch' as any, {
+        msg = i18n.t('notifications.room-disconnected-state-mismatch', {
           code: 'STATE_MISMATCH',
         });
         break;

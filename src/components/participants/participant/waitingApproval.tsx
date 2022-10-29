@@ -44,7 +44,7 @@ const WaitingApproval = ({
         type: 'info',
       });
     } else {
-      toast(t(res.msg as any), {
+      toast(t(res.msg), {
         type: 'error',
       });
     }

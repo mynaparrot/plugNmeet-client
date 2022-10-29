@@ -31,12 +31,16 @@ const DirectLink = () => {
     e.preventDefault();
 
     if (isEmpty(playBackUrl)) {
-      setErrorMsg(t('footer.notice.external-media-player-url-required'));
+      setErrorMsg(
+        t('footer.notice.external-media-player-url-required').toString(),
+      );
       return;
     }
 
     if (!ReactPlayer.canPlay(playBackUrl)) {
-      setErrorMsg(t('footer.notice.external-media-player-url-invalid'));
+      setErrorMsg(
+        t('footer.notice.external-media-player-url-invalid').toString(),
+      );
       return;
     }
 
@@ -65,7 +69,7 @@ const DirectLink = () => {
 
     if (!res.status) {
       toast.update(id, {
-        render: t(res.msg as any),
+        render: t(res.msg),
         type: 'error',
         isLoading: false,
         autoClose: 1000,

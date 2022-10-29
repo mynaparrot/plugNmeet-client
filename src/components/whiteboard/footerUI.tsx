@@ -190,7 +190,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
         type: 'info',
       });
     } else {
-      toast(t(res.msg as any), {
+      toast(t(res.msg), {
         toastId: 'lock-setting-status',
         type: 'error',
       });

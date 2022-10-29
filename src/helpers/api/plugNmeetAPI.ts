@@ -1,5 +1,6 @@
 import axios, { ResponseType } from 'axios';
 import { store } from '../../store';
+import { CommonResponse } from '../proto/plugnmeet_common_api_pb';
 
 const API = axios.create({
   baseURL: (window as any).PLUG_N_MEET_SERVER_URL + '/api',
@@ -36,7 +37,19 @@ const sendAPIRequest = async (
     });
     return res.data;
   } catch (e: any) {
-    console.error(e.response);
+    console.error(e.message);
+    if (!json_encode) {
+      const res = new CommonResponse({
+        status: false,
+        msg: e.code + ': ' + e.message,
+      });
+      return res.toBinary();
+    } else {
+      return {
+        status: false,
+        msg: e.code + ': ' + e.message,
+      };
+    }
   }
 };
 
