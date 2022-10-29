@@ -69,7 +69,7 @@ const DirectLink = () => {
 
     if (!res.status) {
       toast.update(id, {
-        render: t(res.msg as any),
+        render: t(res.msg),
         type: 'error',
         isLoading: false,
         autoClose: 1000,

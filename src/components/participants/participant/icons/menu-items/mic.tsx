@@ -108,7 +108,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
         },
       );
     } else {
-      toast(t(res.msg as any), {
+      toast(t(res.msg), {
         toastId: 'asked-status',
         type: 'error',
       });
