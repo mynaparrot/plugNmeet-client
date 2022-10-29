@@ -23,7 +23,7 @@ const MyBreakoutRooms = () => {
   useEffect(() => {
     if (!isLoading && data) {
       if (!data.status) {
-        toast(t(data.msg as any), {
+        toast(t(data.msg), {
           type: 'error',
         });
         return;

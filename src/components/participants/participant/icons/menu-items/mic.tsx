@@ -62,7 +62,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
         msg:
           t('left-panel.menus.notice.asked-you-to', {
             name: session.currentUser?.name,
-          }) + t(task as any),
+          }) + t(task),
       },
     });
 
@@ -71,7 +71,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     toast(
       t('left-panel.menus.notice.you-have-asked', {
         name: participant?.name,
-      }) + t(task as any),
+      }) + t(task),
       {
         toastId: 'asked-status',
         type: 'info',

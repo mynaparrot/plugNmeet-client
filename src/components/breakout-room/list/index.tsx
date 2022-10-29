@@ -26,7 +26,7 @@ const BreakoutRoomLists = () => {
         });
         dispatch(updateShowManageBreakoutRoomModal(false));
       } else {
-        toast(t(data.msg as any), {
+        toast(t(data.msg), {
           type: 'error',
         });
       }
