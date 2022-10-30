@@ -1,3 +1,4 @@
+//  KeyFrames Animations
 @keyframes refresh {
   0% {
     opacity: 1;
@@ -93,6 +94,9 @@
     opacity: 0;
   }
 }
+//  KeyFrames Animations
+
+// Common SCSS
 body {
   margin: 0;
   font-family: 'Nunito Sans', sans-serif;
@@ -133,6 +137,9 @@ code {
 .border-secondaryColor {
   color: $secondaryColor;
 }
+// Common SCSS
+
+// Gradient pattern
 .multi-gradient {
   background: rgb(235, 248, 255);
   background: linear-gradient(
@@ -143,6 +150,9 @@ code {
     rgba(214, 231, 255, 1) 100%
   );
 }
+// Gradient pattern
+
+// ScrollBar SCSS
 .scrollBar {
   &::-webkit-scrollbar-thumb {
     background-color: $secondaryColor;
@@ -172,6 +182,9 @@ code {
     width: 100%;
   }
 }
+// ScrollBar SCSS
+
+// Private Message Area
 .private-m-tab {
   .inner2 {
     &::-webkit-scrollbar-track {
@@ -220,6 +233,9 @@ code {
     text-align: right;
   }
 }
+// Private Message Area
+
+// Webcam Area SCSS
 .all-webcam-wrapper {
   height: 100%;
   display: flex;
@@ -466,6 +482,8 @@ code {
     height: 100%;
   }
 }
+// Webcam Area SCSS
+
 #main-area.showScreenShare {
   .all-webcam-wrapper {
     .video-camera-item {
@@ -591,6 +609,8 @@ code {
     }
   }
 }
+
+// Camera Modules
 .pin-webcam {
   display: flex;
 }
@@ -632,6 +652,9 @@ code {
     align-items: flex-start;
   }
 }
+// Camera Modules
+
+// Tool Tip
 .tooltip {
   visibility: hidden;
   position: absolute;
@@ -644,6 +667,8 @@ code {
     }
   }
 }
+// Tool Tip
+
 #main-footer {
   .record {
     animation-name: pulse;
@@ -652,6 +677,7 @@ code {
     animation-timing-function: linear;
   }
 }
+//  Next/Previous buttons on Desktop
 button.previous-cam {
   position: absolute;
   top: 48%;
@@ -679,6 +705,7 @@ button.next-cam {
   right: -50px;
   border-radius: 20px 20px 0 0;
 }
+//  Next/Previous buttons on Desktop
 .message-form {
   background: rgb(214, 231, 255);
   background: linear-gradient(
@@ -687,6 +714,7 @@ button.next-cam {
     rgba(214, 231, 255, 1) 100%
   );
 }
+//  Recorder CSS
 #main-area.isRecorder {
   .all-webcam-wrapper {
     height: 100vh;
@@ -700,6 +728,7 @@ button.next-cam {
     }
   }
 }
+//  Recorder CSS
 .Toastify__toast-body {
   margin: 0;
   font-weight: 300;
@@ -712,6 +741,7 @@ button.next-cam {
     }
   }
 }
+// System Message
 .all-MessageModule-wrap {
   .message-item {
     .system {
@@ -722,6 +752,9 @@ button.next-cam {
     }
   }
 }
+// System Message
+
+// Share Screen Running
 .share-screen-wrapper.is-share-screen-running {
   display: flex;
   .screen-share-video {
@@ -741,6 +774,8 @@ button.next-cam {
     }
   }
 }
+// Share Screen Running
+
 .Toastify__toast-container {
   z-index: 999999;
 }
@@ -844,6 +879,7 @@ button.next-cam {
     outline: none;
   }
 }
+// header volume slider
 .volume-popup-wrapper {
   .range {
     -webkit-appearance: none;
@@ -894,6 +930,7 @@ button.next-cam {
     }
   }
 }
+// header volume slider
 .showParticipantsPanel {
   .active-speakers-wrap {
     z-index: 2;
@@ -928,6 +965,7 @@ button.next-cam {
     }
   }
 }
+// Dark Mode Design Updates
 .dark {
   .main-app-bg {
     &::before {
@@ -1001,9 +1039,11 @@ button.next-cam {
     }
   }
 }
+// Dark Mode Design Updates
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
+// Camera Height/Width fix on Landscape MObile devices
 .landscape-device.is-mobile {
   #main-area.fullWidthMainArea {
     .share-screen-wrapper {
@@ -1065,6 +1105,9 @@ button.next-cam {
     }
   }
 }
+// Camera Height/Width fix on Landscape MObile devices
+
+// Full width Modules height Fix for Portrait Mobile devices
 .portrait-device.is-mobile {
   #main-area.fullWidthMainArea {
     .verticalsWebcamsActivated {
@@ -1087,10 +1130,12 @@ button.next-cam {
     }
   }
 }
+// Full width Modules height Fix for Portrait Mobile devices
 aside {
   box-shadow: 0 2px 5px #efefefdb !important;
   width: 100% !important;
 }
+// Camera width on Landscape Tablet
 .landscape-device.is-tablet {
   .camera-row-1.total-items-5.inner-items-2 {
     .video-camera-item {
@@ -1118,7 +1163,9 @@ aside {
     }
   }
 }
+// Camera width on Landscape Tablet
 .portrait-device.is-tablet {
+  // Camera height on Portrait Tablet
   .camera-row-0.total-items-2 {
     .video-camera-item {
       width: 100%;
@@ -1133,6 +1180,7 @@ aside {
     }
     flex-wrap: wrap;
   }
+  // Camera height on Portrait Tablet
   #main-area.fullWidthMainArea {
     .middle-fullscreen-wrapper {
       .all-webcam-wrapper {
