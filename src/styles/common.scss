@@ -1,101 +1,3 @@
-//  KeyFrames Animations
-@keyframes refresh {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
-  }
-}
-@-webkit-keyframes wobble {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  15% {
-    -webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
-    transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
-  }
-  30% {
-    -webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
-    transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
-  }
-  45% {
-    -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
-    transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
-  }
-  60% {
-    -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
-    transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
-  }
-  75% {
-    -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
-    transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
-  }
-  100% {
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-@keyframes wobble {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  15% {
-    -webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
-    transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
-  }
-  30% {
-    -webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
-    transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
-  }
-  45% {
-    -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
-    transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
-  }
-  60% {
-    -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
-    transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
-  }
-  75% {
-    -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
-    transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
-  }
-  100% {
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 5px 0 rgba(0, 77, 144, 0.3);
-  }
-  65% {
-    box-shadow: 0 0 5px 13px rgb(242, 242, 242);
-  }
-  90% {
-    box-shadow: 0 0 5px 13px rgb(242, 242, 242);
-  }
-}
-@keyframes lds-ripple2 {
-  0% {
-    top: 16px;
-    left: 16px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0;
-    left: 0;
-    width: 30px;
-    height: 30px;
-    opacity: 0;
-  }
-}
-//  KeyFrames Animations
-
 // Common SCSS
 body {
   margin: 0;
@@ -106,18 +8,6 @@ body {
 }
 code {
   font-family: 'Nunito Sans', sans-serif;
-}
-.shake {
-  -webkit-animation-name: wobble;
-  animation-name: wobble;
-  -webkit-animation-duration: 0.8s;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
-  -webkit-transform-origin: 50% 100%;
-  display: inline-block;
-}
-.hiddenAnimation {
-  animation: refresh 0.5s infinite;
 }
 .primaryColor {
   color: $primaryColor;
@@ -237,37 +127,45 @@ code {
 
 // Webcam Area SCSS
 .all-webcam-wrapper {
-  height: 100%;
-  display: flex;
-  align-items: center;
+  @apply h-full flex items-center;
+  .all-webcam-wrapper-inner {
+    @apply w-full h-full p-5 grid gap-2;
+    .video-camera-item.admin {
+      order: 1;
+    }
+    .video-camera-item.participants {
+      order: 2;
+    }
+    .video-camera-item.admin.speaking {
+      &::before {
+        border-color: #004e91;
+      }
+    }
+  }
   .all-webcam-wrapper {
     &::-webkit-scrollbar {
-      display: none;
+      @apply hidden;
     }
   }
   button.previous-cam {
+    @apply absolute top-[48%] w-[120px] h-[30px] z-[1] bg-black/50 text-center transition-all -rotate-90 -left-[50px] rounded-tlblD;
     i {
-      width: 20px;
-      margin: auto;
-      transition: all 0.3s ease-in;
-      color: #fff;
+      @apply w-[20px] m-auto transition-all text-white;
     }
     &:hover {
       i {
-        color: #fff;
+        @apply text-white;
       }
     }
   }
   button.next-cam {
+    @apply absolute top-[48%] w-[120px] h-[30px] z-[1] bg-black/50 text-center transition-all -rotate-90 left-auto -right-[50px] rounded-trbrD;
     i {
-      width: 20px;
-      margin: auto;
-      transition: all 0.3s ease-in;
-      color: #fff;
+      @apply w-[20px] m-auto transition-all text-white;
     }
     &:hover {
       i {
-        color: #fff;
+        @apply text-white;
       }
     }
   }
@@ -281,24 +179,6 @@ code {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
-.all-webcam-wrapper-inner {
-  width: 100%;
-  height: 100%;
-  padding: 1.25rem;
-  display: grid;
-  gap: 0.5rem;
-  .video-camera-item.admin {
-    order: 1;
-  }
-  .video-camera-item.participants {
-    order: 2;
-  }
-  .video-camera-item.admin.speaking {
-    &::before {
-      border-color: #004e91;
-    }
-  }
 }
 .camera-row-0 {
   display: flex;
@@ -436,50 +316,45 @@ code {
   }
 }
 .video-camera-item {
-  width: 100%;
-  height: 100%;
-  border-radius: 1rem;
-  overflow: hidden;
-  z-index: 1;
-  background-color: #000;
+  @apply w-full h-full rounded-2xl overflow-hidden z-[1] bg-black;
   .loading {
-    top: 50%;
-    transform: translateY(-50%);
+    @apply top-1/2 -translate-y-1/2;
   }
   &::before {
-    position: absolute;
-    content: '';
-    width: 100%;
-    height: 100%;
-    border: 5px solid transparent;
-    z-index: 999;
-    border-radius: 15px;
+    @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
   }
   &::after {
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 100%;
-    z-index: 99;
-    background: rgb(0, 0, 0);
     background: linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.4) 0%,
       rgba(0, 0, 0, 0.1) 50%
     );
+    @apply absolute content-[''] w-full h-full z-[99];
   }
   .name {
-    position: absolute;
-    bottom: 10px;
-    z-index: 999;
-    color: #fff;
-    left: 0.75rem;
-    font-size: 0.875rem;
-    line-height: 1;
+    @apply absolute bottom-[10px] z-[999] text-white left-3 text-sm leading-[1];
   }
-  video.camera-video {
-    width: 100%;
-    height: 100%;
+  .camera-modules {
+    .camera-video-player {
+      @apply flex h-full w-full absolute;
+      video.camera-video {
+        @apply w-full h-full;
+      }
+    }
+    .status {
+      @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
+      > div {
+        @apply rounded-full bg-black/20 p-2 h-5 flex items-center justify-center;
+      }
+    }
+    .status.PinWebcam {
+      @apply right-auto left-3 top-3 items-start;
+    }
+  }
+}
+.video-camera-item.speaking {
+  &::before {
+    border-color: $secondaryColor;
   }
 }
 // Webcam Area SCSS
@@ -544,49 +419,13 @@ code {
       }
     }
     button.previous-cam {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      height: 32px;
-      z-index: 9999;
-      left: 0;
-      right: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      text-align: center;
-      transition: all 0.3s ease-in;
-      transform: rotate(0deg);
-      i {
-        transform: rotate(0deg);
-        color: #fff;
-      }
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-      }
+      @apply top-0 w-full left-0 rotate-0;
     }
     button.next-cam {
-      position: absolute;
-      width: 100%;
-      height: 32px;
-      z-index: 9999;
-      left: 0;
-      right: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      text-align: center;
-      transition: all 0.3s ease-in;
-      transform: rotate(0deg);
-      bottom: 0;
-      top: auto;
-      i {
-        transform: rotate(0deg);
-        color: #fff;
-      }
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-      }
+      @apply absolute w-full left-0 rotate-0 bottom-0 top-auto;
     }
     .all-webcam-wrapper-inner {
-      padding: 0 5px;
-      display: block !important;
+      @apply block py-0 px-[5px];
     }
   }
   .middle-fullscreen-wrapper.verticalsWebcamsActivated {
@@ -611,47 +450,7 @@ code {
 }
 
 // Camera Modules
-.pin-webcam {
-  display: flex;
-}
-.video-camera-item.speaking {
-  &::before {
-    border-color: $secondaryColor;
-  }
-}
-.camera-video-player {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-}
-.camera-modules {
-  .status {
-    position: absolute;
-    z-index: 999;
-    border-radius: 9999px;
-    bottom: 0.75rem;
-    right: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    > div {
-      border-radius: 9999px;
-      background-color: rgb(0 0 0 / 0.2);
-      padding: 0.5rem;
-      height: 1.25rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-  .status.PinWebcam {
-    right: auto;
-    left: 0.75rem;
-    top: 0.75rem;
-    align-items: flex-start;
-  }
-}
+
 // Camera Modules
 
 // Tool Tip
@@ -677,35 +476,6 @@ code {
     animation-timing-function: linear;
   }
 }
-//  Next/Previous buttons on Desktop
-button.previous-cam {
-  position: absolute;
-  top: 48%;
-  width: 120px;
-  height: 30px;
-  z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  transition: all 0.3s ease-in;
-  transform: rotate(-90deg);
-  left: -50px;
-  border-radius: 0 0 20px 20px;
-}
-button.next-cam {
-  position: absolute;
-  top: 48%;
-  width: 120px;
-  height: 30px;
-  z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  transition: all 0.3s ease-in;
-  transform: rotate(-90deg);
-  left: auto;
-  right: -50px;
-  border-radius: 20px 20px 0 0;
-}
-//  Next/Previous buttons on Desktop
 .message-form {
   background: rgb(214, 231, 255);
   background: linear-gradient(
@@ -736,7 +506,7 @@ button.next-cam {
 .vertical-webcams {
   .all-webcam-wrapper-inner {
     .video-camera-item {
-      height: calc(33.33% - 8px);
+      height: calc(33.33% - 10px);
       margin: 8px 0;
     }
   }
@@ -965,81 +735,6 @@ button.next-cam {
     }
   }
 }
-// Dark Mode Design Updates
-.dark {
-  .main-app-bg {
-    &::before {
-      position: absolute;
-      content: '';
-      width: 100%;
-      height: 100%;
-      background-color: #001222;
-      opacity: 0.7;
-    }
-  }
-  .waiting-room {
-    &::before {
-      position: absolute;
-      content: '';
-      width: 100%;
-      height: 100%;
-      background-color: #001222;
-      opacity: 0.7;
-    }
-  }
-  .error-app-bg {
-    &::before {
-      position: absolute;
-      content: '';
-      width: 100%;
-      height: 100%;
-      background-color: #001222;
-      opacity: 0.7;
-    }
-  }
-  .multi-gradient {
-    background: #031a3e;
-  }
-  #main-area.fullWidthMainArea {
-    .all-webcam-wrapper {
-      background: #031a3e;
-    }
-  }
-  .message-form {
-    background: transparent;
-  }
-  .Toastify__toast {
-    background: #222;
-    color: #fff;
-  }
-  button.Toastify__close-button {
-    svg {
-      path {
-        fill: #fff;
-      }
-    }
-  }
-  .wb-page-navigation {
-    button {
-      &:disabled {
-        background-color: var(--button-gray-1) !important;
-      }
-    }
-  }
-  .header-before-start {
-    opacity: 0.4;
-  }
-  .header-before-end {
-    opacity: 0.1;
-  }
-  .select-camera-number {
-    color: #a7cced;
-    select#select-camera-num {
-      border-color: #a7cced;
-    }
-  }
-}
-// Dark Mode Design Updates
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
@@ -1184,29 +879,17 @@ aside {
   #main-area.fullWidthMainArea {
     .middle-fullscreen-wrapper {
       .all-webcam-wrapper {
-        position: absolute;
-        height: auto;
-        width: 100%;
-        z-index: 9;
-        padding: 0;
-        bottom: -5px;
+        @apply absolute h-auto w-full z-[9] p-0 -bottom-[5px];
         .all-webcam-wrapper-inner {
-          margin: 0;
-          padding: 0 15px;
-          flex-wrap: nowrap;
-          gap: 0;
+          @apply m-0 py-0 px-[15px] flex-wrap gap-0;
           .video-camera-item {
-            width: 100%;
-            margin: 5px;
-            height: 100px;
-            padding-bottom: 0;
-            max-width: 150px;
+            @apply w-full m-[5px] h-[100px] pb-0 max-w-[150px];
           }
         }
       }
     }
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-      padding-left: 0;
+      @apply pl-0;
     }
     .all-webcam-wrapper.vertical-webcams {
       .all-webcam-wrapper-inner {
@@ -1216,6 +899,6 @@ aside {
     }
   }
   .excalidraw-wrapper {
-    margin-top: 1rem;
+    @apply mt-4;
   }
 }

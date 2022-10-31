@@ -21,6 +21,10 @@ module.exports = {
         darkSecondary3: '#031A3E',
         darkText: '#A7CCED',
       },
+      borderRadius: {
+        tlblD: '0 0 20px 20px',
+        trbrD: '20px 20px 0 0',
+      },
     },
   },
   plugins: [],
