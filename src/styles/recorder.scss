@@ -1,0 +1,24 @@
+//  Recorder CSS
+.plugNmeet-app {
+  #main-area.isRecorder {
+    .all-webcam-wrapper {
+      @apply h-screen relative;
+    }
+  }
+  #main-area.fullWidthMainArea.isRecorder {
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      @apply pl-0;
+    }
+  }
+  .isRecorder {
+    .transition-right-panel {
+      @apply relative;
+    }
+  }
+  .isRecorder.showScreenShare {
+    .middle-area {
+      @apply flex items-center justify-center;
+    }
+  }
+}
+//  Recorder CSS

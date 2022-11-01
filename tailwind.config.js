@@ -24,6 +24,8 @@ module.exports = {
       borderRadius: {
         tlblD: '0 0 20px 20px',
         trbrD: '20px 20px 0 0',
+        MSG: '0 15px 15px',
+        MSGME: '15px 0 15px 15px',
       },
     },
   },

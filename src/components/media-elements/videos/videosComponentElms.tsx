@@ -28,7 +28,7 @@ export interface VideoParticipantType {
 
 const MOBILE_PER_PAGE = 6,
   TABLET_PER_PAGE = 9,
-  DESKTOP_PER_PAGE = 1,
+  DESKTOP_PER_PAGE = 24,
   VERTICAL_PER_PAGE = 3;
 
 const screenWidthSelector = createSelector(

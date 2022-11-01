@@ -45,31 +45,28 @@ code {
 // ScrollBar SCSS
 .scrollBar {
   &::-webkit-scrollbar-thumb {
-    background-color: $secondaryColor;
-    border: none;
-    border-radius: 5px;
+    @apply bg-secondaryColor border-none rounded-[5px];
   }
   &::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0.15);
+    @apply bg-[rgba(0,0,0,0.15)];
   }
   &::-webkit-scrollbar {
-    width: 8px;
+    @apply w-2;
   }
 }
 .scrollBar2 {
   &::-webkit-scrollbar {
-    width: 2px;
+    @apply w-[2px];
   }
 }
 .scrollBar4 {
   &::-webkit-scrollbar {
-    width: 4px;
+    @apply w-1;
   }
 }
 .scrollBar3 {
   &::-webkit-scrollbar {
-    height: 8px;
-    width: 100%;
+    @apply h-2 w-full;
   }
 }
 // ScrollBar SCSS
@@ -78,49 +75,49 @@ code {
 .private-m-tab {
   .inner2 {
     &::-webkit-scrollbar-track {
-      background-color: rgb(224, 226, 231);
+      @apply bg-[rgb(224,226,231)];
     }
     &::-webkit-scrollbar {
-      height: 5px;
+      @apply h-[5px];
     }
     &::-webkit-scrollbar-thumb {
-      background-color: $secondaryColor;
-      border: none;
-      border-radius: 5px;
+      @apply bg-secondaryColor border-none rounded-[5px];
     }
   }
 }
 .message-item {
-  p.message-content {
-    padding: 10px;
-    border-radius: 0 15px 15px;
-    overflow-wrap: break-word;
-    font-size: 14px;
-    i.pnm-download {
+  .system {
+    p.message-content {
       font-size: 16px;
-      position: absolute;
-      top: 1px;
-      margin-right: 2px;
+      line-height: 20px;
     }
+  }
+  p.message-content {
+    @apply p-[10px] text-sm break-words rounded-MSG;
     span.download {
-      position: relative;
+      @apply relative;
+      i.pnm-download {
+        @apply text-base absolute -top-[2px] mr-[2px];
+      }
       a {
-        padding-left: 20px;
+        @apply pl-5;
       }
     }
   }
-}
-.content.me {
-  p.message-content {
-    margin-left: auto;
-    border-radius: 15px 0 15px 15px;
-    a {
-      text-decoration: underline;
+  .content.me {
+    @apply w-full;
+    p.message-content {
+      @apply ml-auto rounded-MSGME;
+      i.pnm-download {
+        @apply -top-[1px];
+      }
+      a {
+        @apply underline;
+      }
     }
-  }
-  width: 100%;
-  .name {
-    text-align: right;
+    .name {
+      @apply text-right;
+    }
   }
 }
 // Private Message Area
@@ -128,23 +125,150 @@ code {
 // Webcam Area SCSS
 .all-webcam-wrapper {
   @apply h-full flex items-center;
+  &::-webkit-scrollbar {
+    @apply hidden;
+  }
   .all-webcam-wrapper-inner {
     @apply w-full h-full p-5 grid gap-2;
+    .camera-row-0 {
+      @apply flex gap-2 justify-center;
+    }
+    .camera-row-1 {
+      @apply flex gap-2 justify-center;
+    }
+    .camera-row-2 {
+      @apply flex gap-2 justify-center;
+    }
+    .camera-row-0.total-items-2 {
+      .video-camera-item {
+        @apply w-1/2;
+      }
+    }
+    .camera-row-1.total-items-2 {
+      .video-camera-item {
+        @apply w-1/2;
+      }
+    }
+    .camera-row-0.total-items-3 {
+      .video-camera-item {
+        @apply w-1/3;
+      }
+    }
+    .camera-row-1.total-items-3 {
+      .video-camera-item {
+        @apply w-1/3;
+      }
+    }
+    .camera-row-1.total-items-5.inner-items-2 {
+      .video-camera-item {
+        @apply w-1/3;
+      }
+    }
+    .camera-row-0.total-items-7.inner-items-4 {
+      .video-camera-item {
+        @apply w-1/4;
+      }
+    }
+    .camera-row-1.total-items-7.inner-items-3 {
+      .video-camera-item {
+        @apply w-1/4;
+      }
+    }
+    .camera-row-1.total-items-8.inner-items-4 {
+      .video-camera-item {
+        @apply w-1/4;
+      }
+    }
+    .camera-row-2.total-items-11.inner-items-3 {
+      .video-camera-item {
+        @apply w-1/4;
+      }
+    }
+    .camera-row-2.total-items-10.inner-items-2 {
+      .video-camera-item {
+        @apply w-1/4;
+      }
+    }
+    .camera-row-2.total-items-13.inner-items-3 {
+      .video-camera-item {
+        @apply w-1/5;
+      }
+    }
+    .camera-row-2.total-items-14.inner-items-4 {
+      .video-camera-item {
+        @apply w-1/5;
+      }
+    }
+    .camera-row-2.total-items-15.inner-items-5 {
+      .video-camera-item {
+        @apply w-1/5;
+      }
+    }
+    .camera-row-2.total-items-16.inner-items-4 {
+      .video-camera-item {
+        @apply w-[16.3%];
+      }
+    }
+    .camera-row-2.total-items-17.inner-items-5 {
+      .video-camera-item {
+        @apply w-[16.3%];
+      }
+    }
+    .camera-row-2.total-items-18.inner-items-6 {
+      .video-camera-item {
+        @apply w-[16.3%];
+      }
+    }
+    .camera-row-2.total-items-19.inner-items-5 {
+      .video-camera-item {
+        @apply w-[13.95%];
+      }
+    }
+    .camera-row-2.total-items-20.inner-items-6 {
+      .video-camera-item {
+        @apply w-[13.95%];
+      }
+    }
+    .camera-row-2.total-items-21.inner-items-7 {
+      .video-camera-item {
+        @apply w-[13.95%];
+      }
+    }
+    .camera-row-2.total-items-22.inner-items-6 {
+      .video-camera-item {
+        @apply w-[12.15%];
+      }
+    }
+    .camera-row-2.total-items-23.inner-items-7 {
+      .video-camera-item {
+        @apply w-[12.15%];
+      }
+    }
+    .camera-row-2.total-items-24.inner-items-8 {
+      .video-camera-item {
+        @apply w-[12.15%];
+      }
+    }
+    .camera-row-1.total-items-9.inner-items-4 {
+      .video-camera-item {
+        @apply w-1/5;
+      }
+    }
+    .camera-row-1.total-items-10.inner-items-5 {
+      .video-camera-item {
+        @apply w-1/5;
+      }
+    }
     .video-camera-item.admin {
-      order: 1;
+      @apply order-1;
     }
     .video-camera-item.participants {
-      order: 2;
+      @apply order-2;
     }
     .video-camera-item.admin.speaking {
       &::before {
-        border-color: #004e91;
+        @apply border-[#004e91];
       }
-    }
-  }
-  .all-webcam-wrapper {
-    &::-webkit-scrollbar {
-      @apply hidden;
     }
   }
   button.previous-cam {
@@ -170,150 +294,22 @@ code {
     }
   }
 }
+.fullWidthMainArea {
+  .select-camera-number {
+    @apply hidden;
+  }
+}
+.select-camera-number {
+  @apply flex items-center absolute right-5 text-xs top-0;
+  select#select-camera-num {
+    @apply bg-transparent border border-solid border-[#333] ml-[5px] outline-none;
+  }
+}
 .adminWebcams {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  @apply flex flex-wrap justify-center;
 }
 .otherWebcams {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.camera-row-0 {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-.camera-row-1 {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-.camera-row-2 {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-.camera-row-0.total-items-2 {
-  .video-camera-item {
-    width: 50%;
-  }
-}
-.camera-row-1.total-items-2 {
-  .video-camera-item {
-    width: 50%;
-  }
-}
-.camera-row-0.total-items-3 {
-  .video-camera-item {
-    width: 33.333333%;
-  }
-}
-.camera-row-1.total-items-3 {
-  .video-camera-item {
-    width: 33.333333%;
-  }
-}
-.camera-row-1.total-items-5.inner-items-2 {
-  .video-camera-item {
-    width: 33.333333%;
-  }
-}
-.camera-row-0.total-items-7.inner-items-4 {
-  .video-camera-item {
-    width: 25%;
-  }
-}
-.camera-row-1.total-items-7.inner-items-3 {
-  .video-camera-item {
-    width: 25%;
-  }
-}
-.camera-row-1.total-items-8.inner-items-4 {
-  .video-camera-item {
-    width: 25%;
-  }
-}
-.camera-row-2.total-items-11.inner-items-3 {
-  .video-camera-item {
-    width: 25%;
-  }
-}
-.camera-row-2.total-items-10.inner-items-2 {
-  .video-camera-item {
-    width: 25%;
-  }
-}
-.camera-row-2.total-items-13.inner-items-3 {
-  .video-camera-item {
-    width: 20%;
-  }
-}
-.camera-row-2.total-items-14.inner-items-4 {
-  .video-camera-item {
-    width: 20%;
-  }
-}
-.camera-row-2.total-items-15.inner-items-5 {
-  .video-camera-item {
-    width: 20%;
-  }
-}
-.camera-row-2.total-items-16.inner-items-4 {
-  .video-camera-item {
-    width: 16.3%;
-  }
-}
-.camera-row-2.total-items-17.inner-items-5 {
-  .video-camera-item {
-    width: 16.3%;
-  }
-}
-.camera-row-2.total-items-18.inner-items-6 {
-  .video-camera-item {
-    width: 16.3%;
-  }
-}
-.camera-row-2.total-items-19.inner-items-5 {
-  .video-camera-item {
-    width: 13.95%;
-  }
-}
-.camera-row-2.total-items-20.inner-items-6 {
-  .video-camera-item {
-    width: 13.95%;
-  }
-}
-.camera-row-2.total-items-21.inner-items-7 {
-  .video-camera-item {
-    width: 13.95%;
-  }
-}
-.camera-row-2.total-items-22.inner-items-6 {
-  .video-camera-item {
-    width: 12.15%;
-  }
-}
-.camera-row-2.total-items-23.inner-items-7 {
-  .video-camera-item {
-    width: 12.15%;
-  }
-}
-.camera-row-2.total-items-24.inner-items-8 {
-  .video-camera-item {
-    width: 12.15%;
-  }
-}
-.camera-row-1.total-items-9.inner-items-4 {
-  .video-camera-item {
-    width: 20%;
-  }
-}
-.camera-row-1.total-items-10.inner-items-5 {
-  .video-camera-item {
-    width: 20%;
-  }
+  @apply flex flex-wrap justify-center;
 }
 .video-camera-item {
   @apply w-full h-full rounded-2xl overflow-hidden z-[1] bg-black;
@@ -354,7 +350,7 @@ code {
 }
 .video-camera-item.speaking {
   &::before {
-    border-color: $secondaryColor;
+    @apply border-secondaryColor;
   }
 }
 // Webcam Area SCSS
@@ -364,24 +360,20 @@ code {
     .video-camera-item {
       &:hover {
         &::after {
-          opacity: 1;
+          @apply opacity-100;
         }
       }
       .mic-status {
-        display: none;
+        @apply hidden;
       }
     }
     &::-webkit-scrollbar {
-      display: none;
+      @apply hidden;
     }
   }
 }
 #main-area.fullWidthMainArea {
   .all-webcam-wrapper {
-    position: absolute;
-    width: 270px;
-    height: calc(100vh - 110px);
-    display: block;
     background: rgb(235, 248, 255);
     background: linear-gradient(
       150deg,
@@ -390,32 +382,25 @@ code {
       rgba(243, 237, 249, 1) 67%,
       rgba(214, 231, 255, 1) 100%
     );
-    padding: 30px 0;
-    z-index: 2;
-    left: 0;
+    @apply absolute w-[270px] h-[calc(100vh-110px)] block py-[30px] px-0 z-[2] left-0;
     .adminWebcams {
-      width: 100%;
-      flex-wrap: wrap;
+      @apply w-full flex-wrap;
     }
     .otherWebcams {
-      width: 100%;
-      flex-wrap: wrap;
+      @apply w-full flex-wrap;
     }
     .video-camera-item {
       &::after {
-        background-color: transparent;
-        opacity: 1;
+        @apply bg-transparent opacity-100;
       }
       .name {
-        opacity: 1;
-        top: auto;
-        left: 0.75rem;
+        @apply opacity-100 top-auto left-3;
       }
       .connection-status {
-        display: flex;
+        @apply flex;
       }
       .mic-status {
-        display: flex;
+        @apply flex;
       }
     }
     button.previous-cam {
@@ -429,40 +414,34 @@ code {
     }
   }
   .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-    padding-left: 260px;
+    @apply pl-[260px];
   }
-  .share-screen-wrapper {
-    flex: auto;
-  }
+  // .share-screen-wrapper {
+  //   @apply flex-[auto];
+  // }
   .middle-fullscreen-wrapper {
-    flex: auto;
+    @apply flex-[auto];
   }
 }
-#main-area.hideParticipantsPanel.showScreenShare {
-  .all-webcam-wrapper.total-cam-0 {
-    display: none;
-  }
-  .share-screen-wrapper {
-    .screen-share-video {
-      padding-bottom: calc(100vh - 210px);
-    }
-  }
-}
-
-// Camera Modules
-
-// Camera Modules
+// #main-area.hideParticipantsPanel.showScreenShare {
+//   .all-webcam-wrapper.total-cam-0 {
+//     @apply hidden;
+//   }
+//   // .share-screen-wrapper {
+//   //   .screen-share-video {
+//   //     @apply pb-[calc(100vh-210px)];
+//   //   }
+//   // }
+// }
 
 // Tool Tip
 .tooltip {
-  visibility: hidden;
-  position: absolute;
+  @apply invisible absolute;
 }
 .has-tooltip {
   &:hover {
     .tooltip {
-      visibility: visible;
-      z-index: 50;
+      @apply visible z-[50];
     }
   }
 }
@@ -484,79 +463,42 @@ code {
     rgba(214, 231, 255, 1) 100%
   );
 }
-//  Recorder CSS
-#main-area.isRecorder {
-  .all-webcam-wrapper {
-    height: 100vh;
-    position: relative;
-  }
+
+.Toastify__toast-container {
+  @apply z-[999999];
 }
-.plugNmeet-app {
-  #main-area.isRecorder {
-    .all-webcam-wrapper {
-      height: 100vh;
-    }
-  }
-}
-//  Recorder CSS
 .Toastify__toast-body {
-  margin: 0;
-  font-weight: 300;
+  @apply m-0 font-light;
 }
 .vertical-webcams {
   .all-webcam-wrapper-inner {
     .video-camera-item {
-      height: calc(33.33% - 10px);
-      margin: 8px 0;
+      @apply h-[calc(33.33%-10px)] my-2 mx-0;
     }
   }
 }
-// System Message
-.all-MessageModule-wrap {
-  .message-item {
-    .system {
-      p.message-content {
-        font-size: 16px;
-        line-height: 20px;
-      }
-    }
-  }
-}
-// System Message
 
 // Share Screen Running
 .share-screen-wrapper.is-share-screen-running {
-  display: flex;
   .screen-share-video {
-    flex: 1;
     padding-bottom: calc(100vh - 110px) !important;
     padding-left: 25px;
     video.video-player {
-      width: calc(100% - 50px);
-      height: calc(100% - 50px);
-      top: 25px;
+      @apply h-[calc(100%-50px)] w-[calc(100%-50px)] top-[25px];
     }
     video.video-player.self-screen-share {
-      max-width: 30%;
-      margin: auto;
-      left: 0;
-      right: 0;
+      @apply max-w-[30%] m-auto left-0 right-0;
     }
   }
 }
 // Share Screen Running
 
-.Toastify__toast-container {
-  z-index: 999999;
-}
 .footer-podcast-button {
+  @apply relative;
   .lds-ripple {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    left: 8px;
+    @apply absolute w-[30px] h-[30px] left-2;
     div {
-      border: 2px solid rgb(0, 77, 144);
+      @apply border-2 border-solid border-[rgb(0,77,144)];
       -webkit-animation: lds-ripple2 0.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
       animation: lds-ripple2 0.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
       &:last-child {
@@ -565,20 +507,19 @@ code {
       }
     }
   }
-  position: relative;
 }
-#main-area.hideParticipantsPanel.showSharedNotepad {
-  .middle-fullscreen-wrapper {
-    display: flex;
-    position: relative;
-  }
-}
-#main-area.hideParticipantsPanel.showWhiteboard {
-  .middle-fullscreen-wrapper {
-    display: flex;
-    position: relative;
-  }
-}
+// #main-area.hideParticipantsPanel.showSharedNotepad {
+//   .middle-fullscreen-wrapper {
+//     display: flex;
+//     position: relative;
+//   }
+// }
+// #main-area.hideParticipantsPanel.showWhiteboard {
+//   .middle-fullscreen-wrapper {
+//     display: flex;
+//     position: relative;
+//   }
+// }
 .transition-left-panel {
   position: absolute;
   height: 100%;
@@ -613,89 +554,34 @@ code {
     position: absolute;
   }
 }
-#main-area.fullWidthMainArea.isRecorder {
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-    padding-left: 0;
-  }
-}
-.isRecorder {
-  .transition-right-panel {
-    position: relative;
-  }
-}
-.isRecorder.showScreenShare {
-  .middle-area {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-.fullWidthMainArea {
-  .select-camera-number {
-    display: none;
-  }
-}
-.select-camera-number {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 5px;
-  font-size: 12px;
-  top: 5px;
-  select#select-camera-num {
-    background-color: transparent;
-    border: 1px solid #333;
-    margin-left: 5px;
-    outline: none;
-  }
-}
-// header volume slider
-.volume-popup-wrapper {
-  .range {
-    -webkit-appearance: none;
-    vertical-align: middle;
-    outline: none;
-    border: none;
-    padding: 0;
-    background: none;
-    width: 100%;
-    &::-webkit-slider-runnable-track {
-      background-color: rgba(128, 128, 128, 0.5);
-      height: 10px;
-      border-radius: 5px;
-      border: 1px solid transparent;
-      @apply dark:bg-secondaryColor/90;
-    }
-    &::-moz-range-track {
-      background-color: rgba(128, 128, 128, 0.5);
-      height: 10px;
-      border-radius: 5px;
-      border: none;
-      @apply dark:bg-secondaryColor/90;
-    }
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none !important;
-      border-radius: 100%;
-      background-color: $primaryColor;
-      height: 18px;
-      width: 18px;
-      margin-top: -5px;
-      @apply dark:bg-white;
-    }
-    &::-moz-range-thumb {
-      border-radius: 20px;
-      height: 18px;
-      width: 18px;
-      border: none;
-      background: none;
-      background-color: $primaryColor;
-    }
-    &:active {
+header#main-header {
+  // header volume slider
+  .volume-popup-wrapper {
+    .range {
+      @apply appearance-none align-middle	outline-none border-none p-0 bg-transparent w-full;
+      &::-webkit-slider-runnable-track {
+        background-color: rgba(128, 128, 128, 0.5);
+        height: 10px;
+        border-radius: 5px;
+        border: 1px solid transparent;
+        @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondaryColor/90 h-[10px] rounded-[5px] border border-solid border-transparent;
+      }
+      &::-moz-range-track {
+        @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondaryColor/90 h-[10px] rounded-[5px] border border-solid border-transparent;
+      }
       &::-webkit-slider-thumb {
-        outline: none;
+        @apply appearance-none rounded-full bg-primaryColor dark:bg-white h-[18px] w-[18px] -mt-[5px];
       }
       &::-moz-range-thumb {
-        outline: none;
+        @apply rounded-[20px] h-[18px] w-[18px] border-none bg-primaryColor;
+      }
+      &:active {
+        &::-webkit-slider-thumb {
+          @apply outline-none;
+        }
+        &::-moz-range-thumb {
+          @apply outline-none;
+        }
       }
     }
   }
@@ -703,16 +589,16 @@ code {
 // header volume slider
 .showParticipantsPanel {
   .active-speakers-wrap {
-    z-index: 2;
+    @apply z-[2];
   }
 }
 .showChatPanel {
   .active-speakers-wrap {
-    z-index: 2;
+    @apply z-[2];
   }
   .screen-share-video {
     button {
-      right: 300px;
+      @apply right-[320px];
     }
   }
 }
@@ -744,7 +630,6 @@ code {
     .share-screen-wrapper {
       height: 100%;
       .screen-share-video {
-        padding: 0 !important;
         video.video-player {
           width: 100%;
           padding: 0 10px;
@@ -752,6 +637,12 @@ code {
       }
     }
     .middle-fullscreen-wrapper {
+      .notepad-wrapper {
+        height: 94%;
+        top: 3%;
+        position: relative;
+        margin-top: 0;
+      }
       .all-webcam-wrapper.vertical-webcams.total-cam-1 {
         padding: 0;
         .all-webcam-wrapper-inner {

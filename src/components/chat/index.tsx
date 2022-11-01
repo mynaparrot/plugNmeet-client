@@ -99,7 +99,7 @@ const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
               />
             ) : null}
           </div>
-          <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[300px] bg-white">
+          <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[320px] bg-white">
             <TextBoxArea
               currentRoom={currentRoom}
               chosenEmoji={chosenEmoji}
