@@ -78,6 +78,15 @@ const App = () => {
         title: t('app.token-missing-title'),
         text: t('app.token-missing-des'),
       });
+    } else if (
+      location.protocol === 'http:' &&
+      !location.host.match(/localhost/)?.length
+    ) {
+      setLoading(false);
+      setError({
+        title: t('app.require-ssl-title'),
+        text: t('app.require-ssl-des'),
+      });
     } else {
       const verifyToken = async () => {
         let res: VerifyTokenRes;
