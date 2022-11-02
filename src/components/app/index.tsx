@@ -79,8 +79,8 @@ const App = () => {
         text: t('app.token-missing-des'),
       });
     } else if (
-      location.protocol === 'http:' &&
-      !location.host.match(/localhost/)?.length
+      window.location.protocol === 'http:' &&
+      window.location.hostname !== 'localhost'
     ) {
       setLoading(false);
       setError({
