@@ -109,7 +109,9 @@
     "loading": "লোড হচ্ছে...",
     "connected": "সংযুক্ত হয়েছে",
     "ready": "প্রস্তুত",
-    "webcams-per-page": "প্রতি পৃষ্ঠা প্রদর্শন:"
+    "webcams-per-page": "প্রতি পৃষ্ঠা প্রদর্শন:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "অংশগ্রহণকারীরা ({{total}})",
