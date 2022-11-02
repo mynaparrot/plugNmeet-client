@@ -109,7 +109,9 @@
     "loading": "завантаження...",
     "connected": "підключено",
     "ready": "готово",
-    "webcams-per-page": "Показати на сторінці:"
+    "webcams-per-page": "Показати на сторінці:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "Учасники ({{total}})",
