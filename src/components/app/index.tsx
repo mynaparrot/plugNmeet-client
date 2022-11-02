@@ -70,9 +70,9 @@ const App = () => {
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
+    const accessToken = urlSearchParams.get('access_token');
     let timeout;
-    if (typeof params.access_token === 'undefined') {
+    if (!accessToken) {
       setLoading(false);
       setError({
         title: t('app.token-missing-title'),
@@ -117,7 +117,7 @@ const App = () => {
         setLoading(false);
         if (res.status && res.livekitHost && res.token) {
           // we'll store token that we received from URL
-          dispatch(addToken(params.access_token));
+          dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
 
           // for livekit need to use generated token & host
