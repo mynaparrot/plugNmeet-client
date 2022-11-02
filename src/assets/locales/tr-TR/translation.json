@@ -109,7 +109,9 @@
     "loading": "yükleniyor...",
     "connected": "bağlanıldı",
     "ready": "hazır",
-    "webcams-per-page": "Sayfa başına Görünüm:"
+    "webcams-per-page": "Sayfa başına Görünüm:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "Katılımcılar ({{total}})",
