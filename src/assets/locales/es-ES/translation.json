@@ -109,7 +109,9 @@
     "loading": "cargando...",
     "connected": "conectado",
     "ready": "listo",
-    "webcams-per-page": "Mostrar por página:"
+    "webcams-per-page": "Mostrar por página:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "Participantes ({{total}})",
