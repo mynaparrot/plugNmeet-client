@@ -109,7 +109,9 @@
     "loading": "下載中...",
     "connected": "已連接",
     "ready": "就緒",
-    "webcams-per-page": "Display per page:"
+    "webcams-per-page": "Display per page:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "參會人員 ({{total}})",
