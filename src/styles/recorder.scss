@@ -2,12 +2,12 @@
 .plugNmeet-app {
   #main-area.isRecorder {
     .all-webcam-wrapper {
-      @apply h-screen relative;
+      @apply h-screen;
     }
   }
   #main-area.fullWidthMainArea.isRecorder {
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-      @apply pl-0;
+      @apply pl-[440px];
     }
   }
   .isRecorder {
@@ -18,6 +18,33 @@
   .isRecorder.showScreenShare {
     .middle-area {
       @apply flex items-center justify-center;
+    }
+  }
+}
+@media screen and (max-width: 1800px) {
+  .plugNmeet-app {
+    #main-area.fullWidthMainArea.isRecorder {
+      .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        @apply pl-[270px];
+      }
+    }
+  }
+}
+@media screen and (max-width: 1280px) {
+  .plugNmeet-app {
+    #main-area.fullWidthMainArea.isRecorder {
+      .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        @apply pl-[200px];
+      }
+    }
+  }
+}
+@media screen and (max-width: 1023px) {
+  .plugNmeet-app {
+    #main-area.fullWidthMainArea.isRecorder {
+      .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        @apply pl-0;
+      }
     }
   }
 }

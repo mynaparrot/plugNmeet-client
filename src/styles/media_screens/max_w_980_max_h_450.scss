@@ -3,31 +3,18 @@
     #main-area.fullWidthMainArea {
       .middle-fullscreen-wrapper {
         .all-webcam-wrapper {
-          bottom: auto;
-          right: auto;
-          width: 140px;
-          left: 0;
-          height: 100%;
-          padding: 20px 0;
+          @apply bottom-auto right-auto w-[140px] left-0 h-full py-5 px-0;
           .all-webcam-wrapper-inner {
             display: block !important;
-            padding: 0 5px;
+            @apply py-0 px-[5px];
             .video-camera-item {
-              height: 31.33%;
-              margin: 4px 0px;
+              @apply h-[31.33%] my-1 mx-0;
             }
             button.next-cam {
-              top: auto;
-              bottom: 0;
-              transform: rotate(0deg);
-              left: 0;
-              width: 100%;
+              @apply top-auto bottom-0 rotate-0 left-0 w-full;
             }
             button.previous-cam {
-              top: 0;
-              transform: rotate(0deg);
-              left: 0;
-              width: 100%;
+              @apply top-0 rotate-0 left-0 w-full;
             }
           }
         }
@@ -36,11 +23,10 @@
     .share-screen-wrapper.is-share-screen-running {
       .screen-share-video {
         button {
-          bottom: 55px;
+          @apply bottom-[55px];
         }
         video.video-player {
-          height: calc(100% - 20px);
-          top: 10px;
+          // @apply h-[calc(100%-20px)] top-[10px];
         }
       }
     }

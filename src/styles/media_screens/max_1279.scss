@@ -3,24 +3,23 @@
     .message-item {
       .system {
         p.message-content {
-          font-size: 14px;
-          line-height: 16px;
+          @apply text-sm leading-[16px];
         }
       }
     }
   }
   #main-area.fullWidthMainArea {
     .all-webcam-wrapper {
-      width: 200px;
+      @apply w-[200px];
     }
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-      padding-left: 200px;
+      @apply pl-[200px];
     }
   }
   .showChatPanel {
     .screen-share-video {
       button {
-        right: 250px;
+        @apply right-[250px];
       }
     }
   }

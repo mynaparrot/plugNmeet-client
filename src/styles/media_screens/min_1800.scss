@@ -1,13 +1,13 @@
 @media screen and (min-width: 1800px) {
   #main-area.fullWidthMainArea {
     .all-webcam-wrapper {
-      width: 440px;
+      @apply w-[440px];
     }
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-      padding-left: 440px;
+      @apply pl-[440px];
     }
     #main-left-panel {
-      width: 440px;
+      @apply w-[440px];
     }
   }
 }

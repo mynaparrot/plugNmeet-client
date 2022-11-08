@@ -46,7 +46,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   };
 
   return (
-    <div className="screen-share-video relative pb-[calc(100vh-210px)]">
+    <div className="screen-share-video relative">
       {!loaded ? (
         <div className="loading flex justify-center">
           <div className="lds-ripple">

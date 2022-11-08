@@ -1,84 +1,46 @@
 @media screen and (max-width: 1023px) {
   .transition-left-panel {
-    position: absolute;
-    height: 100%;
-    z-index: 9999;
+    @apply absolute h-full z-[9999];
   }
   .transition-right-panel {
     position: absolute;
     height: 100%;
     right: 0;
     z-index: 9999;
-    .message-form {
-      position: absolute;
-    }
-    .messageModule-wrapper {
-      height: calc(100% - 72px);
-    }
-  }
-  #main-area {
-    .share-screen-wrapper.is-share-screen-running {
-      .all-webcam-wrapper {
+    #main-right-panel {
+      .message-form {
         position: absolute;
-        height: auto;
-        width: 100%;
-        z-index: 9;
-        padding: 0;
-        bottom: -5px;
-        .all-webcam-wrapper-inner {
-          margin: 0;
-          padding: 0 15px;
-          flex-wrap: nowrap;
-          gap: 0;
-          .video-camera-item {
-            width: 100%;
-            margin: 5px;
-            height: 100px;
-            padding-bottom: 0;
-            max-width: 150px;
-            .connection-status {
-              display: none;
-            }
-            .mic-status {
-              display: none;
-            }
-            .name {
-              font-size: 12px;
-              left: 5px;
-            }
-            .camera-video-player {
-              button {
-                right: 0;
-                top: 3px;
-              }
-            }
-          }
-        }
+      }
+      .messageModule-wrapper {
+        @apply h-[calc(100%-72px)];
       }
     }
   }
   #main-area.fullWidthMainArea {
     .middle-fullscreen-wrapper {
       .all-webcam-wrapper {
-        position: absolute;
-        height: auto;
-        width: 100%;
-        z-index: 9;
-        padding: 0;
-        bottom: -5px;
-        bottom: 0;
-        padding-top: 0;
+        @apply absolute h-auto w-full z-[9] p-0 bottom-0 pt-0;
         .all-webcam-wrapper-inner {
-          margin: 0;
-          padding: 0 15px;
-          flex-wrap: nowrap;
-          gap: 0;
+          @apply m-0 py-0 px-[15px] flex-wrap gap-0;
           .video-camera-item {
-            width: 100%;
-            margin: 5px;
-            height: 100px;
-            padding-bottom: 0;
-            max-width: 150px;
+            @apply w-full m-[5px] h-[100px] pb-0 max-w-[150px];
+            .connection-status {
+              @apply hidden;
+            }
+            .mic-status {
+              @apply hidden;
+            }
+            .name {
+              @apply text-xs left-[5px];
+            }
+            .camera-video-player {
+              button {
+                @apply right-0 top-0;
+              }
+            }
+            .status.PinWebcam {
+              @apply left-0 top-0;
+            }
           }
         }
       }
@@ -86,74 +48,61 @@
     .all-webcam-wrapper.vertical-webcams {
       .all-webcam-wrapper-inner {
         display: flex !important;
-        justify-content: center;
-      }
-    }
-    .all-webcam-wrapper-inner {
-      button.next-cam {
-        right: -42px;
-        width: 100px;
-        left: auto;
-        height: 20px;
-        top: 45px;
-        transform: rotate(-90deg);
+        @apply justify-center flex-nowrap;
       }
     }
     .all-webcam-wrapper {
       .all-webcam-wrapper-inner {
+        button.next-cam {
+          @apply -right-[42px] w-[100px] left-auto h-5 top-[45px] -rotate-90;
+        }
         button.previous-cam {
-          right: auto;
-          width: 100px;
-          left: -42px;
-          height: 20px;
-          top: 45px;
-          transform: rotate(-90deg);
+          @apply right-auto w-[100px] -left-[42px] h-5 top-[45px] -rotate-90;
         }
       }
     }
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-      padding-left: 0;
+      @apply pl-0;
+      .screen-share-video {
+        button {
+          @apply bottom-[165px];
+        }
+      }
     }
   }
   .share-screen-wrapper.is-share-screen-running {
-    position: relative;
     .screen-share-video {
-      padding-left: 15px;
-      padding-bottom: calc(100vh - 105px) !important;
+      // padding-bottom: calc(100vh - 105px) !important;
+      // @apply pl-[15px];
       video.video-player {
-        width: calc(100% - 30px);
-        height: calc(100% - 110px);
-        top: 0;
+        // @apply w-[calc(100%-30px)] h-[calc(100%-110px)] top-0;
       }
       button {
-        bottom: 165px;
-        position: fixed;
+        @apply fixed bottom-[55px];
       }
     }
   }
   .Toastify__toast-container {
     .Toastify__toast-body {
-      padding: 0;
+      @apply p-0;
     }
     .Toastify__toast {
-      min-height: 40px;
-      font-size: 14px;
+      @apply min-h-[40px] text-sm;
     }
   }
   #main-area.hideParticipantsPanel.showScreenShare {
     .active-speakers-wrap {
-      padding: 0;
-      flex-wrap: wrap;
+      @apply p-0 flex-wrap;
       div {
-        font-size: 10px;
+        @apply text-[10px];
         i {
-          font-size: 7px;
+          @apply text-[7px];
         }
       }
     }
   }
   .pin-webcam {
-    display: none;
+    @apply hidden;
   }
   #main-right-panel {
     background: rgb(235, 248, 255);
@@ -171,42 +120,34 @@
     }
   }
   .plugNmeet-app {
+    @apply relative h-screen;
     header#main-header {
-      position: fixed;
-      top: 0;
-      width: 100%;
+      @apply fixed top-0 w-full;
     }
-    position: relative;
-    height: 100vh;
     footer#main-footer {
-      position: fixed;
-      width: 100%;
-      bottom: 0;
-      z-index: 99999;
+      @apply fixed w-full bottom-0 z-[99999];
     }
     #main-area {
-      position: fixed;
-      width: 100%;
       height: calc(100% - 105px) !important;
-      top: 50px;
+      @apply fixed w-full top-[50px];
     }
     #main-area.isRecorder {
       height: 100% !important;
-      top: 0;
+      @apply top-0;
     }
   }
   .landscape-device.is-mobile {
     #main-area.fullWidthMainArea {
       .middle-fullscreen-wrapper.verticalsWebcamsActivated {
         padding-left: 130px;
+        @apply pl-[130px];
       }
     }
   }
   .private-m-tab {
-    width: calc(100vh - 180px);
+    @apply w-[calc(100vh-180px)];
   }
   .excalidraw-wrapper {
-    margin-top: 0.5rem;
-    height: calc(100% - 20px);
+    @apply mt-2 h-[calc(100%-20px)];
   }
 }
