@@ -59,13 +59,13 @@ interface IRoomFeatures {
   allow_webcams: boolean;
   mute_on_start: boolean;
   allow_screen_share: boolean;
-  allow_recording: boolean;
   allow_rtmp: boolean;
   allow_view_other_webcams: boolean;
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
   allow_polls: boolean;
   room_duration: number;
+  recording_features: IRecordingFeatures;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
   whiteboard_features: IWhiteboardFeatures;
@@ -73,6 +73,13 @@ interface IRoomFeatures {
   waiting_room_features: IWaitingRoomFeatures;
   breakout_room_features: IBreakoutRoomFeatures;
   display_external_link_features: IDisplayExternalLinkFeatures;
+}
+
+export interface IRecordingFeatures {
+  is_allow: boolean;
+  is_allow_cloud: boolean;
+  enable_auto_cloud_recording: boolean;
+  is_allow_local: boolean;
 }
 
 interface IChatFeatures {
