@@ -3,13 +3,19 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { RecordingType } from './IRecording';
+import { IRecordingFeatures } from '../../../../store/slices/interfaces/session';
 
 interface IRecordingModalProps {
   showModal: boolean;
+  recordingFeatures: IRecordingFeatures;
   onCloseModal(recordingType: RecordingType): void;
 }
 
-const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
+const RecordingModal = ({
+  showModal,
+  recordingFeatures,
+  onCloseModal,
+}: IRecordingModalProps) => {
   const [recordingType, setRecordingType] = useState<RecordingType>(
     RecordingType.RECORDING_TYPE_LOCAL,
   );
@@ -89,52 +95,56 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
                           {t('footer.icons.recording-types-des')}
                         </p>
                         <div className="mt-4 pl-2 space-y-4">
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              value="1"
-                              name="block"
-                              id="yes"
-                              checked={
-                                recordingType ===
-                                RecordingType.RECORDING_TYPE_LOCAL
-                              }
-                              onChange={() =>
-                                setRecordingType(
-                                  RecordingType.RECORDING_TYPE_LOCAL,
-                                )
-                              }
-                            />
-                            <label
-                              htmlFor="yes"
-                              className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
-                            >
-                              {t('footer.icons.local-recording')}
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              value="0"
-                              name="block"
-                              id="no"
-                              checked={
-                                recordingType ===
-                                RecordingType.RECORDING_TYPE_CLOUD
-                              }
-                              onChange={() =>
-                                setRecordingType(
-                                  RecordingType.RECORDING_TYPE_CLOUD,
-                                )
-                              }
-                            />
-                            <label
-                              htmlFor="no"
-                              className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
-                            >
-                              {t('footer.icons.cloud-recording')}
-                            </label>
-                          </div>
+                          {recordingFeatures.is_allow_local ? (
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                value="1"
+                                name="block"
+                                id="yes"
+                                checked={
+                                  recordingType ===
+                                  RecordingType.RECORDING_TYPE_LOCAL
+                                }
+                                onChange={() =>
+                                  setRecordingType(
+                                    RecordingType.RECORDING_TYPE_LOCAL,
+                                  )
+                                }
+                              />
+                              <label
+                                htmlFor="yes"
+                                className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                              >
+                                {t('footer.icons.local-recording')}
+                              </label>
+                            </div>
+                          ) : null}
+                          {recordingFeatures.is_allow_cloud ? (
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                value="0"
+                                name="block"
+                                id="no"
+                                checked={
+                                  recordingType ===
+                                  RecordingType.RECORDING_TYPE_CLOUD
+                                }
+                                onChange={() =>
+                                  setRecordingType(
+                                    RecordingType.RECORDING_TYPE_CLOUD,
+                                  )
+                                }
+                              />
+                              <label
+                                htmlFor="no"
+                                className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                              >
+                                {t('footer.icons.cloud-recording')}
+                              </label>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
 

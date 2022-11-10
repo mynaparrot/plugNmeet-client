@@ -37,7 +37,13 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
   } = useCloudRecording(currentRoom.sid);
 
   const { t } = useTranslation();
+  const roomMetadata = store.getState().session.currentRoom
+    .metadata as IRoomMetadata;
+  const isAllowRecording =
+    roomMetadata.room_features.recording_features.is_allow;
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isPresenter =
+    store.getState().session.currentUser?.metadata?.is_presenter;
 
   const isRunningCloudRecording = useAppSelector(isRecordingSelector);
   const [disable, setDisable] = useState<boolean>(false);
@@ -48,6 +54,8 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
     RecordingType.RECORDING_TYPE_NONE,
   );
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [checkedAutoRecording, setCheckedAutoRecording] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -84,11 +92,10 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
   }, [isRunningCloudRecording, recordingType, isRecording, timer]);
 
   useEffect(() => {
-    const metadata = store.getState().session.currentRoom
-      .metadata as IRoomMetadata;
-    if (!metadata.room_features?.allow_recording) {
+    if (!isAllowRecording) {
       setAllowRecording(false);
     }
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -153,9 +160,7 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
     }
   };
 
-  const onCloseModal = (recordingType: RecordingType) => {
-    setOpenModal(false);
-
+  const startRecording = (recordingType: RecordingType) => {
     if (recordingType === RecordingType.RECORDING_TYPE_LOCAL) {
       setDisable(true);
       setRecordingType(recordingType);
@@ -176,12 +181,43 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
     }
   };
 
+  const onCloseModal = (recordingType: RecordingType) => {
+    setOpenModal(false);
+    startRecording(recordingType);
+  };
+
+  // for auto cloud recording
+  useEffect(() => {
+    let timeout;
+    if (
+      isAllowRecording &&
+      isAdmin &&
+      isPresenter &&
+      !isRunningCloudRecording &&
+      !checkedAutoRecording &&
+      roomMetadata.room_features.recording_features.enable_auto_cloud_recording
+    ) {
+      timeout = setTimeout(() => {
+        startRecording(RecordingType.RECORDING_TYPE_CLOUD);
+      }, 1000);
+    }
+    setCheckedAutoRecording(true);
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+    //eslint-disable-next-line
+  }, [isRunningCloudRecording]);
+
   const render = () => {
     return (
       <>
         {openModal ? (
           <RecordingModal
             showModal={openModal}
+            recordingFeatures={roomMetadata.room_features.recording_features}
             onCloseModal={(recordingType) => onCloseModal(recordingType)}
           />
         ) : null}
