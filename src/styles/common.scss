@@ -438,7 +438,6 @@ code {
 // Share Screen Running
 .share-screen-wrapper.is-share-screen-running {
   .screen-share-video {
-    padding-bottom: 0 !important;
     @apply h-full w-full;
     video.video-player {
       @apply h-[calc(100%-30px)] w-[calc(100%-30px)] top-[15px] left-[15px];
@@ -476,14 +475,21 @@ code {
   width: 100% !important;
   height: inherit !important;
   > div {
-    width: 100% !important;
     height: inherit !important;
+    margin: auto;
     > div {
       @apply overflow-hidden pb-[56.25%] relative;
     }
   }
   iframe {
     @apply left-0 top-0 h-full w-full absolute;
+  }
+}
+.is-pc {
+  .media-player-inner {
+    > div {
+      width: 100% !important;
+    }
   }
 }
 header#main-header {
@@ -571,6 +577,20 @@ header#main-header {
       .notepad-wrapper {
         @apply h-[94%] top-[3%] relative mt-0;
       }
+      .externalMediaPlayerWrapper {
+        @apply h-full;
+        .media-player-inner {
+          div {
+            margin: auto;
+            div {
+              @apply pb-0;
+            }
+          }
+        }
+      }
+      .external-display-link-wrapper {
+        @apply h-full m-0 p-2;
+      }
       .all-webcam-wrapper.vertical-webcams.total-cam-1 {
         @apply p-0;
         .all-webcam-wrapper-inner {
@@ -630,17 +650,42 @@ header#main-header {
   #main-area.fullWidthMainArea {
     .verticalsWebcamsActivated {
       .excalidraw-wrapper {
-        @apply h-[calc(100%-120px)] mt-[10px];
+        @apply h-[calc(100%-110px)] m-0 p-2;
       }
       .notepad-wrapper {
-        @apply h-[calc(100%-120px)] mt-[10px];
+        @apply h-[calc(100%-110px)] m-0 p-2;
       }
-      .externalMediaPlayerWrapper {
-        @apply h-[calc(100%-120px)] mt-[10px];
+      .Div-external-media-player {
+        @apply h-[calc(100%-110px)] m-0 p-2;
+        .externalMediaPlayerWrapper {
+          @apply p-0;
+        }
       }
       .external-display-link-wrapper {
-        @apply h-[calc(100%-120px)] mt-[10px];
+        @apply h-[calc(100%-110px)] m-0 p-2;
       }
+      .screen-share-video {
+        @apply h-[calc(100%-110px)];
+      }
+    }
+  }
+  .middle-fullscreen-wrapper {
+    .screen-share-video {
+      @apply h-full m-0 p-2;
+    }
+    .external-display-link-wrapper {
+      @apply h-full m-0 p-2;
+    }
+    .notepad-wrapper {
+      @apply h-full m-0 p-2;
+    }
+    .excalidraw-wrapper {
+      @apply h-full m-0 p-2;
+    }
+  }
+  .media-player-inner {
+    > div {
+      width: 100% !important;
     }
   }
 }
@@ -708,9 +753,22 @@ aside {
     .middle-fullscreen-wrapper.verticalsWebcamsActivated {
       @apply pl-0;
       .screen-share-video {
+        @apply h-[calc(100%-105px)];
         button {
-          @apply bottom-[105px];
+          @apply absolute bottom-0;
         }
+      }
+      .excalidraw-wrapper {
+        @apply h-[calc(100%-135px)];
+      }
+      .notepad-wrapper {
+        @apply h-[calc(100%-150px)];
+      }
+      .Div-external-media-player {
+        @apply h-[calc(100%-105px)];
+      }
+      .external-display-link-wrapper {
+        @apply h-[calc(100%-145px)];
       }
     }
     .all-webcam-wrapper.vertical-webcams {
@@ -721,7 +779,7 @@ aside {
           @apply -right-[42px] w-[100px] left-auto h-5 top-[45px] -rotate-90;
         }
         button.previous-cam {
-          @apply right-auto w-[100px] -left-[42px] h-5 top-[45px] -rotate-90;
+          @apply right-auto w-[100px] -left-[42px] h-5 top-[45px] -rotate-90 pt-0;
         }
       }
     }
