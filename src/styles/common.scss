@@ -696,6 +696,13 @@ aside {
 }
 // Camera width on Landscape Tablet
 .landscape-device.is-tablet {
+  #main-area.fullWidthMainArea {
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      .all-webcam-wrapper {
+        height: 100%;
+      }
+    }
+  }
   .camera-row-1.total-items-5.inner-items-2 {
     .video-camera-item {
       @apply w-1/2;
