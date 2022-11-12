@@ -30,7 +30,7 @@ const DisplayExternalLink = () => {
       return null;
     }
     return (
-      <div className="external-display-link-wrapper m-auto h-[calc(100%-50px)] w-full max-w-[1100px] flex-1 sm:px-5 mt-9">
+      <div className="external-display-link-wrapper m-auto h-[calc(100%-50px)] w-full max-w-[1100px] flex-1 sm:px-5 mt-9 p-2">
         {!loaded ? (
           <div className="loading absolute left-[50%] top-[40%] flex justify-center">
             <div className="lds-ripple">

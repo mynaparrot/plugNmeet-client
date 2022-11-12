@@ -1,0 +1,13 @@
+@media screen and (max-width: 575px) {
+  #main-area {
+    .share-screen-wrapper.is-share-screen-running {
+      .all-webcam-wrapper {
+        .all-webcam-wrapper-inner {
+          .video-camera-item {
+            @apply w-[calc(32.5%-10px)] max-w-full;
+          }
+        }
+      }
+    }
+  }
+}

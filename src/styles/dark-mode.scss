@@ -1,0 +1,60 @@
+// Dark Mode Design Updates
+.dark {
+  .main-app-bg {
+    &::before {
+      @apply absolute content-[''] w-full h-full bg-[#001222] opacity-70;
+    }
+  }
+  .waiting-room {
+    &::before {
+      @apply absolute content-[''] w-full h-full bg-[#001222] opacity-70;
+    }
+  }
+  .error-app-bg {
+    &::before {
+      @apply absolute content-[''] w-full h-full bg-[#001222] opacity-70;
+    }
+  }
+  .multi-gradient {
+    background: #031a3e;
+  }
+  #main-area.fullWidthMainArea {
+    .all-webcam-wrapper {
+      background: #031a3e;
+    }
+  }
+  .message-form {
+    background: transparent;
+  }
+  .Toastify__toast {
+    background: #222;
+    color: #fff;
+  }
+  button.Toastify__close-button {
+    svg {
+      path {
+        fill: #fff;
+      }
+    }
+  }
+  .wb-page-navigation {
+    button {
+      &:disabled {
+        background-color: var(--button-gray-1) !important;
+      }
+    }
+  }
+  .header-before-start {
+    opacity: 0.4;
+  }
+  .header-before-end {
+    opacity: 0.1;
+  }
+  .select-camera-number {
+    color: #a7cced;
+    select#select-camera-num {
+      border-color: #a7cced;
+    }
+  }
+}
+// Dark Mode Design Updates

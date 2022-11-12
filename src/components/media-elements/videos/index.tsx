@@ -90,10 +90,12 @@ const VideosComponent = ({
           isLocal: participant instanceof LocalParticipant,
         };
 
-        totalNumWebcams = totalNumWebcams + videoTracks.length;
+        // for (let i = 0; i < 49; i++) {
+        totalNumWebcams += videoTracks.length;
         const elm = (
           <VideoParticipant
             key={participant.sid}
+            // key={participant.sid + '_' + i}
             participantType={participantType}
             participant={participant}
           />
@@ -110,6 +112,7 @@ const VideosComponent = ({
         } else {
           otherSubscribers.push(elm);
         }
+        // }
       }
     });
 

@@ -1,0 +1,13 @@
+@media screen and (min-width: 1800px) {
+  #main-area.fullWidthMainArea {
+    .all-webcam-wrapper {
+      @apply w-[440px];
+    }
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      @apply pl-[440px];
+    }
+    #main-left-panel {
+      @apply w-[440px];
+    }
+  }
+}

@@ -175,7 +175,8 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
         dispatch(updateIsActiveChatPanel(false));
         dispatch(updateIsActiveParticipantsPanel(false));
       }
-      classNames = 'w-full flex items-center justify-center';
+      classNames =
+        'Div-external-media-player w-full flex items-center justify-center';
     }
 
     return (

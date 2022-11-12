@@ -1,0 +1,26 @@
+@media screen and (max-width: 1279px) {
+  .all-MessageModule-wrap {
+    .message-item {
+      .system {
+        p.message-content {
+          @apply text-sm leading-[16px];
+        }
+      }
+    }
+  }
+  #main-area.fullWidthMainArea {
+    .all-webcam-wrapper {
+      @apply w-[200px];
+    }
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      @apply pl-[200px];
+    }
+  }
+  .showChatPanel {
+    .screen-share-video {
+      button {
+        @apply right-[250px];
+      }
+    }
+  }
+}

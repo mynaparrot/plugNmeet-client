@@ -1,0 +1,22 @@
+@media screen and (max-width: 370px) {
+  .video-camera-item {
+    .name {
+      @apply text-[10px];
+    }
+  }
+  header#main-header {
+    .middle {
+      h2 {
+        @apply text-xs;
+      }
+    }
+  }
+  .active-speakers-wrap {
+    div {
+      @apply text-[10px] py-0 px-[5px];
+      i {
+        @apply text-[8px];
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@media screen and (min-width: 641px) {
+  .preview-camera-webcam {
+    video {
+      @apply min-h-[240px];
+    }
+    canvas {
+      @apply min-h-[240px];
+    }
+  }
+}

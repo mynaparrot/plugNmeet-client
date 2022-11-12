@@ -1,0 +1,152 @@
+@media screen and (max-width: 1023px) {
+  .transition-left-panel {
+    @apply absolute h-full z-[9999];
+  }
+  .transition-right-panel {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    z-index: 9999;
+    #main-right-panel {
+      .message-form {
+        position: absolute;
+      }
+      .messageModule-wrapper {
+        @apply h-[calc(100%-72px)];
+      }
+    }
+  }
+  #main-area.fullWidthMainArea {
+    .middle-fullscreen-wrapper {
+      .all-webcam-wrapper {
+        @apply absolute h-auto w-full z-[9] p-0 bottom-0 pt-0;
+        .all-webcam-wrapper-inner {
+          @apply m-0 py-0 px-[15px] flex-wrap gap-0;
+          .video-camera-item {
+            @apply w-full m-[5px] h-[100px] pb-0 max-w-[150px];
+            .connection-status {
+              @apply hidden;
+            }
+            .mic-status {
+              @apply hidden;
+            }
+            .name {
+              @apply text-xs left-[5px];
+            }
+            .camera-video-player {
+              button {
+                @apply right-0 top-0;
+              }
+            }
+            .status.PinWebcam {
+              @apply left-0 top-0;
+            }
+          }
+        }
+      }
+    }
+    .all-webcam-wrapper.vertical-webcams {
+      .all-webcam-wrapper-inner {
+        display: flex !important;
+        @apply justify-center flex-nowrap;
+      }
+    }
+    .all-webcam-wrapper {
+      .all-webcam-wrapper-inner {
+        button.next-cam {
+          @apply -right-[42px] w-[100px] left-auto h-5 top-[45px] -rotate-90;
+        }
+        button.previous-cam {
+          @apply right-auto w-[100px] -left-[42px] h-5 top-[45px] -rotate-90;
+        }
+      }
+    }
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      @apply pl-0;
+      .screen-share-video {
+        button {
+          @apply bottom-[165px];
+        }
+      }
+    }
+  }
+  .share-screen-wrapper.is-share-screen-running {
+    .screen-share-video {
+      // padding-bottom: calc(100vh - 105px) !important;
+      // @apply pl-[15px];
+      video.video-player {
+        // @apply w-[calc(100%-30px)] h-[calc(100%-110px)] top-0;
+      }
+      button {
+        @apply fixed bottom-[55px];
+      }
+    }
+  }
+  .Toastify__toast-container {
+    .Toastify__toast-body {
+      @apply p-0;
+    }
+    .Toastify__toast {
+      @apply min-h-[40px] text-sm;
+    }
+  }
+  #main-area.hideParticipantsPanel.showScreenShare {
+    .active-speakers-wrap {
+      @apply p-0 flex-wrap;
+      div {
+        @apply text-[10px];
+        i {
+          @apply text-[7px];
+        }
+      }
+    }
+  }
+  .pin-webcam {
+    @apply hidden;
+  }
+  #main-right-panel {
+    background: rgb(235, 248, 255);
+    background: linear-gradient(
+      150deg,
+      rgba(235, 248, 255, 1) 0%,
+      rgba(255, 255, 255, 1) 10%,
+      rgba(243, 237, 249, 1) 67%,
+      rgba(214, 231, 255, 1) 100%
+    );
+  }
+  .dark {
+    #main-right-panel {
+      background: #001222;
+    }
+  }
+  .plugNmeet-app {
+    @apply relative h-screen;
+    header#main-header {
+      @apply fixed top-0 w-full;
+    }
+    footer#main-footer {
+      @apply fixed w-full bottom-0 z-[99999];
+    }
+    #main-area {
+      height: calc(100% - 105px) !important;
+      @apply fixed w-full top-[50px];
+    }
+    #main-area.isRecorder {
+      height: 100% !important;
+      @apply top-0;
+    }
+  }
+  .landscape-device.is-mobile {
+    #main-area.fullWidthMainArea {
+      .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+        @apply pl-[140px];
+      }
+    }
+  }
+  .private-m-tab {
+    @apply w-[calc(100vh-180px)];
+  }
+  .excalidraw-wrapper {
+    @apply mt-2 h-[calc(100%-20px)];
+  }
+}
