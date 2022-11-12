@@ -90,29 +90,29 @@ const VideosComponent = ({
           isLocal: participant instanceof LocalParticipant,
         };
 
-        for (let i = 0; i < 49; i++) {
-          totalNumWebcams += videoTracks.length;
-          const elm = (
-            <VideoParticipant
-              // key={participant.sid}
-              key={participant.sid + '_' + i}
-              participantType={participantType}
-              participant={participant}
-            />
-          );
+        // for (let i = 0; i < 49; i++) {
+        totalNumWebcams += videoTracks.length;
+        const elm = (
+          <VideoParticipant
+            key={participant.sid}
+            // key={participant.sid + '_' + i}
+            participantType={participantType}
+            participant={participant}
+          />
+        );
 
-          if (isAdmin && pinWebcam) {
-            adminPinSubscribers.push(elm);
-          } else if (isAdmin) {
-            adminSubscribers.push(elm);
-          } else if (pinWebcam) {
-            otherPinSubscribers.push(elm);
-          } else if (participant instanceof LocalParticipant) {
-            localSubscribers.push(elm);
-          } else {
-            otherSubscribers.push(elm);
-          }
+        if (isAdmin && pinWebcam) {
+          adminPinSubscribers.push(elm);
+        } else if (isAdmin) {
+          adminSubscribers.push(elm);
+        } else if (pinWebcam) {
+          otherPinSubscribers.push(elm);
+        } else if (participant instanceof LocalParticipant) {
+          localSubscribers.push(elm);
+        } else {
+          otherSubscribers.push(elm);
         }
+        // }
       }
     });
 
