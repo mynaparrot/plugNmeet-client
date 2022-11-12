@@ -70,13 +70,22 @@ const App = () => {
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
+    const accessToken = urlSearchParams.get('access_token');
     let timeout;
-    if (typeof params.access_token === 'undefined') {
+    if (!accessToken) {
       setLoading(false);
       setError({
         title: t('app.token-missing-title'),
         text: t('app.token-missing-des'),
+      });
+    } else if (
+      window.location.protocol === 'http:' &&
+      window.location.hostname !== 'localhost'
+    ) {
+      setLoading(false);
+      setError({
+        title: t('app.require-ssl-title'),
+        text: t('app.require-ssl-des'),
       });
     } else {
       const verifyToken = async () => {
@@ -108,7 +117,7 @@ const App = () => {
         setLoading(false);
         if (res.status && res.livekitHost && res.token) {
           // we'll store token that we received from URL
-          dispatch(addToken(params.access_token));
+          dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
 
           // for livekit need to use generated token & host
@@ -119,7 +128,7 @@ const App = () => {
         } else {
           setError({
             title: t('app.verification-failed-title'),
-            text: t(res.msg as any),
+            text: t(res.msg),
           });
         }
       };

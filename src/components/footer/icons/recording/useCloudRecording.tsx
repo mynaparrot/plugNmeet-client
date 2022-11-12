@@ -38,7 +38,7 @@ const useCloudRecording = (roomSid: string): IUseCloudRecordingReturn => {
       msg = res.msg;
     }
 
-    toast(t(msg as any), {
+    toast(t(msg), {
       toastId: 'recording-status',
       type: 'info',
     });
@@ -64,7 +64,7 @@ const useCloudRecording = (roomSid: string): IUseCloudRecordingReturn => {
       msg = res.msg;
     }
 
-    toast(t(msg as any).toString(), {
+    toast(t(msg).toString(), {
       toastId: 'recording-status',
       type: 'info',
     });

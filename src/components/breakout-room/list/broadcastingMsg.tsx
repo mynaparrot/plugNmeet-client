@@ -23,7 +23,7 @@ const BroadcastingMsg = () => {
         });
         setMsg('');
       } else {
-        toast(t(data.msg as any), {
+        toast(t(data.msg), {
           type: 'error',
         });
       }

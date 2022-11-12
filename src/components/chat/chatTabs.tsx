@@ -49,7 +49,7 @@ const ChatTabs = () => {
     },
   ]);
   const [selectedTitle, setSelectedTitle] = useState<string>(
-    t('left-panel.public-chat'),
+    t('left-panel.public-chat').toString(),
   );
 
   useEffect(() => {

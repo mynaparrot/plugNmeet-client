@@ -54,9 +54,9 @@ const Header = ({ currentRoom }: IHeaderProps) => {
   const onOpenAlert = (task) => {
     setTask(task);
     if (task === 'logout') {
-      setAlertText(t('header.menus.alert.logout'));
+      setAlertText(t('header.menus.alert.logout').toString());
     } else if (task === 'end Room') {
-      setAlertText(t('header.menus.alert.end'));
+      setAlertText(t('header.menus.alert.end').toString());
     }
     setShowModal(true);
   };

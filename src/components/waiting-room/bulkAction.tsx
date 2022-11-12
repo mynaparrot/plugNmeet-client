@@ -34,7 +34,7 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
       const res = CommonResponse.fromBinary(new Uint8Array(r));
 
       if (!res.status) {
-        toast(t(res.msg as any), {
+        toast(t(res.msg), {
           type: 'error',
         });
       }
@@ -62,7 +62,7 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
       const res = CommonResponse.fromBinary(new Uint8Array(r));
 
       if (!res.status) {
-        toast(t(res.msg as any), {
+        toast(t(res.msg), {
           type: 'error',
         });
       }

@@ -99,7 +99,7 @@ const RtmpModal = () => {
       msg = res.msg;
     }
 
-    toast(t(msg as any), {
+    toast(t(msg), {
       toastId: 'rtmp-status',
       type: 'info',
     });
@@ -274,7 +274,7 @@ const RtmpModal = () => {
       msg = res.msg;
     }
 
-    toast(t(msg as any), {
+    toast(t(msg), {
       toastId: 'rtmp-status',
       type: 'info',
     });

@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { autoBatchEnhancer, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
 import activeSpeakersSlice from './slices/activeSpeakersSlice';
@@ -34,6 +34,9 @@ export const store = configureStore({
       pollsApi.middleware,
       breakoutRoomApi.middleware,
     ),
+  enhancers: (existingEnhancers) => {
+    return existingEnhancers.concat(autoBatchEnhancer());
+  },
   devTools: !IS_PRODUCTION,
 });
 
