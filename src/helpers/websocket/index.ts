@@ -1,4 +1,5 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import { toast } from 'react-toastify';
 
 import { store } from '../../store';
 import { updateIsChatServiceReady } from '../../store/slices/sessionSlice';
@@ -7,9 +8,13 @@ import { handleUserTypeData } from './handleUserType';
 import { handleWhiteboardMsg } from './handleWhiteboardType';
 import { onAfterOpenConnection } from './handleAfterOpenConnection';
 import { DataMessage, DataMsgType } from '../proto/plugnmeet_datamessage_pb';
+import i18n from '../i18n';
 
-let isConnected = false;
+let isConnected = false,
+  normallyClosed = false,
+  isReconnecting = false;
 let ws: ReconnectingWebSocket;
+const toastId = 'websocketStatus';
 
 const createWS = () => {
   ws = new ReconnectingWebSocket(getURL, [], {
@@ -22,15 +27,34 @@ const createWS = () => {
     isConnected = true;
     onAfterOpenConnection();
     store.dispatch(updateIsChatServiceReady(true));
+
+    if (isReconnecting) {
+      isReconnecting = false;
+      toast.dismiss(toastId);
+    }
   };
 
   ws.onclose = () => {
     isConnected = false;
     store.dispatch(updateIsChatServiceReady(false));
+
+    if (!normallyClosed) {
+      toast.loading(i18n.t('notifications.websocket-disconnected'), {
+        type: toast.TYPE.ERROR,
+        autoClose: false,
+        toastId: toastId,
+        closeButton: true,
+      });
+      isReconnecting = true;
+    }
   };
 
   ws.onerror = () => {
-    console.log('Error in websocket');
+    toast(i18n.t('notifications.websocket-error'), {
+      type: toast.TYPE.ERROR,
+      autoClose: 5000,
+      toastId: toastId,
+    });
   };
 
   ws.onmessage = (event: any) => {
@@ -100,14 +124,13 @@ export const openWebsocketConnection = () => {
 
 export const isSocketConnected = () => isConnected;
 
-export const sendWebsocketMessage = (msg) => {
-  if (isConnected) {
-    ws?.send(msg);
-  }
+export const sendWebsocketMessage = (msg: any) => {
+  ws?.send(msg);
 };
 
 export const closeWebsocketConnection = () => {
   if (isConnected) {
+    normallyClosed = true;
     ws?.close();
   }
 };
