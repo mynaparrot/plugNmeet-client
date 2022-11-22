@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
+    "websocket-disconnected": "Websocket disconnected, reconnecting..",
+    "websocket-error": "Error in Websocket."
   },
   "room-metadata": {
     "session-recording": "此會議正在被錄制",
