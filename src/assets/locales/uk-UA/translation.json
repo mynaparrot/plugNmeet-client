@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "Невідповідність стану. Код: {{code}}",
     "your-connection-quality-not-good": "Якість з’єднання недостатньо висока",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
+    "websocket-disconnected": "Websocket disconnected, reconnecting..",
+    "websocket-error": "Error in Websocket."
   },
   "room-metadata": {
     "session-recording": "Цей сеанс записується",
@@ -110,8 +112,8 @@
     "connected": "підключено",
     "ready": "готово",
     "webcams-per-page": "Показати на сторінці:",
-    "require-ssl-title": "Domain must be SSL enabled",
-    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
+    "require-ssl-title": "У домені має бути ввімкнено SSL",
+    "require-ssl-des": "Необхідно використовувати домен із підтримкою SSL, відмінний від localhost."
   },
   "left-panel": {
     "participants": "Учасники ({{total}})",
