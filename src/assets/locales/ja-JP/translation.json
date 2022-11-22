@@ -6,9 +6,9 @@
   "no": "いいえ",
   "join": "参加",
   "share": "共有",
-  "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
-  "open": "Open",
-  "please-wait": "Please wait...",
+  "plugnmeet-server-client-version": "サーバー: v{{server}}; クライアント: v{{client}}",
+  "open": "開く",
+  "please-wait": "お待ちください...",
   "are-you-sure-to-close": "Are you sure to close?",
   "you-are-about-to-close": "You are about to close",
   "notifications": {
@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
+    "websocket-disconnected": "Websocket disconnected, reconnecting..",
+    "websocket-error": "Error in Websocket."
   },
   "room-metadata": {
     "session-recording": "このセッションは録画されています",
