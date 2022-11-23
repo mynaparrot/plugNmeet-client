@@ -45,8 +45,8 @@ const RemoveParticipantAlertModal = ({
       userId: userId,
       msg:
         removeType === 'remove'
-          ? t('notifications.you-have-removed')
-          : t('notifications.you-have-reject'),
+          ? t('notifications.you-have-removed').toString()
+          : t('notifications.you-have-reject').toString(),
       blockUser: blockUser === 1,
     });
 

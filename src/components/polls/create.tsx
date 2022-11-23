@@ -129,7 +129,9 @@ const Create = () => {
                     name={`opt_${elm.id}`}
                     value={elm.text}
                     onChange={(e) => onChange(index, e)}
-                    placeholder={t('polls.option', { count: index + 1 })}
+                    placeholder={t('polls.option', {
+                      count: index + 1,
+                    }).toString()}
                     className="text-black placeholder:text-black/50 py-2 px-4 text-base w-[calc(100%-36px)] border border-solid border-primaryColor outline-none rounded-lg bg-transparent dark:text-darkText dark:border-darkText placeholder:text-darkText"
                   />
                   {index ? (

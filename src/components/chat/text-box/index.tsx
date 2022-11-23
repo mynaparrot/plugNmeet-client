@@ -176,7 +176,7 @@ const TextBoxArea = ({
           value={message}
           onChange={(e) => setMessage(e.currentTarget.value)}
           disabled={!isChatServiceReady || lockSendMsg}
-          placeholder={t('right-panel.chat-box-placeholder')}
+          placeholder={t('right-panel.chat-box-placeholder').toString()}
           onKeyDown={(e) => onEnterPress(e)}
         />
         <div className="btns">

@@ -51,7 +51,7 @@ const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
         msgBodyType: DataMsgBodyType.RAISE_HAND,
         msg: t('footer.notice.has-raised-hand', {
           user: currentRoom.localParticipant.name,
-        }),
+        }).toString(),
       });
 
       const r = await sendAPIRequest(

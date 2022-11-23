@@ -49,7 +49,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
       userId: userId,
-      msg: t('notifications.you-have-reject'),
+      msg: t('notifications.you-have-reject').toString(),
       blockUser: block,
     });
 

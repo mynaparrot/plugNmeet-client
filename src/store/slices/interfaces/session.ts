@@ -50,6 +50,7 @@ export interface IRoomMetadata {
   is_active_rtmp: boolean;
   is_breakout_room: boolean;
   started_at: number;
+  logout_url?: string;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
   copyright_conf: ICopyright_conf;

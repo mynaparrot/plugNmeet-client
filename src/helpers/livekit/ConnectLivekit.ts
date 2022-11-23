@@ -318,6 +318,15 @@ export default class ConnectLivekit
     this.handleActiveSpeakers.onLivekitDisconnect();
     clearInterval(this.tokenRenewInterval);
     this.handleParticipant.clearParticipantCounterInterval();
+
+    // redirect to logout url
+    const logout_url =
+      store.getState().session.currentRoom.metadata?.logout_url;
+    if (reason === DisconnectReason.ROOM_DELETED && logout_url) {
+      setTimeout(() => {
+        window.location.href = logout_url;
+      }, 5000);
+    }
   };
 
   private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {
