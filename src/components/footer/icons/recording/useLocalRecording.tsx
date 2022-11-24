@@ -70,13 +70,21 @@ const useLocalRecording = (
   };
 
   const startRecorder = (captureStream: MediaStream) => {
-    const streams = [...captureStream.getTracks()];
     const date = new Date();
     const fileName = `${roomId}_${date.toLocaleString()}`;
 
+    const ctx = new AudioContext();
+    const dest = ctx.createMediaStreamDestination();
+
+    if (captureStream.getAudioTracks().length) {
+      ctx.createMediaStreamSource(captureStream).connect(dest);
+    }
+
     const localTrack = localParticipant.getTrack(Track.Source.Microphone);
-    if (localTrack?.audioTrack?.mediaStream?.getTracks().length) {
-      streams.push(...localTrack.audioTrack?.mediaStream?.getTracks());
+    if (localTrack?.audioTrack?.mediaStream) {
+      ctx
+        .createMediaStreamSource(localTrack?.audioTrack?.mediaStream)
+        .connect(dest);
     }
 
     let mimeType = 'video/webm';
@@ -84,7 +92,16 @@ const useLocalRecording = (
       mimeType = 'video/mp4';
     }
 
-    const recorder = new MediaRecorder(new MediaStream(streams), {
+    const videoTrack = captureStream.getVideoTracks()[0];
+    const streams = [videoTrack];
+
+    if (dest.stream.getTracks().length) {
+      const mixedTracks = dest.stream.getTracks()[0];
+      streams.push(mixedTracks);
+    }
+
+    const combineStreams = new MediaStream(streams);
+    const recorder = new MediaRecorder(combineStreams, {
       mimeType,
     });
 
