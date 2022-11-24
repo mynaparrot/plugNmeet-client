@@ -14,7 +14,7 @@
     "proto": "protoc --es_opt=target=js+dts --plugin=protoc-gen-es=./node_modules/.bin/protoc-gen-es --es_out=./src/helpers/proto --proto_path=./protocol/proto_files plugnmeet_datamessage.proto plugnmeet_recorder.proto plugnmeet_recording.proto plugnmeet_breakout_room.proto plugnmeet_polls.proto plugnmeet_common_api.proto"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "0.2.1",
+    "@bufbuild/protobuf": "0.3.0",
     "@excalidraw/excalidraw": "0.13.0",
     "@headlessui/react": "1.7.4",
     "@reduxjs/toolkit": "1.9.0",
@@ -47,7 +47,7 @@
     "video.js": "7.20.3"
   },
   "devDependencies": {
-    "@bufbuild/protoc-gen-es": "0.2.1",
+    "@bufbuild/protoc-gen-es": "0.3.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.9",
     "@types/lodash": "4.14.189",
     "@types/react": "18.0.25",
