@@ -75,7 +75,10 @@ const useLocalRecording = (
 
     const ctx = new AudioContext();
     const dest = ctx.createMediaStreamDestination();
-    ctx.createMediaStreamSource(captureStream).connect(dest);
+
+    if (captureStream.getAudioTracks().length) {
+      ctx.createMediaStreamSource(captureStream).connect(dest);
+    }
 
     const localTrack = localParticipant.getTrack(Track.Source.Microphone);
     if (localTrack?.audioTrack?.mediaStream) {
@@ -90,9 +93,14 @@ const useLocalRecording = (
     }
 
     const videoTrack = captureStream.getVideoTracks()[0];
-    const mixedTracks = dest.stream.getTracks()[0];
-    const combineStreams = new MediaStream([videoTrack, mixedTracks]);
+    const streams = [videoTrack];
 
+    if (dest.stream.getTracks().length) {
+      const mixedTracks = dest.stream.getTracks()[0];
+      streams.push(mixedTracks);
+    }
+
+    const combineStreams = new MediaStream(streams);
     const recorder = new MediaRecorder(combineStreams, {
       mimeType,
     });
