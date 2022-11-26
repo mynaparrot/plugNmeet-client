@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@bufbuild/protoc-gen-es": "0.3.0",
-    "@pmmmwh/react-refresh-webpack-plugin": "0.5.9",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.5.10",
     "@types/lodash": "4.14.189",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
