@@ -74,7 +74,7 @@
     "lint-staged": "13.0.3",
     "mini-css-extract-plugin": "2.7.0",
     "postcss": "8.4.19",
-    "postcss-loader": "7.0.1",
+    "postcss-loader": "7.0.2",
     "postcss-nested": "6.0.0",
     "prettier": "2.7.1",
     "react-refresh": "0.14.0",
