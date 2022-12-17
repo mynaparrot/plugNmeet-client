@@ -24,7 +24,7 @@ jobs:
           cd tmp
           zip -X -r client.zip client
       - name: Upload by ftp
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: ${{ secrets.PNM_FTP_HOST }}
           username: ${{ secrets.PNM_FTP_USER }}
