@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
+    "websocket-disconnected": "Websocket disconnected, reconnecting..",
+    "websocket-error": "Error in Websocket."
   },
   "room-metadata": {
     "session-recording": "Diese Sitzung wird aufgezeichnet",
@@ -109,7 +111,9 @@
     "loading": "wird geladen...",
     "connected": "verbunden",
     "ready": "bereit",
-    "webcams-per-page": "Pro Seite anzeigen:"
+    "webcams-per-page": "Pro Seite anzeigen:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "Teilnehmer ({{total}})",

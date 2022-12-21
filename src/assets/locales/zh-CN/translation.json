@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "状态不匹配。代码: {{code}}",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
+    "websocket-disconnected": "Websocket disconnected, reconnecting..",
+    "websocket-error": "Error in Websocket."
   },
   "room-metadata": {
     "session-recording": "此会议正在被录制",
@@ -109,7 +111,9 @@
     "loading": "下载中...",
     "connected": "已连接",
     "ready": "就绪",
-    "webcams-per-page": "显示每页："
+    "webcams-per-page": "显示每页：",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "参会人员 ({{total}})",

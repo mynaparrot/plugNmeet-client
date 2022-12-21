@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "Durum uyuşmazlığı. Kod: {{code}}",
     "your-connection-quality-not-good": "Bağlantı kaliteniz yeterince iyi değil",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link."
+    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
+    "websocket-disconnected": "Websocket disconnected, reconnecting..",
+    "websocket-error": "Error in Websocket."
   },
   "room-metadata": {
     "session-recording": "Bu oturum kaydediliyor",
@@ -109,7 +111,9 @@
     "loading": "yükleniyor...",
     "connected": "bağlanıldı",
     "ready": "hazır",
-    "webcams-per-page": "Sayfa başına Görünüm:"
+    "webcams-per-page": "Sayfa başına Görünüm:",
+    "require-ssl-title": "Domain must be SSL enabled",
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
   "left-panel": {
     "participants": "Katılımcılar ({{total}})",

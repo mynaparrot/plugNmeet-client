@@ -40,7 +40,9 @@
     "room-disconnected-state-mismatch": "State মিলছে না। কোডঃ {{code}}",
     "your-connection-quality-not-good": "আপনার ইন্টারনেট সংযোগের মান ভালো না",
     "need-to-disable-display-external-link": "ডিসপ্লে এক্সটারনাল লিংক চালু আছে। এক্সটার্নাল মিডিয়া প্লেয়ার চালু করার আগে এটি বন্ধ করুন।",
-    "need-to-disable-external-media-player": "এক্সটার্নাল মিডিয়া প্লেয়ার চালু আছে। ডিসপ্লে এক্সটার্নাল লিংক চালু করার আগে এটি বন্ধ করুন।"
+    "need-to-disable-external-media-player": "এক্সটার্নাল মিডিয়া প্লেয়ার চালু আছে। ডিসপ্লে এক্সটার্নাল লিংক চালু করার আগে এটি বন্ধ করুন।",
+    "websocket-disconnected": "Websocket সংযোগ বিচ্ছিন্ন, পুনরায় সংযোগ করা হচ্ছে..",
+    "websocket-error": "Websocket এ ত্রুটি।"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
@@ -109,7 +111,9 @@
     "loading": "লোড হচ্ছে...",
     "connected": "সংযুক্ত হয়েছে",
     "ready": "প্রস্তুত",
-    "webcams-per-page": "প্রতি পৃষ্ঠা প্রদর্শন:"
+    "webcams-per-page": "প্রতি পৃষ্ঠা প্রদর্শন:",
+    "require-ssl-title": "ডোমেন অবশ্যই SSL সক্রিয় হতে হবে",
+    "require-ssl-des": "localhost ছাড়া অন্য যেকোন domain এর ক্ষেত্রে SSL ব্যবহার করতে হবে।"
   },
   "left-panel": {
     "participants": "অংশগ্রহণকারীরা ({{total}})",
