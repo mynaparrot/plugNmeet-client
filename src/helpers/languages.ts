@@ -40,6 +40,10 @@ const languages = [
     text: '日本語',
   },
   {
+    code: 'ru-RU',
+    text: 'Русский',
+  },
+  {
     code: 'uk-UA',
     text: 'Українська',
   },
