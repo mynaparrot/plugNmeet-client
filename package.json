@@ -35,7 +35,7 @@
     "react-dnd": "16.0.1",
     "react-dnd-html5-backend": "16.0.1",
     "react-dom": "18.2.0",
-    "react-hotkeys-hook": "4.0.6",
+    "react-hotkeys-hook": "4.3.2",
     "react-i18next": "12.1.1",
     "react-player": "2.11.0",
     "react-redux": "8.0.5",
