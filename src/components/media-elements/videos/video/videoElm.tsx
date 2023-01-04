@@ -72,7 +72,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   const pictureInPicture = async () => {
     if (document.pictureInPictureElement) {
       document.exitPictureInPicture();
-      await sleep(1000);
+      await sleep(500);
     }
     const el = ref.current;
     if (el) {
