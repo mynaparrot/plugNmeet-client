@@ -31,6 +31,9 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-pip:before {
+  content: '\e930';
+}
 .pnm-cross:before {
   content: '\e92f';
 }

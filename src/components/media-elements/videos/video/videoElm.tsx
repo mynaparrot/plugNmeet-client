@@ -4,6 +4,7 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppSelector } from '../../../../store';
 import './style.scss';
+import { sleep } from '../../../../helpers/utils';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
@@ -68,6 +69,17 @@ const VideoElm = ({ track }: IVideoElmProps) => {
     }
   };
 
+  const pictureInPicture = async () => {
+    if (document.pictureInPictureElement) {
+      document.exitPictureInPicture();
+      await sleep(500);
+    }
+    const el = ref.current;
+    if (el) {
+      await el.requestPictureInPicture();
+    }
+  };
+
   return (
     <div className="camera-video-player">
       {!loaded ? (
@@ -84,6 +96,14 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       >
         <i className="icon pnm-fullscreen text[14px] text-white" />
       </button>
+      {document.pictureInPictureEnabled ? (
+        <button
+          className="absolute z-[999] top-2 right-10 p-1 bg-black/50 w-6 h-6 flex"
+          onClick={pictureInPicture}
+        >
+          <i className="icon pnm-pip text[14px] text-white" />
+        </button>
+      ) : null}
       <video
         className="camera-video"
         onLoadedData={onLoadedData}
