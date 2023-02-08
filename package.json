@@ -76,7 +76,7 @@
     "postcss": "8.4.20",
     "postcss-loader": "7.0.2",
     "postcss-nested": "6.0.0",
-    "prettier": "2.8.1",
+    "prettier": "2.8.4",
     "react-refresh": "0.14.0",
     "react-refresh-typescript": "2.0.7",
     "sass": "1.57.1",
