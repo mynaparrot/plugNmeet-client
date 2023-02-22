@@ -24,7 +24,7 @@ const initialState: IRoomSettings = {
   roomAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
   theme: 'light',
-  videoObjectFit: VideoObjectFit.COVER,
+  videoObjectFit: VideoObjectFit.CONTAIN,
 
   selectedTabLeftPanel: 0,
   selectedChatOption: 'public',
