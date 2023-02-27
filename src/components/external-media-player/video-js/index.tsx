@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
 
 import { store } from '../../../store';
