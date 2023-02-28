@@ -191,7 +191,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           <div
             className={`${
               (window as any).CUSTOM_LOGO ? 'h-[45px]' : 'h-[45px]'
-            } header-logo h-full bg-contain bg-no-repeat`}
+            } header-logo  bg-contain bg-no-repeat`}
             style={{
               backgroundImage: `url("${logo}")`,
             }}
