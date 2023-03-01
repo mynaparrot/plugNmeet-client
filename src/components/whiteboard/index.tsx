@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { createSelector } from '@reduxjs/toolkit';
-import { Excalidraw, Footer, getSceneVersion } from '@excalidraw/excalidraw';
+import {
+  Excalidraw,
+  Footer,
+  MainMenu,
+  getSceneVersion,
+} from '@excalidraw/excalidraw';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
@@ -518,6 +523,10 @@ const Whiteboard = () => {
           libraryReturnUrl=""
         >
           <Footer>{renderFooter()}</Footer>
+          <MainMenu>
+            <MainMenu.DefaultItems.SaveAsImage />
+            <MainMenu.DefaultItems.Help />
+          </MainMenu>
         </Excalidraw>
       </div>
     </>
