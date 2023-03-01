@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { createSelector } from '@reduxjs/toolkit';
-import { Excalidraw, getSceneVersion } from '@excalidraw/excalidraw';
+import { Excalidraw, Footer, getSceneVersion } from '@excalidraw/excalidraw';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
@@ -13,7 +13,7 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
-import './style.scss';
+//import './style.scss';
 import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
@@ -514,9 +514,11 @@ const Whiteboard = () => {
           detectScroll={true}
           langCode={i18n.languages[0]}
           renderTopRightUI={renderTopRightUI}
-          renderFooter={renderFooter}
+          //renderFooter={renderFooter}
           libraryReturnUrl=""
-        />
+        >
+          <Footer>{renderFooter()}</Footer>
+        </Excalidraw>
       </div>
     </>
   );

@@ -1,8 +1,11 @@
 // eslint-disable-next-line import/no-unresolved
 import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types/types';
-// eslint-disable-next-line import/no-unresolved
-import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import { randomInteger } from '../../../helpers/utils';
+import {
+  ExcalidrawElement,
+  ExcalidrawImageElement,
+  // eslint-disable-next-line import/no-unresolved
+} from '@excalidraw/excalidraw/types/element/types';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -97,7 +100,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     reducedBy = 0.7;
   }
 
-  const elm: ExcalidrawElement = {
+  const elm: ExcalidrawImageElement = {
     id: fileId,
     type: 'image',
     x: excalidrawHeight * reducedBy,
@@ -113,7 +116,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     roughness: 1,
     opacity: 100,
     groupIds: [],
-    strokeSharpness: 'round',
+    roundness: null,
     seed: randomInteger(),
     version: lastVersion + 1,
     versionNonce: randomInteger(),
