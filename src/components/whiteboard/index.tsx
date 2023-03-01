@@ -522,11 +522,11 @@ const Whiteboard = () => {
           //renderFooter={renderFooter}
           libraryReturnUrl=""
         >
-          <Footer>{renderFooter()}</Footer>
           <MainMenu>
             <MainMenu.DefaultItems.SaveAsImage />
             <MainMenu.DefaultItems.Help />
           </MainMenu>
+          <Footer>{renderFooter()}</Footer>
         </Excalidraw>
       </div>
     </>
