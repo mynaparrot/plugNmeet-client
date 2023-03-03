@@ -70,7 +70,13 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   return (
     <div className="mt-5">
       {deviceId ? (
-        <div style={backgroundConfig ? { display: 'none' } : { display: '' }}>
+        <div
+          style={
+            backgroundConfig
+              ? { height: '0.5px', width: '0.5px' }
+              : { width: 'auto' }
+          }
+        >
           <VideoBox
             deviceId={deviceId}
             onSourcePlayback={setSourcePlayback}
