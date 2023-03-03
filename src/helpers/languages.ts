@@ -8,6 +8,10 @@ const languages = [
     text: 'Deutsch',
   },
   {
+    code: 'nl-NL',
+    text: 'Dutch',
+  },
+  {
     code: 'es-ES',
     text: 'Español',
   },
