@@ -18,7 +18,7 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
-//import './style.scss';
+import './style.scss';
 import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {

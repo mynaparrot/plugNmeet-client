@@ -96,7 +96,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
     return (
       <>
         <button
-          className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] !mr-2 flex items-center justify-center cursor-pointer"
+          className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-md bg-[#F2F2F2] dark:bg-[#363636] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer"
           onClick={() => openFileBrowser('image')}
         >
           <i className="pnm-blank-img primaryColor dark:text-secondaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
@@ -106,7 +106,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
           <Menu>
             {({ open }) => (
               <>
-                <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-full bg-[#F2F2F2] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
+                <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-md bg-[#F2F2F2] dark:bg-[#363636] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
                   <>
                     <i className="pnm-attachment primaryColor dark:text-secondaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
                     {t('whiteboard.manage-files')}
