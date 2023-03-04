@@ -162,6 +162,9 @@
       .App-toolbar-content {
         padding: 0;
       }
+      label.ToolIcon[title='Insert image — 9'] {
+        display: none;
+      }
     }
   }
 }
