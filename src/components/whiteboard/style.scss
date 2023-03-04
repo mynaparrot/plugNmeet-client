@@ -95,7 +95,9 @@
           display: none !important;
         }
       }
-      .help-icon,
+      .help-icon {
+        display: none;
+      }
       .dropdown-menu-button {
         padding: 0px !important;
         &:hover {
@@ -165,6 +167,18 @@
       label.ToolIcon[title='Insert image — 9'] {
         display: none;
       }
+      footer {
+        .footer-center {
+          justify-content: center !important;
+        }
+      }
     }
   }
+}
+.excalidraw
+  .ToolIcon.fillable
+  .ToolIcon_type_radio:checked
+  + .ToolIcon__icon:hover
+  svg {
+  color: #5b57d1 !important;
 }
