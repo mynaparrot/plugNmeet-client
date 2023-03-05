@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { createSelector } from '@reduxjs/toolkit';
-import { Excalidraw, getSceneVersion } from '@excalidraw/excalidraw';
+import {
+  Excalidraw,
+  Footer,
+  MainMenu,
+  getSceneVersion,
+} from '@excalidraw/excalidraw';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
@@ -58,6 +63,10 @@ const themeSelector = createSelector(
   (state: RootState) => state.roomSettings.theme,
   (theme) => theme,
 );
+const screenWidthSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.screenWidth,
+  (screenWidth) => screenWidth,
+);
 
 const Whiteboard = () => {
   const currentUser = store.getState().session.currentUser;
@@ -88,6 +97,7 @@ const Whiteboard = () => {
   const [fetchedData, setFetchedData] = useState<boolean>(false);
   const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
     useState<number>(0);
+  const screenWidth = useAppSelector(screenWidthSelector);
 
   useEffect(() => {
     const s = store.getState();
@@ -514,9 +524,16 @@ const Whiteboard = () => {
           detectScroll={true}
           langCode={i18n.languages[0]}
           renderTopRightUI={renderTopRightUI}
-          renderFooter={renderFooter}
+          //renderFooter={renderFooter}
           libraryReturnUrl=""
-        />
+        >
+          <MainMenu>
+            <MainMenu.DefaultItems.SaveAsImage />
+            <MainMenu.DefaultItems.Help />
+            {screenWidth <= 767 ? renderFooter() : null}
+          </MainMenu>
+          {screenWidth > 767 ? <Footer>{renderFooter()}</Footer> : null}
+        </Excalidraw>
       </div>
     </>
   );

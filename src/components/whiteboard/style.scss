@@ -1,63 +1,184 @@
-.excalidraw .App-menu_top .buttonList {
-  display: flex;
+// .excalidraw .App-menu_top .buttonList {
+//   display: flex;
+// }
+
+// :root[dir='ltr']
+//   .excalidraw
+//   .layer-ui__wrapper
+//   .zen-mode-transition.App-menu_bottom--transition-left {
+//   transform: none;
+// }
+
+// .excalidraw .panelColumn {
+//   text-align: left;
+// }
+
+// .export-wrapper {
+//   display: flex;
+//   flex-direction: column;
+//   margin: 50px;
+
+//   /*&__checkbox {*/
+//   /*     display: flex;*/
+//   /* }*/
+// }
+
+// .excalidraw {
+//   --color-primary: #004d90;
+//   --color-primary-darker: #004d90;
+//   --color-primary-darkest: #004d90;
+//   --color-primary-light: #24aef7;
+// }
+
+// .App-toolbar label:last-child {
+//   display: none !important;
+// }
+
+// .HelpDialog--header {
+//   display: none !important;
+// }
+
+// .excalidraw .Stack_horizontal {
+//   justify-content: start !important;
+// }
+
+// .wb-page-navigation button {
+//   margin: 0 10px !important;
+// }
+
+// .wb-page-navigation .pre {
+//   margin-left: 0 !important;
+// }
+
+// .wb-page-navigation .next {
+//   margin-right: 0 !important;
+// }
+
+// .wb-page-navigation button:disabled {
+//   background-color: #f4f4f4 !important;
+// }
+
+// .wb-page-navigation button:disabled i {
+//   opacity: 0.2;
+// }
+#plugNmeet-app {
+  .excalidraw-wrapper {
+    .excalidraw {
+      --default-button-size: 2rem;
+      --default-icon-size: 0.7rem;
+      --lg-button-size: 2rem;
+      --lg-icon-size: 1rem;
+      --editor-container-padding: 0.5rem;
+      --island-bg-color: rgba(255, 255, 255, 0.96);
+      --default-border-color: #3d3d3d;
+      --border-radius-lg: 0.5rem;
+      --button-hover-bg: #3d3d3d;
+      @media screen and (max-width: 640px) {
+        --default-button-size: 1.8rem;
+        --lg-button-size: 1.8rem;
+      }
+
+      &.theme--dark {
+        --island-bg-color: #262627;
+        --default-border-color: #3d3d3d;
+      }
+
+      .library-button {
+        height: 32px;
+        width: 32px;
+        &:hover {
+          svg {
+            color: #fff;
+          }
+        }
+        .library-button__label {
+          display: none !important;
+        }
+      }
+      .help-icon {
+        display: none;
+      }
+      .dropdown-menu-button {
+        padding: 0px !important;
+        &:hover {
+          svg {
+            color: #fff;
+          }
+        }
+      }
+      .App-menu_bottom {
+        bottom: 0.5rem;
+        padding: 0 0.5rem;
+      }
+      .wb-page-navigation {
+        button {
+          border: 1px solid var(--default-border-color) !important;
+          width: var(--lg-button-size);
+          height: var(--lg-button-size);
+          background-color: var(--island-bg-color);
+          border-radius: var(--border-radius-lg);
+          margin: 0 0.4rem;
+          &:disabled {
+            cursor: not-allowed;
+          }
+          &:hover {
+            background: var(--button-hover-bg);
+            i {
+              color: #fff;
+            }
+          }
+        }
+      }
+      .ToolIcon__icon {
+        &:hover {
+          svg {
+            color: #fff;
+          }
+        }
+      }
+      button.Sidebar__close-btn {
+        &:hover {
+          svg {
+            color: #fff;
+          }
+        }
+      }
+      .dropdown-menu {
+        .dropdown-menu-item {
+          &:hover {
+            color: #fff;
+          }
+        }
+      }
+      .library-menu-browse-button {
+        padding: 0.5rem 1rem;
+        color: #fff !important;
+        @apply bg-primaryColor;
+        &:hover {
+          @apply bg-secondaryColor;
+        }
+      }
+      .library-menu-items-container__header {
+        @apply text-primaryColor dark:text-secondaryColor text-base font-medium;
+      }
+      .App-toolbar-content {
+        padding: 0;
+      }
+      label.ToolIcon[title='Insert image — 9'] {
+        display: none;
+      }
+      footer {
+        .footer-center {
+          justify-content: center !important;
+        }
+      }
+    }
+  }
 }
-
-:root[dir='ltr']
-  .excalidraw
-  .layer-ui__wrapper
-  .zen-mode-transition.App-menu_bottom--transition-left {
-  transform: none;
-}
-
-.excalidraw .panelColumn {
-  text-align: left;
-}
-
-.export-wrapper {
-  display: flex;
-  flex-direction: column;
-  margin: 50px;
-
-  /*&__checkbox {*/
-  /*     display: flex;*/
-  /* }*/
-}
-
-.excalidraw {
-  --color-primary: #004d90;
-  --color-primary-darker: #004d90;
-  --color-primary-darkest: #004d90;
-  --color-primary-light: #24aef7;
-}
-
-.App-toolbar label:last-child {
-  display: none !important;
-}
-
-.HelpDialog--header {
-  display: none !important;
-}
-
-.excalidraw .Stack_horizontal {
-  justify-content: start !important;
-}
-
-.wb-page-navigation button {
-  margin: 0 10px !important;
-}
-
-.wb-page-navigation .pre {
-  margin-left: 0 !important;
-}
-
-.wb-page-navigation .next {
-  margin-right: 0 !important;
-}
-
-.wb-page-navigation button:disabled {
-  background-color: #f4f4f4 !important;
-}
-
-.wb-page-navigation button:disabled i {
-  opacity: 0.2;
+.excalidraw
+  .ToolIcon.fillable
+  .ToolIcon_type_radio:checked
+  + .ToolIcon__icon:hover
+  svg {
+  color: #5b57d1 !important;
 }

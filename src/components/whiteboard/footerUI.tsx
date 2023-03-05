@@ -141,7 +141,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
 
   const renderForAdmin = () => {
     return (
-      <div className="flex pt-1 wb-page-navigation">
+      <div className="flex wb-page-navigation ml-2">
         <button
           className="pre w-8 h-8 flex items-center justify-center"
           onClick={handlePre}
