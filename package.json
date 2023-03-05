@@ -14,7 +14,7 @@
     "proto": "protoc --es_opt=target=ts,import_extension=.ts --plugin=protoc-gen-es=./node_modules/.bin/protoc-gen-es --es_out=./src/helpers/proto --proto_path=./protocol/proto_files plugnmeet_datamessage.proto plugnmeet_recorder.proto plugnmeet_recording.proto plugnmeet_breakout_room.proto plugnmeet_polls.proto plugnmeet_common_api.proto"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "1.0.0",
+    "@bufbuild/protobuf": "1.1.0",
     "@excalidraw/excalidraw": "^0.14.2",
     "@headlessui/react": "1.7.12",
     "@reduxjs/toolkit": "1.9.3",
