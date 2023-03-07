@@ -167,9 +167,31 @@
       label.ToolIcon[title='Insert image — 9'] {
         display: none;
       }
-      footer {
-        .footer-center {
-          justify-content: center !important;
+      .panelColumn {
+        button {
+          &:hover {
+            svg {
+              color: #fff;
+            }
+          }
+        }
+        .buttonList {
+          label {
+            &:not(.active) {
+              &:hover {
+                svg {
+                  color: #fff;
+                }
+              }
+            }
+          }
+          // label.active {
+          //   &:hover {
+          //     svg {
+          //       color: #000;
+          //     }
+          //   }
+          // }
         }
       }
     }
