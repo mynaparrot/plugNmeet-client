@@ -53,7 +53,7 @@ const AudioNotification = () => {
 
   return (
     <div style={{ display: 'none' }}>
-      <audio ref={ref} src={`${assetPath}/audio/beep-07a.mp3`} />
+      <audio ref={ref} src={`${assetPath}/audio/notification.mp3`} />
     </div>
   );
 };
