@@ -8,8 +8,8 @@ import {
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
   isActiveWebcam: false,
-  isActiveChatPanel: true,
-  isActiveParticipantsPanel: true,
+  isActiveChatPanel: false,
+  isActiveParticipantsPanel: false,
   isActiveRaisehand: false,
   isActiveRecording: false,
   isActiveScreenshare: false,
