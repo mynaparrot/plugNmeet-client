@@ -26,6 +26,7 @@ import {
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
+import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
@@ -203,10 +204,18 @@ export default class HandleParticipants {
   };
 
   private notificationForWaitingUser(metadata: ICurrentUserMetadata, name) {
+    const state = store.getState();
     if (
       metadata.wait_for_approval &&
-      store.getState().session.currentUser?.metadata?.is_admin
+      state.session.currentUser?.metadata?.is_admin
     ) {
+      // we can open participants panel if close
+      if (!state.bottomIconsActivity.isActiveParticipantsPanel) {
+        store.dispatch(updateIsActiveParticipantsPanel(true));
+      }
+      // also play notification
+      store.dispatch(updatePlayAudioNotification(true));
+
       toast(
         i18n.t('waiting-room.user-waiting', {
           name: name,
