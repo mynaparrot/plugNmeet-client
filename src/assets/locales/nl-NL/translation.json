@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Toon externe link is ingeschakeld. Stop deze voordat u externe mediaspeler opstart.",
     "need-to-disable-external-media-player": "Externe Media Player is ingeschakeld. Gelieve het te stoppen voordat u de externe link opent.",
     "websocket-disconnected": "Websocket verbroken, opnieuw verbinden..",
-    "websocket-error": "Fout in Websocket."
+    "websocket-error": "Fout in Websocket.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "Deze sessie wordt opgenomen",
