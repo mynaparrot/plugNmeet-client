@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Отображение внешней ссылки включено. Пожалуйста, отключите перед запуском внешнего медиаплеера.",
     "need-to-disable-external-media-player": "Внешний медиа плеер включен. Пожалуйста, остановите его перед запуском Внешней ссылки.",
     "websocket-disconnected": "Веб-сокет отключен, переподключение..",
-    "websocket-error": "Ошибка в веб-сокете."
+    "websocket-error": "Ошибка в веб-сокете.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "Сессия записывается",
