@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Mostrar Enlace Externo está activado. Deténgalo antes de iniciar el Reproductor Multimedia Externo.",
     "need-to-disable-external-media-player": "El Reproductor Multimedia Externo está encendido. Deténgalo antes de iniciar Mostrar Enlace Externo.",
     "websocket-disconnected": "Websocket desconectado, reconectando...",
-    "websocket-error": "Error en Websocket."
+    "websocket-error": "Error en Websocket.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "Esta sesión se está grabando",
