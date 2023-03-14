@@ -109,6 +109,56 @@ const ApplicationSettings = () => {
             </select>
           </div>
         </div>
+        <div className="grid py-2">
+          <div className="flex items-center justify-start">
+            <label
+              htmlFor="sidebar-width"
+              className="pr-4 w-full dark:text-darkText"
+            >
+              Sidebar Width
+            </label>
+            <select
+              id="sidebar-width"
+              name="sidebar-width"
+              className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option key="full" value="full">
+                Full
+              </option>
+              <option key="medium" value="medium">
+                Medium
+              </option>
+              <option key="small" value="small">
+                Small
+              </option>
+            </select>
+          </div>
+        </div>
+        <div className="grid">
+          <div className="flex items-center justify-start">
+            <label
+              htmlFor="sidebar-width"
+              className="pr-4 w-full dark:text-darkText"
+            >
+              Camera Position
+            </label>
+            <select
+              id="sidebar-width"
+              name="sidebar-width"
+              className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option key="default" value="default">
+                Default
+              </option>
+              <option key="top" value="top">
+                Top
+              </option>
+              <option key="bottom" value="bottom">
+                Bottom
+              </option>
+            </select>
+          </div>
+        </div>
       </div>
     );
   };
