@@ -67,6 +67,7 @@
       "title": "Settings",
       "data-savings": "Data savings",
       "notifications": "Notifications",
+      "ingress": "Ingress",
       "show-webcams": "Show webcams",
       "show-screen-share": "Show Screen share",
       "allow-audio-notification": "Allow audio notification",
@@ -363,5 +364,13 @@
     "meeting-id-des": "Meeting's origin ID",
     "user-role": "User role",
     "user-role-des": "User's current role. Either admin or participant"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
