@@ -70,12 +70,35 @@ export default class HandleParticipants {
   public addParticipant = (
     participant: RemoteParticipant | LocalParticipant,
   ) => {
-    let metadata;
+    let metadata: ICurrentUserMetadata | null = null;
     if (participant.metadata) {
       try {
         metadata = JSON.parse(participant.metadata);
-        this.notificationForWaitingUser(metadata, participant.name);
+        if (metadata) {
+          this.notificationForWaitingUser(metadata, participant.name);
+        }
       } catch (e) {}
+    }
+
+    // set default metadata to prevent errors
+    if (!metadata) {
+      metadata = {
+        is_admin: false,
+        is_presenter: false,
+        raised_hand: false,
+        wait_for_approval: false,
+        lock_settings: {
+          lock_microphone: true,
+          lock_webcam: true,
+          lock_screen_sharing: true,
+          lock_chat: true,
+          lock_chat_send_message: true,
+          lock_chat_file_share: true,
+          lock_private_chat: true,
+          lock_whiteboard: true,
+          lock_shared_notepad: true,
+        },
+      };
     }
 
     let videoTracksCount = 0,
@@ -101,7 +124,7 @@ export default class HandleParticipants {
         sid: participant.sid,
         userId: participant.identity,
         name: participant.name ?? '',
-        metadata: metadata ? metadata : null,
+        metadata: metadata,
         audioTracks: audioTracksCount,
         videoTracks: videoTracksCount,
         screenShareTrack: screenShareTrackCount,

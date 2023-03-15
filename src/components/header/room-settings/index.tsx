@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition, Dialog, Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import { updateShowRoomSettingsModal } from '../../../store/slices/roomSettingsS
 import DataSavings from './dataSavings';
 import Notification from './notification';
 import ApplicationSettings from './application';
+import Ingress from './ingress';
 
 declare const PNM_VERSION: string;
 
@@ -20,18 +21,21 @@ const isShowRoomSettingsModalSelector = createSelector(
   (state: RootState) => state.roomSettings.isShowRoomSettingsModal,
   (isShowRoomSettingsModal) => isShowRoomSettingsModal,
 );
+
 const RoomSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const serverVersion = store.getState().session.serverVersion;
-  const copyright_conf =
-    store.getState().session.currentRoom?.metadata?.copyright_conf;
+  const s = store.getState();
+  const serverVersion = s.session.serverVersion;
+  const copyright_conf = s.session.currentRoom?.metadata?.copyright_conf;
+  const ingressFeatures =
+    s.session.currentRoom?.metadata?.room_features.ingress_features;
 
   const isShowRoomSettingsModal = useAppSelector(
     isShowRoomSettingsModalSelector,
   );
 
-  const [categories] = useState({
+  const [categories, setCategories] = useState({
     'header.room-settings.application': [
       {
         id: 1,
@@ -40,17 +44,34 @@ const RoomSettings = () => {
     ],
     'header.room-settings.data-savings': [
       {
-        id: 1,
+        id: 2,
         elm: <DataSavings />,
       },
     ],
     'header.room-settings.notifications': [
       {
-        id: 1,
+        id: 3,
         elm: <Notification />,
       },
     ],
   });
+
+  useEffect(() => {
+    if (
+      s.session?.currentUser?.metadata?.is_admin &&
+      ingressFeatures?.is_allow
+    ) {
+      categories['header.room-settings.ingress'] = [
+        {
+          id: 4,
+          elm: <Ingress />,
+        },
+      ];
+    }
+
+    setCategories(categories);
+    //eslint-disable-next-line
+  }, []);
 
   const closeModal = () => {
     dispatch(updateShowRoomSettingsModal(false));
