@@ -6,10 +6,16 @@ import { createSelector } from '@reduxjs/toolkit';
 import languages from '../../../helpers/languages';
 import { RootState, useAppDispatch, useAppSelector } from '../../../store';
 import {
+  updateColumnCameraPosition,
+  updateColumnCameraWidth,
   updateTheme,
   updateVideoObjectFit,
 } from '../../../store/slices/roomSettingsSlice';
-import { VideoObjectFit } from '../../../store/slices/interfaces/roomSettings';
+import {
+  ColumnCameraPosition,
+  ColumnCameraWidth,
+  VideoObjectFit,
+} from '../../../store/slices/interfaces/roomSettings';
 
 const themeSelector = createSelector(
   (state: RootState) => state.roomSettings.theme,
@@ -19,12 +25,22 @@ const videoObjectFitSelector = createSelector(
   (state: RootState) => state.roomSettings.videoObjectFit,
   (videoObjectFit) => videoObjectFit,
 );
+const columnCameraWidthSelector = createSelector(
+  (state: RootState) => state.roomSettings.columnCameraWidth,
+  (columnCameraWidth) => columnCameraWidth,
+);
+const columnCameraPositionSelector = createSelector(
+  (state: RootState) => state.roomSettings.columnCameraPosition,
+  (columnCameraPosition) => columnCameraPosition,
+);
 
 const ApplicationSettings = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const theme = useAppSelector(themeSelector);
   const videoObjectFit = useAppSelector(videoObjectFitSelector);
+  const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
+  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
 
   const toggleTheme = () => {
     dispatch(updateTheme(theme === 'light' ? 'dark' : 'light'));
@@ -112,24 +128,39 @@ const ApplicationSettings = () => {
         <div className="grid py-2">
           <div className="flex items-center justify-start">
             <label
-              htmlFor="sidebar-width"
+              htmlFor="column-camera-width"
               className="pr-4 w-full dark:text-darkText"
             >
-              Sidebar Width
+              {t('header.room-settings.column-camera-width')}
             </label>
             <select
-              id="sidebar-width"
-              name="sidebar-width"
+              id="column-camera-width"
+              name="column-camera-width"
+              value={columnCameraWidth}
+              onChange={(e) =>
+                dispatch(
+                  updateColumnCameraWidth(e.target.value as ColumnCameraWidth),
+                )
+              }
               className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
-              <option key="full" value="full">
-                Full
+              <option
+                key={ColumnCameraWidth.FULL_WIDTH}
+                value={ColumnCameraWidth.FULL_WIDTH}
+              >
+                {ColumnCameraWidth.FULL_WIDTH}
               </option>
-              <option key="medium" value="medium">
-                Medium
+              <option
+                key={ColumnCameraWidth.MEDIUM_WIDTH}
+                value={ColumnCameraWidth.MEDIUM_WIDTH}
+              >
+                {ColumnCameraWidth.MEDIUM_WIDTH}
               </option>
-              <option key="small" value="small">
-                Small
+              <option
+                key={ColumnCameraWidth.SMALL_WIDTH}
+                value={ColumnCameraWidth.SMALL_WIDTH}
+              >
+                {ColumnCameraWidth.SMALL_WIDTH}
               </option>
             </select>
           </div>
@@ -137,24 +168,41 @@ const ApplicationSettings = () => {
         <div className="grid">
           <div className="flex items-center justify-start">
             <label
-              htmlFor="sidebar-width"
+              htmlFor="column-camera-position"
               className="pr-4 w-full dark:text-darkText"
             >
-              Camera Position
+              {t('header.room-settings.column-camera-position')}
             </label>
             <select
-              id="sidebar-width"
-              name="sidebar-width"
+              id="column-camera-position"
+              name="column-camera-position"
+              value={columnCameraPosition}
+              onChange={(e) =>
+                dispatch(
+                  updateColumnCameraPosition(
+                    e.target.value as ColumnCameraPosition,
+                  ),
+                )
+              }
               className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
-              <option key="default" value="default">
-                Default
+              <option
+                key={ColumnCameraPosition.LEFT}
+                value={ColumnCameraPosition.LEFT}
+              >
+                {ColumnCameraPosition.LEFT}
               </option>
-              <option key="top" value="top">
-                Top
+              <option
+                key={ColumnCameraPosition.TOP}
+                value={ColumnCameraPosition.TOP}
+              >
+                {ColumnCameraPosition.TOP}
               </option>
-              <option key="bottom" value="bottom">
-                Bottom
+              <option
+                key={ColumnCameraPosition.BOTTOM}
+                value={ColumnCameraPosition.BOTTOM}
+              >
+                {ColumnCameraPosition.BOTTOM}
               </option>
             </select>
           </div>

@@ -1,4 +1,12 @@
 import { useEffect } from 'react';
+import {
+  ColumnCameraPosition,
+  ColumnCameraWidth,
+} from '../../store/slices/interfaces/roomSettings';
+import {
+  updateColumnCameraPosition,
+  updateColumnCameraWidth,
+} from '../../store/slices/roomSettingsSlice';
 
 export interface ICustomDesignParams {
   primary_color?: string;
@@ -11,6 +19,8 @@ export interface ICustomDesignParams {
   right_side_bg_color?: string;
   custom_css_url?: string;
   custom_logo?: string;
+  column_camera_width?: ColumnCameraWidth;
+  column_camera_position?: ColumnCameraPosition;
 }
 
 const useDesignCustomization = () => {
@@ -131,14 +141,6 @@ const useDesignCustomization = () => {
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
-      // css += `.main-app-bg::before, .waiting-room::before, .error-app-bg::before {
-      //     position: absolute;
-      //     content: "";
-      //     width: 100%;
-      //     height: 100%;
-      //     background-color: #001222;
-      //     opacity: 0.5;
-      // }`;
     } else if (designCustomParams.background_color) {
       css += `.main-app-bg { 
         background: ${designCustomParams.background_color} !important;
@@ -181,6 +183,14 @@ const useDesignCustomization = () => {
         '.messageModule-wrapper { background: ' +
         designCustomParams.right_side_bg_color +
         '; }';
+    }
+
+    if (designCustomParams.column_camera_width) {
+      updateColumnCameraWidth(designCustomParams.column_camera_width);
+    }
+
+    if (designCustomParams.column_camera_position) {
+      updateColumnCameraPosition(designCustomParams.column_camera_position);
     }
 
     if (typeof (window as any).CUSTOM_LOGO === 'undefined') {

@@ -80,7 +80,9 @@
       "enable-dark-theme": "Enable dark theme",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Colum camera width",
+      "column-camera-position": "Column camera position"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
