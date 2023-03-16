@@ -28,7 +28,19 @@
     .verticalsWebcamsActivated.column-camera-position-bottom
     .all-webcam-wrapper
     .all-webcam-wrapper-inner {
-    @apply flex;
+    @apply flex items-center justify-center;
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item,
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item {
+    @apply w-[12.5%];
   }
   #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top,
