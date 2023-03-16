@@ -20,6 +20,14 @@ interface IMainAreaProps {
   currentConnection: IConnectLivekit;
 }
 
+const columnCameraWidthSelector = createSelector(
+  (state: RootState) => state.roomSettings.columnCameraWidth,
+  (columnCameraWidth) => columnCameraWidth,
+);
+const columnCameraPositionSelector = createSelector(
+  (state: RootState) => state.roomSettings.columnCameraPosition,
+  (columnCameraPosition) => columnCameraPosition,
+);
 const isActiveParticipantsPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
   (isActiveParticipantsPanel) => isActiveParticipantsPanel,
@@ -58,6 +66,8 @@ const screenHeightSelector = createSelector(
 );
 
 const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
+  const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
+  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
   );
@@ -198,7 +208,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   return (
     <div
       id="main-area"
-      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS}`}
+      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS} main-camera-width-${columnCameraWidth} main-camera-position-${columnCameraPosition}`}
       style={
         !isRecorder
           ? { height: `${screenHeight - 110}px` }
