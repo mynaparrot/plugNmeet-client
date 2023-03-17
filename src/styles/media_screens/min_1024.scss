@@ -112,26 +112,38 @@
   }
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated.column-camera-position-left.column-camera-width-medium {
-    @apply pl-[360px];
+    @apply pl-[250px];
   }
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated.column-camera-position-left.column-camera-width-small {
-    @apply pl-[280px];
+    @apply pl-[230px];
   }
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated.column-camera-position-left.column-camera-width-medium
     .all-webcam-wrapper {
-    @apply w-[360px];
+    @apply w-[250px];
   }
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated.column-camera-position-left.column-camera-width-small
     .all-webcam-wrapper {
-    @apply w-[280px];
+    @apply w-[230px];
   }
   #main-area.main-camera-width-medium.fullWidthMainArea #main-left-panel {
-    @apply w-[360px];
+    @apply w-[250px];
   }
   #main-area.main-camera-width-small.fullWidthMainArea #main-left-panel {
-    @apply w-[280px];
+    @apply w-[230px];
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top
+    .excalidraw-wrapper {
+    margin-top: 140px;
+    height: calc(100% - 150px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom
+    .excalidraw-wrapper {
+    margin-top: 2.25rem;
+    height: calc(100% - 175px);
   }
 }
