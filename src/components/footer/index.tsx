@@ -49,6 +49,9 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
           <div className="footer-right w-52 hidden sm:flex items-center" />
           <BreakoutRoomInvitation currentRoom={currentRoom} />
         </div>
+        <div className="header-collapse-arrow fixed bottom-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]">
+          <i className="pnm-arrow-below text-[10px] sm:text-[12px] dark:text-darkSecondary"></i>
+        </div>
       </footer>
     );
     //eslint-disable-next-line

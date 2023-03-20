@@ -11,6 +11,22 @@
     @apply w-full top-0 h-[130px] py-[5px] px-[15px];
   }
   #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-medium
+    .all-webcam-wrapper,
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-medium
+    .all-webcam-wrapper {
+    @apply h-[120px];
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-small
+    .all-webcam-wrapper,
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-small
+    .all-webcam-wrapper {
+    @apply h-[110px];
+  }
+  #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top
     .all-webcam-wrapper
     .video-camera-item,
@@ -121,24 +137,36 @@
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated.column-camera-position-left.column-camera-width-medium
     .all-webcam-wrapper {
-    @apply w-[250px];
+    @apply w-[240px];
   }
   #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper.verticalsWebcamsActivated.column-camera-position-left.column-camera-width-small
     .all-webcam-wrapper {
-    @apply w-[230px];
+    @apply w-[220px];
   }
   #main-area.main-camera-width-medium.fullWidthMainArea #main-left-panel {
-    @apply w-[250px];
+    @apply w-[240px];
   }
   #main-area.main-camera-width-small.fullWidthMainArea #main-left-panel {
-    @apply w-[230px];
+    @apply w-[220px];
   }
   #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top
     .excalidraw-wrapper {
     margin-top: 140px;
     height: calc(100% - 150px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-medium
+    .excalidraw-wrapper {
+    margin-top: 130px;
+    height: calc(100% - 140px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-small
+    .excalidraw-wrapper {
+    margin-top: 120px;
+    height: calc(100% - 130px);
   }
   #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-bottom
@@ -147,15 +175,49 @@
     height: calc(100% - 175px);
   }
   #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-medium
+    .excalidraw-wrapper {
+    margin-top: 2.25rem;
+    height: calc(100% - 165px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-small
+    .excalidraw-wrapper {
+    margin-top: 2.25rem;
+    height: calc(100% - 155px);
+  }
+  #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top
     .screen-share-video {
     margin-top: 130px;
     height: calc(100% - 130px);
   }
   #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-medium
+    .screen-share-video {
+    margin-top: 120px;
+    height: calc(100% - 120px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-small
+    .screen-share-video {
+    margin-top: 110px;
+    height: calc(100% - 110px);
+  }
+  #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-bottom
     .screen-share-video {
     height: calc(100% - 130px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-medium
+    .screen-share-video {
+    height: calc(100% - 120px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-small
+    .screen-share-video {
+    height: calc(100% - 110px);
   }
   #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top
@@ -164,9 +226,31 @@
     height: calc(100% - 150px);
   }
   #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-medium
+    .notepad-wrapper {
+    margin-top: 130px;
+    height: calc(100% - 140px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-small
+    .notepad-wrapper {
+    margin-top: 120px;
+    height: calc(100% - 130px);
+  }
+  #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-bottom
     .notepad-wrapper {
     height: calc(100% - 175px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-medium
+    .notepad-wrapper {
+    height: calc(100% - 165px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-small
+    .notepad-wrapper {
+    height: calc(100% - 155px);
   }
   #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top
@@ -175,9 +259,31 @@
     height: calc(100% - 130px);
   }
   #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-medium
+    .Div-external-media-player {
+    margin-top: 120px;
+    height: calc(100% - 120px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-small
+    .Div-external-media-player {
+    margin-top: 110px;
+    height: calc(100% - 110px);
+  }
+  #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-bottom
     .Div-external-media-player {
     height: calc(100% - 130px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-medium
+    .Div-external-media-player {
+    height: calc(100% - 120px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-small
+    .Div-external-media-player {
+    height: calc(100% - 110px);
   }
   #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-top
@@ -186,8 +292,30 @@
     height: calc(100% - 150px);
   }
   #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-medium
+    .external-display-link-wrapper {
+    margin-top: 130px;
+    height: calc(100% - 140px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-top.column-camera-width-small
+    .external-display-link-wrapper {
+    margin-top: 120px;
+    height: calc(100% - 130px);
+  }
+  #main-area.fullWidthMainArea
     .verticalsWebcamsActivated.column-camera-position-bottom
     .external-display-link-wrapper {
     height: calc(100% - 175px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-medium
+    .external-display-link-wrapper {
+    height: calc(100% - 165px);
+  }
+  #main-area.fullWidthMainArea
+    .verticalsWebcamsActivated.column-camera-position-bottom.column-camera-width-small
+    .external-display-link-wrapper {
+    height: calc(100% - 155px);
   }
 }
