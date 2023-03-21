@@ -187,7 +187,9 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     <>
       <header
         id="main-header"
-        className="relative z-[99999] h-[50px] px-4 shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary"
+        className={`relative z-[99999] px-4 shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary ${
+          headerVisible ? 'visible h-[50px]' : 'hidden'
+        }`}
       >
         <div
           className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
@@ -250,9 +252,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         {showModal ? alertModal() : null}
       </header>
       <div
-        className={`header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99] ${
-          headerVisible ? 'headerVisible' : 'headerHidden'
-        }`}
+        className="header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]"
         onClick={() => dispatch(toggleHeaderVisibility())}
       >
         <i

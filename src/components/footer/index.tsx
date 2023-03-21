@@ -37,7 +37,9 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
       <>
         <footer
           id="main-footer"
-          className="h-[55px] lg:h-[60px] px-2 md:px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary"
+          className={`px-2 md:px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary ${
+            footerVisible ? 'visible h-[55px] lg:h-[60px]' : 'hidden'
+          }`}
           style={{ display: isRecorder ? 'none' : '' }}
         >
           <div className="footer-inner flex items-center justify-between w-full">
@@ -62,9 +64,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
           </div>
         </footer>
         <div
-          className={`footer-collapse-arrow fixed bottom-[60px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]  ${
-            footerVisible ? 'footerVisible' : 'footerHidden'
-          }`}
+          className="footer-collapse-arrow fixed bottom-[60px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]"
           onClick={() => dispatch(toggleFooterVisibility())}
         >
           <i
