@@ -30,6 +30,8 @@ export interface IRoomSettings {
 
   columnCameraWidth: ColumnCameraWidth;
   columnCameraPosition: ColumnCameraPosition;
+  visibleHeader: boolean;
+  visibleFooter: boolean;
 }
 
 export interface IMediaDevice {

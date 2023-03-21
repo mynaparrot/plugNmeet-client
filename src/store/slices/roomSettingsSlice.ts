@@ -39,6 +39,8 @@ const initialState: IRoomSettings = {
 
   columnCameraWidth: ColumnCameraWidth.FULL_WIDTH,
   columnCameraPosition: ColumnCameraPosition.LEFT,
+  visibleHeader: true,
+  visibleFooter: true,
 };
 
 const roomSettingsSlice = createSlice({
@@ -135,6 +137,12 @@ const roomSettingsSlice = createSlice({
     ) => {
       state.columnCameraPosition = action.payload;
     },
+    toggleHeaderVisibility: (state) => {
+      state.visibleHeader = !state.visibleHeader;
+    },
+    toggleFooterVisibility: (state) => {
+      state.visibleFooter = !state.visibleFooter;
+    },
   },
 });
 
@@ -160,6 +168,8 @@ export const {
   doRefreshWebcams,
   updateColumnCameraWidth,
   updateColumnCameraPosition,
+  toggleHeaderVisibility,
+  toggleFooterVisibility,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

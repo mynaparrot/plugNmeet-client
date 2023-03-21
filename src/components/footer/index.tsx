@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { Room } from 'livekit-client';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { store } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 
 import WebcamIcon from './icons/webcam';
 import MicrophoneIcon from './icons/microphone';
@@ -14,14 +15,23 @@ import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
+import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 
 interface IFooterProps {
   currentRoom: Room;
   isRecorder: boolean;
 }
 
+const footerVisibilitySelector = createSelector(
+  (state: RootState) => state.roomSettings.visibleFooter,
+  (visibleFooter) => visibleFooter,
+);
+
 const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const footerVisible = useAppSelector(footerVisibilitySelector);
+  const dispatch = useAppDispatch();
+
   return useMemo(() => {
     return (
       <>
@@ -51,13 +61,22 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
             <BreakoutRoomInvitation currentRoom={currentRoom} />
           </div>
         </footer>
-        <div className="footer-collapse-arrow fixed bottom-[60px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]">
-          <i className="pnm-arrow-below text-[10px] sm:text-[12px] dark:text-secondaryColor"></i>
+        <div
+          className={`footer-collapse-arrow fixed bottom-[60px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]  ${
+            footerVisible ? 'footerVisible' : 'footerHidden'
+          }`}
+          onClick={() => dispatch(toggleFooterVisibility())}
+        >
+          <i
+            className={` text-[10px] sm:text-[12px] dark:text-secondaryColor ${
+              footerVisible ? 'pnm-arrow-below' : 'pnm-arrow-up'
+            }`}
+          ></i>
         </div>
       </>
     );
     //eslint-disable-next-line
-  }, [currentRoom]);
+  }, [currentRoom, footerVisible]);
 };
 
 export default Footer;

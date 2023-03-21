@@ -5,7 +5,7 @@ import { Room } from 'livekit-client';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, store } from '../../store';
+import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 
 import HeaderMenus from './menus';
@@ -19,6 +19,7 @@ import {
   CommonResponse,
   RoomEndAPIReq,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
+import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 
 interface IHeaderProps {
   currentRoom: Room;
@@ -33,10 +34,17 @@ const roomDurationSelector = createSelector(
     state.session.currentRoom.metadata?.room_features.room_duration,
   (room_duration) => room_duration,
 );
+const headerVisibilitySelector = createSelector(
+  (state: RootState) => state.roomSettings.visibleHeader,
+  (visibleHeader) => visibleHeader,
+);
 
 const Header = ({ currentRoom }: IHeaderProps) => {
   const roomTitle = useAppSelector(roomTitleSelector);
   const roomDuration = useAppSelector(roomDurationSelector);
+  const headerVisible = useAppSelector(headerVisibilitySelector);
+  const dispatch = useAppDispatch();
+
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -241,8 +249,17 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         />
         {showModal ? alertModal() : null}
       </header>
-      <div className="header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]">
-        <i className="pnm-arrow-below text-[10px] sm:text-[12px] dark:text-secondaryColor rotate-180"></i>
+      <div
+        className={`header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99] ${
+          headerVisible ? 'headerVisible' : 'headerHidden'
+        }`}
+        onClick={() => dispatch(toggleHeaderVisibility())}
+      >
+        <i
+          className={`text-[10px] sm:text-[12px] dark:text-secondaryColor rotate-180 ${
+            headerVisible ? 'pnm-arrow-below' : 'pnm-arrow-up'
+          }`}
+        ></i>
       </div>
       <RoomSettings />
       <KeyboardShortcuts />
