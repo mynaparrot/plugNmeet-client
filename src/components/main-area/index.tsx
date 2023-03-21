@@ -64,6 +64,14 @@ const screenHeightSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenHeight,
   (screenHeight) => screenHeight,
 );
+const headerVisibilitySelector = createSelector(
+  (state: RootState) => state.roomSettings.visibleHeader,
+  (visibleHeader) => visibleHeader,
+);
+const footerVisibilitySelector = createSelector(
+  (state: RootState) => state.roomSettings.visibleFooter,
+  (visibleFooter) => visibleFooter,
+);
 
 const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
@@ -84,11 +92,14 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   );
   const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
   const screenHeight = useAppSelector(screenHeightSelector);
+  const headerVisible = useAppSelector(headerVisibilitySelector);
+  const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
 
   const [allowChat, setAllowChat] = useState<boolean>(true);
   const [isActiveScreenShare, setIsActiveScreenShare] =
     useState<boolean>(false);
+  const [height, setHeight] = useState<number>(screenHeight);
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
@@ -205,15 +216,27 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
     //eslint-disable-next-line
   }, [currentConnection, isActiveChatPanel]);
 
+  useEffect(() => {
+    if (isRecorder) {
+      setHeight(screenHeight);
+      return;
+    }
+    if (headerVisible && footerVisible) {
+      setHeight(screenHeight - 110);
+    } else if (headerVisible && !footerVisible) {
+      setHeight(screenHeight - 60);
+    } else if (!headerVisible && footerVisible) {
+      setHeight(screenHeight - 50);
+    } else if (!headerVisible && !footerVisible) {
+      setHeight(screenHeight);
+    }
+  }, [screenHeight, isRecorder, headerVisible, footerVisible]);
+
   return (
     <div
       id="main-area"
       className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`}
-      style={
-        !isRecorder
-          ? { height: `${screenHeight - 110}px` }
-          : { height: `${screenHeight}px` }
-      }
+      style={{ height: `${height}px` }}
     >
       <div
         className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none bg-cover bg-center bg-no-repeat`}
