@@ -50,14 +50,6 @@ const activateWebcamsViewSelector = createSelector(
   (state: RootState) => state.roomSettings.activateWebcamsView,
   (activateWebcamsView) => activateWebcamsView,
 );
-const columnCameraWidthSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraWidth,
-  (columnCameraWidth) => columnCameraWidth,
-);
-const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraPosition,
-  (columnCameraPosition) => columnCameraPosition,
-);
 
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
@@ -75,8 +67,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     isActiveDisplayExternalLinkSelector,
   );
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
-  const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
-  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
 
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
@@ -243,11 +233,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
         'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
       );
       if (showVideoElms && showVerticalVideoView) {
-        cssClasses.push(
-          'verticalsWebcamsActivated',
-          'column-camera-width-' + columnCameraWidth,
-          'column-camera-position-' + columnCameraPosition,
-        );
+        cssClasses.push('verticalsWebcamsActivated');
       }
     } else {
       if (showVideoElms && !showVerticalVideoView) {
@@ -255,8 +241,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       } else if (showVideoElms && showVerticalVideoView) {
         cssClasses.push(
           'middle-fullscreen-wrapper h-full flex verticalsWebcamsActivated',
-          'column-camera-width-' + columnCameraWidth,
-          'column-camera-position-' + columnCameraPosition,
         );
       } else {
         cssClasses.push('middle-fullscreen-wrapper h-full flex');
@@ -268,8 +252,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     isActiveScreenShare,
     showVideoElms,
     showVerticalVideoView,
-    columnCameraWidth,
-    columnCameraPosition,
   ]);
 
   return (

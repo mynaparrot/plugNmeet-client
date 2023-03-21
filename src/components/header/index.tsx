@@ -240,10 +240,10 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           }}
         />
         {showModal ? alertModal() : null}
-        <div className="header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]">
-          <i className="pnm-arrow-below text-[10px] sm:text-[12px] dark:text-darkSecondary rotate-180"></i>
-        </div>
       </header>
+      <div className="header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]">
+        <i className="pnm-arrow-below text-[10px] sm:text-[12px] dark:text-secondaryColor rotate-180"></i>
+      </div>
       <RoomSettings />
       <KeyboardShortcuts />
     </>
