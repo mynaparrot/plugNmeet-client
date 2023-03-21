@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
+import {
+  LocalTrackPublication,
+  RemoteTrackPublication,
+  RemoteVideoTrack,
+} from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppSelector } from '../../../../store';
@@ -69,12 +73,34 @@ const VideoElm = ({ track }: IVideoElmProps) => {
     }
   };
 
+  const enterpictureinpicture = () => {
+    if (track.videoTrack instanceof RemoteVideoTrack && ref.current) {
+      track.videoTrack.stopObservingElement(ref.current);
+    }
+  };
+
+  const leavepictureinpicture = () => {
+    if (track.videoTrack instanceof RemoteVideoTrack && ref.current) {
+      track.videoTrack.startObservingElement(ref.current);
+    }
+  };
+
   const pictureInPicture = async () => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+
     if (document.pictureInPictureElement) {
       document.exitPictureInPicture();
+      el.removeEventListener('enterpictureinpicture', enterpictureinpicture);
+      el.removeEventListener('leavepictureinpicture', leavepictureinpicture);
       await sleep(500);
     }
-    const el = ref.current;
+
+    el.addEventListener('enterpictureinpicture', enterpictureinpicture);
+    el.addEventListener('leavepictureinpicture', leavepictureinpicture);
+
     if (el) {
       await el.requestPictureInPicture();
     }
