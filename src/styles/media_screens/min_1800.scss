@@ -35,14 +35,16 @@
     @apply w-[280px];
   }
 
-  .column-camera-position-left.column-camera-width-full .active-speakers-wrap {
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-full
+    .active-speakers-wrap {
     @apply w-[calc(100%-470px)] left-auto right-[30px];
   }
-  .column-camera-position-left.column-camera-width-medium
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-medium
     .active-speakers-wrap {
     @apply w-[calc(100%-390px)] left-auto right-[30px];
   }
-  .column-camera-position-left.column-camera-width-small .active-speakers-wrap {
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-small
+    .active-speakers-wrap {
     @apply w-[calc(100%-310px)] left-auto right-[30px];
   }
   .column-camera-position-top .active-speakers-wrap,
