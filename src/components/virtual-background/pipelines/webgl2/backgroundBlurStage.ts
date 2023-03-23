@@ -122,7 +122,7 @@ function buildBlurPass(
     outputWidth,
     outputHeight,
     gl.NEAREST,
-    gl.LINEAR,
+    gl.NEAREST,
   );
   const texture2 = createTexture(
     gl,
@@ -130,7 +130,7 @@ function buildBlurPass(
     outputWidth,
     outputHeight,
     gl.NEAREST,
-    gl.LINEAR,
+    gl.NEAREST,
   );
 
   const frameBuffer1 = gl.createFramebuffer();
