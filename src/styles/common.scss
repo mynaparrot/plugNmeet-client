@@ -299,7 +299,7 @@ code {
   }
 }
 .select-camera-number {
-  @apply flex items-center absolute right-5 text-xs top-0;
+  @apply flex items-center absolute right-6 text-xs top-0;
   select#select-camera-num {
     @apply bg-transparent border border-solid border-[#333] ml-[5px] outline-none;
   }
@@ -358,7 +358,7 @@ code {
       rgba(243, 237, 249, 1) 67%,
       rgba(214, 231, 255, 1) 100%
     );
-    @apply absolute w-[270px] h-[calc(100vh-110px)] block py-[30px] px-0 z-[2] left-0;
+    @apply absolute w-[270px] h-full block py-[30px] px-0 z-[2] left-0;
     .video-camera-item {
       &::after {
         @apply bg-transparent opacity-100;

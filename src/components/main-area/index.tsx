@@ -224,9 +224,9 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
     if (headerVisible && footerVisible) {
       setHeight(screenHeight - 110);
     } else if (headerVisible && !footerVisible) {
-      setHeight(screenHeight - 60);
-    } else if (!headerVisible && footerVisible) {
       setHeight(screenHeight - 50);
+    } else if (!headerVisible && footerVisible) {
+      setHeight(screenHeight - 60);
     } else if (!headerVisible && !footerVisible) {
       setHeight(screenHeight);
     }

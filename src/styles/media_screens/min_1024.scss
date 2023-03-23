@@ -318,4 +318,21 @@
     .external-display-link-wrapper {
     height: calc(100% - 155px);
   }
+  .column-camera-position-left.column-camera-width-full .active-speakers-wrap {
+    @apply w-[calc(100%-300px)] left-auto right-[30px];
+  }
+  .column-camera-position-left.column-camera-width-medium
+    .active-speakers-wrap {
+    @apply w-[calc(100%-280px)] left-auto right-[30px];
+  }
+  .column-camera-position-left.column-camera-width-small .active-speakers-wrap {
+    @apply w-[calc(100%-260px)] left-auto right-[30px];
+  }
+
+  .column-camera-position-top .active-speakers-wrap,
+  .column-camera-position-bottom .active-speakers-wrap {
+    max-width: calc(100% - 30px);
+    margin: auto;
+    right: 0;
+  }
 }

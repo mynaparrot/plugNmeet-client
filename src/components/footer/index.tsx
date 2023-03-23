@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Room } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
+import { Transition } from '@headlessui/react';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 
@@ -35,43 +36,57 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   return useMemo(() => {
     return (
       <>
-        <footer
-          id="main-footer"
-          className={`px-2 md:px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary ${
-            footerVisible ? 'visible h-[55px] lg:h-[60px]' : 'hidden'
-          }`}
-          style={{ display: isRecorder ? 'none' : '' }}
+        <Transition
+          show={footerVisible}
+          unmount={false}
+          enter="transform duration-200 transition ease-in"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transform duration-200 transition ease-in"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <div className="footer-inner flex items-center justify-between w-full">
-            <div className="footer-left w-52 flex items-center">
-              <WebcamIcon currentRoom={currentRoom} />
-              <MicrophoneIcon currentRoom={currentRoom} />
-            </div>
+          <footer
+            id="main-footer"
+            className={`px-2 md:px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary h-[55px] lg:h-[60px]`}
+            style={{ display: isRecorder ? 'none' : '' }}
+          >
+            <div className="footer-inner flex items-center justify-between w-full">
+              <div className="footer-left w-52 flex items-center">
+                <WebcamIcon currentRoom={currentRoom} />
+                <MicrophoneIcon currentRoom={currentRoom} />
+              </div>
 
-            <div className="footer-middle flex items-center">
-              <ParticipantIcon />
-              <ChatIcon />
-              <ScreenshareIcon currentRoom={currentRoom} />
-              <RaiseHandIcon currentRoom={currentRoom} />
-              <WhiteboardIcon />
-              <SharedNotePadIcon />
-              <RecordingIcon currentRoom={currentRoom} />
-              {isAdmin ? <MenusIcon /> : null}
-            </div>
+              <div className="footer-middle flex items-center">
+                <ParticipantIcon />
+                <ChatIcon />
+                <ScreenshareIcon currentRoom={currentRoom} />
+                <RaiseHandIcon currentRoom={currentRoom} />
+                <WhiteboardIcon />
+                <SharedNotePadIcon />
+                <RecordingIcon currentRoom={currentRoom} />
+                {isAdmin ? <MenusIcon /> : null}
+              </div>
 
-            <div className="footer-right w-52 hidden sm:flex items-center" />
-            <BreakoutRoomInvitation currentRoom={currentRoom} />
-          </div>
-        </footer>
+              <div className="footer-right w-52 hidden sm:flex items-center" />
+              <BreakoutRoomInvitation currentRoom={currentRoom} />
+            </div>
+          </footer>
+        </Transition>
         <div
-          className="footer-collapse-arrow fixed bottom-[60px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]"
+          className={`footer-collapse-arrow group fixed right-0 flex items-end justify-end h-6 w-6 cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-[50px] pr-1 ${
+            footerVisible ? 'bottom-[60px] pb-[3px]' : 'bottom-0 pb-1'
+          }`}
           onClick={() => dispatch(toggleFooterVisibility())}
         >
           <i
-            className={` text-[10px] sm:text-[12px] dark:text-secondaryColor ${
-              footerVisible ? 'pnm-arrow-below' : 'pnm-arrow-up'
+            className={` text-[10px] sm:text-[12px] dark:text-secondaryColor pnm-arrow-below ${
+              footerVisible ? '' : 'rotate-180'
             }`}
           ></i>
+          <span className="absolute right-0 bottom-5 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
+            {footerVisible ? 'Hide Footer' : 'Show Footer'}
+          </span>
         </div>
       </>
     );

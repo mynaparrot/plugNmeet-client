@@ -180,7 +180,7 @@ const App = () => {
   const renderMainApp = useCallback(() => {
     if (currentConnection) {
       return (
-        <div className="plugNmeet-app overflow-hidden">
+        <div className="plugNmeet-app overflow-hidden h-screen">
           {!isRecorder ? <Header currentRoom={currentConnection.room} /> : null}
           <MainArea
             isRecorder={isRecorder}

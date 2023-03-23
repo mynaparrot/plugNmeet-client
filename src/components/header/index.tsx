@@ -185,81 +185,97 @@ const Header = ({ currentRoom }: IHeaderProps) => {
 
   return (
     <>
-      <header
-        id="main-header"
-        className={`relative z-[99999] px-4 shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary ${
-          headerVisible ? 'visible h-[50px]' : 'hidden'
-        }`}
+      <Transition
+        show={headerVisible}
+        unmount={false}
+        enter="transform duration-200 transition ease-in"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transform duration-200 transition ease-in"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
       >
-        <div
-          className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
-          style={{
-            backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
-          }}
-        />
-        <div className="logo w-28 relative z-20">
+        <header
+          id="main-header"
+          className={`relative z-[99999] px-4 h-[50px] shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary transition-transform ${
+            headerVisible ? 'ac' : ''
+          }`}
+        >
           <div
-            className={`${
-              (window as any).CUSTOM_LOGO ? 'h-[45px]' : 'h-[45px]'
-            } header-logo  bg-contain bg-no-repeat`}
+            className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
             style={{
-              backgroundImage: `url("${logo}")`,
+              backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
             }}
           />
-        </div>
-        <div className="middle flex-auto relative z-20">
-          <h2 className="header-title text-base text-black dark:text-white leading-[1] text-center">
-            {title}
-          </h2>
-        </div>
-        <div className="dark-area w-28 flex items-center justify-end relative z-20 -right-3">
-          {roomDuration && roomDuration > 0 ? (
-            <DurationView duration={roomDuration} />
-          ) : null}
-          <DarkThemeSwitcher />
-          <VolumeControl />
-          <Menu>
-            {({ open }) => (
-              <>
-                <Menu.Button className="relative flex-shrink-0 p-2">
-                  <div className="h-5 w-5 rotate-90 ">
-                    <i className="pnm-menu-small dark:text-secondaryColor" />
-                  </div>
-                </Menu.Button>
+          <div className="logo w-28 relative z-20">
+            <div
+              className={`${
+                (window as any).CUSTOM_LOGO ? 'h-[45px]' : 'h-[45px]'
+              } header-logo  bg-contain bg-no-repeat`}
+              style={{
+                backgroundImage: `url("${logo}")`,
+              }}
+            />
+          </div>
+          <div className="middle flex-auto relative z-20">
+            <h2 className="header-title text-base text-black dark:text-white leading-[1] text-center">
+              {title}
+            </h2>
+          </div>
+          <div className="dark-area w-28 flex items-center justify-end relative z-20 -right-3">
+            {roomDuration && roomDuration > 0 ? (
+              <DurationView duration={roomDuration} />
+            ) : null}
+            <DarkThemeSwitcher />
+            <VolumeControl />
+            <Menu>
+              {({ open }) => (
+                <>
+                  <Menu.Button className="relative flex-shrink-0 p-2">
+                    <div className="h-5 w-5 rotate-90 ">
+                      <i className="pnm-menu-small dark:text-secondaryColor" />
+                    </div>
+                  </Menu.Button>
 
-                {/* Use the Transition component. */}
-                <Transition
-                  show={open}
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform scale-95 opacity-0"
-                  enterTo="transform scale-100 opacity-100"
-                  leave="transition duration-75 ease-out"
-                  leaveFrom="transform scale-100 opacity-100"
-                  leaveTo="transform scale-95 opacity-0"
-                >
-                  <HeaderMenus onOpenAlert={(e) => onOpenAlert(e)} />
-                </Transition>
-              </>
-            )}
-          </Menu>
-        </div>
-        <div
-          className={`header-before-end absolute top-0 right-[-100px] w-[350px] lg:w-[380px] rotate-[156deg] pointer-events-none bg-cover bg-center h-full`}
-          style={{
-            backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
-          }}
-        />
-        {showModal ? alertModal() : null}
-      </header>
+                  {/* Use the Transition component. */}
+                  <Transition
+                    show={open}
+                    enter="transition duration-100 ease-out"
+                    enterFrom="transform scale-95 opacity-0"
+                    enterTo="transform scale-100 opacity-100"
+                    leave="transition duration-75 ease-out"
+                    leaveFrom="transform scale-100 opacity-100"
+                    leaveTo="transform scale-95 opacity-0"
+                  >
+                    <HeaderMenus onOpenAlert={(e) => onOpenAlert(e)} />
+                  </Transition>
+                </>
+              )}
+            </Menu>
+          </div>
+          <div
+            className={`header-before-end absolute top-0 right-[-100px] w-[350px] lg:w-[380px] rotate-[156deg] pointer-events-none bg-cover bg-center h-full`}
+            style={{
+              backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
+            }}
+          />
+          {showModal ? alertModal() : null}
+        </header>
+      </Transition>
       <div
-        className="header-collapse-arrow fixed top-[50px] right-0 flex items-center justify-center h-5 w-5 cursor-pointer z-[99]"
+        className={`header-collapse-arrow group fixed right-0 flex items-start justify-end h-6 w-6 cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-[50px] pr-1 ${
+          headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-1'
+        }`}
         onClick={() => dispatch(toggleHeaderVisibility())}
       >
         <i
-          className={`text-[10px] sm:text-[12px] dark:text-secondaryColor rotate-180 ${
-            headerVisible ? 'pnm-arrow-below' : 'pnm-arrow-up'
+          className={`text-[10px] sm:text-[12px] dark:text-secondaryColor pnm-arrow-below ${
+            headerVisible ? 'rotate-180' : ''
           }`}
         ></i>
+        <span className="absolute right-0 top-5 w-max bg-white text-darkPrimary dark:text-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
+          {headerVisible ? 'Hide Header' : 'Show Header'}
+        </span>
       </div>
       <RoomSettings />
       <KeyboardShortcuts />
