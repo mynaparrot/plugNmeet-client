@@ -148,19 +148,19 @@ const ApplicationSettings = () => {
                 key={ColumnCameraWidth.FULL_WIDTH}
                 value={ColumnCameraWidth.FULL_WIDTH}
               >
-                {ColumnCameraWidth.FULL_WIDTH}
+                {t('header.room-settings.column-camera-width-default')}
               </option>
               <option
                 key={ColumnCameraWidth.MEDIUM_WIDTH}
                 value={ColumnCameraWidth.MEDIUM_WIDTH}
               >
-                {ColumnCameraWidth.MEDIUM_WIDTH}
+                {t('header.room-settings.column-camera-width-medium')}
               </option>
               <option
                 key={ColumnCameraWidth.SMALL_WIDTH}
                 value={ColumnCameraWidth.SMALL_WIDTH}
               >
-                {ColumnCameraWidth.SMALL_WIDTH}
+                {t('header.room-settings.column-camera-width-small')}
               </option>
             </select>
           </div>
@@ -190,19 +190,19 @@ const ApplicationSettings = () => {
                 key={ColumnCameraPosition.LEFT}
                 value={ColumnCameraPosition.LEFT}
               >
-                {ColumnCameraPosition.LEFT}
+                {t('header.room-settings.column-camera-position-left')}
               </option>
               <option
                 key={ColumnCameraPosition.TOP}
                 value={ColumnCameraPosition.TOP}
               >
-                {ColumnCameraPosition.TOP}
+                {t('header.room-settings.column-camera-position-top')}
               </option>
               <option
                 key={ColumnCameraPosition.BOTTOM}
                 value={ColumnCameraPosition.BOTTOM}
               >
-                {ColumnCameraPosition.BOTTOM}
+                {t('header.room-settings.column-camera-position-bottom')}
               </option>
             </select>
           </div>

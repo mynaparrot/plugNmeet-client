@@ -83,8 +83,14 @@
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
       "video-object-fit-contain": "Contain",
-      "column-camera-width": "Colum camera width",
-      "column-camera-position": "Column camera position"
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
