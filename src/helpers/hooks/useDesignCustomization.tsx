@@ -185,11 +185,24 @@ const useDesignCustomization = () => {
         '; }';
     }
 
-    if (designCustomParams.column_camera_width) {
+    if (
+      designCustomParams.column_camera_width &&
+      (designCustomParams.column_camera_width ===
+        ColumnCameraWidth.SMALL_WIDTH ||
+        designCustomParams.column_camera_width ===
+          ColumnCameraWidth.MEDIUM_WIDTH ||
+        designCustomParams.column_camera_width === ColumnCameraWidth.FULL_WIDTH)
+    ) {
       updateColumnCameraWidth(designCustomParams.column_camera_width);
     }
 
-    if (designCustomParams.column_camera_position) {
+    if (
+      designCustomParams.column_camera_position &&
+      (designCustomParams.column_camera_position === ColumnCameraPosition.TOP ||
+        designCustomParams.column_camera_position ===
+          ColumnCameraPosition.BOTTOM ||
+        designCustomParams.column_camera_position === ColumnCameraPosition.LEFT)
+    ) {
       updateColumnCameraPosition(designCustomParams.column_camera_position);
     }
 
