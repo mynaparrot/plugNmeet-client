@@ -52,6 +52,8 @@
     "rtmp-stopped": "This session is no longer broadcasting by RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Settings",
       "keyboard-shortcuts": "Keyboard Shortcuts",
@@ -180,6 +182,8 @@
     "chat-box-placeholder": "Write message (new line: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Start webcam",
       "leave-webcam": "Leave webcam",

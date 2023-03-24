@@ -274,7 +274,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
           }`}
         ></i>
         <span className="absolute right-0 top-5 w-max bg-white text-darkPrimary dark:text-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
-          {headerVisible ? 'Hide Header' : 'Show Header'}
+          {headerVisible ? t('header.hide-header') : t('header.show-header')}
         </span>
       </div>
       <RoomSettings />

@@ -17,6 +17,7 @@ import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
+import { useTranslation } from 'react-i18next';
 
 interface IFooterProps {
   currentRoom: Room;
@@ -32,6 +33,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   return useMemo(() => {
     return (
@@ -85,7 +87,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
             }`}
           ></i>
           <span className="absolute right-0 bottom-5 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
-            {footerVisible ? 'Hide Footer' : 'Show Footer'}
+            {footerVisible ? t('footer.hide-footer') : t('footer.show-footer')}
           </span>
         </div>
       </>
