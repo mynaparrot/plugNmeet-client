@@ -52,6 +52,8 @@
     "rtmp-stopped": "لم تعد هذه الجلسة تبث بواسطة RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "الإعدادات",
       "keyboard-shortcuts": "إختصارات لوحة المفاتيح",
@@ -67,6 +69,7 @@
       "title": "الإعدادات",
       "data-savings": "حفظ البيانات",
       "notifications": "التنبيهات",
+      "ingress": "Ingress",
       "show-webcams": "عرض كاميرات الويب",
       "show-screen-share": "Show Screen share",
       "allow-audio-notification": "Allow audio notification",
@@ -79,7 +82,15 @@
       "enable-dark-theme": "Enable dark theme",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
@@ -177,6 +188,8 @@
     "chat-box-placeholder": "Write message (new line: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Start webcam",
       "leave-webcam": "Leave webcam",
@@ -363,5 +376,13 @@
     "meeting-id-des": "Meeting's origin ID",
     "user-role": "User role",
     "user-role-des": "User's current role. Either admin or participant"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
