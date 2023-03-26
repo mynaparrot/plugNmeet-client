@@ -52,6 +52,8 @@
     "rtmp-stopped": "Цей сеанс більше не транслюється через RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Налаштування",
       "keyboard-shortcuts": "Гарячі клавіші",
@@ -67,6 +69,7 @@
       "title": "Налаштування",
       "data-savings": "Збереження даних",
       "notifications": "Сповіщення",
+      "ingress": "Ingress",
       "show-webcams": "Показати веб-камери",
       "show-screen-share": "Показувати демонстрацію екрана",
       "allow-audio-notification": "Дозволити звукові сповіщення",
@@ -79,7 +82,15 @@
       "enable-dark-theme": "Темна тема",
       "video-object-fit": "Відеооб'єкт підходить",
       "video-object-fit-cover": "Обкладинка",
-      "video-object-fit-contain": "Контейнер"
+      "video-object-fit-contain": "Контейнер",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Гарячі клавіші",
@@ -177,6 +188,8 @@
     "chat-box-placeholder": "Написати повідомлення (новий рядок: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Увімкнути веб-камеру",
       "leave-webcam": "Залишити веб-камеру",
@@ -363,5 +376,13 @@
     "meeting-id-des": "ID початку зустрічі",
     "user-role": "Роль користувача",
     "user-role-des": "Поточна роль користувача. Адмін або учасник"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
