@@ -52,6 +52,8 @@
     "rtmp-stopped": "Questa sessione non è più trasmessa da RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Impostazioni",
       "keyboard-shortcuts": "Tasti Rapidi",
@@ -67,6 +69,7 @@
       "title": "Impostazioni",
       "data-savings": "Risparmio dati",
       "notifications": "Notifiche",
+      "ingress": "Ingress",
       "show-webcams": "Mostra webcam",
       "show-screen-share": "Mostra condivisione schermo",
       "allow-audio-notification": "Consenti notifiche audio",
@@ -79,7 +82,15 @@
       "enable-dark-theme": "Attiva tema scuro",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Tasti Rapidi",
@@ -177,6 +188,8 @@
     "chat-box-placeholder": "Scrivi un messaggio (nuova riga: Maiusc + invio)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Avvia Webcam",
       "leave-webcam": "Disattiva webcam",
@@ -363,5 +376,13 @@
     "meeting-id-des": "ID di origine della riunione",
     "user-role": "Ruolo utente",
     "user-role-des": "Ruolo attuale dell'utente. Amministratore o partecipante"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
