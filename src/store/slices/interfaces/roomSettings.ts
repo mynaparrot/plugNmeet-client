@@ -27,6 +27,11 @@ export interface IRoomSettings {
   initiatePrivateChat: InitiatePrivateChat;
   unreadMsgFrom: Array<string>;
   refreshWebcams: number;
+
+  columnCameraWidth: ColumnCameraWidth;
+  columnCameraPosition: ColumnCameraPosition;
+  visibleHeader: boolean;
+  visibleFooter: boolean;
 }
 
 export interface IMediaDevice {
@@ -42,4 +47,16 @@ export interface InitiatePrivateChat {
 export interface UnreadMsgFromPayload {
   task: 'ADD' | 'DEL';
   id: string;
+}
+
+export enum ColumnCameraWidth {
+  FULL_WIDTH = 'full',
+  MEDIUM_WIDTH = 'medium',
+  SMALL_WIDTH = 'small',
+}
+
+export enum ColumnCameraPosition {
+  LEFT = 'left',
+  TOP = 'top',
+  BOTTOM = 'bottom',
 }

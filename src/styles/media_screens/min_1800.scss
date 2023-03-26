@@ -10,4 +10,47 @@
       @apply w-[440px];
     }
   }
+  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    @apply pl-[360px];
+  }
+  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    @apply pl-[280px];
+  }
+  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply w-[360px];
+  }
+  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply w-[280px];
+  }
+  #main-area.column-camera-width-medium.fullWidthMainArea #main-left-panel {
+    @apply w-[360px];
+  }
+  #main-area.column-camera-width-small.fullWidthMainArea #main-left-panel {
+    @apply w-[280px];
+  }
+
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-full
+    .active-speakers-wrap {
+    @apply w-[calc(100%-470px)] left-auto right-[30px];
+  }
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-medium
+    .active-speakers-wrap {
+    @apply w-[calc(100%-390px)] left-auto right-[30px];
+  }
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-small
+    .active-speakers-wrap {
+    @apply w-[calc(100%-310px)] left-auto right-[30px];
+  }
+  .column-camera-position-top .active-speakers-wrap,
+  .column-camera-position-bottom .active-speakers-wrap {
+    max-width: calc(100% - 30px);
+    margin: auto;
+    right: 0;
+  }
 }
