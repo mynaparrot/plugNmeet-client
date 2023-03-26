@@ -52,6 +52,8 @@
     "rtmp-stopped": "Esta sesión ya no se transmite por RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Configuraciones",
       "keyboard-shortcuts": "Atajos de teclado",
@@ -67,6 +69,7 @@
       "title": "Configuraciones de la sala",
       "data-savings": "Ahorro de datos",
       "notifications": "Notificaciones",
+      "ingress": "Ingress",
       "show-webcams": "Mostrar cámaras web",
       "show-screen-share": "Mostrar pantalla compartida",
       "allow-audio-notification": "Permitir notificación de audio",
@@ -79,7 +82,15 @@
       "enable-dark-theme": "Activar tema oscuro",
       "video-object-fit": "Ajuste del encuadre de video",
       "video-object-fit-cover": "Encuadre completo",
-      "video-object-fit-contain": "Encuadre contenido"
+      "video-object-fit-contain": "Encuadre contenido",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Atajos de teclado",
@@ -177,6 +188,8 @@
     "chat-box-placeholder": "Escribe un mensaje (nueva línea: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Iniciar cámara web",
       "leave-webcam": "Dejar cámara web",
@@ -363,5 +376,13 @@
     "meeting-id-des": "ID de origen de la reunión",
     "user-role": "Rol del usuario",
     "user-role-des": "Rol actual del usuario. Administrador o participante"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
