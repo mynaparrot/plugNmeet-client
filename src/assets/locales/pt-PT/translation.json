@@ -52,6 +52,8 @@
     "rtmp-stopped": "Esta sessão não é mais transmitida por RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Configurações",
       "keyboard-shortcuts": "Atalhos do Teclado",
@@ -67,6 +69,7 @@
       "title": "Configurações de sala",
       "data-savings": "Economia de dados",
       "notifications": "Notificações",
+      "ingress": "Ingress",
       "show-webcams": "Mostrar webcams",
       "show-screen-share": "Mostrar tela compartilhada",
       "allow-audio-notification": "Permitir notificação de áudio",
@@ -79,7 +82,15 @@
       "enable-dark-theme": "Ativar o Tema Escuro",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Atalhos de teclado",
@@ -177,6 +188,8 @@
     "chat-box-placeholder": "Escreve uma mensagem (nova linha: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Iniciar webcam",
       "leave-webcam": "Sair da webcam",
@@ -363,5 +376,13 @@
     "meeting-id-des": "ID origem da reunião",
     "user-role": "Função do usuário",
     "user-role-des": "Cargo atual do usuário. Administrador ou Participante"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
