@@ -52,6 +52,8 @@
     "rtmp-stopped": "Bu oturum artık RTMP olarak yayınlanmıyor"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Ayarlar",
       "keyboard-shortcuts": "Klavye Kısayolları",
@@ -67,6 +69,7 @@
       "title": "Ayarlar",
       "data-savings": "Veri tasarrufu",
       "notifications": "Bildirimler",
+      "ingress": "Ingress",
       "show-webcams": "Web kameralarını göster",
       "show-screen-share": "Ekran paylaşımını göster",
       "allow-audio-notification": "Sesli bildirime izin ver",
@@ -79,7 +82,15 @@
       "enable-dark-theme": "Koyu temayı etkinleştir",
       "video-object-fit": "Video nesnesi sığdır",
       "video-object-fit-cover": "Kapak",
-      "video-object-fit-contain": "İçeren"
+      "video-object-fit-contain": "İçeren",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Klavye kısayolları",
@@ -177,6 +188,8 @@
     "chat-box-placeholder": "Mesaj yaz (yeni satır: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Web kamerasını başlat",
       "leave-webcam": "Web kamerasından ayrıl",
@@ -363,5 +376,13 @@
     "meeting-id-des": "Toplantının başlangıç kimliği",
     "user-role": "Kullanıcı rolü",
     "user-role-des": "Kullanıcının mevcut rolü. Yönetici veya katılımcı"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }
