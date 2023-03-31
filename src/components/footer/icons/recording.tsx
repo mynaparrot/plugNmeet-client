@@ -230,7 +230,7 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
           onClick={() => onClickRecordingBtn()}
           disabled={disable}
         >
-          <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
+          <span className="tooltip !bottom-[62px]">
             {isRecording
               ? t('footer.icons.stop-recording')
               : t('footer.icons.start-recording')}

@@ -299,9 +299,9 @@ code {
   }
 }
 .select-camera-number {
-  @apply flex items-center absolute right-6 text-xs top-0;
+  @apply flex items-center absolute left-6 text-xs top-0;
   select#select-camera-num {
-    @apply bg-transparent border border-solid border-[#333] ml-[5px] outline-none;
+    @apply bg-transparent border border-solid border-[#333] mr-[5px] outline-none;
   }
 }
 .video-camera-item {
@@ -393,7 +393,25 @@ code {
 
 // Tool Tip
 .tooltip {
-  @apply invisible absolute;
+  @apply invisible absolute shadow-lg rounded text-[13px] text-darkPrimary dark:text-darkText py-[5px] px-[10px] inline-block bg-gray-100 dark:bg-darkSecondary2 w-[150px] m-0 bottom-[52px] text-center;
+  &::before {
+    content: '';
+    @apply absolute h-[14px] w-[14px] bg-gray-100 dark:bg-darkSecondary2 bottom-[-7px] left-0 right-0 m-auto rotate-45;
+  }
+}
+.tooltip-left {
+  &::before {
+    left: 24px !important;
+    right: auto !important;
+  }
+}
+html[dir='rtl'] span.tooltip.tooltip-left {
+  right: -34px !important;
+  left: auto !important;
+}
+html[dir='rtl'] span.tooltip.tooltip-left::before {
+  left: auto !important;
+  right: 45px !important;
 }
 .has-tooltip {
   &:hover {

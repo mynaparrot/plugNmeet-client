@@ -263,8 +263,8 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         </header>
       </Transition>
       <div
-        className={`header-collapse-arrow group fixed right-0 flex items-start justify-end h-6 w-6 cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-[50px] pr-1 ${
-          headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-1'
+        className={`header-collapse-arrow group fixed right-0 flex items-start justify-center h-6 w-[50px] cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-lg ${
+          headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-[6px]'
         }`}
         onClick={() => dispatch(toggleHeaderVisibility())}
       >

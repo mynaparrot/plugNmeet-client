@@ -146,9 +146,7 @@ const WhiteboardIcon = () => {
         }`}
         onClick={() => toggleWhiteboard()}
       >
-        <span className="tooltip rounded shadow-lg p-1 bg-gray-100 dark:bg-darkSecondary2 text-red-500 dark:text-darkText -mt-16 text-[10px] w-max">
-          {text()}
-        </span>
+        <span className="tooltip">{text()}</span>
         <>
           <i
             className={`pnm-whiteboard ${iconCSS} text-[14px] lg:text-[16px]`}

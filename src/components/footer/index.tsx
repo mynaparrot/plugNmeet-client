@@ -75,21 +75,25 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
             </div>
           </footer>
         </Transition>
-        <div
-          className={`footer-collapse-arrow group fixed right-0 flex items-end justify-end h-6 w-6 cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-[50px] pr-1 ${
-            footerVisible ? 'bottom-[60px] pb-[3px]' : 'bottom-0 pb-1'
-          }`}
-          onClick={() => dispatch(toggleFooterVisibility())}
-        >
-          <i
-            className={` text-[10px] sm:text-[12px] dark:text-secondaryColor pnm-arrow-below ${
-              footerVisible ? '' : 'rotate-180'
+        {isRecorder ? null : (
+          <div
+            className={`footer-collapse-arrow group fixed right-0 flex items-end justify-center h-6 w-[50px] cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-lg ${
+              footerVisible ? 'bottom-[60px] pb-[3px]' : 'bottom-0 pb-[6px]'
             }`}
-          ></i>
-          <span className="absolute right-0 bottom-5 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
-            {footerVisible ? t('footer.hide-footer') : t('footer.show-footer')}
-          </span>
-        </div>
+            onClick={() => dispatch(toggleFooterVisibility())}
+          >
+            <i
+              className={` text-[10px] sm:text-[12px] dark:text-secondaryColor pnm-arrow-below ${
+                footerVisible ? '' : 'rotate-180'
+              }`}
+            ></i>
+            <span className="absolute right-0 bottom-5 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
+              {footerVisible
+                ? t('footer.hide-footer')
+                : t('footer.show-footer')}
+            </span>
+          </div>
+        )}
       </>
     );
     //eslint-disable-next-line

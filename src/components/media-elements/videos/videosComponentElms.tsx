@@ -235,7 +235,6 @@ const VideosComponentElms = ({
       totalNumWebcams > 6 &&
       !isVertical ? (
         <div className="select-camera-number">
-          <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
           <select
             name="select-camera-num"
             id="select-camera-num"
@@ -249,6 +248,7 @@ const VideosComponentElms = ({
             <option value="18">18</option>
             <option value="24">24</option>
           </select>
+          <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
         </div>
       ) : null}
     </>
