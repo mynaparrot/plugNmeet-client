@@ -31,7 +31,8 @@ const MOBILE_PER_PAGE = 6,
   TABLET_PER_PAGE = 9,
   DESKTOP_PER_PAGE = 24,
   VERTICAL_PER_PAGE = 3,
-  VERTICAL_TOP_BOTTOM_PER_PAGE = 8;
+  VERTICAL_TOP_BOTTOM_PER_PAGE = 8,
+  VERTICAL_TABLET_PORTRAIT = 5;
 
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
@@ -80,6 +81,12 @@ const VideosComponentElms = ({
           setWebcamPerPage(VERTICAL_TOP_BOTTOM_PER_PAGE);
           return;
         }
+      } else if (
+        deviceType === UserDeviceType.TABLET &&
+        deviceOrientation === 'portrait'
+      ) {
+        setWebcamPerPage(VERTICAL_TABLET_PORTRAIT);
+        return;
       }
       setWebcamPerPage(VERTICAL_PER_PAGE);
       return;
@@ -107,7 +114,7 @@ const VideosComponentElms = ({
       }
     }
     //eslint-disable-next-line
-  }, [isVertical, screenWidth, columnCameraPosition]);
+  }, [isVertical, screenWidth, columnCameraPosition, deviceOrientation]);
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
