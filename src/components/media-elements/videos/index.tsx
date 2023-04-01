@@ -94,8 +94,8 @@ const VideosComponent = ({
           totalNumWebcams += videoTracks.length;
           const elm = (
             <VideoParticipant
-              key={participant.sid}
-              //key={participant.sid + '_' + i}
+              // key={participant.sid}
+              key={participant.sid + '_' + i}
               participantType={participantType}
               participant={participant}
             />
