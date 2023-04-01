@@ -111,7 +111,7 @@
     "loading": "loading...",
     "connected": "connected",
     "ready": "ready",
-    "webcams-per-page": "Display per page:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "يجب تمكين SSL للمجال",
     "require-ssl-des": "مطلوب استخدام نطاق مزود بـ SSL غير المضيف المحلي."
   },

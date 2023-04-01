@@ -299,9 +299,9 @@ code {
   }
 }
 .select-camera-number {
-  @apply flex items-center absolute right-6 text-xs top-0;
+  @apply flex items-center absolute left-6 text-xs top-0;
   select#select-camera-num {
-    @apply bg-transparent border border-solid border-[#333] ml-[5px] outline-none;
+    @apply bg-transparent border border-solid border-[#333] mr-[5px] outline-none;
   }
 }
 .video-camera-item {
@@ -393,7 +393,29 @@ code {
 
 // Tool Tip
 .tooltip {
-  @apply invisible absolute;
+  @apply invisible absolute shadow-lg rounded text-[13px] text-darkPrimary dark:text-darkText py-[6px] px-[10px] inline-block bg-gray-100 dark:bg-darkSecondary2 w-[150px] m-0 bottom-[52px] text-center;
+  &::before {
+    content: '';
+    @apply absolute h-[12px] w-[12px] bg-gray-100 dark:bg-darkSecondary2 bottom-[-6px] left-0 right-0 m-auto rotate-45 border border-solid border-darkPrimary/40;
+  }
+  &::after {
+    content: '';
+    @apply absolute h-2 w-full bg-gray-100 dark:bg-darkSecondary2 left-0 bottom-0 rounded;
+  }
+}
+.tooltip-left {
+  &::before {
+    left: 24px !important;
+    right: auto !important;
+  }
+}
+html[dir='rtl'] span.tooltip.tooltip-left {
+  right: -34px !important;
+  left: auto !important;
+}
+html[dir='rtl'] span.tooltip.tooltip-left::before {
+  left: auto !important;
+  right: 45px !important;
 }
 .has-tooltip {
   &:hover {
@@ -753,7 +775,7 @@ aside {
         .all-webcam-wrapper-inner {
           @apply m-0 py-0 px-[15px] flex-wrap gap-0;
           .video-camera-item {
-            @apply w-full m-[5px] h-[100px] pb-0 max-w-[150px];
+            @apply w-full m-[5px] h-[100px] pb-0 max-w-[135px];
           }
         }
       }
@@ -795,4 +817,43 @@ aside {
   .excalidraw-wrapper {
     @apply mt-4;
   }
+}
+.message-form {
+  textarea#message-textarea {
+    color: #004d90;
+  }
+  textarea#message-textarea::placeholder {
+    color: #004d90aa;
+  }
+}
+
+.dark {
+  .message-form {
+    textarea#message-textarea,
+    textarea#message-textarea::placeholder {
+      color: #fff;
+    }
+  }
+}
+.is-mobile {
+  .footer-collapse-arrow,
+  .header-collapse-arrow {
+    display: none;
+  }
+}
+.portrait-device.is-tablet {
+  .footer-collapse-arrow,
+  .header-collapse-arrow {
+    display: none;
+  }
+}
+.footer-collapse-arrow span::before,
+.header-collapse-arrow span::before {
+  content: '';
+  bottom: -6px;
+  @apply absolute w-[10px] h-[10px] bg-white dark:bg-darkPrimary right-5 rotate-45;
+}
+.header-collapse-arrow span::before {
+  bottom: auto;
+  top: -5px;
 }

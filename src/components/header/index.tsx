@@ -263,8 +263,8 @@ const Header = ({ currentRoom }: IHeaderProps) => {
         </header>
       </Transition>
       <div
-        className={`header-collapse-arrow group fixed right-0 flex items-start justify-end h-6 w-6 cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-[50px] pr-1 ${
-          headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-1'
+        className={`header-collapse-arrow group fixed right-0 flex items-start justify-center h-5 w-[50px] cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-lg ${
+          headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-[6px]'
         }`}
         onClick={() => dispatch(toggleHeaderVisibility())}
       >
@@ -273,7 +273,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
             headerVisible ? 'rotate-180' : ''
           }`}
         ></i>
-        <span className="absolute right-0 top-5 w-max bg-white text-darkPrimary dark:text-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
+        <span className="absolute right-0 top-7 w-max bg-white text-darkPrimary dark:text-white dark:bg-darkPrimary text-[10px] py-1 px-[12px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
           {headerVisible ? t('header.hide-header') : t('header.show-header')}
         </span>
       </div>
