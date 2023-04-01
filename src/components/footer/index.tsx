@@ -77,7 +77,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
         </Transition>
         {isRecorder ? null : (
           <div
-            className={`footer-collapse-arrow group fixed right-0 flex items-end justify-center h-6 w-[50px] cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-lg ${
+            className={`footer-collapse-arrow group fixed right-0 flex items-end justify-center h-5 w-[50px] cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-lg ${
               footerVisible ? 'bottom-[60px] pb-[3px]' : 'bottom-0 pb-[6px]'
             }`}
             onClick={() => dispatch(toggleFooterVisibility())}
@@ -87,7 +87,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
                 footerVisible ? '' : 'rotate-180'
               }`}
             ></i>
-            <span className="absolute right-0 bottom-5 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[10px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
+            <span className="absolute right-0 bottom-7 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[12px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
               {footerVisible
                 ? t('footer.hide-footer')
                 : t('footer.show-footer')}

@@ -775,7 +775,7 @@ aside {
         .all-webcam-wrapper-inner {
           @apply m-0 py-0 px-[15px] flex-wrap gap-0;
           .video-camera-item {
-            @apply w-full m-[5px] h-[100px] pb-0 max-w-[150px];
+            @apply w-full m-[5px] h-[100px] pb-0 max-w-[135px];
           }
         }
       }
@@ -834,4 +834,26 @@ aside {
       color: #fff;
     }
   }
+}
+.is-mobile {
+  .footer-collapse-arrow,
+  .header-collapse-arrow {
+    display: none;
+  }
+}
+.portrait-device.is-tablet {
+  .footer-collapse-arrow,
+  .header-collapse-arrow {
+    display: none;
+  }
+}
+.footer-collapse-arrow span::before,
+.header-collapse-arrow span::before {
+  content: '';
+  bottom: -6px;
+  @apply absolute w-[10px] h-[10px] bg-white dark:bg-darkPrimary right-5 rotate-45;
+}
+.header-collapse-arrow span::before {
+  bottom: auto;
+  top: -5px;
 }
