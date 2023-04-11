@@ -64,12 +64,12 @@ export default class ConnectLivekit
     LocalTrackPublication | RemoteTrackPublication
   >();
 
-  private errorState: Dispatch<IErrorPageProps>;
-  private roomConnectionStatusState: Dispatch<ConnectionStatus>;
+  private readonly errorState: Dispatch<IErrorPageProps>;
+  private readonly roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
   protected token: string;
-  public _room: Room;
-  private url: string;
+  private readonly _room: Room;
+  private readonly url: string;
   private tokenRenewInterval: any;
 
   private handleParticipant: HandleParticipants;
