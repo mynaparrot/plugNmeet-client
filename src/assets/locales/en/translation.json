@@ -52,6 +52,8 @@
     "rtmp-stopped": "This session is no longer broadcasting by RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Settings",
       "keyboard-shortcuts": "Keyboard Shortcuts",
@@ -80,7 +82,15 @@
       "enable-dark-theme": "Enable dark theme",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
@@ -113,7 +123,7 @@
     "loading": "loading...",
     "connected": "connected",
     "ready": "ready",
-    "webcams-per-page": "Display per page:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "Domain must be SSL enabled",
     "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
@@ -178,6 +188,8 @@
     "chat-box-placeholder": "Write message (new line: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Start webcam",
       "leave-webcam": "Leave webcam",
