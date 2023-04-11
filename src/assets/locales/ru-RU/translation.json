@@ -123,7 +123,7 @@
     "loading": "загрузка...",
     "connected": "подключено",
     "ready": "готово",
-    "webcams-per-page": "Показывать на странице:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "В домене должен быть включен SSL",
     "require-ssl-des": "Необходимо использовать домен с поддержкой SSL, отличный от localhost."
   },
