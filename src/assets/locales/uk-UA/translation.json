@@ -41,9 +41,9 @@
     "your-connection-quality-not-good": "Якість з’єднання недостатньо висока",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
-    "websocket-disconnected": "Websocket disconnected, reconnecting..",
-    "websocket-error": "Error in Websocket.",
-    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
+    "websocket-disconnected": "Websocket відключено, повторне підключення..",
+    "websocket-error": "Помилка в Websocket.",
+    "room-will-end-in": "Ця кімната буде закрита через {{minutes}} хвилини"
   },
   "room-metadata": {
     "session-recording": "Цей сеанс записується",
@@ -52,8 +52,8 @@
     "rtmp-stopped": "Цей сеанс більше не транслюється через RTMP"
   },
   "header": {
-    "hide-header": "Hide header",
-    "show-header": "Show header",
+    "hide-header": "Сховати заголовок",
+    "show-header": "Показати заголовок",
     "menus": {
       "settings": "Налаштування",
       "keyboard-shortcuts": "Гарячі клавіші",
@@ -83,14 +83,14 @@
       "video-object-fit": "Відеооб'єкт підходить",
       "video-object-fit-cover": "Обкладинка",
       "video-object-fit-contain": "Контейнер",
-      "column-camera-width": "Column camera width",
-      "column-camera-width-default": "Default",
-      "column-camera-width-medium": "Medium",
-      "column-camera-width-small": "Small",
-      "column-camera-position": "Column camera position",
-      "column-camera-position-left": "Left",
-      "column-camera-position-top": "Top",
-      "column-camera-position-bottom": "Bottom"
+      "column-camera-width": "Автопідбір ширини стовпця",
+      "column-camera-width-default": "За замовчуванням",
+      "column-camera-width-medium": "Середній",
+      "column-camera-width-small": "Мала",
+      "column-camera-position": "Положення камери",
+      "column-camera-position-left": "Зліва",
+      "column-camera-position-top": "Згори",
+      "column-camera-position-bottom": "Знизу"
     },
     "keyboard-shortcuts": {
       "title": "Гарячі клавіші",
@@ -123,7 +123,7 @@
     "loading": "завантаження...",
     "connected": "підключено",
     "ready": "готово",
-    "webcams-per-page": "Показати на сторінці:",
+    "webcams-per-page": "На сторінку.",
     "require-ssl-title": "У домені має бути ввімкнено SSL",
     "require-ssl-des": "Необхідно використовувати домен із підтримкою SSL, відмінний від localhost."
   },
@@ -188,8 +188,8 @@
     "chat-box-placeholder": "Написати повідомлення (новий рядок: Shift + enter)"
   },
   "footer": {
-    "hide-footer": "Hide footer",
-    "show-footer": "Show footer",
+    "hide-footer": "Приховати нижнє меню",
+    "show-footer": "Показати нижнє меню",
     "icons": {
       "start-webcam": "Увімкнути веб-камеру",
       "leave-webcam": "Залишити веб-камеру",
@@ -378,11 +378,11 @@
     "user-role-des": "Поточна роль користувача. Адмін або учасник"
   },
   "ingress-features": {
-    "join-as-name": "Join as name",
-    "feature-not-allow": "Feature not allow",
+    "join-as-name": "Приєднатися з ім'ям",
+    "feature-not-allow": "Функція заборонена",
     "join-as-name-required": "Join as name required",
-    "gen-link": "Generate link",
-    "rtmp-url": "RTMP Host/URL",
-    "rtmp-key": "RTMP key/secret"
+    "gen-link": "Створити Посилання",
+    "rtmp-url": "RTMP хост/URL-адреса",
+    "rtmp-key": "Ключ/секрет RTMP"
   }
 }
