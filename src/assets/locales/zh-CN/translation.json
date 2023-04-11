@@ -123,7 +123,7 @@
     "loading": "下载中...",
     "connected": "已连接",
     "ready": "就绪",
-    "webcams-per-page": "显示每页：",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "Domain must be SSL enabled",
     "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
