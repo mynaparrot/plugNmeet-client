@@ -123,7 +123,7 @@
     "loading": "wird geladen...",
     "connected": "verbunden",
     "ready": "bereit",
-    "webcams-per-page": "Pro Seite anzeigen:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "Domain must be SSL enabled",
     "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
