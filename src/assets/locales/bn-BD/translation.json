@@ -123,7 +123,7 @@
     "loading": "লোড হচ্ছে...",
     "connected": "সংযুক্ত হয়েছে",
     "ready": "প্রস্তুত",
-    "webcams-per-page": "প্রতি পৃষ্ঠা প্রদর্শন:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "ডোমেন অবশ্যই SSL সক্রিয় হতে হবে",
     "require-ssl-des": "localhost ছাড়া অন্য যেকোন domain এর ক্ষেত্রে SSL ব্যবহার করতে হবে।"
   },
