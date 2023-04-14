@@ -2,4 +2,387 @@
   .all-webcam-wrapper-inner {
     @apply p-6;
   }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply w-full top-0 h-[130px] py-[5px] px-[15px];
+  }
+  #main-area.column-camera-position-top.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper,
+  #main-area.column-camera-position-bottom.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply h-[120px];
+  }
+  #main-area.column-camera-position-top.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper,
+  #main-area.column-camera-position-bottom.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply h-[110px];
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .video-camera-item,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .video-camera-item {
+    @apply inline-block h-full m-0;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner {
+    @apply flex items-center justify-center;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item {
+    @apply w-[12.5%];
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated {
+    padding: 0 !important;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.next-cam,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.next-cam {
+    @apply h-full w-5 right-0 left-auto rounded-none;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.next-cam
+    i,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.next-cam
+    i {
+    @apply inline-block -rotate-90;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.previous-cam,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.previous-cam {
+    @apply w-5 h-full p-0 rounded-none;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.previous-cam
+    i,
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.previous-cam
+    i {
+    @apply inline-block -rotate-90;
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply bottom-0;
+  }
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply bottom-0 top-auto;
+  }
+  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    @apply pl-[250px];
+  }
+  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+    @apply pl-[230px];
+  }
+  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply w-[240px];
+  }
+  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .all-webcam-wrapper {
+    @apply w-[220px];
+  }
+  #main-area.column-camera-width-medium.fullWidthMainArea #main-left-panel {
+    @apply w-[240px];
+  }
+  #main-area.column-camera-width-small.fullWidthMainArea #main-left-panel {
+    @apply w-[220px];
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .excalidraw-wrapper {
+    margin-top: 140px;
+    height: calc(100% - 150px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .excalidraw-wrapper {
+    margin-top: 130px;
+    height: calc(100% - 140px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .excalidraw-wrapper {
+    margin-top: 120px;
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .excalidraw-wrapper {
+    margin-top: 2.25rem;
+    height: calc(100% - 175px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .excalidraw-wrapper {
+    margin-top: 2.25rem;
+    height: calc(100% - 165px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .excalidraw-wrapper {
+    margin-top: 2.25rem;
+    height: calc(100% - 155px);
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .screen-share-video {
+    margin-top: 130px;
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .screen-share-video {
+    margin-top: 120px;
+    height: calc(100% - 120px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .screen-share-video {
+    margin-top: 110px;
+    height: calc(100% - 110px);
+  }
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .screen-share-video {
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .screen-share-video {
+    height: calc(100% - 120px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .screen-share-video {
+    height: calc(100% - 110px);
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .notepad-wrapper {
+    margin-top: 140px;
+    height: calc(100% - 150px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .notepad-wrapper {
+    margin-top: 130px;
+    height: calc(100% - 140px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .notepad-wrapper {
+    margin-top: 120px;
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .notepad-wrapper {
+    height: calc(100% - 175px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .notepad-wrapper {
+    height: calc(100% - 165px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .notepad-wrapper {
+    height: calc(100% - 155px);
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .Div-external-media-player {
+    margin-top: 130px;
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .Div-external-media-player {
+    margin-top: 120px;
+    height: calc(100% - 120px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .Div-external-media-player {
+    margin-top: 110px;
+    height: calc(100% - 110px);
+  }
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .Div-external-media-player {
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .Div-external-media-player {
+    height: calc(100% - 120px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .Div-external-media-player {
+    height: calc(100% - 110px);
+  }
+  #main-area.column-camera-position-top.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .external-display-link-wrapper {
+    margin-top: 140px;
+    height: calc(100% - 150px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .external-display-link-wrapper {
+    margin-top: 130px;
+    height: calc(100% - 140px);
+  }
+  #main-area.column-camera-position-top.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .external-display-link-wrapper {
+    margin-top: 120px;
+    height: calc(100% - 130px);
+  }
+  #main-area.column-camera-position-bottom.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .external-display-link-wrapper {
+    height: calc(100% - 175px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-medium.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .external-display-link-wrapper {
+    height: calc(100% - 165px);
+  }
+  #main-area.column-camera-position-bottom.column-camera-width-small.fullWidthMainArea
+    .verticalsWebcamsActivated
+    .external-display-link-wrapper {
+    height: calc(100% - 155px);
+  }
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-full
+    .active-speakers-wrap {
+    @apply w-[calc(100%-300px)] left-auto right-[30px];
+  }
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-medium
+    .active-speakers-wrap {
+    @apply w-[calc(100%-280px)] left-auto right-[30px];
+  }
+  #main-area.fullWidthMainArea.column-camera-position-left.column-camera-width-small
+    .active-speakers-wrap {
+    @apply w-[calc(100%-260px)] left-auto right-[30px];
+  }
+
+  .column-camera-position-top .active-speakers-wrap,
+  .column-camera-position-bottom .active-speakers-wrap {
+    max-width: calc(100% - 30px);
+    margin: auto;
+    right: 0;
+  }
+  .column-camera-width-medium
+    .all-webcam-wrapper.total-cam-1
+    .all-webcam-wrapper-inner,
+  .column-camera-width-medium
+    .all-webcam-wrapper.total-cam-2
+    .all-webcam-wrapper-inner,
+  .column-camera-width-medium
+    .all-webcam-wrapper.total-cam-3
+    .all-webcam-wrapper-inner,
+  .column-camera-width-medium
+    .all-webcam-wrapper.total-cam-4
+    .all-webcam-wrapper-inner,
+  .column-camera-width-medium
+    .all-webcam-wrapper.total-cam-5
+    .all-webcam-wrapper-inner,
+  .column-camera-width-medium
+    .all-webcam-wrapper.total-cam-6
+    .all-webcam-wrapper-inner {
+    width: 80%;
+    margin: auto;
+    height: 90%;
+  }
+  .column-camera-width-small
+    .all-webcam-wrapper.total-cam-1
+    .all-webcam-wrapper-inner,
+  .column-camera-width-small
+    .all-webcam-wrapper.total-cam-2
+    .all-webcam-wrapper-inner,
+  .column-camera-width-small
+    .all-webcam-wrapper.total-cam-3
+    .all-webcam-wrapper-inner {
+    width: 60%;
+    margin: auto;
+    height: 70%;
+  }
+  .column-camera-width-small
+    .all-webcam-wrapper.total-cam-4
+    .all-webcam-wrapper-inner,
+  .column-camera-width-small
+    .all-webcam-wrapper.total-cam-5
+    .all-webcam-wrapper-inner,
+  .column-camera-width-small
+    .all-webcam-wrapper.total-cam-6
+    .all-webcam-wrapper-inner {
+    width: 70%;
+    margin: auto;
+    height: 80%;
+  }
 }

@@ -152,8 +152,8 @@ export function buildBackgroundImageStage(
       gl.RGBA8,
       backgroundImage.naturalWidth,
       backgroundImage.naturalHeight,
-      gl.LINEAR,
-      gl.LINEAR,
+      gl.NEAREST,
+      gl.NEAREST,
     );
     gl.texSubImage2D(
       gl.TEXTURE_2D,

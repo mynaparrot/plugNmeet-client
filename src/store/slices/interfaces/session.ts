@@ -74,6 +74,7 @@ interface IRoomFeatures {
   waiting_room_features: IWaitingRoomFeatures;
   breakout_room_features: IBreakoutRoomFeatures;
   display_external_link_features: IDisplayExternalLinkFeatures;
+  ingress_features: IIngressFeatures;
 }
 
 export interface IRecordingFeatures {
@@ -159,4 +160,11 @@ export interface IDisplayExternalLinkFeatures {
 export interface ICopyright_conf {
   display: boolean;
   text: string;
+}
+
+export interface IIngressFeatures {
+  is_allow: boolean;
+  input_type?: number;
+  url?: string;
+  stream_key?: string;
 }

@@ -67,6 +67,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     isActiveDisplayExternalLinkSelector,
   );
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
+
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
   const [hasVideoElms, setHasVideoElms] = useState<boolean>(false);

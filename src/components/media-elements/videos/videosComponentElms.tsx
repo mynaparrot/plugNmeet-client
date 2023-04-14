@@ -15,6 +15,7 @@ import {
   setForMobileLandscape,
   setForPC,
 } from './helpers/utils';
+import { ColumnCameraPosition } from '../../../store/slices/interfaces/roomSettings';
 
 interface IVideosComponentElmsProps {
   allParticipants: JSX.Element[];
@@ -29,7 +30,9 @@ export interface VideoParticipantType {
 const MOBILE_PER_PAGE = 6,
   TABLET_PER_PAGE = 9,
   DESKTOP_PER_PAGE = 24,
-  VERTICAL_PER_PAGE = 3;
+  VERTICAL_PER_PAGE = 3,
+  VERTICAL_TOP_BOTTOM_PER_PAGE = 8,
+  VERTICAL_TABLET_PORTRAIT = 5;
 
 const screenWidthSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.screenWidth,
@@ -38,6 +41,10 @@ const screenWidthSelector = createSelector(
 const deviceOrientationSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.deviceOrientation,
   (deviceOrientation) => deviceOrientation,
+);
+const columnCameraPositionSelector = createSelector(
+  (state: RootState) => state.roomSettings.columnCameraPosition,
+  (columnCameraPosition) => columnCameraPosition,
 );
 
 const VideosComponentElms = ({
@@ -49,6 +56,7 @@ const VideosComponentElms = ({
   const { t } = useTranslation();
   const screenWidth = useAppSelector(screenWidthSelector);
   const deviceOrientation = useAppSelector(deviceOrientationSelector);
+  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
   const deviceType = store.getState().session.userDeviceType;
 
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -65,6 +73,21 @@ const VideosComponentElms = ({
 
   useEffect(() => {
     if (isVertical) {
+      if (deviceType === UserDeviceType.DESKTOP && screenWidth > 1024) {
+        if (
+          columnCameraPosition === ColumnCameraPosition.TOP ||
+          columnCameraPosition === ColumnCameraPosition.BOTTOM
+        ) {
+          setWebcamPerPage(VERTICAL_TOP_BOTTOM_PER_PAGE);
+          return;
+        }
+      } else if (
+        deviceType === UserDeviceType.TABLET &&
+        deviceOrientation === 'portrait'
+      ) {
+        setWebcamPerPage(VERTICAL_TABLET_PORTRAIT);
+        return;
+      }
       setWebcamPerPage(VERTICAL_PER_PAGE);
       return;
     }
@@ -91,7 +114,7 @@ const VideosComponentElms = ({
       }
     }
     //eslint-disable-next-line
-  }, [isVertical, screenWidth]);
+  }, [isVertical, screenWidth, columnCameraPosition, deviceOrientation]);
 
   const setParticipantsToDisplay = (
     [...allParticipants]: Array<JSX.Element>,
@@ -219,7 +242,6 @@ const VideosComponentElms = ({
       totalNumWebcams > 6 &&
       !isVertical ? (
         <div className="select-camera-number">
-          <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
           <select
             name="select-camera-num"
             id="select-camera-num"
@@ -233,6 +255,7 @@ const VideosComponentElms = ({
             <option value="18">18</option>
             <option value="24">24</option>
           </select>
+          <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
         </div>
       ) : null}
     </>

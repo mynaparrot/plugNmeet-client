@@ -109,6 +109,7 @@
       .App-menu_bottom {
         bottom: 0.5rem;
         padding: 0 0.5rem;
+        align-items: center;
       }
       .wb-page-navigation {
         button {
@@ -192,6 +193,13 @@
           //     }
           //   }
           // }
+        }
+      }
+      button.scroll-back-to-content {
+        padding: 5px 20px !important;
+        bottom: 10px !important;
+        &:hover {
+          color: #fff !important;
         }
       }
     }

@@ -2,9 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
 
 import {
-  IRoomSettings,
+  ColumnCameraPosition,
+  ColumnCameraWidth,
   IMediaDevice,
   InitiatePrivateChat,
+  IRoomSettings,
   UnreadMsgFromPayload,
   VideoObjectFit,
 } from './interfaces/roomSettings';
@@ -34,6 +36,11 @@ const initialState: IRoomSettings = {
   },
   unreadMsgFrom: [],
   refreshWebcams: 0,
+
+  columnCameraWidth: ColumnCameraWidth.FULL_WIDTH,
+  columnCameraPosition: ColumnCameraPosition.LEFT,
+  visibleHeader: true,
+  visibleFooter: true,
 };
 
 const roomSettingsSlice = createSlice({
@@ -118,6 +125,24 @@ const roomSettingsSlice = createSlice({
     doRefreshWebcams: (state) => {
       state.refreshWebcams = Date.now();
     },
+    updateColumnCameraWidth: (
+      state,
+      action: PayloadAction<ColumnCameraWidth>,
+    ) => {
+      state.columnCameraWidth = action.payload;
+    },
+    updateColumnCameraPosition: (
+      state,
+      action: PayloadAction<ColumnCameraPosition>,
+    ) => {
+      state.columnCameraPosition = action.payload;
+    },
+    toggleHeaderVisibility: (state) => {
+      state.visibleHeader = !state.visibleHeader;
+    },
+    toggleFooterVisibility: (state) => {
+      state.visibleFooter = !state.visibleFooter;
+    },
   },
 });
 
@@ -141,6 +166,10 @@ export const {
   updateInitiatePrivateChat,
   updateUnreadMsgFrom,
   doRefreshWebcams,
+  updateColumnCameraWidth,
+  updateColumnCameraPosition,
+  toggleHeaderVisibility,
+  toggleFooterVisibility,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

@@ -31,7 +31,7 @@ const WaitingRoomPage = () => {
             <div
               className={`${
                 (window as any).CUSTOM_LOGO ? 'h-[90px]' : 'h-[90px]'
-              } header-logo h-full bg-contain bg-no-repeat`}
+              } header-logo bg-contain bg-no-repeat bg-center`}
               style={{
                 backgroundImage: `url("${logo}")`,
               }}

@@ -5,4 +5,8 @@
   button.next-cam {
     @apply w-[95px] h-[25px] -right-[43px];
   }
+  .footer-collapse-arrow,
+  .header-collapse-arrow {
+    display: none;
+  }
 }

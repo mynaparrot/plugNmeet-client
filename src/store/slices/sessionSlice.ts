@@ -82,6 +82,9 @@ const initialState: ISession = {
           is_allow: true,
           is_active: false,
         },
+        ingress_features: {
+          is_allow: false,
+        },
       },
       copyright_conf: {
         display: true,
