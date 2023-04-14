@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",
-    "websocket-error": "Error in Websocket."
+    "websocket-error": "Error in Websocket.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "Esta sessão está sendo gravada",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "Esta sessão não é mais transmitida por RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Configurações",
       "keyboard-shortcuts": "Atalhos do Teclado",
@@ -66,6 +69,7 @@
       "title": "Configurações de sala",
       "data-savings": "Economia de dados",
       "notifications": "Notificações",
+      "ingress": "Ingress",
       "show-webcams": "Mostrar webcams",
       "show-screen-share": "Mostrar tela compartilhada",
       "allow-audio-notification": "Permitir notificação de áudio",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "Ativar o Tema Escuro",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Atalhos de teclado",
@@ -111,7 +123,7 @@
     "loading": "carregando...",
     "connected": "conectado",
     "ready": "pronto",
-    "webcams-per-page": "Exibir por página:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "Domain must be SSL enabled",
     "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "Escreve uma mensagem (nova linha: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Iniciar webcam",
       "leave-webcam": "Sair da webcam",
@@ -362,5 +376,13 @@
     "meeting-id-des": "ID origem da reunião",
     "user-role": "Função do usuário",
     "user-role-des": "Cargo atual do usuário. Administrador ou Participante"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }

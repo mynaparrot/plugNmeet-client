@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Отображение внешней ссылки включено. Пожалуйста, отключите перед запуском внешнего медиаплеера.",
     "need-to-disable-external-media-player": "Внешний медиа плеер включен. Пожалуйста, остановите его перед запуском Внешней ссылки.",
     "websocket-disconnected": "Веб-сокет отключен, переподключение..",
-    "websocket-error": "Ошибка в веб-сокете."
+    "websocket-error": "Ошибка в веб-сокете.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "Сессия записывается",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "Эта сессия больше не транслируется по RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Настройки",
       "keyboard-shortcuts": "Сочетание клавиш",
@@ -66,6 +69,7 @@
       "title": "Настройки",
       "data-savings": "Сохранение данных",
       "notifications": "Уведомления",
+      "ingress": "Ingress",
       "show-webcams": "Показать веб-камеры",
       "show-screen-share": "Показать демонстрацию экрана",
       "allow-audio-notification": "Разрешить звуковое оповещение",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "Включить темную тему",
       "video-object-fit": "Видео объект поместить",
       "video-object-fit-cover": "Обложка",
-      "video-object-fit-contain": "Содержание"
+      "video-object-fit-contain": "Содержание",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Комбинации клавиш",
@@ -111,7 +123,7 @@
     "loading": "загрузка...",
     "connected": "подключено",
     "ready": "готово",
-    "webcams-per-page": "Показывать на странице:",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "В домене должен быть включен SSL",
     "require-ssl-des": "Необходимо использовать домен с поддержкой SSL, отличный от localhost."
   },
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "Написать сообщение (новая строка: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Запустить веб-камеру",
       "leave-webcam": "Покинуть веб-камеру",
@@ -362,5 +376,13 @@
     "meeting-id-des": "ID источника встречи",
     "user-role": "Роль пользователя",
     "user-role-des": "Текущая роль пользователя. Администратор или участник"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }

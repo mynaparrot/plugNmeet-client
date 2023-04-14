@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",
-    "websocket-error": "Error in Websocket."
+    "websocket-error": "Error in Websocket.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "このセッションは録画されています",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "このセッションはもうRTMPによって配信されていません"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "設定",
       "keyboard-shortcuts": "キーボードショートカット",
@@ -66,6 +69,7 @@
       "title": "設定",
       "data-savings": "データの節約",
       "notifications": "通知",
+      "ingress": "Ingress",
       "show-webcams": "Webカメラを表示",
       "show-screen-share": "画面共有を表示",
       "allow-audio-notification": "音声通知を許可",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "Enable dark theme",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "キーボードショートカット",
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "メッセージを書く(新しい行: Shift + Enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "ウェブカメラを開始",
       "leave-webcam": "Leave webcam",
@@ -362,5 +376,13 @@
     "meeting-id-des": "Meeting's origin ID",
     "user-role": "User role",
     "user-role-des": "User's current role. Either admin or participant"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }

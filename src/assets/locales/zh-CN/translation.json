@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",
-    "websocket-error": "Error in Websocket."
+    "websocket-error": "Error in Websocket.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "此会议正在被录制",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "此会议停止使用RTMP进行直播"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "设置",
       "keyboard-shortcuts": "快捷键",
@@ -66,6 +69,7 @@
       "title": "会议室设置",
       "data-savings": "节省数据流量",
       "notifications": "提醒",
+      "ingress": "Ingress",
       "show-webcams": "显示摄像头",
       "show-screen-share": "显示屏幕分享",
       "allow-audio-notification": "允许声音提醒",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "应用深色主题",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "键盘快捷键",
@@ -111,7 +123,7 @@
     "loading": "下载中...",
     "connected": "已连接",
     "ready": "就绪",
-    "webcams-per-page": "显示每页：",
+    "webcams-per-page": "Per page.",
     "require-ssl-title": "Domain must be SSL enabled",
     "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
   },
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "写消息 (换行: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "启用摄像头",
       "leave-webcam": "关闭摄像头",
@@ -362,5 +376,13 @@
     "meeting-id-des": "会议的起始ID",
     "user-role": "用户角色",
     "user-role-des": "用户当前角色。管理员或参与者"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }

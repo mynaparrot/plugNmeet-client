@@ -39,10 +39,11 @@
     "room-disconnected-room-ended": "Oda kapatıldı. Kod: {{code}}",
     "room-disconnected-state-mismatch": "Durum uyuşmazlığı. Kod: {{code}}",
     "your-connection-quality-not-good": "Bağlantı kaliteniz yeterince iyi değil",
-    "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
-    "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
-    "websocket-disconnected": "Websocket disconnected, reconnecting..",
-    "websocket-error": "Error in Websocket."
+    "need-to-disable-display-external-link": "Harici Bağlantıyı Görüntüleme açık. Harici Medya Oynatıcıyı başlatmadan önce lütfen kapatın.",
+    "need-to-disable-external-media-player": "Harici Bağlantıyı Görüntüleme açık. Harici Medya Oynatıcıyı başlatmadan önce lütfen kapatın.",
+    "websocket-disconnected": "Websocket bağlantısı kesildi, yeniden bağlanıyor..",
+    "websocket-error": "Websocket'te hata oluştu.",
+    "room-will-end-in": "Bu oda {{minutes}} dakika içinde sona erecektir"
   },
   "room-metadata": {
     "session-recording": "Bu oturum kaydediliyor",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "Bu oturum artık RTMP olarak yayınlanmıyor"
   },
   "header": {
+    "hide-header": "Başlığı gizle",
+    "show-header": "Başlığı göster",
     "menus": {
       "settings": "Ayarlar",
       "keyboard-shortcuts": "Klavye Kısayolları",
@@ -66,6 +69,7 @@
       "title": "Ayarlar",
       "data-savings": "Veri tasarrufu",
       "notifications": "Bildirimler",
+      "ingress": "Giriş",
       "show-webcams": "Web kameralarını göster",
       "show-screen-share": "Ekran paylaşımını göster",
       "allow-audio-notification": "Sesli bildirime izin ver",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "Koyu temayı etkinleştir",
       "video-object-fit": "Video nesnesi sığdır",
       "video-object-fit-cover": "Kapak",
-      "video-object-fit-contain": "İçeren"
+      "video-object-fit-contain": "İçeren",
+      "column-camera-width": "Sütun kamera genişliği",
+      "column-camera-width-default": "Varsayılan",
+      "column-camera-width-medium": "Orta",
+      "column-camera-width-small": "Küçük",
+      "column-camera-position": "Sütun kamera konumu",
+      "column-camera-position-left": "Sol",
+      "column-camera-position-top": "Üst",
+      "column-camera-position-bottom": "Alt"
     },
     "keyboard-shortcuts": {
       "title": "Klavye kısayolları",
@@ -102,18 +114,18 @@
     "microphone": "Mikrofon",
     "listen-only": "Sadece dinle",
     "token-missing-title": "Erişim belirteci eksik",
-    "token-missing-des": "Eksik olan erişim belirteci gerekli",
-    "verification-failed-title": "Doğrulama Başarısız!",
-    "token-not-valid": "Erişim belirteci geçersiz!",
+    "token-missing-des": "Eksik olan erişim belirteci gereklidir",
+    "verification-failed-title": "Doğrulama Başarısız oldu!",
+    "token-not-valid": "Erişim belirteci geçerli değil!",
     "connecting": "bağlanıyor...",
     "re-connecting": "tekrar bağlanılıyor...",
     "checking": "denetleniyor...",
     "loading": "yükleniyor...",
     "connected": "bağlanıldı",
     "ready": "hazır",
-    "webcams-per-page": "Sayfa başına Görünüm:",
-    "require-ssl-title": "Domain must be SSL enabled",
-    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
+    "webcams-per-page": "Per page.",
+    "require-ssl-title": "Etki alanı SSL etkinleştirilmiş olmalıdır",
+    "require-ssl-des": "Localhost dışında SSL etkin bir alan adı kullanılması gerekir."
   },
   "left-panel": {
     "participants": "Katılımcılar ({{total}})",
@@ -158,8 +170,8 @@
         "confirm": "{{name}} öğesini kaldırmak istediğinizden emin misiniz?",
         "remove": "Kaldır",
         "asked-you-to": "{{name}} sizden istedi ",
-        "you-have-asked": "{{name}} adlı kişiden istediniz ",
-        "you-have-muted-to": "{{name}} için mikrofonun sesini kapattınız",
+        "you-have-asked": "{{name}} adlı kişiye sordunuz ",
+        "you-have-muted-to": "{{name}} nin mikrofonun sesini kapattınız",
         "applied-new-setting": "Uygulanan yeni kilit ayarı",
         "presenter-changed": "Sunucu başarıyla değiştirildi",
         "you-are-presenter": "Sunucu sensin",
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "Mesaj yaz (yeni satır: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Altbilgi Gizle",
+    "show-footer": "Altbilgiyi Göster",
     "icons": {
       "start-webcam": "Web kamerasını başlat",
       "leave-webcam": "Web kamerasından ayrıl",
@@ -215,7 +229,7 @@
       "mute-microphone": "Mikrofonu Sustur",
       "unmute-microphone": "Mikrofonun sesini aç",
       "leave-microphone": "Mikrofonu bırak",
-      "leave-webcam": "Web kamerasından ayrıl",
+      "leave-webcam": "Web kamerasından ayrılın",
       "start-external-media-player": "Harici Medya Oynatıcı başlat",
       "stop-external-media-player": "Harici Medya Oynatıcı durdur",
       "manage-waiting-room": "Bekleme odasını yönet",
@@ -327,7 +341,7 @@
     "new-room": "Oda {{num}}",
     "start": "Ara odaları başlat",
     "rooms-created": "Oda başarıyla oluşturuldu",
-    "invitation-msg": "Ara odasına katılmaya davet edildiniz",
+    "invitation-msg": "Mola odasına katılmaya davet edildiniz",
     "join": "Katıl",
     "need-one-user": "Herhangi bir ara odasında en az bir kullanıcıya ihtiyacınız var",
     "end-all": "Tüm odaları sonlandır",
@@ -362,5 +376,13 @@
     "meeting-id-des": "Toplantının başlangıç kimliği",
     "user-role": "Kullanıcı rolü",
     "user-role-des": "Kullanıcının mevcut rolü. Yönetici veya katılımcı"
+  },
+  "ingress-features": {
+    "join-as-name": "İsim olarak katıl",
+    "feature-not-allow": "Özelliğe izin verilmiyor",
+    "join-as-name-required": "Gerekli olan isimle katılın",
+    "gen-link": "Bağlantı oluştur",
+    "rtmp-url": "RTMP Ana Bilgisayarı/URL'si",
+    "rtmp-key": "RTMP anahtarı/şifresi"
   }
 }

@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "Toon externe link is ingeschakeld. Stop deze voordat u externe mediaspeler opstart.",
     "need-to-disable-external-media-player": "Externe Media Player is ingeschakeld. Gelieve het te stoppen voordat u de externe link opent.",
     "websocket-disconnected": "Websocket verbroken, opnieuw verbinden..",
-    "websocket-error": "Fout in Websocket."
+    "websocket-error": "Fout in Websocket.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
     "session-recording": "Deze sessie wordt opgenomen",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "Deze sessie wordt niet meer uitgezonden via RTMP"
   },
   "header": {
+    "hide-header": "Hide header",
+    "show-header": "Show header",
     "menus": {
       "settings": "Instellingen",
       "keyboard-shortcuts": "Sneltoetsen",
@@ -66,6 +69,7 @@
       "title": "Instellingen",
       "data-savings": "Gegevensbesparing",
       "notifications": "Meldingen",
+      "ingress": "Ingress",
       "show-webcams": "Webcams tonen",
       "show-screen-share": "Show Screen share",
       "allow-audio-notification": "Allow audio notification",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "Enable dark theme",
       "video-object-fit": "Video object fit",
       "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain"
+      "video-object-fit-contain": "Contain",
+      "column-camera-width": "Column camera width",
+      "column-camera-width-default": "Default",
+      "column-camera-width-medium": "Medium",
+      "column-camera-width-small": "Small",
+      "column-camera-position": "Column camera position",
+      "column-camera-position-left": "Left",
+      "column-camera-position-top": "Top",
+      "column-camera-position-bottom": "Bottom"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "Schrijf bericht (nieuwe regel: Shift + enter)"
   },
   "footer": {
+    "hide-footer": "Hide footer",
+    "show-footer": "Show footer",
     "icons": {
       "start-webcam": "Start webcam",
       "leave-webcam": "Leave webcam",
@@ -362,5 +376,13 @@
     "meeting-id-des": "Oorsprongs-ID van vergadering",
     "user-role": "Gebruikersrol",
     "user-role-des": "Huidige rol van de gebruiker. Ofwel admin of deelnemer"
+  },
+  "ingress-features": {
+    "join-as-name": "Join as name",
+    "feature-not-allow": "Feature not allow",
+    "join-as-name-required": "Join as name required",
+    "gen-link": "Generate link",
+    "rtmp-url": "RTMP Host/URL",
+    "rtmp-key": "RTMP key/secret"
   }
 }

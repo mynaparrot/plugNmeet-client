@@ -42,7 +42,8 @@
     "need-to-disable-display-external-link": "ডিসপ্লে এক্সটারনাল লিংক চালু আছে। এক্সটার্নাল মিডিয়া প্লেয়ার চালু করার আগে এটি বন্ধ করুন।",
     "need-to-disable-external-media-player": "এক্সটার্নাল মিডিয়া প্লেয়ার চালু আছে। ডিসপ্লে এক্সটার্নাল লিংক চালু করার আগে এটি বন্ধ করুন।",
     "websocket-disconnected": "Websocket সংযোগ বিচ্ছিন্ন, পুনরায় সংযোগ করা হচ্ছে..",
-    "websocket-error": "Websocket এ ত্রুটি।"
+    "websocket-error": "Websocket এ ত্রুটি।",
+    "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
@@ -51,6 +52,8 @@
     "rtmp-stopped": "এই অধিবেশনটি RTMP দ্বারা সম্প্রচার করছে না"
   },
   "header": {
+    "hide-header": "হেডার লুকান",
+    "show-header": "হেডার দেখান",
     "menus": {
       "settings": "সেটিংস",
       "keyboard-shortcuts": "কীবোর্ড শর্টকাট",
@@ -66,6 +69,7 @@
       "title": "সেটিংস",
       "data-savings": "ডেটা সেভিং",
       "notifications": "নোটিফিকেশন সমূহ",
+      "ingress": "Ingress",
       "show-webcams": "ওয়েবক্যামগুলি দেখান",
       "show-screen-share": "স্ক্রিন শেয়ার দেখান",
       "allow-audio-notification": "অডিও নোটিফিকেশনের অনুমতি দিন",
@@ -78,7 +82,15 @@
       "enable-dark-theme": "অন্ধকার থিম চালু করুন",
       "video-object-fit": "ভিডিও object fit",
       "video-object-fit-cover": "কভার",
-      "video-object-fit-contain": "অন্তর্ভুক্ত"
+      "video-object-fit-contain": "অন্তর্ভুক্ত",
+      "column-camera-width": "ক্যামেরার প্রস্থ",
+      "column-camera-width-default": "ডিফল্ট",
+      "column-camera-width-medium": "মাঝারি",
+      "column-camera-width-small": "ছোট",
+      "column-camera-position": "Column ক্যামেরা অবস্থান",
+      "column-camera-position-left": "বামে",
+      "column-camera-position-top": "উপরে",
+      "column-camera-position-bottom": "নীচে"
     },
     "keyboard-shortcuts": {
       "title": "কীবোর্ড শর্টকাট",
@@ -111,7 +123,7 @@
     "loading": "লোড হচ্ছে...",
     "connected": "সংযুক্ত হয়েছে",
     "ready": "প্রস্তুত",
-    "webcams-per-page": "প্রতি পৃষ্ঠা প্রদর্শন:",
+    "webcams-per-page": "প্রতি পৃষ্ঠায়",
     "require-ssl-title": "ডোমেন অবশ্যই SSL সক্রিয় হতে হবে",
     "require-ssl-des": "localhost ছাড়া অন্য যেকোন domain এর ক্ষেত্রে SSL ব্যবহার করতে হবে।"
   },
@@ -176,6 +188,8 @@
     "chat-box-placeholder": "বার্তা লিখুন (নতুন লাইন: শিফট + এন্টার)"
   },
   "footer": {
+    "hide-footer": "ফুটার লুকান",
+    "show-footer": "ফুটার দেখান",
     "icons": {
       "start-webcam": "ওয়েবক্যাম শুরু করুন",
       "leave-webcam": "ওয়েবক্যাম ত্যাগ দিন",
@@ -362,5 +376,13 @@
     "meeting-id-des": "মিটিং এর আসল আইডি",
     "user-role": "ব্যবহারকারীর ভূমিকা",
     "user-role-des": "ব্যবহারকারীর বর্তমান ভূমিকা, হয় অ্যাডমিন বা অংশগ্রহণকারী"
+  },
+  "ingress-features": {
+    "join-as-name": "হিসেবে যোগ দিন",
+    "feature-not-allow": "বৈশিষ্ট্য অনুমোদিত নয়",
+    "join-as-name-required": "নাম প্রয়োজন",
+    "gen-link": "লিঙ্ক তৈরি করুন",
+    "rtmp-url": "RTMP হোস্ট/URL",
+    "rtmp-key": "RTMP গোপন কোড"
   }
 }
