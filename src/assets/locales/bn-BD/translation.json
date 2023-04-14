@@ -52,8 +52,8 @@
     "rtmp-stopped": "এই অধিবেশনটি RTMP দ্বারা সম্প্রচার করছে না"
   },
   "header": {
-    "hide-header": "Hide header",
-    "show-header": "Show header",
+    "hide-header": "হেডার লুকান",
+    "show-header": "হেডার দেখান",
     "menus": {
       "settings": "সেটিংস",
       "keyboard-shortcuts": "কীবোর্ড শর্টকাট",
@@ -83,14 +83,14 @@
       "video-object-fit": "ভিডিও object fit",
       "video-object-fit-cover": "কভার",
       "video-object-fit-contain": "অন্তর্ভুক্ত",
-      "column-camera-width": "Column camera width",
-      "column-camera-width-default": "Default",
-      "column-camera-width-medium": "Medium",
-      "column-camera-width-small": "Small",
-      "column-camera-position": "Column camera position",
-      "column-camera-position-left": "Left",
-      "column-camera-position-top": "Top",
-      "column-camera-position-bottom": "Bottom"
+      "column-camera-width": "ক্যামেরার প্রস্থ",
+      "column-camera-width-default": "ডিফল্ট",
+      "column-camera-width-medium": "মাঝারি",
+      "column-camera-width-small": "ছোট",
+      "column-camera-position": "Column ক্যামেরা অবস্থান",
+      "column-camera-position-left": "বামে",
+      "column-camera-position-top": "উপরে",
+      "column-camera-position-bottom": "নীচে"
     },
     "keyboard-shortcuts": {
       "title": "কীবোর্ড শর্টকাট",
@@ -123,7 +123,7 @@
     "loading": "লোড হচ্ছে...",
     "connected": "সংযুক্ত হয়েছে",
     "ready": "প্রস্তুত",
-    "webcams-per-page": "Per page.",
+    "webcams-per-page": "প্রতি পৃষ্ঠায়",
     "require-ssl-title": "ডোমেন অবশ্যই SSL সক্রিয় হতে হবে",
     "require-ssl-des": "localhost ছাড়া অন্য যেকোন domain এর ক্ষেত্রে SSL ব্যবহার করতে হবে।"
   },
@@ -188,8 +188,8 @@
     "chat-box-placeholder": "বার্তা লিখুন (নতুন লাইন: শিফট + এন্টার)"
   },
   "footer": {
-    "hide-footer": "Hide footer",
-    "show-footer": "Show footer",
+    "hide-footer": "ফুটার লুকান",
+    "show-footer": "ফুটার দেখান",
     "icons": {
       "start-webcam": "ওয়েবক্যাম শুরু করুন",
       "leave-webcam": "ওয়েবক্যাম ত্যাগ দিন",
@@ -378,11 +378,11 @@
     "user-role-des": "ব্যবহারকারীর বর্তমান ভূমিকা, হয় অ্যাডমিন বা অংশগ্রহণকারী"
   },
   "ingress-features": {
-    "join-as-name": "Join as name",
-    "feature-not-allow": "Feature not allow",
-    "join-as-name-required": "Join as name required",
-    "gen-link": "Generate link",
-    "rtmp-url": "RTMP Host/URL",
-    "rtmp-key": "RTMP key/secret"
+    "join-as-name": "হিসেবে যোগ দিন",
+    "feature-not-allow": "বৈশিষ্ট্য অনুমোদিত নয়",
+    "join-as-name-required": "নাম প্রয়োজন",
+    "gen-link": "লিঙ্ক তৈরি করুন",
+    "rtmp-url": "RTMP হোস্ট/URL",
+    "rtmp-key": "RTMP গোপন কোড"
   }
 }
