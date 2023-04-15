@@ -16,7 +16,7 @@
   "dependencies": {
     "@bufbuild/protobuf": "1.2.0",
     "@excalidraw/excalidraw": "^0.14.2",
-    "@headlessui/react": "1.7.13",
+    "@headlessui/react": "1.7.14",
     "@reduxjs/toolkit": "1.9.3",
     "@tensorflow-models/body-pix": "2.2.0",
     "@tensorflow/tfjs": "4.4.0",
