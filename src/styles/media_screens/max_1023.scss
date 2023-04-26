@@ -149,4 +149,11 @@
   .excalidraw-wrapper {
     @apply mt-2 h-[calc(100%-20px)];
   }
+  body
+    #plugNmeet-app
+    .excalidraw-wrapper
+    .excalidraw
+    button.scroll-back-to-content {
+    bottom: 35px !important;
+  }
 }
