@@ -9,6 +9,8 @@ import {
   RemoteTrackPublication,
   Room,
   RoomEvent,
+  supportsAV1,
+  supportsVP9,
   Track,
   VideoPresets,
 } from 'livekit-client';
@@ -226,6 +228,13 @@ export default class ConnectLivekit
   };
 
   private configureRoom = () => {
+    let videoCodec = (window as any).VIDEO_CODEC ?? 'vp8';
+    if (
+      (videoCodec === 'vp9' && !supportsVP9()) ||
+      (videoCodec === 'av1' && !supportsAV1())
+    ) {
+      videoCodec = 'vp8';
+    }
     const room = new Room({
       adaptiveStream: true,
       dynacast: (window as any).ENABLE_DYNACAST ?? false,
@@ -241,7 +250,7 @@ export default class ConnectLivekit
           VideoPresets.h360,
         ],
         stopMicTrackOnMute: (window as any).STOP_MIC_TRACK_ON_MUTE ?? false,
-        videoCodec: (window as any).VIDEO_CODEC ?? 'vp8',
+        videoCodec: videoCodec,
       },
     });
 
