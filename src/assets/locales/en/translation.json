@@ -235,7 +235,8 @@
       "manage-waiting-room": "Manage waiting room",
       "manage-breakout-room": "Manage breakout room",
       "start-display-external-link": "Display external link",
-      "stop-display-external-link": "Stop display external link"
+      "stop-display-external-link": "Stop display external link",
+      "speech-to-text-settings": "Speech to text/translation settings"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -384,5 +385,19 @@
     "gen-link": "Generate link",
     "rtmp-url": "RTMP Host/URL",
     "rtmp-key": "RTMP key/secret"
+  },
+  "speech-services": {
+    "modal-settings-title": "Speech to text/translation settings",
+    "speech-langs-label": "Speech languages",
+    "speech-users-label": "Speech users",
+    "enable-translation": "Enable translation",
+    "enable-service": "Enable service",
+    "speech-user-required": "At least one speech user require",
+    "speech-lang-required": "At least one speech language require",
+    "translation-lang-required": "At least one translation language require",
+    "service-ready": "Speech service is ready",
+    "stop-service": "Stop",
+    "update-service": "Update",
+    "service-stopped": "Service has been stopped"
   }
 }

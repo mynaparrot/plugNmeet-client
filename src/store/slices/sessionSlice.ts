@@ -85,6 +85,12 @@ const initialState: ISession = {
         ingress_features: {
           is_allow: false,
         },
+        speech_to_text_translation_features: {
+          is_allow: false,
+          is_allow_translation: false,
+          is_enabled: false,
+          is_enabled_translation: false,
+        },
       },
       copyright_conf: {
         display: true,

@@ -1,0 +1,65 @@
+export type SupportedLangs = {
+  name: string;
+  code: string;
+};
+
+const supportedSpeechToTextLangs = [
+  { name: 'English', code: 'en-US' },
+  { name: 'Arabic', code: 'ar-BH' },
+  { name: 'Danish', code: 'da-DK' },
+  { name: 'German', code: 'de-DE' },
+  { name: 'Spanish', code: 'es-ES' },
+  { name: 'French', code: 'fr-FR' },
+  { name: 'Italian', code: 'it-IT' },
+  { name: 'Dutch', code: 'nl-NL' },
+  { name: 'Portuguese', code: 'pt-PT' },
+  { name: 'Polish', code: 'pl-PL' },
+  { name: 'Russian', code: 'ru-RU' },
+  { name: 'Turkish', code: 'tr-TR' },
+  { name: 'Japanese', code: 'ja-JP' },
+  { name: 'Korean', code: 'ko-KR' },
+  { name: 'Swedish', code: 'sv-SE' },
+  { name: 'Finnish', code: 'fi-FI' },
+  { name: 'Thai', code: 'th-TH' },
+  { name: 'Norwegian', code: 'nb-NO' },
+  { name: 'Hindi (India)', code: 'hi-IN' },
+  { name: 'Chinese (Mandarin, Simplified)', code: 'zh-CN' },
+  { name: 'Chinese (Taiwanese Mandarin)', code: 'zh-TW' },
+];
+
+const supportedTranslationLangs = [
+  { name: 'Arabic (Egypt)', code: 'ar-EG' },
+  { name: 'Arabic (Saudi Arabia)', code: 'ar-SA' },
+  { name: 'Arabic (Bahrain)', code: 'ar-BH' },
+  { name: 'Catalan (Spain)', code: 'ca-ES' },
+  { name: 'Danish (Denmark)', code: 'da-DK' },
+  { name: 'German (Germany)', code: 'de-DE' },
+  { name: 'English (Australia)', code: 'en-AU' },
+  { name: 'English (Canada)', code: 'en-CA' },
+  { name: 'English (UK)', code: 'en-GB' },
+  { name: 'English (India)', code: 'en-IN' },
+  { name: 'English (US)', code: 'en-US' },
+  { name: 'Hindi (India)', code: 'hi-IN' },
+  { name: 'Spanish (Spain)', code: 'es-ES' },
+  { name: 'Spanish (Mexico)', code: 'es-MX' },
+  { name: 'Finnish (Finland)', code: 'fi-FI' },
+  { name: 'French (Canada)', code: 'fr-CA' },
+  { name: 'French (France)', code: 'fr-FR' },
+  { name: 'Italian (Italy)', code: 'it-IT' },
+  { name: 'Japanese', code: 'ja-JP' },
+  { name: 'Korean', code: 'ko-KR' },
+  { name: 'Norwegian', code: 'nb-NO' },
+  { name: 'Dutch (Netherland)', code: 'nl-NL' },
+  { name: 'Polish (Poland)', code: 'pl-PL' },
+  { name: 'Portuguese (Brazil)', code: 'pt-BR' },
+  { name: 'Turkish', code: 'tr' },
+  { name: 'Portuguese (Portugal)', code: 'pt-PT' },
+  { name: 'Russian (Russia)', code: 'ru-RU' },
+  { name: 'Swedish (Sweden)', code: 'sv-SE' },
+  { name: 'Thai (Thailand)', code: 'th-TH' },
+  { name: 'Chinese (Mandarin, Simplified)', code: 'zh-CN' },
+  { name: 'Chinese (Cantonese, Traditional)', code: 'zh-HK' },
+  { name: 'Chinese (Taiwanese Mandarin)', code: 'zh-TW' },
+];
+
+export { supportedSpeechToTextLangs, supportedTranslationLangs };
