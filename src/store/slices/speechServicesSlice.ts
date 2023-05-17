@@ -14,11 +14,15 @@ const SpeechServicesSlice = createSlice({
   name: 'speech-services',
   initialState: speechServicesAdapter.getInitialState(),
   reducers: {
-    addText: speechServicesAdapter.upsertOne,
-    removeOne: speechServicesAdapter.removeOne,
-    removeAll: speechServicesAdapter.removeAll,
+    addSpeechSubtitleText: speechServicesAdapter.upsertOne,
+    removeSpeechSubtitleText: speechServicesAdapter.removeOne,
+    removeAllSpeechSubtitleText: speechServicesAdapter.removeAll,
   },
 });
 
-export const { addText, removeOne, removeAll } = SpeechServicesSlice.actions;
+export const {
+  addSpeechSubtitleText,
+  removeSpeechSubtitleText,
+  removeAllSpeechSubtitleText,
+} = SpeechServicesSlice.actions;
 export default SpeechServicesSlice.reducer;

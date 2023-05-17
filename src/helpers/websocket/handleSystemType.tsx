@@ -20,6 +20,8 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../proto/plugnmeet_datamessage_pb';
+import { SpeechServiceData } from '../../store/slices/interfaces/SpeechServices';
+import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 
 export const handleSystemTypeData = (body: DataMessage) => {
   switch (body.body?.type) {
@@ -50,6 +52,9 @@ export const handleSystemTypeData = (body: DataMessage) => {
       break;
     case DataMsgBodyType.JOIN_BREAKOUT_ROOM:
       handleBreakoutRoomNotifications(body);
+      break;
+    case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
+      handleSpeechSubtitleText(body);
       break;
   }
 };
@@ -173,4 +178,12 @@ const handleBreakoutRoomNotifications = (data: DataMessage) => {
   }
   store.dispatch(updateReceivedInvitationFor(data.body.msg));
   store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
+};
+
+const handleSpeechSubtitleText = (data: DataMessage) => {
+  if (!data.body) {
+    return;
+  }
+  const msg: SpeechServiceData = JSON.parse(data.body.msg);
+  store.dispatch(addSpeechSubtitleText(msg));
 };

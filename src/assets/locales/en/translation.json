@@ -396,8 +396,12 @@
     "speech-lang-required": "At least one speech language require",
     "translation-lang-required": "At least one translation language require",
     "service-ready": "Speech service is ready",
+    "start-service": "Start",
     "stop-service": "Stop",
     "update-service": "Update",
-    "service-stopped": "Service has been stopped"
+    "service-stopped": "Service has been stopped",
+    "start-modal-title": "Speech to text/translation service",
+    "speech-lang-label": "Speech language",
+    "subtitle-lang-label": "Subtitle language"
   }
 }

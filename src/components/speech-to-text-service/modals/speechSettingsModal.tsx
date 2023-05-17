@@ -19,7 +19,7 @@ const speechServiceFeaturesSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
       .speech_to_text_translation_features,
-  (is_enabled) => is_enabled,
+  (speech_to_text_translation_features) => speech_to_text_translation_features,
 );
 
 const SpeechSettingsModal = () => {
@@ -167,7 +167,10 @@ const SpeechSettingsModal = () => {
 
   const translationLangsElms = useCallback(() => {
     const langs = supportedTranslationLangs.filter((l) => {
-      const find = speechLangs.find((v) => v === l.code);
+      const find = speechLangs.find((v) => {
+        const s = v.split('-');
+        return s[0] === l.code;
+      });
       return !find;
     });
     if (!langs.length) {

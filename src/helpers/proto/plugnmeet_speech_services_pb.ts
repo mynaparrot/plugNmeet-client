@@ -180,14 +180,19 @@ export class GenerateAzureTokenRes extends Message<GenerateAzureTokenRes> {
   status = false;
 
   /**
-   * @generated from field: bool msg = 2;
+   * @generated from field: string msg = 2;
    */
-  msg = false;
+  msg = '';
 
   /**
    * @generated from field: optional string token = 3;
    */
   token?: string;
+
+  /**
+   * @generated from field: optional string service_region = 4;
+   */
+  serviceRegion?: string;
 
   constructor(data?: PartialMessage<GenerateAzureTokenRes>) {
     super();
@@ -198,10 +203,17 @@ export class GenerateAzureTokenRes extends Message<GenerateAzureTokenRes> {
   static readonly typeName = 'plugnmeet.GenerateAzureTokenRes';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'status', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-    { no: 2, name: 'msg', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 2, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
       no: 3,
       name: 'token',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 4,
+      name: 'service_region',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
