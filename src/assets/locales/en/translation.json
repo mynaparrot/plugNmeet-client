@@ -391,6 +391,7 @@
     "speech-langs-label": "Speech languages",
     "speech-users-label": "Speech users",
     "enable-translation": "Enable translation",
+    "translation-langs-label": "Translation languages",
     "enable-service": "Enable service",
     "speech-user-required": "At least one speech user require",
     "speech-lang-required": "At least one speech language require",

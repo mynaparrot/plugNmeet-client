@@ -179,7 +179,7 @@ const SpeechSettingsModal = () => {
     return (
       <div className="flex items-center justify-start">
         <label htmlFor="language" className="pr-4 w-full dark:text-darkText">
-          {t('speech-services.speech-langs-label')}
+          {t('speech-services.translation-langs-label')}
         </label>
         <Listbox
           value={translationLangs}
