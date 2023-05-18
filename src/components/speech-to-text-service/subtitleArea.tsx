@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAppSelector } from '../../store';
 import { speechServicesSelector } from '../../store/slices/speechServicesSlice';
-import useStorePreviousString from '../../helpers/hooks/useStorePreviousString';
 
 interface SubtitleAreaProps {
   lang: string;
@@ -13,24 +12,39 @@ const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
   const interim = useAppSelector((state) =>
     speechServicesSelector.selectById(state, lang + '_interim'),
   );
-  const lastFinalText = useStorePreviousString(final?.text ?? '');
+  const [finalTexts, setFinalTexts] = useState<object>({ 0: '', 1: '' });
+  const [subtitleText, setSubtitleText] = useState<string | undefined>(
+    undefined,
+  );
 
-  const getSubtitleText = useMemo(() => {
-    const text: string[] = [];
-    if (lastFinalText) {
-      text.push(lastFinalText);
-    }
+  useEffect(() => {
     if (final) {
-      text.push(final.text);
+      setFinalTexts((prevState) => ({
+        ...prevState,
+        [0]: prevState[1],
+        [1]: final.text,
+      }));
     }
+    const clear = setTimeout(() => {
+      setSubtitleText(undefined);
+    }, 10000);
+
+    return () => {
+      clearTimeout(clear);
+    };
+  }, [final]);
+
+  useMemo(() => {
+    const text: string[] = [finalTexts[0], finalTexts[1]];
+
     if (interim) {
       text.push(interim.text);
     }
 
-    return text.join(' ');
-  }, [final, interim, lastFinalText]);
+    setSubtitleText(text.join(' '));
+  }, [finalTexts, interim]);
 
-  return <div>{getSubtitleText}</div>;
+  return <div>{subtitleText}</div>;
 };
 
 export default SubtitleArea;
