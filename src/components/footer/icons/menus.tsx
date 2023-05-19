@@ -342,7 +342,7 @@ const MenusIcon = () => {
                 {/* Mark this component as `static` */}
                 <Menu.Items
                   static
-                  className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+                  className="origin-bottom-left sm:-left-20 lg:-left-28 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 lg:w-72 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
                   {roomFeatures?.allow_rtmp ? (
                     <div className="py-1" role="none">

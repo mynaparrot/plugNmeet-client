@@ -31,6 +31,7 @@ const SelectOptionBtn = ({
   recognizer,
   onCloseSelectedOptions,
 }: SelectOptionBtnProps) => {
+  const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   const { t } = useTranslation();
   const currentUser = store.getState().session.currentUser;
 
@@ -49,8 +50,8 @@ const SelectOptionBtn = ({
 
   const speechElms = useCallback(() => {
     return (
-      <div className="flex items-center justify-start">
-        <label htmlFor="language" className="pr-4 w-full dark:text-darkText">
+      <div className="flex items-center justify-between">
+        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
           {t('speech-services.speech-lang-label')}
         </label>
         <Listbox
@@ -58,8 +59,8 @@ const SelectOptionBtn = ({
           onChange={setSelectedSpeechLang}
           disabled={recognizer !== undefined}
         >
-          <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <div className="relative mt-1 w-[150px] sm:w-[200px]">
+            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 px-4 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
               <span className="block truncate">
                 {supportedSpeechToTextLangs
                   .map((l) => (l.code === selectedSpeechLang ? l.name : null))
@@ -73,7 +74,7 @@ const SelectOptionBtn = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {speechService.allowed_speech_langs?.map((l) => (
                   <Listbox.Option
                     key={l}
@@ -121,13 +122,13 @@ const SelectOptionBtn = ({
     }
 
     return (
-      <div className="flex items-center justify-start">
-        <label htmlFor="language" className="pr-4 w-full dark:text-darkText">
+      <div className="flex items-center justify-between mt-2">
+        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
           {t('speech-services.subtitle-lang-label')}
         </label>
         <Listbox value={subtitleLang} onChange={setSubtitleLang}>
-          <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <div className="relative mt-1 w-[150px] sm:w-[200px]">
+            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 px-4 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
               <span className="block truncate">
                 {displayLangs
                   .map((l) => (l.code === subtitleLang ? l.name : null))
@@ -141,7 +142,7 @@ const SelectOptionBtn = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {displayLangs.map((l) => (
                   <Listbox.Option
                     key={l.code}
@@ -260,9 +261,15 @@ const SelectOptionBtn = ({
   };
 
   return (
-    <div>
+    <div className="show-speech-setting absolute bottom-1 left-1">
       {modalElm()}
-      <button onClick={() => setShowModal(true)}>Show settings</button>
+      <button onClick={() => setShowModal(true)}>
+        <img
+          className="w-7 h-7"
+          src={`${assetPath}/imgs/text_to_speech_icon_135108.svg`}
+          alt="sdasd"
+        />
+      </button>
     </div>
   );
 };

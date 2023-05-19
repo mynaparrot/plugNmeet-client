@@ -117,7 +117,7 @@ const SpeechToTextService = () => {
   return (
     <>
       {speechService ? (
-        <div>
+        <div className="speechService absolute bottom-0 w-full">
           {showMicrophoneModal ? (
             <MicrophoneModal
               show={showMicrophoneModal}

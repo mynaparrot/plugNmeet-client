@@ -50,13 +50,13 @@ const SpeechSettingsModal = () => {
 
   const spechToTextLangsElm = useCallback(() => {
     return (
-      <div className="flex items-center justify-start">
-        <label htmlFor="language" className="pr-4 w-full dark:text-darkText">
+      <div className="flex items-center justify-between">
+        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
           {t('speech-services.speech-langs-label')}
         </label>
         <Listbox value={speechLangs} onChange={setSpeechLangs} multiple={true}>
-          <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <div className="relative mt-1 w-[150px] sm:w-[200px]">
+            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 px-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
               <span className="block truncate">
                 {speechLangs
                   .map(
@@ -75,12 +75,12 @@ const SpeechSettingsModal = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {supportedSpeechToTextLangs.map((l) => (
                   <Listbox.Option
                     key={l.code}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 px-2 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
@@ -113,13 +113,13 @@ const SpeechSettingsModal = () => {
         p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
     return (
-      <div className="flex items-center justify-start">
-        <label htmlFor="language" className="pr-4 w-full dark:text-darkText">
+      <div className="flex items-center justify-between mt-2">
+        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
           {t('speech-services.speech-users-label')}
         </label>
         <Listbox value={speechUsers} onChange={setSpeechUsers} multiple={true}>
-          <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <div className="relative mt-1 w-[150px] sm:w-[200px]">
+            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
               <span className="block truncate">
                 {speechUsers
                   .map((l) => users.filter((u) => u.userId === l)[0]?.name)
@@ -133,12 +133,12 @@ const SpeechSettingsModal = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {users.map((u) => (
                   <Listbox.Option
                     key={u.userId}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 px-4 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
@@ -177,8 +177,8 @@ const SpeechSettingsModal = () => {
       return null;
     }
     return (
-      <div className="flex items-center justify-start">
-        <label htmlFor="language" className="pr-4 w-full dark:text-darkText">
+      <div className="flex items-center justify-between">
+        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
           {t('speech-services.translation-langs-label')}
         </label>
         <Listbox
@@ -186,8 +186,8 @@ const SpeechSettingsModal = () => {
           onChange={setTranslationLangs}
           multiple={true}
         >
-          <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <div className="relative mt-1 w-[150px] sm:w-[200px]">
+            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
               <span className="block truncate">
                 {translationLangs
                   .map(
@@ -206,12 +206,12 @@ const SpeechSettingsModal = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {langs.map((l) => (
                   <Listbox.Option
                     key={`trans_${l.code}`}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 px-4 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
@@ -391,7 +391,7 @@ const SpeechSettingsModal = () => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[inherit] text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                 <button
                   className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                   type="button"
@@ -409,7 +409,7 @@ const SpeechSettingsModal = () => {
                 </Dialog.Title>
                 <hr />
                 <div className="mt-6">{modalBodyElms()}</div>
-                <div className="py-3 bg-gray-50 dark:bg-transparent text-right">
+                <div className="py-3 bg-gray-50 dark:bg-transparent text-right mt-4">
                   {!speechService?.is_enabled ? (
                     <button
                       className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
@@ -421,7 +421,7 @@ const SpeechSettingsModal = () => {
                   {speechService?.is_enabled ? (
                     <>
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none mr-2"
                         onClick={() => enableOrUpdateService()}
                       >
                         {t('speech-services.update-service')}
