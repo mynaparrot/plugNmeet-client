@@ -17,7 +17,7 @@ const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
     undefined,
   );
 
-  useEffect(() => {
+  useMemo(() => {
     if (final) {
       setFinalTexts((prevState) => ({
         ...prevState,
@@ -25,16 +25,9 @@ const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
         [1]: final.text,
       }));
     }
-    const clear = setTimeout(() => {
-      setSubtitleText(undefined);
-    }, 10000);
-
-    return () => {
-      clearTimeout(clear);
-    };
   }, [final]);
 
-  useMemo(() => {
+  useEffect(() => {
     const text: string[] = [finalTexts[0], finalTexts[1]];
 
     if (interim) {
@@ -42,6 +35,14 @@ const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
     }
 
     setSubtitleText(text.join(' '));
+
+    const clear = setTimeout(() => {
+      setSubtitleText(undefined);
+    }, 10000);
+
+    return () => {
+      clearTimeout(clear);
+    };
   }, [finalTexts, interim]);
 
   return <div>{subtitleText}</div>;

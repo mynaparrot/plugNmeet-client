@@ -50,7 +50,7 @@ export const openConnectionWithAzure = (
   deviceId: string,
   speechLang: string,
   speechService: SpeechToTextTranslationFeatures,
-  setRecognizer: Dispatch<SpeechRecognizer | TranslationRecognizer>,
+  setRecognizer: Dispatch<SpeechRecognizer | TranslationRecognizer | undefined>,
 ) => {
   const audioConfig = AudioConfig.fromMicrophoneInput(deviceId);
   let hasTranslation = false;
@@ -100,6 +100,7 @@ export const openConnectionWithAzure = (
         try {
           recognizer.stopContinuousRecognitionAsync();
           recognizer.close();
+          setRecognizer(undefined);
         } catch (e) {}
       }
     }
