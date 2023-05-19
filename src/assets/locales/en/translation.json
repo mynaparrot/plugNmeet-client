@@ -403,6 +403,7 @@
     "service-stopped": "Service has been stopped",
     "start-modal-title": "Speech to text/translation service",
     "speech-lang-label": "Speech language",
-    "subtitle-lang-label": "Subtitle language"
+    "subtitle-lang-label": "Subtitle language",
+    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}"
   }
 }

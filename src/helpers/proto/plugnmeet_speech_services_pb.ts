@@ -14,6 +14,30 @@ import type {
 import { Message, proto3 } from '@bufbuild/protobuf';
 
 /**
+ * @generated from enum plugnmeet.SpeechServiceUserStatusTasks
+ */
+export enum SpeechServiceUserStatusTasks {
+  /**
+   * @generated from enum value: SESSION_STARTED = 0;
+   */
+  SESSION_STARTED = 0,
+
+  /**
+   * @generated from enum value: SESSION_ENDED = 1;
+   */
+  SESSION_ENDED = 1,
+}
+// Retrieve enum metadata with: proto3.getEnumType(SpeechServiceUserStatusTasks)
+proto3.util.setEnumType(
+  SpeechServiceUserStatusTasks,
+  'plugnmeet.SpeechServiceUserStatusTasks',
+  [
+    { no: 0, name: 'SESSION_STARTED' },
+    { no: 1, name: 'SESSION_ENDED' },
+  ],
+);
+
+/**
  * @generated from message plugnmeet.SpeechToTextTranslationReq
  */
 export class SpeechToTextTranslationReq extends Message<SpeechToTextTranslationReq> {
@@ -194,6 +218,11 @@ export class GenerateAzureTokenRes extends Message<GenerateAzureTokenRes> {
    */
   serviceRegion?: string;
 
+  /**
+   * @generated from field: optional string key_id = 5;
+   */
+  keyId?: string;
+
   constructor(data?: PartialMessage<GenerateAzureTokenRes>) {
     super();
     proto3.util.initPartial(data, this);
@@ -214,6 +243,13 @@ export class GenerateAzureTokenRes extends Message<GenerateAzureTokenRes> {
     {
       no: 4,
       name: 'service_region',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 5,
+      name: 'key_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
@@ -246,5 +282,83 @@ export class GenerateAzureTokenRes extends Message<GenerateAzureTokenRes> {
     b: GenerateAzureTokenRes | PlainMessage<GenerateAzureTokenRes> | undefined,
   ): boolean {
     return proto3.util.equals(GenerateAzureTokenRes, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.SpeechServiceUserStatusReq
+ */
+export class SpeechServiceUserStatusReq extends Message<SpeechServiceUserStatusReq> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId = '';
+
+  /**
+   * @generated from field: string user_id = 2;
+   */
+  userId = '';
+
+  /**
+   * @generated from field: string key_id = 3;
+   */
+  keyId = '';
+
+  /**
+   * @generated from field: plugnmeet.SpeechServiceUserStatusTasks task = 4;
+   */
+  task = SpeechServiceUserStatusTasks.SESSION_STARTED;
+
+  constructor(data?: PartialMessage<SpeechServiceUserStatusReq>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.SpeechServiceUserStatusReq';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'key_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 4,
+      name: 'task',
+      kind: 'enum',
+      T: proto3.getEnumType(SpeechServiceUserStatusTasks),
+    },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): SpeechServiceUserStatusReq {
+    return new SpeechServiceUserStatusReq().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): SpeechServiceUserStatusReq {
+    return new SpeechServiceUserStatusReq().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): SpeechServiceUserStatusReq {
+    return new SpeechServiceUserStatusReq().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a:
+      | SpeechServiceUserStatusReq
+      | PlainMessage<SpeechServiceUserStatusReq>
+      | undefined,
+    b:
+      | SpeechServiceUserStatusReq
+      | PlainMessage<SpeechServiceUserStatusReq>
+      | undefined,
+  ): boolean {
+    return proto3.util.equals(SpeechServiceUserStatusReq, a, b);
   }
 }
