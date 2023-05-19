@@ -1,18 +1,18 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Dialog, Listbox, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import {
+  SpeechRecognizer,
+  TranslationRecognizer,
+} from 'microsoft-cognitiveservices-speech-sdk';
 
-import { store, useAppDispatch } from '../../store';
+import { store } from '../../store';
 import { SpeechToTextTranslationFeatures } from '../../store/slices/interfaces/session';
 import {
   SupportedLangs,
   supportedSpeechToTextLangs,
   supportedTranslationLangs,
 } from './helpers/supportedLangs';
-import {
-  SpeechRecognizer,
-  TranslationRecognizer,
-} from 'microsoft-cognitiveservices-speech-sdk';
 
 interface SelectOptionBtnProps {
   speechService: SpeechToTextTranslationFeatures;
@@ -31,7 +31,6 @@ const SelectOptionBtn = ({
   recognizer,
   onCloseSelectedOptions,
 }: SelectOptionBtnProps) => {
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const currentUser = store.getState().session.currentUser;
 

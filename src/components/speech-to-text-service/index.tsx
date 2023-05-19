@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
 import {
   SpeechRecognizer,
   TranslationRecognizer,
@@ -10,7 +11,6 @@ import SelectOptionBtn, { OnCloseSelectedOptions } from './selectOptionBtn';
 import SubtitleArea from './subtitleArea';
 import { RootState, useAppSelector } from '../../store';
 
-import { toast } from 'react-toastify';
 import MicrophoneModal from '../footer/modals/microphoneModal';
 import {
   AzureTokenInfo,
