@@ -1,7 +1,6 @@
 import { Dispatch } from 'react';
 import { toast } from 'react-toastify';
 import { isEmpty } from 'lodash';
-import i18n from 'i18next';
 import {
   AudioConfig,
   ResultReason,
@@ -32,6 +31,7 @@ import {
   ISession,
   SpeechToTextTranslationFeatures,
 } from '../../../store/slices/interfaces/session';
+import i18n from '../../../helpers/i18n';
 
 export interface AzureTokenInfo {
   token: string;
@@ -87,7 +87,7 @@ export const openConnectionWithAzure = (
   }
   const sl = speechLang.split('-')[0];
 
-  recognizer.sessionStarted = async (sender, sessionEventArgs) => {
+  recognizer.sessionStarted = async () => {
     const res = await sendUserSessionStatus(
       SpeechServiceUserStatusTasks.SESSION_STARTED,
       azureInfo.keyId,
@@ -105,7 +105,7 @@ export const openConnectionWithAzure = (
       }
     }
   };
-  recognizer.sessionStopped = async (sender, sessionEventArgs) => {
+  recognizer.sessionStopped = async () => {
     await sendUserSessionStatus(
       SpeechServiceUserStatusTasks.SESSION_ENDED,
       azureInfo.keyId,
