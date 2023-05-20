@@ -72,7 +72,7 @@
     "html-webpack-plugin": "5.5.1",
     "husky": "8.0.3",
     "lint-staged": "13.2.2",
-    "mini-css-extract-plugin": "2.7.5",
+    "mini-css-extract-plugin": "2.7.6",
     "postcss": "8.4.23",
     "postcss-loader": "7.3.0",
     "postcss-nested": "6.0.1",
