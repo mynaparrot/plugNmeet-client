@@ -103,6 +103,11 @@ export const openConnectionWithAzure = (
           setRecognizer(undefined);
         } catch (e) {}
       }
+    } else {
+      toast(i18n.t('speech-services.speech-to-text-ready'), {
+        type: 'success',
+        autoClose: 3000,
+      });
     }
   };
   recognizer.sessionStopped = async () => {

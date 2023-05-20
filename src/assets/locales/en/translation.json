@@ -404,6 +404,7 @@
     "start-modal-title": "Speech to text/translation service",
     "speech-lang-label": "Speech language",
     "subtitle-lang-label": "Subtitle language",
-    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}"
+    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}",
+    "speech-to-text-ready": "Service started. You can start speaking now."
   }
 }

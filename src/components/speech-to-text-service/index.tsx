@@ -92,6 +92,7 @@ const SpeechToTextService = () => {
         recognizer.stopContinuousRecognitionAsync();
         setRecognizer(undefined);
         setSpeechLang('');
+        setDeviceId('');
       }
     },
     [recognizer],
@@ -108,20 +109,21 @@ const SpeechToTextService = () => {
     setSpeechLang('');
   };
 
-  const _openConnectionWithAzure = (
-    azureInfo: AzureTokenInfo,
-    deviceId: string,
-  ) => {
-    if (speechService) {
-      openConnectionWithAzure(
-        azureInfo,
-        deviceId,
-        speechLang,
-        speechService,
-        setRecognizer,
-      );
-    }
-  };
+  const _openConnectionWithAzure = useCallback(
+    (azureInfo: AzureTokenInfo, deviceId: string) => {
+      if (speechService && !isEmpty(speechLang)) {
+        openConnectionWithAzure(
+          azureInfo,
+          deviceId,
+          speechLang,
+          speechService,
+          setRecognizer,
+        );
+      }
+      //eslint-disable-next-line
+    },
+    [speechLang, speechService],
+  );
 
   return (
     <>
