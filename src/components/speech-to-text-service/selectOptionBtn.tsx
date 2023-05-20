@@ -18,6 +18,7 @@ interface SelectOptionBtnProps {
   speechService: SpeechToTextTranslationFeatures;
   recognizer: SpeechRecognizer | TranslationRecognizer | undefined;
   onCloseSelectedOptions: (selected: OnCloseSelectedOptions) => void;
+  onOpenSelectedOptionsModal: () => void;
 }
 
 export interface OnCloseSelectedOptions {
@@ -30,6 +31,7 @@ const SelectOptionBtn = ({
   speechService,
   recognizer,
   onCloseSelectedOptions,
+  onOpenSelectedOptionsModal,
 }: SelectOptionBtnProps) => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   const { t } = useTranslation();
@@ -47,6 +49,13 @@ const SelectOptionBtn = ({
     );
     setCanShowSpeechSetting(!!haveUser);
   }, [currentUser?.userId, speechService]);
+
+  useEffect(() => {
+    if (showModal) {
+      onOpenSelectedOptionsModal();
+    }
+    //eslint-disable-next-line
+  }, [showModal]);
 
   const speechElms = useCallback(() => {
     return (

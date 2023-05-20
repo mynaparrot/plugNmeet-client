@@ -30,16 +30,12 @@ const SpeechToTextService = () => {
 
   const [speechLang, setSpeechLang] = useState<string>('');
   const [subtitleLang, setSubtitleLang] = useState<string>('');
-  const [azureInfo, setAzureInfo] = useState<AzureTokenInfo>({
-    token: '',
-    serviceRegion: '',
-    keyId: '',
-  });
   const [recognizer, setRecognizer] = useState<
     SpeechRecognizer | TranslationRecognizer | undefined
   >(undefined);
   const [showMicrophoneModal, setShowMicrophoneModal] =
     useState<boolean>(false);
+  const [deviceId, setDeviceId] = useState<string>('');
 
   useEffect(() => {
     return () => {
@@ -57,15 +53,23 @@ const SpeechToTextService = () => {
     if (isEmpty(speechLang)) {
       return;
     }
+    setDeviceId('');
+    setShowMicrophoneModal(true);
+  }, [speechLang]);
+
+  useEffect(() => {
+    if (isEmpty(deviceId)) {
+      return;
+    }
     const getToken = async () => {
       const res = await getAzureToken();
       if (res.status && res.token && res.serviceRegion && res.keyId) {
-        setAzureInfo({
+        const azureInfo: AzureTokenInfo = {
           token: res.token,
           serviceRegion: res.serviceRegion,
           keyId: res.keyId,
-        });
-        setShowMicrophoneModal(true);
+        };
+        _openConnectionWithAzure(azureInfo, deviceId);
       } else {
         toast(res.msg, {
           type: 'error',
@@ -73,15 +77,16 @@ const SpeechToTextService = () => {
       }
     };
     getToken();
-  }, [speechLang]);
+    //eslint-disable-next-line
+  }, [deviceId]);
 
   const onCloseSelectedOptions = useCallback(
     (o: OnCloseSelectedOptions) => {
       if (!isEmpty(o.speechLang)) {
-        setSpeechLang(o.speechLang);
+        setSpeechLang(`${o.speechLang}`);
       }
       if (!isEmpty(o.subtitleLang)) {
-        setSubtitleLang(o.subtitleLang);
+        setSubtitleLang(`${o.subtitleLang}`);
       }
       if (o.stopService && recognizer) {
         recognizer.stopContinuousRecognitionAsync();
@@ -92,11 +97,15 @@ const SpeechToTextService = () => {
     [recognizer],
   );
 
-  const onCloseMicrophoneModal = (deviceId) => {
+  const onCloseMicrophoneModal = async (deviceId) => {
     setShowMicrophoneModal(false);
     if (!isEmpty(deviceId)) {
-      _openConnectionWithAzure(azureInfo, deviceId);
+      setDeviceId(deviceId);
     }
+  };
+
+  const onOpenSelectedOptionsModal = () => {
+    setSpeechLang('');
   };
 
   const _openConnectionWithAzure = (
@@ -128,6 +137,7 @@ const SpeechToTextService = () => {
             speechService={speechService}
             recognizer={recognizer}
             onCloseSelectedOptions={onCloseSelectedOptions}
+            onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
           />
           {!isEmpty(subtitleLang) ? <SubtitleArea lang={subtitleLang} /> : null}
         </div>
