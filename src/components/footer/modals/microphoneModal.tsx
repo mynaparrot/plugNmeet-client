@@ -46,7 +46,7 @@ const MicrophoneModal = ({
       }
     };
     getDeviceMics();
-  }, []);
+  }, [dispatch]);
 
   const selectOrClose = (onlyClose = false) => {
     onCloseMicrophoneModal(onlyClose ? undefined : selectedMic);

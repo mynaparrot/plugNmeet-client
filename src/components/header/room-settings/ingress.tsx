@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 
-import { IIngressFeatures } from '../../../store/slices/interfaces/session';
 import {
   CreateIngressReq,
   CreateIngressRes,
@@ -11,11 +11,6 @@ import {
 } from '../../../helpers/proto/plugnmeet_ingress_pb';
 import { RootState, store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { createSelector } from '@reduxjs/toolkit';
-
-interface IngressProps {
-  features: IIngressFeatures;
-}
 
 const ingressFeaturesSelector = createSelector(
   (state: RootState) =>
