@@ -51,7 +51,10 @@ const SelectOptionBtn = ({
   const speechElms = useCallback(() => {
     return (
       <div className="flex items-center justify-between">
-        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
+        <label
+          htmlFor="language"
+          className="pr-4 w-auto dark:text-darkText text-sm"
+        >
           {t('speech-services.speech-lang-label')}
         </label>
         <Listbox
@@ -60,11 +63,31 @@ const SelectOptionBtn = ({
           disabled={recognizer !== undefined}
         >
           <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 px-4 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <Listbox.Button
+              className={`relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm ${
+                recognizer !== undefined ? 'opacity-70' : ''
+              }`}
+            >
               <span className="block truncate">
                 {supportedSpeechToTextLangs
                   .map((l) => (l.code === selectedSpeechLang ? l.name : null))
                   .join('')}
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                  />
+                </svg>
               </span>
             </Listbox.Button>
 
@@ -79,17 +102,45 @@ const SelectOptionBtn = ({
                   <Listbox.Option
                     key={l}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 pl-7 pr-4 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
                     value={l}
                   >
-                    {
-                      supportedSpeechToTextLangs.filter(
-                        (lang) => lang.code === l,
-                      )[0].name
-                    }
+                    {({ selected }) => (
+                      <>
+                        <span
+                          className={`block truncate ${
+                            selected ? 'font-medium' : 'font-normal'
+                          }`}
+                        >
+                          {
+                            supportedSpeechToTextLangs.filter(
+                              (lang) => lang.code === l,
+                            )[0].name
+                          }
+                        </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-amber-600">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6 6 9-13.5"
+                              />
+                            </svg>
+                          </span>
+                        ) : null}
+                      </>
+                    )}
                   </Listbox.Option>
                 ))}
               </Listbox.Options>
@@ -123,16 +174,35 @@ const SelectOptionBtn = ({
 
     return (
       <div className="flex items-center justify-between mt-2">
-        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
+        <label
+          htmlFor="language"
+          className="pr-4 w-auto dark:text-darkText text-sm"
+        >
           {t('speech-services.subtitle-lang-label')}
         </label>
         <Listbox value={subtitleLang} onChange={setSubtitleLang}>
           <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 px-4 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
               <span className="block truncate">
                 {displayLangs
                   .map((l) => (l.code === subtitleLang ? l.name : null))
                   .join('')}
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                  />
+                </svg>
               </span>
             </Listbox.Button>
 
@@ -147,13 +217,41 @@ const SelectOptionBtn = ({
                   <Listbox.Option
                     key={l.code}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 pl-7 pr-4 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
                     value={l.code}
                   >
-                    {l.name}
+                    {({ selected }) => (
+                      <>
+                        <span
+                          className={`block truncate ${
+                            selected ? 'font-medium' : 'font-normal'
+                          }`}
+                        >
+                          {l.name}
+                        </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-amber-600">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6 6 9-13.5"
+                              />
+                            </svg>
+                          </span>
+                        ) : null}
+                      </>
+                    )}
                   </Listbox.Option>
                 ))}
               </Listbox.Options>

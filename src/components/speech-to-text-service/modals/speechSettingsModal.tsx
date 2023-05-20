@@ -51,12 +51,15 @@ const SpeechSettingsModal = () => {
   const spechToTextLangsElm = useCallback(() => {
     return (
       <div className="flex items-center justify-between">
-        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
+        <label
+          htmlFor="language"
+          className="pr-4 w-auto dark:text-darkText text-sm"
+        >
           {t('speech-services.speech-langs-label')}
         </label>
         <Listbox value={speechLangs} onChange={setSpeechLangs} multiple={true}>
           <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 px-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
               <span className="block truncate">
                 {speechLangs
                   .map(
@@ -66,6 +69,22 @@ const SpeechSettingsModal = () => {
                       )[0].name,
                   )
                   .join(', ')}
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                  />
+                </svg>
               </span>
             </Listbox.Button>
 
@@ -80,7 +99,7 @@ const SpeechSettingsModal = () => {
                   <Listbox.Option
                     key={l.code}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 px-2 ${
+                      `relative cursor-default select-none py-2 pr-4 pl-7 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
@@ -95,6 +114,24 @@ const SpeechSettingsModal = () => {
                         >
                           {l.name}
                         </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-amber-600">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6 6 9-13.5"
+                              />
+                            </svg>
+                          </span>
+                        ) : null}
                       </>
                     )}
                   </Listbox.Option>
@@ -114,16 +151,35 @@ const SpeechSettingsModal = () => {
     );
     return (
       <div className="flex items-center justify-between mt-2">
-        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
+        <label
+          htmlFor="language"
+          className="pr-4 w-auto dark:text-darkText text-sm"
+        >
           {t('speech-services.speech-users-label')}
         </label>
         <Listbox value={speechUsers} onChange={setSpeechUsers} multiple={true}>
           <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
               <span className="block truncate">
                 {speechUsers
                   .map((l) => users.filter((u) => u.userId === l)[0]?.name)
                   .join(', ')}
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                  />
+                </svg>
               </span>
             </Listbox.Button>
 
@@ -138,7 +194,7 @@ const SpeechSettingsModal = () => {
                   <Listbox.Option
                     key={u.userId}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 px-4 ${
+                      `relative cursor-default select-none py-2 pr-4 pl-7 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
@@ -153,6 +209,24 @@ const SpeechSettingsModal = () => {
                         >
                           {u.name}
                         </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-amber-600">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6 6 9-13.5"
+                              />
+                            </svg>
+                          </span>
+                        ) : null}
                       </>
                     )}
                   </Listbox.Option>
@@ -178,7 +252,10 @@ const SpeechSettingsModal = () => {
     }
     return (
       <div className="flex items-center justify-between">
-        <label htmlFor="language" className="pr-4 w-auto dark:text-darkText">
+        <label
+          htmlFor="language"
+          className="pr-4 w-auto dark:text-darkText text-sm"
+        >
           {t('speech-services.translation-langs-label')}
         </label>
         <Listbox
@@ -187,7 +264,7 @@ const SpeechSettingsModal = () => {
           multiple={true}
         >
           <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default rounded-lg bg-white py-1 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
               <span className="block truncate">
                 {translationLangs
                   .map(
@@ -197,6 +274,22 @@ const SpeechSettingsModal = () => {
                       )[0].name,
                   )
                   .join(', ')}
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                  />
+                </svg>
               </span>
             </Listbox.Button>
 
@@ -211,7 +304,7 @@ const SpeechSettingsModal = () => {
                   <Listbox.Option
                     key={`trans_${l.code}`}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 px-4 ${
+                      `relative cursor-default select-none py-2 pr-4 pl-7 ${
                         active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                       }`
                     }
@@ -226,6 +319,24 @@ const SpeechSettingsModal = () => {
                         >
                           {l.name}
                         </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-amber-600">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6 6 9-13.5"
+                              />
+                            </svg>
+                          </span>
+                        ) : null}
                       </>
                     )}
                   </Listbox.Option>
@@ -245,7 +356,7 @@ const SpeechSettingsModal = () => {
         {speechUsersElms()}
         <Switch.Group>
           <div className="flex items-center justify-between my-4">
-            <Switch.Label className="pr-4 w-full dark:text-darkText">
+            <Switch.Label className="pr-4 w-full dark:text-darkText text-sm">
               {t('speech-services.enable-translation')}
             </Switch.Label>
             <Switch
