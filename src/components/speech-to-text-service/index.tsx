@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import {
   SpeechRecognizer,
   TranslationRecognizer,
@@ -26,6 +27,7 @@ const speechServiceFeaturesSelector = createSelector(
 );
 
 const SpeechToTextService = () => {
+  const { t } = useTranslation();
   const speechService = useAppSelector(speechServiceFeaturesSelector);
 
   const [speechLang, setSpeechLang] = useState<string>('');
@@ -71,7 +73,7 @@ const SpeechToTextService = () => {
         };
         _openConnectionWithAzure(azureInfo, deviceId);
       } else {
-        toast(res.msg, {
+        toast(t(res.msg), {
           type: 'error',
         });
       }
