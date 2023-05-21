@@ -19,7 +19,6 @@ import {
 import { sendWebsocketMessage } from '../../../helpers/websocket';
 import {
   GenerateAzureTokenReq,
-  GenerateAzureTokenRes,
   SpeechServiceUserStatusReq,
   SpeechServiceUserStatusTasks,
 } from '../../../helpers/proto/plugnmeet_speech_services_pb';
@@ -211,7 +210,12 @@ export const sendEmptyData = (language: string, type = 'interim') => {
 };
 
 export const getAzureToken = async () => {
-  const body = new GenerateAzureTokenReq();
+  if (!session) {
+    session = getSession();
+  }
+  const body = new GenerateAzureTokenReq({
+    userSid: session?.currentUser?.sid,
+  });
   const r = await sendAPIRequest(
     'speechServices/azureToken',
     body.toBinary(),
@@ -219,7 +223,7 @@ export const getAzureToken = async () => {
     'application/protobuf',
     'arraybuffer',
   );
-  return GenerateAzureTokenRes.fromBinary(new Uint8Array(r));
+  return CommonResponse.fromBinary(new Uint8Array(r));
 };
 
 export const sendUserSessionStatus = async (

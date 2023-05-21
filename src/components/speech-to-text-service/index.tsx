@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
@@ -10,14 +10,14 @@ import {
 
 import SelectOptionBtn, { OnCloseSelectedOptions } from './selectOptionBtn';
 import SubtitleArea from './subtitleArea';
-import { RootState, useAppSelector } from '../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
 
 import MicrophoneModal from '../footer/modals/microphoneModal';
 import {
-  AzureTokenInfo,
   getAzureToken,
   openConnectionWithAzure,
 } from './helpers/apiConnections';
+import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
 
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -25,10 +25,16 @@ const speechServiceFeaturesSelector = createSelector(
       .speech_to_text_translation_features,
   (speech_to_text_translation_features) => speech_to_text_translation_features,
 );
+const azureTokenInfoSelector = createSelector(
+  (state: RootState) => state.roomSettings.azureTokenInfo,
+  (azureTokenInfo) => azureTokenInfo,
+);
 
 const SpeechToTextService = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const speechService = useAppSelector(speechServiceFeaturesSelector);
+  const azureTokenInfo = useAppSelector(azureTokenInfoSelector);
 
   const [speechLang, setSpeechLang] = useState<string>('');
   const [subtitleLang, setSubtitleLang] = useState<string>('');
@@ -65,22 +71,36 @@ const SpeechToTextService = () => {
     }
     const getToken = async () => {
       const res = await getAzureToken();
-      if (res.status && res.token && res.serviceRegion && res.keyId) {
-        const azureInfo: AzureTokenInfo = {
-          token: res.token,
-          serviceRegion: res.serviceRegion,
-          keyId: res.keyId,
-        };
-        _openConnectionWithAzure(azureInfo, deviceId);
-      } else {
+      if (!res.status) {
         toast(t(res.msg), {
           type: 'error',
         });
+      } else {
       }
     };
     getToken();
     //eslint-disable-next-line
   }, [deviceId]);
+
+  useEffect(() => {
+    if (
+      speechService &&
+      azureTokenInfo &&
+      !isEmpty(azureTokenInfo) &&
+      !isEmpty(deviceId) &&
+      !isEmpty(speechLang)
+    ) {
+      openConnectionWithAzure(
+        azureTokenInfo,
+        deviceId,
+        speechLang,
+        speechService,
+        setRecognizer,
+      );
+      dispatch(updateAzureTokenInfo(undefined));
+    }
+    //eslint-disable-next-line
+  }, [azureTokenInfo, deviceId, speechLang, speechService]);
 
   const onCloseSelectedOptions = useCallback(
     (o: OnCloseSelectedOptions) => {
@@ -110,22 +130,6 @@ const SpeechToTextService = () => {
   const onOpenSelectedOptionsModal = () => {
     setSpeechLang('');
   };
-
-  const _openConnectionWithAzure = useCallback(
-    (azureInfo: AzureTokenInfo, deviceId: string) => {
-      if (speechService && !isEmpty(speechLang)) {
-        openConnectionWithAzure(
-          azureInfo,
-          deviceId,
-          speechLang,
-          speechService,
-          setRecognizer,
-        );
-      }
-      //eslint-disable-next-line
-    },
-    [speechLang, speechService],
-  );
 
   return (
     <>

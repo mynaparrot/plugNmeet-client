@@ -154,6 +154,11 @@ export class GenerateAzureTokenReq extends Message<GenerateAzureTokenReq> {
    */
   roomId = '';
 
+  /**
+   * @generated from field: string user_sid = 2;
+   */
+  userSid = '';
+
   constructor(data?: PartialMessage<GenerateAzureTokenReq>) {
     super();
     proto3.util.initPartial(data, this);
@@ -163,6 +168,7 @@ export class GenerateAzureTokenReq extends Message<GenerateAzureTokenReq> {
   static readonly typeName = 'plugnmeet.GenerateAzureTokenReq';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'user_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(
