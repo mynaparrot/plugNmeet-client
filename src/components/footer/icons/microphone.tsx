@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Room, Track } from 'livekit-client';
+import { createLocalTracks, Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
+import { isEmpty } from 'lodash';
 
 import {
   RootState,
@@ -9,7 +10,6 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../store';
-import ShareMicrophoneModal from '../modals/shareMicrophone';
 import {
   updateIsActiveMicrophone,
   updateIsMicMuted,
@@ -17,6 +17,9 @@ import {
 } from '../../../store/slices/bottomIconsActivitySlice';
 import MicMenu from './mic-menu';
 import { participantsSelector } from '../../../store/slices/participantSlice';
+import MicrophoneModal from '../modals/microphoneModal';
+import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
+import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
 
 interface IMicrophoneIconProps {
   currentRoom: Room;
@@ -41,8 +44,12 @@ const isMicMutedSelector = createSelector(
 
 const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
   const dispatch = useAppDispatch();
-  const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
+
+  const session = store.getState().session;
+  const showTooltip = session.userDeviceType === 'desktop';
+  const muteOnStart =
+    session.currentRoom.metadata?.room_features.mute_on_start ?? false;
 
   const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
   const isActiveMicrophone = useAppSelector(isActiveMicrophoneSelector);
@@ -137,10 +144,60 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
     }
   };
 
+  const onCloseMicrophoneModal = async (deviceId?: string) => {
+    dispatch(updateShowMicrophoneModal(false));
+
+    if (isEmpty(deviceId)) {
+      return;
+    }
+
+    const localTracks = await createLocalTracks({
+      audio: {
+        deviceId: deviceId,
+      },
+      video: false,
+    });
+    for (let i = 0; i < localTracks.length; i++) {
+      const track = localTracks[i];
+      if (track.kind === Track.Kind.Audio) {
+        await currentRoom?.localParticipant.publishTrack(track);
+        dispatch(updateIsActiveMicrophone(true));
+      }
+    }
+    if (muteOnStart) {
+      setTimeout(async () => {
+        const audioTracks = currentRoom?.localParticipant.audioTracks;
+
+        if (audioTracks) {
+          audioTracks.forEach(async (publication) => {
+            if (
+              publication.track &&
+              publication.track.source === Track.Source.Microphone
+            ) {
+              if (!publication.isMuted) {
+                await publication.track.mute();
+                dispatch(updateIsMicMuted(true));
+                // we'll disable it as it was first time only.
+                dispatch(updateMuteOnStart(false));
+              }
+            }
+          });
+        }
+      }, 500);
+    }
+
+    if (deviceId != null) {
+      dispatch(updateSelectedAudioDevice(deviceId));
+    }
+  };
+
   return (
     <div className="relative z-10">
       {showMicrophoneModal ? (
-        <ShareMicrophoneModal currentRoom={currentRoom} />
+        <MicrophoneModal
+          show={showMicrophoneModal}
+          onCloseMicrophoneModal={onCloseMicrophoneModal}
+        />
       ) : null}
       <div
         className={`microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer ${
