@@ -237,16 +237,6 @@ const SpeechSettingsModal = () => {
   }, [allParticipants, speechUsers, t]);
 
   const translationLangsElms = useCallback(() => {
-    const langs = supportedTranslationLangs.filter((l) => {
-      const find = speechLangs.find((v) => {
-        const s = v.split('-');
-        return s[0] === l.code;
-      });
-      return !find;
-    });
-    if (!langs.length) {
-      return null;
-    }
     return (
       <div className="flex items-center justify-between">
         <label
@@ -297,7 +287,7 @@ const SpeechSettingsModal = () => {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {langs.map((l) => (
+                {supportedTranslationLangs.map((l) => (
                   <Listbox.Option
                     key={`trans_${l.code}`}
                     className={({ active }) =>
@@ -344,7 +334,7 @@ const SpeechSettingsModal = () => {
         </Listbox>
       </div>
     );
-  }, [speechLangs, t, translationLangs]);
+  }, [t, translationLangs]);
 
   const modalBodyElms = () => {
     return (
