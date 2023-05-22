@@ -27,9 +27,7 @@ const SpeechSettingsModal = () => {
   const allParticipants = useAppSelector(participantsSelector.selectAll);
   const speechService = useAppSelector(speechServiceFeaturesSelector);
 
-  const [speechLangs, setSpeechLangs] = useState<string[]>([
-    supportedSpeechToTextLangs[0].code,
-  ]);
+  const [speechLangs, setSpeechLangs] = useState<string[]>([]);
   const [speechUsers, setSpeechUsers] = useState<string[]>([]);
   const [enableTranslation, setEnableTranslation] = useState(false);
   const [translationLangs, setTranslationLangs] = useState<string[]>([]);
