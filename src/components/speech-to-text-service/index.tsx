@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
@@ -8,16 +8,16 @@ import {
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
 
-import SelectOptionBtn, { OnCloseSelectedOptions } from './selectOptionBtn';
 import SubtitleArea from './subtitleArea';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 
-import MicrophoneModal from '../footer/modals/microphoneModal';
 import {
   getAzureToken,
   openConnectionWithAzure,
 } from './helpers/apiConnections';
 import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
+import SelectOptions from './selectOptions';
+import { OnCloseSelectedOptions } from './selectOptions';
 
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -41,9 +41,9 @@ const SpeechToTextService = () => {
   const [recognizer, setRecognizer] = useState<
     SpeechRecognizer | TranslationRecognizer | undefined
   >(undefined);
-  const [showMicrophoneModal, setShowMicrophoneModal] =
-    useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string>('');
+  const [optionSelectionDisabled, setOptionSelectionDisabled] =
+    useState<boolean>(false);
 
   useEffect(() => {
     return () => {
@@ -58,25 +58,18 @@ const SpeechToTextService = () => {
   }, [recognizer]);
 
   useEffect(() => {
-    if (isEmpty(speechLang)) {
-      return;
-    }
-    setDeviceId('');
-    setShowMicrophoneModal(true);
-  }, [speechLang]);
-
-  useEffect(() => {
     if (isEmpty(deviceId)) {
       return;
     }
     const getToken = async () => {
+      setOptionSelectionDisabled(true);
       const res = await getAzureToken();
       if (!res.status) {
         toast(t(res.msg), {
           type: 'error',
         });
-      } else {
       }
+      setOptionSelectionDisabled(false);
     };
     getToken();
     //eslint-disable-next-line
@@ -90,11 +83,13 @@ const SpeechToTextService = () => {
       !isEmpty(deviceId) &&
       !isEmpty(speechLang)
     ) {
+      setOptionSelectionDisabled(true);
       openConnectionWithAzure(
         azureTokenInfo,
         deviceId,
         speechLang,
         speechService,
+        setOptionSelectionDisabled,
         setRecognizer,
       );
       dispatch(updateAzureTokenInfo(undefined));
@@ -110,6 +105,9 @@ const SpeechToTextService = () => {
       if (!isEmpty(o.subtitleLang)) {
         setSubtitleLang(`${o.subtitleLang}`);
       }
+      if (!isEmpty(o.micDevice)) {
+        setDeviceId(o.micDevice);
+      }
       if (o.stopService && recognizer) {
         recognizer.stopContinuousRecognitionAsync();
         setRecognizer(undefined);
@@ -120,28 +118,17 @@ const SpeechToTextService = () => {
     [recognizer],
   );
 
-  const onCloseMicrophoneModal = async (deviceId) => {
-    setShowMicrophoneModal(false);
-    if (!isEmpty(deviceId)) {
-      setDeviceId(deviceId);
-    }
-  };
-
   const onOpenSelectedOptionsModal = () => {
     setSpeechLang('');
+    setDeviceId('');
   };
 
   return (
     <>
       {speechService ? (
         <div className="speechService absolute bottom-0 w-full">
-          {showMicrophoneModal ? (
-            <MicrophoneModal
-              show={showMicrophoneModal}
-              onCloseMicrophoneModal={onCloseMicrophoneModal}
-            />
-          ) : null}
-          <SelectOptionBtn
+          <SelectOptions
+            optionSelectionDisabled={optionSelectionDisabled}
             speechService={speechService}
             recognizer={recognizer}
             onCloseSelectedOptions={onCloseSelectedOptions}

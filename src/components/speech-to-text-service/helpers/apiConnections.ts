@@ -21,6 +21,7 @@ import {
   GenerateAzureTokenReq,
   SpeechServiceUserStatusReq,
   SpeechServiceUserStatusTasks,
+  SpeechToTextTranslationReq,
 } from '../../../helpers/proto/plugnmeet_speech_services_pb';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
@@ -49,6 +50,7 @@ export const openConnectionWithAzure = (
   deviceId: string,
   speechLang: string,
   speechService: SpeechToTextTranslationFeatures,
+  setOptionSelectionDisabled: Dispatch<boolean>,
   setRecognizer: Dispatch<SpeechRecognizer | TranslationRecognizer | undefined>,
 ) => {
   const audioConfig = AudioConfig.fromMicrophoneInput(deviceId);
@@ -87,6 +89,7 @@ export const openConnectionWithAzure = (
   const sl = speechLang.split('-')[0];
 
   recognizer.sessionStarted = async () => {
+    setOptionSelectionDisabled(false);
     const res = await sendUserSessionStatus(
       SpeechServiceUserStatusTasks.SESSION_STARTED,
       azureInfo.keyId,
@@ -174,6 +177,10 @@ export const openConnectionWithAzure = (
     }
   };
 
+  recognizer.canceled = () => {
+    setOptionSelectionDisabled(false);
+  };
+
   recognizer.startContinuousRecognitionAsync();
   setRecognizer(recognizer);
 };
@@ -243,6 +250,19 @@ export const sendUserSessionStatus = async (
 
   const r = await sendAPIRequest(
     'speechServices/userStatus',
+    body.toBinary(),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return CommonResponse.fromBinary(new Uint8Array(r));
+};
+
+export const enableOrDisableSpeechService = async (
+  body: SpeechToTextTranslationReq,
+) => {
+  const r = await sendAPIRequest(
+    'speechServices',
     body.toBinary(),
     false,
     'application/protobuf',

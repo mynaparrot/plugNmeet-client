@@ -388,6 +388,7 @@
   },
   "speech-services": {
     "modal-settings-title": "Speech to text/translation settings",
+    "enable-speech-to-text": "Enable speech to text",
     "speech-langs-label": "Speech languages",
     "speech-users-label": "Speech users",
     "enable-translation": "Enable translation",

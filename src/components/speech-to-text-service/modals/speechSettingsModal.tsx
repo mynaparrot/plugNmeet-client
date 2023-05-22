@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Dialog, Listbox, Switch, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { RootState, useAppDispatch, useAppSelector } from '../../../store';
@@ -10,10 +11,8 @@ import {
   supportedTranslationLangs,
 } from '../helpers/supportedLangs';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-import { toast } from 'react-toastify';
-import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 import { SpeechToTextTranslationReq } from '../../../helpers/proto/plugnmeet_speech_services_pb';
+import { enableOrDisableSpeechService } from '../helpers/apiConnections';
 
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -412,14 +411,8 @@ const SpeechSettingsModal = () => {
       isEnabledTranslation: enableTranslation,
       allowedTransLangs: translationLangs,
     });
-    const r = await sendAPIRequest(
-      'speechServices',
-      body.toBinary(),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+
+    const res = await enableOrDisableSpeechService(body);
 
     if (res.status) {
       toast(t('speech-services.service-ready'), {
@@ -443,14 +436,7 @@ const SpeechSettingsModal = () => {
       isEnabledTranslation: false,
       allowedTransLangs: [],
     });
-    const r = await sendAPIRequest(
-      'speechServices',
-      body.toBinary(),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = await enableOrDisableSpeechService(body);
 
     if (res.status) {
       toast(t('speech-services.service-stopped'), {
