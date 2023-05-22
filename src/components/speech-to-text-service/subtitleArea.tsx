@@ -34,8 +34,8 @@ const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
     if (interim) {
       text.push(interim.text);
     }
-
-    setSubtitleText(text.join(' '));
+    const finalText = text.join(' ').split(' ').slice(-20);
+    setSubtitleText(finalText.join(' '));
 
     const clear = setTimeout(() => {
       setSubtitleText(undefined);
