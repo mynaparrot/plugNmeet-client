@@ -107,7 +107,7 @@ const SelectOptions = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[initial] text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                 <button
                   className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                   type="button"
@@ -124,7 +124,7 @@ const SelectOptions = ({
                   {t('speech-services.start-modal-title')}
                 </Dialog.Title>
                 <hr />
-                <div className="mt-6" style={{ height: '300px' }}>
+                <div className="mt-6">
                   {canShowSpeechSetting ? (
                     <SpeechToTextLangElms
                       recognizer={recognizer}
@@ -141,7 +141,7 @@ const SelectOptions = ({
                     setSelectedSubtitleLang={setSelectedSubtitleLang}
                   />
                 </div>
-                <div className="py-3 bg-gray-50 dark:bg-transparent text-right">
+                <div className="pt-5 bg-gray-50 dark:bg-transparent text-right">
                   <>
                     {canShowSpeechSetting ? (
                       <button
@@ -175,11 +175,9 @@ const SelectOptions = ({
     <div className="show-speech-setting absolute bottom-1 left-1">
       {modalElm()}
       <button onClick={() => setShowModal(true)}>
-        <img
-          className="w-7 h-7"
-          src={`${assetPath}/imgs/text_to_speech_icon_135108.svg`}
-          alt="sdasd"
-        />
+        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer">
+          <i className="pnm-mic-unmute primaryColor dark:text-darkText text-[12px] lg:text-[14px]"></i>
+        </div>
       </button>
     </div>
   );

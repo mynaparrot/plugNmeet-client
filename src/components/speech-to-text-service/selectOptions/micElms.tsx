@@ -48,14 +48,14 @@ const MicElms = ({
   }, []);
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="selectMicroPhone flex items-center justify-between mt-2">
       <label
         htmlFor="microphone"
-        className="pr-4 w-auto dark:text-darkText text-sm"
+        className="pr-4 w-min dark:text-darkText text-sm"
       >
         {t('footer.modal.select-microphone')}
       </label>
-      <div className="col-span-6 sm:col-span-3">
+      <div className="relative mt-1 w-[150px] sm:w-[200px]">
         <select
           value={selectedMicDevice}
           disabled={disabled}

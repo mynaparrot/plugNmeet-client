@@ -153,31 +153,29 @@ const SpeechToTextLangElms = ({
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <Switch.Group>
-          <div className="flex items-center justify-between my-4">
-            <Switch.Label className="pr-4 w-full dark:text-darkText">
-              {t('speech-services.enable-speech-to-text')}
-            </Switch.Label>
-            <Switch
-              checked={enableSpeechToText}
-              onChange={setEnableSpeechToText}
-              disabled={recognizer !== undefined}
+      <Switch.Group>
+        <div className="flex items-center justify-between my-4">
+          <Switch.Label className="pr-4 w-full dark:text-darkText">
+            {t('speech-services.enable-speech-to-text')}
+          </Switch.Label>
+          <Switch
+            checked={enableSpeechToText}
+            onChange={setEnableSpeechToText}
+            disabled={recognizer !== undefined}
+            className={`${
+              enableSpeechToText
+                ? 'bg-primaryColor dark:bg-darkSecondary2'
+                : 'bg-gray-200 dark:bg-secondaryColor'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            <span
               className={`${
-                enableSpeechToText
-                  ? 'bg-primaryColor dark:bg-darkSecondary2'
-                  : 'bg-gray-200 dark:bg-secondaryColor'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
-            >
-              <span
-                className={`${
-                  enableSpeechToText ? 'translate-x-6' : 'translate-x-1'
-                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-              />
-            </Switch>
-          </div>
-        </Switch.Group>
-      </div>
+                enableSpeechToText ? 'translate-x-6' : 'translate-x-1'
+              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+            />
+          </Switch>
+        </div>
+      </Switch.Group>
       {enableSpeechToText ? speechLangElms() : null}
     </>
   );
