@@ -32,6 +32,7 @@ import {
   SpeechToTextTranslationFeatures,
 } from '../../../store/slices/interfaces/session';
 import i18n from '../../../helpers/i18n';
+import { supportedSpeechToTextLangs } from './supportedLangs';
 
 export interface AzureTokenInfo {
   token: string;
@@ -59,13 +60,33 @@ export const openConnectionWithAzure = (
   let speechConfig: SpeechConfig | SpeechTranslationConfig;
   let recognizer: SpeechRecognizer | TranslationRecognizer;
 
+  const sl = supportedSpeechToTextLangs.filter((l) => l.code === speechLang)[0];
+  let transLangs: Array<string> = [];
+
   if (speechService.allowed_trans_langs?.length) {
     hasTranslation = true;
     speechConfig = SpeechTranslationConfig.fromAuthorizationToken(
       azureInfo.token,
       azureInfo.serviceRegion,
     );
-    speechService.allowed_trans_langs.forEach((l) =>
+
+    transLangs = speechService.allowed_trans_langs.filter(
+      (l) => l !== sl.locale,
+    );
+
+    speechService.allowed_speech_langs
+      ?.filter((l) => l !== sl.code)
+      .forEach((s) => {
+        const speechObj = supportedSpeechToTextLangs.filter(
+          (l) => l.code === s,
+        );
+        const hasLang = transLangs.find((l) => l === speechObj[0].locale);
+        if (!hasLang) {
+          transLangs.push(speechObj[0].locale);
+        }
+      });
+
+    transLangs.forEach((l) =>
       (speechConfig as SpeechTranslationConfig).addTargetLanguage(l),
     );
   } else {
@@ -86,7 +107,6 @@ export const openConnectionWithAzure = (
   } else {
     recognizer = new SpeechRecognizer(speechConfig, audioConfig);
   }
-  const sl = speechLang.split('-')[0];
 
   recognizer.sessionStarted = async () => {
     setOptionSelectionDisabled(false);
@@ -122,7 +142,7 @@ export const openConnectionWithAzure = (
   recognizer.recognizing = (sender, recognitionEventArgs) => {
     const result = recognitionEventArgs.result;
     const data: SpeechServiceData = {
-      lang: sl,
+      lang: sl.locale,
       type: 'interim',
       text: result.text,
     };
@@ -130,7 +150,7 @@ export const openConnectionWithAzure = (
 
     if (result.reason === ResultReason.TranslatingSpeech) {
       if (speechService) {
-        speechService.allowed_trans_langs?.forEach((l) => {
+        transLangs.forEach((l) => {
           const text = (
             result as TranslationRecognitionResult
           ).translations.get(l);
@@ -150,16 +170,16 @@ export const openConnectionWithAzure = (
   recognizer.recognized = (sender, recognitionEventArgs) => {
     const result = recognitionEventArgs.result;
     const data: SpeechServiceData = {
-      lang: sl,
+      lang: sl.locale,
       type: 'final',
       text: result.text,
     };
     broadcastSpeechToTextMsgs(data);
-    sendEmptyData(sl);
+    sendEmptyData(sl.locale);
 
     if (result.reason === ResultReason.TranslatedSpeech) {
       if (speechService) {
-        speechService.allowed_trans_langs?.forEach((l) => {
+        transLangs.forEach((l) => {
           const text = (
             result as TranslationRecognitionResult
           ).translations.get(l);

@@ -37,7 +37,7 @@ import {
   ExternalMediaPlayerTask,
   MuteUnMuteTrackReq,
 } from '../../../helpers/proto/plugnmeet_common_api_pb';
-import SpeechSettingsModal from '../../speech-to-text-service/modals/speechSettingsModal';
+import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -492,7 +492,7 @@ const MenusIcon = () => {
       {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
       {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
       {showDisplayExternalLinkModal ? <DisplayExternalLinkModal /> : null}
-      {showSpeechSettingsModal ? <SpeechSettingsModal /> : null}
+      {showSpeechSettingsModal ? <SpeechServiceSettingsModal /> : null}
     </>
   );
 };

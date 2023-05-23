@@ -28,19 +28,22 @@ const SubtitleLangElms = ({
       const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
       if (r) {
         displayLangs.push({
-          code: r[0].code.split('-')[0],
+          code: r[0].locale,
           name: r[0].name,
         });
       }
     });
 
     if (speechService.is_enabled_translation) {
-      const transLangs = speechService.allowed_trans_langs?.map((l) => {
-        return supportedTranslationLangs.filter((lang) => lang.code === l)?.[0];
+      speechService.allowed_trans_langs?.forEach((l) => {
+        const obj = supportedTranslationLangs.filter(
+          (lang) => lang.code === l,
+        )?.[0];
+        const find = displayLangs.find((l) => l.code === obj?.code);
+        if (!find) {
+          displayLangs.push(obj);
+        }
       });
-      if (transLangs?.length) {
-        displayLangs.push(...transLangs);
-      }
     }
 
     return (

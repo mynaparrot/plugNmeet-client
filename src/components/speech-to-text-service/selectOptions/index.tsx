@@ -33,7 +33,6 @@ const SelectOptions = ({
   onCloseSelectedOptions,
   onOpenSelectedOptionsModal,
 }: SelectOptionsProps) => {
-  const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   const { t } = useTranslation();
   const currentUser = store.getState().session.currentUser;
 
@@ -45,7 +44,7 @@ const SelectOptions = ({
   const [selectedMicDevice, setSelectedMicDevice] = useState<string>('');
 
   useEffect(() => {
-    const haveUser = speechService.allowed_speech_users?.filter(
+    const haveUser = speechService.allowed_speech_users?.find(
       (u) => u === currentUser?.userId,
     );
     setCanShowSpeechSetting(!!haveUser);
@@ -62,12 +61,22 @@ const SelectOptions = ({
     if (optionSelectionDisabled) {
       return;
     }
-    onCloseSelectedOptions({
-      speechLang: selectedSpeechLang,
-      subtitleLang: selectedSubtitleLang,
-      micDevice: selectedMicDevice,
-      stopService: !!recognizer,
-    });
+    if (canShowSpeechSetting) {
+      onCloseSelectedOptions({
+        speechLang: selectedSpeechLang,
+        subtitleLang: selectedSubtitleLang,
+        micDevice: selectedMicDevice,
+        stopService: !!recognizer,
+      });
+    } else {
+      onCloseSelectedOptions({
+        speechLang: '',
+        subtitleLang: selectedSubtitleLang,
+        micDevice: '',
+        stopService: false,
+      });
+    }
+
     setShowModal(false);
   };
 
