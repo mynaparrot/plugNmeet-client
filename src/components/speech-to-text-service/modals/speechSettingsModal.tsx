@@ -55,9 +55,9 @@ const SpeechSettingsModal = () => {
           {t('speech-services.speech-langs-label')}
         </label>
         <Listbox value={speechLangs} onChange={setSpeechLangs} multiple={true}>
-          <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-              <span className="block truncate">
+          <div className="relative mt-1 w-[150px] sm:w-[250px]">
+            <Listbox.Button className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+              <span className="block">
                 {speechLangs
                   .map(
                     (l) =>
@@ -155,9 +155,9 @@ const SpeechSettingsModal = () => {
           {t('speech-services.speech-users-label')}
         </label>
         <Listbox value={speechUsers} onChange={setSpeechUsers} multiple={true}>
-          <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-              <span className="block truncate">
+          <div className="relative mt-1 w-[150px] sm:w-[250px]">
+            <Listbox.Button className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+              <span className="block">
                 {speechUsers
                   .map((l) => users.filter((u) => u.userId === l)[0]?.name)
                   .join(', ')}
@@ -250,9 +250,9 @@ const SpeechSettingsModal = () => {
           onChange={setTranslationLangs}
           multiple={true}
         >
-          <div className="relative mt-1 w-[150px] sm:w-[200px]">
-            <Listbox.Button className="relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-              <span className="block truncate">
+          <div className="relative mt-1 w-[150px] sm:w-[250px]">
+            <Listbox.Button className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+              <span className="block">
                 {translationLangs
                   .map(
                     (l) =>
