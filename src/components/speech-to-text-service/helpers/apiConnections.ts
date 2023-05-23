@@ -57,8 +57,7 @@ export const openConnectionWithAzure = (
 ) => {
   let audioConfig: AudioConfig,
     speechConfig: SpeechConfig | SpeechTranslationConfig,
-    recognizer: SpeechRecognizer | TranslationRecognizer,
-    hasTranslation = false;
+    recognizer: SpeechRecognizer | TranslationRecognizer;
 
   if (!isEmpty(deviceId)) {
     audioConfig = AudioConfig.fromMicrophoneInput(deviceId);
@@ -75,8 +74,6 @@ export const openConnectionWithAzure = (
   let transLangs: Array<string> = [];
 
   if (speechService.allowed_trans_langs?.length) {
-    hasTranslation = true;
-
     transLangs = speechService.allowed_trans_langs.filter(
       (l) => l !== sl.locale,
     );
@@ -98,7 +95,7 @@ export const openConnectionWithAzure = (
       });
   }
 
-  if (hasTranslation && transLangs.length) {
+  if (transLangs.length) {
     speechConfig = SpeechTranslationConfig.fromAuthorizationToken(
       azureInfo.token,
       azureInfo.serviceRegion,
@@ -116,7 +113,7 @@ export const openConnectionWithAzure = (
   speechConfig.speechRecognitionLanguage = speechLang;
   speechConfig.enableDictation();
 
-  if (hasTranslation) {
+  if (transLangs.length) {
     recognizer = new TranslationRecognizer(
       speechConfig as SpeechTranslationConfig,
       audioConfig,
