@@ -49,16 +49,27 @@ const getSession = () => {
 export const openConnectionWithAzure = (
   azureInfo: AzureTokenInfo,
   deviceId: string,
+  mediaStream: MediaStream | undefined,
   speechLang: string,
   speechService: SpeechToTextTranslationFeatures,
   setOptionSelectionDisabled: Dispatch<boolean>,
   setRecognizer: Dispatch<SpeechRecognizer | TranslationRecognizer | undefined>,
 ) => {
-  const audioConfig = AudioConfig.fromMicrophoneInput(deviceId);
-  let hasTranslation = false;
+  let audioConfig: AudioConfig,
+    speechConfig: SpeechConfig | SpeechTranslationConfig,
+    recognizer: SpeechRecognizer | TranslationRecognizer,
+    hasTranslation = false;
 
-  let speechConfig: SpeechConfig | SpeechTranslationConfig;
-  let recognizer: SpeechRecognizer | TranslationRecognizer;
+  if (!isEmpty(deviceId)) {
+    audioConfig = AudioConfig.fromMicrophoneInput(deviceId);
+  } else if (mediaStream) {
+    audioConfig = AudioConfig.fromStreamInput(mediaStream);
+  } else {
+    toast(i18n.t('speech-services.mic-error'), {
+      type: 'error',
+    });
+    return;
+  }
 
   const sl = supportedSpeechToTextLangs.filter((l) => l.code === speechLang)[0];
   let transLangs: Array<string> = [];

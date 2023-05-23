@@ -7,6 +7,7 @@ import {
   SpeechRecognizer,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
+import { Room, Track } from 'livekit-client';
 
 import SubtitleArea from './subtitleArea';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
@@ -19,6 +20,10 @@ import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
 import SelectOptions from './selectOptions';
 import { OnCloseSelectedOptions } from './selectOptions';
 
+interface SpeechToTextServiceProps {
+  currentRoom: Room;
+}
+
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
@@ -30,7 +35,7 @@ const azureTokenInfoSelector = createSelector(
   (azureTokenInfo) => azureTokenInfo,
 );
 
-const SpeechToTextService = () => {
+const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const speechService = useAppSelector(speechServiceFeaturesSelector);
@@ -42,6 +47,9 @@ const SpeechToTextService = () => {
     SpeechRecognizer | TranslationRecognizer | undefined
   >(undefined);
   const [deviceId, setDeviceId] = useState<string>('');
+  const [mediaStream, setMediaStream] = useState<MediaStream | undefined>(
+    undefined,
+  );
   const [optionSelectionDisabled, setOptionSelectionDisabled] =
     useState<boolean>(false);
 
@@ -58,7 +66,7 @@ const SpeechToTextService = () => {
   }, [recognizer]);
 
   useEffect(() => {
-    if (isEmpty(deviceId)) {
+    if (isEmpty(deviceId) && !mediaStream) {
       return;
     }
     const getToken = async () => {
@@ -73,20 +81,23 @@ const SpeechToTextService = () => {
     };
     getToken();
     //eslint-disable-next-line
-  }, [deviceId]);
+  }, [deviceId, mediaStream]);
 
   useEffect(() => {
+    if (isEmpty(deviceId) && !mediaStream) {
+      return;
+    }
     if (
       speechService &&
       azureTokenInfo &&
       !isEmpty(azureTokenInfo) &&
-      !isEmpty(deviceId) &&
       !isEmpty(speechLang)
     ) {
       setOptionSelectionDisabled(true);
       openConnectionWithAzure(
         azureTokenInfo,
         deviceId,
+        mediaStream,
         speechLang,
         speechService,
         setOptionSelectionDisabled,
@@ -95,7 +106,7 @@ const SpeechToTextService = () => {
       dispatch(updateAzureTokenInfo(undefined));
     }
     //eslint-disable-next-line
-  }, [azureTokenInfo, deviceId, speechLang, speechService]);
+  }, [azureTokenInfo, deviceId, mediaStream, speechLang, speechService]);
 
   const onCloseSelectedOptions = useCallback(
     (o: OnCloseSelectedOptions) => {
@@ -107,20 +118,33 @@ const SpeechToTextService = () => {
       }
       if (!isEmpty(o.micDevice)) {
         setDeviceId(o.micDevice);
+        setMediaStream(undefined);
+      } else {
+        currentRoom.localParticipant.audioTracks.forEach((publication) => {
+          if (
+            publication.track &&
+            publication.track.source === Track.Source.Microphone &&
+            publication.track.mediaStream
+          ) {
+            setMediaStream(publication.track.mediaStream);
+          }
+        });
       }
       if (o.stopService && recognizer) {
         recognizer.stopContinuousRecognitionAsync();
         setRecognizer(undefined);
         setSpeechLang('');
         setDeviceId('');
+        setMediaStream(undefined);
       }
     },
-    [recognizer],
+    [currentRoom.localParticipant.audioTracks, recognizer],
   );
 
   const onOpenSelectedOptionsModal = () => {
     setSpeechLang('');
     setDeviceId('');
+    setMediaStream(undefined);
   };
 
   return (

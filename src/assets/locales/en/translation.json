@@ -410,6 +410,7 @@
     "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",
     "already-using-service": "You're already using the service.",
     "service-disabled": "Service is disabled. Please check server configuration.",
-    "token-generation-failed": "Token generation failed with error: {{error}}"
+    "token-generation-failed": "Token generation failed with error: {{error}}",
+    "mic-error": "Service can't start because of microphone problem."
   }
 }

@@ -279,7 +279,9 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
         {notepadElm}
         {externalMediaPlayerElm}
         {displayExternalLinkElm}
-        {activateSpeechService ? <SpeechToTextService /> : null}
+        {activateSpeechService ? (
+          <SpeechToTextService currentRoom={currentConnection.room} />
+        ) : null}
       </div>
       <AudioElements currentConnection={currentConnection} />
     </>
