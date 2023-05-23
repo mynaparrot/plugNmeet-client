@@ -150,7 +150,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   return (
     <>
       {speechService ? (
-        <div className="speechService absolute bottom-0 w-full">
+        <div className="speechService absolute bottom-0 w-full z-50">
           <SelectOptions
             optionSelectionDisabled={optionSelectionDisabled}
             speechService={speechService}

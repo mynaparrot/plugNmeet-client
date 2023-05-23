@@ -43,7 +43,7 @@ const SpeechUsersElms = ({
                   .join(', ')}
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
-                <i className="pnm-updown w-5 h-5 text-gray-400" />
+                <i className="pnm-updown text-xl primaryColor dark:text-darkText" />
               </span>
             </Listbox.Button>
 
