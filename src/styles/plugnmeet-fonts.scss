@@ -31,6 +31,15 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.pnm-closed-captioning:before {
+  content: '\e931';
+}
+.pnm-check:before {
+  content: '\e932';
+}
+.pnm-updown:before {
+  content: '\e933';
+}
 .pnm-pip:before {
   content: '\e930';
 }

@@ -444,7 +444,7 @@ const MenusIcon = () => {
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openSpeechServiceSettingsModal()}
                         >
-                          <i className="pnm-waiting-room text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          <i className="pnm-closed-captioning text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
                           {t('footer.menus.speech-to-text-settings')}
                         </button>
                       </Menu.Item>

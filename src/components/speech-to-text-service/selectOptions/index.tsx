@@ -176,7 +176,7 @@ const SelectOptions = ({
       {modalElm()}
       <button onClick={() => setShowModal(true)}>
         <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] mr-3 lg:mr-6 flex items-center justify-center cursor-pointer">
-          <i className="pnm-mic-unmute primaryColor dark:text-darkText text-[12px] lg:text-[14px]"></i>
+          <i className="pnm-closed-captioning primaryColor dark:text-darkText text-[12px] lg:text-[14px]"></i>
         </div>
       </button>
     </div>
