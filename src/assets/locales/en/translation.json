@@ -411,6 +411,7 @@
     "already-using-service": "You're already using the service.",
     "service-disabled": "Service is disabled. Please check server configuration.",
     "token-generation-failed": "Token generation failed with error: {{error}}",
-    "mic-error": "Service can't start because of microphone problem."
+    "mic-error": "Service can't start because of microphone problem.",
+    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled."
   }
 }

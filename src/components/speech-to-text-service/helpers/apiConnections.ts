@@ -76,10 +76,6 @@ export const openConnectionWithAzure = (
 
   if (speechService.allowed_trans_langs?.length) {
     hasTranslation = true;
-    speechConfig = SpeechTranslationConfig.fromAuthorizationToken(
-      azureInfo.token,
-      azureInfo.serviceRegion,
-    );
 
     transLangs = speechService.allowed_trans_langs.filter(
       (l) => l !== sl.locale,
@@ -91,12 +87,22 @@ export const openConnectionWithAzure = (
         const speechObj = supportedSpeechToTextLangs.filter(
           (l) => l.code === s,
         );
+        if (speechObj[0].locale === sl.locale) {
+          // same locale, so we can avoid to add
+          return;
+        }
         const hasLang = transLangs.find((l) => l === speechObj[0].locale);
         if (!hasLang) {
           transLangs.push(speechObj[0].locale);
         }
       });
+  }
 
+  if (hasTranslation && transLangs.length) {
+    speechConfig = SpeechTranslationConfig.fromAuthorizationToken(
+      azureInfo.token,
+      azureInfo.serviceRegion,
+    );
     transLangs.forEach((l) =>
       (speechConfig as SpeechTranslationConfig).addTargetLanguage(l),
     );

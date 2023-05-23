@@ -55,6 +55,12 @@ const SpeechServiceSettingsModal = () => {
       });
       return;
     }
+    if (!enableTranslation && selectedSpeechLangs.length > 1) {
+      toast(t('speech-services.enable-translation-warning'), {
+        type: 'warning',
+      });
+      return;
+    }
     if (
       enableTranslation &&
       selectedSpeechLangs.length === 1 &&
