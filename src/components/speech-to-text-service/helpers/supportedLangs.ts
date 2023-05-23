@@ -36,9 +36,13 @@ const supportedSpeechToTextLangs = [
   { name: 'Czech', code: 'cs-CZ', locale: 'cs' },
   { name: 'Croatian', code: 'hr-HR', locale: 'hr' },
   { name: 'Chinese (Mandarin, Simplified)', code: 'zh-CN', locale: 'zh-Hans' },
-  { name: 'Chinese (Taiwanese Mandarin)', code: 'zh-TW', locale: 'zh' },
+  { name: 'Chinese (Taiwanese Mandarin)', code: 'zh-TW', locale: 'zh-Hant' },
   { name: 'Chinese (Wu, Simplified)', code: 'wuu-CN', locale: 'zh-Hans' },
-  { name: 'Chinese (Cantonese, Simplified)', code: 'yue-CN', locale: 'zh' },
+  {
+    name: 'Chinese (Cantonese, Simplified)',
+    code: 'yue-CN',
+    locale: 'zh-Hant',
+  },
   {
     name: 'Chinese (Jilu Mandarin, Simplified)',
     code: 'zh-CN-shandong',
@@ -49,7 +53,11 @@ const supportedSpeechToTextLangs = [
     code: 'zh-CN-sichuan',
     locale: 'zh-Hans',
   },
-  { name: 'Chinese (Cantonese, Traditional)', code: 'zh-HK', locale: 'zh' },
+  {
+    name: 'Chinese (Cantonese, Traditional)',
+    code: 'zh-HK',
+    locale: 'zh-Hant',
+  },
   { name: 'Danish', code: 'da-DK', locale: 'da' },
   { name: 'Dutch (Belgium)', code: 'nl-BE', locale: 'nl' },
   { name: 'Dutch (Netherlands)', code: 'nl-NL', locale: 'nl' },
