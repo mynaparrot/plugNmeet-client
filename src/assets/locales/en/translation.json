@@ -396,7 +396,7 @@
     "enable-service": "Enable service",
     "speech-user-required": "At least one speech user require",
     "speech-lang-required": "At least one speech language require",
-    "translation-lang-required": "At least one translation language require",
+    "translation-lang-required": "At least one translation language or 2 speech languages required",
     "service-ready": "Speech service is ready",
     "start-service": "Start",
     "stop-service": "Stop",

@@ -55,7 +55,11 @@ const SpeechServiceSettingsModal = () => {
       });
       return;
     }
-    if (enableTranslation && !selectedTransLangs.length) {
+    if (
+      enableTranslation &&
+      selectedSpeechLangs.length === 1 &&
+      !selectedTransLangs.length
+    ) {
       toast(t('speech-services.translation-lang-required'), {
         type: 'error',
       });
