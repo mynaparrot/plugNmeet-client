@@ -53,6 +53,7 @@ const SubtitleLangElms = ({
       });
     }
     setDisplayLangs(langs);
+    //eslint-disable-next-line
   }, [
     speechService.allowed_speech_langs,
     speechService.allowed_trans_langs,
