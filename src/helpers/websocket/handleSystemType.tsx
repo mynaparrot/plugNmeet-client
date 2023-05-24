@@ -185,15 +185,14 @@ const handleSpeechSubtitleText = (data: DataMessage) => {
     return;
   }
   const msg: SpeechTextBroadcastFormat = JSON.parse(data.body.msg);
-  const selectedSubtitleLang =
-    store.getState().speechServices.selectedSubtitleLang;
-  if (typeof msg.result[selectedSubtitleLang] === 'undefined') {
-    return;
+  const lang = store.getState().speechServices.selectedSubtitleLang;
+
+  if (lang !== '' && typeof msg.result[lang] !== 'undefined') {
+    store.dispatch(
+      addSpeechSubtitleText({
+        type: msg.type,
+        text: msg.result[lang],
+      }),
+    );
   }
-  store.dispatch(
-    addSpeechSubtitleText({
-      type: msg.type,
-      text: msg.result[selectedSubtitleLang],
-    }),
-  );
 };

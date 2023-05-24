@@ -17,7 +17,7 @@ export interface ISpeechSubtitleText {
   text: string;
 }
 
-export interface SpeechTextBroadcastFormat {
+export type SpeechTextBroadcastFormat = {
   type: SpeechSubtitleTypes;
-  result: Array<{ [k: string]: string }>;
-}
+  result: { [k: string]: string };
+};

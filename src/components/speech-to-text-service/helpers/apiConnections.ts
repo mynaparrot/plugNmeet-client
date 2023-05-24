@@ -73,11 +73,12 @@ export const openConnectionWithAzure = (
   const sl = supportedSpeechToTextLangs.filter((l) => l.code === speechLang)[0];
   let transLangs: Array<string> = [];
 
-  if (speechService.allowed_trans_langs?.length) {
-    transLangs = speechService.allowed_trans_langs.filter(
-      (l) => l !== sl.locale,
-    );
-
+  if (speechService.is_enabled_translation) {
+    if (speechService.allowed_trans_langs?.length) {
+      transLangs = speechService.allowed_trans_langs.filter(
+        (l) => l !== sl.locale,
+      );
+    }
     speechService.allowed_speech_langs
       ?.filter((l) => l !== sl.code)
       .forEach((s) => {
@@ -157,11 +158,9 @@ export const openConnectionWithAzure = (
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'interim',
-      result: [],
+      result: {},
     };
-    data.result.push({
-      [sl.locale]: result.text,
-    });
+    data.result[sl.locale] = result.text;
 
     if (result.reason === ResultReason.TranslatingSpeech) {
       if (speechService) {
@@ -170,9 +169,7 @@ export const openConnectionWithAzure = (
             result as TranslationRecognitionResult
           ).translations.get(l);
           if (!isEmpty(text)) {
-            data.result.push({
-              [l]: result.text,
-            });
+            data.result[l] = text;
           }
         });
       }
@@ -184,18 +181,9 @@ export const openConnectionWithAzure = (
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'final',
-      result: [],
+      result: {},
     };
-    data.result.push({
-      [sl.locale]: result.text,
-    });
-    /*const data: SpeechServiceData = {
-      lang: sl.locale,
-      type: 'final',
-      text: result.text,
-    };
-    broadcastSpeechToTextMsgs(data);
-    sendEmptyData(sl.locale);*/
+    data.result[sl.locale] = result.text;
 
     if (result.reason === ResultReason.TranslatedSpeech) {
       if (speechService) {
@@ -204,16 +192,7 @@ export const openConnectionWithAzure = (
             result as TranslationRecognitionResult
           ).translations.get(l);
           if (!isEmpty(text)) {
-            data.result.push({
-              [l]: result.text,
-            });
-            // const data: SpeechServiceData = {
-            //   lang: l,
-            //   type: 'final',
-            //   text,
-            // };
-            // broadcastSpeechToTextMsgs(data);
-            // sendEmptyData(l);
+            data.result[l] = text;
           }
         });
       }
@@ -250,16 +229,6 @@ export const broadcastSpeechToTextMsgs = (msg) => {
 
   sendWebsocketMessage(dataMsg.toBinary());
 };
-
-/*export const sendEmptyData = (language: string, type:SpeechSubtitleTypes = "interim") => {
-  const data:SpeechTextBroadcastFormat = {
-    type: type,
-    result: [{
-      [language]: ""
-    }],
-  };
-  broadcastSpeechToTextMsgs(data);
-};*/
 
 export const getAzureToken = async () => {
   if (!session) {

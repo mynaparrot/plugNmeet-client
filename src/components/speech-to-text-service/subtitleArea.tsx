@@ -1,38 +1,36 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { useAppSelector } from '../../store';
-import { speechServicesSelector } from '../../store/slices/speechServicesSlice';
+import { RootState, useAppSelector } from '../../store';
 
-interface SubtitleAreaProps {
-  lang: string;
-}
-const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
-  const final = useAppSelector((state) =>
-    speechServicesSelector.selectById(state, lang + '_final'),
-  );
-  const interim = useAppSelector((state) =>
-    speechServicesSelector.selectById(state, lang + '_interim'),
-  );
+const speechServicesSelector = createSelector(
+  (state: RootState) => state.speechServices,
+  (speechServices) => speechServices,
+);
+
+const SubtitleArea = () => {
+  const speechServices = useAppSelector(speechServicesSelector);
+
   const [finalTexts, setFinalTexts] = useState<object>({ 0: '', 1: '' });
   const [subtitleText, setSubtitleText] = useState<string | undefined>(
     undefined,
   );
 
   useMemo(() => {
-    if (final) {
+    if (speechServices.finalText) {
       setFinalTexts((prevState) => ({
         ...prevState,
         [0]: prevState[1],
-        [1]: final.text,
+        [1]: speechServices.finalText,
       }));
     }
-  }, [final]);
+  }, [speechServices.finalText]);
 
   useEffect(() => {
     const text: string[] = [finalTexts[0], finalTexts[1]];
 
-    if (interim) {
-      text.push(interim.text);
+    if (speechServices.interimText) {
+      text.push(speechServices.interimText);
     }
     const finalText = text.join(' ').split(' ').slice(-20);
     setSubtitleText(finalText.join(' '));
@@ -44,15 +42,16 @@ const SubtitleArea = ({ lang }: SubtitleAreaProps) => {
     return () => {
       clearTimeout(clear);
     };
-  }, [finalTexts, interim]);
+  }, [finalTexts, speechServices.interimText]);
 
   return (
     <>
-      {subtitleText && (
+      {speechServices.selectedSubtitleLang !== '' &&
+      subtitleText !== undefined ? (
         <div className="sub-title w-max absolute bottom-4 py-1 px-2 bg-black/20 text-black dark:text-white m-auto inline-block left-1/2 -translate-x-1/2 text-sm pointer-events-none">
           {subtitleText}
         </div>
-      )}
+      ) : null}
     </>
   );
 };

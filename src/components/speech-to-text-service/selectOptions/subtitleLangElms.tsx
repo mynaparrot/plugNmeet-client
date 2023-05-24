@@ -24,7 +24,12 @@ const SubtitleLangElms = ({
   const [displayLangs, setDisplayLangs] = useState<Array<SupportedLangs>>([]);
 
   useMemo(() => {
-    const langs: Array<SupportedLangs> = [];
+    const langs: Array<SupportedLangs> = [
+      {
+        name: t('speech-services.select-one-lang'),
+        code: '',
+      },
+    ];
     speechService.allowed_speech_langs?.forEach((l) => {
       const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
       const find = langs.find((l) => l.code === r[0].locale);

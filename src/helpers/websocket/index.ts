@@ -12,19 +12,21 @@ import i18n from '../i18n';
 
 let isConnected = false,
   normallyClosed = false,
-  isReconnecting = false;
+  isReconnecting = false,
+  isFirstTime = true;
 let ws: ReconnectingWebSocket;
 const toastId = 'websocketStatus';
 
 const createWS = () => {
   ws = new ReconnectingWebSocket(getURL, [], {
-    connectionTimeout: 4000,
+    minReconnectionDelay: 2000,
     maxRetries: 20,
   });
   ws.binaryType = 'arraybuffer';
 
   ws.onopen = () => {
     isConnected = true;
+    isFirstTime = false;
     onAfterOpenConnection();
     store.dispatch(updateIsChatServiceReady(true));
 
@@ -125,6 +127,13 @@ export const openWebsocketConnection = () => {
 export const isSocketConnected = () => isConnected;
 
 export const sendWebsocketMessage = (msg: any) => {
+  if (!isFirstTime && !isConnected) {
+    toast(i18n.t('notifications.websocket-not-connected'), {
+      type: 'error',
+      toastId: 'websocket-notify',
+      autoClose: 2000,
+    });
+  }
   ws?.send(msg);
 };
 

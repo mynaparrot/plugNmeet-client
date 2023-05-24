@@ -43,6 +43,7 @@
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",
     "websocket-error": "Error in Websocket.",
+    "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
     "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
@@ -412,6 +413,7 @@
     "service-disabled": "Service is disabled. Please check server configuration.",
     "token-generation-failed": "Token generation failed with error: {{error}}",
     "mic-error": "Service can't start because of microphone problem.",
-    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled."
+    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
+    "select-one-lang": "Select one language"
   }
 }

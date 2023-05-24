@@ -19,6 +19,7 @@ import {
 import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
 import SelectOptions from './selectOptions';
 import { OnCloseSelectedOptions } from './selectOptions';
+import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
 
 interface SpeechToTextServiceProps {
   currentRoom: Room;
@@ -42,7 +43,6 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   const azureTokenInfo = useAppSelector(azureTokenInfoSelector);
 
   const [speechLang, setSpeechLang] = useState<string>('');
-  const [subtitleLang, setSubtitleLang] = useState<string>('');
   const [recognizer, setRecognizer] = useState<
     SpeechRecognizer | TranslationRecognizer | undefined
   >(undefined);
@@ -69,6 +69,9 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     if (isEmpty(deviceId) && !mediaStream) {
       return;
     }
+    if (isEmpty(speechLang)) {
+      return;
+    }
     const getToken = async () => {
       setOptionSelectionDisabled(true);
       const res = await getAzureToken();
@@ -81,7 +84,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     };
     getToken();
     //eslint-disable-next-line
-  }, [deviceId, mediaStream]);
+  }, [deviceId, mediaStream, speechLang]);
 
   useEffect(() => {
     if (isEmpty(deviceId) && !mediaStream) {
@@ -110,11 +113,10 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
 
   const onCloseSelectedOptions = useCallback(
     (o: OnCloseSelectedOptions) => {
+      dispatch(updateSelectedSubtitleLang(o.subtitleLang));
+
       if (!isEmpty(o.speechLang)) {
         setSpeechLang(`${o.speechLang}`);
-      }
-      if (!isEmpty(o.subtitleLang)) {
-        setSubtitleLang(`${o.subtitleLang}`);
       }
       if (!isEmpty(o.micDevice)) {
         setDeviceId(o.micDevice);
@@ -138,6 +140,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
         setMediaStream(undefined);
       }
     },
+    //eslint-disable-next-line
     [currentRoom.localParticipant.audioTracks, recognizer],
   );
 
@@ -158,7 +161,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
             onCloseSelectedOptions={onCloseSelectedOptions}
             onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
           />
-          {!isEmpty(subtitleLang) ? <SubtitleArea lang={subtitleLang} /> : null}
+          <SubtitleArea />
         </div>
       ) : null}
     </>

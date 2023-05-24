@@ -16,6 +16,8 @@ const speechServicesSlice = createSlice({
   reducers: {
     updateSelectedSubtitleLang: (state, action: PayloadAction<string>) => {
       state.selectedSubtitleLang = action.payload;
+      state.interimText = '';
+      state.finalText = '';
     },
     addSpeechSubtitleText: (
       state,
