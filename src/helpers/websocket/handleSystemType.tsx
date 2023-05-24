@@ -188,10 +188,15 @@ const handleSpeechSubtitleText = (data: DataMessage) => {
   const lang = store.getState().speechServices.selectedSubtitleLang;
 
   if (lang !== '' && typeof msg.result[lang] !== 'undefined') {
+    const d = new Date(data.body.time ?? '');
     store.dispatch(
       addSpeechSubtitleText({
         type: msg.type,
-        text: msg.result[lang],
+        result: {
+          text: msg.result[lang],
+          from: msg.from,
+          time: d.toLocaleTimeString(),
+        },
       }),
     );
   }

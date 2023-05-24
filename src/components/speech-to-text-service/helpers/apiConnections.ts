@@ -159,6 +159,7 @@ export const openConnectionWithAzure = (
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'interim',
+      from: session?.currentUser?.name ?? '',
       result: {
         [sl.locale]: result.text,
       },
@@ -183,6 +184,7 @@ export const openConnectionWithAzure = (
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'final',
+      from: session?.currentUser?.name ?? '',
       result: {
         [sl.locale]: result.text,
       },

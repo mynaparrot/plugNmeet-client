@@ -185,7 +185,9 @@ const SelectOptions = ({
       {modalElm()}
       <button onClick={() => setShowModal(true)}>
         <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
-          <span className="tooltip !-left-3 tooltip-left">Speech to text</span>
+          <span className="tooltip !-left-3 tooltip-left">
+            {t('speech-services.start-modal-title')}
+          </span>
           <i className="pnm-closed-captioning primaryColor dark:text-darkText text-[12px] lg:text-[14px]"></i>
         </div>
       </button>

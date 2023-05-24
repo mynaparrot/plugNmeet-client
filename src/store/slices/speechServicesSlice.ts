@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { isEmpty } from 'lodash';
+
 import {
   ISpeechServices,
   ISpeechSubtitleText,
@@ -25,11 +27,13 @@ const speechServicesSlice = createSlice({
       action: PayloadAction<ISpeechSubtitleText>,
     ) => {
       if (action.payload.type === 'interim') {
-        state.interimText = action.payload.text;
+        state.interimText = action.payload.result.text;
       } else {
         state.interimText = '';
-        state.finalText = action.payload.text;
-        state.lastFinalTexts.push(action.payload.text);
+        state.finalText = action.payload.result.text;
+        if (!isEmpty(action.payload.result.text)) {
+          state.lastFinalTexts.push(action.payload.result);
+        }
       }
     },
   },

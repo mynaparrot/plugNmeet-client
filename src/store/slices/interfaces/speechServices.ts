@@ -1,24 +1,25 @@
+export interface LastFinalText {
+  time: string;
+  text: string;
+  from: string;
+}
+
 export interface ISpeechServices {
   selectedSubtitleLang: string;
   interimText: string;
   finalText: string;
-  lastFinalTexts: string[];
+  lastFinalTexts: LastFinalText[];
 }
 
 export type SpeechSubtitleTypes = 'interim' | 'final';
 
-export interface SpeechServiceData {
-  lang: string;
-  type: SpeechSubtitleTypes;
-  text: string;
-}
-
 export interface ISpeechSubtitleText {
   type: SpeechSubtitleTypes;
-  text: string;
+  result: LastFinalText;
 }
 
 export type SpeechTextBroadcastFormat = {
   type: SpeechSubtitleTypes;
+  from: string;
   result: { [k: string]: string };
 };
