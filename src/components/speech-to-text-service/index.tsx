@@ -20,6 +20,7 @@ import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
 import SelectOptions from './selectOptions';
 import { OnCloseSelectedOptions } from './selectOptions';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
+import SubtitleTextsHistory from './subtitleTextsHistory';
 
 interface SpeechToTextServiceProps {
   currentRoom: Room;
@@ -161,6 +162,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
             onCloseSelectedOptions={onCloseSelectedOptions}
             onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
           />
+          <SubtitleTextsHistory />
           <SubtitleArea />
         </div>
       ) : null}

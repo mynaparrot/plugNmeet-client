@@ -414,6 +414,8 @@
     "token-generation-failed": "Token generation failed with error: {{error}}",
     "mic-error": "Service can't start because of microphone problem.",
     "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
-    "select-one-lang": "Select one language"
+    "select-one-lang": "Select one language",
+    "subtitle-history-modal-title": "Subtitle texts history",
+    "azure-error": "Microsoft azure error: {{error}}"
   }
 }

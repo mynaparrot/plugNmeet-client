@@ -2,6 +2,7 @@ export interface ISpeechServices {
   selectedSubtitleLang: string;
   interimText: string;
   finalText: string;
+  lastFinalTexts: string[];
 }
 
 export type SpeechSubtitleTypes = 'interim' | 'final';

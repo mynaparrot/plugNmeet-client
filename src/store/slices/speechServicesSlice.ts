@@ -8,6 +8,7 @@ const initialState: ISpeechServices = {
   selectedSubtitleLang: '',
   interimText: '',
   finalText: '',
+  lastFinalTexts: [],
 };
 
 const speechServicesSlice = createSlice({
@@ -28,6 +29,7 @@ const speechServicesSlice = createSlice({
       } else {
         state.interimText = '';
         state.finalText = action.payload.text;
+        state.lastFinalTexts.push(action.payload.text);
       }
     },
   },

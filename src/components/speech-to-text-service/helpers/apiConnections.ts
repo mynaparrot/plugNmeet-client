@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { isEmpty } from 'lodash';
 import {
   AudioConfig,
+  CancellationReason,
   ResultReason,
   SpeechConfig,
   SpeechRecognizer,
@@ -202,8 +203,25 @@ export const openConnectionWithAzure = (
     broadcastSpeechToTextMsgs(data);
   };
 
-  recognizer.canceled = () => {
+  recognizer.canceled = async (s, e) => {
     setOptionSelectionDisabled(false);
+    await sendUserSessionStatus(
+      SpeechServiceUserStatusTasks.SESSION_ENDED,
+      azureInfo.keyId,
+    );
+    if (
+      e.reason === CancellationReason.Error ||
+      e.reason === CancellationReason.EndOfStream
+    ) {
+      toast(i18n.t('speech-services.azure-error', { error: e.errorDetails }), {
+        type: 'error',
+      });
+      try {
+        recognizer.stopContinuousRecognitionAsync();
+        recognizer.close();
+        setRecognizer(undefined);
+      } catch (e) {}
+    }
   };
 
   recognizer.startContinuousRecognitionAsync();
