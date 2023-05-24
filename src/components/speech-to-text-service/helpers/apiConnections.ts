@@ -158,9 +158,10 @@ export const openConnectionWithAzure = (
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'interim',
-      result: {},
+      result: {
+        [sl.locale]: result.text,
+      },
     };
-    data.result[sl.locale] = result.text;
 
     if (result.reason === ResultReason.TranslatingSpeech) {
       if (speechService) {
@@ -181,9 +182,10 @@ export const openConnectionWithAzure = (
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'final',
-      result: {},
+      result: {
+        [sl.locale]: result.text,
+      },
     };
-    data.result[sl.locale] = result.text;
 
     if (result.reason === ResultReason.TranslatedSpeech) {
       if (speechService) {
