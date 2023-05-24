@@ -20,7 +20,7 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../proto/plugnmeet_datamessage_pb';
-import { SpeechServiceData } from '../../store/slices/interfaces/SpeechServices';
+import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 
 export const handleSystemTypeData = (body: DataMessage) => {
@@ -184,6 +184,16 @@ const handleSpeechSubtitleText = (data: DataMessage) => {
   if (!data.body) {
     return;
   }
-  const msg: SpeechServiceData = JSON.parse(data.body.msg);
-  store.dispatch(addSpeechSubtitleText(msg));
+  const msg: SpeechTextBroadcastFormat = JSON.parse(data.body.msg);
+  const selectedSubtitleLang =
+    store.getState().speechServices.selectedSubtitleLang;
+  if (typeof msg.result[selectedSubtitleLang] === 'undefined') {
+    return;
+  }
+  store.dispatch(
+    addSpeechSubtitleText({
+      type: msg.type,
+      text: msg.result[selectedSubtitleLang],
+    }),
+  );
 };

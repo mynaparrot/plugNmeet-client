@@ -1,28 +1,36 @@
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../index';
-import { SpeechServiceData } from './interfaces/SpeechServices';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  ISpeechServices,
+  ISpeechSubtitleText,
+} from './interfaces/speechServices';
 
-const speechServicesAdapter = createEntityAdapter<SpeechServiceData>({
-  selectId: (data) => data.lang + '_' + data.type,
-});
+const initialState: ISpeechServices = {
+  selectedSubtitleLang: '',
+  interimText: '',
+  finalText: '',
+};
 
-export const speechServicesSelector = speechServicesAdapter.getSelectors(
-  (state: RootState) => state.speechServiceData,
-);
-
-const SpeechServicesSlice = createSlice({
+const speechServicesSlice = createSlice({
   name: 'speech-services',
-  initialState: speechServicesAdapter.getInitialState(),
+  initialState,
   reducers: {
-    addSpeechSubtitleText: speechServicesAdapter.upsertOne,
-    removeSpeechSubtitleText: speechServicesAdapter.removeOne,
-    removeAllSpeechSubtitleText: speechServicesAdapter.removeAll,
+    updateSelectedSubtitleLang: (state, action: PayloadAction<string>) => {
+      state.selectedSubtitleLang = action.payload;
+    },
+    addSpeechSubtitleText: (
+      state,
+      action: PayloadAction<ISpeechSubtitleText>,
+    ) => {
+      if (action.payload.type === 'interim') {
+        state.interimText = action.payload.text;
+      } else {
+        state.interimText = '';
+        state.finalText = action.payload.text;
+      }
+    },
   },
 });
 
-export const {
-  addSpeechSubtitleText,
-  removeSpeechSubtitleText,
-  removeAllSpeechSubtitleText,
-} = SpeechServicesSlice.actions;
-export default SpeechServicesSlice.reducer;
+export const { updateSelectedSubtitleLang, addSpeechSubtitleText } =
+  speechServicesSlice.actions;
+export default speechServicesSlice.reducer;

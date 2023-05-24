@@ -26,7 +26,7 @@ import {
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 import { store } from '../../../store';
-import { SpeechServiceData } from '../../../store/slices/interfaces/SpeechServices';
+import { SpeechTextBroadcastFormat } from '../../../store/slices/interfaces/speechServices';
 import {
   ISession,
   SpeechToTextTranslationFeatures,
@@ -155,12 +155,13 @@ export const openConnectionWithAzure = (
 
   recognizer.recognizing = (sender, recognitionEventArgs) => {
     const result = recognitionEventArgs.result;
-    const data: SpeechServiceData = {
-      lang: sl.locale,
+    const data: SpeechTextBroadcastFormat = {
       type: 'interim',
-      text: result.text,
+      result: [],
     };
-    broadcastSpeechToTextMsgs(data);
+    data.result.push({
+      [sl.locale]: result.text,
+    });
 
     if (result.reason === ResultReason.TranslatingSpeech) {
       if (speechService) {
@@ -169,27 +170,32 @@ export const openConnectionWithAzure = (
             result as TranslationRecognitionResult
           ).translations.get(l);
           if (!isEmpty(text)) {
-            const data: SpeechServiceData = {
-              lang: l,
-              type: 'interim',
-              text,
-            };
-            broadcastSpeechToTextMsgs(data);
+            data.result.push({
+              [l]: result.text,
+            });
           }
         });
       }
     }
+    broadcastSpeechToTextMsgs(data);
   };
 
   recognizer.recognized = (sender, recognitionEventArgs) => {
     const result = recognitionEventArgs.result;
-    const data: SpeechServiceData = {
+    const data: SpeechTextBroadcastFormat = {
+      type: 'final',
+      result: [],
+    };
+    data.result.push({
+      [sl.locale]: result.text,
+    });
+    /*const data: SpeechServiceData = {
       lang: sl.locale,
       type: 'final',
       text: result.text,
     };
     broadcastSpeechToTextMsgs(data);
-    sendEmptyData(sl.locale);
+    sendEmptyData(sl.locale);*/
 
     if (result.reason === ResultReason.TranslatedSpeech) {
       if (speechService) {
@@ -198,17 +204,21 @@ export const openConnectionWithAzure = (
             result as TranslationRecognitionResult
           ).translations.get(l);
           if (!isEmpty(text)) {
-            const data: SpeechServiceData = {
-              lang: l,
-              type: 'final',
-              text,
-            };
-            broadcastSpeechToTextMsgs(data);
-            sendEmptyData(l);
+            data.result.push({
+              [l]: result.text,
+            });
+            // const data: SpeechServiceData = {
+            //   lang: l,
+            //   type: 'final',
+            //   text,
+            // };
+            // broadcastSpeechToTextMsgs(data);
+            // sendEmptyData(l);
           }
         });
       }
     }
+    broadcastSpeechToTextMsgs(data);
   };
 
   recognizer.canceled = () => {
@@ -241,14 +251,15 @@ export const broadcastSpeechToTextMsgs = (msg) => {
   sendWebsocketMessage(dataMsg.toBinary());
 };
 
-export const sendEmptyData = (language: string, type = 'interim') => {
-  const data = {
-    lang: language,
+/*export const sendEmptyData = (language: string, type:SpeechSubtitleTypes = "interim") => {
+  const data:SpeechTextBroadcastFormat = {
     type: type,
-    text: '',
+    result: [{
+      [language]: ""
+    }],
   };
   broadcastSpeechToTextMsgs(data);
-};
+};*/
 
 export const getAzureToken = async () => {
   if (!session) {
