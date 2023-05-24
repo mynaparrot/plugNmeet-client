@@ -155,14 +155,16 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     <>
       {speechService ? (
         <div className="speechService absolute bottom-0 w-full z-50">
-          <SelectOptions
-            optionSelectionDisabled={optionSelectionDisabled}
-            speechService={speechService}
-            recognizer={recognizer}
-            onCloseSelectedOptions={onCloseSelectedOptions}
-            onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
-          />
-          <SubtitleTextsHistory />
+          <div className="wrap">
+            <SelectOptions
+              optionSelectionDisabled={optionSelectionDisabled}
+              speechService={speechService}
+              recognizer={recognizer}
+              onCloseSelectedOptions={onCloseSelectedOptions}
+              onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
+            />
+            <SubtitleTextsHistory />
+          </div>
           <SubtitleArea />
         </div>
       ) : null}
