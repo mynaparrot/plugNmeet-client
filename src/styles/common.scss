@@ -390,7 +390,12 @@ code {
     @apply flex-[auto] w-full h-full;
   }
 }
-
+.SpeechHistory {
+  &::before {
+    content: '';
+    @apply absolute h-[12px] w-[12px] bg-white dark:bg-darkPrimary bottom-[-6px] left-14 rotate-45 border border-solid border-darkPrimary/40;
+  }
+}
 // Tool Tip
 .tooltip {
   @apply invisible absolute shadow-lg rounded text-[13px] text-darkPrimary dark:text-darkText py-[6px] px-[10px] inline-block bg-gray-100 dark:bg-darkSecondary2 w-[150px] m-0 bottom-[52px] text-center;

@@ -102,9 +102,13 @@ const SubtitleTextsHistory = () => {
           </div>
         </Popover.Button>
 
-        <Popover.Panel className="absolute z-10 mx-1 bottom-12 w-full max-w-lg bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
-          <h2 className="text-lg font-medium leading-6 text-gray-900 dark:text-white p-5 pb-3 px-3">
+        <Popover.Panel className="SpeechHistory absolute z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+          <h2 className="relative text-lg font-medium leading-6 text-gray-900 dark:text-white p-5 pb-3 px-3">
             {t('speech-services.subtitle-history-modal-title')}
+            <Popover.Button className="absolute top-7 right-3 w-[25px] h-[25px] outline-none">
+              <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+              <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+            </Popover.Button>
           </h2>
           <hr />
           <div className="p-3 pb-8 text-primary dark:text-white">
