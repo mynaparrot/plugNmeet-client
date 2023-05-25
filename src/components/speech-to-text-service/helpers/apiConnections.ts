@@ -127,7 +127,7 @@ export const openConnectionWithAzure = (
   recognizer.sessionStarted = async () => {
     setOptionSelectionDisabled(false);
     const res = await sendUserSessionStatus(
-      SpeechServiceUserStatusTasks.SESSION_STARTED,
+      SpeechServiceUserStatusTasks.SPEECH_TO_TEXT_SESSION_STARTED,
       azureInfo.keyId,
     );
     if (!res.status) {
@@ -150,7 +150,7 @@ export const openConnectionWithAzure = (
   };
   recognizer.sessionStopped = async () => {
     await sendUserSessionStatus(
-      SpeechServiceUserStatusTasks.SESSION_ENDED,
+      SpeechServiceUserStatusTasks.SPEECH_TO_TEXT_SESSION_ENDED,
       azureInfo.keyId,
     );
   };
@@ -208,7 +208,7 @@ export const openConnectionWithAzure = (
   recognizer.canceled = async (s, e) => {
     setOptionSelectionDisabled(false);
     await sendUserSessionStatus(
-      SpeechServiceUserStatusTasks.SESSION_ENDED,
+      SpeechServiceUserStatusTasks.SPEECH_TO_TEXT_SESSION_ENDED,
       azureInfo.keyId,
     );
     if (
@@ -282,6 +282,7 @@ export const sendUserSessionStatus = async (
     task,
     userId,
     keyId,
+    roomSid: session?.currentRoom.sid,
   });
 
   const r = await sendAPIRequest(

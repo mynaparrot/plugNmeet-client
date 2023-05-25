@@ -406,6 +406,7 @@
     "start-modal-title": "Speech to text/translation service",
     "speech-lang-label": "Speech language",
     "subtitle-lang-label": "Subtitle language",
+    "subtitle-settings": "Subtitle settings",
     "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}",
     "speech-to-text-ready": "Service started. You can start speaking now.",
     "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",

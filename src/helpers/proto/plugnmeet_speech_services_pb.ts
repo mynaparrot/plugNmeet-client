@@ -18,22 +18,28 @@ import { Message, proto3 } from '@bufbuild/protobuf';
  */
 export enum SpeechServiceUserStatusTasks {
   /**
-   * @generated from enum value: SESSION_STARTED = 0;
+   * @generated from enum value: SPEECH_TO_TEXT_SESSION_STARTED = 0;
    */
-  SESSION_STARTED = 0,
+  SPEECH_TO_TEXT_SESSION_STARTED = 0,
 
   /**
-   * @generated from enum value: SESSION_ENDED = 1;
+   * @generated from enum value: SPEECH_TO_TEXT_SESSION_ENDED = 1;
    */
-  SESSION_ENDED = 1,
+  SPEECH_TO_TEXT_SESSION_ENDED = 1,
+
+  /**
+   * @generated from enum value: SPEECH_TO_TEXT_TOTAL_USAGE = 2;
+   */
+  SPEECH_TO_TEXT_TOTAL_USAGE = 2,
 }
 // Retrieve enum metadata with: proto3.getEnumType(SpeechServiceUserStatusTasks)
 proto3.util.setEnumType(
   SpeechServiceUserStatusTasks,
   'plugnmeet.SpeechServiceUserStatusTasks',
   [
-    { no: 0, name: 'SESSION_STARTED' },
-    { no: 1, name: 'SESSION_ENDED' },
+    { no: 0, name: 'SPEECH_TO_TEXT_SESSION_STARTED' },
+    { no: 1, name: 'SPEECH_TO_TEXT_SESSION_ENDED' },
+    { no: 2, name: 'SPEECH_TO_TEXT_TOTAL_USAGE' },
   ],
 );
 
@@ -301,19 +307,24 @@ export class SpeechServiceUserStatusReq extends Message<SpeechServiceUserStatusR
   roomId = '';
 
   /**
-   * @generated from field: string user_id = 2;
+   * @generated from field: string room_sid = 2;
+   */
+  roomSid = '';
+
+  /**
+   * @generated from field: string user_id = 3;
    */
   userId = '';
 
   /**
-   * @generated from field: string key_id = 3;
+   * @generated from field: string key_id = 4;
    */
   keyId = '';
 
   /**
-   * @generated from field: plugnmeet.SpeechServiceUserStatusTasks task = 4;
+   * @generated from field: plugnmeet.SpeechServiceUserStatusTasks task = 5;
    */
-  task = SpeechServiceUserStatusTasks.SESSION_STARTED;
+  task = SpeechServiceUserStatusTasks.SPEECH_TO_TEXT_SESSION_STARTED;
 
   constructor(data?: PartialMessage<SpeechServiceUserStatusReq>) {
     super();
@@ -324,10 +335,11 @@ export class SpeechServiceUserStatusReq extends Message<SpeechServiceUserStatusR
   static readonly typeName = 'plugnmeet.SpeechServiceUserStatusReq';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: 'user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: 'key_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: 'key_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
-      no: 4,
+      no: 5,
       name: 'task',
       kind: 'enum',
       T: proto3.getEnumType(SpeechServiceUserStatusTasks),
