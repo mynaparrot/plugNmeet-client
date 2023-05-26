@@ -43,6 +43,7 @@
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",
     "websocket-error": "Error in Websocket.",
+    "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
     "room-will-end-in": "This room will be ended in {{minutes}} minutes"
   },
   "room-metadata": {
@@ -235,7 +236,8 @@
       "manage-waiting-room": "管理等候室",
       "manage-breakout-room": "管理分组房间",
       "start-display-external-link": "显示外部链接",
-      "stop-display-external-link": "停止显示外部链接"
+      "stop-display-external-link": "停止显示外部链接",
+      "speech-to-text-settings": "Speech to text/translation settings"
     },
     "notice": {
       "already-active-screen-sharing": "已经有一个屏幕在分享",
@@ -384,5 +386,38 @@
     "gen-link": "Generate link",
     "rtmp-url": "RTMP Host/URL",
     "rtmp-key": "RTMP key/secret"
+  },
+  "speech-services": {
+    "modal-settings-title": "Speech to text/translation settings",
+    "enable-speech-to-text": "Enable speech to text",
+    "speech-langs-label": "Speech languages",
+    "speech-users-label": "Speech users",
+    "enable-translation": "Enable translation",
+    "translation-langs-label": "Translation languages",
+    "enable-service": "Enable service",
+    "speech-user-required": "At least one speech user require",
+    "speech-lang-required": "At least one speech language require",
+    "translation-lang-required": "At least one translation language or 2 speech languages required",
+    "service-ready": "Speech service is ready",
+    "start-service": "Start",
+    "stop-service": "Stop",
+    "update-service": "Update",
+    "service-stopped": "Service has been stopped",
+    "start-modal-title": "Speech to text/translation service",
+    "speech-lang-label": "Speech language",
+    "subtitle-lang-label": "Subtitle language",
+    "subtitle-settings": "Subtitle settings",
+    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}",
+    "speech-to-text-ready": "Service started. You can start speaking now.",
+    "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",
+    "already-using-service": "You're already using the service.",
+    "service-disabled": "Service is disabled. Please check server configuration.",
+    "token-generation-failed": "Token generation failed with error: {{error}}",
+    "mic-error": "Service can't start because of microphone problem.",
+    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
+    "select-one-lang": "Select one language",
+    "subtitle-history-modal-title": "Subtitle texts history",
+    "azure-error": "Microsoft azure error: {{error}}",
+    "speech-to-text-stopped": "Speech to text service has been stopped"
   }
 }
