@@ -127,7 +127,7 @@ export const openWebsocketConnection = () => {
 export const isSocketConnected = () => isConnected;
 
 export const sendWebsocketMessage = (msg: any) => {
-  if (!isFirstTime && !isConnected) {
+  if (!isFirstTime && !isConnected && !normallyClosed) {
     toast(i18n.t('notifications.websocket-not-connected'), {
       type: 'error',
       toastId: 'websocket-notify',
