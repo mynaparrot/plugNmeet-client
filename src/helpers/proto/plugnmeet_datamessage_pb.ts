@@ -126,6 +126,16 @@ export enum DataMsgBodyType {
   JOIN_BREAKOUT_ROOM = 15,
 
   /**
+   * @generated from enum value: SPEECH_SUBTITLE_TEXT = 23;
+   */
+  SPEECH_SUBTITLE_TEXT = 23,
+
+  /**
+   * @generated from enum value: AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 24;
+   */
+  AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 24,
+
+  /**
    * USER type
    *
    * @generated from enum value: CHAT = 16;
@@ -182,6 +192,8 @@ proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
   { no: 13, name: 'NEW_POLL_RESPONSE' },
   { no: 14, name: 'POLL_CLOSED' },
   { no: 15, name: 'JOIN_BREAKOUT_ROOM' },
+  { no: 23, name: 'SPEECH_SUBTITLE_TEXT' },
+  { no: 24, name: 'AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN' },
   { no: 16, name: 'CHAT' },
   { no: 17, name: 'SCENE_UPDATE' },
   { no: 18, name: 'POINTER_UPDATE' },

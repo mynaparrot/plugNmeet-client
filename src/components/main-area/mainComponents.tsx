@@ -18,6 +18,7 @@ import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
 } from '../../store/slices/bottomIconsActivitySlice';
+import SpeechToTextService from '../speech-to-text-service';
 
 interface IMainComponentsProps {
   currentConnection: IConnectLivekit;
@@ -51,6 +52,13 @@ const activateWebcamsViewSelector = createSelector(
   (activateWebcamsView) => activateWebcamsView,
 );
 
+const activateSpeechServiceSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features
+      .speech_to_text_translation_features.is_enabled,
+  (is_enabled) => is_enabled,
+);
+
 const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
   const isRecorder = store.getState().session.currentUser?.isRecorder;
@@ -67,6 +75,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     isActiveDisplayExternalLinkSelector,
   );
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
+  const activateSpeechService = useAppSelector(activateSpeechServiceSelector);
 
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
@@ -270,6 +279,9 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
         {notepadElm}
         {externalMediaPlayerElm}
         {displayExternalLinkElm}
+        {activateSpeechService ? (
+          <SpeechToTextService currentRoom={currentConnection.room} />
+        ) : null}
       </div>
       <AudioElements currentConnection={currentConnection} />
     </>

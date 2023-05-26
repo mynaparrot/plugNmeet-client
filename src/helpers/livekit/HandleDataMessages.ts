@@ -4,13 +4,17 @@ import i18n from '../i18n';
 
 import { IConnectLivekit } from './types';
 import { store } from '../../store';
-import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
+import {
+  updateAzureTokenInfo,
+  updatePlayAudioNotification,
+} from '../../store/slices/roomSettingsSlice';
 import {
   DataMessage,
   DataMsgBody,
   DataMsgBodyType,
   DataMsgType,
 } from '../proto/plugnmeet_datamessage_pb';
+import { GenerateAzureTokenRes } from '../proto/plugnmeet_speech_services_pb';
 
 export default class HandleDataMessages {
   private that: IConnectLivekit;
@@ -60,6 +64,28 @@ export default class HandleDataMessages {
           type: 'error',
         });
         this.playNotification(body.type);
+        break;
+
+      case DataMsgBodyType.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN:
+        const res = GenerateAzureTokenRes.fromJsonString(body.msg);
+        if (res.status && res.token && res.keyId && res.serviceRegion) {
+          store.dispatch(
+            updateAzureTokenInfo({
+              token: res.token,
+              keyId: res.keyId,
+              serviceRegion: res.serviceRegion,
+            }),
+          );
+        } else {
+          toast(
+            i18n.t('speech-services.token-generation-failed', {
+              error: res.msg,
+            }),
+            {
+              type: 'error',
+            },
+          );
+        }
         break;
     }
   };

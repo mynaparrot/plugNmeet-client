@@ -1,46 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { createLocalTracks, Room, Track } from 'livekit-client';
-import { createSelector } from '@reduxjs/toolkit';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-
-import {
-  useAppSelector,
-  RootState,
-  useAppDispatch,
-  store,
-} from '../../../store';
-import {
-  updateIsActiveMicrophone,
-  updateIsMicMuted,
-  updateShowMicrophoneModal,
-} from '../../../store/slices/bottomIconsActivitySlice';
 import { getDevices } from '../../../helpers/utils';
-import {
-  addAudioDevices,
-  updateSelectedAudioDevice,
-} from '../../../store/slices/roomSettingsSlice';
-import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { IMediaDevice } from '../../../store/slices/interfaces/roomSettings';
+import { addAudioDevices } from '../../../store/slices/roomSettingsSlice';
+import { useAppDispatch } from '../../../store';
 
-interface IMicrophoneIconProps {
-  currentRoom?: Room;
+interface MicrophoneModalProps {
+  show: boolean;
+  onCloseMicrophoneModal: (deviceId?: string) => void;
 }
-
-const showMicrophoneModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showMicrophoneModal,
-  (showMicrophoneModal) => showMicrophoneModal,
-);
-const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
-  const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+const MicrophoneModal = ({
+  show,
+  onCloseMicrophoneModal,
+}: MicrophoneModalProps) => {
+  const { t } = useTranslation();
   const [selectedMic, setSelectMic] = useState<string>('');
   const [devices, setDevices] = useState<Array<JSX.Element>>([]);
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
-  const muteOnStart =
-    store.getState().session.currentRoom.metadata?.room_features
-      .mute_on_start ?? false;
 
   useEffect(() => {
     const getDeviceMics = async () => {
@@ -71,70 +48,14 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
     getDeviceMics();
   }, [dispatch]);
 
-  useEffect(() => {
-    if (showMicrophoneModal) {
-      setIsOpen(true);
-    }
-  }, [showMicrophoneModal]);
-
-  const onClose = () => {
-    setIsOpen(false);
-    dispatch(updateShowMicrophoneModal(false));
-  };
-
-  const shareMic = async () => {
-    setIsOpen(false);
-    dispatch(updateShowMicrophoneModal(false));
-
-    if (!selectedMic) {
-      return;
-    }
-
-    const localTrack = await createLocalTracks({
-      audio: {
-        deviceId: selectedMic,
-      },
-      video: false,
-    });
-
-    localTrack.forEach(async (track) => {
-      if (track.kind === Track.Kind.Audio) {
-        await currentRoom?.localParticipant.publishTrack(track);
-        dispatch(updateIsActiveMicrophone(true));
-      }
-    });
-
-    if (muteOnStart) {
-      setTimeout(async () => {
-        currentRoom?.localParticipant.audioTracks.forEach(
-          async (publication) => {
-            if (
-              publication.track &&
-              publication.track.source === Track.Source.Microphone
-            ) {
-              if (!publication.isMuted) {
-                await publication.track.mute();
-                dispatch(updateIsMicMuted(true));
-                // we'll disable it as it was first time only.
-                dispatch(updateMuteOnStart(false));
-              }
-            }
-          },
-        );
-      }, 500);
-    }
-
-    dispatch(updateSelectedAudioDevice(selectedMic));
+  const selectOrClose = (onlyClose = false) => {
+    onCloseMicrophoneModal(onlyClose ? undefined : selectedMic);
   };
 
   const render = () => {
-    if (!showMicrophoneModal) {
-      return null;
-    }
-
     return (
       <Transition
-        show={isOpen}
+        show={show}
         enter="transition duration-100 ease-out"
         enterFrom="transform scale-95 opacity-0"
         enterTo="transform scale-100 opacity-100"
@@ -143,7 +64,7 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
         leaveTo="transform scale-95 opacity-0"
       >
         <Dialog
-          open={isOpen}
+          open={show}
           onClose={() => false}
           className="share-microphone-popup-wrap fixed z-[99999] inset-0 overflow-y-auto"
         >
@@ -154,7 +75,7 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
               <button
                 className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
                 type="button"
-                onClick={() => onClose()}
+                onClick={() => selectOrClose(true)}
               >
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
@@ -176,7 +97,7 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
               <div className="py-3 text-right">
                 <button
                   className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
-                  onClick={() => shareMic()}
+                  onClick={() => selectOrClose()}
                 >
                   {t('join')}
                 </button>
@@ -190,4 +111,4 @@ const ShareMicrophoneModal = ({ currentRoom }: IMicrophoneIconProps) => {
   return <>{render()}</>;
 };
 
-export default ShareMicrophoneModal;
+export default MicrophoneModal;

@@ -1,4 +1,5 @@
 import { VideoQuality } from 'livekit-client';
+import { AzureTokenInfo } from '../../../components/speech-to-text-service/helpers/apiConnections';
 
 export enum VideoObjectFit {
   COVER = 'cover',
@@ -32,6 +33,7 @@ export interface IRoomSettings {
   columnCameraPosition: ColumnCameraPosition;
   visibleHeader: boolean;
   visibleFooter: boolean;
+  azureTokenInfo?: AzureTokenInfo;
 }
 
 export interface IMediaDevice {

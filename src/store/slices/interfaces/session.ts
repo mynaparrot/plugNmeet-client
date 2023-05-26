@@ -75,6 +75,7 @@ interface IRoomFeatures {
   breakout_room_features: IBreakoutRoomFeatures;
   display_external_link_features: IDisplayExternalLinkFeatures;
   ingress_features: IIngressFeatures;
+  speech_to_text_translation_features: SpeechToTextTranslationFeatures;
 }
 
 export interface IRecordingFeatures {
@@ -167,4 +168,14 @@ export interface IIngressFeatures {
   input_type?: number;
   url?: string;
   stream_key?: string;
+}
+
+export interface SpeechToTextTranslationFeatures {
+  is_allow: boolean;
+  is_allow_translation: boolean;
+  is_enabled: boolean;
+  is_enabled_translation: boolean;
+  allowed_speech_langs?: string[];
+  allowed_speech_users?: string[];
+  allowed_trans_langs?: string[];
 }

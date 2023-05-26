@@ -14,6 +14,7 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import LockSettingsModal from '../modals/lockSettingsModal';
 import {
   updateDisplayExternalLinkRoomModal,
+  updateDisplaySpeechSettingsModal,
   updateIsActiveSharedNotePad,
   updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
@@ -36,6 +37,7 @@ import {
   ExternalMediaPlayerTask,
   MuteUnMuteTrackReq,
 } from '../../../helpers/proto/plugnmeet_common_api_pb';
+import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 
 const showLockSettingsModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
@@ -83,6 +85,10 @@ const showDisplayExternalLinkModalModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity.showDisplayExternalLinkModal,
   (showDisplayExternalLinkModal) => showDisplayExternalLinkModal,
 );
+const showSpeechSettingsModalSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.showSpeechSettingsModal,
+  (showSpeechSettingsModal) => showSpeechSettingsModal,
+);
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -112,6 +118,9 @@ const MenusIcon = () => {
   );
   const showDisplayExternalLinkModal = useAppSelector(
     showDisplayExternalLinkModalModalSelector,
+  );
+  const showSpeechSettingsModal = useAppSelector(
+    showSpeechSettingsModalSelector,
   );
   const roomFeatures =
     store.getState().session.currentRoom?.metadata?.room_features;
@@ -302,6 +311,10 @@ const MenusIcon = () => {
     dispatch(updateShowManageWaitingRoomModal(true));
   };
 
+  const openSpeechServiceSettingsModal = () => {
+    dispatch(updateDisplaySpeechSettingsModal(true));
+  };
+
   const openManageBreakoutRoomModal = () => {
     dispatch(updateShowManageBreakoutRoomModal(true));
   };
@@ -329,7 +342,7 @@ const MenusIcon = () => {
                 {/* Mark this component as `static` */}
                 <Menu.Items
                   static
-                  className="origin-bottom-left sm:-left-20 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+                  className="origin-bottom-left sm:-left-20 lg:-left-28 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 lg:w-72 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
                   {roomFeatures?.allow_rtmp ? (
                     <div className="py-1" role="none">
@@ -423,6 +436,20 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
+                  {roomFeatures?.speech_to_text_translation_features
+                    .is_allow ? (
+                    <div className="py-1" role="none">
+                      <Menu.Item>
+                        <button
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          onClick={() => openSpeechServiceSettingsModal()}
+                        >
+                          <i className="pnm-closed-captioning text-primaryColor mr-2 transition ease-in group-hover:text-secondaryColor" />
+                          {t('footer.menus.speech-to-text-settings')}
+                        </button>
+                      </Menu.Item>
+                    </div>
+                  ) : null}
                   {roomFeatures?.breakout_room_features.is_allow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
@@ -465,6 +492,7 @@ const MenusIcon = () => {
       {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
       {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
       {showDisplayExternalLinkModal ? <DisplayExternalLinkModal /> : null}
+      {showSpeechSettingsModal ? <SpeechServiceSettingsModal /> : null}
     </>
   );
 };

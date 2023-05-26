@@ -10,6 +10,7 @@ import {
   UnreadMsgFromPayload,
   VideoObjectFit,
 } from './interfaces/roomSettings';
+import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
@@ -143,6 +144,12 @@ const roomSettingsSlice = createSlice({
     toggleFooterVisibility: (state) => {
       state.visibleFooter = !state.visibleFooter;
     },
+    updateAzureTokenInfo: (
+      state,
+      action: PayloadAction<AzureTokenInfo | undefined>,
+    ) => {
+      state.azureTokenInfo = action.payload;
+    },
   },
 });
 
@@ -170,6 +177,7 @@ export const {
   updateColumnCameraPosition,
   toggleHeaderVisibility,
   toggleFooterVisibility,
+  updateAzureTokenInfo,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;
