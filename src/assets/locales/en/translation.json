@@ -417,6 +417,7 @@
     "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
     "select-one-lang": "Select one language",
     "subtitle-history-modal-title": "Subtitle texts history",
-    "azure-error": "Microsoft azure error: {{error}}"
+    "azure-error": "Microsoft azure error: {{error}}",
+    "speech-to-text-stopped": "Speech to text service has been stopped"
   }
 }

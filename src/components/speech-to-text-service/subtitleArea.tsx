@@ -30,7 +30,7 @@ const SubtitleArea = () => {
     const text: string[] = [finalTexts[0], finalTexts[1]];
 
     if (speechServices.interimText) {
-      text.push(speechServices.interimText);
+      text.push(speechServices.interimText.text);
     }
     const finalText = text.join(' ').split(' ').slice(-20);
     setSubtitleText(finalText.join(' '));

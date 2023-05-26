@@ -1,4 +1,4 @@
-export interface LastFinalText {
+export interface TextWithInfo {
   time: string;
   text: string;
   from: string;
@@ -6,16 +6,16 @@ export interface LastFinalText {
 
 export interface ISpeechServices {
   selectedSubtitleLang: string;
-  interimText: string;
+  interimText?: TextWithInfo;
   finalText: string;
-  lastFinalTexts: LastFinalText[];
+  lastFinalTexts: TextWithInfo[];
 }
 
 export type SpeechSubtitleTypes = 'interim' | 'final';
 
 export interface ISpeechSubtitleText {
   type: SpeechSubtitleTypes;
-  result: LastFinalText;
+  result: TextWithInfo;
 }
 
 export type SpeechTextBroadcastFormat = {

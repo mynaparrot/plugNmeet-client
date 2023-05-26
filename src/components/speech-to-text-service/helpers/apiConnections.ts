@@ -54,7 +54,8 @@ export const openConnectionWithAzure = (
   speechLang: string,
   speechService: SpeechToTextTranslationFeatures,
   setOptionSelectionDisabled: Dispatch<boolean>,
-  setRecognizer: Dispatch<SpeechRecognizer | TranslationRecognizer | undefined>,
+  setRecognizer: Dispatch<SpeechRecognizer | TranslationRecognizer>,
+  unsetRecognizer: () => void,
 ) => {
   let audioConfig: AudioConfig,
     speechConfig: SpeechConfig | SpeechTranslationConfig,
@@ -135,11 +136,7 @@ export const openConnectionWithAzure = (
         type: 'error',
       });
       if (recognizer) {
-        try {
-          recognizer.stopContinuousRecognitionAsync();
-          recognizer.close();
-          setRecognizer(undefined);
-        } catch (e) {}
+        unsetRecognizer();
       }
     } else {
       toast(i18n.t('speech-services.speech-to-text-ready'), {
@@ -153,6 +150,10 @@ export const openConnectionWithAzure = (
       SpeechServiceUserStatusTasks.SPEECH_TO_TEXT_SESSION_ENDED,
       azureInfo.keyId,
     );
+    toast(i18n.t('speech-services.speech-to-text-stopped'), {
+      type: 'success',
+      autoClose: 3000,
+    });
   };
 
   recognizer.recognizing = (sender, recognitionEventArgs) => {
@@ -218,11 +219,7 @@ export const openConnectionWithAzure = (
       toast(i18n.t('speech-services.azure-error', { error: e.errorDetails }), {
         type: 'error',
       });
-      try {
-        recognizer.stopContinuousRecognitionAsync();
-        recognizer.close();
-        setRecognizer(undefined);
-      } catch (e) {}
+      unsetRecognizer();
     }
   };
 

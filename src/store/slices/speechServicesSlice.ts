@@ -8,7 +8,7 @@ import {
 
 const initialState: ISpeechServices = {
   selectedSubtitleLang: '',
-  interimText: '',
+  interimText: undefined,
   finalText: '',
   lastFinalTexts: [],
 };
@@ -19,7 +19,7 @@ const speechServicesSlice = createSlice({
   reducers: {
     updateSelectedSubtitleLang: (state, action: PayloadAction<string>) => {
       state.selectedSubtitleLang = action.payload;
-      state.interimText = '';
+      state.interimText = undefined;
       state.finalText = '';
     },
     addSpeechSubtitleText: (
@@ -27,9 +27,9 @@ const speechServicesSlice = createSlice({
       action: PayloadAction<ISpeechSubtitleText>,
     ) => {
       if (action.payload.type === 'interim') {
-        state.interimText = action.payload.result.text;
+        state.interimText = action.payload.result;
       } else {
-        state.interimText = '';
+        state.interimText = undefined;
         state.finalText = action.payload.result.text;
         if (!isEmpty(action.payload.result.text)) {
           state.lastFinalTexts.push(action.payload.result);

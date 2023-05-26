@@ -20,7 +20,7 @@ import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
 import SelectOptions from './selectOptions';
 import { OnCloseSelectedOptions } from './selectOptions';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
-import SubtitleTextsHistory from './subtitleTextsHistory';
+import SubtitleTextsHistory from './history';
 
 interface SpeechToTextServiceProps {
   currentRoom: Room;
@@ -53,17 +53,25 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   );
   const [optionSelectionDisabled, setOptionSelectionDisabled] =
     useState<boolean>(false);
+  const [isOpenPopover, setIsOpenPopover] = useState<boolean>(false);
+
+  const unsetRecognizer = useCallback(() => {
+    if (recognizer) {
+      try {
+        recognizer.stopContinuousRecognitionAsync();
+        recognizer.close();
+        setRecognizer(undefined);
+      } catch (e) {}
+    }
+  }, [recognizer]);
 
   useEffect(() => {
     return () => {
       if (recognizer) {
-        try {
-          recognizer.stopContinuousRecognitionAsync();
-          recognizer.close();
-          setRecognizer(undefined);
-        } catch (e) {}
+        unsetRecognizer();
       }
     };
+    //eslint-disable-next-line
   }, [recognizer]);
 
   useEffect(() => {
@@ -106,6 +114,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
         speechService,
         setOptionSelectionDisabled,
         setRecognizer,
+        unsetRecognizer,
       );
       dispatch(updateAzureTokenInfo(undefined));
     }
@@ -134,8 +143,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
         });
       }
       if (o.stopService && recognizer) {
-        recognizer.stopContinuousRecognitionAsync();
-        setRecognizer(undefined);
+        unsetRecognizer();
         setSpeechLang('');
         setDeviceId('');
         setMediaStream(undefined);
@@ -163,9 +171,9 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
               onCloseSelectedOptions={onCloseSelectedOptions}
               onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
             />
-            <SubtitleTextsHistory />
+            <SubtitleTextsHistory isOpenPopover={setIsOpenPopover} />
           </div>
-          <SubtitleArea />
+          {!isOpenPopover ? <SubtitleArea /> : null}
         </div>
       ) : null}
     </>
