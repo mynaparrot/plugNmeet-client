@@ -43,6 +43,7 @@
     "need-to-disable-external-media-player": "এক্সটার্নাল মিডিয়া প্লেয়ার চালু আছে। ডিসপ্লে এক্সটার্নাল লিংক চালু করার আগে এটি বন্ধ করুন।",
     "websocket-disconnected": "Websocket সংযোগ বিচ্ছিন্ন, পুনরায় সংযোগ করা হচ্ছে..",
     "websocket-error": "Websocket এ ত্রুটি।",
+    "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
     "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে"
   },
   "room-metadata": {
@@ -235,7 +236,8 @@
       "manage-waiting-room": "ওয়েটিং রুম পরিচালনা করুন",
       "manage-breakout-room": "ব্রেকআউট রুম পরিচালনা করুন",
       "start-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন করুন",
-      "stop-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন বন্ধ করুন"
+      "stop-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন বন্ধ করুন",
+      "speech-to-text-settings": "Speech to text/translation settings"
     },
     "notice": {
       "already-active-screen-sharing": "ইতিমধ্যে একটি সক্রিয় স্ক্রিন শেয়ার চালু আছে",
@@ -384,5 +386,38 @@
     "gen-link": "লিঙ্ক তৈরি করুন",
     "rtmp-url": "RTMP হোস্ট/URL",
     "rtmp-key": "RTMP গোপন কোড"
+  },
+  "speech-services": {
+    "modal-settings-title": "Speech to text/translation settings",
+    "enable-speech-to-text": "Enable speech to text",
+    "speech-langs-label": "Speech languages",
+    "speech-users-label": "Speech users",
+    "enable-translation": "Enable translation",
+    "translation-langs-label": "Translation languages",
+    "enable-service": "Enable service",
+    "speech-user-required": "At least one speech user require",
+    "speech-lang-required": "At least one speech language require",
+    "translation-lang-required": "At least one translation language or 2 speech languages required",
+    "service-ready": "Speech service is ready",
+    "start-service": "Start",
+    "stop-service": "Stop",
+    "update-service": "Update",
+    "service-stopped": "Service has been stopped",
+    "start-modal-title": "Speech to text/translation service",
+    "speech-lang-label": "Speech language",
+    "subtitle-lang-label": "Subtitle language",
+    "subtitle-settings": "Subtitle settings",
+    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}",
+    "speech-to-text-ready": "Service started. You can start speaking now.",
+    "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",
+    "already-using-service": "You're already using the service.",
+    "service-disabled": "Service is disabled. Please check server configuration.",
+    "token-generation-failed": "Token generation failed with error: {{error}}",
+    "mic-error": "Service can't start because of microphone problem.",
+    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
+    "select-one-lang": "Select one language",
+    "subtitle-history-modal-title": "Subtitle texts history",
+    "azure-error": "Microsoft azure error: {{error}}",
+    "speech-to-text-stopped": "Speech to text service has been stopped"
   }
 }
