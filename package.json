@@ -27,7 +27,7 @@
     "i18next": "22.5.0",
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.2.1",
-    "livekit-client": "1.9.6",
+    "livekit-client": "1.9.7",
     "lodash": "4.17.21",
     "microsoft-cognitiveservices-speech-sdk": "^1.28.0",
     "mobile-detect": "1.4.5",
