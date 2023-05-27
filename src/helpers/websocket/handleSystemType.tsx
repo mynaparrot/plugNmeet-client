@@ -196,6 +196,7 @@ const handleSpeechSubtitleText = (data: DataMessage) => {
           text: msg.result[lang],
           from: msg.from,
           time: d.toLocaleTimeString(),
+          id: data.messageId ?? d.getUTCMilliseconds().toString(),
         },
       }),
     );

@@ -1,7 +1,8 @@
 export interface TextWithInfo {
+  id: string;
   time: string;
-  text: string;
   from: string;
+  text: string;
 }
 
 export interface ISpeechServices {
