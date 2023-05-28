@@ -82,7 +82,7 @@
     "react-refresh": "0.14.0",
     "react-refresh-typescript": "2.0.9",
     "sass": "1.62.1",
-    "sass-loader": "13.3.0",
+    "sass-loader": "13.3.1",
     "style-loader": "3.3.3",
     "tailwindcss": "3.3.2",
     "terser-webpack-plugin": "5.3.9",
