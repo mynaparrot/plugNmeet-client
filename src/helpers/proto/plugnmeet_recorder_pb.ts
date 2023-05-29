@@ -11,7 +11,7 @@ import type {
   PartialMessage,
   PlainMessage,
 } from '@bufbuild/protobuf';
-import { Message, proto3 } from '@bufbuild/protobuf';
+import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
 
 /**
  * @generated from enum plugnmeet.RecordingTasks
@@ -104,9 +104,9 @@ export class PlugNmeetToRecorder extends Message<PlugNmeetToRecorder> {
   task = RecordingTasks.START_RECORDING;
 
   /**
-   * @generated from field: string room_id = 3;
+   * @generated from field: int64 room_table_id = 3;
    */
-  roomId = '';
+  roomTableId = protoInt64.zero;
 
   /**
    * @generated from field: string room_sid = 4;
@@ -148,7 +148,12 @@ export class PlugNmeetToRecorder extends Message<PlugNmeetToRecorder> {
       kind: 'enum',
       T: proto3.getEnumType(RecordingTasks),
     },
-    { no: 3, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'room_table_id',
+      kind: 'scalar',
+      T: 3 /* ScalarType.INT64 */,
+    },
     { no: 4, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
       no: 5,
@@ -236,6 +241,11 @@ export class RecorderToPlugNmeet extends Message<RecorderToPlugNmeet> {
   recordingId = '';
 
   /**
+   * @generated from field: int64 room_table_id = 11;
+   */
+  roomTableId = protoInt64.zero;
+
+  /**
    * @generated from field: string room_id = 6;
    */
   roomId = '';
@@ -256,6 +266,8 @@ export class RecorderToPlugNmeet extends Message<RecorderToPlugNmeet> {
   filePath = '';
 
   /**
+   * next key 12
+   *
    * @generated from field: float file_size = 10;
    */
   fileSize = 0;
@@ -282,6 +294,12 @@ export class RecorderToPlugNmeet extends Message<RecorderToPlugNmeet> {
       name: 'recording_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 11,
+      name: 'room_table_id',
+      kind: 'scalar',
+      T: 3 /* ScalarType.INT64 */,
     },
     { no: 6, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 7, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
@@ -339,14 +357,9 @@ export class FromParentToChild extends Message<FromParentToChild> {
   recordingId = '';
 
   /**
-   * @generated from field: string room_id = 3;
+   * @generated from field: int64 room_table_id = 3;
    */
-  roomId = '';
-
-  /**
-   * @generated from field: string room_sid = 4;
-   */
-  roomSid = '';
+  roomTableId = protoInt64.zero;
 
   constructor(data?: PartialMessage<FromParentToChild>) {
     super();
@@ -368,8 +381,12 @@ export class FromParentToChild extends Message<FromParentToChild> {
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
     },
-    { no: 3, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'room_table_id',
+      kind: 'scalar',
+      T: 3 /* ScalarType.INT64 */,
+    },
   ]);
 
   static fromBinary(
@@ -426,14 +443,9 @@ export class FromChildToParent extends Message<FromChildToParent> {
   recordingId = '';
 
   /**
-   * @generated from field: string room_id = 5;
+   * @generated from field: int64 room_table_id = 5;
    */
-  roomId = '';
-
-  /**
-   * @generated from field: string room_sid = 6;
-   */
-  roomSid = '';
+  roomTableId = protoInt64.zero;
 
   constructor(data?: PartialMessage<FromChildToParent>) {
     super();
@@ -457,8 +469,12 @@ export class FromChildToParent extends Message<FromChildToParent> {
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
     },
-    { no: 5, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 5,
+      name: 'room_table_id',
+      kind: 'scalar',
+      T: 3 /* ScalarType.INT64 */,
+    },
   ]);
 
   static fromBinary(
@@ -495,19 +511,14 @@ export class FromChildToParent extends Message<FromChildToParent> {
  */
 export class StartRecorderChildArgs extends Message<StartRecorderChildArgs> {
   /**
-   * @generated from field: string room_id = 1;
+   * @generated from field: int64 room_table_id = 1;
    */
-  roomId = '';
+  roomTableId = protoInt64.zero;
 
   /**
    * @generated from field: string recording_id = 2;
    */
   recordingId = '';
-
-  /**
-   * @generated from field: string room_sid = 3;
-   */
-  roomSid = '';
 
   /**
    * @generated from field: string access_token = 4;
@@ -562,14 +573,18 @@ export class StartRecorderChildArgs extends Message<StartRecorderChildArgs> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = 'plugnmeet.StartRecorderChildArgs';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 1,
+      name: 'room_table_id',
+      kind: 'scalar',
+      T: 3 /* ScalarType.INT64 */,
+    },
     {
       no: 2,
       name: 'recording_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
     },
-    { no: 3, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
       no: 4,
       name: 'access_token',

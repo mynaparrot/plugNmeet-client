@@ -11,7 +11,7 @@ import type {
   PartialMessage,
   PlainMessage,
 } from '@bufbuild/protobuf';
-import { Message, proto3 } from '@bufbuild/protobuf';
+import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
 import { RecordingTasks } from './plugnmeet_recorder_pb.ts';
 
 /**
@@ -24,17 +24,27 @@ export class RecordingReq extends Message<RecordingReq> {
   task = RecordingTasks.START_RECORDING;
 
   /**
-   * @generated from field: string sid = 2;
+   * @generated from field: string room_id = 2;
+   */
+  roomId = '';
+
+  /**
+   * @generated from field: int64 room_table_id = 3;
+   */
+  roomTableId = protoInt64.zero;
+
+  /**
+   * @generated from field: string sid = 4;
    */
   sid = '';
 
   /**
-   * @generated from field: optional string rtmp_url = 3;
+   * @generated from field: optional string rtmp_url = 5;
    */
   rtmpUrl?: string;
 
   /**
-   * @generated from field: optional string custom_design = 4;
+   * @generated from field: optional string custom_design = 6;
    */
   customDesign?: string;
 
@@ -52,16 +62,23 @@ export class RecordingReq extends Message<RecordingReq> {
       kind: 'enum',
       T: proto3.getEnumType(RecordingTasks),
     },
-    { no: 2, name: 'sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
       no: 3,
+      name: 'room_table_id',
+      kind: 'scalar',
+      T: 3 /* ScalarType.INT64 */,
+    },
+    { no: 4, name: 'sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 5,
       name: 'rtmp_url',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 4,
+      no: 6,
       name: 'custom_design',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
