@@ -296,7 +296,7 @@ export const enableOrDisableSpeechService = async (
   body: SpeechToTextTranslationReq,
 ) => {
   const r = await sendAPIRequest(
-    'speechServices',
+    'speechServices/serviceStatus',
     body.toBinary(),
     false,
     'application/protobuf',
