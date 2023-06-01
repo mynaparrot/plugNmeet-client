@@ -91,6 +91,9 @@ const initialState: ISession = {
           is_enabled: false,
           is_enabled_translation: false,
         },
+        end_to_end_encryption_features: {
+          is_enabled: false,
+        },
       },
       copyright_conf: {
         display: true,

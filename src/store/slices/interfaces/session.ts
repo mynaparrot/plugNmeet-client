@@ -76,6 +76,7 @@ interface IRoomFeatures {
   display_external_link_features: IDisplayExternalLinkFeatures;
   ingress_features: IIngressFeatures;
   speech_to_text_translation_features: SpeechToTextTranslationFeatures;
+  end_to_end_encryption_features: EndToEndEncryptionFeatures;
 }
 
 export interface IRecordingFeatures {
@@ -178,4 +179,9 @@ export interface SpeechToTextTranslationFeatures {
   allowed_speech_langs?: string[];
   allowed_speech_users?: string[];
   allowed_trans_langs?: string[];
+}
+
+export interface EndToEndEncryptionFeatures {
+  is_enabled: boolean;
+  encryption_key?: string;
 }
