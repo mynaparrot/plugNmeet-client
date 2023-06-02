@@ -49,7 +49,7 @@ export interface IRoomMetadata {
   is_recording: boolean;
   is_active_rtmp: boolean;
   is_breakout_room: boolean;
-  started_at: number;
+  started_at: string;
   logout_url?: string;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
@@ -65,7 +65,7 @@ interface IRoomFeatures {
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
   allow_polls: boolean;
-  room_duration: number;
+  room_duration: string;
   recording_features: IRecordingFeatures;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
@@ -90,7 +90,7 @@ interface IChatFeatures {
   allow_chat: boolean;
   allow_file_upload: boolean;
   allowed_file_types?: Array<string>;
-  max_file_size?: number;
+  max_file_size?: string;
 }
 
 interface ISharedNotepadFeatures {

@@ -31,7 +31,7 @@ const initialState: ISession = {
       is_recording: false,
       is_active_rtmp: false,
       is_breakout_room: false,
-      started_at: Date.now(),
+      started_at: Date.now().toString(),
       room_features: {
         allow_webcams: true,
         mute_on_start: false,
@@ -41,7 +41,7 @@ const initialState: ISession = {
         allow_view_other_users_list: true,
         admin_only_webcams: false,
         allow_polls: true,
-        room_duration: 0,
+        room_duration: '0',
         recording_features: {
           is_allow: true,
           is_allow_cloud: true,

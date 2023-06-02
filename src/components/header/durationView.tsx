@@ -17,7 +17,7 @@ const DurationView = ({ duration }: IDurationViewProps) => {
 
   useEffect(() => {
     const startedAt = store.getState().session.currentRoom.metadata?.started_at;
-    const start = startedAt ? startedAt * 1000 : Date.now();
+    const start = startedAt ? Number(startedAt) * 1000 : Date.now();
     let diff, minutes, seconds;
     setRemaining('00:00');
 
