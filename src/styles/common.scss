@@ -862,3 +862,7 @@ aside {
   bottom: auto;
   top: -5px;
 }
+.notepad-wrapper .inner {
+  resize: both;
+  overflow: auto;
+}
