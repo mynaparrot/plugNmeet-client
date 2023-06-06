@@ -11,8 +11,16 @@ import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 export default class HandleRoomMetadata {
   private metadata: IRoomMetadata | null = null;
   private welcomeMessage: string | undefined = undefined;
+  private lastMessageId: string | undefined = undefined;
 
-  public setRoomMetadata = (metadata: string) => {
+  public setRoomMetadata = (metadata: string, messageId?: string) => {
+    if (messageId && this.lastMessageId && messageId === this.lastMessageId) {
+      // if message id is same then we won't do anything.
+      return;
+    } else {
+      this.lastMessageId = messageId;
+    }
+
     if (!isEmpty(metadata)) {
       try {
         this.metadata = JSON.parse(metadata);
