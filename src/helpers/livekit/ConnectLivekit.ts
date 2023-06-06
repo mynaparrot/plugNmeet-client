@@ -261,10 +261,11 @@ export default class ConnectLivekit
       this.roomConnectionStatusState('connected'),
     );
     room.on(RoomEvent.Disconnected, this.onDisconnected);
-    room.on(
+    // at present for updating metadata, we'll do it manually
+    /*room.on(
       RoomEvent.RoomMetadataChanged,
       this.handleRoomMetadata.setRoomMetadata,
-    );
+    );*/
     room.on(
       RoomEvent.ActiveSpeakersChanged,
       this.handleActiveSpeakers.activeSpeakersChanged,

@@ -15,13 +15,17 @@ import {
   DataMsgType,
 } from '../proto/plugnmeet_datamessage_pb';
 import { GenerateAzureTokenRes } from '../proto/plugnmeet_speech_services_pb';
+import HandleRoomMetadata from './HandleRoomMetadata';
 
 export default class HandleDataMessages {
   private that: IConnectLivekit;
   private requestedParticipant: Participant | undefined;
+  private metadataHandler: HandleRoomMetadata;
+  private lastId: string | undefined = undefined;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
+    this.metadataHandler = new HandleRoomMetadata();
   }
 
   public dataReceived = (
@@ -37,6 +41,7 @@ export default class HandleDataMessages {
       console.error(error);
       return;
     }
+    this.lastId = data.messageId;
 
     if (kind === DataPacket_Kind.RELIABLE) {
       if (data.type === DataMsgType.SYSTEM) {
@@ -86,6 +91,9 @@ export default class HandleDataMessages {
             },
           );
         }
+        break;
+      case DataMsgBodyType.UPDATE_ROOM_METADATA:
+        this.metadataHandler.setRoomMetadata(body.msg, this.lastId);
         break;
     }
   };
