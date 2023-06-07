@@ -35,6 +35,7 @@ export interface ICurrentUserMetadata {
   raised_hand: boolean;
   wait_for_approval: boolean;
   lock_settings: ILockSettings;
+  metadata_id?: string;
 }
 
 export interface ICurrentRoom {
@@ -54,6 +55,7 @@ export interface IRoomMetadata {
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
   copyright_conf: ICopyright_conf;
+  metadata_id?: string;
 }
 
 interface IRoomFeatures {

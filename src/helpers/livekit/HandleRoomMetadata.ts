@@ -11,21 +11,24 @@ import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 export default class HandleRoomMetadata {
   private metadata: IRoomMetadata | null = null;
   private welcomeMessage: string | undefined = undefined;
-  private lastMessageId: string | undefined = undefined;
 
-  public setRoomMetadata = (metadata: string, messageId?: string) => {
-    if (messageId && this.lastMessageId && messageId === this.lastMessageId) {
-      // if message id is same then we won't do anything.
-      return;
-    } else {
-      this.lastMessageId = messageId;
-    }
-
+  public setRoomMetadata = (metadata: string) => {
     if (!isEmpty(metadata)) {
       try {
         this.metadata = JSON.parse(metadata);
       } catch (e) {
         console.error(e);
+        return;
+      }
+
+      const currentId =
+        store.getState().session.currentRoom?.metadata?.metadata_id;
+      if (
+        currentId &&
+        this.metadata?.metadata_id &&
+        currentId === this.metadata?.metadata_id
+      ) {
+        // if both id are same then we don't need to update
         return;
       }
 
