@@ -1,4 +1,4 @@
-import {
+import type {
   LocalParticipant,
   LocalTrackPublication,
   Participant,
@@ -6,7 +6,7 @@ import {
   RemoteTrackPublication,
   Room,
 } from 'livekit-client';
-import { EventEmitter } from 'events';
+import type EventEmitter from 'eventemitter3';
 
 export type ConnectionStatus =
   | 'connecting'

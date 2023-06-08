@@ -14,7 +14,7 @@ import {
   Track,
   VideoPresets,
 } from 'livekit-client';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 
 import { store } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
