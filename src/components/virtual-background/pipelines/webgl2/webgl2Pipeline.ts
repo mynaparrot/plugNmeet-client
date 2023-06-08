@@ -1,3 +1,5 @@
+/*eslint-disable*/
+
 import { compileShader, createTexture, glsl } from '../helpers/webglHelper';
 import {
   BackgroundBlurStage,
