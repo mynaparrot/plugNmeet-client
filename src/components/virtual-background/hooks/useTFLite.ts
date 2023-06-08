@@ -7,8 +7,6 @@ import {
 declare function createTFLiteModule(): Promise<TFLite>;
 declare function createTFLiteSIMDModule(): Promise<TFLite>;
 
-// eslint-disable-next-line
-// @ts-ignore
 export interface TFLite extends EmscriptenModule {
   _getModelBufferMemoryOffset(): number;
   _getInputMemoryOffset(): number;
@@ -32,17 +30,13 @@ function useTFLite(segmentationConfig: SegmentationConfig) {
 
   useEffect(() => {
     async function loadTFLite() {
+      createTFLiteModule().then(setTFLite);
       try {
         const createdTFLiteSIMD = await createTFLiteSIMDModule();
         setTFLiteSIMD(createdTFLiteSIMD);
-        setTFLite(createdTFLiteSIMD);
         setSIMDSupported(true);
-      } catch (e) {
-        try {
-          createTFLiteModule().then(setTFLite);
-        } catch (error) {
-          console.warn('Failed to create TFLite WebAssembly module.', error);
-        }
+      } catch (error) {
+        console.warn('Failed to create TFLite SIMD WebAssembly module.', error);
       }
     }
 
@@ -63,7 +57,7 @@ function useTFLite(segmentationConfig: SegmentationConfig) {
 
       setSelectedTFLite(undefined);
 
-      const newSelectedTFLite: any =
+      const newSelectedTFLite =
         segmentationConfig.backend === 'wasmSimd' ? tfliteSIMD : tflite;
 
       if (!newSelectedTFLite) {
@@ -116,7 +110,7 @@ function useTFLite(segmentationConfig: SegmentationConfig) {
     }
 
     loadTFLiteModel();
-    // eslint-disable-next-line
+    //eslint-disable-next-line
   }, [
     tflite,
     tfliteSIMD,

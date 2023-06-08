@@ -1,4 +1,7 @@
-/* eslint-disable */
+/*eslint-disable*/
+
+import { TimerWorker } from '../../helpers/timerHelper';
+
 /**
  * Use it along with boyswan.glsl-literal VSCode extension
  * to get GLSL syntax highlighting.
@@ -82,6 +85,7 @@ export function createTexture(
 }
 
 export async function readPixelsAsync(
+  timerWorker: TimerWorker,
   gl: WebGL2RenderingContext,
   x: number,
   y: number,
@@ -97,13 +101,21 @@ export async function readPixelsAsync(
   gl.readPixels(x, y, width, height, format, type, 0);
   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 
-  await getBufferSubDataAsync(gl, gl.PIXEL_PACK_BUFFER, buf, 0, dest);
+  await getBufferSubDataAsync(
+    timerWorker,
+    gl,
+    gl.PIXEL_PACK_BUFFER,
+    buf,
+    0,
+    dest,
+  );
 
   gl.deleteBuffer(buf);
   return dest;
 }
 
 async function getBufferSubDataAsync(
+  timerWorker: TimerWorker,
   gl: WebGL2RenderingContext,
   target: number,
   buffer: WebGLBuffer,
@@ -114,7 +126,7 @@ async function getBufferSubDataAsync(
 ) {
   const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)!;
   gl.flush();
-  const res = await clientWaitAsync(gl, sync);
+  const res = await clientWaitAsync(timerWorker, gl, sync);
   gl.deleteSync(sync);
 
   if (res !== gl.WAIT_FAILED) {
@@ -124,7 +136,11 @@ async function getBufferSubDataAsync(
   }
 }
 
-function clientWaitAsync(gl: WebGL2RenderingContext, sync: WebGLSync) {
+function clientWaitAsync(
+  timerWorker: TimerWorker,
+  gl: WebGL2RenderingContext,
+  sync: WebGLSync,
+) {
   return new Promise<number>((resolve) => {
     function test() {
       const res = gl.clientWaitSync(sync, 0, 0);
@@ -133,11 +149,11 @@ function clientWaitAsync(gl: WebGL2RenderingContext, sync: WebGLSync) {
         return;
       }
       if (res === gl.TIMEOUT_EXPIRED) {
-        requestAnimationFrame(test);
+        timerWorker.setTimeout(test);
         return;
       }
       resolve(res);
     }
-    requestAnimationFrame(test);
+    timerWorker.setTimeout(test);
   });
 }
