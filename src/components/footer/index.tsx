@@ -54,7 +54,7 @@ const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
             style={{ display: isRecorder ? 'none' : '' }}
           >
             <div className="footer-inner flex items-center justify-between w-full">
-              <div className="footer-left w-52 flex items-center">
+              <div className="footer-left w-52 flex items-center relative z-50">
                 <WebcamIcon currentRoom={currentRoom} />
                 <MicrophoneIcon currentRoom={currentRoom} />
               </div>
