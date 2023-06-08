@@ -1,22 +1,25 @@
 import {
-  inputResolutions,
-  SegmentationConfig,
-} from '../../helpers/segmentationHelper';
-import {
   compileShader,
   createPiplelineStageProgram,
   createTexture,
   glsl,
   readPixelsAsync,
 } from '../helpers/webglHelper';
+import { TimerWorker } from '../../helpers/timerHelper';
+import {
+  inputResolutions,
+  SegmentationConfig,
+} from '../../helpers/segmentationHelper';
+import { TFLite } from '../../hooks/useTFLite';
 
 export function buildResizingStage(
+  timerWorker: TimerWorker,
   gl: WebGL2RenderingContext,
   vertexShader: WebGLShader,
   positionBuffer: WebGLBuffer,
   texCoordBuffer: WebGLBuffer,
   segmentationConfig: SegmentationConfig,
-  tflite: any,
+  tflite: TFLite,
 ) {
   const fragmentShaderSource = glsl`#version 300 es
 
@@ -69,14 +72,14 @@ export function buildResizingStage(
   gl.useProgram(program);
   gl.uniform1i(inputFrameLocation, 0);
 
-  function render() {
+  async function render() {
     gl.viewport(0, 0, outputWidth, outputHeight);
     gl.useProgram(program);
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-    // Downloads pixels asynchronously from GPU while rendering the current frame
-    readPixelsAsync(
+    const readPixelsPromise = readPixelsAsync(
+      timerWorker,
       gl,
       0,
       0,
@@ -86,6 +89,14 @@ export function buildResizingStage(
       gl.UNSIGNED_BYTE,
       outputPixels,
     );
+
+    if (segmentationConfig.deferInputResizing) {
+      // Downloads pixels asynchronously from GPU while rendering the current frame.
+      // The pixels will be available in the next frame render which results
+      // in offsets in the segmentation output but increases the frame rate.
+    } else {
+      await readPixelsPromise;
+    }
 
     for (let i = 0; i < outputPixelCount; i++) {
       const tfliteIndex = tfliteInputMemoryOffset + i * 3;

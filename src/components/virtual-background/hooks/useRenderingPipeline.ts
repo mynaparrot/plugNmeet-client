@@ -1,13 +1,13 @@
-/* eslint-disable */
 import { BodyPix } from '@tensorflow-models/body-pix';
 import { useEffect, useRef, useState } from 'react';
-import { buildCanvas2dPipeline } from '../pipelines/canvas2d/canvas2dPipeline';
-import { buildWebGL2Pipeline } from '../pipelines/webgl2/webgl2Pipeline';
 import { BackgroundConfig } from '../helpers/backgroundHelper';
 import { RenderingPipeline } from '../helpers/renderingPipelineHelper';
 import { SegmentationConfig } from '../helpers/segmentationHelper';
 import { SourcePlayback } from '../helpers/sourceHelper';
 import { TFLite } from './useTFLite';
+import { createTimerWorker } from '../helpers/timerHelper';
+import { buildWebGL2Pipeline } from '../pipelines/webgl2/webgl2Pipeline';
+import { buildCanvas2dPipeline } from '../pipelines/canvas2d/canvas2dPipeline';
 declare const IS_PRODUCTION: boolean;
 
 function useRenderingPipeline(
@@ -24,9 +24,7 @@ function useRenderingPipeline(
   const [durations, setDurations] = useState<number[]>([]);
 
   useEffect(() => {
-    // The useEffect cleanup function is not enough to stop
-    // the rendering loop when the framerate is low
-    let shouldRender = true;
+    const targetTimerTimeoutMs = 1000 / segmentationConfig.targetFps;
 
     let previousTime = 0;
     let beginTime = 0;
@@ -34,7 +32,9 @@ function useRenderingPipeline(
     let frameCount = 0;
     const frameDurations: number[] = [];
 
-    let renderRequestId: number;
+    let renderTimeoutId: number;
+
+    const timerWorker = createTimerWorker();
 
     const newPipeline =
       segmentationConfig.pipeline === 'webgl2'
@@ -45,6 +45,7 @@ function useRenderingPipeline(
             segmentationConfig,
             canvasRef.current,
             tflite,
+            timerWorker,
             addFrameEvent,
           )
         : buildCanvas2dPipeline(
@@ -58,13 +59,16 @@ function useRenderingPipeline(
           );
 
     async function render() {
-      if (!shouldRender) {
-        return;
-      }
+      const startTime = performance.now();
+
       beginFrame();
       await newPipeline.render();
       endFrame();
-      renderRequestId = requestAnimationFrame(render);
+
+      renderTimeoutId = timerWorker.setTimeout(
+        render,
+        Math.max(0, targetTimerTimeoutMs - (performance.now() - startTime)),
+      );
     }
 
     function beginFrame() {
@@ -104,10 +108,9 @@ function useRenderingPipeline(
     setPipeline(newPipeline);
 
     return () => {
-      shouldRender = false;
-      cancelAnimationFrame(renderRequestId);
+      timerWorker.clearTimeout(renderTimeoutId);
+      timerWorker.terminate();
       newPipeline.cleanUp();
-
       if (!IS_PRODUCTION) {
         console.log(
           'Animation stopped:',

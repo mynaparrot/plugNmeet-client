@@ -1,12 +1,3 @@
-/* eslint-disable */
-import { BackgroundConfig } from '../../helpers/backgroundHelper';
-import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
-import {
-  inputResolutions,
-  SegmentationConfig,
-} from '../../helpers/segmentationHelper';
-import { SourcePlayback } from '../../helpers/sourceHelper';
-import { TFLite } from '../../hooks/useTFLite';
 import { compileShader, createTexture, glsl } from '../helpers/webglHelper';
 import {
   BackgroundBlurStage,
@@ -20,6 +11,15 @@ import { buildJointBilateralFilterStage } from './jointBilateralFilterStage';
 import { buildLoadSegmentationStage } from './loadSegmentationStage';
 import { buildResizingStage } from './resizingStage';
 import { buildSoftmaxStage } from './softmaxStage';
+import { SourcePlayback } from '../../helpers/sourceHelper';
+import { BackgroundConfig } from '../../helpers/backgroundHelper';
+import {
+  inputResolutions,
+  SegmentationConfig,
+} from '../../helpers/segmentationHelper';
+import { TFLite } from '../../hooks/useTFLite';
+import { TimerWorker } from '../../helpers/timerHelper';
+import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
 
 export function buildWebGL2Pipeline(
   sourcePlayback: SourcePlayback,
@@ -28,6 +28,7 @@ export function buildWebGL2Pipeline(
   segmentationConfig: SegmentationConfig,
   canvas: HTMLCanvasElement,
   tflite: TFLite,
+  timerWorker: TimerWorker,
   addFrameEvent: () => void,
 ) {
   const vertexShaderSource = glsl`#version 300 es
@@ -96,6 +97,7 @@ export function buildWebGL2Pipeline(
   )!;
 
   const resizingStage = buildResizingStage(
+    timerWorker,
     gl,
     vertexShader,
     positionBuffer,
@@ -153,9 +155,6 @@ export function buildWebGL2Pipeline(
         );
 
   async function render() {
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, inputFrameTexture);
 
@@ -172,7 +171,7 @@ export function buildWebGL2Pipeline(
 
     gl.bindVertexArray(vertexArray);
 
-    resizingStage.render();
+    await resizingStage.render();
 
     addFrameEvent();
 
