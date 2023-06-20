@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import NoSleep from 'nosleep.js';
 
 import ErrorPage from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
@@ -39,6 +40,8 @@ const waitingForApprovalSelector = createSelector(
 const App = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const noSleep = new NoSleep();
+
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
   const [isRecorder, setIsRecorder] = useState<boolean>(false);
@@ -197,10 +200,13 @@ const App = () => {
     return null;
   }, [isRecorder, currentConnection]);
 
-  const onCloseStartupModal = () => {
+  const onCloseStartupModal = async () => {
     if (livekitInfo) {
       const currentConnection = startLivekitConnection(livekitInfo);
       setCurrentConnection(currentConnection);
+
+      // Prevent display sleep for mobile devices
+      await noSleep.enable();
     }
   };
 
