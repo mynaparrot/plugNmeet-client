@@ -31,6 +31,7 @@ export interface ICurrentUser {
 export interface ICurrentUserMetadata {
   profile_pic?: string;
   is_admin: boolean;
+  record_webcam?: boolean;
   is_presenter: boolean;
   raised_hand: boolean;
   wait_for_approval: boolean;
@@ -86,6 +87,7 @@ export interface IRecordingFeatures {
   is_allow_cloud: boolean;
   enable_auto_cloud_recording: boolean;
   is_allow_local: boolean;
+  only_record_admin_webcams: boolean;
 }
 
 interface IChatFeatures {

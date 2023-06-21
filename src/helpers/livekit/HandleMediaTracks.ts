@@ -19,6 +19,7 @@ import {
   ICurrentUserMetadata,
   IRoomMetadata,
 } from '../../store/slices/interfaces/session';
+import { isEmpty } from 'lodash';
 
 export default class HandleMediaTracks {
   private that: IConnectLivekit;
@@ -131,12 +132,33 @@ export default class HandleMediaTracks {
           !this.roomMetadata.room_features?.allow_view_other_webcams) &&
         !this.currentUser?.metadata?.is_admin
       ) {
-        if (participant.metadata) {
+        if (participant.metadata && !isEmpty(participant.metadata)) {
           const metadata: ICurrentUserMetadata = JSON.parse(
             participant.metadata,
           );
           // we'll check if user is an admin or not. Otherwise no webcam will show up.
           if (!metadata.is_admin) {
+            return;
+          }
+        }
+      }
+
+      if (this.currentUser?.isRecorder) {
+        // we'll setup logic for webcam recording
+        if (participant.metadata && !isEmpty(participant.metadata)) {
+          const metadata: ICurrentUserMetadata = JSON.parse(
+            participant.metadata,
+          );
+          if (!metadata.record_webcam) {
+            // if record feature is disable then we won't load webcams
+            return;
+          } else if (
+            !metadata.is_admin &&
+            this.roomMetadata.room_features.recording_features
+              .only_record_admin_webcams
+          ) {
+            // if room setting was enable to record webcam only for admin
+            // then we'll simply won't load webcams
             return;
           }
         }
