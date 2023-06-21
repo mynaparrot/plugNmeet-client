@@ -141,6 +141,7 @@
                         is_allow_cloud: true,
                         is_allow_local: true,
                         enable_auto_cloud_recording: false,
+                        only_record_admin_webcams: true,
                     },
                     chat_features: {
                         allow_chat: true,
@@ -189,6 +190,9 @@
             is_admin: data.get('user_type') === 'admin',
             name: data.get('name'),
             user_id: data.get('user_id'),
+            /*user_metadata: {
+                record_webcam: false,
+            }*/
         };
 
         API_KEY = data.get('api_key');

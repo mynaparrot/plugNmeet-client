@@ -47,6 +47,7 @@ const initialState: ISession = {
           is_allow_cloud: true,
           enable_auto_cloud_recording: false,
           is_allow_local: true,
+          only_record_admin_webcams: false,
         },
         chat_features: {
           allow_chat: true,

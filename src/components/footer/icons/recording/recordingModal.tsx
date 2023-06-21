@@ -16,14 +16,16 @@ const RecordingModal = ({
   recordingFeatures,
   onCloseModal,
 }: IRecordingModalProps) => {
-  const [recordingType, setRecordingType] = useState<RecordingType>(
-    RecordingType.RECORDING_TYPE_LOCAL,
+  const [recordingType, setRecordingType] = useState<RecordingType | undefined>(
+    undefined,
   );
   const { t } = useTranslation();
 
   const startRecording = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onCloseModal(recordingType);
+    if (recordingType) {
+      onCloseModal(recordingType);
+    }
   };
 
   const closeModal = () => {
