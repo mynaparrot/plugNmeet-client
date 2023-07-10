@@ -7,6 +7,9 @@ window.PLUG_N_MEET_SERVER_URL = 'http://localhost:8080';
 // custom logo. For best, use direct https link
 // window.CUSTOM_LOGO = '';
 
+// waiting room logo. For best, use direct https link
+// window.WAITING_LOGO = '';
+
 //With Dynacast dynamically pauses video layers that are not being consumed by any subscribers, significantly reducing publishing CPU and bandwidth usage.
 window.ENABLE_DYNACAST = true;
 
