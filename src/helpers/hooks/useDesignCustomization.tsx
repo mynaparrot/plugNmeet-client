@@ -19,6 +19,7 @@ export interface ICustomDesignParams {
   right_side_bg_color?: string;
   custom_css_url?: string;
   custom_logo?: string;
+  waiting_logo?: string;
   column_camera_width?: ColumnCameraWidth;
   column_camera_position?: ColumnCameraPosition;
 }
@@ -209,6 +210,12 @@ const useDesignCustomization = () => {
     if (typeof (window as any).CUSTOM_LOGO === 'undefined') {
       if (designCustomParams.custom_logo) {
         (window as any).CUSTOM_LOGO = designCustomParams.custom_logo;
+      }
+    }
+
+        if (typeof (window as any).WAITING_LOGO === 'undefined') {
+      if (designCustomParams.waiting_logo) {
+        (window as any).WAITING_LOGO = designCustomParams.waiting_logo;
       }
     }
 
