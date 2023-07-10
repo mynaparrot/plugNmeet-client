@@ -14,7 +14,7 @@ const waitingRoomMessageSelector = createSelector(
 
 const WaitingRoomPage = () => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-  const logo = (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/main-logo.png`;
+  const waitinglogo = (window as any).WAITING_LOGO ?? `${assetPath}/imgs/waiting-logo.png`;
   const { t } = useTranslation();
   const waitingRoomMessage = useAppSelector(waitingRoomMessageSelector);
 
@@ -30,10 +30,10 @@ const WaitingRoomPage = () => {
           <div className="logo w-40 m-auto relative z-20">
             <div
               className={`${
-                (window as any).CUSTOM_LOGO ? 'h-[90px]' : 'h-[90px]'
+                (window as any).WAITING_LOGO ? 'h-[90px]' : 'h-[90px]'
               } header-logo bg-contain bg-no-repeat bg-center`}
               style={{
-                backgroundImage: `url("${logo}")`,
+                backgroundImage: `url("${waitinglogo}")`,
               }}
             />
           </div>
