@@ -186,7 +186,10 @@ export default class ConnectLivekit
 
     if (isE2EESupported()) {
       const workerMaker = new Worker(
-        new URL('./e2ee-worker/livekit-client.e2ee.worker.js', import.meta.url),
+        new URL(
+          '/node_modules/livekit-client/src/e2ee/worker/e2ee.worker.ts',
+          import.meta.url,
+        ),
       );
 
       roomOptions.e2ee = {
@@ -196,7 +199,6 @@ export default class ConnectLivekit
     }
 
     const room = new Room(roomOptions);
-
     room.on(RoomEvent.Reconnecting, () =>
       this.roomConnectionStatusState('re-connecting'),
     );
