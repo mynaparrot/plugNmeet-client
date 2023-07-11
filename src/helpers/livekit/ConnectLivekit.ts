@@ -329,8 +329,8 @@ export default class ConnectLivekit
     return;
   };
 
-  public setRoomMetadata(metadata: string) {
-    this.handleRoomMetadata.setRoomMetadata(metadata);
+  public async setRoomMetadata(metadata: string) {
+    await this.handleRoomMetadata.setRoomMetadata(metadata);
   }
 
   public disconnectRoom() {
@@ -356,10 +356,8 @@ export default class ConnectLivekit
     );
 
     if (this._room.metadata && !isEmpty(this._room.metadata)) {
-      this.setRoomMetadata(this._room.metadata);
+      await this.setRoomMetadata(this._room.metadata);
     }
-
-    return;
   };
 
   private onDisconnected = (reason?: DisconnectReason) => {

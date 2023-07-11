@@ -17,7 +17,7 @@ export function buildCanvas2dPipeline(
   addFrameEvent: () => void,
 ) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
 
   const [segmentationWidth, segmentationHeight] =
     inputResolutions[segmentationConfig.inputResolution];
@@ -32,7 +32,9 @@ export function buildCanvas2dPipeline(
   bgImg.src = backgroundConfig.url as string;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const segmentationMaskCtx = segmentationMaskCanvas.getContext('2d')!;
+  const segmentationMaskCtx = segmentationMaskCanvas.getContext('2d', {
+    willReadFrequently: true,
+  })!;
 
   const inputMemoryOffset = tflite._getInputMemoryOffset() / 4;
   const outputMemoryOffset = tflite._getOutputMemoryOffset() / 4;
