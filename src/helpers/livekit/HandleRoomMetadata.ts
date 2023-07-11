@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 import { isEmpty } from 'validator';
+import { isE2EESupported } from 'livekit-client';
 
 import { store } from '../../store';
 import i18n from '../i18n';
@@ -7,12 +8,19 @@ import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateCurrentRoomMetadata } from '../../store/slices/sessionSlice';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
+import { IConnectLivekit } from './types';
 
 export default class HandleRoomMetadata {
   private metadata: IRoomMetadata | null = null;
+  private that: IConnectLivekit;
   private welcomeMessage: string | undefined = undefined;
+  private checkedE2EE: boolean = false;
 
-  public setRoomMetadata = (metadata: string) => {
+  constructor(that: IConnectLivekit) {
+    this.that = that;
+  }
+
+  public setRoomMetadata = async (metadata: string) => {
     if (!isEmpty(metadata)) {
       try {
         this.metadata = JSON.parse(metadata);
@@ -33,6 +41,29 @@ export default class HandleRoomMetadata {
       }
 
       if (this.metadata) {
+        if (!this.checkedE2EE) {
+          this.checkedE2EE = true;
+          const e2eeFeatures =
+            this.metadata.room_features.end_to_end_encryption_features;
+          if (
+            e2eeFeatures &&
+            e2eeFeatures.is_enabled &&
+            e2eeFeatures.encryption_key
+          ) {
+            if (!isE2EESupported()) {
+              this.that.setErrorStatus(
+                i18n.t('notifications.e2ee-unsupported-browser-title'),
+                i18n.t('notifications.e2ee-unsupported-browser-msg'),
+              );
+            } else {
+              await this.that.e2eeKeyProvider.setKey(
+                e2eeFeatures.encryption_key,
+              );
+              await this.that.room.setE2EEEnabled(true);
+            }
+          }
+        }
+
         this.setWindowTitle(this.metadata.room_title);
         this.showRecordingNotification();
         this.showRTMPNotification();
