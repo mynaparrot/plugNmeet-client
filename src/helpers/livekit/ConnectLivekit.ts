@@ -18,7 +18,6 @@ import {
   Track,
   VideoPresets,
 } from 'livekit-client';
-import { CrossOriginWorkerMaker as Worker } from './e2ee-worker/cross-origin-worker';
 import { EventEmitter } from 'eventemitter3';
 
 import { store } from '../../store';
@@ -54,6 +53,7 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from './types';
+import { CrossOriginWorkerMaker as Worker } from './e2ee-worker/cross-origin-worker';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
