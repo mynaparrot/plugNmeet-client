@@ -14,7 +14,7 @@ export default class HandleRoomMetadata {
   private metadata: IRoomMetadata | null = null;
   private that: IConnectLivekit;
   private welcomeMessage: string | undefined = undefined;
-  private checkedE2EE: boolean = false;
+  private checkedE2EE = false;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
@@ -56,10 +56,12 @@ export default class HandleRoomMetadata {
                 i18n.t('notifications.e2ee-unsupported-browser-msg'),
               );
             } else {
-              await this.that.e2eeKeyProvider.setKey(
-                e2eeFeatures.encryption_key,
-              );
-              await this.that.room.setE2EEEnabled(true);
+              if (!this.that.room.isE2EEEnabled) {
+                await this.that.e2eeKeyProvider.setKey(
+                  e2eeFeatures.encryption_key,
+                );
+                await this.that.room.setE2EEEnabled(true);
+              }
             }
           }
         }

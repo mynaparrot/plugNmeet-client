@@ -53,7 +53,7 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from './types';
-import { CrossOriginWorkerMaker as Worker } from './e2ee-worker/cross-origin-worker';
+import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
