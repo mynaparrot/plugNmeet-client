@@ -5,6 +5,7 @@ import type {
   RemoteParticipant,
   RemoteTrackPublication,
   Room,
+  ExternalE2EEKeyProvider,
 } from 'livekit-client';
 import type EventEmitter from 'eventemitter3';
 
@@ -25,6 +26,7 @@ export enum CurrentConnectionEvents {
 
 export interface IConnectLivekit extends EventEmitter {
   get room(): Room;
+  get e2eeKeyProvider(): ExternalE2EEKeyProvider;
   get videoSubscribersMap(): Map<
     string,
     Participant | LocalParticipant | RemoteParticipant
@@ -34,6 +36,9 @@ export interface IConnectLivekit extends EventEmitter {
     string,
     LocalTrackPublication | RemoteTrackPublication
   >;
+  setRoomMetadata(metadata: string): Promise<void>;
+  disconnectRoom(): void;
+  setErrorStatus(title: string, reason: string): void;
   updateVideoSubscribers(
     participant: Participant | LocalParticipant | RemoteParticipant,
     add?: boolean,
