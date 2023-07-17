@@ -44,7 +44,9 @@
     "websocket-disconnected": "Websocket সংযোগ বিচ্ছিন্ন, পুনরায় সংযোগ করা হচ্ছে..",
     "websocket-error": "Websocket এ ত্রুটি।",
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
-    "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে"
+    "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
