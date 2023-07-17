@@ -38,13 +38,15 @@
     "room-disconnected-participant-removed": "Você foi removido desta conferência. Código {{code}}",
     "room-disconnected-room-ended": "A sala foi fechada. Código: {{code}}",
     "room-disconnected-state-mismatch": "Incompatibilidade de estado. Código: {{code}}",
-    "your-connection-quality-not-good": "Your connection quality isn't good enough",
+    "your-connection-quality-not-good": "A qualidade da sua conexão não é boa o suficiente",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",
     "websocket-error": "Error in Websocket.",
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
-    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "Esta sessão está sendo gravada",
@@ -81,17 +83,17 @@
       "medium": "Médio",
       "low": "Baixo",
       "enable-dark-theme": "Ativar o Tema Escuro",
-      "video-object-fit": "Video object fit",
-      "video-object-fit-cover": "Cover",
-      "video-object-fit-contain": "Contain",
-      "column-camera-width": "Column camera width",
-      "column-camera-width-default": "Default",
-      "column-camera-width-medium": "Medium",
-      "column-camera-width-small": "Small",
-      "column-camera-position": "Column camera position",
-      "column-camera-position-left": "Left",
-      "column-camera-position-top": "Top",
-      "column-camera-position-bottom": "Bottom"
+      "video-object-fit": "Ajuste do objeto de vídeo",
+      "video-object-fit-cover": "Preencher",
+      "video-object-fit-contain": "Conter",
+      "column-camera-width": "Largura da coluna de câmera",
+      "column-camera-width-default": "Padrão",
+      "column-camera-width-medium": "Média",
+      "column-camera-width-small": "Pequena",
+      "column-camera-position": "Posição da coluna de câmera",
+      "column-camera-position-left": "Esquerda",
+      "column-camera-position-top": "Topo",
+      "column-camera-position-bottom": "Em baixo"
     },
     "keyboard-shortcuts": {
       "title": "Atalhos de teclado",
@@ -237,7 +239,7 @@
       "manage-breakout-room": "Gerenciar salas simultâneas",
       "start-display-external-link": "Exibir link externo",
       "stop-display-external-link": "Parar a exibição do link externo",
-      "speech-to-text-settings": "Speech to text/translation settings"
+      "speech-to-text-settings": "Configurações de fala para texto/tradução"
     },
     "notice": {
       "already-active-screen-sharing": "A sessão já tem compartilhamento de tela ativo",
