@@ -44,7 +44,9 @@
     "websocket-disconnected": "Websocket bağlantısı kesildi, yeniden bağlanıyor..",
     "websocket-error": "Websocket'te hata oluştu.",
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
-    "room-will-end-in": "Bu oda {{minutes}} dakika içinde sona erecektir"
+    "room-will-end-in": "Bu oda {{minutes}} dakika içinde sona erecektir",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "Bu oturum kaydediliyor",
