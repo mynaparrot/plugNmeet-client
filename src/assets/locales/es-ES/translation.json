@@ -44,7 +44,9 @@
     "websocket-disconnected": "Websocket desconectado, reconectando...",
     "websocket-error": "Error en Websocket.",
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
-    "room-will-end-in": "Esta sala terminará en {{minutes}} minutos"
+    "room-will-end-in": "Esta sala terminará en {{minutes}} minutos",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "Esta sesión se está grabando",
