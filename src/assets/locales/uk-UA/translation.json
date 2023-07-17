@@ -44,7 +44,9 @@
     "websocket-disconnected": "Websocket відключено, повторне підключення..",
     "websocket-error": "Помилка в Websocket.",
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
-    "room-will-end-in": "Ця кімната буде закрита через {{minutes}} хвилини"
+    "room-will-end-in": "Ця кімната буде закрита через {{minutes}} хвилини",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "Цей сеанс записується",
