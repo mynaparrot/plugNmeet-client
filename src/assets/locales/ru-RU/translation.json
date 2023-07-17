@@ -44,7 +44,9 @@
     "websocket-disconnected": "Веб-сокет отключен, переподключение..",
     "websocket-error": "Ошибка в веб-сокете.",
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
-    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "Сессия записывается",
