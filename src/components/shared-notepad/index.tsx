@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, store, useAppSelector } from '../../store';
-// import { Rnd } from 'react-rnd';
 import Draggable from 'react-draggable';
-import { Resizable } from 're-resizable';
 
 const sharedNotepadFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -70,28 +68,23 @@ const SharedNotepadElement = () => {
     if (url) {
       return (
         <div className="h-[calc(100%-50px)] sm:px-5 mt-9">
-          <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
-            <div className="absolute z-[999] top-1/2 left-1/2">
-              <Resizable>
-                <div className="notepad-wrapper h-[calc(100%-80px)] w-[1100px] m-auto border-t-[20px] border-solid border-primaryColor cursor-pointer">
-                  <div className="inner w-full h-full border-2 border-solid border-primaryColor">
-                    {!loaded ? (
-                      <div className="loading absolute left-[50%] top-[40%] flex justify-center">
-                        <div className="lds-ripple">
-                          <div className="border-secondaryColor"></div>
-                          <div className="border-secondaryColor"></div>
-                        </div>
-                      </div>
-                    ) : null}
-                    <iframe
-                      height="100%"
-                      width="100%"
-                      src={url}
-                      onLoad={onLoad}
-                    />
+          <Draggable handle="#draggable-h1">
+            <div className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[1100px] m-auto cursor-pointer relative">
+              <div
+                id="draggable-h1"
+                className="absolute top-0 left-0 border-t-[20px] border-solid border-transparent w-full"
+              />
+              <div className="inner w-full h-full border-t-[20px] border-solid border-primaryColor">
+                {!loaded ? (
+                  <div className="loading absolute left-[50%] top-[40%] flex justify-center">
+                    <div className="lds-ripple">
+                      <div className="border-secondaryColor"></div>
+                      <div className="border-secondaryColor"></div>
+                    </div>
                   </div>
-                </div>
-              </Resizable>
+                ) : null}
+                <iframe height="100%" width="100%" src={url} onLoad={onLoad} />
+              </div>
             </div>
           </Draggable>
         </div>
