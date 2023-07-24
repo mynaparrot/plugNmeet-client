@@ -8,7 +8,7 @@ import { store } from '../../store';
 
 export interface IUseResumableFilesUpload {
   allowedFileTypes: Array<string>;
-  maxFileSize: number | undefined;
+  maxFileSize: string | undefined;
   files: Array<File> | undefined;
 }
 export interface IUseResumableFilesUploadResult {
@@ -59,7 +59,7 @@ const useResumableFilesUpload = ({
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      maxFileSize: maxFileSize ? maxFileSize * 1000000 : undefined,
+      maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
       maxFileSizeErrorCallback() {
         toast(t('notifications.max-file-size-exceeds'), {
           type: toast.TYPE.ERROR,

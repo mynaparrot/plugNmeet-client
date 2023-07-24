@@ -1,7 +1,10 @@
 import { Dispatch } from 'react';
 import { isEmpty } from 'validator';
 import {
+  ConnectionState,
   DisconnectReason,
+  ExternalE2EEKeyProvider,
+  isE2EESupported,
   LocalParticipant,
   LocalTrackPublication,
   Participant,
@@ -9,12 +12,13 @@ import {
   RemoteTrackPublication,
   Room,
   RoomEvent,
+  RoomOptions,
   supportsAV1,
   supportsVP9,
   Track,
   VideoPresets,
 } from 'livekit-client';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 
 import { store } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
@@ -49,6 +53,7 @@ import {
   CurrentConnectionEvents,
   IConnectLivekit,
 } from './types';
+import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
@@ -73,6 +78,7 @@ export default class ConnectLivekit
   private readonly _room: Room;
   private readonly url: string;
   private tokenRenewInterval: any;
+  private _e2eeKeyProvider: ExternalE2EEKeyProvider;
 
   private handleParticipant: HandleParticipants;
   private handleMediaTracks: HandleMediaTracks;
@@ -91,11 +97,12 @@ export default class ConnectLivekit
 
     this.errorState = errorState;
     this.roomConnectionStatusState = roomConnectionStatusState;
+    this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
 
     this.handleParticipant = new HandleParticipants(this);
     this.handleMediaTracks = new HandleMediaTracks(this);
     this.handleDataMessages = new HandleDataMessages(this);
-    this.handleRoomMetadata = new HandleRoomMetadata();
+    this.handleRoomMetadata = new HandleRoomMetadata(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
     this.roomConnectionStatusState('connecting');
@@ -123,12 +130,16 @@ export default class ConnectLivekit
     return this._room;
   }
 
+  public get e2eeKeyProvider() {
+    return this._e2eeKeyProvider;
+  }
+
   private connect = async () => {
     try {
       await this._room.connect(this.url, this.token);
       // we'll prepare our information
-      await this.initiateParticipants();
       await this.updateSession();
+      await this.initiateParticipants();
       // open websocket
       openWebsocketConnection();
       // finally
@@ -143,6 +154,109 @@ export default class ConnectLivekit
         text: String(error),
       });
     }
+  };
+
+  private configureRoom = () => {
+    let videoCodec = (window as any).VIDEO_CODEC ?? 'vp8';
+    if (
+      (videoCodec === 'vp9' && !supportsVP9()) ||
+      (videoCodec === 'av1' && !supportsAV1())
+    ) {
+      videoCodec = 'vp8';
+    }
+
+    const roomOptions: RoomOptions = {
+      adaptiveStream: true,
+      dynacast: (window as any).ENABLE_DYNACAST ?? false,
+      stopLocalTrackOnUnpublish: true,
+      videoCaptureDefaults: {
+        resolution: VideoPresets.h720.resolution,
+      },
+      publishDefaults: {
+        simulcast: (window as any).ENABLE_SIMULCAST ?? false,
+        videoSimulcastLayers: [
+          VideoPresets.h90,
+          VideoPresets.h180,
+          VideoPresets.h360,
+        ],
+        stopMicTrackOnMute: (window as any).STOP_MIC_TRACK_ON_MUTE ?? false,
+        videoCodec: videoCodec,
+      },
+    };
+
+    if (isE2EESupported()) {
+      const workerMaker = new Worker(
+        new URL('./e2ee-worker/livekit-client.e2ee.worker.js', import.meta.url),
+      );
+
+      roomOptions.e2ee = {
+        keyProvider: this._e2eeKeyProvider,
+        worker: workerMaker.worker,
+      };
+    }
+
+    const room = new Room(roomOptions);
+    room.on(RoomEvent.Reconnecting, () =>
+      this.roomConnectionStatusState('re-connecting'),
+    );
+    room.on(RoomEvent.Reconnected, () =>
+      this.roomConnectionStatusState('connected'),
+    );
+    room.on(RoomEvent.Disconnected, this.onDisconnected);
+    room.on(
+      RoomEvent.RoomMetadataChanged,
+      this.handleRoomMetadata.setRoomMetadata,
+    );
+    room.on(
+      RoomEvent.ActiveSpeakersChanged,
+      this.handleActiveSpeakers.activeSpeakersChanged,
+    );
+    room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
+
+    room.on(RoomEvent.DataReceived, this.handleDataMessages.dataReceived);
+
+    room.on(
+      RoomEvent.ParticipantConnected,
+      this.handleParticipant.participantConnected,
+    );
+    room.on(
+      RoomEvent.ParticipantDisconnected,
+      this.handleParticipant.participantDisconnected,
+    );
+    room.on(
+      RoomEvent.ParticipantMetadataChanged,
+      this.handleParticipant.setParticipantMetadata,
+    );
+    room.on(
+      RoomEvent.ConnectionQualityChanged,
+      this.handleParticipant.connectionQualityChanged,
+    );
+
+    room.on(
+      RoomEvent.LocalTrackPublished,
+      this.handleMediaTracks.localTrackPublished,
+    );
+    room.on(
+      RoomEvent.LocalTrackUnpublished,
+      this.handleMediaTracks.localTrackUnpublished,
+    );
+    room.on(RoomEvent.TrackSubscribed, this.handleMediaTracks.trackSubscribed);
+    room.on(
+      RoomEvent.TrackUnpublished,
+      this.handleMediaTracks.trackUnsubscribed,
+    );
+    room.on(
+      RoomEvent.TrackSubscriptionFailed,
+      this.handleMediaTracks.trackSubscriptionFailed,
+    );
+    room.on(RoomEvent.TrackMuted, this.handleMediaTracks.trackMuted);
+    room.on(RoomEvent.TrackUnmuted, this.handleMediaTracks.trackUnmuted);
+    room.on(
+      RoomEvent.TrackStreamStateChanged,
+      this.handleMediaTracks.trackStreamStateChanged,
+    );
+
+    return room;
   };
 
   private initiateParticipants = async () => {
@@ -212,6 +326,24 @@ export default class ConnectLivekit
     return;
   };
 
+  public async setRoomMetadata(metadata: string) {
+    await this.handleRoomMetadata.setRoomMetadata(metadata);
+  }
+
+  public disconnectRoom() {
+    if (this._room.state === ConnectionState.Connected) {
+      this._room.disconnect(true);
+    }
+  }
+
+  public setErrorStatus(title: string, reason: string) {
+    this.roomConnectionStatusState('error');
+    this.errorState({
+      title: title,
+      text: reason,
+    });
+  }
+
   private updateSession = async () => {
     store.dispatch(
       addCurrentRoom({
@@ -221,100 +353,8 @@ export default class ConnectLivekit
     );
 
     if (this._room.metadata && !isEmpty(this._room.metadata)) {
-      this.handleRoomMetadata.setRoomMetadata(this._room.metadata);
+      await this.setRoomMetadata(this._room.metadata);
     }
-
-    return;
-  };
-
-  private configureRoom = () => {
-    let videoCodec = (window as any).VIDEO_CODEC ?? 'vp8';
-    if (
-      (videoCodec === 'vp9' && !supportsVP9()) ||
-      (videoCodec === 'av1' && !supportsAV1())
-    ) {
-      videoCodec = 'vp8';
-    }
-    const room = new Room({
-      adaptiveStream: true,
-      dynacast: (window as any).ENABLE_DYNACAST ?? false,
-      stopLocalTrackOnUnpublish: true,
-      videoCaptureDefaults: {
-        resolution: VideoPresets.h720.resolution,
-      },
-      publishDefaults: {
-        simulcast: (window as any).ENABLE_SIMULCAST ?? false,
-        videoSimulcastLayers: [
-          VideoPresets.h90,
-          VideoPresets.h180,
-          VideoPresets.h360,
-        ],
-        stopMicTrackOnMute: (window as any).STOP_MIC_TRACK_ON_MUTE ?? false,
-        videoCodec: videoCodec,
-      },
-    });
-
-    room.on(RoomEvent.Reconnecting, () =>
-      this.roomConnectionStatusState('re-connecting'),
-    );
-    room.on(RoomEvent.Reconnected, () =>
-      this.roomConnectionStatusState('connected'),
-    );
-    room.on(RoomEvent.Disconnected, this.onDisconnected);
-    room.on(
-      RoomEvent.RoomMetadataChanged,
-      this.handleRoomMetadata.setRoomMetadata,
-    );
-    room.on(
-      RoomEvent.ActiveSpeakersChanged,
-      this.handleActiveSpeakers.activeSpeakersChanged,
-    );
-    room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
-
-    room.on(RoomEvent.DataReceived, this.handleDataMessages.dataReceived);
-
-    room.on(
-      RoomEvent.ParticipantConnected,
-      this.handleParticipant.participantConnected,
-    );
-    room.on(
-      RoomEvent.ParticipantDisconnected,
-      this.handleParticipant.participantDisconnected,
-    );
-    room.on(
-      RoomEvent.ParticipantMetadataChanged,
-      this.handleParticipant.setParticipantMetadata,
-    );
-    room.on(
-      RoomEvent.ConnectionQualityChanged,
-      this.handleParticipant.connectionQualityChanged,
-    );
-
-    room.on(
-      RoomEvent.LocalTrackPublished,
-      this.handleMediaTracks.localTrackPublished,
-    );
-    room.on(
-      RoomEvent.LocalTrackUnpublished,
-      this.handleMediaTracks.localTrackUnpublished,
-    );
-    room.on(RoomEvent.TrackSubscribed, this.handleMediaTracks.trackSubscribed);
-    room.on(
-      RoomEvent.TrackUnpublished,
-      this.handleMediaTracks.trackUnsubscribed,
-    );
-    room.on(
-      RoomEvent.TrackSubscriptionFailed,
-      this.handleMediaTracks.trackSubscriptionFailed,
-    );
-    room.on(RoomEvent.TrackMuted, this.handleMediaTracks.trackMuted);
-    room.on(RoomEvent.TrackUnmuted, this.handleMediaTracks.trackUnmuted);
-    room.on(
-      RoomEvent.TrackStreamStateChanged,
-      this.handleMediaTracks.trackStreamStateChanged,
-    );
-
-    return room;
   };
 
   private onDisconnected = (reason?: DisconnectReason) => {

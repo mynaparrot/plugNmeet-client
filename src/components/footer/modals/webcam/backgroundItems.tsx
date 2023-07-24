@@ -25,7 +25,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
 
   const { isUploading, result } = useResumableFilesUpload({
     allowedFileTypes,
-    maxFileSize: 30,
+    maxFileSize: '30',
     files,
   });
 

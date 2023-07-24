@@ -87,6 +87,9 @@ export default class HandleDataMessages {
           );
         }
         break;
+      case DataMsgBodyType.UPDATE_ROOM_METADATA:
+        this.that.setRoomMetadata(body.msg);
+        break;
     }
   };
 

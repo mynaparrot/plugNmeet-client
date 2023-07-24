@@ -48,7 +48,7 @@ const SubtitleArea = () => {
     <>
       {speechServices.selectedSubtitleLang !== '' &&
       subtitleText !== undefined ? (
-        <div className="sub-title w-max absolute bottom-4 py-1 px-2 bg-black/20 text-black dark:text-white m-auto inline-block left-1/2 -translate-x-1/2 text-sm pointer-events-none">
+        <div className="sub-title w-max absolute bottom-4 py-1 px-2 bg-black text-white m-auto inline-block left-1/2 -translate-x-1/2 text-sm pointer-events-none">
           {subtitleText}
         </div>
       ) : null}

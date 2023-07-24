@@ -18,6 +18,8 @@ export type SegmentationConfig = {
   backend: SegmentationBackend;
   inputResolution: InputResolution;
   pipeline: PipelineName;
+  targetFps: number;
+  deferInputResizing: boolean;
 };
 
 export const defaultSegmentationConfig: SegmentationConfig = {
@@ -25,6 +27,8 @@ export const defaultSegmentationConfig: SegmentationConfig = {
   backend: 'wasmSimd',
   inputResolution: '160x96',
   pipeline: 'canvas2dCpu',
+  targetFps: 65,
+  deferInputResizing: true,
 };
 
 export function getTFLiteModelFileName(

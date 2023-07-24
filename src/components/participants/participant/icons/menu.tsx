@@ -24,6 +24,11 @@ const defaultLockSettingsSelector = createSelector(
   (default_lock_settings) => default_lock_settings,
 );
 
+const currentUserLockSettingsSelector = createSelector(
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings,
+);
+
 const MenuIcon = ({
   userId,
   name,
@@ -31,6 +36,9 @@ const MenuIcon = ({
   openRemoveParticipantAlert,
 }: IMenuIconProps) => {
   const defaultLockSettings = useAppSelector(defaultLockSettingsSelector);
+  const currentUserLockSettings = useAppSelector(
+    currentUserLockSettingsSelector,
+  );
   const currentUser = store.getState().session.currentUser;
 
   const renderMenuItems = () => {
@@ -54,6 +62,7 @@ const MenuIcon = ({
     // if lock then user won't be able to send private messages to each other
     if (
       !currentUser?.metadata?.is_admin &&
+      !currentUserLockSettings?.lock_private_chat &&
       !defaultLockSettings?.lock_chat &&
       !defaultLockSettings?.lock_private_chat
     ) {

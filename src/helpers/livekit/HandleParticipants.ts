@@ -228,6 +228,11 @@ export default class HandleParticipants {
 
   private notificationForWaitingUser(metadata: ICurrentUserMetadata, name) {
     const state = store.getState();
+    if (state.session.currentUser?.isRecorder) {
+      // if current user is recorder then don't need to do anything
+      return;
+    }
+
     if (
       metadata.wait_for_approval &&
       state.session.currentUser?.metadata?.is_admin

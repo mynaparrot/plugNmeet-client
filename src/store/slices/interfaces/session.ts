@@ -31,10 +31,12 @@ export interface ICurrentUser {
 export interface ICurrentUserMetadata {
   profile_pic?: string;
   is_admin: boolean;
+  record_webcam?: boolean;
   is_presenter: boolean;
   raised_hand: boolean;
   wait_for_approval: boolean;
   lock_settings: ILockSettings;
+  metadata_id?: string;
 }
 
 export interface ICurrentRoom {
@@ -49,11 +51,12 @@ export interface IRoomMetadata {
   is_recording: boolean;
   is_active_rtmp: boolean;
   is_breakout_room: boolean;
-  started_at: number;
+  started_at: string;
   logout_url?: string;
   room_features: IRoomFeatures;
   default_lock_settings?: ILockSettings;
   copyright_conf: ICopyright_conf;
+  metadata_id?: string;
 }
 
 interface IRoomFeatures {
@@ -65,7 +68,7 @@ interface IRoomFeatures {
   allow_view_other_users_list: boolean;
   admin_only_webcams: boolean;
   allow_polls: boolean;
-  room_duration: number;
+  room_duration: string;
   recording_features: IRecordingFeatures;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;
@@ -84,13 +87,14 @@ export interface IRecordingFeatures {
   is_allow_cloud: boolean;
   enable_auto_cloud_recording: boolean;
   is_allow_local: boolean;
+  only_record_admin_webcams: boolean;
 }
 
 interface IChatFeatures {
   allow_chat: boolean;
   allow_file_upload: boolean;
   allowed_file_types?: Array<string>;
-  max_file_size?: number;
+  max_file_size?: string;
 }
 
 interface ISharedNotepadFeatures {
