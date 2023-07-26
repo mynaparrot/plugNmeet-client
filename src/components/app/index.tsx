@@ -127,6 +127,7 @@ const App = () => {
           setLivekitInfo({
             livekit_host: res.livekitHost,
             token: res.token,
+            enabledE2EE: res.enabledE2ee,
           });
         } else {
           setError({
