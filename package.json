@@ -46,7 +46,7 @@
     "reconnecting-websocket": "4.4.0",
     "resumablejs": "1.1.0",
     "sanitize-html": "2.11.0",
-    "validator": "13.9.0",
+    "validator": "13.11.0",
     "video.js": "8.3.0"
   },
   "devDependencies": {
