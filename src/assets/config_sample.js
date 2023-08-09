@@ -39,7 +39,7 @@ window.STOP_MIC_TRACK_ON_MUTE = true;
 //   "left_side_bg_color": "#04a2f3",
 //   "right_side_bg_color": "#04a2f3",
 //   "custom_css_url": "https:\/\/mydomain.com\/plugNmeet_desing.css",
-//   "custom_logo": "https:\/\/mydomain.com\/logo.png",
+//   "custom_logo": "https:\/\/mydomain.com\/logo.png"
 // }`;
 
 // Whiteboard PreloadedLibraryItems which should an array of full library direct URL
