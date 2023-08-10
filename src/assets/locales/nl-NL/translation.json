@@ -43,7 +43,10 @@
     "need-to-disable-external-media-player": "Externe Media Player is ingeschakeld. Gelieve het te stoppen voordat u de externe link opent.",
     "websocket-disconnected": "Websocket verbroken, opnieuw verbinden..",
     "websocket-error": "Fout in Websocket.",
-    "room-will-end-in": "This room will be ended in {{minutes}} minutes"
+    "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
+    "room-will-end-in": "This room will be ended in {{minutes}} minutes",
+    "e2ee-unsupported-browser-title": "Unsupported browser",
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
   },
   "room-metadata": {
     "session-recording": "Deze sessie wordt opgenomen",
@@ -235,7 +238,8 @@
       "manage-waiting-room": "Manage waiting room",
       "manage-breakout-room": "Manage breakout room",
       "start-display-external-link": "Display external link",
-      "stop-display-external-link": "Stop display external link"
+      "stop-display-external-link": "Stop display external link",
+      "speech-to-text-settings": "Speech to text/translation settings"
     },
     "notice": {
       "already-active-screen-sharing": "Session already has an active screen sharing",
@@ -384,5 +388,38 @@
     "gen-link": "Generate link",
     "rtmp-url": "RTMP Host/URL",
     "rtmp-key": "RTMP key/secret"
+  },
+  "speech-services": {
+    "modal-settings-title": "Speech to text/translation settings",
+    "enable-speech-to-text": "Enable speech to text",
+    "speech-langs-label": "Speech languages",
+    "speech-users-label": "Speech users",
+    "enable-translation": "Enable translation",
+    "translation-langs-label": "Translation languages",
+    "enable-service": "Enable service",
+    "speech-user-required": "At least one speech user require",
+    "speech-lang-required": "At least one speech language require",
+    "translation-lang-required": "At least one translation language or 2 speech languages required",
+    "service-ready": "Speech service is ready",
+    "start-service": "Start",
+    "stop-service": "Stop",
+    "update-service": "Update",
+    "service-stopped": "Service has been stopped",
+    "start-modal-title": "Speech to text/translation service",
+    "speech-lang-label": "Speech language",
+    "subtitle-lang-label": "Subtitle language",
+    "subtitle-settings": "Subtitle settings",
+    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}",
+    "speech-to-text-ready": "Service started. You can start speaking now.",
+    "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",
+    "already-using-service": "You're already using the service.",
+    "service-disabled": "Service is disabled. Please check server configuration.",
+    "token-generation-failed": "Token generation failed with error: {{error}}",
+    "mic-error": "Service can't start because of microphone problem.",
+    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
+    "select-one-lang": "Select one language",
+    "subtitle-history-modal-title": "Subtitle texts history",
+    "azure-error": "Microsoft azure error: {{error}}",
+    "speech-to-text-stopped": "Speech to text service has been stopped"
   }
 }
