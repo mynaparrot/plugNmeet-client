@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-import NoSleep from 'nosleep.js';
+import { toast } from 'react-toastify';
 
 import ErrorPage from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
@@ -30,7 +30,6 @@ import {
   VerifyTokenRes,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { IConnectLivekit } from '../../helpers/livekit/types';
-import { toast } from 'react-toastify';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -41,7 +40,6 @@ const waitingForApprovalSelector = createSelector(
 const App = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const noSleep = new NoSleep();
   const toastId = React.useRef<string>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -221,9 +219,6 @@ const App = () => {
     if (livekitInfo) {
       const currentConnection = startLivekitConnection(livekitInfo);
       setCurrentConnection(currentConnection);
-
-      // Prevent display sleep for mobile devices
-      await noSleep.enable();
     }
   };
 
