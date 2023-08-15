@@ -30,6 +30,7 @@ import {
   VerifyTokenRes,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { IConnectLivekit } from '../../helpers/livekit/types';
+import { toast } from 'react-toastify';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -41,6 +42,7 @@ const App = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const noSleep = new NoSleep();
+  const toastId = React.useRef<string>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
@@ -155,13 +157,27 @@ const App = () => {
   useEffect(() => {
     if (
       roomConnectionStatus === 'connecting' ||
-      roomConnectionStatus === 're-connecting' ||
       roomConnectionStatus === 'checking'
     ) {
       setLoading(true);
+    } else if (roomConnectionStatus === 're-connecting') {
+      //eslint-disable-next-line
+      // @ts-ignore
+      toastId.current = toast.loading(
+        t('notifications.room-disconnected-reconnecting'),
+        {
+          type: toast.TYPE.WARNING,
+          closeButton: false,
+          autoClose: false,
+        },
+      );
     } else {
       setLoading(false);
+      if (toastId.current) {
+        toast.dismiss(toastId.current);
+      }
     }
+    //eslint-disable-next-line
   }, [roomConnectionStatus]);
 
   useEffect(() => {
@@ -216,7 +232,10 @@ const App = () => {
       return <Loading text={t(('app.' + roomConnectionStatus) as any)} />;
     } else if (error && !loading) {
       return <ErrorPage title={error.title} text={error.text} />;
-    } else if (roomConnectionStatus === 'connected') {
+    } else if (
+      roomConnectionStatus === 'connected' ||
+      roomConnectionStatus === 're-connecting'
+    ) {
       if (waitForApproval) {
         return <WaitingRoomPage />;
       }
