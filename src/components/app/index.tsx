@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
@@ -40,7 +46,7 @@ const waitingForApprovalSelector = createSelector(
 const App = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const toastId = React.useRef<string>(null);
+  const toastId = useRef<string>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
