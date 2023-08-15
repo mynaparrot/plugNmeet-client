@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import MobileDetect from 'mobile-detect';
 import type { Room } from 'livekit-client';
 import NoSleep from 'nosleep.js';
@@ -19,6 +19,7 @@ import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
   const noSleep = new NoSleep();
+  const initialRef = useRef(false);
 
   const [deviceClass, setDeviceClass] = useState<string>('');
   const [orientationClass, setOrientationClass] =
@@ -54,6 +55,11 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
   }, [preScreenWidth, screenWidth]);
 
   useEffect(() => {
+    if (initialRef.current) {
+      return;
+    }
+    initialRef.current = true;
+
     window.onresize = () => {
       setScreenWidth(window.innerWidth);
       dispatch(updateScreenHeight(window.innerHeight));
