@@ -202,7 +202,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
       <div className="flex text-sm items-center justify-center relative pl-3">
         {isAdmin && !isRecorder ? (
           <button
-            className="w-10 h-8 flex items-center justify-center absolute left-0 top-[3px]"
+            className="w-10 h-8 flex items-center justify-center absolute -right-9 top-1/2 -translate-y-1/2"
             onClick={takeOverPresenter}
           >
             <i className="pnm-presenter primaryColor text-[14px] opacity-50" />
