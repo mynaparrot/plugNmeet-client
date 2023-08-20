@@ -199,13 +199,17 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
 
   const renderForParticipant = () => {
     return (
-      <div className="flex text-sm items-center justify-start md:justify-center relative pl-3">
+      <div
+        className={`flex text-sm items-center justify-start md:justify-center relative ${
+          isAdmin && !isRecorder ? 'pl-3 md:pl-12' : 'pl-3'
+        } `}
+      >
         {isAdmin && !isRecorder ? (
           <button
-            className="w-10 h-8 flex items-center justify-center absolute right-4 md:-right-9 top-1/2 -translate-y-1/2"
+            className="w-8 h-8 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] flex items-center justify-center absolute right-4 md:left-2 top-1/2 -translate-y-1/2"
             onClick={takeOverPresenter}
           >
-            <i className="pnm-presenter primaryColor text-[14px] opacity-50" />
+            <i className="pnm-presenter text-[14px]" />
           </button>
         ) : null}
         {t('whiteboard.page', { count: currentPage })}
