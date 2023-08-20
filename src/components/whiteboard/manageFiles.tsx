@@ -96,19 +96,19 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
     return (
       <>
         <button
-          className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-md bg-[#F2F2F2] dark:bg-[#363636] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer"
+          className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer"
           onClick={() => openFileBrowser('image')}
         >
-          <i className="pnm-blank-img primaryColor dark:text-secondaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+          <i className="pnm-blank-img text-[14px] mr-1" />
           {t('whiteboard.upload-image')}
         </button>
         <div className="menu relative z-10">
           <Menu>
             {({ open }) => (
               <>
-                <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-md bg-[#F2F2F2] dark:bg-[#363636] hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
+                <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer">
                   <>
-                    <i className="pnm-attachment primaryColor dark:text-secondaryColor hover:secondaryColor text-[14px] opacity-50 mr-1" />
+                    <i className="pnm-attachment text-[14px] mr-1" />
                     {t('whiteboard.manage-files')}
                   </>
                 </Menu.Button>
