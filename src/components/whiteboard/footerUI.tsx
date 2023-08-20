@@ -199,10 +199,10 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
 
   const renderForParticipant = () => {
     return (
-      <div className="flex text-sm items-center justify-center relative pl-3">
+      <div className="flex text-sm items-center justify-start md:justify-center relative pl-3">
         {isAdmin && !isRecorder ? (
           <button
-            className="w-10 h-8 flex items-center justify-center absolute -right-9 top-1/2 -translate-y-1/2"
+            className="w-10 h-8 flex items-center justify-center absolute right-4 md:-right-9 top-1/2 -translate-y-1/2"
             onClick={takeOverPresenter}
           >
             <i className="pnm-presenter primaryColor text-[14px] opacity-50" />
