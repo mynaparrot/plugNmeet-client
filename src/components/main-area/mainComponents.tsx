@@ -150,7 +150,8 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   const notepadElm = useMemo(() => {
     let classNames = 'hidden';
     if (isActiveSharedNotePad) {
-      classNames = 'w-full notepadMainParent absolute h-full z-10';
+      classNames =
+        'w-full notepadMainParent absolute h-full z-10 top-0 pointer-events-none';
     }
 
     return (
