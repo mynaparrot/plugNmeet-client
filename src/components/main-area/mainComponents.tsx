@@ -155,7 +155,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
       classNames = 'hidden';
     } else if (isActiveSharedNotePad) {
       dispatch(updateIsActiveParticipantsPanel(false));
-      classNames = 'w-full';
+      classNames = 'w-full notepadMainParent absolute h-full z-10';
     }
 
     return (

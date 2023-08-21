@@ -139,7 +139,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
       : css.push('hideScreenShare');
 
     isActiveSharedNotePad
-      ? css.push('showSharedNotepad fullWidthMainArea')
+      ? css.push('showSharedNotepadfullWidthMainArea')
       : css.push('hideSharedNotepad');
 
     isActiveWhiteboard
