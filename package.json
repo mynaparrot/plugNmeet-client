@@ -37,7 +37,7 @@
     "react-dnd": "16.0.1",
     "react-dnd-html5-backend": "16.0.1",
     "react-dom": "18.2.0",
-    "react-draggable": "4.4.5",
+    "react-draggable": "npm:@tdaniil/react-draggable@5.0.1",
     "react-hotkeys-hook": "4.4.1",
     "react-i18next": "13.0.3",
     "react-player": "2.12.0",

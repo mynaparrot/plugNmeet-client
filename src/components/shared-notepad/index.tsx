@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import Draggable from 'react-draggable';
@@ -27,6 +27,7 @@ const SharedNotepadElement = () => {
   const theme = useAppSelector(themeSelector);
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
+  const nodeRef = useRef(null);
 
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
@@ -91,8 +92,11 @@ const SharedNotepadElement = () => {
     <>
       {url ? (
         <div className="h-[calc(100%-50px)] sm:px-5 mt-9 flex">
-          <Draggable handle="#draggable-h1">
-            <div className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-move relative pointer-events-auto">
+          <Draggable handle="#draggable-h1" nodeRef={nodeRef}>
+            <div
+              className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-move relative pointer-events-auto"
+              ref={nodeRef}
+            >
               <div
                 id="draggable-h1"
                 className="absolute top-2 md:top-0 left-0 h-7 w-full text-white flex items-center justify-center text-sm"
