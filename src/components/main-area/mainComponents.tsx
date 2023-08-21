@@ -108,7 +108,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   useEffect(() => {
     if (
       !isActiveScreenShare &&
-      !isActiveSharedNotePad &&
       !isActiveWhiteboard &&
       !isActiveExternalMediaPlayer &&
       !isActiveDisplayExternalLink
@@ -119,7 +118,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     }
   }, [
     isActiveScreenShare,
-    isActiveSharedNotePad,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
@@ -151,10 +149,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
 
   const notepadElm = useMemo(() => {
     let classNames = 'hidden';
-    if (activeScreenSharingView && isActiveScreenShare) {
-      classNames = 'hidden';
-    } else if (isActiveSharedNotePad) {
-      dispatch(updateIsActiveParticipantsPanel(false));
+    if (isActiveSharedNotePad) {
       classNames = 'w-full notepadMainParent absolute h-full z-10';
     }
 
@@ -163,12 +158,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
         <SharedNotepadElement />
       </div>
     );
-  }, [
-    dispatch,
-    activeScreenSharingView,
-    isActiveScreenShare,
-    isActiveSharedNotePad,
-  ]);
+  }, [isActiveSharedNotePad]);
 
   // we can't disable to show both external player & link.
   // So, external-media-player will be first priority
@@ -176,8 +166,7 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     let classNames = 'hidden';
     if (
       (activeScreenSharingView && isActiveScreenShare) ||
-      isActiveWhiteboard ||
-      isActiveSharedNotePad
+      isActiveWhiteboard
     ) {
       classNames = 'hidden';
     } else if (isActiveExternalMediaPlayer) {
@@ -208,7 +197,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
     if (
       (activeScreenSharingView && isActiveScreenShare) ||
       isActiveWhiteboard ||
-      isActiveSharedNotePad ||
       isActiveExternalMediaPlayer
     ) {
       classNames = 'hidden';
@@ -229,7 +217,6 @@ const MainComponents = ({ currentConnection }: IMainComponentsProps) => {
   }, [
     activeScreenSharingView,
     isActiveScreenShare,
-    isActiveSharedNotePad,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,

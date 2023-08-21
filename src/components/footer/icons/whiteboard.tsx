@@ -10,7 +10,6 @@ import {
 } from '../../../store';
 import {
   updateIsActiveChatPanel,
-  updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
@@ -45,9 +44,6 @@ const WhiteboardIcon = () => {
   useEffect(() => {
     if (isActiveWhiteboard) {
       setIconCSS('secondaryColor');
-      if (store.getState().bottomIconsActivity.isActiveSharedNotePad) {
-        dispatch(updateIsActiveSharedNotePad(false));
-      }
       if (!isRecorder) {
         dispatch(updateIsActiveChatPanel(false));
       }
@@ -102,7 +98,6 @@ const WhiteboardIcon = () => {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,
         visibleWhiteBoard: true,
-        visibleNotepad: false,
       });
       // wait little bit before change visibility
       setTimeout(() => {
