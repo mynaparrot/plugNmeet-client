@@ -92,10 +92,10 @@ const SharedNotepadElement = () => {
       {url ? (
         <div className="h-[calc(100%-50px)] sm:px-5 mt-9 flex">
           <Draggable handle="#draggable-h1">
-            <div className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-pointer relative pointer-events-auto">
+            <div className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-move relative pointer-events-auto">
               <div
                 id="draggable-h1"
-                className="absolute top-0 left-0 h-7 w-full text-white flex items-center justify-center text-sm"
+                className="absolute top-2 md:top-0 left-0 h-7 w-full text-white flex items-center justify-center text-sm"
               >
                 Shared NotePad
               </div>
