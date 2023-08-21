@@ -3,7 +3,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import Draggable from 'react-draggable';
 
-import { RootState, store, useAppSelector } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 
 const sharedNotepadFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -25,6 +26,7 @@ const SharedNotepadElement = () => {
   const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
   const theme = useAppSelector(themeSelector);
   const { i18n } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
@@ -81,9 +83,13 @@ const SharedNotepadElement = () => {
     setLoaded(true);
   };
 
-  const render = () => {
-    if (url) {
-      return (
+  const minimizePad = () => {
+    dispatch(updateIsActiveSharedNotePad(false));
+  };
+
+  return (
+    <>
+      {url ? (
         <div className="h-[calc(100%-50px)] sm:px-5 mt-9 flex">
           <Draggable handle="#draggable-h1">
             <div className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-pointer relative">
@@ -92,7 +98,10 @@ const SharedNotepadElement = () => {
                 className="absolute top-0 left-0 border-t-[20px] border-solid border-transparent w-full"
               />
               <div className="hide-icon absolute right-1 w-6 h-5 cursor-pointer flex items-center">
-                <div className="line h-0.5 w-full bg-white"></div>
+                <div
+                  className="line h-0.5 w-full bg-white"
+                  onClick={minimizePad}
+                ></div>
               </div>
               <div className="inner w-full h-full border-t-[20px] border-solid border-primaryColor">
                 {!loaded ? (
@@ -108,13 +117,9 @@ const SharedNotepadElement = () => {
             </div>
           </Draggable>
         </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  return <>{render()}</>;
+      ) : null}
+    </>
+  );
 };
 
 export default SharedNotepadElement;
