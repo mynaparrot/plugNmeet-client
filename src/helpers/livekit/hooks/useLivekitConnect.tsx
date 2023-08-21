@@ -7,6 +7,7 @@ import { IConnectLivekit } from '../types';
 export interface LivekitInfo {
   livekit_host: string;
   token: string;
+  enabledE2EE: boolean;
 }
 
 export interface IUseLivekitConnect {

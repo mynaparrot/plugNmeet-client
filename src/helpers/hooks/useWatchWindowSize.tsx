@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import MobileDetect from 'mobile-detect';
-import { Room } from 'livekit-client';
+import type { Room } from 'livekit-client';
+import NoSleep from 'nosleep.js';
 
 import {
   updateDeviceOrientation,
@@ -17,6 +18,9 @@ import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
+  const noSleep = new NoSleep();
+  const initialRef = useRef(false);
+
   const [deviceClass, setDeviceClass] = useState<string>('');
   const [orientationClass, setOrientationClass] =
     useState<string>('landscape-device');
@@ -51,6 +55,11 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
   }, [preScreenWidth, screenWidth]);
 
   useEffect(() => {
+    if (initialRef.current) {
+      return;
+    }
+    initialRef.current = true;
+
     window.onresize = () => {
       setScreenWidth(window.innerWidth);
       dispatch(updateScreenHeight(window.innerHeight));
@@ -79,7 +88,8 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       dispatch(updateIsActiveChatPanel(false));
     }
 
-    let deviceClass = 'is-pc';
+    let deviceClass = 'is-pc',
+      isSmallDevice = false;
     const md = new MobileDetect(window.navigator.userAgent);
     const isIpad =
       /Macintosh/i.test(window.navigator.userAgent) &&
@@ -88,10 +98,17 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
 
     if (isIpad || md.tablet()) {
       deviceClass = 'is-tablet ';
+      isSmallDevice = true;
       dispatch(updateUserDeviceType(UserDeviceType.TABLET));
     } else if (md.mobile()) {
       deviceClass = 'is-mobile ';
+      isSmallDevice = true;
       dispatch(updateUserDeviceType(UserDeviceType.MOBILE));
+    }
+
+    if (isSmallDevice) {
+      // Prevent display sleep for mobile devices
+      noSleep.enable();
     }
 
     const os = md.os();

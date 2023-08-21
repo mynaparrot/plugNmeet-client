@@ -77,6 +77,7 @@ export default class ConnectLivekit
   protected token: string;
   private readonly _room: Room;
   private readonly url: string;
+  private readonly enabledE2EE: boolean = false;
   private tokenRenewInterval: any;
   private _e2eeKeyProvider: ExternalE2EEKeyProvider;
 
@@ -94,6 +95,7 @@ export default class ConnectLivekit
     super();
     this.token = livekitInfo.token;
     this.url = livekitInfo.livekit_host;
+    this.enabledE2EE = livekitInfo.enabledE2EE;
 
     this.errorState = errorState;
     this.roomConnectionStatusState = roomConnectionStatusState;
@@ -184,7 +186,7 @@ export default class ConnectLivekit
       },
     };
 
-    if (isE2EESupported()) {
+    if (this.enabledE2EE && isE2EESupported()) {
       const workerMaker = new Worker(
         new URL('./e2ee-worker/livekit-client.e2ee.worker.js', import.meta.url),
       );

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
+import { useTranslation } from 'react-i18next';
+import Draggable from 'react-draggable';
 
 import { RootState, store, useAppSelector } from '../../store';
-import Draggable from 'react-draggable';
 
 const sharedNotepadFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -22,10 +23,24 @@ const themeSelector = createSelector(
 const SharedNotepadElement = () => {
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
+  const theme = useAppSelector(themeSelector);
+  const { i18n } = useTranslation();
+
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
   const [url, setUrl] = useState<string | null>();
-  const theme = useAppSelector(themeSelector);
+
+  const getUserColor = () => {
+    let userColor = sessionStorage.getItem('shared-notepad-user-color');
+    if (!userColor) {
+      userColor = ((Math.random() * 0xffffff) << 0)
+        .toString(16)
+        .padStart(6, '0');
+      sessionStorage.setItem('shared-notepad-user-color', userColor);
+    }
+
+    return userColor;
+  };
 
   useEffect(() => {
     if (sharedNotepadFeatures?.is_active && sharedNotepadFeatures.host) {
@@ -47,6 +62,8 @@ const SharedNotepadElement = () => {
         url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
       }
 
+      url += '&userColor=%23' + getUserColor() + '&lang=' + i18n.languages[0];
+
       if (theme === 'dark') {
         url += '&theme=monokai';
       } else {
@@ -58,7 +75,7 @@ const SharedNotepadElement = () => {
       setUrl(null);
     }
     //eslint-disable-next-line
-  }, [sharedNotepadFeatures, lockSharedNotepad, theme]);
+  }, [sharedNotepadFeatures, lockSharedNotepad, theme, i18n.languages]);
 
   const onLoad = () => {
     setLoaded(true);

@@ -1,7 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-import NoSleep from 'nosleep.js';
+import { toast } from 'react-toastify';
 
 import ErrorPage from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
@@ -40,7 +46,7 @@ const waitingForApprovalSelector = createSelector(
 const App = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const noSleep = new NoSleep();
+  const toastId = useRef<string>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
@@ -127,6 +133,7 @@ const App = () => {
           setLivekitInfo({
             livekit_host: res.livekitHost,
             token: res.token,
+            enabledE2EE: res.enabledE2ee,
           });
         } else {
           setError({
@@ -154,13 +161,27 @@ const App = () => {
   useEffect(() => {
     if (
       roomConnectionStatus === 'connecting' ||
-      roomConnectionStatus === 're-connecting' ||
       roomConnectionStatus === 'checking'
     ) {
       setLoading(true);
+    } else if (roomConnectionStatus === 're-connecting') {
+      //eslint-disable-next-line
+      // @ts-ignore
+      toastId.current = toast.loading(
+        t('notifications.room-disconnected-reconnecting'),
+        {
+          type: toast.TYPE.WARNING,
+          closeButton: false,
+          autoClose: false,
+        },
+      );
     } else {
       setLoading(false);
+      if (toastId.current) {
+        toast.dismiss(toastId.current);
+      }
     }
+    //eslint-disable-next-line
   }, [roomConnectionStatus]);
 
   useEffect(() => {
@@ -204,9 +225,6 @@ const App = () => {
     if (livekitInfo) {
       const currentConnection = startLivekitConnection(livekitInfo);
       setCurrentConnection(currentConnection);
-
-      // Prevent display sleep for mobile devices
-      await noSleep.enable();
     }
   };
 
@@ -215,7 +233,10 @@ const App = () => {
       return <Loading text={t(('app.' + roomConnectionStatus) as any)} />;
     } else if (error && !loading) {
       return <ErrorPage title={error.title} text={error.text} />;
-    } else if (roomConnectionStatus === 'connected') {
+    } else if (
+      roomConnectionStatus === 'connected' ||
+      roomConnectionStatus === 're-connecting'
+    ) {
       if (waitForApproval) {
         return <WaitingRoomPage />;
       }

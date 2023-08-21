@@ -43,7 +43,10 @@
     "need-to-disable-external-media-player": "এক্সটার্নাল মিডিয়া প্লেয়ার চালু আছে। ডিসপ্লে এক্সটার্নাল লিংক চালু করার আগে এটি বন্ধ করুন।",
     "websocket-disconnected": "Websocket সংযোগ বিচ্ছিন্ন, পুনরায় সংযোগ করা হচ্ছে..",
     "websocket-error": "Websocket এ ত্রুটি।",
-    "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে"
+    "websocket-not-connected": "ওয়েবসকেট সংযুক্ত নেই। মেসেজ পাঠানো যাবে না।",
+    "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে",
+    "e2ee-unsupported-browser-title": "অসমর্থিত ব্রাউজার",
+    "e2ee-unsupported-browser-msg": "এই সেশনটি এন্ড-টু-এন্ড এনক্রিপশন (E2EE) সক্ষম করেছে যা আপনার বর্তমান ব্রাউজার সমর্থন করে না।"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
@@ -235,7 +238,8 @@
       "manage-waiting-room": "ওয়েটিং রুম পরিচালনা করুন",
       "manage-breakout-room": "ব্রেকআউট রুম পরিচালনা করুন",
       "start-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন করুন",
-      "stop-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন বন্ধ করুন"
+      "stop-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন বন্ধ করুন",
+      "speech-to-text-settings": "Speech to text/translation সেটিং"
     },
     "notice": {
       "already-active-screen-sharing": "ইতিমধ্যে একটি সক্রিয় স্ক্রিন শেয়ার চালু আছে",
@@ -384,5 +388,38 @@
     "gen-link": "লিঙ্ক তৈরি করুন",
     "rtmp-url": "RTMP হোস্ট/URL",
     "rtmp-key": "RTMP গোপন কোড"
+  },
+  "speech-services": {
+    "modal-settings-title": "Speech to text/translation সেটিং",
+    "enable-speech-to-text": "Speech to text সক্ষম করুন",
+    "speech-langs-label": "বক্তৃতা ভাষা",
+    "speech-users-label": "বক্তৃতা ব্যবহারকারী",
+    "enable-translation": "অনুবাদ সক্ষম করুন",
+    "translation-langs-label": "অনুবাদের ভাষাসমূহ",
+    "enable-service": "পরিষেবা সক্ষম করুন",
+    "speech-user-required": "কমপক্ষে একজন বক্তৃতা দেওয়ার ব্যবহারকারী প্রয়োজন",
+    "speech-lang-required": "অন্তত একটি বক্তৃতা ভাষা প্রয়োজন",
+    "translation-lang-required": "কমপক্ষে একটি অনুবাদ ভাষা বা ২টি বক্তৃতা ভাষা প্রয়োজন৷",
+    "service-ready": "Speech পরিষেবা প্রস্তুত হয়েছে",
+    "start-service": "শুরু করুন",
+    "stop-service": "বন্ধ",
+    "update-service": "আপডেট",
+    "service-stopped": "পরিষেবা বন্ধ করে দেওয়া হয়েছে",
+    "start-modal-title": "Speech to text/translation পরিষেবা",
+    "speech-lang-label": "বক্তৃতা ভাষা",
+    "subtitle-lang-label": "সাবটাইটেল ভাষা",
+    "subtitle-settings": "সাবটাইটেল সেটিংস",
+    "status-change-error": "স্ট্যাটাস পরিবর্তনের সময় কিছু ভুল হয়েছে। অনুগ্রহপূর্বক আবার চেষ্টা করুন। ত্রুটিঃ {{error}}",
+    "speech-to-text-ready": "সেবা শুরু হয়েছে। আপনি এখন কথা বলা শুরু করতে পারেন।",
+    "already-received-token": "আপনি ইতিমধ্যে টোকেন পেয়েছেন. নতুন টোকেন এর জন্য 5 মিনিট অপেক্ষা করতে হবে।",
+    "already-using-service": "আপনি ইতিমধ্যে পরিষেবাটি ব্যবহার করছেন৷",
+    "service-disabled": "পরিষেবা অক্ষম করা হয়েছে৷ সার্ভার কনফিগারেশন চেক করুন।",
+    "token-generation-failed": "টোকেন জেনারেশন ত্রুটির সাথে ব্যর্থ হয়েছেঃ {{error}}",
+    "mic-error": "মাইক্রোফোন সমস্যার কারণে পরিষেবা শুরু করা যাচ্ছে না।",
+    "enable-translation-warning": "আপনার 1টির বেশি বক্তৃতা ভাষা সিলেক্ট করেছেন কিন্তু অনুবাদ অক্ষম করা রয়েছে।",
+    "select-one-lang": "একটি ভাষা নির্বাচন করুন",
+    "subtitle-history-modal-title": "সাবটাইটেল টেক্সট ইতিহাস",
+    "azure-error": "মাইক্রোসফট Azure ত্রুটিঃ {{error}}",
+    "speech-to-text-stopped": "Speech to text পরিষেবা বন্ধ করা হয়েছে"
   }
 }

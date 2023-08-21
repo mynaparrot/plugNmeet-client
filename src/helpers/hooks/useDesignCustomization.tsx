@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import {
   ColumnCameraPosition,
   ColumnCameraWidth,
@@ -7,6 +8,7 @@ import {
   updateColumnCameraPosition,
   updateColumnCameraWidth,
 } from '../../store/slices/roomSettingsSlice';
+import { useAppDispatch } from '../../store';
 
 export interface ICustomDesignParams {
   primary_color?: string;
@@ -24,6 +26,8 @@ export interface ICustomDesignParams {
 }
 
 const useDesignCustomization = () => {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const custom_design = urlParams.get('custom_design');
@@ -193,7 +197,7 @@ const useDesignCustomization = () => {
           ColumnCameraWidth.MEDIUM_WIDTH ||
         designCustomParams.column_camera_width === ColumnCameraWidth.FULL_WIDTH)
     ) {
-      updateColumnCameraWidth(designCustomParams.column_camera_width);
+      dispatch(updateColumnCameraWidth(designCustomParams.column_camera_width));
     }
 
     if (
@@ -203,7 +207,9 @@ const useDesignCustomization = () => {
           ColumnCameraPosition.BOTTOM ||
         designCustomParams.column_camera_position === ColumnCameraPosition.LEFT)
     ) {
-      updateColumnCameraPosition(designCustomParams.column_camera_position);
+      dispatch(
+        updateColumnCameraPosition(designCustomParams.column_camera_position),
+      );
     }
 
     if (typeof (window as any).CUSTOM_LOGO === 'undefined') {
@@ -240,7 +246,7 @@ const useDesignCustomization = () => {
         head.removeChild(link);
       }
     };
-  }, []);
+  }, [dispatch]);
 };
 
 export default useDesignCustomization;

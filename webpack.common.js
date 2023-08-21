@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const tailwindcss = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
@@ -78,6 +78,16 @@ module.exports = {
     },
   },
   plugins: [
+    {
+      apply: (compiler) => {
+        compiler.hooks.initialize.tap("PlugNmeet", () => {
+          // temporary work around for worker files
+          const from = path.resolve(__dirname, "node_modules", "livekit-client", "dist", "livekit-client.e2ee.worker.js");
+          const to = path.resolve(__dirname, "src", "helpers", "livekit", "e2ee-worker", "livekit-client.e2ee.worker.js");
+          fs.copyFileSync(from, to);
+        });
+      },
+    },
     new webpack.DefinePlugin({
       IS_PRODUCTION: isProduction,
       PNM_VERSION: JSON.stringify(pkg.version),
