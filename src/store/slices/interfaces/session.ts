@@ -107,9 +107,10 @@ interface ISharedNotepadFeatures {
   read_only_pad_id?: string;
 }
 
-interface IWhiteboardFeatures {
+export interface IWhiteboardFeatures {
   allowed_whiteboard: boolean;
   visible: boolean;
+  preload_file?: string;
   whiteboard_file_id: string;
   file_name: string;
   file_path: string;

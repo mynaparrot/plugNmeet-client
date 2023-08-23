@@ -4,14 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
-import {
-  IWhiteboardFile,
-  IWhiteboardOfficeFile,
-} from '../../store/slices/interfaces/whiteboard';
-import {
-  addWhiteboardOtherImageFile,
-  addWhiteboardUploadedOfficeFiles,
-} from '../../store/slices/whiteboard';
+import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
+import { addWhiteboardOtherImageFile } from '../../store/slices/whiteboard';
 import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
@@ -25,7 +19,10 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../helpers/proto/plugnmeet_datamessage_pb';
-import { formatStorageKey } from './helpers/utils';
+import {
+  formatStorageKey,
+  handleToAddWhiteboardUploadedOfficeNewFile,
+} from './helpers/utils';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -115,31 +112,13 @@ const UploadFilesUI = ({
       });
       return;
     }
-    const files: Array<IWhiteboardFile> = [];
-    for (let i = 0; i < res.total_pages; i++) {
-      const fileName = 'page_' + (i + 1) + '.png';
-      const file: IWhiteboardFile = {
-        id: randomString(),
-        currentPage: i + 1,
-        filePath: res.file_path + '/' + fileName,
-        fileName,
-        uploaderWhiteboardHeight: excalidrawAPI.getAppState().height,
-        uploaderWhiteboardWidth: excalidrawAPI.getAppState().width,
-        isOfficeFile: true,
-      };
-      files.push(file);
-    }
-
-    const newFile: IWhiteboardOfficeFile = {
-      fileId: res.file_id,
-      fileName: res.file_name,
-      filePath: res.file_path,
-      totalPages: res.total_pages,
-      pageFiles: JSON.stringify(files),
-    };
     // save current page state before changes
     await saveCurrentPageData();
-    store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
+    const newFile = handleToAddWhiteboardUploadedOfficeNewFile(
+      res,
+      excalidrawAPI.getAppState().height,
+      excalidrawAPI.getAppState().width,
+    );
 
     await sleep(500);
     broadcastWhiteboardOfficeFile(newFile);
