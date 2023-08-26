@@ -369,6 +369,11 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
    */
   time?: bigint;
 
+  /**
+   * @generated from field: optional string extra_data = 10;
+   */
+  extraData?: string;
+
   constructor(data?: PartialMessage<AnalyticsDataMsg>) {
     super();
     proto3.util.initPartial(data, this);
@@ -436,6 +441,13 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
       name: 'time',
       kind: 'scalar',
       T: 3 /* ScalarType.INT64 */,
+      opt: true,
+    },
+    {
+      no: 10,
+      name: 'extra_data',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
       opt: true,
     },
   ]);
@@ -657,7 +669,17 @@ export class AnalyticsUserInfo extends Message<AnalyticsUserInfo> {
   name = '';
 
   /**
-   * @generated from field: repeated plugnmeet.AnalyticsEventData events = 3;
+   * @generated from field: bool is_admin = 3;
+   */
+  isAdmin = false;
+
+  /**
+   * @generated from field: optional string extra_data = 4;
+   */
+  extraData?: string;
+
+  /**
+   * @generated from field: repeated plugnmeet.AnalyticsEventData events = 5;
    */
   events: AnalyticsEventData[] = [];
 
@@ -671,8 +693,16 @@ export class AnalyticsUserInfo extends Message<AnalyticsUserInfo> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 2, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'is_admin', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     {
-      no: 3,
+      no: 4,
+      name: 'extra_data',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 5,
       name: 'events',
       kind: 'message',
       T: AnalyticsEventData,
@@ -767,5 +797,84 @@ export class AnalyticsResult extends Message<AnalyticsResult> {
     b: AnalyticsResult | PlainMessage<AnalyticsResult> | undefined,
   ): boolean {
     return proto3.util.equals(AnalyticsResult, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.AnalyticsRedisUserInfo
+ */
+export class AnalyticsRedisUserInfo extends Message<AnalyticsRedisUserInfo> {
+  /**
+   * @generated from field: optional string name = 1;
+   */
+  name?: string;
+
+  /**
+   * @generated from field: bool is_admin = 2;
+   */
+  isAdmin = false;
+
+  /**
+   * @generated from field: optional string extra_data = 3;
+   */
+  extraData?: string;
+
+  constructor(data?: PartialMessage<AnalyticsRedisUserInfo>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.AnalyticsRedisUserInfo';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    {
+      no: 1,
+      name: 'name',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    { no: 2, name: 'is_admin', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    {
+      no: 3,
+      name: 'extra_data',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): AnalyticsRedisUserInfo {
+    return new AnalyticsRedisUserInfo().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): AnalyticsRedisUserInfo {
+    return new AnalyticsRedisUserInfo().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): AnalyticsRedisUserInfo {
+    return new AnalyticsRedisUserInfo().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a:
+      | AnalyticsRedisUserInfo
+      | PlainMessage<AnalyticsRedisUserInfo>
+      | undefined,
+    b:
+      | AnalyticsRedisUserInfo
+      | PlainMessage<AnalyticsRedisUserInfo>
+      | undefined,
+  ): boolean {
+    return proto3.util.equals(AnalyticsRedisUserInfo, a, b);
   }
 }
