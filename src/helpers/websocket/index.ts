@@ -149,7 +149,7 @@ export const sendWebsocketMessage = (msg: any) => {
 export const sendAnalyticsByWebsocket = (
   event_name: AnalyticsEvents,
   event_type: AnalyticsEventType = AnalyticsEventType.USER,
-  zset_member_value?: string,
+  hset_value?: string,
   event_value_string?: string,
   event_value_integer?: bigint,
 ) => {
@@ -160,7 +160,7 @@ export const sendAnalyticsByWebsocket = (
     eventName: event_name,
     roomId: session.currentRoom.room_id,
     userId: session.currentUser?.userId,
-    zsetMemberValue: zset_member_value,
+    hsetValue: hset_value,
     eventValueString: event_value_string,
     eventValueInteger: event_value_integer,
   });

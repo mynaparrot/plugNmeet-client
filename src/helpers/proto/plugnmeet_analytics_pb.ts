@@ -169,9 +169,9 @@ export enum AnalyticsEvents {
   ANALYTICS_EVENT_USER_UNMUTED_MIC = 21,
 
   /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_TALKED = 41;
+   * @generated from enum value: ANALYTICS_EVENT_USER_TALKED = 39;
    */
-  ANALYTICS_EVENT_USER_TALKED = 41,
+  ANALYTICS_EVENT_USER_TALKED = 39,
 
   /**
    * webcam
@@ -261,19 +261,9 @@ export enum AnalyticsEvents {
   ANALYTICS_EVENT_USER_SPEECH_SERVICES_ENDED = 37,
 
   /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_CONNECTION_QUALITY_EXCELLENT = 38;
+   * @generated from enum value: ANALYTICS_EVENT_USER_CONNECTION_QUALITY = 38;
    */
-  ANALYTICS_EVENT_USER_CONNECTION_QUALITY_EXCELLENT = 38,
-
-  /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_CONNECTION_QUALITY_GOOD = 39;
-   */
-  ANALYTICS_EVENT_USER_CONNECTION_QUALITY_GOOD = 39,
-
-  /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_CONNECTION_QUALITY_POOR = 40;
-   */
-  ANALYTICS_EVENT_USER_CONNECTION_QUALITY_POOR = 40,
+  ANALYTICS_EVENT_USER_CONNECTION_QUALITY = 38,
 }
 // Retrieve enum metadata with: proto3.getEnumType(AnalyticsEvents)
 proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
@@ -301,7 +291,7 @@ proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
   { no: 19, name: 'ANALYTICS_EVENT_USER_STOPPED_MIC' },
   { no: 20, name: 'ANALYTICS_EVENT_USER_MUTED_MIC' },
   { no: 21, name: 'ANALYTICS_EVENT_USER_UNMUTED_MIC' },
-  { no: 41, name: 'ANALYTICS_EVENT_USER_TALKED' },
+  { no: 39, name: 'ANALYTICS_EVENT_USER_TALKED' },
   { no: 22, name: 'ANALYTICS_EVENT_USER_STARTED_WEBCAM' },
   { no: 23, name: 'ANALYTICS_EVENT_USER_STOPPED_WEBCAM' },
   { no: 24, name: 'ANALYTICS_EVENT_USER_STARTED_SCREEN_SHARE' },
@@ -317,9 +307,7 @@ proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
   { no: 34, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE' },
   { no: 36, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_STARTED' },
   { no: 37, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_ENDED' },
-  { no: 38, name: 'ANALYTICS_EVENT_USER_CONNECTION_QUALITY_EXCELLENT' },
-  { no: 39, name: 'ANALYTICS_EVENT_USER_CONNECTION_QUALITY_GOOD' },
-  { no: 40, name: 'ANALYTICS_EVENT_USER_CONNECTION_QUALITY_POOR' },
+  { no: 38, name: 'ANALYTICS_EVENT_USER_CONNECTION_QUALITY' },
 ]);
 
 /**
@@ -351,11 +339,11 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
   eventValueInteger?: bigint;
 
   /**
-   * for zset member
+   * for HSET value
    *
-   * @generated from field: optional string zset_member_value = 5;
+   * @generated from field: optional string hset_value = 5;
    */
-  zsetMemberValue?: string;
+  hsetValue?: string;
 
   /**
    * @generated from field: optional string room_id = 6;
@@ -423,7 +411,7 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
     },
     {
       no: 5,
-      name: 'zset_member_value',
+      name: 'hset_value',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
