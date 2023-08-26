@@ -26,7 +26,10 @@ import {
   formatStorageKey,
   handleToAddWhiteboardUploadedOfficeNewFile,
 } from './helpers/utils';
-import { AnalyticsEvents } from '../../helpers/proto/plugnmeet_analytics_pb';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../../helpers/proto/plugnmeet_analytics_pb';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -93,6 +96,11 @@ const UploadFilesUI = ({
         sendAnalyticsByWebsocket(
           AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED,
         );
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+          AnalyticsEventType.ROOM,
+          fileName,
+        );
         break;
       default:
         convertFile(session, filePath);
@@ -130,9 +138,15 @@ const UploadFilesUI = ({
 
     await sleep(500);
     broadcastWhiteboardOfficeFile(newFile);
+
     // send analytics
     sendAnalyticsByWebsocket(
       AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED,
+    );
+    sendAnalyticsByWebsocket(
+      AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+      AnalyticsEventType.ROOM,
+      newFile.fileName,
     );
 
     toast.update(id, {

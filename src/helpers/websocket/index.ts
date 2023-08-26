@@ -149,6 +149,9 @@ export const sendWebsocketMessage = (msg: any) => {
 export const sendAnalyticsByWebsocket = (
   event_name: AnalyticsEvents,
   event_type: AnalyticsEventType = AnalyticsEventType.USER,
+  zset_member_value?: string,
+  event_value_string?: string,
+  event_value_integer?: bigint,
 ) => {
   const session = store.getState().session;
 
@@ -157,6 +160,9 @@ export const sendAnalyticsByWebsocket = (
     eventName: event_name,
     roomId: session.currentRoom.room_id,
     userId: session.currentUser?.userId,
+    zsetMemberValue: zset_member_value,
+    eventValueString: event_value_string,
+    eventValueInteger: event_value_integer,
   });
 
   const dataMsg = new DataMessage({

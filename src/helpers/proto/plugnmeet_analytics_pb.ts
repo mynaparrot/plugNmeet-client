@@ -135,6 +135,11 @@ export enum AnalyticsEvents {
   ANALYTICS_EVENT_ROOM_INGRESS_CREATED = 16,
 
   /**
+   * @generated from enum value: ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES = 42;
+   */
+  ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES = 42,
+
+  /**
    * here all related with user
    *
    * @generated from enum value: ANALYTICS_EVENT_USER_LEFT = 17;
@@ -231,9 +236,9 @@ export enum AnalyticsEvents {
   /**
    * etc
    *
-   * @generated from enum value: ANALYTICS_EVENT_USER_INVISIBLE_INTERFACE = 32;
+   * @generated from enum value: ANALYTICS_EVENT_USER_INTERFACE_INVISIBILITY = 32;
    */
-  ANALYTICS_EVENT_USER_INVISIBLE_INTERFACE = 32,
+  ANALYTICS_EVENT_USER_INTERFACE_INVISIBILITY = 32,
 
   /**
    * @generated from enum value: ANALYTICS_EVENT_USER_RAISE_HAND = 33;
@@ -290,6 +295,7 @@ proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
   { no: 15, name: 'ANALYTICS_EVENT_ROOM_SPEECH_SERVICE_ENDED' },
   { no: 35, name: 'ANALYTICS_EVENT_ROOM_SPEECH_SERVICE_TOTAL_USAGE' },
   { no: 16, name: 'ANALYTICS_EVENT_ROOM_INGRESS_CREATED' },
+  { no: 42, name: 'ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES' },
   { no: 17, name: 'ANALYTICS_EVENT_USER_LEFT' },
   { no: 18, name: 'ANALYTICS_EVENT_USER_STARTED_MIC' },
   { no: 19, name: 'ANALYTICS_EVENT_USER_STOPPED_MIC' },
@@ -306,7 +312,7 @@ proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
   { no: 29, name: 'ANALYTICS_EVENT_USER_CHAT_FILES' },
   { no: 30, name: 'ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED' },
   { no: 31, name: 'ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED' },
-  { no: 32, name: 'ANALYTICS_EVENT_USER_INVISIBLE_INTERFACE' },
+  { no: 32, name: 'ANALYTICS_EVENT_USER_INTERFACE_INVISIBILITY' },
   { no: 33, name: 'ANALYTICS_EVENT_USER_RAISE_HAND' },
   { no: 34, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE' },
   { no: 36, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_STARTED' },
@@ -345,32 +351,39 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
   eventValueInteger?: bigint;
 
   /**
-   * @generated from field: optional string room_id = 5;
+   * for zset member
+   *
+   * @generated from field: optional string zset_member_value = 5;
+   */
+  zsetMemberValue?: string;
+
+  /**
+   * @generated from field: optional string room_id = 6;
    */
   roomId?: string;
 
   /**
-   * @generated from field: optional string room_sid = 6;
+   * @generated from field: optional string room_sid = 7;
    */
   roomSid?: string;
 
   /**
-   * @generated from field: optional string user_id = 7;
+   * @generated from field: optional string user_id = 8;
    */
   userId?: string;
 
   /**
-   * @generated from field: optional string user_name = 8;
+   * @generated from field: optional string user_name = 9;
    */
   userName?: string;
 
   /**
-   * @generated from field: optional int64 time = 9;
+   * @generated from field: optional int64 time = 10;
    */
   time?: bigint;
 
   /**
-   * @generated from field: optional string extra_data = 10;
+   * @generated from field: optional string extra_data = 11;
    */
   extraData?: string;
 
@@ -410,41 +423,48 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
     },
     {
       no: 5,
-      name: 'room_id',
+      name: 'zset_member_value',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
       no: 6,
-      name: 'room_sid',
+      name: 'room_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
       no: 7,
-      name: 'user_id',
+      name: 'room_sid',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
       no: 8,
-      name: 'user_name',
+      name: 'user_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
       no: 9,
+      name: 'user_name',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 10,
       name: 'time',
       kind: 'scalar',
       T: 3 /* ScalarType.INT64 */,
       opt: true,
     },
     {
-      no: 10,
+      no: 11,
       name: 'extra_data',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
@@ -482,6 +502,61 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
 }
 
 /**
+ * @generated from message plugnmeet.AnalyticsEventValue
+ */
+export class AnalyticsEventValue extends Message<AnalyticsEventValue> {
+  /**
+   * @generated from field: int64 time = 1;
+   */
+  time = protoInt64.zero;
+
+  /**
+   * @generated from field: string value = 2;
+   */
+  value = '';
+
+  constructor(data?: PartialMessage<AnalyticsEventValue>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.AnalyticsEventValue';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'time', kind: 'scalar', T: 3 /* ScalarType.INT64 */ },
+    { no: 2, name: 'value', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): AnalyticsEventValue {
+    return new AnalyticsEventValue().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): AnalyticsEventValue {
+    return new AnalyticsEventValue().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): AnalyticsEventValue {
+    return new AnalyticsEventValue().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: AnalyticsEventValue | PlainMessage<AnalyticsEventValue> | undefined,
+    b: AnalyticsEventValue | PlainMessage<AnalyticsEventValue> | undefined,
+  ): boolean {
+    return proto3.util.equals(AnalyticsEventValue, a, b);
+  }
+}
+
+/**
  * @generated from message plugnmeet.AnalyticsEventData
  */
 export class AnalyticsEventData extends Message<AnalyticsEventData> {
@@ -496,9 +571,9 @@ export class AnalyticsEventData extends Message<AnalyticsEventData> {
   total = 0;
 
   /**
-   * @generated from field: repeated string values = 3;
+   * @generated from field: repeated plugnmeet.AnalyticsEventValue values = 3;
    */
-  values: string[] = [];
+  values: AnalyticsEventValue[] = [];
 
   constructor(data?: PartialMessage<AnalyticsEventData>) {
     super();
@@ -513,8 +588,8 @@ export class AnalyticsEventData extends Message<AnalyticsEventData> {
     {
       no: 3,
       name: 'values',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
+      kind: 'message',
+      T: AnalyticsEventValue,
       repeated: true,
     },
   ]);

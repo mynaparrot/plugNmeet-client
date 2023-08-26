@@ -206,22 +206,24 @@ export default class HandleParticipants {
     }
 
     // send analytics
-    switch (connectionQuality) {
-      case ConnectionQuality.Excellent:
-        sendAnalyticsByWebsocket(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_EXCELLENT,
-        );
-        break;
-      case ConnectionQuality.Good:
-        sendAnalyticsByWebsocket(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_GOOD,
-        );
-        break;
-      case ConnectionQuality.Poor:
-        sendAnalyticsByWebsocket(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_POOR,
-        );
-        break;
+    if (participant.sid === this.that.room.localParticipant.sid) {
+      switch (connectionQuality) {
+        case ConnectionQuality.Excellent:
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_EXCELLENT,
+          );
+          break;
+        case ConnectionQuality.Good:
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_GOOD,
+          );
+          break;
+        case ConnectionQuality.Poor:
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_POOR,
+          );
+          break;
+      }
     }
   };
 
