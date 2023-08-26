@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { createLocalTracks, Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,8 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
+import { sendAnalyticsByWebsocket } from '../../../helpers/websocket';
+import { AnalyticsEvents } from '../../../helpers/proto/plugnmeet_analytics_pb';
 
 interface IMicrophoneIconProps {
   currentRoom: Room;
@@ -112,9 +114,17 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
         if (publication.isMuted) {
           await publication.track.unmute();
           dispatch(updateIsMicMuted(false));
+          // send analytics
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_UNMUTED_MIC,
+          );
         } else {
           await publication.track.mute();
           dispatch(updateIsMicMuted(true));
+          // send analytics
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_MUTED_MIC,
+          );
         }
       }
     });

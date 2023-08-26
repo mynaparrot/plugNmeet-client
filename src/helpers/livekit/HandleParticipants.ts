@@ -27,6 +27,8 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
+import { sendAnalyticsByWebsocket } from '../websocket';
+import { AnalyticsEvents } from '../proto/plugnmeet_analytics_pb';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
@@ -201,6 +203,25 @@ export default class HandleParticipants {
           type: 'error',
         });
       }
+    }
+
+    // send analytics
+    switch (connectionQuality) {
+      case ConnectionQuality.Excellent:
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_EXCELLENT,
+        );
+        break;
+      case ConnectionQuality.Good:
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_GOOD,
+        );
+        break;
+      case ConnectionQuality.Poor:
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY_POOR,
+        );
+        break;
     }
   };
 
