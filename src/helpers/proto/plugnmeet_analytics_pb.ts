@@ -164,6 +164,11 @@ export enum AnalyticsEvents {
   ANALYTICS_EVENT_USER_UNMUTED_MIC = 21,
 
   /**
+   * @generated from enum value: ANALYTICS_EVENT_USER_TALKED = 41;
+   */
+  ANALYTICS_EVENT_USER_TALKED = 41,
+
+  /**
    * webcam
    *
    * @generated from enum value: ANALYTICS_EVENT_USER_STARTED_WEBCAM = 22;
@@ -290,6 +295,7 @@ proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
   { no: 19, name: 'ANALYTICS_EVENT_USER_STOPPED_MIC' },
   { no: 20, name: 'ANALYTICS_EVENT_USER_MUTED_MIC' },
   { no: 21, name: 'ANALYTICS_EVENT_USER_UNMUTED_MIC' },
+  { no: 41, name: 'ANALYTICS_EVENT_USER_TALKED' },
   { no: 22, name: 'ANALYTICS_EVENT_USER_STARTED_WEBCAM' },
   { no: 23, name: 'ANALYTICS_EVENT_USER_STOPPED_WEBCAM' },
   { no: 24, name: 'ANALYTICS_EVENT_USER_STARTED_SCREEN_SHARE' },

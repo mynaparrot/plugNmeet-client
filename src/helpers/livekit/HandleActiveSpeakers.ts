@@ -9,6 +9,8 @@ import {
   setAllSpeakers,
 } from '../../store/slices/activeSpeakersSlice';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
+import { sendAnalyticsByWebsocket } from '../websocket';
+import { AnalyticsEvents } from '../proto/plugnmeet_analytics_pb';
 
 const ACTIVE_SPEAKER_LIST_CHANGE_DURATION = 1000; // milliseconds
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 4000; // milliseconds
@@ -18,10 +20,20 @@ export default class HandleActiveSpeakers {
   private lastActiveWebcamChanged: number = Date.now();
   private activeSpeakers: Array<IActiveSpeaker> = [];
   private interval: any;
+  private currentUserId: string | undefined = undefined;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
     this.runInterval();
+  }
+
+  private getCurrentUserId() {
+    if (this.currentUserId) {
+      return this.currentUserId;
+    }
+    this.currentUserId =
+      store.getState().session.currentUser?.userId ?? undefined;
+    return this.currentUserId;
   }
 
   public activeSpeakersChanged = (participants: Participant[]) => {
@@ -56,6 +68,12 @@ export default class HandleActiveSpeakers {
         };
         store.dispatch(addSpeaker(speaker));
         this.activeSpeakers.push(speaker);
+
+        const currentUserId = this.getCurrentUserId();
+        if (currentUserId && participant.identity === currentUserId) {
+          // send analytics
+          sendAnalyticsByWebsocket(AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED);
+        }
       });
     }
   };
