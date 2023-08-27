@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { createLocalTracks, Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
+import { proto3 } from '@bufbuild/protobuf';
 import { isEmpty } from 'lodash';
 
 import {
@@ -122,7 +123,8 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
           sendAnalyticsByWebsocket(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
-            AnalyticsStatus.UNMUTED.toString(),
+            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.UNMUTED]
+              .name,
           );
         } else {
           await publication.track.mute();
@@ -131,7 +133,8 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
           sendAnalyticsByWebsocket(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
-            AnalyticsStatus.MUTED.toString(),
+            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.MUTED]
+              .name,
           );
         }
       }
