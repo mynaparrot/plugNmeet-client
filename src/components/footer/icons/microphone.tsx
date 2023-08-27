@@ -21,7 +21,11 @@ import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
 import { sendAnalyticsByWebsocket } from '../../../helpers/websocket';
-import { AnalyticsEvents } from '../../../helpers/proto/plugnmeet_analytics_pb';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  AnalyticsStatus,
+} from '../../../helpers/proto/plugnmeet_analytics_pb';
 
 interface IMicrophoneIconProps {
   currentRoom: Room;
@@ -116,14 +120,18 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
           dispatch(updateIsMicMuted(false));
           // send analytics
           sendAnalyticsByWebsocket(
-            AnalyticsEvents.ANALYTICS_EVENT_USER_UNMUTED_MIC,
+            AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+            AnalyticsEventType.USER,
+            AnalyticsStatus.UNMUTED.toString(),
           );
         } else {
           await publication.track.mute();
           dispatch(updateIsMicMuted(true));
           // send analytics
           sendAnalyticsByWebsocket(
-            AnalyticsEvents.ANALYTICS_EVENT_USER_MUTED_MIC,
+            AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+            AnalyticsEventType.USER,
+            AnalyticsStatus.MUTED.toString(),
           );
         }
       }
