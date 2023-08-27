@@ -601,6 +601,11 @@ export class AnalyticsRoomInfo extends Message<AnalyticsRoomInfo> {
   roomDuration = protoInt64.zero;
 
   /**
+   * @generated from field: bool enabled_e2ee = 7;
+   */
+  enabledE2ee = false;
+
+  /**
    * @generated from field: repeated plugnmeet.AnalyticsEventData events = 9;
    */
   events: AnalyticsEventData[] = [];
@@ -634,6 +639,7 @@ export class AnalyticsRoomInfo extends Message<AnalyticsRoomInfo> {
       kind: 'scalar',
       T: 3 /* ScalarType.INT64 */,
     },
+    { no: 7, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     {
       no: 9,
       name: 'events',
