@@ -174,31 +174,33 @@ export enum AnalyticsEvents {
   ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED = 22,
 
   /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED = 23;
+   * @generated from enum value: ANALYTICS_EVENT_USER_WHITEBOARD_FILES = 23;
    */
-  ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED = 23,
+  ANALYTICS_EVENT_USER_WHITEBOARD_FILES = 23,
+
+  /**
+   * speech services
+   *
+   * @generated from enum value: ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE = 24;
+   */
+  ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE = 24,
+
+  /**
+   * @generated from enum value: ANALYTICS_EVENT_USER_SPEECH_SERVICES_STATUS = 25;
+   */
+  ANALYTICS_EVENT_USER_SPEECH_SERVICES_STATUS = 25,
 
   /**
    * etc
    *
-   * @generated from enum value: ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY = 24;
+   * @generated from enum value: ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY = 26;
    */
-  ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY = 24,
+  ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY = 26,
 
   /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_RAISE_HAND = 25;
+   * @generated from enum value: ANALYTICS_EVENT_USER_RAISE_HAND = 27;
    */
-  ANALYTICS_EVENT_USER_RAISE_HAND = 25,
-
-  /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE = 26;
-   */
-  ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE = 26,
-
-  /**
-   * @generated from enum value: ANALYTICS_EVENT_USER_SPEECH_SERVICES_STATUS = 27;
-   */
-  ANALYTICS_EVENT_USER_SPEECH_SERVICES_STATUS = 27,
+  ANALYTICS_EVENT_USER_RAISE_HAND = 27,
 
   /**
    * @generated from enum value: ANALYTICS_EVENT_USER_CONNECTION_QUALITY = 28;
@@ -230,11 +232,11 @@ proto3.util.setEnumType(AnalyticsEvents, 'plugnmeet.AnalyticsEvents', [
   { no: 20, name: 'ANALYTICS_EVENT_USER_PRIVATE_CHAT' },
   { no: 21, name: 'ANALYTICS_EVENT_USER_CHAT_FILES' },
   { no: 22, name: 'ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED' },
-  { no: 23, name: 'ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED' },
-  { no: 24, name: 'ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY' },
-  { no: 25, name: 'ANALYTICS_EVENT_USER_RAISE_HAND' },
-  { no: 26, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE' },
-  { no: 27, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_STATUS' },
+  { no: 23, name: 'ANALYTICS_EVENT_USER_WHITEBOARD_FILES' },
+  { no: 24, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_USAGE' },
+  { no: 25, name: 'ANALYTICS_EVENT_USER_SPEECH_SERVICES_STATUS' },
+  { no: 26, name: 'ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY' },
+  { no: 27, name: 'ANALYTICS_EVENT_USER_RAISE_HAND' },
   { no: 28, name: 'ANALYTICS_EVENT_USER_CONNECTION_QUALITY' },
 ]);
 
@@ -285,52 +287,57 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
   eventName = AnalyticsEvents.ANALYTICS_EVENT_UNKNOWN;
 
   /**
-   * it will always use SET
+   * @generated from field: string room_id = 3;
+   */
+  roomId = '';
+
+  /**
+   * should be unix milliseconds
    *
-   * @generated from field: optional string event_value_string = 3;
+   * @generated from field: int64 time = 4;
+   */
+  time = protoInt64.zero;
+
+  /**
+   * if we pass value here then it will use redis SET to set the value for the key
+   *
+   * @generated from field: optional string event_value_string = 5;
    */
   eventValueString?: string;
 
   /**
-   * it will always use INCRBY
+   * if we pass value here then it will use redis INCRBY to increment value for the key
    *
-   * @generated from field: optional int64 event_value_integer = 4;
+   * @generated from field: optional int64 event_value_integer = 6;
    */
   eventValueInteger?: bigint;
 
   /**
-   * for HSET value
+   * if we pass value here then it will use redis HSET to set hash field value for the key
+   * hash field will be unix milliseconds, so it will remain unique as always
    *
-   * @generated from field: optional string hset_value = 5;
+   * @generated from field: optional string hset_value = 7;
    */
   hsetValue?: string;
 
   /**
-   * @generated from field: optional string room_id = 6;
-   */
-  roomId?: string;
-
-  /**
-   * @generated from field: optional string room_sid = 7;
+   * @generated from field: optional string room_sid = 8;
    */
   roomSid?: string;
 
   /**
-   * @generated from field: optional string user_id = 8;
+   * @generated from field: optional string user_id = 9;
    */
   userId?: string;
 
   /**
-   * @generated from field: optional string user_name = 9;
+   * @generated from field: optional string user_name = 10;
    */
   userName?: string;
 
   /**
-   * @generated from field: optional int64 time = 10;
-   */
-  time?: bigint;
-
-  /**
+   * this extra_data can be use for various purposes like, room or user metadata
+   *
    * @generated from field: optional string extra_data = 11;
    */
   extraData?: string;
@@ -355,60 +362,48 @@ export class AnalyticsDataMsg extends Message<AnalyticsDataMsg> {
       kind: 'enum',
       T: proto3.getEnumType(AnalyticsEvents),
     },
+    { no: 3, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: 'time', kind: 'scalar', T: 3 /* ScalarType.INT64 */ },
     {
-      no: 3,
+      no: 5,
       name: 'event_value_string',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 4,
+      no: 6,
       name: 'event_value_integer',
       kind: 'scalar',
       T: 3 /* ScalarType.INT64 */,
       opt: true,
     },
     {
-      no: 5,
+      no: 7,
       name: 'hset_value',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 6,
-      name: 'room_id',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-      opt: true,
-    },
-    {
-      no: 7,
+      no: 8,
       name: 'room_sid',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 8,
+      no: 9,
       name: 'user_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 9,
+      no: 10,
       name: 'user_name',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
-      opt: true,
-    },
-    {
-      no: 10,
-      name: 'time',
-      kind: 'scalar',
-      T: 3 /* ScalarType.INT64 */,
       opt: true,
     },
     {

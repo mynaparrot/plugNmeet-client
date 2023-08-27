@@ -94,7 +94,9 @@ const UploadFilesUI = ({
         broadcastFile(filePath, fileName);
         // send analytics
         sendAnalyticsByWebsocket(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED,
+          AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+          AnalyticsEventType.USER,
+          fileName,
         );
         sendAnalyticsByWebsocket(
           AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
@@ -141,7 +143,9 @@ const UploadFilesUI = ({
 
     // send analytics
     sendAnalyticsByWebsocket(
-      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES_ADDED,
+      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+      AnalyticsEventType.USER,
+      newFile.fileName,
     );
     sendAnalyticsByWebsocket(
       AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
