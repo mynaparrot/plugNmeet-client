@@ -10,7 +10,10 @@ import {
 } from '../../store/slices/activeSpeakersSlice';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 import { sendAnalyticsByWebsocket } from '../websocket';
-import { AnalyticsEvents } from '../proto/plugnmeet_analytics_pb';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../proto/plugnmeet_analytics_pb';
 
 const ACTIVE_SPEAKER_LIST_CHANGE_DURATION = 1000; // milliseconds
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 4000; // milliseconds
@@ -21,6 +24,7 @@ export default class HandleActiveSpeakers {
   private activeSpeakers: Array<IActiveSpeaker> = [];
   private interval: any;
   private currentUserId: string | undefined = undefined;
+  private currenUserLastTalked: number = 0;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
@@ -37,6 +41,8 @@ export default class HandleActiveSpeakers {
   }
 
   public activeSpeakersChanged = (participants: Participant[]) => {
+    const currentUserId = this.getCurrentUserId();
+    let currentUserTalked = false;
     this.activeSpeakers = [];
 
     if (participants.length) {
@@ -69,12 +75,34 @@ export default class HandleActiveSpeakers {
         store.dispatch(addSpeaker(speaker));
         this.activeSpeakers.push(speaker);
 
-        const currentUserId = this.getCurrentUserId();
         if (currentUserId && participant.identity === currentUserId) {
+          currentUserTalked = true;
+          this.currenUserLastTalked =
+            participant.lastSpokeAt?.getTime() ?? Date.now();
+
           // send analytics
-          sendAnalyticsByWebsocket(AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED);
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED,
+            AnalyticsEventType.USER,
+            undefined,
+            undefined,
+            BigInt(1),
+          );
         }
       });
+    }
+
+    if (!currentUserTalked && this.currenUserLastTalked > 0) {
+      const cal = Date.now() - this.currenUserLastTalked;
+      this.currenUserLastTalked = 0;
+      // send analytics
+      sendAnalyticsByWebsocket(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED_DURATION,
+        AnalyticsEventType.USER,
+        undefined,
+        undefined,
+        BigInt(cal),
+      );
     }
   };
 
