@@ -24,7 +24,7 @@ export default class HandleActiveSpeakers {
   private activeSpeakers: Array<IActiveSpeaker> = [];
   private interval: any;
   private currentUserId: string | undefined = undefined;
-  private currenUserLastTalked: number = 0;
+  private currenUserLastTalked = 0;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
