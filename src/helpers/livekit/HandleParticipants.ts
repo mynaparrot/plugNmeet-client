@@ -27,12 +27,18 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
+import { sendAnalyticsByWebsocket } from '../websocket';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../proto/plugnmeet_analytics_pb';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
   private isRecorderJoin = false;
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
+  private lastConnectionQuality: ConnectionQuality | undefined = undefined;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
@@ -200,6 +206,19 @@ export default class HandleParticipants {
           toastId: 'connection-status',
           type: 'error',
         });
+      }
+    }
+
+    // send analytics
+    if (participant.sid === this.that.room.localParticipant.sid) {
+      if (this.lastConnectionQuality !== connectionQuality) {
+        this.lastConnectionQuality = connectionQuality;
+
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
+          AnalyticsEventType.USER,
+          connectionQuality.toString(),
+        );
       }
     }
   };

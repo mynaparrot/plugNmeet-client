@@ -7,6 +7,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState, store, useAppSelector } from '../../../store';
 import {
   isSocketConnected,
+  sendAnalyticsByWebsocket,
   sendWebsocketMessage,
 } from '../../../helpers/websocket';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
@@ -15,6 +16,10 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../../../helpers/proto/plugnmeet_analytics_pb';
 
 interface IFileSendProps {
   isChatServiceReady: boolean;
@@ -105,6 +110,12 @@ const FileSend = ({
     });
 
     sendWebsocketMessage(dataMsg.toBinary());
+    // send analytics
+    sendAnalyticsByWebsocket(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_CHAT_FILES,
+      AnalyticsEventType.USER,
+      fileName,
+    );
   };
 
   const render = () => {

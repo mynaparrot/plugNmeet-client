@@ -565,6 +565,21 @@ export class StartRecorderChildArgs extends Message<StartRecorderChildArgs> {
    */
   customChromePath?: string;
 
+  /**
+   * @generated from field: optional uint32 width = 13;
+   */
+  width?: number;
+
+  /**
+   * @generated from field: optional uint32 height = 14;
+   */
+  height?: number;
+
+  /**
+   * @generated from field: optional uint32 xvfb_dpi = 15;
+   */
+  xvfbDpi?: number;
+
   constructor(data?: PartialMessage<StartRecorderChildArgs>) {
     super();
     proto3.util.initPartial(data, this);
@@ -630,6 +645,27 @@ export class StartRecorderChildArgs extends Message<StartRecorderChildArgs> {
       name: 'custom_chrome_path',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 13,
+      name: 'width',
+      kind: 'scalar',
+      T: 13 /* ScalarType.UINT32 */,
+      opt: true,
+    },
+    {
+      no: 14,
+      name: 'height',
+      kind: 'scalar',
+      T: 13 /* ScalarType.UINT32 */,
+      opt: true,
+    },
+    {
+      no: 15,
+      name: 'xvfb_dpi',
+      kind: 'scalar',
+      T: 13 /* ScalarType.UINT32 */,
       opt: true,
     },
   ]);

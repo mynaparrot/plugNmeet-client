@@ -42,9 +42,8 @@ const useLocalRecording = (
       return;
     }
     try {
-      const captureStream = await navigator.mediaDevices.getDisplayMedia(
-        displayMediaOptions,
-      );
+      const captureStream =
+        await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
       setCaptureStream(captureStream);
       startRecorder(captureStream);
     } catch (e) {

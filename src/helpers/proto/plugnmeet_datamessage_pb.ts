@@ -178,6 +178,13 @@ export enum DataMsgBodyType {
    * @generated from enum value: WHITEBOARD_APP_STATE_CHANGE = 22;
    */
   WHITEBOARD_APP_STATE_CHANGE = 22,
+
+  /**
+   * analytics
+   *
+   * @generated from enum value: ANALYTICS_DATA = 27;
+   */
+  ANALYTICS_DATA = 27,
 }
 // Retrieve enum metadata with: proto3.getEnumType(DataMsgBodyType)
 proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
@@ -207,6 +214,7 @@ proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
   { no: 20, name: 'ADD_WHITEBOARD_OFFICE_FILE' },
   { no: 21, name: 'PAGE_CHANGE' },
   { no: 22, name: 'WHITEBOARD_APP_STATE_CHANGE' },
+  { no: 27, name: 'ANALYTICS_DATA' },
 ]);
 
 /**

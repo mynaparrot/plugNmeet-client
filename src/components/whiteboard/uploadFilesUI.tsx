@@ -6,7 +6,10 @@ import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { addWhiteboardOtherImageFile } from '../../store/slices/whiteboard';
-import { sendWebsocketMessage } from '../../helpers/websocket';
+import {
+  sendAnalyticsByWebsocket,
+  sendWebsocketMessage,
+} from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
@@ -23,6 +26,10 @@ import {
   formatStorageKey,
   handleToAddWhiteboardUploadedOfficeNewFile,
 } from './helpers/utils';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../../helpers/proto/plugnmeet_analytics_pb';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -85,6 +92,17 @@ const UploadFilesUI = ({
           type: toast.TYPE.SUCCESS,
         });
         broadcastFile(filePath, fileName);
+        // send analytics
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+          AnalyticsEventType.USER,
+          fileName,
+        );
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+          AnalyticsEventType.ROOM,
+          fileName,
+        );
         break;
       default:
         convertFile(session, filePath);
@@ -122,6 +140,18 @@ const UploadFilesUI = ({
 
     await sleep(500);
     broadcastWhiteboardOfficeFile(newFile);
+
+    // send analytics
+    sendAnalyticsByWebsocket(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+      AnalyticsEventType.USER,
+      newFile.fileName,
+    );
+    sendAnalyticsByWebsocket(
+      AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+      AnalyticsEventType.ROOM,
+      newFile.fileName,
+    );
 
     toast.update(id, {
       render: t('whiteboard.file-ready'),
