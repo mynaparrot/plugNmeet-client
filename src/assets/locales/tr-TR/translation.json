@@ -38,6 +38,7 @@
     "room-disconnected-participant-removed": "Bu konferanstan çıkarıldınız. Kod: {{code}}",
     "room-disconnected-room-ended": "Oda kapatıldı. Kod: {{code}}",
     "room-disconnected-state-mismatch": "Durum uyuşmazlığı. Kod: {{code}}",
+    "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "Bağlantı kaliteniz yeterince iyi değil",
     "need-to-disable-display-external-link": "Harici Bağlantıyı Görüntüleme açık. Harici Medya Oynatıcıyı başlatmadan önce lütfen kapatın.",
     "need-to-disable-external-media-player": "Harici Bağlantıyı Görüntüleme açık. Harici Medya Oynatıcıyı başlatmadan önce lütfen kapatın.",

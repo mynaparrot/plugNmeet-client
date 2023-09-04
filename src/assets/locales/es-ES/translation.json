@@ -38,15 +38,16 @@
     "room-disconnected-participant-removed": "Ha sido eliminado de esta conferencia. Código: {{code}}",
     "room-disconnected-room-ended": "La sala ha sido cerrada. Código: {{code}}",
     "room-disconnected-state-mismatch": "El estado no coincide. Código: {{code}}",
+    "room-disconnected-reconnecting": "Sala desconectada, reconectando...",
     "your-connection-quality-not-good": "La calidad de tu conexión no es lo suficientemente buena",
     "need-to-disable-display-external-link": "Mostrar Enlace Externo está activado. Deténgalo antes de iniciar el Reproductor Multimedia Externo.",
     "need-to-disable-external-media-player": "El Reproductor Multimedia Externo está encendido. Deténgalo antes de iniciar Mostrar Enlace Externo.",
     "websocket-disconnected": "Websocket desconectado, reconectando...",
     "websocket-error": "Error en Websocket.",
-    "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
+    "websocket-not-connected": "Websocket no está conectado. Los mensajes no se entregarán.",
     "room-will-end-in": "Esta sala terminará en {{minutes}} minutos",
-    "e2ee-unsupported-browser-title": "Unsupported browser",
-    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
+    "e2ee-unsupported-browser-title": "Navegador no soportado",
+    "e2ee-unsupported-browser-msg": "Esta sesión ha habilitado el cifrado de extremo a extremo que su navegador actual no admite."
   },
   "room-metadata": {
     "session-recording": "Esta sesión se está grabando",
@@ -239,7 +240,7 @@
       "manage-breakout-room": "Gestionar Grupos de Trabajo",
       "start-display-external-link": "Mostrar enlace externo",
       "stop-display-external-link": "Dejar de mostrar enlace externo",
-      "speech-to-text-settings": "Speech to text/translation settings"
+      "speech-to-text-settings": "Configuración de voz a texto/traducción"
     },
     "notice": {
       "already-active-screen-sharing": "La sesión ya tiene un uso compartido de pantalla activo",
@@ -390,20 +391,20 @@
     "rtmp-key": "Clave/Secreto de RTMP"
   },
   "speech-services": {
-    "modal-settings-title": "Speech to text/translation settings",
-    "enable-speech-to-text": "Enable speech to text",
-    "speech-langs-label": "Speech languages",
-    "speech-users-label": "Speech users",
-    "enable-translation": "Enable translation",
-    "translation-langs-label": "Translation languages",
-    "enable-service": "Enable service",
+    "modal-settings-title": "Configuración de voz a texto/traducción",
+    "enable-speech-to-text": "Habilitar voz a texto",
+    "speech-langs-label": "Idiomas de voz",
+    "speech-users-label": "Usuarios de voz",
+    "enable-translation": "Habilitar traducción",
+    "translation-langs-label": "Idiomas de traducción",
+    "enable-service": "Habilitar servicio",
     "speech-user-required": "At least one speech user require",
     "speech-lang-required": "At least one speech language require",
     "translation-lang-required": "At least one translation language or 2 speech languages required",
-    "service-ready": "Speech service is ready",
-    "start-service": "Start",
-    "stop-service": "Stop",
-    "update-service": "Update",
+    "service-ready": "El servicio de voz está listo",
+    "start-service": "Empezar",
+    "stop-service": "Detener",
+    "update-service": "Actualizar",
     "service-stopped": "Service has been stopped",
     "start-modal-title": "Speech to text/translation service",
     "speech-lang-label": "Speech language",
@@ -417,9 +418,9 @@
     "token-generation-failed": "Token generation failed with error: {{error}}",
     "mic-error": "Service can't start because of microphone problem.",
     "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
-    "select-one-lang": "Select one language",
-    "subtitle-history-modal-title": "Subtitle texts history",
+    "select-one-lang": "Seleccione un idioma",
+    "subtitle-history-modal-title": "Historial de textos de subtítulos",
     "azure-error": "Microsoft azure error: {{error}}",
-    "speech-to-text-stopped": "Speech to text service has been stopped"
+    "speech-to-text-stopped": "El servicio de voz a texto ha sido detenido"
   }
 }

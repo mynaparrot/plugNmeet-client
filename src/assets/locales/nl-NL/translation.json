@@ -38,6 +38,7 @@
     "room-disconnected-participant-removed": "U bent verwijderd uit deze vergadering. Code: {{code}}",
     "room-disconnected-room-ended": "De kamer is gesloten. Code: {{code}}",
     "room-disconnected-state-mismatch": "Staat komt niet overeen. code: {{code}}",
+    "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "De kwaliteit van uw verbinding is niet goed genoeg",
     "need-to-disable-display-external-link": "Toon externe link is ingeschakeld. Stop deze voordat u externe mediaspeler opstart.",
     "need-to-disable-external-media-player": "Externe Media Player is ingeschakeld. Gelieve het te stoppen voordat u de externe link opent.",
