@@ -210,7 +210,7 @@ export default class HandleParticipants {
     }
 
     // send analytics
-    if (participant.sid === this.that.room.localParticipant.sid) {
+    if (participant.identity === this.that.room.localParticipant.identity) {
       if (this.lastConnectionQuality !== connectionQuality) {
         this.lastConnectionQuality = connectionQuality;
 
