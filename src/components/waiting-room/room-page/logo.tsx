@@ -6,7 +6,7 @@ const Logo = () => {
 
   return (
     <div
-      className="h-[90px] header-logo bg-contain bg-no-repeat bg-center"
+      className="h-[90px] header-logo bg-contain bg-no-repeat !bg-center"
       style={{
         backgroundImage: `url("${logo}")`,
       }}
