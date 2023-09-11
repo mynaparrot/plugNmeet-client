@@ -28,7 +28,7 @@ import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
-import WaitingRoomPage from '../waiting-room/waitingRoomPage';
+import WaitingRoomPage from '../waiting-room/room-page';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import {

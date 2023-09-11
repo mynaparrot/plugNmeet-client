@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 
-import { RootState, useAppSelector } from '../../store';
+import { RootState, useAppSelector } from '../../../store';
+import Logo from './logo';
 
 const waitingRoomMessageSelector = createSelector(
   (state: RootState) =>
@@ -14,7 +15,6 @@ const waitingRoomMessageSelector = createSelector(
 
 const WaitingRoomPage = () => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-  const logo = (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/main-logo.png`;
   const { t } = useTranslation();
   const waitingRoomMessage = useAppSelector(waitingRoomMessageSelector);
 
@@ -28,14 +28,7 @@ const WaitingRoomPage = () => {
       >
         <div className="waiting-room-inner relative z-10">
           <div className="logo w-40 m-auto relative z-20">
-            <div
-              className={`${
-                (window as any).CUSTOM_LOGO ? 'h-[90px]' : 'h-[90px]'
-              } header-logo bg-contain bg-no-repeat bg-center`}
-              style={{
-                backgroundImage: `url("${logo}")`,
-              }}
-            />
+            <Logo />
           </div>
           <div className="divider my-5 h-[2px] w-full max-w-[50px] bg-primaryColor dark:bg-darkText m-auto"></div>
           <div className="loading-wrap relative h-24">
