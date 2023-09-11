@@ -5,10 +5,10 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState, useAppSelector } from '../../store';
 
 interface CustomLogo {
-  main_logo_light: string;
-  main_logo_dark: string;
-  waiting_room_logo_light: string;
-  waiting_room_logo_dark: string;
+  main_logo_light?: string;
+  main_logo_dark?: string;
+  waiting_room_logo_light?: string;
+  waiting_room_logo_dark?: string;
 }
 
 const themeSelector = createSelector(
