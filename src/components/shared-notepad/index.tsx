@@ -114,7 +114,7 @@ const SharedNotepadElement = () => {
               : 'hidden'
           }
         >
-          <div className="h-full mt-9 flex items-end justify-end">
+          <div className="h-[calc(100%-50px)] mt-9 flex items-end justify-end">
             <Draggable
               handle="#draggable-h1"
               nodeRef={nodeRef}
