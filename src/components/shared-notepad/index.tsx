@@ -110,11 +110,11 @@ const SharedNotepadElement = () => {
         <div
           className={
             isActiveSharedNotePad
-              ? 'w-full notepadMainParent absolute h-full z-10 top-0 pointer-events-none'
+              ? 'w-full notepadMainParent absolute h-full z-10 top-0 left-0 pointer-events-none'
               : 'hidden'
           }
         >
-          <div className="h-[calc(100%-50px)] sm:px-5 mt-9 flex">
+          <div className="h-full mt-9 flex items-end justify-end">
             <Draggable
               handle="#draggable-h1"
               nodeRef={nodeRef}
@@ -124,7 +124,7 @@ const SharedNotepadElement = () => {
               }
             >
               <div
-                className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-move relative pointer-events-auto"
+                className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto"
                 ref={nodeRef}
               >
                 <div
