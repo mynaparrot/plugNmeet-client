@@ -9,12 +9,15 @@ import { updateCurrentRoomMetadata } from '../../store/slices/sessionSlice';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { IConnectLivekit } from './types';
+import { sleep } from '../utils';
+import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
 
 export default class HandleRoomMetadata {
   private metadata: IRoomMetadata | null = null;
   private that: IConnectLivekit;
   private welcomeMessage: string | undefined = undefined;
   private checkedE2EE = false;
+  private checkedPreloadedWhiteboardFile = false;
 
   constructor(that: IConnectLivekit) {
     this.that = that;
@@ -72,6 +75,10 @@ export default class HandleRoomMetadata {
         this.publishWelcomeMessage();
 
         store.dispatch(updateCurrentRoomMetadata(this.metadata));
+        if (!this.checkedPreloadedWhiteboardFile) {
+          // we'll check whiteboard preloaded file
+          this.addPreloadWhiteboardFile();
+        }
       }
     }
   };
@@ -146,5 +153,41 @@ export default class HandleRoomMetadata {
     };
 
     store.dispatch(addChatMessage(body));
+  };
+
+  private addPreloadWhiteboardFile = async () => {
+    // without waiting, we won't get current user data
+    await sleep(3000);
+    if (!store.getState().session.currentUser?.metadata?.is_presenter) {
+      this.checkedPreloadedWhiteboardFile = true;
+      return;
+    }
+
+    const whiteboard = this.metadata?.room_features.whiteboard_features;
+    if (!whiteboard?.preload_file || isEmpty(whiteboard?.preload_file)) {
+      this.checkedPreloadedWhiteboardFile = true;
+      return;
+    }
+
+    const ff = whiteboard?.preload_file?.split('/');
+    if (!ff) {
+      return;
+    }
+    const fileName = ff[ff.length - 1];
+
+    if (fileName !== whiteboard?.file_name) {
+      this.checkedPreloadedWhiteboardFile = true;
+      return;
+    }
+
+    const whiteboardFiles =
+      store.getState().whiteboard.whiteboardUploadedOfficeFiles;
+    const exist = whiteboardFiles.find(
+      (f) => f.fileId === whiteboard.whiteboard_file_id,
+    );
+    if (!exist) {
+      handleToAddWhiteboardUploadedOfficeNewFile(whiteboard);
+    }
+    this.checkedPreloadedWhiteboardFile = true;
   };
 }

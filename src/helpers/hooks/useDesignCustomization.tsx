@@ -214,7 +214,10 @@ const useDesignCustomization = () => {
 
     if (typeof (window as any).CUSTOM_LOGO === 'undefined') {
       if (designCustomParams.custom_logo) {
-        (window as any).CUSTOM_LOGO = designCustomParams.custom_logo;
+        // from design params let's assume logo will be only light to reduce complexity
+        (window as any).CUSTOM_LOGO = {
+          main_logo_light: designCustomParams.custom_logo,
+        };
       }
     }
 

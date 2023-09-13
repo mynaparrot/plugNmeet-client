@@ -38,6 +38,7 @@
     "room-disconnected-participant-removed": "Вас вилучено з цієї конференції. Код: {{code}}",
     "room-disconnected-room-ended": "Сесію закрито. Код: {{code}}",
     "room-disconnected-state-mismatch": "Невідповідність стану. Код: {{code}}",
+    "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "Якість з’єднання недостатньо висока",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",

@@ -75,7 +75,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
   );
-  const activeScreenSharingView = useAppSelector(
+  const isActiveScreenSharingView = useAppSelector(
     activeScreenSharingViewSelector,
   );
   const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
@@ -129,7 +129,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
       ? css.push('showParticipantsPanel')
       : css.push('hideParticipantsPanel');
 
-    activeScreenSharingView && isActiveScreenShare
+    isActiveScreenSharingView && isActiveScreenShare
       ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
@@ -149,7 +149,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
 
     return css.join(' ');
   }, [
-    activeScreenSharingView,
+    isActiveScreenSharingView,
     isActiveScreenShare,
     isActiveChatPanel,
     isActiveParticipantsPanel,
@@ -178,8 +178,22 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   }, [isActiveParticipantsPanel]);
 
   const renderMainComponentElms = useMemo(() => {
-    return <MainComponents currentConnection={currentConnection} />;
-  }, [currentConnection]);
+    return (
+      <MainComponents
+        currentConnection={currentConnection}
+        isActiveWhiteboard={isActiveWhiteboard}
+        isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
+        isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
+        isActiveScreenSharingView={isActiveScreenSharingView}
+      />
+    );
+  }, [
+    isActiveScreenSharingView,
+    currentConnection,
+    isActiveDisplayExternalLink,
+    isActiveExternalMediaPlayer,
+    isActiveWhiteboard,
+  ]);
 
   const renderRightPanel = useMemo(() => {
     if (allowChat) {

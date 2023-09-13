@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
-import Draggable from 'react-draggable';
+import Draggable, {
+  ControlPosition,
+  DraggableData,
+  DraggableEvent,
+} from 'react-draggable';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
@@ -20,11 +24,16 @@ const themeSelector = createSelector(
   (state: RootState) => state.roomSettings.theme,
   (theme) => theme,
 );
+const isActiveSharedNotePadSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
+  (isActiveSharedNotePad) => isActiveSharedNotePad,
+);
 
 const SharedNotepadElement = () => {
   const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
   const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
   const theme = useAppSelector(themeSelector);
+  const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const nodeRef = useRef(null);
@@ -32,6 +41,9 @@ const SharedNotepadElement = () => {
   const currentUser = store.getState().session.currentUser;
   const [loaded, setLoaded] = useState<boolean>();
   const [url, setUrl] = useState<string | null>();
+  const [currentPosition, setCurrentPosition] = useState<
+    ControlPosition | undefined
+  >(undefined);
 
   const getUserColor = () => {
     let userColor = sessionStorage.getItem('shared-notepad-user-color');
@@ -88,40 +100,62 @@ const SharedNotepadElement = () => {
     dispatch(updateIsActiveSharedNotePad(false));
   };
 
+  const onStopDrag = (_e: DraggableEvent, data: DraggableData) => {
+    setCurrentPosition({ x: data.lastX, y: data.lastY });
+  };
+
   return (
     <>
       {url ? (
-        <div className="h-[calc(100%-50px)] sm:px-5 mt-9 flex">
-          <Draggable handle="#draggable-h1" nodeRef={nodeRef}>
-            <div
-              className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-move relative pointer-events-auto"
-              ref={nodeRef}
+        <div
+          className={
+            isActiveSharedNotePad
+              ? 'w-full notepadMainParent absolute h-full z-10 top-0 pointer-events-none'
+              : 'hidden'
+          }
+        >
+          <div className="h-[calc(100%-50px)] sm:px-5 mt-9 flex">
+            <Draggable
+              handle="#draggable-h1"
+              nodeRef={nodeRef}
+              onStop={onStopDrag}
+              position={
+                isActiveSharedNotePad ? currentPosition : { x: 0, y: 0 }
+              }
             >
               <div
-                id="draggable-h1"
-                className="absolute top-2 md:top-0 left-0 h-7 w-full text-white flex items-center justify-center text-sm"
+                className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] ml-auto mt-auto cursor-move relative pointer-events-auto"
+                ref={nodeRef}
               >
-                Shared NotePad
-              </div>
-              <div
-                className="hide-icon absolute pl-2 w-16 h-7 cursor-pointer flex items-center"
-                onClick={minimizePad}
-              >
-                <div className="line h-0.5 w-6 bg-white"></div>
-              </div>
-              <div className="inner w-full h-full border-t-[28px] border-solid border-primaryColor">
-                {!loaded ? (
-                  <div className="loading absolute left-[50%] top-[40%] flex justify-center">
-                    <div className="lds-ripple">
-                      <div className="border-secondaryColor"></div>
-                      <div className="border-secondaryColor"></div>
+                <div
+                  id="draggable-h1"
+                  className="absolute top-2 md:top-0 left-0 h-7 w-full text-white flex items-center justify-center text-sm"
+                ></div>
+                <div
+                  className="hide-icon absolute pl-2 w-16 h-7 cursor-pointer flex items-center"
+                  onClick={minimizePad}
+                >
+                  <div className="line h-0.5 w-6 bg-white"></div>
+                </div>
+                <div className="inner w-full h-full border-t-[28px] border-solid border-primaryColor">
+                  {!loaded ? (
+                    <div className="loading absolute left-[50%] top-[40%] flex justify-center">
+                      <div className="lds-ripple">
+                        <div className="border-secondaryColor"></div>
+                        <div className="border-secondaryColor"></div>
+                      </div>
                     </div>
-                  </div>
-                ) : null}
-                <iframe height="100%" width="100%" src={url} onLoad={onLoad} />
+                  ) : null}
+                  <iframe
+                    height="100%"
+                    width="100%"
+                    src={url}
+                    onLoad={onLoad}
+                  />
+                </div>
               </div>
-            </div>
-          </Draggable>
+            </Draggable>
+          </div>
         </div>
       ) : null}
     </>

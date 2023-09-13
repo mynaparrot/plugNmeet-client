@@ -38,6 +38,7 @@
     "room-disconnected-participant-removed": "Sei stato rimosso da questa conferenza. Codice: {{code}}",
     "room-disconnected-room-ended": "La stanza è stata chiusa. Codice: {{code}}",
     "room-disconnected-state-mismatch": "Stato non corrispondente. Codice: {{code}}",
+    "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",

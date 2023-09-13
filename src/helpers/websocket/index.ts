@@ -7,7 +7,16 @@ import { handleSystemTypeData } from './handleSystemType';
 import { handleUserTypeData } from './handleUserType';
 import { handleWhiteboardMsg } from './handleWhiteboardType';
 import { onAfterOpenConnection } from './handleAfterOpenConnection';
-import { DataMessage, DataMsgType } from '../proto/plugnmeet_datamessage_pb';
+import {
+  DataMessage,
+  DataMsgBodyType,
+  DataMsgType,
+} from '../proto/plugnmeet_datamessage_pb';
+import {
+  AnalyticsDataMsg,
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../proto/plugnmeet_analytics_pb';
 import i18n from '../i18n';
 
 let isConnected = false,
@@ -135,6 +144,41 @@ export const sendWebsocketMessage = (msg: any) => {
     });
   }
   ws?.send(msg);
+};
+
+export const sendAnalyticsByWebsocket = (
+  event_name: AnalyticsEvents,
+  event_type: AnalyticsEventType = AnalyticsEventType.USER,
+  hset_value?: string,
+  event_value_string?: string,
+  event_value_integer?: bigint,
+) => {
+  const session = store.getState().session;
+
+  const analyticsMsg = new AnalyticsDataMsg({
+    eventType: event_type,
+    eventName: event_name,
+    roomId: session.currentRoom.room_id,
+    userId: session.currentUser?.userId,
+    hsetValue: hset_value,
+    eventValueString: event_value_string,
+    eventValueInteger: event_value_integer,
+  });
+
+  const dataMsg = new DataMessage({
+    type: DataMsgType.SYSTEM,
+    roomSid: session.currentRoom.sid,
+    roomId: session.currentRoom.room_id,
+    body: {
+      type: DataMsgBodyType.ANALYTICS_DATA,
+      from: {
+        sid: session.currentUser?.sid ?? '',
+        userId: session.currentUser?.userId ?? '',
+      },
+      msg: analyticsMsg.toJsonString(),
+    },
+  });
+  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const closeWebsocketConnection = () => {

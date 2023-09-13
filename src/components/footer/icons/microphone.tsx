@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { createLocalTracks, Room, Track } from 'livekit-client';
+import {
+  createLocalTracks,
+  ParticipantEvent,
+  Room,
+  Track,
+} from 'livekit-client';
 import { useTranslation } from 'react-i18next';
+import { proto3 } from '@bufbuild/protobuf';
 import { isEmpty } from 'lodash';
 
 import {
@@ -20,6 +26,12 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
+import { sendAnalyticsByWebsocket } from '../../../helpers/websocket';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  AnalyticsStatus,
+} from '../../../helpers/proto/plugnmeet_analytics_pb';
 
 interface IMicrophoneIconProps {
   currentRoom: Room;
@@ -103,6 +115,49 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
     // eslint-disable-next-line
   }, []);
 
+  // for speaking to send stats
+  useEffect(() => {
+    if (!currentRoom) {
+      return;
+    }
+    const speakingHandler = (speaking: boolean) => {
+      if (!speaking) {
+        const lastSpokeAt = currentRoom.localParticipant.lastSpokeAt?.getTime();
+        if (lastSpokeAt && lastSpokeAt > 0) {
+          const cal = Date.now() - lastSpokeAt;
+          // send analytics
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED_DURATION,
+            AnalyticsEventType.USER,
+            undefined,
+            undefined,
+            BigInt(cal),
+          );
+        }
+      } else {
+        // send analytics as user has spoken
+        sendAnalyticsByWebsocket(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED,
+          AnalyticsEventType.USER,
+          undefined,
+          undefined,
+          BigInt(1),
+        );
+      }
+    };
+
+    currentRoom.localParticipant.on(
+      ParticipantEvent.IsSpeakingChanged,
+      speakingHandler,
+    );
+    return () => {
+      currentRoom.localParticipant.off(
+        ParticipantEvent.IsSpeakingChanged,
+        speakingHandler,
+      );
+    };
+  }, [currentRoom]);
+
   const muteUnmuteMic = () => {
     currentRoom?.localParticipant.audioTracks.forEach(async (publication) => {
       if (
@@ -112,9 +167,23 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
         if (publication.isMuted) {
           await publication.track.unmute();
           dispatch(updateIsMicMuted(false));
+          // send analytics
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+            AnalyticsEventType.USER,
+            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.UNMUTED]
+              .name,
+          );
         } else {
           await publication.track.mute();
           dispatch(updateIsMicMuted(true));
+          // send analytics
+          sendAnalyticsByWebsocket(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+            AnalyticsEventType.USER,
+            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.MUTED]
+              .name,
+          );
         }
       }
     });

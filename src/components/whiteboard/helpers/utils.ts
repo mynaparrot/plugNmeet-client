@@ -3,6 +3,13 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
+import {
+  IWhiteboardFile,
+  IWhiteboardOfficeFile,
+} from '../../../store/slices/interfaces/whiteboard';
+import { randomString } from '../../../helpers/utils';
+import { IWhiteboardFeatures } from '../../../store/slices/interfaces/session';
+import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -70,4 +77,37 @@ export const displaySavedPageData = (
       }
     }
   }
+};
+
+export const handleToAddWhiteboardUploadedOfficeNewFile = (
+  whiteboard: IWhiteboardFeatures,
+  uploaderWhiteboardHeight = 260,
+  uploaderWhiteboardWidth = 1160,
+) => {
+  const files: Array<IWhiteboardFile> = [];
+  for (let i = 0; i < whiteboard.total_pages; i++) {
+    const fileName = 'page_' + (i + 1) + '.png';
+    const file: IWhiteboardFile = {
+      id: randomString(),
+      currentPage: i + 1,
+      filePath: whiteboard.file_path + '/' + fileName,
+      fileName,
+      uploaderWhiteboardHeight,
+      uploaderWhiteboardWidth,
+      isOfficeFile: true,
+    };
+    files.push(file);
+  }
+
+  const newFile: IWhiteboardOfficeFile = {
+    fileId: whiteboard.whiteboard_file_id,
+    fileName: whiteboard.file_name,
+    filePath: whiteboard.file_path,
+    totalPages: whiteboard.total_pages,
+    pageFiles: JSON.stringify(files),
+  };
+
+  store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
+
+  return newFile;
 };

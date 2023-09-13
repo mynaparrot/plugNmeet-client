@@ -38,6 +38,7 @@
     "room-disconnected-participant-removed": "您已经从此会议中移除。代码： {{code}}",
     "room-disconnected-room-ended": "该房间已断开连接。原因： {{code}}",
     "room-disconnected-state-mismatch": "状态不匹配。代码: {{code}}",
+    "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",

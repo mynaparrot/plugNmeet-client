@@ -285,7 +285,8 @@
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Upload and play",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
-      "upload-background-image": "Upload background image"
+      "upload-background-image": "Upload background image",
+      "shared-notepad": "Shared notepad"
     }
   },
   "whiteboard": {

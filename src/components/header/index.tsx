@@ -20,6 +20,7 @@ import {
   RoomEndAPIReq,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
+import HeaderLogo from './headerLogo';
 
 interface IHeaderProps {
   currentRoom: Room;
@@ -51,7 +52,6 @@ const Header = ({ currentRoom }: IHeaderProps) => {
   const [alertText, setAlertText] = useState('');
   const [task, setTask] = useState('');
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-  const logo = (window as any).CUSTOM_LOGO ?? `${assetPath}/imgs/main-logo.png`;
 
   useEffect(() => {
     if (roomTitle) {
@@ -76,7 +76,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
     }
 
     if (task === 'logout') {
-      currentRoom.disconnect();
+      await currentRoom.disconnect();
     } else if (task === 'end Room') {
       const session = store.getState().session;
 
@@ -208,14 +208,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
             }}
           />
           <div className="logo w-28 relative z-20">
-            <div
-              className={`${
-                (window as any).CUSTOM_LOGO ? 'h-[45px]' : 'h-[45px]'
-              } header-logo  bg-contain bg-no-repeat`}
-              style={{
-                backgroundImage: `url("${logo}")`,
-              }}
-            />
+            <HeaderLogo />
           </div>
           <div className="middle flex-auto relative z-20">
             <h2 className="header-title text-base text-black dark:text-white leading-[1] text-center">
