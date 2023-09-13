@@ -11,7 +11,6 @@ import {
 import {
   updateIsActiveChatPanel,
   updateIsActiveSharedNotePad,
-  updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
@@ -57,9 +56,6 @@ const SharedNotePadIcon = () => {
   useEffect(() => {
     if (isActiveSharedNotePad) {
       setIconCSS('secondaryColor');
-      if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
-        dispatch(updateIsActiveWhiteboard(false));
-      }
       if (!isRecorder) {
         dispatch(updateIsActiveChatPanel(false));
       }
@@ -113,7 +109,6 @@ const SharedNotePadIcon = () => {
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,
-        visibleWhiteBoard: false,
         visibleNotepad: true,
       });
       // wait little bit before change visibility
@@ -142,11 +137,6 @@ const SharedNotePadIcon = () => {
   };
 
   const toggleSharedNotePad = async () => {
-    const isActiveScreenShare =
-      store.getState().bottomIconsActivity.isActiveScreenshare;
-    if (isActiveScreenShare) {
-      return;
-    }
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
   };
 

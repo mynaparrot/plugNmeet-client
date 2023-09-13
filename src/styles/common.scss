@@ -862,6 +862,11 @@ aside {
   bottom: auto;
   top: -5px;
 }
+.notepad-wrapper .inner {
+  resize: both;
+  overflow: auto;
+}
+
 .header-logo {
   background-position: center left;
 }

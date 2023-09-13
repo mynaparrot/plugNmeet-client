@@ -90,17 +90,12 @@ const bottomIconsSlice = createSlice({
 
       if (state.isActiveScreenshare) {
         // in this case disable both
-        state.isActiveSharedNotePad = false;
         state.isActiveWhiteboard = false;
         state.isActiveParticipantsPanel = false;
       }
     },
     updateIsActiveSharedNotePad: (state, action: PayloadAction<boolean>) => {
       state.isActiveSharedNotePad = action.payload;
-
-      if (state.isActiveSharedNotePad) {
-        state.isActiveParticipantsPanel = false;
-      }
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
       state.isActiveWhiteboard = action.payload;
