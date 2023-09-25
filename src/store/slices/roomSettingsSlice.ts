@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
+import type { Theme } from '@excalidraw/excalidraw/types/element/types';
 
 import {
   ColumnCameraPosition,
@@ -91,7 +92,7 @@ const roomSettingsSlice = createSlice({
       state.roomVideoQuality = action.payload;
     },
     updateTheme: (state, action: PayloadAction<string>) => {
-      state.theme = action.payload;
+      state.theme = action.payload as Theme;
     },
     updateVideoObjectFit: (state, action: PayloadAction<VideoObjectFit>) => {
       state.videoObjectFit = action.payload;

@@ -128,6 +128,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     fileId: fileId as any,
     scale: [1, 1],
     locked: isOfficeFile, // if office file then lock it by default.
+    frameId: null,
   };
 
   return {
