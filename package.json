@@ -62,7 +62,7 @@
     "@types/video.js": "7.3.52",
     "@typescript-eslint/eslint-plugin": "6.7.0",
     "@typescript-eslint/parser": "6.7.0",
-    "autoprefixer": "10.4.15",
+    "autoprefixer": "10.4.16",
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.8.1",
