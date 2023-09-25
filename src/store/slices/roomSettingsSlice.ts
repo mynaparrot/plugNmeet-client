@@ -11,6 +11,7 @@ import {
   VideoObjectFit,
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
+import type { Theme } from '@excalidraw/excalidraw/types/element/types';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
@@ -91,7 +92,7 @@ const roomSettingsSlice = createSlice({
       state.roomVideoQuality = action.payload;
     },
     updateTheme: (state, action: PayloadAction<string>) => {
-      state.theme = action.payload;
+      state.theme = action.payload as Theme;
     },
     updateVideoObjectFit: (state, action: PayloadAction<VideoObjectFit>) => {
       state.videoObjectFit = action.payload;
