@@ -81,7 +81,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   };
 
   return (
-    <div className="camera-video-player">
+    <div className="camera-video-player w-full">
       {!loaded ? (
         <div className="loading absolute text-center top-3 z-[999] left-0 right-0 m-auto">
           <div className="lds-ripple">
@@ -105,7 +105,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         </button>
       ) : null}
       <video
-        className="camera-video"
+        className="camera-video w-full h-[calc(100vh-150px)]"
         onLoadedData={onLoadedData}
         ref={ref}
         style={{ objectFit: videoFit }}

@@ -13,18 +13,18 @@ const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
   const render = () => {
     return (
       <>
-        <div className="status">
+        <div className="status absolute">
           <ConnectionStatus userId={userId} />
           <MicStatus userId={userId} />
         </div>
-        <div className="status PinWebcam">
+        <div className="status PinWebcam absolute">
           <PinWebcam userId={userId} />
         </div>
         <VideoElm track={track} />
       </>
     );
   };
-  return <div className="camera-modules">{render()}</div>;
+  return <div className="camera-modules w-full">{render()}</div>;
 };
 
 export default VideoComponent;

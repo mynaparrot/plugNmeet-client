@@ -304,48 +304,48 @@ code {
     @apply bg-transparent border border-solid border-[#333] mr-[5px] outline-none;
   }
 }
-.video-camera-item {
-  @apply w-full h-full rounded-2xl overflow-hidden z-[1] bg-black;
-  .loading {
-    @apply top-1/2 -translate-y-1/2;
-  }
-  &::before {
-    @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
-  }
-  &::after {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.1) 50%
-    );
-    @apply absolute content-[''] w-full h-full z-[99];
-  }
-  .name {
-    @apply absolute bottom-[10px] z-[999] text-white left-3 text-sm leading-[1];
-  }
-  .camera-modules {
-    .camera-video-player {
-      @apply flex h-full w-full absolute;
-      video.camera-video {
-        @apply w-full h-full;
-      }
-    }
-    .status {
-      @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
-      > div {
-        @apply rounded-full bg-black/20 p-2 h-5 flex items-center justify-center;
-      }
-    }
-    .status.PinWebcam {
-      @apply right-auto left-3 top-3 items-start;
-    }
-  }
-}
-.video-camera-item.speaking {
-  &::before {
-    @apply border-secondaryColor;
-  }
-}
+// .video-camera-item {
+//   @apply w-auto h-full rounded-2xl overflow-hidden z-[1] bg-black;
+//   .loading {
+//     @apply top-1/2 -translate-y-1/2;
+//   }
+//   &::before {
+//     @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
+//   }
+//   &::after {
+//     background: linear-gradient(
+//       0deg,
+//       rgba(0, 0, 0, 0.4) 0%,
+//       rgba(0, 0, 0, 0.1) 50%
+//     );
+//     @apply absolute content-[''] w-full h-full z-[99];
+//   }
+//   .name {
+//     @apply absolute bottom-[10px] z-[999] text-white left-3 text-sm leading-[1];
+//   }
+//   .camera-modules {
+//     .camera-video-player {
+//       @apply flex h-full w-full relative;
+//       video.camera-video {
+//         @apply w-full h-[calc(100vh-145px)];
+//       }
+//     }
+//     .status {
+//       @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
+//       > div {
+//         @apply rounded-full bg-black/20 p-2 h-5 flex items-center justify-center;
+//       }
+//     }
+//     .status.PinWebcam {
+//       @apply right-auto left-3 top-3 items-start;
+//     }
+//   }
+// }
+// .video-camera-item.speaking {
+//   &::before {
+//     @apply border-secondaryColor;
+//   }
+// }
 // Webcam Area SCSS
 
 #main-area.fullWidthMainArea {

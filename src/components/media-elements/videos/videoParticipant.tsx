@@ -23,8 +23,11 @@ const VideoParticipant = ({
     participant.tracks.forEach((track) => {
       if (track.source === Track.Source.Camera) {
         const elm = (
-          <div className="video-camera-item-inner" key={track.trackSid}>
-            <div className="name">
+          <div
+            className="video-camera-item-inner w-max mx-auto relative"
+            key={track.trackSid}
+          >
+            <div className="name absolute">
               {participant.name} {participantType.isLocal ? '(me)' : null}
             </div>
             <VideoComponent userId={participant.identity} track={track} />
@@ -39,9 +42,9 @@ const VideoParticipant = ({
 
   return (
     <div
-      className={`video-camera-item relative ${isSpeaking ? 'speaking' : ''} ${
-        participantType.isAdmin ? 'admin' : 'participants'
-      }`}
+      className={`video-camera-item relative w-full h-full flex items-center ${
+        isSpeaking ? 'speaking' : ''
+      } ${participantType.isAdmin ? 'admin' : 'participants'}`}
     >
       {renderVideoElms}
     </div>
