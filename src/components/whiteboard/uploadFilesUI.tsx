@@ -131,10 +131,12 @@ const UploadFilesUI = ({
       return;
     }
 
-    // is important here, otherwise file id will be invalid
-    res.whiteboard_file_id = res.file_id;
     // save current page state before changes
     await saveCurrentPageData();
+
+    // is important here, otherwise file id will be invalid
+    // in handleToAddWhiteboardUploadedOfficeNewFile
+    res.whiteboard_file_id = res.file_id;
     const newFile = handleToAddWhiteboardUploadedOfficeNewFile(
       res,
       excalidrawAPI.getAppState().height,
