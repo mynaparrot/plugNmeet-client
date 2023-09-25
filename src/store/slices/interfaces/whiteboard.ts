@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
-import { NormalizedZoomValue } from '@excalidraw/excalidraw/types/types';
+import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types/types';
 
 export interface IWhiteboardSlice {
   totalPages: number;

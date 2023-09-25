@@ -1,6 +1,7 @@
 import { VideoQuality } from 'livekit-client';
-import { AzureTokenInfo } from '../../../components/speech-to-text-service/helpers/apiConnections';
 import type { Theme } from '@excalidraw/excalidraw/types/element/types';
+
+import { AzureTokenInfo } from '../../../components/speech-to-text-service/helpers/apiConnections';
 
 export enum VideoObjectFit {
   COVER = 'cover',

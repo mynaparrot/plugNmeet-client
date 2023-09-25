@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
+import type { Theme } from '@excalidraw/excalidraw/types/element/types';
 
 import {
   ColumnCameraPosition,
@@ -11,7 +12,6 @@ import {
   VideoObjectFit,
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
-import type { Theme } from '@excalidraw/excalidraw/types/element/types';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
