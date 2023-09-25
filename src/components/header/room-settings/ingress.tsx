@@ -22,6 +22,9 @@ const Ingress = () => {
   const { t } = useTranslation();
   const [name, setName] = useState<string>('broadcaster');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [ingressType, setIngressType] = useState<IngressInput>(
+    IngressInput.RTMP_INPUT,
+  );
   const session = store.getState().session;
   const ingressFeatures = useAppSelector(ingressFeaturesSelector);
 
@@ -40,7 +43,7 @@ const Ingress = () => {
     }
 
     const body = new CreateIngressReq({
-      inputType: IngressInput.RTMP_INPUT,
+      inputType: ingressType,
       participantName: participantName,
       roomId: session.currentRoom.room_id,
     });
@@ -66,10 +69,29 @@ const Ingress = () => {
     return (
       <>
         <form method="POST" onSubmit={(e) => onSubmit(e)}>
-          <div className="">
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="quality" className="pr-4 w-full dark:text-darkText">
+              {t('ingress-features.ingress-type')}
+            </label>
+            <select
+              id="quality"
+              name="quality"
+              className="mt-1 block py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={ingressType}
+              onChange={(e) => setIngressType(Number(e.target.value))}
+            >
+              <option value={IngressInput.RTMP_INPUT}>
+                {t('ingress-features.ingress-type-rtmp')}
+              </option>
+              <option value={IngressInput.WHIP_INPUT}>
+                {t('ingress-features.ingress-type-whip')}
+              </option>
+            </select>
+          </div>
+          <div className="flex items-center justify-between mb-2">
             <label
               htmlFor="stream-key"
-              className="block text-sm font-medium text-gray-700 dark:text-darkText"
+              className="pr-4 w-full dark:text-darkText"
             >
               {t('ingress-features.join-as-name')}
             </label>
@@ -109,7 +131,7 @@ const Ingress = () => {
               htmlFor="language"
               className="pr-4 w-full dark:text-darkText"
             >
-              {t('ingress-features.rtmp-url')}
+              {t('ingress-features.stream-url')}
             </label>
             <input
               type="text"
@@ -127,7 +149,7 @@ const Ingress = () => {
               htmlFor="language"
               className="pr-4 w-full dark:text-darkText"
             >
-              {t('ingress-features.rtmp-key')}
+              {t('ingress-features.stream-key')}
             </label>
             <input
               type="text"

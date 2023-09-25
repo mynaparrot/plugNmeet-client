@@ -18,17 +18,19 @@ import { Message, proto3 } from '@bufbuild/protobuf';
  */
 export enum IngressInput {
   /**
-   *    FILE_INPUT = 1;
-   *    SRT_INPUT = 2;
-   *    URL_INPUT = 3;
-   *
    * @generated from enum value: RTMP_INPUT = 0;
    */
   RTMP_INPUT = 0,
+
+  /**
+   * @generated from enum value: WHIP_INPUT = 1;
+   */
+  WHIP_INPUT = 1,
 }
 // Retrieve enum metadata with: proto3.getEnumType(IngressInput)
 proto3.util.setEnumType(IngressInput, 'plugnmeet.IngressInput', [
   { no: 0, name: 'RTMP_INPUT' },
+  { no: 1, name: 'WHIP_INPUT' },
 ]);
 
 /**
