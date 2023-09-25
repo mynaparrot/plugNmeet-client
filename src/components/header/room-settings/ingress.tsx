@@ -128,9 +128,24 @@ const Ingress = () => {
         <div className="grid">
           <div className="flex items-center justify-start">
             <label
-              htmlFor="language"
+              htmlFor="ingress_type"
               className="pr-4 w-full dark:text-darkText"
             >
+              {t('ingress-features.ingress-type')}
+            </label>
+            <input
+              type="text"
+              readOnly={true}
+              name="ingress_type"
+              id="ingress_type"
+              value={ingressFeatures?.input_type?.toString()}
+              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
+            />
+          </div>
+        </div>
+        <div className="grid">
+          <div className="flex items-center justify-start">
+            <label htmlFor="url" className="pr-4 w-full dark:text-darkText">
               {t('ingress-features.stream-url')}
             </label>
             <input
@@ -146,7 +161,7 @@ const Ingress = () => {
         <div className="grid">
           <div className="flex items-center justify-start">
             <label
-              htmlFor="language"
+              htmlFor="stream_key"
               className="pr-4 w-full dark:text-darkText"
             >
               {t('ingress-features.stream-key')}

@@ -119,12 +119,17 @@ export class CreateIngressRes extends Message<CreateIngressRes> {
   msg = '';
 
   /**
-   * @generated from field: string url = 3;
+   * @generated from field: plugnmeet.IngressInput input_type = 3;
+   */
+  inputType = IngressInput.RTMP_INPUT;
+
+  /**
+   * @generated from field: string url = 4;
    */
   url = '';
 
   /**
-   * @generated from field: string stream_key = 4;
+   * @generated from field: string stream_key = 5;
    */
   streamKey = '';
 
@@ -138,8 +143,14 @@ export class CreateIngressRes extends Message<CreateIngressRes> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'status', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     { no: 2, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: 'url', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: 'stream_key', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'input_type',
+      kind: 'enum',
+      T: proto3.getEnumType(IngressInput),
+    },
+    { no: 4, name: 'url', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: 'stream_key', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(
