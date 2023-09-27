@@ -95,6 +95,16 @@
           display: none !important;
         }
       }
+      label[title='Library'] {
+        .sidebar-trigger {
+          &:hover {
+            @apply text-[#b8b8b8];
+          }
+        }
+      }
+      .excalidraw-button.sidebar__close {
+        @apply text-[#b8b8b8];
+      }
       .help-icon {
         display: none;
       }
