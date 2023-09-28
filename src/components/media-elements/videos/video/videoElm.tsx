@@ -57,7 +57,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
     setLoaded(true);
   };
 
-  const fullScreen = () => {
+  const fullScreen = async () => {
     if (!document.fullscreenElement) {
       ref.current?.requestFullscreen().catch((err) => {
         alert(
@@ -65,13 +65,13 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         );
       });
     } else {
-      document.exitFullscreen();
+      await document.exitFullscreen();
     }
   };
 
   const pictureInPicture = async () => {
     if (document.pictureInPictureElement) {
-      document.exitPictureInPicture();
+      await document.exitPictureInPicture();
       await sleep(500);
     }
     const el = ref.current;
