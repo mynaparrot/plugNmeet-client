@@ -40,6 +40,13 @@ const activateSpeechServiceSelector = createSelector(
   (is_enabled) => is_enabled,
 );
 
+const isActiveSharedNotepadSelector = createSelector(
+  (state: RootState) =>
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
+      .is_active,
+  (is_active) => is_active,
+);
+
 const MainComponents = ({
   currentConnection,
   isActiveWhiteboard,
@@ -52,6 +59,7 @@ const MainComponents = ({
 
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const activateSpeechService = useAppSelector(activateSpeechServiceSelector);
+  const isActiveSharedNotepad = useAppSelector(isActiveSharedNotepadSelector);
 
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
@@ -134,8 +142,10 @@ const MainComponents = ({
       classNames = 'hidden';
     } else if (isActiveExternalMediaPlayer) {
       if (!isRecorder) {
-        dispatch(updateIsActiveChatPanel(false));
-        dispatch(updateIsActiveParticipantsPanel(false));
+        setTimeout(() => {
+          dispatch(updateIsActiveChatPanel(false));
+          dispatch(updateIsActiveParticipantsPanel(false));
+        }, 200);
       }
       classNames =
         'Div-external-media-player w-full flex items-center justify-center';
@@ -164,8 +174,10 @@ const MainComponents = ({
       classNames = 'hidden';
     } else if (isActiveDisplayExternalLink) {
       if (!isRecorder) {
-        dispatch(updateIsActiveChatPanel(false));
-        dispatch(updateIsActiveParticipantsPanel(false));
+        setTimeout(() => {
+          dispatch(updateIsActiveChatPanel(false));
+          dispatch(updateIsActiveParticipantsPanel(false));
+        }, 200);
       }
       classNames = 'w-full';
     }
@@ -183,6 +195,14 @@ const MainComponents = ({
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
   ]);
+
+  // this will help to reset position, if something went wrong
+  const sharedNotepadElm = useMemo(() => {
+    if (isActiveSharedNotepad) {
+      return <SharedNotepadElement />;
+    }
+    return null;
+  }, [isActiveSharedNotepad]);
 
   const cssClasses = useMemo(() => {
     const cssClasses: Array<string> = [];
@@ -215,7 +235,7 @@ const MainComponents = ({
   return (
     <>
       <div className={cssClasses}>
-        <SharedNotepadElement />
+        {sharedNotepadElm}
         {activateWebcamsView ? (
           <VideosComponent
             currentConnection={currentConnection}
