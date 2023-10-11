@@ -285,7 +285,8 @@
       "external-media-player-upload-file": "上传",
       "external-media-player-upload-file-play": "上传并播放",
       "external-media-player-upload-supported-files": "支持的文件： {{files}}",
-      "upload-background-image": "上传背景图片"
+      "upload-background-image": "上传背景图片",
+      "shared-notepad": "Shared notepad"
     }
   },
   "whiteboard": {
@@ -383,12 +384,15 @@
     "user-role-des": "用户当前角色。管理员或参与者"
   },
   "ingress-features": {
+    "ingress-type": "Ingress type",
+    "ingress-type-rtmp": "RTMP",
+    "ingress-type-whip": "WHIP",
     "join-as-name": "Join as name",
     "feature-not-allow": "Feature not allow",
     "join-as-name-required": "Join as name required",
     "gen-link": "Generate link",
-    "rtmp-url": "RTMP Host/URL",
-    "rtmp-key": "RTMP key/secret"
+    "stream-url": "Stream Host/URL",
+    "stream-key": "Stream key/secret"
   },
   "speech-services": {
     "modal-settings-title": "Speech to text/translation settings",
