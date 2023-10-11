@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
@@ -19,6 +20,8 @@ import {
   updateIsActiveParticipantsPanel,
 } from '../../store/slices/bottomIconsActivitySlice';
 import SpeechToTextService from '../speech-to-text-service';
+import { useCallbackRefState } from '../whiteboard/helpers/hooks/useCallbackRefState';
+import { savePageData } from '../whiteboard/helpers/utils';
 
 interface IMainComponentsProps {
   currentConnection: IConnectLivekit;
@@ -67,6 +70,8 @@ const MainComponents = ({
   const [showVideoElms, setShowVideoElms] = useState<boolean>(false);
   const [isActiveScreenShare, setIsActiveScreenShare] =
     useState<boolean>(false);
+  const [excalidrawAPI, excalidrawRefCallback] =
+    useCallbackRefState<ExcalidrawImperativeAPI>();
 
   useEffect(() => {
     setHasVideoElms(currentConnection.videoSubscribersMap.size > 0);
@@ -127,8 +132,22 @@ const MainComponents = ({
   }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
   const whiteboardElm = useMemo(() => {
+    // if we disable whiteboard during that time we should collect elements from parent component
+    // otherwise if we make it null then we won't be able to get last state
+    if (!isActiveWhiteboard && excalidrawAPI) {
+      const s = store.getState();
+      const isPresenter = s.session.currentUser?.metadata?.is_presenter;
+      // we'll only do it for presenter
+      if (isPresenter) {
+        const lastPage = s.whiteboard.currentPage;
+        savePageData(excalidrawAPI, lastPage);
+      }
+    }
     // for whiteboard, it's better to null not hide
-    return !isActiveScreenShare && isActiveWhiteboard ? <Whiteboard /> : null;
+    return !isActiveScreenShare && isActiveWhiteboard ? (
+      <Whiteboard onReadyExcalidrawAPI={excalidrawRefCallback} />
+    ) : null;
+    //eslint-disable-next-line
   }, [isActiveScreenShare, isActiveWhiteboard]);
 
   // we can't disable to show both external player & link.

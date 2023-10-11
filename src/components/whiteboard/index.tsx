@@ -7,18 +7,15 @@ import {
   MainMenu,
   getSceneVersion,
 } from '@excalidraw/excalidraw';
-// eslint-disable-next-line import/no-unresolved
-import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
-import {
+import type { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
+import type {
   ExcalidrawImperativeAPI,
   Gesture,
   Collaborator,
   BinaryFileData,
   AppState,
-  // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 
-import './style.scss';
 import { RootState, store, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
@@ -43,8 +40,13 @@ import ManageFiles from './manageFiles';
 import {
   addPreloadedLibraryItems,
   displaySavedPageData,
-  savePageData,
 } from './helpers/utils';
+
+import './style.scss';
+
+interface WhiteboardProps {
+  onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
+}
 
 const whiteboardSelector = createSelector(
   (state: RootState) => state.whiteboard,
@@ -68,7 +70,7 @@ const screenWidthSelector = createSelector(
   (screenWidth) => screenWidth,
 );
 
-const Whiteboard = () => {
+const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const currentUser = store.getState().session.currentUser;
   const currentRoom = store.getState().session.currentRoom;
   const CURSOR_SYNC_TIMEOUT = 33;
@@ -117,13 +119,6 @@ const Whiteboard = () => {
     ) {
       setViewModeEnabled(false);
     }
-
-    return () => {
-      if (excalidrawAPI && isPresenter) {
-        const lastPage = s.whiteboard.currentPage;
-        savePageData(excalidrawAPI, lastPage);
-      }
-    };
     //eslint-disable-next-line
   }, [excalidrawAPI]);
 
@@ -502,11 +497,20 @@ const Whiteboard = () => {
     );
   };
 
+  const handleOnReadyExcalidrawRef = (
+    value: ExcalidrawImperativeAPI | null,
+  ) => {
+    if (value) {
+      excalidrawRefCallback(value);
+      onReadyExcalidrawAPI(value);
+    }
+  };
+
   return (
     <>
       <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[0]">
         <Excalidraw
-          ref={excalidrawRefCallback as any}
+          ref={handleOnReadyExcalidrawRef}
           onChange={onChange}
           onPointerUpdate={onPointerUpdate}
           viewModeEnabled={viewModeEnabled}
