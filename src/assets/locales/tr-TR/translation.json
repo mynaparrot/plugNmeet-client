@@ -285,7 +285,8 @@
       "external-media-player-upload-file": "Yükle",
       "external-media-player-upload-file-play": "Yükle ve oynat",
       "external-media-player-upload-supported-files": "Desteklenen dosyalar: {{files}}",
-      "upload-background-image": "Arkaplan resmi yükle"
+      "upload-background-image": "Arkaplan resmi yükle",
+      "shared-notepad": "Shared notepad"
     }
   },
   "whiteboard": {
@@ -383,12 +384,15 @@
     "user-role-des": "Kullanıcının mevcut rolü. Yönetici veya katılımcı"
   },
   "ingress-features": {
+    "ingress-type": "Ingress type",
+    "ingress-type-rtmp": "RTMP",
+    "ingress-type-whip": "WHIP",
     "join-as-name": "İsim olarak katıl",
     "feature-not-allow": "Özelliğe izin verilmiyor",
     "join-as-name-required": "Gerekli olan isimle katılın",
     "gen-link": "Bağlantı oluştur",
-    "rtmp-url": "RTMP Ana Bilgisayarı/URL'si",
-    "rtmp-key": "RTMP anahtarı/şifresi"
+    "stream-url": "Stream Host/URL",
+    "stream-key": "Stream key/secret"
   },
   "speech-services": {
     "modal-settings-title": "Speech to text/translation settings",
