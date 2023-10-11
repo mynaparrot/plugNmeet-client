@@ -285,7 +285,8 @@
       "external-media-player-upload-file": "Завантажити",
       "external-media-player-upload-file-play": "Завантажити",
       "external-media-player-upload-supported-files": "Підтримувані файли: {{files}}",
-      "upload-background-image": "Завантажити фонове зображення"
+      "upload-background-image": "Завантажити фонове зображення",
+      "shared-notepad": "Shared notepad"
     }
   },
   "whiteboard": {
@@ -383,12 +384,15 @@
     "user-role-des": "Поточна роль користувача. Адмін або учасник"
   },
   "ingress-features": {
+    "ingress-type": "Ingress type",
+    "ingress-type-rtmp": "RTMP",
+    "ingress-type-whip": "WHIP",
     "join-as-name": "Приєднатися з ім'ям",
     "feature-not-allow": "Функція заборонена",
     "join-as-name-required": "Join as name required",
     "gen-link": "Створити Посилання",
-    "rtmp-url": "RTMP хост/URL-адреса",
-    "rtmp-key": "Ключ/секрет RTMP"
+    "stream-url": "Stream Host/URL",
+    "stream-key": "Stream key/secret"
   },
   "speech-services": {
     "modal-settings-title": "Speech to text/translation settings",
