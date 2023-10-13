@@ -72,15 +72,22 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
 
   // for change in mic lock setting
   useEffect(() => {
-    const closeMicOnLock = () => {
-      currentRoom?.localParticipant.audioTracks.forEach((publication) => {
+    const closeMicOnLock = async () => {
+      for (const [
+        ,
+        publication,
+      ] of currentRoom?.localParticipant.audioTracks.entries()) {
         if (
           publication.track &&
           publication.source === Track.Source.Microphone
         ) {
-          currentRoom.localParticipant.unpublishTrack(publication.track, true);
+          await currentRoom.localParticipant.unpublishTrack(
+            publication.track,
+            true,
+          );
         }
-      });
+      }
+
       dispatch(updateIsActiveMicrophone(false));
       dispatch(updateIsMicMuted(false));
     };
@@ -158,8 +165,11 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
     };
   }, [currentRoom]);
 
-  const muteUnmuteMic = () => {
-    currentRoom?.localParticipant.audioTracks.forEach(async (publication) => {
+  const muteUnmuteMic = async () => {
+    for (const [
+      ,
+      publication,
+    ] of currentRoom?.localParticipant.audioTracks.entries()) {
       if (
         publication.track &&
         publication.track.source === Track.Source.Microphone
@@ -186,16 +196,16 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
           );
         }
       }
-    });
+    }
   };
 
-  const manageMic = () => {
+  const manageMic = async () => {
     if (!isActiveMicrophone && !lockMic) {
       dispatch(updateShowMicrophoneModal(true));
     }
 
     if (isActiveMicrophone) {
-      muteUnmuteMic();
+      await muteUnmuteMic();
     }
   };
 
@@ -238,7 +248,7 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
         const audioTracks = currentRoom?.localParticipant.audioTracks;
 
         if (audioTracks) {
-          audioTracks.forEach(async (publication) => {
+          for (const [, publication] of audioTracks.entries()) {
             if (
               publication.track &&
               publication.track.source === Track.Source.Microphone
@@ -250,7 +260,7 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
                 dispatch(updateMuteOnStart(false));
               }
             }
-          });
+          }
         }
       }, 500);
     }

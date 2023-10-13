@@ -68,12 +68,18 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
 
   // for change in webcam lock setting
   useEffect(() => {
-    const closeMicOnLock = () => {
-      currentRoom?.localParticipant.videoTracks.forEach((publication) => {
+    const closeMicOnLock = async () => {
+      for (const [
+        ,
+        publication,
+      ] of currentRoom?.localParticipant.videoTracks.entries()) {
         if (publication.track && publication.source === Track.Source.Camera) {
-          currentRoom.localParticipant.unpublishTrack(publication.track, true);
+          await currentRoom.localParticipant.unpublishTrack(
+            publication.track,
+            true,
+          );
         }
-      });
+      }
       dispatch(updateIsActiveWebcam(false));
     };
 
@@ -172,7 +178,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     }
   };
 
-  const toggleWebcam = () => {
+  const toggleWebcam = async () => {
     if (lockWebcam) {
       return;
     }
@@ -181,14 +187,20 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
       dispatch(updateShowVideoShareModal(!isActiveWebcam));
     } else if (isActiveWebcam) {
       // leave webcam
-      currentRoom.localParticipant.videoTracks.forEach(async (publication) => {
+      for (const [
+        ,
+        publication,
+      ] of currentRoom.localParticipant.videoTracks.entries()) {
         if (
           publication.track &&
           publication.track.source === Track.Source.Camera
         ) {
-          currentRoom.localParticipant.unpublishTrack(publication.track, true);
+          await currentRoom.localParticipant.unpublishTrack(
+            publication.track,
+            true,
+          );
         }
-      });
+      }
       dispatch(updateIsActiveWebcam(false));
       dispatch(updateSelectedVideoDevice(''));
       dispatch(
@@ -199,7 +211,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     }
   };
 
-  const createDeviceStream = async (deviceId) => {
+  const createDeviceStream = async (deviceId: string) => {
     if (virtualBackground.type === 'none') {
       const resolution = getWebcamResolution();
       const track = await createLocalVideoTrack({
@@ -231,7 +243,7 @@ const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
     return;
   };
 
-  const onSelectedDevice = async (deviceId) => {
+  const onSelectedDevice = async (deviceId: string) => {
     setDeviceId(deviceId);
     await createDeviceStream(deviceId);
     dispatch(updateSelectedVideoDevice(deviceId));

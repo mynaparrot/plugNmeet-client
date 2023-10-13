@@ -63,17 +63,23 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     //eslint-disable-next-line
   }, [sessionScreenSharing]);
 
-  const endScreenShare = useCallback(() => {
+  const endScreenShare = useCallback(async () => {
     if (isActiveScreenshare) {
-      currentRoom.localParticipant.tracks.forEach((publication) => {
+      for (const [
+        ,
+        publication,
+      ] of currentRoom.localParticipant.tracks.entries()) {
         if (
           (publication.source === Track.Source.ScreenShare ||
             publication.source === Track.Source.ScreenShareAudio) &&
           publication.track
         ) {
-          currentRoom.localParticipant.unpublishTrack(publication.track, true);
+          await currentRoom.localParticipant.unpublishTrack(
+            publication.track,
+            true,
+          );
         }
-      });
+      }
       dispatch(updateIsActiveScreenshare(false));
       dispatch(
         updateScreenSharing({
