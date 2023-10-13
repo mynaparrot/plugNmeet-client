@@ -134,7 +134,10 @@ const MainComponents = ({
   const whiteboardElm = useMemo(() => {
     // if we disable whiteboard during that time we should collect elements from parent component
     // otherwise if we make it null then we won't be able to get last state
-    if (!isActiveWhiteboard && excalidrawAPI) {
+    if (
+      ((isActiveWhiteboard && isActiveScreenShare) || !isActiveWhiteboard) &&
+      excalidrawAPI
+    ) {
       const s = store.getState();
       const isPresenter = s.session.currentUser?.metadata?.is_presenter;
       // we'll only do it for presenter

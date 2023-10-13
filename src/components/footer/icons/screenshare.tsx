@@ -2,7 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { createLocalScreenTracks, Room, Track } from 'livekit-client';
+import {
+  createLocalScreenTracks,
+  Room,
+  ScreenShareCaptureOptions,
+  Track,
+} from 'livekit-client';
 
 import {
   RootState,
@@ -116,13 +121,23 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
         return;
       }
 
-      const localTracks = await createLocalScreenTracks({
+      const option: ScreenShareCaptureOptions = {
         audio: true,
-        resolution: getScreenShareResolution(),
-      });
-      localTracks.forEach(async (track) => {
+      };
+      // because of one bug we'll disable to set regulation for safari
+      // https://bugs.webkit.org/show_bug.cgi?id=263015
+      const isSafari = /^((?!chrome|android).)*safari/i.test(
+        navigator.userAgent,
+      );
+      if (!isSafari) {
+        option.resolution = getScreenShareResolution();
+      }
+
+      const localTracks = await createLocalScreenTracks(option);
+      for (let i = 0; i < localTracks.length; i++) {
+        const track = localTracks[i];
         await currentRoom.localParticipant.publishTrack(track);
-      });
+      }
 
       dispatch(updateIsActiveScreenshare(true));
       dispatch(
