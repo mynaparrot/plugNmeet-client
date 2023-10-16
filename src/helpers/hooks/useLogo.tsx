@@ -21,7 +21,7 @@ export type logoType = 'main' | 'waiting-room';
 const useLogo = (logo_type: logoType = 'main') => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   const theme = useAppSelector(themeSelector);
-  const [logo, setLogo] = useState<string>(`${assetPath}/imgs/main-logo.png`);
+  const [logo, setLogo] = useState<string>(`${assetPath}/imgs/digis-logo.png`);
 
   useEffect(() => {
     const logo: string | CustomLogo = (window as any).CUSTOM_LOGO;
