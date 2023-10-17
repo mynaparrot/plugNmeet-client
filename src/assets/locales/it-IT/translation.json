@@ -285,7 +285,8 @@
       "external-media-player-upload-file": "Carica",
       "external-media-player-upload-file-play": "Carica e riproduci",
       "external-media-player-upload-supported-files": "File supportati: {{files}}",
-      "upload-background-image": "Carica immagine di sfondo"
+      "upload-background-image": "Carica immagine di sfondo",
+      "shared-notepad": "Shared notepad"
     }
   },
   "whiteboard": {
@@ -383,12 +384,15 @@
     "user-role-des": "Ruolo attuale dell'utente. Amministratore o partecipante"
   },
   "ingress-features": {
+    "ingress-type": "Ingress type",
+    "ingress-type-rtmp": "RTMP",
+    "ingress-type-whip": "WHIP",
     "join-as-name": "Join as name",
     "feature-not-allow": "Feature not allow",
     "join-as-name-required": "Join as name required",
     "gen-link": "Generate link",
-    "rtmp-url": "RTMP Host/URL",
-    "rtmp-key": "RTMP key/secret"
+    "stream-url": "Stream Host/URL",
+    "stream-key": "Stream key/secret"
   },
   "speech-services": {
     "modal-settings-title": "Speech to text/translation settings",

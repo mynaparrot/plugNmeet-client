@@ -285,7 +285,8 @@
       "external-media-player-upload-file": "আপলোড করুন",
       "external-media-player-upload-file-play": "আপলোড করে চালু করুন",
       "external-media-player-upload-supported-files": "সমর্থিত ফাইলগুলিঃ {{files}}",
-      "upload-background-image": "ব্যাকগ্রাউন্ড চিত্র আপলোড করুন"
+      "upload-background-image": "ব্যাকগ্রাউন্ড চিত্র আপলোড করুন",
+      "shared-notepad": "Shared notepad"
     }
   },
   "whiteboard": {
@@ -383,12 +384,15 @@
     "user-role-des": "ব্যবহারকারীর বর্তমান ভূমিকা, হয় অ্যাডমিন বা অংশগ্রহণকারী"
   },
   "ingress-features": {
+    "ingress-type": "Ingress type",
+    "ingress-type-rtmp": "RTMP",
+    "ingress-type-whip": "WHIP",
     "join-as-name": "হিসেবে যোগ দিন",
     "feature-not-allow": "বৈশিষ্ট্য অনুমোদিত নয়",
     "join-as-name-required": "নাম প্রয়োজন",
     "gen-link": "লিঙ্ক তৈরি করুন",
-    "rtmp-url": "RTMP হোস্ট/URL",
-    "rtmp-key": "RTMP গোপন কোড"
+    "stream-url": "Stream Host/URL",
+    "stream-key": "Stream key/secret"
   },
   "speech-services": {
     "modal-settings-title": "Speech to text/translation সেটিং",
