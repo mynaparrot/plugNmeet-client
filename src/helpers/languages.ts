@@ -59,6 +59,10 @@ const languages = [
     code: 'zh-HK',
     text: '繁體中文',
   },
+  {
+    code: 'fa-IR',
+    text: 'فارسی',
+  },
 ];
 
 export default languages;
