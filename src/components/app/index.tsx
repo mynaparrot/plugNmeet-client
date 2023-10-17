@@ -45,7 +45,10 @@ const waitingForApprovalSelector = createSelector(
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // make sure we're using correct body dir
+  document.body.dir = i18n.dir();
+
   const toastId = useRef<string>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
