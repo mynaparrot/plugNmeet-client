@@ -38,7 +38,7 @@ const RecordingModal = ({
         <Transition appear show={showModal} as={Fragment}>
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="RecordingModal fixed inset-0 z-[9999] overflow-y-auto"
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
@@ -116,7 +116,7 @@ const RecordingModal = ({
                               />
                               <label
                                 htmlFor="yes"
-                                className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                                className="ltr:ml-3 rtl:mr-3 block text-sm font-medium text-gray-700 dark:text-darkText"
                               >
                                 {t('footer.icons.local-recording')}
                               </label>
@@ -141,7 +141,7 @@ const RecordingModal = ({
                               />
                               <label
                                 htmlFor="no"
-                                className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                                className="ltr:ml-3 rtl:mr-3 block text-sm font-medium text-gray-700 dark:text-darkText"
                               >
                                 {t('footer.icons.cloud-recording')}
                               </label>

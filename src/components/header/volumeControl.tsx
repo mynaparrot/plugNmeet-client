@@ -59,7 +59,7 @@ const VolumeControl = () => {
             >
               <Menu.Items
                 static
-                className="volume-popup-wrapper origin-top-right z-10 absolute right-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-darkPrimary/90 ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 rtl:left-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-darkPrimary/90 ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
               >
                 <section className="flex items-center">
                   <input

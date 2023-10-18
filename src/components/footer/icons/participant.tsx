@@ -44,7 +44,7 @@ const ParticipantIcon = () => {
 
   return (
     <div
-      className={`participants footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] mr-3 lg:mr-6 relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer ${
+      className={`participants footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer ${
         showTooltip ? 'has-tooltip' : ''
       }`}
       onClick={() => toggleParticipantsPanel()}
