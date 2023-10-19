@@ -1,15 +1,17 @@
+import { isArray } from 'lodash';
+
 export type BackgroundConfig = {
   type: 'none' | 'blur' | 'image';
   url?: string;
 };
 
-export const defaultBackgroundConfig: BackgroundConfig = {
+const defaultBackgroundConfig: BackgroundConfig = {
   type: 'none',
 };
 
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
-export const backgroundImageUrls = [
+let backgroundImageUrls = [
   'kenny-eliason-Wp7t4cWN-68-unsplash',
   'jonny-caspari-KuudDjBHIlA-unsplash',
   'roman-bozhko-PypjzKTUqLo-unsplash',
@@ -21,3 +23,13 @@ export const backgroundImageUrls = [
   'steve-richey-6xqAK6oAeHA-unsplash',
   'erol-ahmed-IHL-Jbawvvo-unsplash',
 ].map((imageName) => `${assetPath}/backgrounds/${imageName}.jpg`);
+
+if (
+  typeof (window as any).PNM_VIRTUAL_BG_IMGS !== 'undefined' &&
+  isArray((window as any).PNM_VIRTUAL_BG_IMGS) &&
+  (window as any).PNM_VIRTUAL_BG_IMGS.length > 0
+) {
+  backgroundImageUrls = (window as any).PNM_VIRTUAL_BG_IMGS;
+}
+
+export { backgroundImageUrls, defaultBackgroundConfig };

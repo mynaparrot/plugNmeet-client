@@ -34,25 +34,33 @@ window.STOP_MIC_TRACK_ON_MUTE = true;
 
 // Design customization
 // in json format
-// window.DESIGN_CUSTOMIZATION = `{
-//   "primary_color": "#004D90",
-//   "secondary_color": "#24AEF7",
-//   "background_color": "#0b7db4",
-//   "background_image": "https:\/\/mydomain.com\/custom_bg.png",
-//   "header_bg_color": "#45b3ec",
-//   "footer_bg_color": "#45b3ec",
-//   "left_side_bg_color": "#04a2f3",
-//   "right_side_bg_color": "#04a2f3",
-//   "custom_css_url": "https:\/\/mydomain.com\/plugNmeet_desing.css",
-//   "custom_logo": "https:\/\/mydomain.com\/logo.png"
-// }`;
+/*window.DESIGN_CUSTOMIZATION = `{
+   "primary_color": "#004D90",
+   "secondary_color": "#24AEF7",
+   "background_color": "#0b7db4",
+   "background_image": "https:\/\/mydomain.com\/custom_bg.png",
+   "header_bg_color": "#45b3ec",
+   "footer_bg_color": "#45b3ec",
+   "left_side_bg_color": "#04a2f3",
+   "right_side_bg_color": "#04a2f3",
+   "custom_css_url": "https:\/\/mydomain.com\/plugNmeet_desing.css",
+   "custom_logo": "https:\/\/mydomain.com\/logo.png"
+ }`;*/
 
 // Whiteboard PreloadedLibraryItems which should an array of full library direct URL
 // You can get items from here: https://libraries.excalidraw.com
-// window.WHITEBOARD_PRELOADED_LIBRARY_ITEMS = [
-//   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
-//   'https://libraries.excalidraw.com/libraries/aretecode/decision-flow-control.excalidrawlib',
-//   'https://libraries.excalidraw.com/libraries/dbssticky/data-viz.excalidrawlib',
-//   'https://libraries.excalidraw.com/libraries/pgilfernandez/basic-shapes.excalidrawlib',
-//   'https://libraries.excalidraw.com/libraries/ocapraro/bubbles.excalidrawlib',
-// ];
+/*window.WHITEBOARD_PRELOADED_LIBRARY_ITEMS = [
+  'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
+  'https://libraries.excalidraw.com/libraries/aretecode/decision-flow-control.excalidrawlib',
+  'https://libraries.excalidraw.com/libraries/dbssticky/data-viz.excalidrawlib',
+  'https://libraries.excalidraw.com/libraries/pgilfernandez/basic-shapes.excalidrawlib',
+  'https://libraries.excalidraw.com/libraries/ocapraro/bubbles.excalidrawlib',
+];*/
+
+// You can set default virtual background images here,
+// make sure that you're using direct https links otherwise file may not be loaded
+/*window.PNM_VIRTUAL_BG_IMGS = [
+  'https://www.example.com/vb_bg/image1.png',
+  'https://www.example.com/vb_bg/image2.png',
+  'https://www.example.com/vb_bg/image3.png',
+];*/
