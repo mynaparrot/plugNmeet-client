@@ -29,7 +29,25 @@ if (
   isArray((window as any).PNM_VIRTUAL_BG_IMGS) &&
   (window as any).PNM_VIRTUAL_BG_IMGS.length > 0
 ) {
-  backgroundImageUrls = (window as any).PNM_VIRTUAL_BG_IMGS;
+  const bgImgUrls: Array<string> = (window as any).PNM_VIRTUAL_BG_IMGS;
+  const imgUrls: Array<string> = [];
+
+  (async () => {
+    for (let i = 0; i < bgImgUrls.length; i++) {
+      const url = bgImgUrls[i];
+      try {
+        const req = await fetch(url, { method: 'HEAD' });
+        if (req.ok) {
+          imgUrls.push(url);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (imgUrls.length) {
+      backgroundImageUrls = imgUrls;
+    }
+  })();
 }
 
 export { backgroundImageUrls, defaultBackgroundConfig };
