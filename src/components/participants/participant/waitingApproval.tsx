@@ -57,7 +57,7 @@ const WaitingApproval = ({
   const render = useMemo(() => {
     if (participant?.metadata.wait_for_approval) {
       return (
-        <div className="approve-btn-wrap">
+        <div className="approve-btn-wrap rtl:pt-2">
           <button
             className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
             onClick={approve}
@@ -65,7 +65,7 @@ const WaitingApproval = ({
             {t('left-panel.approve')}
           </button>
           <button
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ml-2"
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
             onClick={reject}
           >
             {t('left-panel.reject')}

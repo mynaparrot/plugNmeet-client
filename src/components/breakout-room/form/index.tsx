@@ -161,7 +161,7 @@ const FromElems = () => {
     }
 
     return (
-      <div className="numbers-of-room w-full sm:w-56 mb-4 sm:mr-10">
+      <div className="numbers-of-room w-full sm:w-56 mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
         <label
           className="block text-base text-black dark:text-darkText mb-1"
           htmlFor="breakout-room-number"
@@ -250,7 +250,7 @@ const FromElems = () => {
         </div>
       </div>
       <div className="row flex flex-wrap justify-between items-end">
-        <div className="room-welcome-messages w-full sm:max-w-[30.5rem] mb-4 sm:mr-10">
+        <div className="room-welcome-messages w-full sm:max-w-[30.5rem] mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
           <label
             className="block text-base text-black dark:text-darkText mb-1"
             htmlFor="breakout-room-welcome"
@@ -264,7 +264,7 @@ const FromElems = () => {
             value={welcomeMsg}
           ></textarea>
         </div>
-        <div className="random-room-select mb-4 mr-6">
+        <div className="random-room-select mb-4 ltr:mr-6 rtl:ml-6">
           <button
             className="text-base text-primaryColor dark:text-secondaryColor"
             onClick={randomSelection}

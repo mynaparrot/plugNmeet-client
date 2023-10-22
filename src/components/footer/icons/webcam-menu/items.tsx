@@ -85,7 +85,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   return (
     <Menu.Items
       static
-      className="origin-bottom-right z-[9999] absolute left-0 mt-2 w-40 bottom-[40px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+      className="origin-bottom-right z-[9999] absolute ltr:left-0 rtl:-right-6 mt-2 w-40 bottom-[40px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
     >
       {devicesMenu}
       <div className="" role="none">

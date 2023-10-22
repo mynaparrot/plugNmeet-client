@@ -60,7 +60,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
           <div className="btn flex justify-center">
             <button
               type="button"
-              className="microphone bg-transparent mr-4 text-center"
+              className="microphone bg-transparent ltr:mr-4 rtl:ml-4 text-center"
               onClick={() => shareMic()}
             >
               <div className="h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary3 hover:bg-[#ECF4FF] hover:dark:bg-darkSecondary2 mb-1 flex items-center justify-center cursor-pointer">
@@ -73,7 +73,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
             <button
               type="button"
               id="listenOnlyJoin"
-              className="headphone bg-transparent ml-4 text-center"
+              className="headphone bg-transparent ltr:ml-4 rtl:mr-4 text-center"
             >
               <div
                 className="camera h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary3 hover:bg-[#ECF4FF] hover:dark:bg-darkSecondary2 mb-1 flex items-center justify-center cursor-pointer"

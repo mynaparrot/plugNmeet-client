@@ -161,7 +161,7 @@ const SpeechServiceSettingsModal = () => {
             >
               <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[inherit] text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                 <button
-                  className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
                   type="button"
                   onClick={() => closeModal()}
                 >
@@ -171,7 +171,7 @@ const SpeechServiceSettingsModal = () => {
 
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
                 >
                   {t('speech-services.modal-settings-title')}
                 </Dialog.Title>
@@ -187,7 +187,7 @@ const SpeechServiceSettingsModal = () => {
                   />
                   <Switch.Group>
                     <div className="flex items-center justify-between my-4">
-                      <Switch.Label className="pr-4 w-full dark:text-darkText text-sm">
+                      <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText text-sm">
                         {t('speech-services.enable-translation')}
                       </Switch.Label>
                       <Switch
@@ -202,8 +202,8 @@ const SpeechServiceSettingsModal = () => {
                         <span
                           className={`${
                             enableTranslation
-                              ? 'translate-x-6'
-                              : 'translate-x-1'
+                              ? 'ltr:translate-x-6 rtl:-translate-x-6'
+                              : 'ltr:translate-x-1 rtl:translate-x-0'
                           } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
                         />
                       </Switch>
@@ -228,7 +228,7 @@ const SpeechServiceSettingsModal = () => {
                   {speechService?.is_enabled ? (
                     <>
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none mr-2"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none ltr:mr-2 rtl:ml-2"
                         onClick={() => enableOrUpdateService()}
                       >
                         {t('speech-services.update-service')}

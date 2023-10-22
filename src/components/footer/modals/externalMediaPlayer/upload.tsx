@@ -99,7 +99,7 @@ const Upload = () => {
           id="chat-file"
           accept={allowedFileTypes.map((type) => '.' + type).join(',')}
           onChange={(e) => onChange(e)}
-          className="absolute w-full h-full top-0 py-[28px] px-5 border border-dashed border-primaryColor dark:border-darkText dark:text-darkText cursor-pointer rounded"
+          className="absolute left-0 w-full h-full top-0 py-[28px] px-5 border border-dashed border-primaryColor dark:border-darkText dark:text-darkText cursor-pointer rounded"
         />
       </div>
       <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">

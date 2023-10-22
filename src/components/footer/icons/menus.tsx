@@ -348,7 +348,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="footer-podcast-button text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="footer-podcast-button text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openRtmpModal()}
                         >
                           {isActiveRtmpBroadcasting ? (
@@ -368,7 +368,7 @@ const MenusIcon = () => {
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
-                        className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                        className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                         onClick={() => muteAllUsers()}
                       >
                         <i className="pnm-mic-mute text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -381,7 +381,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => toggleSharedNotepad()}
                         >
                           <i className="pnm-notepad text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -397,7 +397,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => toggleExternalMediaPlayer()}
                         >
                           <i className="pnm-file-play text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -412,7 +412,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => toggleDisplayExternalLinkModal()}
                         >
                           <i className="pnm-display text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -427,7 +427,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openManageWaitingRoomModal()}
                         >
                           <i className="pnm-waiting-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -441,7 +441,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openSpeechServiceSettingsModal()}
                         >
                           <i className="pnm-closed-captioning text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -454,7 +454,7 @@ const MenusIcon = () => {
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
-                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                          className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openManageBreakoutRoomModal()}
                         >
                           <i className="pnm-breakout-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
@@ -466,7 +466,7 @@ const MenusIcon = () => {
                   <div className="py-1" role="none">
                     <Menu.Item>
                       <button
-                        className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm text-left w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
+                        className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                         onClick={() => openLockSettingsModal()}
                       >
                         <i className="pnm-lock text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />

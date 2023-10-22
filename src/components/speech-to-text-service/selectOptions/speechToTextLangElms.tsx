@@ -129,7 +129,7 @@ const SpeechToTextLangElms = ({
     <>
       <Switch.Group>
         <div className="flex items-center justify-between my-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText">
             {t('speech-services.enable-speech-to-text')}
           </Switch.Label>
           <Switch
@@ -144,7 +144,9 @@ const SpeechToTextLangElms = ({
           >
             <span
               className={`${
-                enableSpeechToText ? 'translate-x-6' : 'translate-x-1'
+                enableSpeechToText
+                  ? 'ltr:translate-x-6 rtl:-translate-x-6'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>

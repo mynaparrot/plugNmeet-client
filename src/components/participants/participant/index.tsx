@@ -42,7 +42,7 @@ const ParticipantComponent = ({
             isCurrentUser={currentUser?.userId === participant.userId}
           />
         </div>
-        <div className="right ml-2 flex-auto flex items-center justify-end">
+        <div className="right ltr:ml-2 rtl:mr-2 flex-auto flex items-center justify-end">
           <RaiseHandIcon userId={participant.userId} />
           <VisibilityIcon userId={participant.userId} />
           <PresenterIcon userId={participant.userId} />
@@ -62,7 +62,7 @@ const ParticipantComponent = ({
           ) : null}
         </div>
         {currentUser?.metadata?.is_admin ? (
-          <div className="approve-wrap absolute right-0 top-5">
+          <div className="approve-wrap absolute ltr:right-0 rtl:left-0 top-5">
             <WaitingApproval
               userId={participant.userId}
               name={participant.name}

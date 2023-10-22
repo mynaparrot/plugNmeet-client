@@ -870,3 +870,7 @@ aside {
 .header-logo {
   background-position: center left;
 }
+.show-speech-setting .rtl\:tooltip-right::before {
+  left: 26px;
+  right: auto;
+}
