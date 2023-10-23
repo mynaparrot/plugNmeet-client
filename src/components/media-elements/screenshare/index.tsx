@@ -48,13 +48,12 @@ const ScreenShareElements = ({
         tracks.forEach((track) => {
           if (track.source === Track.Source.ScreenShare) {
             elm.push(<VideoElm key={track.trackSid} track={track} />);
-          } else if (track.source === Track.Source.ScreenShareAudio) {
-            elm.push(
-              <AudioElm
-                key={track.trackSid}
-                track={track as RemoteTrackPublication}
-              />,
-            );
+          } else if (
+            track.source === Track.Source.ScreenShareAudio &&
+            track instanceof RemoteTrackPublication
+          ) {
+            // we won't add local screen share audio track to avoid eco
+            elm.push(<AudioElm key={track.trackSid} track={track} />);
           }
         });
       });
