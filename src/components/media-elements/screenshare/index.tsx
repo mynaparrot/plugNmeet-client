@@ -20,7 +20,9 @@ const ScreenShareElements = ({
   currentConnection,
 }: IScreenShareElementsProps) => {
   const [screenShareTracks, setScreenShareTracks] =
-    useState<Map<string, LocalTrackPublication | RemoteTrackPublication>>();
+    useState<
+      Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>
+    >();
 
   useEffect(() => {
     if (currentConnection.screenShareTracksMap.size) {
@@ -42,17 +44,19 @@ const ScreenShareElements = ({
     if (screenShareTracks) {
       const elm = Array<JSX.Element>();
 
-      screenShareTracks.forEach((track) => {
-        if (track.source === Track.Source.ScreenShare) {
-          elm.push(<VideoElm key={track.trackSid} track={track} />);
-        } else if (track.source === Track.Source.ScreenShareAudio) {
-          elm.push(
-            <AudioElm
-              key={track.trackSid}
-              track={track as RemoteTrackPublication}
-            />,
-          );
-        }
+      screenShareTracks.forEach((tracks) => {
+        tracks.forEach((track) => {
+          if (track.source === Track.Source.ScreenShare) {
+            elm.push(<VideoElm key={track.trackSid} track={track} />);
+          } else if (track.source === Track.Source.ScreenShareAudio) {
+            elm.push(
+              <AudioElm
+                key={track.trackSid}
+                track={track as RemoteTrackPublication}
+              />,
+            );
+          }
+        });
       });
 
       return elm;

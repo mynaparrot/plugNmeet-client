@@ -34,7 +34,7 @@ export interface IConnectLivekit extends EventEmitter {
   get audioSubscribersMap(): Map<string, RemoteParticipant>;
   get screenShareTracksMap(): Map<
     string,
-    LocalTrackPublication | RemoteTrackPublication
+    Array<LocalTrackPublication | RemoteTrackPublication>
   >;
   setRoomMetadata(metadata: string): Promise<void>;
   disconnectRoom(): void;
@@ -74,7 +74,10 @@ export interface IConnectLivekit extends EventEmitter {
   on(
     event: CurrentConnectionEvents.ScreenShareTracks,
     listener: (
-      tracks: Map<string, LocalTrackPublication | RemoteTrackPublication>,
+      tracks: Map<
+        string,
+        Array<LocalTrackPublication | RemoteTrackPublication>
+      >,
     ) => void,
   );
 }

@@ -68,7 +68,7 @@ export default class ConnectLivekit
   >();
   private _screenShareTracksMap = new Map<
     string,
-    LocalTrackPublication | RemoteTrackPublication
+    Array<LocalTrackPublication | RemoteTrackPublication>
   >();
 
   private readonly errorState: Dispatch<IErrorPageProps>;
@@ -463,7 +463,15 @@ export default class ConnectLivekit
     add = true,
   ) => {
     if (add) {
-      this._screenShareTracksMap.set(participant.identity, track);
+      const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
+      if (this._screenShareTracksMap.has(participant.identity)) {
+        const oldTracks = this._screenShareTracksMap.get(participant.identity);
+        if (oldTracks && oldTracks.length) {
+          tracks.push(...oldTracks);
+        }
+      }
+      tracks.push(track);
+      this._screenShareTracksMap.set(participant.identity, tracks);
     } else {
       this._screenShareTracksMap.delete(participant.identity);
     }
