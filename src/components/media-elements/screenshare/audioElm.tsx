@@ -6,20 +6,22 @@ import { RootState, useAppSelector } from '../../../store';
 interface IAudioElmProps {
   track: RemoteTrackPublication;
 }
-const roomAudioVolumeSelector = createSelector(
-  (state: RootState) => state.roomSettings.roomAudioVolume,
-  (roomAudioVolume) => roomAudioVolume,
+const roomScreenShareAudioVolumeSelector = createSelector(
+  (state: RootState) => state.roomSettings.roomScreenShareAudioVolume,
+  (roomScreenShareAudioVolume) => roomScreenShareAudioVolume,
 );
 
 const AudioElm = ({ track }: IAudioElmProps) => {
-  const roomAudioVolume = useAppSelector(roomAudioVolumeSelector);
+  const roomScreenShareAudioVolume = useAppSelector(
+    roomScreenShareAudioVolumeSelector,
+  );
   const ref = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (el) {
       track.audioTrack?.attach(el);
-      el.volume = roomAudioVolume;
+      el.volume = roomScreenShareAudioVolume;
     }
 
     return () => {
@@ -33,9 +35,9 @@ const AudioElm = ({ track }: IAudioElmProps) => {
   useEffect(() => {
     const el = ref.current;
     if (el) {
-      el.volume = roomAudioVolume;
+      el.volume = roomScreenShareAudioVolume;
     }
-  }, [roomAudioVolume]);
+  }, [roomScreenShareAudioVolume]);
 
   return (
     <div style={{ display: 'none' }}>

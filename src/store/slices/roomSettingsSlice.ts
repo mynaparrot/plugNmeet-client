@@ -26,6 +26,7 @@ const initialState: IRoomSettings = {
   activeScreenSharingView: true,
   allowPlayAudioNotification: true,
   roomAudioVolume: 1,
+  roomScreenShareAudioVolume: 1,
   roomVideoQuality: VideoQuality.HIGH,
   theme: 'light',
   videoObjectFit: VideoObjectFit.CONTAIN,
@@ -87,6 +88,12 @@ const roomSettingsSlice = createSlice({
     },
     updateRoomAudioVolume: (state, action: PayloadAction<number>) => {
       state.roomAudioVolume = action.payload;
+    },
+    updateRoomScreenShareAudioVolume: (
+      state,
+      action: PayloadAction<number>,
+    ) => {
+      state.roomScreenShareAudioVolume = action.payload;
     },
     updateRoomVideoQuality: (state, action: PayloadAction<VideoQuality>) => {
       state.roomVideoQuality = action.payload;
@@ -166,6 +173,7 @@ export const {
   updateAllowPlayAudioNotification,
   updateShowKeyboardShortcutsModal,
   updateRoomAudioVolume,
+  updateRoomScreenShareAudioVolume,
   updateRoomVideoQuality,
   updateTheme,
   updateVideoObjectFit,

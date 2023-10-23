@@ -21,6 +21,7 @@ export interface IRoomSettings {
   activeScreenSharingView: boolean;
   allowPlayAudioNotification: boolean;
   roomAudioVolume: number;
+  roomScreenShareAudioVolume: number;
   roomVideoQuality: VideoQuality;
   theme: Theme;
   videoObjectFit: VideoObjectFit;

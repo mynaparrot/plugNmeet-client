@@ -58,6 +58,8 @@
   "header": {
     "hide-header": "Hide header",
     "show-header": "Show header",
+    "room-audio-volume": "Room audio",
+    "room-screen-share-audio-volume": "Room screen share audio",
     "menus": {
       "settings": "Settings",
       "keyboard-shortcuts": "Keyboard Shortcuts",
