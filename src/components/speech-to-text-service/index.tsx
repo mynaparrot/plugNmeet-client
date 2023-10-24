@@ -169,11 +169,14 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
         let mStream = mediaStream;
         // we'll create media stream otherwise won't be able to mute audio stream
         if (!isEmpty(deviceId) && !mediaStream) {
-          mStream = await navigator.mediaDevices.getUserMedia({
+          // use livekit track creation method for simplicity
+          const m = await currentRoom.localParticipant.createTracks({
             audio: {
               deviceId,
             },
+            video: false,
           });
+          mStream = m[0].mediaStream;
         }
         setCreatedMediaStream(mStream);
 
