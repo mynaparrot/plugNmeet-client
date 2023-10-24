@@ -10,7 +10,7 @@ interface SubtitleTextsHistoryProps {
 
 const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
   const { t } = useTranslation();
-  const [showPopover, setShowPopover] = useState<boolean>(false);
+  const [showPopover, setShowPopover] = useState<boolean>(true);
 
   useEffect(() => {
     isOpenPopover(showPopover);

@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Transition } from '@headlessui/react';
+import { isEmpty } from 'lodash';
 import {
   SpeechRecognizer,
   TranslationRecognizer,
@@ -10,6 +11,7 @@ import { SpeechToTextTranslationFeatures } from '../../../store/slices/interface
 import { store } from '../../../store';
 import SpeechToTextLangElms from './speechToTextLangElms';
 import SubtitleLangElms from './subtitleLangElms';
+import SubtitleFontSize from './subtitleFontSize';
 
 interface SelectOptionsProps {
   optionSelectionDisabled: boolean;
@@ -42,6 +44,15 @@ const SelectOptions = ({
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
   const [selectedSubtitleLang, setSelectedSubtitleLang] = useState<string>('');
   const [selectedMicDevice, setSelectedMicDevice] = useState<string>('');
+
+  useEffect(() => {
+    const selectedSubtitleLang =
+      store.getState().speechServices.selectedSubtitleLang;
+    if (!isEmpty(selectedSubtitleLang)) {
+      setSelectedSubtitleLang(selectedSubtitleLang);
+    }
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     const haveUser = speechService.allowed_speech_users?.find(
@@ -149,6 +160,7 @@ const SelectOptions = ({
                     selectedSubtitleLang={selectedSubtitleLang}
                     setSelectedSubtitleLang={setSelectedSubtitleLang}
                   />
+                  <SubtitleFontSize />
                 </div>
                 <div className="pt-5 bg-gray-50 dark:bg-transparent text-right">
                   <>

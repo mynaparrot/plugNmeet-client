@@ -1,3 +1,7 @@
+import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
+import { store } from '../../../store';
+import i18n from '../../../helpers/i18n';
+
 export type SupportedLangs = {
   name: string;
   code: string;
@@ -250,4 +254,48 @@ const supportedTranslationLangs = [
   { name: 'Yucatec Maya	', code: 'yua' },
 ];
 
-export { supportedSpeechToTextLangs, supportedTranslationLangs };
+const getSubtitleLangs = (
+  speechService: SpeechToTextTranslationFeatures | undefined,
+): Array<SupportedLangs> => {
+  if (!speechService) {
+    speechService =
+      store.getState().session.currentRoom.metadata?.room_features
+        .speech_to_text_translation_features;
+  }
+  const langs: Array<SupportedLangs> = [
+    {
+      name: i18n.t('speech-services.select-one-lang'),
+      code: '',
+    },
+  ];
+
+  speechService?.allowed_speech_langs?.forEach((l) => {
+    const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
+    const find = langs.find((l) => l.code === r[0].locale);
+    if (!find) {
+      const obj = supportedTranslationLangs.filter(
+        (lang) => lang.code === r[0].locale,
+      )?.[0];
+      langs.push(obj);
+    }
+  });
+
+  if (speechService?.is_enabled_translation) {
+    speechService.allowed_trans_langs?.forEach((l) => {
+      const obj = supportedTranslationLangs.filter(
+        (lang) => lang.code === l,
+      )?.[0];
+      const find = langs.find((l) => l.code === obj?.code);
+      if (!find) {
+        langs.push(obj);
+      }
+    });
+  }
+  return langs;
+};
+
+export {
+  supportedSpeechToTextLangs,
+  supportedTranslationLangs,
+  getSubtitleLangs,
+};

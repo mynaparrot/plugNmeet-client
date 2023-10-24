@@ -49,7 +49,6 @@ const getSession = () => {
 
 export const openConnectionWithAzure = (
   azureInfo: AzureTokenInfo,
-  deviceId: string,
   mediaStream: MediaStream | undefined,
   speechLang: string,
   speechService: SpeechToTextTranslationFeatures,
@@ -61,9 +60,7 @@ export const openConnectionWithAzure = (
     speechConfig: SpeechConfig | SpeechTranslationConfig,
     recognizer: SpeechRecognizer | TranslationRecognizer;
 
-  if (!isEmpty(deviceId)) {
-    audioConfig = AudioConfig.fromMicrophoneInput(deviceId);
-  } else if (mediaStream) {
+  if (mediaStream) {
     audioConfig = AudioConfig.fromStreamInput(mediaStream);
   } else {
     toast(i18n.t('speech-services.mic-error'), {

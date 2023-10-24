@@ -7,6 +7,7 @@ export interface TextWithInfo {
 
 export interface ISpeechServices {
   selectedSubtitleLang: string;
+  subtitleFontSize: number;
   interimText?: TextWithInfo;
   finalText: string;
   lastFinalTexts: TextWithInfo[];
