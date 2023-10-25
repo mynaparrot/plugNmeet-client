@@ -2,11 +2,7 @@ import React, { Fragment, useMemo, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  SupportedLangs,
-  supportedSpeechToTextLangs,
-  supportedTranslationLangs,
-} from '../helpers/supportedLangs';
+import { getSubtitleLangs, SupportedLangs } from '../helpers/supportedLangs';
 import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
 
 interface SubtitleLangElmsPros {
@@ -24,41 +20,9 @@ const SubtitleLangElms = ({
   const [displayLangs, setDisplayLangs] = useState<Array<SupportedLangs>>([]);
 
   useMemo(() => {
-    const langs: Array<SupportedLangs> = [
-      {
-        name: t('speech-services.select-one-lang'),
-        code: '',
-      },
-    ];
-    speechService.allowed_speech_langs?.forEach((l) => {
-      const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
-      const find = langs.find((l) => l.code === r[0].locale);
-      if (!find) {
-        const obj = supportedTranslationLangs.filter(
-          (lang) => lang.code === r[0].locale,
-        )?.[0];
-        langs.push(obj);
-      }
-    });
-
-    if (speechService.is_enabled_translation) {
-      speechService.allowed_trans_langs?.forEach((l) => {
-        const obj = supportedTranslationLangs.filter(
-          (lang) => lang.code === l,
-        )?.[0];
-        const find = langs.find((l) => l.code === obj?.code);
-        if (!find) {
-          langs.push(obj);
-        }
-      });
-    }
+    const langs = getSubtitleLangs(speechService);
     setDisplayLangs(langs);
-    //eslint-disable-next-line
-  }, [
-    speechService.allowed_speech_langs,
-    speechService.allowed_trans_langs,
-    speechService.is_enabled_translation,
-  ]);
+  }, [speechService]);
 
   return (
     <div className="flex items-center justify-between mt-2">

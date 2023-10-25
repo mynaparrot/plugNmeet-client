@@ -8,6 +8,7 @@ import {
 
 const initialState: ISpeechServices = {
   selectedSubtitleLang: '',
+  subtitleFontSize: 14,
   interimText: undefined,
   finalText: '',
   lastFinalTexts: [],
@@ -21,6 +22,9 @@ const speechServicesSlice = createSlice({
       state.selectedSubtitleLang = action.payload;
       state.interimText = undefined;
       state.finalText = '';
+    },
+    updateSubtitleFontSize: (state, action: PayloadAction<number>) => {
+      state.subtitleFontSize = action.payload;
     },
     addSpeechSubtitleText: (
       state,
@@ -39,6 +43,9 @@ const speechServicesSlice = createSlice({
   },
 });
 
-export const { updateSelectedSubtitleLang, addSpeechSubtitleText } =
-  speechServicesSlice.actions;
+export const {
+  updateSelectedSubtitleLang,
+  updateSubtitleFontSize,
+  addSpeechSubtitleText,
+} = speechServicesSlice.actions;
 export default speechServicesSlice.reducer;

@@ -519,38 +519,39 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
     }
   }
 }
-header#main-header {
-  // header volume slider
-  .volume-popup-wrapper {
-    .range {
-      @apply appearance-none align-middle	outline-none border-none p-0 bg-transparent w-full;
-      &::-webkit-slider-runnable-track {
-        background-color: rgba(128, 128, 128, 0.5);
-        height: 10px;
-        border-radius: 5px;
-        border: 1px solid transparent;
-        @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondaryColor/90 h-[10px] rounded-[5px] border border-solid border-transparent;
-      }
-      &::-moz-range-track {
-        @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondaryColor/90 h-[10px] rounded-[5px] border border-solid border-transparent;
-      }
-      &::-webkit-slider-thumb {
-        @apply appearance-none rounded-full bg-primaryColor dark:bg-white h-[18px] w-[18px] -mt-[5px];
-      }
-      &::-moz-range-thumb {
-        @apply rounded-[20px] h-[18px] w-[18px] border-none bg-primaryColor;
-      }
-      &:active {
-        &::-webkit-slider-thumb {
-          @apply outline-none;
-        }
-        &::-moz-range-thumb {
-          @apply outline-none;
-        }
-      }
+.range {
+  @apply appearance-none align-middle	outline-none border-none p-0 bg-transparent w-full;
+  &::-webkit-slider-runnable-track {
+    background-color: rgba(128, 128, 128, 0.5);
+    height: 10px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondaryColor/90 h-[10px] rounded-[5px] border border-solid border-transparent;
+  }
+  &::-moz-range-track {
+    @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondaryColor/90 h-[10px] rounded-[5px] border border-solid border-transparent;
+  }
+  &::-webkit-slider-thumb {
+    @apply appearance-none rounded-full bg-primaryColor dark:bg-white h-[18px] w-[18px] -mt-[5px];
+  }
+  &::-moz-range-thumb {
+    @apply rounded-[20px] h-[18px] w-[18px] border-none bg-primaryColor;
+  }
+  &:active {
+    &::-webkit-slider-thumb {
+      @apply outline-none;
+    }
+    &::-moz-range-thumb {
+      @apply outline-none;
     }
   }
 }
+// header#main-header {
+//   // header volume slider
+//   .volume-popup-wrapper {
+
+//   }
+// }
 // header volume slider
 .showParticipantsPanel {
   .active-speakers-wrap {

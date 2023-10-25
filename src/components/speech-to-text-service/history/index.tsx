@@ -10,7 +10,7 @@ interface SubtitleTextsHistoryProps {
 
 const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
   const { t } = useTranslation();
-  const [showPopover, setShowPopover] = useState<boolean>(false);
+  const [showPopover, setShowPopover] = useState<boolean>(true);
 
   useEffect(() => {
     isOpenPopover(showPopover);
@@ -27,7 +27,11 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
           <span className="tooltip">
             {t('speech-services.subtitle-history-modal-title')}
           </span>
-          <i className="pnm-timeline-solid primaryColor dark:text-darkText text-[12px] lg:text-[14px]"></i>
+          <i
+            className={`pnm-timeline-solid dark:text-darkText text-[12px] lg:text-[14px] ${
+              showPopover ? 'secondaryColor' : 'primaryColor'
+            }`}
+          ></i>
         </div>
       </button>
       {showPopover ? (
