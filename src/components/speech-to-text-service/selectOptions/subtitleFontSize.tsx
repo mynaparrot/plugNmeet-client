@@ -23,7 +23,7 @@ const SubtitleFontSize = () => {
       <p className="text-sm dark:text-darkText">
         {t('speech-services.subtitle-font-size')}
       </p>
-      <section className="flex items-center">
+      <section className="flex items-center w-[150px] sm:w-[250px]">
         <input
           type="range"
           min={0}
