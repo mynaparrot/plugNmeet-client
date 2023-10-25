@@ -200,7 +200,11 @@ const SelectOptions = ({
           <span className="tooltip !-left-3 tooltip-left">
             {t('speech-services.subtitle-settings')}
           </span>
-          <i className="pnm-closed-captioning primaryColor dark:text-darkText text-[12px] lg:text-[14px]"></i>
+          <i
+            className={`pnm-closed-captioning dark:text-darkText text-[12px] lg:text-[14px] ${
+              showModal ? 'secondaryColor' : 'primaryColor'
+            }`}
+          ></i>
         </div>
       </button>
     </div>
