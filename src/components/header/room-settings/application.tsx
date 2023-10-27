@@ -53,7 +53,7 @@ const ApplicationSettings = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="language"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
             >
               {t('header.room-settings.language')}
             </label>
@@ -76,7 +76,7 @@ const ApplicationSettings = () => {
         </div>
         <Switch.Group>
           <div className="flex items-center justify-between my-4">
-            <Switch.Label className="pr-4 w-full dark:text-darkText">
+            <Switch.Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
               {t('header.room-settings.enable-dark-theme')}
             </Switch.Label>
             <Switch
@@ -90,7 +90,9 @@ const ApplicationSettings = () => {
             >
               <span
                 className={`${
-                  theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                  theme === 'dark'
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
                 } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
               />
             </Switch>
@@ -100,7 +102,7 @@ const ApplicationSettings = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="video-object-fit"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
             >
               {t('header.room-settings.video-object-fit')}
             </label>
@@ -129,7 +131,7 @@ const ApplicationSettings = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="column-camera-width"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
             >
               {t('header.room-settings.column-camera-width')}
             </label>
@@ -169,7 +171,7 @@ const ApplicationSettings = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="column-camera-position"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
             >
               {t('header.room-settings.column-camera-position')}
             </label>

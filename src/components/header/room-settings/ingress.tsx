@@ -70,7 +70,10 @@ const Ingress = () => {
       <>
         <form method="POST" onSubmit={(e) => onSubmit(e)}>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="quality" className="pr-4 w-full dark:text-darkText">
+            <label
+              htmlFor="quality"
+              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+            >
               {t('ingress-features.ingress-type')}
             </label>
             <select
@@ -91,7 +94,7 @@ const Ingress = () => {
           <div className="flex items-center justify-between mb-2">
             <label
               htmlFor="stream-key"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
             >
               {t('ingress-features.join-as-name')}
             </label>

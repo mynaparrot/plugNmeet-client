@@ -26,7 +26,7 @@ const Notification = () => {
     return (
       <Switch.Group>
         <div className="flex items-center justify-between mb-2">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('header.room-settings.allow-audio-notification')}
           </Switch.Label>
           <Switch
@@ -40,7 +40,9 @@ const Notification = () => {
           >
             <span
               className={`${
-                allowPlayAudioNotification ? 'translate-x-6' : 'translate-x-1'
+                allowPlayAudioNotification
+                  ? 'ltr:translate-x-6 rtl:-translate-x-6'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>

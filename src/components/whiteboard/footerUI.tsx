@@ -201,7 +201,9 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     return (
       <div
         className={`flex text-sm items-center justify-start md:justify-center relative ${
-          isAdmin && !isRecorder ? 'pl-3 md:pl-12' : 'pl-3'
+          isAdmin && !isRecorder
+            ? 'ltr:pl-3 rtl:pr-3 md:pl-12  md:rtl:pr-12'
+            : 'ltr:pl-3 rtl:pr-3'
         } `}
       >
         {isAdmin && !isRecorder ? (

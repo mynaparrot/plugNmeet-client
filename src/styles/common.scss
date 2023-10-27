@@ -870,6 +870,13 @@ aside {
 .header-logo {
   background-position: center left;
 }
+html[dir='rtl'] .header-logo {
+  background-position: center right;
+}
+html[dir='rtl'] .rtl\:microphone-rtl-left::before {
+  left: 26px;
+  margin-left: 0;
+}
 .show-speech-setting .rtl\:tooltip-right::before {
   left: 26px;
   right: auto;

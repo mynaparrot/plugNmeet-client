@@ -224,7 +224,7 @@ const Header = ({ currentRoom }: IHeaderProps) => {
             <Menu>
               {({ open }) => (
                 <>
-                  <Menu.Button className="relative flex-shrink-0 p-2">
+                  <Menu.Button className="relative flex-shrink-0 p-2 rtl:-ml-4">
                     <div className="h-5 w-5 rotate-90 ">
                       <i className="pnm-menu-small dark:text-secondaryColor" />
                     </div>
