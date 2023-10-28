@@ -101,6 +101,21 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
       ParticipantEvent.TrackUnmuted,
       handleUserMutedMic,
     );
+
+    if (createdMediaStream) {
+      // in the beginning we'll check mic status
+      if (currentRoom.localParticipant.audioTracks.size) {
+        currentRoom.localParticipant.audioTracks.forEach((t) => {
+          if (t.isMuted) {
+            createdMediaStream.getAudioTracks().forEach((t) => {
+              if (t.enabled) {
+                t.enabled = false;
+              }
+            });
+          }
+        });
+      }
+    }
     return () => {
       currentRoom.localParticipant.off(
         ParticipantEvent.TrackMuted,
