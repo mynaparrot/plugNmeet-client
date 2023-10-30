@@ -52,7 +52,7 @@ const PopoverPanelElms = ({
   return (
     <Draggable nodeRef={nodeRef}>
       <Popover.Panel
-        className="SpeechHistory absolute z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
+        className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
         ref={nodeRef}
         static={showPopover}
       >

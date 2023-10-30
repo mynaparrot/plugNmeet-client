@@ -147,7 +147,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
           onClick={handlePre}
           disabled={disablePre}
         >
-          <i className="pnm-arrow-left-short text-black dark:text-white text-xl opacity-50" />
+          <i className="pnm-arrow-left-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
         <select
           id="pages"
@@ -163,7 +163,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
           onClick={handleNext}
           disabled={disableNext}
         >
-          <i className="pnm-arrow-right-short text-black dark:text-white text-xl opacity-50" />
+          <i className="pnm-arrow-right-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
       </div>
     );

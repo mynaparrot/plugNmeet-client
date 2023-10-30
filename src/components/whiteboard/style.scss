@@ -95,7 +95,15 @@
           display: none !important;
         }
       }
-      label[title='Library'] {
+      label[title='Library'],
+      label[title='کتابخانه'],
+      label[title='Bibliothèque'],
+      label[title='Bibliothek'],
+      label[title='Libreria'],
+      label[title='Kütüphane'],
+      label[title='Biblioteca'],
+      label[title='ライブラリ'],
+      label[title='Библиотека'] {
         .sidebar-trigger {
           &:hover {
             @apply text-[#b8b8b8];
