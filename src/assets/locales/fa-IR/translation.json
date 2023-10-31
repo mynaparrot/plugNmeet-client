@@ -58,6 +58,8 @@
   "header": {
     "hide-header": "عناوین را مخفی کنید",
     "show-header": "نمایش عناوین",
+    "room-audio-volume": "Room audio",
+    "room-screen-share-audio-volume": "Room screen share audio",
     "menus": {
       "settings": "تنظیمات",
       "keyboard-shortcuts": "میانبرهای صفحه کلید",
@@ -399,8 +401,10 @@
     "enable-speech-to-text": "گفتار به متن را فعال کنید",
     "speech-langs-label": "زبان های گفتاری",
     "speech-users-label": "کاربران گفتار",
+    "subtitle-font-size": "Subtitle font size",
     "enable-translation": "فعالسازی ترجمه",
     "translation-langs-label": "زبان ترجمه",
+    "default-subtitle-lang-label": "Default subtitle language",
     "enable-service": "فعال کردن سرویس",
     "speech-user-required": "حداقل یک کاربر گفتار نیاز دارد",
     "speech-lang-required": "حداقل یک زبان گفتاری لازم است",
