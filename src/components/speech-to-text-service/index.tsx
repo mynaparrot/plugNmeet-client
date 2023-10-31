@@ -77,7 +77,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
       }
     }
     //eslint-disable-next-line
-  }, [speechService]);
+  }, []);
 
   // if we've an active mic for room + speech to text on
   // sometime it make confused to user if they would like to mute/unmute
