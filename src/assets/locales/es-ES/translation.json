@@ -58,6 +58,8 @@
   "header": {
     "hide-header": "Ocultar encabezado",
     "show-header": "Mostrar encabezado",
+    "room-audio-volume": "Room audio",
+    "room-screen-share-audio-volume": "Room screen share audio",
     "menus": {
       "settings": "Configuraciones",
       "keyboard-shortcuts": "Atajos de teclado",
@@ -399,8 +401,10 @@
     "enable-speech-to-text": "Habilitar voz a texto",
     "speech-langs-label": "Idiomas de voz",
     "speech-users-label": "Usuarios de voz",
+    "subtitle-font-size": "Subtitle font size",
     "enable-translation": "Habilitar traducción",
     "translation-langs-label": "Idiomas de traducción",
+    "default-subtitle-lang-label": "Default subtitle language",
     "enable-service": "Habilitar servicio",
     "speech-user-required": "At least one speech user require",
     "speech-lang-required": "At least one speech language require",

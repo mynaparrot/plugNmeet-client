@@ -404,7 +404,6 @@
     "subtitle-font-size": "Subtitle font size",
     "enable-translation": "Enable translation",
     "translation-langs-label": "Translation languages",
-    "default-subtitle-lang-label": "Default subtitle language",
     "enable-service": "Enable service",
     "speech-user-required": "At least one speech user require",
     "speech-lang-required": "At least one speech language require",
