@@ -184,6 +184,7 @@ export interface SpeechToTextTranslationFeatures {
   allowed_speech_langs?: string[];
   allowed_speech_users?: string[];
   allowed_trans_langs?: string[];
+  default_subtitle_lang?: string;
 }
 
 export interface EndToEndEncryptionFeatures {

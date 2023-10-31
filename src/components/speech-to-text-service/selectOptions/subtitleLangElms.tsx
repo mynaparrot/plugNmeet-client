@@ -20,7 +20,10 @@ const SubtitleLangElms = ({
   const [displayLangs, setDisplayLangs] = useState<Array<SupportedLangs>>([]);
 
   useMemo(() => {
-    const langs = getSubtitleLangs(speechService);
+    const langs = getSubtitleLangs(
+      speechService.allowed_speech_langs,
+      speechService.allowed_trans_langs,
+    );
     setDisplayLangs(langs);
   }, [speechService]);
 

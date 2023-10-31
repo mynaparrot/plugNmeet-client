@@ -11,6 +11,7 @@ import { enableOrDisableSpeechService } from '../helpers/apiConnections';
 import SpeechLangsElms from './speechLangsElms';
 import SpeechUsersElms from './speechUsersElms';
 import TransLangsElm from './transLangsElm';
+import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) =>
@@ -28,6 +29,8 @@ const SpeechServiceSettingsModal = () => {
 
   const [enableTranslation, setEnableTranslation] = useState(false);
   const [selectedTransLangs, setSelectedTransLangs] = useState<string[]>([]);
+  const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] =
+    useState<string>('');
 
   useEffect(() => {
     if (speechService?.allowed_speech_langs) {
@@ -38,6 +41,9 @@ const SpeechServiceSettingsModal = () => {
     }
     if (speechService?.allowed_trans_langs) {
       setSelectedTransLangs(speechService.allowed_trans_langs);
+    }
+    if (speechService?.default_subtitle_lang) {
+      setSelectedDefaultSubtitleLang(speechService.default_subtitle_lang);
     }
     setEnableTranslation(speechService?.is_enabled_translation ?? false);
   }, [speechService]);
@@ -78,6 +84,7 @@ const SpeechServiceSettingsModal = () => {
       allowedSpeechUsers: selectedSpeechUsers,
       isEnabledTranslation: enableTranslation,
       allowedTransLangs: selectedTransLangs,
+      defaultSubtitleLang: selectedDefaultSubtitleLang,
     });
 
     const res = await enableOrDisableSpeechService(body);
@@ -215,6 +222,14 @@ const SpeechServiceSettingsModal = () => {
                       setSelectedTransLangs={setSelectedTransLangs}
                     />
                   ) : null}
+                  <DefaultSubtitleLangElms
+                    selectedSpeechLangs={selectedSpeechLangs}
+                    selectedTransLangs={selectedTransLangs}
+                    selectedDefaultSubtitleLang={selectedDefaultSubtitleLang}
+                    setSelectedDefaultSubtitleLang={
+                      setSelectedDefaultSubtitleLang
+                    }
+                  />
                 </div>
                 <div className="py-3 bg-gray-50 dark:bg-transparent text-right mt-4">
                   {!speechService?.is_enabled ? (

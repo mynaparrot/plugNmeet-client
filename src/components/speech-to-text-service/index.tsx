@@ -25,7 +25,6 @@ import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
 import SelectOptions, { OnCloseSelectedOptions } from './selectOptions';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
 import SubtitleTextsHistory from './history';
-import { getSubtitleLangs } from './helpers/supportedLangs';
 
 interface SpeechToTextServiceProps {
   currentRoom: Room;
@@ -70,13 +69,15 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     const selectedSubtitleLang =
       store.getState().speechServices.selectedSubtitleLang;
     if (isEmpty(selectedSubtitleLang)) {
-      const langs = getSubtitleLangs(undefined);
-      if (langs.length > 1) {
-        dispatch(updateSelectedSubtitleLang(langs[1].code));
+      const defaultSubtitleLang =
+        store.getState().session.currentRoom.metadata?.room_features
+          .speech_to_text_translation_features.default_subtitle_lang;
+      if (defaultSubtitleLang && !isEmpty(defaultSubtitleLang)) {
+        dispatch(updateSelectedSubtitleLang(defaultSubtitleLang));
       }
     }
     //eslint-disable-next-line
-  }, []);
+  }, [speechService]);
 
   // if we've an active mic for room + speech to text on
   // sometime it make confused to user if they would like to mute/unmute

@@ -32,12 +32,12 @@ const SpeechLangsElms = ({
           <Listbox.Button className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
             <span className="block">
               {selectedSpeechLangs
-                .map(
-                  (l) =>
-                    supportedSpeechToTextLangs.filter(
-                      (lang) => lang.code === l,
-                    )[0].name,
-                )
+                .map((l) => {
+                  if (!l) return [];
+                  return supportedSpeechToTextLangs.filter(
+                    (lang) => lang.code === l,
+                  )[0].name;
+                })
                 .join(', ')}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">

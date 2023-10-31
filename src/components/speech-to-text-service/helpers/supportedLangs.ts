@@ -1,4 +1,3 @@
-import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
 import { store } from '../../../store';
 import i18n from '../../../helpers/i18n';
 
@@ -255,12 +254,17 @@ const supportedTranslationLangs = [
 ];
 
 const getSubtitleLangs = (
-  speechService: SpeechToTextTranslationFeatures | undefined,
+  speechLangs?: string[],
+  transLangs?: string[],
 ): Array<SupportedLangs> => {
-  if (!speechService) {
-    speechService =
-      store.getState().session.currentRoom.metadata?.room_features
-        .speech_to_text_translation_features;
+  const speechService =
+    store.getState().session.currentRoom.metadata?.room_features
+      .speech_to_text_translation_features;
+  if (!speechLangs) {
+    speechLangs = speechService?.allowed_speech_langs;
+  }
+  if (!transLangs) {
+    transLangs = speechService?.allowed_trans_langs;
   }
   const langs: Array<SupportedLangs> = [
     {
@@ -269,28 +273,36 @@ const getSubtitleLangs = (
     },
   ];
 
-  speechService?.allowed_speech_langs?.forEach((l) => {
-    const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
-    const find = langs.find((l) => l.code === r[0].locale);
-    if (!find) {
-      const obj = supportedTranslationLangs.filter(
-        (lang) => lang.code === r[0].locale,
-      )?.[0];
-      langs.push(obj);
-    }
-  });
-
-  if (speechService?.is_enabled_translation) {
-    speechService.allowed_trans_langs?.forEach((l) => {
-      const obj = supportedTranslationLangs.filter(
-        (lang) => lang.code === l,
-      )?.[0];
-      const find = langs.find((l) => l.code === obj?.code);
-      if (!find) {
-        langs.push(obj);
+  if (speechLangs) {
+    for (let i = 0; i < speechLangs.length; i++) {
+      const l = speechLangs[i];
+      const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
+      if (!r.length) {
+        continue;
       }
-    });
+      const find = langs.find((ll) => ll.code === r[0].locale);
+      if (!find) {
+        const obj = supportedTranslationLangs.filter(
+          (lang) => lang.code === r[0].locale,
+        );
+        langs.push(...obj);
+      }
+    }
   }
+  if (transLangs) {
+    for (let i = 0; i < transLangs.length; i++) {
+      const l = transLangs[i];
+      const r = supportedTranslationLangs.filter((lang) => lang.code === l);
+      if (!r.length) {
+        continue;
+      }
+      const find = langs.find((ll) => ll.code === r[0].code);
+      if (!find) {
+        langs.push(...r);
+      }
+    }
+  }
+
   return langs;
 };
 
