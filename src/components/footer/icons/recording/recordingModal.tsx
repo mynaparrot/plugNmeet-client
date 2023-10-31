@@ -38,7 +38,7 @@ const RecordingModal = ({
         <Transition appear show={showModal} as={Fragment}>
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="recordingModal fixed inset-0 z-[9999] overflow-y-auto"
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
@@ -71,7 +71,7 @@ const RecordingModal = ({
               >
                 <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                    className="close-btn absolute top-8 lrt:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
@@ -81,7 +81,7 @@ const RecordingModal = ({
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                   >
                     {t('footer.icons.how-to-record')}
                   </Dialog.Title>
@@ -116,7 +116,7 @@ const RecordingModal = ({
                               />
                               <label
                                 htmlFor="yes"
-                                className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                                className="ltr:ml-3 rtl:mr-3 block text-sm font-medium text-gray-700 dark:text-darkText"
                               >
                                 {t('footer.icons.local-recording')}
                               </label>
@@ -141,7 +141,7 @@ const RecordingModal = ({
                               />
                               <label
                                 htmlFor="no"
-                                className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                                className="ltr:ml-3 rtl:mr-3 block text-sm font-medium text-gray-700 dark:text-darkText"
                               >
                                 {t('footer.icons.cloud-recording')}
                               </label>
@@ -150,7 +150,7 @@ const RecordingModal = ({
                         </div>
                       </div>
 
-                      <div className="px-4 py-3 bg-gray-50 dark:bg-transparent text-right sm:px-6 mt-4">
+                      <div className="py-3 bg-gray-50 dark:bg-transparent text-right mt-4">
                         <button
                           type="submit"
                           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"

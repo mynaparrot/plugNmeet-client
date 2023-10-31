@@ -107,7 +107,7 @@ const DisplayExternalLinkModal = () => {
         <Transition appear show={!isActive} as={Fragment}>
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="external-link-modal fixed inset-0 z-[9999] overflow-y-auto"
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
@@ -140,7 +140,7 @@ const DisplayExternalLinkModal = () => {
               >
                 <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                    className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeStartModal()}
                   >
@@ -150,7 +150,7 @@ const DisplayExternalLinkModal = () => {
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                   >
                     {t('external-display-link-display.modal-title')}
                   </Dialog.Title>

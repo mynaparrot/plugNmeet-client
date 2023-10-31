@@ -68,7 +68,7 @@ const LockSettingsModal = () => {
     return (
       <Switch.Group>
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-microphone')}
           </Switch.Label>
           <Switch
@@ -83,15 +83,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_microphone
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-webcams')}
           </Switch.Label>
           <Switch
@@ -106,15 +106,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_webcam
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-screen-sharing')}
           </Switch.Label>
           <Switch
@@ -129,15 +129,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_screen_sharing
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-whiteboard')}
           </Switch.Label>
           <Switch
@@ -152,15 +152,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_whiteboard
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-shared-notepad')}
           </Switch.Label>
           <Switch
@@ -175,15 +175,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_shared_notepad
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-chat')}
           </Switch.Label>
           <Switch
@@ -197,14 +197,16 @@ const LockSettingsModal = () => {
           >
             <span
               className={`${
-                roomLockSettings?.lock_chat ? 'translate-x-6' : 'translate-x-1'
+                roomLockSettings?.lock_chat
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-send-message')}
           </Switch.Label>
           <Switch
@@ -219,15 +221,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_chat_send_message
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-chat-file-share')}
           </Switch.Label>
           <Switch
@@ -242,15 +244,15 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_chat_file_share
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="pr-4 w-full dark:text-darkText">
+          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-private-chat')}
           </Switch.Label>
           <Switch
@@ -265,8 +267,8 @@ const LockSettingsModal = () => {
             <span
               className={`${
                 roomLockSettings?.lock_private_chat
-                  ? 'translate-x-6'
-                  : 'translate-x-1'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
@@ -281,7 +283,7 @@ const LockSettingsModal = () => {
         <Transition appear show={true} as={Fragment}>
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="lockSettingsModal fixed inset-0 z-[9999] overflow-y-auto"
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
@@ -314,7 +316,7 @@ const LockSettingsModal = () => {
               >
                 <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                    className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
@@ -324,7 +326,7 @@ const LockSettingsModal = () => {
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
                   >
                     {t('footer.modal.lock-settings-title')}
                   </Dialog.Title>

@@ -90,13 +90,13 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
           </button>
           <button
             onClick={() => rejectUser(p.userId, false)}
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ml-2"
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
           >
             {t('left-panel.reject')}
           </button>
           <button
             onClick={() => rejectUser(p.userId, true)}
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ml-2"
+            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
           >
             {t('waiting-room.reject-and-block-user')}
           </button>
@@ -107,7 +107,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
 
   return (
     <div className="waiting-list-wrap">
-      <p className="text-lg my-4 text-black dark:text-white font-bold">
+      <p className="text-lg my-4 text-black dark:text-white font-bold ltr:text-left rtl:text-right">
         {t('waiting-room.list-waiting-participants', {
           count: waitingParticipants.length,
         })}

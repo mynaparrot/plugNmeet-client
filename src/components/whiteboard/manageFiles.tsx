@@ -99,7 +99,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
           className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer"
           onClick={() => openFileBrowser('image')}
         >
-          <i className="pnm-blank-img text-[14px] mr-1" />
+          <i className="pnm-blank-img text-[14px] ltr:mr-1 rtl:ml-1" />
           {t('whiteboard.upload-image')}
         </button>
         <div className="menu relative z-10">
@@ -108,7 +108,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
               <>
                 <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer">
                   <>
-                    <i className="pnm-attachment text-[14px] mr-1" />
+                    <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
                     {t('whiteboard.manage-files')}
                   </>
                 </Menu.Button>
@@ -126,7 +126,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
                   {/* Mark this component as `static` */}
                   <Menu.Items
                     static
-                    className="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+                    className="origin-top-right z-10 absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                   >
                     <div className="item-wrapper-uploaded-file overflow-x-hidden overflow-y-auto max-h-[170px] scrollBar scrollBar2">
                       {menuItems}
@@ -137,7 +137,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
                           onClick={() => openFileBrowser('office')}
                           className="w-[100px] !m-auto text-xs h-7 flex items-center justify-center !bg-primaryColor hover:!bg-secondaryColor text-white"
                         >
-                          <i className="pnm-attachment text-white text-[14px] opacity-50 mr-1" />
+                          <i className="pnm-attachment text-white text-[14px] opacity-50 ltr:mr-1 rtl:ml-1" />
                           {t('whiteboard.upload-file')}
                         </button>
                       </Menu.Item>

@@ -26,7 +26,7 @@ const BreakoutRoom = () => {
         <Transition appear show={isOpen} as={Fragment}>
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="breakout-room-modal fixed inset-0 z-[9999] overflow-y-auto"
             onClose={() => false}
             static={false}
           >
@@ -60,7 +60,7 @@ const BreakoutRoom = () => {
               >
                 <div className="inline-block w-full max-w-5xl h-full p-4 md:p-6 my-16 overflow-hidden text-left transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                   <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                    className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
                     type="button"
                     onClick={() => closeModal()}
                   >
@@ -70,7 +70,7 @@ const BreakoutRoom = () => {
 
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                   >
                     {t('breakout-room.modal-title')}
                   </Dialog.Title>

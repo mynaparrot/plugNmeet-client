@@ -52,20 +52,20 @@ const PopoverPanelElms = ({
   return (
     <Draggable nodeRef={nodeRef}>
       <Popover.Panel
-        className="SpeechHistory absolute z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
+        className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
         ref={nodeRef}
         static={showPopover}
       >
         <h2 className="relative text-lg font-medium leading-6 text-gray-900 dark:text-white p-5 pb-3 px-3 cursor-move">
           {t('speech-services.subtitle-history-modal-title')}
           <button
-            className="absolute right-10 w-[25px] h-[25px] outline-none"
+            className="absolute ltr:right-10 rtl:left-10 w-[25px] h-[25px] outline-none"
             onClick={() => downloadTexts()}
           >
             <i className="pnm-download" />
           </button>
           <button
-            className="absolute top-7 right-3 w-[25px] h-[25px] outline-none"
+            className="absolute top-7 ltr:right-3 rtl:left-3 w-[25px] h-[25px] outline-none"
             onClick={() => setShowPopover(!showPopover)}
           >
             <span className="inline-block h-[2px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-0" />

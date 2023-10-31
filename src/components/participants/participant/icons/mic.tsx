@@ -44,7 +44,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
 
   const renderUnmuteIcon = useCallback(() => {
     return (
-      <div className="mic mr-2 cursor-pointer">
+      <div className="mic ltr:mr-2 rtl:ml-2 cursor-pointer">
         <Menu>
           {({ open }) => (
             <>
@@ -63,7 +63,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
               >
                 <Menu.Items
                   static
-                  className="volume-popup-wrapper origin-top-right z-10 absolute -right-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                  className="volume-popup-wrapper origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                 >
                   <section className="flex items-center">
                     <input

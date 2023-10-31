@@ -248,7 +248,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
           backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
         }}
       />
-      <div className="inner flex justify-between w-full">
+      <div className="inner flex justify-between w-full rtl:flex-row-reverse">
         {renderLeftPanel}
 
         <div className="middle-area relative flex-auto">

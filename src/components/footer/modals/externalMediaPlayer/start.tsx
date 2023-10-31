@@ -74,7 +74,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
             >
               <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
                 <button
-                  className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
                   type="button"
                   onClick={() => closeStartModal()}
                 >
@@ -84,7 +84,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
 
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                 >
                   {t('footer.modal.external-media-player-title')}
                 </Dialog.Title>
@@ -117,7 +117,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                           className={`${
                             item.id === 2 || item.id === 3
                               ? 'polls h-full'
-                              : 'px-2 xl:px-4 pt-2 xl:pt-5 h-full overflow-auto scrollBar'
+                              : 'pt-2 xl:pt-5 h-full overflow-auto scrollBar'
                           }`}
                         >
                           <>{item.elm}</>
