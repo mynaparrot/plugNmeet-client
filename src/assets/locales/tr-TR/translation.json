@@ -38,16 +38,16 @@
     "room-disconnected-participant-removed": "Bu konferanstan çıkarıldınız. Kod: {{code}}",
     "room-disconnected-room-ended": "Oda kapatıldı. Kod: {{code}}",
     "room-disconnected-state-mismatch": "Durum uyuşmazlığı. Kod: {{code}}",
-    "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
+    "room-disconnected-reconnecting": "Oda bağlantısı kesildi, tekrar bağlanıyor...",
     "your-connection-quality-not-good": "Bağlantı kaliteniz yeterince iyi değil",
     "need-to-disable-display-external-link": "Harici Bağlantıyı Görüntüleme açık. Harici Medya Oynatıcıyı başlatmadan önce lütfen kapatın.",
     "need-to-disable-external-media-player": "Harici Bağlantıyı Görüntüleme açık. Harici Medya Oynatıcıyı başlatmadan önce lütfen kapatın.",
     "websocket-disconnected": "Websocket bağlantısı kesildi, yeniden bağlanıyor..",
     "websocket-error": "Websocket'te hata oluştu.",
-    "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
+    "websocket-not-connected": "Websocket bağlı değil. Mesajlar iletilmiyor.",
     "room-will-end-in": "Bu oda {{minutes}} dakika içinde sona erecektir",
-    "e2ee-unsupported-browser-title": "Unsupported browser",
-    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
+    "e2ee-unsupported-browser-title": "Desteklenmeyen tarayıcı",
+    "e2ee-unsupported-browser-msg": "Bu oturum, mevcut tarayıcınızın desteklemediği uçtan uca şifrelemeyi etkinleştirdi."
   },
   "room-metadata": {
     "session-recording": "Bu oturum kaydediliyor",
@@ -58,6 +58,8 @@
   "header": {
     "hide-header": "Başlığı gizle",
     "show-header": "Başlığı göster",
+    "room-audio-volume": "Oda sesi",
+    "room-screen-share-audio-volume": "Oda ekranı ses paylaşımı",
     "menus": {
       "settings": "Ayarlar",
       "keyboard-shortcuts": "Klavye Kısayolları",
@@ -127,7 +129,7 @@
     "loading": "yükleniyor...",
     "connected": "bağlanıldı",
     "ready": "hazır",
-    "webcams-per-page": "Per page.",
+    "webcams-per-page": "Sayfa başına.",
     "require-ssl-title": "Etki alanı SSL etkinleştirilmiş olmalıdır",
     "require-ssl-des": "Localhost dışında SSL etkin bir alan adı kullanılması gerekir."
   },
@@ -240,7 +242,7 @@
       "manage-breakout-room": "Ara odalarını yönet",
       "start-display-external-link": "Harici bağlantıyı görüntüle",
       "stop-display-external-link": "Harici bağlantıyı görüntüleme",
-      "speech-to-text-settings": "Speech to text/translation settings"
+      "speech-to-text-settings": "Konuşmadan metne/çeviri ayarları"
     },
     "notice": {
       "already-active-screen-sharing": "Oturumda zaten etkin bir ekran paylaşımı var",
@@ -286,7 +288,7 @@
       "external-media-player-upload-file-play": "Yükle ve oynat",
       "external-media-player-upload-supported-files": "Desteklenen dosyalar: {{files}}",
       "upload-background-image": "Arkaplan resmi yükle",
-      "shared-notepad": "Shared notepad"
+      "shared-notepad": "Paylaşılan not defteri"
     }
   },
   "whiteboard": {
@@ -384,47 +386,49 @@
     "user-role-des": "Kullanıcının mevcut rolü. Yönetici veya katılımcı"
   },
   "ingress-features": {
-    "ingress-type": "Ingress type",
+    "ingress-type": "Giriş tipi",
     "ingress-type-rtmp": "RTMP",
     "ingress-type-whip": "WHIP",
     "join-as-name": "İsim olarak katıl",
     "feature-not-allow": "Özelliğe izin verilmiyor",
     "join-as-name-required": "Gerekli olan isimle katılın",
     "gen-link": "Bağlantı oluştur",
-    "stream-url": "Stream Host/URL",
-    "stream-key": "Stream key/secret"
+    "stream-url": "Akış Ana Bilgisayarı/URL'si",
+    "stream-key": "Akış anahtarı/gizli anahtar"
   },
   "speech-services": {
-    "modal-settings-title": "Speech to text/translation settings",
-    "enable-speech-to-text": "Enable speech to text",
-    "speech-langs-label": "Speech languages",
-    "speech-users-label": "Speech users",
-    "enable-translation": "Enable translation",
+    "modal-settings-title": "Konuşmadan metne/çeviri ayarları",
+    "enable-speech-to-text": "Konuşmayı metne dönüştürmeyi etkinleştirin",
+    "speech-langs-label": "Konuşma dilleri",
+    "speech-users-label": "Konuşma kullanıcıları",
+    "subtitle-font-size": "Altyazı yazı tipi boyutu",
+    "enable-translation": "Çeviriyi etkinleştir",
     "translation-langs-label": "Çeviri dili",
-    "enable-service": "Enable service",
-    "speech-user-required": "At least one speech user require",
-    "speech-lang-required": "At least one speech language require",
-    "translation-lang-required": "At least one translation language or 2 speech languages required",
-    "service-ready": "Speech service is ready",
-    "start-service": "Start",
-    "stop-service": "Stop",
-    "update-service": "Update",
-    "service-stopped": "Service has been stopped",
-    "start-modal-title": "Speech to text/translation service",
-    "speech-lang-label": "Speech language",
-    "subtitle-lang-label": "Subtitle language",
-    "subtitle-settings": "Subtitle settings",
-    "status-change-error": "Something went wrong during status change. Please try again. Error {{error}}",
-    "speech-to-text-ready": "Service started. You can start speaking now.",
-    "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",
-    "already-using-service": "You're already using the service.",
-    "service-disabled": "Service is disabled. Please check server configuration.",
-    "token-generation-failed": "Token generation failed with error: {{error}}",
-    "mic-error": "Service can't start because of microphone problem.",
-    "enable-translation-warning": "You've more than 1 speech to text languages but translation was disabled.",
-    "select-one-lang": "Select one language",
-    "subtitle-history-modal-title": "Subtitle texts history",
-    "azure-error": "Microsoft azure error: {{error}}",
-    "speech-to-text-stopped": "Speech to text service has been stopped"
+    "default-subtitle-lang-label": "Default subtitle language",
+    "enable-service": "Servisi Etkinleştir",
+    "speech-user-required": "En az bir konuşma kullanıcısı gerekir",
+    "speech-lang-required": "En az bir konuşma dili gerektirir",
+    "translation-lang-required": "En az bir çeviri dili veya 2 konuşma dili gerekli",
+    "service-ready": "Konuşma servisi hazır",
+    "start-service": "Başla",
+    "stop-service": "Durdur",
+    "update-service": "Güncelle",
+    "service-stopped": "Servis durduruldu",
+    "start-modal-title": "Konuşmadan metne/çeviri servisi",
+    "speech-lang-label": "Konuşma dili",
+    "subtitle-lang-label": "Altyazı dili",
+    "subtitle-settings": "Altyazı ayarları",
+    "status-change-error": "Durum değişikliği sırasında bir şeyler ters gitti. Lütfen tekrar deneyin. Hata {{error}}",
+    "speech-to-text-ready": "Servis başladı. Artık konuşmaya başlayabilirsiniz.",
+    "already-received-token": "Zaten jeton aldınız. Yenisini oluşturmadan önce 5 dakika beklemeniz gerekiyor.",
+    "already-using-service": "Servisi zaten kullanıyorsunuz.",
+    "service-disabled": "Servis devre dışı bırakıldı. Lütfen sunucu yapılandırmasını kontrol edin.",
+    "token-generation-failed": "Belirteç oluşturma şu hatayla başarısız oldu: {{error}}",
+    "mic-error": "Mikrofon sorunu nedeniyle hizmet başlatılamıyor.",
+    "enable-translation-warning": "1'den fazla konuşmadan metne diliniz var ancak çeviri devre dışı bırakıldı.",
+    "select-one-lang": "Bir dil seçin",
+    "subtitle-history-modal-title": "Altyazı metinleri geçmişi",
+    "azure-error": "Microsoft azure hatası: {{error}}",
+    "speech-to-text-stopped": "Konuşmayı metne dönüştürme hizmeti durduruldu"
   }
 }
