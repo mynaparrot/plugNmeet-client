@@ -257,15 +257,18 @@ const getSubtitleLangs = (
   speechLangs?: string[],
   transLangs?: string[],
 ): Array<SupportedLangs> => {
-  const speechService =
-    store.getState().session.currentRoom.metadata?.room_features
-      .speech_to_text_translation_features;
-  if (!speechLangs) {
-    speechLangs = speechService?.allowed_speech_langs;
+  if (!speechLangs || !transLangs) {
+    const speechService =
+      store.getState().session.currentRoom.metadata?.room_features
+        .speech_to_text_translation_features;
+    if (!speechLangs) {
+      speechLangs = speechService?.allowed_speech_langs;
+    }
+    if (!transLangs) {
+      transLangs = speechService?.allowed_trans_langs;
+    }
   }
-  if (!transLangs) {
-    transLangs = speechService?.allowed_trans_langs;
-  }
+
   const langs: Array<SupportedLangs> = [
     {
       name: i18n.t('speech-services.select-one-lang'),
