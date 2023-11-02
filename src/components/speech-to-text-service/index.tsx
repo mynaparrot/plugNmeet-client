@@ -62,7 +62,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   >(undefined);
   const [optionSelectionDisabled, setOptionSelectionDisabled] =
     useState<boolean>(false);
-  const [isOpenPopover, setIsOpenPopover] = useState<boolean>(true);
+  const [isOpenPopover, setIsOpenPopover] = useState<boolean>(false);
 
   // by default, we'll select the first language as default subtitle
   useEffect(() => {
@@ -79,11 +79,8 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     //eslint-disable-next-line
   }, []);
 
-  // if we've an active mic for room + speech to text on
-  // sometime it make confused to user if they would like to mute/unmute
-  // so, we'll do the same if a user tries to mute/unmute their room mic
-  useEffect(() => {
-    const handleUserMutedMic = (publication: TrackPublication) => {
+  const handleUserMutedMic = useCallback(
+    (publication: TrackPublication) => {
       if (!createdMediaStream) {
         return;
       }
@@ -92,8 +89,14 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
           t.enabled = !publication.isMuted;
         });
       }
-    };
+    },
+    [createdMediaStream],
+  );
 
+  // if we've an active mic for room + speech to text on
+  // sometime it make confused to user if they would like to mute/unmute
+  // so, we'll do the same if a user tries to mute/unmute their room mic
+  useEffect(() => {
     currentRoom.localParticipant.on(
       ParticipantEvent.TrackMuted,
       handleUserMutedMic,
@@ -102,21 +105,6 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
       ParticipantEvent.TrackUnmuted,
       handleUserMutedMic,
     );
-
-    if (createdMediaStream) {
-      // in the beginning we'll check mic status
-      if (currentRoom.localParticipant.audioTracks.size) {
-        currentRoom.localParticipant.audioTracks.forEach((t) => {
-          if (t.isMuted) {
-            createdMediaStream.getAudioTracks().forEach((t) => {
-              if (t.enabled) {
-                t.enabled = false;
-              }
-            });
-          }
-        });
-      }
-    }
     return () => {
       currentRoom.localParticipant.off(
         ParticipantEvent.TrackMuted,
@@ -195,6 +183,19 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
           mStream = m[0].mediaStream;
         }
         setCreatedMediaStream(mStream);
+
+        // for the beginning, we'll check if our room mic is muted or not
+        if (currentRoom.localParticipant.audioTracks.size) {
+          currentRoom.localParticipant.audioTracks.forEach((t) => {
+            if (t.isMuted && mStream) {
+              mStream.getAudioTracks().forEach((t) => {
+                if (t.enabled) {
+                  t.enabled = false;
+                }
+              });
+            }
+          });
+        }
 
         openConnectionWithAzure(
           azureTokenInfo,

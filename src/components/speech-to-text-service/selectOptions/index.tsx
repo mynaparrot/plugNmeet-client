@@ -50,6 +50,10 @@ const SelectOptions = ({
       store.getState().speechServices.selectedSubtitleLang;
     if (!isEmpty(selectedSubtitleLang)) {
       setSelectedSubtitleLang(selectedSubtitleLang);
+    } else {
+      if (speechService.default_subtitle_lang) {
+        setSelectedSubtitleLang(speechService.default_subtitle_lang);
+      }
     }
     //eslint-disable-next-line
   }, []);

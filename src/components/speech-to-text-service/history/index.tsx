@@ -3,6 +3,7 @@ import { Popover } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import PopoverPanelElms from './popoverPanelElms';
+import { store } from '../../../store';
 
 interface SubtitleTextsHistoryProps {
   isOpenPopover: (open: boolean) => void;
@@ -10,7 +11,15 @@ interface SubtitleTextsHistoryProps {
 
 const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
   const { t } = useTranslation();
-  const [showPopover, setShowPopover] = useState<boolean>(true);
+  const [showPopover, setShowPopover] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isRecorder = store.getState().session.currentUser?.isRecorder;
+    if (!isRecorder) {
+      setShowPopover(true);
+    }
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     isOpenPopover(showPopover);
