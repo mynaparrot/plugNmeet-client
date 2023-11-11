@@ -53,7 +53,7 @@
   "devDependencies": {
     "@bufbuild/protoc-gen-es": "1.4.2",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.11",
-    "@size-limit/preset-app": "10.0.2",
+    "@size-limit/preset-app": "10.0.3",
     "@types/emscripten": "1.39.10",
     "@types/lodash": "4.14.201",
     "@types/react": "18.2.37",
