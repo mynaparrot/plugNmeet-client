@@ -2,9 +2,9 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { IChatMsg } from './interfaces/dataMessages';
 
-const chatMessagesAdapter = createEntityAdapter<IChatMsg>({
-  selectId: (chatMessage) => chatMessage.message_id,
-  sortComparer: (a, b) => {
+const chatMessagesAdapter = createEntityAdapter({
+  selectId: (chatMessage: IChatMsg) => chatMessage.message_id,
+  sortComparer: (a: IChatMsg, b: IChatMsg) => {
     const aTime = new Date(a.time);
     const bTime = new Date(b.time);
     if (aTime.getTime() > bTime.getTime()) return 1;
