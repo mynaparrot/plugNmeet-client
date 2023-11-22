@@ -44,10 +44,10 @@ const VideoComponent = ({
     <div
       className="video-camera-item-inner"
       style={{
-        height: `${videoDimension.height}px`,
-        width: `${videoDimension.width}px`,
-        maxWidth: '1280px',
-        maxHeight: '720px',
+        // height: `${videoDimension.height}px`,
+        // width: `${videoDimension.width}px`,
+        maxWidth: `${videoDimension.width}px`, //'1280px',
+        maxHeight: `${videoDimension.height}px`, //'720px',
       }}
     >
       <div className="name">

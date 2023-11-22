@@ -305,20 +305,23 @@ code {
   }
 }
 .video-camera-item {
-  @apply w-full h-full rounded-2xl overflow-hidden z-[1] bg-black;
+  @apply w-full h-full z-[1] flex items-center justify-center;
   .loading {
     @apply top-1/2 -translate-y-1/2;
   }
-  &::before {
-    @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
-  }
-  &::after {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.1) 50%
-    );
-    @apply absolute content-[''] w-full h-full z-[99];
+  .video-camera-item-inner {
+    @apply relative w-full h-full rounded-2xl overflow-hidden bg-black;
+    &::before {
+      @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
+    }
+    &::after {
+      background: linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.1) 50%
+      );
+      @apply absolute content-[''] w-full h-full z-[99];
+    }
   }
   .name {
     @apply absolute bottom-[10px] z-[999] text-white left-3 text-sm leading-[1];
@@ -360,8 +363,10 @@ code {
     );
     @apply absolute w-[270px] h-full block py-[30px] px-0 z-[2] left-0;
     .video-camera-item {
-      &::after {
-        @apply bg-transparent opacity-100;
+      .video-camera-item-inner {
+        &::after {
+          @apply bg-transparent opacity-100;
+        }
       }
       .name {
         @apply opacity-100 top-auto left-3;
@@ -882,22 +887,22 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   right: auto;
 }
-.middle-area
-  .all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-0.total-items-1
-  .video-camera-item {
-  width: max-content;
-}
-.middle-area
-  .all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-0.total-items-1
-  .video-camera-item
-  .camera-modules
-  .camera-video-player {
-  position: relative;
-  height: calc(100vh - 148px);
-  width: max-content;
-  margin: auto;
-}
+// .middle-area
+//   .all-webcam-wrapper
+//   .all-webcam-wrapper-inner
+//   .camera-row-0.total-items-1
+//   .video-camera-item {
+//   width: max-content;
+// }
+// .middle-area
+//   .all-webcam-wrapper
+//   .all-webcam-wrapper-inner
+//   .camera-row-0.total-items-1
+//   .video-camera-item
+//   .camera-modules
+//   .camera-video-player {
+//   position: relative;
+//   height: calc(100vh - 148px);
+//   width: max-content;
+//   margin: auto;
+// }
