@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
+import type { VideoParticipantType } from './videosComponentElms';
 import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
 import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlice';
-import { VideoParticipantType } from './videosComponentElms';
 
 interface VideoParticipantProps {
   participantType: VideoParticipantType;
@@ -22,15 +22,14 @@ const VideoParticipant = ({
     const elements: Array<JSX.Element> = [];
     participant.tracks.forEach((track) => {
       if (track.source === Track.Source.Camera) {
-        const elm = (
-          <div className="video-camera-item-inner" key={track.trackSid}>
-            <div className="name">
-              {participant.name} {participantType.isLocal ? '(me)' : null}
-            </div>
-            <VideoComponent userId={participant.identity} track={track} />
-          </div>
+        elements.push(
+          <VideoComponent
+            key={track.trackSid}
+            participant={participant}
+            participantType={participantType}
+            track={track}
+          />,
         );
-        elements.push(elm);
       }
     });
     return elements;
