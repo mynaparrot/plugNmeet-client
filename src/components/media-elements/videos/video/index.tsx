@@ -1,44 +1,26 @@
 import React from 'react';
-import {
-  LocalTrackPublication,
-  RemoteTrackPublication,
-  RemoteParticipant,
-  LocalParticipant,
-} from 'livekit-client';
+import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import VideoElm from './videoElm';
-// import ConnectionStatus from './connectionStatus';
-// import MicStatus from './micStatus';
-// import PinWebcam from './pinWebcam';
-import { VideoParticipantType } from '../videosComponentElms';
+import ConnectionStatus from './connectionStatus';
+import MicStatus from './micStatus';
+import PinWebcam from './pinWebcam';
 
 export interface IVideoComponentProps {
   userId: string;
   track: RemoteTrackPublication | LocalTrackPublication;
-  participantType: VideoParticipantType;
-  participant: RemoteParticipant | LocalParticipant;
 }
-const VideoComponent = ({
-  userId,
-  track,
-  participantType,
-  participant,
-}: IVideoComponentProps) => {
+const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
   const render = () => {
     return (
       <>
-        {/* <div className="status">
+        <div className="status">
           <ConnectionStatus userId={userId} />
           <MicStatus userId={userId} />
         </div>
         <div className="status PinWebcam">
           <PinWebcam userId={userId} />
-        </div> */}
-        <VideoElm
-          track={track}
-          userId={userId}
-          participantType={participantType}
-          participant={participant}
-        />
+        </div>
+        <VideoElm track={track} />
       </>
     );
   };

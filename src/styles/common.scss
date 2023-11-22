@@ -882,22 +882,22 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   right: auto;
 }
-// .middle-area
-//   .all-webcam-wrapper
-//   .all-webcam-wrapper-inner
-//   .camera-row-0.total-items-1
-//   .video-camera-item {
-//   width: max-content;
-// }
-// .middle-area
-//   .all-webcam-wrapper
-//   .all-webcam-wrapper-inner
-//   .camera-row-0.total-items-1
-//   .video-camera-item
-//   .camera-modules
-//   .camera-video-player {
-//   position: relative;
-//   height: calc(100vh - 148px);
-//   width: max-content;
-//   margin: auto;
-// }
+.middle-area
+  .all-webcam-wrapper
+  .all-webcam-wrapper-inner
+  .camera-row-0.total-items-1
+  .video-camera-item {
+  width: max-content;
+}
+.middle-area
+  .all-webcam-wrapper
+  .all-webcam-wrapper-inner
+  .camera-row-0.total-items-1
+  .video-camera-item
+  .camera-modules
+  .camera-video-player {
+  position: relative;
+  height: calc(100vh - 148px);
+  width: max-content;
+  margin: auto;
+}

@@ -3,24 +3,15 @@ import {
   LocalTrackPublication,
   RemoteTrackPublication,
   Track,
-  RemoteParticipant,
-  LocalParticipant,
 } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppSelector } from '../../../../store';
 import { sleep } from '../../../../helpers/utils';
 import './style.scss';
-import ConnectionStatus from './connectionStatus';
-import MicStatus from './micStatus';
-import PinWebcam from './pinWebcam';
-import { VideoParticipantType } from '../videosComponentElms';
 
 interface IVideoElmProps {
-  userId: string;
   track: RemoteTrackPublication | LocalTrackPublication;
-  participantType: VideoParticipantType;
-  participant: RemoteParticipant | LocalParticipant;
 }
 
 const roomVideoQualitySelector = createSelector(
@@ -32,12 +23,7 @@ const videoObjectFitSelector = createSelector(
   (videoObjectFit) => videoObjectFit,
 );
 
-const VideoElm = ({
-  track,
-  userId,
-  participantType,
-  participant,
-}: IVideoElmProps) => {
+const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
   const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
@@ -108,10 +94,10 @@ const VideoElm = ({
     <div
       className="camera-video-player"
       style={{
-        // height: `${videoDimension.height}px`,
-        // width: `${videoDimension.width}px`,
-        maxWidth: `${videoDimension.width}px`, //'1280px',
-        maxHeight: `${videoDimension.height}px`, //'720px',
+        height: `${videoDimension.height}px`,
+        width: `${videoDimension.width}px`,
+        maxWidth: '1280px',
+        maxHeight: '720px',
       }}
     >
       {!loaded ? (
@@ -122,16 +108,6 @@ const VideoElm = ({
           </div>
         </div>
       ) : null}
-      <div className="name">
-        {participant.name} {participantType.isLocal ? '(me)' : null}
-      </div>
-      <div className="status">
-        <ConnectionStatus userId={userId} />
-        <MicStatus userId={userId} />
-      </div>
-      <div className="status PinWebcam">
-        <PinWebcam userId={userId} />
-      </div>
       <button
         className="absolute z-[999] top-2 right-2 p-1 bg-black/50 w-6 h-6 flex"
         onClick={fullScreen}

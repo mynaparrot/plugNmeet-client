@@ -24,9 +24,9 @@ const VideoParticipant = ({
       if (track.source === Track.Source.Camera) {
         const elm = (
           <div className="video-camera-item-inner" key={track.trackSid}>
-            {/* <div className="name">
+            <div className="name">
               {participant.name} {participantType.isLocal ? '(me)' : null}
-            </div> */}
+            </div>
             <VideoComponent userId={participant.identity} track={track} />
           </div>
         );
