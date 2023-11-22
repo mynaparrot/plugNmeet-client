@@ -1,6 +1,7 @@
 import axios, { ResponseType } from 'axios';
 import { store } from '../../store';
 import { CommonResponse } from '../proto/plugnmeet_common_api_pb';
+import { getAccessToken } from '../utils';
 
 const API = axios.create({
   baseURL: (window as any).PLUG_N_MEET_SERVER_URL + '/api',
@@ -12,9 +13,8 @@ const getToken = () => {
     return store.getState().session.token;
   }
 
-  // this mostly happened first time.
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  return urlSearchParams.get('access_token') ?? '';
+  // this mostly happened during the first time before validation
+  return getAccessToken();
 };
 
 const sendAPIRequest = async (
