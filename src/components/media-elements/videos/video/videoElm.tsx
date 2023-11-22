@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
+import {
+  LocalTrackPublication,
+  RemoteTrackPublication,
+  Track,
+} from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppSelector } from '../../../../store';
-import './style.scss';
 import { sleep } from '../../../../helpers/utils';
+import './style.scss';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
@@ -25,16 +29,22 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
   const videoObjectFit = useAppSelector(videoObjectFitSelector);
   const [videoFit, setVideoFit] = useState<any>(videoObjectFit);
+  const [videoDimension, setVideoDimension] = useState<Track.Dimensions>({
+    height: 720,
+    width: 1280,
+  });
 
   useEffect(() => {
     const el = ref.current;
-    if (el) {
-      track.videoTrack?.attach(el);
+    if (el && track.videoTrack) {
+      track.videoTrack.attach(el);
+      track.videoTrack.on('videoDimensionsChanged', setVideoDimension);
     }
 
     return () => {
-      if (el) {
-        track.videoTrack?.detach(el);
+      if (el && track.videoTrack) {
+        track.videoTrack.detach(el);
+        track.videoTrack.off('videoDimensionsChanged', setVideoDimension);
       }
     };
   }, [track]);
@@ -81,7 +91,13 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   };
 
   return (
-    <div className="camera-video-player">
+    <div
+      className="camera-video-player"
+      style={{
+        height: `${videoDimension.height}px`,
+        width: `${videoDimension.width}px`,
+      }}
+    >
       {!loaded ? (
         <div className="loading absolute text-center top-3 z-[999] left-0 right-0 m-auto">
           <div className="lds-ripple">
