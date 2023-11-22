@@ -96,6 +96,8 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       style={{
         height: `${videoDimension.height}px`,
         width: `${videoDimension.width}px`,
+        maxWidth: '1280px',
+        maxHeight: '720px',
       }}
     >
       {!loaded ? (
