@@ -116,3 +116,29 @@ export const getScreenShareResolution = () => {
 
   return resolution;
 };
+
+/**
+ * getAccessToken will try to get token by the following:
+ * from `access_token` GET/Search parameter from URL OR
+ * from cookie name `pnm_access_token`
+ * */
+export const getAccessToken = () => {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  let accessToken = urlSearchParams.get('access_token');
+  if (accessToken) {
+    return accessToken;
+  }
+
+  // now let's check from cookies
+  const tokenCookieName = 'pnm_access_token';
+  accessToken =
+    document.cookie
+      .match('(^|;)\\s*' + tokenCookieName + '\\s*=\\s*([^;]+)')
+      ?.pop() || '';
+
+  if (accessToken) {
+    return accessToken;
+  }
+
+  return null;
+};
