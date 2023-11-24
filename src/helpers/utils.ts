@@ -1,4 +1,4 @@
-import { ScreenSharePresets, VideoPresets } from 'livekit-client';
+import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 
 export async function getDevices(kind: MediaDeviceKind) {
   let constraints: MediaStreamConstraints = {
@@ -115,6 +115,34 @@ export const getScreenShareResolution = () => {
   }
 
   return resolution;
+};
+
+export const getAudioPreset = () => {
+  const selected = (window as any).DEFAULT_AUDIO_PRESET ?? 'music';
+  let preset = AudioPresets.music;
+
+  switch (selected) {
+    case 'telephone':
+      preset = AudioPresets.telephone;
+      break;
+    case 'speech':
+      preset = AudioPresets.speech;
+      break;
+    case 'music':
+      preset = AudioPresets.music;
+      break;
+    case 'musicStereo':
+      preset = AudioPresets.musicStereo;
+      break;
+    case 'musicHighQuality':
+      preset = AudioPresets.musicHighQuality;
+      break;
+    case 'musicHighQualityStereo':
+      preset = AudioPresets.musicHighQualityStereo;
+      break;
+  }
+
+  return preset;
 };
 
 /**

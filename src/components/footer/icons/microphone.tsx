@@ -32,6 +32,7 @@ import {
   AnalyticsEventType,
   AnalyticsStatus,
 } from '../../../helpers/proto/plugnmeet_analytics_pb';
+import { getAudioPreset } from '../../../helpers/utils';
 
 interface IMicrophoneIconProps {
   currentRoom: Room;
@@ -239,7 +240,9 @@ const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
     for (let i = 0; i < localTracks.length; i++) {
       const track = localTracks[i];
       if (track.kind === Track.Kind.Audio) {
-        await currentRoom?.localParticipant.publishTrack(track);
+        await currentRoom?.localParticipant.publishTrack(track, {
+          audioPreset: getAudioPreset(),
+        });
         dispatch(updateIsActiveMicrophone(true));
       }
     }
