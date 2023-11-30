@@ -20,34 +20,15 @@ export class CrossOriginWorkerMaker {
       console.debug(
         `Failed to load a worker script from ${url.toString()}. Trying to load a cross-origin worker...`,
       );
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      const publicPath: string = __webpack_public_path__;
-
-      const objectURL = URL.createObjectURL(
-        new Blob(
-          [
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            oneLine`
-                    const publicPath = ${JSON.stringify(publicPath)};
-                    globalThis = new Proxy(
-                        globalThis,
-                        {
-                            get: (target, prop) =>
-                                prop === 'location' ? publicPath : target[prop]
-                        }
-                    );
-                    importScripts(${JSON.stringify(url.toString())});
-                `,
-          ],
-          {
-            type: 'application/javascript',
-          },
-        ),
+      const workerBlob = new Blob(
+        [`importScripts(${JSON.stringify(url.toString())});`],
+        {
+          type: 'application/javascript',
+        },
       );
-      this.worker = new Worker(objectURL);
-      URL.revokeObjectURL(objectURL);
+      const workerBlobUrl = URL.createObjectURL(workerBlob);
+      this.worker = new Worker(workerBlobUrl);
+      URL.revokeObjectURL(workerBlobUrl);
     }
   }
 }
