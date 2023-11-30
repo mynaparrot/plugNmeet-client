@@ -13,22 +13,14 @@ export class CrossOriginWorkerMaker {
   public readonly worker: Worker;
 
   constructor(url: URL) {
-    try {
-      // This is the normal way to load a worker script, which is the best straightforward if possible.
-      this.worker = new Worker(url);
-    } catch (e) {
-      console.debug(
-        `Failed to load a worker script from ${url.toString()}. Trying to load a cross-origin worker...`,
-      );
-      const workerBlob = new Blob(
-        [`importScripts(${JSON.stringify(url.toString())});`],
-        {
-          type: 'application/javascript',
-        },
-      );
-      const workerBlobUrl = URL.createObjectURL(workerBlob);
-      this.worker = new Worker(workerBlobUrl);
-      URL.revokeObjectURL(workerBlobUrl);
-    }
+    const workerBlob = new Blob(
+      [`importScripts(${JSON.stringify(url.toString())});`],
+      {
+        type: 'application/javascript',
+      },
+    );
+    const workerBlobUrl = URL.createObjectURL(workerBlob);
+    this.worker = new Worker(workerBlobUrl);
+    URL.revokeObjectURL(workerBlobUrl);
   }
 }
