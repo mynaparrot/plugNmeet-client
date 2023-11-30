@@ -9,18 +9,24 @@
 // so this `CrossOriginWorkerMaker` class must be defined in a separate file and
 // be imported as the `Worker` alias into the file where the syntax is used to load the worker.
 // This technique was introduced at https://github.com/webpack/webpack/discussions/14648#discussioncomment-1589272
+declare const IS_PRODUCTION: boolean;
+
 export class CrossOriginWorkerMaker {
   public readonly worker: Worker;
 
   constructor(url: URL) {
-    const workerBlob = new Blob(
-      [`importScripts(${JSON.stringify(url.toString())});`],
-      {
-        type: 'application/javascript',
-      },
-    );
-    const workerBlobUrl = URL.createObjectURL(workerBlob);
-    this.worker = new Worker(workerBlobUrl);
-    URL.revokeObjectURL(workerBlobUrl);
+    if (!IS_PRODUCTION) {
+      this.worker = new Worker(url);
+    } else {
+      const workerBlob = new Blob(
+        [`importScripts(${JSON.stringify(url.toString())});`],
+        {
+          type: 'application/javascript',
+        },
+      );
+      const workerBlobUrl = URL.createObjectURL(workerBlob);
+      this.worker = new Worker(workerBlobUrl);
+      URL.revokeObjectURL(workerBlobUrl);
+    }
   }
 }
