@@ -85,36 +85,57 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
   const length = participantsToRender.length;
   const elms: Array<JSX.Element> = [];
 
-  if (length < 4) {
-    elms.push(
-      <div key={0} className={`camera-row-0 total-items-${length}`}>
-        {participantsToRender}
-      </div>,
-    );
-  } else if (length >= 4 && length <= 10) {
-    const c = chunk(participantsToRender, Math.ceil(length / 2));
-    c.forEach((el, i) => {
-      elms.push(
-        <div
-          key={i}
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
-        >
-          {el}
-        </div>,
-      );
-    });
-  } else {
-    const c = chunk(participantsToRender, Math.ceil(length / 3));
-    c.forEach((el, i) => {
-      elms.push(
-        <div
-          key={i}
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
-        >
-          {el}
-        </div>,
-      );
-    });
-  }
+  elms.push(
+    <div
+      key={0}
+      className={`camera-row-0 grid gap-2 justify-items-center total-items-${length} ${
+        length < 4 ? 'grid-rows-1' : ''
+      } ${length == 1 ? 'grid-cols-1' : ''} ${
+        length == 2 ? 'grid-cols-2' : ''
+      } ${length == 3 ? 'grid-cols-3' : ''} ${
+        length == 4 ? 'grid-cols-2' : ''
+      } ${length == 4 ? 'grid-rows-2' : ''} ${
+        length == 5 ? 'grid-cols-3' : ''
+      } ${length == 6 ? 'grid-cols-3' : ''} ${
+        length == 7 ? 'grid-cols-4' : ''
+      } ${length == 8 ? 'grid-cols-4' : ''} ${
+        length == 9 ? 'grid-cols-5' : ''
+      } ${length == 10 ? 'grid-cols-5' : ''}`}
+    >
+      {participantsToRender}
+    </div>,
+  );
+
+  // if (length < 4) {
+  //   elms.push(
+  //     <div key={0} className={`camera-row-0 total-items-${length}`}>
+  //       {participantsToRender}
+  //     </div>,
+  //   );
+  // } else if (length >= 4 && length <= 10) {
+  //   const c = chunk(participantsToRender, Math.ceil(length / 2));
+  //   c.forEach((el, i) => {
+  //     elms.push(
+  //       <div
+  //         key={i}
+  //         className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+  //       >
+  //         {el}
+  //       </div>,
+  //     );
+  //   });
+  // } else {
+  //   const c = chunk(participantsToRender, Math.ceil(length / 3));
+  //   c.forEach((el, i) => {
+  //     elms.push(
+  //       <div
+  //         key={i}
+  //         className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+  //       >
+  //         {el}
+  //       </div>,
+  //     );
+  //   });
+  // }
   return elms;
 };
