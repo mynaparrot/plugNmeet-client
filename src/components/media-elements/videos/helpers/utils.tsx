@@ -101,8 +101,34 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
       } ${length == 8 ? 'grid-cols-4' : ''} ${
         length == 9 ? 'grid-cols-5' : ''
       } ${length == 10 ? 'grid-cols-5' : ''} ${
-        length == 11 ? 'grid-cols-6' : ''
-      } ${length == 12 ? 'grid-cols-6' : ''}`}
+        length == 11 ? 'grid-cols-4' : ''
+      } ${length == 11 ? 'grid-rows-3' : ''} ${
+        length == 12 ? 'grid-cols-4' : ''
+      } ${length == 12 ? 'grid-rows-3' : ''} ${
+        length == 13 ? 'grid-rows-3' : ''
+      } ${length == 13 ? 'grid-cols-5' : ''} ${
+        length == 14 ? 'grid-cols-5' : ''
+      } ${length == 14 ? 'grid-rows-3' : ''} ${
+        length == 15 ? 'grid-cols-5' : ''
+      } ${length == 15 ? 'grid-rows-3' : ''} ${
+        length == 16 ? 'grid-cols-6' : ''
+      } ${length == 16 ? 'grid-rows-3' : ''} ${
+        length == 17 ? 'grid-cols-6' : ''
+      } ${length == 17 ? 'grid-rows-3' : ''} ${
+        length == 18 ? 'grid-cols-6' : ''
+      } ${length == 18 ? 'grid-rows-3' : ''} ${
+        length == 19 ? 'grid-cols-7' : ''
+      } ${length == 19 ? 'grid-rows-3' : ''} ${
+        length == 20 ? 'grid-cols-7' : ''
+      } ${length == 20 ? 'grid-rows-3' : ''} ${
+        length == 21 ? 'grid-cols-7' : ''
+      } ${length == 21 ? 'grid-rows-3' : ''} ${
+        length == 22 ? 'grid-cols-8' : ''
+      } ${length == 22 ? 'grid-rows-3' : ''} ${
+        length == 23 ? 'grid-cols-8' : ''
+      } ${length == 23 ? 'grid-rows-3' : ''} ${
+        length == 24 ? 'grid-cols-8' : ''
+      } ${length == 24 ? 'grid-rows-3' : ''}`}
     >
       {participantsToRender}
     </div>,

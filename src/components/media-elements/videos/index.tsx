@@ -91,7 +91,7 @@ const VideosComponent = ({
         };
 
         // Generate auto camera using this loop.
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 48; i++) {
           totalNumWebcams += videoTracks.length;
           const elm = (
             <VideoParticipant
