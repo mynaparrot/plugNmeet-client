@@ -6,11 +6,17 @@ const Logo = () => {
 
   return (
     <div
-      className="h-[90px] header-logo bg-contain bg-no-repeat !bg-center"
-      style={{
-        backgroundImage: `url("${logo}")`,
-      }}
-    />
+      className="h-[90px] waiting-room-logo flex"
+      // style={{
+      //   backgroundImage: `url("${logo}")`,
+      // }}
+    >
+      <img
+        className="h-full w-full object-contain"
+        src={`${logo}`}
+        alt="logo"
+      />
+    </div>
   );
 };
 

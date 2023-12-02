@@ -868,12 +868,12 @@ aside {
   overflow: auto;
 }
 
-.header-logo {
-  background-position: center left;
-}
-html[dir='rtl'] .header-logo {
-  background-position: center right;
-}
+// .header-logo {
+//   background-position: center left;
+// }
+// html[dir='rtl'] .header-logo {
+//   background-position: center right;
+// }
 html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   margin-left: 0;
