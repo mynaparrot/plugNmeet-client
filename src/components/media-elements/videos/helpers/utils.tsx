@@ -100,7 +100,9 @@ export const setForPC = (participantsToRender: JSX.Element[]) => {
         length == 7 ? 'grid-cols-4' : ''
       } ${length == 8 ? 'grid-cols-4' : ''} ${
         length == 9 ? 'grid-cols-5' : ''
-      } ${length == 10 ? 'grid-cols-5' : ''}`}
+      } ${length == 10 ? 'grid-cols-5' : ''} ${
+        length == 11 ? 'grid-cols-6' : ''
+      } ${length == 12 ? 'grid-cols-6' : ''}`}
     >
       {participantsToRender}
     </div>,
