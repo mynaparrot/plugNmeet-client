@@ -867,13 +867,15 @@ aside {
   resize: both;
   overflow: auto;
 }
-
-// .header-logo {
-//   background-position: center left;
-// }
-// html[dir='rtl'] .header-logo {
-//   background-position: center right;
-// }
+.waiting-room-logo {
+  height: 90px;
+  display: flex;
+}
+.waiting-room-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   margin-left: 0;
