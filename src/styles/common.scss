@@ -876,6 +876,23 @@ aside {
     object-fit: contain;
   }
 }
+.header-logo {
+  height: 45px;
+  display: flex;
+  .header-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: left;
+  }
+}
+html[dir='rtl'] {
+  .header-logo {
+    .header-logo-img {
+      object-position: right;
+    }
+  }
+}
 html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   margin-left: 0;

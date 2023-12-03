@@ -5,17 +5,8 @@ const HeaderLogo = () => {
   const logo = useLogo();
 
   return (
-    <div
-      className="h-[45px] header-logo flex"
-      // style={{
-      //   backgroundImage: `url("${logo}")`,
-      // }}
-    >
-      <img
-        className="h-full w-full object-contain ltr:object-left rtl:object-right"
-        src={`${logo}`}
-        alt="logo"
-      />
+    <div className="header-logo">
+      <img className="header-logo-img" src={`${logo}`} alt="logo" />
     </div>
   );
 };
