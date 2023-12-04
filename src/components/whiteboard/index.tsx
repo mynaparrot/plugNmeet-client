@@ -497,12 +497,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     );
   };
 
-  const handleOnReadyExcalidrawRef = (
-    value: ExcalidrawImperativeAPI | null,
-  ) => {
-    if (value) {
-      excalidrawRefCallback(value);
-      onReadyExcalidrawAPI(value);
+  const handleOnReadyExcalidrawRef = (api: ExcalidrawImperativeAPI) => {
+    if (api) {
+      excalidrawRefCallback(api);
+      onReadyExcalidrawAPI(api);
     }
   };
 
@@ -510,7 +508,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     <>
       <div className="excalidraw-wrapper flex-1 w-full max-w-[1200px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[0]">
         <Excalidraw
-          ref={handleOnReadyExcalidrawRef}
+          excalidrawAPI={(api: ExcalidrawImperativeAPI) =>
+            handleOnReadyExcalidrawRef(api)
+          }
           onChange={onChange}
           onPointerUpdate={onPointerUpdate}
           viewModeEnabled={viewModeEnabled}
@@ -522,6 +522,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
               loadScene: false,
               export: false,
               saveAsImage: !currentUser?.isRecorder,
+            },
+            tools: {
+              image: false,
             },
           }}
           autoFocus={true}

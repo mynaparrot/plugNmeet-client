@@ -80,10 +80,23 @@ module.exports = {
   plugins: [
     {
       apply: (compiler) => {
-        compiler.hooks.initialize.tap("PlugNmeet", () => {
+        compiler.hooks.initialize.tap('PlugNmeet', () => {
           // temporary work around for worker files
-          const from = path.resolve(__dirname, "node_modules", "livekit-client", "dist", "livekit-client.e2ee.worker.js");
-          const to = path.resolve(__dirname, "src", "helpers", "livekit", "e2ee-worker", "livekit-client.e2ee.worker.js");
+          const from = path.resolve(
+            __dirname,
+            'node_modules',
+            'livekit-client',
+            'dist',
+            'livekit-client.e2ee.worker.js',
+          );
+          const to = path.resolve(
+            __dirname,
+            'src',
+            'helpers',
+            'livekit',
+            'e2ee-worker',
+            'livekit-client.e2ee.worker.js',
+          );
           fs.copyFileSync(from, to);
         });
       },
@@ -92,6 +105,11 @@ module.exports = {
       IS_PRODUCTION: isProduction,
       PNM_VERSION: JSON.stringify(pkg.version),
       BUILD_TIME: Math.floor(Date.now() / 1000),
+      process: {
+        env: {
+          IS_PREACT: false,
+        },
+      },
     }),
     !isProduction && new ReactRefreshWebpackPlugin(),
     new MiniCssExtractPlugin({

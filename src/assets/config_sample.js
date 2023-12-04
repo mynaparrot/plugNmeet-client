@@ -29,6 +29,10 @@ window.DEFAULT_WEBCAM_RESOLUTION = 'h720';
 // Default: h1080fps15
 window.DEFAULT_SCREEN_SHARE_RESOLUTION = 'h1080fps15';
 
+// Available options: 'telephone' | 'speech' | 'music' | 'musicStereo' | 'musicHighQuality' | 'musicHighQualityStereo'.
+// Default: music
+window.DEFAULT_AUDIO_PRESET = 'music';
+
 //For local tracks, stop the underlying MediaStreamTrack when the track is muted (or paused) on some platforms, this option is necessary to disable the microphone recording indicator. Note: when this is enabled, and BT devices are connected, they will transition between profiles (e.g. HFP to A2DP) and there will be an audible difference in playback.
 window.STOP_MIC_TRACK_ON_MUTE = true;
 

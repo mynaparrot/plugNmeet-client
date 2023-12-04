@@ -36,6 +36,7 @@ import {
   VerifyTokenRes,
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { IConnectLivekit } from '../../helpers/livekit/types';
+import { getAccessToken } from '../../helpers/utils';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -81,8 +82,7 @@ const App = () => {
   useThemeSettings();
 
   useEffect(() => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const accessToken = urlSearchParams.get('access_token');
+    const accessToken = getAccessToken();
     let timeout;
     if (!accessToken) {
       setLoading(false);
