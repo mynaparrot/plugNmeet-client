@@ -1,4 +1,4 @@
-import { ScreenSharePresets, VideoPresets } from 'livekit-client';
+import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 
 export async function getDevices(kind: MediaDeviceKind) {
   let constraints: MediaStreamConstraints = {
@@ -115,4 +115,58 @@ export const getScreenShareResolution = () => {
   }
 
   return resolution;
+};
+
+export const getAudioPreset = () => {
+  const selected = (window as any).DEFAULT_AUDIO_PRESET ?? 'music';
+  let preset = AudioPresets.music;
+
+  switch (selected) {
+    case 'telephone':
+      preset = AudioPresets.telephone;
+      break;
+    case 'speech':
+      preset = AudioPresets.speech;
+      break;
+    case 'music':
+      preset = AudioPresets.music;
+      break;
+    case 'musicStereo':
+      preset = AudioPresets.musicStereo;
+      break;
+    case 'musicHighQuality':
+      preset = AudioPresets.musicHighQuality;
+      break;
+    case 'musicHighQualityStereo':
+      preset = AudioPresets.musicHighQualityStereo;
+      break;
+  }
+
+  return preset;
+};
+
+/**
+ * getAccessToken will try to get token by the following:
+ * from `access_token` GET/Search parameter from URL OR
+ * from cookie name `pnm_access_token`
+ * */
+export const getAccessToken = () => {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  let accessToken = urlSearchParams.get('access_token');
+  if (accessToken) {
+    return accessToken;
+  }
+
+  // now let's check from cookies
+  const tokenCookieName = 'pnm_access_token';
+  accessToken =
+    document.cookie
+      .match('(^|;)\\s*' + tokenCookieName + '\\s*=\\s*([^;]+)')
+      ?.pop() || '';
+
+  if (accessToken) {
+    return accessToken;
+  }
+
+  return null;
 };
