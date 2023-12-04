@@ -5,12 +5,9 @@ const HeaderLogo = () => {
   const logo = useLogo();
 
   return (
-    <div
-      className="h-[45px] header-logo bg-contain bg-no-repeat"
-      style={{
-        backgroundImage: `url("${logo}")`,
-      }}
-    />
+    <div className="header-logo">
+      <img className="header-logo-img" src={`${logo}`} alt="logo" />
+    </div>
   );
 };
 

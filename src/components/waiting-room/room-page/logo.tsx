@@ -5,12 +5,9 @@ const Logo = () => {
   const logo = useLogo('waiting-room');
 
   return (
-    <div
-      className="h-[90px] header-logo bg-contain bg-no-repeat !bg-center"
-      style={{
-        backgroundImage: `url("${logo}")`,
-      }}
-    />
+    <div className="waiting-room-logo">
+      <img className="waiting-room-logo-img" src={`${logo}`} alt="logo" />
+    </div>
   );
 };
 
