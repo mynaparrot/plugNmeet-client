@@ -13,8 +13,8 @@ import MyBreakoutRooms from '../breakout-room/my/myBreakoutRooms';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const selectedTabLeftPanelSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedTabLeftPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedTabLeftPanel,
 );
 
 const LeftPanel = () => {

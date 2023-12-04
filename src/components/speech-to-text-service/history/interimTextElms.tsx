@@ -4,8 +4,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState, useAppSelector } from '../../../store';
 
 const interimTextSelector = createSelector(
-  (state: RootState) => state.speechServices.interimText,
-  (interimText) => interimText,
+  (state: RootState) => state.speechServices,
+  (speechServices) => speechServices.interimText,
 );
 const InterimTextElms = () => {
   const interimText = useAppSelector(interimTextSelector);

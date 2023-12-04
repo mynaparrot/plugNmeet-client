@@ -16,16 +16,16 @@ interface IMicMenuItemsProps {
 }
 
 const audioDevicesSelector = createSelector(
-  (state: RootState) => state.roomSettings.audioDevices,
-  (audioDevices) => audioDevices,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.audioDevices,
 );
 const isMicMutedSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isMicMuted,
-  (isMicMuted) => isMicMuted,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
 );
 const selectedAudioDeviceSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedAudioDevice,
-  (selectedAudioDevice) => selectedAudioDevice,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedAudioDevice,
 );
 
 const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {

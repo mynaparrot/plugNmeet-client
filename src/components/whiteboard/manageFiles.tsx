@@ -18,12 +18,12 @@ interface IManageFilesProps {
 }
 
 const currentPageSelector = createSelector(
-  (state: RootState) => state.whiteboard.currentPage,
-  (currentPage) => currentPage,
+  (state: RootState) => state.whiteboard,
+  (whiteboard) => whiteboard.currentPage,
 );
 const whiteboardUploadedOfficeFilesSelector = createSelector(
-  (state: RootState) => state.whiteboard.whiteboardUploadedOfficeFiles,
-  (whiteboardUploadedOfficeFiles) => whiteboardUploadedOfficeFiles,
+  (state: RootState) => state.whiteboard,
+  (whiteboard) => whiteboard.whiteboardUploadedOfficeFiles,
 );
 
 const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {

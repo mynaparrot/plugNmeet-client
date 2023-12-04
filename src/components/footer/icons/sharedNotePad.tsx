@@ -16,20 +16,18 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveSharedNotePadSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
-  (isActiveSharedNotePad) => isActiveSharedNotePad,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveSharedNotePad,
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
-      .is_active,
-  (is_active) => is_active,
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
+  (shared_note_pad_features) => shared_note_pad_features?.is_active,
 );
 const isSharedNotepadVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
-      .visible,
-  (visible) => visible,
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
+  (shared_note_pad_features) => shared_note_pad_features?.visible,
 );
 
 const SharedNotePadIcon = () => {

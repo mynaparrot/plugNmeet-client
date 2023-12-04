@@ -38,21 +38,20 @@ interface IMicrophoneIconProps {
   currentRoom: Room;
 }
 const isActiveMicrophoneSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveMicrophone,
-  (isActiveMicrophone) => isActiveMicrophone,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveMicrophone,
 );
 const showMicrophoneModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showMicrophoneModal,
-  (showMicrophoneModal) => showMicrophoneModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showMicrophoneModal,
 );
 const isMicLockSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings.lock_microphone,
-  (lock_microphone) => lock_microphone,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_microphone,
 );
 const isMicMutedSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isMicMuted,
-  (isMicMuted) => isMicMuted,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
 );
 
 const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {

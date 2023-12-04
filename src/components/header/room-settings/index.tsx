@@ -18,8 +18,8 @@ import Ingress from './ingress';
 declare const PNM_VERSION: string;
 
 const isShowRoomSettingsModalSelector = createSelector(
-  (state: RootState) => state.roomSettings.isShowRoomSettingsModal,
-  (isShowRoomSettingsModal) => isShowRoomSettingsModal,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.isShowRoomSettingsModal,
 );
 
 const RoomSettings = () => {

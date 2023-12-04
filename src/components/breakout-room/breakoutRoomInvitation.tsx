@@ -22,8 +22,8 @@ interface IBreakoutRoomInvitationProps {
 }
 
 const receivedInvitationForSelector = createSelector(
-  (state: RootState) => state.breakoutRoom.receivedInvitationFor,
-  (receivedInvitationFor) => receivedInvitationFor,
+  (state: RootState) => state.breakoutRoom,
+  (breakoutRoom) => breakoutRoom.receivedInvitationFor,
 );
 
 const BreakoutRoomInvitation = ({

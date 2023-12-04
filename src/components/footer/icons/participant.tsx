@@ -9,14 +9,11 @@ import {
   store,
 } from '../../../store';
 import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
+import { participantsSelector } from '../../../store/slices/participantSlice';
 
 const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
-);
-const participantsSelector = createSelector(
-  (state: RootState) => state.participants,
-  (participants) => participants,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveParticipantsPanel,
 );
 
 const ParticipantIcon = () => {
@@ -27,7 +24,7 @@ const ParticipantIcon = () => {
   const isActiveParticipantsPanel = useAppSelector(
     isActiveParticipantsPanelSelector,
   );
-  const participants = useAppSelector(participantsSelector);
+  const participantsTotal = useAppSelector(participantsSelector.selectTotal);
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
   useEffect(() => {
@@ -58,7 +55,7 @@ const ParticipantIcon = () => {
       <i className={`pnm-participant ${iconCSS} text-[14px] lg:text-[16px]`} />
       {!isActiveParticipantsPanel ? (
         <div className="unseen-message-count bg-secondaryColor w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
-          {participants.ids.length}
+          {participantsTotal}
         </div>
       ) : null}
     </div>

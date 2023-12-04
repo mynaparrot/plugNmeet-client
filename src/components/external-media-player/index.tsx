@@ -9,27 +9,27 @@ import ReactPlayerComponent from './reactPlayerComponent';
 const isActiveSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .external_media_player_features.is_active,
-  (is_active) => is_active,
+      .external_media_player_features,
+  (external_media_player_features) => external_media_player_features?.is_active,
 );
 const playBackUrlSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .external_media_player_features.url,
-  (url) => url,
+      .external_media_player_features,
+  (external_media_player_features) => external_media_player_features?.url,
 );
 const actionSelector = createSelector(
-  (state: RootState) => state.externalMediaPlayer.action,
-  (action) => action,
+  (state: RootState) => state.externalMediaPlayer,
+  (externalMediaPlayer) => externalMediaPlayer.action,
 );
 const seekToSelector = createSelector(
-  (state: RootState) => state.externalMediaPlayer.seekTo,
-  (seekTo) => seekTo,
+  (state: RootState) => state.externalMediaPlayer,
+  (externalMediaPlayer) => externalMediaPlayer.seekTo,
 );
 
 const isPresenterSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
-  (is_presenter) => is_presenter,
+  (state: RootState) => state.session.currentUser?.metadata,
+  (metadata) => metadata?.is_presenter,
 );
 
 const ExternalMediaPlayer = () => {

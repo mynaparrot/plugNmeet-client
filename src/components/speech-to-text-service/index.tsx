@@ -31,14 +31,12 @@ interface SpeechToTextServiceProps {
 }
 
 const speechServiceFeaturesSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .speech_to_text_translation_features,
-  (speech_to_text_translation_features) => speech_to_text_translation_features,
+  (state: RootState) => state.session.currentRoom.metadata?.room_features,
+  (room_features) => room_features?.speech_to_text_translation_features,
 );
 const azureTokenInfoSelector = createSelector(
-  (state: RootState) => state.roomSettings.azureTokenInfo,
-  (azureTokenInfo) => azureTokenInfo,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.azureTokenInfo,
 );
 
 const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {

@@ -24,25 +24,23 @@ interface ITextBoxAreaProps {
   onAfterSendMessage(): void;
 }
 const isChatServiceReadySelector = createSelector(
-  (state: RootState) => state.session.isChatServiceReady,
-  (isChatServiceReady) => isChatServiceReady,
+  (state: RootState) => state.session,
+  (session) => session.isChatServiceReady,
 );
 
 const isLockChatSendMsgSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings.lock_chat_send_message,
-  (lock_chat_send_message) => lock_chat_send_message,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_chat_send_message,
 );
 
 const isLockSendFileSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings.lock_chat_file_share,
-  (lock_chat_file_share) => lock_chat_file_share,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_chat_file_share,
 );
 
 const selectedChatOptionSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedChatOption,
-  (selectedChatOption) => selectedChatOption,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedChatOption,
 );
 
 const TextBoxArea = ({

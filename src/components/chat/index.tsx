@@ -13,13 +13,12 @@ interface IChatComponentProps {
 }
 
 const isChatLockSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings.lock_chat,
-  (lock_chat) => lock_chat,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_chat,
 );
 const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings.theme,
-  (theme) => theme,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.theme,
 );
 
 const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {

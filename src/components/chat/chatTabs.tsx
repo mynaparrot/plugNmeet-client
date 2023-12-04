@@ -13,16 +13,16 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 
 const selectedChatOptionSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedChatOption,
-  (selectedChatOption) => selectedChatOption,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedChatOption,
 );
 const initiatePrivateChatSelector = createSelector(
-  (state: RootState) => state.roomSettings.initiatePrivateChat,
-  (initiatePrivateChat) => initiatePrivateChat,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.initiatePrivateChat,
 );
 const unreadMsgFromSelector = createSelector(
-  (state: RootState) => state.roomSettings.unreadMsgFrom,
-  (unreadMsgFrom) => unreadMsgFrom,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.unreadMsgFrom,
 );
 
 interface IChatOptions {

@@ -5,13 +5,13 @@ import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 
 const playAudioNotificationSelector = createSelector(
-  (state: RootState) => state.roomSettings.playAudioNotification,
-  (playAudioNotification) => playAudioNotification,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.playAudioNotification,
 );
 
 const allowPlayAudioNotificationSelector = createSelector(
-  (state: RootState) => state.roomSettings.allowPlayAudioNotification,
-  (allowPlayAudioNotification) => allowPlayAudioNotification,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.allowPlayAudioNotification,
 );
 
 const AudioNotification = () => {

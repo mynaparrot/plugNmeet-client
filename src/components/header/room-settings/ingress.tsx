@@ -13,9 +13,8 @@ import { RootState, store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const ingressFeaturesSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom?.metadata?.room_features.ingress_features,
-  (ingress_features) => ingress_features,
+  (state: RootState) => state.session.currentRoom?.metadata?.room_features,
+  (room_features) => room_features?.ingress_features,
 );
 
 const Ingress = () => {

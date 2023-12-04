@@ -28,8 +28,8 @@ interface IFileSendProps {
 }
 
 const selectedChatOptionSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedChatOption,
-  (selectedChatOption) => selectedChatOption,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedChatOption,
 );
 
 const FileSend = ({

@@ -5,8 +5,8 @@ import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { updateTheme } from '../../store/slices/roomSettingsSlice';
 
 const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings.theme,
-  (theme) => theme,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.theme,
 );
 
 const useThemeSettings = () => {

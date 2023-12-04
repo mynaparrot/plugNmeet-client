@@ -12,8 +12,8 @@ import RemoveParticipantAlertModal, {
 } from './removeParticipantAlertModal';
 
 const screenHeightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenHeight,
-  (screenHeight) => screenHeight,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
 );
 
 const ParticipantsComponent = () => {

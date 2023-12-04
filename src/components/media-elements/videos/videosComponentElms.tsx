@@ -35,16 +35,16 @@ const MOBILE_PER_PAGE = 6,
   VERTICAL_TABLET_PORTRAIT = 5;
 
 const screenWidthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenWidth,
-  (screenWidth) => screenWidth,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenWidth,
 );
 const deviceOrientationSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.deviceOrientation,
-  (deviceOrientation) => deviceOrientation,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.deviceOrientation,
 );
 const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraPosition,
-  (columnCameraPosition) => columnCameraPosition,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.columnCameraPosition,
 );
 
 const VideosComponentElms = ({

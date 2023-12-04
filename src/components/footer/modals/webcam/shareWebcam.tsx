@@ -18,8 +18,8 @@ interface IShareWebcamModal {
 }
 
 const showVideoShareModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showVideoShareModal,
-  (showVideoShareModal) => showVideoShareModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showVideoShareModal,
 );
 
 const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {

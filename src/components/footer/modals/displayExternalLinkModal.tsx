@@ -21,8 +21,8 @@ import {
 const isActiveSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .display_external_link_features.is_active,
-  (is_active) => is_active,
+      .display_external_link_features,
+  (display_external_link_features) => display_external_link_features?.is_active,
 );
 
 const DisplayExternalLinkModal = () => {

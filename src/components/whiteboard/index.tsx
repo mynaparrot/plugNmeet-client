@@ -49,25 +49,24 @@ interface WhiteboardProps {
 }
 
 const whiteboardSelector = createSelector(
-  (state: RootState) => state.whiteboard,
-  (whiteboard) => whiteboard,
+  (state: RootState) => state,
+  (state) => state.whiteboard,
 );
 const lockWhiteboardSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings?.lock_whiteboard,
-  (lock_whiteboard) => lock_whiteboard,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_whiteboard,
 );
 const isPresenterSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.is_presenter,
-  (is_presenter) => is_presenter,
+  (state: RootState) => state.session.currentUser?.metadata,
+  (metadata) => metadata?.is_presenter,
 );
 const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings.theme,
-  (theme) => theme,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.theme,
 );
 const screenWidthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenWidth,
-  (screenWidth) => screenWidth,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenWidth,
 );
 
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
