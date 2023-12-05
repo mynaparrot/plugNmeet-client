@@ -129,135 +129,135 @@ code {
   }
   .all-webcam-wrapper-inner {
     @apply w-full h-full p-5 grid gap-2;
-    .camera-row-0 {
-      // @apply flex gap-2 justify-center;
-    }
-    .camera-row-1 {
-      @apply flex gap-2 justify-center;
-    }
-    .camera-row-2 {
-      @apply flex gap-2 justify-center;
-    }
-    .camera-row-0.total-items-2 {
-      .video-camera-item {
-        // @apply w-1/2;
-      }
-    }
-    .camera-row-1.total-items-2 {
-      .video-camera-item {
-        @apply w-1/2;
-      }
-    }
-    .camera-row-0.total-items-3 {
-      .video-camera-item {
-        // @apply w-1/3;
-      }
-    }
-    .camera-row-1.total-items-3 {
-      .video-camera-item {
-        @apply w-1/3;
-      }
-    }
-    .camera-row-1.total-items-5.inner-items-2 {
-      .video-camera-item {
-        @apply w-1/3;
-      }
-    }
-    .camera-row-0.total-items-7.inner-items-4 {
-      .video-camera-item {
-        // @apply w-1/4;
-      }
-    }
-    .camera-row-1.total-items-7.inner-items-3 {
-      .video-camera-item {
-        @apply w-1/4;
-      }
-    }
-    .camera-row-1.total-items-8.inner-items-4 {
-      .video-camera-item {
-        @apply w-1/4;
-      }
-    }
-    .camera-row-2.total-items-11.inner-items-3 {
-      .video-camera-item {
-        @apply w-1/4;
-      }
-    }
-    .camera-row-2.total-items-10.inner-items-2 {
-      .video-camera-item {
-        @apply w-1/4;
-      }
-    }
-    .camera-row-2.total-items-13.inner-items-3 {
-      .video-camera-item {
-        @apply w-1/5;
-      }
-    }
-    .camera-row-2.total-items-14.inner-items-4 {
-      .video-camera-item {
-        @apply w-1/5;
-      }
-    }
-    .camera-row-2.total-items-15.inner-items-5 {
-      .video-camera-item {
-        @apply w-1/5;
-      }
-    }
-    .camera-row-2.total-items-16.inner-items-4 {
-      .video-camera-item {
-        @apply w-[16.3%];
-      }
-    }
-    .camera-row-2.total-items-17.inner-items-5 {
-      .video-camera-item {
-        @apply w-[16.3%];
-      }
-    }
-    .camera-row-2.total-items-18.inner-items-6 {
-      .video-camera-item {
-        @apply w-[16.3%];
-      }
-    }
-    .camera-row-2.total-items-19.inner-items-5 {
-      .video-camera-item {
-        @apply w-[13.95%];
-      }
-    }
-    .camera-row-2.total-items-20.inner-items-6 {
-      .video-camera-item {
-        @apply w-[13.95%];
-      }
-    }
-    .camera-row-2.total-items-21.inner-items-7 {
-      .video-camera-item {
-        @apply w-[13.95%];
-      }
-    }
-    .camera-row-2.total-items-22.inner-items-6 {
-      .video-camera-item {
-        @apply w-[12.15%];
-      }
-    }
-    .camera-row-2.total-items-23.inner-items-7 {
-      .video-camera-item {
-        @apply w-[12.15%];
-      }
-    }
-    .camera-row-2.total-items-24.inner-items-8 {
-      .video-camera-item {
-        @apply w-[12.15%];
-      }
-    }
-    .camera-row-1.total-items-9.inner-items-4 {
-      .video-camera-item {
-        @apply w-1/5;
-      }
-    }
-    .camera-row-1.total-items-10.inner-items-5 {
-      .video-camera-item {
-        @apply w-1/5;
-      }
-    }
+    // .camera-row-0 {
+    //   @apply flex gap-2 justify-center;
+    // }
+    // .camera-row-1 {
+    //   @apply flex gap-2 justify-center;
+    // }
+    // .camera-row-2 {
+    //   @apply flex gap-2 justify-center;
+    // }
+    // .camera-row-0.total-items-2 {
+    //   .video-camera-item {
+    //     @apply w-1/2;
+    //   }
+    // }
+    // .camera-row-1.total-items-2 {
+    //   .video-camera-item {
+    //     @apply w-1/2;
+    //   }
+    // }
+    // .camera-row-0.total-items-3 {
+    //   .video-camera-item {
+    //     @apply w-1/3;
+    //   }
+    // }
+    // .camera-row-1.total-items-3 {
+    //   .video-camera-item {
+    //     @apply w-1/3;
+    //   }
+    // }
+    // .camera-row-1.total-items-5.inner-items-2 {
+    //   .video-camera-item {
+    //     @apply w-1/3;
+    //   }
+    // }
+    // .camera-row-0.total-items-7.inner-items-4 {
+    //   .video-camera-item {
+    //     @apply w-1/4;
+    //   }
+    // }
+    // .camera-row-1.total-items-7.inner-items-3 {
+    //   .video-camera-item {
+    //     @apply w-1/4;
+    //   }
+    // }
+    // .camera-row-1.total-items-8.inner-items-4 {
+    //   .video-camera-item {
+    //     @apply w-1/4;
+    //   }
+    // }
+    // .camera-row-2.total-items-11.inner-items-3 {
+    //   .video-camera-item {
+    //     @apply w-1/4;
+    //   }
+    // }
+    // .camera-row-2.total-items-10.inner-items-2 {
+    //   .video-camera-item {
+    //     @apply w-1/4;
+    //   }
+    // }
+    // .camera-row-2.total-items-13.inner-items-3 {
+    //   .video-camera-item {
+    //     @apply w-1/5;
+    //   }
+    // }
+    // .camera-row-2.total-items-14.inner-items-4 {
+    //   .video-camera-item {
+    //     @apply w-1/5;
+    //   }
+    // }
+    // .camera-row-2.total-items-15.inner-items-5 {
+    //   .video-camera-item {
+    //     @apply w-1/5;
+    //   }
+    // }
+    // .camera-row-2.total-items-16.inner-items-4 {
+    //   .video-camera-item {
+    //     @apply w-[16.3%];
+    //   }
+    // }
+    // .camera-row-2.total-items-17.inner-items-5 {
+    //   .video-camera-item {
+    //     @apply w-[16.3%];
+    //   }
+    // }
+    // .camera-row-2.total-items-18.inner-items-6 {
+    //   .video-camera-item {
+    //     @apply w-[16.3%];
+    //   }
+    // }
+    // .camera-row-2.total-items-19.inner-items-5 {
+    //   .video-camera-item {
+    //     @apply w-[13.95%];
+    //   }
+    // }
+    // .camera-row-2.total-items-20.inner-items-6 {
+    //   .video-camera-item {
+    //     @apply w-[13.95%];
+    //   }
+    // }
+    // .camera-row-2.total-items-21.inner-items-7 {
+    //   .video-camera-item {
+    //     @apply w-[13.95%];
+    //   }
+    // }
+    // .camera-row-2.total-items-22.inner-items-6 {
+    //   .video-camera-item {
+    //     @apply w-[12.15%];
+    //   }
+    // }
+    // .camera-row-2.total-items-23.inner-items-7 {
+    //   .video-camera-item {
+    //     @apply w-[12.15%];
+    //   }
+    // }
+    // .camera-row-2.total-items-24.inner-items-8 {
+    //   .video-camera-item {
+    //     @apply w-[12.15%];
+    //   }
+    // }
+    // .camera-row-1.total-items-9.inner-items-4 {
+    //   .video-camera-item {
+    //     @apply w-1/5;
+    //   }
+    // }
+    // .camera-row-1.total-items-10.inner-items-5 {
+    //   .video-camera-item {
+    //     @apply w-1/5;
+    //   }
+    // }
     .video-camera-item.admin {
       @apply order-1;
     }
@@ -737,47 +737,47 @@ aside {
     }
   }
 
-  .camera-row-1.total-items-5.inner-items-2 {
-    .video-camera-item {
-      @apply w-1/2;
-    }
-  }
-  .camera-row-2.total-items-5.inner-items-1 {
-    .video-camera-item {
-      @apply w-1/2;
-    }
-  }
-  .camera-row-1.total-items-7.inner-items-3 {
-    .video-camera-item {
-      @apply w-1/3;
-    }
-  }
-  .camera-row-2.total-items-7.inner-items-1 {
-    .video-camera-item {
-      @apply w-1/3;
-    }
-  }
-  .camera-row-2.total-items-8.inner-items-2 {
-    .video-camera-item {
-      @apply w-1/3;
-    }
-  }
+  // .camera-row-1.total-items-5.inner-items-2 {
+  //   .video-camera-item {
+  //     @apply w-1/2;
+  //   }
+  // }
+  // .camera-row-2.total-items-5.inner-items-1 {
+  //   .video-camera-item {
+  //     @apply w-1/2;
+  //   }
+  // }
+  // .camera-row-1.total-items-7.inner-items-3 {
+  //   .video-camera-item {
+  //     @apply w-1/3;
+  //   }
+  // }
+  // .camera-row-2.total-items-7.inner-items-1 {
+  //   .video-camera-item {
+  //     @apply w-1/3;
+  //   }
+  // }
+  // .camera-row-2.total-items-8.inner-items-2 {
+  //   .video-camera-item {
+  //     @apply w-1/3;
+  //   }
+  // }
 }
 // Camera width on Landscape Tablet
 .portrait-device.is-tablet {
   // Camera height on Portrait Tablet
-  .camera-row-0.total-items-2 {
-    @apply flex-wrap;
-    .video-camera-item {
-      @apply w-full h-1/2;
-    }
-  }
-  .camera-row-0.total-items-3 {
-    @apply flex-wrap;
-    .video-camera-item {
-      @apply w-full h-1/3;
-    }
-  }
+  // .camera-row-0.total-items-2 {
+  //   @apply flex-wrap;
+  //   .video-camera-item {
+  //     @apply w-full h-1/2;
+  //   }
+  // }
+  // .camera-row-0.total-items-3 {
+  //   @apply flex-wrap;
+  //   .video-camera-item {
+  //     @apply w-full h-1/3;
+  //   }
+  // }
   // Camera height on Portrait Tablet
   #main-area.fullWidthMainArea {
     .middle-fullscreen-wrapper {
