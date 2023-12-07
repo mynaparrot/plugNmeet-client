@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import type {
   LocalParticipant,
   LocalTrackPublication,
   RemoteParticipant,
   RemoteTrackPublication,
-  Track,
 } from 'livekit-client';
 
 import type { VideoParticipantType } from '../videosComponentElms';
@@ -23,33 +22,8 @@ const VideoComponent = ({
   participantType,
   track,
 }: IVideoComponentProps) => {
-  const [videoDimension, setVideoDimension] = useState<Track.Dimensions>({
-    height: 720,
-    width: 1280,
-  });
-
-  useEffect(() => {
-    if (track.videoTrack) {
-      track.videoTrack.on('videoDimensionsChanged', setVideoDimension);
-    }
-
-    return () => {
-      if (track.videoTrack) {
-        track.videoTrack.off('videoDimensionsChanged', setVideoDimension);
-      }
-    };
-  }, []);
-
   return (
-    <div
-      className="video-camera-item-inner"
-      style={{
-        // height: `${videoDimension.height}px`,
-        // width: `${videoDimension.width}px`,
-        maxWidth: `${videoDimension.width}px`, //'1280px',
-        maxHeight: `${videoDimension.height}px`, //'720px',
-      }}
-    >
+    <div className="video-camera-item-inner">
       <div className="name">
         {participant.name} {participantType.isLocal ? '(me)' : null}
       </div>

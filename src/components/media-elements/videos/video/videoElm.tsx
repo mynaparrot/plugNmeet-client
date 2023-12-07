@@ -29,10 +29,6 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
   const videoObjectFit = useAppSelector(videoObjectFitSelector);
   const [videoFit, setVideoFit] = useState<any>(videoObjectFit);
-  // const [videoDimension, setVideoDimension] = useState<Track.Dimensions>({
-  //   height: 720,
-  //   width: 1280,
-  // });
 
   useEffect(() => {
     const el = ref.current;
@@ -91,15 +87,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   };
 
   return (
-    <div
-      className="camera-video-player"
-      // style={{
-      //   height: `${videoDimension.height}px`,
-      //   width: `${videoDimension.width}px`,
-      //   maxWidth: '1280px',
-      //   maxHeight: '720px',
-      // }}
-    >
+    <div className="camera-video-player">
       {!loaded ? (
         <div className="loading absolute text-center top-3 z-[999] left-0 right-0 m-auto">
           <div className="lds-ripple">
