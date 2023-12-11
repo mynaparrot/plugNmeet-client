@@ -1,10 +1,11 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+
 import { RootState } from '..';
 import { IActiveSpeaker } from './interfaces/activeSpeakers';
 
-const activeSpeakerAdapter = createEntityAdapter({
-  selectId: (speaker: IActiveSpeaker) => speaker.userId,
-  sortComparer: (a: IActiveSpeaker, b: IActiveSpeaker) => {
+const activeSpeakerAdapter = createEntityAdapter<IActiveSpeaker>({
+  selectId: (speaker) => speaker.userId,
+  sortComparer: (a, b) => {
     if (a.isSpeaking && b.isSpeaking) {
       return a.audioLevel - b.audioLevel;
     }
