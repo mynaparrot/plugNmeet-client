@@ -48,10 +48,7 @@ interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
 }
 
-const whiteboardSelector = createSelector(
-  (state: RootState) => state,
-  (state) => state.whiteboard,
-);
+const whiteboardSelector = (state: RootState) => state.whiteboard;
 const lockWhiteboardSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
   (lock_settings) => lock_settings?.lock_whiteboard,
