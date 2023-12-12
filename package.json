@@ -20,7 +20,7 @@
     "@headlessui/react": "1.7.17",
     "@reduxjs/toolkit": "1.9.7",
     "@tensorflow-models/body-pix": "2.2.1",
-    "@tensorflow/tfjs": "4.13.0",
+    "@tensorflow/tfjs": "4.15.0",
     "axios": "1.6.2",
     "copy-text-to-clipboard": "3.2.0",
     "emoji-picker-react": "4.5.16",
