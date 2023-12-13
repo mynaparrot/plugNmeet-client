@@ -40,6 +40,7 @@
     "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
     "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
+    "your-connection-quality-lost": "Your connection to the server has been lost",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
     "need-to-disable-external-media-player": "External Media Player is turned on. Please stop it before launching Display External Link.",
     "websocket-disconnected": "Websocket disconnected, reconnecting..",

@@ -17,8 +17,8 @@ import {
 } from '../../store/slices/participantSlice';
 import { ICurrentUserMetadata } from '../../store/slices/interfaces/session';
 import {
-  updateScreenSharing,
   updateCurrentUserMetadata,
+  updateScreenSharing,
 } from '../../store/slices/sessionSlice';
 import { IConnectLivekit } from './types';
 import {
@@ -194,7 +194,10 @@ export default class HandleParticipants {
       }),
     );
 
-    if (connectionQuality === ConnectionQuality.Poor) {
+    if (
+      connectionQuality === ConnectionQuality.Poor ||
+      connectionQuality === ConnectionQuality.Lost
+    ) {
       if (
         participant.sid === this.that.room.localParticipant.sid &&
         !(
@@ -202,7 +205,11 @@ export default class HandleParticipants {
           participant.identity === 'RTMP_BOT'
         )
       ) {
-        toast(i18n.t('notifications.your-connection-quality-not-good'), {
+        let msg = i18n.t('notifications.your-connection-quality-not-good');
+        if (connectionQuality === ConnectionQuality.Lost) {
+          msg = i18n.t('notifications.your-connection-quality-lost');
+        }
+        toast(msg, {
           toastId: 'connection-status',
           type: 'error',
         });

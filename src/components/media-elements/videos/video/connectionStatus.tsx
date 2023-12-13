@@ -23,6 +23,9 @@ const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
       case ConnectionQuality.Poor:
         setColor('#FF0000');
         break;
+      case ConnectionQuality.Lost:
+        setColor('#e03131');
+        break;
       default:
         setColor('#FFFFFF');
     }
