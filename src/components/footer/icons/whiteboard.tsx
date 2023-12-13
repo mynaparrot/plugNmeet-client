@@ -16,14 +16,13 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveWhiteboardSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
-  (isActiveWhiteboard) => isActiveWhiteboard,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveWhiteboard,
 );
 const isWhiteboardVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.whiteboard_features
-      .visible,
-  (visible) => visible,
+    state.session.currentRoom.metadata?.room_features.whiteboard_features,
+  (whiteboard_features) => whiteboard_features?.visible,
 );
 
 const WhiteboardIcon = () => {

@@ -18,20 +18,20 @@ import {
 } from '../../../store/slices/interfaces/roomSettings';
 
 const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings.theme,
-  (theme) => theme,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.theme,
 );
 const videoObjectFitSelector = createSelector(
-  (state: RootState) => state.roomSettings.videoObjectFit,
-  (videoObjectFit) => videoObjectFit,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.videoObjectFit,
 );
 const columnCameraWidthSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraWidth,
-  (columnCameraWidth) => columnCameraWidth,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.columnCameraWidth,
 );
 const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraPosition,
-  (columnCameraPosition) => columnCameraPosition,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.columnCameraPosition,
 );
 
 const ApplicationSettings = () => {

@@ -12,13 +12,13 @@ import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivi
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 
 const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveChatPanel,
 );
 
 const totalUnreadChatMsgsSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.totalUnreadChatMsgs,
-  (totalUnreadChatMsgs) => totalUnreadChatMsgs,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.totalUnreadChatMsgs,
 );
 
 const ChatIcon = () => {

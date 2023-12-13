@@ -25,17 +25,16 @@ interface IScrenshareIconProps {
 }
 
 const isActiveScreenshareSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveScreenshare,
-  (isActiveScreenshare) => isActiveScreenshare,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveScreenshare,
 );
 const sessionScreenSharingSelector = createSelector(
-  (state: RootState) => state.session.screenSharing,
-  (screenSharing) => screenSharing,
+  (state: RootState) => state.session,
+  (session) => session.screenSharing,
 );
 const isScreenshareLockSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings.lock_screen_sharing,
-  (lock_screen_sharing) => lock_screen_sharing,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_screen_sharing,
 );
 
 const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {

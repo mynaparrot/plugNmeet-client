@@ -15,13 +15,13 @@ interface IWebcamMenuItemsProps {
   currentRoom: Room;
 }
 const videoDevicesSelector = createSelector(
-  (state: RootState) => state.roomSettings.videoDevices,
-  (videoDevices) => videoDevices,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.videoDevices,
 );
 
 const selectedVideoDeviceSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedVideoDevice,
-  (selectedVideoDevice) => selectedVideoDevice,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedVideoDevice,
 );
 
 const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {

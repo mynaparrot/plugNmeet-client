@@ -32,22 +32,22 @@ interface IMainComponentsProps {
 }
 
 const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.activateWebcamsView,
 );
 
 const activateSpeechServiceSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .speech_to_text_translation_features.is_enabled,
-  (is_enabled) => is_enabled,
+      .speech_to_text_translation_features,
+  (speech_to_text_translation_features) =>
+    speech_to_text_translation_features?.is_enabled,
 );
 
 const isActiveSharedNotepadSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
-      .is_active,
-  (is_active) => is_active,
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
+  (shared_note_pad_features) => shared_note_pad_features?.is_active,
 );
 
 const MainComponents = ({

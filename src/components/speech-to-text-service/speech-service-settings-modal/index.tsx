@@ -14,10 +14,8 @@ import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 
 const speechServiceFeaturesSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .speech_to_text_translation_features,
-  (speech_to_text_translation_features) => speech_to_text_translation_features,
+  (state: RootState) => state.session.currentRoom.metadata?.room_features,
+  (room_features) => room_features?.speech_to_text_translation_features,
 );
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();

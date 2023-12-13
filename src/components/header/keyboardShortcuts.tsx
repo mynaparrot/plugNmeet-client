@@ -7,8 +7,8 @@ import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { updateShowKeyboardShortcutsModal } from '../../store/slices/roomSettingsSlice';
 
 const isShowKeyboardShortcutsSelector = createSelector(
-  (state: RootState) => state.roomSettings.isShowKeyboardShortcuts,
-  (isShowKeyboardShortcuts) => isShowKeyboardShortcuts,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.isShowKeyboardShortcuts,
 );
 
 const KeyboardShortcuts = () => {

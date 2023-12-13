@@ -22,16 +22,16 @@ interface IFooterUIProps {
   isPresenter: boolean;
 }
 const totalPagesSelector = createSelector(
-  (state: RootState) => state.whiteboard.totalPages,
-  (totalPages) => totalPages,
+  (state: RootState) => state.whiteboard,
+  (whiteboard) => whiteboard.totalPages,
 );
 const currentPageSelector = createSelector(
-  (state: RootState) => state.whiteboard.currentPage,
-  (currentPage) => currentPage,
+  (state: RootState) => state.whiteboard,
+  (whiteboard) => whiteboard.currentPage,
 );
 const currentWhiteboardOfficeFileIdSelector = createSelector(
-  (state: RootState) => state.whiteboard.currentWhiteboardOfficeFileId,
-  (currentWhiteboardOfficeFileId) => currentWhiteboardOfficeFileId,
+  (state: RootState) => state.whiteboard,
+  (whiteboard) => whiteboard.currentWhiteboardOfficeFileId,
 );
 
 const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {

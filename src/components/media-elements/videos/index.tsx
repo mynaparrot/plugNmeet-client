@@ -21,8 +21,8 @@ interface IVideosComponentProps {
 }
 
 const refreshWebcamsSelector = createSelector(
-  (state: RootState) => state.roomSettings.refreshWebcams,
-  (refreshWebcams) => refreshWebcams,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.refreshWebcams,
 );
 
 const VideosComponent = ({

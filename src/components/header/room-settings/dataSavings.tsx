@@ -17,13 +17,13 @@ import {
 } from '../../../store/slices/roomSettingsSlice';
 
 const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activateWebcamsView,
-  (activateWebcamsView) => activateWebcamsView,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.activateWebcamsView,
 );
 
 const activeScreenSharingViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activeScreenSharingView,
-  (activeScreenSharingView) => activeScreenSharingView,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.activeScreenSharingView,
 );
 
 const DataSavings = () => {

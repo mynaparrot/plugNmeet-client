@@ -12,8 +12,8 @@ interface CustomLogo {
 }
 
 const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings.theme,
-  (theme) => theme,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.theme,
 );
 
 export type logoType = 'main' | 'waiting-room';

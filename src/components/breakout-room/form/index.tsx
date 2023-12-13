@@ -22,8 +22,8 @@ import {
 } from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const droppedUserSelector = createSelector(
-  (state: RootState) => state.breakoutRoom.droppedUser,
-  (droppedUser) => droppedUser,
+  (state: RootState) => state.breakoutRoom,
+  (breakoutRoom) => breakoutRoom.droppedUser,
 );
 
 const FromElems = () => {

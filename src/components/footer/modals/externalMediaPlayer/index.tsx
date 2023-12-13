@@ -7,8 +7,8 @@ import StartPlaybackModal from './start';
 const externalMediaPlayerIsActiveSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .external_media_player_features.is_active,
-  (is_active) => is_active,
+      .external_media_player_features,
+  (external_media_player_features) => external_media_player_features?.is_active,
 );
 
 const ExternalMediaPlayerModal = () => {

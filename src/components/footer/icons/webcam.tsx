@@ -27,25 +27,24 @@ interface IWebcamIconProps {
 }
 
 const isActiveWebcamPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveWebcam,
-  (isActiveWebcam) => isActiveWebcam,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveWebcam,
 );
 const showVideoShareModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showVideoShareModal,
-  (showVideoShareModal) => showVideoShareModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showVideoShareModal,
 );
 const isWebcamLockSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings.lock_webcam,
-  (lock_webcam) => lock_webcam,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_webcam,
 );
 const virtualBackgroundSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.virtualBackground,
-  (virtualBackground) => virtualBackground,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.virtualBackground,
 );
 const selectedVideoDeviceSelector = createSelector(
-  (state: RootState) => state.roomSettings.selectedVideoDevice,
-  (selectedVideoDevice) => selectedVideoDevice,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.selectedVideoDevice,
 );
 
 const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {

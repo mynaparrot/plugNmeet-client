@@ -18,9 +18,8 @@ import {
 } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const roomLockSettingsSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.default_lock_settings,
-  (default_lock_settings) => default_lock_settings,
+  (state: RootState) => state.session.currentRoom.metadata,
+  (metadata) => metadata?.default_lock_settings,
 );
 const LockSettingsModal = () => {
   const dispatch = useAppDispatch();

@@ -11,12 +11,12 @@ interface IVideoElmProps {
 }
 
 const roomVideoQualitySelector = createSelector(
-  (state: RootState) => state.roomSettings.roomVideoQuality,
-  (roomVideoQuality) => roomVideoQuality,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.roomVideoQuality,
 );
 const videoObjectFitSelector = createSelector(
-  (state: RootState) => state.roomSettings.videoObjectFit,
-  (videoObjectFit) => videoObjectFit,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.videoObjectFit,
 );
 
 const VideoElm = ({ track }: IVideoElmProps) => {

@@ -13,8 +13,8 @@ interface PopoverPanelElmsProps {
 }
 
 const lastFinalTextsSelector = createSelector(
-  (state: RootState) => state.speechServices.lastFinalTexts,
-  (lastFinalTexts) => lastFinalTexts,
+  (state: RootState) => state.speechServices,
+  (speechServices) => speechServices.lastFinalTexts,
 );
 
 const PopoverPanelElms = ({

@@ -16,8 +16,8 @@ interface IRecordingIconProps {
 }
 
 const isRecordingSelector = createSelector(
-  (state: RootState) => state.session.isActiveRecording,
-  (is_recording) => is_recording,
+  (state: RootState) => state.session,
+  (session) => session.isActiveRecording,
 );
 const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';

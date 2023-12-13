@@ -11,22 +11,20 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 
 const sharedNotepadFeaturesSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features,
+  (state: RootState) => state.session.currentRoom.metadata?.room_features,
+  (room_features) => room_features?.shared_note_pad_features,
 );
 const lockSharedNotepadSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentUser?.metadata?.lock_settings?.lock_shared_notepad,
-  (lock_shared_notepad) => lock_shared_notepad,
+  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (lock_settings) => lock_settings?.lock_shared_notepad,
 );
 const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings.theme,
-  (theme) => theme,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.theme,
 );
 const isActiveSharedNotePadSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveSharedNotePad,
-  (isActiveSharedNotePad) => isActiveSharedNotePad,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveSharedNotePad,
 );
 
 const SharedNotepadElement = () => {

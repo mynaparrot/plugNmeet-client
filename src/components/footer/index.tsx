@@ -25,8 +25,8 @@ interface IFooterProps {
 }
 
 const footerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings.visibleFooter,
-  (visibleFooter) => visibleFooter,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.visibleFooter,
 );
 
 const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {

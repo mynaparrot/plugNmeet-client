@@ -21,52 +21,52 @@ interface IMainAreaProps {
 }
 
 const columnCameraWidthSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraWidth,
-  (columnCameraWidth) => columnCameraWidth,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.columnCameraWidth,
 );
 const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings.columnCameraPosition,
-  (columnCameraPosition) => columnCameraPosition,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.columnCameraPosition,
 );
 const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (isActiveParticipantsPanel) => isActiveParticipantsPanel,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveParticipantsPanel,
 );
 const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveChatPanel,
 );
 const activeScreenSharingViewSelector = createSelector(
-  (state: RootState) => state.roomSettings.activeScreenSharingView,
-  (activeScreenSharingView) => activeScreenSharingView,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.activeScreenSharingView,
 );
 const isActiveWhiteboardSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveWhiteboard,
-  (isActiveWhiteboard) => isActiveWhiteboard,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveWhiteboard,
 );
 const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .external_media_player_features.is_active,
-  (is_active) => is_active,
+      .external_media_player_features,
+  (external_media_player_features) => external_media_player_features?.is_active,
 );
 const isActiveDisplayExternalLinkSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .display_external_link_features.is_active,
-  (is_active) => is_active,
+      .display_external_link_features,
+  (display_external_link_features) => display_external_link_features?.is_active,
 );
 const screenHeightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenHeight,
-  (screenHeight) => screenHeight,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
 );
 const headerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings.visibleHeader,
-  (visibleHeader) => visibleHeader,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.visibleHeader,
 );
 const footerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings.visibleFooter,
-  (visibleFooter) => visibleFooter,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.visibleFooter,
 );
 
 const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {

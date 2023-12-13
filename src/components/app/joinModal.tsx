@@ -12,8 +12,8 @@ interface StartupJoinModalProps {
 }
 
 const isStartupSelector = createSelector(
-  (state: RootState) => state.session.isStartup,
-  (isStartup) => isStartup,
+  (state: RootState) => state.session,
+  (session) => session.isStartup,
 );
 const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
   const [open, setOpen] = useState<boolean>(true);

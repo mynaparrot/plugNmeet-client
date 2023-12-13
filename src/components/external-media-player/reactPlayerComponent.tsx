@@ -17,12 +17,12 @@ interface IReactPlayerComponentProps {
 }
 
 const heightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenHeight,
-  (screenHeight) => screenHeight,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
 );
 const widthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenWidth,
-  (screenWidth) => screenWidth,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenWidth,
 );
 
 const ReactPlayerComponent = ({

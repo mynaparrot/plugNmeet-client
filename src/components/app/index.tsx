@@ -40,8 +40,8 @@ import { getAccessToken } from '../../helpers/utils';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.wait_for_approval,
-  (wait_for_approval) => wait_for_approval,
+  (state: RootState) => state.session.currentUser?.metadata,
+  (metadata) => metadata?.wait_for_approval,
 );
 
 const App = () => {

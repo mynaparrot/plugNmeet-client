@@ -18,8 +18,8 @@ import { RecordingReq } from '../../../helpers/proto/plugnmeet_recording_pb';
 import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveRtmpBroadcastingSelector = createSelector(
-  (state: RootState) => state.session.isActiveRtmpBroadcasting,
-  (isActiveRtmpBroadcasting) => isActiveRtmpBroadcasting,
+  (state: RootState) => state.session,
+  (session) => session.isActiveRtmpBroadcasting,
 );
 
 const RtmpModal = () => {

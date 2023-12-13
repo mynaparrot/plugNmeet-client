@@ -27,17 +27,16 @@ interface IHeaderProps {
 }
 
 const roomTitleSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.room_title,
-  (room_title) => room_title,
+  (state: RootState) => state.session.currentRoom.metadata,
+  (metadata) => metadata?.room_title,
 );
 const roomDurationSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.room_duration,
-  (room_duration) => room_duration,
+  (state: RootState) => state.session.currentRoom.metadata?.room_features,
+  (room_features) => room_features?.room_duration,
 );
 const headerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings.visibleHeader,
-  (visibleHeader) => visibleHeader,
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.visibleHeader,
 );
 
 const Header = ({ currentRoom }: IHeaderProps) => {

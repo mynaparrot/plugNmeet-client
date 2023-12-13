@@ -8,8 +8,8 @@ import { RootState, store, useAppSelector } from '../../store';
 import { PollInfo } from '../../helpers/proto/plugnmeet_polls_pb';
 
 const screenHeightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.screenHeight,
-  (screenHeight) => screenHeight,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
 );
 
 const ListPolls = () => {

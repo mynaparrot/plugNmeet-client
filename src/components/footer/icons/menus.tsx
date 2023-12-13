@@ -40,54 +40,53 @@ import {
 import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 
 const showLockSettingsModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showLockSettingsModal,
-  (showLockSettingsModal) => showLockSettingsModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showLockSettingsModal,
 );
 const isActiveRtmpBroadcastingSelector = createSelector(
-  (state: RootState) => state.session.isActiveRtmpBroadcasting,
-  (isActiveRtmpBroadcasting) => isActiveRtmpBroadcasting,
+  (state: RootState) => state.session,
+  (session) => session.isActiveRtmpBroadcasting,
 );
 const showRtmpModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showRtmpModal,
-  (showRtmpModal) => showRtmpModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showRtmpModal,
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features
-      .is_active,
-  (is_active) => is_active,
+    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
+  (shared_note_pad_features) => shared_note_pad_features?.is_active,
 );
 const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .external_media_player_features.is_active,
-  (is_active) => is_active,
+      .external_media_player_features,
+  (external_media_player_features) => external_media_player_features?.is_active,
 );
 const showExternalMediaPlayerModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showExternalMediaPlayerModal,
-  (showExternalMediaPlayerModal) => showExternalMediaPlayerModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showExternalMediaPlayerModal,
 );
 const showManageWaitingRoomModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showManageWaitingRoomModal,
-  (showManageWaitingRoomModal) => showManageWaitingRoomModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showManageWaitingRoomModal,
 );
 const showManageBreakoutRoomModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showManageBreakoutRoomModal,
-  (showManageBreakoutRoomModal) => showManageBreakoutRoomModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showManageBreakoutRoomModal,
 );
 const isActiveDisplayExternalLinkSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.room_features
-      .display_external_link_features.is_active,
-  (is_active) => is_active,
+      .display_external_link_features,
+  (display_external_link_features) => display_external_link_features?.is_active,
 );
 const showDisplayExternalLinkModalModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showDisplayExternalLinkModal,
-  (showDisplayExternalLinkModal) => showDisplayExternalLinkModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showDisplayExternalLinkModal,
 );
 const showSpeechSettingsModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.showSpeechSettingsModal,
-  (showSpeechSettingsModal) => showSpeechSettingsModal,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.showSpeechSettingsModal,
 );
 
 const MenusIcon = () => {

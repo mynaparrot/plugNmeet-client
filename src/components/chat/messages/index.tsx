@@ -12,8 +12,8 @@ interface IMessagesProps {
 }
 
 const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (isActiveChatPanel) => isActiveChatPanel,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveChatPanel,
 );
 
 const Messages = ({ userId }: IMessagesProps) => {

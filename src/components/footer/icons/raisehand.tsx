@@ -24,8 +24,8 @@ interface IRaiseHandIconProps {
 }
 
 const isActiveRaisehandSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveRaisehand,
-  (isActiveRaisehand) => isActiveRaisehand,
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isActiveRaisehand,
 );
 
 const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
