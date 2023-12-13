@@ -15,7 +15,7 @@
     "size-limit": "npm run build && size-limit --json"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "1.4.2",
+    "@bufbuild/protobuf": "1.6.0",
     "@excalidraw/excalidraw": "0.17.2",
     "@headlessui/react": "1.7.17",
     "@reduxjs/toolkit": "2.0.0",
