@@ -1,17 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppSelector } from '../../store';
+import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 
-const speechServicesSelector = createSelector(
-  (state: RootState) => state.speechServices,
-  (speechServices) => speechServices,
-);
+const speechServicesSelector = (state: RootState) => state.speechServices;
+
+interface FinalTexts {
+  first?: TextWithInfo;
+  second?: TextWithInfo;
+}
 
 const SubtitleArea = () => {
   const speechServices = useAppSelector(speechServicesSelector);
 
-  const [finalTexts, setFinalTexts] = useState<object>({ 0: '', 1: '' });
+  const [finalTexts, setFinalTexts] = useState<FinalTexts>({
+    first: undefined,
+    second: undefined,
+  });
   const [subtitleText, setSubtitleText] = useState<string | undefined>(
     undefined,
   );
@@ -20,20 +25,42 @@ const SubtitleArea = () => {
     if (speechServices.finalText) {
       setFinalTexts((prevState) => ({
         ...prevState,
-        [0]: prevState[1],
-        [1]: speechServices.finalText,
+        first: prevState.first,
+        second: speechServices.finalText,
       }));
     }
   }, [speechServices.finalText]);
 
   useEffect(() => {
-    const text: string[] = [finalTexts[0], finalTexts[1]];
+    const text: string[] = [];
+    if (finalTexts.first && finalTexts.first.from !== finalTexts.second?.from) {
+      text.push(
+        `${finalTexts.first.from}:`,
+        finalTexts.first.text.slice(-20),
+        '\n',
+      );
+    }
+
+    const from = finalTexts.second?.from ?? '';
+
+    if (finalTexts.second) {
+      text.push(
+        `${finalTexts.second.from}:`,
+        finalTexts.second.text.slice(-20),
+      );
+    }
 
     if (speechServices.interimText) {
-      text.push(speechServices.interimText.text);
+      if (from === speechServices.interimText.from) {
+        text.push(speechServices.interimText.text);
+      } else {
+        text.push(
+          `\n${speechServices.interimText.from}: ${speechServices.interimText.text}`,
+        );
+      }
     }
-    const finalText = text.join(' ').split(' ').slice(-20);
-    setSubtitleText(finalText.join(' '));
+
+    setSubtitleText(text.join(' '));
 
     const clear = setTimeout(() => {
       setSubtitleText(undefined);
@@ -52,7 +79,7 @@ const SubtitleArea = () => {
           className="sub-title w-11/12 absolute bottom-4  left-1/2 -translate-x-1/2 pointer-events-none px-10 flex items-center"
           style={{ fontSize: speechServices.subtitleFontSize }}
         >
-          <p className="py-1 px-2 bg-black text-white m-auto inline-block break-words text-center">
+          <p className="py-1 px-2 bg-black text-white m-auto inline-block break-words text-center whitespace-pre-wrap">
             {subtitleText}
           </p>
         </div>
