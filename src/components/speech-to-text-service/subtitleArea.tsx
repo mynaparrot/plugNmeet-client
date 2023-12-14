@@ -32,42 +32,69 @@ const SubtitleArea = () => {
   }, [speechServices.finalText]);
 
   useEffect(() => {
-    const text: string[] = [];
-    if (finalTexts.first && finalTexts.first.from !== finalTexts.second?.from) {
-      text.push(
-        `${finalTexts.first.from}:`,
-        finalTexts.first.text.slice(-20),
-        '\n',
-      );
+    if (!finalTexts.first && !finalTexts.second) {
+      return;
     }
+    let lastLineFrom = '';
 
-    const from = finalTexts.second?.from ?? '';
+    const text: string[] = [];
+    if (
+      finalTexts.first &&
+      finalTexts.first?.from === finalTexts.second?.from
+    ) {
+      // both are the same person
+      const t = finalTexts.first.text + ' ' + finalTexts.second?.text;
+      text.push(`${finalTexts.first.from}:`, t.slice(-50));
+      lastLineFrom = finalTexts.first.from;
+    } else {
+      // they are both different person
+      if (finalTexts.first) {
+        text.push(
+          `${finalTexts.first.from}:`,
+          finalTexts.first.text.slice(-20),
+        );
+        if (finalTexts.second) {
+          // if second data exist, then we'll require adding a new line
+          text.push('\n');
+        }
+        lastLineFrom = finalTexts.first.from;
+      }
 
-    if (finalTexts.second) {
-      text.push(
-        `${finalTexts.second.from}:`,
-        finalTexts.second.text.slice(-20),
-      );
+      if (finalTexts.second) {
+        text.push(
+          `${finalTexts.second.from}:`,
+          finalTexts.second.text.slice(-50),
+        );
+        lastLineFrom = finalTexts.second.from;
+      }
     }
 
     if (speechServices.interimText) {
-      if (from === speechServices.interimText.from) {
-        text.push(speechServices.interimText.text);
+      if (lastLineFrom === speechServices.interimText.from) {
+        text.push(speechServices.interimText.text.slice(-200));
       } else {
         text.push(
-          `\n${speechServices.interimText.from}: ${speechServices.interimText.text}`,
+          '\n',
+          `${
+            speechServices.interimText.from
+          }: ${speechServices.interimText.text.slice(-200)}`,
         );
       }
     }
 
-    setSubtitleText(text.join(' '));
+    if (!text.length) {
+      return;
+    }
 
+    setSubtitleText(text.join(' '));
     const clear = setTimeout(() => {
       setSubtitleText(undefined);
     }, 10000);
 
     return () => {
-      clearTimeout(clear);
+      if (clear) {
+        clearTimeout(clear);
+      }
     };
   }, [finalTexts, speechServices.interimText]);
 
