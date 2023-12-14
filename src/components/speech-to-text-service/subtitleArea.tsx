@@ -3,12 +3,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { RootState, useAppSelector } from '../../store';
 import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 
-const speechServicesSelector = (state: RootState) => state.speechServices;
-
 interface FinalTexts {
   first?: TextWithInfo;
   second?: TextWithInfo;
 }
+
+const speechServicesSelector = (state: RootState) => state.speechServices;
 
 const SubtitleArea = () => {
   const speechServices = useAppSelector(speechServicesSelector);
