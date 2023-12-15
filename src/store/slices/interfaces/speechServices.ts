@@ -9,7 +9,7 @@ export interface ISpeechServices {
   selectedSubtitleLang: string;
   subtitleFontSize: number;
   interimText?: TextWithInfo;
-  finalText: string;
+  finalText?: TextWithInfo;
   lastFinalTexts: TextWithInfo[];
 }
 

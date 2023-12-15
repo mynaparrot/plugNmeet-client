@@ -10,7 +10,7 @@ const initialState: ISpeechServices = {
   selectedSubtitleLang: '',
   subtitleFontSize: 14,
   interimText: undefined,
-  finalText: '',
+  finalText: undefined,
   lastFinalTexts: [],
 };
 
@@ -21,7 +21,7 @@ const speechServicesSlice = createSlice({
     updateSelectedSubtitleLang: (state, action: PayloadAction<string>) => {
       state.selectedSubtitleLang = action.payload;
       state.interimText = undefined;
-      state.finalText = '';
+      state.finalText = undefined;
     },
     updateSubtitleFontSize: (state, action: PayloadAction<number>) => {
       state.subtitleFontSize = action.payload;
@@ -34,7 +34,7 @@ const speechServicesSlice = createSlice({
         state.interimText = action.payload.result;
       } else {
         state.interimText = undefined;
-        state.finalText = action.payload.result.text;
+        state.finalText = action.payload.result;
         if (!isEmpty(action.payload.result.text)) {
           state.lastFinalTexts.push(action.payload.result);
         }
