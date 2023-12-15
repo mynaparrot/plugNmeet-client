@@ -37,7 +37,7 @@ const SubtitleArea = () => {
     }
     let lastLineFrom = '';
 
-    const text: string[] = [];
+    let text: string[] = [];
     if (
       finalTexts.first &&
       finalTexts.first?.from === finalTexts.second?.from
@@ -70,15 +70,22 @@ const SubtitleArea = () => {
     }
 
     if (speechServices.interimText) {
-      if (lastLineFrom === speechServices.interimText.from) {
-        text.push(speechServices.interimText.text.slice(-200));
+      if (speechServices.interimText.text.length > 100) {
+        // if we have a lot of text then better to show only those
+        text = [
+          `${speechServices.interimText.from}:`,
+          speechServices.interimText.text.slice(-200),
+        ];
       } else {
-        text.push(
-          '\n',
-          `${
-            speechServices.interimText.from
-          }: ${speechServices.interimText.text.slice(-200)}`,
-        );
+        if (lastLineFrom === speechServices.interimText.from) {
+          text.push(speechServices.interimText.text);
+        } else {
+          text.push(
+            '\n',
+            `${speechServices.interimText.from}:`,
+            speechServices.interimText.text,
+          );
+        }
       }
     }
 
