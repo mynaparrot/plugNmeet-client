@@ -144,9 +144,9 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     return () => {
       if (recognizer) {
         unsetRecognizer();
-        if (interval) {
-          clearInterval(interval);
-        }
+      }
+      if (interval) {
+        clearInterval(interval);
       }
     };
     //eslint-disable-next-line
