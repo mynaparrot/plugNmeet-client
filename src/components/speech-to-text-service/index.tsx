@@ -20,8 +20,9 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import {
   getAzureToken,
   openConnectionWithAzure,
+  renewAzureToken,
 } from './helpers/apiConnections';
-import { updateAzureTokenInfo } from '../../store/slices/roomSettingsSlice';
+import { cleanAzureToken } from '../../store/slices/roomSettingsSlice';
 import SelectOptions, { OnCloseSelectedOptions } from './selectOptions';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
 import SubtitleTextsHistory from './history';
@@ -38,6 +39,7 @@ const azureTokenInfoSelector = createSelector(
   (state: RootState) => state.roomSettings,
   (roomSettings) => roomSettings.azureTokenInfo,
 );
+const tokenRenewInterval = 8 * 60 * 1000;
 
 const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   const { t } = useTranslation();
@@ -127,13 +129,42 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   }, [recognizer]);
 
   useEffect(() => {
+    let interval: any = undefined;
+    if (recognizer) {
+      interval = setInterval(async () => {
+        const res = await renewAzureToken();
+        if (res && !res.status) {
+          toast(t(res.msg), {
+            type: 'error',
+          });
+        }
+      }, tokenRenewInterval);
+    }
+
     return () => {
       if (recognizer) {
         unsetRecognizer();
+        if (interval) {
+          clearInterval(interval);
+        }
       }
     };
     //eslint-disable-next-line
   }, [recognizer]);
+
+  // we'll update token
+  useEffect(() => {
+    if (
+      recognizer &&
+      azureTokenInfo &&
+      azureTokenInfo.renew &&
+      azureTokenInfo.token !== ''
+    ) {
+      recognizer.authorizationToken = azureTokenInfo.token;
+      dispatch(cleanAzureToken());
+    }
+    //eslint-disable-next-line
+  }, [recognizer, azureTokenInfo]);
 
   useEffect(() => {
     if (isEmpty(deviceId) && !mediaStream) {
@@ -164,7 +195,8 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
       if (
         speechService &&
         azureTokenInfo &&
-        !isEmpty(azureTokenInfo) &&
+        !azureTokenInfo.renew &&
+        !isEmpty(azureTokenInfo.token) &&
         !isEmpty(speechLang)
       ) {
         setOptionSelectionDisabled(true);
@@ -204,7 +236,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
           setRecognizer,
           unsetRecognizer,
         );
-        dispatch(updateAzureTokenInfo(undefined));
+        dispatch(cleanAzureToken());
       }
     };
     startConnection();
