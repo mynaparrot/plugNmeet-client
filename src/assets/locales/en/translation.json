@@ -423,6 +423,8 @@
     "speech-to-text-ready": "Service started. You can start speaking now.",
     "already-received-token": "You've already received token. Need to wait 5 minutes before generating new one.",
     "already-using-service": "You're already using the service.",
+    "renew-need-already-using-service": "Renew token can be requested only from existing user",
+    "renew-subscription-key-not-found": "Renew subscription key not found",
     "service-disabled": "Service is disabled. Please check server configuration.",
     "token-generation-failed": "Token generation failed with error: {{error}}",
     "mic-error": "Service can't start because of microphone problem.",

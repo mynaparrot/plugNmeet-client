@@ -3,9 +3,10 @@ import { toast } from 'react-toastify';
 import { isEmpty } from 'lodash';
 import {
   AudioConfig,
-  CancellationReason,
   ResultReason,
   SpeechConfig,
+  SpeechRecognitionCanceledEventArgs,
+  SpeechRecognitionEventArgs,
   SpeechRecognizer,
   SpeechTranslationConfig,
   TranslationRecognitionResult,
@@ -19,6 +20,7 @@ import {
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import { sendWebsocketMessage } from '../../../helpers/websocket';
 import {
+  AzureTokenRenewReq,
   GenerateAzureTokenReq,
   SpeechServiceUserStatusReq,
   SpeechServiceUserStatusTasks,
@@ -39,6 +41,7 @@ export interface AzureTokenInfo {
   token: string;
   serviceRegion: string;
   keyId: string;
+  renew: boolean;
 }
 
 let session: ISession | undefined = undefined;
@@ -153,7 +156,10 @@ export const openConnectionWithAzure = (
     });
   };
 
-  recognizer.recognizing = (sender, recognitionEventArgs) => {
+  recognizer.recognizing = (
+    sender,
+    recognitionEventArgs: SpeechRecognitionEventArgs,
+  ) => {
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'interim',
@@ -178,7 +184,10 @@ export const openConnectionWithAzure = (
     broadcastSpeechToTextMsgs(data);
   };
 
-  recognizer.recognized = (sender, recognitionEventArgs) => {
+  recognizer.recognized = (
+    sender,
+    recognitionEventArgs: SpeechRecognitionEventArgs,
+  ) => {
     const result = recognitionEventArgs.result;
     const data: SpeechTextBroadcastFormat = {
       type: 'final',
@@ -203,21 +212,21 @@ export const openConnectionWithAzure = (
     broadcastSpeechToTextMsgs(data);
   };
 
-  recognizer.canceled = async (s, e) => {
+  recognizer.canceled = async (s, e: SpeechRecognitionCanceledEventArgs) => {
     setOptionSelectionDisabled(false);
     await sendUserSessionStatus(
       SpeechServiceUserStatusTasks.SPEECH_TO_TEXT_SESSION_ENDED,
       azureInfo.keyId,
     );
-    if (
-      e.reason === CancellationReason.Error ||
-      e.reason === CancellationReason.EndOfStream
-    ) {
-      toast(i18n.t('speech-services.azure-error', { error: e.errorDetails }), {
+    toast(
+      i18n.t('speech-services.azure-error', {
+        error: e.errorCode + ': ' + e.errorDetails,
+      }),
+      {
         type: 'error',
-      });
-      unsetRecognizer();
-    }
+      },
+    );
+    unsetRecognizer();
   };
 
   recognizer.startContinuousRecognitionAsync();
@@ -255,6 +264,32 @@ export const getAzureToken = async () => {
   });
   const r = await sendAPIRequest(
     'speechServices/azureToken',
+    body.toBinary(),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return CommonResponse.fromBinary(new Uint8Array(r));
+};
+
+export const renewAzureToken = async () => {
+  if (!session) {
+    session = getSession();
+  }
+
+  const azureTokenInfo = store.getState().roomSettings.azureTokenInfo;
+  if (!azureTokenInfo) {
+    return;
+  }
+
+  const body = new AzureTokenRenewReq({
+    userSid: session?.currentUser?.sid,
+    serviceRegion: azureTokenInfo.serviceRegion,
+    keyId: azureTokenInfo.keyId,
+  });
+
+  const r = await sendAPIRequest(
+    'speechServices/renewToken',
     body.toBinary(),
     false,
     'application/protobuf',

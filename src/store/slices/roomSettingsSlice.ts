@@ -152,11 +152,13 @@ const roomSettingsSlice = createSlice({
     toggleFooterVisibility: (state) => {
       state.visibleFooter = !state.visibleFooter;
     },
-    updateAzureTokenInfo: (
-      state,
-      action: PayloadAction<AzureTokenInfo | undefined>,
-    ) => {
+    updateAzureTokenInfo: (state, action: PayloadAction<AzureTokenInfo>) => {
       state.azureTokenInfo = action.payload;
+    },
+    cleanAzureToken: (state) => {
+      if (state.azureTokenInfo) {
+        state.azureTokenInfo.token = '';
+      }
     },
   },
 });
@@ -187,6 +189,7 @@ export const {
   toggleHeaderVisibility,
   toggleFooterVisibility,
   updateAzureTokenInfo,
+  cleanAzureToken,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

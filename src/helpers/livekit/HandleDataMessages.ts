@@ -74,6 +74,7 @@ export default class HandleDataMessages {
               token: res.token,
               keyId: res.keyId,
               serviceRegion: res.serviceRegion,
+              renew: res.renew,
             }),
           );
         } else {
