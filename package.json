@@ -85,7 +85,7 @@
     "prettier": "3.1.1",
     "react-refresh": "0.14.0",
     "react-refresh-typescript": "2.0.9",
-    "sass": "1.69.5",
+    "sass": "1.70.0",
     "sass-loader": "13.3.2",
     "size-limit": "11.0.1",
     "style-loader": "3.3.3",
