@@ -123,7 +123,7 @@ code {
 
 // Webcam Area SCSS
 .all-webcam-wrapper {
-  @apply h-full flex items-center;
+  @apply h-full flex items-center justify-center;
   &::-webkit-scrollbar {
     @apply hidden;
   }
@@ -906,3 +906,19 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 //   width: max-content;
 //   margin: auto;
 // }
+.all-webcam-wrapper.total-cam-1 .all-webcam-wrapper-inner {
+  max-width: 918px;
+  max-height: 700px;
+}
+.all-webcam-wrapper.total-cam-2 .all-webcam-wrapper-inner {
+  max-width: 1550px;
+  max-height: 603px;
+}
+.all-webcam-wrapper.total-cam-3 .all-webcam-wrapper-inner {
+  max-width: 1550px;
+  max-height: 415px;
+}
+.all-webcam-wrapper.total-cam-4 .all-webcam-wrapper-inner {
+  max-width: 851px;
+  max-height: 650px;
+}
