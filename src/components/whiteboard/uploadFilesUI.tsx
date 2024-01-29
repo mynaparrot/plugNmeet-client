@@ -89,7 +89,7 @@ const UploadFilesUI = ({
       case 'png':
       case 'svg':
         toast(t('right-panel.file-upload-success'), {
-          type: toast.TYPE.SUCCESS,
+          type: 'success',
         });
         broadcastFile(filePath, fileName);
         // send analytics

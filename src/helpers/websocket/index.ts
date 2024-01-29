@@ -51,7 +51,7 @@ const createWS = () => {
 
     if (!normallyClosed) {
       toast.loading(i18n.t('notifications.websocket-disconnected'), {
-        type: toast.TYPE.ERROR,
+        type: 'error',
         autoClose: false,
         toastId: toastId,
         closeButton: true,
@@ -62,7 +62,7 @@ const createWS = () => {
 
   ws.onerror = () => {
     toast(i18n.t('notifications.websocket-error'), {
-      type: toast.TYPE.ERROR,
+      type: 'error',
       autoClose: 5000,
       toastId: toastId,
     });

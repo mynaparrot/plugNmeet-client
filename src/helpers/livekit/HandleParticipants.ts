@@ -32,6 +32,7 @@ import {
   AnalyticsEvents,
   AnalyticsEventType,
 } from '../proto/plugnmeet_analytics_pb';
+import languages from '../languages';
 
 export default class HandleParticipants {
   private that: IConnectLivekit;
@@ -39,6 +40,7 @@ export default class HandleParticipants {
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
   private lastConnectionQuality: ConnectionQuality | undefined = undefined;
+  private preferredLang = '';
 
   constructor(that: IConnectLivekit) {
     this.that = that;
@@ -230,7 +232,7 @@ export default class HandleParticipants {
     }
   };
 
-  public setParticipantMetadata = (
+  public setParticipantMetadata = async (
     _: string | undefined,
     participant: Participant,
   ) => {
@@ -246,6 +248,21 @@ export default class HandleParticipants {
       );
 
       if (this.that.room.localParticipant.sid === participant.sid) {
+        if (
+          this.preferredLang === '' &&
+          typeof metadata.preferred_lang !== 'undefined' &&
+          metadata.preferred_lang !== ''
+        ) {
+          this.preferredLang = metadata.preferred_lang;
+          for (let i = 0; i < languages.length; i++) {
+            const lan = languages[i];
+            if (lan.code === metadata.preferred_lang) {
+              await i18n.changeLanguage(lan.code);
+              break;
+            }
+          }
+        }
+
         store.dispatch(updateCurrentUserMetadata(metadata));
         store.dispatch(updateIsActiveRaisehand(metadata.raised_hand));
       }
