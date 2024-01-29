@@ -173,7 +173,7 @@ const App = () => {
       toastId.current = toast.loading(
         t('notifications.room-disconnected-reconnecting'),
         {
-          type: toast.TYPE.WARNING,
+          type: 'warning',
           closeButton: false,
           autoClose: false,
         },

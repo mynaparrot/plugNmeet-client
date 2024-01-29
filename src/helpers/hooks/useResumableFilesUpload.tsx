@@ -54,7 +54,7 @@ const useResumableFilesUpload = ({
       fileType: allowedFileTypes,
       fileTypeErrorCallback(file) {
         toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
-          type: toast.TYPE.ERROR,
+          type: 'error',
         });
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -62,7 +62,7 @@ const useResumableFilesUpload = ({
       maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
       maxFileSizeErrorCallback() {
         toast(t('notifications.max-file-size-exceeds'), {
-          type: toast.TYPE.ERROR,
+          type: 'error',
         });
       },
     });
@@ -102,11 +102,11 @@ const useResumableFilesUpload = ({
       try {
         const res = JSON.parse(message);
         toast(t(res.msg), {
-          type: toast.TYPE.ERROR,
+          type: 'error',
         });
       } catch (e) {
         toast(t('right-panel.file-upload-default-error'), {
-          type: toast.TYPE.ERROR,
+          type: 'error',
         });
       }
     });

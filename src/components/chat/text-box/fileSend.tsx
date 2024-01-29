@@ -61,7 +61,7 @@ const FileSend = ({
     if (result && result.filePath && result.fileName) {
       publishToChat(result.filePath, result.fileName);
       toast(t('right-panel.file-upload-success'), {
-        type: toast.TYPE.SUCCESS,
+        type: 'success',
       });
     }
     //eslint-disable-next-line
