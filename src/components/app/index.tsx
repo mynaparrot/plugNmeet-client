@@ -23,7 +23,6 @@ import useLivekitConnect, {
   LivekitInfo,
 } from '../../helpers/livekit/hooks/useLivekitConnect';
 import AudioNotification from './audioNotification';
-import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
@@ -49,7 +48,6 @@ const App = () => {
   const { t, i18n } = useTranslation();
   // make sure we're using correct body dir
   document.dir = i18n.dir();
-
   const toastId = useRef<string>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,10 +57,6 @@ const App = () => {
   const [livekitInfo, setLivekitInfo] = useState<LivekitInfo>();
   const [currentConnection, setCurrentConnection] = useState<IConnectLivekit>();
   const waitForApproval = useAppSelector(waitingForApprovalSelector);
-
-  // we'll require making ready virtual background
-  // elements as early as possible.
-  useBodyPix();
 
   // some custom hooks
   const {

@@ -137,6 +137,8 @@
                     allow_polls: true,
                     room_duration: 0,
                     enable_analytics: true,
+                    allow_virtual_bg: true,
+                    allow_raise_hand: true,
                     recording_features: {
                         is_allow: true,
                         is_allow_cloud: true,
@@ -194,9 +196,9 @@
             is_admin: data.get('user_type') === 'admin',
             name: data.get('name'),
             user_id: data.get('user_id'),
-            /*user_metadata: {
-                record_webcam: false,
-            }*/
+            user_metadata: {
+                preferred_lang: "bn-BD",
+            }
         };
 
         API_KEY = data.get('api_key');

@@ -35,6 +35,7 @@ export interface ICurrentUserMetadata {
   is_presenter: boolean;
   raised_hand: boolean;
   wait_for_approval: boolean;
+  preferred_lang?: string;
   lock_settings: ILockSettings;
   metadata_id?: string;
 }
@@ -69,6 +70,8 @@ interface IRoomFeatures {
   admin_only_webcams: boolean;
   allow_polls: boolean;
   room_duration: string;
+  allow_virtual_bg?: boolean;
+  allow_raise_hand?: boolean;
   recording_features: IRecordingFeatures;
   chat_features: IChatFeatures;
   shared_note_pad_features: ISharedNotepadFeatures;

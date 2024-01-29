@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { SourcePlayback } from '../../../virtual-background/helpers/sourceHelper';
 import { BackgroundConfig } from '../../../virtual-background/helpers/backgroundHelper';
@@ -21,7 +21,6 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
 
   const currentUser = store.getState().session.currentUser?.userId;
   const dispatch = useAppDispatch();
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   useEffect(() => {
     if (previousDeviceId !== deviceId) {
@@ -52,6 +51,23 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
       }
     };
   }, [mediaStream]);
+
+  const displayVB = useCallback(() => {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      return false;
+    }
+    const room_features =
+      store.getState().session.currentRoom.metadata?.room_features;
+    if (
+      typeof room_features?.allow_virtual_bg !== 'undefined' &&
+      room_features.allow_virtual_bg === false
+    ) {
+      return false;
+    }
+
+    return true;
+  }, []);
 
   const onSelectBg = (bg: BackgroundConfig) => {
     dispatch(updateVirtualBackground(bg));
@@ -91,7 +107,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
           id={currentUser}
         />
       ) : null}
-      {!isSafari ? <BackgroundItems onSelect={onSelectBg} /> : null}
+      {displayVB() ? <BackgroundItems onSelect={onSelectBg} /> : null}
     </div>
   );
 };

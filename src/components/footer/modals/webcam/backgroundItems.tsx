@@ -7,12 +7,17 @@ import {
   defaultBackgroundConfig,
 } from '../../../virtual-background/helpers/backgroundHelper';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
+import useBodyPix from '../../../virtual-background/hooks/useBodyPix';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
 }
 
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
+  // we'll require making ready virtual background
+  // elements as early as possible.
+  useBodyPix();
+
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
   const { t } = useTranslation();
 
