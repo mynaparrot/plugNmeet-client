@@ -196,9 +196,10 @@
             is_admin: data.get('user_type') === 'admin',
             name: data.get('name'),
             user_id: data.get('user_id'),
-            user_metadata: {
+            /*user_metadata: {
+                record_webcam: false,
                 preferred_lang: "bn-BD",
-            }
+            }*/
         };
 
         API_KEY = data.get('api_key');
