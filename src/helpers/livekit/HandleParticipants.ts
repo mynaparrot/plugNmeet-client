@@ -256,7 +256,10 @@ export default class HandleParticipants {
           this.preferredLang = metadata.preferred_lang;
           for (let i = 0; i < languages.length; i++) {
             const lan = languages[i];
-            if (lan.code === metadata.preferred_lang) {
+            if (
+              lan.code.toLowerCase() === metadata.preferred_lang.toLowerCase()
+            ) {
+              // we'll only change if we've found the right language
               await i18n.changeLanguage(lan.code);
               break;
             }
