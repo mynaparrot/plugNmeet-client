@@ -1,8 +1,9 @@
-import React, { Dispatch, Fragment } from 'react';
+import React, { Dispatch, Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { supportedTranslationLangs } from '../helpers/supportedLangs';
+import { store } from '../../../store';
 
 interface TransLangsElmPros {
   selectedTransLangs: Array<string>;
@@ -14,6 +15,21 @@ const TransLangsElm = ({
   setSelectedTransLangs,
 }: TransLangsElmPros) => {
   const { t } = useTranslation();
+  const max =
+    store.getState().session.currentRoom.metadata?.room_features
+      .speech_to_text_translation_features.max_num_tran_langs_allow_selecting ||
+    2;
+
+  const [selectedItems, setSelectedItems] =
+    useState<string[]>(selectedTransLangs);
+
+  useEffect(() => {
+    if (selectedItems.length > max) {
+      return;
+    }
+    setSelectedTransLangs(selectedItems);
+    //eslint-disable-next-line
+  }, [selectedItems]);
 
   return (
     <div className="flex items-center justify-between">
@@ -21,11 +37,11 @@ const TransLangsElm = ({
         htmlFor="language"
         className="pr-4 w-auto dark:text-darkText text-sm"
       >
-        {t('speech-services.translation-langs-label')}
+        {t('speech-services.translation-langs-label', { num: max })}
       </label>
       <Listbox
         value={selectedTransLangs}
-        onChange={setSelectedTransLangs}
+        onChange={setSelectedItems}
         multiple={true}
       >
         <div className="relative mt-1 w-[150px] sm:w-[250px]">
