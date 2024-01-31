@@ -91,6 +91,7 @@ const initialState: ISession = {
           is_allow_translation: false,
           is_enabled: false,
           is_enabled_translation: false,
+          max_num_tran_langs_allow_selecting: 2,
         },
         end_to_end_encryption_features: {
           is_enabled: false,

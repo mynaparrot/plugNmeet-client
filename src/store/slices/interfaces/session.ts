@@ -184,6 +184,7 @@ export interface SpeechToTextTranslationFeatures {
   is_allow_translation: boolean;
   is_enabled: boolean;
   is_enabled_translation: boolean;
+  max_num_tran_langs_allow_selecting: number;
   allowed_speech_langs?: string[];
   allowed_speech_users?: string[];
   allowed_trans_langs?: string[];
