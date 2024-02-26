@@ -1,6 +1,6 @@
 {
   "name": "plugnmeet-client",
-  "version": "1.5.14",
+  "version": "1.5.15",
   "author": "Jibon L. Costa",
   "license": "MIT",
   "scripts": {
@@ -18,7 +18,7 @@
     "@bufbuild/protobuf": "1.7.2",
     "@excalidraw/excalidraw": "0.17.3",
     "@headlessui/react": "1.7.18",
-    "@reduxjs/toolkit": "2.1.0",
+    "@reduxjs/toolkit": "2.2.1",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.16.0",
     "axios": "1.6.7",
