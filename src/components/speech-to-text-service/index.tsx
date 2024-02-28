@@ -7,12 +7,7 @@ import {
   SpeechRecognizer,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import {
-  ParticipantEvent,
-  Room,
-  Track,
-  TrackPublication,
-} from 'livekit-client';
+import { Room, Track } from 'livekit-client';
 
 import SubtitleArea from './subtitleArea';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
@@ -39,6 +34,10 @@ const azureTokenInfoSelector = createSelector(
   (state: RootState) => state.roomSettings,
   (roomSettings) => roomSettings.azureTokenInfo,
 );
+const isMicMutedSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity,
+  (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
+);
 const tokenRenewInterval = 8 * 60 * 1000;
 
 const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
@@ -46,6 +45,7 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
   const dispatch = useAppDispatch();
   const speechService = useAppSelector(speechServiceFeaturesSelector);
   const azureTokenInfo = useAppSelector(azureTokenInfoSelector);
+  const isMicMuted = useAppSelector(isMicMutedSelector);
 
   const [speechLang, setSpeechLang] = useState<string>('');
   const [recognizer, setRecognizer] = useState<
@@ -79,44 +79,18 @@ const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
     //eslint-disable-next-line
   }, []);
 
-  const handleUserMutedMic = useCallback(
-    (publication: TrackPublication) => {
-      if (!createdMediaStream) {
-        return;
-      }
-      if (publication.kind === Track.Kind.Audio) {
-        createdMediaStream.getAudioTracks().forEach((t) => {
-          t.enabled = !publication.isMuted;
-        });
-      }
-    },
-    [createdMediaStream],
-  );
-
   // if we've an active mic for room + speech to text on
   // sometime it make confused to user if they would like to mute/unmute
   // so, we'll do the same if a user tries to mute/unmute their room mic
   useEffect(() => {
-    currentRoom.localParticipant.on(
-      ParticipantEvent.TrackMuted,
-      handleUserMutedMic,
-    );
-    currentRoom.localParticipant.on(
-      ParticipantEvent.TrackUnmuted,
-      handleUserMutedMic,
-    );
-    return () => {
-      currentRoom.localParticipant.off(
-        ParticipantEvent.TrackMuted,
-        handleUserMutedMic,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.TrackUnmuted,
-        handleUserMutedMic,
-      );
-    };
+    if (!createdMediaStream) {
+      return;
+    }
+    createdMediaStream.getAudioTracks().forEach((t) => {
+      t.enabled = !isMicMuted;
+    });
     //eslint-disable-next-line
-  }, [createdMediaStream]);
+  }, [createdMediaStream, isMicMuted]);
 
   const unsetRecognizer = useCallback(() => {
     if (recognizer) {
