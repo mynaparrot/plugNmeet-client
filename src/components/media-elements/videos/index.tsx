@@ -69,7 +69,7 @@ const VideosComponent = ({
     videoSubscribers.forEach((participant) => {
       // we will only take if source from Camera
       const videoTracks = participant
-        .getTracks()
+        .getTrackPublications()
         .filter((track) => track.source === Track.Source.Camera);
 
       if (videoTracks.length) {

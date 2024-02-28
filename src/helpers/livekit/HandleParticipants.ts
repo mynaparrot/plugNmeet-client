@@ -63,10 +63,10 @@ export default class HandleParticipants {
    * startParticipantCounter will only call if participant was a recorder or RTMP bot
    * */
   private startParticipantCounter() {
-    this.participantCounterInterval = setInterval(() => {
+    this.participantCounterInterval = setInterval(async () => {
       if (this.participantsCount === 0) {
         console.log('NO_USER_ONLINE');
-        this.that.room.disconnect();
+        await this.that.room.disconnect();
       }
     }, 3000);
   }
@@ -113,7 +113,7 @@ export default class HandleParticipants {
       audioTracksCount = 0,
       screenShareTrackCount = 0,
       isMuted = false;
-    participant.getTracks().forEach((t) => {
+    participant.getTrackPublications().forEach((t) => {
       if (t.source === Track.Source.Camera) {
         videoTracksCount += 1;
       } else if (t.source === Track.Source.Microphone) {

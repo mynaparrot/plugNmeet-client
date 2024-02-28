@@ -77,7 +77,7 @@ export default class HandleRoomMetadata {
         store.dispatch(updateCurrentRoomMetadata(this.metadata));
         if (!this.checkedPreloadedWhiteboardFile) {
           // we'll check whiteboard preloaded file
-          this.addPreloadWhiteboardFile();
+          await this.addPreloadWhiteboardFile();
         }
       }
     }
@@ -106,7 +106,7 @@ export default class HandleRoomMetadata {
   };
 
   private showRTMPNotification = () => {
-    // we should avoid notification is user is recorder.
+    // we should avoid notification is user being recorder.
     if (store.getState().session.currentUser?.isRecorder) {
       return;
     }

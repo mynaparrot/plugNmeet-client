@@ -132,10 +132,11 @@ const TextBoxArea = ({
     if (isEmpty(msg)) {
       return;
     }
+    const sid = await currentRoom.getSid();
 
     const dataMsg = new DataMessage({
       type: DataMsgType.USER,
-      roomSid: currentRoom.sid,
+      roomSid: sid,
       roomId: currentRoom.name,
       to: selectedChatOption !== 'public' ? selectedChatOption : '',
       body: {
@@ -157,10 +158,10 @@ const TextBoxArea = ({
     onAfterSendMessage();
   };
 
-  const onEnterPress = (e) => {
+  const onEnterPress = async (e) => {
     if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
-      sendMsg();
+      await sendMsg();
     }
   };
 

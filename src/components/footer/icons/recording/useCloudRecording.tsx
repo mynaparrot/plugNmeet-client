@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { Room } from 'livekit-client';
 
 import { IUseCloudRecordingReturn, RecordingType } from './IRecording';
 import { RecordingReq } from '../../../../helpers/proto/plugnmeet_recording_pb';
@@ -8,15 +9,17 @@ import { RecordingTasks } from '../../../../helpers/proto/plugnmeet_recorder_pb'
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { CommonResponse } from '../../../../helpers/proto/plugnmeet_common_api_pb';
 
-const useCloudRecording = (roomSid: string): IUseCloudRecordingReturn => {
+const useCloudRecording = (currentRoom: Room): IUseCloudRecordingReturn => {
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_LOCAL;
   const [hasError, setHasError] = useState<boolean>(false);
   const { t } = useTranslation();
 
   const startRecording = async () => {
+    const sid = await currentRoom.getSid();
+
     const body = new RecordingReq({
       task: RecordingTasks.START_RECORDING,
-      sid: roomSid,
+      sid: sid,
     });
     if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
       body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
@@ -45,9 +48,10 @@ const useCloudRecording = (roomSid: string): IUseCloudRecordingReturn => {
   };
 
   const stopRecording = async () => {
+    const sid = await currentRoom.getSid();
     const body = new RecordingReq({
       task: RecordingTasks.STOP_RECORDING,
-      sid: roomSid,
+      sid: sid,
     });
     const r = await sendAPIRequest(
       'recording',
