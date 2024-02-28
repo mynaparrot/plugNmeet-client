@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from 'react';
-import { RemoteTrackPublication } from 'livekit-client';
+import { RemoteAudioTrack } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState, useAppSelector } from '../../../store';
 
 interface IAudioElmProps {
-  track: RemoteTrackPublication;
+  audioTrack: RemoteAudioTrack;
 }
 const roomScreenShareAudioVolumeSelector = createSelector(
   (state: RootState) => state.roomSettings.roomScreenShareAudioVolume,
   (roomScreenShareAudioVolume) => roomScreenShareAudioVolume,
 );
 
-const AudioElm = ({ track }: IAudioElmProps) => {
+const AudioElm = ({ audioTrack }: IAudioElmProps) => {
   const roomScreenShareAudioVolume = useAppSelector(
     roomScreenShareAudioVolumeSelector,
   );
@@ -20,24 +20,21 @@ const AudioElm = ({ track }: IAudioElmProps) => {
   useEffect(() => {
     const el = ref.current;
     if (el) {
-      track.audioTrack?.attach(el);
-      el.volume = roomScreenShareAudioVolume;
+      audioTrack.attach(el);
+      audioTrack.setVolume(roomScreenShareAudioVolume);
     }
 
     return () => {
       if (el) {
-        track.audioTrack?.detach(el);
+        audioTrack.detach(el);
       }
     };
     //eslint-disable-next-line
-  }, [track]);
+  }, [audioTrack]);
 
   useEffect(() => {
-    const el = ref.current;
-    if (el) {
-      el.volume = roomScreenShareAudioVolume;
-    }
-  }, [roomScreenShareAudioVolume]);
+    audioTrack.setVolume(roomScreenShareAudioVolume);
+  }, [audioTrack, roomScreenShareAudioVolume]);
 
   return (
     <div style={{ display: 'none' }}>

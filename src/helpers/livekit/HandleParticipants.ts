@@ -141,6 +141,7 @@ export default class HandleParticipants {
         isLocal: false,
         joinedAt: participant.joinedAt?.getTime() ?? Date.now(),
         visibility: 'visible',
+        audioVolume: store.getState().roomSettings.roomAudioVolume,
       }),
     );
 

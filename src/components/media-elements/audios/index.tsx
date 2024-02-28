@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { RemoteParticipant, LocalParticipant } from 'livekit-client';
+import {
+  RemoteParticipant,
+  LocalParticipant,
+  RemoteAudioTrack,
+} from 'livekit-client';
 
 import AudioElm from './audio';
 import {
@@ -37,13 +41,15 @@ const AudioElements = ({ currentConnection }: IAudioElementsProps) => {
     const elms: Array<JSX.Element> = [];
     audioSubscribers.forEach((participant) => {
       participant.audioTrackPublications.forEach((track) => {
-        elms.push(
-          <AudioElm
-            userId={participant.identity}
-            track={track}
-            key={track.trackSid}
-          />,
-        );
+        if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {
+          elms.push(
+            <AudioElm
+              userId={participant.identity}
+              audioTrack={track.audioTrack}
+              key={track.trackSid}
+            />,
+          );
+        }
       });
     });
 
