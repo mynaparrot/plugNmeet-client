@@ -74,28 +74,35 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
   }, [newDevice, currentRoom, dispatch]);
 
   const muteUnmuteMic = () => {
-    currentRoom?.localParticipant.audioTracks.forEach(async (publication) => {
-      if (
-        publication.track &&
-        publication.track.source === Track.Source.Microphone
-      ) {
-        if (publication.isMuted) {
-          await publication.track.unmute();
-          dispatch(updateIsMicMuted(false));
-        } else {
-          await publication.track.mute();
-          dispatch(updateIsMicMuted(true));
+    currentRoom?.localParticipant.audioTrackPublications.forEach(
+      async (publication) => {
+        if (
+          publication.track &&
+          publication.track.source === Track.Source.Microphone
+        ) {
+          if (publication.isMuted) {
+            await publication.track.unmute();
+            dispatch(updateIsMicMuted(false));
+          } else {
+            await publication.track.mute();
+            dispatch(updateIsMicMuted(true));
+          }
         }
-      }
-    });
+      },
+    );
   };
 
   const leaveMic = () => {
-    currentRoom?.localParticipant.audioTracks.forEach(async (publication) => {
-      if (publication.track && publication.kind === Track.Kind.Audio) {
-        currentRoom.localParticipant.unpublishTrack(publication.track, true);
-      }
-    });
+    currentRoom?.localParticipant.audioTrackPublications.forEach(
+      async (publication) => {
+        if (publication.track && publication.kind === Track.Kind.Audio) {
+          await currentRoom.localParticipant.unpublishTrack(
+            publication.track,
+            true,
+          );
+        }
+      },
+    );
     dispatch(updateIsActiveMicrophone(false));
     dispatch(updateIsMicMuted(false));
     dispatch(updateSelectedAudioDevice(''));

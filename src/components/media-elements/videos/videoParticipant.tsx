@@ -20,7 +20,7 @@ const VideoParticipant = ({
 
   const renderVideoElms = useMemo(() => {
     const elements: Array<JSX.Element> = [];
-    participant.tracks.forEach((track) => {
+    participant.videoTrackPublications.forEach((track) => {
       if (track.source === Track.Source.Camera) {
         const elm = (
           <div className="video-camera-item-inner" key={track.trackSid}>

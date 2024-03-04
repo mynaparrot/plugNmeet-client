@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 import { IErrorPageProps } from '../../../components/extra-pages/Error';
 import ConnectLivekit from '../ConnectLivekit';
@@ -12,9 +12,9 @@ export interface LivekitInfo {
 
 export interface IUseLivekitConnect {
   error: IErrorPageProps | undefined;
-  setError: React.Dispatch<React.SetStateAction<IErrorPageProps | undefined>>;
+  setError: Dispatch<SetStateAction<IErrorPageProps | undefined>>;
   roomConnectionStatus: string;
-  setRoomConnectionStatus: React.Dispatch<React.SetStateAction<string>>;
+  setRoomConnectionStatus: Dispatch<SetStateAction<string>>;
   startLivekitConnection(info: LivekitInfo): IConnectLivekit;
 }
 

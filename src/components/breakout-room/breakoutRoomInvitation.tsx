@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
-import { Room, Track } from 'livekit-client';
+import { LocalAudioTrack, Room, Track } from 'livekit-client';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import copy from 'copy-text-to-clipboard';
@@ -40,26 +40,32 @@ const BreakoutRoomInvitation = ({
   const [token, setToken] = useState<string>('');
 
   const closeLocalTracks = useCallback(() => {
-    currentRoom.localParticipant.tracks.forEach(async (publication) => {
-      if (!publication.track) {
-        return;
-      }
-      if (publication.track.source === Track.Source.Camera) {
-        currentRoom.localParticipant.unpublishTrack(publication.track, true);
-        dispatch(updateIsActiveWebcam(false));
-        dispatch(updateSelectedVideoDevice(''));
-        dispatch(
-          updateVirtualBackground({
-            type: 'none',
-          }),
-        );
-      } else if (publication.track.source === Track.Source.Microphone) {
-        if (!publication.isMuted) {
-          await publication.track.unmute();
-          dispatch(updateIsMicMuted(true));
+    currentRoom.localParticipant
+      .getTrackPublications()
+      .forEach(async (publication) => {
+        if (!publication.track) {
+          return;
         }
-      }
-    });
+        if (publication.track.source === Track.Source.Camera) {
+          await currentRoom.localParticipant.unpublishTrack(
+            publication.track.mediaStreamTrack,
+            true,
+          );
+          dispatch(updateIsActiveWebcam(false));
+          dispatch(updateSelectedVideoDevice(''));
+          dispatch(
+            updateVirtualBackground({
+              type: 'none',
+            }),
+          );
+        } else if (publication.track.source === Track.Source.Microphone) {
+          if (!publication.isMuted) {
+            const track = publication.audioTrack as LocalAudioTrack;
+            await track.unmute();
+            dispatch(updateIsMicMuted(true));
+          }
+        }
+      });
   }, [currentRoom.localParticipant, dispatch]);
 
   useEffect(() => {

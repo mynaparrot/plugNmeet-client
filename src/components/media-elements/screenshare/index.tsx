@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   LocalTrackPublication,
+  RemoteAudioTrack,
   RemoteTrackPublication,
   Track,
 } from 'livekit-client';
@@ -50,10 +51,13 @@ const ScreenShareElements = ({
             elm.push(<VideoElm key={track.trackSid} track={track} />);
           } else if (
             track.source === Track.Source.ScreenShareAudio &&
-            track instanceof RemoteTrackPublication
+            track.audioTrack &&
+            track.audioTrack instanceof RemoteAudioTrack
           ) {
             // we won't add local screen share audio track to avoid eco
-            elm.push(<AudioElm key={track.trackSid} track={track} />);
+            elm.push(
+              <AudioElm key={track.trackSid} audioTrack={track.audioTrack} />,
+            );
           }
         });
       });

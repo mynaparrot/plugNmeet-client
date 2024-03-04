@@ -67,7 +67,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
       for (const [
         ,
         publication,
-      ] of currentRoom.localParticipant.tracks.entries()) {
+      ] of currentRoom.localParticipant.trackPublications.entries()) {
         if (
           (publication.source === Track.Source.ScreenShare ||
             publication.source === Track.Source.ScreenShareAudio) &&
@@ -103,7 +103,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
     //eslint-disable-next-line
   }, [endScreenShare, isScreenshareLock]);
 
-  // for special case when user will cancel sharing from browser directly
+  // for special case when user cancels sharing from browser directly,
   // we will check & disable button status.
   useEffect(() => {
     if (!sessionScreenSharing.isActive && isActiveScreenshare) {
@@ -129,7 +129,7 @@ const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
       const option: ScreenShareCaptureOptions = {
         audio: true,
       };
-      // because of one bug we'll disable to set regulation for safari
+      // because of one bug, we'll disable to set regulation for safari
       // https://bugs.webkit.org/show_bug.cgi?id=263015
       const isSafari = /^((?!chrome|android).)*safari/i.test(
         navigator.userAgent,
