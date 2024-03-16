@@ -51,7 +51,7 @@
     "video.js": "8.10.0"
   },
   "devDependencies": {
-    "@bufbuild/protoc-gen-es": "1.7.2",
+    "@bufbuild/protoc-gen-es": "1.8.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.11",
     "@size-limit/preset-app": "11.1.0",
     "@types/emscripten": "1.39.10",
