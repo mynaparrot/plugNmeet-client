@@ -21,7 +21,7 @@
     "@reduxjs/toolkit": "2.2.1",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.17.0",
-    "axios": "1.6.7",
+    "axios": "1.6.8",
     "copy-text-to-clipboard": "3.2.0",
     "emoji-picker-react": "4.8.0",
     "eventemitter3": "5.0.1",
