@@ -18,7 +18,7 @@
     "@bufbuild/protobuf": "1.8.0",
     "@excalidraw/excalidraw": "0.17.3",
     "@headlessui/react": "1.7.18",
-    "@reduxjs/toolkit": "2.2.1",
+    "@reduxjs/toolkit": "2.2.2",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.17.0",
     "axios": "1.6.8",
