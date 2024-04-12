@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Room } from 'livekit-client';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
@@ -18,20 +17,18 @@ import {
   DataMessageReq,
 } from '../../../helpers/proto/plugnmeet_common_api_pb';
 import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
-
-interface IRaiseHandIconProps {
-  currentRoom: Room;
-}
+import { getCurrentRoom } from '../../../helpers/livekit/utils';
 
 const isActiveRaisehandSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
   (bottomIconsActivity) => bottomIconsActivity.isActiveRaisehand,
 );
 
-const RaiseHandIcon = ({ currentRoom }: IRaiseHandIconProps) => {
+const RaiseHandIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const currentRoom = getCurrentRoom();
   const isActiveRaisehand = useAppSelector(isActiveRaisehandSelector);
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 

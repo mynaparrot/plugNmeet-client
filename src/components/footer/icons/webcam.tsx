@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-import { createLocalVideoTrack, Room, Track } from 'livekit-client';
+import { createLocalVideoTrack, Track } from 'livekit-client';
 
 import {
   RootState,
@@ -21,10 +21,7 @@ import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSli
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 import { getWebcamResolution } from '../../../helpers/utils';
-
-interface IWebcamIconProps {
-  currentRoom: Room;
-}
+import { getCurrentRoom } from '../../../helpers/livekit/utils';
 
 const isActiveWebcamPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -47,8 +44,10 @@ const selectedVideoDeviceSelector = createSelector(
   (roomSettings) => roomSettings.selectedVideoDevice,
 );
 
-const WebcamIcon = ({ currentRoom }: IWebcamIconProps) => {
+const WebcamIcon = () => {
   const dispatch = useAppDispatch();
+  const currentRoom = getCurrentRoom();
+
   // we don't need this for small devices
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
 

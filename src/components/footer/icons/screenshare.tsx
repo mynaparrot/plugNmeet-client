@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
   createLocalScreenTracks,
-  Room,
   ScreenShareCaptureOptions,
   Track,
 } from 'livekit-client';
@@ -19,10 +18,7 @@ import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActi
 import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
-
-interface IScrenshareIconProps {
-  currentRoom: Room;
-}
+import { getCurrentRoom } from '../../../helpers/livekit/utils';
 
 const isActiveScreenshareSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -37,9 +33,10 @@ const isScreenshareLockSelector = createSelector(
   (lock_settings) => lock_settings?.lock_screen_sharing,
 );
 
-const ScrenshareIcon = ({ currentRoom }: IScrenshareIconProps) => {
+const ScrenshareIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const dispatch = useAppDispatch();
+  const currentRoom = getCurrentRoom();
   const { t } = useTranslation();
 
   const isActiveScreenshare = useAppSelector(isActiveScreenshareSelector);

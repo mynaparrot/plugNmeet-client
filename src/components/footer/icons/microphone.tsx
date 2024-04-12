@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  createLocalTracks,
-  ParticipantEvent,
-  Room,
-  Track,
-} from 'livekit-client';
+import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { proto3 } from '@bufbuild/protobuf';
 import { isEmpty } from 'lodash';
@@ -33,10 +28,8 @@ import {
   AnalyticsStatus,
 } from '../../../helpers/proto/plugnmeet_analytics_pb';
 import { getAudioPreset } from '../../../helpers/utils';
+import { getCurrentRoom } from '../../../helpers/livekit/utils';
 
-interface IMicrophoneIconProps {
-  currentRoom: Room;
-}
 const isActiveMicrophoneSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
   (bottomIconsActivity) => bottomIconsActivity.isActiveMicrophone,
@@ -54,8 +47,9 @@ const isMicMutedSelector = createSelector(
   (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
 );
 
-const MicrophoneIcon = ({ currentRoom }: IMicrophoneIconProps) => {
+const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
+  const currentRoom = getCurrentRoom();
   const { t } = useTranslation();
 
   const session = store.getState().session;

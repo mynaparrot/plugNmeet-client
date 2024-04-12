@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
-import { LocalAudioTrack, Room, Track } from 'livekit-client';
+import { LocalAudioTrack, Track } from 'livekit-client';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import copy from 'copy-text-to-clipboard';
@@ -16,21 +16,18 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
 import { JoinBreakoutRoomReq } from '../../helpers/proto/plugnmeet_breakout_room_pb';
-
-interface IBreakoutRoomInvitationProps {
-  currentRoom: Room;
-}
+import { getCurrentRoom } from '../../helpers/livekit/utils';
 
 const receivedInvitationForSelector = createSelector(
   (state: RootState) => state.breakoutRoom,
   (breakoutRoom) => breakoutRoom.receivedInvitationFor,
 );
 
-const BreakoutRoomInvitation = ({
-  currentRoom,
-}: IBreakoutRoomInvitationProps) => {
+const BreakoutRoomInvitation = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const currentRoom = getCurrentRoom();
+
   const receivedInvitationFor = useAppSelector(receivedInvitationForSelector);
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
   const [joinLink, setJoinLink] = useState<string>('');

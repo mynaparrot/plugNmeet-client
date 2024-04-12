@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 
@@ -16,11 +17,7 @@ import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
-import { useTranslation } from 'react-i18next';
-import {
-  getCurrentRoom,
-  isCurrentUserRecorder,
-} from '../../helpers/livekit/utils';
+import { isCurrentUserRecorder } from '../../helpers/livekit/utils';
 
 const footerVisibilitySelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -32,7 +29,6 @@ const Footer = () => {
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const currentRoom = getCurrentRoom();
   const isRecorder = isCurrentUserRecorder();
 
   return useMemo(() => {
@@ -55,23 +51,23 @@ const Footer = () => {
           >
             <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
               <div className="footer-left w-52 flex items-center relative z-50 rtl:justify-end">
-                <WebcamIcon currentRoom={currentRoom} />
-                <MicrophoneIcon currentRoom={currentRoom} />
+                <WebcamIcon />
+                <MicrophoneIcon />
               </div>
 
               <div className="footer-middle flex items-center">
                 <ParticipantIcon />
                 <ChatIcon />
-                <ScreenshareIcon currentRoom={currentRoom} />
-                <RaiseHandIcon currentRoom={currentRoom} />
+                <ScreenshareIcon />
+                <RaiseHandIcon />
                 <WhiteboardIcon />
                 <SharedNotePadIcon />
-                <RecordingIcon currentRoom={currentRoom} />
+                <RecordingIcon />
                 {isAdmin ? <MenusIcon /> : null}
               </div>
 
               <div className="footer-right w-52 hidden sm:flex items-center" />
-              <BreakoutRoomInvitation currentRoom={currentRoom} />
+              <BreakoutRoomInvitation />
             </div>
           </footer>
         </Transition>
@@ -97,7 +93,7 @@ const Footer = () => {
       </>
     );
     //eslint-disable-next-line
-  }, [currentRoom, footerVisible]);
+  }, [footerVisible]);
 };
 
 export default Footer;

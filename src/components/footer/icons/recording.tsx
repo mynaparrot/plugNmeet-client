@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { Room } from 'livekit-client';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
@@ -11,15 +10,11 @@ import { RecordingEvent, RecordingType } from './recording/IRecording';
 import useLocalRecording from './recording/useLocalRecording';
 import useCloudRecording from './recording/useCloudRecording';
 
-interface IRecordingIconProps {
-  currentRoom: Room;
-}
-
 const isRecordingSelector = createSelector(
   (state: RootState) => state.session,
   (session) => session.isActiveRecording,
 );
-const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
+const RecordingIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const {
     hasError: localRecordingError,
@@ -27,14 +22,14 @@ const RecordingIcon = ({ currentRoom }: IRecordingIconProps) => {
     startRecording: startLocalRecording,
     stopRecording: stopLocalRecording,
     resetError: resetLocalRecordingError,
-  } = useLocalRecording(currentRoom.localParticipant, currentRoom.name);
+  } = useLocalRecording();
 
   const {
     hasError: hasCloudRecordingError,
     resetError: resetCloudRecordingError,
     startRecording: startCloudRecording,
     stopRecording: stopCloudRecording,
-  } = useCloudRecording(currentRoom);
+  } = useCloudRecording();
 
   const { t } = useTranslation();
   const roomMetadata = store.getState().session.currentRoom
