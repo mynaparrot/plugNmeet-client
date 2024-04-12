@@ -10,15 +10,11 @@ import ActiveSpeakers from '../active-speakers';
 import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
+import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import {
-  CurrentConnectionEvents,
-  IConnectLivekit,
-} from '../../helpers/livekit/types';
-
-interface IMainAreaProps {
-  isRecorder: boolean; // it could be recorder or RTMP bot.
-  currentConnection: IConnectLivekit;
-}
+  getCurrentConnection,
+  isCurrentUserRecorder,
+} from '../../helpers/livekit/utils';
 
 const columnCameraWidthSelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -69,7 +65,7 @@ const footerVisibilitySelector = createSelector(
   (roomSettings) => roomSettings.visibleFooter,
 );
 
-const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
+const MainArea = () => {
   const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
   const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
   const isActiveParticipantsPanel = useAppSelector(
@@ -90,6 +86,8 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const headerVisible = useAppSelector(headerVisibilitySelector);
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
+  const currentConnection = getCurrentConnection();
+  const isRecorder = isCurrentUserRecorder();
 
   const [allowChat, setAllowChat] = useState<boolean>(true);
   const [isActiveScreenShare, setIsActiveScreenShare] =
@@ -180,7 +178,6 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
   const renderMainComponentElms = useMemo(() => {
     return (
       <MainComponents
-        currentConnection={currentConnection}
         isActiveWhiteboard={isActiveWhiteboard}
         isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
         isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
@@ -189,7 +186,6 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
     );
   }, [
     isActiveScreenSharingView,
-    currentConnection,
     isActiveDisplayExternalLink,
     isActiveExternalMediaPlayer,
     isActiveWhiteboard,
@@ -209,10 +205,7 @@ const MainArea = ({ isRecorder, currentConnection }: IMainAreaProps) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0 translate-x-full"
         >
-          <RightPanel
-            currentRoom={currentConnection.room}
-            isRecorder={isRecorder}
-          />
+          <RightPanel />
         </Transition>
       );
     }

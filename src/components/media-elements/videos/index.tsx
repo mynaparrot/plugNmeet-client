@@ -10,13 +10,10 @@ import VideosComponentElms, {
   VideoParticipantType,
 } from './videosComponentElms';
 import VideoParticipant from './videoParticipant';
-import {
-  CurrentConnectionEvents,
-  IConnectLivekit,
-} from '../../../helpers/livekit/types';
+import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
+import { getCurrentConnection } from '../../../helpers/livekit/utils';
 
 interface IVideosComponentProps {
-  currentConnection: IConnectLivekit;
   isVertical?: boolean;
 }
 
@@ -25,10 +22,7 @@ const refreshWebcamsSelector = createSelector(
   (roomSettings) => roomSettings.refreshWebcams,
 );
 
-const VideosComponent = ({
-  currentConnection,
-  isVertical,
-}: IVideosComponentProps) => {
+const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
   const participants = useAppSelector(participantsSelector.selectAll);
   const refreshWebcams = useAppSelector(refreshWebcamsSelector);
   const [videoSubscribers, setVideoSubscribers] =
@@ -37,6 +31,7 @@ const VideosComponent = ({
     [],
   );
   const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
+  const currentConnection = getCurrentConnection();
 
   useEffect(() => {
     if (currentConnection.videoSubscribersMap.size) {

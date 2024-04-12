@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { IErrorPageProps } from '../../../components/extra-pages/Error';
-import ConnectLivekit from '../ConnectLivekit';
 import { IConnectLivekit } from '../types';
+import { createLivekitConnection } from '../utils';
 
 export interface LivekitInfo {
   livekit_host: string;
@@ -24,7 +24,7 @@ const useLivekitConnect = (): IUseLivekitConnect => {
     useState<string>('loading');
 
   const startLivekitConnection = (info: LivekitInfo): IConnectLivekit => {
-    return new ConnectLivekit(info, setError, setRoomConnectionStatus);
+    return createLivekitConnection(info, setError, setRoomConnectionStatus);
   };
 
   return {

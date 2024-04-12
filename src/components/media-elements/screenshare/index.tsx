@@ -8,22 +8,15 @@ import {
 
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
-import {
-  CurrentConnectionEvents,
-  IConnectLivekit,
-} from '../../../helpers/livekit/types';
+import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
+import { getCurrentConnection } from '../../../helpers/livekit/utils';
 
-interface IScreenShareElementsProps {
-  currentConnection: IConnectLivekit;
-}
-
-const ScreenShareElements = ({
-  currentConnection,
-}: IScreenShareElementsProps) => {
+const ScreenShareElements = () => {
   const [screenShareTracks, setScreenShareTracks] =
     useState<
       Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>
     >();
+  const currentConnection = getCurrentConnection();
 
   useEffect(() => {
     if (currentConnection.screenShareTracksMap.size) {

@@ -3,11 +3,11 @@ import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { Track } from 'livekit-client';
 import {
   SpeechRecognizer,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import { Room, Track } from 'livekit-client';
 
 import SubtitleArea from './subtitleArea';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
@@ -21,10 +21,7 @@ import { cleanAzureToken } from '../../store/slices/roomSettingsSlice';
 import SelectOptions, { OnCloseSelectedOptions } from './selectOptions';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
 import SubtitleTextsHistory from './history';
-
-interface SpeechToTextServiceProps {
-  currentRoom: Room;
-}
+import { getCurrentRoom } from '../../helpers/livekit/utils';
 
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata?.room_features,
@@ -40,12 +37,13 @@ const isMicMutedSelector = createSelector(
 );
 const tokenRenewInterval = 8 * 60 * 1000;
 
-const SpeechToTextService = ({ currentRoom }: SpeechToTextServiceProps) => {
+const SpeechToTextService = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const speechService = useAppSelector(speechServiceFeaturesSelector);
   const azureTokenInfo = useAppSelector(azureTokenInfoSelector);
   const isMicMuted = useAppSelector(isMicMutedSelector);
+  const currentRoom = getCurrentRoom();
 
   const [speechLang, setSpeechLang] = useState<string>('');
   const [recognizer, setRecognizer] = useState<
