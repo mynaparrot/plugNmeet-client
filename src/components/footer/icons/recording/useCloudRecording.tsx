@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { Room } from 'livekit-client';
 
 import { IUseCloudRecordingReturn, RecordingType } from './IRecording';
 import { RecordingReq } from '../../../../helpers/proto/plugnmeet_recording_pb';
 import { RecordingTasks } from '../../../../helpers/proto/plugnmeet_recorder_pb';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { CommonResponse } from '../../../../helpers/proto/plugnmeet_common_api_pb';
+import { getCurrentRoom } from '../../../../helpers/livekit/utils';
 
-const useCloudRecording = (currentRoom: Room): IUseCloudRecordingReturn => {
+const useCloudRecording = (): IUseCloudRecordingReturn => {
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_LOCAL;
   const [hasError, setHasError] = useState<boolean>(false);
   const { t } = useTranslation();
+  const currentRoom = getCurrentRoom();
 
   const startRecording = async () => {
     const sid = await currentRoom.getSid();

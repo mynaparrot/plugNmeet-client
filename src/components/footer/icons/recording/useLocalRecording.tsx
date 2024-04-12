@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { LocalParticipant, Track } from 'livekit-client';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { Track } from 'livekit-client';
 
 import {
   IUseLocalRecordingReturn,
@@ -15,11 +15,11 @@ import {
 } from '../../../../helpers/proto/plugnmeet_datamessage_pb';
 import { store } from '../../../../store';
 import { sendWebsocketMessage } from '../../../../helpers/websocket';
+import { getCurrentRoom } from '../../../../helpers/livekit/utils';
 
-const useLocalRecording = (
-  localParticipant: LocalParticipant,
-  roomId: string,
-): IUseLocalRecordingReturn => {
+const useLocalRecording = (): IUseLocalRecordingReturn => {
+  const currentRoom = getCurrentRoom();
+
   const [recordingEvent, setRecordingEvent] = useState<RecordingEvent>(
     RecordingEvent.NONE,
   );
@@ -70,7 +70,7 @@ const useLocalRecording = (
 
   const startRecorder = (captureStream: MediaStream) => {
     const date = new Date();
-    const fileName = `${roomId}_${date.toLocaleString()}`;
+    const fileName = `${currentRoom.name}_${date.toLocaleString()}`;
 
     const ctx = new AudioContext();
     const dest = ctx.createMediaStreamDestination();
@@ -79,7 +79,7 @@ const useLocalRecording = (
       ctx.createMediaStreamSource(captureStream).connect(dest);
     }
 
-    const localTrack = localParticipant.getTrackPublicationByName(
+    const localTrack = currentRoom.localParticipant.getTrackPublicationByName(
       Track.Source.Microphone,
     );
     if (localTrack?.audioTrack?.mediaStream) {

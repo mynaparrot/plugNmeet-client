@@ -22,14 +22,14 @@ export const createLivekitConnection = (
 };
 
 export const getCurrentConnection = () => {
-  if (currentConnect === null) {
+  if (typeof currentConnect === "undefined") {
     throw new Error('connection not created');
   }
   return currentConnect;
 };
 
 export const getCurrentRoom = () => {
-  if (currentConnect === null) {
+  if (typeof currentConnect === "undefined") {
     throw new Error('connection not created');
   }
   return currentConnect.room;

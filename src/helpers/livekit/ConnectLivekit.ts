@@ -71,8 +71,8 @@ export default class ConnectLivekit
     Array<LocalTrackPublication | RemoteTrackPublication>
   >();
 
-  private readonly errorState: Dispatch<IErrorPageProps>;
-  private readonly roomConnectionStatusState: Dispatch<ConnectionStatus>;
+  private readonly _errorState: Dispatch<IErrorPageProps>;
+  private readonly _roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
   protected token: string;
   private readonly _room: Room;
@@ -97,8 +97,8 @@ export default class ConnectLivekit
     this.url = livekitInfo.livekit_host;
     this.enabledE2EE = livekitInfo.enabledE2EE;
 
-    this.errorState = errorState;
-    this.roomConnectionStatusState = roomConnectionStatusState;
+    this._errorState = errorState;
+    this._roomConnectionStatusState = roomConnectionStatusState;
     this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
 
     this.handleParticipant = new HandleParticipants(this);
@@ -107,7 +107,7 @@ export default class ConnectLivekit
     this.handleRoomMetadata = new HandleRoomMetadata(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
-    this.roomConnectionStatusState('connecting');
+    this._roomConnectionStatusState('connecting');
     // clean session data
     sessionStorage.clear();
     // configure room
@@ -145,13 +145,13 @@ export default class ConnectLivekit
       // open websocket
       openWebsocketConnection();
       // finally
-      this.roomConnectionStatusState('connected');
+      this._roomConnectionStatusState('connected');
       // start token renew interval
       this.startTokenRenewInterval();
     } catch (error) {
       console.error(error);
-      this.roomConnectionStatusState('error');
-      this.errorState({
+      this._roomConnectionStatusState('error');
+      this._errorState({
         title: 'Error',
         text: String(error),
       });
@@ -199,10 +199,10 @@ export default class ConnectLivekit
 
     const room = new Room(roomOptions);
     room.on(RoomEvent.Reconnecting, () =>
-      this.roomConnectionStatusState('re-connecting'),
+      this._roomConnectionStatusState('re-connecting'),
     );
     room.on(RoomEvent.Reconnected, () =>
-      this.roomConnectionStatusState('connected'),
+      this._roomConnectionStatusState('connected'),
     );
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(
@@ -339,8 +339,8 @@ export default class ConnectLivekit
   }
 
   public setErrorStatus(title: string, reason: string) {
-    this.roomConnectionStatusState('error');
-    this.errorState({
+    this._roomConnectionStatusState('error');
+    this._errorState({
       title: title,
       text: reason,
     });
@@ -361,11 +361,11 @@ export default class ConnectLivekit
   };
 
   private onDisconnected = (reason?: DisconnectReason) => {
-    this.errorState({
+    this._errorState({
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-    this.roomConnectionStatusState('disconnected');
+    this._roomConnectionStatusState('disconnected');
     closeWebsocketConnection();
     this.handleActiveSpeakers.onLivekitDisconnect();
     clearInterval(this.tokenRenewInterval);
