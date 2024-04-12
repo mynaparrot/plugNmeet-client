@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Room } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
 import { RootState, store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
-
-interface IChatComponentProps {
-  currentRoom: Room;
-  isRecorder: boolean;
-}
+import {
+  getCurrentRoom,
+  isCurrentUserRecorder,
+} from '../../helpers/livekit/utils';
 
 const isChatLockSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
@@ -21,12 +19,14 @@ const themeSelector = createSelector(
   (roomSettings) => roomSettings.theme,
 );
 
-const ChatComponent = ({ currentRoom, isRecorder }: IChatComponentProps) => {
+const ChatComponent = () => {
   const isChatLock = useAppSelector(isChatLockSelector);
   const theme = useAppSelector(themeSelector);
   const [show, setShow] = useState<boolean>(false);
   const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
   const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);
+  const currentRoom = getCurrentRoom();
+  const isRecorder = isCurrentUserRecorder();
 
   // default room lock settings
   useEffect(() => {

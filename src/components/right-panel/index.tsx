@@ -1,17 +1,13 @@
 import React from 'react';
-import { Room } from 'livekit-client';
 
 import ChatComponent from '../chat';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch } from '../../store';
+import { isCurrentUserRecorder } from '../../helpers/livekit/utils';
 
-interface IRightPanelProps {
-  currentRoom: Room;
-  isRecorder: boolean;
-}
-
-const RightPanel = ({ currentRoom, isRecorder }: IRightPanelProps) => {
+const RightPanel = () => {
   const dispatch = useAppDispatch();
+  const isRecorder = isCurrentUserRecorder();
 
   const closePanel = () => {
     dispatch(updateIsActiveChatPanel(false));
@@ -28,9 +24,9 @@ const RightPanel = ({ currentRoom, isRecorder }: IRightPanelProps) => {
           <span className="inline-block w-[18px] h-[1px] bg-primaryColor dark:bg-darkText absolute -rotate-45 top-[11px] right-[2px]"></span>
         </div>
       ) : null}
-      <ChatComponent currentRoom={currentRoom} isRecorder={isRecorder} />
+      <ChatComponent />
     </div>
   );
 };
 
-export default React.memo(RightPanel);
+export default RightPanel;

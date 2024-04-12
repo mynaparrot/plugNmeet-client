@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { Room } from 'livekit-client';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
@@ -21,10 +20,7 @@ import {
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
-
-interface IHeaderProps {
-  currentRoom: Room;
-}
+import { getCurrentRoom } from '../../helpers/livekit/utils';
 
 const roomTitleSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
@@ -39,11 +35,12 @@ const headerVisibilitySelector = createSelector(
   (roomSettings) => roomSettings.visibleHeader,
 );
 
-const Header = ({ currentRoom }: IHeaderProps) => {
+const Header = () => {
   const roomTitle = useAppSelector(roomTitleSelector);
   const roomDuration = useAppSelector(roomDurationSelector);
   const headerVisible = useAppSelector(headerVisibilitySelector);
   const dispatch = useAppDispatch();
+  const currentRoom = getCurrentRoom();
 
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');

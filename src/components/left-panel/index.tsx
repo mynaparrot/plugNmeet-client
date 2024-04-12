@@ -127,4 +127,4 @@ const LeftPanel = () => {
   );
 };
 
-export default React.memo(LeftPanel);
+export default LeftPanel;

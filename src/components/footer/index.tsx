@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Room } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
 
@@ -18,22 +17,23 @@ import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 import { useTranslation } from 'react-i18next';
-
-interface IFooterProps {
-  currentRoom: Room;
-  isRecorder: boolean;
-}
+import {
+  getCurrentRoom,
+  isCurrentUserRecorder,
+} from '../../helpers/livekit/utils';
 
 const footerVisibilitySelector = createSelector(
   (state: RootState) => state.roomSettings,
   (roomSettings) => roomSettings.visibleFooter,
 );
 
-const Footer = ({ currentRoom, isRecorder }: IFooterProps) => {
+const Footer = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const currentRoom = getCurrentRoom();
+  const isRecorder = isCurrentUserRecorder();
 
   return useMemo(() => {
     return (

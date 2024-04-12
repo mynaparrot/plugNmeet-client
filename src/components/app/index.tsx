@@ -202,15 +202,9 @@ const App = () => {
     if (currentConnection) {
       return (
         <div className="plugNmeet-app overflow-hidden h-screen">
-          {!isRecorder ? <Header currentRoom={currentConnection.room} /> : null}
-          <MainArea
-            isRecorder={isRecorder}
-            currentConnection={currentConnection}
-          />
-          <Footer
-            currentRoom={currentConnection.room}
-            isRecorder={isRecorder}
-          />
+          {!isRecorder ? <Header /> : null}
+          <MainArea />
+          <Footer />
           <AudioNotification />
         </div>
       );

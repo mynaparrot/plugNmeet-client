@@ -11,10 +11,7 @@ import ExternalMediaPlayer from '../external-media-player';
 import DisplayExternalLink from '../display-external-link';
 import VideosComponent from '../media-elements/videos';
 import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
-import {
-  CurrentConnectionEvents,
-  IConnectLivekit,
-} from '../../helpers/livekit/types';
+import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
@@ -22,9 +19,12 @@ import {
 import SpeechToTextService from '../speech-to-text-service';
 import { useCallbackRefState } from '../whiteboard/helpers/hooks/useCallbackRefState';
 import { savePageData } from '../whiteboard/helpers/utils';
+import {
+  getCurrentConnection,
+  isCurrentUserRecorder,
+} from '../../helpers/livekit/utils';
 
 interface IMainComponentsProps {
-  currentConnection: IConnectLivekit;
   isActiveWhiteboard: boolean;
   isActiveExternalMediaPlayer: boolean;
   isActiveDisplayExternalLink: boolean;
@@ -51,14 +51,14 @@ const isActiveSharedNotepadSelector = createSelector(
 );
 
 const MainComponents = ({
-  currentConnection,
   isActiveWhiteboard,
   isActiveExternalMediaPlayer,
   isActiveDisplayExternalLink,
   isActiveScreenSharingView,
 }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
+  const isRecorder = isCurrentUserRecorder();
+  const currentConnection = getCurrentConnection();
 
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const activateSpeechService = useAppSelector(activateSpeechServiceSelector);
@@ -92,7 +92,8 @@ const MainComponents = ({
         setIsActiveScreenShare,
       );
     };
-  }, [currentConnection]);
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (
@@ -259,22 +260,15 @@ const MainComponents = ({
       <div className={cssClasses}>
         {sharedNotepadElm}
         {activateWebcamsView ? (
-          <VideosComponent
-            currentConnection={currentConnection}
-            isVertical={showVerticalVideoView}
-          />
+          <VideosComponent isVertical={showVerticalVideoView} />
         ) : null}
-        {isActiveScreenSharingView ? (
-          <ScreenShareElements currentConnection={currentConnection} />
-        ) : null}
+        {isActiveScreenSharingView ? <ScreenShareElements /> : null}
         {whiteboardElm}
         {externalMediaPlayerElm}
         {displayExternalLinkElm}
-        {activateSpeechService ? (
-          <SpeechToTextService currentRoom={currentConnection.room} />
-        ) : null}
+        {activateSpeechService ? <SpeechToTextService /> : null}
       </div>
-      <AudioElements currentConnection={currentConnection} />
+      <AudioElements />
     </>
   );
 };
