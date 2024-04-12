@@ -22,7 +22,7 @@ export const createLivekitConnection = (
 };
 
 export const getCurrentConnection = () => {
-  if (typeof currentConnect === undefined) {
+  if (typeof currentConnect === "undefined") {
     throw new Error('connection not created');
   }
   return currentConnect;
