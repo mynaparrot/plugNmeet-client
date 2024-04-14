@@ -147,6 +147,11 @@
       "path": "dist/assets"
     }
   ],
+  "overrides": {
+    "@pmmmwh/react-refresh-webpack-plugin": {
+      "webpack-dev-server": "^5.0.2"
+    }
+  },
   "browserslist": [
     "safari >= 11",
     "ios_saf >= 11",
