@@ -25,7 +25,7 @@
     "copy-text-to-clipboard": "3.2.0",
     "emoji-picker-react": "4.9.2",
     "eventemitter3": "5.0.1",
-    "i18next": "23.10.1",
+    "i18next": "23.11.1",
     "i18next-browser-languagedetector": "7.2.1",
     "i18next-http-backend": "2.5.0",
     "livekit-client": "2.0.10",
@@ -41,7 +41,7 @@
     "react-draggable": "npm:@tdaniil/react-draggable@5.0.1",
     "react-hotkeys-hook": "4.5.0",
     "react-i18next": "14.1.0",
-    "react-player": "2.15.1",
+    "react-player": "2.16.0",
     "react-redux": "9.1.0",
     "react-toastify": "10.0.5",
     "reconnecting-websocket": "4.4.0",
@@ -56,16 +56,16 @@
     "@size-limit/preset-app": "11.1.2",
     "@types/emscripten": "1.39.10",
     "@types/lodash": "4.17.0",
-    "@types/react": "18.2.67",
-    "@types/react-dom": "18.2.22",
+    "@types/react": "18.2.78",
+    "@types/react-dom": "18.2.25",
     "@types/sanitize-html": "2.11.0",
     "@types/video.js": "7.3.57",
-    "@typescript-eslint/eslint-plugin": "7.3.1",
-    "@typescript-eslint/parser": "7.3.1",
-    "autoprefixer": "10.4.18",
+    "@typescript-eslint/eslint-plugin": "7.6.0",
+    "@typescript-eslint/parser": "7.6.0",
+    "autoprefixer": "10.4.19",
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "12.0.2",
-    "css-loader": "6.10.0",
+    "css-loader": "7.1.1",
     "css-minimizer-webpack-plugin": "6.0.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
@@ -79,23 +79,23 @@
     "husky": "9.0.11",
     "lint-staged": "15.2.2",
     "mini-css-extract-plugin": "2.8.1",
-    "postcss": "8.4.37",
+    "postcss": "8.4.38",
     "postcss-loader": "8.1.1",
     "postcss-nested": "6.0.1",
     "prettier": "3.2.5",
     "react-refresh": "0.14.0",
     "react-refresh-typescript": "2.0.9",
-    "sass": "1.72.0",
-    "sass-loader": "14.1.1",
+    "sass": "1.75.0",
+    "sass-loader": "14.2.0",
     "size-limit": "11.1.2",
-    "style-loader": "3.3.4",
+    "style-loader": "4.0.0",
     "tailwindcss": "3.4.3",
     "terser-webpack-plugin": "5.3.10",
     "ts-loader": "9.5.1",
-    "typescript": "5.4.2",
+    "typescript": "5.4.5",
     "webpack": "5.91.0",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "4.15.2"
+    "webpack-dev-server": "5.0.4"
   },
   "lint-staged": {
     "*.{ts,tsx,scss}": [
@@ -147,6 +147,11 @@
       "path": "dist/assets"
     }
   ],
+  "overrides": {
+    "@pmmmwh/react-refresh-webpack-plugin": {
+      "webpack-dev-server": "^5.0.2"
+    }
+  },
   "browserslist": [
     "safari >= 11",
     "ios_saf >= 11",
