@@ -318,7 +318,7 @@ export default class ConnectLivekit
               track as RemoteTrackPublication,
               participant,
             );
-          } else {
+          } else if (track.source === Track.Source.Camera) {
             this.updateVideoSubscribers(participant);
           }
         }

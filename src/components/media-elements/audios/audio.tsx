@@ -33,10 +33,14 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
   }, [audioTrack]);
 
   useEffect(() => {
-    if (typeof participant.audioVolume !== 'undefined') {
+    if (
+      participant &&
+      audioTrack &&
+      typeof participant.audioVolume !== 'undefined'
+    ) {
       audioTrack.setVolume(participant.audioVolume);
     }
-  }, [audioTrack, participant?.audioVolume]);
+  }, [audioTrack, participant]);
 
   return (
     <div style={{ display: 'none' }}>
