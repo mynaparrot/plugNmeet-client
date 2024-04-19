@@ -464,6 +464,11 @@ export default class ConnectLivekit
     participant: LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
+    // make sure track that we are about to add is valid
+    if (add && !participant.videoTrackPublications.size) {
+      return;
+    }
+
     if (add) {
       const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
       if (this._screenShareTracksMap.has(participant.identity)) {
@@ -498,25 +503,27 @@ export default class ConnectLivekit
   public updateScreenShareOnUserDisconnect = (
     participant: RemoteParticipant,
   ) => {
-    if (this._screenShareTracksMap.size) {
-      if (this._screenShareTracksMap.has(participant.identity)) {
-        this._screenShareTracksMap.delete(participant.identity);
+    if (!this._screenShareTracksMap.size) {
+      return;
+    }
 
-        const screenShareTracks = new Map(this._screenShareTracksMap) as any;
-        this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
+    if (this._screenShareTracksMap.has(participant.identity)) {
+      this._screenShareTracksMap.delete(participant.identity);
 
-        // update status too
-        if (!this._screenShareTracksMap.size) {
-          store.dispatch(
-            updateScreenSharing({
-              isActive: false,
-              sharedBy: '',
-            }),
-          );
-          this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
-        } else {
-          this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
-        }
+      const screenShareTracks = new Map(this._screenShareTracksMap) as any;
+      this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
+
+      // update status too
+      if (!this._screenShareTracksMap.size) {
+        store.dispatch(
+          updateScreenSharing({
+            isActive: false,
+            sharedBy: '',
+          }),
+        );
+        this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
+      } else {
+        this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
       }
     }
   };
@@ -530,7 +537,8 @@ export default class ConnectLivekit
     participant: Participant | LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
-    if (typeof participant.identity === 'undefined') {
+    // make sure track that we are about to add is valid
+    if (add && !participant.audioTrackPublications.size) {
       return;
     }
 
@@ -565,7 +573,8 @@ export default class ConnectLivekit
     participant: Participant | LocalParticipant | RemoteParticipant,
     add = true,
   ) => {
-    if (typeof participant.identity === 'undefined') {
+    // make sure track that we are about to add is valid
+    if (add && !participant.videoTrackPublications.size) {
       return;
     }
 

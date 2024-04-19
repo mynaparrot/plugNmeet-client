@@ -174,7 +174,7 @@
                     ingress_features: {
                         is_allow: true,
                     },
-                    speech_to_text_translation_features:{
+                    speech_to_text_translation_features: {
                         is_allow: true,
                         is_allow_translation: true,
                     },
@@ -221,6 +221,10 @@
         // if not active then we'll create
         if (!isRoomActive) {
             const roomCreateRes = await sendRequest(roomInfo, 'room/create');
+            if (!roomCreateRes.status) {
+                alert(roomCreateRes.msg);
+                return;
+            }
             isRoomActive = roomCreateRes.status;
         }
 
@@ -231,16 +235,15 @@
                 user_info: userInfo,
             };
 
-            const roomCreateRes = await sendRequest(
+            const roomJoinRes = await sendRequest(
                 getJoinTokenReq,
                 'room/getJoinToken',
             );
 
-            if (roomCreateRes.status) {
-                window.location.href = '/?access_token=' + roomCreateRes.token;
+            if (roomJoinRes.status) {
+                window.location.href = '/?access_token=' + roomJoinRes.token;
             } else {
-                console.log(roomCreateRes.msg);
-                alert("Can't get token");
+                alert(roomJoinRes.msg);
             }
         }
     };
