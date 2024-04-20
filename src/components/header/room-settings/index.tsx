@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Transition, Dialog, Tab } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import sanitizeHtml from 'sanitize-html';
 
 import {
   RootState,
@@ -82,7 +83,20 @@ const RoomSettings = () => {
   };
 
   const displayBottomText = () => {
-    let text = copyright_conf?.display ? `${copyright_conf?.text}&nbsp;` : '';
+    let text = '';
+    if (
+      copyright_conf &&
+      copyright_conf.display &&
+      copyright_conf.text !== ''
+    ) {
+      text = sanitizeHtml(copyright_conf.text, {
+        allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+        allowedAttributes: {
+          a: ['href', 'target'],
+        },
+      }).concat('&nbsp;');
+    }
+
     text += t('plugnmeet-server-client-version', {
       server: serverVersion,
       client: PNM_VERSION,
