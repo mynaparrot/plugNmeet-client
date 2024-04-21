@@ -8,9 +8,12 @@ let isShowingPagination = false,
 window.addEventListener('load', async () => {
   if (IS_ADMIN) {
     isSessionActive();
-    setInterval(() => {
-      isSessionActive();
-    }, 1000 * 60 * 5);
+    setInterval(
+      () => {
+        isSessionActive();
+      },
+      1000 * 60 * 5,
+    );
   }
 
   // initial call
@@ -77,9 +80,10 @@ const endSession = async () => {
 };
 
 const isSessionActive = async () => {
-  const res = await sendAPIRequest('/room/isActive', {});
   const btn = document.querySelector('.end');
-  if (res.status) {
+  const res = await sendAPIRequest('/room/isActive', {});
+
+  if (res.is_active) {
     btn.style.display = '';
   } else {
     btn.style.display = 'none';
