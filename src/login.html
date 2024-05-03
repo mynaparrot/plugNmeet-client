@@ -214,9 +214,11 @@
             room_id: roomInfo.room_id,
         };
 
-        let isRoomActive = false;
         const res = await sendRequest(isRoomActiveReq, 'room/isRoomActive');
-        isRoomActive = res.status;
+        if (!res.status){
+            alert(res.msg);
+        }
+        let isRoomActive = res.is_active;
 
         // if not active then we'll create
         if (!isRoomActive) {
