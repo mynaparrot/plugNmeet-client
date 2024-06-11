@@ -147,9 +147,10 @@ const TextBoxArea = ({
       try {
         msg = await encryptMessage(e2ee.encryption_key, msg);
       } catch (e: any) {
-        toast('crypto error: ' + e.message, {
+        toast('Encryption error: ' + e.message, {
           type: 'error',
         });
+        console.error('Encryption error:' + e.message);
         return;
       }
     }
