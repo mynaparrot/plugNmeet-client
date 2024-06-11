@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import { store } from '../../store';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
@@ -40,7 +42,10 @@ export const handleUserTypeData = async (
       try {
         finalMsg = await decryptMessage(e2ee.encryption_key, body.msg);
       } catch (e: any) {
-        console.error(e.message);
+        toast('Decryption error: ' + e.message, {
+          type: 'error',
+        });
+        console.error('Decryption error:' + e.message);
       }
     }
 

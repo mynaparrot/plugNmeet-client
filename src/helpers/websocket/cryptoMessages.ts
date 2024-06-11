@@ -42,6 +42,7 @@ const encryptMessage = async (secret: string, message: string) => {
   const key = await importSecretKey(secret);
   const encoded = new TextEncoder().encode(message);
 
+  // Generate a new IV for each encryption to ensure security
   const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const cipherText = await window.crypto.subtle.encrypt(
     { name: algorithm, iv: iv },
