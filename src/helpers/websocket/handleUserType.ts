@@ -10,8 +10,12 @@ import {
   DataMsgBodyType,
 } from '../proto/plugnmeet_datamessage_pb';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
+import { decryptMessage } from './cryptoMessages';
+import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
 
-export const handleUserTypeData = (
+let e2ee: EndToEndEncryptionFeatures | undefined = undefined;
+
+export const handleUserTypeData = async (
   body: DataMsgBody,
   message_id?: string,
   to?: string,
@@ -20,6 +24,26 @@ export const handleUserTypeData = (
     if (!body.messageId) {
       body.messageId = message_id;
     }
+    let finalMsg = body.msg;
+    if (!e2ee) {
+      e2ee =
+        store.getState().session.currentRoom.metadata?.room_features
+          .end_to_end_encryption_features;
+    }
+    if (
+      body.from?.userId !== 'system' &&
+      typeof e2ee !== 'undefined' &&
+      e2ee.is_enabled &&
+      e2ee.included_chat_messages &&
+      e2ee.encryption_key
+    ) {
+      try {
+        finalMsg = await decryptMessage(e2ee.encryption_key, body.msg);
+      } catch (e: any) {
+        console.error(e.message);
+      }
+    }
+
     const chatMsg: IChatMsg = {
       type: 'CHAT',
       message_id: body.messageId ?? '',
@@ -30,7 +54,7 @@ export const handleUserTypeData = (
         name: body.from?.name,
       },
       isPrivate: body.isPrivate === 1,
-      msg: body.msg,
+      msg: finalMsg,
     };
 
     if (to) {

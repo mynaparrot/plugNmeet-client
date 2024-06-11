@@ -22,6 +22,7 @@ import {
 } from '../proto/plugnmeet_datamessage_pb';
 import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
+import { encryptMessage } from './cryptoMessages';
 
 export const handleSystemTypeData = (body: DataMessage) => {
   switch (body.body?.type) {
@@ -62,10 +63,27 @@ export const handleSystemTypeData = (body: DataMessage) => {
 const handleSendChatMsg = (mainBody: DataMessage) => {
   const messages = chatMessagesSelector.selectAll(store.getState());
   const session = store.getState().session;
+  const e2ee =
+    session.currentRoom.metadata?.room_features.end_to_end_encryption_features;
+
   messages
     .filter((msg) => msg.from.sid !== 'system')
     .slice(-30)
     .map(async (msg) => {
+      let finalMsg = msg.msg;
+
+      if (
+        typeof e2ee !== 'undefined' &&
+        e2ee.is_enabled &&
+        e2ee.included_chat_messages &&
+        e2ee.encryption_key
+      ) {
+        try {
+          finalMsg = await encryptMessage(e2ee.encryption_key, msg.msg);
+        } catch (e: any) {
+          console.error(e.message);
+        }
+      }
       const dataMsg: DataMessage = new DataMessage({
         type: DataMsgType.USER,
         to: mainBody.body?.from?.userId,
@@ -81,7 +99,7 @@ const handleSendChatMsg = (mainBody: DataMessage) => {
             userId: msg.from.userId,
             name: msg.from.name,
           },
-          msg: msg.msg,
+          msg: finalMsg,
           isPrivate: msg.isPrivate ? 1 : 0,
         },
       });

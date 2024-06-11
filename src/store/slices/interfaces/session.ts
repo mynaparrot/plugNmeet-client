@@ -193,5 +193,6 @@ export interface SpeechToTextTranslationFeatures {
 
 export interface EndToEndEncryptionFeatures {
   is_enabled: boolean;
+  included_chat_messages: boolean;
   encryption_key?: string;
 }

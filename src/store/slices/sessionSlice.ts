@@ -95,6 +95,7 @@ const initialState: ISession = {
         },
         end_to_end_encryption_features: {
           is_enabled: false,
+          included_chat_messages: false,
         },
       },
       copyright_conf: {
