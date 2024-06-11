@@ -50,18 +50,19 @@ const encryptMessage = async (secret: string, message: string) => {
     encoded,
   );
 
-  const ivEncoded = arrayBufferToBase64(iv);
-  const cipherTextDecode = arrayBufferToBase64(cipherText);
+  const arrayView = new Uint8Array(iv.byteLength + cipherText.byteLength);
+  arrayView.set(iv);
+  arrayView.set(new Uint8Array(cipherText), iv.byteLength);
 
-  return ivEncoded + ':' + cipherTextDecode;
+  return arrayBufferToBase64(arrayView.buffer);
 };
 
 const decryptMessage = async (secret: string, cipherData: string) => {
   const key = await importSecretKey(secret);
-  const data = cipherData.split(':');
+  const data = base64ToArrayBuffer(cipherData);
 
-  const iv = base64ToArrayBuffer(data[0]);
-  const cipherText = base64ToArrayBuffer(data[1]);
+  const iv = data.slice(0, IV_LENGTH);
+  const cipherText = data.slice(IV_LENGTH);
 
   const textData = await window.crypto.subtle.decrypt(
     { name: algorithm, iv },
