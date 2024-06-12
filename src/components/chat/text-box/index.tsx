@@ -4,6 +4,7 @@ import sanitizeHtml from 'sanitize-html';
 import { Room } from 'livekit-client';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import {
@@ -17,6 +18,7 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
+import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
@@ -52,6 +54,9 @@ const TextBoxArea = ({
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
+  const e2ee =
+    store.getState().session.currentRoom.metadata?.room_features
+      .end_to_end_encryption_features;
   const { t } = useTranslation();
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
@@ -120,7 +125,7 @@ const TextBoxArea = ({
     //eslint-disable-next-line
   }, [chosenEmoji]);
 
-  const cleanHtml = (rawText) => {
+  const cleanHtml = (rawText: string) => {
     return sanitizeHtml(rawText, {
       allowedTags: ['b', 'i', 'strong', 'br'],
       allowedSchemes: ['mailto', 'tel'],
@@ -128,12 +133,29 @@ const TextBoxArea = ({
   };
 
   const sendMsg = async () => {
-    const msg = cleanHtml(message);
+    let msg = cleanHtml(message);
     if (isEmpty(msg)) {
       return;
     }
-    const sid = await currentRoom.getSid();
 
+    if (
+      typeof e2ee !== 'undefined' &&
+      e2ee.is_enabled &&
+      e2ee.included_chat_messages &&
+      e2ee.encryption_key
+    ) {
+      try {
+        msg = await encryptMessage(e2ee.encryption_key, msg);
+      } catch (e: any) {
+        toast('Encryption error: ' + e.message, {
+          type: 'error',
+        });
+        console.error('Encryption error:' + e.message);
+        return;
+      }
+    }
+
+    const sid = await currentRoom.getSid();
     const dataMsg = new DataMessage({
       type: DataMsgType.USER,
       roomSid: sid,

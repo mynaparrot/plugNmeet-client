@@ -21,6 +21,9 @@ import {
   DataMsgBodyType,
   DataMsgType,
 } from '../../../helpers/proto/plugnmeet_datamessage_pb';
+import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
+import { toast } from 'react-toastify';
+import { EndToEndEncryptionFeatures } from '../../../store/slices/interfaces/session';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
@@ -143,11 +146,16 @@ export const broadcastSceneOnChange = (
   broadcastScreenDataBySocket(syncableElements, sendTo);
 };
 
-export const broadcastScreenDataBySocket = (
+export const broadcastScreenDataBySocket = async (
   elements: readonly ExcalidrawElement[],
   sendTo?: string,
 ) => {
   const session = store.getState().session;
+  const finalMsg = await handleEncryption(JSON.stringify(elements));
+  if (typeof finalMsg === 'undefined') {
+    return;
+  }
+
   const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
     roomSid: session.currentRoom.sid,
@@ -158,7 +166,7 @@ export const broadcastScreenDataBySocket = (
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
-      msg: JSON.stringify(elements),
+      msg: finalMsg,
     },
   });
 
@@ -218,8 +226,13 @@ export const broadcastWhiteboardOfficeFile = (
   sendWebsocketMessage(dataMsg.toBinary());
 };
 
-export const broadcastMousePointerUpdate = (msg: any) => {
+export const broadcastMousePointerUpdate = async (element: any) => {
   const session = store.getState().session;
+  const finalMsg = await handleEncryption(JSON.stringify(element));
+  if (typeof finalMsg === 'undefined') {
+    return;
+  }
+
   const dataMsg = new DataMessage({
     type: DataMsgType.WHITEBOARD,
     roomSid: session.currentRoom.sid,
@@ -230,7 +243,7 @@ export const broadcastMousePointerUpdate = (msg: any) => {
         sid: session.currentUser?.sid ?? '',
         userId: session.currentUser?.userId ?? '',
       },
-      msg: JSON.stringify(msg),
+      msg: finalMsg,
     },
   });
 
@@ -282,4 +295,31 @@ export const broadcastAppStateChanges = (
   });
 
   sendWebsocketMessage(dataMsg.toBinary());
+};
+
+let e2ee: EndToEndEncryptionFeatures | undefined = undefined;
+const handleEncryption = async (msg: string) => {
+  if (!e2ee) {
+    e2ee =
+      store.getState().session.currentRoom.metadata?.room_features
+        .end_to_end_encryption_features;
+  }
+  if (
+    typeof e2ee !== 'undefined' &&
+    e2ee.is_enabled &&
+    e2ee.included_whiteboard &&
+    e2ee.encryption_key
+  ) {
+    try {
+      return await encryptMessage(e2ee.encryption_key, msg);
+    } catch (e: any) {
+      toast('Encryption error: ' + e.message, {
+        type: 'error',
+      });
+      console.error('Encryption error:' + e.message);
+      return undefined;
+    }
+  } else {
+    return msg;
+  }
 };
