@@ -54,6 +54,7 @@ import {
   IConnectLivekit,
 } from './types';
 import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
+import { createNatsConn } from '../nats';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
@@ -142,6 +143,13 @@ export default class ConnectLivekit
       // we'll prepare our information
       await this.updateSession();
       await this.initiateParticipants();
+
+      const session = store.getState().session;
+      createNatsConn(
+        session.token,
+        session.currentRoom.room_id ?? '',
+        session.currentUser?.userId ?? '',
+      );
       // open websocket
       openWebsocketConnection();
       // finally

@@ -32,6 +32,7 @@
     "lodash": "4.17.21",
     "microsoft-cognitiveservices-speech-sdk": "1.38.0",
     "mobile-detect": "1.4.5",
+    "nats.ws": "1.29.2",
     "nosleep.js": "0.12.0",
     "react": "18.3.1",
     "react-cool-virtual": "0.7.0",
