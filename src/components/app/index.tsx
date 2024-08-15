@@ -36,6 +36,7 @@ import {
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken } from '../../helpers/utils';
+import { startNatsConn } from '../../helpers/nats';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
@@ -121,10 +122,19 @@ const App = () => {
 
         setRoomConnectionStatus('ready');
         setLoading(false);
-        if (res.status && res.livekitHost && res.token) {
+        if (res.status && res.livekitHost && res.token && res.natsSubjects) {
+          console.log(res);
+
           // we'll store token that we received from URL
           dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
+
+          await startNatsConn(
+            accessToken,
+            res.roomId ?? '',
+            res.userId ?? '',
+            res.natsSubjects,
+          );
 
           // for livekit need to use generated token & host
           setLivekitInfo({
