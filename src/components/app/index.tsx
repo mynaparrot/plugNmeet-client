@@ -135,6 +135,7 @@ const App = () => {
             res.userId ?? '',
             res.natsSubjects,
           );
+          console.log(res.livekitHost);
 
           // for livekit need to use generated token & host
           setLivekitInfo({

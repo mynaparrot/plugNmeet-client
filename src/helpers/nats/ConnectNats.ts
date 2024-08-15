@@ -1,6 +1,11 @@
 import type { JetStreamClient, NatsConnection } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
+import {
+  NatsMsgServerToClient,
+  NatsMsgServerToClientEvents,
+} from '../proto/plugnmeet_nats_msg_pb';
+import HandleRoomMetadata from './HandleRoomMetadata';
 
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
@@ -9,6 +14,8 @@ export default class ConnectNats {
   private readonly _roomId: string;
   private readonly _userId: string;
   private readonly _subjects: NatsSubjects;
+
+  private handleRoomMetadata: HandleRoomMetadata;
 
   constructor(
     token: string,
@@ -20,6 +27,8 @@ export default class ConnectNats {
     this._roomId = roomId;
     this._userId = userId;
     this._subjects = subjects;
+
+    this.handleRoomMetadata = new HandleRoomMetadata();
   }
 
   get nc(): NatsConnection {
@@ -75,11 +84,15 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPrivate + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    console.log(consumer);
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      console.log(m.string());
+      const payload = NatsMsgServerToClient.fromBinary(m.data);
+      switch (payload.event) {
+        case NatsMsgServerToClientEvents.ROOM_METADATA:
+          await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+      }
+
       m.ack();
     }
   }
@@ -89,12 +102,17 @@ export default class ConnectNats {
       return;
     }
 
-    const consumerName = 'sysPublic:' + this._userId;
+    const consumerName = this._subjects.systemPublic + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      console.log(m.string());
+      const payload = NatsMsgServerToClient.fromBinary(m.data);
+      switch (payload.event) {
+        case NatsMsgServerToClientEvents.ROOM_METADATA:
+          await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+      }
+
       m.ack();
     }
   };

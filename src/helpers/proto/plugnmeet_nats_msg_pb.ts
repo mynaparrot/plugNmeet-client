@@ -226,3 +226,137 @@ export class NatsMsgClientToServer extends Message<NatsMsgClientToServer> {
     return proto3.util.equals(NatsMsgClientToServer, a, b);
   }
 }
+
+/**
+ * @generated from message plugnmeet.NatsKvRoomInfo
+ */
+export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId = '';
+
+  /**
+   * @generated from field: string room_sid = 2;
+   */
+  roomSid = '';
+
+  /**
+   * @generated from field: string metadata = 3;
+   */
+  metadata = '';
+
+  constructor(data?: PartialMessage<NatsKvRoomInfo>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.NatsKvRoomInfo';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): NatsKvRoomInfo {
+    return new NatsKvRoomInfo().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): NatsKvRoomInfo {
+    return new NatsKvRoomInfo().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): NatsKvRoomInfo {
+    return new NatsKvRoomInfo().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: NatsKvRoomInfo | PlainMessage<NatsKvRoomInfo> | undefined,
+    b: NatsKvRoomInfo | PlainMessage<NatsKvRoomInfo> | undefined,
+  ): boolean {
+    return proto3.util.equals(NatsKvRoomInfo, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.NatsKvUserInfo
+ */
+export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId = '';
+
+  /**
+   * @generated from field: string user_sid = 2;
+   */
+  userSid = '';
+
+  /**
+   * @generated from field: string name = 3;
+   */
+  name = '';
+
+  /**
+   * @generated from field: string room_id = 4;
+   */
+  roomId = '';
+
+  /**
+   * @generated from field: string metadata = 5;
+   */
+  metadata = '';
+
+  constructor(data?: PartialMessage<NatsKvUserInfo>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.NatsKvUserInfo';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'user_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): NatsKvUserInfo {
+    return new NatsKvUserInfo().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): NatsKvUserInfo {
+    return new NatsKvUserInfo().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): NatsKvUserInfo {
+    return new NatsKvUserInfo().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: NatsKvUserInfo | PlainMessage<NatsKvUserInfo> | undefined,
+    b: NatsKvUserInfo | PlainMessage<NatsKvUserInfo> | undefined,
+  ): boolean {
+    return proto3.util.equals(NatsKvUserInfo, a, b);
+  }
+}
