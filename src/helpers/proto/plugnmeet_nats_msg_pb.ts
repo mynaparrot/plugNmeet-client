@@ -40,6 +40,11 @@ export enum NatsMsgServerToClientEvents {
   JOINED_USERS_LIST = 3,
 
   /**
+   * @generated from enum value: MEDIA_SERVER_INFO = 10;
+   */
+  MEDIA_SERVER_INFO = 10,
+
+  /**
    * @generated from enum value: ROOM_METADATA_UPDATE = 4;
    */
   ROOM_METADATA_UPDATE = 4,
@@ -63,6 +68,11 @@ export enum NatsMsgServerToClientEvents {
    * @generated from enum value: USER_OFFLINE = 8;
    */
   USER_OFFLINE = 8,
+
+  /**
+   * @generated from enum value: PMN_RENEWED_TOKEN = 9;
+   */
+  PMN_RENEWED_TOKEN = 9,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -73,11 +83,13 @@ proto3.util.setEnumType(
     { no: 1, name: 'ROOM_INFO' },
     { no: 2, name: 'LOCAL_USER_INFO' },
     { no: 3, name: 'JOINED_USERS_LIST' },
+    { no: 10, name: 'MEDIA_SERVER_INFO' },
     { no: 4, name: 'ROOM_METADATA_UPDATE' },
     { no: 5, name: 'USER_METADATA_UPDATE' },
     { no: 6, name: 'USER_JOINED' },
     { no: 7, name: 'USER_DISCONNECTED' },
     { no: 8, name: 'USER_OFFLINE' },
+    { no: 9, name: 'PMN_RENEWED_TOKEN' },
   ],
 );
 

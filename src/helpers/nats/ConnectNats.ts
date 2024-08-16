@@ -2,18 +2,23 @@ import type { JetStreamClient, NatsConnection } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
+  NatsMsgClientToServer,
+  NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
 } from '../proto/plugnmeet_nats_msg_pb';
 import HandleRoomMetadata from './HandleRoomMetadata';
 
+const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
+
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
   private _js: JetStreamClient | undefined;
-  private readonly _token: string;
+  private _token: string;
   private readonly _roomId: string;
   private readonly _userId: string;
   private readonly _subjects: NatsSubjects;
+  private tokenRenewInterval: any;
 
   private handleRoomMetadata: HandleRoomMetadata;
 
@@ -65,6 +70,8 @@ export default class ConnectNats {
     this.subscribeToSystemPublic();
     this.subscribeToPublicChat();
 
+    this.startTokenRenewInterval();
+
     return true;
   };
 
@@ -87,12 +94,20 @@ export default class ConnectNats {
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      const payload = NatsMsgServerToClient.fromBinary(m.data);
-      console.log(payload.event.toString(), payload.msg);
+      try {
+        const payload = NatsMsgServerToClient.fromBinary(m.data);
+        console.log(payload.event, payload.msg);
 
-      switch (payload.event) {
-        case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-          await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+        switch (payload.event) {
+          case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
+            await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.PMN_RENEWED_TOKEN:
+            this._token = payload.msg.toString();
+            break;
+        }
+      } catch (e) {
+        console.error(e);
       }
 
       m.ack();
@@ -109,13 +124,16 @@ export default class ConnectNats {
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      const payload = NatsMsgServerToClient.fromBinary(m.data);
-      console.log(payload.event.toString(), payload.msg);
-      switch (payload.event) {
-        case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-          await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+      try {
+        const payload = NatsMsgServerToClient.fromBinary(m.data);
+        console.log(payload.event, payload.msg);
+        switch (payload.event) {
+          case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
+            await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+        }
+      } catch (e) {
+        console.error(e);
       }
-
       m.ack();
     }
   };
@@ -133,5 +151,17 @@ export default class ConnectNats {
       console.log(m.string());
       m.ack();
     }
+  };
+
+  private startTokenRenewInterval = () => {
+    this.tokenRenewInterval = setInterval(async () => {
+      const subject =
+        this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
+      const msg = new NatsMsgClientToServer({
+        event: NatsMsgClientToServerEvents.RENEW_PNM_TOKEN,
+        msg: this._token,
+      });
+      await this.js.publish(subject, msg.toBinary());
+    }, RENEW_TOKEN_FREQUENT);
   };
 }
