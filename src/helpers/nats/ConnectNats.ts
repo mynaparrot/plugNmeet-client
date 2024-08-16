@@ -88,8 +88,10 @@ export default class ConnectNats {
     const sub = await consumer.consume();
     for await (const m of sub) {
       const payload = NatsMsgServerToClient.fromBinary(m.data);
+      console.log(payload.event.toString(), payload.msg);
+
       switch (payload.event) {
-        case NatsMsgServerToClientEvents.ROOM_METADATA:
+        case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
           await this.handleRoomMetadata.setRoomMetadata(payload.msg);
       }
 
@@ -108,8 +110,9 @@ export default class ConnectNats {
     const sub = await consumer.consume();
     for await (const m of sub) {
       const payload = NatsMsgServerToClient.fromBinary(m.data);
+      console.log(payload.event.toString(), payload.msg);
       switch (payload.event) {
-        case NatsMsgServerToClientEvents.ROOM_METADATA:
+        case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
           await this.handleRoomMetadata.setRoomMetadata(payload.msg);
       }
 

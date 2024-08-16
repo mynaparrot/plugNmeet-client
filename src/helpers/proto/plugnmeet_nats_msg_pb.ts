@@ -11,7 +11,7 @@ import type {
   PartialMessage,
   PlainMessage,
 } from '@bufbuild/protobuf';
-import { Message, proto3 } from '@bufbuild/protobuf';
+import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
 
 /**
  * @generated from enum plugnmeet.NatsMsgServerToClientEvents
@@ -23,11 +23,11 @@ export enum NatsMsgServerToClientEvents {
   UNKNOWN_NATS_SERVER_EVENT = 0,
 
   /**
-   * both initial & update
+   * initial data
    *
-   * @generated from enum value: ROOM_METADATA = 1;
+   * @generated from enum value: ROOM_INFO = 1;
    */
-  ROOM_METADATA = 1,
+  ROOM_INFO = 1,
 
   /**
    * @generated from enum value: LOCAL_USER_INFO = 2;
@@ -40,21 +40,29 @@ export enum NatsMsgServerToClientEvents {
   JOINED_USERS_LIST = 3,
 
   /**
-   * mostly after update
-   *
-   * @generated from enum value: USER_METADATA = 4;
+   * @generated from enum value: ROOM_METADATA_UPDATE = 4;
    */
-  USER_METADATA = 4,
+  ROOM_METADATA_UPDATE = 4,
 
   /**
-   * @generated from enum value: USER_JOINED = 5;
+   * @generated from enum value: USER_METADATA_UPDATE = 5;
    */
-  USER_JOINED = 5,
+  USER_METADATA_UPDATE = 5,
 
   /**
-   * @generated from enum value: USER_DISCONNECTED = 6;
+   * @generated from enum value: USER_JOINED = 6;
    */
-  USER_DISCONNECTED = 6,
+  USER_JOINED = 6,
+
+  /**
+   * @generated from enum value: USER_DISCONNECTED = 7;
+   */
+  USER_DISCONNECTED = 7,
+
+  /**
+   * @generated from enum value: USER_OFFLINE = 8;
+   */
+  USER_OFFLINE = 8,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -62,12 +70,14 @@ proto3.util.setEnumType(
   'plugnmeet.NatsMsgServerToClientEvents',
   [
     { no: 0, name: 'UNKNOWN_NATS_SERVER_EVENT' },
-    { no: 1, name: 'ROOM_METADATA' },
+    { no: 1, name: 'ROOM_INFO' },
     { no: 2, name: 'LOCAL_USER_INFO' },
     { no: 3, name: 'JOINED_USERS_LIST' },
-    { no: 4, name: 'USER_METADATA' },
-    { no: 5, name: 'USER_JOINED' },
-    { no: 6, name: 'USER_DISCONNECTED' },
+    { no: 4, name: 'ROOM_METADATA_UPDATE' },
+    { no: 5, name: 'USER_METADATA_UPDATE' },
+    { no: 6, name: 'USER_JOINED' },
+    { no: 7, name: 'USER_DISCONNECTED' },
+    { no: 8, name: 'USER_OFFLINE' },
   ],
 );
 
@@ -246,6 +256,11 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
    */
   metadata = '';
 
+  /**
+   * @generated from field: uint64 created_at = 4;
+   */
+  createdAt = protoInt64.zero;
+
   constructor(data?: PartialMessage<NatsKvRoomInfo>) {
     super();
     proto3.util.initPartial(data, this);
@@ -257,6 +272,7 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
     { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 2, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 3, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
   ]);
 
   static fromBinary(
@@ -317,6 +333,21 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
    */
   metadata = '';
 
+  /**
+   * @generated from field: uint64 joined_at = 6;
+   */
+  joinedAt = protoInt64.zero;
+
+  /**
+   * @generated from field: uint64 reconnected_at = 7;
+   */
+  reconnectedAt = protoInt64.zero;
+
+  /**
+   * @generated from field: uint64 disconnected_at = 8;
+   */
+  disconnectedAt = protoInt64.zero;
+
   constructor(data?: PartialMessage<NatsKvUserInfo>) {
     super();
     proto3.util.initPartial(data, this);
@@ -330,6 +361,19 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
     { no: 3, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 4, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 5, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: 'joined_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    {
+      no: 7,
+      name: 'reconnected_at',
+      kind: 'scalar',
+      T: 4 /* ScalarType.UINT64 */,
+    },
+    {
+      no: 8,
+      name: 'disconnected_at',
+      kind: 'scalar',
+      T: 4 /* ScalarType.UINT64 */,
+    },
   ]);
 
   static fromBinary(
