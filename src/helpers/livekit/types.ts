@@ -36,6 +36,7 @@ export interface IConnectLivekit extends EventEmitter {
     string,
     Array<LocalTrackPublication | RemoteTrackPublication>
   >;
+  connect(): Promise<void>;
   setRoomMetadata(metadata: string): Promise<void>;
   disconnectRoom(): void;
   setErrorStatus(title: string, reason: string): void;

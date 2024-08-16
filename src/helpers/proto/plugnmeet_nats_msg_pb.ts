@@ -264,12 +264,17 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   roomSid = '';
 
   /**
-   * @generated from field: string metadata = 3;
+   * @generated from field: bool enabled_e2ee = 3;
+   */
+  enabledE2ee = false;
+
+  /**
+   * @generated from field: string metadata = 4;
    */
   metadata = '';
 
   /**
-   * @generated from field: uint64 created_at = 4;
+   * @generated from field: uint64 created_at = 5;
    */
   createdAt = protoInt64.zero;
 
@@ -283,8 +288,9 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 2, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    { no: 3, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 4, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
   ]);
 
   static fromBinary(
@@ -341,22 +347,27 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
   roomId = '';
 
   /**
-   * @generated from field: string metadata = 5;
+   * @generated from field: bool is_admin = 5;
+   */
+  isAdmin = false;
+
+  /**
+   * @generated from field: string metadata = 6;
    */
   metadata = '';
 
   /**
-   * @generated from field: uint64 joined_at = 6;
+   * @generated from field: uint64 joined_at = 7;
    */
   joinedAt = protoInt64.zero;
 
   /**
-   * @generated from field: uint64 reconnected_at = 7;
+   * @generated from field: uint64 reconnected_at = 8;
    */
   reconnectedAt = protoInt64.zero;
 
   /**
-   * @generated from field: uint64 disconnected_at = 8;
+   * @generated from field: uint64 disconnected_at = 9;
    */
   disconnectedAt = protoInt64.zero;
 
@@ -372,16 +383,17 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
     { no: 2, name: 'user_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 3, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 4, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: 'joined_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    { no: 5, name: 'is_admin', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: 'joined_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
     {
-      no: 7,
+      no: 8,
       name: 'reconnected_at',
       kind: 'scalar',
       T: 4 /* ScalarType.UINT64 */,
     },
     {
-      no: 8,
+      no: 9,
       name: 'disconnected_at',
       kind: 'scalar',
       T: 4 /* ScalarType.UINT64 */,
@@ -414,5 +426,66 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
     b: NatsKvUserInfo | PlainMessage<NatsKvUserInfo> | undefined,
   ): boolean {
     return proto3.util.equals(NatsKvUserInfo, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.MediaServerConnInfo
+ */
+export class MediaServerConnInfo extends Message<MediaServerConnInfo> {
+  /**
+   * @generated from field: string url = 1;
+   */
+  url = '';
+
+  /**
+   * @generated from field: string token = 2;
+   */
+  token = '';
+
+  /**
+   * @generated from field: bool enabled_e2ee = 3;
+   */
+  enabledE2ee = false;
+
+  constructor(data?: PartialMessage<MediaServerConnInfo>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.MediaServerConnInfo';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'url', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'token', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): MediaServerConnInfo {
+    return new MediaServerConnInfo().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): MediaServerConnInfo {
+    return new MediaServerConnInfo().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): MediaServerConnInfo {
+    return new MediaServerConnInfo().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: MediaServerConnInfo | PlainMessage<MediaServerConnInfo> | undefined,
+    b: MediaServerConnInfo | PlainMessage<MediaServerConnInfo> | undefined,
+  ): boolean {
+    return proto3.util.equals(MediaServerConnInfo, a, b);
   }
 }

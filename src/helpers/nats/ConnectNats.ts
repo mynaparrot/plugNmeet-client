@@ -2,12 +2,18 @@ import type { JetStreamClient, NatsConnection } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
+  MediaServerConnInfo,
   NatsMsgClientToServer,
   NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
 } from '../proto/plugnmeet_nats_msg_pb';
 import HandleRoomMetadata from './HandleRoomMetadata';
+import { Dispatch } from 'react';
+import { IErrorPageProps } from '../../components/extra-pages/Error';
+import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
+import { createLivekitConnection } from '../livekit/utils';
+import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
@@ -19,6 +25,11 @@ export default class ConnectNats {
   private readonly _userId: string;
   private readonly _subjects: NatsSubjects;
   private tokenRenewInterval: any;
+  private mediaServerConn: any = undefined;
+
+  private readonly _setErrorState: Dispatch<IErrorPageProps>;
+  private readonly _setRoomConnectionStatusState: Dispatch<ConnectionStatus>;
+  private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
   private handleRoomMetadata: HandleRoomMetadata;
 
@@ -27,11 +38,17 @@ export default class ConnectNats {
     roomId: string,
     userId: string,
     subjects: NatsSubjects,
+    setErrorState: Dispatch<IErrorPageProps>,
+    setRoomConnectionStatusState: Dispatch<ConnectionStatus>,
+    setCurrentMediaServerConn: Dispatch<IConnectLivekit>,
   ) {
     this._token = token;
     this._roomId = roomId;
     this._userId = userId;
     this._subjects = subjects;
+    this._setErrorState = setErrorState;
+    this._setRoomConnectionStatusState = setRoomConnectionStatusState;
+    this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
     this.handleRoomMetadata = new HandleRoomMetadata();
   }
@@ -99,6 +116,9 @@ export default class ConnectNats {
         console.log(payload.event, payload.msg);
 
         switch (payload.event) {
+          case NatsMsgServerToClientEvents.MEDIA_SERVER_INFO:
+            this.createMediaServerConn(payload.msg);
+            break;
           case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
             await this.handleRoomMetadata.setRoomMetadata(payload.msg);
             break;
@@ -153,7 +173,7 @@ export default class ConnectNats {
     }
   };
 
-  private startTokenRenewInterval = () => {
+  private startTokenRenewInterval() {
     this.tokenRenewInterval = setInterval(async () => {
       const subject =
         this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
@@ -163,5 +183,27 @@ export default class ConnectNats {
       });
       await this.js.publish(subject, msg.toBinary());
     }, RENEW_TOKEN_FREQUENT);
-  };
+  }
+
+  private createMediaServerConn(msg: string) {
+    if (typeof this.mediaServerConn !== 'undefined') {
+      return;
+    }
+    const connInfo: MediaServerConnInfo = JSON.parse(msg);
+
+    const info: LivekitInfo = {
+      livekit_host: connInfo.url,
+      token: connInfo.token,
+      enabledE2EE: connInfo.enabledE2ee,
+    };
+
+    const conn = createLivekitConnection(
+      info,
+      this._setErrorState,
+      this._setRoomConnectionStatusState,
+    );
+
+    this._setCurrentMediaServerConn(conn);
+    this.mediaServerConn = conn;
+  }
 }

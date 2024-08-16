@@ -107,13 +107,10 @@ export default class ConnectLivekit
     this.handleRoomMetadata = new HandleRoomMetadata(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
-    this._roomConnectionStatusState('connecting');
     // clean session data
     sessionStorage.clear();
     // configure room
     this._room = this.configureRoom();
-    // finally connect
-    this.connect();
   }
 
   public get videoSubscribersMap() {
@@ -136,7 +133,9 @@ export default class ConnectLivekit
     return this._e2eeKeyProvider;
   }
 
-  private connect = async () => {
+  public connect = async () => {
+    this._roomConnectionStatusState('connecting');
+
     try {
       await this._room.connect(this.url, this.token);
       // we'll prepare our information
