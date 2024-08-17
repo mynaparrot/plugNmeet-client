@@ -352,22 +352,27 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
   isAdmin = false;
 
   /**
-   * @generated from field: string metadata = 6;
+   * @generated from field: bool is_presenter = 6;
+   */
+  isPresenter = false;
+
+  /**
+   * @generated from field: string metadata = 7;
    */
   metadata = '';
 
   /**
-   * @generated from field: uint64 joined_at = 7;
+   * @generated from field: uint64 joined_at = 8;
    */
   joinedAt = protoInt64.zero;
 
   /**
-   * @generated from field: uint64 reconnected_at = 8;
+   * @generated from field: uint64 reconnected_at = 9;
    */
   reconnectedAt = protoInt64.zero;
 
   /**
-   * @generated from field: uint64 disconnected_at = 9;
+   * @generated from field: uint64 disconnected_at = 10;
    */
   disconnectedAt = protoInt64.zero;
 
@@ -384,16 +389,17 @@ export class NatsKvUserInfo extends Message<NatsKvUserInfo> {
     { no: 3, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 4, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 5, name: 'is_admin', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-    { no: 6, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: 'joined_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    { no: 6, name: 'is_presenter', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 7, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 8, name: 'joined_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
     {
-      no: 8,
+      no: 9,
       name: 'reconnected_at',
       kind: 'scalar',
       T: 4 /* ScalarType.UINT64 */,
     },
     {
-      no: 9,
+      no: 10,
       name: 'disconnected_at',
       kind: 'scalar',
       T: 4 /* ScalarType.UINT64 */,
