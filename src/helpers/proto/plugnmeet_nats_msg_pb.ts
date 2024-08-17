@@ -73,6 +73,11 @@ export enum NatsMsgServerToClientEvents {
    * @generated from enum value: PMN_RENEWED_TOKEN = 9;
    */
   PMN_RENEWED_TOKEN = 9,
+
+  /**
+   * @generated from enum value: SYSTEM_NOTIFICATION = 11;
+   */
+  SYSTEM_NOTIFICATION = 11,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -90,6 +95,7 @@ proto3.util.setEnumType(
     { no: 7, name: 'USER_DISCONNECTED' },
     { no: 8, name: 'USER_OFFLINE' },
     { no: 9, name: 'PMN_RENEWED_TOKEN' },
+    { no: 11, name: 'SYSTEM_NOTIFICATION' },
   ],
 );
 
@@ -114,6 +120,36 @@ proto3.util.setEnumType(
   [
     { no: 0, name: 'UNKNOWN_NATS_CLIENT_EVENT' },
     { no: 1, name: 'RENEW_PNM_TOKEN' },
+  ],
+);
+
+/**
+ * @generated from enum plugnmeet.NatsSystemNotificationTypes
+ */
+export enum NatsSystemNotificationTypes {
+  /**
+   * @generated from enum value: NATS_SYSTEM_NOTIFICATION_INFO = 0;
+   */
+  NATS_SYSTEM_NOTIFICATION_INFO = 0,
+
+  /**
+   * @generated from enum value: NATS_SYSTEM_NOTIFICATION_WARNING = 1;
+   */
+  NATS_SYSTEM_NOTIFICATION_WARNING = 1,
+
+  /**
+   * @generated from enum value: NATS_SYSTEM_NOTIFICATION_ERROR = 2;
+   */
+  NATS_SYSTEM_NOTIFICATION_ERROR = 2,
+}
+// Retrieve enum metadata with: proto3.getEnumType(NatsSystemNotificationTypes)
+proto3.util.setEnumType(
+  NatsSystemNotificationTypes,
+  'plugnmeet.NatsSystemNotificationTypes',
+  [
+    { no: 0, name: 'NATS_SYSTEM_NOTIFICATION_INFO' },
+    { no: 1, name: 'NATS_SYSTEM_NOTIFICATION_WARNING' },
+    { no: 2, name: 'NATS_SYSTEM_NOTIFICATION_ERROR' },
   ],
 );
 
@@ -493,5 +529,83 @@ export class MediaServerConnInfo extends Message<MediaServerConnInfo> {
     b: MediaServerConnInfo | PlainMessage<MediaServerConnInfo> | undefined,
   ): boolean {
     return proto3.util.equals(MediaServerConnInfo, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.NatsSystemNotification
+ */
+export class NatsSystemNotification extends Message<NatsSystemNotification> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = '';
+
+  /**
+   * @generated from field: plugnmeet.NatsSystemNotificationTypes type = 2;
+   */
+  type = NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO;
+
+  /**
+   * @generated from field: string msg = 3;
+   */
+  msg = '';
+
+  /**
+   * @generated from field: int64 sent_at = 4;
+   */
+  sentAt = protoInt64.zero;
+
+  constructor(data?: PartialMessage<NatsSystemNotification>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.NatsSystemNotification';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 2,
+      name: 'type',
+      kind: 'enum',
+      T: proto3.getEnumType(NatsSystemNotificationTypes),
+    },
+    { no: 3, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: 'sent_at', kind: 'scalar', T: 3 /* ScalarType.INT64 */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): NatsSystemNotification {
+    return new NatsSystemNotification().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): NatsSystemNotification {
+    return new NatsSystemNotification().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): NatsSystemNotification {
+    return new NatsSystemNotification().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a:
+      | NatsSystemNotification
+      | PlainMessage<NatsSystemNotification>
+      | undefined,
+    b:
+      | NatsSystemNotification
+      | PlainMessage<NatsSystemNotification>
+      | undefined,
+  ): boolean {
+    return proto3.util.equals(NatsSystemNotification, a, b);
   }
 }
