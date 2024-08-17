@@ -14,7 +14,9 @@ export type ConnectionStatus =
   | 'connected'
   | 'disconnected'
   | 're-connecting'
-  | 'error';
+  | 'error'
+  | 'receiving-data'
+  | 'ready';
 
 export enum CurrentConnectionEvents {
   ScreenShareStatus = 'screenShareStatus',

@@ -130,6 +130,7 @@ const App = () => {
           dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
 
+          setRoomConnectionStatus('connecting');
           await startNatsConn(
             accessToken,
             res.roomId ?? '',
@@ -139,13 +140,6 @@ const App = () => {
             setRoomConnectionStatus,
             setCurrentMediaServerConn,
           );
-
-          // for livekit need to use generated token & host
-          // setLivekitInfo({
-          //   livekit_host: res.livekitHost,
-          //   token: res.token,
-          //   enabledE2EE: res.enabledE2ee,
-          // });
         } else {
           setError({
             title: t('app.verification-failed-title'),
@@ -172,7 +166,8 @@ const App = () => {
   useEffect(() => {
     if (
       roomConnectionStatus === 'connecting' ||
-      roomConnectionStatus === 'checking'
+      roomConnectionStatus === 'checking' ||
+      roomConnectionStatus === 'receiving-data'
     ) {
       setLoading(true);
     } else if (roomConnectionStatus === 're-connecting') {

@@ -1,5 +1,7 @@
 import type { JetStreamClient, NatsConnection } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
+import { isE2EESupported } from 'livekit-client';
+
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
   MediaServerConnInfo,
@@ -8,12 +10,13 @@ import {
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
 } from '../proto/plugnmeet_nats_msg_pb';
-import HandleRoomMetadata from './HandleRoomMetadata';
 import { Dispatch } from 'react';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
 import { createLivekitConnection } from '../livekit/utils';
 import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
+import HandleRoomData from './HandleRoomData';
+import i18n from '../i18n';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
@@ -25,13 +28,13 @@ export default class ConnectNats {
   private readonly _userId: string;
   private readonly _subjects: NatsSubjects;
   private tokenRenewInterval: any;
-  private mediaServerConn: any = undefined;
+  private _mediaServerConn: IConnectLivekit | undefined = undefined;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
   private readonly _setRoomConnectionStatusState: Dispatch<ConnectionStatus>;
   private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
-  private handleRoomMetadata: HandleRoomMetadata;
+  private handleRoomData: HandleRoomData;
 
   constructor(
     token: string,
@@ -50,7 +53,7 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState = setRoomConnectionStatusState;
     this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
-    this.handleRoomMetadata = new HandleRoomMetadata();
+    this.handleRoomData = new HandleRoomData(this);
   }
 
   get nc(): NatsConnection {
@@ -61,12 +64,24 @@ export default class ConnectNats {
     return <JetStreamClient>this._js;
   }
 
+  get mediaServerConn(): IConnectLivekit | undefined {
+    return this._mediaServerConn;
+  }
+
   public openConn = async () => {
     if (typeof this._nc === 'undefined' || this._nc.isClosed()) {
       return await this._openConn();
     }
     return true;
   };
+
+  public setErrorStatus(title: string, reason: string) {
+    this._setRoomConnectionStatusState('error');
+    this._setErrorState({
+      title: title,
+      text: reason,
+    });
+  }
 
   private _openConn = async () => {
     try {
@@ -78,8 +93,10 @@ export default class ConnectNats {
       console.info(`connected ${this._nc.getServer()}`);
     } catch (e) {
       console.error(e);
+      this.setErrorStatus('Connection failed', 'error authentication');
       return false;
     }
+    this._setRoomConnectionStatusState('receiving-data');
 
     this._js = this._nc.jetstream();
     this.monitorConnStatus();
@@ -117,10 +134,14 @@ export default class ConnectNats {
 
         switch (payload.event) {
           case NatsMsgServerToClientEvents.MEDIA_SERVER_INFO:
-            this.createMediaServerConn(payload.msg);
+            await this.createMediaServerConn(payload.msg);
+            this._setRoomConnectionStatusState('ready');
+            break;
+          case NatsMsgServerToClientEvents.ROOM_INFO:
+            await this.handleRoomData.setRoomInfo(payload.msg);
             break;
           case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-            await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+            await this.handleRoomData.updateRoomMetadata(payload.msg);
             break;
           case NatsMsgServerToClientEvents.PMN_RENEWED_TOKEN:
             this._token = payload.msg.toString();
@@ -149,7 +170,7 @@ export default class ConnectNats {
         console.log(payload.event, payload.msg);
         switch (payload.event) {
           case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-            await this.handleRoomMetadata.setRoomMetadata(payload.msg);
+            await this.handleRoomData.updateRoomMetadata(payload.msg);
         }
       } catch (e) {
         console.error(e);
@@ -185,8 +206,8 @@ export default class ConnectNats {
     }, RENEW_TOKEN_FREQUENT);
   }
 
-  private createMediaServerConn(msg: string) {
-    if (typeof this.mediaServerConn !== 'undefined') {
+  private async createMediaServerConn(msg: string) {
+    if (typeof this._mediaServerConn !== 'undefined') {
       return;
     }
     const connInfo: MediaServerConnInfo = JSON.parse(msg);
@@ -203,7 +224,28 @@ export default class ConnectNats {
       this._setRoomConnectionStatusState,
     );
 
+    const e2eeFeatures =
+      this.handleRoomData.roomInfo.metadata?.room_features
+        .end_to_end_encryption_features;
+    if (
+      e2eeFeatures &&
+      e2eeFeatures.is_enabled &&
+      e2eeFeatures.encryption_key
+    ) {
+      if (!isE2EESupported()) {
+        this.setErrorStatus(
+          i18n.t('notifications.e2ee-unsupported-browser-title'),
+          i18n.t('notifications.e2ee-unsupported-browser-msg'),
+        );
+      } else {
+        if (conn.room.isE2EEEnabled) {
+          await conn.e2eeKeyProvider.setKey(e2eeFeatures.encryption_key);
+          await conn.room.setE2EEEnabled(true);
+        }
+      }
+    }
+
     this._setCurrentMediaServerConn(conn);
-    this.mediaServerConn = conn;
+    this._mediaServerConn = conn;
   }
 }

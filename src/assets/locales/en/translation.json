@@ -126,6 +126,7 @@
     "token-not-valid": "Token isn't valid!",
     "connecting": "connecting...",
     "re-connecting": "re-connecting...",
+    "receiving-data": "receiving session data...",
     "checking": "checking...",
     "loading": "loading...",
     "connected": "connected",

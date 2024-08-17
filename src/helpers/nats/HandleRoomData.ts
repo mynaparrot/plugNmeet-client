@@ -1,84 +1,79 @@
 import { toast } from 'react-toastify';
-import { isEmpty } from 'validator';
-import { isE2EESupported } from 'livekit-client';
 
+import {
+  ICurrentRoom,
+  IRoomMetadata,
+} from '../../store/slices/interfaces/session';
+import { NatsKvRoomInfo } from '../proto/plugnmeet_nats_msg_pb';
 import { store } from '../../store';
+import {
+  addCurrentRoom,
+  updateCurrentRoomMetadata,
+} from '../../store/slices/sessionSlice';
 import i18n from '../i18n';
-import { IRoomMetadata } from '../../store/slices/interfaces/session';
-import { updateCurrentRoomMetadata } from '../../store/slices/sessionSlice';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { sleep } from '../utils';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
+import ConnectNats from './ConnectNats';
 
-export default class HandleRoomMetadata {
-  private metadata: IRoomMetadata | null = null;
+export default class HandleRoomData {
+  private _that: ConnectNats;
+  private _room: ICurrentRoom;
   private welcomeMessage: string | undefined = undefined;
-  private checkedE2EE = false;
   private checkedPreloadedWhiteboardFile = false;
 
-  constructor() {}
+  constructor(private that: ConnectNats) {
+    this._that = that;
+    this._room = {
+      room_id: '',
+      sid: '',
+      metadata: undefined,
+    };
+  }
 
-  public setRoomMetadata = async (metadata: string) => {
-    if (!isEmpty(metadata)) {
-      try {
-        this.metadata = JSON.parse(metadata);
-      } catch (e) {
-        console.error(e);
-        return;
-      }
+  get roomInfo(): ICurrentRoom {
+    return this._room;
+  }
 
-      const currentId =
-        store.getState().session.currentRoom?.metadata?.metadata_id;
-      if (
-        currentId &&
-        this.metadata?.metadata_id &&
-        currentId === this.metadata?.metadata_id
-      ) {
-        // if both id are same then we don't need to update
-        return;
-      }
+  public setRoomInfo = async (msg: string) => {
+    const info = NatsKvRoomInfo.fromJsonString(msg);
+    this._room = {
+      room_id: info.roomId,
+      sid: info.roomSid,
+    };
+    store.dispatch(addCurrentRoom(this._room));
+    await this.updateRoomMetadata(info.metadata);
+  };
 
-      if (this.metadata) {
-        if (!this.checkedE2EE) {
-          this.checkedE2EE = true;
-          const e2eeFeatures =
-            this.metadata.room_features.end_to_end_encryption_features;
-          if (
-            e2eeFeatures &&
-            e2eeFeatures.is_enabled &&
-            e2eeFeatures.encryption_key
-          ) {
-            if (!isE2EESupported()) {
-              // TODO: adjust here
-              // this.that.setErrorStatus(
-              //   i18n.t('notifications.e2ee-unsupported-browser-title'),
-              //   i18n.t('notifications.e2ee-unsupported-browser-msg'),
-              // );
-            } else {
-              // if (!this.that.room.isE2EEEnabled) {
-              //   await this.that.e2eeKeyProvider.setKey(
-              //     e2eeFeatures.encryption_key,
-              //   );
-              //   await this.that.room.setE2EEEnabled(true);
-              // }
-            }
-          }
-        }
+  public updateRoomMetadata = async (data: string) => {
+    const metadata: IRoomMetadata = JSON.parse(data);
 
-        this.setWindowTitle(this.metadata.room_title);
-        this.showRecordingNotification();
-        this.showRTMPNotification();
-        this.publishWelcomeMessage();
-
-        store.dispatch(updateCurrentRoomMetadata(this.metadata));
-        if (!this.checkedPreloadedWhiteboardFile) {
-          // we'll check whiteboard preloaded file
-          await this.addPreloadWhiteboardFile();
-        }
-      }
+    if (
+      typeof this._room.metadata === 'undefined' ||
+      this._room.metadata.metadata_id !== metadata.metadata_id
+    ) {
+      this._room.metadata = metadata;
+      await this.updateMetadata();
     }
   };
+
+  private async updateMetadata() {
+    if (typeof this._room.metadata === 'undefined') {
+      return;
+    }
+
+    this.setWindowTitle(this._room.metadata.room_title);
+    this.showRecordingNotification();
+    this.showRTMPNotification();
+    this.publishWelcomeMessage();
+
+    store.dispatch(updateCurrentRoomMetadata(this._room.metadata));
+    if (!this.checkedPreloadedWhiteboardFile) {
+      // we'll check whiteboard preloaded file
+      await this.addPreloadWhiteboardFile();
+    }
+  }
 
   private setWindowTitle = (title: string) => {
     document.title = title;
@@ -91,11 +86,11 @@ export default class HandleRoomMetadata {
     }
 
     const isActiveRecording = store.getState().session.isActiveRecording;
-    if (!isActiveRecording && this.metadata?.is_recording) {
+    if (!isActiveRecording && this._room.metadata?.is_recording) {
       toast(i18n.t('room-metadata.session-recording'), {
         type: 'info',
       });
-    } else if (isActiveRecording && !this.metadata?.is_recording) {
+    } else if (isActiveRecording && !this._room.metadata?.is_recording) {
       toast(i18n.t('room-metadata.session-not-recording'), {
         type: 'info',
       });
@@ -110,11 +105,14 @@ export default class HandleRoomMetadata {
 
     const isActiveRtmpBroadcasting =
       store.getState().session.isActiveRtmpBroadcasting;
-    if (!isActiveRtmpBroadcasting && this.metadata?.is_active_rtmp) {
+    if (!isActiveRtmpBroadcasting && this._room.metadata?.is_active_rtmp) {
       toast(i18n.t('room-metadata.rtmp-started'), {
         type: 'info',
       });
-    } else if (isActiveRtmpBroadcasting && !this.metadata?.is_active_rtmp) {
+    } else if (
+      isActiveRtmpBroadcasting &&
+      !this._room.metadata?.is_active_rtmp
+    ) {
       toast(i18n.t('room-metadata.rtmp-stopped'), {
         type: 'info',
       });
@@ -126,16 +124,15 @@ export default class HandleRoomMetadata {
       return;
     }
 
-    if (!this.metadata?.welcome_message) {
-      this.welcomeMessage = '';
-      return;
-    }
-    if (isEmpty(this.metadata?.welcome_message)) {
+    if (
+      !this._room.metadata?.welcome_message ||
+      this._room.metadata?.welcome_message === ''
+    ) {
       this.welcomeMessage = '';
       return;
     }
 
-    this.welcomeMessage = this.metadata?.welcome_message;
+    this.welcomeMessage = this._room.metadata?.welcome_message;
     const body: IChatMsg = {
       type: 'CHAT',
       message_id: '',
@@ -160,8 +157,8 @@ export default class HandleRoomMetadata {
       return;
     }
 
-    const whiteboard = this.metadata?.room_features.whiteboard_features;
-    if (!whiteboard?.preload_file || isEmpty(whiteboard?.preload_file)) {
+    const whiteboard = this._room.metadata?.room_features.whiteboard_features;
+    if (!whiteboard?.preload_file || whiteboard?.preload_file === '') {
       this.checkedPreloadedWhiteboardFile = true;
       return;
     }

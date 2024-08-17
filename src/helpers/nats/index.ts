@@ -32,3 +32,7 @@ export const startNatsConn = async (
 
   return conn;
 };
+
+export const getNatsConn = () => {
+  return conn;
+};

@@ -1,5 +1,4 @@
 import { Dispatch } from 'react';
-import { isEmpty } from 'validator';
 import {
   ConnectionState,
   DisconnectReason,
@@ -23,7 +22,6 @@ import { EventEmitter } from 'eventemitter3';
 import { store } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import {
-  addCurrentRoom,
   addCurrentUser,
   updateScreenSharing,
   updateTotalAudioSubscribers,
@@ -346,17 +344,17 @@ export default class ConnectLivekit
   }
 
   private updateSession = async () => {
-    const sid = await this._room.getSid();
-    store.dispatch(
-      addCurrentRoom({
-        sid: sid,
-        room_id: this._room.name,
-      }),
-    );
-
-    if (this._room.metadata && !isEmpty(this._room.metadata)) {
-      await this.setRoomMetadata(this._room.metadata);
-    }
+    // const sid = await this._room.getSid();
+    // store.dispatch(
+    //   addCurrentRoom({
+    //     sid: sid,
+    //     room_id: this._room.name,
+    //   }),
+    // );
+    //
+    // if (this._room.metadata && !isEmpty(this._room.metadata)) {
+    //   await this.setRoomMetadata(this._room.metadata);
+    // }
   };
 
   private onDisconnected = (reason?: DisconnectReason) => {
