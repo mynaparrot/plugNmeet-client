@@ -18,84 +18,66 @@ import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
  */
 export enum NatsMsgServerToClientEvents {
   /**
-   * @generated from enum value: UNKNOWN_NATS_SERVER_EVENT = 0;
-   */
-  UNKNOWN_NATS_SERVER_EVENT = 0,
-
-  /**
    * initial data
    *
-   * @generated from enum value: ROOM_INFO = 1;
+   * @generated from enum value: INITIAL_DATA = 0;
    */
-  ROOM_INFO = 1,
+  INITIAL_DATA = 0,
 
   /**
-   * @generated from enum value: LOCAL_USER_INFO = 2;
+   * @generated from enum value: JOINED_USERS_LIST = 1;
    */
-  LOCAL_USER_INFO = 2,
+  JOINED_USERS_LIST = 1,
 
   /**
-   * @generated from enum value: JOINED_USERS_LIST = 3;
+   * @generated from enum value: ROOM_METADATA_UPDATE = 2;
    */
-  JOINED_USERS_LIST = 3,
+  ROOM_METADATA_UPDATE = 2,
 
   /**
-   * @generated from enum value: MEDIA_SERVER_INFO = 10;
+   * @generated from enum value: USER_METADATA_UPDATE = 3;
    */
-  MEDIA_SERVER_INFO = 10,
+  USER_METADATA_UPDATE = 3,
 
   /**
-   * @generated from enum value: ROOM_METADATA_UPDATE = 4;
+   * @generated from enum value: USER_JOINED = 4;
    */
-  ROOM_METADATA_UPDATE = 4,
+  USER_JOINED = 4,
 
   /**
-   * @generated from enum value: USER_METADATA_UPDATE = 5;
+   * @generated from enum value: USER_DISCONNECTED = 5;
    */
-  USER_METADATA_UPDATE = 5,
+  USER_DISCONNECTED = 5,
 
   /**
-   * @generated from enum value: USER_JOINED = 6;
+   * @generated from enum value: USER_OFFLINE = 6;
    */
-  USER_JOINED = 6,
+  USER_OFFLINE = 6,
 
   /**
-   * @generated from enum value: USER_DISCONNECTED = 7;
+   * @generated from enum value: PMN_RENEWED_TOKEN = 7;
    */
-  USER_DISCONNECTED = 7,
+  PMN_RENEWED_TOKEN = 7,
 
   /**
-   * @generated from enum value: USER_OFFLINE = 8;
+   * @generated from enum value: SYSTEM_NOTIFICATION = 8;
    */
-  USER_OFFLINE = 8,
-
-  /**
-   * @generated from enum value: PMN_RENEWED_TOKEN = 9;
-   */
-  PMN_RENEWED_TOKEN = 9,
-
-  /**
-   * @generated from enum value: SYSTEM_NOTIFICATION = 11;
-   */
-  SYSTEM_NOTIFICATION = 11,
+  SYSTEM_NOTIFICATION = 8,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
   NatsMsgServerToClientEvents,
   'plugnmeet.NatsMsgServerToClientEvents',
   [
-    { no: 0, name: 'UNKNOWN_NATS_SERVER_EVENT' },
-    { no: 1, name: 'ROOM_INFO' },
-    { no: 2, name: 'LOCAL_USER_INFO' },
-    { no: 3, name: 'JOINED_USERS_LIST' },
-    { no: 10, name: 'MEDIA_SERVER_INFO' },
-    { no: 4, name: 'ROOM_METADATA_UPDATE' },
-    { no: 5, name: 'USER_METADATA_UPDATE' },
-    { no: 6, name: 'USER_JOINED' },
-    { no: 7, name: 'USER_DISCONNECTED' },
-    { no: 8, name: 'USER_OFFLINE' },
-    { no: 9, name: 'PMN_RENEWED_TOKEN' },
-    { no: 11, name: 'SYSTEM_NOTIFICATION' },
+    { no: 0, name: 'INITIAL_DATA' },
+    { no: 1, name: 'JOINED_USERS_LIST' },
+    { no: 2, name: 'ROOM_METADATA_UPDATE' },
+    { no: 3, name: 'USER_METADATA_UPDATE' },
+    { no: 4, name: 'USER_JOINED' },
+    { no: 5, name: 'USER_DISCONNECTED' },
+    { no: 6, name: 'USER_OFFLINE' },
+    { no: 7, name: 'PMN_RENEWED_TOKEN' },
+    { no: 8, name: 'SYSTEM_NOTIFICATION' },
   ],
 );
 
@@ -165,7 +147,7 @@ export class NatsMsgServerToClient extends Message<NatsMsgServerToClient> {
   /**
    * @generated from field: plugnmeet.NatsMsgServerToClientEvents event = 2;
    */
-  event = NatsMsgServerToClientEvents.UNKNOWN_NATS_SERVER_EVENT;
+  event = NatsMsgServerToClientEvents.INITIAL_DATA;
 
   /**
    * @generated from field: string msg = 3;
@@ -529,6 +511,84 @@ export class MediaServerConnInfo extends Message<MediaServerConnInfo> {
     b: MediaServerConnInfo | PlainMessage<MediaServerConnInfo> | undefined,
   ): boolean {
     return proto3.util.equals(MediaServerConnInfo, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.NatsInitialData
+ */
+export class NatsInitialData extends Message<NatsInitialData> {
+  /**
+   * @generated from field: plugnmeet.NatsKvRoomInfo room = 1;
+   */
+  room?: NatsKvRoomInfo;
+
+  /**
+   * @generated from field: plugnmeet.NatsKvUserInfo local_user = 2;
+   */
+  localUser?: NatsKvUserInfo;
+
+  /**
+   * @generated from field: plugnmeet.MediaServerConnInfo media_server_info = 3;
+   */
+  mediaServerInfo?: MediaServerConnInfo;
+
+  /**
+   * @generated from field: repeated plugnmeet.NatsKvUserInfo online_users = 4;
+   */
+  onlineUsers: NatsKvUserInfo[] = [];
+
+  constructor(data?: PartialMessage<NatsInitialData>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.NatsInitialData';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'room', kind: 'message', T: NatsKvRoomInfo },
+    { no: 2, name: 'local_user', kind: 'message', T: NatsKvUserInfo },
+    {
+      no: 3,
+      name: 'media_server_info',
+      kind: 'message',
+      T: MediaServerConnInfo,
+    },
+    {
+      no: 4,
+      name: 'online_users',
+      kind: 'message',
+      T: NatsKvUserInfo,
+      repeated: true,
+    },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): NatsInitialData {
+    return new NatsInitialData().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): NatsInitialData {
+    return new NatsInitialData().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): NatsInitialData {
+    return new NatsInitialData().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: NatsInitialData | PlainMessage<NatsInitialData> | undefined,
+    b: NatsInitialData | PlainMessage<NatsInitialData> | undefined,
+  ): boolean {
+    return proto3.util.equals(NatsInitialData, a, b);
   }
 }
 

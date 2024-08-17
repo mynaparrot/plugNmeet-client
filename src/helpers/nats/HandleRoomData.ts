@@ -36,8 +36,7 @@ export default class HandleRoomData {
     return this._room;
   }
 
-  public setRoomInfo = async (msg: string) => {
-    const info = NatsKvRoomInfo.fromJsonString(msg);
+  public setRoomInfo = async (info: NatsKvRoomInfo) => {
     this._room = {
       room_id: info.roomId,
       sid: info.roomSid,

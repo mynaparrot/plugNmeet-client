@@ -5,6 +5,7 @@ import { isE2EESupported } from 'livekit-client';
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
   MediaServerConnInfo,
+  NatsInitialData,
   NatsMsgClientToServer,
   NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
@@ -93,7 +94,10 @@ export default class ConnectNats {
       console.info(`connected ${this._nc.getServer()}`);
     } catch (e) {
       console.error(e);
-      this.setErrorStatus('Connection failed', 'error authentication');
+      this.setErrorStatus(
+        'Authentication failed',
+        'We was not able to verify your auth information. May be you are using an expired token?',
+      );
       return false;
     }
     this._setRoomConnectionStatusState('receiving-data');
@@ -133,12 +137,9 @@ export default class ConnectNats {
         console.log(payload.event, payload.msg);
 
         switch (payload.event) {
-          case NatsMsgServerToClientEvents.MEDIA_SERVER_INFO:
-            await this.createMediaServerConn(payload.msg);
+          case NatsMsgServerToClientEvents.INITIAL_DATA:
+            await this.handleInitialData(payload.msg);
             this._setRoomConnectionStatusState('ready');
-            break;
-          case NatsMsgServerToClientEvents.ROOM_INFO:
-            await this.handleRoomData.setRoomInfo(payload.msg);
             break;
           case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
             await this.handleRoomData.updateRoomMetadata(payload.msg);
@@ -206,12 +207,32 @@ export default class ConnectNats {
     }, RENEW_TOKEN_FREQUENT);
   }
 
-  private async createMediaServerConn(msg: string) {
+  private async handleInitialData(msg: string) {
+    let data: NatsInitialData;
+    try {
+      data = NatsInitialData.fromJsonString(msg);
+    } catch (e) {
+      this.setErrorStatus(
+        'Data decoded error',
+        'We could not understand data sent from server.',
+      );
+      return;
+    }
+
+    if (data.room) {
+      await this.handleRoomData.setRoomInfo(data.room);
+    }
+    if (data.mediaServerInfo) {
+      await this.createMediaServerConn(data.mediaServerInfo);
+    }
+    console.log(data.localUser);
+    console.log(data.onlineUsers);
+  }
+
+  private async createMediaServerConn(connInfo: MediaServerConnInfo) {
     if (typeof this._mediaServerConn !== 'undefined') {
       return;
     }
-    const connInfo: MediaServerConnInfo = JSON.parse(msg);
-
     const info: LivekitInfo = {
       livekit_host: connInfo.url,
       token: connInfo.token,
