@@ -50,24 +50,24 @@ export enum NatsMsgServerToClientEvents {
   USER_DISCONNECTED = 5,
 
   /**
-   * @generated from enum value: USER_OFFLINE = 6;
+   * @generated from enum value: USER_OFFLINE = 7;
    */
-  USER_OFFLINE = 6,
+  USER_OFFLINE = 7,
 
   /**
-   * @generated from enum value: RESP_RENEW_PNM_TOKEN = 7;
+   * @generated from enum value: RESP_RENEW_PNM_TOKEN = 8;
    */
-  RESP_RENEW_PNM_TOKEN = 7,
+  RESP_RENEW_PNM_TOKEN = 8,
 
   /**
-   * @generated from enum value: SYSTEM_NOTIFICATION = 8;
+   * @generated from enum value: SYSTEM_NOTIFICATION = 9;
    */
-  SYSTEM_NOTIFICATION = 8,
+  SYSTEM_NOTIFICATION = 9,
 
   /**
-   * @generated from enum value: RESP_DATA_MSG = 9;
+   * @generated from enum value: RESP_DATA_MSG = 10;
    */
-  RESP_DATA_MSG = 9,
+  RESP_DATA_MSG = 10,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -80,10 +80,10 @@ proto3.util.setEnumType(
     { no: 3, name: 'USER_METADATA_UPDATE' },
     { no: 4, name: 'USER_JOINED' },
     { no: 5, name: 'USER_DISCONNECTED' },
-    { no: 6, name: 'USER_OFFLINE' },
-    { no: 7, name: 'RESP_RENEW_PNM_TOKEN' },
-    { no: 8, name: 'SYSTEM_NOTIFICATION' },
-    { no: 9, name: 'RESP_DATA_MSG' },
+    { no: 7, name: 'USER_OFFLINE' },
+    { no: 8, name: 'RESP_RENEW_PNM_TOKEN' },
+    { no: 9, name: 'SYSTEM_NOTIFICATION' },
+    { no: 10, name: 'RESP_DATA_MSG' },
   ],
 );
 
@@ -110,6 +110,11 @@ export enum NatsMsgClientToServerEvents {
    * @generated from enum value: PING = 4;
    */
   PING = 4,
+
+  /**
+   * @generated from enum value: REQ_LOGOUT = 5;
+   */
+  REQ_LOGOUT = 5,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgClientToServerEvents)
 proto3.util.setEnumType(
@@ -120,6 +125,7 @@ proto3.util.setEnumType(
     { no: 1, name: 'REQ_RENEW_PNM_TOKEN' },
     { no: 3, name: 'REQ_DATA_MSG' },
     { no: 4, name: 'PING' },
+    { no: 5, name: 'REQ_LOGOUT' },
   ],
 );
 

@@ -198,6 +198,12 @@ export default class ConnectNats {
           case NatsMsgServerToClientEvents.USER_JOINED:
             this.handleParticipants.addRemoteParticipant(payload.msg);
             break;
+          case NatsMsgServerToClientEvents.USER_DISCONNECTED:
+            this.handleParticipants.handleParticipantDisconnected(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.USER_OFFLINE:
+            this.handleParticipants.handleParticipantOffline(payload.msg);
+            break;
         }
       } catch (e) {
         console.error(e);
@@ -229,6 +235,12 @@ export default class ConnectNats {
             break;
           case NatsMsgServerToClientEvents.USER_JOINED:
             this.handleParticipants.addRemoteParticipant(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.USER_DISCONNECTED:
+            this.handleParticipants.handleParticipantDisconnected(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.USER_OFFLINE:
+            this.handleParticipants.handleParticipantOffline(payload.msg);
             break;
         }
       } catch (e) {

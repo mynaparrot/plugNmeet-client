@@ -162,6 +162,39 @@ export default class HandleParticipants {
     }
   };
 
+  /**
+   * when user disconnected temporary e.g. network related issue,
+   * we'll mainly pause media files
+   * @param data string
+   */
+  public handleParticipantDisconnected = (data: string) => {
+    let participant: NatsKvUserInfo;
+    try {
+      participant = NatsKvUserInfo.fromJsonString(data);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+    console.log(participant);
+  };
+
+  /**
+   * will use for both offline & logged out status
+   * as both have similar task
+   * we'll remove this use including all media files
+   * @param data string
+   */
+  public handleParticipantOffline = (data: string) => {
+    let participant: NatsKvUserInfo;
+    try {
+      participant = NatsKvUserInfo.fromJsonString(data);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+    console.log(participant);
+  };
+
   private notificationForWaitingUser(metadata: ICurrentUserMetadata, name) {
     const state = store.getState();
     if (state.session.currentUser?.isRecorder) {
