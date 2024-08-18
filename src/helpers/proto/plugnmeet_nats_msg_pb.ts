@@ -105,6 +105,11 @@ export enum NatsMsgClientToServerEvents {
    * @generated from enum value: REQ_DATA_MSG = 3;
    */
   REQ_DATA_MSG = 3,
+
+  /**
+   * @generated from enum value: PING = 4;
+   */
+  PING = 4,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgClientToServerEvents)
 proto3.util.setEnumType(
@@ -114,6 +119,7 @@ proto3.util.setEnumType(
     { no: 0, name: 'REQ_INITIAL_DATA' },
     { no: 1, name: 'REQ_RENEW_PNM_TOKEN' },
     { no: 3, name: 'REQ_DATA_MSG' },
+    { no: 4, name: 'PING' },
   ],
 );
 

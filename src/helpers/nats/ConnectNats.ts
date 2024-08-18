@@ -25,6 +25,8 @@ import HandleParticipants from './HandleParticipants';
 import { toast } from 'react-toastify';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
+const PING_INTERVAL = 10 * 1000;
+const STATUS_CHECKER_INTERVAL = 500;
 
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
@@ -34,6 +36,8 @@ export default class ConnectNats {
   private readonly _userId: string;
   private readonly _subjects: NatsSubjects;
   private tokenRenewInterval: any;
+  private pingInterval: any;
+  private statusCheckerInterval: any;
   private _mediaServerConn: IConnectLivekit | undefined = undefined;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
@@ -116,6 +120,7 @@ export default class ConnectNats {
     this.subscribeToPublicChat();
 
     this.startTokenRenewInterval();
+    this.startPingToServer();
 
     // request for initial data
     await this.sendMessageToSystemWorker(
@@ -131,8 +136,31 @@ export default class ConnectNats {
     if (typeof this._nc === 'undefined') {
       return;
     }
+    const startStatusChecker = () => {
+      if (typeof this.statusCheckerInterval === 'undefined') {
+        this.statusCheckerInterval = setInterval(() => {
+          if (this._nc?.isClosed()) {
+            this._setRoomConnectionStatusState('disconnected');
+            this.setErrorStatus('Disconnected', 'Room disconnected');
+
+            clearInterval(this.statusCheckerInterval);
+            this.statusCheckerInterval = undefined;
+          }
+        }, STATUS_CHECKER_INTERVAL);
+      }
+    };
+
     for await (const s of this._nc.status()) {
       console.info(`${s.type}: ${s.data}`);
+      if (s.type === 'reconnecting') {
+        startStatusChecker();
+        this._setRoomConnectionStatusState('re-connecting');
+      } else if (s.type === 'reconnect') {
+        this._setRoomConnectionStatusState('connected');
+
+        clearInterval(this.statusCheckerInterval);
+        this.statusCheckerInterval = undefined;
+      }
     }
   }
 
@@ -227,14 +255,27 @@ export default class ConnectNats {
 
   private startTokenRenewInterval() {
     this.tokenRenewInterval = setInterval(async () => {
-      const subject =
-        this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
       const msg = new NatsMsgClientToServer({
         event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
         msg: this._token,
       });
-      await this.js.publish(subject, msg.toBinary());
+      await this.sendMessageToSystemWorker(msg);
     }, RENEW_TOKEN_FREQUENT);
+  }
+
+  private startPingToServer() {
+    const ping = async () => {
+      await this.sendMessageToSystemWorker(
+        new NatsMsgClientToServer({
+          event: NatsMsgClientToServerEvents.PING,
+        }),
+      );
+    };
+    this.pingInterval = setInterval(async () => {
+      await ping();
+    }, PING_INTERVAL);
+    // start instantly
+    ping();
   }
 
   private async handleInitialData(msg: string) {
@@ -343,9 +384,13 @@ export default class ConnectNats {
     if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
       return;
     }
-    const subject =
-      this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
+    try {
+      const subject =
+        this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
 
-    return await this._js.publish(subject, data.toBinary());
+      return await this._js.publish(subject, data.toBinary());
+    } catch (e) {
+      console.dir(e);
+    }
   };
 }
