@@ -55,14 +55,19 @@ export enum NatsMsgServerToClientEvents {
   USER_OFFLINE = 6,
 
   /**
-   * @generated from enum value: PMN_RENEWED_TOKEN = 7;
+   * @generated from enum value: RESP_RENEW_PNM_TOKEN = 7;
    */
-  PMN_RENEWED_TOKEN = 7,
+  RESP_RENEW_PNM_TOKEN = 7,
 
   /**
    * @generated from enum value: SYSTEM_NOTIFICATION = 8;
    */
   SYSTEM_NOTIFICATION = 8,
+
+  /**
+   * @generated from enum value: RESP_DATA_MSG = 9;
+   */
+  RESP_DATA_MSG = 9,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -76,8 +81,9 @@ proto3.util.setEnumType(
     { no: 4, name: 'USER_JOINED' },
     { no: 5, name: 'USER_DISCONNECTED' },
     { no: 6, name: 'USER_OFFLINE' },
-    { no: 7, name: 'PMN_RENEWED_TOKEN' },
+    { no: 7, name: 'RESP_RENEW_PNM_TOKEN' },
     { no: 8, name: 'SYSTEM_NOTIFICATION' },
+    { no: 9, name: 'RESP_DATA_MSG' },
   ],
 );
 
@@ -86,22 +92,28 @@ proto3.util.setEnumType(
  */
 export enum NatsMsgClientToServerEvents {
   /**
-   * @generated from enum value: UNKNOWN_NATS_CLIENT_EVENT = 0;
+   * @generated from enum value: REQ_INITIAL_DATA = 0;
    */
-  UNKNOWN_NATS_CLIENT_EVENT = 0,
+  REQ_INITIAL_DATA = 0,
 
   /**
-   * @generated from enum value: RENEW_PNM_TOKEN = 1;
+   * @generated from enum value: REQ_RENEW_PNM_TOKEN = 1;
    */
-  RENEW_PNM_TOKEN = 1,
+  REQ_RENEW_PNM_TOKEN = 1,
+
+  /**
+   * @generated from enum value: REQ_DATA_MSG = 3;
+   */
+  REQ_DATA_MSG = 3,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgClientToServerEvents)
 proto3.util.setEnumType(
   NatsMsgClientToServerEvents,
   'plugnmeet.NatsMsgClientToServerEvents',
   [
-    { no: 0, name: 'UNKNOWN_NATS_CLIENT_EVENT' },
-    { no: 1, name: 'RENEW_PNM_TOKEN' },
+    { no: 0, name: 'REQ_INITIAL_DATA' },
+    { no: 1, name: 'REQ_RENEW_PNM_TOKEN' },
+    { no: 3, name: 'REQ_DATA_MSG' },
   ],
 );
 
@@ -213,7 +225,7 @@ export class NatsMsgClientToServer extends Message<NatsMsgClientToServer> {
   /**
    * @generated from field: plugnmeet.NatsMsgClientToServerEvents event = 2;
    */
-  event = NatsMsgClientToServerEvents.UNKNOWN_NATS_CLIENT_EVENT;
+  event = NatsMsgClientToServerEvents.REQ_INITIAL_DATA;
 
   /**
    * @generated from field: string msg = 3;
@@ -533,11 +545,6 @@ export class NatsInitialData extends Message<NatsInitialData> {
    */
   mediaServerInfo?: MediaServerConnInfo;
 
-  /**
-   * @generated from field: repeated plugnmeet.NatsKvUserInfo online_users = 4;
-   */
-  onlineUsers: NatsKvUserInfo[] = [];
-
   constructor(data?: PartialMessage<NatsInitialData>) {
     super();
     proto3.util.initPartial(data, this);
@@ -553,13 +560,6 @@ export class NatsInitialData extends Message<NatsInitialData> {
       name: 'media_server_info',
       kind: 'message',
       T: MediaServerConnInfo,
-    },
-    {
-      no: 4,
-      name: 'online_users',
-      kind: 'message',
-      T: NatsKvUserInfo,
-      repeated: true,
     },
   ]);
 

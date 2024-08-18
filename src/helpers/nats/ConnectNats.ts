@@ -6,10 +6,13 @@ import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
   MediaServerConnInfo,
   NatsInitialData,
+  NatsKvUserInfo,
   NatsMsgClientToServer,
   NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
+  NatsSystemNotification,
+  NatsSystemNotificationTypes,
 } from '../proto/plugnmeet_nats_msg_pb';
 import { Dispatch } from 'react';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
@@ -18,6 +21,8 @@ import { createLivekitConnection } from '../livekit/utils';
 import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 import HandleRoomData from './HandleRoomData';
 import i18n from '../i18n';
+import HandleParticipants from './HandleParticipants';
+import { toast } from 'react-toastify';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
@@ -36,6 +41,7 @@ export default class ConnectNats {
   private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
   private handleRoomData: HandleRoomData;
+  private handleParticipants: HandleParticipants;
 
   constructor(
     token: string,
@@ -55,6 +61,7 @@ export default class ConnectNats {
     this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
     this.handleRoomData = new HandleRoomData(this);
+    this.handleParticipants = new HandleParticipants(this);
   }
 
   get nc(): NatsConnection {
@@ -110,6 +117,13 @@ export default class ConnectNats {
 
     this.startTokenRenewInterval();
 
+    // request for initial data
+    await this.sendMessageToSystemWorker(
+      new NatsMsgClientToServer({
+        event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
+      }),
+    );
+
     return true;
   };
 
@@ -141,11 +155,20 @@ export default class ConnectNats {
             await this.handleInitialData(payload.msg);
             this._setRoomConnectionStatusState('ready');
             break;
+          case NatsMsgServerToClientEvents.JOINED_USERS_LIST:
+            await this.handleJoinedUsers(payload.msg);
+            break;
           case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
             await this.handleRoomData.updateRoomMetadata(payload.msg);
             break;
-          case NatsMsgServerToClientEvents.PMN_RENEWED_TOKEN:
+          case NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN:
             this._token = payload.msg.toString();
+            break;
+          case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
+            this.handleNotification(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.USER_JOINED:
+            this.handleParticipants.addRemoteParticipant(payload.msg);
             break;
         }
       } catch (e) {
@@ -172,6 +195,13 @@ export default class ConnectNats {
         switch (payload.event) {
           case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
             await this.handleRoomData.updateRoomMetadata(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
+            this.handleNotification(payload.msg);
+            break;
+          case NatsMsgServerToClientEvents.USER_JOINED:
+            this.handleParticipants.addRemoteParticipant(payload.msg);
+            break;
         }
       } catch (e) {
         console.error(e);
@@ -200,7 +230,7 @@ export default class ConnectNats {
       const subject =
         this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
       const msg = new NatsMsgClientToServer({
-        event: NatsMsgClientToServerEvents.RENEW_PNM_TOKEN,
+        event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
         msg: this._token,
       });
       await this.js.publish(subject, msg.toBinary());
@@ -218,15 +248,54 @@ export default class ConnectNats {
       );
       return;
     }
-
+    // add local user first
+    if (data.localUser) {
+      await this.handleParticipants.addLocalParticipantInfo(data.localUser);
+    }
+    // now room
     if (data.room) {
       await this.handleRoomData.setRoomInfo(data.room);
     }
+    // media info
     if (data.mediaServerInfo) {
       await this.createMediaServerConn(data.mediaServerInfo);
     }
-    console.log(data.localUser);
-    console.log(data.onlineUsers);
+  }
+
+  private async handleJoinedUsers(msg: string) {
+    try {
+      const onlineUsers: string[] = JSON.parse(msg);
+      for (let i = 0; i < onlineUsers.length; i++) {
+        const user = NatsKvUserInfo.fromJson(onlineUsers[i]);
+        await this.handleParticipants.addRemoteParticipant(user);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private handleNotification(data: string) {
+    const nt = NatsSystemNotification.fromJsonString(data);
+    switch (nt.type) {
+      case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
+        toast(nt.msg, {
+          toastId: 'info-status',
+          type: 'info',
+        });
+        break;
+      case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
+        toast(nt.msg, {
+          toastId: 'info-status',
+          type: 'warning',
+        });
+        break;
+      case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
+        toast(nt.msg, {
+          toastId: 'info-status',
+          type: 'error',
+        });
+        break;
+    }
   }
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
@@ -269,4 +338,14 @@ export default class ConnectNats {
     this._setCurrentMediaServerConn(conn);
     this._mediaServerConn = conn;
   }
+
+  public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
+    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+      return;
+    }
+    const subject =
+      this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
+
+    return await this._js.publish(subject, data.toBinary());
+  };
 }

@@ -13,7 +13,6 @@ import {
 import i18n from '../i18n';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import { sleep } from '../utils';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
 import ConnectNats from './ConnectNats';
 
@@ -149,8 +148,6 @@ export default class HandleRoomData {
   };
 
   private addPreloadWhiteboardFile = async () => {
-    // without waiting, we won't get current user data
-    await sleep(3000);
     if (!store.getState().session.currentUser?.metadata?.is_presenter) {
       this.checkedPreloadedWhiteboardFile = true;
       return;

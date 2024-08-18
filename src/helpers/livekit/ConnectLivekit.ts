@@ -138,7 +138,7 @@ export default class ConnectLivekit
       await this._room.connect(this.url, this.token);
       // we'll prepare our information
       await this.updateSession();
-      await this.initiateParticipants();
+      //await this.initiateParticipants();
       // open websocket
       openWebsocketConnection();
       // finally
@@ -214,10 +214,10 @@ export default class ConnectLivekit
 
     room.on(RoomEvent.DataReceived, this.handleDataMessages.dataReceived);
 
-    room.on(
-      RoomEvent.ParticipantConnected,
-      this.handleParticipant.participantConnected,
-    );
+    // room.on(
+    //   RoomEvent.ParticipantConnected,
+    //   this.handleParticipant.participantConnected,
+    // );
     room.on(
       RoomEvent.ParticipantDisconnected,
       this.handleParticipant.participantDisconnected,
