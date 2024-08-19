@@ -22,7 +22,7 @@ export default class HandleRoomData {
   private welcomeMessage: string | undefined = undefined;
   private checkedPreloadedWhiteboardFile = false;
 
-  constructor(private that: ConnectNats) {
+  constructor(that: ConnectNats) {
     this._that = that;
     this._room = {
       room_id: '',
