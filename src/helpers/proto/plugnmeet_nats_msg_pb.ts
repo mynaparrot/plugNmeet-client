@@ -742,3 +742,93 @@ export class NatsUserMetadataUpdate extends Message<NatsUserMetadataUpdate> {
     return proto3.util.equals(NatsUserMetadataUpdate, a, b);
   }
 }
+
+/**
+ * @generated from message plugnmeet.ChatMessage
+ */
+export class ChatMessage extends Message<ChatMessage> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = '';
+
+  /**
+   * @generated from field: string from_name = 2;
+   */
+  fromName = '';
+
+  /**
+   * @generated from field: string from_user_id = 3;
+   */
+  fromUserId = '';
+
+  /**
+   * @generated from field: optional string to_user_id = 5;
+   */
+  toUserId?: string;
+
+  /**
+   * @generated from field: bool is_private = 6;
+   */
+  isPrivate = false;
+
+  /**
+   * @generated from field: string message = 7;
+   */
+  message = '';
+
+  constructor(data?: PartialMessage<ChatMessage>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.ChatMessage';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'from_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'from_user_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 5,
+      name: 'to_user_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    { no: 6, name: 'is_private', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 7, name: 'message', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): ChatMessage {
+    return new ChatMessage().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): ChatMessage {
+    return new ChatMessage().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): ChatMessage {
+    return new ChatMessage().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: ChatMessage | PlainMessage<ChatMessage> | undefined,
+    b: ChatMessage | PlainMessage<ChatMessage> | undefined,
+  ): boolean {
+    return proto3.util.equals(ChatMessage, a, b);
+  }
+}

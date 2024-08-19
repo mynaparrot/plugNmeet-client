@@ -7,18 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { RootState, store, useAppSelector } from '../../../store';
-import {
-  isSocketConnected,
-  sendWebsocketMessage,
-} from '../../../helpers/websocket';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
+import { getNatsConn } from '../../../helpers/nats';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
@@ -154,29 +146,32 @@ const TextBoxArea = ({
         return;
       }
     }
+    const conn = getNatsConn();
+    await conn.sendChatMsg(selectedChatOption, msg.replace(/\r?\n/g, '<br />'));
+    setMessage('');
 
-    const sid = await currentRoom.getSid();
-    const dataMsg = new DataMessage({
-      type: DataMsgType.USER,
-      roomSid: sid,
-      roomId: currentRoom.name,
-      to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      body: {
-        type: DataMsgBodyType.CHAT,
-        isPrivate: selectedChatOption !== 'public' ? 1 : 0,
-        from: {
-          sid: currentRoom.localParticipant.sid,
-          userId: currentRoom.localParticipant.identity,
-          name: currentRoom.localParticipant.name,
-        },
-        msg: msg.replace(/\r?\n/g, '<br />'),
-      },
-    });
-
-    if (isSocketConnected()) {
-      sendWebsocketMessage(dataMsg.toBinary());
-      setMessage('');
-    }
+    // const sid = await currentRoom.getSid();
+    // const dataMsg = new DataMessage({
+    //   type: DataMsgType.USER,
+    //   roomSid: sid,
+    //   roomId: currentRoom.name,
+    //   to: selectedChatOption !== 'public' ? selectedChatOption : '',
+    //   body: {
+    //     type: DataMsgBodyType.CHAT,
+    //     isPrivate: selectedChatOption !== 'public' ? 1 : 0,
+    //     from: {
+    //       sid: currentRoom.localParticipant.sid,
+    //       userId: currentRoom.localParticipant.identity,
+    //       name: currentRoom.localParticipant.name,
+    //     },
+    //     msg: msg.replace(/\r?\n/g, '<br />'),
+    //   },
+    // });
+    //
+    // if (isSocketConnected()) {
+    //   sendWebsocketMessage(dataMsg.toBinary());
+    //   setMessage('');
+    // }
     onAfterSendMessage();
   };
 

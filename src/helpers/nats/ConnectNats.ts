@@ -1,9 +1,11 @@
 import type { JetStreamClient, NatsConnection } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
 import { isE2EESupported } from 'livekit-client';
+import { toast } from 'react-toastify';
 
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
+  ChatMessage,
   MediaServerConnInfo,
   NatsInitialData,
   NatsKvUserInfo,
@@ -22,7 +24,7 @@ import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 import HandleRoomData from './HandleRoomData';
 import i18n from '../i18n';
 import HandleParticipants from './HandleParticipants';
-import { toast } from 'react-toastify';
+import HandleDataMessage from './HandleDataMessage';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -46,6 +48,7 @@ export default class ConnectNats {
 
   private handleRoomData: HandleRoomData;
   private handleParticipants: HandleParticipants;
+  private handleDataMsg: HandleDataMessage;
 
   constructor(
     token: string,
@@ -66,6 +69,7 @@ export default class ConnectNats {
 
     this.handleRoomData = new HandleRoomData(this);
     this.handleParticipants = new HandleParticipants(this);
+    this.handleDataMsg = new HandleDataMessage(this);
   }
 
   get nc(): NatsConnection {
@@ -245,12 +249,18 @@ export default class ConnectNats {
       return;
     }
 
-    const consumerName = 'chatPublic:' + this._userId;
+    const consumerName = this._subjects.chatPublic + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      console.log(m.string());
+      try {
+        const payload = ChatMessage.fromBinary(m.data);
+        payload.id = `${m.info.timestampNanos}`;
+        await this.handleDataMsg.handleChatMsg(payload);
+      } catch (e) {
+        console.error(e);
+      }
       m.ack();
     }
   };
@@ -390,6 +400,34 @@ export default class ConnectNats {
       const subject =
         this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
 
+      return await this._js.publish(subject, data.toBinary());
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+
+  public sendChatMsg = async (to: string, msg: string) => {
+    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+      return;
+    }
+
+    const isPrivate = to !== 'public';
+    const data = new ChatMessage({
+      fromName: this.handleParticipants.localParticipant.name,
+      fromUserId: this.handleParticipants.localParticipant.userId,
+      toUserId: to !== 'public' ? to : undefined,
+      isPrivate: isPrivate,
+      message: msg,
+    });
+
+    let subject =
+      this._roomId + ':' + this._subjects.chatPublic + '.' + this._userId;
+    if (isPrivate) {
+      subject =
+        this._roomId + ':' + this._subjects.chatPrivate + '.' + this._userId;
+    }
+
+    try {
       return await this._js.publish(subject, data.toBinary());
     } catch (e) {
       console.dir(e);

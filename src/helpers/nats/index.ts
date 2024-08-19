@@ -34,5 +34,5 @@ export const startNatsConn = async (
 };
 
 export const getNatsConn = () => {
-  return conn;
+  return conn as ConnectNats;
 };
