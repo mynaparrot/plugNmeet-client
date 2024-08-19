@@ -11,9 +11,12 @@ import { store } from '../../store';
 import {
   addCurrentUser,
   updateCurrentUserMetadata,
+  updateScreenSharing,
 } from '../../store/slices/sessionSlice';
 import {
   addParticipant,
+  participantsSelector,
+  removeParticipant,
   updateParticipant,
 } from '../../store/slices/participantSlice';
 import languages from '../languages';
@@ -23,6 +26,7 @@ import {
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
+import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
@@ -32,7 +36,7 @@ export default class HandleParticipants {
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
 
-  constructor(private that: ConnectNats) {
+  constructor(that: ConnectNats) {
     this._that = that;
     this._localParticipant = {
       userId: '',
@@ -88,7 +92,7 @@ export default class HandleParticipants {
     await this.updateParticipantMetadata(info.userId, info.metadata);
   };
 
-  public addRemoteParticipant = (p: string | NatsKvUserInfo) => {
+  public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
     let participant: NatsKvUserInfo;
     if (typeof p === 'string') {
       try {
@@ -100,8 +104,32 @@ export default class HandleParticipants {
     } else {
       participant = p;
     }
-
     const metadata = this.decodeMetadata(participant.metadata);
+
+    // check if this user exists or not
+    const existUser = participantsSelector.selectById(
+      store.getState(),
+      participant.userId,
+    );
+    if (
+      typeof existUser !== 'undefined' &&
+      existUser.userId === participant.userId
+    ) {
+      console.info(
+        `found same userId: ${existUser.userId} again, so updating medata only, metadata same?: ${metadata.metadata_id === existUser.metadata.metadata_id}`,
+      );
+      // we've the same user, so we won't add it again
+      // because maybe this user disconnected & reconnected again
+      // we can just try to update metadata
+      if (metadata.metadata_id !== existUser.metadata.metadata_id) {
+        await this.updateParticipantMetadata(
+          participant.userId,
+          participant.metadata,
+        );
+      }
+      return;
+    }
+
     this.notificationForWaitingUser(metadata, participant.name);
 
     store.dispatch(
@@ -176,6 +204,12 @@ export default class HandleParticipants {
       return;
     }
     console.log(participant);
+
+    if (this.isRecorderJoin) {
+      this.participantsCount--;
+    }
+    // TODO: think about medias
+    // may be simply pause?
   };
 
   /**
@@ -185,17 +219,45 @@ export default class HandleParticipants {
    * @param data string
    */
   public handleParticipantOffline = (data: string) => {
-    let participant: NatsKvUserInfo;
+    let p: NatsKvUserInfo;
     try {
-      participant = NatsKvUserInfo.fromJsonString(data);
+      p = NatsKvUserInfo.fromJsonString(data);
     } catch (e) {
       console.error(e);
       return;
     }
-    console.log(participant);
+    console.log(p);
+    const participant = participantsSelector.selectById(
+      store.getState(),
+      p.userId,
+    );
+
+    if (participant?.screenShareTrack) {
+      store.dispatch(
+        updateScreenSharing({
+          isActive: false,
+          sharedBy: '',
+        }),
+      );
+    }
+    // now remove user.
+    store.dispatch(removeParticipant(p.userId));
+
+    // remove if in active speaker
+    store.dispatch(removeOneSpeaker(p.userId));
+
+    // TODO: now remove webcam
+    // this.that.mediaServerConn.updateVideoSubscribers(p, false);
+    // // now remove audio
+    // this.that.mediaServerConn.updateAudioSubscribers(p, false);
+    // // check for screen sharing
+    // this.that.mediaServerConn.updateScreenShareOnUserDisconnect(p);
   };
 
-  private notificationForWaitingUser(metadata: ICurrentUserMetadata, name) {
+  private notificationForWaitingUser(
+    metadata: ICurrentUserMetadata,
+    name: string,
+  ) {
     const state = store.getState();
     if (state.session.currentUser?.isRecorder) {
       // if the current user is recorder then don't need to do anything
@@ -206,7 +268,7 @@ export default class HandleParticipants {
       metadata.wait_for_approval &&
       state.session.currentUser?.metadata?.is_admin
     ) {
-      // we can open participants panel if close
+      // we can open the participants panel if close
       if (!state.bottomIconsActivity.isActiveParticipantsPanel) {
         store.dispatch(updateIsActiveParticipantsPanel(true));
       }

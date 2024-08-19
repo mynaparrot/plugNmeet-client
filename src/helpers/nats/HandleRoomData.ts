@@ -45,14 +45,18 @@ export default class HandleRoomData {
   };
 
   public updateRoomMetadata = async (data: string) => {
-    const metadata: IRoomMetadata = JSON.parse(data);
+    try {
+      const metadata: IRoomMetadata = JSON.parse(data);
 
-    if (
-      typeof this._room.metadata === 'undefined' ||
-      this._room.metadata.metadata_id !== metadata.metadata_id
-    ) {
-      this._room.metadata = metadata;
-      await this.updateMetadata();
+      if (
+        typeof this._room.metadata === 'undefined' ||
+        this._room.metadata.metadata_id !== metadata.metadata_id
+      ) {
+        this._room.metadata = metadata;
+        await this.updateMetadata();
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 

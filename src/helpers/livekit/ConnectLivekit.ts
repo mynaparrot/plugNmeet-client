@@ -218,10 +218,10 @@ export default class ConnectLivekit
     //   RoomEvent.ParticipantConnected,
     //   this.handleParticipant.participantConnected,
     // );
-    room.on(
-      RoomEvent.ParticipantDisconnected,
-      this.handleParticipant.participantDisconnected,
-    );
+    // room.on(
+    //   RoomEvent.ParticipantDisconnected,
+    //   this.handleParticipant.participantDisconnected,
+    // );
     room.on(
       RoomEvent.ParticipantMetadataChanged,
       this.handleParticipant.setParticipantMetadata,

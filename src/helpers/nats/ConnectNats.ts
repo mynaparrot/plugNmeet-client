@@ -171,44 +171,15 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPrivate + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-
     const sub = await consumer.consume();
+
     for await (const m of sub) {
       try {
         const payload = NatsMsgServerToClient.fromBinary(m.data);
-        console.log(payload.event, payload.msg);
-
-        switch (payload.event) {
-          case NatsMsgServerToClientEvents.INITIAL_DATA:
-            await this.handleInitialData(payload.msg);
-            this._setRoomConnectionStatusState('ready');
-            break;
-          case NatsMsgServerToClientEvents.JOINED_USERS_LIST:
-            await this.handleJoinedUsers(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-            await this.handleRoomData.updateRoomMetadata(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN:
-            this._token = payload.msg.toString();
-            break;
-          case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
-            this.handleNotification(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.USER_JOINED:
-            this.handleParticipants.addRemoteParticipant(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.USER_DISCONNECTED:
-            this.handleParticipants.handleParticipantDisconnected(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.USER_OFFLINE:
-            this.handleParticipants.handleParticipantOffline(payload.msg);
-            break;
-        }
+        await this.handleSystemEvents(payload);
       } catch (e) {
         console.error(e);
       }
-
       m.ack();
     }
   }
@@ -220,35 +191,49 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPublic + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-
     const sub = await consumer.consume();
+
     for await (const m of sub) {
       try {
         const payload = NatsMsgServerToClient.fromBinary(m.data);
-        console.log(payload.event, payload.msg);
-        switch (payload.event) {
-          case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-            await this.handleRoomData.updateRoomMetadata(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
-            this.handleNotification(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.USER_JOINED:
-            this.handleParticipants.addRemoteParticipant(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.USER_DISCONNECTED:
-            this.handleParticipants.handleParticipantDisconnected(payload.msg);
-            break;
-          case NatsMsgServerToClientEvents.USER_OFFLINE:
-            this.handleParticipants.handleParticipantOffline(payload.msg);
-            break;
-        }
+        await this.handleSystemEvents(payload);
       } catch (e) {
         console.error(e);
       }
       m.ack();
     }
   };
+
+  private async handleSystemEvents(payload: NatsMsgServerToClient) {
+    console.log(payload.event, payload.msg);
+    switch (payload.event) {
+      case NatsMsgServerToClientEvents.INITIAL_DATA:
+        await this.handleInitialData(payload.msg);
+        this._setRoomConnectionStatusState('ready');
+        break;
+      case NatsMsgServerToClientEvents.JOINED_USERS_LIST:
+        await this.handleJoinedUsers(payload.msg);
+        break;
+      case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
+        await this.handleRoomData.updateRoomMetadata(payload.msg);
+        break;
+      case NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN:
+        this._token = payload.msg.toString();
+        break;
+      case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
+        this.handleNotification(payload.msg);
+        break;
+      case NatsMsgServerToClientEvents.USER_JOINED:
+        await this.handleParticipants.addRemoteParticipant(payload.msg);
+        break;
+      case NatsMsgServerToClientEvents.USER_DISCONNECTED:
+        this.handleParticipants.handleParticipantDisconnected(payload.msg);
+        break;
+      case NatsMsgServerToClientEvents.USER_OFFLINE:
+        this.handleParticipants.handleParticipantOffline(payload.msg);
+        break;
+    }
+  }
 
   private subscribeToPublicChat = async () => {
     if (typeof this._js === 'undefined') {
