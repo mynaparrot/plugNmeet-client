@@ -8,18 +8,13 @@ import { RootState, store, useAppSelector } from '../../../store';
 import {
   isSocketConnected,
   sendAnalyticsByWebsocket,
-  sendWebsocketMessage,
 } from '../../../helpers/websocket';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import {
   AnalyticsEvents,
   AnalyticsEventType,
 } from '../../../helpers/proto/plugnmeet_analytics_pb';
+import { getNatsConn } from '../../../helpers/nats';
 
 interface IFileSendProps {
   isChatServiceReady: boolean;
@@ -32,11 +27,7 @@ const selectedChatOptionSelector = createSelector(
   (roomSettings) => roomSettings.selectedChatOption,
 );
 
-const FileSend = ({
-  isChatServiceReady,
-  lockSendFile,
-  currentRoom,
-}: IFileSendProps) => {
+const FileSend = ({ isChatServiceReady, lockSendFile }: IFileSendProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const [files, setFiles] = useState<Array<File>>();
@@ -92,25 +83,9 @@ const FileSend = ({
       filePath
     }" target="_blank">${fileName}</a></span>`;
 
-    const sid = await currentRoom.getSid();
-    const dataMsg = new DataMessage({
-      type: DataMsgType.USER,
-      roomSid: sid,
-      roomId: currentRoom.name,
-      to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      body: {
-        type: DataMsgBodyType.CHAT,
-        isPrivate: selectedChatOption !== 'public' ? 1 : 0,
-        from: {
-          sid: currentRoom.localParticipant.sid,
-          userId: currentRoom.localParticipant.identity,
-          name: currentRoom.localParticipant.name,
-        },
-        msg: message,
-      },
-    });
+    const conn = getNatsConn();
+    await conn.sendChatMsg(selectedChatOption, message);
 
-    sendWebsocketMessage(dataMsg.toBinary());
     // send analytics
     sendAnalyticsByWebsocket(
       AnalyticsEvents.ANALYTICS_EVENT_USER_CHAT_FILES,
