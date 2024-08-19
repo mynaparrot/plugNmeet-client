@@ -232,6 +232,11 @@ export default class ConnectNats {
       case NatsMsgServerToClientEvents.USER_OFFLINE:
         this.handleParticipants.handleParticipantOffline(payload.msg);
         break;
+      case NatsMsgServerToClientEvents.USER_METADATA_UPDATE:
+        await this.handleParticipants.handleParticipantMetadataUpdate(
+          payload.msg,
+        );
+        break;
     }
   }
 

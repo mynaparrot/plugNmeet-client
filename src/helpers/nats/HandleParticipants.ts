@@ -6,7 +6,10 @@ import {
   ICurrentUser,
   ICurrentUserMetadata,
 } from '../../store/slices/interfaces/session';
-import { NatsKvUserInfo } from '../proto/plugnmeet_nats_msg_pb';
+import {
+  NatsKvUserInfo,
+  NatsUserMetadataUpdate,
+} from '../proto/plugnmeet_nats_msg_pb';
 import { store } from '../../store';
 import {
   addCurrentUser,
@@ -152,6 +155,15 @@ export default class HandleParticipants {
 
     if (this.isRecorderJoin) {
       this.participantsCount++;
+    }
+  };
+
+  public handleParticipantMetadataUpdate = async (d: string) => {
+    try {
+      const data = NatsUserMetadataUpdate.fromJsonString(d);
+      await this.updateParticipantMetadata(data.userId, data.metadata);
+    } catch (e) {
+      console.error(e);
     }
   };
 

@@ -681,3 +681,64 @@ export class NatsSystemNotification extends Message<NatsSystemNotification> {
     return proto3.util.equals(NatsSystemNotification, a, b);
   }
 }
+
+/**
+ * @generated from message plugnmeet.NatsUserMetadataUpdate
+ */
+export class NatsUserMetadataUpdate extends Message<NatsUserMetadataUpdate> {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId = '';
+
+  /**
+   * @generated from field: string metadata = 2;
+   */
+  metadata = '';
+
+  constructor(data?: PartialMessage<NatsUserMetadataUpdate>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.NatsUserMetadataUpdate';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): NatsUserMetadataUpdate {
+    return new NatsUserMetadataUpdate().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): NatsUserMetadataUpdate {
+    return new NatsUserMetadataUpdate().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): NatsUserMetadataUpdate {
+    return new NatsUserMetadataUpdate().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a:
+      | NatsUserMetadataUpdate
+      | PlainMessage<NatsUserMetadataUpdate>
+      | undefined,
+    b:
+      | NatsUserMetadataUpdate
+      | PlainMessage<NatsUserMetadataUpdate>
+      | undefined,
+  ): boolean {
+    return proto3.util.equals(NatsUserMetadataUpdate, a, b);
+  }
+}

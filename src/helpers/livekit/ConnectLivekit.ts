@@ -202,10 +202,10 @@ export default class ConnectLivekit
       this._roomConnectionStatusState('connected'),
     );
     room.on(RoomEvent.Disconnected, this.onDisconnected);
-    room.on(
-      RoomEvent.RoomMetadataChanged,
-      this.handleRoomMetadata.setRoomMetadata,
-    );
+    // room.on(
+    //   RoomEvent.RoomMetadataChanged,
+    //   this.handleRoomMetadata.setRoomMetadata,
+    // );
     room.on(
       RoomEvent.ActiveSpeakersChanged,
       this.handleActiveSpeakers.activeSpeakersChanged,
@@ -222,10 +222,10 @@ export default class ConnectLivekit
     //   RoomEvent.ParticipantDisconnected,
     //   this.handleParticipant.participantDisconnected,
     // );
-    room.on(
-      RoomEvent.ParticipantMetadataChanged,
-      this.handleParticipant.setParticipantMetadata,
-    );
+    // room.on(
+    //   RoomEvent.ParticipantMetadataChanged,
+    //   this.handleParticipant.setParticipantMetadata,
+    // );
     room.on(
       RoomEvent.ConnectionQualityChanged,
       this.handleParticipant.connectionQualityChanged,
