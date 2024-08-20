@@ -29,6 +29,8 @@ import HandleDataMessage from './HandleDataMessage';
 import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
 import HandleWhiteboard from './HandleWhiteboard';
 import HandleChat from './HandleChat';
+import { store } from '../../store';
+import { participantsSelector } from '../../store/slices/participantSlice';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -271,9 +273,13 @@ export default class ConnectNats {
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      const payload = DataChannelMessage.fromBinary(m.data);
-      if (payload.fromUserId !== this._userId) {
-        await this.handleWhiteboard.handleWhiteboardMsg(payload);
+      try {
+        const payload = DataChannelMessage.fromBinary(m.data);
+        if (payload.fromUserId !== this._userId) {
+          await this.handleWhiteboard.handleWhiteboardMsg(payload);
+        }
+      } catch (e) {
+        console.error(e);
       }
       m.ack();
     }
@@ -289,7 +295,15 @@ export default class ConnectNats {
 
     const sub = await consumer.consume();
     for await (const m of sub) {
-      console.log(m.string());
+      try {
+        const payload = DataChannelMessage.fromBinary(m.data);
+        if (payload.fromUserId !== this._userId) {
+          console.log(payload);
+          this.handleDataMsg.handleMessage(payload);
+        }
+      } catch (e) {
+        console.error(e);
+      }
       m.ack();
     }
   };
@@ -302,7 +316,7 @@ export default class ConnectNats {
         this._setRoomConnectionStatusState('ready');
         break;
       case NatsMsgServerToClientEvents.JOINED_USERS_LIST:
-        await this.handleJoinedUsers(payload.msg);
+        await this.handleJoinedUsersList(payload.msg);
         break;
       case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
         await this.handleRoomData.updateRoomMetadata(payload.msg);
@@ -380,18 +394,50 @@ export default class ConnectNats {
     }
   }
 
-  private async handleJoinedUsers(msg: string) {
+  private async handleJoinedUsersList(msg: string) {
     try {
       const onlineUsers: string[] = JSON.parse(msg);
       for (let i = 0; i < onlineUsers.length; i++) {
         const user = NatsKvUserInfo.fromJson(onlineUsers[i]);
         await this.handleParticipants.addRemoteParticipant(user);
       }
+      await this.onAfterUserReady();
     } catch (e) {
       console.error(e);
     }
   }
 
+  /**
+   * This method should call when the current user is ready
+   * with an initial data & users list
+   */
+  private async onAfterUserReady() {
+    const participants = participantsSelector
+      .selectAll(store.getState())
+      .filter((participant) => participant.userId !== this._userId);
+
+    if (!participants.length) return;
+    participants.sort((a, b) => {
+      return a.joinedAt - b.joinedAt;
+    });
+    const donor = participants[0];
+    // TODO: need to think about it
+    // await this.sendDataMessage(
+    //   DataMsgBodyType.SEND_CHAT_MSGS,
+    //   '',
+    //   donor.userId,
+    // );
+    await this.sendDataMessage(
+      DataMsgBodyType.INIT_WHITEBOARD,
+      '',
+      donor.userId,
+    );
+  }
+
+  /**
+   * To handle various notifications
+   * @param data
+   */
   private handleNotification(data: string) {
     const nt = NatsSystemNotification.fromJsonString(data);
     switch (nt.type) {

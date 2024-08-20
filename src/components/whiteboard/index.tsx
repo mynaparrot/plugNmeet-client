@@ -281,7 +281,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       user.username = name;
       user.id = userId;
       tmp.set(userId, user);
-      console.log(tmp);
 
       excalidrawAPI?.updateScene({ collaborators: tmp });
     }
