@@ -12,6 +12,7 @@ import type {
   PlainMessage,
 } from '@bufbuild/protobuf';
 import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
+import { DataMsgBodyType } from './plugnmeet_datamessage_pb.ts';
 
 /**
  * @generated from enum plugnmeet.NatsMsgServerToClientEvents
@@ -830,5 +831,88 @@ export class ChatMessage extends Message<ChatMessage> {
     b: ChatMessage | PlainMessage<ChatMessage> | undefined,
   ): boolean {
     return proto3.util.equals(ChatMessage, a, b);
+  }
+}
+
+/**
+ * @generated from message plugnmeet.DataChannelMessage
+ */
+export class DataChannelMessage extends Message<DataChannelMessage> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = '';
+
+  /**
+   * @generated from field: plugnmeet.DataMsgBodyType type = 2;
+   */
+  type = DataMsgBodyType.RAISE_HAND;
+
+  /**
+   * @generated from field: string from_user_id = 3;
+   */
+  fromUserId = '';
+
+  /**
+   * @generated from field: string to_user_id = 4;
+   */
+  toUserId = '';
+
+  /**
+   * @generated from field: string message = 5;
+   */
+  message = '';
+
+  constructor(data?: PartialMessage<DataChannelMessage>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.DataChannelMessage';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: 'id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 2,
+      name: 'type',
+      kind: 'enum',
+      T: proto3.getEnumType(DataMsgBodyType),
+    },
+    {
+      no: 3,
+      name: 'from_user_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 4, name: 'to_user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: 'message', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): DataChannelMessage {
+    return new DataChannelMessage().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): DataChannelMessage {
+    return new DataChannelMessage().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): DataChannelMessage {
+    return new DataChannelMessage().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: DataChannelMessage | PlainMessage<DataChannelMessage> | undefined,
+    b: DataChannelMessage | PlainMessage<DataChannelMessage> | undefined,
+  ): boolean {
+    return proto3.util.equals(DataChannelMessage, a, b);
   }
 }

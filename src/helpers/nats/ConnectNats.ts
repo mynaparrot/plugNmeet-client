@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
   ChatMessage,
+  DataChannelMessage,
   MediaServerConnInfo,
   NatsInitialData,
   NatsKvUserInfo,
@@ -25,6 +26,9 @@ import HandleRoomData from './HandleRoomData';
 import i18n from '../i18n';
 import HandleParticipants from './HandleParticipants';
 import HandleDataMessage from './HandleDataMessage';
+import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
+import HandleWhiteboard from './HandleWhiteboard';
+import HandleChat from './HandleChat';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -48,7 +52,9 @@ export default class ConnectNats {
 
   private handleRoomData: HandleRoomData;
   private handleParticipants: HandleParticipants;
+  private handleChat: HandleChat;
   private handleDataMsg: HandleDataMessage;
+  private handleWhiteboard: HandleWhiteboard;
 
   constructor(
     token: string,
@@ -69,7 +75,9 @@ export default class ConnectNats {
 
     this.handleRoomData = new HandleRoomData(this);
     this.handleParticipants = new HandleParticipants(this);
+    this.handleChat = new HandleChat(this);
     this.handleDataMsg = new HandleDataMessage(this);
+    this.handleWhiteboard = new HandleWhiteboard(this);
   }
 
   get nc(): NatsConnection {
@@ -123,6 +131,8 @@ export default class ConnectNats {
     this.subscribeToSystemPublic();
     this.subscribeToPublicChat();
     this.subscribeToPrivateChat();
+    this.subscribeToWhiteboard();
+    this.subscribeToDataChannel();
 
     this.startTokenRenewInterval();
     this.startPingToServer();
@@ -222,7 +232,7 @@ export default class ConnectNats {
       try {
         const payload = ChatMessage.fromBinary(m.data);
         payload.id = `${m.info.timestampNanos}`;
-        await this.handleDataMsg.handleChatMsg(payload);
+        await this.handleChat.handleMsg(payload);
       } catch (e) {
         console.error(e);
       }
@@ -243,11 +253,43 @@ export default class ConnectNats {
       try {
         const payload = ChatMessage.fromBinary(m.data);
         payload.id = `${m.info.timestampNanos}`;
-        console.log(payload);
-        await this.handleDataMsg.handleChatMsg(payload);
+        await this.handleChat.handleMsg(payload);
       } catch (e) {
         console.error(e);
       }
+      m.ack();
+    }
+  };
+
+  private subscribeToWhiteboard = async () => {
+    if (typeof this._js === 'undefined') {
+      return;
+    }
+
+    const consumerName = this._subjects.whiteboard + ':' + this._userId;
+    const consumer = await this._js.consumers.get(this._roomId, consumerName);
+
+    const sub = await consumer.consume();
+    for await (const m of sub) {
+      const payload = DataChannelMessage.fromBinary(m.data);
+      if (payload.fromUserId !== this._userId) {
+        await this.handleWhiteboard.handleWhiteboardMsg(payload);
+      }
+      m.ack();
+    }
+  };
+
+  private subscribeToDataChannel = async () => {
+    if (typeof this._js === 'undefined') {
+      return;
+    }
+
+    const consumerName = this._subjects.dataChannel + ':' + this._userId;
+    const consumer = await this._js.consumers.get(this._roomId, consumerName);
+
+    const sub = await consumer.consume();
+    for await (const m of sub) {
+      console.log(m.string());
       m.ack();
     }
   };
@@ -479,6 +521,54 @@ export default class ConnectNats {
       } catch (e) {
         console.dir(e);
       }
+    }
+  };
+
+  public sendWhiteboardData = async (
+    type: DataMsgBodyType,
+    msg: string,
+    to?: string,
+  ) => {
+    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+      return;
+    }
+
+    const data = new DataChannelMessage({
+      type,
+      fromUserId: this.handleParticipants.localParticipant.userId,
+      toUserId: to,
+      message: msg,
+    });
+    const subject =
+      this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
+    try {
+      await this._js.publish(subject, data.toBinary());
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+
+  public sendDataMessage = async (
+    type: DataMsgBodyType,
+    msg: string,
+    to?: string,
+  ) => {
+    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+      return;
+    }
+
+    const data = new DataChannelMessage({
+      type,
+      fromUserId: this.handleParticipants.localParticipant.userId,
+      toUserId: to,
+      message: msg,
+    });
+    const subject =
+      this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
+    try {
+      await this._js.publish(subject, data.toBinary());
+    } catch (e) {
+      console.dir(e);
     }
   };
 }

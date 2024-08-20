@@ -9,21 +9,17 @@ import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
-import { sendWebsocketMessage } from '../../../helpers/websocket';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
 import {
   BroadcastedExcalidrawElement,
   PRECEDING_ELEMENT_KEY,
 } from './reconciliation';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
 import { toast } from 'react-toastify';
 import { EndToEndEncryptionFeatures } from '../../../store/slices/interfaces/session';
+import { getNatsConn } from '../../../helpers/nats';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
@@ -48,27 +44,17 @@ export const sendRequestedForWhiteboardData = () => {
     donors = participants.slice(0, 2);
   }
 
-  donors.forEach((donor) => {
-    const dataMsg = new DataMessage({
-      type: DataMsgType.SYSTEM,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      to: donor.sid,
-      body: {
-        type: DataMsgBodyType.INIT_WHITEBOARD,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg: '',
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+  donors.forEach(async (donor) => {
+    const conn = getNatsConn();
+    await conn.sendWhiteboardData(
+      DataMsgBodyType.INIT_WHITEBOARD,
+      '',
+      donor.sid,
+    );
   });
 };
 
-export const sendWhiteboardDataAsDonor = (
+export const sendWhiteboardDataAsDonor = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   sendTo: string,
 ) => {
@@ -90,11 +76,11 @@ export const sendWhiteboardDataAsDonor = (
     pageFiles: whiteboard.whiteboardOfficeFilePagesAndOtherImages,
   };
 
-  broadcastWhiteboardOfficeFile(newFile, sendTo);
+  await broadcastWhiteboardOfficeFile(newFile, sendTo);
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
-    broadcastSceneOnChange(elements, true, sendTo);
+    await broadcastSceneOnChange(elements, true, sendTo);
   }
 
   // finally, change status of request
@@ -113,7 +99,7 @@ export const isSyncableElement = (element: ExcalidrawElement) => {
   return !isInvisiblySmallElement(element);
 };
 
-export const broadcastSceneOnChange = (
+export const broadcastSceneOnChange = async (
   allElements: readonly ExcalidrawElement[],
   syncAll: boolean,
   sendTo?: string,
@@ -143,114 +129,53 @@ export const broadcastSceneOnChange = (
     broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
   }
 
-  broadcastScreenDataBySocket(syncableElements, sendTo);
+  await broadcastScreenDataBySocket(syncableElements, sendTo);
 };
 
 export const broadcastScreenDataBySocket = async (
   elements: readonly ExcalidrawElement[],
   sendTo?: string,
 ) => {
-  const session = store.getState().session;
+  //const session = store.getState().session;
   const finalMsg = await handleEncryption(JSON.stringify(elements));
   if (typeof finalMsg === 'undefined') {
     return;
   }
-
-  const dataMsg = new DataMessage({
-    type: DataMsgType.WHITEBOARD,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.SCENE_UPDATE,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: finalMsg,
-    },
-  });
-
-  if (sendTo && sendTo !== '') {
-    dataMsg.to = sendTo;
-  }
-
-  sendWebsocketMessage(dataMsg.toBinary());
+  const conn = getNatsConn();
+  await conn.sendWhiteboardData(DataMsgBodyType.SCENE_UPDATE, finalMsg, sendTo);
 };
 
-export const broadcastCurrentPageNumber = (page: number, sendTo?: string) => {
-  const session = store.getState().session;
-  const dataMsg = new DataMessage({
-    type: DataMsgType.WHITEBOARD,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.PAGE_CHANGE,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: `${page}`,
-    },
-  });
-
-  if (sendTo !== '') {
-    dataMsg.to = sendTo;
-  }
-
-  sendWebsocketMessage(dataMsg.toBinary());
+export const broadcastCurrentPageNumber = async (
+  page: number,
+  sendTo?: string,
+) => {
+  const conn = getNatsConn();
+  await conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
 };
 
-export const broadcastWhiteboardOfficeFile = (
+export const broadcastWhiteboardOfficeFile = async (
   newFile: IWhiteboardOfficeFile,
   sendTo?: string,
 ) => {
-  const session = store.getState().session;
-  const dataMsg = new DataMessage({
-    type: DataMsgType.WHITEBOARD,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: JSON.stringify(newFile),
-    },
-  });
-
-  if (sendTo !== '') {
-    dataMsg.to = sendTo;
-  }
-
-  sendWebsocketMessage(dataMsg.toBinary());
+  const conn = getNatsConn();
+  await conn.sendWhiteboardData(
+    DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE,
+    JSON.stringify(newFile),
+    sendTo,
+  );
 };
 
 export const broadcastMousePointerUpdate = async (element: any) => {
-  const session = store.getState().session;
   const finalMsg = await handleEncryption(JSON.stringify(element));
   if (typeof finalMsg === 'undefined') {
     return;
   }
 
-  const dataMsg = new DataMessage({
-    type: DataMsgType.WHITEBOARD,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.POINTER_UPDATE,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: finalMsg,
-    },
-  });
-
-  sendWebsocketMessage(dataMsg.toBinary());
+  const conn = getNatsConn();
+  await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
 };
 
-export const broadcastAppStateChanges = (
+export const broadcastAppStateChanges = async (
   height: number,
   width: number,
   scrollX: number,
@@ -269,32 +194,20 @@ export const broadcastAppStateChanges = (
     preScrollY = scrollY;
   }
 
-  const session = store.getState().session;
-  const dataMsg = new DataMessage({
-    type: DataMsgType.WHITEBOARD,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: JSON.stringify({
-        height,
-        width,
-        scrollX,
-        scrollY,
-        zoomValue,
-        theme,
-        viewBackgroundColor,
-        zenModeEnabled,
-        gridSize,
-      }),
-    },
+  const finalMsg = JSON.stringify({
+    height,
+    width,
+    scrollX,
+    scrollY,
+    zoomValue,
+    theme,
+    viewBackgroundColor,
+    zenModeEnabled,
+    gridSize,
   });
 
-  sendWebsocketMessage(dataMsg.toBinary());
+  const conn = getNatsConn();
+  await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
 };
 
 let e2ee: EndToEndEncryptionFeatures | undefined = undefined;

@@ -269,6 +269,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       const { pointer, button, name, userId, selectedElementIds } = JSON.parse(
         whiteboard.mousePointerLocation,
       );
+      if (typeof userId === 'undefined' || userId === '') {
+        return;
+      }
 
       const tmp: any = new Map(collaborators);
       const user = tmp.get(userId) ?? {};
@@ -278,6 +281,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       user.username = name;
       user.id = userId;
       tmp.set(userId, user);
+      console.log(tmp);
 
       excalidrawAPI?.updateScene({ collaborators: tmp });
     }
