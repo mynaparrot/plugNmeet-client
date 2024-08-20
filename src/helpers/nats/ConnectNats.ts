@@ -94,6 +94,14 @@ export default class ConnectNats {
     return this._mediaServerConn;
   }
 
+  get roomId(): string {
+    return this._roomId;
+  }
+
+  get userId(): string {
+    return this._userId;
+  }
+
   public openConn = async () => {
     if (typeof this._nc === 'undefined' || this._nc.isClosed()) {
       return await this._openConn();
@@ -131,8 +139,7 @@ export default class ConnectNats {
     this.monitorConnStatus();
     this.subscribeToSystemPrivate();
     this.subscribeToSystemPublic();
-    this.subscribeToPublicChat();
-    this.subscribeToPrivateChat();
+    this.subscribeToChat();
     this.subscribeToWhiteboard();
     this.subscribeToDataChannel();
 
@@ -221,33 +228,12 @@ export default class ConnectNats {
     }
   };
 
-  private subscribeToPublicChat = async () => {
+  private subscribeToChat = async () => {
     if (typeof this._js === 'undefined') {
       return;
     }
 
-    const consumerName = this._subjects.chatPublic + ':' + this._userId;
-    const consumer = await this._js.consumers.get(this._roomId, consumerName);
-
-    const sub = await consumer.consume();
-    for await (const m of sub) {
-      try {
-        const payload = ChatMessage.fromBinary(m.data);
-        payload.id = `${m.info.timestampNanos}`;
-        await this.handleChat.handleMsg(payload);
-      } catch (e) {
-        console.error(e);
-      }
-      m.ack();
-    }
-  };
-
-  private subscribeToPrivateChat = async () => {
-    if (typeof this._js === 'undefined') {
-      return;
-    }
-
-    const consumerName = this._subjects.chatPrivate + ':' + this._userId;
+    const consumerName = this._subjects.chat + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
 
     const sub = await consumer.consume();
@@ -531,42 +517,12 @@ export default class ConnectNats {
       message: msg,
     });
 
-    if (isPrivate) {
-      let subject =
-        this._roomId +
-        ':' +
-        this._subjects.chatPrivate +
-        '.' +
-        to +
-        '.' +
-        this._userId;
-      try {
-        await this._js.publish(subject, data.toBinary());
-      } catch (e) {
-        console.dir(e);
-      }
-      // again sent to himself otherwise user will not get own message
-      subject =
-        this._roomId +
-        ':' +
-        this._subjects.chatPrivate +
-        '.' +
-        this._userId +
-        '.' +
-        this._userId;
-      try {
-        await this._js.publish(subject, data.toBinary());
-      } catch (e) {
-        console.dir(e);
-      }
-    } else {
-      const subject =
-        this._roomId + ':' + this._subjects.chatPublic + '.' + this._userId;
-      try {
-        await this._js.publish(subject, data.toBinary());
-      } catch (e) {
-        console.dir(e);
-      }
+    const subject =
+      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
+    try {
+      await this._js.publish(subject, data.toBinary());
+    } catch (e) {
+      console.dir(e);
     }
   };
 

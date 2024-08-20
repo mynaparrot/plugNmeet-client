@@ -307,17 +307,22 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   roomSid = '';
 
   /**
-   * @generated from field: bool enabled_e2ee = 3;
+   * @generated from field: uint64 empty_timeout = 3;
+   */
+  emptyTimeout = protoInt64.zero;
+
+  /**
+   * @generated from field: bool enabled_e2ee = 4;
    */
   enabledE2ee = false;
 
   /**
-   * @generated from field: string metadata = 4;
+   * @generated from field: string metadata = 5;
    */
   metadata = '';
 
   /**
-   * @generated from field: uint64 created_at = 5;
+   * @generated from field: uint64 created_at = 6;
    */
   createdAt = protoInt64.zero;
 
@@ -331,9 +336,15 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 2, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-    { no: 4, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    {
+      no: 3,
+      name: 'empty_timeout',
+      kind: 'scalar',
+      T: 4 /* ScalarType.UINT64 */,
+    },
+    { no: 4, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 5, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
   ]);
 
   static fromBinary(

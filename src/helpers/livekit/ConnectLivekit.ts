@@ -390,9 +390,7 @@ export default class ConnectLivekit
         });
         break;
       case DisconnectReason.DUPLICATE_IDENTITY:
-        msg = i18n.t('notifications.room-disconnected-duplicate-entry', {
-          code: 'DUPLICATE_IDENTITY',
-        });
+        msg = i18n.t('notifications.room-disconnected-duplicate-entry');
         break;
       case DisconnectReason.SERVER_SHUTDOWN:
         msg = i18n.t('notifications.room-disconnected-server-shutdown', {

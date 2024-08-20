@@ -33,7 +33,7 @@
     "room-disconnected-title": "Room disconnected",
     "room-disconnected-unknown": "The room has been disconnected. Code: {{code}}",
     "room-disconnected-client-initiated": "Client has been initiated. Code: {{code}}",
-    "room-disconnected-duplicate-entry": "Other user with same userId has been joined. Code: {{code}}",
+    "room-disconnected-duplicate-entry": "A different user has already joined with the same userId.",
     "room-disconnected-server-shutdown": "Server shutdown. Code: {{code}}",
     "room-disconnected-participant-removed": "You have been removed from this conference. Code: {{code}}",
     "room-disconnected-room-ended": "The room has been closed. Code: {{code}}",

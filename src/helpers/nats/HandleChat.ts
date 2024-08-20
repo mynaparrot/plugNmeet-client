@@ -22,6 +22,13 @@ export default class HandleChat {
   }
 
   public handleMsg = async (payload: ChatMessage) => {
+    if (payload.isPrivate && payload.toUserId !== this._that.userId) {
+      if (payload.fromUserId !== this._that.userId) {
+        // private message not for this user
+        return;
+      }
+    }
+
     const finalMsg = await this.handleDecryption(payload.message);
     if (!finalMsg) {
       return;

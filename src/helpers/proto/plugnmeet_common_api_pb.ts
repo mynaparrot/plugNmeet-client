@@ -207,16 +207,6 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
   msg = '';
 
   /**
-   * @generated from field: optional string livekit_host = 3;
-   */
-  livekitHost?: string;
-
-  /**
-   * @generated from field: optional string token = 4;
-   */
-  token?: string;
-
-  /**
    * @generated from field: optional string server_version = 5;
    */
   serverVersion?: string;
@@ -251,20 +241,6 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'status', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     { no: 2, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    {
-      no: 3,
-      name: 'livekit_host',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-      opt: true,
-    },
-    {
-      no: 4,
-      name: 'token',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-      opt: true,
-    },
     {
       no: 5,
       name: 'server_version',
@@ -1416,22 +1392,17 @@ export class NatsSubjects extends Message<NatsSubjects> {
   systemPrivate = '';
 
   /**
-   * @generated from field: string chat_public = 4;
+   * @generated from field: string chat = 4;
    */
-  chatPublic = '';
+  chat = '';
 
   /**
-   * @generated from field: string chat_private = 5;
-   */
-  chatPrivate = '';
-
-  /**
-   * @generated from field: string whiteboard = 6;
+   * @generated from field: string whiteboard = 5;
    */
   whiteboard = '';
 
   /**
-   * @generated from field: string data_channel = 7;
+   * @generated from field: string data_channel = 6;
    */
   dataChannel = '';
 
@@ -1461,21 +1432,10 @@ export class NatsSubjects extends Message<NatsSubjects> {
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
     },
+    { no: 4, name: 'chat', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: 'whiteboard', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
-      no: 4,
-      name: 'chat_public',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-    {
-      no: 5,
-      name: 'chat_private',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-    { no: 6, name: 'whiteboard', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    {
-      no: 7,
+      no: 6,
       name: 'data_channel',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,

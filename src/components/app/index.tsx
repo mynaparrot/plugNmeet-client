@@ -123,9 +123,7 @@ const App = () => {
 
         setRoomConnectionStatus('ready');
         setLoading(false);
-        if (res.status && res.livekitHost && res.token && res.natsSubjects) {
-          console.log(res);
-
+        if (res.status && res.roomId && res.userId && res.natsSubjects) {
           // we'll store token that we received from URL
           dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
@@ -133,8 +131,8 @@ const App = () => {
           setRoomConnectionStatus('connecting');
           await startNatsConn(
             accessToken,
-            res.roomId ?? '',
-            res.userId ?? '',
+            res.roomId,
+            res.userId,
             res.natsSubjects,
             setError,
             setRoomConnectionStatus,
