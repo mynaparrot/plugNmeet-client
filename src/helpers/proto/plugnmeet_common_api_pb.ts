@@ -1430,6 +1430,11 @@ export class NatsSubjects extends Message<NatsSubjects> {
    */
   whiteboard = '';
 
+  /**
+   * @generated from field: string data_channel = 7;
+   */
+  dataChannel = '';
+
   constructor(data?: PartialMessage<NatsSubjects>) {
     super();
     proto3.util.initPartial(data, this);
@@ -1469,6 +1474,12 @@ export class NatsSubjects extends Message<NatsSubjects> {
       T: 9 /* ScalarType.STRING */,
     },
     { no: 6, name: 'whiteboard', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 7,
+      name: 'data_channel',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
   ]);
 
   static fromBinary(
