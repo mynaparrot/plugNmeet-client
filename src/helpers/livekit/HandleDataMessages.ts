@@ -4,7 +4,6 @@ import i18n from '../i18n';
 
 import { IConnectLivekit } from './types';
 import { store } from '../../store';
-import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 import {
   DataMessage,
   DataMsgBody,
@@ -47,19 +46,19 @@ export default class HandleDataMessages {
 
   private handleSystemTypeData = async (body: DataMsgBody) => {
     switch (body.type) {
-      case DataMsgBodyType.RAISE_HAND:
+      //case DataMsgBodyType.RAISE_HAND:
       case DataMsgBodyType.INFO:
         toast(i18n.t(body.msg as any), {
           type: 'info',
         });
-        this.playNotification(body.type);
+        //this.playNotification(body.type);
         break;
 
       case DataMsgBodyType.ALERT:
         toast(i18n.t(body.msg as any), {
           type: 'error',
         });
-        this.playNotification(body.type);
+        //this.playNotification(body.type);
         break;
 
       // case DataMsgBodyType.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN:
@@ -87,12 +86,6 @@ export default class HandleDataMessages {
       case DataMsgBodyType.UPDATE_ROOM_METADATA:
         await this.that.setRoomMetadata(body.msg);
         break;
-    }
-  };
-
-  private playNotification = (type: DataMsgBodyType) => {
-    if (type === DataMsgBodyType.RAISE_HAND || type === DataMsgBodyType.ALERT) {
-      store.dispatch(updatePlayAudioNotification(true));
     }
   };
 }

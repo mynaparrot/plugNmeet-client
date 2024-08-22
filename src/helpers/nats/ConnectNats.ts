@@ -1,4 +1,4 @@
-import type { JetStreamClient, NatsConnection } from 'nats.ws';
+import { JetStreamClient, NatsConnection, NatsError } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
 import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
@@ -29,6 +29,7 @@ import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
+import { toast } from 'react-toastify';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -202,7 +203,8 @@ export default class ConnectNats {
         const payload = NatsMsgServerToClient.fromBinary(m.data);
         await this.handleSystemEvents(payload);
       } catch (e) {
-        console.error(e);
+        const err = e as NatsError;
+        console.error(err.message);
       }
       m.ack();
     }
@@ -222,7 +224,8 @@ export default class ConnectNats {
         const payload = NatsMsgServerToClient.fromBinary(m.data);
         await this.handleSystemEvents(payload);
       } catch (e) {
-        console.error(e);
+        const err = e as NatsError;
+        console.error(err.message);
       }
       m.ack();
     }
@@ -243,7 +246,8 @@ export default class ConnectNats {
         payload.id = `${m.info.timestampNanos}`;
         await this.handleChat.handleMsg(payload);
       } catch (e) {
-        console.error(e);
+        const err = e as NatsError;
+        console.error(err.message);
       }
       m.ack();
     }
@@ -265,7 +269,8 @@ export default class ConnectNats {
           await this.handleWhiteboard.handleWhiteboardMsg(payload);
         }
       } catch (e) {
-        console.error(e);
+        const err = e as NatsError;
+        console.error(err.message);
       }
       m.ack();
     }
@@ -288,7 +293,8 @@ export default class ConnectNats {
           this.handleDataMsg.handleMessage(payload);
         }
       } catch (e) {
-        console.error(e);
+        const err = e as NatsError;
+        console.error(err.message);
       }
       m.ack();
     }
@@ -392,7 +398,8 @@ export default class ConnectNats {
       }
       await this.onAfterUserReady();
     } catch (e) {
-      console.error(e);
+      const err = e as NatsError;
+      console.error(err.message);
     }
   }
 
@@ -473,8 +480,18 @@ export default class ConnectNats {
         this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
 
       return await this._js.publish(subject, data.toBinary());
-    } catch (e) {
-      console.dir(e);
+    } catch (e: any) {
+      const err = e as NatsError;
+      console.error(err.message);
+      toast(
+        i18n.t('notifications.nats-sent-error', {
+          error: `${err.name}: ${err.message}`,
+        }),
+        {
+          toastId: 'nats-status',
+          type: 'error',
+        },
+      );
     }
   };
 
@@ -496,8 +513,18 @@ export default class ConnectNats {
       this._roomId + ':' + this._subjects.chat + '.' + this._userId;
     try {
       await this._js.publish(subject, data.toBinary());
-    } catch (e) {
-      console.dir(e);
+    } catch (e: any) {
+      const err = e as NatsError;
+      console.error(err.message);
+      toast(
+        i18n.t('notifications.nats-sent-error', {
+          error: `${err.name}: ${err.message}`,
+        }),
+        {
+          toastId: 'nats-status',
+          type: 'error',
+        },
+      );
     }
   };
 
@@ -520,8 +547,18 @@ export default class ConnectNats {
       this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
     try {
       await this._js.publish(subject, data.toBinary());
-    } catch (e) {
-      console.dir(e);
+    } catch (e: any) {
+      const err = e as NatsError;
+      console.error(err.message);
+      toast(
+        i18n.t('notifications.nats-sent-error', {
+          error: `${err.name}: ${err.message}`,
+        }),
+        {
+          toastId: 'nats-status',
+          type: 'error',
+        },
+      );
     }
   };
 
@@ -544,8 +581,18 @@ export default class ConnectNats {
       this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
     try {
       await this._js.publish(subject, data.toBinary());
-    } catch (e) {
-      console.dir(e);
+    } catch (e: any) {
+      const err = e as NatsError;
+      console.error(err.message);
+      toast(
+        i18n.t('notifications.nats-sent-error', {
+          error: `${err.name}: ${err.message}`,
+        }),
+        {
+          toastId: 'nats-status',
+          type: 'error',
+        },
+      );
     }
   };
 }

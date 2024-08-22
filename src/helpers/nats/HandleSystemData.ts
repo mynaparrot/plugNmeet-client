@@ -32,19 +32,27 @@ export default class HandleSystemData {
           toastId: 'info-status',
           type: 'info',
         });
+        if (nt.withSound) {
+          this.playNotification();
+        }
         break;
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
         toast(i18n.t(nt.msg), {
           toastId: 'info-status',
           type: 'warning',
         });
+        if (nt.withSound) {
+          this.playNotification();
+        }
         break;
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
         toast(i18n.t(nt.msg), {
           toastId: 'info-status',
           type: 'error',
         });
-        this.playNotification();
+        if (nt.withSound) {
+          this.playNotification();
+        }
         break;
     }
   };

@@ -46,19 +46,9 @@ export enum DataMsgBodyType {
   /**
    * SYSTEM type
    *
-   * @generated from enum value: RAISE_HAND = 0;
+   * @generated from enum value: UNKNOWN = 0;
    */
-  RAISE_HAND = 0,
-
-  /**
-   * @generated from enum value: LOWER_HAND = 1;
-   */
-  LOWER_HAND = 1,
-
-  /**
-   * @generated from enum value: OTHER_USER_LOWER_HAND = 2;
-   */
-  OTHER_USER_LOWER_HAND = 2,
+  UNKNOWN = 0,
 
   /**
    * @generated from enum value: FILE_UPLOAD = 3;
@@ -183,9 +173,7 @@ export enum DataMsgBodyType {
 }
 // Retrieve enum metadata with: proto3.getEnumType(DataMsgBodyType)
 proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
-  { no: 0, name: 'RAISE_HAND' },
-  { no: 1, name: 'LOWER_HAND' },
-  { no: 2, name: 'OTHER_USER_LOWER_HAND' },
+  { no: 0, name: 'UNKNOWN' },
   { no: 3, name: 'FILE_UPLOAD' },
   { no: 4, name: 'INFO' },
   { no: 5, name: 'ALERT' },
@@ -309,7 +297,7 @@ export class DataMsgBody extends Message<DataMsgBody> {
   /**
    * @generated from field: plugnmeet.DataMsgBodyType type = 1;
    */
-  type = DataMsgBodyType.RAISE_HAND;
+  type = DataMsgBodyType.UNKNOWN;
 
   /**
    * @generated from field: optional string message_id = 2;

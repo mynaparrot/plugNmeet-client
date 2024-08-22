@@ -48,7 +48,8 @@
     "websocket-not-connected": "Websocket isn't connected. Messages won't deliver.",
     "room-will-end-in": "This room will be ended in {{minutes}} minutes",
     "e2ee-unsupported-browser-title": "Unsupported browser",
-    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support."
+    "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support.",
+    "nats-sent-error": "Sending data was failed, please check your connection. Error: {{error}}"
   },
   "room-metadata": {
     "session-recording": "This session is being recording",

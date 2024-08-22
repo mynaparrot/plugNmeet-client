@@ -109,19 +109,34 @@ export enum NatsMsgClientToServerEvents {
   REQ_RENEW_PNM_TOKEN = 1,
 
   /**
-   * @generated from enum value: REQ_DATA_MSG = 3;
+   * @generated from enum value: REQ_DATA_MSG = 2;
    */
-  REQ_DATA_MSG = 3,
+  REQ_DATA_MSG = 2,
 
   /**
-   * @generated from enum value: PING = 4;
+   * @generated from enum value: PING = 3;
    */
-  PING = 4,
+  PING = 3,
 
   /**
-   * @generated from enum value: REQ_LOGOUT = 5;
+   * @generated from enum value: REQ_LOGOUT = 4;
    */
-  REQ_LOGOUT = 5,
+  REQ_LOGOUT = 4,
+
+  /**
+   * @generated from enum value: REQ_RAISE_HAND = 5;
+   */
+  REQ_RAISE_HAND = 5,
+
+  /**
+   * @generated from enum value: REQ_LOWER_HAND = 6;
+   */
+  REQ_LOWER_HAND = 6,
+
+  /**
+   * @generated from enum value: REQ_LOWER_OTHER_USER_HAND = 7;
+   */
+  REQ_LOWER_OTHER_USER_HAND = 7,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgClientToServerEvents)
 proto3.util.setEnumType(
@@ -130,9 +145,12 @@ proto3.util.setEnumType(
   [
     { no: 0, name: 'REQ_INITIAL_DATA' },
     { no: 1, name: 'REQ_RENEW_PNM_TOKEN' },
-    { no: 3, name: 'REQ_DATA_MSG' },
-    { no: 4, name: 'PING' },
-    { no: 5, name: 'REQ_LOGOUT' },
+    { no: 2, name: 'REQ_DATA_MSG' },
+    { no: 3, name: 'PING' },
+    { no: 4, name: 'REQ_LOGOUT' },
+    { no: 5, name: 'REQ_RAISE_HAND' },
+    { no: 6, name: 'REQ_LOWER_HAND' },
+    { no: 7, name: 'REQ_LOWER_OTHER_USER_HAND' },
   ],
 );
 
@@ -646,6 +664,11 @@ export class NatsSystemNotification extends Message<NatsSystemNotification> {
    */
   sentAt = protoInt64.zero;
 
+  /**
+   * @generated from field: bool with_sound = 5;
+   */
+  withSound = false;
+
   constructor(data?: PartialMessage<NatsSystemNotification>) {
     super();
     proto3.util.initPartial(data, this);
@@ -663,6 +686,7 @@ export class NatsSystemNotification extends Message<NatsSystemNotification> {
     },
     { no: 3, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     { no: 4, name: 'sent_at', kind: 'scalar', T: 3 /* ScalarType.INT64 */ },
+    { no: 5, name: 'with_sound', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(
@@ -863,7 +887,7 @@ export class DataChannelMessage extends Message<DataChannelMessage> {
   /**
    * @generated from field: plugnmeet.DataMsgBodyType type = 2;
    */
-  type = DataMsgBodyType.RAISE_HAND;
+  type = DataMsgBodyType.UNKNOWN;
 
   /**
    * @generated from field: string from_user_id = 3;

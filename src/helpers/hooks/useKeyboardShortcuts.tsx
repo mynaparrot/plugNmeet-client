@@ -1,6 +1,5 @@
 import { Room, Track } from 'livekit-client';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch } from '../../store';
@@ -8,7 +7,6 @@ import {
   updateIsActiveChatPanel,
   updateIsActiveMicrophone,
   updateIsActiveParticipantsPanel,
-  updateIsActiveRaisehand,
   updateIsActiveWebcam,
   updateIsActiveWhiteboard,
   updateIsMicMuted,
@@ -22,13 +20,11 @@ import {
   updateSelectedVideoDevice,
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
-import { SystemMsgType } from '../../store/slices/interfaces/dataMessages';
-import sendAPIRequest from '../api/plugNmeetAPI';
+import { getNatsConn } from '../nats';
 import {
-  CommonResponse,
-  DataMessageReq,
-} from '../proto/plugnmeet_common_api_pb';
-import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
+  NatsMsgClientToServer,
+  NatsMsgClientToServerEvents,
+} from '../proto/plugnmeet_nats_msg_pb';
 
 const useKeyboardShortcuts = (currentRoom?: Room) => {
   const dispatch = useAppDispatch();
@@ -200,61 +196,19 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     isActiveRaisehand: boolean,
     currentRoom: Room,
   ) => {
+    const conn = getNatsConn();
+    const data = new NatsMsgClientToServer();
+
     if (!isActiveRaisehand) {
-      const sid = await currentRoom.getSid();
-      const body = new DataMessageReq({
-        roomSid: sid,
-        roomId: currentRoom.name,
-        msgBodyType: DataMsgBodyType.RAISE_HAND,
-        msg: t('footer.notice.has-raised-hand', {
-          user: currentRoom.localParticipant.name,
-        }).toString(),
-      });
-
-      const r = await sendAPIRequest(
-        'dataMessage',
-        body.toBinary(),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveRaisehand(true));
-
-        toast(t('footer.notice.you-raised-hand'), {
-          type: 'info',
-        });
-      } else {
-        toast(res.msg, {
-          type: 'error',
-        });
-      }
+      data.event = NatsMsgClientToServerEvents.REQ_RAISE_HAND;
+      data.msg = t('footer.notice.has-raised-hand', {
+        user: currentRoom.localParticipant.name,
+      }).toString();
     } else {
-      const sid = await currentRoom.getSid();
-      const body = new DataMessageReq({
-        roomSid: sid,
-        roomId: currentRoom.name,
-        msgBodyType: DataMsgBodyType.LOWER_HAND,
-        msg: SystemMsgType.LOWER_HAND,
-      });
-
-      const r = await sendAPIRequest(
-        'dataMessage',
-        body.toBinary(),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveRaisehand(false));
-      } else {
-        toast(res.msg, {
-          type: 'error',
-        });
-      }
+      data.event = NatsMsgClientToServerEvents.REQ_LOWER_HAND;
     }
+
+    await conn.sendMessageToSystemWorker(data);
   };
 
   useHotkeys(

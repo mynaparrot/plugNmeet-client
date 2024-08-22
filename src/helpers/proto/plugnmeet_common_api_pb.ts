@@ -485,7 +485,7 @@ export class DataMessageReq extends Message<DataMessageReq> {
   /**
    * @generated from field: plugnmeet.DataMsgBodyType msg_body_type = 5;
    */
-  msgBodyType = DataMsgBodyType.RAISE_HAND;
+  msgBodyType = DataMsgBodyType.UNKNOWN;
 
   /**
    * @generated from field: string msg = 6;
