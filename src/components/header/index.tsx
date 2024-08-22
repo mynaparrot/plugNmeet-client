@@ -20,7 +20,7 @@ import {
 } from '../../helpers/proto/plugnmeet_common_api_pb';
 import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
-import { getCurrentRoom } from '../../helpers/livekit/utils';
+import { getNatsConn } from '../../helpers/nats';
 
 const roomTitleSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
@@ -40,7 +40,6 @@ const Header = () => {
   const roomDuration = useAppSelector(roomDurationSelector);
   const headerVisible = useAppSelector(headerVisibilitySelector);
   const dispatch = useAppDispatch();
-  const currentRoom = getCurrentRoom();
 
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');
@@ -72,7 +71,8 @@ const Header = () => {
     }
 
     if (task === 'logout') {
-      await currentRoom.disconnect();
+      const conn = getNatsConn();
+      await conn.endSession('LOGGED_OUT');
     } else if (task === 'end Room') {
       const session = store.getState().session;
 

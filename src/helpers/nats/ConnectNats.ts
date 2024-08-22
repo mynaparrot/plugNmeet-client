@@ -1,7 +1,13 @@
-import { JetStreamClient, NatsConnection, NatsError } from 'nats.ws';
-import { connect, tokenAuthenticator } from 'nats.ws';
+import {
+  connect,
+  JetStreamClient,
+  NatsConnection,
+  NatsError,
+  tokenAuthenticator,
+} from 'nats.ws';
 import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
+import { toast } from 'react-toastify';
 
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
@@ -29,7 +35,6 @@ import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
-import { toast } from 'react-toastify';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -336,6 +341,9 @@ export default class ConnectNats {
       case NatsMsgServerToClientEvents.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN:
         this.handleSystemData.handleAzureToken(payload.msg);
         break;
+      case NatsMsgServerToClientEvents.SESSION_ENDED:
+        await this.endSession(payload.msg);
+        break;
     }
   }
 
@@ -429,6 +437,27 @@ export default class ConnectNats {
       donor.userId,
     );
   }
+
+  public endSession = async (msg: string) => {
+    if (this._nc && !this._nc.isClosed()) {
+      if (this.mediaServerConn) {
+        await this.mediaServerConn.room.disconnect();
+      }
+
+      clearInterval(this.tokenRenewInterval);
+      clearInterval(this.pingInterval);
+      this.handleParticipants.clearParticipantCounterInterval();
+
+      await this._nc.drain();
+      await this._nc.close();
+
+      this._setErrorState({
+        title: i18n.t('notifications.room-disconnected-title'),
+        text: msg,
+      });
+      this._setRoomConnectionStatusState('disconnected');
+    }
+  };
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
     if (typeof this._mediaServerConn !== 'undefined') {
