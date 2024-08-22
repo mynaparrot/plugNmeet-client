@@ -69,6 +69,11 @@ export enum NatsMsgServerToClientEvents {
    * @generated from enum value: RESP_DATA_MSG = 10;
    */
   RESP_DATA_MSG = 10,
+
+  /**
+   * @generated from enum value: AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 11;
+   */
+  AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 11,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -85,6 +90,7 @@ proto3.util.setEnumType(
     { no: 8, name: 'RESP_RENEW_PNM_TOKEN' },
     { no: 9, name: 'SYSTEM_NOTIFICATION' },
     { no: 10, name: 'RESP_DATA_MSG' },
+    { no: 11, name: 'AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN' },
   ],
 );
 

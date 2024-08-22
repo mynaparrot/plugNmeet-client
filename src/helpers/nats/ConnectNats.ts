@@ -1,7 +1,7 @@
 import type { JetStreamClient, NatsConnection } from 'nats.ws';
 import { connect, tokenAuthenticator } from 'nats.ws';
 import { isE2EESupported } from 'livekit-client';
-import { toast } from 'react-toastify';
+import { Dispatch } from 'react';
 
 import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
@@ -14,16 +14,12 @@ import {
   NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
-  NatsSystemNotification,
-  NatsSystemNotificationTypes,
 } from '../proto/plugnmeet_nats_msg_pb';
-import { Dispatch } from 'react';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
 import { createLivekitConnection } from '../livekit/utils';
 import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 import HandleRoomData from './HandleRoomData';
-import i18n from '../i18n';
 import HandleParticipants from './HandleParticipants';
 import HandleDataMessage from './HandleDataMessage';
 import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
@@ -31,6 +27,8 @@ import HandleWhiteboard from './HandleWhiteboard';
 import HandleChat from './HandleChat';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
+import HandleSystemData from './HandleSystemData';
+import i18n from '../i18n';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -53,6 +51,7 @@ export default class ConnectNats {
   private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
   private handleRoomData: HandleRoomData;
+  private handleSystemData: HandleSystemData;
   private handleParticipants: HandleParticipants;
   private handleChat: HandleChat;
   private handleDataMsg: HandleDataMessage;
@@ -76,6 +75,7 @@ export default class ConnectNats {
     this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
     this.handleRoomData = new HandleRoomData(this);
+    this.handleSystemData = new HandleSystemData(this);
     this.handleParticipants = new HandleParticipants(this);
     this.handleChat = new HandleChat(this);
     this.handleDataMsg = new HandleDataMessage(this);
@@ -311,7 +311,7 @@ export default class ConnectNats {
         this._token = payload.msg.toString();
         break;
       case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
-        this.handleNotification(payload.msg);
+        this.handleSystemData.handleNotification(payload.msg);
         break;
       case NatsMsgServerToClientEvents.USER_JOINED:
         await this.handleParticipants.addRemoteParticipant(payload.msg);
@@ -326,6 +326,9 @@ export default class ConnectNats {
         await this.handleParticipants.handleParticipantMetadataUpdate(
           payload.msg,
         );
+        break;
+      case NatsMsgServerToClientEvents.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN:
+        this.handleSystemData.handleAzureToken(payload.msg);
         break;
     }
   }
@@ -418,34 +421,6 @@ export default class ConnectNats {
       '',
       donor.userId,
     );
-  }
-
-  /**
-   * To handle various notifications
-   * @param data
-   */
-  private handleNotification(data: string) {
-    const nt = NatsSystemNotification.fromJsonString(data);
-    switch (nt.type) {
-      case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
-        toast(nt.msg, {
-          toastId: 'info-status',
-          type: 'info',
-        });
-        break;
-      case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
-        toast(nt.msg, {
-          toastId: 'info-status',
-          type: 'warning',
-        });
-        break;
-      case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
-        toast(nt.msg, {
-          toastId: 'info-status',
-          type: 'error',
-        });
-        break;
-    }
   }
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
