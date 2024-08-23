@@ -5,10 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, store, useAppSelector } from '../../../store';
-import {
-  isSocketConnected,
-  sendAnalyticsByWebsocket,
-} from '../../../helpers/websocket';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
 import {
   AnalyticsEvents,
@@ -32,6 +28,7 @@ const FileSend = ({ isChatServiceReady, lockSendFile }: IFileSendProps) => {
   const { t } = useTranslation();
   const [files, setFiles] = useState<Array<File>>();
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
+  const conn = getNatsConn();
 
   const chat_features =
     store.getState().session.currentRoom.metadata?.room_features.chat_features;
@@ -73,21 +70,16 @@ const FileSend = ({ isChatServiceReady, lockSendFile }: IFileSendProps) => {
   };
 
   const publishToChat = async (filePath: string, fileName: string) => {
-    if (!isSocketConnected()) {
-      return;
-    }
-
     const message = `<span class="download"> <i class="pnm-download"></i> <a href="${
       (window as any).PLUG_N_MEET_SERVER_URL +
       '/download/uploadedFile/' +
       filePath
     }" target="_blank">${fileName}</a></span>`;
 
-    const conn = getNatsConn();
     await conn.sendChatMsg(selectedChatOption, message);
 
     // send analytics
-    sendAnalyticsByWebsocket(
+    await conn.sendAnalyticsData(
       AnalyticsEvents.ANALYTICS_EVENT_USER_CHAT_FILES,
       AnalyticsEventType.USER,
       fileName,

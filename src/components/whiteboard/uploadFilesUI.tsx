@@ -6,10 +6,7 @@ import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { addWhiteboardOtherImageFile } from '../../store/slices/whiteboard';
-import {
-  sendAnalyticsByWebsocket,
-  sendWebsocketMessage,
-} from '../../helpers/websocket';
+import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
@@ -30,6 +27,7 @@ import {
   AnalyticsEvents,
   AnalyticsEventType,
 } from '../../helpers/proto/plugnmeet_analytics_pb';
+import { getNatsConn } from '../../helpers/nats';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -50,6 +48,7 @@ const UploadFilesUI = ({
   const dispatch = useAppDispatch();
   const session = store.getState().session;
   const preRefreshFileBrowser = useStorePreviousInt(refreshFileBrowser);
+  const conn = getNatsConn();
 
   const { isUploading, result } = useResumableFilesUpload({
     allowedFileTypes,
@@ -93,12 +92,12 @@ const UploadFilesUI = ({
         });
         broadcastFile(filePath, fileName);
         // send analytics
-        sendAnalyticsByWebsocket(
+        conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
           AnalyticsEventType.USER,
           fileName,
         );
-        sendAnalyticsByWebsocket(
+        conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
           AnalyticsEventType.ROOM,
           fileName,
@@ -147,12 +146,12 @@ const UploadFilesUI = ({
     broadcastWhiteboardOfficeFile(newFile);
 
     // send analytics
-    sendAnalyticsByWebsocket(
+    conn.sendAnalyticsData(
       AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
       AnalyticsEventType.USER,
       newFile.fileName,
     );
-    sendAnalyticsByWebsocket(
+    conn.sendAnalyticsData(
       AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
       AnalyticsEventType.ROOM,
       newFile.fileName,

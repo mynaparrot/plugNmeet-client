@@ -35,6 +35,11 @@ import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
+import {
+  AnalyticsDataMsg,
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../proto/plugnmeet_analytics_pb';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -626,5 +631,29 @@ export default class ConnectNats {
         },
       );
     }
+  };
+
+  public sendAnalyticsData = async (
+    event_name: AnalyticsEvents,
+    event_type: AnalyticsEventType = AnalyticsEventType.USER,
+    hset_value?: string,
+    event_value_string?: string,
+    event_value_integer?: bigint,
+  ) => {
+    const analyticsMsg = new AnalyticsDataMsg({
+      eventType: event_type,
+      eventName: event_name,
+      roomId: this._roomId,
+      userId: this._userId,
+      hsetValue: hset_value,
+      eventValueString: event_value_string,
+      eventValueInteger: event_value_integer,
+    });
+
+    const data = new NatsMsgClientToServer({
+      event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
+      msg: analyticsMsg.toJsonString(),
+    });
+    await this.sendMessageToSystemWorker(data);
   };
 }

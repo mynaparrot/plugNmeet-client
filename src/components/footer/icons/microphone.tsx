@@ -21,7 +21,6 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
-import { sendAnalyticsByWebsocket } from '../../../helpers/websocket';
 import {
   AnalyticsEvents,
   AnalyticsEventType,
@@ -29,6 +28,7 @@ import {
 } from '../../../helpers/proto/plugnmeet_analytics_pb';
 import { getAudioPreset } from '../../../helpers/utils';
 import { getCurrentRoom } from '../../../helpers/livekit/utils';
+import { getNatsConn } from '../../../helpers/nats';
 
 const isActiveMicrophoneSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -51,6 +51,7 @@ const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getCurrentRoom();
   const { t } = useTranslation();
+  const conn = getNatsConn();
 
   const session = store.getState().session;
   const showTooltip = session.userDeviceType === 'desktop';
@@ -127,7 +128,7 @@ const MicrophoneIcon = () => {
         if (lastSpokeAt && lastSpokeAt > 0) {
           const cal = Date.now() - lastSpokeAt;
           // send analytics
-          sendAnalyticsByWebsocket(
+          conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED_DURATION,
             AnalyticsEventType.USER,
             undefined,
@@ -137,7 +138,7 @@ const MicrophoneIcon = () => {
         }
       } else {
         // send analytics as user has spoken
-        sendAnalyticsByWebsocket(
+        conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED,
           AnalyticsEventType.USER,
           undefined,
@@ -157,6 +158,7 @@ const MicrophoneIcon = () => {
         speakingHandler,
       );
     };
+    //eslint-disable-next-line
   }, [currentRoom]);
 
   const muteUnmuteMic = async () => {
@@ -172,7 +174,7 @@ const MicrophoneIcon = () => {
           await publication.track.unmute();
           dispatch(updateIsMicMuted(false));
           // send analytics
-          sendAnalyticsByWebsocket(
+          conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
             proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.UNMUTED]
@@ -182,7 +184,7 @@ const MicrophoneIcon = () => {
           await publication.track.mute();
           dispatch(updateIsMicMuted(true));
           // send analytics
-          sendAnalyticsByWebsocket(
+          conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
             proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.MUTED]

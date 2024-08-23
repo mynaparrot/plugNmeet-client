@@ -143,6 +143,11 @@ export enum NatsMsgClientToServerEvents {
    * @generated from enum value: REQ_LOWER_OTHER_USER_HAND = 7;
    */
   REQ_LOWER_OTHER_USER_HAND = 7,
+
+  /**
+   * @generated from enum value: PUSH_ANALYTICS_DATA = 8;
+   */
+  PUSH_ANALYTICS_DATA = 8,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgClientToServerEvents)
 proto3.util.setEnumType(
@@ -157,6 +162,7 @@ proto3.util.setEnumType(
     { no: 5, name: 'REQ_RAISE_HAND' },
     { no: 6, name: 'REQ_LOWER_HAND' },
     { no: 7, name: 'REQ_LOWER_OTHER_USER_HAND' },
+    { no: 8, name: 'PUSH_ANALYTICS_DATA' },
   ],
 );
 
