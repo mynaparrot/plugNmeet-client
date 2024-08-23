@@ -2,11 +2,9 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { toast } from 'react-toastify';
 
 import { store } from '../../store';
-import { updateIsChatServiceReady } from '../../store/slices/sessionSlice';
 import { handleSystemTypeData } from './handleSystemType';
 import { handleUserTypeData } from './handleUserType';
 import { handleWhiteboardMsg } from './handleWhiteboardType';
-import { onAfterOpenConnection } from './handleAfterOpenConnection';
 import {
   DataMessage,
   DataMsgBodyType,
@@ -36,8 +34,7 @@ const createWS = () => {
   ws.onopen = () => {
     isConnected = true;
     isFirstTime = false;
-    onAfterOpenConnection();
-    store.dispatch(updateIsChatServiceReady(true));
+    //onAfterOpenConnection();
 
     if (isReconnecting) {
       isReconnecting = false;
@@ -47,7 +44,6 @@ const createWS = () => {
 
   ws.onclose = () => {
     isConnected = false;
-    store.dispatch(updateIsChatServiceReady(false));
 
     if (!normallyClosed) {
       toast.loading(i18n.t('notifications.websocket-disconnected'), {

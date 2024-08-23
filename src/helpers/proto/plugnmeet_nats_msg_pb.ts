@@ -79,6 +79,11 @@ export enum NatsMsgServerToClientEvents {
    * @generated from enum value: SESSION_ENDED = 12;
    */
   SESSION_ENDED = 12,
+
+  /**
+   * @generated from enum value: POLL_CLOSED = 13;
+   */
+  POLL_CLOSED = 13,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -97,6 +102,7 @@ proto3.util.setEnumType(
     { no: 10, name: 'RESP_DATA_MSG' },
     { no: 11, name: 'AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN' },
     { no: 12, name: 'SESSION_ENDED' },
+    { no: 13, name: 'POLL_CLOSED' },
   ],
 );
 

@@ -6,7 +6,6 @@ import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { addWhiteboardOtherImageFile } from '../../store/slices/whiteboard';
-import { sendWebsocketMessage } from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
@@ -14,11 +13,7 @@ import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from '../../helpers/proto/plugnmeet_datamessage_pb';
 import {
   formatStorageKey,
   handleToAddWhiteboardUploadedOfficeNewFile,
@@ -179,22 +174,7 @@ const UploadFilesUI = ({
 
     const files =
       store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
-    const session = store.getState().session;
-    const dataMsg = new DataMessage({
-      type: DataMsgType.WHITEBOARD,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      body: {
-        type: DataMsgBodyType.ADD_WHITEBOARD_FILE,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg: files,
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+    conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
   };
 
   const saveCurrentPageData = async () => {

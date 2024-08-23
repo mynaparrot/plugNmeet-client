@@ -12,7 +12,7 @@ import {
   DataMsgBody,
   DataMsgBodyType,
 } from '../proto/plugnmeet_datamessage_pb';
-import { decryptMessage } from './cryptoMessages';
+import { decryptMessage } from '../cryptoMessages';
 import { toast } from 'react-toastify';
 import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
 

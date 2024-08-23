@@ -5,12 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import { sendWebsocketMessage } from '../../../../../helpers/websocket';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
+import { getNatsConn } from '../../../../../helpers/nats';
 
 interface IWebcamMenuItemProps {
   userId: string;
@@ -22,6 +18,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   );
   const roomFeatures =
     store.getState().session.currentRoom.metadata?.room_features;
+  const conn = getNatsConn();
 
   const session = store.getState().session;
   const [text, setText] = useState<string>('Ask to share Webcam');
@@ -37,31 +34,20 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     }
   }, [t, participant?.videoTracks]);
 
-  const onClick = () => {
-    const dataMsg = new DataMessage({
-      type: DataMsgType.SYSTEM,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      to: userId,
-      body: {
-        type: DataMsgBodyType.INFO,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg:
-          t('left-panel.menus.notice.asked-you-to', {
-            name: session.currentUser?.name,
-          }) + t(task),
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+  const onClick = async () => {
+    await conn.sendDataMessage(
+      DataMsgBodyType.INFO,
+      t('left-panel.menus.notice.asked-you-to', {
+        name: session.currentUser?.name,
+        task: t(task),
+      }),
+    );
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {
         name: participant?.name,
-      }) + t(task),
+        task: t(task),
+      }),
       {
         toastId: 'asked-status',
         type: 'info',

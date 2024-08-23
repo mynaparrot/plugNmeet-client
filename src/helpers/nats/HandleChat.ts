@@ -2,7 +2,7 @@ import ConnectNats from './ConnectNats';
 import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
 import { ChatMessage } from '../proto/plugnmeet_nats_msg_pb';
 import { store } from '../../store';
-import { decryptMessage } from '../websocket/cryptoMessages';
+import { decryptMessage } from '../cryptoMessages';
 import { toast } from 'react-toastify';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';

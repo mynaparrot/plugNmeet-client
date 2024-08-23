@@ -5,17 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import { sendWebsocketMessage } from '../../../../../helpers/websocket';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
 import {
   CommonResponse,
   MuteUnMuteTrackReq,
 } from '../../../../../helpers/proto/plugnmeet_common_api_pb';
+import { getNatsConn } from '../../../../../helpers/nats';
 
 interface IMicMenuItemProps {
   userId: string;
@@ -28,6 +24,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
   const [text, setText] = useState<string>('Ask to share Microphone');
   const [task, setTask] = useState<string>('');
   const { t } = useTranslation();
+  const conn = getNatsConn();
 
   useEffect(() => {
     if (participant?.audioTracks === 0) {
@@ -42,36 +39,25 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     }
   }, [t, participant?.isMuted, participant?.audioTracks]);
 
-  const onClick = () => {
+  const onClick = async () => {
     if (task === 'mute') {
-      muteAudio();
+      await muteAudio();
       return;
     }
 
-    const dataMsg = new DataMessage({
-      type: DataMsgType.SYSTEM,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      to: userId,
-      body: {
-        type: DataMsgBodyType.INFO,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg:
-          t('left-panel.menus.notice.asked-you-to', {
-            name: session.currentUser?.name,
-          }) + t(task),
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+    await conn.sendDataMessage(
+      DataMsgBodyType.INFO,
+      t('left-panel.menus.notice.asked-you-to', {
+        name: session.currentUser?.name,
+        task: t(task),
+      }),
+    );
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {
         name: participant?.name,
-      }) + t(task),
+        task: t(task),
+      }),
       {
         toastId: 'asked-status',
         type: 'info',

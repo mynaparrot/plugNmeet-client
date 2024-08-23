@@ -55,6 +55,7 @@ export default class ConnectNats {
   private _token: string;
   private readonly _roomId: string;
   private readonly _userId: string;
+  private _isAdmin: boolean = false;
   private readonly _subjects: NatsSubjects;
   private tokenRenewInterval: any;
   private pingInterval: any;
@@ -109,6 +110,10 @@ export default class ConnectNats {
 
   get userId(): string {
     return this._userId;
+  }
+
+  get isAdmin(): boolean {
+    return this._isAdmin;
   }
 
   public openConn = async () => {
@@ -310,10 +315,11 @@ export default class ConnectNats {
     for await (const m of sub) {
       try {
         const payload = DataChannelMessage.fromBinary(m.data);
-        if (payload.fromUserId !== this._userId) {
-          console.log(payload);
-          this.handleDataMsg.handleMessage(payload);
+        if (payload.toUserId !== '' && payload.toUserId !== this._userId) {
+          continue;
         }
+        console.log(payload);
+        this.handleDataMsg.handleMessage(payload);
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
@@ -361,6 +367,9 @@ export default class ConnectNats {
       case NatsMsgServerToClientEvents.SESSION_ENDED:
         await this.endSession(payload.msg);
         break;
+      case NatsMsgServerToClientEvents.POLL_CLOSED:
+        this.handleSystemData.handlePollClosed();
+        break;
     }
   }
 
@@ -402,6 +411,7 @@ export default class ConnectNats {
     }
     // add local user first
     if (data.localUser) {
+      this._isAdmin = data.localUser.isAdmin;
       await this.handleParticipants.addLocalParticipantInfo(data.localUser);
     }
     // now room

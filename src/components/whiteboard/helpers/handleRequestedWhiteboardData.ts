@@ -16,7 +16,7 @@ import {
 } from './reconciliation';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
-import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
+import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { toast } from 'react-toastify';
 import { EndToEndEncryptionFeatures } from '../../../store/slices/interfaces/session';
 import { getNatsConn } from '../../../helpers/nats';

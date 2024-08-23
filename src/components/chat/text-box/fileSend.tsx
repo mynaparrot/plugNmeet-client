@@ -13,7 +13,6 @@ import {
 import { getNatsConn } from '../../../helpers/nats';
 
 interface IFileSendProps {
-  isChatServiceReady: boolean;
   lockSendFile: boolean;
   currentRoom: Room;
 }
@@ -23,7 +22,7 @@ const selectedChatOptionSelector = createSelector(
   (roomSettings) => roomSettings.selectedChatOption,
 );
 
-const FileSend = ({ isChatServiceReady, lockSendFile }: IFileSendProps) => {
+const FileSend = ({ lockSendFile }: IFileSendProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const [files, setFiles] = useState<Array<File>>();
@@ -98,7 +97,7 @@ const FileSend = ({ isChatServiceReady, lockSendFile }: IFileSendProps) => {
           onChange={(e) => onChange(e)}
         />
         <button
-          disabled={!isChatServiceReady || lockSendFile || isUploading}
+          disabled={lockSendFile || isUploading}
           onClick={() => openFileBrowser()}
           className="w-4 h-6 px-2"
         >

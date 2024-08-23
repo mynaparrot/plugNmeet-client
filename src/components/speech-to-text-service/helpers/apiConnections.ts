@@ -13,12 +13,7 @@ import {
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
 
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
-import { sendWebsocketMessage } from '../../../helpers/websocket';
+import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import {
   AzureTokenRenewReq,
   GenerateAzureTokenReq,
@@ -36,6 +31,7 @@ import {
 } from '../../../store/slices/interfaces/session';
 import i18n from '../../../helpers/i18n';
 import { supportedSpeechToTextLangs } from './supportedLangs';
+import { getNatsConn } from '../../../helpers/nats';
 
 export interface AzureTokenInfo {
   token: string;
@@ -156,7 +152,7 @@ export const openConnectionWithAzure = (
     });
   };
 
-  recognizer.recognizing = (
+  recognizer.recognizing = async (
     sender,
     recognitionEventArgs: SpeechRecognitionEventArgs,
   ) => {
@@ -181,10 +177,10 @@ export const openConnectionWithAzure = (
         });
       }
     }
-    broadcastSpeechToTextMsgs(data);
+    await broadcastSpeechToTextMsgs(data);
   };
 
-  recognizer.recognized = (
+  recognizer.recognized = async (
     sender,
     recognitionEventArgs: SpeechRecognitionEventArgs,
   ) => {
@@ -209,7 +205,7 @@ export const openConnectionWithAzure = (
         });
       }
     }
-    broadcastSpeechToTextMsgs(data);
+    await broadcastSpeechToTextMsgs(data);
   };
 
   recognizer.canceled = async (s, e: SpeechRecognitionCanceledEventArgs) => {
@@ -233,26 +229,14 @@ export const openConnectionWithAzure = (
   setRecognizer(recognizer);
 };
 
-export const broadcastSpeechToTextMsgs = (msg) => {
-  if (!session) {
-    session = getSession();
+export const broadcastSpeechToTextMsgs = async (msg: any) => {
+  const conn = getNatsConn();
+  if (typeof conn !== 'undefined') {
+    await conn.sendDataMessage(
+      DataMsgBodyType.SPEECH_SUBTITLE_TEXT,
+      JSON.stringify(msg),
+    );
   }
-
-  const dataMsg = new DataMessage({
-    type: DataMsgType.SYSTEM,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.SPEECH_SUBTITLE_TEXT,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: JSON.stringify(msg),
-    },
-  });
-
-  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const getAzureToken = async () => {

@@ -12,7 +12,7 @@ import {
   DataMsgBodyType,
 } from '../proto/plugnmeet_datamessage_pb';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
-import { decryptMessage } from './cryptoMessages';
+import { decryptMessage } from '../cryptoMessages';
 import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
 
 let e2ee: EndToEndEncryptionFeatures | undefined = undefined;

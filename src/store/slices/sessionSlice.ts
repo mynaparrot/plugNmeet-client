@@ -19,7 +19,6 @@ const initialState: ISession = {
   isActiveRecording: false,
   isWebcamPaginating: false,
   isStartup: true,
-  isChatServiceReady: false,
   totalAudioSubscribers: 0,
   totalVideoSubscribers: 0,
   userDeviceType: UserDeviceType.DESKTOP,
@@ -154,9 +153,6 @@ const sessionSlice = createSlice({
         state.isActiveRecording = action.payload.is_recording ?? false;
       }
     },
-    updateIsChatServiceReady: (state, action: PayloadAction<boolean>) => {
-      state.isChatServiceReady = action.payload;
-    },
     updateTotalVideoSubscribers: (state, action: PayloadAction<number>) => {
       state.totalVideoSubscribers = action.payload;
     },
@@ -184,7 +180,6 @@ export const {
   setWebcamPaginating,
   updateCurrentUserMetadata,
   updateCurrentRoomMetadata,
-  updateIsChatServiceReady,
   updateTotalVideoSubscribers,
   updateTotalAudioSubscribers,
   updateMuteOnStart,

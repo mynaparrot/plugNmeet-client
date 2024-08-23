@@ -33,11 +33,7 @@ import HandleMediaTracks from './HandleMediaTracks';
 import HandleDataMessages from './HandleDataMessages';
 import HandleRoomMetadata from './HandleRoomMetadata';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import {
-  closeWebsocketConnection,
-  openWebsocketConnection,
-  sendWebsocketMessage,
-} from '../websocket';
+import { sendWebsocketMessage } from '../websocket';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './hooks/useLivekitConnect';
 import i18n from '../i18n';
@@ -140,7 +136,7 @@ export default class ConnectLivekit
       await this.updateSession();
       //await this.initiateParticipants();
       // open websocket
-      openWebsocketConnection();
+      //openWebsocketConnection();
       // finally
       this._roomConnectionStatusState('connected');
       // start token renew interval
@@ -363,7 +359,7 @@ export default class ConnectLivekit
       text: this.getDisconnectErrorReasonText(reason),
     });
     this._roomConnectionStatusState('disconnected');
-    closeWebsocketConnection();
+    //closeWebsocketConnection();
     this.handleActiveSpeakers.onLivekitDisconnect();
     clearInterval(this.tokenRenewInterval);
     this.handleParticipant.clearParticipantCounterInterval();

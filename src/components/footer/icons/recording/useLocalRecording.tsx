@@ -8,17 +8,14 @@ import {
   RecordingEvent,
   RecordingType,
 } from './IRecording';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../../helpers/proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from '../../../../helpers/proto/plugnmeet_datamessage_pb';
 import { store } from '../../../../store';
-import { sendWebsocketMessage } from '../../../../helpers/websocket';
 import { getCurrentRoom } from '../../../../helpers/livekit/utils';
+import { getNatsConn } from '../../../../helpers/nats';
 
 const useLocalRecording = (): IUseLocalRecordingReturn => {
   const currentRoom = getCurrentRoom();
+  const conn = getNatsConn();
 
   const [recordingEvent, setRecordingEvent] = useState<RecordingEvent>(
     RecordingEvent.NONE,
@@ -155,32 +152,17 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
     setRecorder(recorder);
   };
 
-  const broadcastNotification = (start = true) => {
-    const data: any = {
-      type: DataMsgType.SYSTEM,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      body: {
-        type: DataMsgBodyType.INFO,
-        from: {
-          sid: session.currentUser?.sid,
-          userId: session.currentUser?.userId,
-        },
-      },
-    };
+  const broadcastNotification = async (start = true) => {
+    let msg = t('notifications.local-recording-ended', {
+      name: session.currentUser?.name,
+    });
 
     if (start) {
-      data.body.msg = t('notifications.local-recording-started', {
-        name: session.currentUser?.name,
-      });
-    } else {
-      data.body.msg = t('notifications.local-recording-ended', {
+      msg = t('notifications.local-recording-started', {
         name: session.currentUser?.name,
       });
     }
-
-    const dataMsg = new DataMessage(data);
-    sendWebsocketMessage(dataMsg.toBinary());
+    await conn.sendDataMessage(DataMsgBodyType.INFO, msg);
   };
 
   const resetError = () => {

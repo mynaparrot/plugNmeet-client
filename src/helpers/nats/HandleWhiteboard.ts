@@ -13,7 +13,7 @@ import {
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
-import { decryptMessage } from '../websocket/cryptoMessages';
+import { decryptMessage } from '../cryptoMessages';
 import { DataChannelMessage } from '../proto/plugnmeet_nats_msg_pb';
 
 export default class HandleWhiteboard {

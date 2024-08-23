@@ -12,6 +12,7 @@ import {
   updatePlayAudioNotification,
 } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
+import { pollsApi } from '../../store/services/pollsApi';
 
 export default class HandleSystemData {
   private _that: ConnectNats;
@@ -78,6 +79,10 @@ export default class HandleSystemData {
         },
       );
     }
+  };
+
+  public handlePollClosed = () => {
+    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   };
 
   private playNotification() {

@@ -22,7 +22,7 @@ import {
 } from '../proto/plugnmeet_datamessage_pb';
 import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
-import { encryptMessage } from './cryptoMessages';
+import { encryptMessage } from '../cryptoMessages';
 
 export const handleSystemTypeData = (body: DataMessage) => {
   switch (body.body?.type) {
@@ -47,7 +47,6 @@ export const handleSystemTypeData = (body: DataMessage) => {
       handleExternalMediaPlayerEvents(body);
       break;
     case DataMsgBodyType.POLL_CREATED:
-    case DataMsgBodyType.POLL_CLOSED:
     case DataMsgBodyType.NEW_POLL_RESPONSE:
       handlePollsNotifications(body);
       break;
@@ -185,8 +184,6 @@ const handlePollsNotifications = (data: DataMessage) => {
         { type: 'PollDetails', id: data.body.msg },
       ]),
     );
-  } else if (data.body?.type === DataMsgBodyType.POLL_CLOSED) {
-    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
   }
 };
 

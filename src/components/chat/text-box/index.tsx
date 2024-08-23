@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { RootState, store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
-import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
+import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 
 interface ITextBoxAreaProps {
@@ -17,10 +17,6 @@ interface ITextBoxAreaProps {
   chosenEmoji: string | null;
   onAfterSendMessage(): void;
 }
-const isChatServiceReadySelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.isChatServiceReady,
-);
 
 const isLockChatSendMsgSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
@@ -42,7 +38,6 @@ const TextBoxArea = ({
   chosenEmoji,
   onAfterSendMessage,
 }: ITextBoxAreaProps) => {
-  const isChatServiceReady = useAppSelector(isChatServiceReadySelector);
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
@@ -150,28 +145,6 @@ const TextBoxArea = ({
     await conn.sendChatMsg(selectedChatOption, msg.replace(/\r?\n/g, '<br />'));
     setMessage('');
 
-    // const sid = await currentRoom.getSid();
-    // const dataMsg = new DataMessage({
-    //   type: DataMsgType.USER,
-    //   roomSid: sid,
-    //   roomId: currentRoom.name,
-    //   to: selectedChatOption !== 'public' ? selectedChatOption : '',
-    //   body: {
-    //     type: DataMsgBodyType.CHAT,
-    //     isPrivate: selectedChatOption !== 'public' ? 1 : 0,
-    //     from: {
-    //       sid: currentRoom.localParticipant.sid,
-    //       userId: currentRoom.localParticipant.identity,
-    //       name: currentRoom.localParticipant.name,
-    //     },
-    //     msg: msg.replace(/\r?\n/g, '<br />'),
-    //   },
-    // });
-    //
-    // if (isSocketConnected()) {
-    //   sendWebsocketMessage(dataMsg.toBinary());
-    //   setMessage('');
-    // }
     onAfterSendMessage();
   };
 
@@ -191,13 +164,13 @@ const TextBoxArea = ({
           className="w-full bg-white dark:bg-darkSecondary2 h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor dark:text-white placeholder:text-primaryColor/70 dark:placeholder:text-white/70"
           value={message}
           onChange={(e) => setMessage(e.currentTarget.value)}
-          disabled={!isChatServiceReady || lockSendMsg}
+          disabled={lockSendMsg}
           placeholder={t('right-panel.chat-box-placeholder').toString()}
           onKeyDown={(e) => onEnterPress(e)}
         />
         <div className="btns">
           <button
-            disabled={!isChatServiceReady || lockSendMsg}
+            disabled={lockSendMsg}
             onClick={() => sendMsg()}
             className="w-4 h-6 p-2"
           >
@@ -205,11 +178,7 @@ const TextBoxArea = ({
           </button>
 
           {showSendFile ? (
-            <FileSend
-              isChatServiceReady={isChatServiceReady}
-              lockSendFile={lockSendFile}
-              currentRoom={currentRoom}
-            />
+            <FileSend lockSendFile={lockSendFile} currentRoom={currentRoom} />
           ) : null}
         </div>
       </div>

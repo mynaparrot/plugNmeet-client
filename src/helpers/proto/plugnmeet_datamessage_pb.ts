@@ -106,11 +106,6 @@ export enum DataMsgBodyType {
   NEW_POLL_RESPONSE = 13,
 
   /**
-   * @generated from enum value: POLL_CLOSED = 14;
-   */
-  POLL_CLOSED = 14,
-
-  /**
    * @generated from enum value: JOIN_BREAKOUT_ROOM = 15;
    */
   JOIN_BREAKOUT_ROOM = 15,
@@ -185,7 +180,6 @@ proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
   { no: 11, name: 'EXTERNAL_MEDIA_PLAYER_EVENTS' },
   { no: 12, name: 'POLL_CREATED' },
   { no: 13, name: 'NEW_POLL_RESPONSE' },
-  { no: 14, name: 'POLL_CLOSED' },
   { no: 15, name: 'JOIN_BREAKOUT_ROOM' },
   { no: 23, name: 'SPEECH_SUBTITLE_TEXT' },
   { no: 25, name: 'UPDATE_ROOM_METADATA' },

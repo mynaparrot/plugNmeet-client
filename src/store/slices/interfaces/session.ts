@@ -14,7 +14,6 @@ export interface ISession {
   isActiveRecording: boolean;
   isWebcamPaginating: boolean;
   isStartup: boolean;
-  isChatServiceReady: boolean;
   totalVideoSubscribers: number;
   totalAudioSubscribers: number;
   userDeviceType: UserDeviceType;
