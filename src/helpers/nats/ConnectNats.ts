@@ -1,5 +1,6 @@
 import {
   connect,
+  ErrorCode,
   JetStreamClient,
   NatsConnection,
   NatsError,
@@ -96,14 +97,6 @@ export default class ConnectNats {
     this.handleWhiteboard = new HandleWhiteboard(this);
   }
 
-  get nc(): NatsConnection {
-    return <NatsConnection>this._nc;
-  }
-
-  get js(): JetStreamClient {
-    return <JetStreamClient>this._js;
-  }
-
   get mediaServerConn(): IConnectLivekit | undefined {
     return this._mediaServerConn;
   }
@@ -142,8 +135,8 @@ export default class ConnectNats {
     } catch (e) {
       console.error(e);
       this.setErrorStatus(
-        'Authentication failed',
-        'We was not able to verify your auth information. May be you are using an expired token?',
+        i18n.t('notifications.nats-error-auth-title'),
+        i18n.t('nats-error-auth-body'),
       );
       return false;
     }
@@ -158,7 +151,7 @@ export default class ConnectNats {
     this.subscribeToDataChannel();
 
     this.startTokenRenewInterval();
-    this.startPingToServer();
+    await this.startPingToServer();
 
     // request for initial data
     await this.sendMessageToSystemWorker(
@@ -179,7 +172,12 @@ export default class ConnectNats {
         this.statusCheckerInterval = setInterval(() => {
           if (this._nc?.isClosed()) {
             this._setRoomConnectionStatusState('disconnected');
-            this.setErrorStatus('Disconnected', 'Room disconnected');
+            this.setErrorStatus(
+              i18n.t('notifications.room-disconnected-title'),
+              i18n.t('room-disconnected-unknown', {
+                code: 'NETWORK_ERROR',
+              }),
+            );
 
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
@@ -189,7 +187,6 @@ export default class ConnectNats {
     };
 
     for await (const s of this._nc.status()) {
-      console.info(`${s.type}: ${s.data}`);
       if (s.type === 'reconnecting') {
         startStatusChecker();
         this._setRoomConnectionStatusState('re-connecting');
@@ -365,7 +362,7 @@ export default class ConnectNats {
     }, RENEW_TOKEN_FREQUENT);
   }
 
-  private startPingToServer() {
+  private async startPingToServer() {
     const ping = async () => {
       await this.sendMessageToSystemWorker(
         new NatsMsgClientToServer({
@@ -377,7 +374,7 @@ export default class ConnectNats {
       await ping();
     }, PING_INTERVAL);
     // start instantly
-    ping();
+    await ping();
   }
 
   private async handleInitialData(msg: string) {
@@ -386,8 +383,8 @@ export default class ConnectNats {
       data = NatsInitialData.fromJsonString(msg);
     } catch (e) {
       this.setErrorStatus(
-        'Data decoded error',
-        'We could not understand data sent from server.',
+        i18n.t('notifications.decode-error-title'),
+        i18n.t('decode-error-body'),
       );
       return;
     }
@@ -414,8 +411,7 @@ export default class ConnectNats {
       }
       await this.onAfterUserReady();
     } catch (e) {
-      const err = e as NatsError;
-      console.error(err.message);
+      console.error(e);
     }
   }
 
@@ -461,7 +457,7 @@ export default class ConnectNats {
 
       this._setErrorState({
         title: i18n.t('notifications.room-disconnected-title'),
-        text: msg,
+        text: i18n.t(msg),
       });
       this._setRoomConnectionStatusState('disconnected');
     }
@@ -518,17 +514,12 @@ export default class ConnectNats {
 
       return await this._js.publish(subject, data.toBinary());
     } catch (e: any) {
-      const err = e as NatsError;
-      console.error(err.message);
-      toast(
-        i18n.t('notifications.nats-sent-error', {
-          error: `${err.name}: ${err.message}`,
-        }),
-        {
-          toastId: 'nats-status',
-          type: 'error',
-        },
-      );
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
     }
   };
 
@@ -551,17 +542,12 @@ export default class ConnectNats {
     try {
       await this._js.publish(subject, data.toBinary());
     } catch (e: any) {
-      const err = e as NatsError;
-      console.error(err.message);
-      toast(
-        i18n.t('notifications.nats-sent-error', {
-          error: `${err.name}: ${err.message}`,
-        }),
-        {
-          toastId: 'nats-status',
-          type: 'error',
-        },
-      );
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
     }
   };
 
@@ -585,17 +571,12 @@ export default class ConnectNats {
     try {
       await this._js.publish(subject, data.toBinary());
     } catch (e: any) {
-      const err = e as NatsError;
-      console.error(err.message);
-      toast(
-        i18n.t('notifications.nats-sent-error', {
-          error: `${err.name}: ${err.message}`,
-        }),
-        {
-          toastId: 'nats-status',
-          type: 'error',
-        },
-      );
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
     }
   };
 
@@ -619,17 +600,12 @@ export default class ConnectNats {
     try {
       await this._js.publish(subject, data.toBinary());
     } catch (e: any) {
-      const err = e as NatsError;
-      console.error(err.message);
-      toast(
-        i18n.t('notifications.nats-sent-error', {
-          error: `${err.name}: ${err.message}`,
-        }),
-        {
-          toastId: 'nats-status',
-          type: 'error',
-        },
-      );
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
     }
   };
 
@@ -656,4 +632,27 @@ export default class ConnectNats {
     });
     await this.sendMessageToSystemWorker(data);
   };
+
+  private formatError(err: any) {
+    let msg = i18n.t('notifications.nats-error-request-failed').toString();
+
+    switch (err.code) {
+      case ErrorCode.NoResponders:
+        msg = i18n
+          .t('notifications.nats-error-no-response', {
+            error: `${err.name}: ${err.message}`,
+          })
+          .toString();
+        break;
+      case ErrorCode.Timeout:
+        msg = i18n
+          .t('notifications.nats-error-timeout', {
+            error: `${err.name}: ${err.message}`,
+          })
+          .toString();
+        break;
+    }
+
+    return msg;
+  }
 }

@@ -35,8 +35,8 @@
     "room-disconnected-client-initiated": "Client has been initiated. Code: {{code}}",
     "room-disconnected-duplicate-entry": "A different user has already joined with the same userId.",
     "room-disconnected-server-shutdown": "Server shutdown. Code: {{code}}",
-    "room-disconnected-participant-removed": "You have been removed from this conference. Code: {{code}}",
-    "room-disconnected-room-ended": "The room has been closed. Code: {{code}}",
+    "room-disconnected-participant-removed": "You have been removed from this conference",
+    "room-disconnected-room-ended": "The room has been closed",
     "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
     "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
@@ -49,7 +49,14 @@
     "room-will-end-in": "This room will be ended in {{minutes}} minutes",
     "e2ee-unsupported-browser-title": "Unsupported browser",
     "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support.",
-    "nats-sent-error": "Sending data was failed, please check your connection. Error: {{error}}"
+    "nats-error-no-response": "No backend server found to handle the request. Error: {{error}}",
+    "nats-error-timeout": "No response found from backend server. Error: {{error}}",
+    "nats-error-request-failed": "Sending request was not successful",
+    "decode-error-title": "Decoding error",
+    "decode-error-body": "We could not understand data sent from server",
+    "nats-error-auth-title": "Authentication error",
+    "nats-error-auth-body": "We was not able to verify your auth information. May be you are using an expired token?",
+    "user-logged-out": "You logged out"
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
