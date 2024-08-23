@@ -12,6 +12,7 @@ import type {
   PlainMessage,
 } from '@bufbuild/protobuf';
 import { Message, proto3 } from '@bufbuild/protobuf';
+import { NatsSubjects } from './plugnmeet_nats_msg_pb.ts';
 import { DataMsgBodyType } from './plugnmeet_datamessage_pb.ts';
 
 /**
@@ -207,27 +208,32 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
   msg = '';
 
   /**
-   * @generated from field: optional string server_version = 5;
+   * @generated from field: optional string nats_ws_url = 3;
+   */
+  natsWsUrl?: string;
+
+  /**
+   * @generated from field: optional string server_version = 4;
    */
   serverVersion?: string;
 
   /**
-   * @generated from field: bool enabled_e2ee = 6;
+   * @generated from field: bool enabled_e2ee = 5;
    */
   enabledE2ee = false;
 
   /**
-   * @generated from field: optional string room_id = 7;
+   * @generated from field: optional string room_id = 6;
    */
   roomId?: string;
 
   /**
-   * @generated from field: optional string user_id = 8;
+   * @generated from field: optional string user_id = 7;
    */
   userId?: string;
 
   /**
-   * @generated from field: optional plugnmeet.NatsSubjects nats_subjects = 9;
+   * @generated from field: optional plugnmeet.NatsSubjects nats_subjects = 8;
    */
   natsSubjects?: NatsSubjects;
 
@@ -242,29 +248,36 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
     { no: 1, name: 'status', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     { no: 2, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
-      no: 5,
+      no: 3,
+      name: 'nats_ws_url',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 4,
       name: 'server_version',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
-    { no: 6, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 5, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     {
-      no: 7,
+      no: 6,
       name: 'room_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 8,
+      no: 7,
       name: 'user_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 9,
+      no: 8,
       name: 'nats_subjects',
       kind: 'message',
       T: NatsSubjects,
@@ -1369,104 +1382,5 @@ export class UpdateUserLockSettingsReq extends Message<UpdateUserLockSettingsReq
       | undefined,
   ): boolean {
     return proto3.util.equals(UpdateUserLockSettingsReq, a, b);
-  }
-}
-
-/**
- * @generated from message plugnmeet.NatsSubjects
- */
-export class NatsSubjects extends Message<NatsSubjects> {
-  /**
-   * @generated from field: string system_worker = 1;
-   */
-  systemWorker = '';
-
-  /**
-   * @generated from field: string system_public = 2;
-   */
-  systemPublic = '';
-
-  /**
-   * @generated from field: string system_private = 3;
-   */
-  systemPrivate = '';
-
-  /**
-   * @generated from field: string chat = 4;
-   */
-  chat = '';
-
-  /**
-   * @generated from field: string whiteboard = 5;
-   */
-  whiteboard = '';
-
-  /**
-   * @generated from field: string data_channel = 6;
-   */
-  dataChannel = '';
-
-  constructor(data?: PartialMessage<NatsSubjects>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'plugnmeet.NatsSubjects';
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    {
-      no: 1,
-      name: 'system_worker',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-    {
-      no: 2,
-      name: 'system_public',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-    {
-      no: 3,
-      name: 'system_private',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-    { no: 4, name: 'chat', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: 'whiteboard', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    {
-      no: 6,
-      name: 'data_channel',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-  ]);
-
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): NatsSubjects {
-    return new NatsSubjects().fromBinary(bytes, options);
-  }
-
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): NatsSubjects {
-    return new NatsSubjects().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): NatsSubjects {
-    return new NatsSubjects().fromJsonString(jsonString, options);
-  }
-
-  static equals(
-    a: NatsSubjects | PlainMessage<NatsSubjects> | undefined,
-    b: NatsSubjects | PlainMessage<NatsSubjects> | undefined,
-  ): boolean {
-    return proto3.util.equals(NatsSubjects, a, b);
   }
 }

@@ -9,7 +9,6 @@ import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
 import { toast } from 'react-toastify';
 
-import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import {
   ChatMessage,
   DataChannelMessage,
@@ -20,6 +19,7 @@ import {
   NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
+  NatsSubjects,
 } from '../proto/plugnmeet_nats_msg_pb';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
@@ -43,6 +43,7 @@ const STATUS_CHECKER_INTERVAL = 500;
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
   private _js: JetStreamClient | undefined;
+  private readonly _natsWSUrl: string;
   private _token: string;
   private readonly _roomId: string;
   private readonly _userId: string;
@@ -64,6 +65,7 @@ export default class ConnectNats {
   private handleWhiteboard: HandleWhiteboard;
 
   constructor(
+    natsWSUrl: string,
     token: string,
     roomId: string,
     userId: string,
@@ -72,6 +74,7 @@ export default class ConnectNats {
     setRoomConnectionStatusState: Dispatch<ConnectionStatus>,
     setCurrentMediaServerConn: Dispatch<IConnectLivekit>,
   ) {
+    this._natsWSUrl = natsWSUrl;
     this._token = token;
     this._roomId = roomId;
     this._userId = userId;
@@ -126,7 +129,7 @@ export default class ConnectNats {
   private _openConn = async () => {
     try {
       this._nc = await connect({
-        servers: ['http://localhost:8222'],
+        servers: [this._natsWSUrl],
         authenticator: tokenAuthenticator(() => this._token),
       });
 
@@ -506,7 +509,7 @@ export default class ConnectNats {
     }
     try {
       const subject =
-        this._subjects.systemWorker + '.' + this._roomId + '.' + this._userId;
+        this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
 
       return await this._js.publish(subject, data.toBinary());
     } catch (e: any) {

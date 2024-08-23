@@ -123,13 +123,20 @@ const App = () => {
 
         setRoomConnectionStatus('ready');
         setLoading(false);
-        if (res.status && res.roomId && res.userId && res.natsSubjects) {
-          // we'll store token that we received from URL
+        if (
+          res.status &&
+          res.natsWsUrl &&
+          res.roomId &&
+          res.userId &&
+          res.natsSubjects
+        ) {
+          // we'll store the token that we received from the URL
           dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
 
           setRoomConnectionStatus('connecting');
           await startNatsConn(
+            res.natsWsUrl,
             accessToken,
             res.roomId,
             res.userId,

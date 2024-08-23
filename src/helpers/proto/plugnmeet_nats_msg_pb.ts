@@ -191,6 +191,116 @@ proto3.util.setEnumType(
 );
 
 /**
+ * @generated from message plugnmeet.NatsSubjects
+ */
+export class NatsSubjects extends Message<NatsSubjects> {
+  /**
+   * @generated from field: string system_api_worker = 1;
+   */
+  systemApiWorker = '';
+
+  /**
+   * @generated from field: string system_js_worker = 2;
+   */
+  systemJsWorker = '';
+
+  /**
+   * @generated from field: string system_public = 3;
+   */
+  systemPublic = '';
+
+  /**
+   * @generated from field: string system_private = 4;
+   */
+  systemPrivate = '';
+
+  /**
+   * @generated from field: string chat = 5;
+   */
+  chat = '';
+
+  /**
+   * @generated from field: string whiteboard = 6;
+   */
+  whiteboard = '';
+
+  /**
+   * @generated from field: string data_channel = 7;
+   */
+  dataChannel = '';
+
+  constructor(data?: PartialMessage<NatsSubjects>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = 'plugnmeet.NatsSubjects';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    {
+      no: 1,
+      name: 'system_api_worker',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 2,
+      name: 'system_js_worker',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 3,
+      name: 'system_public',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 4,
+      name: 'system_private',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 5, name: 'chat', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: 'whiteboard', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 7,
+      name: 'data_channel',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+  ]);
+
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>,
+  ): NatsSubjects {
+    return new NatsSubjects().fromBinary(bytes, options);
+  }
+
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>,
+  ): NatsSubjects {
+    return new NatsSubjects().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>,
+  ): NatsSubjects {
+    return new NatsSubjects().fromJsonString(jsonString, options);
+  }
+
+  static equals(
+    a: NatsSubjects | PlainMessage<NatsSubjects> | undefined,
+    b: NatsSubjects | PlainMessage<NatsSubjects> | undefined,
+  ): boolean {
+    return proto3.util.equals(NatsSubjects, a, b);
+  }
+}
+
+/**
  * @generated from message plugnmeet.NatsMsgServerToClient
  */
 export class NatsMsgServerToClient extends Message<NatsMsgServerToClient> {
@@ -327,32 +437,37 @@ export class NatsMsgClientToServer extends Message<NatsMsgClientToServer> {
  */
 export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   /**
-   * @generated from field: string room_id = 1;
+   * @generated from field: uint64 db_table_id = 1;
+   */
+  dbTableId = protoInt64.zero;
+
+  /**
+   * @generated from field: string room_id = 2;
    */
   roomId = '';
 
   /**
-   * @generated from field: string room_sid = 2;
+   * @generated from field: string room_sid = 3;
    */
   roomSid = '';
 
   /**
-   * @generated from field: uint64 empty_timeout = 3;
+   * @generated from field: uint64 empty_timeout = 4;
    */
   emptyTimeout = protoInt64.zero;
 
   /**
-   * @generated from field: bool enabled_e2ee = 4;
+   * @generated from field: bool enabled_e2ee = 5;
    */
   enabledE2ee = false;
 
   /**
-   * @generated from field: string metadata = 5;
+   * @generated from field: string metadata = 6;
    */
   metadata = '';
 
   /**
-   * @generated from field: uint64 created_at = 6;
+   * @generated from field: uint64 created_at = 7;
    */
   createdAt = protoInt64.zero;
 
@@ -364,17 +479,23 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = 'plugnmeet.NatsKvRoomInfo';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
-      no: 3,
+      no: 1,
+      name: 'db_table_id',
+      kind: 'scalar',
+      T: 4 /* ScalarType.UINT64 */,
+    },
+    { no: 2, name: 'room_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'room_sid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 4,
       name: 'empty_timeout',
       kind: 'scalar',
       T: 4 /* ScalarType.UINT64 */,
     },
-    { no: 4, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-    { no: 5, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    { no: 5, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
   ]);
 
   static fromBinary(

@@ -1,12 +1,13 @@
 import ConnectNats from './ConnectNats';
-import { NatsSubjects } from '../proto/plugnmeet_common_api_pb';
 import { Dispatch } from 'react';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
+import { NatsSubjects } from '../proto/plugnmeet_nats_msg_pb';
 
 let conn: ConnectNats | undefined = undefined;
 
 export const startNatsConn = async (
+  natsWSUrl: string,
   token: string,
   roomId: string,
   userId: string,
@@ -20,6 +21,7 @@ export const startNatsConn = async (
   }
 
   conn = new ConnectNats(
+    natsWSUrl,
     token,
     roomId,
     userId,
