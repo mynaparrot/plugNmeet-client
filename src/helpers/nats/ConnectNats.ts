@@ -638,18 +638,14 @@ export default class ConnectNats {
 
     switch (err.code) {
       case ErrorCode.NoResponders:
-        msg = i18n
-          .t('notifications.nats-error-no-response', {
-            error: `${err.name}: ${err.message}`,
-          })
-          .toString();
+        msg = i18n.t('notifications.nats-error-no-response', {
+          error: `${err.name}: ${err.message}`,
+        });
         break;
       case ErrorCode.Timeout:
-        msg = i18n
-          .t('notifications.nats-error-timeout', {
-            error: `${err.name}: ${err.message}`,
-          })
-          .toString();
+        msg = i18n.t('notifications.nats-error-timeout', {
+          error: `${err.name}: ${err.message}`,
+        });
         break;
     }
 

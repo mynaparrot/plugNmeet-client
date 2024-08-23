@@ -72,7 +72,7 @@ const Header = () => {
 
     if (task === 'logout') {
       const conn = getNatsConn();
-      await conn.endSession('user-logged-out');
+      await conn.endSession('notifications.user-logged-out');
     } else if (task === 'end Room') {
       const session = store.getState().session;
 
