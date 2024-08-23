@@ -51,7 +51,7 @@ const STATUS_CHECKER_INTERVAL = 500;
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
   private _js: JetStreamClient | undefined;
-  private readonly _natsWSUrl: string;
+  private readonly _natsWSUrls: string[];
   private _token: string;
   private readonly _roomId: string;
   private readonly _userId: string;
@@ -73,7 +73,7 @@ export default class ConnectNats {
   private handleWhiteboard: HandleWhiteboard;
 
   constructor(
-    natsWSUrl: string,
+    natsWSUrls: string[],
     token: string,
     roomId: string,
     userId: string,
@@ -82,7 +82,7 @@ export default class ConnectNats {
     setRoomConnectionStatusState: Dispatch<ConnectionStatus>,
     setCurrentMediaServerConn: Dispatch<IConnectLivekit>,
   ) {
-    this._natsWSUrl = natsWSUrl;
+    this._natsWSUrls = natsWSUrls;
     this._token = token;
     this._roomId = roomId;
     this._userId = userId;
@@ -129,7 +129,7 @@ export default class ConnectNats {
   private _openConn = async () => {
     try {
       this._nc = await wsconnect({
-        servers: [this._natsWSUrl],
+        servers: this._natsWSUrls,
         authenticator: tokenAuthenticator(() => this._token),
       });
 

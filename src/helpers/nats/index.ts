@@ -8,7 +8,7 @@ import { NatsSubjects } from '../proto/plugnmeet_nats_msg_pb';
 let conn: ConnectNats | undefined = undefined;
 
 export const startNatsConn = async (
-  natsWSUrl: string,
+  natsWSUrl: string[],
   token: string,
   roomId: string,
   userId: string,

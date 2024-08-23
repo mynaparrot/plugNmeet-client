@@ -125,7 +125,7 @@ const App = () => {
         setLoading(false);
         if (
           res.status &&
-          res.natsWsUrl &&
+          res.natsWsUrls.length &&
           res.roomId &&
           res.userId &&
           res.natsSubjects
@@ -136,7 +136,7 @@ const App = () => {
 
           setRoomConnectionStatus('connecting');
           await startNatsConn(
-            res.natsWsUrl,
+            res.natsWsUrls,
             accessToken,
             res.roomId,
             res.userId,

@@ -208,9 +208,9 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
   msg = '';
 
   /**
-   * @generated from field: optional string nats_ws_url = 3;
+   * @generated from field: repeated string nats_ws_urls = 3;
    */
-  natsWsUrl?: string;
+  natsWsUrls: string[] = [];
 
   /**
    * @generated from field: optional string server_version = 4;
@@ -249,10 +249,10 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
     { no: 2, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
     {
       no: 3,
-      name: 'nats_ws_url',
+      name: 'nats_ws_urls',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
-      opt: true,
+      repeated: true,
     },
     {
       no: 4,
