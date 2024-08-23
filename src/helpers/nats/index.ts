@@ -1,5 +1,6 @@
-import ConnectNats from './ConnectNats';
 import { Dispatch } from 'react';
+
+import ConnectNats from './ConnectNats';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
 import { NatsSubjects } from '../proto/plugnmeet_nats_msg_pb';
