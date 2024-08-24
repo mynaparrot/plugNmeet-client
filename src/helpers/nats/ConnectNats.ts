@@ -63,6 +63,7 @@ export default class ConnectNats {
   private pingInterval: any;
   private statusCheckerInterval: any;
   private _mediaServerConn: IConnectLivekit | undefined = undefined;
+  private isRoomReconnecting: boolean = false;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
   private readonly _setRoomConnectionStatusState: Dispatch<ConnectionStatus>;
@@ -184,23 +185,19 @@ export default class ConnectNats {
       if (typeof this.statusCheckerInterval === 'undefined') {
         this.statusCheckerInterval = setInterval(() => {
           if (this._nc?.isClosed()) {
-            this._setRoomConnectionStatusState('disconnected');
-            this.setErrorStatus(
-              i18n.t('notifications.room-disconnected-title'),
-              i18n.t('room-disconnected-unknown', {
-                code: 'NETWORK_ERROR',
-              }),
-            );
+            this.endSession('notifications.room-disconnected-network-error');
 
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
+            this.isRoomReconnecting = false;
           }
         }, STATUS_CHECKER_INTERVAL);
       }
     };
 
     for await (const s of this._nc.status()) {
-      if (s.type === 'reconnecting') {
+      if (s.type === 'reconnecting' && !this.isRoomReconnecting) {
+        this.isRoomReconnecting = true;
         startStatusChecker();
         this._setRoomConnectionStatusState('re-connecting');
       } else if (s.type === 'reconnect') {
@@ -208,6 +205,7 @@ export default class ConnectNats {
 
         clearInterval(this.statusCheckerInterval);
         this.statusCheckerInterval = undefined;
+        this.isRoomReconnecting = false;
       }
     }
   }
@@ -478,24 +476,27 @@ export default class ConnectNats {
   }
 
   public endSession = async (msg: string) => {
-    if (this._nc && !this._nc.isClosed()) {
-      if (this.mediaServerConn) {
-        await this.mediaServerConn.room.disconnect();
-      }
+    if (!this._nc) {
+      return;
+    }
+    if (this.mediaServerConn) {
+      await this.mediaServerConn.disconnectRoom();
+    }
 
-      clearInterval(this.tokenRenewInterval);
-      clearInterval(this.pingInterval);
-      this.handleParticipants.clearParticipantCounterInterval();
+    clearInterval(this.tokenRenewInterval);
+    clearInterval(this.pingInterval);
+    this.handleParticipants.clearParticipantCounterInterval();
 
+    if (!this._nc.isClosed()) {
       await this._nc.drain();
       await this._nc.close();
-
-      this._setErrorState({
-        title: i18n.t('notifications.room-disconnected-title'),
-        text: i18n.t(msg),
-      });
-      this._setRoomConnectionStatusState('disconnected');
     }
+
+    this._setErrorState({
+      title: i18n.t('notifications.room-disconnected-title'),
+      text: i18n.t(msg),
+    });
+    this._setRoomConnectionStatusState('disconnected');
   };
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
@@ -540,7 +541,11 @@ export default class ConnectNats {
   }
 
   public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
-    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
       return;
     }
     try {
@@ -559,7 +564,11 @@ export default class ConnectNats {
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
-    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
       return;
     }
 
@@ -591,7 +600,11 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
       return;
     }
 
@@ -620,7 +633,11 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (typeof this._js === 'undefined' || this._nc?.isClosed()) {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
       return;
     }
 

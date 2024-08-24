@@ -39,8 +39,7 @@ export interface IConnectLivekit extends EventEmitter {
     Array<LocalTrackPublication | RemoteTrackPublication>
   >;
   connect(): Promise<void>;
-  setRoomMetadata(metadata: string): Promise<void>;
-  disconnectRoom(): void;
+  disconnectRoom(): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
   addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
@@ -50,12 +49,11 @@ export interface IConnectLivekit extends EventEmitter {
     participant: Participant | LocalParticipant | RemoteParticipant,
   ): void;
   removeVideoSubscriber(userId: string): void;
-  setScreenShareTrack(
-    track: LocalTrackPublication | RemoteTrackPublication | undefined,
-    participant: LocalParticipant | RemoteParticipant,
-    add?: boolean,
+  addScreenShareTrack(
+    userId: string,
+    track: LocalTrackPublication | RemoteTrackPublication,
   ): void;
-  updateScreenShareOnUserDisconnect(participant: RemoteParticipant): void;
+  removeScreenShareTrack(userId: string): void;
   on(
     event: CurrentConnectionEvents.ScreenShareStatus,
     listener: (active: boolean) => void,

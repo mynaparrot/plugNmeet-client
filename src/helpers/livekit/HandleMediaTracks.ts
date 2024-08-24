@@ -13,7 +13,6 @@ import { isEmpty } from 'lodash';
 import { IConnectLivekit } from './types';
 import { store } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
-import { updateScreenSharing } from '../../store/slices/sessionSlice';
 import { updateIsMicMuted } from '../../store/slices/bottomIconsActivitySlice';
 import {
   ICurrentUser,
@@ -177,13 +176,7 @@ export default class HandleMediaTracks {
           },
         }),
       );
-      store.dispatch(
-        updateScreenSharing({
-          isActive: true,
-          sharedBy: participant.identity,
-        }),
-      );
-      this.that.setScreenShareTrack(track, participant, true);
+      this.that.addScreenShareTrack(participant.identity, track);
     } else if (track.source === Track.Source.Microphone) {
       this.that.addAudioSubscriber(participant);
       const count = participant
@@ -233,13 +226,7 @@ export default class HandleMediaTracks {
           },
         }),
       );
-      store.dispatch(
-        updateScreenSharing({
-          isActive: false,
-          sharedBy: '',
-        }),
-      );
-      this.that.setScreenShareTrack(track, participant, false);
+      this.that.removeScreenShareTrack(participant.identity);
     } else if (track.source === Track.Source.Microphone) {
       this.that.removeAudioSubscriber(participant.identity);
       store.dispatch(

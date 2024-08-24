@@ -39,6 +39,7 @@
     "room-disconnected-room-ended": "The room has been closed",
     "room-disconnected-state-mismatch": "State mismatch. Code: {{code}}",
     "room-disconnected-reconnecting": "Room disconnected, reconnecting...",
+    "room-disconnected-network-error": "Room disconnected because of network error.",
     "your-connection-quality-not-good": "Your connection quality isn't good enough",
     "your-connection-quality-lost": "Your connection to the server has been lost",
     "need-to-disable-display-external-link": "Display External Link is turned on. Please stop it before launching External Media Player.",
@@ -56,7 +57,9 @@
     "decode-error-body": "We could not understand data sent from server",
     "nats-error-auth-title": "Authentication error",
     "nats-error-auth-body": "We was not able to verify your auth information. May be you are using an expired token?",
-    "user-logged-out": "You logged out"
+    "user-logged-out": "You logged out",
+    "media-server-disconnected-reconnecting": "Media server disconnected, reconnecting...",
+    "media-server-disconnected": "Media server disconnected."
   },
   "room-metadata": {
     "session-recording": "This session is being recording",

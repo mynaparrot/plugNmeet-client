@@ -1,5 +1,9 @@
 import { toast } from 'react-toastify';
-import { ConnectionQuality } from 'livekit-client';
+import {
+  ConnectionQuality,
+  RemoteTrackPublication,
+  Track,
+} from 'livekit-client';
 
 import ConnectNats from './ConnectNats';
 import {
@@ -14,7 +18,6 @@ import { store } from '../../store';
 import {
   addCurrentUser,
   updateCurrentUserMetadata,
-  updateScreenSharing,
 } from '../../store/slices/sessionSlice';
 import {
   addParticipant,
@@ -225,6 +228,7 @@ export default class HandleParticipants {
     // remove media for this user for the moment
     mediaConn.removeAudioSubscriber(participant.userId);
     mediaConn.removeVideoSubscriber(participant.userId);
+    mediaConn.removeScreenShareTrack(participant.userId);
 
     store.dispatch(
       updateParticipant({
@@ -255,19 +259,6 @@ export default class HandleParticipants {
     }
 
     console.log(p);
-    const participant = participantsSelector.selectById(
-      store.getState(),
-      p.userId,
-    );
-
-    if (participant?.screenShareTrack) {
-      store.dispatch(
-        updateScreenSharing({
-          isActive: false,
-          sharedBy: '',
-        }),
-      );
-    }
 
     // now remove user.
     store.dispatch(removeParticipant(p.userId));
@@ -331,8 +322,7 @@ export default class HandleParticipants {
     this.participantCounterInterval = setInterval(async () => {
       if (this.participantsCount === 0) {
         console.log('NO_USER_ONLINE');
-        // TODO: update
-        //await this.that.room.disconnect();
+        await this._that.endSession('NO_USER_ONLINE');
       }
     }, 3000);
   }
@@ -350,8 +340,20 @@ export default class HandleParticipants {
     const mediaConn = getCurrentConnection();
     const participant = mediaConn.room.getParticipantByIdentity(userId);
     if (participant) {
-      mediaConn.addAudioSubscriber(participant);
-      mediaConn.addVideoSubscriber(participant);
+      participant.trackPublications.forEach((track) => {
+        if (
+          track.source === Track.Source.ScreenShare ||
+          track.source === Track.Source.ScreenShareAudio
+        ) {
+          mediaConn.addScreenShareTrack(
+            participant.identity,
+            track as RemoteTrackPublication,
+          );
+        } else {
+          mediaConn.addVideoSubscriber(participant);
+          mediaConn.addAudioSubscriber(participant);
+        }
+      });
     }
   }
 }

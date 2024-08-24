@@ -1,5 +1,6 @@
 import { Dispatch } from 'react';
 import {
+  ConnectionQuality,
   ConnectionState,
   DisconnectReason,
   ExternalE2EEKeyProvider,
@@ -30,9 +31,7 @@ import {
   updateTotalVideoSubscribers,
 } from '../../store/slices/sessionSlice';
 
-import HandleParticipants from './HandleParticipants';
 import HandleMediaTracks from './HandleMediaTracks';
-import HandleRoomMetadata from './HandleRoomMetadata';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './hooks/useLivekitConnect';
@@ -43,6 +42,13 @@ import {
   IConnectLivekit,
 } from './types';
 import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
+import { IScreenSharing } from '../../store/slices/interfaces/session';
+import { toast } from 'react-toastify';
+import { getNatsConn } from '../nats';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+} from '../proto/plugnmeet_analytics_pb';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -61,16 +67,14 @@ export default class ConnectLivekit
   private readonly _errorState: Dispatch<IErrorPageProps>;
   private readonly _roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
-  protected token: string;
+  private readonly token: string;
   private readonly _room: Room;
   private readonly url: string;
   private readonly enabledE2EE: boolean = false;
-  private tokenRenewInterval: any;
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
+  private toastIdConnecting: any = undefined;
 
-  private handleParticipant: HandleParticipants;
   private handleMediaTracks: HandleMediaTracks;
-  private handleRoomMetadata: HandleRoomMetadata;
   private handleActiveSpeakers: HandleActiveSpeakers;
 
   constructor(
@@ -87,9 +91,7 @@ export default class ConnectLivekit
     this._roomConnectionStatusState = roomConnectionStatusState;
     this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
 
-    this.handleParticipant = new HandleParticipants(this);
     this.handleMediaTracks = new HandleMediaTracks(this);
-    this.handleRoomMetadata = new HandleRoomMetadata(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
     // clean session data
@@ -125,9 +127,6 @@ export default class ConnectLivekit
       await this._room.connect(this.url, this.token);
       // we'll prepare our information
       await this.initiateParticipants();
-      // open websocket
-      //openWebsocketConnection();
-      // finally
       this._roomConnectionStatusState('connected');
     } catch (error) {
       console.error(error);
@@ -179,35 +178,29 @@ export default class ConnectLivekit
     }
 
     const room = new Room(roomOptions);
-    room.on(RoomEvent.Reconnecting, () =>
-      this._roomConnectionStatusState('re-connecting'),
-    );
-    room.on(RoomEvent.Reconnected, () =>
-      this._roomConnectionStatusState('connected'),
-    );
+
+    room.on(RoomEvent.Reconnecting, () => {
+      this.toastIdConnecting = toast.loading(
+        i18n.t('notifications.media-server-disconnected-reconnecting'),
+        {
+          type: 'warning',
+          closeButton: false,
+          autoClose: false,
+        },
+      );
+    });
+    room.on(RoomEvent.Reconnected, () => {
+      if (this.toastIdConnecting) {
+        toast.dismiss(this.toastIdConnecting);
+      }
+    });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(
       RoomEvent.ActiveSpeakersChanged,
       this.handleActiveSpeakers.activeSpeakersChanged,
     );
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
-
-    // room.on(
-    //   RoomEvent.ParticipantConnected,
-    //   this.handleParticipant.participantConnected,
-    // );
-    // room.on(
-    //   RoomEvent.ParticipantDisconnected,
-    //   this.handleParticipant.participantDisconnected,
-    // );
-    // room.on(
-    //   RoomEvent.ParticipantMetadataChanged,
-    //   this.handleParticipant.setParticipantMetadata,
-    // );
-    room.on(
-      RoomEvent.ConnectionQualityChanged,
-      this.handleParticipant.connectionQualityChanged,
-    );
+    room.on(RoomEvent.ConnectionQualityChanged, this.connectionQualityChanged);
 
     room.on(
       RoomEvent.LocalTrackPublished,
@@ -253,15 +246,9 @@ export default class ConnectLivekit
                 },
               }),
             );
-            store.dispatch(
-              updateScreenSharing({
-                isActive: true,
-                sharedBy: participant.identity,
-              }),
-            );
-            this.setScreenShareTrack(
+            this.addScreenShareTrack(
+              participant.identity,
               track as RemoteTrackPublication,
-              participant,
             );
           } else if (track.source === Track.Source.Camera) {
             this.addVideoSubscriber(participant);
@@ -270,10 +257,6 @@ export default class ConnectLivekit
       });
     });
   };
-
-  public async setRoomMetadata(metadata: string) {
-    await this.handleRoomMetadata.setRoomMetadata(metadata);
-  }
 
   public async disconnectRoom() {
     if (this._room.state === ConnectionState.Connected) {
@@ -294,11 +277,11 @@ export default class ConnectLivekit
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-    this._roomConnectionStatusState('disconnected');
-    //closeWebsocketConnection();
+
     this.handleActiveSpeakers.onLivekitDisconnect();
-    clearInterval(this.tokenRenewInterval);
-    this.handleParticipant.clearParticipantCounterInterval();
+    if (this.toastIdConnecting) {
+      toast.dismiss(this.toastIdConnecting);
+    }
 
     // redirect to logout url
     const logout_url =
@@ -354,47 +337,90 @@ export default class ConnectLivekit
     console.error(error);
   };
 
-  /**
-   * This method will set screenshare media track
-   * @param track
-   * @param participant
-   * @param add
-   */
-  public setScreenShareTrack = (
-    track: LocalTrackPublication | RemoteTrackPublication,
-    participant: LocalParticipant | RemoteParticipant,
-    add = true,
-  ) => {
-    // make sure track that we are about to add is valid
-    if (add) {
-      if (!participant.videoTrackPublications.size) {
-        return;
-      }
-      const existUser = participantsSelector.selectById(
-        store.getState(),
-        participant.identity,
-      );
-      if (!existUser || existUser.isOnline) {
-        return;
+  private async connectionQualityChanged(
+    connectionQuality: ConnectionQuality,
+    participant: Participant,
+  ) {
+    store.dispatch(
+      updateParticipant({
+        id: participant.identity,
+        changes: {
+          connectionQuality: connectionQuality,
+        },
+      }),
+    );
+
+    if (
+      connectionQuality === ConnectionQuality.Poor ||
+      connectionQuality === ConnectionQuality.Lost
+    ) {
+      if (
+        participant.identity === this.room.localParticipant.identity &&
+        !(
+          participant.identity === 'RECORDER_BOT' ||
+          participant.identity === 'RTMP_BOT'
+        )
+      ) {
+        let msg = i18n.t('notifications.your-connection-quality-not-good');
+        if (connectionQuality === ConnectionQuality.Lost) {
+          msg = i18n.t('notifications.your-connection-quality-lost');
+        }
+        toast(msg, {
+          toastId: 'connection-status',
+          type: 'error',
+        });
       }
     }
 
-    if (add) {
-      const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
-      if (this._screenShareTracksMap.has(participant.identity)) {
-        const oldTracks = this._screenShareTracksMap.get(participant.identity);
-        if (oldTracks && oldTracks.length) {
-          tracks.push(...oldTracks);
-        }
-      }
-      tracks.push(track);
-      this._screenShareTracksMap.set(participant.identity, tracks);
-    } else {
-      this._screenShareTracksMap.delete(participant.identity);
+    const conn = getNatsConn();
+    if (conn) {
+      await conn.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
+        AnalyticsEventType.USER,
+        connectionQuality.toString(),
+      );
     }
+  }
+
+  public addScreenShareTrack = (
+    userId: string,
+    track: LocalTrackPublication | RemoteTrackPublication,
+  ) => {
+    const existUser = participantsSelector.selectById(store.getState(), userId);
+    if (!existUser || !existUser.isOnline) {
+      return;
+    }
+
+    const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
+    if (this._screenShareTracksMap.has(userId)) {
+      const oldTracks = this._screenShareTracksMap.get(userId);
+      if (oldTracks && oldTracks.length) {
+        tracks.push(...oldTracks);
+      }
+    }
+    tracks.push(track);
+    this._screenShareTracksMap.set(userId, tracks);
+    this.syncScreenShareTracks(userId);
+  };
+
+  public removeScreenShareTrack = (userId: string) => {
+    this._screenShareTracksMap.delete(userId);
+    this.syncScreenShareTracks(userId);
+  };
+
+  public syncScreenShareTracks(userId: string) {
+    let payload: IScreenSharing = {
+      isActive: false,
+      sharedBy: '',
+    };
+    console.log(this._screenShareTracksMap);
 
     // notify about status
     if (this._screenShareTracksMap.size) {
+      payload = {
+        isActive: true,
+        sharedBy: userId,
+      };
       this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
     } else {
       this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
@@ -403,40 +429,8 @@ export default class ConnectLivekit
     // emit a new tracks map
     const screenShareTracks = new Map(this._screenShareTracksMap) as any;
     this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
-  };
-
-  /**
-   * This method will update screen sharing if user disconnects
-   * This will ensure UI has been updated properly
-   * @param participant
-   */
-  public updateScreenShareOnUserDisconnect = (
-    participant: RemoteParticipant,
-  ) => {
-    if (!this._screenShareTracksMap.size) {
-      return;
-    }
-
-    if (this._screenShareTracksMap.has(participant.identity)) {
-      this._screenShareTracksMap.delete(participant.identity);
-
-      const screenShareTracks = new Map(this._screenShareTracksMap) as any;
-      this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
-
-      // update status too
-      if (!this._screenShareTracksMap.size) {
-        store.dispatch(
-          updateScreenSharing({
-            isActive: false,
-            sharedBy: '',
-          }),
-        );
-        this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
-      } else {
-        this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
-      }
-    }
-  };
+    store.dispatch(updateScreenSharing(payload));
+  }
 
   public addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
