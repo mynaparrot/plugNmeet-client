@@ -27,11 +27,6 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
-import { sendAnalyticsByWebsocket } from '../websocket';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-} from '../proto/plugnmeet_analytics_pb';
 import languages from '../languages';
 
 export default class HandleParticipants {
@@ -224,11 +219,12 @@ export default class HandleParticipants {
       if (this.lastConnectionQuality !== connectionQuality) {
         this.lastConnectionQuality = connectionQuality;
 
-        sendAnalyticsByWebsocket(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
-          AnalyticsEventType.USER,
-          connectionQuality.toString(),
-        );
+        //TODO: update here
+        // sendAnalyticsByWebsocket(
+        //   AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
+        //   AnalyticsEventType.USER,
+        //   connectionQuality.toString(),
+        // );
       }
     }
   };

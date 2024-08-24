@@ -33,23 +33,15 @@ import HandleMediaTracks from './HandleMediaTracks';
 import HandleDataMessages from './HandleDataMessages';
 import HandleRoomMetadata from './HandleRoomMetadata';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import { sendWebsocketMessage } from '../websocket';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './hooks/useLivekitConnect';
 import i18n from '../i18n';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../proto/plugnmeet_datamessage_pb';
 import {
   ConnectionStatus,
   CurrentConnectionEvents,
   IConnectLivekit,
 } from './types';
 import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
-
-const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -139,8 +131,6 @@ export default class ConnectLivekit
       //openWebsocketConnection();
       // finally
       this._roomConnectionStatusState('connected');
-      // start token renew interval
-      this.startTokenRenewInterval();
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
@@ -416,32 +406,6 @@ export default class ConnectLivekit
   private mediaDevicesError = (error: Error) => {
     // to do
     console.error(error);
-  };
-
-  // this method basically updates plugNmeet token
-  // livekit will renew token by itself automatically
-  private startTokenRenewInterval = () => {
-    this.tokenRenewInterval = setInterval(async () => {
-      const sid = await this._room.getSid();
-      // get the current token that is store in redux
-      const token = store.getState().session.token;
-      const dataMsg = new DataMessage({
-        type: DataMsgType.SYSTEM,
-        roomSid: sid,
-        roomId: this._room.name,
-        body: {
-          type: DataMsgBodyType.RENEW_TOKEN,
-          from: {
-            sid: this._room.localParticipant.sid,
-            userId: this._room.localParticipant.identity,
-          },
-          isPrivate: 1,
-          msg: token,
-        },
-      });
-
-      sendWebsocketMessage(dataMsg.toBinary());
-    }, RENEW_TOKEN_FREQUENT);
   };
 
   /**
