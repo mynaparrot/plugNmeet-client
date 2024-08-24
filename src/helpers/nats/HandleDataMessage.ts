@@ -1,4 +1,3 @@
-import React from 'react';
 import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
@@ -6,10 +5,7 @@ import { DataChannelMessage } from '../proto/plugnmeet_nats_msg_pb';
 import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
 import { store } from '../../store';
 import { updateRequestedWhiteboardData } from '../../store/slices/whiteboard';
-import NewPollMsg from '../../components/extra-pages/newPollMsg';
 import { pollsApi } from '../../store/services/pollsApi';
-import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
-import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 import { updateParticipant } from '../../store/slices/participantSlice';
@@ -63,25 +59,11 @@ export default class HandleDataMessage {
         }
         this.handleExternalMediaPlayerEvents(payload.message);
         break;
-      case DataMsgBodyType.POLL_CREATED:
-        if (payload.fromUserId === this._that.userId) {
-          return;
-        }
-        toast(<NewPollMsg />, {
-          toastId: 'info-status',
-          type: 'info',
-          autoClose: false,
-        });
-        store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
-        break;
       case DataMsgBodyType.NEW_POLL_RESPONSE:
         if (payload.fromUserId === this._that.userId) {
           return;
         }
         store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
-        break;
-      case DataMsgBodyType.JOIN_BREAKOUT_ROOM:
-        this.handleBreakoutRoomNotifications(payload.message);
         break;
       case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
         this.handleSpeechSubtitleText(payload.message);
@@ -127,14 +109,6 @@ export default class HandleDataMessage {
     if (typeof data.seekTo !== 'undefined') {
       store.dispatch(externalMediaPlayerSeekTo(data.seekTo));
     }
-  }
-
-  private handleBreakoutRoomNotifications(msg: string) {
-    if (msg === '') {
-      return;
-    }
-    store.dispatch(updateReceivedInvitationFor(msg));
-    store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
   }
 
   private handleSpeechSubtitleText(message: string) {

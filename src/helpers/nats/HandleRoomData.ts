@@ -135,9 +135,11 @@ export default class HandleRoomData {
     }
 
     this.welcomeMessage = this._room.metadata?.welcome_message;
+    const now = new Date();
+
     const body: IChatMsg = {
       type: 'CHAT',
-      message_id: '',
+      message_id: `${now.getMilliseconds()}`,
       time: '',
       isPrivate: false,
       from: {

@@ -84,6 +84,23 @@ export enum NatsMsgServerToClientEvents {
    * @generated from enum value: POLL_CLOSED = 13;
    */
   POLL_CLOSED = 13,
+
+  /**
+   * @generated from enum value: POLL_CREATED = 14;
+   */
+  POLL_CREATED = 14,
+
+  /**
+   * @generated from enum value: JOIN_BREAKOUT_ROOM = 15;
+   */
+  JOIN_BREAKOUT_ROOM = 15,
+
+  /**
+   * mostly system message display in chat
+   *
+   * @generated from enum value: SYSTEM_CHAT_MSG = 16;
+   */
+  SYSTEM_CHAT_MSG = 16,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -103,6 +120,9 @@ proto3.util.setEnumType(
     { no: 11, name: 'AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN' },
     { no: 12, name: 'SESSION_ENDED' },
     { no: 13, name: 'POLL_CLOSED' },
+    { no: 14, name: 'POLL_CREATED' },
+    { no: 15, name: 'JOIN_BREAKOUT_ROOM' },
+    { no: 16, name: 'SYSTEM_CHAT_MSG' },
   ],
 );
 

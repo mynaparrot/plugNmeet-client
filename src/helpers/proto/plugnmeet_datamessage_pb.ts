@@ -96,19 +96,9 @@ export enum DataMsgBodyType {
   EXTERNAL_MEDIA_PLAYER_EVENTS = 11,
 
   /**
-   * @generated from enum value: POLL_CREATED = 12;
-   */
-  POLL_CREATED = 12,
-
-  /**
    * @generated from enum value: NEW_POLL_RESPONSE = 13;
    */
   NEW_POLL_RESPONSE = 13,
-
-  /**
-   * @generated from enum value: JOIN_BREAKOUT_ROOM = 15;
-   */
-  JOIN_BREAKOUT_ROOM = 15,
 
   /**
    * @generated from enum value: SPEECH_SUBTITLE_TEXT = 23;
@@ -178,9 +168,7 @@ proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
   { no: 9, name: 'INIT_WHITEBOARD' },
   { no: 10, name: 'USER_VISIBILITY_CHANGE' },
   { no: 11, name: 'EXTERNAL_MEDIA_PLAYER_EVENTS' },
-  { no: 12, name: 'POLL_CREATED' },
   { no: 13, name: 'NEW_POLL_RESPONSE' },
-  { no: 15, name: 'JOIN_BREAKOUT_ROOM' },
   { no: 23, name: 'SPEECH_SUBTITLE_TEXT' },
   { no: 25, name: 'UPDATE_ROOM_METADATA' },
   { no: 16, name: 'CHAT' },

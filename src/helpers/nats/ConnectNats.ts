@@ -367,8 +367,15 @@ export default class ConnectNats {
       case NatsMsgServerToClientEvents.SESSION_ENDED:
         await this.endSession(payload.msg);
         break;
-      case NatsMsgServerToClientEvents.POLL_CLOSED:
-        this.handleSystemData.handlePollClosed();
+      case (NatsMsgServerToClientEvents.POLL_CREATED,
+      NatsMsgServerToClientEvents.POLL_CLOSED):
+        this.handleSystemData.handlePoll(payload);
+        break;
+      case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
+        this.handleSystemData.handleBreakoutRoomNotifications(payload.msg);
+        break;
+      case NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG:
+        this.handleSystemData.handleSysChatMsg(payload.msg);
         break;
     }
   }

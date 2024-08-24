@@ -1,4 +1,3 @@
-import React from 'react';
 import { toast } from 'react-toastify';
 
 import { chatMessagesSelector } from '../../store/slices/chatMessagesSlice';
@@ -11,10 +10,6 @@ import {
   addExternalMediaPlayerAction,
   externalMediaPlayerSeekTo,
 } from '../../store/slices/externalMediaPlayer';
-import { pollsApi } from '../../store/services/pollsApi';
-import NewPollMsg from '../../components/extra-pages/newPollMsg';
-import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
-import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import {
   DataMessage,
   DataMsgBodyType,
@@ -46,13 +41,13 @@ export const handleSystemTypeData = (body: DataMessage) => {
     case DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS:
       handleExternalMediaPlayerEvents(body);
       break;
-    case DataMsgBodyType.POLL_CREATED:
-    case DataMsgBodyType.NEW_POLL_RESPONSE:
-      handlePollsNotifications(body);
-      break;
-    case DataMsgBodyType.JOIN_BREAKOUT_ROOM:
-      handleBreakoutRoomNotifications(body);
-      break;
+    // case DataMsgBodyType.POLL_CREATED:
+    // case DataMsgBodyType.NEW_POLL_RESPONSE:
+    //   handlePollsNotifications(body);
+    //   break;
+    // case DataMsgBodyType.JOIN_BREAKOUT_ROOM:
+    //   handleBreakoutRoomNotifications(body);
+    //   break;
     case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
       handleSpeechSubtitleText(body);
       break;
@@ -163,36 +158,6 @@ const handleExternalMediaPlayerEvents = (data: DataMessage) => {
   if (typeof msg.seekTo !== 'undefined') {
     store.dispatch(externalMediaPlayerSeekTo(msg.seekTo));
   }
-};
-
-const handlePollsNotifications = (data: DataMessage) => {
-  // for recorder don't need to show anything
-  if (store.getState().session.currentUser?.isRecorder) {
-    return;
-  }
-  if (data.body?.type === DataMsgBodyType.POLL_CREATED) {
-    toast(<NewPollMsg />, {
-      toastId: 'info-status',
-      type: 'info',
-      autoClose: false,
-    });
-    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
-  } else if (data.body?.type === DataMsgBodyType.NEW_POLL_RESPONSE) {
-    store.dispatch(
-      pollsApi.util.invalidateTags([
-        { type: 'Count', id: data.body.msg },
-        { type: 'PollDetails', id: data.body.msg },
-      ]),
-    );
-  }
-};
-
-const handleBreakoutRoomNotifications = (data: DataMessage) => {
-  if (!data.body) {
-    return;
-  }
-  store.dispatch(updateReceivedInvitationFor(data.body.msg));
-  store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
 };
 
 const handleSpeechSubtitleText = (data: DataMessage) => {

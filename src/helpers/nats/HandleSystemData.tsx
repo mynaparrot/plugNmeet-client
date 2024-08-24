@@ -1,7 +1,10 @@
+import React from 'react';
 import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
 import {
+  NatsMsgServerToClient,
+  NatsMsgServerToClientEvents,
   NatsSystemNotification,
   NatsSystemNotificationTypes,
 } from '../proto/plugnmeet_nats_msg_pb';
@@ -13,6 +16,11 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
+import NewPollMsg from '../../components/extra-pages/newPollMsg';
+import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
+import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
+import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
+import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 
 export default class HandleSystemData {
   private _that: ConnectNats;
@@ -81,8 +89,44 @@ export default class HandleSystemData {
     }
   };
 
-  public handlePollClosed = () => {
-    store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+  public handlePoll = (payload: NatsMsgServerToClient) => {
+    if (payload.event === NatsMsgServerToClientEvents.POLL_CREATED) {
+      toast(<NewPollMsg />, {
+        toastId: 'info-status',
+        type: 'info',
+        autoClose: false,
+      });
+      store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+    } else if (payload.event === NatsMsgServerToClientEvents.POLL_CLOSED) {
+      store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+    }
+  };
+
+  public handleBreakoutRoomNotifications = (msg: string) => {
+    if (msg === '') {
+      return;
+    }
+    store.dispatch(updateReceivedInvitationFor(msg));
+    store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
+  };
+
+  public handleSysChatMsg = (msg: string) => {
+    const now = new Date();
+
+    const body: IChatMsg = {
+      type: 'CHAT',
+      message_id: `${now.getMilliseconds()}`,
+      time: '',
+      isPrivate: false,
+      from: {
+        userId: 'system',
+        name: 'System',
+        sid: 'system',
+      },
+      msg: msg,
+    };
+
+    store.dispatch(addChatMessage(body));
   };
 
   private playNotification() {
