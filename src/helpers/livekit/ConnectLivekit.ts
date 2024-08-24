@@ -20,9 +20,11 @@ import {
 import { EventEmitter } from 'eventemitter3';
 
 import { store } from '../../store';
-import { updateParticipant } from '../../store/slices/participantSlice';
 import {
-  addCurrentUser,
+  participantsSelector,
+  updateParticipant,
+} from '../../store/slices/participantSlice';
+import {
   updateScreenSharing,
   updateTotalAudioSubscribers,
   updateTotalVideoSubscribers,
@@ -122,8 +124,7 @@ export default class ConnectLivekit
     try {
       await this._room.connect(this.url, this.token);
       // we'll prepare our information
-      await this.updateSession();
-      //await this.initiateParticipants();
+      await this.initiateParticipants();
       // open websocket
       //openWebsocketConnection();
       // finally
@@ -185,10 +186,6 @@ export default class ConnectLivekit
       this._roomConnectionStatusState('connected'),
     );
     room.on(RoomEvent.Disconnected, this.onDisconnected);
-    // room.on(
-    //   RoomEvent.RoomMetadataChanged,
-    //   this.handleRoomMetadata.setRoomMetadata,
-    // );
     room.on(
       RoomEvent.ActiveSpeakersChanged,
       this.handleActiveSpeakers.activeSpeakersChanged,
@@ -240,38 +237,8 @@ export default class ConnectLivekit
   };
 
   private initiateParticipants = async () => {
-    // check if the current user is recorder/rtmp bot
-    const isRecorder =
-      (this._room.localParticipant.identity === 'RECORDER_BOT' ||
-        this._room.localParticipant.identity === 'RTMP_BOT') ??
-      false;
-
-    // local Participant
-    store.dispatch(
-      addCurrentUser({
-        sid: this._room.localParticipant.sid,
-        userId: this._room.localParticipant.identity,
-        name: this._room.localParticipant.name,
-        isRecorder,
-      }),
-    );
-    await this.handleParticipant.setParticipantMetadata(
-      '',
-      this._room.localParticipant,
-    );
-
-    // start recorder task
-    if (isRecorder) {
-      this.handleParticipant.recorderJoined();
-    } else {
-      // otherwise we'll add user
-      this.handleParticipant.addParticipant(this._room.localParticipant);
-    }
-
     // all other connected Participants
     this._room.remoteParticipants.forEach((participant) => {
-      this.handleParticipant.addParticipant(participant);
-
       participant.getTrackPublications().forEach((track) => {
         if (track.isSubscribed) {
           if (
@@ -297,13 +264,11 @@ export default class ConnectLivekit
               participant,
             );
           } else if (track.source === Track.Source.Camera) {
-            this.updateVideoSubscribers(participant);
+            this.addVideoSubscriber(participant);
           }
         }
       });
     });
-
-    return;
   };
 
   public async setRoomMetadata(metadata: string) {
@@ -323,20 +288,6 @@ export default class ConnectLivekit
       text: reason,
     });
   }
-
-  private updateSession = async () => {
-    // const sid = await this._room.getSid();
-    // store.dispatch(
-    //   addCurrentRoom({
-    //     sid: sid,
-    //     room_id: this._room.name,
-    //   }),
-    // );
-    //
-    // if (this._room.metadata && !isEmpty(this._room.metadata)) {
-    //   await this.setRoomMetadata(this._room.metadata);
-    // }
-  };
 
   private onDisconnected = (reason?: DisconnectReason) => {
     this._errorState({
@@ -415,8 +366,17 @@ export default class ConnectLivekit
     add = true,
   ) => {
     // make sure track that we are about to add is valid
-    if (add && !participant.videoTrackPublications.size) {
-      return;
+    if (add) {
+      if (!participant.videoTrackPublications.size) {
+        return;
+      }
+      const existUser = participantsSelector.selectById(
+        store.getState(),
+        participant.identity,
+      );
+      if (!existUser || existUser.isOnline) {
+        return;
+      }
     }
 
     if (add) {
@@ -478,66 +438,78 @@ export default class ConnectLivekit
     }
   };
 
-  /**
-   * This method will add/update audio subscribers
-   * @param participant
-   * @param add
-   */
-  public updateAudioSubscribers = (
+  public addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add = true,
-  ) => {
-    // make sure track that we are about to add is valid
-    if (add && !participant.audioTrackPublications.size) {
+  ) {
+    if (!participant.audioTrackPublications.size) {
       return;
     }
-
+    const existUser = participantsSelector.selectById(
+      store.getState(),
+      participant.identity,
+    );
+    if (!existUser || !existUser.isOnline) {
+      return;
+    }
     // we don't want to add local audio here.
     if (participant.identity === this._room.localParticipant.identity) {
       return;
     }
 
-    if (add) {
-      this._audioSubscribersMap.set(
-        participant.identity,
-        participant as RemoteParticipant,
-      );
-    } else {
-      if (this._audioSubscribersMap.has(participant.identity)) {
-        this._audioSubscribersMap.delete(participant.identity);
-      }
+    this._audioSubscribersMap.set(
+      participant.identity,
+      participant as RemoteParticipant,
+    );
+    this.syncAudioSubscribers();
+  }
+
+  public removeAudioSubscriber(userId: string) {
+    if (!this._audioSubscribersMap.has(userId)) {
+      return;
     }
+
+    this._audioSubscribersMap.delete(userId);
+    this.syncAudioSubscribers();
+  }
+
+  private syncAudioSubscribers = () => {
     const audioSubscribers = new Map(this._audioSubscribersMap) as any;
     this.emit(CurrentConnectionEvents.AudioSubscribers, audioSubscribers);
     // update session reducer
     store.dispatch(updateTotalAudioSubscribers(audioSubscribers.size));
   };
 
-  /**
-   * This method will add/update webcams
-   * This will also sort webcam lists based on active speaker event
-   * @param participant
-   * @param add
-   */
-  public updateVideoSubscribers = (
+  public addVideoSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add = true,
-  ) => {
-    // make sure track that we are about to add is valid
-    if (add && !participant.videoTrackPublications.size) {
+  ) {
+    if (!participant.videoTrackPublications.size) {
+      return;
+    }
+    const existUser = participantsSelector.selectById(
+      store.getState(),
+      participant.identity,
+    );
+    if (!existUser || !existUser.isOnline) {
       return;
     }
 
-    if (add) {
-      this._videoSubscribersMap.set(participant.identity, participant);
-    } else {
-      if (this._videoSubscribersMap.has(participant.identity)) {
-        this._videoSubscribersMap.delete(participant.identity);
-      }
+    this._videoSubscribersMap.set(participant.identity, participant);
+    this.syncVideoSubscribers();
+  }
+
+  public removeVideoSubscriber(userId: string) {
+    if (!this._videoSubscribersMap.has(userId)) {
+      return;
     }
 
+    this._videoSubscribersMap.delete(userId);
+    this.syncVideoSubscribers();
+  }
+
+  public syncVideoSubscribers = () => {
     // update session reducer
     store.dispatch(updateTotalVideoSubscribers(this._videoSubscribersMap.size));
+
     if (this._videoSubscribersMap.size) {
       this.emit(CurrentConnectionEvents.VideoStatus, true);
     } else {

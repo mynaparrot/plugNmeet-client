@@ -102,6 +102,10 @@ export default class ConnectNats {
     this.handleWhiteboard = new HandleWhiteboard(this);
   }
 
+  get nc(): NatsConnection | undefined {
+    return this._nc;
+  }
+
   get mediaServerConn(): IConnectLivekit | undefined {
     return this._mediaServerConn;
   }

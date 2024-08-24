@@ -40,7 +40,7 @@ export default class HandleActiveSpeakers {
             ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION;
           if (now > last) {
             if (this.that.videoSubscribersMap.has(participant.identity)) {
-              this.that.updateVideoSubscribers(participant);
+              this.that.addAudioSubscriber(participant);
               this.lastActiveWebcamChanged = now;
             }
           }

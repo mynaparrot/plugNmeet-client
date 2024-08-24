@@ -185,7 +185,7 @@ export default class HandleMediaTracks {
       );
       this.that.setScreenShareTrack(track, participant, true);
     } else if (track.source === Track.Source.Microphone) {
-      this.that.updateAudioSubscribers(participant);
+      this.that.addAudioSubscriber(participant);
       const count = participant
         .getTrackPublications()
         .filter((track) => track.source === Track.Source.Microphone).length;
@@ -201,7 +201,7 @@ export default class HandleMediaTracks {
         }),
       );
     } else if (track.source === Track.Source.Camera) {
-      this.that.updateVideoSubscribers(participant);
+      this.that.addVideoSubscriber(participant);
       const count = participant
         .getTrackPublications()
         .filter((track) => track.source === Track.Source.Camera).length;
@@ -241,7 +241,7 @@ export default class HandleMediaTracks {
       );
       this.that.setScreenShareTrack(track, participant, false);
     } else if (track.source === Track.Source.Microphone) {
-      this.that.updateAudioSubscribers(participant, false);
+      this.that.removeAudioSubscriber(participant.identity);
       store.dispatch(
         updateParticipant({
           id: participant.identity,
@@ -256,7 +256,7 @@ export default class HandleMediaTracks {
         }),
       );
     } else if (track.source === Track.Source.Camera) {
-      this.that.updateVideoSubscribers(participant, false);
+      this.that.removeVideoSubscriber(participant.identity);
       // now update store
       store.dispatch(
         updateParticipant({

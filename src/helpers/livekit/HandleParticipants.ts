@@ -137,6 +137,7 @@ export default class HandleParticipants {
         joinedAt: participant.joinedAt?.getTime() ?? Date.now(),
         visibility: 'visible',
         audioVolume: store.getState().roomSettings.roomAudioVolume,
+        isOnline: true,
       }),
     );
 
@@ -172,9 +173,9 @@ export default class HandleParticipants {
     store.dispatch(removeOneSpeaker(p.identity));
 
     // now remove webcam
-    this.that.updateVideoSubscribers(p, false);
+    this.that.removeVideoSubscriber(p.identity);
     // now remove audio
-    this.that.updateAudioSubscribers(p, false);
+    this.that.removeAudioSubscriber(p.identity);
     // check for screen sharing
     this.that.updateScreenShareOnUserDisconnect(p);
   };

@@ -42,14 +42,14 @@ export interface IConnectLivekit extends EventEmitter {
   setRoomMetadata(metadata: string): Promise<void>;
   disconnectRoom(): void;
   setErrorStatus(title: string, reason: string): void;
-  updateVideoSubscribers(
+  addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add?: boolean,
   ): void;
-  updateAudioSubscribers(
+  removeAudioSubscriber(userId: string): void;
+  addVideoSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add?: boolean,
   ): void;
+  removeVideoSubscriber(userId: string): void;
   setScreenShareTrack(
     track: LocalTrackPublication | RemoteTrackPublication | undefined,
     participant: LocalParticipant | RemoteParticipant,

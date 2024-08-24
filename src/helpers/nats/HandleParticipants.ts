@@ -30,6 +30,7 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
+import { getCurrentConnection } from '../livekit/utils';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
@@ -130,6 +131,7 @@ export default class HandleParticipants {
           participant.metadata,
         );
       }
+      this.onAfterUserConnectMediaUpdate(participant.userId);
       return;
     }
 
@@ -150,12 +152,15 @@ export default class HandleParticipants {
         screenShareTrack: 0,
         isMuted: false,
         connectionQuality: ConnectionQuality.Unknown,
+        isOnline: true,
       }),
     );
 
     if (this.isRecorderJoin) {
       this.participantsCount++;
     }
+
+    this.onAfterUserConnectMediaUpdate(participant.userId);
   };
 
   public handleParticipantMetadataUpdate = async (d: string) => {
@@ -215,13 +220,20 @@ export default class HandleParticipants {
       console.error(e);
       return;
     }
-    console.log(participant);
 
-    if (this.isRecorderJoin) {
-      this.participantsCount--;
-    }
-    // TODO: think about medias
-    // may be simply pause?
+    const mediaConn = getCurrentConnection();
+    // remove media for this user for the moment
+    mediaConn.removeAudioSubscriber(participant.userId);
+    mediaConn.removeVideoSubscriber(participant.userId);
+
+    store.dispatch(
+      updateParticipant({
+        id: participant.userId,
+        changes: {
+          isOnline: false,
+        },
+      }),
+    );
   };
 
   /**
@@ -238,6 +250,10 @@ export default class HandleParticipants {
       console.error(e);
       return;
     }
+    if (this.isRecorderJoin) {
+      this.participantsCount--;
+    }
+
     console.log(p);
     const participant = participantsSelector.selectById(
       store.getState(),
@@ -252,18 +268,11 @@ export default class HandleParticipants {
         }),
       );
     }
+
     // now remove user.
     store.dispatch(removeParticipant(p.userId));
-
     // remove if in active speaker
     store.dispatch(removeOneSpeaker(p.userId));
-
-    // TODO: now remove webcam
-    // this.that.mediaServerConn.updateVideoSubscribers(p, false);
-    // // now remove audio
-    // this.that.mediaServerConn.updateAudioSubscribers(p, false);
-    // // check for screen sharing
-    // this.that.mediaServerConn.updateScreenShareOnUserDisconnect(p);
   };
 
   private notificationForWaitingUser(
@@ -326,5 +335,23 @@ export default class HandleParticipants {
         //await this.that.room.disconnect();
       }
     }, 3000);
+  }
+
+  private onAfterUserConnectMediaUpdate(userId: string) {
+    store.dispatch(
+      updateParticipant({
+        id: userId,
+        changes: {
+          isOnline: true,
+        },
+      }),
+    );
+
+    const mediaConn = getCurrentConnection();
+    const participant = mediaConn.room.getParticipantByIdentity(userId);
+    if (participant) {
+      mediaConn.addAudioSubscriber(participant);
+      mediaConn.addVideoSubscriber(participant);
+    }
   }
 }
