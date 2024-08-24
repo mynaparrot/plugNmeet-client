@@ -12,7 +12,6 @@ import type {
   PlainMessage,
 } from '@bufbuild/protobuf';
 import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
-import { DataMsgBodyType } from './plugnmeet_datamessage_pb.ts';
 
 /**
  * @generated from enum plugnmeet.NatsMsgServerToClientEvents
@@ -51,56 +50,51 @@ export enum NatsMsgServerToClientEvents {
   USER_DISCONNECTED = 5,
 
   /**
-   * @generated from enum value: USER_OFFLINE = 7;
+   * @generated from enum value: USER_OFFLINE = 6;
    */
-  USER_OFFLINE = 7,
+  USER_OFFLINE = 6,
 
   /**
-   * @generated from enum value: RESP_RENEW_PNM_TOKEN = 8;
+   * @generated from enum value: RESP_RENEW_PNM_TOKEN = 7;
    */
-  RESP_RENEW_PNM_TOKEN = 8,
+  RESP_RENEW_PNM_TOKEN = 7,
 
   /**
-   * @generated from enum value: SYSTEM_NOTIFICATION = 9;
+   * @generated from enum value: SYSTEM_NOTIFICATION = 8;
    */
-  SYSTEM_NOTIFICATION = 9,
+  SYSTEM_NOTIFICATION = 8,
 
   /**
-   * @generated from enum value: RESP_DATA_MSG = 10;
+   * @generated from enum value: AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 9;
    */
-  RESP_DATA_MSG = 10,
+  AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 9,
 
   /**
-   * @generated from enum value: AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 11;
+   * @generated from enum value: SESSION_ENDED = 10;
    */
-  AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN = 11,
+  SESSION_ENDED = 10,
 
   /**
-   * @generated from enum value: SESSION_ENDED = 12;
+   * @generated from enum value: POLL_CLOSED = 11;
    */
-  SESSION_ENDED = 12,
+  POLL_CLOSED = 11,
 
   /**
-   * @generated from enum value: POLL_CLOSED = 13;
+   * @generated from enum value: POLL_CREATED = 12;
    */
-  POLL_CLOSED = 13,
+  POLL_CREATED = 12,
 
   /**
-   * @generated from enum value: POLL_CREATED = 14;
+   * @generated from enum value: JOIN_BREAKOUT_ROOM = 13;
    */
-  POLL_CREATED = 14,
-
-  /**
-   * @generated from enum value: JOIN_BREAKOUT_ROOM = 15;
-   */
-  JOIN_BREAKOUT_ROOM = 15,
+  JOIN_BREAKOUT_ROOM = 13,
 
   /**
    * mostly system message display in chat
    *
-   * @generated from enum value: SYSTEM_CHAT_MSG = 16;
+   * @generated from enum value: SYSTEM_CHAT_MSG = 14;
    */
-  SYSTEM_CHAT_MSG = 16,
+  SYSTEM_CHAT_MSG = 14,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgServerToClientEvents)
 proto3.util.setEnumType(
@@ -113,16 +107,15 @@ proto3.util.setEnumType(
     { no: 3, name: 'USER_METADATA_UPDATE' },
     { no: 4, name: 'USER_JOINED' },
     { no: 5, name: 'USER_DISCONNECTED' },
-    { no: 7, name: 'USER_OFFLINE' },
-    { no: 8, name: 'RESP_RENEW_PNM_TOKEN' },
-    { no: 9, name: 'SYSTEM_NOTIFICATION' },
-    { no: 10, name: 'RESP_DATA_MSG' },
-    { no: 11, name: 'AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN' },
-    { no: 12, name: 'SESSION_ENDED' },
-    { no: 13, name: 'POLL_CLOSED' },
-    { no: 14, name: 'POLL_CREATED' },
-    { no: 15, name: 'JOIN_BREAKOUT_ROOM' },
-    { no: 16, name: 'SYSTEM_CHAT_MSG' },
+    { no: 6, name: 'USER_OFFLINE' },
+    { no: 7, name: 'RESP_RENEW_PNM_TOKEN' },
+    { no: 8, name: 'SYSTEM_NOTIFICATION' },
+    { no: 9, name: 'AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN' },
+    { no: 10, name: 'SESSION_ENDED' },
+    { no: 11, name: 'POLL_CLOSED' },
+    { no: 12, name: 'POLL_CREATED' },
+    { no: 13, name: 'JOIN_BREAKOUT_ROOM' },
+    { no: 14, name: 'SYSTEM_CHAT_MSG' },
   ],
 );
 
@@ -141,39 +134,34 @@ export enum NatsMsgClientToServerEvents {
   REQ_RENEW_PNM_TOKEN = 1,
 
   /**
-   * @generated from enum value: REQ_DATA_MSG = 2;
+   * @generated from enum value: PING = 2;
    */
-  REQ_DATA_MSG = 2,
+  PING = 2,
 
   /**
-   * @generated from enum value: PING = 3;
+   * @generated from enum value: REQ_LOGOUT = 3;
    */
-  PING = 3,
+  REQ_LOGOUT = 3,
 
   /**
-   * @generated from enum value: REQ_LOGOUT = 4;
+   * @generated from enum value: REQ_RAISE_HAND = 4;
    */
-  REQ_LOGOUT = 4,
+  REQ_RAISE_HAND = 4,
 
   /**
-   * @generated from enum value: REQ_RAISE_HAND = 5;
+   * @generated from enum value: REQ_LOWER_HAND = 5;
    */
-  REQ_RAISE_HAND = 5,
+  REQ_LOWER_HAND = 5,
 
   /**
-   * @generated from enum value: REQ_LOWER_HAND = 6;
+   * @generated from enum value: REQ_LOWER_OTHER_USER_HAND = 6;
    */
-  REQ_LOWER_HAND = 6,
+  REQ_LOWER_OTHER_USER_HAND = 6,
 
   /**
-   * @generated from enum value: REQ_LOWER_OTHER_USER_HAND = 7;
+   * @generated from enum value: PUSH_ANALYTICS_DATA = 7;
    */
-  REQ_LOWER_OTHER_USER_HAND = 7,
-
-  /**
-   * @generated from enum value: PUSH_ANALYTICS_DATA = 8;
-   */
-  PUSH_ANALYTICS_DATA = 8,
+  PUSH_ANALYTICS_DATA = 7,
 }
 // Retrieve enum metadata with: proto3.getEnumType(NatsMsgClientToServerEvents)
 proto3.util.setEnumType(
@@ -182,13 +170,12 @@ proto3.util.setEnumType(
   [
     { no: 0, name: 'REQ_INITIAL_DATA' },
     { no: 1, name: 'REQ_RENEW_PNM_TOKEN' },
-    { no: 2, name: 'REQ_DATA_MSG' },
-    { no: 3, name: 'PING' },
-    { no: 4, name: 'REQ_LOGOUT' },
-    { no: 5, name: 'REQ_RAISE_HAND' },
-    { no: 6, name: 'REQ_LOWER_HAND' },
-    { no: 7, name: 'REQ_LOWER_OTHER_USER_HAND' },
-    { no: 8, name: 'PUSH_ANALYTICS_DATA' },
+    { no: 2, name: 'PING' },
+    { no: 3, name: 'REQ_LOGOUT' },
+    { no: 4, name: 'REQ_RAISE_HAND' },
+    { no: 5, name: 'REQ_LOWER_HAND' },
+    { no: 6, name: 'REQ_LOWER_OTHER_USER_HAND' },
+    { no: 7, name: 'PUSH_ANALYTICS_DATA' },
   ],
 );
 
@@ -1037,88 +1024,5 @@ export class ChatMessage extends Message<ChatMessage> {
     b: ChatMessage | PlainMessage<ChatMessage> | undefined,
   ): boolean {
     return proto3.util.equals(ChatMessage, a, b);
-  }
-}
-
-/**
- * @generated from message plugnmeet.DataChannelMessage
- */
-export class DataChannelMessage extends Message<DataChannelMessage> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = '';
-
-  /**
-   * @generated from field: plugnmeet.DataMsgBodyType type = 2;
-   */
-  type = DataMsgBodyType.UNKNOWN;
-
-  /**
-   * @generated from field: string from_user_id = 3;
-   */
-  fromUserId = '';
-
-  /**
-   * @generated from field: string to_user_id = 4;
-   */
-  toUserId = '';
-
-  /**
-   * @generated from field: string message = 5;
-   */
-  message = '';
-
-  constructor(data?: PartialMessage<DataChannelMessage>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'plugnmeet.DataChannelMessage';
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: 'id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    {
-      no: 2,
-      name: 'type',
-      kind: 'enum',
-      T: proto3.getEnumType(DataMsgBodyType),
-    },
-    {
-      no: 3,
-      name: 'from_user_id',
-      kind: 'scalar',
-      T: 9 /* ScalarType.STRING */,
-    },
-    { no: 4, name: 'to_user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: 'message', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): DataChannelMessage {
-    return new DataChannelMessage().fromBinary(bytes, options);
-  }
-
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): DataChannelMessage {
-    return new DataChannelMessage().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): DataChannelMessage {
-    return new DataChannelMessage().fromJsonString(jsonString, options);
-  }
-
-  static equals(
-    a: DataChannelMessage | PlainMessage<DataChannelMessage> | undefined,
-    b: DataChannelMessage | PlainMessage<DataChannelMessage> | undefined,
-  ): boolean {
-    return proto3.util.equals(DataChannelMessage, a, b);
   }
 }

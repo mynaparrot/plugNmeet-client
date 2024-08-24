@@ -2,7 +2,10 @@ import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
 import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
-import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
+import {
+  DataChannelMessage,
+  DataMsgBodyType,
+} from '../proto/plugnmeet_datamessage_pb';
 import { store } from '../../store';
 import {
   addWhiteboardFileAsJSON,
@@ -14,7 +17,6 @@ import {
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
 import { decryptMessage } from '../cryptoMessages';
-import { DataChannelMessage } from '../proto/plugnmeet_nats_msg_pb';
 
 export default class HandleWhiteboard {
   private _that: ConnectNats;

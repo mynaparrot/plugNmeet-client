@@ -30,7 +30,6 @@ import {
 
 import HandleParticipants from './HandleParticipants';
 import HandleMediaTracks from './HandleMediaTracks';
-import HandleDataMessages from './HandleDataMessages';
 import HandleRoomMetadata from './HandleRoomMetadata';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
@@ -69,7 +68,6 @@ export default class ConnectLivekit
 
   private handleParticipant: HandleParticipants;
   private handleMediaTracks: HandleMediaTracks;
-  private handleDataMessages: HandleDataMessages;
   private handleRoomMetadata: HandleRoomMetadata;
   private handleActiveSpeakers: HandleActiveSpeakers;
 
@@ -89,7 +87,6 @@ export default class ConnectLivekit
 
     this.handleParticipant = new HandleParticipants(this);
     this.handleMediaTracks = new HandleMediaTracks(this);
-    this.handleDataMessages = new HandleDataMessages(this);
     this.handleRoomMetadata = new HandleRoomMetadata(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
@@ -197,8 +194,6 @@ export default class ConnectLivekit
       this.handleActiveSpeakers.activeSpeakersChanged,
     );
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
-
-    room.on(RoomEvent.DataReceived, this.handleDataMessages.dataReceived);
 
     // room.on(
     //   RoomEvent.ParticipantConnected,

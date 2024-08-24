@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 
 import {
   ChatMessage,
-  DataChannelMessage,
   MediaServerConnInfo,
   NatsInitialData,
   NatsKvUserInfo,
@@ -31,7 +30,10 @@ import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 import HandleRoomData from './HandleRoomData';
 import HandleParticipants from './HandleParticipants';
 import HandleDataMessage from './HandleDataMessage';
-import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
+import {
+  DataChannelMessage,
+  DataMsgBodyType,
+} from '../proto/plugnmeet_datamessage_pb';
 import HandleWhiteboard from './HandleWhiteboard';
 import HandleChat from './HandleChat';
 import { store } from '../../store';

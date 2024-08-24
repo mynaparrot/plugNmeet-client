@@ -1,8 +1,10 @@
 import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
-import { DataChannelMessage } from '../proto/plugnmeet_nats_msg_pb';
-import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
+import {
+  DataChannelMessage,
+  DataMsgBodyType,
+} from '../proto/plugnmeet_datamessage_pb';
 import { store } from '../../store';
 import { updateRequestedWhiteboardData } from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
