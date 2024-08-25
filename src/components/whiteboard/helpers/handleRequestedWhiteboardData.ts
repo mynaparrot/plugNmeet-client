@@ -47,7 +47,7 @@ export const sendRequestedForWhiteboardData = () => {
   donors.forEach(async (donor) => {
     const conn = getNatsConn();
     await conn.sendWhiteboardData(
-      DataMsgBodyType.INIT_WHITEBOARD,
+      DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA,
       '',
       donor.sid,
     );
@@ -83,7 +83,7 @@ export const sendWhiteboardDataAsDonor = async (
     await broadcastSceneOnChange(elements, true, sendTo);
   }
 
-  // finally, change status of request
+  // finally, change the status of request
   store.dispatch(
     updateRequestedWhiteboardData({
       requested: false,

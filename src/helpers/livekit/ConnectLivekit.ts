@@ -71,6 +71,7 @@ export default class ConnectLivekit
   private readonly _room: Room;
   private readonly url: string;
   private readonly enabledE2EE: boolean = false;
+  private readonly encryptionKey: string | undefined = '';
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: any = undefined;
 
@@ -85,11 +86,15 @@ export default class ConnectLivekit
     super();
     this.token = livekitInfo.token;
     this.url = livekitInfo.livekit_host;
-    this.enabledE2EE = livekitInfo.enabledE2EE;
 
     this._errorState = errorState;
     this._roomConnectionStatusState = roomConnectionStatusState;
+
     this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
+    if (livekitInfo.enabledE2EE) {
+      this.enabledE2EE = livekitInfo.enabledE2EE;
+      this.encryptionKey = livekitInfo.encryption_key;
+    }
 
     this.handleMediaTracks = new HandleMediaTracks(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
@@ -125,6 +130,10 @@ export default class ConnectLivekit
 
     try {
       await this._room.connect(this.url, this.token);
+      if (this.enabledE2EE && this.encryptionKey) {
+        await this._e2eeKeyProvider.setKey(this.encryptionKey);
+        await this._room.setE2EEEnabled(true);
+      }
       // we'll prepare our information
       await this.initiateParticipants();
       this._roomConnectionStatusState('connected');

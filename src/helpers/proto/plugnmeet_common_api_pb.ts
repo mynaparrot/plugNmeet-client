@@ -218,22 +218,17 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
   serverVersion?: string;
 
   /**
-   * @generated from field: bool enabled_e2ee = 5;
-   */
-  enabledE2ee = false;
-
-  /**
-   * @generated from field: optional string room_id = 6;
+   * @generated from field: optional string room_id = 5;
    */
   roomId?: string;
 
   /**
-   * @generated from field: optional string user_id = 7;
+   * @generated from field: optional string user_id = 6;
    */
   userId?: string;
 
   /**
-   * @generated from field: optional plugnmeet.NatsSubjects nats_subjects = 8;
+   * @generated from field: optional plugnmeet.NatsSubjects nats_subjects = 7;
    */
   natsSubjects?: NatsSubjects;
 
@@ -261,23 +256,22 @@ export class VerifyTokenRes extends Message<VerifyTokenRes> {
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
-    { no: 5, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
     {
-      no: 6,
+      no: 5,
       name: 'room_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 7,
+      no: 6,
       name: 'user_id',
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
       opt: true,
     },
     {
-      no: 8,
+      no: 7,
       name: 'nats_subjects',
       kind: 'message',
       T: NatsSubjects,

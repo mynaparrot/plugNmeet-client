@@ -23,9 +23,9 @@ export default class HandleDataMessage {
     this._that = that;
   }
 
-  public handleMessage(payload: DataChannelMessage) {
+  public handleMessage = async (payload: DataChannelMessage) => {
     switch (payload.type) {
-      case DataMsgBodyType.INIT_WHITEBOARD:
+      case DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA:
         if (payload.fromUserId === this._that.userId) {
           return;
         }
@@ -71,14 +71,14 @@ export default class HandleDataMessage {
         this.handleSpeechSubtitleText(payload.message);
         break;
     }
-  }
+  };
 
   private handleSendInitWhiteboard(payload: DataChannelMessage) {
     if (store.getState().whiteboard.requestedWhiteboardData.requested) {
       // already have one request
       return;
     }
-    // we'll update the reducer only
+    // we'll update the reducer-only
     // component will take care for sending data
     store.dispatch(
       updateRequestedWhiteboardData({

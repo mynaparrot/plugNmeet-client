@@ -40,66 +40,61 @@ export enum DataMsgBodyType {
   ALERT = 3,
 
   /**
-   * @generated from enum value: SEND_CHAT_MSGS = 4;
+   * @generated from enum value: USER_VISIBILITY_CHANGE = 6;
    */
-  SEND_CHAT_MSGS = 4,
+  USER_VISIBILITY_CHANGE = 6,
 
   /**
-   * @generated from enum value: USER_VISIBILITY_CHANGE = 5;
+   * @generated from enum value: EXTERNAL_MEDIA_PLAYER_EVENTS = 7;
    */
-  USER_VISIBILITY_CHANGE = 5,
+  EXTERNAL_MEDIA_PLAYER_EVENTS = 7,
 
   /**
-   * @generated from enum value: EXTERNAL_MEDIA_PLAYER_EVENTS = 6;
+   * @generated from enum value: NEW_POLL_RESPONSE = 8;
    */
-  EXTERNAL_MEDIA_PLAYER_EVENTS = 6,
+  NEW_POLL_RESPONSE = 8,
 
   /**
-   * @generated from enum value: NEW_POLL_RESPONSE = 7;
+   * @generated from enum value: SPEECH_SUBTITLE_TEXT = 9;
    */
-  NEW_POLL_RESPONSE = 7,
-
-  /**
-   * @generated from enum value: SPEECH_SUBTITLE_TEXT = 8;
-   */
-  SPEECH_SUBTITLE_TEXT = 8,
+  SPEECH_SUBTITLE_TEXT = 9,
 
   /**
    * WHITEBOARD type
    *
-   * @generated from enum value: INIT_WHITEBOARD = 9;
+   * @generated from enum value: REQ_INIT_WHITEBOARD_DATA = 10;
    */
-  INIT_WHITEBOARD = 9,
+  REQ_INIT_WHITEBOARD_DATA = 10,
 
   /**
-   * @generated from enum value: SCENE_UPDATE = 10;
+   * @generated from enum value: SCENE_UPDATE = 11;
    */
-  SCENE_UPDATE = 10,
+  SCENE_UPDATE = 11,
 
   /**
-   * @generated from enum value: POINTER_UPDATE = 11;
+   * @generated from enum value: POINTER_UPDATE = 12;
    */
-  POINTER_UPDATE = 11,
+  POINTER_UPDATE = 12,
 
   /**
-   * @generated from enum value: ADD_WHITEBOARD_FILE = 12;
+   * @generated from enum value: ADD_WHITEBOARD_FILE = 13;
    */
-  ADD_WHITEBOARD_FILE = 12,
+  ADD_WHITEBOARD_FILE = 13,
 
   /**
-   * @generated from enum value: ADD_WHITEBOARD_OFFICE_FILE = 13;
+   * @generated from enum value: ADD_WHITEBOARD_OFFICE_FILE = 14;
    */
-  ADD_WHITEBOARD_OFFICE_FILE = 13,
+  ADD_WHITEBOARD_OFFICE_FILE = 14,
 
   /**
-   * @generated from enum value: PAGE_CHANGE = 14;
+   * @generated from enum value: PAGE_CHANGE = 15;
    */
-  PAGE_CHANGE = 14,
+  PAGE_CHANGE = 15,
 
   /**
-   * @generated from enum value: WHITEBOARD_APP_STATE_CHANGE = 15;
+   * @generated from enum value: WHITEBOARD_APP_STATE_CHANGE = 16;
    */
-  WHITEBOARD_APP_STATE_CHANGE = 15,
+  WHITEBOARD_APP_STATE_CHANGE = 16,
 }
 // Retrieve enum metadata with: proto3.getEnumType(DataMsgBodyType)
 proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
@@ -107,18 +102,17 @@ proto3.util.setEnumType(DataMsgBodyType, 'plugnmeet.DataMsgBodyType', [
   { no: 1, name: 'FILE_UPLOAD' },
   { no: 2, name: 'INFO' },
   { no: 3, name: 'ALERT' },
-  { no: 4, name: 'SEND_CHAT_MSGS' },
-  { no: 5, name: 'USER_VISIBILITY_CHANGE' },
-  { no: 6, name: 'EXTERNAL_MEDIA_PLAYER_EVENTS' },
-  { no: 7, name: 'NEW_POLL_RESPONSE' },
-  { no: 8, name: 'SPEECH_SUBTITLE_TEXT' },
-  { no: 9, name: 'INIT_WHITEBOARD' },
-  { no: 10, name: 'SCENE_UPDATE' },
-  { no: 11, name: 'POINTER_UPDATE' },
-  { no: 12, name: 'ADD_WHITEBOARD_FILE' },
-  { no: 13, name: 'ADD_WHITEBOARD_OFFICE_FILE' },
-  { no: 14, name: 'PAGE_CHANGE' },
-  { no: 15, name: 'WHITEBOARD_APP_STATE_CHANGE' },
+  { no: 6, name: 'USER_VISIBILITY_CHANGE' },
+  { no: 7, name: 'EXTERNAL_MEDIA_PLAYER_EVENTS' },
+  { no: 8, name: 'NEW_POLL_RESPONSE' },
+  { no: 9, name: 'SPEECH_SUBTITLE_TEXT' },
+  { no: 10, name: 'REQ_INIT_WHITEBOARD_DATA' },
+  { no: 11, name: 'SCENE_UPDATE' },
+  { no: 12, name: 'POINTER_UPDATE' },
+  { no: 13, name: 'ADD_WHITEBOARD_FILE' },
+  { no: 14, name: 'ADD_WHITEBOARD_OFFICE_FILE' },
+  { no: 15, name: 'PAGE_CHANGE' },
+  { no: 16, name: 'WHITEBOARD_APP_STATE_CHANGE' },
 ]);
 
 /**
@@ -141,9 +135,9 @@ export class DataChannelMessage extends Message<DataChannelMessage> {
   fromUserId = '';
 
   /**
-   * @generated from field: string to_user_id = 4;
+   * @generated from field: optional string to_user_id = 4;
    */
-  toUserId = '';
+  toUserId?: string;
 
   /**
    * @generated from field: string message = 5;
@@ -171,7 +165,13 @@ export class DataChannelMessage extends Message<DataChannelMessage> {
       kind: 'scalar',
       T: 9 /* ScalarType.STRING */,
     },
-    { no: 4, name: 'to_user_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 4,
+      name: 'to_user_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
     { no: 5, name: 'message', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
   ]);
 

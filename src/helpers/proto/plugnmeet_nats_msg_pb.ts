@@ -20,9 +20,9 @@ export enum NatsMsgServerToClientEvents {
   /**
    * initial data
    *
-   * @generated from enum value: INITIAL_DATA = 0;
+   * @generated from enum value: RES_INITIAL_DATA = 0;
    */
-  INITIAL_DATA = 0,
+  RES_INITIAL_DATA = 0,
 
   /**
    * @generated from enum value: JOINED_USERS_LIST = 1;
@@ -101,7 +101,7 @@ proto3.util.setEnumType(
   NatsMsgServerToClientEvents,
   'plugnmeet.NatsMsgServerToClientEvents',
   [
-    { no: 0, name: 'INITIAL_DATA' },
+    { no: 0, name: 'RES_INITIAL_DATA' },
     { no: 1, name: 'JOINED_USERS_LIST' },
     { no: 2, name: 'ROOM_METADATA_UPDATE' },
     { no: 3, name: 'USER_METADATA_UPDATE' },
@@ -139,11 +139,6 @@ export enum NatsMsgClientToServerEvents {
   PING = 2,
 
   /**
-   * @generated from enum value: REQ_LOGOUT = 3;
-   */
-  REQ_LOGOUT = 3,
-
-  /**
    * @generated from enum value: REQ_RAISE_HAND = 4;
    */
   REQ_RAISE_HAND = 4,
@@ -171,7 +166,6 @@ proto3.util.setEnumType(
     { no: 0, name: 'REQ_INITIAL_DATA' },
     { no: 1, name: 'REQ_RENEW_PNM_TOKEN' },
     { no: 2, name: 'PING' },
-    { no: 3, name: 'REQ_LOGOUT' },
     { no: 4, name: 'REQ_RAISE_HAND' },
     { no: 5, name: 'REQ_LOWER_HAND' },
     { no: 6, name: 'REQ_LOWER_OTHER_USER_HAND' },
@@ -331,7 +325,7 @@ export class NatsMsgServerToClient extends Message<NatsMsgServerToClient> {
   /**
    * @generated from field: plugnmeet.NatsMsgServerToClientEvents event = 2;
    */
-  event = NatsMsgServerToClientEvents.INITIAL_DATA;
+  event = NatsMsgServerToClientEvents.RES_INITIAL_DATA;
 
   /**
    * @generated from field: string msg = 3;
@@ -481,17 +475,12 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
   emptyTimeout = protoInt64.zero;
 
   /**
-   * @generated from field: bool enabled_e2ee = 6;
-   */
-  enabledE2ee = false;
-
-  /**
-   * @generated from field: string metadata = 7;
+   * @generated from field: string metadata = 6;
    */
   metadata = '';
 
   /**
-   * @generated from field: uint64 created_at = 8;
+   * @generated from field: uint64 created_at = 7;
    */
   createdAt = protoInt64.zero;
 
@@ -518,9 +507,8 @@ export class NatsKvRoomInfo extends Message<NatsKvRoomInfo> {
       kind: 'scalar',
       T: 4 /* ScalarType.UINT64 */,
     },
-    { no: 6, name: 'enabled_e2ee', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-    { no: 7, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
+    { no: 6, name: 'metadata', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: 'created_at', kind: 'scalar', T: 4 /* ScalarType.UINT64 */ },
   ]);
 
   static fromBinary(

@@ -294,7 +294,17 @@ export default class ConnectNats {
     for await (const m of sub) {
       try {
         const payload = DataChannelMessage.fromBinary(m.data);
+        // whiteboard data should not process by the same sender
         if (payload.fromUserId !== this._userId) {
+          if (
+            typeof payload.toUserId !== 'undefined' &&
+            payload.toUserId !== this._userId
+          ) {
+            // receiver specified & this user was not the receiver
+            // we'll not process further
+            m.ack();
+            continue;
+          }
           await this.handleWhiteboard.handleWhiteboardMsg(payload);
         }
       } catch (e) {
@@ -319,11 +329,18 @@ export default class ConnectNats {
     for await (const m of sub) {
       try {
         const payload = DataChannelMessage.fromBinary(m.data);
-        if (payload.toUserId !== '' && payload.toUserId !== this._userId) {
+        if (
+          typeof payload.toUserId !== 'undefined' &&
+          payload.toUserId !== this._userId
+        ) {
+          // receiver specified & this user was not the receiver
+          // we'll not process further
+          m.ack();
           continue;
         }
         console.log(payload);
-        this.handleDataMsg.handleMessage(payload);
+        // fromUserId check inside handleMessage method
+        await this.handleDataMsg.handleMessage(payload);
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
@@ -335,7 +352,7 @@ export default class ConnectNats {
   private async handleSystemEvents(payload: NatsMsgServerToClient) {
     console.log(payload.event, payload.msg);
     switch (payload.event) {
-      case NatsMsgServerToClientEvents.INITIAL_DATA:
+      case NatsMsgServerToClientEvents.RES_INITIAL_DATA:
         await this.handleInitialData(payload.msg);
         this._setRoomConnectionStatusState('ready');
         break;
@@ -462,14 +479,9 @@ export default class ConnectNats {
       return a.joinedAt - b.joinedAt;
     });
     const donor = participants[0];
-    // TODO: need to think about it
-    // await this.sendDataMessage(
-    //   DataMsgBodyType.SEND_CHAT_MSGS,
-    //   '',
-    //   donor.userId,
-    // );
+
     await this.sendDataMessage(
-      DataMsgBodyType.INIT_WHITEBOARD,
+      DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA,
       '',
       donor.userId,
     );
@@ -506,14 +518,7 @@ export default class ConnectNats {
     const info: LivekitInfo = {
       livekit_host: connInfo.url,
       token: connInfo.token,
-      enabledE2EE: connInfo.enabledE2ee,
     };
-
-    const conn = createLivekitConnection(
-      info,
-      this._setErrorState,
-      this._setRoomConnectionStatusState,
-    );
 
     const e2eeFeatures =
       this.handleRoomData.roomInfo.metadata?.room_features
@@ -528,13 +533,18 @@ export default class ConnectNats {
           i18n.t('notifications.e2ee-unsupported-browser-title'),
           i18n.t('notifications.e2ee-unsupported-browser-msg'),
         );
+        return;
       } else {
-        if (conn.room.isE2EEEnabled) {
-          await conn.e2eeKeyProvider.setKey(e2eeFeatures.encryption_key);
-          await conn.room.setE2EEEnabled(true);
-        }
+        info.enabledE2EE = true;
+        info.encryption_key = e2eeFeatures.encryption_key;
       }
     }
+
+    const conn = createLivekitConnection(
+      info,
+      this._setErrorState,
+      this._setRoomConnectionStatusState,
+    );
 
     this._setCurrentMediaServerConn(conn);
     this._mediaServerConn = conn;
