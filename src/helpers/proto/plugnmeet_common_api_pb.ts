@@ -10,8 +10,8 @@ import type {
   JsonValue,
   PartialMessage,
   PlainMessage,
-} from '@bufbuild/protobuf';
-import { Message, proto3 } from '@bufbuild/protobuf';
+} from '@bufbuild/protobufv1';
+import { Message, proto3 } from '@bufbuild/protobufv1';
 import { NatsSubjects } from './plugnmeet_nats_msg_pb.ts';
 import { DataMsgBodyType } from './plugnmeet_datamessage_pb.ts';
 

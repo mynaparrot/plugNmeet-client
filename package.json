@@ -11,11 +11,10 @@
     "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/",
     "lint-staged": "lint-staged",
     "prepare": "husky",
-    "proto": "protoc --es_opt=target=ts,import_extension=.ts --plugin=protoc-gen-es=./node_modules/.bin/protoc-gen-es --es_out=./src/helpers/proto --proto_path=../protocol/proto_files plugnmeet_datamessage.proto plugnmeet_recorder.proto plugnmeet_recording.proto plugnmeet_breakout_room.proto plugnmeet_polls.proto plugnmeet_common_api.proto plugnmeet_ingress.proto plugnmeet_speech_services.proto plugnmeet_analytics.proto plugnmeet_nats_msg.proto",
     "size-limit": "npm run build && size-limit --json"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "1.10.0",
+    "@bufbuild/protobufv1": "npm:@bufbuild/protobuf@^1.10.0",
     "@excalidraw/excalidraw": "0.17.6",
     "@headlessui/react": "1.7.19",
     "@nats-io/jetstream": "^3.0.0-4",
@@ -35,6 +34,7 @@
     "microsoft-cognitiveservices-speech-sdk": "1.40.0",
     "mobile-detect": "1.4.5",
     "nosleep.js": "0.12.0",
+    "plugnmeet-protocol-js": "file:../protocol/js",
     "react": "18.3.1",
     "react-cool-virtual": "0.7.0",
     "react-dnd": "16.0.1",

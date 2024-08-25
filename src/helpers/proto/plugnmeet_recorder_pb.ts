@@ -10,8 +10,8 @@ import type {
   JsonValue,
   PartialMessage,
   PlainMessage,
-} from '@bufbuild/protobuf';
-import { Message, proto3, protoInt64 } from '@bufbuild/protobuf';
+} from '@bufbuild/protobufv1';
+import { Message, proto3, protoInt64 } from '@bufbuild/protobufv1';
 
 /**
  * @generated from enum plugnmeet.RecordingTasks
