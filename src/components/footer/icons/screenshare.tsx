@@ -30,7 +30,7 @@ const sessionScreenSharingSelector = createSelector(
 );
 const isScreenshareLockSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_screen_sharing,
+  (lock_settings) => lock_settings?.lockScreenSharing,
 );
 
 const ScrenshareIcon = () => {

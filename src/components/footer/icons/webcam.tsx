@@ -33,7 +33,7 @@ const showVideoShareModalSelector = createSelector(
 );
 const isWebcamLockSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_webcam,
+  (lock_settings) => lock_settings?.lockWebcam,
 );
 const virtualBackgroundSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -98,8 +98,8 @@ const WebcamIcon = () => {
   // default room lock settings
   useEffect(() => {
     const isLock =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_webcam;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockWebcam;
     const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {

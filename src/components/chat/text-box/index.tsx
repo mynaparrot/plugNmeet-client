@@ -20,12 +20,12 @@ interface ITextBoxAreaProps {
 
 const isLockChatSendMsgSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_chat_send_message,
+  (lock_settings) => lock_settings?.lockChatSendMessage,
 );
 
 const isLockSendFileSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_chat_file_share,
+  (lock_settings) => lock_settings?.lockChatFileShare,
 );
 
 const selectedChatOptionSelector = createSelector(
@@ -76,11 +76,11 @@ const TextBoxArea = ({
   // default room lock settings
   useEffect(() => {
     const lock_chat_send_message =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_chat_send_message;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockChatSendMessage;
     const lock_chat_file_share =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_chat_file_share;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockChatFileShare;
 
     const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 

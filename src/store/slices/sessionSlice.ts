@@ -98,7 +98,7 @@ const initialState: ISession = {
           includedWhiteboard: false,
         },
       },
-      copyright_conf: {
+      copyrightConf: {
         display: true,
         text: 'Powered by <a href="https://www.plugnmeet.org" target="_blank">plugNmeet</a>',
       },

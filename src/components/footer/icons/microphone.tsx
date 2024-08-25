@@ -40,7 +40,7 @@ const showMicrophoneModalSelector = createSelector(
 );
 const isMicLockSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_microphone,
+  (lock_settings) => lock_settings?.lockMicrophone,
 );
 const isMicMutedSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -105,8 +105,8 @@ const MicrophoneIcon = () => {
   // default room lock settings
   useEffect(() => {
     const isLock =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_microphone;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockMicrophone;
     const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {

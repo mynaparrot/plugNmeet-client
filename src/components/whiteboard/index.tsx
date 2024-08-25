@@ -51,7 +51,7 @@ interface WhiteboardProps {
 const whiteboardSelector = (state: RootState) => state.whiteboard;
 const lockWhiteboardSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_whiteboard,
+  (lock_settings) => lock_settings?.lockWhiteboard,
 );
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
@@ -111,7 +111,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
     } else if (
       !currentUser?.isRecorder &&
-      !currentRoom.metadata?.default_lock_settings?.lock_whiteboard
+      !currentRoom.metadata?.defaultLockSettings?.lockWhiteboard
     ) {
       setViewModeEnabled(false);
     }
@@ -198,7 +198,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       addPreloadedLibraryItems(excalidrawAPI);
     } else if (!currentUser?.isRecorder) {
       setViewModeEnabled(
-        currentUser?.metadata?.lockSettings.lock_whiteboard ?? true,
+        currentUser?.metadata?.lockSettings.lockWhiteboard ?? true,
       );
     }
     //eslint-disable-next-line

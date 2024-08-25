@@ -54,8 +54,8 @@ export interface IRoomMetadata {
   startedAt: string;
   logoutUrl?: string;
   roomFeatures: IRoomFeatures;
-  default_lock_settings?: ILockSettings;
-  copyright_conf: ICopyright_conf;
+  defaultLockSettings?: ILockSettings;
+  copyrightConf: ICopyright_conf;
   metadataId?: string;
 }
 
@@ -120,15 +120,15 @@ export interface IWhiteboardFeatures {
 }
 
 interface ILockSettings {
-  lock_microphone: boolean;
-  lock_webcam: boolean;
-  lock_screen_sharing: boolean;
-  lock_chat: boolean;
-  lock_chat_send_message: boolean;
-  lock_chat_file_share: boolean;
-  lock_private_chat: boolean;
-  lock_whiteboard: boolean;
-  lock_shared_notepad: boolean;
+  lockMicrophone: boolean;
+  lockWebcam: boolean;
+  lockScreenSharing: boolean;
+  lockChat: boolean;
+  lockChatSendMessage: boolean;
+  lockChatFileShare: boolean;
+  lockPrivateChat: boolean;
+  lockWhiteboard: boolean;
+  lockSharedNotepad: boolean;
 }
 
 export interface IScreenSharing {

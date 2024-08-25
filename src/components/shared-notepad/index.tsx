@@ -16,7 +16,7 @@ const sharedNotepadFeaturesSelector = createSelector(
 );
 const lockSharedNotepadSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lock_shared_notepad,
+  (lock_settings) => lock_settings?.lockSharedNotepad,
 );
 const themeSelector = createSelector(
   (state: RootState) => state.roomSettings,

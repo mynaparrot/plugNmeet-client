@@ -28,7 +28,7 @@ const RoomSettings = () => {
   const { t } = useTranslation();
   const s = store.getState();
   const serverVersion = s.session.serverVersion;
-  const copyright_conf = s.session.currentRoom?.metadata?.copyright_conf;
+  const copyright_conf = s.session.currentRoom?.metadata?.copyrightConf;
   const ingressFeatures =
     s.session.currentRoom?.metadata?.roomFeatures.ingressFeatures;
 
