@@ -20,9 +20,9 @@ import {
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 
 const DisplayExternalLinkModal = () => {
@@ -64,7 +64,7 @@ const DisplayExternalLinkModal = () => {
     if (extraValues.role) {
       url.searchParams.set(
         'role',
-        session.currentUser?.metadata?.is_admin ? 'admin' : 'participant',
+        session.currentUser?.metadata?.isAdmin ? 'admin' : 'participant',
       );
     }
     if (extraValues.meetingId) {

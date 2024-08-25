@@ -49,7 +49,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   const { t } = useTranslation();
 
   const currentUser = store.getState().session.currentUser;
-  const isAdmin = currentUser?.metadata?.is_admin;
+  const isAdmin = currentUser?.metadata?.isAdmin;
   const isRecorder = currentUser?.isRecorder;
 
   useEffect(() => {

@@ -77,7 +77,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           const metadata: ICurrentUserMetadata = JSON.parse(
             participant.metadata,
           );
-          isAdmin = metadata.is_admin;
+          isAdmin = metadata.isAdmin;
         }
 
         const participantType: VideoParticipantType = {

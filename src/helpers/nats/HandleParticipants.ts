@@ -65,11 +65,11 @@ export default class HandleParticipants {
 
     // default
     return {
-      is_admin: false,
-      is_presenter: false,
-      raised_hand: false,
-      wait_for_approval: false,
-      lock_settings: {
+      isAdmin: false,
+      isPresenter: false,
+      raisedHand: false,
+      waitForApproval: false,
+      lockSettings: {
         lock_microphone: true,
         lock_webcam: true,
         lock_screen_sharing: true,
@@ -123,12 +123,12 @@ export default class HandleParticipants {
       existUser.userId === participant.userId
     ) {
       console.info(
-        `found same userId: ${existUser.userId} again, so updating medata only, metadata same?: ${metadata.metadata_id === existUser.metadata.metadata_id}`,
+        `found same userId: ${existUser.userId} again, so updating medata only, metadata same?: ${metadata.metadataId === existUser.metadata.metadataId}`,
       );
       // we've the same user, so we won't add it again
       // because maybe this user disconnected & reconnected again
       // we can just try to update metadata
-      if (metadata.metadata_id !== existUser.metadata.metadata_id) {
+      if (metadata.metadataId !== existUser.metadata.metadataId) {
         await this.updateParticipantMetadata(
           participant.userId,
           participant.metadata,
@@ -189,15 +189,13 @@ export default class HandleParticipants {
     if (this._localParticipant.userId === userId) {
       if (
         this.preferredLang === '' &&
-        typeof metadata.preferred_lang !== 'undefined' &&
-        metadata.preferred_lang !== ''
+        typeof metadata.preferredLang !== 'undefined' &&
+        metadata.preferredLang !== ''
       ) {
-        this.preferredLang = metadata.preferred_lang;
+        this.preferredLang = metadata.preferredLang;
         for (let i = 0; i < languages.length; i++) {
           const lan = languages[i];
-          if (
-            lan.code.toLowerCase() === metadata.preferred_lang.toLowerCase()
-          ) {
+          if (lan.code.toLowerCase() === metadata.preferredLang.toLowerCase()) {
             // we'll only change if we've found the right language
             await i18n.changeLanguage(lan.code);
             break;
@@ -206,7 +204,7 @@ export default class HandleParticipants {
       }
 
       store.dispatch(updateCurrentUserMetadata(metadata));
-      store.dispatch(updateIsActiveRaisehand(metadata.raised_hand));
+      store.dispatch(updateIsActiveRaisehand(metadata.raisedHand));
     }
   };
 
@@ -277,8 +275,8 @@ export default class HandleParticipants {
     }
 
     if (
-      metadata.wait_for_approval &&
-      state.session.currentUser?.metadata?.is_admin
+      metadata.waitForApproval &&
+      state.session.currentUser?.metadata?.isAdmin
     ) {
       // we can open the participants panel if close
       if (!state.bottomIconsActivity.isActiveParticipantsPanel) {

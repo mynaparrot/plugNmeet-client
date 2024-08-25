@@ -24,11 +24,11 @@ import { getNatsConn } from '../../helpers/nats';
 
 const roomTitleSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.room_title,
+  (metadata) => metadata?.roomTitle,
 );
 const roomDurationSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.room_features,
-  (room_features) => room_features?.room_duration,
+  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
+  (room_features) => room_features?.roomDuration,
 );
 const headerVisibilitySelector = createSelector(
   (state: RootState) => state.roomSettings,

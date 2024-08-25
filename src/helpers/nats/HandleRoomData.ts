@@ -50,7 +50,7 @@ export default class HandleRoomData {
 
       if (
         typeof this._room.metadata === 'undefined' ||
-        this._room.metadata.metadata_id !== metadata.metadata_id
+        this._room.metadata.metadataId !== metadata.metadataId
       ) {
         this._room.metadata = metadata;
         await this.updateMetadata();
@@ -65,7 +65,7 @@ export default class HandleRoomData {
       return;
     }
 
-    this.setWindowTitle(this._room.metadata.room_title);
+    this.setWindowTitle(this._room.metadata.roomTitle);
     this.showRecordingNotification();
     this.showRTMPNotification();
     this.publishWelcomeMessage();
@@ -88,11 +88,11 @@ export default class HandleRoomData {
     }
 
     const isActiveRecording = store.getState().session.isActiveRecording;
-    if (!isActiveRecording && this._room.metadata?.is_recording) {
+    if (!isActiveRecording && this._room.metadata?.isRecording) {
       toast(i18n.t('room-metadata.session-recording'), {
         type: 'info',
       });
-    } else if (isActiveRecording && !this._room.metadata?.is_recording) {
+    } else if (isActiveRecording && !this._room.metadata?.isRecording) {
       toast(i18n.t('room-metadata.session-not-recording'), {
         type: 'info',
       });
@@ -107,14 +107,11 @@ export default class HandleRoomData {
 
     const isActiveRtmpBroadcasting =
       store.getState().session.isActiveRtmpBroadcasting;
-    if (!isActiveRtmpBroadcasting && this._room.metadata?.is_active_rtmp) {
+    if (!isActiveRtmpBroadcasting && this._room.metadata?.isActiveRtmp) {
       toast(i18n.t('room-metadata.rtmp-started'), {
         type: 'info',
       });
-    } else if (
-      isActiveRtmpBroadcasting &&
-      !this._room.metadata?.is_active_rtmp
-    ) {
+    } else if (isActiveRtmpBroadcasting && !this._room.metadata?.isActiveRtmp) {
       toast(i18n.t('room-metadata.rtmp-stopped'), {
         type: 'info',
       });
@@ -127,14 +124,14 @@ export default class HandleRoomData {
     }
 
     if (
-      !this._room.metadata?.welcome_message ||
-      this._room.metadata?.welcome_message === ''
+      !this._room.metadata?.welcomeMessage ||
+      this._room.metadata?.welcomeMessage === ''
     ) {
       this.welcomeMessage = '';
       return;
     }
 
-    this.welcomeMessage = this._room.metadata?.welcome_message;
+    this.welcomeMessage = this._room.metadata?.welcomeMessage;
     const now = new Date();
 
     const body: IChatMsg = {
@@ -154,24 +151,24 @@ export default class HandleRoomData {
   };
 
   private addPreloadWhiteboardFile = async () => {
-    if (!store.getState().session.currentUser?.metadata?.is_presenter) {
+    if (!store.getState().session.currentUser?.metadata?.isPresenter) {
       this.checkedPreloadedWhiteboardFile = true;
       return;
     }
 
-    const whiteboard = this._room.metadata?.room_features.whiteboard_features;
-    if (!whiteboard?.preload_file || whiteboard?.preload_file === '') {
+    const whiteboard = this._room.metadata?.roomFeatures.whiteboardFeatures;
+    if (!whiteboard?.preloadFile || whiteboard?.preloadFile === '') {
       this.checkedPreloadedWhiteboardFile = true;
       return;
     }
 
-    const ff = whiteboard?.preload_file?.split('/');
+    const ff = whiteboard?.preloadFile?.split('/');
     if (!ff) {
       return;
     }
     const fileName = ff[ff.length - 1];
 
-    if (fileName !== whiteboard?.file_name) {
+    if (fileName !== whiteboard?.fileName) {
       this.checkedPreloadedWhiteboardFile = true;
       return;
     }
@@ -179,7 +176,7 @@ export default class HandleRoomData {
     const whiteboardFiles =
       store.getState().whiteboard.whiteboardUploadedOfficeFiles;
     const exist = whiteboardFiles.find(
-      (f) => f.fileId === whiteboard.whiteboard_file_id,
+      (f) => f.fileId === whiteboard.whiteboardFileId,
     );
     if (!exist) {
       handleToAddWhiteboardUploadedOfficeNewFile(whiteboard);

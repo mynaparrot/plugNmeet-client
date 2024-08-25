@@ -97,7 +97,7 @@ const RecordingModal = ({
                           {t('footer.icons.recording-types-des')}
                         </p>
                         <div className="mt-4 pl-2 space-y-4">
-                          {recordingFeatures.is_allow_local ? (
+                          {recordingFeatures.isAllowLocal ? (
                             <div className="flex items-center">
                               <input
                                 type="radio"
@@ -122,7 +122,7 @@ const RecordingModal = ({
                               </label>
                             </div>
                           ) : null}
-                          {recordingFeatures.is_allow_cloud ? (
+                          {recordingFeatures.isAllowCloud ? (
                             <div className="flex items-center">
                               <input
                                 type="radio"

@@ -55,7 +55,7 @@ const WaitingApproval = ({
   };
 
   const render = useMemo(() => {
-    if (participant?.metadata.wait_for_approval) {
+    if (participant?.metadata.waitForApproval) {
       return (
         <div className="approve-btn-wrap rtl:pt-2">
           <button
@@ -76,7 +76,7 @@ const WaitingApproval = ({
 
     return null;
     //eslint-disable-next-line
-  }, [participant?.metadata.wait_for_approval]);
+  }, [participant?.metadata.waitForApproval]);
 
   return <>{render}</>;
 };

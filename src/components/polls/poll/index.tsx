@@ -13,7 +13,7 @@ interface IPollPros {
 
 const Poll = ({ item }: IPollPros) => {
   const { t } = useTranslation();
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const [viewDetails, setViewDetails] = useState<boolean>(false);
   const [viewResult, setViewResult] = useState<boolean>(false);
 

@@ -39,7 +39,7 @@ const showMicrophoneModalSelector = createSelector(
   (bottomIconsActivity) => bottomIconsActivity.showMicrophoneModal,
 );
 const isMicLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
   (lock_settings) => lock_settings?.lock_microphone,
 );
 const isMicMutedSelector = createSelector(
@@ -56,7 +56,7 @@ const MicrophoneIcon = () => {
   const session = store.getState().session;
   const showTooltip = session.userDeviceType === 'desktop';
   const muteOnStart =
-    session.currentRoom.metadata?.room_features.mute_on_start ?? false;
+    session.currentRoom.metadata?.roomFeatures.muteOnStart ?? false;
 
   const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
   const isActiveMicrophone = useAppSelector(isActiveMicrophoneSelector);
@@ -107,7 +107,7 @@ const MicrophoneIcon = () => {
     const isLock =
       store.getState().session.currentRoom.metadata?.default_lock_settings
         ?.lock_microphone;
-    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {
       if (isMicLock !== false) {

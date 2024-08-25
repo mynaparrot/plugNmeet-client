@@ -53,14 +53,14 @@ const showRtmpModalSelector = createSelector(
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .external_media_player_features,
-  (external_media_player_features) => external_media_player_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .externalMediaPlayerFeatures,
+  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
 );
 const showExternalMediaPlayerModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -76,9 +76,9 @@ const showManageBreakoutRoomModalSelector = createSelector(
 );
 const isActiveDisplayExternalLinkSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 const showDisplayExternalLinkModalModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -122,7 +122,7 @@ const MenusIcon = () => {
     showSpeechSettingsModalSelector,
   );
   const roomFeatures =
-    store.getState().session.currentRoom?.metadata?.room_features;
+    store.getState().session.currentRoom?.metadata?.roomFeatures;
 
   const muteAllUsers = async () => {
     const body = new MuteUnMuteTrackReq({
@@ -156,8 +156,8 @@ const MenusIcon = () => {
 
   const toggleSharedNotepad = async () => {
     const host =
-      store.getState().session.currentRoom.metadata?.room_features
-        .shared_note_pad_features.host;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        .sharedNotePadFeatures.host;
 
     if (!host && !sharedNotepadStatus) {
       const r = await sendAPIRequest(
@@ -343,7 +343,7 @@ const MenusIcon = () => {
                   static
                   className="origin-bottom-left sm:-left-20 lg:-left-28 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 lg:w-72 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
-                  {roomFeatures?.allow_rtmp ? (
+                  {roomFeatures?.allowRtmp ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -375,8 +375,7 @@ const MenusIcon = () => {
                       </button>
                     </Menu.Item>
                   </div>
-                  {roomFeatures?.shared_note_pad_features
-                    .allowed_shared_note_pad ? (
+                  {roomFeatures?.sharedNotePadFeatures.allowedSharedNotePad ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -391,8 +390,8 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.external_media_player_features
-                    .allowed_external_media_player ? (
+                  {roomFeatures?.externalMediaPlayerFeatures
+                    .allowedExternalMediaPlayer ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -407,7 +406,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.display_external_link_features.is_allow ? (
+                  {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -422,7 +421,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.waiting_room_features.is_active ? (
+                  {roomFeatures?.waitingRoomFeatures.isActive ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -435,8 +434,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.speech_to_text_translation_features
-                    .is_allow ? (
+                  {roomFeatures?.speechToTextTranslationFeatures.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -449,7 +447,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.breakout_room_features.is_allow ? (
+                  {roomFeatures?.breakoutRoomFeatures.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button

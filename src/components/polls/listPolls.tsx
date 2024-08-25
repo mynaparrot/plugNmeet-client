@@ -15,7 +15,7 @@ const screenHeightSelector = createSelector(
 const ListPolls = () => {
   const screenHeight = useAppSelector(screenHeightSelector);
   const { data, isLoading } = useGetPollListsQuery();
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const [polls, setPolls] = useState<PollInfo[]>([]);
   const { outerRef, innerRef, items } = useVirtual({
     itemCount: polls.length,

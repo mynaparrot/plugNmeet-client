@@ -17,7 +17,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     participantsSelector.selectById(state, userId),
   );
   const roomFeatures =
-    store.getState().session.currentRoom.metadata?.room_features;
+    store.getState().session.currentRoom.metadata?.roomFeatures;
   const conn = getNatsConn();
 
   const session = store.getState().session;
@@ -74,8 +74,8 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   return (
     <>
       {session.currentUser?.userId !== participant?.userId &&
-      roomFeatures?.allow_webcams &&
-      !roomFeatures.admin_only_webcams
+      roomFeatures?.allowWebcams &&
+      !roomFeatures.adminOnlyWebcams
         ? render()
         : null}
     </>

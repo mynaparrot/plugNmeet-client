@@ -11,7 +11,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
   );
 
   const render = useMemo(() => {
-    if (participant?.metadata.raised_hand) {
+    if (participant?.metadata.raisedHand) {
       return (
         <div className="hand ltr:mr-2 rtl:ml-2 cursor-pointer">
           <i className="pnm-raise-hand text-[#ffbd40] text-[10px]" />
@@ -20,7 +20,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
     } else {
       return null;
     }
-  }, [participant?.metadata.raised_hand]);
+  }, [participant?.metadata.raisedHand]);
 
   return <>{render}</>;
 };

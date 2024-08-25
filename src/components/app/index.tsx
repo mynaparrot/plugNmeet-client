@@ -38,7 +38,7 @@ import { startNatsConn } from '../../helpers/nats';
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.wait_for_approval,
+  (metadata) => metadata?.waitForApproval,
 );
 
 const App = () => {
@@ -206,7 +206,7 @@ const App = () => {
         dispatch(updateIsActiveChatPanel(false));
       }
 
-      if (store.getState().session.currentUser?.metadata?.is_admin) {
+      if (store.getState().session.currentUser?.metadata?.isAdmin) {
         setUserTypeClass('admin');
       }
     }

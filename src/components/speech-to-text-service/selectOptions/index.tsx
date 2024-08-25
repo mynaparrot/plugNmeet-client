@@ -51,15 +51,15 @@ const SelectOptions = ({
     if (!isEmpty(selectedSubtitleLang)) {
       setSelectedSubtitleLang(selectedSubtitleLang);
     } else {
-      if (speechService.default_subtitle_lang) {
-        setSelectedSubtitleLang(speechService.default_subtitle_lang);
+      if (speechService.defaultSubtitleLang) {
+        setSelectedSubtitleLang(speechService.defaultSubtitleLang);
       }
     }
     //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    const haveUser = speechService.allowed_speech_users?.find(
+    const haveUser = speechService.allowedSpeechUsers?.find(
       (u) => u === currentUser?.userId,
     );
     setCanShowSpeechSetting(!!haveUser);

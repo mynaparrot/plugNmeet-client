@@ -13,8 +13,8 @@ import { RootState, store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const ingressFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom?.metadata?.room_features,
-  (room_features) => room_features?.ingress_features,
+  (state: RootState) => state.session.currentRoom?.metadata?.roomFeatures,
+  (room_features) => room_features?.ingressFeatures,
 );
 
 const Ingress = () => {
@@ -31,7 +31,7 @@ const Ingress = () => {
     e.preventDefault();
     setErrorMsg(null);
 
-    if (!ingressFeatures?.is_allow) {
+    if (!ingressFeatures?.isAllow) {
       setErrorMsg(t('ingress-features.feature-not-allow'));
       return;
     }
@@ -140,7 +140,7 @@ const Ingress = () => {
               readOnly={true}
               name="ingress_type"
               id="ingress_type"
-              value={ingressFeatures?.input_type?.toString()}
+              value={ingressFeatures?.inputType?.toString()}
               className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
             />
           </div>
@@ -173,7 +173,7 @@ const Ingress = () => {
               readOnly={true}
               name="stream_key"
               id="stream_key"
-              value={ingressFeatures?.stream_key}
+              value={ingressFeatures?.streamKey}
               className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
             />
           </div>
@@ -184,7 +184,7 @@ const Ingress = () => {
 
   return (
     <div className="mt-2">
-      {isEmpty(ingressFeatures?.url) && isEmpty(ingressFeatures?.stream_key)
+      {isEmpty(ingressFeatures?.url) && isEmpty(ingressFeatures?.streamKey)
         ? renderFrom()
         : render()}
     </div>

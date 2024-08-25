@@ -32,9 +32,9 @@ const ParticipantsComponent = () => {
   const session = store.getState().session;
   const currentUserUserId = session.currentUser?.userId;
   const allow_view_other_users_list =
-    session.currentRoom.metadata?.room_features?.allow_view_other_users_list ??
+    session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList ??
     false;
-  const currentIsAdmin = session.currentUser?.metadata?.is_admin ?? false;
+  const currentIsAdmin = session.currentUser?.metadata?.isAdmin ?? false;
 
   useEffect(() => {
     if (!allParticipants) {
@@ -74,7 +74,7 @@ const ParticipantsComponent = () => {
     const isRemoteParticipant = currentUserUserId !== participant.userId;
     if (!currentIsAdmin && !allow_view_other_users_list) {
       if (
-        !participant.metadata.is_admin &&
+        !participant.metadata.isAdmin &&
         currentUserUserId !== participant.userId
       ) {
         return null;

@@ -259,13 +259,13 @@ const getSubtitleLangs = (
 ): Array<SupportedLangs> => {
   if (!speechLangs || !transLangs) {
     const speechService =
-      store.getState().session.currentRoom.metadata?.room_features
-        .speech_to_text_translation_features;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        .speechToTextTranslationFeatures;
     if (!speechLangs) {
-      speechLangs = speechService?.allowed_speech_langs;
+      speechLangs = speechService?.allowedSpeechLangs;
     }
     if (!transLangs) {
-      transLangs = speechService?.allowed_trans_langs;
+      transLangs = speechService?.allowedTransLangs;
     }
   }
 

@@ -56,12 +56,12 @@ const ParticipantComponent = ({
             <MenuIcon
               userId={participant.userId}
               name={participant.name}
-              isAdmin={participant.metadata.is_admin}
+              isAdmin={participant.metadata.isAdmin}
               openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
             />
           ) : null}
         </div>
-        {currentUser?.metadata?.is_admin ? (
+        {currentUser?.metadata?.isAdmin ? (
           <div className="approve-wrap absolute ltr:right-0 rtl:left-0 top-5">
             <WaitingApproval
               userId={participant.userId}

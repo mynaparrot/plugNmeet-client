@@ -521,13 +521,9 @@ export default class ConnectNats {
     };
 
     const e2eeFeatures =
-      this.handleRoomData.roomInfo.metadata?.room_features
-        .end_to_end_encryption_features;
-    if (
-      e2eeFeatures &&
-      e2eeFeatures.is_enabled &&
-      e2eeFeatures.encryption_key
-    ) {
+      this.handleRoomData.roomInfo.metadata?.roomFeatures
+        .endToEndEncryptionFeatures;
+    if (e2eeFeatures && e2eeFeatures.isEnabled && e2eeFeatures.encryptionKey) {
       if (!isE2EESupported()) {
         this.setErrorStatus(
           i18n.t('notifications.e2ee-unsupported-browser-title'),
@@ -536,7 +532,7 @@ export default class ConnectNats {
         return;
       } else {
         info.enabledE2EE = true;
-        info.encryption_key = e2eeFeatures.encryption_key;
+        info.encryption_key = e2eeFeatures.encryptionKey;
       }
     }
 

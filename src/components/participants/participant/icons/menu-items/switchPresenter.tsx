@@ -25,7 +25,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
   const onClick = async () => {
     const body = new SwitchPresenterReq({
       userId: participant?.userId,
-      task: participant?.metadata.is_presenter
+      task: participant?.metadata.isPresenter
         ? SwitchPresenterTask.DEMOTE
         : SwitchPresenterTask.PROMOTE,
     });
@@ -61,7 +61,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
               className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
               onClick={() => onClick()}
             >
-              {participant?.metadata.is_presenter
+              {participant?.metadata.isPresenter
                 ? t('footer.icons.demote-presenter')
                 : t('footer.icons.promote-presenter')}
             </button>

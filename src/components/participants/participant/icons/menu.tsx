@@ -25,7 +25,7 @@ const defaultLockSettingsSelector = createSelector(
 
 const currentUserLockSettingsSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.lock_settings,
+  (metadata) => metadata?.lockSettings,
 );
 
 const MenuIcon = ({
@@ -41,7 +41,7 @@ const MenuIcon = ({
   const currentUser = store.getState().session.currentUser;
 
   const renderMenuItems = () => {
-    if (currentUser?.metadata?.is_admin) {
+    if (currentUser?.metadata?.isAdmin) {
       return (
         <>
           <MicMenuItem userId={userId} />
@@ -60,7 +60,7 @@ const MenuIcon = ({
 
     // if lock then user won't be able to send private messages to each other
     if (
-      !currentUser?.metadata?.is_admin &&
+      !currentUser?.metadata?.isAdmin &&
       !currentUserLockSettings?.lock_private_chat &&
       !defaultLockSettings?.lock_chat &&
       !defaultLockSettings?.lock_private_chat

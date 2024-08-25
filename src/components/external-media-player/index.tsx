@@ -8,15 +8,15 @@ import ReactPlayerComponent from './reactPlayerComponent';
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .external_media_player_features,
-  (external_media_player_features) => external_media_player_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .externalMediaPlayerFeatures,
+  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
 );
 const playBackUrlSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .external_media_player_features,
-  (external_media_player_features) => external_media_player_features?.url,
+    state.session.currentRoom.metadata?.roomFeatures
+      .externalMediaPlayerFeatures,
+  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.url,
 );
 const actionSelector = createSelector(
   (state: RootState) => state.externalMediaPlayer,
@@ -29,7 +29,7 @@ const seekToSelector = createSelector(
 
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.is_presenter,
+  (metadata) => metadata?.isPresenter,
 );
 
 const ExternalMediaPlayer = () => {

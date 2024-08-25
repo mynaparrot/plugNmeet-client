@@ -5,7 +5,7 @@ import ListPolls from './listPolls';
 import { store } from '../../store';
 
 const PollsComponent = () => {
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   return (
     <>
       <ListPolls />

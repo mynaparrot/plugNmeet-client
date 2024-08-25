@@ -58,10 +58,10 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
       return false;
     }
     const room_features =
-      store.getState().session.currentRoom.metadata?.room_features;
+      store.getState().session.currentRoom.metadata?.roomFeatures;
     if (
-      typeof room_features?.allow_virtual_bg !== 'undefined' &&
-      room_features.allow_virtual_bg === false
+      typeof room_features?.allowVirtualBg !== 'undefined' &&
+      room_features.allowVirtualBg === false
     ) {
       return false;
     }

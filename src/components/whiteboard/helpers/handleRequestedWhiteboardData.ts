@@ -214,17 +214,17 @@ let e2ee: EndToEndEncryptionFeatures | undefined = undefined;
 const handleEncryption = async (msg: string) => {
   if (!e2ee) {
     e2ee =
-      store.getState().session.currentRoom.metadata?.room_features
-        .end_to_end_encryption_features;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        .endToEndEncryptionFeatures;
   }
   if (
     typeof e2ee !== 'undefined' &&
-    e2ee.is_enabled &&
-    e2ee.included_whiteboard &&
-    e2ee.encryption_key
+    e2ee.isEnabled &&
+    e2ee.includedWhiteboard &&
+    e2ee.encryptionKey
   ) {
     try {
-      return await encryptMessage(e2ee.encryption_key, msg);
+      return await encryptMessage(e2ee.encryptionKey, msg);
     } catch (e: any) {
       toast('Encryption error: ' + e.message, {
         type: 'error',

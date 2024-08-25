@@ -85,12 +85,12 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
   uploaderWhiteboardWidth = 1160,
 ) => {
   const files: Array<IWhiteboardFile> = [];
-  for (let i = 0; i < whiteboard.total_pages; i++) {
+  for (let i = 0; i < whiteboard.totalPages; i++) {
     const fileName = 'page_' + (i + 1) + '.png';
     const file: IWhiteboardFile = {
       id: randomString(),
       currentPage: i + 1,
-      filePath: whiteboard.file_path + '/' + fileName,
+      filePath: whiteboard.filePath + '/' + fileName,
       fileName,
       uploaderWhiteboardHeight,
       uploaderWhiteboardWidth,
@@ -100,10 +100,10 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
   }
 
   const newFile: IWhiteboardOfficeFile = {
-    fileId: whiteboard.whiteboard_file_id,
-    fileName: whiteboard.file_name,
-    filePath: whiteboard.file_path,
-    totalPages: whiteboard.total_pages,
+    fileId: whiteboard.whiteboardFileId,
+    fileName: whiteboard.fileName,
+    filePath: whiteboard.filePath,
+    totalPages: whiteboard.totalPages,
     pageFiles: JSON.stringify(files),
   };
 

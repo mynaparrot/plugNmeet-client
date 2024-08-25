@@ -5,15 +5,15 @@ import { RootState, useAppSelector } from '../../store';
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 const linkSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.link,
+    state.session.currentRoom.metadata?.roomFeatures
+      .displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.link,
 );
 
 const DisplayExternalLink = () => {

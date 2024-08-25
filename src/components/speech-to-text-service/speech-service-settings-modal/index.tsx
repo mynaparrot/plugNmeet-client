@@ -14,8 +14,8 @@ import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 
 const speechServiceFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.room_features,
-  (room_features) => room_features?.speech_to_text_translation_features,
+  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
+  (room_features) => room_features?.speechToTextTranslationFeatures,
 );
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();
@@ -31,19 +31,19 @@ const SpeechServiceSettingsModal = () => {
     useState<string>('');
 
   useEffect(() => {
-    if (speechService?.allowed_speech_langs) {
-      setSelectedSpeechLangs(speechService.allowed_speech_langs);
+    if (speechService?.allowedSpeechLangs) {
+      setSelectedSpeechLangs(speechService.allowedSpeechLangs);
     }
-    if (speechService?.allowed_speech_users) {
-      setSelectedSpeechUsers(speechService.allowed_speech_users);
+    if (speechService?.allowedSpeechUsers) {
+      setSelectedSpeechUsers(speechService.allowedSpeechUsers);
     }
-    if (speechService?.allowed_trans_langs) {
-      setSelectedTransLangs(speechService.allowed_trans_langs);
+    if (speechService?.allowedTransLangs) {
+      setSelectedTransLangs(speechService.allowedTransLangs);
     }
-    if (speechService?.default_subtitle_lang) {
-      setSelectedDefaultSubtitleLang(speechService.default_subtitle_lang);
+    if (speechService?.defaultSubtitleLang) {
+      setSelectedDefaultSubtitleLang(speechService.defaultSubtitleLang);
     }
-    setEnableTranslation(speechService?.is_enabled_translation ?? false);
+    setEnableTranslation(speechService?.isEnabledTranslation ?? false);
   }, [speechService]);
 
   const enableOrUpdateService = async () => {
@@ -230,7 +230,7 @@ const SpeechServiceSettingsModal = () => {
                   />
                 </div>
                 <div className="py-3 bg-gray-50 dark:bg-transparent text-right mt-4">
-                  {!speechService?.is_enabled ? (
+                  {!speechService?.isEnabled ? (
                     <button
                       className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
                       onClick={() => enableOrUpdateService()}
@@ -238,7 +238,7 @@ const SpeechServiceSettingsModal = () => {
                       {t('speech-services.enable-service')}
                     </button>
                   ) : null}
-                  {speechService?.is_enabled ? (
+                  {speechService?.isEnabled ? (
                     <>
                       <button
                         className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none ltr:mr-2 rtl:ml-2"

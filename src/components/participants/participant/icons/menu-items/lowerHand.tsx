@@ -46,7 +46,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     );
   };
 
-  return <>{participant?.metadata.raised_hand ? render() : null}</>;
+  return <>{participant?.metadata.raisedHand ? render() : null}</>;
 };
 
 export default LowerHandMenuItem;

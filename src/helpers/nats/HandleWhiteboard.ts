@@ -74,17 +74,17 @@ export default class HandleWhiteboard {
       this.checkedE2EE = true;
 
       this._e2eeFeatures =
-        store.getState().session.currentRoom.metadata?.room_features.end_to_end_encryption_features;
+        store.getState().session.currentRoom.metadata?.roomFeatures.endToEndEncryptionFeatures;
     }
 
     if (
       typeof this._e2eeFeatures !== 'undefined' &&
-      this._e2eeFeatures.is_enabled &&
-      this._e2eeFeatures.included_whiteboard &&
-      this._e2eeFeatures.encryption_key
+      this._e2eeFeatures.isEnabled &&
+      this._e2eeFeatures.includedWhiteboard &&
+      this._e2eeFeatures.encryptionKey
     ) {
       try {
-        return await decryptMessage(this._e2eeFeatures.encryption_key, msg);
+        return await decryptMessage(this._e2eeFeatures.encryptionKey, msg);
       } catch (e: any) {
         toast('Decryption error: ' + e.message, {
           type: 'error',
@@ -99,6 +99,6 @@ export default class HandleWhiteboard {
 
   private isCurrentUserPresenter() {
     const session = store.getState().session;
-    return session.currentUser?.metadata?.is_presenter;
+    return session.currentUser?.metadata?.isPresenter;
   }
 }

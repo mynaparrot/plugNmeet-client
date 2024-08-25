@@ -48,10 +48,10 @@ const RaiseHandIcon = () => {
 
   const render = () => {
     const room_features =
-      store.getState().session.currentRoom.metadata?.room_features;
+      store.getState().session.currentRoom.metadata?.roomFeatures;
     if (
-      typeof room_features?.allow_raise_hand !== 'undefined' &&
-      room_features?.allow_raise_hand === false
+      typeof room_features?.allowRaiseHand !== 'undefined' &&
+      room_features?.allowRaiseHand === false
     ) {
       return null;
     }

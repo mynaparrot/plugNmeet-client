@@ -28,15 +28,15 @@ export interface ICurrentUser {
 }
 
 export interface ICurrentUserMetadata {
-  profile_pic?: string;
-  is_admin: boolean;
-  record_webcam?: boolean;
-  is_presenter: boolean;
-  raised_hand: boolean;
-  wait_for_approval: boolean;
-  preferred_lang?: string;
-  lock_settings: ILockSettings;
-  metadata_id?: string;
+  profilePic?: string;
+  isAdmin: boolean;
+  recordWebcam?: boolean;
+  isPresenter: boolean;
+  raisedHand: boolean;
+  waitForApproval: boolean;
+  preferredLang?: string;
+  lockSettings: ILockSettings;
+  metadataId?: string;
 }
 
 export interface ICurrentRoom {
@@ -46,77 +46,77 @@ export interface ICurrentRoom {
 }
 
 export interface IRoomMetadata {
-  room_title: string;
-  welcome_message?: string;
-  is_recording: boolean;
-  is_active_rtmp: boolean;
-  is_breakout_room: boolean;
-  started_at: string;
-  logout_url?: string;
-  room_features: IRoomFeatures;
+  roomTitle: string;
+  welcomeMessage?: string;
+  isRecording: boolean;
+  isActiveRtmp: boolean;
+  isBreakoutRoom: boolean;
+  startedAt: string;
+  logoutUrl?: string;
+  roomFeatures: IRoomFeatures;
   default_lock_settings?: ILockSettings;
   copyright_conf: ICopyright_conf;
-  metadata_id?: string;
+  metadataId?: string;
 }
 
 interface IRoomFeatures {
-  allow_webcams: boolean;
-  mute_on_start: boolean;
-  allow_screen_share: boolean;
-  allow_rtmp: boolean;
-  allow_view_other_webcams: boolean;
-  allow_view_other_users_list: boolean;
-  admin_only_webcams: boolean;
-  allow_polls: boolean;
-  room_duration: string;
-  allow_virtual_bg?: boolean;
-  allow_raise_hand?: boolean;
-  recording_features: IRecordingFeatures;
-  chat_features: IChatFeatures;
-  shared_note_pad_features: ISharedNotepadFeatures;
-  whiteboard_features: IWhiteboardFeatures;
-  external_media_player_features: IExternalMediaPlayerFeatures;
-  waiting_room_features: IWaitingRoomFeatures;
-  breakout_room_features: IBreakoutRoomFeatures;
-  display_external_link_features: IDisplayExternalLinkFeatures;
-  ingress_features: IIngressFeatures;
-  speech_to_text_translation_features: SpeechToTextTranslationFeatures;
-  end_to_end_encryption_features: EndToEndEncryptionFeatures;
+  allowWebcams: boolean;
+  muteOnStart: boolean;
+  allowScreenShare: boolean;
+  allowRtmp: boolean;
+  allowViewOtherWebcams: boolean;
+  allowViewOtherUsersList: boolean;
+  adminOnlyWebcams: boolean;
+  allowPolls: boolean;
+  roomDuration: string;
+  allowVirtualBg?: boolean;
+  allowRaiseHand?: boolean;
+  recordingFeatures: IRecordingFeatures;
+  chatFeatures: IChatFeatures;
+  sharedNotePadFeatures: ISharedNotepadFeatures;
+  whiteboardFeatures: IWhiteboardFeatures;
+  externalMediaPlayerFeatures: IExternalMediaPlayerFeatures;
+  waitingRoomFeatures: IWaitingRoomFeatures;
+  breakoutRoomFeatures: IBreakoutRoomFeatures;
+  displayExternalLinkFeatures: IDisplayExternalLinkFeatures;
+  ingressFeatures: IIngressFeatures;
+  speechToTextTranslationFeatures: SpeechToTextTranslationFeatures;
+  endToEndEncryptionFeatures: EndToEndEncryptionFeatures;
 }
 
 export interface IRecordingFeatures {
-  is_allow: boolean;
-  is_allow_cloud: boolean;
-  enable_auto_cloud_recording: boolean;
-  is_allow_local: boolean;
-  only_record_admin_webcams: boolean;
+  isAllow: boolean;
+  isAllowCloud: boolean;
+  enableAutoCloudRecording: boolean;
+  isAllowLocal: boolean;
+  onlyRecordAdminWebcams: boolean;
 }
 
 interface IChatFeatures {
-  allow_chat: boolean;
-  allow_file_upload: boolean;
-  allowed_file_types?: Array<string>;
-  max_file_size?: string;
+  allowChat: boolean;
+  allowFileUpload: boolean;
+  allowedFileTypes?: Array<string>;
+  maxFileSize?: string;
 }
 
 interface ISharedNotepadFeatures {
-  allowed_shared_note_pad: boolean;
-  is_active: boolean;
+  allowedSharedNotePad: boolean;
+  isActive: boolean;
   visible: boolean;
-  node_id?: string;
+  nodeId?: string;
   host?: string;
-  note_pad_id?: string;
-  read_only_pad_id?: string;
+  notePadId?: string;
+  readOnlyPadId?: string;
 }
 
 export interface IWhiteboardFeatures {
-  allowed_whiteboard: boolean;
+  allowedWhiteboard: boolean;
   visible: boolean;
-  preload_file?: string;
-  whiteboard_file_id: string;
-  file_name: string;
-  file_path: string;
-  total_pages: number;
+  preloadFile?: string;
+  whiteboardFileId: string;
+  fileName: string;
+  filePath: string;
+  totalPages: number;
 }
 
 interface ILockSettings {
@@ -142,28 +142,28 @@ export interface IRTMPBroadcasting {
 }
 
 export interface IExternalMediaPlayerFeatures {
-  allowed_external_media_player: boolean;
-  is_active: boolean;
-  shared_by?: string;
+  allowedExternalMediaPlayer: boolean;
+  isActive: boolean;
+  sharedBy?: string;
   url?: string;
 }
 
 export interface IWaitingRoomFeatures {
-  is_active: boolean;
-  waiting_room_msg: string;
+  isActive: boolean;
+  waitingRoomMsg: string;
 }
 
 export interface IBreakoutRoomFeatures {
-  is_allow: boolean;
-  is_active: boolean;
-  allowed_number_rooms: number;
+  isAllow: boolean;
+  isActive: boolean;
+  allowedNumberRooms: number;
 }
 
 export interface IDisplayExternalLinkFeatures {
-  is_allow: boolean;
-  is_active: boolean;
+  isAllow: boolean;
+  isActive: boolean;
   link?: string;
-  shared_by?: string;
+  sharedBy?: string;
 }
 
 export interface ICopyright_conf {
@@ -172,27 +172,27 @@ export interface ICopyright_conf {
 }
 
 export interface IIngressFeatures {
-  is_allow: boolean;
-  input_type?: number;
+  isAllow: boolean;
+  inputType?: number;
   url?: string;
-  stream_key?: string;
+  streamKey?: string;
 }
 
 export interface SpeechToTextTranslationFeatures {
-  is_allow: boolean;
-  is_allow_translation: boolean;
-  is_enabled: boolean;
-  is_enabled_translation: boolean;
-  max_num_tran_langs_allow_selecting: number;
-  allowed_speech_langs?: string[];
-  allowed_speech_users?: string[];
-  allowed_trans_langs?: string[];
-  default_subtitle_lang?: string;
+  isAllow: boolean;
+  isAllowTranslation: boolean;
+  isEnabled: boolean;
+  isEnabledTranslation: boolean;
+  maxNumTranLangsAllowSelecting: number;
+  allowedSpeechLangs?: string[];
+  allowedSpeechUsers?: string[];
+  allowedTransLangs?: string[];
+  defaultSubtitleLang?: string;
 }
 
 export interface EndToEndEncryptionFeatures {
-  is_enabled: boolean;
-  included_chat_messages: boolean;
-  included_whiteboard: boolean;
-  encryption_key?: string;
+  isEnabled: boolean;
+  includedChatMessages: boolean;
+  includedWhiteboard: boolean;
+  encryptionKey?: string;
 }

@@ -42,15 +42,15 @@ const isActiveWhiteboardSelector = createSelector(
 );
 const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .external_media_player_features,
-  (external_media_player_features) => external_media_player_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .externalMediaPlayerFeatures,
+  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
 );
 const isActiveDisplayExternalLinkSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      .displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 const screenHeightSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -99,7 +99,7 @@ const MainArea = () => {
     const metadata = store.getState().session.currentRoom
       .metadata as IRoomMetadata;
 
-    if (!metadata.room_features?.chat_features.allow_chat) {
+    if (!metadata.roomFeatures?.chatFeatures.allowChat) {
       setAllowChat(false);
       dispatch(updateIsActiveChatPanel(false));
     }

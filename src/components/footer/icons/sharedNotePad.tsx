@@ -21,13 +21,13 @@ const isActiveSharedNotePadSelector = createSelector(
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 const isSharedNotepadVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.visible,
+    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.visible,
 );
 
 const SharedNotePadIcon = () => {
@@ -39,7 +39,7 @@ const SharedNotePadIcon = () => {
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
   const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
   const [initiated, setInitiated] = useState<boolean>(false);
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const SharedNotePadIcon = () => {
 
     if (
       !initiated &&
-      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+      currentRoom.metadata?.roomFeatures.sharedNotePadFeatures.visible
     ) {
       setInitiated(true);
       return;
@@ -103,7 +103,7 @@ const SharedNotePadIcon = () => {
 
     if (
       isActiveSharedNotePad &&
-      !currentRoom.metadata?.room_features.shared_note_pad_features.visible
+      !currentRoom.metadata?.roomFeatures.sharedNotePadFeatures.visible
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,
@@ -115,7 +115,7 @@ const SharedNotePadIcon = () => {
       }, 500);
     } else if (
       !isActiveSharedNotePad &&
-      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+      currentRoom.metadata?.roomFeatures.sharedNotePadFeatures.visible
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,

@@ -36,7 +36,7 @@ const FromElems = () => {
   const preTotalRooms = useStorePreviousInt(totalRooms);
   const [roomDuration, setRoomDuration] = useState<number>(15);
   const [welcomeMsg, setWelcomeMsg] = useState<string>(
-    store.getState().session.currentRoom.metadata?.welcome_message ?? '',
+    store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
   );
   const [rooms, setRooms] = useState<Array<RoomType>>();
   const [users, setUsers] = useState<Array<UserType>>([]);
@@ -148,8 +148,8 @@ const FromElems = () => {
 
   const renderBreakoutRoomNumbers = () => {
     const max =
-      store.getState().session.currentRoom.metadata?.room_features
-        ?.breakout_room_features?.allowed_number_rooms ?? 6;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.breakoutRoomFeatures?.allowedNumberRooms ?? 6;
 
     const options: Array<JSX.Element> = [];
     for (let i = 0; i < max; i++) {

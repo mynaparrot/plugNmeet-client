@@ -26,76 +26,76 @@ const initialState: ISession = {
     sid: '',
     room_id: '',
     metadata: {
-      room_title: 'plugNmeet',
-      is_recording: false,
-      is_active_rtmp: false,
-      is_breakout_room: false,
-      started_at: Date.now().toString(),
-      room_features: {
-        allow_webcams: true,
-        mute_on_start: false,
-        allow_screen_share: true,
-        allow_rtmp: true,
-        allow_view_other_webcams: true,
-        allow_view_other_users_list: true,
-        admin_only_webcams: false,
-        allow_polls: true,
-        room_duration: '0',
-        recording_features: {
-          is_allow: true,
-          is_allow_cloud: true,
-          enable_auto_cloud_recording: false,
-          is_allow_local: true,
-          only_record_admin_webcams: false,
+      roomTitle: 'plugNmeet',
+      isRecording: false,
+      isActiveRtmp: false,
+      isBreakoutRoom: false,
+      startedAt: Date.now().toString(),
+      roomFeatures: {
+        allowWebcams: true,
+        muteOnStart: false,
+        allowScreenShare: true,
+        allowRtmp: true,
+        allowViewOtherWebcams: true,
+        allowViewOtherUsersList: true,
+        adminOnlyWebcams: false,
+        allowPolls: true,
+        roomDuration: '0',
+        recordingFeatures: {
+          isAllow: true,
+          isAllowCloud: true,
+          enableAutoCloudRecording: false,
+          isAllowLocal: true,
+          onlyRecordAdminWebcams: false,
         },
-        chat_features: {
-          allow_chat: true,
-          allow_file_upload: true,
+        chatFeatures: {
+          allowChat: true,
+          allowFileUpload: true,
         },
-        shared_note_pad_features: {
-          allowed_shared_note_pad: false,
-          is_active: false,
+        sharedNotePadFeatures: {
+          allowedSharedNotePad: false,
+          isActive: false,
           visible: false,
         },
-        whiteboard_features: {
-          allowed_whiteboard: true,
+        whiteboardFeatures: {
+          allowedWhiteboard: true,
           visible: false,
-          whiteboard_file_id: 'default',
-          file_name: 'default',
-          file_path: 'default',
-          total_pages: 10,
+          whiteboardFileId: 'default',
+          fileName: 'default',
+          filePath: 'default',
+          totalPages: 10,
         },
-        external_media_player_features: {
-          allowed_external_media_player: true,
-          is_active: false,
+        externalMediaPlayerFeatures: {
+          allowedExternalMediaPlayer: true,
+          isActive: false,
         },
-        waiting_room_features: {
-          is_active: false,
-          waiting_room_msg: '',
+        waitingRoomFeatures: {
+          isActive: false,
+          waitingRoomMsg: '',
         },
-        breakout_room_features: {
-          is_allow: true,
-          is_active: false,
-          allowed_number_rooms: 6,
+        breakoutRoomFeatures: {
+          isAllow: true,
+          isActive: false,
+          allowedNumberRooms: 6,
         },
-        display_external_link_features: {
-          is_allow: true,
-          is_active: false,
+        displayExternalLinkFeatures: {
+          isAllow: true,
+          isActive: false,
         },
-        ingress_features: {
-          is_allow: false,
+        ingressFeatures: {
+          isAllow: false,
         },
-        speech_to_text_translation_features: {
-          is_allow: false,
-          is_allow_translation: false,
-          is_enabled: false,
-          is_enabled_translation: false,
-          max_num_tran_langs_allow_selecting: 2,
+        speechToTextTranslationFeatures: {
+          isAllow: false,
+          isAllowTranslation: false,
+          isEnabled: false,
+          isEnabledTranslation: false,
+          maxNumTranLangsAllowSelecting: 2,
         },
-        end_to_end_encryption_features: {
-          is_enabled: false,
-          included_chat_messages: false,
-          included_whiteboard: false,
+        endToEndEncryptionFeatures: {
+          isEnabled: false,
+          includedChatMessages: false,
+          includedWhiteboard: false,
         },
       },
       copyright_conf: {
@@ -149,8 +149,8 @@ const sessionSlice = createSlice({
     ) => {
       if (state.currentRoom) {
         state.currentRoom.metadata = action.payload;
-        state.isActiveRtmpBroadcasting = action.payload.is_active_rtmp ?? false;
-        state.isActiveRecording = action.payload.is_recording ?? false;
+        state.isActiveRtmpBroadcasting = action.payload.isActiveRtmp ?? false;
+        state.isActiveRecording = action.payload.isRecording ?? false;
       }
     },
     updateTotalVideoSubscribers: (state, action: PayloadAction<number>) => {
@@ -161,7 +161,7 @@ const sessionSlice = createSlice({
     },
     updateMuteOnStart: (state, action: PayloadAction<boolean>) => {
       if (state.currentRoom.metadata) {
-        state.currentRoom.metadata.room_features.mute_on_start = action.payload;
+        state.currentRoom.metadata.roomFeatures.muteOnStart = action.payload;
       }
     },
     updateUserDeviceType: (state, action: PayloadAction<UserDeviceType>) => {

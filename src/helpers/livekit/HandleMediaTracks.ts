@@ -127,16 +127,16 @@ export default class HandleMediaTracks {
       // only admin user can see all webcams
       // other user can see only admin users' webcams.
       if (
-        (this.roomMetadata.room_features?.admin_only_webcams ||
-          !this.roomMetadata.room_features?.allow_view_other_webcams) &&
-        !this.currentUser?.metadata?.is_admin
+        (this.roomMetadata.roomFeatures?.adminOnlyWebcams ||
+          !this.roomMetadata.roomFeatures?.allowViewOtherWebcams) &&
+        !this.currentUser?.metadata?.isAdmin
       ) {
         if (participant.metadata && !isEmpty(participant.metadata)) {
           const metadata: ICurrentUserMetadata = JSON.parse(
             participant.metadata,
           );
           // we'll check if user is an admin or not. Otherwise no webcam will show up.
-          if (!metadata.is_admin) {
+          if (!metadata.isAdmin) {
             return;
           }
         }
@@ -148,13 +148,13 @@ export default class HandleMediaTracks {
           const metadata: ICurrentUserMetadata = JSON.parse(
             participant.metadata,
           );
-          if (!metadata.record_webcam) {
+          if (!metadata.recordWebcam) {
             // if record feature is disable then we won't load webcams
             return;
           } else if (
-            !metadata.is_admin &&
-            this.roomMetadata.room_features.recording_features
-              .only_record_admin_webcams
+            !metadata.isAdmin &&
+            this.roomMetadata.roomFeatures.recordingFeatures
+              .onlyRecordAdminWebcams
           ) {
             // if room setting was enable to record webcam only for admin
             // then we'll simply won't load webcams

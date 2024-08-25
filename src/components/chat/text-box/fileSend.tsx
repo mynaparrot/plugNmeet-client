@@ -30,16 +30,15 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
   const conn = getNatsConn();
 
   const chat_features =
-    store.getState().session.currentRoom.metadata?.room_features.chat_features;
+    store.getState().session.currentRoom.metadata?.roomFeatures.chatFeatures;
   const accept =
-    chat_features?.allowed_file_types?.map((type) => '.' + type).join(',') ??
-    '*';
-  const maxFileSize = chat_features?.max_file_size
-    ? chat_features?.max_file_size
+    chat_features?.allowedFileTypes?.map((type) => '.' + type).join(',') ?? '*';
+  const maxFileSize = chat_features?.maxFileSize
+    ? chat_features?.maxFileSize
     : undefined;
 
   const { isUploading, result } = useResumableFilesUpload({
-    allowedFileTypes: chat_features?.allowed_file_types ?? [],
+    allowedFileTypes: chat_features?.allowedFileTypes ?? [],
     maxFileSize,
     files,
   });

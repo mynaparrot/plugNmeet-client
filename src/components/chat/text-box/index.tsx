@@ -19,12 +19,12 @@ interface ITextBoxAreaProps {
 }
 
 const isLockChatSendMsgSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
   (lock_settings) => lock_settings?.lock_chat_send_message,
 );
 
 const isLockSendFileSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
   (lock_settings) => lock_settings?.lock_chat_file_share,
 );
 
@@ -42,8 +42,8 @@ const TextBoxArea = ({
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
   const e2ee =
-    store.getState().session.currentRoom.metadata?.room_features
-      .end_to_end_encryption_features;
+    store.getState().session.currentRoom.metadata?.roomFeatures
+      .endToEndEncryptionFeatures;
   const { t } = useTranslation();
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
@@ -55,7 +55,7 @@ const TextBoxArea = ({
     const metadata = store.getState().session.currentRoom
       .metadata as IRoomMetadata;
 
-    if (!metadata.room_features.chat_features.allow_file_upload) {
+    if (!metadata.roomFeatures.chatFeatures.allowFileUpload) {
       setShowSendFile(false);
     }
   }, []);
@@ -82,7 +82,7 @@ const TextBoxArea = ({
       store.getState().session.currentRoom.metadata?.default_lock_settings
         ?.lock_chat_file_share;
 
-    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (lock_chat_send_message && !isAdmin) {
       if (isLockChatSendMsg !== false) {
@@ -127,12 +127,12 @@ const TextBoxArea = ({
 
     if (
       typeof e2ee !== 'undefined' &&
-      e2ee.is_enabled &&
-      e2ee.included_chat_messages &&
-      e2ee.encryption_key
+      e2ee.isEnabled &&
+      e2ee.includedChatMessages &&
+      e2ee.encryptionKey
     ) {
       try {
-        msg = await encryptMessage(e2ee.encryption_key, msg);
+        msg = await encryptMessage(e2ee.encryptionKey, msg);
       } catch (e: any) {
         toast('Encryption error: ' + e.message, {
           type: 'error',

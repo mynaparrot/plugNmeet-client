@@ -71,13 +71,13 @@ export const openConnectionWithAzure = (
   const sl = supportedSpeechToTextLangs.filter((l) => l.code === speechLang)[0];
   let transLangs: Array<string> = [];
 
-  if (speechService.is_enabled_translation) {
-    if (speechService.allowed_trans_langs?.length) {
-      transLangs = speechService.allowed_trans_langs.filter(
+  if (speechService.isEnabledTranslation) {
+    if (speechService.allowedTransLangs?.length) {
+      transLangs = speechService.allowedTransLangs.filter(
         (l) => l !== sl.locale,
       );
     }
-    speechService.allowed_speech_langs
+    speechService.allowedSpeechLangs
       ?.filter((l) => l !== sl.code)
       .forEach((s) => {
         const speechObj = supportedSpeechToTextLangs.filter(
