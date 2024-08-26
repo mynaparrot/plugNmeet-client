@@ -1,3 +1,5 @@
+import { type RoomMetadata, UserMetadata } from 'plugnmeet-protocol-js';
+
 export enum UserDeviceType {
   MOBILE = 'mobile',
   TABLET = 'tablet',
@@ -22,22 +24,13 @@ export interface ISession {
 export interface ICurrentUser {
   sid: string;
   userId: string;
-  name?: string;
+  name: string;
   isRecorder?: boolean;
   metadata?: ICurrentUserMetadata;
 }
 
-export interface ICurrentUserMetadata {
-  profilePic?: string;
-  isAdmin: boolean;
-  recordWebcam?: boolean;
-  isPresenter: boolean;
-  raisedHand: boolean;
-  waitForApproval: boolean;
-  preferredLang?: string;
-  lockSettings: ILockSettings;
-  metadataId?: string;
-}
+export type IRoomMetadata = RoomMetadata;
+export type ICurrentUserMetadata = UserMetadata;
 
 export interface ICurrentRoom {
   sid: string;
@@ -45,20 +38,38 @@ export interface ICurrentRoom {
   metadata?: IRoomMetadata;
 }
 
-export interface IRoomMetadata {
-  roomTitle: string;
-  welcomeMessage?: string;
-  isRecording: boolean;
-  isActiveRtmp: boolean;
-  isBreakoutRoom: boolean;
-  startedAt: string;
-  logoutUrl?: string;
-  roomFeatures: IRoomFeatures;
-  defaultLockSettings?: ILockSettings;
-  copyrightConf: ICopyright_conf;
-  metadataId?: string;
+export interface IScreenSharing {
+  isActive: boolean;
+  sharedBy: string;
 }
 
+/*export interface ICurrentUserMetadata {
+  profilePic?: string;
+  isAdmin: boolean;
+  recordWebcam?: boolean;
+  isPresenter: boolean;
+  raisedHand: boolean;
+  waitForApproval: boolean;
+  preferredLang?: string;
+  lockSettings: LockSettings;
+  metadataId?: string;
+}*/
+
+// export interface IRoomMetadata {
+//   roomTitle: string;
+//   welcomeMessage?: string;
+//   isRecording: boolean;
+//   isActiveRtmp: boolean;
+//   isBreakoutRoom: boolean;
+//   startedAt: string;
+//   logoutUrl?: string;
+//   roomFeatures: IRoomFeatures;
+//   defaultLockSettings?: ILockSettings;
+//   copyrightConf: ICopyright_conf;
+//   metadataId?: string;
+// }
+
+/*
 interface IRoomFeatures {
   allowWebcams: boolean;
   muteOnStart: boolean;
@@ -131,11 +142,6 @@ interface ILockSettings {
   lockSharedNotepad: boolean;
 }
 
-export interface IScreenSharing {
-  isActive: boolean;
-  sharedBy: string;
-}
-
 export interface IRTMPBroadcasting {
   isActive: boolean;
   sharedBy: string;
@@ -196,3 +202,4 @@ export interface EndToEndEncryptionFeatures {
   includedWhiteboard: boolean;
   encryptionKey?: string;
 }
+*/

@@ -1,6 +1,11 @@
 import { Room, Track } from 'livekit-client';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
+import {
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
+} from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch } from '../../store';
 import {
@@ -21,10 +26,6 @@ import {
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
 import { getNatsConn } from '../nats';
-import {
-  NatsMsgClientToServer,
-  NatsMsgClientToServerEvents,
-} from '../proto/plugnmeet_nats_msg_pb';
 
 const useKeyboardShortcuts = (currentRoom?: Room) => {
   const dispatch = useAppDispatch();
@@ -197,7 +198,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     currentRoom: Room,
   ) => {
     const conn = getNatsConn();
-    const data = new NatsMsgClientToServer();
+    const data = create(NatsMsgClientToServerSchema, {});
 
     if (!isActiveRaisehand) {
       data.event = NatsMsgClientToServerEvents.REQ_RAISE_HAND;

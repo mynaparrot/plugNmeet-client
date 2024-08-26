@@ -1,14 +1,15 @@
 import React from 'react';
 import { toast } from 'react-toastify';
-
-import ConnectNats from './ConnectNats';
+import { fromJsonString } from '@bufbuild/protobuf';
 import {
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
-  NatsSystemNotification,
+  NatsSystemNotificationSchema,
   NatsSystemNotificationTypes,
-} from '../proto/plugnmeet_nats_msg_pb';
-import { GenerateAzureTokenRes } from '../proto/plugnmeet_speech_services_pb';
+  GenerateAzureTokenResSchema,
+} from 'plugnmeet-protocol-js';
+
+import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import {
   updateAzureTokenInfo,
@@ -34,7 +35,7 @@ export default class HandleSystemData {
    * @param data
    */
   public handleNotification = (data: string) => {
-    const nt = NatsSystemNotification.fromJsonString(data);
+    const nt = fromJsonString(NatsSystemNotificationSchema, data);
     switch (nt.type) {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
         toast(i18n.t(nt.msg), {
@@ -67,7 +68,7 @@ export default class HandleSystemData {
   };
 
   public handleAzureToken = (data: string) => {
-    const res = GenerateAzureTokenRes.fromJsonString(data);
+    const res = fromJsonString(GenerateAzureTokenResSchema, data);
     if (res.status && res.token && res.keyId && res.serviceRegion) {
       store.dispatch(
         updateAzureTokenInfo({

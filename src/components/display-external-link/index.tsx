@@ -6,13 +6,13 @@ import { RootState, useAppSelector } from '../../store';
 const isActiveSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .displayExternalLinkFeatures,
+      ?.displayExternalLinkFeatures,
   (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 const linkSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .displayExternalLinkFeatures,
+      ?.displayExternalLinkFeatures,
   (displayExternalLinkFeatures) => displayExternalLinkFeatures?.link,
 );
 

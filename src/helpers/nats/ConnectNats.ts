@@ -11,18 +11,34 @@ import { jetstream, JetStreamClient } from '@nats-io/jetstream';
 import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
 import { toast } from 'react-toastify';
-
 import {
-  ChatMessage,
   MediaServerConnInfo,
   NatsInitialData,
-  NatsKvUserInfo,
   NatsMsgClientToServer,
   NatsMsgClientToServerEvents,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
   NatsSubjects,
-} from '../proto/plugnmeet_nats_msg_pb';
+  DataMsgBodyType,
+  AnalyticsEvents,
+  AnalyticsEventType,
+  NatsMsgClientToServerSchema,
+  NatsMsgServerToClientSchema,
+  ChatMessageSchema,
+  DataChannelMessageSchema,
+  NatsInitialDataSchema,
+  NatsKvUserInfoSchema,
+  AnalyticsDataMsgSchema,
+} from 'plugnmeet-protocol-js';
+import {
+  create,
+  fromBinary,
+  fromJson,
+  fromJsonString,
+  toBinary,
+  toJsonString,
+} from '@bufbuild/protobuf';
+
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
 import { createLivekitConnection } from '../livekit/utils';
@@ -30,21 +46,12 @@ import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 import HandleRoomData from './HandleRoomData';
 import HandleParticipants from './HandleParticipants';
 import HandleDataMessage from './HandleDataMessage';
-import {
-  DataChannelMessage,
-  DataMsgBodyType,
-} from '../proto/plugnmeet_datamessage_pb';
 import HandleWhiteboard from './HandleWhiteboard';
 import HandleChat from './HandleChat';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
-import {
-  AnalyticsDataMsg,
-  AnalyticsEvents,
-  AnalyticsEventType,
-} from '../proto/plugnmeet_analytics_pb';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -169,7 +176,7 @@ export default class ConnectNats {
 
     // request for initial data
     await this.sendMessageToSystemWorker(
-      new NatsMsgClientToServer({
+      create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
       }),
     );
@@ -223,7 +230,7 @@ export default class ConnectNats {
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = NatsMsgServerToClient.fromBinary(m.data);
+        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
         await this.handleSystemEvents(payload);
       } catch (e) {
         const err = e as NatsError;
@@ -246,7 +253,7 @@ export default class ConnectNats {
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = NatsMsgServerToClient.fromBinary(m.data);
+        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
         await this.handleSystemEvents(payload);
       } catch (e) {
         const err = e as NatsError;
@@ -269,7 +276,7 @@ export default class ConnectNats {
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = ChatMessage.fromBinary(m.data);
+        const payload = fromBinary(ChatMessageSchema, m.data);
         payload.id = `${m.info.timestampNanos}`;
         await this.handleChat.handleMsg(payload);
       } catch (e) {
@@ -293,7 +300,7 @@ export default class ConnectNats {
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = DataChannelMessage.fromBinary(m.data);
+        const payload = fromBinary(DataChannelMessageSchema, m.data);
         // whiteboard data should not process by the same sender
         if (payload.fromUserId !== this._userId) {
           if (
@@ -328,7 +335,7 @@ export default class ConnectNats {
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = DataChannelMessage.fromBinary(m.data);
+        const payload = fromBinary(DataChannelMessageSchema, m.data);
         if (
           typeof payload.toUserId !== 'undefined' &&
           payload.toUserId !== this._userId
@@ -403,7 +410,7 @@ export default class ConnectNats {
 
   private startTokenRenewInterval() {
     this.tokenRenewInterval = setInterval(async () => {
-      const msg = new NatsMsgClientToServer({
+      const msg = create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
         msg: this._token,
       });
@@ -414,7 +421,7 @@ export default class ConnectNats {
   private async startPingToServer() {
     const ping = async () => {
       await this.sendMessageToSystemWorker(
-        new NatsMsgClientToServer({
+        create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.PING,
         }),
       );
@@ -429,7 +436,7 @@ export default class ConnectNats {
   private async handleInitialData(msg: string) {
     let data: NatsInitialData;
     try {
-      data = NatsInitialData.fromJsonString(msg);
+      data = fromJsonString(NatsInitialDataSchema, msg);
     } catch (e) {
       this.setErrorStatus(
         i18n.t('notifications.decode-error-title'),
@@ -456,7 +463,7 @@ export default class ConnectNats {
     try {
       const onlineUsers: string[] = JSON.parse(msg);
       for (let i = 0; i < onlineUsers.length; i++) {
-        const user = NatsKvUserInfo.fromJson(onlineUsers[i]);
+        const user = fromJson(NatsKvUserInfoSchema, onlineUsers[i]);
         await this.handleParticipants.addRemoteParticipant(user);
       }
       await this.onAfterUserReady();
@@ -522,7 +529,7 @@ export default class ConnectNats {
 
     const e2eeFeatures =
       this.handleRoomData.roomInfo.metadata?.roomFeatures
-        .endToEndEncryptionFeatures;
+        ?.endToEndEncryptionFeatures;
     if (e2eeFeatures && e2eeFeatures.isEnabled && e2eeFeatures.encryptionKey) {
       if (!isE2EESupported()) {
         this.setErrorStatus(
@@ -557,8 +564,10 @@ export default class ConnectNats {
     try {
       const subject =
         this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
-
-      return await this._js.publish(subject, data.toBinary());
+      return await this._js.publish(
+        subject,
+        toBinary(NatsMsgClientToServerSchema, data),
+      );
     } catch (e: any) {
       console.error(e.message);
       const msg = this.formatError(e);
@@ -579,7 +588,7 @@ export default class ConnectNats {
     }
 
     const isPrivate = to !== 'public';
-    const data = new ChatMessage({
+    const data = create(ChatMessageSchema, {
       fromName: this.handleParticipants.localParticipant.name,
       fromUserId: this.handleParticipants.localParticipant.userId,
       toUserId: to !== 'public' ? to : undefined,
@@ -590,7 +599,7 @@ export default class ConnectNats {
     const subject =
       this._roomId + ':' + this._subjects.chat + '.' + this._userId;
     try {
-      await this._js.publish(subject, data.toBinary());
+      await this._js.publish(subject, toBinary(ChatMessageSchema, data));
     } catch (e: any) {
       console.error(e.message);
       const msg = this.formatError(e);
@@ -614,7 +623,7 @@ export default class ConnectNats {
       return;
     }
 
-    const data = new DataChannelMessage({
+    const data = create(DataChannelMessageSchema, {
       type,
       fromUserId: this.handleParticipants.localParticipant.userId,
       toUserId: to,
@@ -623,7 +632,7 @@ export default class ConnectNats {
     const subject =
       this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
     try {
-      await this._js.publish(subject, data.toBinary());
+      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
     } catch (e: any) {
       console.error(e.message);
       const msg = this.formatError(e);
@@ -647,7 +656,7 @@ export default class ConnectNats {
       return;
     }
 
-    const data = new DataChannelMessage({
+    const data = create(DataChannelMessageSchema, {
       type,
       fromUserId: this.handleParticipants.localParticipant.userId,
       toUserId: to,
@@ -656,7 +665,7 @@ export default class ConnectNats {
     const subject =
       this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
     try {
-      await this._js.publish(subject, data.toBinary());
+      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
     } catch (e: any) {
       console.error(e.message);
       const msg = this.formatError(e);
@@ -672,9 +681,9 @@ export default class ConnectNats {
     event_type: AnalyticsEventType = AnalyticsEventType.USER,
     hset_value?: string,
     event_value_string?: string,
-    event_value_integer?: bigint,
+    event_value_integer?: string,
   ) => {
-    const analyticsMsg = new AnalyticsDataMsg({
+    const analyticsMsg = create(AnalyticsDataMsgSchema, {
       eventType: event_type,
       eventName: event_name,
       roomId: this._roomId,
@@ -684,9 +693,9 @@ export default class ConnectNats {
       eventValueInteger: event_value_integer,
     });
 
-    const data = new NatsMsgClientToServer({
+    const data = create(NatsMsgClientToServerSchema, {
       event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
-      msg: analyticsMsg.toJsonString(),
+      msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
     });
     await this.sendMessageToSystemWorker(data);
   };

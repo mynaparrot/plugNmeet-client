@@ -6,6 +6,8 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
+import { toast } from 'react-toastify';
+import { EndToEndEncryptionFeatures } from 'plugnmeet-protocol-js';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
@@ -17,8 +19,6 @@ import {
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import { encryptMessage } from '../../../helpers/cryptoMessages';
-import { toast } from 'react-toastify';
-import { EndToEndEncryptionFeatures } from '../../../store/slices/interfaces/session';
 import { getNatsConn } from '../../../helpers/nats';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
@@ -215,7 +215,7 @@ const handleEncryption = async (msg: string) => {
   if (!e2ee) {
     e2ee =
       store.getState().session.currentRoom.metadata?.roomFeatures
-        .endToEndEncryptionFeatures;
+        ?.endToEndEncryptionFeatures;
   }
   if (
     typeof e2ee !== 'undefined' &&

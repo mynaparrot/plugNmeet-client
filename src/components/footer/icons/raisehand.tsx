@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
+import {
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
+} from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import { getCurrentRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
-import {
-  NatsMsgClientToServer,
-  NatsMsgClientToServerEvents,
-} from '../../../helpers/proto/plugnmeet_nats_msg_pb';
 
 const isActiveRaisehandSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -32,7 +33,7 @@ const RaiseHandIcon = () => {
 
   const toggleRaiseHand = async () => {
     const conn = getNatsConn();
-    const data = new NatsMsgClientToServer();
+    const data = create(NatsMsgClientToServerSchema, {});
 
     if (!isActiveRaisehand) {
       data.event = NatsMsgClientToServerEvents.REQ_RAISE_HAND;

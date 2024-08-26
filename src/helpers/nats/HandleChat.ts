@@ -1,6 +1,6 @@
+import { ChatMessage, EndToEndEncryptionFeatures } from 'plugnmeet-protocol-js';
+
 import ConnectNats from './ConnectNats';
-import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
-import { ChatMessage } from '../proto/plugnmeet_nats_msg_pb';
 import { store } from '../../store';
 import { decryptMessage } from '../cryptoMessages';
 import { toast } from 'react-toastify';
@@ -95,7 +95,7 @@ export default class HandleChat {
       this.checkedE2EE = true;
 
       this._e2eeFeatures =
-        store.getState().session.currentRoom.metadata?.roomFeatures.endToEndEncryptionFeatures;
+        store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     }
 
     if (

@@ -153,8 +153,8 @@ export default class HandleMediaTracks {
             return;
           } else if (
             !metadata.isAdmin &&
-            this.roomMetadata.roomFeatures.recordingFeatures
-              .onlyRecordAdminWebcams
+            this.roomMetadata.roomFeatures?.recordingFeatures
+              ?.onlyRecordAdminWebcams
           ) {
             // if room setting was enable to record webcam only for admin
             // then we'll simply won't load webcams

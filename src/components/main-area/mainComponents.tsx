@@ -39,14 +39,14 @@ const activateWebcamsViewSelector = createSelector(
 const activateSpeechServiceSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .speechToTextTranslationFeatures,
+      ?.speechToTextTranslationFeatures,
   (speech_to_text_translation_features) =>
     speech_to_text_translation_features?.isEnabled,
 );
 
 const isActiveSharedNotepadSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
   (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 

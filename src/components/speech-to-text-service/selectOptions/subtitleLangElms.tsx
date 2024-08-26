@@ -1,9 +1,9 @@
 import React, { Fragment, useMemo, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { getSubtitleLangs, SupportedLangs } from '../helpers/supportedLangs';
-import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
 
 interface SubtitleLangElmsPros {
   speechService: SpeechToTextTranslationFeatures;

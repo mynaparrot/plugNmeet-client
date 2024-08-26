@@ -21,7 +21,7 @@ const isActiveWhiteboardSelector = createSelector(
 );
 const isWhiteboardVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures.whiteboardFeatures,
+    state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures,
   (whiteboardFeatures) => whiteboardFeatures?.visible,
 );
 
@@ -36,7 +36,7 @@ const WhiteboardIcon = () => {
 
   const allowedWhiteboard =
     store.getState().session.currentRoom.metadata?.roomFeatures
-      .whiteboardFeatures.allowedWhiteboard;
+      ?.whiteboardFeatures?.allowedWhiteboard;
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
@@ -73,7 +73,7 @@ const WhiteboardIcon = () => {
 
     if (
       !initiated &&
-      currentRoom.metadata?.roomFeatures.whiteboardFeatures.visible
+      currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
       setInitiated(true);
       return;
@@ -92,7 +92,7 @@ const WhiteboardIcon = () => {
 
     if (
       isActiveWhiteboard &&
-      !currentRoom.metadata?.roomFeatures.whiteboardFeatures.visible
+      !currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,
@@ -104,7 +104,7 @@ const WhiteboardIcon = () => {
       }, 500);
     } else if (
       !isActiveWhiteboard &&
-      currentRoom.metadata?.roomFeatures.whiteboardFeatures.visible
+      currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,

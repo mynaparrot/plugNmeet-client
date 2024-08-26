@@ -17,7 +17,7 @@ const TransLangsElm = ({
   const { t } = useTranslation();
   const max =
     store.getState().session.currentRoom.metadata?.roomFeatures
-      .speechToTextTranslationFeatures.maxNumTranLangsAllowSelecting || 2;
+      ?.speechToTextTranslationFeatures?.maxNumTranLangsAllowSelecting || 2;
 
   const [selectedItems, setSelectedItems] =
     useState<string[]>(selectedTransLangs);

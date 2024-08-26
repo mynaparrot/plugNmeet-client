@@ -30,7 +30,7 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
   const conn = getNatsConn();
 
   const chat_features =
-    store.getState().session.currentRoom.metadata?.roomFeatures.chatFeatures;
+    store.getState().session.currentRoom.metadata?.roomFeatures?.chatFeatures;
   const accept =
     chat_features?.allowedFileTypes?.map((type) => '.' + type).join(',') ?? '*';
   const maxFileSize = chat_features?.maxFileSize

@@ -53,13 +53,13 @@ const showRtmpModalSelector = createSelector(
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
   (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .externalMediaPlayerFeatures,
+      ?.externalMediaPlayerFeatures,
   (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
 );
 const showExternalMediaPlayerModalSelector = createSelector(
@@ -77,7 +77,7 @@ const showManageBreakoutRoomModalSelector = createSelector(
 const isActiveDisplayExternalLinkSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .displayExternalLinkFeatures,
+      ?.displayExternalLinkFeatures,
   (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 const showDisplayExternalLinkModalModalSelector = createSelector(
@@ -157,7 +157,7 @@ const MenusIcon = () => {
   const toggleSharedNotepad = async () => {
     const host =
       store.getState().session.currentRoom.metadata?.roomFeatures
-        .sharedNotePadFeatures.host;
+        ?.sharedNotePadFeatures?.host;
 
     if (!host && !sharedNotepadStatus) {
       const r = await sendAPIRequest(
@@ -375,7 +375,7 @@ const MenusIcon = () => {
                       </button>
                     </Menu.Item>
                   </div>
-                  {roomFeatures?.sharedNotePadFeatures.allowedSharedNotePad ? (
+                  {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -391,7 +391,7 @@ const MenusIcon = () => {
                     </div>
                   ) : null}
                   {roomFeatures?.externalMediaPlayerFeatures
-                    .allowedExternalMediaPlayer ? (
+                    ?.allowedExternalMediaPlayer ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -421,7 +421,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.waitingRoomFeatures.isActive ? (
+                  {roomFeatures?.waitingRoomFeatures?.isActive ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -434,7 +434,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.speechToTextTranslationFeatures.isAllow ? (
+                  {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -447,7 +447,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.breakoutRoomFeatures.isAllow ? (
+                  {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button

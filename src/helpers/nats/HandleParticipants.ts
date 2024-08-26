@@ -4,16 +4,19 @@ import {
   RemoteTrackPublication,
   Track,
 } from 'livekit-client';
+import {
+  NatsKvUserInfo,
+  NatsKvUserInfoSchema,
+  NatsUserMetadataUpdateSchema,
+  UserMetadataSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromJsonString } from '@bufbuild/protobuf';
 
 import ConnectNats from './ConnectNats';
 import {
   ICurrentUser,
   ICurrentUserMetadata,
 } from '../../store/slices/interfaces/session';
-import {
-  NatsKvUserInfo,
-  NatsUserMetadataUpdate,
-} from '../proto/plugnmeet_nats_msg_pb';
 import { store } from '../../store';
 import {
   addCurrentUser,
@@ -57,14 +60,17 @@ export default class HandleParticipants {
     return this._localParticipant;
   }
 
-  private decodeMetadata(data: string) {
+  private decodeMetadata(data: string): ICurrentUserMetadata {
     try {
-      const metadata: ICurrentUserMetadata = JSON.parse(data);
+      const metadata: ICurrentUserMetadata = fromJsonString(
+        UserMetadataSchema,
+        data,
+      );
       return metadata;
     } catch (e) {}
 
     // default
-    return {
+    return create(UserMetadataSchema, {
       isAdmin: false,
       isPresenter: false,
       raisedHand: false,
@@ -80,7 +86,7 @@ export default class HandleParticipants {
         lockWhiteboard: true,
         lockSharedNotepad: true,
       },
-    };
+    });
   }
 
   public addLocalParticipantInfo = async (info: NatsKvUserInfo) => {
@@ -103,7 +109,7 @@ export default class HandleParticipants {
     let participant: NatsKvUserInfo;
     if (typeof p === 'string') {
       try {
-        participant = NatsKvUserInfo.fromJsonString(p);
+        participant = fromJsonString(NatsKvUserInfoSchema, p);
       } catch (e) {
         console.error(e);
         return;
@@ -168,7 +174,7 @@ export default class HandleParticipants {
 
   public handleParticipantMetadataUpdate = async (d: string) => {
     try {
-      const data = NatsUserMetadataUpdate.fromJsonString(d);
+      const data = fromJsonString(NatsUserMetadataUpdateSchema, d);
       await this.updateParticipantMetadata(data.userId, data.metadata);
     } catch (e) {
       console.error(e);
@@ -216,7 +222,7 @@ export default class HandleParticipants {
   public handleParticipantDisconnected = (data: string) => {
     let participant: NatsKvUserInfo;
     try {
-      participant = NatsKvUserInfo.fromJsonString(data);
+      participant = fromJsonString(NatsKvUserInfoSchema, data);
     } catch (e) {
       console.error(e);
       return;
@@ -247,7 +253,7 @@ export default class HandleParticipants {
   public handleParticipantOffline = (data: string) => {
     let p: NatsKvUserInfo;
     try {
-      p = NatsKvUserInfo.fromJsonString(data);
+      p = fromJsonString(NatsKvUserInfoSchema, data);
     } catch (e) {
       console.error(e);
       return;

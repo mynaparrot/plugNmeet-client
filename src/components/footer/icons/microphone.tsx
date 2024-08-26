@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
-import { proto3 } from '@bufbuild/protobuf';
+import { proto3 } from '@bufbuild/protobufv1';
 import { isEmpty } from 'lodash';
 
 import {
@@ -56,7 +56,7 @@ const MicrophoneIcon = () => {
   const session = store.getState().session;
   const showTooltip = session.userDeviceType === 'desktop';
   const muteOnStart =
-    session.currentRoom.metadata?.roomFeatures.muteOnStart ?? false;
+    session.currentRoom.metadata?.roomFeatures?.muteOnStart ?? false;
 
   const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
   const isActiveMicrophone = useAppSelector(isActiveMicrophoneSelector);
@@ -133,7 +133,7 @@ const MicrophoneIcon = () => {
             AnalyticsEventType.USER,
             undefined,
             undefined,
-            BigInt(cal),
+            cal.toString(),
           );
         }
       } else {
@@ -143,7 +143,7 @@ const MicrophoneIcon = () => {
           AnalyticsEventType.USER,
           undefined,
           undefined,
-          BigInt(1),
+          '1',
         );
       }
     };

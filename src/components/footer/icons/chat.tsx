@@ -42,7 +42,7 @@ const ChatIcon = () => {
   useEffect(() => {
     const metadata = store.getState().session.currentRoom
       .metadata as IRoomMetadata;
-    if (!metadata.roomFeatures?.chatFeatures.allowChat) {
+    if (!metadata.roomFeatures?.chatFeatures?.allowChat) {
       setAllowChat(false);
       dispatch(updateIsActiveChatPanel(false));
     }

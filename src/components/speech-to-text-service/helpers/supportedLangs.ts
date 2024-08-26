@@ -260,7 +260,7 @@ const getSubtitleLangs = (
   if (!speechLangs || !transLangs) {
     const speechService =
       store.getState().session.currentRoom.metadata?.roomFeatures
-        .speechToTextTranslationFeatures;
+        ?.speechToTextTranslationFeatures;
     if (!speechLangs) {
       speechLangs = speechService?.allowedSpeechLangs;
     }

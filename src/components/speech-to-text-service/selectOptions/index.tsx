@@ -6,8 +6,8 @@ import {
   SpeechRecognizer,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
+import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
-import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
 import { store } from '../../../store';
 import SpeechToTextLangElms from './speechToTextLangElms';
 import SubtitleLangElms from './subtitleLangElms';

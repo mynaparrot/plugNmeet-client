@@ -69,7 +69,7 @@ const SpeechToTextService = () => {
     if (isEmpty(selectedSubtitleLang)) {
       const defaultSubtitleLang =
         store.getState().session.currentRoom.metadata?.roomFeatures
-          .speechToTextTranslationFeatures.defaultSubtitleLang;
+          ?.speechToTextTranslationFeatures?.defaultSubtitleLang;
       if (defaultSubtitleLang && !isEmpty(defaultSubtitleLang)) {
         dispatch(updateSelectedSubtitleLang(defaultSubtitleLang));
       }

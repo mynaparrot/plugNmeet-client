@@ -3,10 +3,11 @@ import { Dialog, Switch, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { SpeechToTextTranslationReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { RootState, useAppDispatch, useAppSelector } from '../../../store';
-import { SpeechToTextTranslationReq } from '../../../helpers/proto/plugnmeet_speech_services_pb';
 import { enableOrDisableSpeechService } from '../helpers/apiConnections';
 import SpeechLangsElms from './speechLangsElms';
 import SpeechUsersElms from './speechUsersElms';
@@ -76,7 +77,7 @@ const SpeechServiceSettingsModal = () => {
       return;
     }
 
-    const body = new SpeechToTextTranslationReq({
+    const body = create(SpeechToTextTranslationReqSchema, {
       isEnabled: true,
       allowedSpeechLangs: selectedSpeechLangs,
       allowedSpeechUsers: selectedSpeechUsers,
@@ -102,7 +103,7 @@ const SpeechServiceSettingsModal = () => {
   };
 
   const stopService = async () => {
-    const body = new SpeechToTextTranslationReq({
+    const body = create(SpeechToTextTranslationReqSchema, {
       isEnabled: false,
       allowedSpeechLangs: [],
       allowedSpeechUsers: [],

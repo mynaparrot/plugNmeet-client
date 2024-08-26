@@ -9,13 +9,13 @@ import ReactPlayerComponent from './reactPlayerComponent';
 const isActiveSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .externalMediaPlayerFeatures,
+      ?.externalMediaPlayerFeatures,
   (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
 );
 const playBackUrlSelector = createSelector(
   (state: RootState) =>
     state.session.currentRoom.metadata?.roomFeatures
-      .externalMediaPlayerFeatures,
+      ?.externalMediaPlayerFeatures,
   (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.url,
 );
 const actionSelector = createSelector(

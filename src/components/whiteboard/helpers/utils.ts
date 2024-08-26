@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import { WhiteboardFeatures } from 'plugnmeet-protocol-js';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
@@ -8,7 +9,6 @@ import {
   IWhiteboardOfficeFile,
 } from '../../../store/slices/interfaces/whiteboard';
 import { randomString } from '../../../helpers/utils';
-import { IWhiteboardFeatures } from '../../../store/slices/interfaces/session';
 import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
 
 const defaultPreloadedLibraryItems = [
@@ -80,7 +80,7 @@ export const displaySavedPageData = (
 };
 
 export const handleToAddWhiteboardUploadedOfficeNewFile = (
-  whiteboard: IWhiteboardFeatures,
+  whiteboard: WhiteboardFeatures,
   uploaderWhiteboardHeight = 260,
   uploaderWhiteboardWidth = 1160,
 ) => {

@@ -34,7 +34,8 @@ const RecordingIcon = () => {
   const { t } = useTranslation();
   const roomMetadata = store.getState().session.currentRoom
     .metadata as IRoomMetadata;
-  const isAllowRecording = roomMetadata.roomFeatures.recordingFeatures.isAllow;
+  const isAllowRecording =
+    roomMetadata.roomFeatures?.recordingFeatures?.isAllow;
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isPresenter =
     store.getState().session.currentUser?.metadata?.isPresenter;
@@ -189,7 +190,7 @@ const RecordingIcon = () => {
       isPresenter &&
       !isRunningCloudRecording &&
       !checkedAutoRecording &&
-      roomMetadata.roomFeatures.recordingFeatures.enableAutoCloudRecording
+      roomMetadata.roomFeatures?.recordingFeatures?.enableAutoCloudRecording
     ) {
       timeout = setTimeout(async () => {
         await startRecording(RecordingType.RECORDING_TYPE_CLOUD);
@@ -211,7 +212,7 @@ const RecordingIcon = () => {
         {openModal ? (
           <RecordingModal
             showModal={openModal}
-            recordingFeatures={roomMetadata.roomFeatures.recordingFeatures}
+            recordingFeatures={roomMetadata.roomFeatures?.recordingFeatures}
             onCloseModal={(recordingType) => onCloseModal(recordingType)}
           />
         ) : null}

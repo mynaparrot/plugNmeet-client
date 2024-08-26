@@ -198,7 +198,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       addPreloadedLibraryItems(excalidrawAPI);
     } else if (!currentUser?.isRecorder) {
       setViewModeEnabled(
-        currentUser?.metadata?.lockSettings.lockWhiteboard ?? true,
+        currentUser?.metadata?.lockSettings?.lockWhiteboard ?? true,
       );
     }
     //eslint-disable-next-line

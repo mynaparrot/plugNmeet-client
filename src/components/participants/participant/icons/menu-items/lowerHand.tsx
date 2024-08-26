@@ -1,14 +1,15 @@
 import React from 'react';
 import { Menu } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import {
+  NatsMsgClientToServerSchema,
+  NatsMsgClientToServerEvents,
+} from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import { getNatsConn } from '../../../../../helpers/nats';
-import {
-  NatsMsgClientToServer,
-  NatsMsgClientToServerEvents,
-} from '../../../../../helpers/proto/plugnmeet_nats_msg_pb';
 
 interface ILowerHandMenuItemProps {
   userId: string;
@@ -22,7 +23,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
 
   const onClick = async () => {
     const conn = getNatsConn();
-    const data = new NatsMsgClientToServer({
+    const data = create(NatsMsgClientToServerSchema, {
       event: NatsMsgClientToServerEvents.REQ_LOWER_OTHER_USER_HAND,
       msg: participant?.userId,
     });

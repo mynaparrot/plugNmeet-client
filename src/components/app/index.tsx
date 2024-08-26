@@ -8,6 +8,12 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import {
+  VerifyTokenReqSchema,
+  VerifyTokenRes,
+  VerifyTokenResSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
@@ -27,10 +33,6 @@ import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChan
 import WaitingRoomPage from '../waiting-room/room-page';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
-import {
-  VerifyTokenReq,
-  VerifyTokenRes,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
@@ -101,14 +103,17 @@ const App = () => {
         try {
           const r = await sendAPIRequest(
             'verifyToken',
-            new VerifyTokenReq({
-              isProduction: IS_PRODUCTION,
-            }).toBinary(),
+            toBinary(
+              VerifyTokenReqSchema,
+              create(VerifyTokenReqSchema, {
+                isProduction: IS_PRODUCTION,
+              }),
+            ),
             false,
             'application/protobuf',
             'arraybuffer',
           );
-          res = VerifyTokenRes.fromBinary(new Uint8Array(r));
+          res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
         } catch (error: any) {
           console.error(error);
 

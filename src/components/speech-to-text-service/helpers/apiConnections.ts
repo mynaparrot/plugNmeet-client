@@ -12,23 +12,23 @@ import {
   TranslationRecognitionResult,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-
-import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import {
-  AzureTokenRenewReq,
-  GenerateAzureTokenReq,
-  SpeechServiceUserStatusReq,
+  GenerateAzureTokenReqSchema,
+  SpeechToTextTranslationFeatures,
   SpeechServiceUserStatusTasks,
   SpeechToTextTranslationReq,
-} from '../../../helpers/proto/plugnmeet_speech_services_pb';
+  DataMsgBodyType,
+  CommonResponseSchema,
+  AzureTokenRenewReqSchema,
+  SpeechServiceUserStatusReqSchema,
+  SpeechToTextTranslationReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 import { store } from '../../../store';
 import { SpeechTextBroadcastFormat } from '../../../store/slices/interfaces/speechServices';
-import {
-  ISession,
-  SpeechToTextTranslationFeatures,
-} from '../../../store/slices/interfaces/session';
+import { ISession } from '../../../store/slices/interfaces/session';
 import i18n from '../../../helpers/i18n';
 import { supportedSpeechToTextLangs } from './supportedLangs';
 import { getNatsConn } from '../../../helpers/nats';
@@ -243,17 +243,17 @@ export const getAzureToken = async () => {
   if (!session) {
     session = getSession();
   }
-  const body = new GenerateAzureTokenReq({
+  const body = create(GenerateAzureTokenReqSchema, {
     userSid: session?.currentUser?.sid,
   });
   const r = await sendAPIRequest(
     'speechServices/azureToken',
-    body.toBinary(),
+    toBinary(GenerateAzureTokenReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
 export const renewAzureToken = async () => {
@@ -266,7 +266,7 @@ export const renewAzureToken = async () => {
     return;
   }
 
-  const body = new AzureTokenRenewReq({
+  const body = create(AzureTokenRenewReqSchema, {
     userSid: session?.currentUser?.sid,
     serviceRegion: azureTokenInfo.serviceRegion,
     keyId: azureTokenInfo.keyId,
@@ -274,12 +274,12 @@ export const renewAzureToken = async () => {
 
   const r = await sendAPIRequest(
     'speechServices/renewToken',
-    body.toBinary(),
+    toBinary(AzureTokenRenewReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
 export const sendUserSessionStatus = async (
@@ -291,7 +291,7 @@ export const sendUserSessionStatus = async (
   }
   const userId = session.currentUser?.userId;
 
-  const body = new SpeechServiceUserStatusReq({
+  const body = create(SpeechServiceUserStatusReqSchema, {
     task,
     userId,
     keyId,
@@ -300,12 +300,12 @@ export const sendUserSessionStatus = async (
 
   const r = await sendAPIRequest(
     'speechServices/userStatus',
-    body.toBinary(),
+    toBinary(SpeechServiceUserStatusReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
 export const enableOrDisableSpeechService = async (
@@ -313,10 +313,10 @@ export const enableOrDisableSpeechService = async (
 ) => {
   const r = await sendAPIRequest(
     'speechServices/serviceStatus',
-    body.toBinary(),
+    toBinary(SpeechToTextTranslationReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };

@@ -5,9 +5,9 @@ import {
   SpeechRecognizer,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
+import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
-import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
 import MicElms from './micElms';
 
 interface SpeechToTextLangElmsPros {

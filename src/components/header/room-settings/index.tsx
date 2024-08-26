@@ -30,7 +30,7 @@ const RoomSettings = () => {
   const serverVersion = s.session.serverVersion;
   const copyright_conf = s.session.currentRoom?.metadata?.copyrightConf;
   const ingressFeatures =
-    s.session.currentRoom?.metadata?.roomFeatures.ingressFeatures;
+    s.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures;
 
   const isShowRoomSettingsModal = useAppSelector(
     isShowRoomSettingsModalSelector,

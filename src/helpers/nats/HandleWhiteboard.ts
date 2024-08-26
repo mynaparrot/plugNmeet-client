@@ -1,11 +1,11 @@
 import { toast } from 'react-toastify';
-
-import ConnectNats from './ConnectNats';
-import { EndToEndEncryptionFeatures } from '../../store/slices/interfaces/session';
 import {
   DataChannelMessage,
   DataMsgBodyType,
-} from '../proto/plugnmeet_datamessage_pb';
+  EndToEndEncryptionFeatures,
+} from 'plugnmeet-protocol-js';
+
+import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import {
   addWhiteboardFileAsJSON,
@@ -74,7 +74,7 @@ export default class HandleWhiteboard {
       this.checkedE2EE = true;
 
       this._e2eeFeatures =
-        store.getState().session.currentRoom.metadata?.roomFeatures.endToEndEncryptionFeatures;
+        store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     }
 
     if (

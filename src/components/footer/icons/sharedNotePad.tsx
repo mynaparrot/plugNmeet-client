@@ -21,12 +21,12 @@ const isActiveSharedNotePadSelector = createSelector(
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
   (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 const isSharedNotepadVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures.sharedNotePadFeatures,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
   (sharedNotePadFeatures) => sharedNotePadFeatures?.visible,
 );
 
@@ -84,7 +84,7 @@ const SharedNotePadIcon = () => {
 
     if (
       !initiated &&
-      currentRoom.metadata?.roomFeatures.sharedNotePadFeatures.visible
+      currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
       setInitiated(true);
       return;
@@ -103,7 +103,7 @@ const SharedNotePadIcon = () => {
 
     if (
       isActiveSharedNotePad &&
-      !currentRoom.metadata?.roomFeatures.sharedNotePadFeatures.visible
+      !currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,
@@ -115,7 +115,7 @@ const SharedNotePadIcon = () => {
       }, 500);
     } else if (
       !isActiveSharedNotePad &&
-      currentRoom.metadata?.roomFeatures.sharedNotePadFeatures.visible
+      currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
       const body = new ChangeVisibilityRes({
         roomId: currentRoom.room_id,

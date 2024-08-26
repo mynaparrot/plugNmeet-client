@@ -1,10 +1,9 @@
 import { toast } from 'react-toastify';
+import { RoomMetadataSchema, NatsKvRoomInfo } from 'plugnmeet-protocol-js';
+import { fromJsonString } from '@bufbuild/protobuf';
 
-import {
-  ICurrentRoom,
-  IRoomMetadata,
-} from '../../store/slices/interfaces/session';
-import { NatsKvRoomInfo } from '../proto/plugnmeet_nats_msg_pb';
+import ConnectNats from './ConnectNats';
+import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { store } from '../../store';
 import {
   addCurrentRoom,
@@ -14,7 +13,6 @@ import i18n from '../i18n';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
-import ConnectNats from './ConnectNats';
 
 export default class HandleRoomData {
   private _that: ConnectNats;
@@ -46,8 +44,7 @@ export default class HandleRoomData {
 
   public updateRoomMetadata = async (data: string) => {
     try {
-      const metadata: IRoomMetadata = JSON.parse(data);
-
+      const metadata = fromJsonString(RoomMetadataSchema, data);
       if (
         typeof this._room.metadata === 'undefined' ||
         this._room.metadata.metadataId !== metadata.metadataId
@@ -156,7 +153,7 @@ export default class HandleRoomData {
       return;
     }
 
-    const whiteboard = this._room.metadata?.roomFeatures.whiteboardFeatures;
+    const whiteboard = this._room.metadata?.roomFeatures?.whiteboardFeatures;
     if (!whiteboard?.preloadFile || whiteboard?.preloadFile === '') {
       this.checkedPreloadedWhiteboardFile = true;
       return;

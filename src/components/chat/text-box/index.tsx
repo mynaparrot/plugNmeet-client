@@ -43,7 +43,7 @@ const TextBoxArea = ({
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
   const e2ee =
     store.getState().session.currentRoom.metadata?.roomFeatures
-      .endToEndEncryptionFeatures;
+      ?.endToEndEncryptionFeatures;
   const { t } = useTranslation();
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
@@ -55,7 +55,7 @@ const TextBoxArea = ({
     const metadata = store.getState().session.currentRoom
       .metadata as IRoomMetadata;
 
-    if (!metadata.roomFeatures.chatFeatures.allowFileUpload) {
+    if (!metadata.roomFeatures?.chatFeatures?.allowFileUpload) {
       setShowSendFile(false);
     }
   }, []);

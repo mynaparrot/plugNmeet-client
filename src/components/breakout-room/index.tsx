@@ -12,7 +12,7 @@ const BreakoutRoom = () => {
   const dispatch = useAppDispatch();
   const breakoutRoomIsActive =
     store.getState().session.currentRoom.metadata?.roomFeatures
-      .breakoutRoomFeatures.isActive;
+      ?.breakoutRoomFeatures?.isActive;
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const closeModal = () => {

@@ -8,7 +8,7 @@ import Logo from './logo';
 
 const waitingRoomMessageSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures.waitingRoomFeatures,
+    state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures,
   (waitingRoomFeatures) => waitingRoomFeatures?.waitingRoomMsg,
 );
 
