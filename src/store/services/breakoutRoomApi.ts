@@ -6,7 +6,14 @@ import {
   BroadcastBreakoutRoomMsgReq,
   JoinBreakoutRoomReq,
   EndBreakoutRoomReq,
-} from '../../helpers/proto/plugnmeet_breakout_room_pb';
+  BreakoutRoomResSchema,
+  CreateBreakoutRoomsReqSchema,
+  IncreaseBreakoutRoomDurationReqSchema,
+  BroadcastBreakoutRoomMsgReqSchema,
+  JoinBreakoutRoomReqSchema,
+  EndBreakoutRoomReqSchema,
+} from 'plugnmeet-protocol-js';
+import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
 
 export const breakoutRoomApi = createApi({
   reducerPath: 'breakoutRoomApi',
@@ -30,7 +37,8 @@ export const breakoutRoomApi = createApi({
           url: 'listRooms',
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -44,10 +52,11 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'create',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(CreateBreakoutRoomsReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -61,10 +70,11 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'increaseDuration',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(IncreaseBreakoutRoomDurationReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -78,10 +88,11 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'sendMsg',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(BroadcastBreakoutRoomMsgReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -91,10 +102,11 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'join',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(JoinBreakoutRoomReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -105,7 +117,8 @@ export const breakoutRoomApi = createApi({
           url: 'myRooms',
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -116,10 +129,11 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'endRoom',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(EndBreakoutRoomReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },
@@ -132,7 +146,8 @@ export const breakoutRoomApi = createApi({
           method: 'POST',
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return BreakoutRoomRes.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
+            return toJson(BreakoutRoomResSchema, b);
           },
         };
       },

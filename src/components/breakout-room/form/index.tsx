@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import {
+  BreakoutRoom,
+  BreakoutRoomSchema,
+  CreateBreakoutRoomsReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -16,10 +22,6 @@ import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoo
 import { useCreateBreakoutRoomsMutation } from '../../../store/services/breakoutRoomApi';
 import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { RoomBox } from './roomBox';
-import {
-  CreateBreakoutRoomsReq,
-  BreakoutRoom,
-} from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const droppedUserSelector = createSelector(
   (state: RootState) => state.breakoutRoom,
@@ -201,13 +203,13 @@ const FromElems = () => {
       if (r.id !== 0) {
         const u = users.filter((u) => u.roomId === r.id);
         if (u.length) {
-          const room = new BreakoutRoom({
+          const room = create(BreakoutRoomSchema, {
             id: `${r.id}`,
             title: r.name,
             users: u,
-            duration: BigInt(roomDuration),
+            duration: String(roomDuration),
             started: false,
-            created: BigInt(Date.now()),
+            created: String(Date.now()),
           });
           tmp.push(room);
         }
@@ -221,8 +223,8 @@ const FromElems = () => {
       return;
     }
 
-    const req = new CreateBreakoutRoomsReq({
-      duration: BigInt(roomDuration),
+    const req = create(CreateBreakoutRoomsReqSchema, {
+      duration: String(roomDuration),
       welcomeMsg: welcomeMsg,
       rooms: tmp,
     });

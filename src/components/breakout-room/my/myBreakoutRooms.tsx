@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import {
   useGetMyBreakoutRoomsQuery,
@@ -8,7 +10,6 @@ import {
 } from '../../../store/services/breakoutRoomApi';
 import { store } from '../../../store';
 import Duration from '../list/room/duration';
-import { JoinBreakoutRoomReq } from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const MyBreakoutRooms = () => {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ const MyBreakoutRooms = () => {
 
   const join = () => {
     joinRoom(
-      new JoinBreakoutRoomReq({
+      create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: myRooms?.room?.id ?? '',
         userId: store.getState().session.currentUser?.userId ?? '',
       }),
@@ -75,8 +76,8 @@ const MyBreakoutRooms = () => {
         {myRooms.room?.started ? (
           <div className="status absolute top-0 left-0 text-[10px] text-white">
             <Duration
-              duration={myRooms.room?.duration ?? 5}
-              created={myRooms.room?.created ?? Date.now()}
+              duration={BigInt(myRooms.room?.duration) ?? 5}
+              created={BigInt(myRooms.room?.created) ?? Date.now()}
             />
           </div>
         ) : (

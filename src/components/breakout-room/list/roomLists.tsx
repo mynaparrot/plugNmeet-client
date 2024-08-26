@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { BreakoutRoom } from 'plugnmeet-protocol-js';
 
 import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
 import EndBtn from './room/endBtn';
@@ -8,7 +9,6 @@ import BreakoutRoomUsers from './room/users';
 import BreakoutRoomDuration from './room/duration';
 import JoinBtn from './room/joinBtn';
 import ExtendDuration from './room/extendDuration';
-import { BreakoutRoom } from '../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 const RoomLists = () => {
   const { t } = useTranslation();
@@ -34,8 +34,8 @@ const RoomLists = () => {
               <div className="flex items-center">
                 {room.started ? (
                   <BreakoutRoomDuration
-                    duration={room.duration}
-                    created={room.created}
+                    duration={BigInt(room.duration)}
+                    created={BigInt(room.created)}
                   />
                 ) : (
                   t('breakout-room.not-started')

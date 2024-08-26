@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { IncreaseBreakoutRoomDurationReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { useIncreaseDurationMutation } from '../../../../store/services/breakoutRoomApi';
-import { IncreaseBreakoutRoomDurationReq } from '../../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 interface IExtendTimeProps {
   breakoutRoomId: string;
@@ -35,9 +36,9 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
 
   const extendDuration = () => {
     increaseDuration(
-      new IncreaseBreakoutRoomDurationReq({
+      create(IncreaseBreakoutRoomDurationReqSchema, {
         breakoutRoomId: breakoutRoomId,
-        duration: BigInt(duration),
+        duration: String(duration),
       }),
     );
   };

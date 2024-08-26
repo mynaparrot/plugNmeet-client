@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { create } from '@bufbuild/protobuf';
+import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 
 import { useJoinRoomMutation } from '../../../../store/services/breakoutRoomApi';
 import { store } from '../../../../store';
-import { JoinBreakoutRoomReq } from '../../../../helpers/proto/plugnmeet_breakout_room_pb';
 
 interface IJoinBtnProps {
   breakoutRoomId: string;
@@ -58,7 +59,7 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
 
   const join = () => {
     joinRoom(
-      new JoinBreakoutRoomReq({
+      create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: breakoutRoomId,
         userId: store.getState().session.currentUser?.userId ?? '',
       }),
