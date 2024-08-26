@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
-
 import {
-  CreateIngressReq,
-  CreateIngressRes,
+  CreateIngressReqSchema,
+  CreateIngressResSchema,
   IngressInput,
-} from '../../../helpers/proto/plugnmeet_ingress_pb';
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+
 import { RootState, store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
@@ -41,7 +42,7 @@ const Ingress = () => {
       participantName = 'broadcaster';
     }
 
-    const body = new CreateIngressReq({
+    const body = create(CreateIngressReqSchema, {
       inputType: ingressType,
       participantName: participantName,
       roomId: session.currentRoom.room_id,
@@ -49,12 +50,12 @@ const Ingress = () => {
 
     const r = await sendAPIRequest(
       'ingress/create',
-      body.toBinary(),
+      toBinary(CreateIngressReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CreateIngressRes.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CreateIngressResSchema, new Uint8Array(r));
     if (!res.status) {
       toast(t(res.msg), {
         type: 'error',
