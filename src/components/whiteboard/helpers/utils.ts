@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
-import { WhiteboardFeatures } from 'plugnmeet-protocol-js';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 import {
+  IWhiteboardFeatures,
   IWhiteboardFile,
   IWhiteboardOfficeFile,
 } from '../../../store/slices/interfaces/whiteboard';
@@ -79,18 +79,19 @@ export const displaySavedPageData = (
   }
 };
 
+// TODO: change IWhiteboardFeatures type correctly
 export const handleToAddWhiteboardUploadedOfficeNewFile = (
-  whiteboard: WhiteboardFeatures,
+  whiteboard: IWhiteboardFeatures,
   uploaderWhiteboardHeight = 260,
   uploaderWhiteboardWidth = 1160,
 ) => {
   const files: Array<IWhiteboardFile> = [];
-  for (let i = 0; i < whiteboard.totalPages; i++) {
+  for (let i = 0; i < whiteboard.total_pages; i++) {
     const fileName = 'page_' + (i + 1) + '.png';
     const file: IWhiteboardFile = {
       id: randomString(),
       currentPage: i + 1,
-      filePath: whiteboard.filePath + '/' + fileName,
+      filePath: whiteboard.file_path + '/' + fileName,
       fileName,
       uploaderWhiteboardHeight,
       uploaderWhiteboardWidth,
@@ -100,14 +101,13 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
   }
 
   const newFile: IWhiteboardOfficeFile = {
-    fileId: whiteboard.whiteboardFileId,
-    fileName: whiteboard.fileName,
-    filePath: whiteboard.filePath,
-    totalPages: whiteboard.totalPages,
+    fileId: whiteboard.whiteboard_file_id,
+    fileName: whiteboard.file_name,
+    filePath: whiteboard.file_path,
+    totalPages: whiteboard.total_pages,
     pageFiles: JSON.stringify(files),
   };
 
   store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
-
   return newFile;
 };

@@ -13,6 +13,7 @@ import i18n from '../i18n';
 import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
+import { IWhiteboardFeatures } from '../../store/slices/interfaces/whiteboard';
 
 export default class HandleRoomData {
   private _that: ConnectNats;
@@ -176,7 +177,13 @@ export default class HandleRoomData {
       (f) => f.fileId === whiteboard.whiteboardFileId,
     );
     if (!exist) {
-      handleToAddWhiteboardUploadedOfficeNewFile(whiteboard);
+      const f: IWhiteboardFeatures = {
+        whiteboard_file_id: whiteboard.whiteboardFileId,
+        file_name: whiteboard.fileName,
+        file_path: whiteboard.filePath,
+        total_pages: whiteboard.totalPages,
+      };
+      handleToAddWhiteboardUploadedOfficeNewFile(f);
     }
     this.checkedPreloadedWhiteboardFile = true;
   };
