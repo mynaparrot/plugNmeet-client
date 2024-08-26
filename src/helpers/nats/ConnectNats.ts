@@ -52,6 +52,7 @@ import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
+import { addToken } from '../../store/slices/sessionSlice';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -371,6 +372,7 @@ export default class ConnectNats {
         break;
       case NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN:
         this._token = payload.msg.toString();
+        store.dispatch(addToken(this._token));
         break;
       case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
         this.handleSystemData.handleNotification(payload.msg);
