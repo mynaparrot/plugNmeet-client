@@ -42,7 +42,7 @@ const RemoveParticipantAlertModal = ({
     const session = store.getState().session;
     const body = create(RemoveParticipantReqSchema, {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: userId,
       msg:
         removeType === 'remove'

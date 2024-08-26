@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import useVirtual from 'react-cool-virtual';
 import { createSelector } from '@reduxjs/toolkit';
+import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import { RootState, store, useAppSelector } from '../../../store';
-import { IChatMsg } from '../../../store/slices/interfaces/dataMessages';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
 import Message from './message';
 
@@ -22,7 +22,7 @@ const Messages = ({ userId }: IMessagesProps) => {
 
   const scrollToRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;
-  const [chatMessages, setChatMessages] = useState<Array<IChatMsg>>([]);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [autoScrollToBottom, setAutoScrollToBottom] = useState<boolean>(true);
 
   const { outerRef, innerRef, items, scrollToItem } = useVirtual({
@@ -37,12 +37,13 @@ const Messages = ({ userId }: IMessagesProps) => {
   });
 
   useEffect(() => {
-    let chatMessages: IChatMsg[] = [];
+    let chatMessages: ChatMessage[] = [];
     if (userId === 'public') {
       chatMessages = allMessages.filter((m) => !m.isPrivate);
     } else {
       chatMessages = allMessages.filter(
-        (m) => m.isPrivate && (m.from.userId === userId || m.to === userId),
+        (m) =>
+          m.isPrivate && (m.fromUserId === userId || m.toUserId === userId),
       );
     }
 
@@ -96,10 +97,8 @@ const Messages = ({ userId }: IMessagesProps) => {
     if (!chatMessages.length || typeof chatMessages[index] === 'undefined') {
       return null;
     }
-    const body = chatMessages[index] as IChatMsg;
-    return (
-      <Message key={body.message_id} body={body} currentUser={currentUser} />
-    );
+    const body = chatMessages[index];
+    return <Message key={body.id} body={body} currentUser={currentUser} />;
   };
 
   return (

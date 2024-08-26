@@ -40,11 +40,11 @@ import { getCurrentConnection } from '../livekit/utils';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
-  private _localParticipant: ICurrentUser;
   private preferredLang = '';
   private isRecorderJoin = false;
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
+  private _localParticipant: ICurrentUser;
 
   constructor(that: ConnectNats) {
     this._that = that;
@@ -58,35 +58,6 @@ export default class HandleParticipants {
 
   get localParticipant(): ICurrentUser {
     return this._localParticipant;
-  }
-
-  private decodeMetadata(data: string): ICurrentUserMetadata {
-    try {
-      const metadata: ICurrentUserMetadata = fromJsonString(
-        UserMetadataSchema,
-        data,
-      );
-      return metadata;
-    } catch (e) {}
-
-    // default
-    return create(UserMetadataSchema, {
-      isAdmin: false,
-      isPresenter: false,
-      raisedHand: false,
-      waitForApproval: false,
-      lockSettings: {
-        lockMicrophone: true,
-        lockWebcam: true,
-        lockScreenSharing: true,
-        lockChat: true,
-        lockChatSendMessage: true,
-        lockChatFileShare: true,
-        lockPrivateChat: true,
-        lockWhiteboard: true,
-        lockSharedNotepad: true,
-      },
-    });
   }
 
   public addLocalParticipantInfo = async (info: NatsKvUserInfo) => {
@@ -270,6 +241,45 @@ export default class HandleParticipants {
     store.dispatch(removeOneSpeaker(p.userId));
   };
 
+  public isRecorder = (userId: string) => {
+    return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
+  };
+
+  public clearParticipantCounterInterval = () => {
+    if (this.participantCounterInterval) {
+      clearInterval(this.participantCounterInterval);
+    }
+  };
+
+  private decodeMetadata(data: string): ICurrentUserMetadata {
+    try {
+      const metadata: ICurrentUserMetadata = fromJsonString(
+        UserMetadataSchema,
+        data,
+      );
+      return metadata;
+    } catch (e) {}
+
+    // default
+    return create(UserMetadataSchema, {
+      isAdmin: false,
+      isPresenter: false,
+      raisedHand: false,
+      waitForApproval: false,
+      lockSettings: {
+        lockMicrophone: true,
+        lockWebcam: true,
+        lockScreenSharing: true,
+        lockChat: true,
+        lockChatSendMessage: true,
+        lockChatFileShare: true,
+        lockPrivateChat: true,
+        lockWhiteboard: true,
+        lockSharedNotepad: true,
+      },
+    });
+  }
+
   private notificationForWaitingUser(
     metadata: ICurrentUserMetadata,
     name: string,
@@ -303,21 +313,11 @@ export default class HandleParticipants {
     }
   }
 
-  public isRecorder = (userId: string) => {
-    return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
-  };
-
   private recorderJoined() {
     this.startParticipantCounter();
     //store.dispatch(updateIsActiveChatPanel(false));
     store.dispatch(updateIsActiveParticipantsPanel(false));
   }
-
-  public clearParticipantCounterInterval = () => {
-    if (this.participantCounterInterval) {
-      clearInterval(this.participantCounterInterval);
-    }
-  };
 
   /*
    * startParticipantCounter will only call if participant was a recorder or RTMP bot

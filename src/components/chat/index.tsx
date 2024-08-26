@@ -36,7 +36,7 @@ const ChatComponent = () => {
     const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {
-      if (isChatLock !== false) {
+      if (isChatLock) {
         setShow(false);
       }
     }

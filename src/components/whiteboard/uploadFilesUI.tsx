@@ -111,7 +111,7 @@ const UploadFilesUI = ({
     });
     const body: any = {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: session.currentUser?.userId,
       file_path: filePath,
     };

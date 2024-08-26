@@ -32,8 +32,6 @@ export const startNatsConn = async (
     setCurrentMediaServerConn,
   );
   await conn.openConn();
-
-  return conn;
 };
 
 export const getNatsConn = () => {

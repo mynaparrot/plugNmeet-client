@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { ChatMessage } from 'plugnmeet-protocol-js';
 
-import { IChatMsg } from '../../../../store/slices/interfaces/dataMessages';
 import { ICurrentUser } from '../../../../store/slices/interfaces/session';
 import { useAppSelector } from '../../../../store';
 
@@ -9,26 +9,26 @@ import Avatar from './avatar';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 
 interface IMessageProps {
-  body: IChatMsg;
+  body: ChatMessage;
   currentUser?: ICurrentUser;
 }
 const Message = ({ body, currentUser }: IMessageProps) => {
   const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, body.from.userId),
+    participantsSelector.selectById(state, body.fromUserId),
   );
   const { t } = useTranslation();
 
   const render = () => {
-    if (body.from.userId === 'system') {
+    if (body.fromUserId === 'system') {
       return (
         <div className="content w-[calc(100%)] pt-2 system mb-2">
           <p
             className="message-content max-w-fit shadow-footer text-xs bg-primaryColor text-white"
-            dangerouslySetInnerHTML={{ __html: body.msg }}
+            dangerouslySetInnerHTML={{ __html: body.message }}
           />
         </div>
       );
-    } else if (currentUser?.userId === body.from.userId) {
+    } else if (currentUser?.userId === body.fromUserId) {
       return (
         <div className="content me w-[calc(100%-2rem)] pt-2">
           <p className="name pl-2 text-sm pb-1 primaryColor dark:text-darkText">
@@ -36,24 +36,24 @@ const Message = ({ body, currentUser }: IMessageProps) => {
           </p>
           <p
             className="message-content max-w-fit shadow-footer text-xs bg-secondaryColor text-white"
-            dangerouslySetInnerHTML={{ __html: body.msg }}
+            dangerouslySetInnerHTML={{ __html: body.message }}
           />
         </div>
       );
     } else {
       return (
         <>
-          <Avatar participant={participant} from={body.from} />
+          <Avatar participant={participant} name={body.fromName} />
           <div className="content w-[calc(100%-2rem)] pt-2">
             <p className="name pl-2 text-sm pb-1 dark:text-darkText">
-              {body.from.name ? body.from.name : participant?.name}
+              {body.fromName ? body.fromName : participant?.name}
               <span style={{ fontSize: '10px' }}>
                 {participant ? null : ' (offline)'}
               </span>
             </p>
             <p
               className="message-content max-w-fit bg-white shadow-footer text-xs"
-              dangerouslySetInnerHTML={{ __html: body.msg }}
+              dangerouslySetInnerHTML={{ __html: body.message }}
             />
           </div>
         </>

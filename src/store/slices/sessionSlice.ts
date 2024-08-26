@@ -12,88 +12,6 @@ import {
   UserDeviceType,
 } from './interfaces/session';
 
-const metadata = create(RoomMetadataSchema, {
-  roomTitle: 'plugNmeet',
-  welcomeMessage: 'Welcome to plugNmeet!',
-  isRecording: false,
-  isActiveRtmp: false,
-  parentRoomId: '',
-  isBreakoutRoom: false,
-  startedAt: Date.now().toString(),
-  roomFeatures: {
-    allowWebcams: true,
-    muteOnStart: false,
-    allowScreenShare: true,
-    allowRtmp: true,
-    allowViewOtherWebcams: true,
-    allowViewOtherUsersList: true,
-    adminOnlyWebcams: false,
-    allowPolls: true,
-    roomDuration: '0',
-    allowVirtualBg: true,
-    allowRaiseHand: true,
-    recordingFeatures: {
-      isAllow: true,
-      isAllowCloud: true,
-      enableAutoCloudRecording: false,
-      isAllowLocal: true,
-      onlyRecordAdminWebcams: false,
-    },
-    chatFeatures: {
-      allowChat: true,
-      allowFileUpload: true,
-      allowedFileTypes: ['jpg', 'png', 'zip'],
-    },
-    sharedNotePadFeatures: {
-      allowedSharedNotePad: true,
-    },
-    whiteboardFeatures: {
-      allowedWhiteboard: true,
-      visible: false,
-      whiteboardFileId: '',
-      fileName: '',
-      filePath: '',
-      totalPages: 0,
-    },
-    externalMediaPlayerFeatures: {
-      allowedExternalMediaPlayer: true,
-      isActive: false,
-    },
-    waitingRoomFeatures: {
-      isActive: false,
-      waitingRoomMsg: '',
-    },
-    breakoutRoomFeatures: {
-      isAllow: true,
-    },
-    displayExternalLinkFeatures: {
-      isAllow: true,
-    },
-    ingressFeatures: {
-      isAllow: true,
-    },
-    speechToTextTranslationFeatures: {
-      isAllow: true,
-      isAllowTranslation: true,
-      isEnabled: false,
-      isEnabledTranslation: false,
-      allowedSpeechLangs: [],
-      allowedSpeechUsers: [],
-      allowedTransLangs: [],
-      maxNumTranLangsAllowSelecting: 10,
-    },
-    endToEndEncryptionFeatures: {
-      isEnabled: false,
-      includedChatMessages: false,
-      includedWhiteboard: false,
-    },
-  },
-  copyrightConf: {
-    display: true,
-    text: 'Powered by <a href="https://www.plugnmeet.org" target="_blank">plugNmeet</a>',
-  },
-});
-
 const initialState: ISession = {
   token: '',
   screenSharing: {
@@ -109,8 +27,88 @@ const initialState: ISession = {
   userDeviceType: UserDeviceType.DESKTOP,
   currentRoom: {
     sid: '',
-    room_id: '',
-    metadata,
+    roomId: '',
+    metadata: create(RoomMetadataSchema, {
+      roomTitle: 'plugNmeet',
+      welcomeMessage: 'Welcome to plugNmeet!',
+      isRecording: false,
+      isActiveRtmp: false,
+      parentRoomId: '',
+      isBreakoutRoom: false,
+      startedAt: Date.now().toString(),
+      roomFeatures: {
+        allowWebcams: true,
+        muteOnStart: false,
+        allowScreenShare: true,
+        allowRtmp: true,
+        allowViewOtherWebcams: true,
+        allowViewOtherUsersList: true,
+        adminOnlyWebcams: false,
+        allowPolls: true,
+        roomDuration: '0',
+        allowVirtualBg: true,
+        allowRaiseHand: true,
+        recordingFeatures: {
+          isAllow: true,
+          isAllowCloud: true,
+          enableAutoCloudRecording: false,
+          isAllowLocal: true,
+          onlyRecordAdminWebcams: false,
+        },
+        chatFeatures: {
+          allowChat: true,
+          allowFileUpload: true,
+          allowedFileTypes: ['jpg', 'png', 'zip'],
+        },
+        sharedNotePadFeatures: {
+          allowedSharedNotePad: true,
+        },
+        whiteboardFeatures: {
+          allowedWhiteboard: true,
+          visible: false,
+          whiteboardFileId: '',
+          fileName: '',
+          filePath: '',
+          totalPages: 0,
+        },
+        externalMediaPlayerFeatures: {
+          allowedExternalMediaPlayer: true,
+          isActive: false,
+        },
+        waitingRoomFeatures: {
+          isActive: false,
+          waitingRoomMsg: '',
+        },
+        breakoutRoomFeatures: {
+          isAllow: true,
+        },
+        displayExternalLinkFeatures: {
+          isAllow: true,
+        },
+        ingressFeatures: {
+          isAllow: true,
+        },
+        speechToTextTranslationFeatures: {
+          isAllow: true,
+          isAllowTranslation: true,
+          isEnabled: false,
+          isEnabledTranslation: false,
+          allowedSpeechLangs: [],
+          allowedSpeechUsers: [],
+          allowedTransLangs: [],
+          maxNumTranLangsAllowSelecting: 10,
+        },
+        endToEndEncryptionFeatures: {
+          isEnabled: false,
+          includedChatMessages: false,
+          includedWhiteboard: false,
+        },
+      },
+      copyrightConf: {
+        display: true,
+        text: 'Powered by <a href="https://www.plugnmeet.org" target="_blank">plugNmeet</a>',
+      },
+    }),
   },
 };
 
@@ -131,7 +129,7 @@ const sessionSlice = createSlice({
       state.currentUser = action.payload;
     },
     addCurrentRoom: (state, action: PayloadAction<ICurrentRoom>) => {
-      state.currentRoom.room_id = action.payload.room_id;
+      state.currentRoom.roomId = action.payload.roomId;
       state.currentRoom.sid = action.payload.sid;
       if (action.payload.metadata) {
         state.currentRoom.metadata = action.payload.metadata;

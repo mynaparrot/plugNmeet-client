@@ -1,9 +1,9 @@
 import {
-  wsconnect,
-  tokenAuthenticator,
   ErrorCode,
   NatsConnection,
   NatsError,
+  tokenAuthenticator,
+  wsconnect,
   // eslint-disable-next-line import/no-unresolved
 } from '@nats-io/nats-core';
 // eslint-disable-next-line import/no-unresolved
@@ -12,23 +12,23 @@ import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
 import { toast } from 'react-toastify';
 import {
-  MediaServerConnInfo,
-  NatsInitialData,
-  NatsMsgClientToServer,
-  NatsMsgClientToServerEvents,
-  NatsMsgServerToClient,
-  NatsMsgServerToClientEvents,
-  NatsSubjects,
-  DataMsgBodyType,
+  AnalyticsDataMsgSchema,
   AnalyticsEvents,
   AnalyticsEventType,
-  NatsMsgClientToServerSchema,
-  NatsMsgServerToClientSchema,
   ChatMessageSchema,
   DataChannelMessageSchema,
+  DataMsgBodyType,
+  MediaServerConnInfo,
+  NatsInitialData,
   NatsInitialDataSchema,
   NatsKvUserInfoSchema,
-  AnalyticsDataMsgSchema,
+  NatsMsgClientToServer,
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
+  NatsMsgServerToClient,
+  NatsMsgServerToClientEvents,
+  NatsMsgServerToClientSchema,
+  NatsSubjects,
 } from 'plugnmeet-protocol-js';
 import {
   create,
@@ -63,20 +63,22 @@ export default class ConnectNats {
   private _js: JetStreamClient | undefined;
   private readonly _natsWSUrls: string[];
   private _token: string;
+
   private readonly _roomId: string;
   private readonly _userId: string;
   private _isAdmin: boolean = false;
   private readonly _subjects: NatsSubjects;
+
   private tokenRenewInterval: any;
   private pingInterval: any;
   private statusCheckerInterval: any;
-  private _mediaServerConn: IConnectLivekit | undefined = undefined;
   private isRoomReconnecting: boolean = false;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
   private readonly _setRoomConnectionStatusState: Dispatch<ConnectionStatus>;
   private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
+  private _mediaServerConn: IConnectLivekit | undefined = undefined;
   private handleRoomData: HandleRoomData;
   private handleSystemData: HandleSystemData;
   private handleParticipants: HandleParticipants;
@@ -103,16 +105,20 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState = setRoomConnectionStatusState;
     this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
-    this.handleRoomData = new HandleRoomData(this);
-    this.handleSystemData = new HandleSystemData(this);
+    this.handleRoomData = new HandleRoomData();
+    this.handleSystemData = new HandleSystemData();
     this.handleParticipants = new HandleParticipants(this);
     this.handleChat = new HandleChat(this);
     this.handleDataMsg = new HandleDataMessage(this);
-    this.handleWhiteboard = new HandleWhiteboard(this);
+    this.handleWhiteboard = new HandleWhiteboard();
   }
 
   get nc(): NatsConnection | undefined {
     return this._nc;
+  }
+
+  get isAdmin(): boolean {
+    return this._isAdmin;
   }
 
   get mediaServerConn(): IConnectLivekit | undefined {
@@ -127,26 +133,7 @@ export default class ConnectNats {
     return this._userId;
   }
 
-  get isAdmin(): boolean {
-    return this._isAdmin;
-  }
-
   public openConn = async () => {
-    if (typeof this._nc === 'undefined' || this._nc.isClosed()) {
-      return await this._openConn();
-    }
-    return true;
-  };
-
-  public setErrorStatus(title: string, reason: string) {
-    this._setRoomConnectionStatusState('error');
-    this._setErrorState({
-      title: title,
-      text: reason,
-    });
-  }
-
-  private _openConn = async () => {
     try {
       this._nc = await wsconnect({
         servers: this._natsWSUrls,
@@ -160,11 +147,12 @@ export default class ConnectNats {
         i18n.t('notifications.nats-error-auth-title'),
         i18n.t('nats-error-auth-body'),
       );
-      return false;
+      return;
     }
-    this._setRoomConnectionStatusState('receiving-data');
 
+    this._setRoomConnectionStatusState('receiving-data');
     this._js = jetstream(this._nc);
+
     this.monitorConnStatus();
     this.subscribeToSystemPrivate();
     this.subscribeToSystemPublic();
@@ -181,9 +169,184 @@ export default class ConnectNats {
         event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
       }),
     );
-
-    return true;
   };
+
+  public endSession = async (msg: string) => {
+    if (this.mediaServerConn) {
+      await this.mediaServerConn.disconnectRoom();
+    }
+
+    clearInterval(this.tokenRenewInterval);
+    clearInterval(this.pingInterval);
+    this.handleParticipants.clearParticipantCounterInterval();
+
+    if (this._nc && !this._nc.isClosed()) {
+      await this._nc.drain();
+      await this._nc.close();
+    }
+
+    this._setErrorState({
+      title: i18n.t('notifications.room-disconnected-title'),
+      text: i18n.t(msg),
+    });
+    this._setRoomConnectionStatusState('disconnected');
+  };
+
+  public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
+      return;
+    }
+    try {
+      const subject =
+        this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
+      return await this._js.publish(
+        subject,
+        toBinary(NatsMsgClientToServerSchema, data),
+      );
+    } catch (e: any) {
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
+    }
+  };
+
+  public sendChatMsg = async (to: string, msg: string) => {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
+      return;
+    }
+
+    const isPrivate = to !== 'public';
+    const data = create(ChatMessageSchema, {
+      fromName: this.handleParticipants.localParticipant.name,
+      fromUserId: this.handleParticipants.localParticipant.userId,
+      sentAt: Date.now().toString(),
+      toUserId: to !== 'public' ? to : undefined,
+      isPrivate: isPrivate,
+      message: msg,
+    });
+
+    const subject =
+      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
+    try {
+      await this._js.publish(subject, toBinary(ChatMessageSchema, data));
+    } catch (e: any) {
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
+    }
+  };
+
+  public sendWhiteboardData = async (
+    type: DataMsgBodyType,
+    msg: string,
+    to?: string,
+  ) => {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
+      return;
+    }
+
+    const data = create(DataChannelMessageSchema, {
+      type,
+      fromUserId: this.handleParticipants.localParticipant.userId,
+      toUserId: to,
+      message: msg,
+    });
+    const subject =
+      this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
+    try {
+      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
+    } catch (e: any) {
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
+    }
+  };
+
+  public sendDataMessage = async (
+    type: DataMsgBodyType,
+    msg: string,
+    to?: string,
+  ) => {
+    if (
+      typeof this._js === 'undefined' ||
+      this._nc?.isClosed() ||
+      this.isRoomReconnecting
+    ) {
+      return;
+    }
+
+    const data = create(DataChannelMessageSchema, {
+      type,
+      fromUserId: this.handleParticipants.localParticipant.userId,
+      toUserId: to,
+      message: msg,
+    });
+    const subject =
+      this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
+    try {
+      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
+    } catch (e: any) {
+      console.error(e.message);
+      const msg = this.formatError(e);
+      toast(msg, {
+        toastId: 'nats-status',
+        type: 'error',
+      });
+    }
+  };
+
+  public sendAnalyticsData = async (
+    event_name: AnalyticsEvents,
+    event_type: AnalyticsEventType = AnalyticsEventType.USER,
+    hset_value?: string,
+    event_value_string?: string,
+    event_value_integer?: string,
+  ) => {
+    const analyticsMsg = create(AnalyticsDataMsgSchema, {
+      eventType: event_type,
+      eventName: event_name,
+      roomId: this._roomId,
+      userId: this._userId,
+      hsetValue: hset_value,
+      eventValueString: event_value_string,
+      eventValueInteger: event_value_integer,
+    });
+
+    const data = create(NatsMsgClientToServerSchema, {
+      event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
+      msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
+    });
+    await this.sendMessageToSystemWorker(data);
+  };
+
+  private setErrorStatus(title: string, reason: string) {
+    this._setRoomConnectionStatusState('error');
+    this._setErrorState({
+      title: title,
+      text: reason,
+    });
+  }
 
   private async monitorConnStatus() {
     if (typeof this._nc === 'undefined') {
@@ -346,7 +509,6 @@ export default class ConnectNats {
           m.ack();
           continue;
         }
-        console.log(payload);
         // fromUserId check inside handleMessage method
         await this.handleDataMsg.handleMessage(payload);
       } catch (e) {
@@ -397,8 +559,8 @@ export default class ConnectNats {
       case NatsMsgServerToClientEvents.SESSION_ENDED:
         await this.endSession(payload.msg);
         break;
-      case (NatsMsgServerToClientEvents.POLL_CREATED,
-      NatsMsgServerToClientEvents.POLL_CLOSED):
+      case NatsMsgServerToClientEvents.POLL_CREATED:
+      case NatsMsgServerToClientEvents.POLL_CLOSED:
         this.handleSystemData.handlePoll(payload);
         break;
       case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
@@ -496,30 +658,6 @@ export default class ConnectNats {
     );
   }
 
-  public endSession = async (msg: string) => {
-    if (!this._nc) {
-      return;
-    }
-    if (this.mediaServerConn) {
-      await this.mediaServerConn.disconnectRoom();
-    }
-
-    clearInterval(this.tokenRenewInterval);
-    clearInterval(this.pingInterval);
-    this.handleParticipants.clearParticipantCounterInterval();
-
-    if (!this._nc.isClosed()) {
-      await this._nc.drain();
-      await this._nc.close();
-    }
-
-    this._setErrorState({
-      title: i18n.t('notifications.room-disconnected-title'),
-      text: i18n.t(msg),
-    });
-    this._setRoomConnectionStatusState('disconnected');
-  };
-
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
     if (typeof this._mediaServerConn !== 'undefined') {
       return;
@@ -554,153 +692,6 @@ export default class ConnectNats {
     this._setCurrentMediaServerConn(conn);
     this._mediaServerConn = conn;
   }
-
-  public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-    try {
-      const subject =
-        this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
-      return await this._js.publish(
-        subject,
-        toBinary(NatsMsgClientToServerSchema, data),
-      );
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
-  };
-
-  public sendChatMsg = async (to: string, msg: string) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-
-    const isPrivate = to !== 'public';
-    const data = create(ChatMessageSchema, {
-      fromName: this.handleParticipants.localParticipant.name,
-      fromUserId: this.handleParticipants.localParticipant.userId,
-      toUserId: to !== 'public' ? to : undefined,
-      isPrivate: isPrivate,
-      message: msg,
-    });
-
-    const subject =
-      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
-    try {
-      await this._js.publish(subject, toBinary(ChatMessageSchema, data));
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
-  };
-
-  public sendWhiteboardData = async (
-    type: DataMsgBodyType,
-    msg: string,
-    to?: string,
-  ) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this.handleParticipants.localParticipant.userId,
-      toUserId: to,
-      message: msg,
-    });
-    const subject =
-      this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
-    try {
-      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
-  };
-
-  public sendDataMessage = async (
-    type: DataMsgBodyType,
-    msg: string,
-    to?: string,
-  ) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this.handleParticipants.localParticipant.userId,
-      toUserId: to,
-      message: msg,
-    });
-    const subject =
-      this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
-    try {
-      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
-  };
-
-  public sendAnalyticsData = async (
-    event_name: AnalyticsEvents,
-    event_type: AnalyticsEventType = AnalyticsEventType.USER,
-    hset_value?: string,
-    event_value_string?: string,
-    event_value_integer?: string,
-  ) => {
-    const analyticsMsg = create(AnalyticsDataMsgSchema, {
-      eventType: event_type,
-      eventName: event_name,
-      roomId: this._roomId,
-      userId: this._userId,
-      hsetValue: hset_value,
-      eventValueString: event_value_string,
-      eventValueInteger: event_value_integer,
-    });
-
-    const data = create(NatsMsgClientToServerSchema, {
-      event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
-      msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
-    });
-    await this.sendMessageToSystemWorker(data);
-  };
 
   private formatError(err: any) {
     let msg = i18n.t('notifications.nats-error-request-failed').toString();

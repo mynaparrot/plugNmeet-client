@@ -1,8 +1,11 @@
 import { toast } from 'react-toastify';
-import { RoomMetadataSchema, NatsKvRoomInfo } from 'plugnmeet-protocol-js';
-import { fromJsonString } from '@bufbuild/protobuf';
+import {
+  RoomMetadataSchema,
+  NatsKvRoomInfo,
+  ChatMessageSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromJsonString } from '@bufbuild/protobuf';
 
-import ConnectNats from './ConnectNats';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { store } from '../../store';
 import {
@@ -10,21 +13,18 @@ import {
   updateCurrentRoomMetadata,
 } from '../../store/slices/sessionSlice';
 import i18n from '../i18n';
-import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
 import { IWhiteboardFeatures } from '../../store/slices/interfaces/whiteboard';
 
 export default class HandleRoomData {
-  private _that: ConnectNats;
   private _room: ICurrentRoom;
   private welcomeMessage: string | undefined = undefined;
   private checkedPreloadedWhiteboardFile = false;
 
-  constructor(that: ConnectNats) {
-    this._that = that;
+  constructor() {
     this._room = {
-      room_id: '',
+      roomId: '',
       sid: '',
       metadata: undefined,
     };
@@ -36,7 +36,7 @@ export default class HandleRoomData {
 
   public setRoomInfo = async (info: NatsKvRoomInfo) => {
     this._room = {
-      room_id: info.roomId,
+      roomId: info.roomId,
       sid: info.roomSid,
     };
     store.dispatch(addCurrentRoom(this._room));
@@ -131,19 +131,14 @@ export default class HandleRoomData {
 
     this.welcomeMessage = this._room.metadata?.welcomeMessage;
     const now = new Date();
-
-    const body: IChatMsg = {
-      type: 'CHAT',
-      message_id: `${now.getMilliseconds()}`,
-      time: '',
+    const body = create(ChatMessageSchema, {
+      id: `${now.getMilliseconds()}`,
+      sentAt: `${now.getMilliseconds()}`,
       isPrivate: false,
-      from: {
-        userId: 'system',
-        name: 'System',
-        sid: 'system',
-      },
-      msg: this.welcomeMessage ?? '',
-    };
+      fromName: 'system',
+      fromUserId: 'system',
+      message: this.welcomeMessage,
+    });
 
     store.dispatch(addChatMessage(body));
   };

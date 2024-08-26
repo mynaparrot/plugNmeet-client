@@ -77,7 +77,7 @@ const Header = () => {
       const session = store.getState().session;
 
       const body = create(RoomEndAPIReqSchema, {
-        roomId: session.currentRoom.room_id,
+        roomId: session.currentRoom.roomId,
       });
 
       const r = await sendAPIRequest(

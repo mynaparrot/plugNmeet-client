@@ -85,12 +85,12 @@ const TextBoxArea = ({
     const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (lock_chat_send_message && !isAdmin) {
-      if (isLockChatSendMsg !== false) {
+      if (isLockChatSendMsg) {
         setLockSendMsg(true);
       }
     }
     if (lock_chat_file_share && !isAdmin) {
-      if (isLockChatSendMsg !== false) {
+      if (isLockChatSendMsg) {
         setLockSendFile(true);
       }
     }
@@ -148,7 +148,7 @@ const TextBoxArea = ({
     onAfterSendMessage();
   };
 
-  const onEnterPress = async (e) => {
+  const onEnterPress = async (e: any) => {
     if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
       await sendMsg();

@@ -110,7 +110,7 @@ const SharedNotePadIcon = () => {
       !currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
       const body = create(ChangeVisibilityResSchema, {
-        roomId: currentRoom.room_id,
+        roomId: currentRoom.roomId,
         visibleNotepad: true,
       });
       // wait little bit before change visibility
@@ -122,7 +122,7 @@ const SharedNotePadIcon = () => {
       currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
       const body = create(ChangeVisibilityResSchema, {
-        roomId: currentRoom.room_id,
+        roomId: currentRoom.roomId,
         visibleNotepad: false,
       });
       sendRequest(body);

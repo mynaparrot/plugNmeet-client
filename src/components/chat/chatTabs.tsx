@@ -62,20 +62,20 @@ const ChatTabs = () => {
     }
     chatMessages.forEach((m) => {
       if (m.isPrivate) {
-        if (m.from.userId !== currentUser?.userId) {
-          if (!privateChatUsers.has(m.from.userId)) {
-            privateChatUsers.set(m.from.userId, m.from.name ?? '');
+        if (m.fromUserId !== currentUser?.userId) {
+          if (!privateChatUsers.has(m.fromUserId)) {
+            privateChatUsers.set(m.fromUserId, m.fromName ?? '');
             setPrivateChatUsers(new Map(privateChatUsers));
           }
         } else if (
-          m.from.userId === currentUser?.userId &&
-          m.to &&
-          m.to !== currentUser?.userId
+          m.fromUserId === currentUser?.userId &&
+          m.toUserId &&
+          m.toUserId !== currentUser?.userId
         ) {
-          if (!privateChatUsers.has(m.to)) {
+          if (!privateChatUsers.has(m.toUserId)) {
             const user = participantsSelector.selectById(
               store.getState(),
-              m.to,
+              m.toUserId,
             );
             if (user) {
               privateChatUsers.set(user.userId, user.name);

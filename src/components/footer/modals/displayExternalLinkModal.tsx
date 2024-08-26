@@ -69,7 +69,7 @@ const DisplayExternalLinkModal = () => {
       );
     }
     if (extraValues.meetingId) {
-      url.searchParams.set('meetingId', session.currentRoom.room_id);
+      url.searchParams.set('meetingId', session.currentRoom.roomId);
     }
 
     const id = toast.loading(t('please-wait'), {

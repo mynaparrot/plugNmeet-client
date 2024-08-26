@@ -1,10 +1,9 @@
 import { ChatMessage, EndToEndEncryptionFeatures } from 'plugnmeet-protocol-js';
+import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import { decryptMessage } from '../cryptoMessages';
-import { toast } from 'react-toastify';
-import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
   updateIsActiveChatPanel,
@@ -33,25 +32,8 @@ export default class HandleChat {
     if (!finalMsg) {
       return;
     }
+    store.dispatch(addChatMessage(payload));
 
-    const chatMsg: IChatMsg = {
-      type: 'CHAT',
-      message_id: payload.id,
-      time: '',
-      from: {
-        sid: '',
-        userId: payload.fromUserId,
-        name: payload.fromName,
-      },
-      isPrivate: payload.isPrivate,
-      msg: finalMsg,
-    };
-
-    if (payload.toUserId) {
-      chatMsg.to = payload.toUserId;
-    }
-
-    store.dispatch(addChatMessage(chatMsg));
     const isActiveChatPanel =
       store.getState().bottomIconsActivity.isActiveChatPanel;
     const selectedChatOption = store.getState().roomSettings.selectedChatOption;
@@ -91,9 +73,8 @@ export default class HandleChat {
   };
 
   private async handleDecryption(msg: string) {
-    if (!this._e2eeFeatures && !this.checkedE2EE) {
+    if (!this.checkedE2EE) {
       this.checkedE2EE = true;
-
       this._e2eeFeatures =
         store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     }

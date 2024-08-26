@@ -116,7 +116,6 @@ export default class HandleDataMessage {
     }
     const data: SpeechTextBroadcastFormat = JSON.parse(message);
     const lang = store.getState().speechServices.selectedSubtitleLang;
-    console.log(lang, data.result[lang]);
 
     if (lang !== '' && typeof data.result[lang] !== 'undefined') {
       const d = new Date();

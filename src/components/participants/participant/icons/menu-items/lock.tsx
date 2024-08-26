@@ -68,7 +68,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
 
     const body = create(UpdateUserLockSettingsReqSchema, {
       roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: participant?.userId,
       service,
       direction,

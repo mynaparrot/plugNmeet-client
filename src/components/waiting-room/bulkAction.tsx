@@ -47,7 +47,7 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
     const session = store.getState().session;
     const body = create(RemoveParticipantReqSchema, {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
     });
     waitingParticipants.forEach(async (p) => {
       body.userId = p.userId;

@@ -45,7 +45,7 @@ const Ingress = () => {
     const body = create(CreateIngressReqSchema, {
       inputType: ingressType,
       participantName: participantName,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
     });
 
     const r = await sendAPIRequest(

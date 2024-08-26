@@ -1,15 +1,15 @@
 import React from 'react';
 import { toast } from 'react-toastify';
-import { fromJsonString } from '@bufbuild/protobuf';
+import { create, fromJsonString } from '@bufbuild/protobuf';
 import {
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
   NatsSystemNotificationSchema,
   NatsSystemNotificationTypes,
   GenerateAzureTokenResSchema,
+  ChatMessageSchema,
 } from 'plugnmeet-protocol-js';
 
-import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import {
   updateAzureTokenInfo,
@@ -20,15 +20,10 @@ import { pollsApi } from '../../store/services/pollsApi';
 import NewPollMsg from '../../components/extra-pages/newPollMsg';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
-import { IChatMsg } from '../../store/slices/interfaces/dataMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 
 export default class HandleSystemData {
-  private _that: ConnectNats;
-
-  constructor(that: ConnectNats) {
-    this._that = that;
-  }
+  constructor() {}
 
   /**
    * To handle various notifications
@@ -114,18 +109,14 @@ export default class HandleSystemData {
   public handleSysChatMsg = (msg: string) => {
     const now = new Date();
 
-    const body: IChatMsg = {
-      type: 'CHAT',
-      message_id: `${now.getMilliseconds()}`,
-      time: '',
+    const body = create(ChatMessageSchema, {
+      id: `${now.getMilliseconds()}`,
+      sentAt: `${now.getMilliseconds()}`,
       isPrivate: false,
-      from: {
-        userId: 'system',
-        name: 'System',
-        sid: 'system',
-      },
-      msg: msg,
-    };
+      fromName: 'system',
+      fromUserId: 'system',
+      message: msg,
+    });
 
     store.dispatch(addChatMessage(body));
   };

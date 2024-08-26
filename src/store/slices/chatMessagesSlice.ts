@@ -1,12 +1,12 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { IChatMsg } from './interfaces/dataMessages';
+import { ChatMessage } from 'plugnmeet-protocol-js';
 
 const chatMessagesAdapter = createEntityAdapter({
-  selectId: (chatMessage: IChatMsg) => chatMessage.message_id,
-  sortComparer: (a: IChatMsg, b: IChatMsg) => {
-    const aTime = new Date(a.time);
-    const bTime = new Date(b.time);
+  selectId: (chatMessage: ChatMessage) => chatMessage.id,
+  sortComparer: (a: ChatMessage, b: ChatMessage) => {
+    const aTime = new Date(a.sentAt);
+    const bTime = new Date(b.sentAt);
     if (aTime.getTime() > bTime.getTime()) return 1;
     else if (aTime.getTime() < bTime.getTime()) return -1;
     else return 0;

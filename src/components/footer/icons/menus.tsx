@@ -128,7 +128,7 @@ const MenusIcon = () => {
   const muteAllUsers = async () => {
     const body = create(MuteUnMuteTrackReqSchema, {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: 'all',
       muted: true,
     });
@@ -178,7 +178,7 @@ const MenusIcon = () => {
       }
     } else if (host && !sharedNotepadStatus) {
       const body = create(ChangeEtherpadStatusReqSchema, {
-        roomId: store.getState().session.currentRoom.room_id,
+        roomId: store.getState().session.currentRoom.roomId,
         isActive: true,
       });
       const r = await sendAPIRequest(
@@ -198,7 +198,7 @@ const MenusIcon = () => {
       }
     } else if (host && sharedNotepadStatus) {
       const body = create(ChangeEtherpadStatusReqSchema, {
-        roomId: store.getState().session.currentRoom.room_id,
+        roomId: store.getState().session.currentRoom.roomId,
         isActive: false,
       });
       const r = await sendAPIRequest(

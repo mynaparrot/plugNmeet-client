@@ -99,7 +99,7 @@ const WhiteboardIcon = () => {
       !currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
       const body = create(ChangeVisibilityResSchema, {
-        roomId: currentRoom.room_id,
+        roomId: currentRoom.roomId,
         visibleWhiteBoard: true,
       });
       // wait little bit before change visibility
@@ -111,7 +111,7 @@ const WhiteboardIcon = () => {
       currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
       const body = create(ChangeVisibilityResSchema, {
-        roomId: currentRoom.room_id,
+        roomId: currentRoom.roomId,
         visibleWhiteBoard: false,
       });
       sendRequest(body);

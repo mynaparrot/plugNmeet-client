@@ -71,7 +71,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
 
     const body = create(MuteUnMuteTrackReqSchema, {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: participant?.userId,
       muted: true,
     });

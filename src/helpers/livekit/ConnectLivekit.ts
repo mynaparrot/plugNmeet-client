@@ -418,7 +418,6 @@ export default class ConnectLivekit
       isActive: false,
       sharedBy: '',
     };
-    console.log(this._screenShareTracksMap);
 
     // notify about status
     if (this._screenShareTracksMap.size) {

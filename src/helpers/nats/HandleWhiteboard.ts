@@ -5,7 +5,6 @@ import {
   EndToEndEncryptionFeatures,
 } from 'plugnmeet-protocol-js';
 
-import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import {
   addWhiteboardFileAsJSON,
@@ -19,13 +18,10 @@ import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard'
 import { decryptMessage } from '../cryptoMessages';
 
 export default class HandleWhiteboard {
-  private _that: ConnectNats;
   private checkedE2EE = false;
   private _e2eeFeatures: EndToEndEncryptionFeatures | undefined = undefined;
 
-  constructor(that: ConnectNats) {
-    this._that = that;
-  }
+  constructor() {}
 
   public handleWhiteboardMsg = async (payload: DataChannelMessage) => {
     let finalMsg: string | undefined;
@@ -70,9 +66,8 @@ export default class HandleWhiteboard {
   }
 
   private async handleDecryption(msg: string) {
-    if (!this._e2eeFeatures && !this.checkedE2EE) {
+    if (!this.checkedE2EE) {
       this.checkedE2EE = true;
-
       this._e2eeFeatures =
         store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     }
