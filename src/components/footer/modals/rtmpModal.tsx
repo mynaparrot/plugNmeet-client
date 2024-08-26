@@ -4,6 +4,12 @@ import { createSelector } from '@reduxjs/toolkit';
 import { isURL, isEmpty } from 'validator';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  RecordingReqSchema,
+  RecordingTasks,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -13,9 +19,6 @@ import {
 } from '../../../store';
 import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { RecordingTasks } from '../../../helpers/proto/plugnmeet_recorder_pb';
-import { RecordingReq } from '../../../helpers/proto/plugnmeet_recording_pb';
-import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveRtmpBroadcastingSelector = createSelector(
   (state: RootState) => state.session,
@@ -72,7 +75,7 @@ const RtmpModal = () => {
       return;
     }
 
-    const body = new RecordingReq({
+    const body = create(RecordingReqSchema, {
       task: RecordingTasks.START_RTMP,
       sid: store.getState().session.currentRoom.sid,
       rtmpUrl: url + '/' + serverKey,
@@ -87,12 +90,12 @@ const RtmpModal = () => {
 
     const r = await sendAPIRequest(
       'rtmp',
-      body.toBinary(),
+      toBinary(RecordingReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
     let msg = 'footer.notice.rtmp-starting';
 
     if (!res.status) {
@@ -255,19 +258,19 @@ const RtmpModal = () => {
       return;
     }
 
-    const body = new RecordingReq({
+    const body = create(RecordingReqSchema, {
       task: RecordingTasks.STOP_RTMP,
       sid: store.getState().session.currentRoom.sid,
     });
 
     const r = await sendAPIRequest(
       'rtmp',
-      body.toBinary(),
+      toBinary(RecordingReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
     let msg = t('footer.notice.rtmp-ending');
 
     if (!res.status) {

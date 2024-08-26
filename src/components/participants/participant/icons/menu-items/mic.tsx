@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  DataMsgBodyType,
+  MuteUnMuteTrackReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
-import { DataMsgBodyType } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
-import {
-  CommonResponse,
-  MuteUnMuteTrackReq,
-} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 import { getNatsConn } from '../../../../../helpers/nats';
 
 interface IMicMenuItemProps {
@@ -68,7 +69,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
   const muteAudio = async () => {
     const session = store.getState().session;
 
-    const body = new MuteUnMuteTrackReq({
+    const body = create(MuteUnMuteTrackReqSchema, {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
       userId: participant?.userId,
@@ -76,12 +77,12 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     });
     const r = await sendAPIRequest(
       'muteUnmuteTrack',
-      body.toBinary(),
+      toBinary(MuteUnMuteTrackReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(

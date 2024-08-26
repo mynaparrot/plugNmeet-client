@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import { DataMsgBodyType } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
 import { getNatsConn } from '../../../../../helpers/nats';
 
 interface IWebcamMenuItemProps {

@@ -10,10 +10,12 @@ import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardD
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
 import {
-  CommonResponse,
-  SwitchPresenterReq,
+  CommonResponseSchema,
+  SwitchPresenterReqSchema,
   SwitchPresenterTask,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import { displaySavedPageData, savePageData } from './helpers/utils';
 
@@ -170,19 +172,19 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   };
 
   const takeOverPresenter = async () => {
-    const body = new SwitchPresenterReq({
+    const body = create(SwitchPresenterReqSchema, {
       userId: currentUser?.userId,
       task: SwitchPresenterTask.PROMOTE,
     });
 
     const r = await sendAPIRequest(
       'switchPresenter',
-      body.toBinary(),
+      toBinary(SwitchPresenterReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('left-panel.menus.notice.presenter-changed'), {

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  ChangeVisibilityRes,
+  ChangeVisibilityResSchema,
+} from 'plugnmeet-protocol-js';
+import { create, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -13,7 +18,6 @@ import {
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -84,7 +88,7 @@ const WhiteboardIcon = () => {
     const sendRequest = async (body: ChangeVisibilityRes) => {
       await sendAPIRequest(
         'changeVisibility',
-        body.toBinary(),
+        toBinary(ChangeVisibilityResSchema, body),
         false,
         'application/protobuf',
       );
@@ -94,7 +98,7 @@ const WhiteboardIcon = () => {
       isActiveWhiteboard &&
       !currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
+      const body = create(ChangeVisibilityResSchema, {
         roomId: currentRoom.room_id,
         visibleWhiteBoard: true,
       });
@@ -106,7 +110,7 @@ const WhiteboardIcon = () => {
       !isActiveWhiteboard &&
       currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
+      const body = create(ChangeVisibilityResSchema, {
         roomId: currentRoom.room_id,
         visibleWhiteBoard: false,
       });

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import PlayerComponent from './player';
-import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import { getNatsConn } from '../../../helpers/nats';
 
 interface IVideoJsPlayerComponentProps {

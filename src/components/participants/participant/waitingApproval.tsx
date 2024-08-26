@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import {
+  ApproveWaitingUsersReqSchema,
+  CommonResponseSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import {
-  ApproveWaitingUsersReq,
-  CommonResponse,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface IWaitingApprovalProps {
   userId: string;
@@ -26,18 +27,18 @@ const WaitingApproval = ({
   const { t } = useTranslation();
 
   const approve = async () => {
-    const body = new ApproveWaitingUsersReq({
+    const body = create(ApproveWaitingUsersReqSchema, {
       userId: userId,
     });
 
     const r = await sendAPIRequest(
       'waitingRoom/approveUsers',
-      body.toBinary(),
+      toBinary(ApproveWaitingUsersReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('left-panel.menus.notice.user-approved', { name: name }), {

@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
+import {
+  CommonResponseSchema,
+  UpdateWaitingRoomMessageReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { RootState, useAppSelector } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import {
-  CommonResponse,
-  UpdateWaitingRoomMessageReq,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
 
 const waitingRoomMessageSelector = createSelector(
   (state: RootState) =>
@@ -26,18 +27,18 @@ const UpdateRoomMessage = () => {
     if (isEmpty(message)) {
       return;
     }
-    const body = new UpdateWaitingRoomMessageReq({
+    const body = create(UpdateWaitingRoomMessageReqSchema, {
       msg: message,
     });
 
     const r = await sendAPIRequest(
       'waitingRoom/updateMsg',
-      body.toBinary(),
+      toBinary(UpdateWaitingRoomMessageReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('waiting-room.updated-msg'), {

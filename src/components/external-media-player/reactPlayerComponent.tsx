@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player/lazy';
 import { RootState, useAppSelector } from '../../store';
 import { createSelector } from '@reduxjs/toolkit';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
-import { DataMsgBodyType } from '../../helpers/proto/plugnmeet_datamessage_pb';
 import { getNatsConn } from '../../helpers/nats';
 
 interface IReactPlayerComponentProps {

@@ -7,7 +7,10 @@ import {
 } from '@excalidraw/excalidraw/types/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import { toast } from 'react-toastify';
-import { EndToEndEncryptionFeatures } from 'plugnmeet-protocol-js';
+import {
+  EndToEndEncryptionFeatures,
+  DataMsgBodyType,
+} from 'plugnmeet-protocol-js';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
@@ -17,7 +20,6 @@ import {
   PRECEDING_ELEMENT_KEY,
 } from './reconciliation';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
-import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
 import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 

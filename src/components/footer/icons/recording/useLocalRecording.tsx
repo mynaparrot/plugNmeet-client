@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { Track } from 'livekit-client';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import {
   IUseLocalRecordingReturn,
   RecordingEvent,
   RecordingType,
 } from './IRecording';
-import { DataMsgBodyType } from '../../../../helpers/proto/plugnmeet_datamessage_pb';
 import { store } from '../../../../store';
 import { getCurrentRoom } from '../../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../../helpers/nats';

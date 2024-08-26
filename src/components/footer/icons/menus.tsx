@@ -3,6 +3,17 @@ import { Menu, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
+import {
+  ChangeEtherpadStatusReqSchema,
+  CommonResponseSchema,
+  CreateEtherpadSessionResSchema,
+  ExternalDisplayLinkReqSchema,
+  ExternalDisplayLinkTask,
+  ExternalMediaPlayerReqSchema,
+  ExternalMediaPlayerTask,
+  MuteUnMuteTrackReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -27,16 +38,6 @@ import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
-import {
-  ChangeEtherpadStatusReq,
-  CommonResponse,
-  CreateEtherpadSessionRes,
-  ExternalDisplayLinkReq,
-  ExternalDisplayLinkTask,
-  ExternalMediaPlayerReq,
-  ExternalMediaPlayerTask,
-  MuteUnMuteTrackReq,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
 import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 
 const showLockSettingsModalSelector = createSelector(
@@ -125,7 +126,7 @@ const MenusIcon = () => {
     store.getState().session.currentRoom?.metadata?.roomFeatures;
 
   const muteAllUsers = async () => {
-    const body = new MuteUnMuteTrackReq({
+    const body = create(MuteUnMuteTrackReqSchema, {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
       userId: 'all',
@@ -134,12 +135,12 @@ const MenusIcon = () => {
 
     const r = await sendAPIRequest(
       'muteUnmuteTrack',
-      body.toBinary(),
+      toBinary(MuteUnMuteTrackReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('footer.notice.muted-all-microphone'), {
@@ -167,7 +168,7 @@ const MenusIcon = () => {
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -176,18 +177,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && !sharedNotepadStatus) {
-      const body = new ChangeEtherpadStatusReq({
+      const body = create(ChangeEtherpadStatusReqSchema, {
         roomId: store.getState().session.currentRoom.room_id,
         isActive: true,
       });
       const r = await sendAPIRequest(
         'etherpad/changeStatus',
-        body.toBinary(),
+        toBinary(ChangeEtherpadStatusReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -196,18 +197,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && sharedNotepadStatus) {
-      const body = new ChangeEtherpadStatusReq({
+      const body = create(ChangeEtherpadStatusReqSchema, {
         roomId: store.getState().session.currentRoom.room_id,
         isActive: false,
       });
       const r = await sendAPIRequest(
         'etherpad/changeStatus',
-        body.toBinary(),
+        toBinary(ChangeEtherpadStatusReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(false));
       } else {
@@ -234,17 +235,17 @@ const MenusIcon = () => {
       type: 'info',
     });
 
-    const body = new ExternalMediaPlayerReq({
+    const body = create(ExternalMediaPlayerReqSchema, {
       task: ExternalMediaPlayerTask.END_PLAYBACK,
     });
     const r = await sendAPIRequest(
       'externalMediaPlayer',
-      body.toBinary(),
+      toBinary(ExternalMediaPlayerReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {
@@ -269,7 +270,7 @@ const MenusIcon = () => {
       }
       return;
     }
-    const body = new ExternalDisplayLinkReq({
+    const body = create(ExternalDisplayLinkReqSchema, {
       task: ExternalDisplayLinkTask.STOP_EXTERNAL_LINK,
     });
 
@@ -279,12 +280,12 @@ const MenusIcon = () => {
 
     const r = await sendAPIRequest(
       'externalDisplayLink',
-      body.toBinary(),
+      toBinary(ExternalDisplayLinkReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {

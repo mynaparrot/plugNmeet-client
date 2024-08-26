@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  ChangeVisibilityRes,
+  ChangeVisibilityResSchema,
+} from 'plugnmeet-protocol-js';
+import { create, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -13,7 +18,6 @@ import {
   updateIsActiveSharedNotePad,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveSharedNotePadSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -95,7 +99,7 @@ const SharedNotePadIcon = () => {
     const sendRequest = async (body: ChangeVisibilityRes) => {
       await sendAPIRequest(
         'changeVisibility',
-        body.toBinary(),
+        toBinary(ChangeVisibilityResSchema, body),
         false,
         'application/protobuf',
       );
@@ -105,7 +109,7 @@ const SharedNotePadIcon = () => {
       isActiveSharedNotePad &&
       !currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
+      const body = create(ChangeVisibilityResSchema, {
         roomId: currentRoom.room_id,
         visibleNotepad: true,
       });
@@ -117,7 +121,7 @@ const SharedNotePadIcon = () => {
       !isActiveSharedNotePad &&
       currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
+      const body = create(ChangeVisibilityResSchema, {
         roomId: currentRoom.room_id,
         visibleNotepad: false,
       });

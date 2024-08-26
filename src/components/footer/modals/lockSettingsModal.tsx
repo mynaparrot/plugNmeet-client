@@ -3,6 +3,11 @@ import { createSelector } from '@reduxjs/toolkit';
 import { Transition, Dialog, Switch } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  UpdateUserLockSettingsReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -12,10 +17,6 @@ import {
 } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import {
-  CommonResponse,
-  UpdateUserLockSettingsReq,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const roomLockSettingsSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
@@ -30,7 +31,7 @@ const LockSettingsModal = () => {
   const updateLockSettings = async (status, service: string) => {
     const direction = status ? 'lock' : 'unlock';
 
-    const body = new UpdateUserLockSettingsReq({
+    const body = create(UpdateUserLockSettingsReqSchema, {
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
       userId: 'all',
@@ -40,12 +41,12 @@ const LockSettingsModal = () => {
 
     const r = await sendAPIRequest(
       'updateLockSettings',
-      body.toBinary(),
+      toBinary(UpdateUserLockSettingsReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('footer.notice.applied-settings'), {

@@ -3,13 +3,10 @@ import { toast } from 'react-toastify';
 import { Room } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-} from '../../../helpers/proto/plugnmeet_analytics_pb';
 import { getNatsConn } from '../../../helpers/nats';
 
 interface IFileSendProps {

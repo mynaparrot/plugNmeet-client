@@ -3,10 +3,14 @@ import { createSelector } from '@reduxjs/toolkit';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  RoomEndAPIReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
 import './style.css';
@@ -14,10 +18,6 @@ import KeyboardShortcuts from './keyboardShortcuts';
 import VolumeControl from './volumeControl';
 import DurationView from './durationView';
 import DarkThemeSwitcher from './darkThemeSwitcher';
-import {
-  CommonResponse,
-  RoomEndAPIReq,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
 import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
@@ -76,18 +76,18 @@ const Header = () => {
     } else if (task === 'end Room') {
       const session = store.getState().session;
 
-      const body = new RoomEndAPIReq({
+      const body = create(RoomEndAPIReqSchema, {
         roomId: session.currentRoom.room_id,
       });
 
       const r = await sendAPIRequest(
         'endRoom',
-        body.toBinary(),
+        toBinary(RoomEndAPIReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
       if (!res.status) {
         toast(res.msg, {
           type: 'error',

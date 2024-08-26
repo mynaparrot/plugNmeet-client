@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
-import { DataMsgBodyType } from '../proto/plugnmeet_datamessage_pb';
 import { getNatsConn } from '../nats';
 
 const useWatchVisibilityChange = () => {

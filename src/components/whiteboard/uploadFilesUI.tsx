@@ -12,16 +12,17 @@ import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboa
 import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  DataMsgBodyType,
+} from 'plugnmeet-protocol-js';
+
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
-import { DataMsgBodyType } from '../../helpers/proto/plugnmeet_datamessage_pb';
 import {
   formatStorageKey,
   handleToAddWhiteboardUploadedOfficeNewFile,
 } from './helpers/utils';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-} from '../../helpers/proto/plugnmeet_analytics_pb';
 import { getNatsConn } from '../../helpers/nats';
 
 interface IUploadFilesProps {

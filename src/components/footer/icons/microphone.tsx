@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
-import { proto3 } from '@bufbuild/protobufv1';
 import { isEmpty } from 'lodash';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  AnalyticsStatus,
+  AnalyticsStatusSchema,
+} from 'plugnmeet-protocol-js';
 
 import {
   RootState,
@@ -21,11 +26,6 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  AnalyticsStatus,
-} from '../../../helpers/proto/plugnmeet_analytics_pb';
 import { getAudioPreset } from '../../../helpers/utils';
 import { getCurrentRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
@@ -173,22 +173,24 @@ const MicrophoneIcon = () => {
         if (publication.isMuted) {
           await publication.track.unmute();
           dispatch(updateIsMicMuted(false));
+
           // send analytics
+          const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
           conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
-            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.UNMUTED]
-              .name,
+            val['name'],
           );
         } else {
           await publication.track.mute();
           dispatch(updateIsMicMuted(true));
+
           // send analytics
+          const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
           conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
-            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.MUTED]
-              .name,
+            val['name'],
           );
         }
       }

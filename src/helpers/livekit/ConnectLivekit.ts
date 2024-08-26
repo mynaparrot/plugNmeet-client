@@ -19,6 +19,7 @@ import {
   VideoPresets,
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
+import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import {
@@ -45,10 +46,6 @@ import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { toast } from 'react-toastify';
 import { getNatsConn } from '../nats';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-} from '../proto/plugnmeet_analytics_pb';
 
 export default class ConnectLivekit
   extends EventEmitter

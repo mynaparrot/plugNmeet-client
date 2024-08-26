@@ -2,15 +2,16 @@ import React from 'react';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  UpdateUserLockSettingsReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
 import { ICurrentUserMetadata } from '../../../../../store/slices/interfaces/session';
-import {
-  CommonResponse,
-  UpdateUserLockSettingsReq,
-} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface ILockSettingMenuItemProps {
   userId: string;
@@ -65,7 +66,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
         break;
     }
 
-    const body = new UpdateUserLockSettingsReq({
+    const body = create(UpdateUserLockSettingsReqSchema, {
       roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
       userId: participant?.userId,
@@ -75,12 +76,12 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
 
     const r = await sendAPIRequest(
       'updateLockSettings',
-      body.toBinary(),
+      toBinary(UpdateUserLockSettingsReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('left-panel.menus.notice.applied-new-setting'), {

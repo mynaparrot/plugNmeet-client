@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  RemoveParticipantReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store } from '../../store';
-import {
-  CommonResponse,
-  RemoveParticipantReq,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 
 export interface IRemoveParticipantAlertModalData {
@@ -39,7 +40,7 @@ const RemoveParticipantAlertModal = ({
     }
 
     const session = store.getState().session;
-    const body = new RemoveParticipantReq({
+    const body = create(RemoveParticipantReqSchema, {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.room_id,
       userId: userId,
@@ -52,12 +53,12 @@ const RemoveParticipantAlertModal = ({
 
     const r = await sendAPIRequest(
       'removeParticipant',
-      body.toBinary(),
+      toBinary(RemoveParticipantReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('left-panel.menus.notice.participant-removed'), {

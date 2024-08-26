@@ -2,15 +2,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
+import {
+  CommonResponseSchema,
+  SwitchPresenterReqSchema,
+  SwitchPresenterTask,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
-import {
-  CommonResponse,
-  SwitchPresenterReq,
-  SwitchPresenterTask,
-} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface ISwitchPresenterMenuItemProps {
   userId: string;
@@ -23,7 +24,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
   const { t } = useTranslation();
 
   const onClick = async () => {
-    const body = new SwitchPresenterReq({
+    const body = create(SwitchPresenterReqSchema, {
       userId: participant?.userId,
       task: participant?.metadata.isPresenter
         ? SwitchPresenterTask.DEMOTE
@@ -32,12 +33,12 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
 
     const r = await sendAPIRequest(
       'switchPresenter',
-      body.toBinary(),
+      toBinary(SwitchPresenterReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('left-panel.menus.notice.presenter-changed'), {

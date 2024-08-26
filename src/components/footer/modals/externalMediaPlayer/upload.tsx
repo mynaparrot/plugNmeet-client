@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import {
+  CommonResponseSchema,
+  ExternalMediaPlayerReqSchema,
+  ExternalMediaPlayerTask,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch } from '../../../../store';
-import {
-  CommonResponse,
-  ExternalMediaPlayerReq,
-  ExternalMediaPlayerTask,
-} from '../../../../helpers/proto/plugnmeet_common_api_pb';
 
 const Upload = () => {
   const { t } = useTranslation();
@@ -35,18 +36,18 @@ const Upload = () => {
         },
       );
 
-      const body = new ExternalMediaPlayerReq({
+      const body = create(ExternalMediaPlayerReqSchema, {
         task: ExternalMediaPlayerTask.START_PLAYBACK,
         url: playBackUrl,
       });
       const r = await sendAPIRequest(
         'externalMediaPlayer',
-        body.toBinary(),
+        toBinary(ExternalMediaPlayerReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
       if (!res.status) {
         toast.update(id, {
