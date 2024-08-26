@@ -20,7 +20,7 @@ const MyVoteStatus = ({ pollId }: IMyVoteStatusProps) => {
   useEffect(() => {
     if (!isLoading && data) {
       if (data.status) {
-        setHasVoted(!!(data.voted && data.voted > 0));
+        setHasVoted(!!(data.voted && Number(data.voted) > 0));
       }
     }
   }, [data, isLoading]);

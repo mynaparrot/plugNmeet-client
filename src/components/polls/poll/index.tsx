@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { PollInfo } from 'plugnmeet-protocol-js';
+
 import TotalResponses from './totalResponses';
 import MyVoteStatus from './myVoteStatus';
 import { useTranslation } from 'react-i18next';
 import { store } from '../../../store';
 import ViewDetails from '../viewDetails';
 import ViewResult from '../viewResult';
-import { PollInfo } from '../../../helpers/proto/plugnmeet_polls_pb';
 
 interface IPollPros {
   item: PollInfo;

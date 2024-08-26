@@ -3,13 +3,14 @@ import ReactDOMServer from 'react-dom/server';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
+import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import {
   useClosePollMutation,
   useGetPollListsQuery,
   useGetPollResponsesDetailsQuery,
 } from '../../store/services/pollsApi';
-import { ClosePollReq } from '../../helpers/proto/plugnmeet_polls_pb';
 import { getNatsConn } from '../../helpers/nats';
 
 interface IViewDetailsProps {
@@ -72,7 +73,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
 
   const endPoll = () => {
     closePoll(
-      new ClosePollReq({
+      create(ClosePollReqSchema, {
         pollId: pollId,
       }),
     );

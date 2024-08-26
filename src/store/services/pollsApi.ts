@@ -4,7 +4,12 @@ import {
   CreatePollReq,
   SubmitPollResponseReq,
   ClosePollReq,
-} from '../../helpers/proto/plugnmeet_polls_pb';
+  PollResponseSchema,
+  CreatePollReqSchema,
+  SubmitPollResponseReqSchema,
+  ClosePollReqSchema,
+} from 'plugnmeet-protocol-js';
+import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
 
 export const pollsApi = createApi({
   reducerPath: 'pollsApi',
@@ -34,7 +39,8 @@ export const pollsApi = createApi({
           url: 'listPolls',
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -46,7 +52,8 @@ export const pollsApi = createApi({
           url: `countTotalResponses/${poll_id}`,
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -65,7 +72,8 @@ export const pollsApi = createApi({
           url: `userSelectedOption/${pollId}/${userId}`,
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -81,7 +89,8 @@ export const pollsApi = createApi({
           url: `pollResponsesDetails/${poll_id}`,
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -97,7 +106,8 @@ export const pollsApi = createApi({
           url: `pollResponsesResult/${poll_id}`,
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -113,7 +123,8 @@ export const pollsApi = createApi({
           url: 'pollsStats',
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -124,10 +135,11 @@ export const pollsApi = createApi({
         return {
           url: 'create',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(CreatePollReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -138,10 +150,11 @@ export const pollsApi = createApi({
         return {
           url: 'submitResponse',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(SubmitPollResponseReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
@@ -156,10 +169,11 @@ export const pollsApi = createApi({
         return {
           url: 'closePoll',
           method: 'POST',
-          body: body.toBinary(),
+          body: toBinary(ClosePollReqSchema, body),
           responseHandler: async (res) => {
             const buf = await res.arrayBuffer();
-            return PollResponse.fromBinary(new Uint8Array(buf)).toJson();
+            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
+            return toJson(PollResponseSchema, b);
           },
         };
       },
