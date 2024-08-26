@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.0.0",
-    "@bufbuild/protobufv1": "npm:@bufbuild/protobuf@^1.10.0",
     "@excalidraw/excalidraw": "0.17.6",
     "@headlessui/react": "1.7.19",
     "@nats-io/jetstream": "^3.0.0-4",
@@ -53,7 +52,6 @@
     "video.js": "8.17.3"
   },
   "devDependencies": {
-    "@bufbuild/protoc-gen-es": "1.10.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.15",
     "@size-limit/preset-app": "11.1.4",
     "@types/emscripten": "1.39.13",
