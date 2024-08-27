@@ -1,12 +1,12 @@
 import React from 'react';
 import { Menu } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
+
 import { store, useAppDispatch } from '../../store';
 import {
   updateShowKeyboardShortcutsModal,
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
-import { useTranslation } from 'react-i18next';
-import { getNatsConn } from '../../helpers/nats';
 
 interface IHeaderMenusProps {
   onOpenAlert(task: string): void;
@@ -30,17 +30,6 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
 
   const showKeyboardShortcuts = () => {
     dispatch(updateShowKeyboardShortcutsModal(true));
-  };
-
-  const disconnect = async () => {
-    const conn = getNatsConn();
-    await conn.nc?.drain();
-    await conn.nc?.close();
-  };
-
-  const reconnect = async () => {
-    const conn = getNatsConn();
-    await conn.nc?.reconnect();
   };
 
   const render = () => {
@@ -79,28 +68,6 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
             >
               <i className="pnm-logout text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
               {t('header.menus.logout')}
-            </button>
-          </Menu.Item>
-        </div>
-        <div className="py-1" role="none">
-          <Menu.Item>
-            <button
-              className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
-              onClick={() => reconnect()}
-            >
-              <i className="pnm-logout text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
-              Reconnect
-            </button>
-          </Menu.Item>
-        </div>
-        <div className="py-1" role="none">
-          <Menu.Item>
-            <button
-              className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
-              onClick={() => disconnect()}
-            >
-              <i className="pnm-logout text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
-              Disconnect
             </button>
           </Menu.Item>
         </div>
