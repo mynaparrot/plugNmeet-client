@@ -10,20 +10,18 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { IUseCloudRecordingReturn, RecordingType } from './IRecording';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
-import { getCurrentRoom } from '../../../../helpers/livekit/utils';
+import { getNatsConn } from '../../../../helpers/nats';
 
 const useCloudRecording = (): IUseCloudRecordingReturn => {
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_LOCAL;
   const [hasError, setHasError] = useState<boolean>(false);
   const { t } = useTranslation();
-  const currentRoom = getCurrentRoom();
+  const conn = getNatsConn();
 
   const startRecording = async () => {
-    const sid = await currentRoom.getSid();
-
     const body = create(RecordingReqSchema, {
       task: RecordingTasks.START_RECORDING,
-      sid: sid,
+      sid: conn.currentRoomInfo.sid,
     });
     if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
       body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
@@ -52,10 +50,9 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
   };
 
   const stopRecording = async () => {
-    const sid = await currentRoom.getSid();
     const body = create(RecordingReqSchema, {
       task: RecordingTasks.STOP_RECORDING,
-      sid: sid,
+      sid: conn.currentRoomInfo.sid,
     });
     const r = await sendAPIRequest(
       'recording',

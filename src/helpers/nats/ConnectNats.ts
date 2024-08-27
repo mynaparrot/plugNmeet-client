@@ -53,6 +53,10 @@ import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
+import {
+  ICurrentRoom,
+  ICurrentUser,
+} from '../../store/slices/interfaces/session';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -131,6 +135,14 @@ export default class ConnectNats {
 
   get userId(): string {
     return this._userId;
+  }
+
+  get currentRoomInfo(): ICurrentRoom {
+    return this.handleRoomData.roomInfo;
+  }
+
+  get localUserInfo(): ICurrentUser {
+    return this.handleParticipants.localParticipant;
   }
 
   public openConn = async () => {
