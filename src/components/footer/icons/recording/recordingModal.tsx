@@ -1,13 +1,13 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { RecordingFeatures } from 'plugnmeet-protocol-js';
 
 import { RecordingType } from './IRecording';
-import { IRecordingFeatures } from '../../../../store/slices/interfaces/session';
 
 interface IRecordingModalProps {
   showModal: boolean;
-  recordingFeatures: IRecordingFeatures;
+  recordingFeatures?: RecordingFeatures;
   onCloseModal(recordingType: RecordingType): void;
 }
 
@@ -97,7 +97,7 @@ const RecordingModal = ({
                           {t('footer.icons.recording-types-des')}
                         </p>
                         <div className="mt-4 pl-2 space-y-4">
-                          {recordingFeatures.is_allow_local ? (
+                          {recordingFeatures?.isAllowLocal ? (
                             <div className="flex items-center">
                               <input
                                 type="radio"
@@ -122,7 +122,7 @@ const RecordingModal = ({
                               </label>
                             </div>
                           ) : null}
-                          {recordingFeatures.is_allow_cloud ? (
+                          {recordingFeatures?.isAllowCloud ? (
                             <div className="flex items-center">
                               <input
                                 type="radio"

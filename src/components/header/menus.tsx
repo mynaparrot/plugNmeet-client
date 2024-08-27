@@ -1,18 +1,19 @@
 import React from 'react';
 import { Menu } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
+
 import { store, useAppDispatch } from '../../store';
 import {
   updateShowKeyboardShortcutsModal,
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
-import { useTranslation } from 'react-i18next';
 
 interface IHeaderMenusProps {
   onOpenAlert(task: string): void;
 }
 
 const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 

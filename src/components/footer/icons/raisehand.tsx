@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
+} from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
-import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
-import { updateIsActiveRaisehand } from '../../../store/slices/bottomIconsActivitySlice';
-import { SystemMsgType } from '../../../store/slices/interfaces/dataMessages';
-import {
-  CommonResponse,
-  DataMessageReq,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
-import { DataMsgBodyType } from '../../../helpers/proto/plugnmeet_datamessage_pb';
+import { RootState, store, useAppSelector } from '../../../store';
 import { getCurrentRoom } from '../../../helpers/livekit/utils';
+import { getNatsConn } from '../../../helpers/nats';
 
 const isActiveRaisehandSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -27,7 +19,6 @@ const isActiveRaisehandSelector = createSelector(
 const RaiseHandIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const currentRoom = getCurrentRoom();
   const isActiveRaisehand = useAppSelector(isActiveRaisehandSelector);
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
@@ -41,69 +32,27 @@ const RaiseHandIcon = () => {
   }, [isActiveRaisehand]);
 
   const toggleRaiseHand = async () => {
-    const sid = await currentRoom.getSid();
+    const conn = getNatsConn();
+    const data = create(NatsMsgClientToServerSchema, {});
+
     if (!isActiveRaisehand) {
-      const body = new DataMessageReq({
-        roomSid: sid,
-        roomId: currentRoom.name,
-        msgBodyType: DataMsgBodyType.RAISE_HAND,
-        msg: t('footer.notice.has-raised-hand', {
-          user: currentRoom.localParticipant.name,
-        }).toString(),
-      });
-
-      const r = await sendAPIRequest(
-        'dataMessage',
-        body.toBinary(),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
-
-      if (res.status) {
-        dispatch(updateIsActiveRaisehand(true));
-
-        toast(t('footer.notice.you-raised-hand'), {
-          type: 'info',
-        });
-      } else {
-        toast(res.msg, {
-          type: 'error',
-        });
-      }
+      data.event = NatsMsgClientToServerEvents.REQ_RAISE_HAND;
+      data.msg = t('footer.notice.has-raised-hand', {
+        user: currentRoom.localParticipant.name,
+      }).toString();
     } else {
-      const body = new DataMessageReq({
-        roomSid: sid,
-        roomId: currentRoom.name,
-        msgBodyType: DataMsgBodyType.LOWER_HAND,
-        msg: SystemMsgType.LOWER_HAND,
-      });
-
-      const r = await sendAPIRequest(
-        'dataMessage',
-        body.toBinary(),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveRaisehand(false));
-      } else {
-        toast(res.msg, {
-          type: 'error',
-        });
-      }
+      data.event = NatsMsgClientToServerEvents.REQ_LOWER_HAND;
     }
+
+    await conn.sendMessageToSystemWorker(data);
   };
 
   const render = () => {
     const room_features =
-      store.getState().session.currentRoom.metadata?.room_features;
+      store.getState().session.currentRoom.metadata?.roomFeatures;
     if (
-      typeof room_features?.allow_raise_hand !== 'undefined' &&
-      room_features?.allow_raise_hand === false
+      typeof room_features?.allowRaiseHand !== 'undefined' &&
+      room_features?.allowRaiseHand === false
     ) {
       return null;
     }

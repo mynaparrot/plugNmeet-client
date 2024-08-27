@@ -2,9 +2,10 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { CreatePollReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { useCreatePollMutation } from '../../store/services/pollsApi';
-import { CreatePollReq } from '../../helpers/proto/plugnmeet_polls_pb';
 
 interface CreatePollOptions {
   id: number;
@@ -62,7 +63,7 @@ const Create = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const body = new CreatePollReq({
+    const body = create(CreatePollReqSchema, {
       question,
       options,
     });

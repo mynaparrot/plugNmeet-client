@@ -25,7 +25,7 @@ const footerVisibilitySelector = createSelector(
 );
 
 const Footer = () => {
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();

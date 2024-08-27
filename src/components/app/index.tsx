@@ -8,8 +8,14 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import {
+  VerifyTokenReqSchema,
+  VerifyTokenRes,
+  VerifyTokenResSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import ErrorPage from '../extra-pages/Error';
+import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
 import Footer from '../footer';
 import Header from '../header';
@@ -19,9 +25,6 @@ import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import StartupJoinModal from './joinModal';
-import useLivekitConnect, {
-  LivekitInfo,
-} from '../../helpers/livekit/hooks/useLivekitConnect';
 import AudioNotification from './audioNotification';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
@@ -30,17 +33,14 @@ import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChan
 import WaitingRoomPage from '../waiting-room/room-page';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
-import {
-  VerifyTokenReq,
-  VerifyTokenRes,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken } from '../../helpers/utils';
+import { startNatsConn } from '../../helpers/nats';
 
 declare const IS_PRODUCTION: boolean;
 const waitingForApprovalSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.wait_for_approval,
+  (metadata) => metadata?.waitForApproval,
 );
 
 const App = () => {
@@ -54,24 +54,28 @@ const App = () => {
   // it could be recorder or RTMP bot
   const [isRecorder, setIsRecorder] = useState<boolean>(false);
   const [userTypeClass, setUserTypeClass] = useState('participant');
-  const [livekitInfo, setLivekitInfo] = useState<LivekitInfo>();
-  const [currentConnection, setCurrentConnection] = useState<IConnectLivekit>();
+  const [currentMediaServerConn, setCurrentMediaServerConn] =
+    useState<IConnectLivekit>();
   const waitForApproval = useAppSelector(waitingForApprovalSelector);
 
-  // some custom hooks
-  const {
-    error,
-    setError,
-    roomConnectionStatus,
-    setRoomConnectionStatus,
-    startLivekitConnection,
-  } = useLivekitConnect();
+  const [error, setError] = useState<IErrorPageProps | undefined>();
+  const [roomConnectionStatus, setRoomConnectionStatus] =
+    useState<string>('loading');
 
-  useKeyboardShortcuts(currentConnection?.room);
+  // some custom hooks
+  // const {
+  //   error,
+  //   setError,
+  //   roomConnectionStatus,
+  //   setRoomConnectionStatus,
+  //   startLivekitConnection,
+  // } = useLivekitConnect();
+
+  useKeyboardShortcuts(currentMediaServerConn?.room);
   useDesignCustomization();
   useWatchVisibilityChange();
   const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
-    currentConnection?.room,
+    currentMediaServerConn?.room,
   );
   useThemeSettings();
 
@@ -99,14 +103,17 @@ const App = () => {
         try {
           const r = await sendAPIRequest(
             'verifyToken',
-            new VerifyTokenReq({
-              isProduction: IS_PRODUCTION,
-            }).toBinary(),
+            toBinary(
+              VerifyTokenReqSchema,
+              create(VerifyTokenReqSchema, {
+                isProduction: IS_PRODUCTION,
+              }),
+            ),
             false,
             'application/protobuf',
             'arraybuffer',
           );
-          res = VerifyTokenRes.fromBinary(new Uint8Array(r));
+          res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
         } catch (error: any) {
           console.error(error);
 
@@ -121,17 +128,28 @@ const App = () => {
 
         setRoomConnectionStatus('ready');
         setLoading(false);
-        if (res.status && res.livekitHost && res.token) {
-          // we'll store token that we received from URL
+        if (
+          res.status &&
+          res.natsWsUrls.length &&
+          res.roomId &&
+          res.userId &&
+          res.natsSubjects
+        ) {
+          // we'll store the token that we received from the URL
           dispatch(addToken(accessToken));
           dispatch(addServerVersion(res.serverVersion ?? ''));
 
-          // for livekit need to use generated token & host
-          setLivekitInfo({
-            livekit_host: res.livekitHost,
-            token: res.token,
-            enabledE2EE: res.enabledE2ee,
-          });
+          setRoomConnectionStatus('connecting');
+          await startNatsConn(
+            res.natsWsUrls,
+            accessToken,
+            res.roomId,
+            res.userId,
+            res.natsSubjects,
+            setError,
+            setRoomConnectionStatus,
+            setCurrentMediaServerConn,
+          );
         } else {
           setError({
             title: t('app.verification-failed-title'),
@@ -140,7 +158,7 @@ const App = () => {
         }
       };
 
-      if (!currentConnection) {
+      if (!currentMediaServerConn) {
         setRoomConnectionStatus('checking');
         timeout = setTimeout(() => {
           verifyToken();
@@ -153,12 +171,13 @@ const App = () => {
         clearTimeout(timeout);
       }
     };
-  }, [t, dispatch, currentConnection, setError, setRoomConnectionStatus]);
+  }, [t, dispatch, currentMediaServerConn, setError, setRoomConnectionStatus]);
 
   useEffect(() => {
     if (
       roomConnectionStatus === 'connecting' ||
-      roomConnectionStatus === 'checking'
+      roomConnectionStatus === 'checking' ||
+      roomConnectionStatus === 'receiving-data'
     ) {
       setLoading(true);
     } else if (roomConnectionStatus === 're-connecting') {
@@ -184,14 +203,15 @@ const App = () => {
   useEffect(() => {
     if (roomConnectionStatus === 'connected') {
       if (
-        currentConnection?.room.localParticipant.identity === 'RECORDER_BOT' ||
-        currentConnection?.room.localParticipant.identity === 'RTMP_BOT'
+        currentMediaServerConn?.room.localParticipant.identity ===
+          'RECORDER_BOT' ||
+        currentMediaServerConn?.room.localParticipant.identity === 'RTMP_BOT'
       ) {
         setIsRecorder(true);
         dispatch(updateIsActiveChatPanel(false));
       }
 
-      if (store.getState().session.currentUser?.metadata?.is_admin) {
+      if (store.getState().session.currentUser?.metadata?.isAdmin) {
         setUserTypeClass('admin');
       }
     }
@@ -199,7 +219,7 @@ const App = () => {
   }, [roomConnectionStatus]);
 
   const renderMainApp = useCallback(() => {
-    if (currentConnection) {
+    if (currentMediaServerConn) {
       return (
         <div className="plugNmeet-app overflow-hidden h-screen">
           {!isRecorder ? <Header /> : null}
@@ -210,12 +230,11 @@ const App = () => {
       );
     }
     return null;
-  }, [isRecorder, currentConnection]);
+  }, [isRecorder, currentMediaServerConn]);
 
   const onCloseStartupModal = async () => {
-    if (livekitInfo) {
-      const currentConnection = startLivekitConnection(livekitInfo);
-      setCurrentConnection(currentConnection);
+    if (currentMediaServerConn) {
+      await currentMediaServerConn.connect();
     }
   };
 

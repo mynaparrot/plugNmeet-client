@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
-import { store } from '../../store';
-import { sendWebsocketMessage } from '../websocket';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
+
+import { getNatsConn } from '../nats';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
@@ -71,22 +67,16 @@ const useWatchVisibilityChange = () => {
   }, []);
 
   useEffect(() => {
-    const session = store.getState().session;
-    const dataMsg = new DataMessage({
-      type: DataMsgType.SYSTEM,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      body: {
-        type: DataMsgBodyType.USER_VISIBILITY_CHANGE,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg: hidden ? 'hidden' : 'visible',
-      },
-    });
+    const conn = getNatsConn();
+    if (typeof conn === 'undefined') {
+      return;
+    }
 
-    sendWebsocketMessage(dataMsg.toBinary());
+    conn.sendDataMessage(
+      DataMsgBodyType.USER_VISIBILITY_CHANGE,
+      hidden ? 'hidden' : 'visible',
+    );
+    //eslint-disable-next-line
   }, [hidden]);
 };
 

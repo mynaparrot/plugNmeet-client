@@ -21,7 +21,7 @@ const ManageWaitingRoom = () => {
 
   useEffect(() => {
     if (participants.length) {
-      const waiting = participants.filter((p) => p.metadata.wait_for_approval);
+      const waiting = participants.filter((p) => p.metadata.waitForApproval);
       setWaitingParticipants(waiting);
     }
   }, [participants]);

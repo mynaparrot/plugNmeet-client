@@ -11,8 +11,8 @@ import {
 } from '../../helpers/livekit/utils';
 
 const isChatLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_chat,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockChat,
 );
 const themeSelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -31,12 +31,12 @@ const ChatComponent = () => {
   // default room lock settings
   useEffect(() => {
     const isLock =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_chat;
-    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockChat;
+    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {
-      if (isChatLock !== false) {
+      if (isChatLock) {
         setShow(false);
       }
     }

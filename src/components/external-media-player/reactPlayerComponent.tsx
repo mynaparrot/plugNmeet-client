@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player/lazy';
-import { sendWebsocketMessage } from '../../helpers/websocket';
-import { RootState, store, useAppSelector } from '../../store';
+import { RootState, useAppSelector } from '../../store';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage_pb';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
+
+import { getNatsConn } from '../../helpers/nats';
 
 interface IReactPlayerComponentProps {
   src: string;
@@ -35,7 +32,7 @@ const ReactPlayerComponent = ({
   const [isReady, setIsReady] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const player = useRef<ReactPlayer>();
-  const session = store.getState().session;
+  const conn = getNatsConn();
 
   const height = useAppSelector(heightSelector);
   const width = useAppSelector(widthSelector);
@@ -69,22 +66,11 @@ const ReactPlayerComponent = ({
     if (!isReady || !player) {
       return;
     }
-    const broadcast = (msg: string) => {
-      const dataMsg = new DataMessage({
-        type: DataMsgType.SYSTEM,
-        roomSid: session.currentRoom.sid,
-        roomId: session.currentRoom.room_id,
-        body: {
-          type: DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
-          from: {
-            sid: session.currentUser?.sid ?? '',
-            userId: session.currentUser?.userId ?? '',
-          },
-          msg,
-        },
-      });
-
-      sendWebsocketMessage(dataMsg.toBinary());
+    const broadcast = async (msg: string) => {
+      await conn.sendDataMessage(
+        DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
+        msg,
+      );
     };
 
     if (paused) {

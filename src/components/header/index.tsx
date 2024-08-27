@@ -3,10 +3,14 @@ import { createSelector } from '@reduxjs/toolkit';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  RoomEndAPIReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
 import './style.css';
@@ -14,21 +18,17 @@ import KeyboardShortcuts from './keyboardShortcuts';
 import VolumeControl from './volumeControl';
 import DurationView from './durationView';
 import DarkThemeSwitcher from './darkThemeSwitcher';
-import {
-  CommonResponse,
-  RoomEndAPIReq,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
 import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
-import { getCurrentRoom } from '../../helpers/livekit/utils';
+import { getNatsConn } from '../../helpers/nats';
 
 const roomTitleSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.room_title,
+  (metadata) => metadata?.roomTitle,
 );
 const roomDurationSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.room_features,
-  (room_features) => room_features?.room_duration,
+  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
+  (room_features) => room_features?.roomDuration,
 );
 const headerVisibilitySelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -40,7 +40,6 @@ const Header = () => {
   const roomDuration = useAppSelector(roomDurationSelector);
   const headerVisible = useAppSelector(headerVisibilitySelector);
   const dispatch = useAppDispatch();
-  const currentRoom = getCurrentRoom();
 
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');
@@ -72,22 +71,23 @@ const Header = () => {
     }
 
     if (task === 'logout') {
-      await currentRoom.disconnect();
+      const conn = getNatsConn();
+      await conn.endSession('notifications.user-logged-out');
     } else if (task === 'end Room') {
       const session = store.getState().session;
 
-      const body = new RoomEndAPIReq({
-        roomId: session.currentRoom.room_id,
+      const body = create(RoomEndAPIReqSchema, {
+        roomId: session.currentRoom.roomId,
       });
 
       const r = await sendAPIRequest(
         'endRoom',
-        body.toBinary(),
+        toBinary(RoomEndAPIReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
       if (!res.status) {
         toast(res.msg, {
           type: 'error',

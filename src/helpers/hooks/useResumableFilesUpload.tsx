@@ -44,7 +44,7 @@ const useResumableFilesUpload = ({
       uploadMethod: 'POST',
       query: {
         sid: session.currentRoom.sid,
-        roomId: session.currentRoom.room_id,
+        roomId: session.currentRoom.roomId,
         userId: session.currentUser?.userId,
         resumable: true,
       },

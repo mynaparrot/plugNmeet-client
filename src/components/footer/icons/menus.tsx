@@ -3,6 +3,17 @@ import { Menu, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
+import {
+  ChangeEtherpadStatusReqSchema,
+  CommonResponseSchema,
+  CreateEtherpadSessionResSchema,
+  ExternalDisplayLinkReqSchema,
+  ExternalDisplayLinkTask,
+  ExternalMediaPlayerReqSchema,
+  ExternalMediaPlayerTask,
+  MuteUnMuteTrackReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -27,16 +38,6 @@ import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
-import {
-  ChangeEtherpadStatusReq,
-  CommonResponse,
-  CreateEtherpadSessionRes,
-  ExternalDisplayLinkReq,
-  ExternalDisplayLinkTask,
-  ExternalMediaPlayerReq,
-  ExternalMediaPlayerTask,
-  MuteUnMuteTrackReq,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
 import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 
 const showLockSettingsModalSelector = createSelector(
@@ -53,14 +54,14 @@ const showRtmpModalSelector = createSelector(
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 const isActiveExternalMediaPlayerSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .external_media_player_features,
-  (external_media_player_features) => external_media_player_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      ?.externalMediaPlayerFeatures,
+  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
 );
 const showExternalMediaPlayerModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -76,9 +77,9 @@ const showManageBreakoutRoomModalSelector = createSelector(
 );
 const isActiveDisplayExternalLinkSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      ?.displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 const showDisplayExternalLinkModalModalSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -122,24 +123,24 @@ const MenusIcon = () => {
     showSpeechSettingsModalSelector,
   );
   const roomFeatures =
-    store.getState().session.currentRoom?.metadata?.room_features;
+    store.getState().session.currentRoom?.metadata?.roomFeatures;
 
   const muteAllUsers = async () => {
-    const body = new MuteUnMuteTrackReq({
+    const body = create(MuteUnMuteTrackReqSchema, {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: 'all',
       muted: true,
     });
 
     const r = await sendAPIRequest(
       'muteUnmuteTrack',
-      body.toBinary(),
+      toBinary(MuteUnMuteTrackReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('footer.notice.muted-all-microphone'), {
@@ -156,8 +157,8 @@ const MenusIcon = () => {
 
   const toggleSharedNotepad = async () => {
     const host =
-      store.getState().session.currentRoom.metadata?.room_features
-        .shared_note_pad_features.host;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.sharedNotePadFeatures?.host;
 
     if (!host && !sharedNotepadStatus) {
       const r = await sendAPIRequest(
@@ -167,7 +168,7 @@ const MenusIcon = () => {
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -176,18 +177,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && !sharedNotepadStatus) {
-      const body = new ChangeEtherpadStatusReq({
-        roomId: store.getState().session.currentRoom.room_id,
+      const body = create(ChangeEtherpadStatusReqSchema, {
+        roomId: store.getState().session.currentRoom.roomId,
         isActive: true,
       });
       const r = await sendAPIRequest(
         'etherpad/changeStatus',
-        body.toBinary(),
+        toBinary(ChangeEtherpadStatusReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
@@ -196,18 +197,18 @@ const MenusIcon = () => {
         });
       }
     } else if (host && sharedNotepadStatus) {
-      const body = new ChangeEtherpadStatusReq({
-        roomId: store.getState().session.currentRoom.room_id,
+      const body = create(ChangeEtherpadStatusReqSchema, {
+        roomId: store.getState().session.currentRoom.roomId,
         isActive: false,
       });
       const r = await sendAPIRequest(
         'etherpad/changeStatus',
-        body.toBinary(),
+        toBinary(ChangeEtherpadStatusReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CreateEtherpadSessionRes.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(false));
       } else {
@@ -234,17 +235,17 @@ const MenusIcon = () => {
       type: 'info',
     });
 
-    const body = new ExternalMediaPlayerReq({
+    const body = create(ExternalMediaPlayerReqSchema, {
       task: ExternalMediaPlayerTask.END_PLAYBACK,
     });
     const r = await sendAPIRequest(
       'externalMediaPlayer',
-      body.toBinary(),
+      toBinary(ExternalMediaPlayerReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {
@@ -269,7 +270,7 @@ const MenusIcon = () => {
       }
       return;
     }
-    const body = new ExternalDisplayLinkReq({
+    const body = create(ExternalDisplayLinkReqSchema, {
       task: ExternalDisplayLinkTask.STOP_EXTERNAL_LINK,
     });
 
@@ -279,12 +280,12 @@ const MenusIcon = () => {
 
     const r = await sendAPIRequest(
       'externalDisplayLink',
-      body.toBinary(),
+      toBinary(ExternalDisplayLinkReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {
@@ -343,7 +344,7 @@ const MenusIcon = () => {
                   static
                   className="origin-bottom-left sm:-left-20 lg:-left-28 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 lg:w-72 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
-                  {roomFeatures?.allow_rtmp ? (
+                  {roomFeatures?.allowRtmp ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -375,8 +376,7 @@ const MenusIcon = () => {
                       </button>
                     </Menu.Item>
                   </div>
-                  {roomFeatures?.shared_note_pad_features
-                    .allowed_shared_note_pad ? (
+                  {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -391,8 +391,8 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.external_media_player_features
-                    .allowed_external_media_player ? (
+                  {roomFeatures?.externalMediaPlayerFeatures
+                    ?.allowedExternalMediaPlayer ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -407,7 +407,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.display_external_link_features.is_allow ? (
+                  {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -422,7 +422,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.waiting_room_features.is_active ? (
+                  {roomFeatures?.waitingRoomFeatures?.isActive ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -435,8 +435,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.speech_to_text_translation_features
-                    .is_allow ? (
+                  {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button
@@ -449,7 +448,7 @@ const MenusIcon = () => {
                       </Menu.Item>
                     </div>
                   ) : null}
-                  {roomFeatures?.breakout_room_features.is_allow ? (
+                  {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
                     <div className="py-1" role="none">
                       <Menu.Item>
                         <button

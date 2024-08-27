@@ -7,7 +7,8 @@ import { createLivekitConnection } from '../utils';
 export interface LivekitInfo {
   livekit_host: string;
   token: string;
-  enabledE2EE: boolean;
+  enabledE2EE?: boolean;
+  encryption_key?: string;
 }
 
 export interface IUseLivekitConnect {

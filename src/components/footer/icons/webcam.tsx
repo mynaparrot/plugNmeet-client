@@ -32,8 +32,8 @@ const showVideoShareModalSelector = createSelector(
   (bottomIconsActivity) => bottomIconsActivity.showVideoShareModal,
 );
 const isWebcamLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_webcam,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockWebcam,
 );
 const virtualBackgroundSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -98,9 +98,9 @@ const WebcamIcon = () => {
   // default room lock settings
   useEffect(() => {
     const isLock =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_webcam;
-    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockWebcam;
+    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {
       if (isWebcamLock !== false) {
@@ -265,14 +265,14 @@ const WebcamIcon = () => {
 
   const shouldShow = () => {
     const session = store.getState().session;
-    const room_features = session.currentRoom.metadata?.room_features;
+    const room_features = session.currentRoom.metadata?.roomFeatures;
     const currentUser = session.currentUser;
 
-    if (!room_features?.allow_webcams) {
+    if (!room_features?.allowWebcams) {
       return false;
     } else if (
-      room_features?.admin_only_webcams &&
-      !currentUser?.metadata?.is_admin
+      room_features?.adminOnlyWebcams &&
+      !currentUser?.metadata?.isAdmin
     ) {
       return false;
     }

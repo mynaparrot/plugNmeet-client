@@ -2,21 +2,16 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
+import { toast } from 'react-toastify';
+import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import {
   useClosePollMutation,
   useGetPollListsQuery,
   useGetPollResponsesDetailsQuery,
 } from '../../store/services/pollsApi';
-import { toast } from 'react-toastify';
-import { sendWebsocketMessage } from '../../helpers/websocket';
-import { store } from '../../store';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage_pb';
-import { ClosePollReq } from '../../helpers/proto/plugnmeet_polls_pb';
+import { getNatsConn } from '../../helpers/nats';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -26,6 +21,7 @@ interface IViewDetailsProps {
 const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const { t } = useTranslation();
+  const conn = getNatsConn();
   const { post: poll } = useGetPollListsQuery(undefined, {
     selectFromResult: ({ data }) => ({
       post: data?.polls.find((poll) => poll.id === pollId),
@@ -77,7 +73,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
 
   const endPoll = () => {
     closePoll(
-      new ClosePollReq({
+      create(ClosePollReqSchema, {
         pollId: pollId,
       }),
     );
@@ -147,12 +143,11 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
     });
   };
 
-  const publishPollResultByChat = () => {
+  const publishPollResultByChat = async () => {
     if (isLoading) {
       return;
     }
     const totalRes: any = pollResponses?.responses['total_resp'] ?? '0';
-    const session = store.getState().session;
     const elm = ReactDOMServer.renderToString(
       <>
         <p>{poll?.question}</p>
@@ -166,23 +161,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
         })}
       </>,
     );
-
-    const dataMsg = new DataMessage({
-      type: DataMsgType.USER,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      body: {
-        type: DataMsgBodyType.CHAT,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-          name: session.currentUser?.name,
-        },
-        msg: elm,
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+    await conn.sendChatMsg('public', elm);
     closeModal();
   };
 

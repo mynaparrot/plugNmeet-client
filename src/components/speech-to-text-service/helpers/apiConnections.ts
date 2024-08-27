@@ -12,30 +12,26 @@ import {
   TranslationRecognitionResult,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-
 import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
-import { sendWebsocketMessage } from '../../../helpers/websocket';
-import {
-  AzureTokenRenewReq,
-  GenerateAzureTokenReq,
-  SpeechServiceUserStatusReq,
+  GenerateAzureTokenReqSchema,
+  SpeechToTextTranslationFeatures,
   SpeechServiceUserStatusTasks,
   SpeechToTextTranslationReq,
-} from '../../../helpers/proto/plugnmeet_speech_services_pb';
+  DataMsgBodyType,
+  CommonResponseSchema,
+  AzureTokenRenewReqSchema,
+  SpeechServiceUserStatusReqSchema,
+  SpeechToTextTranslationReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { CommonResponse } from '../../../helpers/proto/plugnmeet_common_api_pb';
 import { store } from '../../../store';
 import { SpeechTextBroadcastFormat } from '../../../store/slices/interfaces/speechServices';
-import {
-  ISession,
-  SpeechToTextTranslationFeatures,
-} from '../../../store/slices/interfaces/session';
+import { ISession } from '../../../store/slices/interfaces/session';
 import i18n from '../../../helpers/i18n';
 import { supportedSpeechToTextLangs } from './supportedLangs';
+import { getNatsConn } from '../../../helpers/nats';
 
 export interface AzureTokenInfo {
   token: string;
@@ -75,13 +71,13 @@ export const openConnectionWithAzure = (
   const sl = supportedSpeechToTextLangs.filter((l) => l.code === speechLang)[0];
   let transLangs: Array<string> = [];
 
-  if (speechService.is_enabled_translation) {
-    if (speechService.allowed_trans_langs?.length) {
-      transLangs = speechService.allowed_trans_langs.filter(
+  if (speechService.isEnabledTranslation) {
+    if (speechService.allowedTransLangs?.length) {
+      transLangs = speechService.allowedTransLangs.filter(
         (l) => l !== sl.locale,
       );
     }
-    speechService.allowed_speech_langs
+    speechService.allowedSpeechLangs
       ?.filter((l) => l !== sl.code)
       .forEach((s) => {
         const speechObj = supportedSpeechToTextLangs.filter(
@@ -156,7 +152,7 @@ export const openConnectionWithAzure = (
     });
   };
 
-  recognizer.recognizing = (
+  recognizer.recognizing = async (
     sender,
     recognitionEventArgs: SpeechRecognitionEventArgs,
   ) => {
@@ -181,10 +177,10 @@ export const openConnectionWithAzure = (
         });
       }
     }
-    broadcastSpeechToTextMsgs(data);
+    await broadcastSpeechToTextMsgs(data);
   };
 
-  recognizer.recognized = (
+  recognizer.recognized = async (
     sender,
     recognitionEventArgs: SpeechRecognitionEventArgs,
   ) => {
@@ -209,7 +205,7 @@ export const openConnectionWithAzure = (
         });
       }
     }
-    broadcastSpeechToTextMsgs(data);
+    await broadcastSpeechToTextMsgs(data);
   };
 
   recognizer.canceled = async (s, e: SpeechRecognitionCanceledEventArgs) => {
@@ -233,43 +229,31 @@ export const openConnectionWithAzure = (
   setRecognizer(recognizer);
 };
 
-export const broadcastSpeechToTextMsgs = (msg) => {
-  if (!session) {
-    session = getSession();
+export const broadcastSpeechToTextMsgs = async (msg: any) => {
+  const conn = getNatsConn();
+  if (typeof conn !== 'undefined') {
+    await conn.sendDataMessage(
+      DataMsgBodyType.SPEECH_SUBTITLE_TEXT,
+      JSON.stringify(msg),
+    );
   }
-
-  const dataMsg = new DataMessage({
-    type: DataMsgType.SYSTEM,
-    roomSid: session.currentRoom.sid,
-    roomId: session.currentRoom.room_id,
-    body: {
-      type: DataMsgBodyType.SPEECH_SUBTITLE_TEXT,
-      from: {
-        sid: session.currentUser?.sid ?? '',
-        userId: session.currentUser?.userId ?? '',
-      },
-      msg: JSON.stringify(msg),
-    },
-  });
-
-  sendWebsocketMessage(dataMsg.toBinary());
 };
 
 export const getAzureToken = async () => {
   if (!session) {
     session = getSession();
   }
-  const body = new GenerateAzureTokenReq({
+  const body = create(GenerateAzureTokenReqSchema, {
     userSid: session?.currentUser?.sid,
   });
   const r = await sendAPIRequest(
     'speechServices/azureToken',
-    body.toBinary(),
+    toBinary(GenerateAzureTokenReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
 export const renewAzureToken = async () => {
@@ -282,7 +266,7 @@ export const renewAzureToken = async () => {
     return;
   }
 
-  const body = new AzureTokenRenewReq({
+  const body = create(AzureTokenRenewReqSchema, {
     userSid: session?.currentUser?.sid,
     serviceRegion: azureTokenInfo.serviceRegion,
     keyId: azureTokenInfo.keyId,
@@ -290,12 +274,12 @@ export const renewAzureToken = async () => {
 
   const r = await sendAPIRequest(
     'speechServices/renewToken',
-    body.toBinary(),
+    toBinary(AzureTokenRenewReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
 export const sendUserSessionStatus = async (
@@ -307,7 +291,7 @@ export const sendUserSessionStatus = async (
   }
   const userId = session.currentUser?.userId;
 
-  const body = new SpeechServiceUserStatusReq({
+  const body = create(SpeechServiceUserStatusReqSchema, {
     task,
     userId,
     keyId,
@@ -316,12 +300,12 @@ export const sendUserSessionStatus = async (
 
   const r = await sendAPIRequest(
     'speechServices/userStatus',
-    body.toBinary(),
+    toBinary(SpeechServiceUserStatusReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
 export const enableOrDisableSpeechService = async (
@@ -329,10 +313,10 @@ export const enableOrDisableSpeechService = async (
 ) => {
   const r = await sendAPIRequest(
     'speechServices/serviceStatus',
-    body.toBinary(),
+    toBinary(SpeechToTextTranslationReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',
   );
-  return CommonResponse.fromBinary(new Uint8Array(r));
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };

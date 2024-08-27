@@ -6,8 +6,8 @@ import {
   SpeechRecognizer,
   TranslationRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
+import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
-import { SpeechToTextTranslationFeatures } from '../../../store/slices/interfaces/session';
 import { store } from '../../../store';
 import SpeechToTextLangElms from './speechToTextLangElms';
 import SubtitleLangElms from './subtitleLangElms';
@@ -51,15 +51,15 @@ const SelectOptions = ({
     if (!isEmpty(selectedSubtitleLang)) {
       setSelectedSubtitleLang(selectedSubtitleLang);
     } else {
-      if (speechService.default_subtitle_lang) {
-        setSelectedSubtitleLang(speechService.default_subtitle_lang);
+      if (speechService.defaultSubtitleLang) {
+        setSelectedSubtitleLang(speechService.defaultSubtitleLang);
       }
     }
     //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    const haveUser = speechService.allowed_speech_users?.find(
+    const haveUser = speechService.allowedSpeechUsers?.find(
       (u) => u === currentUser?.userId,
     );
     setCanShowSpeechSetting(!!haveUser);

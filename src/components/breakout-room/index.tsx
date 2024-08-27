@@ -11,8 +11,8 @@ const BreakoutRoom = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const breakoutRoomIsActive =
-    store.getState().session.currentRoom.metadata?.room_features
-      .breakout_room_features.is_active;
+    store.getState().session.currentRoom.metadata?.roomFeatures
+      ?.breakoutRoomFeatures?.isActive;
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const closeModal = () => {

@@ -3,18 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
-
 import {
-  CreateIngressReq,
-  CreateIngressRes,
+  CreateIngressReqSchema,
+  CreateIngressResSchema,
   IngressInput,
-} from '../../../helpers/proto/plugnmeet_ingress_pb';
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+
 import { RootState, store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const ingressFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom?.metadata?.room_features,
-  (room_features) => room_features?.ingress_features,
+  (state: RootState) => state.session.currentRoom?.metadata?.roomFeatures,
+  (room_features) => room_features?.ingressFeatures,
 );
 
 const Ingress = () => {
@@ -31,7 +32,7 @@ const Ingress = () => {
     e.preventDefault();
     setErrorMsg(null);
 
-    if (!ingressFeatures?.is_allow) {
+    if (!ingressFeatures?.isAllow) {
       setErrorMsg(t('ingress-features.feature-not-allow'));
       return;
     }
@@ -41,20 +42,20 @@ const Ingress = () => {
       participantName = 'broadcaster';
     }
 
-    const body = new CreateIngressReq({
+    const body = create(CreateIngressReqSchema, {
       inputType: ingressType,
       participantName: participantName,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
     });
 
     const r = await sendAPIRequest(
       'ingress/create',
-      body.toBinary(),
+      toBinary(CreateIngressReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CreateIngressRes.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CreateIngressResSchema, new Uint8Array(r));
     if (!res.status) {
       toast(t(res.msg), {
         type: 'error',
@@ -140,7 +141,7 @@ const Ingress = () => {
               readOnly={true}
               name="ingress_type"
               id="ingress_type"
-              value={ingressFeatures?.input_type?.toString()}
+              value={ingressFeatures?.inputType?.toString()}
               className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
             />
           </div>
@@ -173,7 +174,7 @@ const Ingress = () => {
               readOnly={true}
               name="stream_key"
               id="stream_key"
-              value={ingressFeatures?.stream_key}
+              value={ingressFeatures?.streamKey}
               className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
             />
           </div>
@@ -184,7 +185,7 @@ const Ingress = () => {
 
   return (
     <div className="mt-2">
-      {isEmpty(ingressFeatures?.url) && isEmpty(ingressFeatures?.stream_key)
+      {isEmpty(ingressFeatures?.url) && isEmpty(ingressFeatures?.streamKey)
         ? renderFrom()
         : render()}
     </div>

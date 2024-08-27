@@ -6,30 +6,24 @@ import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
 import { addWhiteboardOtherImageFile } from '../../store/slices/whiteboard';
-import {
-  sendAnalyticsByWebsocket,
-  sendWebsocketMessage,
-} from '../../helpers/websocket';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
 // eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
-import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import {
-  DataMessage,
+  AnalyticsEvents,
+  AnalyticsEventType,
   DataMsgBodyType,
-  DataMsgType,
-} from '../../helpers/proto/plugnmeet_datamessage_pb';
+} from 'plugnmeet-protocol-js';
+
+import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import {
   formatStorageKey,
   handleToAddWhiteboardUploadedOfficeNewFile,
 } from './helpers/utils';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-} from '../../helpers/proto/plugnmeet_analytics_pb';
+import { getNatsConn } from '../../helpers/nats';
 
 interface IUploadFilesProps {
   refreshFileBrowser: number;
@@ -50,6 +44,7 @@ const UploadFilesUI = ({
   const dispatch = useAppDispatch();
   const session = store.getState().session;
   const preRefreshFileBrowser = useStorePreviousInt(refreshFileBrowser);
+  const conn = getNatsConn();
 
   const { isUploading, result } = useResumableFilesUpload({
     allowedFileTypes,
@@ -93,12 +88,12 @@ const UploadFilesUI = ({
         });
         broadcastFile(filePath, fileName);
         // send analytics
-        sendAnalyticsByWebsocket(
+        conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
           AnalyticsEventType.USER,
           fileName,
         );
-        sendAnalyticsByWebsocket(
+        conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
           AnalyticsEventType.ROOM,
           fileName,
@@ -116,7 +111,7 @@ const UploadFilesUI = ({
     });
     const body: any = {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: session.currentUser?.userId,
       file_path: filePath,
     };
@@ -147,12 +142,12 @@ const UploadFilesUI = ({
     broadcastWhiteboardOfficeFile(newFile);
 
     // send analytics
-    sendAnalyticsByWebsocket(
+    conn.sendAnalyticsData(
       AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
       AnalyticsEventType.USER,
       newFile.fileName,
     );
-    sendAnalyticsByWebsocket(
+    conn.sendAnalyticsData(
       AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
       AnalyticsEventType.ROOM,
       newFile.fileName,
@@ -180,22 +175,7 @@ const UploadFilesUI = ({
 
     const files =
       store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
-    const session = store.getState().session;
-    const dataMsg = new DataMessage({
-      type: DataMsgType.WHITEBOARD,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      body: {
-        type: DataMsgBodyType.ADD_WHITEBOARD_FILE,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg: files,
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+    conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
   };
 
   const saveCurrentPageData = async () => {

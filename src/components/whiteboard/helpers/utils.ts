@@ -4,11 +4,11 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 import {
+  IWhiteboardFeatures,
   IWhiteboardFile,
   IWhiteboardOfficeFile,
 } from '../../../store/slices/interfaces/whiteboard';
 import { randomString } from '../../../helpers/utils';
-import { IWhiteboardFeatures } from '../../../store/slices/interfaces/session';
 import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
 
 const defaultPreloadedLibraryItems = [
@@ -79,6 +79,7 @@ export const displaySavedPageData = (
   }
 };
 
+// TODO: change IWhiteboardFeatures type correctly
 export const handleToAddWhiteboardUploadedOfficeNewFile = (
   whiteboard: IWhiteboardFeatures,
   uploaderWhiteboardHeight = 260,
@@ -108,6 +109,5 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
   };
 
   store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
-
   return newFile;
 };

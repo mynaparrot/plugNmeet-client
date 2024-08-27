@@ -1,13 +1,15 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { create } from '@bufbuild/protobuf';
+import { SubmitPollResponseReqSchema } from 'plugnmeet-protocol-js';
+
 import {
   useAddResponseMutation,
   useGetPollListsQuery,
 } from '../../store/services/pollsApi';
 import { store } from '../../store';
-import { toast } from 'react-toastify';
-import { SubmitPollResponseReq } from '../../helpers/proto/plugnmeet_polls_pb';
 
 interface IVoteFormProps {
   onCloseForm(): void;
@@ -53,11 +55,11 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
       return;
     }
     addResponse(
-      new SubmitPollResponseReq({
+      create(SubmitPollResponseReqSchema, {
         pollId: pollId,
         userId: store.getState().session.currentUser?.userId ?? '',
         name: store.getState().session.currentUser?.name ?? '',
-        selectedOption: BigInt(selectedOption),
+        selectedOption: `${selectedOption}`,
       }),
     );
   };

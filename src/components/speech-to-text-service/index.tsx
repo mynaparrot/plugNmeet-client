@@ -24,8 +24,8 @@ import SubtitleTextsHistory from './history';
 import { getCurrentRoom } from '../../helpers/livekit/utils';
 
 const speechServiceFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.room_features,
-  (room_features) => room_features?.speech_to_text_translation_features,
+  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
+  (room_features) => room_features?.speechToTextTranslationFeatures,
 );
 const azureTokenInfoSelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -68,8 +68,8 @@ const SpeechToTextService = () => {
       store.getState().speechServices.selectedSubtitleLang;
     if (isEmpty(selectedSubtitleLang)) {
       const defaultSubtitleLang =
-        store.getState().session.currentRoom.metadata?.room_features
-          .speech_to_text_translation_features.default_subtitle_lang;
+        store.getState().session.currentRoom.metadata?.roomFeatures
+          ?.speechToTextTranslationFeatures?.defaultSubtitleLang;
       if (defaultSubtitleLang && !isEmpty(defaultSubtitleLang)) {
         dispatch(updateSelectedSubtitleLang(defaultSubtitleLang));
       }

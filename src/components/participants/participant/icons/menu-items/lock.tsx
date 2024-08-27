@@ -2,22 +2,23 @@ import React from 'react';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  UpdateUserLockSettingsReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
 import { ICurrentUserMetadata } from '../../../../../store/slices/interfaces/session';
-import {
-  CommonResponse,
-  UpdateUserLockSettingsReq,
-} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
 
 interface ILockSettingMenuItemProps {
   userId: string;
 }
 const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
   const roomFeatures =
-    store.getState().session.currentRoom.metadata?.room_features;
+    store.getState().session.currentRoom.metadata?.roomFeatures;
   const { t } = useTranslation();
 
   const participant = useAppSelector((state) =>
@@ -32,42 +33,42 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
 
     switch (task) {
       case 'mic':
-        direction = metadata?.lock_settings.lock_microphone ? 'unlock' : 'lock';
+        direction = metadata?.lockSettings?.lockMicrophone ? 'unlock' : 'lock';
         break;
       case 'webcam':
-        direction = metadata?.lock_settings.lock_webcam ? 'unlock' : 'lock';
+        direction = metadata?.lockSettings?.lockWebcam ? 'unlock' : 'lock';
         break;
       case 'screenShare':
-        direction = metadata?.lock_settings.lock_screen_sharing
+        direction = metadata?.lockSettings?.lockScreenSharing
           ? 'unlock'
           : 'lock';
         break;
       case 'whiteboard':
-        direction = metadata?.lock_settings.lock_whiteboard ? 'unlock' : 'lock';
+        direction = metadata?.lockSettings?.lockWhiteboard ? 'unlock' : 'lock';
         break;
       case 'sharedNotepad':
-        direction = metadata?.lock_settings.lock_shared_notepad
+        direction = metadata?.lockSettings?.lockSharedNotepad
           ? 'unlock'
           : 'lock';
         break;
       case 'chat':
-        direction = metadata?.lock_settings.lock_chat ? 'unlock' : 'lock';
+        direction = metadata?.lockSettings?.lockChat ? 'unlock' : 'lock';
         break;
       case 'sendChatMsg':
-        direction = metadata?.lock_settings.lock_chat_send_message
+        direction = metadata?.lockSettings?.lockChatSendMessage
           ? 'unlock'
           : 'lock';
         break;
       case 'chatFile':
-        direction = metadata?.lock_settings.lock_chat_file_share
+        direction = metadata?.lockSettings?.lockChatFileShare
           ? 'unlock'
           : 'lock';
         break;
     }
 
-    const body = new UpdateUserLockSettingsReq({
+    const body = create(UpdateUserLockSettingsReqSchema, {
       roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: participant?.userId,
       service,
       direction,
@@ -75,12 +76,12 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
 
     const r = await sendAPIRequest(
       'updateLockSettings',
-      body.toBinary(),
+      toBinary(UpdateUserLockSettingsReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('left-panel.menus.notice.applied-new-setting'), {
@@ -104,7 +105,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                 className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                 onClick={() => onClick('mic')}
               >
-                {participant?.metadata.lock_settings.lock_microphone
+                {participant?.metadata.lockSettings?.lockMicrophone
                   ? t('left-panel.menus.items.unlock-microphone')
                   : t('left-panel.menus.items.lock-microphone')}
               </button>
@@ -112,7 +113,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           </Menu.Item>
         </div>
 
-        {roomFeatures?.allow_webcams && !roomFeatures?.admin_only_webcams ? (
+        {roomFeatures?.allowWebcams && !roomFeatures?.adminOnlyWebcams ? (
           <div className="" role="none">
             <Menu.Item>
               {() => (
@@ -120,7 +121,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('webcam')}
                 >
-                  {participant?.metadata.lock_settings.lock_webcam
+                  {participant?.metadata.lockSettings?.lockWebcam
                     ? t('left-panel.menus.items.unlock-webcam')
                     : t('left-panel.menus.items.lock-webcam')}
                 </button>
@@ -129,7 +130,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           </div>
         ) : null}
 
-        {roomFeatures?.allow_screen_share ? (
+        {roomFeatures?.allowScreenShare ? (
           <div className="" role="none">
             <Menu.Item>
               {() => (
@@ -137,7 +138,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('screenShare')}
                 >
-                  {participant?.metadata.lock_settings.lock_screen_sharing
+                  {participant?.metadata.lockSettings?.lockScreenSharing
                     ? t('left-panel.menus.items.unlock-screen-sharing')
                     : t('left-panel.menus.items.lock-screen-sharing')}
                 </button>
@@ -146,7 +147,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           </div>
         ) : null}
 
-        {roomFeatures?.whiteboard_features.allowed_whiteboard ? (
+        {roomFeatures?.whiteboardFeatures?.allowedWhiteboard ? (
           <div className="" role="none">
             <Menu.Item>
               {() => (
@@ -154,7 +155,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('whiteboard')}
                 >
-                  {participant?.metadata.lock_settings.lock_whiteboard
+                  {participant?.metadata.lockSettings?.lockWhiteboard
                     ? t('left-panel.menus.items.unlock-whiteboard')
                     : t('left-panel.menus.items.lock-whiteboard')}
                 </button>
@@ -163,7 +164,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           </div>
         ) : null}
 
-        {roomFeatures?.shared_note_pad_features.allowed_shared_note_pad ? (
+        {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
           <div className="" role="none">
             <Menu.Item>
               {() => (
@@ -171,7 +172,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                   onClick={() => onClick('sharedNotepad')}
                 >
-                  {participant?.metadata.lock_settings.lock_shared_notepad
+                  {participant?.metadata.lockSettings?.lockSharedNotepad
                     ? t('left-panel.menus.items.unlock-shared-notepad')
                     : t('left-panel.menus.items.lock-shared-notepad')}
                 </button>
@@ -180,7 +181,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
           </div>
         ) : null}
 
-        {roomFeatures?.chat_features.allow_chat ? (
+        {roomFeatures?.chatFeatures?.allowChat ? (
           <>
             <div className="" role="none">
               <Menu.Item>
@@ -189,7 +190,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                     className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                     onClick={() => onClick('chat')}
                   >
-                    {participant?.metadata.lock_settings.lock_chat
+                    {participant?.metadata.lockSettings?.lockChat
                       ? t('left-panel.menus.items.unlock-chat')
                       : t('left-panel.menus.items.lock-chat')}
                   </button>
@@ -204,7 +205,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                     className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                     onClick={() => onClick('sendChatMsg')}
                   >
-                    {participant?.metadata.lock_settings.lock_chat_send_message
+                    {participant?.metadata.lockSettings?.lockChatSendMessage
                       ? t('left-panel.menus.items.unlock-send-chat-message')
                       : t('left-panel.menus.items.lock-send-chat-message')}
                   </button>
@@ -212,7 +213,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
               </Menu.Item>
             </div>
 
-            {roomFeatures.chat_features.allow_file_upload ? (
+            {roomFeatures.chatFeatures.allowFileUpload ? (
               <div className="" role="none">
                 <Menu.Item>
                   {() => (
@@ -220,7 +221,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                       className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
                       onClick={() => onClick('chatFile')}
                     >
-                      {participant?.metadata.lock_settings.lock_chat_file_share
+                      {participant?.metadata.lockSettings?.lockChatFileShare
                         ? t('left-panel.menus.items.unlock-send-file')
                         : t('left-panel.menus.items.lock-send-file')}
                     </button>

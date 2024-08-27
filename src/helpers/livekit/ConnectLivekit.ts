@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
-import { isEmpty } from 'validator';
 import {
+  ConnectionQuality,
   ConnectionState,
   DisconnectReason,
   ExternalE2EEKeyProvider,
@@ -19,43 +19,33 @@ import {
   VideoPresets,
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
+import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
-import { updateParticipant } from '../../store/slices/participantSlice';
 import {
-  addCurrentRoom,
-  addCurrentUser,
+  participantsSelector,
+  updateParticipant,
+} from '../../store/slices/participantSlice';
+import {
   updateScreenSharing,
   updateTotalAudioSubscribers,
   updateTotalVideoSubscribers,
 } from '../../store/slices/sessionSlice';
 
-import HandleParticipants from './HandleParticipants';
 import HandleMediaTracks from './HandleMediaTracks';
-import HandleDataMessages from './HandleDataMessages';
-import HandleRoomMetadata from './HandleRoomMetadata';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import {
-  closeWebsocketConnection,
-  openWebsocketConnection,
-  sendWebsocketMessage,
-} from '../websocket';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './hooks/useLivekitConnect';
 import i18n from '../i18n';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../proto/plugnmeet_datamessage_pb';
 import {
   ConnectionStatus,
   CurrentConnectionEvents,
   IConnectLivekit,
 } from './types';
 import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
-
-const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
+import { IScreenSharing } from '../../store/slices/interfaces/session';
+import { toast } from 'react-toastify';
+import { getNatsConn } from '../nats';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -74,17 +64,15 @@ export default class ConnectLivekit
   private readonly _errorState: Dispatch<IErrorPageProps>;
   private readonly _roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
-  protected token: string;
+  private readonly token: string;
   private readonly _room: Room;
   private readonly url: string;
   private readonly enabledE2EE: boolean = false;
-  private tokenRenewInterval: any;
+  private readonly encryptionKey: string | undefined = '';
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
+  private toastIdConnecting: any = undefined;
 
-  private handleParticipant: HandleParticipants;
   private handleMediaTracks: HandleMediaTracks;
-  private handleDataMessages: HandleDataMessages;
-  private handleRoomMetadata: HandleRoomMetadata;
   private handleActiveSpeakers: HandleActiveSpeakers;
 
   constructor(
@@ -95,25 +83,23 @@ export default class ConnectLivekit
     super();
     this.token = livekitInfo.token;
     this.url = livekitInfo.livekit_host;
-    this.enabledE2EE = livekitInfo.enabledE2EE;
 
     this._errorState = errorState;
     this._roomConnectionStatusState = roomConnectionStatusState;
-    this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
 
-    this.handleParticipant = new HandleParticipants(this);
+    this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
+    if (livekitInfo.enabledE2EE) {
+      this.enabledE2EE = livekitInfo.enabledE2EE;
+      this.encryptionKey = livekitInfo.encryption_key;
+    }
+
     this.handleMediaTracks = new HandleMediaTracks(this);
-    this.handleDataMessages = new HandleDataMessages(this);
-    this.handleRoomMetadata = new HandleRoomMetadata(this);
     this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
-    this._roomConnectionStatusState('connecting');
     // clean session data
     sessionStorage.clear();
     // configure room
     this._room = this.configureRoom();
-    // finally connect
-    this.connect();
   }
 
   public get videoSubscribersMap() {
@@ -136,18 +122,18 @@ export default class ConnectLivekit
     return this._e2eeKeyProvider;
   }
 
-  private connect = async () => {
+  public connect = async () => {
+    this._roomConnectionStatusState('connecting');
+
     try {
       await this._room.connect(this.url, this.token);
+      if (this.enabledE2EE && this.encryptionKey) {
+        await this._e2eeKeyProvider.setKey(this.encryptionKey);
+        await this._room.setE2EEEnabled(true);
+      }
       // we'll prepare our information
-      await this.updateSession();
       await this.initiateParticipants();
-      // open websocket
-      openWebsocketConnection();
-      // finally
       this._roomConnectionStatusState('connected');
-      // start token renew interval
-      this.startTokenRenewInterval();
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
@@ -198,41 +184,29 @@ export default class ConnectLivekit
     }
 
     const room = new Room(roomOptions);
-    room.on(RoomEvent.Reconnecting, () =>
-      this._roomConnectionStatusState('re-connecting'),
-    );
-    room.on(RoomEvent.Reconnected, () =>
-      this._roomConnectionStatusState('connected'),
-    );
+
+    room.on(RoomEvent.Reconnecting, () => {
+      this.toastIdConnecting = toast.loading(
+        i18n.t('notifications.media-server-disconnected-reconnecting'),
+        {
+          type: 'warning',
+          closeButton: false,
+          autoClose: false,
+        },
+      );
+    });
+    room.on(RoomEvent.Reconnected, () => {
+      if (this.toastIdConnecting) {
+        toast.dismiss(this.toastIdConnecting);
+      }
+    });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
-    room.on(
-      RoomEvent.RoomMetadataChanged,
-      this.handleRoomMetadata.setRoomMetadata,
-    );
     room.on(
       RoomEvent.ActiveSpeakersChanged,
       this.handleActiveSpeakers.activeSpeakersChanged,
     );
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
-
-    room.on(RoomEvent.DataReceived, this.handleDataMessages.dataReceived);
-
-    room.on(
-      RoomEvent.ParticipantConnected,
-      this.handleParticipant.participantConnected,
-    );
-    room.on(
-      RoomEvent.ParticipantDisconnected,
-      this.handleParticipant.participantDisconnected,
-    );
-    room.on(
-      RoomEvent.ParticipantMetadataChanged,
-      this.handleParticipant.setParticipantMetadata,
-    );
-    room.on(
-      RoomEvent.ConnectionQualityChanged,
-      this.handleParticipant.connectionQualityChanged,
-    );
+    room.on(RoomEvent.ConnectionQualityChanged, this.connectionQualityChanged);
 
     room.on(
       RoomEvent.LocalTrackPublished,
@@ -262,38 +236,8 @@ export default class ConnectLivekit
   };
 
   private initiateParticipants = async () => {
-    // check if the current user is recorder/rtmp bot
-    const isRecorder =
-      (this._room.localParticipant.identity === 'RECORDER_BOT' ||
-        this._room.localParticipant.identity === 'RTMP_BOT') ??
-      false;
-
-    // local Participant
-    store.dispatch(
-      addCurrentUser({
-        sid: this._room.localParticipant.sid,
-        userId: this._room.localParticipant.identity,
-        name: this._room.localParticipant.name,
-        isRecorder,
-      }),
-    );
-    await this.handleParticipant.setParticipantMetadata(
-      '',
-      this._room.localParticipant,
-    );
-
-    // start recorder task
-    if (isRecorder) {
-      this.handleParticipant.recorderJoined();
-    } else {
-      // otherwise we'll add user
-      this.handleParticipant.addParticipant(this._room.localParticipant);
-    }
-
     // all other connected Participants
     this._room.remoteParticipants.forEach((participant) => {
-      this.handleParticipant.addParticipant(participant);
-
       participant.getTrackPublications().forEach((track) => {
         if (track.isSubscribed) {
           if (
@@ -308,29 +252,17 @@ export default class ConnectLivekit
                 },
               }),
             );
-            store.dispatch(
-              updateScreenSharing({
-                isActive: true,
-                sharedBy: participant.identity,
-              }),
-            );
-            this.setScreenShareTrack(
+            this.addScreenShareTrack(
+              participant.identity,
               track as RemoteTrackPublication,
-              participant,
             );
           } else if (track.source === Track.Source.Camera) {
-            this.updateVideoSubscribers(participant);
+            this.addVideoSubscriber(participant);
           }
         }
       });
     });
-
-    return;
   };
-
-  public async setRoomMetadata(metadata: string) {
-    await this.handleRoomMetadata.setRoomMetadata(metadata);
-  }
 
   public async disconnectRoom() {
     if (this._room.state === ConnectionState.Connected) {
@@ -346,34 +278,19 @@ export default class ConnectLivekit
     });
   }
 
-  private updateSession = async () => {
-    const sid = await this._room.getSid();
-    store.dispatch(
-      addCurrentRoom({
-        sid: sid,
-        room_id: this._room.name,
-      }),
-    );
-
-    if (this._room.metadata && !isEmpty(this._room.metadata)) {
-      await this.setRoomMetadata(this._room.metadata);
-    }
-  };
-
   private onDisconnected = (reason?: DisconnectReason) => {
     this._errorState({
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-    this._roomConnectionStatusState('disconnected');
-    closeWebsocketConnection();
+
     this.handleActiveSpeakers.onLivekitDisconnect();
-    clearInterval(this.tokenRenewInterval);
-    this.handleParticipant.clearParticipantCounterInterval();
+    if (this.toastIdConnecting) {
+      toast.dismiss(this.toastIdConnecting);
+    }
 
     // redirect to logout url
-    const logout_url =
-      store.getState().session.currentRoom.metadata?.logout_url;
+    const logout_url = store.getState().session.currentRoom.metadata?.logoutUrl;
     if (reason === DisconnectReason.ROOM_DELETED && logout_url) {
       setTimeout(() => {
         window.location.href = logout_url;
@@ -393,9 +310,7 @@ export default class ConnectLivekit
         });
         break;
       case DisconnectReason.DUPLICATE_IDENTITY:
-        msg = i18n.t('notifications.room-disconnected-duplicate-entry', {
-          code: 'DUPLICATE_IDENTITY',
-        });
+        msg = i18n.t('notifications.room-disconnected-duplicate-entry');
         break;
       case DisconnectReason.SERVER_SHUTDOWN:
         msg = i18n.t('notifications.room-disconnected-server-shutdown', {
@@ -427,64 +342,89 @@ export default class ConnectLivekit
     console.error(error);
   };
 
-  // this method basically updates plugNmeet token
-  // livekit will renew token by itself automatically
-  private startTokenRenewInterval = () => {
-    this.tokenRenewInterval = setInterval(async () => {
-      const sid = await this._room.getSid();
-      // get the current token that is store in redux
-      const token = store.getState().session.token;
-      const dataMsg = new DataMessage({
-        type: DataMsgType.SYSTEM,
-        roomSid: sid,
-        roomId: this._room.name,
-        body: {
-          type: DataMsgBodyType.RENEW_TOKEN,
-          from: {
-            sid: this._room.localParticipant.sid,
-            userId: this._room.localParticipant.identity,
-          },
-          isPrivate: 1,
-          msg: token,
+  private async connectionQualityChanged(
+    connectionQuality: ConnectionQuality,
+    participant: Participant,
+  ) {
+    store.dispatch(
+      updateParticipant({
+        id: participant.identity,
+        changes: {
+          connectionQuality: connectionQuality,
         },
-      });
+      }),
+    );
 
-      sendWebsocketMessage(dataMsg.toBinary());
-    }, RENEW_TOKEN_FREQUENT);
-  };
+    if (
+      connectionQuality === ConnectionQuality.Poor ||
+      connectionQuality === ConnectionQuality.Lost
+    ) {
+      if (
+        participant.identity === this.room.localParticipant.identity &&
+        !(
+          participant.identity === 'RECORDER_BOT' ||
+          participant.identity === 'RTMP_BOT'
+        )
+      ) {
+        let msg = i18n.t('notifications.your-connection-quality-not-good');
+        if (connectionQuality === ConnectionQuality.Lost) {
+          msg = i18n.t('notifications.your-connection-quality-lost');
+        }
+        toast(msg, {
+          toastId: 'connection-status',
+          type: 'error',
+        });
+      }
+    }
 
-  /**
-   * This method will set screenshare media track
-   * @param track
-   * @param participant
-   * @param add
-   */
-  public setScreenShareTrack = (
+    const conn = getNatsConn();
+    if (conn) {
+      await conn.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
+        AnalyticsEventType.USER,
+        connectionQuality.toString(),
+      );
+    }
+  }
+
+  public addScreenShareTrack = (
+    userId: string,
     track: LocalTrackPublication | RemoteTrackPublication,
-    participant: LocalParticipant | RemoteParticipant,
-    add = true,
   ) => {
-    // make sure track that we are about to add is valid
-    if (add && !participant.videoTrackPublications.size) {
+    const existUser = participantsSelector.selectById(store.getState(), userId);
+    if (!existUser || !existUser.isOnline) {
       return;
     }
 
-    if (add) {
-      const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
-      if (this._screenShareTracksMap.has(participant.identity)) {
-        const oldTracks = this._screenShareTracksMap.get(participant.identity);
-        if (oldTracks && oldTracks.length) {
-          tracks.push(...oldTracks);
-        }
+    const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
+    if (this._screenShareTracksMap.has(userId)) {
+      const oldTracks = this._screenShareTracksMap.get(userId);
+      if (oldTracks && oldTracks.length) {
+        tracks.push(...oldTracks);
       }
-      tracks.push(track);
-      this._screenShareTracksMap.set(participant.identity, tracks);
-    } else {
-      this._screenShareTracksMap.delete(participant.identity);
     }
+    tracks.push(track);
+    this._screenShareTracksMap.set(userId, tracks);
+    this.syncScreenShareTracks(userId);
+  };
+
+  public removeScreenShareTrack = (userId: string) => {
+    this._screenShareTracksMap.delete(userId);
+    this.syncScreenShareTracks(userId);
+  };
+
+  public syncScreenShareTracks(userId: string) {
+    let payload: IScreenSharing = {
+      isActive: false,
+      sharedBy: '',
+    };
 
     // notify about status
     if (this._screenShareTracksMap.size) {
+      payload = {
+        isActive: true,
+        sharedBy: userId,
+      };
       this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
     } else {
       this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
@@ -493,101 +433,81 @@ export default class ConnectLivekit
     // emit a new tracks map
     const screenShareTracks = new Map(this._screenShareTracksMap) as any;
     this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
-  };
+    store.dispatch(updateScreenSharing(payload));
+  }
 
-  /**
-   * This method will update screen sharing if user disconnects
-   * This will ensure UI has been updated properly
-   * @param participant
-   */
-  public updateScreenShareOnUserDisconnect = (
-    participant: RemoteParticipant,
-  ) => {
-    if (!this._screenShareTracksMap.size) {
-      return;
-    }
-
-    if (this._screenShareTracksMap.has(participant.identity)) {
-      this._screenShareTracksMap.delete(participant.identity);
-
-      const screenShareTracks = new Map(this._screenShareTracksMap) as any;
-      this.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
-
-      // update status too
-      if (!this._screenShareTracksMap.size) {
-        store.dispatch(
-          updateScreenSharing({
-            isActive: false,
-            sharedBy: '',
-          }),
-        );
-        this.emit(CurrentConnectionEvents.ScreenShareStatus, false);
-      } else {
-        this.emit(CurrentConnectionEvents.ScreenShareStatus, true);
-      }
-    }
-  };
-
-  /**
-   * This method will add/update audio subscribers
-   * @param participant
-   * @param add
-   */
-  public updateAudioSubscribers = (
+  public addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add = true,
-  ) => {
-    // make sure track that we are about to add is valid
-    if (add && !participant.audioTrackPublications.size) {
+  ) {
+    if (!participant.audioTrackPublications.size) {
       return;
     }
-
+    const existUser = participantsSelector.selectById(
+      store.getState(),
+      participant.identity,
+    );
+    if (!existUser || !existUser.isOnline) {
+      return;
+    }
     // we don't want to add local audio here.
     if (participant.identity === this._room.localParticipant.identity) {
       return;
     }
 
-    if (add) {
-      this._audioSubscribersMap.set(
-        participant.identity,
-        participant as RemoteParticipant,
-      );
-    } else {
-      if (this._audioSubscribersMap.has(participant.identity)) {
-        this._audioSubscribersMap.delete(participant.identity);
-      }
+    this._audioSubscribersMap.set(
+      participant.identity,
+      participant as RemoteParticipant,
+    );
+    this.syncAudioSubscribers();
+  }
+
+  public removeAudioSubscriber(userId: string) {
+    if (!this._audioSubscribersMap.has(userId)) {
+      return;
     }
+
+    this._audioSubscribersMap.delete(userId);
+    this.syncAudioSubscribers();
+  }
+
+  private syncAudioSubscribers = () => {
     const audioSubscribers = new Map(this._audioSubscribersMap) as any;
     this.emit(CurrentConnectionEvents.AudioSubscribers, audioSubscribers);
     // update session reducer
     store.dispatch(updateTotalAudioSubscribers(audioSubscribers.size));
   };
 
-  /**
-   * This method will add/update webcams
-   * This will also sort webcam lists based on active speaker event
-   * @param participant
-   * @param add
-   */
-  public updateVideoSubscribers = (
+  public addVideoSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add = true,
-  ) => {
-    // make sure track that we are about to add is valid
-    if (add && !participant.videoTrackPublications.size) {
+  ) {
+    if (!participant.videoTrackPublications.size) {
+      return;
+    }
+    const existUser = participantsSelector.selectById(
+      store.getState(),
+      participant.identity,
+    );
+    if (!existUser || !existUser.isOnline) {
       return;
     }
 
-    if (add) {
-      this._videoSubscribersMap.set(participant.identity, participant);
-    } else {
-      if (this._videoSubscribersMap.has(participant.identity)) {
-        this._videoSubscribersMap.delete(participant.identity);
-      }
+    this._videoSubscribersMap.set(participant.identity, participant);
+    this.syncVideoSubscribers();
+  }
+
+  public removeVideoSubscriber(userId: string) {
+    if (!this._videoSubscribersMap.has(userId)) {
+      return;
     }
 
+    this._videoSubscribersMap.delete(userId);
+    this.syncVideoSubscribers();
+  }
+
+  public syncVideoSubscribers = () => {
     // update session reducer
     store.dispatch(updateTotalVideoSubscribers(this._videoSubscribersMap.size));
+
     if (this._videoSubscribersMap.size) {
       this.emit(CurrentConnectionEvents.VideoStatus, true);
     } else {

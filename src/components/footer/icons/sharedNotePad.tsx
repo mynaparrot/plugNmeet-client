@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  ChangeVisibilityRes,
+  ChangeVisibilityResSchema,
+} from 'plugnmeet-protocol-js';
+import { create, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -13,7 +18,6 @@ import {
   updateIsActiveSharedNotePad,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveSharedNotePadSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -21,13 +25,13 @@ const isActiveSharedNotePadSelector = createSelector(
 );
 const sharedNotepadStatusSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 const isSharedNotepadVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.visible,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.visible,
 );
 
 const SharedNotePadIcon = () => {
@@ -39,7 +43,7 @@ const SharedNotePadIcon = () => {
   const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
   const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
   const [initiated, setInitiated] = useState<boolean>(false);
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
@@ -84,7 +88,7 @@ const SharedNotePadIcon = () => {
 
     if (
       !initiated &&
-      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+      currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
       setInitiated(true);
       return;
@@ -95,7 +99,7 @@ const SharedNotePadIcon = () => {
     const sendRequest = async (body: ChangeVisibilityRes) => {
       await sendAPIRequest(
         'changeVisibility',
-        body.toBinary(),
+        toBinary(ChangeVisibilityResSchema, body),
         false,
         'application/protobuf',
       );
@@ -103,10 +107,10 @@ const SharedNotePadIcon = () => {
 
     if (
       isActiveSharedNotePad &&
-      !currentRoom.metadata?.room_features.shared_note_pad_features.visible
+      !currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
-        roomId: currentRoom.room_id,
+      const body = create(ChangeVisibilityResSchema, {
+        roomId: currentRoom.roomId,
         visibleNotepad: true,
       });
       // wait little bit before change visibility
@@ -115,10 +119,10 @@ const SharedNotePadIcon = () => {
       }, 500);
     } else if (
       !isActiveSharedNotePad &&
-      currentRoom.metadata?.room_features.shared_note_pad_features.visible
+      currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
-        roomId: currentRoom.room_id,
+      const body = create(ChangeVisibilityResSchema, {
+        roomId: currentRoom.roomId,
         visibleNotepad: false,
       });
       sendRequest(body);

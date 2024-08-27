@@ -2,15 +2,10 @@ import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
-import { store } from '../../../store';
-import { sendWebsocketMessage } from '../../../helpers/websocket';
 import PlayerComponent from './player';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
+import { getNatsConn } from '../../../helpers/nats';
 
 interface IVideoJsPlayerComponentProps {
   src: string;
@@ -26,7 +21,7 @@ const VideoJsPlayerComponent = ({
   isPresenter,
 }: IVideoJsPlayerComponentProps) => {
   const [player, setPlayer] = useState<VideoJsPlayer>();
-  const session = store.getState().session;
+  const conn = getNatsConn();
 
   const [options] = useState<VideoJsPlayerOptions>({
     controls: isPresenter,
@@ -62,22 +57,11 @@ const VideoJsPlayerComponent = ({
   }, [seekTo, player, isPresenter]);
 
   useEffect(() => {
-    const broadcast = (msg: string) => {
-      const dataMsg = new DataMessage({
-        type: DataMsgType.SYSTEM,
-        roomSid: session.currentRoom.sid,
-        roomId: session.currentRoom.room_id,
-        body: {
-          type: DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
-          from: {
-            sid: session.currentUser?.sid ?? '',
-            userId: session.currentUser?.userId ?? '',
-          },
-          msg,
-        },
-      });
-
-      sendWebsocketMessage(dataMsg.toBinary());
+    const broadcast = async (msg: string) => {
+      await conn.sendDataMessage(
+        DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
+        msg,
+      );
     };
 
     if (player) {

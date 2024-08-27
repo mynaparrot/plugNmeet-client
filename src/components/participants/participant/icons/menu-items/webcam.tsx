@@ -2,15 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import { sendWebsocketMessage } from '../../../../../helpers/websocket';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
+import { getNatsConn } from '../../../../../helpers/nats';
 
 interface IWebcamMenuItemProps {
   userId: string;
@@ -21,7 +17,8 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     participantsSelector.selectById(state, userId),
   );
   const roomFeatures =
-    store.getState().session.currentRoom.metadata?.room_features;
+    store.getState().session.currentRoom.metadata?.roomFeatures;
+  const conn = getNatsConn();
 
   const session = store.getState().session;
   const [text, setText] = useState<string>('Ask to share Webcam');
@@ -37,31 +34,20 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     }
   }, [t, participant?.videoTracks]);
 
-  const onClick = () => {
-    const dataMsg = new DataMessage({
-      type: DataMsgType.SYSTEM,
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      to: userId,
-      body: {
-        type: DataMsgBodyType.INFO,
-        from: {
-          sid: session.currentUser?.sid ?? '',
-          userId: session.currentUser?.userId ?? '',
-        },
-        msg:
-          t('left-panel.menus.notice.asked-you-to', {
-            name: session.currentUser?.name,
-          }) + t(task),
-      },
-    });
-
-    sendWebsocketMessage(dataMsg.toBinary());
+  const onClick = async () => {
+    await conn.sendDataMessage(
+      DataMsgBodyType.INFO,
+      t('left-panel.menus.notice.asked-you-to', {
+        name: session.currentUser?.name,
+        task: t(task),
+      }),
+    );
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {
         name: participant?.name,
-      }) + t(task),
+        task: t(task),
+      }),
       {
         toastId: 'asked-status',
         type: 'info',
@@ -88,8 +74,8 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   return (
     <>
       {session.currentUser?.userId !== participant?.userId &&
-      roomFeatures?.allow_webcams &&
-      !roomFeatures.admin_only_webcams
+      roomFeatures?.allowWebcams &&
+      !roomFeatures.adminOnlyWebcams
         ? render()
         : null}
     </>

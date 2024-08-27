@@ -50,12 +50,12 @@ interface WhiteboardProps {
 
 const whiteboardSelector = (state: RootState) => state.whiteboard;
 const lockWhiteboardSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_whiteboard,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockWhiteboard,
 );
 const isPresenterSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.is_presenter,
+  (metadata) => metadata?.isPresenter,
 );
 const themeSelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -99,7 +99,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   useEffect(() => {
     const s = store.getState();
-    const isPresenter = s.session.currentUser?.metadata?.is_presenter;
+    const isPresenter = s.session.currentUser?.metadata?.isPresenter;
 
     if (excalidrawAPI) {
       if (isPresenter) {
@@ -111,7 +111,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
     } else if (
       !currentUser?.isRecorder &&
-      !currentRoom.metadata?.default_lock_settings?.lock_whiteboard
+      !currentRoom.metadata?.defaultLockSettings?.lockWhiteboard
     ) {
       setViewModeEnabled(false);
     }
@@ -158,7 +158,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       return;
     }
     participants.forEach((participant) => {
-      if (participant.metadata.is_admin) {
+      if (participant.metadata.isAdmin) {
         if (!collaborators.has(participant.userId)) {
           collaborators.set(participant.userId, {});
         }
@@ -198,7 +198,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       addPreloadedLibraryItems(excalidrawAPI);
     } else if (!currentUser?.isRecorder) {
       setViewModeEnabled(
-        currentUser?.metadata?.lock_settings.lock_whiteboard ?? true,
+        currentUser?.metadata?.lockSettings?.lockWhiteboard ?? true,
       );
     }
     //eslint-disable-next-line
@@ -269,6 +269,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       const { pointer, button, name, userId, selectedElementIds } = JSON.parse(
         whiteboard.mousePointerLocation,
       );
+      if (typeof userId === 'undefined' || userId === '') {
+        return;
+      }
 
       const tmp: any = new Map(collaborators);
       const user = tmp.get(userId) ?? {};

@@ -5,6 +5,8 @@ import { LocalAudioTrack, Track } from 'livekit-client';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import copy from 'copy-text-to-clipboard';
+import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
@@ -15,7 +17,6 @@ import {
   updateVirtualBackground,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
-import { JoinBreakoutRoomReq } from '../../helpers/proto/plugnmeet_breakout_room_pb';
 import { getCurrentRoom } from '../../helpers/livekit/utils';
 
 const receivedInvitationForSelector = createSelector(
@@ -113,7 +114,7 @@ const BreakoutRoomInvitation = () => {
 
   const join = () => {
     joinRoom(
-      new JoinBreakoutRoomReq({
+      create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: receivedInvitationFor,
         userId: currentRoom.localParticipant.identity,
       }),

@@ -20,12 +20,12 @@ interface IMenuIconProps {
 
 const defaultLockSettingsSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.default_lock_settings,
+  (metadata) => metadata?.defaultLockSettings,
 );
 
 const currentUserLockSettingsSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.lock_settings,
+  (metadata) => metadata?.lockSettings,
 );
 
 const MenuIcon = ({
@@ -41,7 +41,7 @@ const MenuIcon = ({
   const currentUser = store.getState().session.currentUser;
 
   const renderMenuItems = () => {
-    if (currentUser?.metadata?.is_admin) {
+    if (currentUser?.metadata?.isAdmin) {
       return (
         <>
           <MicMenuItem userId={userId} />
@@ -60,18 +60,18 @@ const MenuIcon = ({
 
     // if lock then user won't be able to send private messages to each other
     if (
-      !currentUser?.metadata?.is_admin &&
-      !currentUserLockSettings?.lock_private_chat &&
-      !defaultLockSettings?.lock_chat &&
-      !defaultLockSettings?.lock_private_chat
+      !currentUser?.metadata?.isAdmin &&
+      !currentUserLockSettings?.lockPrivateChat &&
+      !defaultLockSettings?.lockChat &&
+      !defaultLockSettings?.lockPrivateChat
     ) {
       return <PrivateChatMenuItem userId={userId} name={name} />;
     }
 
     // user can always send private messages to admin if chat isn't lock
     if (
-      !defaultLockSettings?.lock_chat &&
-      defaultLockSettings?.lock_private_chat &&
+      !defaultLockSettings?.lockChat &&
+      defaultLockSettings?.lockPrivateChat &&
       isAdmin
     ) {
       return <PrivateChatMenuItem userId={userId} name={name} />;

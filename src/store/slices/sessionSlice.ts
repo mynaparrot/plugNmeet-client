@@ -1,4 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RoomMetadataSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
+
 import {
   ISession,
   ICurrentUser,
@@ -19,91 +22,93 @@ const initialState: ISession = {
   isActiveRecording: false,
   isWebcamPaginating: false,
   isStartup: true,
-  isChatServiceReady: false,
   totalAudioSubscribers: 0,
   totalVideoSubscribers: 0,
   userDeviceType: UserDeviceType.DESKTOP,
   currentRoom: {
     sid: '',
-    room_id: '',
-    metadata: {
-      room_title: 'plugNmeet',
-      is_recording: false,
-      is_active_rtmp: false,
-      is_breakout_room: false,
-      started_at: Date.now().toString(),
-      room_features: {
-        allow_webcams: true,
-        mute_on_start: false,
-        allow_screen_share: true,
-        allow_rtmp: true,
-        allow_view_other_webcams: true,
-        allow_view_other_users_list: true,
-        admin_only_webcams: false,
-        allow_polls: true,
-        room_duration: '0',
-        recording_features: {
-          is_allow: true,
-          is_allow_cloud: true,
-          enable_auto_cloud_recording: false,
-          is_allow_local: true,
-          only_record_admin_webcams: false,
+    roomId: '',
+    metadata: create(RoomMetadataSchema, {
+      roomTitle: 'plugNmeet',
+      welcomeMessage: 'Welcome to plugNmeet!',
+      isRecording: false,
+      isActiveRtmp: false,
+      parentRoomId: '',
+      isBreakoutRoom: false,
+      startedAt: Date.now().toString(),
+      roomFeatures: {
+        allowWebcams: true,
+        muteOnStart: false,
+        allowScreenShare: true,
+        allowRtmp: true,
+        allowViewOtherWebcams: true,
+        allowViewOtherUsersList: true,
+        adminOnlyWebcams: false,
+        allowPolls: true,
+        roomDuration: '0',
+        allowVirtualBg: true,
+        allowRaiseHand: true,
+        recordingFeatures: {
+          isAllow: true,
+          isAllowCloud: true,
+          enableAutoCloudRecording: false,
+          isAllowLocal: true,
+          onlyRecordAdminWebcams: false,
         },
-        chat_features: {
-          allow_chat: true,
-          allow_file_upload: true,
+        chatFeatures: {
+          allowChat: true,
+          allowFileUpload: true,
+          allowedFileTypes: ['jpg', 'png', 'zip'],
         },
-        shared_note_pad_features: {
-          allowed_shared_note_pad: false,
-          is_active: false,
+        sharedNotePadFeatures: {
+          allowedSharedNotePad: true,
+        },
+        whiteboardFeatures: {
+          allowedWhiteboard: true,
           visible: false,
+          whiteboardFileId: '',
+          fileName: '',
+          filePath: '',
+          totalPages: 0,
         },
-        whiteboard_features: {
-          allowed_whiteboard: true,
-          visible: false,
-          whiteboard_file_id: 'default',
-          file_name: 'default',
-          file_path: 'default',
-          total_pages: 10,
+        externalMediaPlayerFeatures: {
+          allowedExternalMediaPlayer: true,
+          isActive: false,
         },
-        external_media_player_features: {
-          allowed_external_media_player: true,
-          is_active: false,
+        waitingRoomFeatures: {
+          isActive: false,
+          waitingRoomMsg: '',
         },
-        waiting_room_features: {
-          is_active: false,
-          waiting_room_msg: '',
+        breakoutRoomFeatures: {
+          isAllow: true,
         },
-        breakout_room_features: {
-          is_allow: true,
-          is_active: false,
-          allowed_number_rooms: 6,
+        displayExternalLinkFeatures: {
+          isAllow: true,
         },
-        display_external_link_features: {
-          is_allow: true,
-          is_active: false,
+        ingressFeatures: {
+          isAllow: true,
         },
-        ingress_features: {
-          is_allow: false,
+        speechToTextTranslationFeatures: {
+          isAllow: true,
+          isAllowTranslation: true,
+          isEnabled: false,
+          isEnabledTranslation: false,
+          allowedSpeechLangs: [],
+          allowedSpeechUsers: [],
+          allowedTransLangs: [],
+          maxNumTranLangsAllowSelecting: 10,
         },
-        speech_to_text_translation_features: {
-          is_allow: false,
-          is_allow_translation: false,
-          is_enabled: false,
-          is_enabled_translation: false,
-          max_num_tran_langs_allow_selecting: 2,
-        },
-        end_to_end_encryption_features: {
-          is_enabled: false,
-          included_chat_messages: false,
-          included_whiteboard: false,
+        endToEndEncryptionFeatures: {
+          isEnabled: false,
+          includedChatMessages: false,
+          includedWhiteboard: false,
         },
       },
-      copyright_conf: {
+      copyrightConf: {
         display: true,
         text: 'Powered by <a href="https://www.plugnmeet.org" target="_blank">plugNmeet</a>',
       },
-    },
+    }),
   },
 };
 
@@ -124,7 +129,7 @@ const sessionSlice = createSlice({
       state.currentUser = action.payload;
     },
     addCurrentRoom: (state, action: PayloadAction<ICurrentRoom>) => {
-      state.currentRoom.room_id = action.payload.room_id;
+      state.currentRoom.roomId = action.payload.roomId;
       state.currentRoom.sid = action.payload.sid;
       if (action.payload.metadata) {
         state.currentRoom.metadata = action.payload.metadata;
@@ -150,12 +155,9 @@ const sessionSlice = createSlice({
     ) => {
       if (state.currentRoom) {
         state.currentRoom.metadata = action.payload;
-        state.isActiveRtmpBroadcasting = action.payload.is_active_rtmp ?? false;
-        state.isActiveRecording = action.payload.is_recording ?? false;
+        state.isActiveRtmpBroadcasting = action.payload.isActiveRtmp ?? false;
+        state.isActiveRecording = action.payload.isRecording ?? false;
       }
-    },
-    updateIsChatServiceReady: (state, action: PayloadAction<boolean>) => {
-      state.isChatServiceReady = action.payload;
     },
     updateTotalVideoSubscribers: (state, action: PayloadAction<number>) => {
       state.totalVideoSubscribers = action.payload;
@@ -164,8 +166,8 @@ const sessionSlice = createSlice({
       state.totalAudioSubscribers = action.payload;
     },
     updateMuteOnStart: (state, action: PayloadAction<boolean>) => {
-      if (state.currentRoom.metadata) {
-        state.currentRoom.metadata.room_features.mute_on_start = action.payload;
+      if (state.currentRoom.metadata?.roomFeatures) {
+        state.currentRoom.metadata.roomFeatures.muteOnStart = action.payload;
       }
     },
     updateUserDeviceType: (state, action: PayloadAction<UserDeviceType>) => {
@@ -184,7 +186,6 @@ export const {
   setWebcamPaginating,
   updateCurrentUserMetadata,
   updateCurrentRoomMetadata,
-  updateIsChatServiceReady,
   updateTotalVideoSubscribers,
   updateTotalAudioSubscribers,
   updateMuteOnStart,

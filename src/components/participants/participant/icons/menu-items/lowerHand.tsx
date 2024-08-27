@@ -1,17 +1,15 @@
 import React from 'react';
 import { Menu } from '@headlessui/react';
-
-import { store, useAppDispatch, useAppSelector } from '../../../../../store';
-import { participantsSelector } from '../../../../../store/slices/participantSlice';
-import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
-import { updateIsActiveRaisehand } from '../../../../../store/slices/bottomIconsActivitySlice';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
-  CommonResponse,
-  DataMessageReq,
-} from '../../../../../helpers/proto/plugnmeet_common_api_pb';
-import { DataMsgBodyType } from '../../../../../helpers/proto/plugnmeet_datamessage_pb';
+  NatsMsgClientToServerSchema,
+  NatsMsgClientToServerEvents,
+} from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
+
+import { useAppSelector } from '../../../../../store';
+import { participantsSelector } from '../../../../../store/slices/participantSlice';
+import { getNatsConn } from '../../../../../helpers/nats';
 
 interface ILowerHandMenuItemProps {
   userId: string;
@@ -21,34 +19,15 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
   const participant = useAppSelector((state) =>
     participantsSelector.selectById(state, userId),
   );
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const onClick = async () => {
-    const session = store.getState().session;
-    const body = new DataMessageReq({
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
-      msgBodyType: DataMsgBodyType.OTHER_USER_LOWER_HAND,
+    const conn = getNatsConn();
+    const data = create(NatsMsgClientToServerSchema, {
+      event: NatsMsgClientToServerEvents.REQ_LOWER_OTHER_USER_HAND,
       msg: participant?.userId,
     });
-
-    const r = await sendAPIRequest(
-      'dataMessage',
-      body.toBinary(),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
-
-    if (res.status) {
-      dispatch(updateIsActiveRaisehand(false));
-    } else {
-      toast(t(res.msg), {
-        type: 'error',
-      });
-    }
+    await conn.sendMessageToSystemWorker(data);
   };
 
   const render = () => {
@@ -68,7 +47,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     );
   };
 
-  return <>{participant?.metadata.raised_hand ? render() : null}</>;
+  return <>{participant?.metadata.raisedHand ? render() : null}</>;
 };
 
 export default LowerHandMenuItem;

@@ -23,7 +23,7 @@ const LeftPanel = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const allow_polls =
-    store.getState().session.currentRoom.metadata?.room_features.allow_polls;
+    store.getState().session.currentRoom.metadata?.roomFeatures?.allowPolls;
   const selectedTabLeftPanel = useAppSelector(selectedTabLeftPanelSelector);
 
   const items = useMemo(() => {

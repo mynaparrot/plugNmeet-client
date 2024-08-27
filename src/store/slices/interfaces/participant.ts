@@ -16,4 +16,5 @@ export interface IParticipant {
   joinedAt: number;
   visibility: string;
   pinWebcam?: boolean;
+  isOnline: boolean;
 }

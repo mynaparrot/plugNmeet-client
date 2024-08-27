@@ -28,9 +28,9 @@ const RoomSettings = () => {
   const { t } = useTranslation();
   const s = store.getState();
   const serverVersion = s.session.serverVersion;
-  const copyright_conf = s.session.currentRoom?.metadata?.copyright_conf;
+  const copyright_conf = s.session.currentRoom?.metadata?.copyrightConf;
   const ingressFeatures =
-    s.session.currentRoom?.metadata?.room_features.ingress_features;
+    s.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures;
 
   const isShowRoomSettingsModal = useAppSelector(
     isShowRoomSettingsModalSelector,
@@ -58,10 +58,7 @@ const RoomSettings = () => {
   });
 
   useEffect(() => {
-    if (
-      s.session?.currentUser?.metadata?.is_admin &&
-      ingressFeatures?.is_allow
-    ) {
+    if (s.session?.currentUser?.metadata?.isAdmin && ingressFeatures?.isAllow) {
       categories['header.room-settings.ingress'] = [
         {
           id: 4,

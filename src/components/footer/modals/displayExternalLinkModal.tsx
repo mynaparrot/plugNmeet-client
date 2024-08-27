@@ -3,6 +3,12 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  CommonResponseSchema,
+  ExternalDisplayLinkReqSchema,
+  ExternalDisplayLinkTask,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -12,17 +18,12 @@ import {
 } from '../../../store';
 import { updateDisplayExternalLinkRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import {
-  CommonResponse,
-  ExternalDisplayLinkReq,
-  ExternalDisplayLinkTask,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .display_external_link_features,
-  (display_external_link_features) => display_external_link_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures
+      ?.displayExternalLinkFeatures,
+  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
 );
 
 const DisplayExternalLinkModal = () => {
@@ -64,29 +65,29 @@ const DisplayExternalLinkModal = () => {
     if (extraValues.role) {
       url.searchParams.set(
         'role',
-        session.currentUser?.metadata?.is_admin ? 'admin' : 'participant',
+        session.currentUser?.metadata?.isAdmin ? 'admin' : 'participant',
       );
     }
     if (extraValues.meetingId) {
-      url.searchParams.set('meetingId', session.currentRoom.room_id);
+      url.searchParams.set('meetingId', session.currentRoom.roomId);
     }
 
     const id = toast.loading(t('please-wait'), {
       type: 'info',
     });
 
-    const body = new ExternalDisplayLinkReq({
+    const body = create(ExternalDisplayLinkReqSchema, {
       task: ExternalDisplayLinkTask.START_EXTERNAL_LINK,
       url: url.toString(),
     });
     const r = await sendAPIRequest(
       'externalDisplayLink',
-      body.toBinary(),
+      toBinary(ExternalDisplayLinkReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (!res.status) {
       toast.update(id, {

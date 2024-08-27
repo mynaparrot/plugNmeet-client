@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
-import { proto3 } from '@bufbuild/protobuf';
 import { isEmpty } from 'lodash';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  AnalyticsStatus,
+  AnalyticsStatusSchema,
+} from 'plugnmeet-protocol-js';
 
 import {
   RootState,
@@ -21,14 +26,9 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
-import { sendAnalyticsByWebsocket } from '../../../helpers/websocket';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  AnalyticsStatus,
-} from '../../../helpers/proto/plugnmeet_analytics_pb';
 import { getAudioPreset } from '../../../helpers/utils';
 import { getCurrentRoom } from '../../../helpers/livekit/utils';
+import { getNatsConn } from '../../../helpers/nats';
 
 const isActiveMicrophoneSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -39,8 +39,8 @@ const showMicrophoneModalSelector = createSelector(
   (bottomIconsActivity) => bottomIconsActivity.showMicrophoneModal,
 );
 const isMicLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_microphone,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockMicrophone,
 );
 const isMicMutedSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -51,11 +51,12 @@ const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getCurrentRoom();
   const { t } = useTranslation();
+  const conn = getNatsConn();
 
   const session = store.getState().session;
   const showTooltip = session.userDeviceType === 'desktop';
   const muteOnStart =
-    session.currentRoom.metadata?.room_features.mute_on_start ?? false;
+    session.currentRoom.metadata?.roomFeatures?.muteOnStart ?? false;
 
   const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
   const isActiveMicrophone = useAppSelector(isActiveMicrophoneSelector);
@@ -104,9 +105,9 @@ const MicrophoneIcon = () => {
   // default room lock settings
   useEffect(() => {
     const isLock =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_microphone;
-    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockMicrophone;
+    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (isLock && !isAdmin) {
       if (isMicLock !== false) {
@@ -127,22 +128,22 @@ const MicrophoneIcon = () => {
         if (lastSpokeAt && lastSpokeAt > 0) {
           const cal = Date.now() - lastSpokeAt;
           // send analytics
-          sendAnalyticsByWebsocket(
+          conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED_DURATION,
             AnalyticsEventType.USER,
             undefined,
             undefined,
-            BigInt(cal),
+            cal.toString(),
           );
         }
       } else {
         // send analytics as user has spoken
-        sendAnalyticsByWebsocket(
+        conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED,
           AnalyticsEventType.USER,
           undefined,
           undefined,
-          BigInt(1),
+          '1',
         );
       }
     };
@@ -157,6 +158,7 @@ const MicrophoneIcon = () => {
         speakingHandler,
       );
     };
+    //eslint-disable-next-line
   }, [currentRoom]);
 
   const muteUnmuteMic = async () => {
@@ -171,22 +173,24 @@ const MicrophoneIcon = () => {
         if (publication.isMuted) {
           await publication.track.unmute();
           dispatch(updateIsMicMuted(false));
+
           // send analytics
-          sendAnalyticsByWebsocket(
+          const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
+          conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
-            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.UNMUTED]
-              .name,
+            val['name'],
           );
         } else {
           await publication.track.mute();
           dispatch(updateIsMicMuted(true));
+
           // send analytics
-          sendAnalyticsByWebsocket(
+          const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
+          conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
             AnalyticsEventType.USER,
-            proto3.getEnumType(AnalyticsStatus).values[AnalyticsStatus.MUTED]
-              .name,
+            val['name'],
           );
         }
       }

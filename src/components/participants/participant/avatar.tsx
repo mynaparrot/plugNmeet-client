@@ -6,9 +6,9 @@ interface IAvatarProps {
 }
 const Avatar = ({ participant }: IAvatarProps) => {
   const render = () => {
-    if (participant.metadata.profile_pic) {
+    if (participant.metadata.profilePic) {
       return (
-        <img src={participant.metadata.profile_pic} alt={participant.name} />
+        <img src={participant.metadata.profilePic} alt={participant.name} />
       );
     } else {
       return <>{participant.name.slice(0, 2).toUpperCase()}</>;

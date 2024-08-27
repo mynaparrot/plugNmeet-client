@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { IParticipant } from '../../store/slices/interfaces/participant';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
-import { store } from '../../store';
 import {
-  ApproveWaitingUsersReq,
-  CommonResponse,
-  RemoveParticipantReq,
-} from '../../helpers/proto/plugnmeet_common_api_pb';
+  ApproveWaitingUsersReqSchema,
+  CommonResponseSchema,
+  RemoveParticipantReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+
+import { store } from '../../store';
 
 interface IBulkActionProps {
   waitingParticipants: IParticipant[];
@@ -20,18 +22,18 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
 
   const approveEveryone = () => {
     waitingParticipants.forEach(async (p) => {
-      const body = new ApproveWaitingUsersReq({
+      const body = create(ApproveWaitingUsersReqSchema, {
         userId: p.userId,
       });
 
       const r = await sendAPIRequest(
         'waitingRoom/approveUsers',
-        body.toBinary(),
+        toBinary(ApproveWaitingUsersReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
       if (!res.status) {
         toast(t(res.msg), {
@@ -43,9 +45,9 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
 
   const rejectEveryone = () => {
     const session = store.getState().session;
-    const body = new RemoveParticipantReq({
+    const body = create(RemoveParticipantReqSchema, {
       sid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
     });
     waitingParticipants.forEach(async (p) => {
       body.userId = p.userId;
@@ -54,12 +56,12 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
 
       const r = await sendAPIRequest(
         'removeParticipant',
-        body.toBinary(),
+        toBinary(RemoveParticipantReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
       );
-      const res = CommonResponse.fromBinary(new Uint8Array(r));
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
       if (!res.status) {
         toast(t(res.msg), {

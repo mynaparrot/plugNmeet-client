@@ -3,6 +3,11 @@ import { createSelector } from '@reduxjs/toolkit';
 import { Transition, Dialog, Switch } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import {
+  CommonResponseSchema,
+  UpdateUserLockSettingsReqSchema,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -12,14 +17,10 @@ import {
 } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import {
-  CommonResponse,
-  UpdateUserLockSettingsReq,
-} from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const roomLockSettingsSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.default_lock_settings,
+  (metadata) => metadata?.defaultLockSettings,
 );
 const LockSettingsModal = () => {
   const dispatch = useAppDispatch();
@@ -30,9 +31,9 @@ const LockSettingsModal = () => {
   const updateLockSettings = async (status, service: string) => {
     const direction = status ? 'lock' : 'unlock';
 
-    const body = new UpdateUserLockSettingsReq({
+    const body = create(UpdateUserLockSettingsReqSchema, {
       roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.room_id,
+      roomId: session.currentRoom.roomId,
       userId: 'all',
       service,
       direction,
@@ -40,12 +41,12 @@ const LockSettingsModal = () => {
 
     const r = await sendAPIRequest(
       'updateLockSettings',
-      body.toBinary(),
+      toBinary(UpdateUserLockSettingsReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
     );
-    const res = CommonResponse.fromBinary(new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       toast(t('footer.notice.applied-settings'), {
@@ -71,17 +72,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-microphone')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_microphone ?? false}
+            checked={roomLockSettings?.lockMicrophone ?? false}
             onChange={(e) => updateLockSettings(e, 'mic')}
             className={`${
-              roomLockSettings?.lock_microphone
+              roomLockSettings?.lockMicrophone
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_microphone
+                roomLockSettings?.lockMicrophone
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -94,17 +95,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-webcams')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_webcam ?? false}
+            checked={roomLockSettings?.lockWebcam ?? false}
             onChange={(e) => updateLockSettings(e, 'webcam')}
             className={`${
-              roomLockSettings?.lock_webcam
+              roomLockSettings?.lockWebcam
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_webcam
+                roomLockSettings?.lockWebcam
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -117,17 +118,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-screen-sharing')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_screen_sharing ?? false}
+            checked={roomLockSettings?.lockScreenSharing ?? false}
             onChange={(e) => updateLockSettings(e, 'screenShare')}
             className={`${
-              roomLockSettings?.lock_screen_sharing
+              roomLockSettings?.lockScreenSharing
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_screen_sharing
+                roomLockSettings?.lockScreenSharing
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -140,17 +141,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-whiteboard')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_whiteboard ?? false}
+            checked={roomLockSettings?.lockWhiteboard ?? false}
             onChange={(e) => updateLockSettings(e, 'whiteboard')}
             className={`${
-              roomLockSettings?.lock_whiteboard
+              roomLockSettings?.lockWhiteboard
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_whiteboard
+                roomLockSettings?.lockWhiteboard
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -163,17 +164,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-shared-notepad')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_shared_notepad ?? false}
+            checked={roomLockSettings?.lockSharedNotepad ?? false}
             onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
             className={`${
-              roomLockSettings?.lock_shared_notepad
+              roomLockSettings?.lockSharedNotepad
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_shared_notepad
+                roomLockSettings?.lockSharedNotepad
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -186,17 +187,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-chat')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_chat ?? false}
+            checked={roomLockSettings?.lockChat ?? false}
             onChange={(e) => updateLockSettings(e, 'chat')}
             className={`${
-              roomLockSettings?.lock_chat
+              roomLockSettings?.lockChat
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_chat
+                roomLockSettings?.lockChat
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -209,17 +210,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-send-message')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_chat_send_message ?? false}
+            checked={roomLockSettings?.lockChatSendMessage ?? false}
             onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
             className={`${
-              roomLockSettings?.lock_chat_send_message
+              roomLockSettings?.lockChatSendMessage
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_chat_send_message
+                roomLockSettings?.lockChatSendMessage
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -232,17 +233,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-chat-file-share')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_chat_file_share ?? false}
+            checked={roomLockSettings?.lockChatFileShare ?? false}
             onChange={(e) => updateLockSettings(e, 'chatFile')}
             className={`${
-              roomLockSettings?.lock_chat_file_share
+              roomLockSettings?.lockChatFileShare
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_chat_file_share
+                roomLockSettings?.lockChatFileShare
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
@@ -255,17 +256,17 @@ const LockSettingsModal = () => {
             {t('footer.modal.lock-private-chat')}
           </Switch.Label>
           <Switch
-            checked={roomLockSettings?.lock_private_chat ?? false}
+            checked={roomLockSettings?.lockPrivateChat ?? false}
             onChange={(e) => updateLockSettings(e, 'privateChat')}
             className={`${
-              roomLockSettings?.lock_private_chat
+              roomLockSettings?.lockPrivateChat
                 ? 'bg-primaryColor dark:bg-darkSecondary2'
                 : 'bg-gray-200 dark:bg-secondaryColor'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
-                roomLockSettings?.lock_private_chat
+                roomLockSettings?.lockPrivateChat
                   ? 'ltr:translate-x-5 rtl:-translate-x-5'
                   : 'ltr:translate-x-1 rtl:translate-x-0'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}

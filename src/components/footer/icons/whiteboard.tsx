@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  ChangeVisibilityRes,
+  ChangeVisibilityResSchema,
+} from 'plugnmeet-protocol-js';
+import { create, toBinary } from '@bufbuild/protobuf';
 
 import {
   RootState,
@@ -13,7 +18,6 @@ import {
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { ChangeVisibilityRes } from '../../../helpers/proto/plugnmeet_common_api_pb';
 
 const isActiveWhiteboardSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -21,8 +25,8 @@ const isActiveWhiteboardSelector = createSelector(
 );
 const isWhiteboardVisibleSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.whiteboard_features,
-  (whiteboard_features) => whiteboard_features?.visible,
+    state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures,
+  (whiteboardFeatures) => whiteboardFeatures?.visible,
 );
 
 const WhiteboardIcon = () => {
@@ -35,9 +39,9 @@ const WhiteboardIcon = () => {
   const isVisible = useAppSelector(isWhiteboardVisibleSelector);
 
   const allowedWhiteboard =
-    store.getState().session.currentRoom.metadata?.room_features
-      .whiteboard_features.allowed_whiteboard;
-  const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+    store.getState().session.currentRoom.metadata?.roomFeatures
+      ?.whiteboardFeatures?.allowedWhiteboard;
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
@@ -73,7 +77,7 @@ const WhiteboardIcon = () => {
 
     if (
       !initiated &&
-      currentRoom.metadata?.room_features.whiteboard_features.visible
+      currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
       setInitiated(true);
       return;
@@ -84,7 +88,7 @@ const WhiteboardIcon = () => {
     const sendRequest = async (body: ChangeVisibilityRes) => {
       await sendAPIRequest(
         'changeVisibility',
-        body.toBinary(),
+        toBinary(ChangeVisibilityResSchema, body),
         false,
         'application/protobuf',
       );
@@ -92,10 +96,10 @@ const WhiteboardIcon = () => {
 
     if (
       isActiveWhiteboard &&
-      !currentRoom.metadata?.room_features.whiteboard_features.visible
+      !currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
-        roomId: currentRoom.room_id,
+      const body = create(ChangeVisibilityResSchema, {
+        roomId: currentRoom.roomId,
         visibleWhiteBoard: true,
       });
       // wait little bit before change visibility
@@ -104,10 +108,10 @@ const WhiteboardIcon = () => {
       }, 500);
     } else if (
       !isActiveWhiteboard &&
-      currentRoom.metadata?.room_features.whiteboard_features.visible
+      currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible
     ) {
-      const body = new ChangeVisibilityRes({
-        roomId: currentRoom.room_id,
+      const body = create(ChangeVisibilityResSchema, {
+        roomId: currentRoom.roomId,
         visibleWhiteBoard: false,
       });
       sendRequest(body);

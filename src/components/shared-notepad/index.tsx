@@ -11,12 +11,12 @@ import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 
 const sharedNotepadFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.room_features,
-  (room_features) => room_features?.shared_note_pad_features,
+  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
+  (room_features) => room_features?.sharedNotePadFeatures,
 );
 const lockSharedNotepadSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_shared_notepad,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockSharedNotepad,
 );
 const themeSelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -56,7 +56,7 @@ const SharedNotepadElement = () => {
   };
 
   useEffect(() => {
-    if (sharedNotepadFeatures?.is_active && sharedNotepadFeatures.host) {
+    if (sharedNotepadFeatures?.isActive && sharedNotepadFeatures.host) {
       let url = sharedNotepadFeatures.host;
       if (sharedNotepadFeatures.host.match('host.docker.internal')) {
         url = 'http://localhost:9001';
@@ -64,15 +64,15 @@ const SharedNotepadElement = () => {
 
       if (currentUser?.isRecorder) {
         setUrl(
-          `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`,
+          `${url}/p/${sharedNotepadFeatures.readOnlyPadId}?userName=${currentUser?.name}`,
         );
         return;
       }
 
       if (!lockSharedNotepad) {
-        url = `${url}/p/${sharedNotepadFeatures.note_pad_id}?userName=${currentUser?.name}`;
+        url = `${url}/p/${sharedNotepadFeatures.notePadId}?userName=${currentUser?.name}`;
       } else {
-        url = `${url}/p/${sharedNotepadFeatures.read_only_pad_id}?userName=${currentUser?.name}`;
+        url = `${url}/p/${sharedNotepadFeatures.readOnlyPadId}?userName=${currentUser?.name}`;
       }
 
       url += '&userColor=%23' + getUserColor() + '&lang=' + i18n.languages[0];

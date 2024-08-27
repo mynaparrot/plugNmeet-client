@@ -38,16 +38,16 @@ const activateWebcamsViewSelector = createSelector(
 
 const activateSpeechServiceSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features
-      .speech_to_text_translation_features,
+    state.session.currentRoom.metadata?.roomFeatures
+      ?.speechToTextTranslationFeatures,
   (speech_to_text_translation_features) =>
-    speech_to_text_translation_features?.is_enabled,
+    speech_to_text_translation_features?.isEnabled,
 );
 
 const isActiveSharedNotepadSelector = createSelector(
   (state: RootState) =>
-    state.session.currentRoom.metadata?.room_features.shared_note_pad_features,
-  (shared_note_pad_features) => shared_note_pad_features?.is_active,
+    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
+  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
 );
 
 const MainComponents = ({
@@ -140,7 +140,7 @@ const MainComponents = ({
       excalidrawAPI
     ) {
       const s = store.getState();
-      const isPresenter = s.session.currentUser?.metadata?.is_presenter;
+      const isPresenter = s.session.currentUser?.metadata?.isPresenter;
       // we'll only do it for presenter
       if (isPresenter) {
         const lastPage = s.whiteboard.currentPage;

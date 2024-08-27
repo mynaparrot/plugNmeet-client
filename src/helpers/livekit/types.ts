@@ -14,7 +14,9 @@ export type ConnectionStatus =
   | 'connected'
   | 'disconnected'
   | 're-connecting'
-  | 'error';
+  | 'error'
+  | 'receiving-data'
+  | 'ready';
 
 export enum CurrentConnectionEvents {
   ScreenShareStatus = 'screenShareStatus',
@@ -36,23 +38,22 @@ export interface IConnectLivekit extends EventEmitter {
     string,
     Array<LocalTrackPublication | RemoteTrackPublication>
   >;
-  setRoomMetadata(metadata: string): Promise<void>;
-  disconnectRoom(): void;
+  connect(): Promise<void>;
+  disconnectRoom(): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
-  updateVideoSubscribers(
+  addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add?: boolean,
   ): void;
-  updateAudioSubscribers(
+  removeAudioSubscriber(userId: string): void;
+  addVideoSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
-    add?: boolean,
   ): void;
-  setScreenShareTrack(
-    track: LocalTrackPublication | RemoteTrackPublication | undefined,
-    participant: LocalParticipant | RemoteParticipant,
-    add?: boolean,
+  removeVideoSubscriber(userId: string): void;
+  addScreenShareTrack(
+    userId: string,
+    track: LocalTrackPublication | RemoteTrackPublication,
   ): void;
-  updateScreenShareOnUserDisconnect(participant: RemoteParticipant): void;
+  removeScreenShareTrack(userId: string): void;
   on(
     event: CurrentConnectionEvents.ScreenShareStatus,
     listener: (active: boolean) => void,

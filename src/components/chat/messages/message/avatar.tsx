@@ -1,24 +1,23 @@
 import React from 'react';
 import { IParticipant } from '../../../../store/slices/interfaces/participant';
-import { ICurrentUser } from '../../../../store/slices/interfaces/session';
 
 interface IAvatarProps {
   participant?: IParticipant;
-  from: ICurrentUser;
+  name: string;
 }
 
-const Avatar = ({ participant, from }: IAvatarProps) => {
+const Avatar = ({ participant, name }: IAvatarProps) => {
   const render = () => {
-    if (participant?.metadata?.profile_pic) {
+    if (participant?.metadata?.profilePic) {
       return (
-        <img src={participant?.metadata.profile_pic} alt={participant.name} />
+        <img src={participant?.metadata.profilePic} alt={participant.name} />
       );
     } else {
-      let name = from.name;
+      let n = name;
       if (participant?.name) {
-        name = participant?.name;
+        n = participant?.name;
       }
-      return <>{name?.slice(0, 2).toUpperCase()}</>;
+      return <>{n?.slice(0, 2).toUpperCase()}</>;
     }
   };
   return (

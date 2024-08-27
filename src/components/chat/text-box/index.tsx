@@ -7,37 +7,25 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { RootState, store, useAppSelector } from '../../../store';
-import {
-  isSocketConnected,
-  sendWebsocketMessage,
-} from '../../../helpers/websocket';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
-import {
-  DataMessage,
-  DataMsgBodyType,
-  DataMsgType,
-} from '../../../helpers/proto/plugnmeet_datamessage_pb';
-import { encryptMessage } from '../../../helpers/websocket/cryptoMessages';
+import { encryptMessage } from '../../../helpers/cryptoMessages';
+import { getNatsConn } from '../../../helpers/nats';
 
 interface ITextBoxAreaProps {
   currentRoom: Room;
   chosenEmoji: string | null;
   onAfterSendMessage(): void;
 }
-const isChatServiceReadySelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.isChatServiceReady,
-);
 
 const isLockChatSendMsgSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_chat_send_message,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockChatSendMessage,
 );
 
 const isLockSendFileSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lock_settings,
-  (lock_settings) => lock_settings?.lock_chat_file_share,
+  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
+  (lock_settings) => lock_settings?.lockChatFileShare,
 );
 
 const selectedChatOptionSelector = createSelector(
@@ -50,13 +38,12 @@ const TextBoxArea = ({
   chosenEmoji,
   onAfterSendMessage,
 }: ITextBoxAreaProps) => {
-  const isChatServiceReady = useAppSelector(isChatServiceReadySelector);
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
   const e2ee =
-    store.getState().session.currentRoom.metadata?.room_features
-      .end_to_end_encryption_features;
+    store.getState().session.currentRoom.metadata?.roomFeatures
+      ?.endToEndEncryptionFeatures;
   const { t } = useTranslation();
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
@@ -68,7 +55,7 @@ const TextBoxArea = ({
     const metadata = store.getState().session.currentRoom
       .metadata as IRoomMetadata;
 
-    if (!metadata.room_features.chat_features.allow_file_upload) {
+    if (!metadata.roomFeatures?.chatFeatures?.allowFileUpload) {
       setShowSendFile(false);
     }
   }, []);
@@ -89,21 +76,21 @@ const TextBoxArea = ({
   // default room lock settings
   useEffect(() => {
     const lock_chat_send_message =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_chat_send_message;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockChatSendMessage;
     const lock_chat_file_share =
-      store.getState().session.currentRoom.metadata?.default_lock_settings
-        ?.lock_chat_file_share;
+      store.getState().session.currentRoom.metadata?.defaultLockSettings
+        ?.lockChatFileShare;
 
-    const isAdmin = store.getState().session.currentUser?.metadata?.is_admin;
+    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
     if (lock_chat_send_message && !isAdmin) {
-      if (isLockChatSendMsg !== false) {
+      if (isLockChatSendMsg) {
         setLockSendMsg(true);
       }
     }
     if (lock_chat_file_share && !isAdmin) {
-      if (isLockChatSendMsg !== false) {
+      if (isLockChatSendMsg) {
         setLockSendFile(true);
       }
     }
@@ -140,12 +127,12 @@ const TextBoxArea = ({
 
     if (
       typeof e2ee !== 'undefined' &&
-      e2ee.is_enabled &&
-      e2ee.included_chat_messages &&
-      e2ee.encryption_key
+      e2ee.isEnabled &&
+      e2ee.includedChatMessages &&
+      e2ee.encryptionKey
     ) {
       try {
-        msg = await encryptMessage(e2ee.encryption_key, msg);
+        msg = await encryptMessage(e2ee.encryptionKey, msg);
       } catch (e: any) {
         toast('Encryption error: ' + e.message, {
           type: 'error',
@@ -154,33 +141,14 @@ const TextBoxArea = ({
         return;
       }
     }
+    const conn = getNatsConn();
+    await conn.sendChatMsg(selectedChatOption, msg.replace(/\r?\n/g, '<br />'));
+    setMessage('');
 
-    const sid = await currentRoom.getSid();
-    const dataMsg = new DataMessage({
-      type: DataMsgType.USER,
-      roomSid: sid,
-      roomId: currentRoom.name,
-      to: selectedChatOption !== 'public' ? selectedChatOption : '',
-      body: {
-        type: DataMsgBodyType.CHAT,
-        isPrivate: selectedChatOption !== 'public' ? 1 : 0,
-        from: {
-          sid: currentRoom.localParticipant.sid,
-          userId: currentRoom.localParticipant.identity,
-          name: currentRoom.localParticipant.name,
-        },
-        msg: msg.replace(/\r?\n/g, '<br />'),
-      },
-    });
-
-    if (isSocketConnected()) {
-      sendWebsocketMessage(dataMsg.toBinary());
-      setMessage('');
-    }
     onAfterSendMessage();
   };
 
-  const onEnterPress = async (e) => {
+  const onEnterPress = async (e: any) => {
     if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
       await sendMsg();
@@ -196,13 +164,13 @@ const TextBoxArea = ({
           className="w-full bg-white dark:bg-darkSecondary2 h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor dark:text-white placeholder:text-primaryColor/70 dark:placeholder:text-white/70"
           value={message}
           onChange={(e) => setMessage(e.currentTarget.value)}
-          disabled={!isChatServiceReady || lockSendMsg}
+          disabled={lockSendMsg}
           placeholder={t('right-panel.chat-box-placeholder').toString()}
           onKeyDown={(e) => onEnterPress(e)}
         />
         <div className="btns">
           <button
-            disabled={!isChatServiceReady || lockSendMsg}
+            disabled={lockSendMsg}
             onClick={() => sendMsg()}
             className="w-4 h-6 p-2"
           >
@@ -210,11 +178,7 @@ const TextBoxArea = ({
           </button>
 
           {showSendFile ? (
-            <FileSend
-              isChatServiceReady={isChatServiceReady}
-              lockSendFile={lockSendFile}
-              currentRoom={currentRoom}
-            />
+            <FileSend lockSendFile={lockSendFile} currentRoom={currentRoom} />
           ) : null}
         </div>
       </div>
