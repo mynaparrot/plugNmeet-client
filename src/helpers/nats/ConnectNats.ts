@@ -532,7 +532,6 @@ export default class ConnectNats {
   };
 
   private async handleSystemEvents(payload: NatsMsgServerToClient) {
-    console.log(payload.event, payload.msg);
     switch (payload.event) {
       case NatsMsgServerToClientEvents.RES_INITIAL_DATA:
         await this.handleInitialData(payload.msg);
