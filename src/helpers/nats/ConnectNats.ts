@@ -202,6 +202,7 @@ export default class ConnectNats {
       await this._nc.drain();
       await this._nc.close();
     }
+    this.messageQueue.isConnected(false);
 
     this._setErrorState({
       title: i18n.t('notifications.room-disconnected-title'),
