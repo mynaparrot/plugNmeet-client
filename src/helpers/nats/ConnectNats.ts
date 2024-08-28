@@ -1,5 +1,4 @@
 import {
-  ErrorCode,
   NatsConnection,
   NatsError,
   tokenAuthenticator,
@@ -10,7 +9,6 @@ import {
 import { jetstream, JetStreamClient } from '@nats-io/jetstream';
 import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
-import { toast } from 'react-toastify';
 import {
   AnalyticsDataMsgSchema,
   AnalyticsEvents,
@@ -57,6 +55,7 @@ import {
   ICurrentRoom,
   ICurrentUser,
 } from '../../store/slices/interfaces/session';
+import MessageQueue from './MessageQueue';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
@@ -83,6 +82,7 @@ export default class ConnectNats {
   private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
   private _mediaServerConn: IConnectLivekit | undefined = undefined;
+  private messageQueue: MessageQueue;
   private handleRoomData: HandleRoomData;
   private handleSystemData: HandleSystemData;
   private handleParticipants: HandleParticipants;
@@ -109,6 +109,7 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState = setRoomConnectionStatusState;
     this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
+    this.messageQueue = new MessageQueue();
     this.handleRoomData = new HandleRoomData();
     this.handleSystemData = new HandleSystemData();
     this.handleParticipants = new HandleParticipants(this);
@@ -119,6 +120,10 @@ export default class ConnectNats {
 
   get nc(): NatsConnection | undefined {
     return this._nc;
+  }
+
+  get js(): JetStreamClient | undefined {
+    return this.js;
   }
 
   get isAdmin(): boolean {
@@ -164,6 +169,7 @@ export default class ConnectNats {
 
     this._setRoomConnectionStatusState('receiving-data');
     this._js = jetstream(this._nc);
+    this.messageQueue.js(this._js);
 
     this.monitorConnStatus();
     this.subscribeToSystemPrivate();
@@ -205,39 +211,15 @@ export default class ConnectNats {
   };
 
   public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-    try {
-      const subject =
-        this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
-      return await this._js.publish(
-        subject,
-        toBinary(NatsMsgClientToServerSchema, data),
-      );
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
+    const subject =
+      this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(NatsMsgClientToServerSchema, data),
+    });
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-
     const isPrivate = to !== 'public';
     const data = create(ChatMessageSchema, {
       fromName: this.handleParticipants.localParticipant.name,
@@ -250,16 +232,10 @@ export default class ConnectNats {
 
     const subject =
       this._roomId + ':' + this._subjects.chat + '.' + this._userId;
-    try {
-      await this._js.publish(subject, toBinary(ChatMessageSchema, data));
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(ChatMessageSchema, data),
+    });
   };
 
   public sendWhiteboardData = async (
@@ -267,32 +243,19 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-
     const data = create(DataChannelMessageSchema, {
       type,
       fromUserId: this.handleParticipants.localParticipant.userId,
       toUserId: to,
       message: msg,
     });
+
     const subject =
       this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
-    try {
-      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(DataChannelMessageSchema, data),
+    });
   };
 
   public sendDataMessage = async (
@@ -300,32 +263,19 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (
-      typeof this._js === 'undefined' ||
-      this._nc?.isClosed() ||
-      this.isRoomReconnecting
-    ) {
-      return;
-    }
-
     const data = create(DataChannelMessageSchema, {
       type,
       fromUserId: this.handleParticipants.localParticipant.userId,
       toUserId: to,
       message: msg,
     });
+
     const subject =
       this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
-    try {
-      await this._js.publish(subject, toBinary(DataChannelMessageSchema, data));
-    } catch (e: any) {
-      console.error(e.message);
-      const msg = this.formatError(e);
-      toast(msg, {
-        toastId: 'nats-status',
-        type: 'error',
-      });
-    }
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(DataChannelMessageSchema, data),
+    });
   };
 
   public sendAnalyticsData = async (
@@ -368,6 +318,7 @@ export default class ConnectNats {
       if (typeof this.statusCheckerInterval === 'undefined') {
         this.statusCheckerInterval = setInterval(() => {
           if (this._nc?.isClosed()) {
+            this.messageQueue.isConnected(false);
             this.endSession('notifications.room-disconnected-network-error');
 
             clearInterval(this.statusCheckerInterval);
@@ -702,24 +653,5 @@ export default class ConnectNats {
 
     this._setCurrentMediaServerConn(conn);
     this._mediaServerConn = conn;
-  }
-
-  private formatError(err: any) {
-    let msg = i18n.t('notifications.nats-error-request-failed').toString();
-
-    switch (err.code) {
-      case ErrorCode.NoResponders:
-        msg = i18n.t('notifications.nats-error-no-response', {
-          error: `${err.name}: ${err.message}`,
-        });
-        break;
-      case ErrorCode.Timeout:
-        msg = i18n.t('notifications.nats-error-timeout', {
-          error: `${err.name}: ${err.message}`,
-        });
-        break;
-    }
-
-    return msg;
   }
 }
