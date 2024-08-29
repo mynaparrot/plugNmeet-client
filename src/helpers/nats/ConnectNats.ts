@@ -197,7 +197,7 @@ export default class ConnectNats {
 
   public endSession = async (msg: string) => {
     if (this.mediaServerConn) {
-      await this.mediaServerConn.disconnectRoom();
+      await this.mediaServerConn.disconnectRoom(true);
     }
 
     clearInterval(this.tokenRenewInterval);

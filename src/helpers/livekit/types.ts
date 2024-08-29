@@ -39,7 +39,7 @@ export interface IConnectLivekit extends EventEmitter {
     Array<LocalTrackPublication | RemoteTrackPublication>
   >;
   connect(): Promise<void>;
-  disconnectRoom(): Promise<void>;
+  disconnectRoom(normalDisconnect: boolean): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
   addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,

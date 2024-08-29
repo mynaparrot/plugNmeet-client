@@ -71,6 +71,7 @@ export default class ConnectLivekit
   private readonly encryptionKey: string | undefined = '';
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: any = undefined;
+  private wasNormalDisconnected: boolean = false;
 
   private handleMediaTracks: HandleMediaTracks;
   private handleActiveSpeakers: HandleActiveSpeakers;
@@ -264,8 +265,9 @@ export default class ConnectLivekit
     });
   };
 
-  public async disconnectRoom() {
+  public async disconnectRoom(normalDisconnect: boolean) {
     if (this._room.state === ConnectionState.Connected) {
+      this.wasNormalDisconnected = normalDisconnect;
       await this._room.disconnect(true);
     }
   }
@@ -279,6 +281,11 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
+    if (this.wasNormalDisconnected) {
+      // no need to show any message
+      return;
+    }
+
     this._errorState({
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
