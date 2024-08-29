@@ -35,7 +35,7 @@ export default class HandleDataMessage {
         this.handleUserVisibility(payload);
         break;
       case DataMsgBodyType.INFO:
-        if (payload.fromUserId === this._that.userId) {
+        if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
           return;
         }
         toast(payload.message, {
@@ -44,7 +44,7 @@ export default class HandleDataMessage {
         });
         break;
       case DataMsgBodyType.ALERT:
-        if (payload.fromUserId === this._that.userId) {
+        if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
           return;
         }
         toast(payload.message, {

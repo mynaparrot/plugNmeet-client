@@ -70,6 +70,7 @@ export default class ConnectNats {
   private readonly _roomId: string;
   private readonly _userId: string;
   private _isAdmin: boolean = false;
+  private _isRecorder: boolean = false;
   private readonly _subjects: NatsSubjects;
 
   private tokenRenewInterval: any;
@@ -142,6 +143,10 @@ export default class ConnectNats {
     return this._userId;
   }
 
+  get isRecorder(): boolean {
+    return this._isRecorder;
+  }
+
   get currentRoomInfo(): ICurrentRoom {
     return this.handleRoomData.roomInfo;
   }
@@ -168,6 +173,7 @@ export default class ConnectNats {
     }
 
     this._setRoomConnectionStatusState('receiving-data');
+    this._isRecorder = this.handleParticipants.isRecorder(this.userId);
     this._js = jetstream(this._nc);
     this.messageQueue.js(this._js);
 
@@ -500,7 +506,10 @@ export default class ConnectNats {
         store.dispatch(addToken(this._token));
         break;
       case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
-        this.handleSystemData.handleNotification(payload.msg);
+        if (!this._isRecorder) {
+          // no notification for recorder
+          this.handleSystemData.handleNotification(payload.msg);
+        }
         break;
       case NatsMsgServerToClientEvents.USER_JOINED:
         await this.handleParticipants.addRemoteParticipant(payload.msg);
