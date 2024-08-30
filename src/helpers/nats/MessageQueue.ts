@@ -1,8 +1,6 @@
-// eslint-disable-next-line import/no-unresolved
-import { type JetStreamClient } from '@nats-io/jetstream';
-// eslint-disable-next-line import/no-unresolved
-import { ErrorCode } from '@nats-io/nats-core';
+import { ErrorCode } from 'nats.ws';
 import { toast } from 'react-toastify';
+import { type JetStreamClient } from 'nats.ws';
 
 import { sleep } from '../utils';
 import i18n from '../i18n';

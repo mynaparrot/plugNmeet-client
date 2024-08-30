@@ -45,7 +45,7 @@ const useDesignCustomization = () => {
     try {
       designCustomParams = JSON.parse((window as any).DESIGN_CUSTOMIZATION);
     } catch (e) {
-      console.error("can't parse custom design params");
+      console.error("can't parse custom design params", e);
       return;
     }
 

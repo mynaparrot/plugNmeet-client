@@ -96,7 +96,9 @@ const SpeechToTextService = () => {
         recognizer.stopContinuousRecognitionAsync();
         recognizer.close();
         setRecognizer(undefined);
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     }
   }, [recognizer]);
 

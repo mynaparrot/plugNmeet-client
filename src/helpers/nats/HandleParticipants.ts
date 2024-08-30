@@ -258,7 +258,9 @@ export default class HandleParticipants {
         data,
       );
       return metadata;
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
 
     // default
     return create(UserMetadataSchema, {

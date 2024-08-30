@@ -50,7 +50,8 @@ const DisplayExternalLinkModal = () => {
     let url;
     try {
       url = new URL(link);
-    } catch (_) {
+    } catch (e) {
+      console.error(e);
       setErrorMsg(t('external-display-link-display.link-invalid').toString());
       return;
     }

@@ -17,6 +17,7 @@ const PlayerComponent = ({ options, onReady }: IPlayerComponentProps) => {
     const videoElement = videoRef.current;
     if (videoElement && !player) {
       const player = videojs(videoElement, options, () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         onReady && onReady(player);
       });
       setPlayer(player);

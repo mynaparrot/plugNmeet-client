@@ -122,27 +122,34 @@ const MainArea = () => {
   const customCSS = useMemo(() => {
     const css: Array<string> = [];
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveParticipantsPanel
       ? css.push('showParticipantsPanel')
       : css.push('hideParticipantsPanel');
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveScreenSharingView && isActiveScreenShare
       ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveWhiteboard
       ? css.push('showWhiteboard fullWidthMainArea')
       : css.push('hideWhiteboard');
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveExternalMediaPlayer
       ? css.push('showExternalMediaPlayer fullWidthMainArea')
       : css.push('hideExternalMediaPlayer');
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveDisplayExternalLink
       ? css.push('showDisplayExternalLink fullWidthMainArea')
       : css.push('hideDisplayExternalLink');
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isRecorder ? css.push(`isRecorder`) : null;
 
     return css.join(' ');

@@ -105,6 +105,7 @@ const useResumableFilesUpload = ({
           type: 'error',
         });
       } catch (e) {
+        console.error(e);
         toast(t('right-panel.file-upload-default-error'), {
           type: 'error',
         });
