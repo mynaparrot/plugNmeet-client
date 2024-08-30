@@ -45,6 +45,7 @@ const TextBoxArea = ({
     store.getState().session.currentRoom.metadata?.roomFeatures
       ?.endToEndEncryptionFeatures;
   const { t } = useTranslation();
+  const conn = getNatsConn();
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
   const [lockSendFile, setLockSendFile] = useState<boolean>(false);
@@ -141,7 +142,6 @@ const TextBoxArea = ({
         return;
       }
     }
-    const conn = getNatsConn();
     await conn.sendChatMsg(selectedChatOption, msg.replace(/\r?\n/g, '<br />'));
     setMessage('');
 

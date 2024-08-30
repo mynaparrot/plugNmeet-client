@@ -243,6 +243,24 @@ export default class ConnectNats {
       subject,
       payload: toBinary(ChatMessageSchema, data),
     });
+
+    if (isPrivate) {
+      this.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_PRIVATE_CHAT,
+        AnalyticsEventType.USER,
+        '',
+        '',
+        '1',
+      );
+    } else {
+      this.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
+        AnalyticsEventType.USER,
+        '',
+        '',
+        '1',
+      );
+    }
   };
 
   public sendWhiteboardData = async (

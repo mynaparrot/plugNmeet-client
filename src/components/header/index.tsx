@@ -40,6 +40,7 @@ const Header = () => {
   const roomDuration = useAppSelector(roomDurationSelector);
   const headerVisible = useAppSelector(headerVisibilitySelector);
   const dispatch = useAppDispatch();
+  const conn = getNatsConn();
 
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');
@@ -71,7 +72,6 @@ const Header = () => {
     }
 
     if (task === 'logout') {
-      const conn = getNatsConn();
       await conn.endSession('notifications.user-logged-out');
     } else if (task === 'end Room') {
       const session = store.getState().session;

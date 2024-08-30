@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 import {
   EndToEndEncryptionFeatures,
   DataMsgBodyType,
+  AnalyticsEvents,
+  AnalyticsEventType,
 } from 'plugnmeet-protocol-js';
 
 import { participantsSelector } from '../../../store/slices/participantSlice';
@@ -22,11 +24,13 @@ import {
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
+import ConnectNats from '../../../helpers/nats/ConnectNats';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
 let preScrollX = 0,
-  preScrollY = 0;
+  preScrollY = 0,
+  conn: ConnectNats;
 
 export const sendRequestedForWhiteboardData = () => {
   const session = store.getState().session;
@@ -47,7 +51,6 @@ export const sendRequestedForWhiteboardData = () => {
   }
 
   donors.forEach(async (donor) => {
-    const conn = getNatsConn();
     await conn.sendWhiteboardData(
       DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA,
       '',
@@ -143,15 +146,26 @@ export const broadcastScreenDataBySocket = async (
   if (typeof finalMsg === 'undefined') {
     return;
   }
-  const conn = getNatsConn();
+  if (!conn) {
+    conn = getNatsConn();
+  }
   await conn.sendWhiteboardData(DataMsgBodyType.SCENE_UPDATE, finalMsg, sendTo);
+  await conn.sendAnalyticsData(
+    AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED,
+    AnalyticsEventType.USER,
+    '',
+    '',
+    '1',
+  );
 };
 
 export const broadcastCurrentPageNumber = async (
   page: number,
   sendTo?: string,
 ) => {
-  const conn = getNatsConn();
+  if (!conn) {
+    conn = getNatsConn();
+  }
   await conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
 };
 
@@ -159,7 +173,9 @@ export const broadcastWhiteboardOfficeFile = async (
   newFile: IWhiteboardOfficeFile,
   sendTo?: string,
 ) => {
-  const conn = getNatsConn();
+  if (!conn) {
+    conn = getNatsConn();
+  }
   await conn.sendWhiteboardData(
     DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE,
     JSON.stringify(newFile),
@@ -173,7 +189,9 @@ export const broadcastMousePointerUpdate = async (element: any) => {
     return;
   }
 
-  const conn = getNatsConn();
+  if (!conn) {
+    conn = getNatsConn();
+  }
   await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
 };
 
@@ -208,7 +226,9 @@ export const broadcastAppStateChanges = async (
     gridSize,
   });
 
-  const conn = getNatsConn();
+  if (!conn) {
+    conn = getNatsConn();
+  }
   await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
 };
 

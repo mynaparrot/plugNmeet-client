@@ -20,9 +20,9 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     participantsSelector.selectById(state, userId),
   );
   const { t } = useTranslation();
+  const conn = getNatsConn();
 
   const onClick = async () => {
-    const conn = getNatsConn();
     const data = create(NatsMsgClientToServerSchema, {
       event: NatsMsgClientToServerEvents.REQ_LOWER_OTHER_USER_HAND,
       msg: participant?.userId,

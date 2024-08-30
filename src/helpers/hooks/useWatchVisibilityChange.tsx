@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { DataMsgBodyType } from 'plugnmeet-protocol-js';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  DataMsgBodyType,
+} from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../nats';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
+  const conn = getNatsConn();
 
   useEffect(() => {
     const onBlur = () => {
@@ -67,14 +72,15 @@ const useWatchVisibilityChange = () => {
   }, []);
 
   useEffect(() => {
-    const conn = getNatsConn();
     if (typeof conn === 'undefined') {
       return;
     }
-
-    conn.sendDataMessage(
-      DataMsgBodyType.USER_VISIBILITY_CHANGE,
-      hidden ? 'hidden' : 'visible',
+    const data = hidden ? 'hidden' : 'visible';
+    conn.sendDataMessage(DataMsgBodyType.USER_VISIBILITY_CHANGE, data);
+    conn.sendAnalyticsData(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY,
+      AnalyticsEventType.USER,
+      data,
     );
     //eslint-disable-next-line
   }, [hidden]);

@@ -20,6 +20,8 @@ const RaiseHandIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
   const currentRoom = getCurrentRoom();
+  const conn = getNatsConn();
+
   const isActiveRaisehand = useAppSelector(isActiveRaisehandSelector);
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
@@ -32,7 +34,6 @@ const RaiseHandIcon = () => {
   }, [isActiveRaisehand]);
 
   const toggleRaiseHand = async () => {
-    const conn = getNatsConn();
     const data = create(NatsMsgClientToServerSchema, {});
 
     if (!isActiveRaisehand) {
