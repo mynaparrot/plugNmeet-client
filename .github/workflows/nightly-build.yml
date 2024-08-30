@@ -13,6 +13,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.MYNA_APP_ID }}
+          private-key: ${{ secrets.MYNA_APP_SECRET }}
+      - name: 'bot: version bump'
+        uses: phips28/gh-action-bump-version@master
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        with:
+          version-type: 'prerelease'
+          commit-message: 'bump version'
+          skip-tag: 'true'
+          skip-commit: 'false'
       - name: Build project
         run: |
           npm install
