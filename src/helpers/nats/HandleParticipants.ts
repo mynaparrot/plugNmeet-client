@@ -41,7 +41,7 @@ import { getCurrentConnection } from '../livekit/utils';
 export default class HandleParticipants {
   private _that: ConnectNats;
   private preferredLang = '';
-  private isRecorderJoin = false;
+  private isLocalUserRecorder = false;
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
   private _localParticipant: ICurrentUser;
@@ -61,14 +61,15 @@ export default class HandleParticipants {
   }
 
   public addLocalParticipantInfo = async (info: NatsKvUserInfo) => {
-    this.isRecorderJoin = this.isRecorder(info.userId);
+    this.isLocalUserRecorder = this.isRecorder(info.userId);
     this._localParticipant = {
       userId: info.userId,
       sid: info.userSid,
       name: info.name,
-      isRecorder: this.isRecorderJoin,
+      isRecorder: this.isLocalUserRecorder,
     };
-    if (this.isRecorderJoin) {
+
+    if (this.isLocalUserRecorder) {
       this.recorderJoined();
     }
 
@@ -77,6 +78,10 @@ export default class HandleParticipants {
   };
 
   public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
+    if (this.isLocalUserRecorder) {
+      this.participantsCount++;
+    }
+
     let participant: NatsKvUserInfo;
     if (typeof p === 'string') {
       try {
@@ -88,6 +93,11 @@ export default class HandleParticipants {
     } else {
       participant = p;
     }
+
+    if (this.isRecorder(participant.userId)) {
+      return;
+    }
+
     const metadata = this.decodeMetadata(participant.metadata);
 
     // check if this user exists or not
@@ -135,10 +145,6 @@ export default class HandleParticipants {
         isOnline: true,
       }),
     );
-
-    if (this.isRecorderJoin) {
-      this.participantsCount++;
-    }
 
     this.onAfterUserConnectMediaUpdate(participant.userId);
   };
@@ -229,11 +235,9 @@ export default class HandleParticipants {
       console.error(e);
       return;
     }
-    if (this.isRecorderJoin) {
+    if (this.isLocalUserRecorder) {
       this.participantsCount--;
     }
-
-    console.log(p);
 
     // now remove user.
     store.dispatch(removeParticipant(p.userId));
@@ -326,7 +330,7 @@ export default class HandleParticipants {
    * */
   private startParticipantCounter() {
     this.participantCounterInterval = setInterval(async () => {
-      if (this.participantsCount === 0) {
+      if (this.participantsCount <= 1) {
         console.log('NO_USER_ONLINE');
         await this._that.endSession('NO_USER_ONLINE');
       }
