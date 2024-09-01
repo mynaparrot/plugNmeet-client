@@ -257,11 +257,7 @@ export default class HandleParticipants {
 
   private decodeMetadata(data: string): ICurrentUserMetadata {
     try {
-      const metadata: ICurrentUserMetadata = fromJsonString(
-        UserMetadataSchema,
-        data,
-      );
-      return metadata;
+      return fromJsonString(UserMetadataSchema, data);
     } catch (e) {
       console.error(e);
     }
