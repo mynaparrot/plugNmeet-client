@@ -76,7 +76,7 @@
     "fork-ts-checker-webpack-plugin": "9.0.2",
     "html-webpack-plugin": "5.6.0",
     "husky": "9.1.5",
-    "lint-staged": "15.2.9",
+    "lint-staged": "15.2.10",
     "mini-css-extract-plugin": "2.9.1",
     "postcss": "8.4.41",
     "postcss-loader": "8.1.1",
