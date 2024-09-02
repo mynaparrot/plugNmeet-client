@@ -232,7 +232,10 @@ export const broadcastAppStateChanges = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
+  await conn.sendWhiteboardData(
+    DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
+    finalMsg,
+  );
 };
 
 let e2ee: EndToEndEncryptionFeatures | undefined = undefined;
