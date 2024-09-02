@@ -56,7 +56,7 @@ import {
 import MessageQueue from './MessageQueue';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
-const PING_INTERVAL = 10 * 1000;
+const PING_INTERVAL = 60 * 1000;
 const STATUS_CHECKER_INTERVAL = 500;
 
 export default class ConnectNats {
