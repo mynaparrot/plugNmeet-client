@@ -49,6 +49,9 @@ export const sendRequestedForWhiteboardData = () => {
     // we'll request data from max 2 users.
     donors = participants.slice(0, 2);
   }
+  if (!conn) {
+    conn = getNatsConn();
+  }
 
   donors.forEach(async (donor) => {
     await conn.sendWhiteboardData(
