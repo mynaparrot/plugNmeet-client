@@ -70,6 +70,8 @@ export default class ConnectNats {
   private _isAdmin: boolean = false;
   private _isRecorder: boolean = false;
   private readonly _subjects: NatsSubjects;
+  private _localUserInfo: ICurrentUser | undefined;
+  private _currentRoomInfo: ICurrentRoom | undefined;
 
   private tokenRenewInterval: any;
   private pingInterval: any;
@@ -117,14 +119,6 @@ export default class ConnectNats {
     this.handleWhiteboard = new HandleWhiteboard();
   }
 
-  get nc(): NatsConnection | undefined {
-    return this._nc;
-  }
-
-  get js(): JetStreamClient | undefined {
-    return this.js;
-  }
-
   get isAdmin(): boolean {
     return this._isAdmin;
   }
@@ -146,11 +140,17 @@ export default class ConnectNats {
   }
 
   get currentRoomInfo(): ICurrentRoom {
-    return this.handleRoomData.roomInfo;
+    if (typeof this._currentRoomInfo === 'undefined') {
+      this._currentRoomInfo = store.getState().session.currentRoom;
+    }
+    return this._currentRoomInfo;
   }
 
-  get localUserInfo(): ICurrentUser {
-    return this.handleParticipants.localParticipant;
+  get localUserInfo(): ICurrentUser | undefined {
+    if (typeof this._localUserInfo === 'undefined') {
+      this._localUserInfo = store.getState().session.currentUser;
+    }
+    return this._localUserInfo;
   }
 
   public openConn = async () => {
@@ -176,11 +176,11 @@ export default class ConnectNats {
     this.messageQueue.js(this._js);
 
     this.monitorConnStatus();
+
+    // now we'll subscribe to the system only
+    // others will be done after received initial data
     this.subscribeToSystemPrivate();
     this.subscribeToSystemPublic();
-    this.subscribeToChat();
-    this.subscribeToWhiteboard();
-    this.subscribeToDataChannel();
 
     this.startTokenRenewInterval();
     await this.startPingToServer();
@@ -225,10 +225,14 @@ export default class ConnectNats {
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
+    if (!this.localUserInfo) {
+      return;
+    }
+
     const isPrivate = to !== 'public';
     const data = create(ChatMessageSchema, {
-      fromName: this.handleParticipants.localParticipant.name,
-      fromUserId: this.handleParticipants.localParticipant.userId,
+      fromName: this.localUserInfo.name,
+      fromUserId: this.localUserInfo.userId,
       sentAt: Date.now().toString(),
       toUserId: to !== 'public' ? to : undefined,
       isPrivate: isPrivate,
@@ -266,9 +270,13 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
+    if (!this.localUserInfo) {
+      return;
+    }
+
     const data = create(DataChannelMessageSchema, {
       type,
-      fromUserId: this.handleParticipants.localParticipant.userId,
+      fromUserId: this.localUserInfo.userId,
       toUserId: to,
       message: msg,
     });
@@ -286,9 +294,13 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
+    if (!this.localUserInfo) {
+      return;
+    }
+
     const data = create(DataChannelMessageSchema, {
       type,
-      fromUserId: this.handleParticipants.localParticipant.userId,
+      fromUserId: this.localUserInfo.userId,
       toUserId: to,
       message: msg,
     });
@@ -552,11 +564,12 @@ export default class ConnectNats {
 
   private startTokenRenewInterval() {
     this.tokenRenewInterval = setInterval(async () => {
-      const msg = create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
-        msg: this._token,
-      });
-      await this.sendMessageToSystemWorker(msg);
+      await this.sendMessageToSystemWorker(
+        create(NatsMsgClientToServerSchema, {
+          event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
+          msg: this._token,
+        }),
+      );
     }, RENEW_TOKEN_FREQUENT);
   }
 
@@ -596,13 +609,23 @@ export default class ConnectNats {
     // now local user
     if (data.localUser) {
       this._isAdmin = data.localUser.isAdmin;
-      await this.handleParticipants.addLocalParticipantInfo(data.localUser);
+      this._localUserInfo =
+        await this.handleParticipants.addLocalParticipantInfo(data.localUser);
     }
 
     // media info
     if (data.mediaServerInfo) {
       await this.createMediaServerConn(data.mediaServerInfo);
     }
+
+    // now subscribe to other channels
+    // some of those services need user or room info
+    // without proper data will give unexpected results,
+    // for example, if E2EE is enabled then key will require
+    // for chat or whiteboard
+    this.subscribeToChat();
+    this.subscribeToWhiteboard();
+    this.subscribeToDataChannel();
   }
 
   private async handleJoinedUsersList(msg: string) {
@@ -650,8 +673,7 @@ export default class ConnectNats {
     };
 
     const e2eeFeatures =
-      this.handleRoomData.roomInfo.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures;
+      this.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     if (e2eeFeatures && e2eeFeatures.isEnabled && e2eeFeatures.encryptionKey) {
       if (!isE2EESupported()) {
         this.setErrorStatus(

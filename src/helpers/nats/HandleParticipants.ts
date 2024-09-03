@@ -59,11 +59,9 @@ export default class HandleParticipants {
     };
   }
 
-  get localParticipant(): ICurrentUser {
-    return this._localParticipant;
-  }
-
-  public addLocalParticipantInfo = async (info: NatsKvUserInfo) => {
+  public addLocalParticipantInfo = async (
+    info: NatsKvUserInfo,
+  ): Promise<ICurrentUser> => {
     this.isLocalUserRecorder = this.isRecorder(info.userId);
     const metadata = this.decodeMetadata(info.metadata);
 
@@ -85,6 +83,8 @@ export default class HandleParticipants {
 
     store.dispatch(addCurrentUser(this._localParticipant));
     await this.updateParticipantMetadata(info.userId, metadata);
+
+    return this._localParticipant;
   };
 
   public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
@@ -104,13 +104,13 @@ export default class HandleParticipants {
       participant = p;
     }
 
-    if (this.localParticipant.userId !== participant.userId) {
+    if (this._localParticipant.userId !== participant.userId) {
       if (this.isRecorder(participant.userId)) {
         return;
       }
       if (
         !participant.isAdmin &&
-        !this.localParticipant.metadata?.isAdmin &&
+        !this._localParticipant.metadata?.isAdmin &&
         !this.roomMetadata?.roomFeatures?.allowViewOtherUsersList
       ) {
         return;

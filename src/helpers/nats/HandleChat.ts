@@ -13,7 +13,6 @@ import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleChat {
   private _that: ConnectNats;
-  private checkedE2EE = false;
   private _e2eeFeatures: EndToEndEncryptionFeatures | undefined = undefined;
 
   constructor(that: ConnectNats) {
@@ -32,6 +31,7 @@ export default class HandleChat {
     if (!finalMsg) {
       return;
     }
+    payload.message = finalMsg;
     store.dispatch(addChatMessage(payload));
 
     const isActiveChatPanel =
@@ -73,16 +73,14 @@ export default class HandleChat {
   };
 
   private async handleDecryption(msg: string) {
-    if (!this.checkedE2EE) {
-      this.checkedE2EE = true;
+    if (typeof this._e2eeFeatures === 'undefined') {
       this._e2eeFeatures =
         store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     }
-
     if (
       typeof this._e2eeFeatures !== 'undefined' &&
       this._e2eeFeatures.isEnabled &&
-      this._e2eeFeatures.includedWhiteboard &&
+      this._e2eeFeatures.includedChatMessages &&
       this._e2eeFeatures.encryptionKey
     ) {
       try {

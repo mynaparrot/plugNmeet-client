@@ -18,7 +18,6 @@ import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard'
 import { decryptMessage } from '../cryptoMessages';
 
 export default class HandleWhiteboard {
-  private checkedE2EE = false;
   private _e2eeFeatures: EndToEndEncryptionFeatures | undefined = undefined;
 
   constructor() {}
@@ -66,8 +65,7 @@ export default class HandleWhiteboard {
   }
 
   private async handleDecryption(msg: string) {
-    if (!this.checkedE2EE) {
-      this.checkedE2EE = true;
+    if (typeof this._e2eeFeatures === 'undefined') {
       this._e2eeFeatures =
         store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     }

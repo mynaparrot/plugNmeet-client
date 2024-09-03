@@ -30,10 +30,6 @@ export default class HandleRoomData {
     };
   }
 
-  get roomInfo(): ICurrentRoom {
-    return this._room;
-  }
-
   public setRoomInfo = async (info: NatsKvRoomInfo) => {
     this._room = {
       roomId: info.roomId,
