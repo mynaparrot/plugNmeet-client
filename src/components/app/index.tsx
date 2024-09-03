@@ -62,15 +62,6 @@ const App = () => {
   const [roomConnectionStatus, setRoomConnectionStatus] =
     useState<string>('loading');
 
-  // some custom hooks
-  // const {
-  //   error,
-  //   setError,
-  //   roomConnectionStatus,
-  //   setRoomConnectionStatus,
-  //   startLivekitConnection,
-  // } = useLivekitConnect();
-
   useKeyboardShortcuts(currentMediaServerConn?.room);
   useDesignCustomization();
   useWatchVisibilityChange();

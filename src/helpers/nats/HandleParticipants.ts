@@ -8,6 +8,7 @@ import {
   NatsKvUserInfo,
   NatsKvUserInfoSchema,
   NatsUserMetadataUpdateSchema,
+  UserMetadata,
   UserMetadataSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromJsonString } from '@bufbuild/protobuf';
@@ -16,6 +17,7 @@ import ConnectNats from './ConnectNats';
 import {
   ICurrentUser,
   ICurrentUserMetadata,
+  IRoomMetadata,
 } from '../../store/slices/interfaces/session';
 import { store } from '../../store';
 import {
@@ -45,6 +47,7 @@ export default class HandleParticipants {
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
   private _localParticipant: ICurrentUser;
+  private roomMetadata: IRoomMetadata | undefined;
 
   constructor(that: ConnectNats) {
     this._that = that;
@@ -62,19 +65,26 @@ export default class HandleParticipants {
 
   public addLocalParticipantInfo = async (info: NatsKvUserInfo) => {
     this.isLocalUserRecorder = this.isRecorder(info.userId);
+    const metadata = this.decodeMetadata(info.metadata);
+
     this._localParticipant = {
       userId: info.userId,
       sid: info.userSid,
       name: info.name,
       isRecorder: this.isLocalUserRecorder,
+      metadata,
     };
 
     if (this.isLocalUserRecorder) {
       this.recorderJoined();
     }
 
+    if (!this.roomMetadata) {
+      this.roomMetadata = this._that.currentRoomInfo.metadata;
+    }
+
     store.dispatch(addCurrentUser(this._localParticipant));
-    await this.updateParticipantMetadata(info.userId, info.metadata);
+    await this.updateParticipantMetadata(info.userId, metadata);
   };
 
   public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
@@ -94,8 +104,17 @@ export default class HandleParticipants {
       participant = p;
     }
 
-    if (this.isRecorder(participant.userId)) {
-      return;
+    if (this.localParticipant.userId !== participant.userId) {
+      if (this.isRecorder(participant.userId)) {
+        return;
+      }
+      if (
+        !participant.isAdmin &&
+        !this.localParticipant.metadata?.isAdmin &&
+        !this.roomMetadata?.roomFeatures?.allowViewOtherUsersList
+      ) {
+        return;
+      }
     }
 
     const metadata = this.decodeMetadata(participant.metadata);
@@ -158,8 +177,14 @@ export default class HandleParticipants {
     }
   };
 
-  public updateParticipantMetadata = async (userId: string, data: string) => {
-    const metadata = this.decodeMetadata(data);
+  public updateParticipantMetadata = async (
+    userId: string,
+    metadata: string | UserMetadata,
+  ) => {
+    if (typeof metadata === 'string') {
+      metadata = this.decodeMetadata(metadata);
+    }
+
     store.dispatch(
       updateParticipant({
         id: userId,

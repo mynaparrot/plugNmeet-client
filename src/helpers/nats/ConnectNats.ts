@@ -587,15 +587,18 @@ export default class ConnectNats {
       );
       return;
     }
-    // add local user first
+
+    // add room info first
+    if (data.room) {
+      await this.handleRoomData.setRoomInfo(data.room);
+    }
+
+    // now local user
     if (data.localUser) {
       this._isAdmin = data.localUser.isAdmin;
       await this.handleParticipants.addLocalParticipantInfo(data.localUser);
     }
-    // now room
-    if (data.room) {
-      await this.handleRoomData.setRoomInfo(data.room);
-    }
+
     // media info
     if (data.mediaServerInfo) {
       await this.createMediaServerConn(data.mediaServerInfo);

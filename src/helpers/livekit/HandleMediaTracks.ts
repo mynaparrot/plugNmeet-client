@@ -8,15 +8,16 @@ import {
   Track,
   TrackPublication,
 } from 'livekit-client';
-import { isEmpty } from 'lodash';
 
 import { IConnectLivekit } from './types';
 import { store } from '../../store';
-import { updateParticipant } from '../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  updateParticipant,
+} from '../../store/slices/participantSlice';
 import { updateIsMicMuted } from '../../store/slices/bottomIconsActivitySlice';
 import {
   ICurrentUser,
-  ICurrentUserMetadata,
   IRoomMetadata,
 } from '../../store/slices/interfaces/session';
 
@@ -68,7 +69,7 @@ export default class HandleMediaTracks {
       }),
     );
 
-    if (participant.identity === store.getState().session.currentUser?.userId) {
+    if (participant.identity === this.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(true));
     }
   };
@@ -83,7 +84,7 @@ export default class HandleMediaTracks {
       }),
     );
 
-    if (participant.identity === store.getState().session.currentUser?.userId) {
+    if (participant.identity === this.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(false));
     }
   };
@@ -123,7 +124,12 @@ export default class HandleMediaTracks {
       participant.identity !== this.currentUser?.userId &&
       track.source === Track.Source.Camera
     ) {
-      // if admin_only_webcams or allow_view_other_webcams is enable that time
+      const user = participantsSelector.selectById(
+        store.getState(),
+        participant.identity,
+      );
+
+      // if admin_only_webcams or allow_view_other_webcams is enabled that time
       // only admin user can see all webcams
       // other user can see only admin users' webcams.
       if (
@@ -131,32 +137,24 @@ export default class HandleMediaTracks {
           !this.roomMetadata.roomFeatures?.allowViewOtherWebcams) &&
         !this.currentUser?.metadata?.isAdmin
       ) {
-        if (participant.metadata && !isEmpty(participant.metadata)) {
-          const metadata: ICurrentUserMetadata = JSON.parse(
-            participant.metadata,
-          );
-          // we'll check if user is an admin or not. Otherwise no webcam will show up.
-          if (!metadata.isAdmin) {
-            return;
-          }
+        // We'll check if this user is an admin or not. Otherwise, no webcam will show up.
+        if (user && user.metadata && !user.metadata.isAdmin) {
+          return;
         }
       }
 
       if (this.currentUser?.isRecorder) {
-        // we'll setup logic for webcam recording
-        if (participant.metadata && !isEmpty(participant.metadata)) {
-          const metadata: ICurrentUserMetadata = JSON.parse(
-            participant.metadata,
-          );
-          if (!metadata.recordWebcam) {
-            // if record feature is disable then we won't load webcams
+        // we'll set up logic for webcam recording
+        if (user && user.metadata) {
+          if (!user.metadata.recordWebcam) {
+            // if record webcam is disabled then we won't load webcams
             return;
           } else if (
-            !metadata.isAdmin &&
+            !user.metadata.isAdmin &&
             this.roomMetadata.roomFeatures?.recordingFeatures
               ?.onlyRecordAdminWebcams
           ) {
-            // if room setting was enable to record webcam only for admin
+            // if room setting was enabled to record webcam only for admin,
             // then we'll simply won't load webcams
             return;
           }
