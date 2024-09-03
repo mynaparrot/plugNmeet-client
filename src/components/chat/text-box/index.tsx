@@ -4,12 +4,10 @@ import sanitizeHtml from 'sanitize-html';
 import { Room } from 'livekit-client';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 
 import { RootState, store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
-import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 
 interface ITextBoxAreaProps {
@@ -41,9 +39,7 @@ const TextBoxArea = ({
   const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
   const isLockSendFile = useAppSelector(isLockSendFileSelector);
   const selectedChatOption = useAppSelector(selectedChatOptionSelector);
-  const e2ee =
-    store.getState().session.currentRoom.metadata?.roomFeatures
-      ?.endToEndEncryptionFeatures;
+
   const { t } = useTranslation();
   const conn = getNatsConn();
 
@@ -121,27 +117,11 @@ const TextBoxArea = ({
   };
 
   const sendMsg = async () => {
-    let msg = cleanHtml(message);
+    const msg = cleanHtml(message);
     if (isEmpty(msg)) {
       return;
     }
 
-    if (
-      typeof e2ee !== 'undefined' &&
-      e2ee.isEnabled &&
-      e2ee.includedChatMessages &&
-      e2ee.encryptionKey
-    ) {
-      try {
-        msg = await encryptMessage(e2ee.encryptionKey, msg);
-      } catch (e: any) {
-        toast('Encryption error: ' + e.message, {
-          type: 'error',
-        });
-        console.error('Encryption error:' + e.message);
-        return;
-      }
-    }
     await conn.sendChatMsg(selectedChatOption, msg.replace(/\r?\n/g, '<br />'));
     setMessage('');
 

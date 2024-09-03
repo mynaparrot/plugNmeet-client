@@ -54,6 +54,8 @@ import {
   ICurrentUser,
 } from '../../store/slices/interfaces/session';
 import MessageQueue from './MessageQueue';
+import { encryptMessage } from '../cryptoMessages';
+import { toast } from 'react-toastify';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -227,6 +229,24 @@ export default class ConnectNats {
   public sendChatMsg = async (to: string, msg: string) => {
     if (!this.localUserInfo) {
       return;
+    }
+    const e2ee =
+      this.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+    if (
+      e2ee &&
+      e2ee.isEnabled &&
+      e2ee.includedChatMessages &&
+      e2ee.encryptionKey
+    ) {
+      try {
+        msg = await encryptMessage(e2ee.encryptionKey, msg);
+      } catch (e: any) {
+        toast('Encryption error: ' + e.message, {
+          type: 'error',
+        });
+        console.error('Encryption error:' + e.message);
+        return;
+      }
     }
 
     const isPrivate = to !== 'public';
@@ -672,9 +692,9 @@ export default class ConnectNats {
       token: connInfo.token,
     };
 
-    const e2eeFeatures =
+    const e2ee =
       this.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures;
-    if (e2eeFeatures && e2eeFeatures.isEnabled && e2eeFeatures.encryptionKey) {
+    if (e2ee && e2ee.isEnabled && e2ee.encryptionKey) {
       if (!isE2EESupported()) {
         this.setErrorStatus(
           i18n.t('notifications.e2ee-unsupported-browser-title'),
@@ -683,7 +703,7 @@ export default class ConnectNats {
         return;
       } else {
         info.enabledE2EE = true;
-        info.encryption_key = e2eeFeatures.encryptionKey;
+        info.encryption_key = e2ee.encryptionKey;
       }
     }
 
