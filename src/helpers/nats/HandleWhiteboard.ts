@@ -91,7 +91,6 @@ export default class HandleWhiteboard {
   }
 
   private isCurrentUserPresenter() {
-    const session = store.getState().session;
-    return session.currentUser?.metadata?.isPresenter;
+    return store.getState().session.currentUser?.metadata?.isPresenter;
   }
 }

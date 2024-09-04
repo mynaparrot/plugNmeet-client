@@ -40,6 +40,7 @@ export default class MessageQueue {
   private async processMessages() {
     this._state = PROCESSING;
     if (!this._js) {
+      this._state = WAITING;
       return;
     }
 
@@ -48,12 +49,12 @@ export default class MessageQueue {
       if (request) {
         for (let i = 0; i < MAX_RETRY; i++) {
           if (!this._js || !this._isConnected) {
-            return;
+            break;
           }
 
           try {
             await this._js.publish(request.subject, request.payload);
-            return;
+            break;
           } catch (e: any) {
             console.error(e.message);
             if (i === MAX_RETRY) {
