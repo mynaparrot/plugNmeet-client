@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import sanitizeHtml from 'sanitize-html';
-import { Room } from 'livekit-client';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +10,6 @@ import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 
 interface ITextBoxAreaProps {
-  currentRoom: Room;
   chosenEmoji: string | null;
   onAfterSendMessage(): void;
 }
@@ -32,7 +30,6 @@ const selectedChatOptionSelector = createSelector(
 );
 
 const TextBoxArea = ({
-  currentRoom,
   chosenEmoji,
   onAfterSendMessage,
 }: ITextBoxAreaProps) => {
@@ -157,9 +154,7 @@ const TextBoxArea = ({
             <i className="pnm-send primaryColor text-[20px] dark:text-secondaryColor" />
           </button>
 
-          {showSendFile ? (
-            <FileSend lockSendFile={lockSendFile} currentRoom={currentRoom} />
-          ) : null}
+          {showSendFile ? <FileSend lockSendFile={lockSendFile} /> : null}
         </div>
       </div>
     </>

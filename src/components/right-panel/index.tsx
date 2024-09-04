@@ -2,12 +2,11 @@ import React from 'react';
 
 import ChatComponent from '../chat';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
-import { useAppDispatch } from '../../store';
-import { isCurrentUserRecorder } from '../../helpers/livekit/utils';
+import { store, useAppDispatch } from '../../store';
 
 const RightPanel = () => {
   const dispatch = useAppDispatch();
-  const isRecorder = isCurrentUserRecorder();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const closePanel = () => {
     dispatch(updateIsActiveChatPanel(false));

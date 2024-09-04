@@ -37,9 +37,12 @@ import {
 import { toast } from 'react-toastify';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
+import {
+  ConnectionStatus,
+  IConnectLivekit,
+  LivekitInfo,
+} from '../livekit/types';
 import { createLivekitConnection } from '../livekit/utils';
-import { LivekitInfo } from '../livekit/hooks/useLivekitConnect';
 import HandleRoomData from './HandleRoomData';
 import HandleParticipants from './HandleParticipants';
 import HandleDataMessage from './HandleDataMessage';
@@ -126,6 +129,10 @@ export default class ConnectNats {
 
   get userId(): string {
     return this._userId;
+  }
+
+  get userName(): string {
+    return this._userName;
   }
 
   get isRecorder(): boolean {

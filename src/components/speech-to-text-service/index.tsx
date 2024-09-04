@@ -21,7 +21,7 @@ import { cleanAzureToken } from '../../store/slices/roomSettingsSlice';
 import SelectOptions, { OnCloseSelectedOptions } from './selectOptions';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
 import SubtitleTextsHistory from './history';
-import { getCurrentRoom } from '../../helpers/livekit/utils';
+import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
 
 const speechServiceFeaturesSelector = createSelector(
   (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
@@ -43,7 +43,7 @@ const SpeechToTextService = () => {
   const speechService = useAppSelector(speechServiceFeaturesSelector);
   const azureTokenInfo = useAppSelector(azureTokenInfoSelector);
   const isMicMuted = useAppSelector(isMicMutedSelector);
-  const currentRoom = getCurrentRoom();
+  const currentRoom = getMediaServerConnRoom();
 
   const [speechLang, setSpeechLang] = useState<string>('');
   const [recognizer, setRecognizer] = useState<

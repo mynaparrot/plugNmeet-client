@@ -10,11 +10,11 @@ import {
   RecordingType,
 } from './IRecording';
 import { store } from '../../../../store';
-import { getCurrentRoom } from '../../../../helpers/livekit/utils';
+import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../../helpers/nats';
 
 const useLocalRecording = (): IUseLocalRecordingReturn => {
-  const currentRoom = getCurrentRoom();
+  const currentRoom = getMediaServerConnRoom();
   const conn = getNatsConn();
 
   const [recordingEvent, setRecordingEvent] = useState<RecordingEvent>(
@@ -67,7 +67,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
 
   const startRecorder = (captureStream: MediaStream) => {
     const date = new Date();
-    const fileName = `${currentRoom.name}_${date.toLocaleString()}`;
+    const fileName = `${conn.roomId}_${date.toLocaleString()}`;
 
     const ctx = new AudioContext();
     const dest = ctx.createMediaStreamDestination();

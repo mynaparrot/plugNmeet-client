@@ -19,10 +19,7 @@ import {
 import SpeechToTextService from '../speech-to-text-service';
 import { useCallbackRefState } from '../whiteboard/helpers/hooks/useCallbackRefState';
 import { savePageData } from '../whiteboard/helpers/utils';
-import {
-  getCurrentConnection,
-  isCurrentUserRecorder,
-} from '../../helpers/livekit/utils';
+import { getMediaServerConn } from '../../helpers/livekit/utils';
 
 interface IMainComponentsProps {
   isActiveWhiteboard: boolean;
@@ -57,8 +54,8 @@ const MainComponents = ({
   isActiveScreenSharingView,
 }: IMainComponentsProps) => {
   const dispatch = useAppDispatch();
-  const isRecorder = isCurrentUserRecorder();
-  const currentConnection = getCurrentConnection();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
+  const currentConnection = getMediaServerConn();
 
   const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
   const activateSpeechService = useAppSelector(activateSpeechServiceSelector);

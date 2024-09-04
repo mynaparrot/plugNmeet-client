@@ -7,12 +7,12 @@ import {
 
 import AudioElm from './audio';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
-import { getCurrentConnection } from '../../../helpers/livekit/utils';
+import { getMediaServerConn } from '../../../helpers/livekit/utils';
 
 const AudioElements = () => {
   const [audioSubscribers, setAudioSubscribers] =
     useState<Map<string, RemoteParticipant | LocalParticipant>>();
-  const currentConnection = getCurrentConnection();
+  const currentConnection = getMediaServerConn();
 
   useEffect(() => {
     if (currentConnection.audioSubscribersMap.size) {

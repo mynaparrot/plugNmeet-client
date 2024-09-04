@@ -17,7 +17,6 @@ import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
-import { isCurrentUserRecorder } from '../../helpers/livekit/utils';
 
 const footerVisibilitySelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -29,7 +28,7 @@ const Footer = () => {
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const isRecorder = isCurrentUserRecorder();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   return useMemo(() => {
     return (

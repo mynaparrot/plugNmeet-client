@@ -11,7 +11,7 @@ import VideosComponentElms, {
 } from './videosComponentElms';
 import VideoParticipant from './videoParticipant';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
-import { getCurrentConnection } from '../../../helpers/livekit/utils';
+import { getMediaServerConn } from '../../../helpers/livekit/utils';
 
 interface IVideosComponentProps {
   isVertical?: boolean;
@@ -31,7 +31,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     [],
   );
   const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
-  const currentConnection = getCurrentConnection();
+  const currentConnection = getMediaServerConn();
 
   useEffect(() => {
     if (currentConnection.videoSubscribersMap.size) {

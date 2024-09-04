@@ -17,7 +17,7 @@ import {
   updateVirtualBackground,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
-import { getCurrentRoom } from '../../helpers/livekit/utils';
+import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
 
 const receivedInvitationForSelector = createSelector(
   (state: RootState) => state.breakoutRoom,
@@ -27,7 +27,7 @@ const receivedInvitationForSelector = createSelector(
 const BreakoutRoomInvitation = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const currentRoom = getCurrentRoom();
+  const currentRoom = getMediaServerConnRoom();
 
   const receivedInvitationFor = useAppSelector(receivedInvitationForSelector);
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();

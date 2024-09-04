@@ -27,7 +27,7 @@ import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
 import { getAudioPreset } from '../../../helpers/utils';
-import { getCurrentRoom } from '../../../helpers/livekit/utils';
+import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
 
 const isActiveMicrophoneSelector = createSelector(
@@ -49,7 +49,7 @@ const isMicMutedSelector = createSelector(
 
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
-  const currentRoom = getCurrentRoom();
+  const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
   const conn = getNatsConn();
 

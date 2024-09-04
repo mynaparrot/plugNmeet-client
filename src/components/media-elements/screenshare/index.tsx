@@ -9,14 +9,14 @@ import {
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
-import { getCurrentConnection } from '../../../helpers/livekit/utils';
+import { getMediaServerConn } from '../../../helpers/livekit/utils';
 
 const ScreenShareElements = () => {
   const [screenShareTracks, setScreenShareTracks] =
     useState<
       Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>
     >();
-  const currentConnection = getCurrentConnection();
+  const currentConnection = getMediaServerConn();
 
   useEffect(() => {
     if (currentConnection.screenShareTracksMap.size) {

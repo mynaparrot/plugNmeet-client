@@ -18,7 +18,7 @@ import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActi
 import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
-import { getCurrentRoom } from '../../../helpers/livekit/utils';
+import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 
 const isActiveScreenshareSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -36,7 +36,7 @@ const isScreenshareLockSelector = createSelector(
 const ScrenshareIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const dispatch = useAppDispatch();
-  const currentRoom = getCurrentRoom();
+  const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
 
   const isActiveScreenshare = useAppSelector(isActiveScreenshareSelector);

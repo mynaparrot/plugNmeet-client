@@ -5,10 +5,6 @@ import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 import { RootState, store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
-import {
-  getCurrentRoom,
-  isCurrentUserRecorder,
-} from '../../helpers/livekit/utils';
 
 const isChatLockSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
@@ -25,8 +21,7 @@ const ChatComponent = () => {
   const [show, setShow] = useState<boolean>(false);
   const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
   const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);
-  const currentRoom = getCurrentRoom();
-  const isRecorder = isCurrentUserRecorder();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   // default room lock settings
   useEffect(() => {
@@ -100,7 +95,6 @@ const ChatComponent = () => {
           </div>
           <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[320px] bg-white">
             <TextBoxArea
-              currentRoom={currentRoom}
               chosenEmoji={chosenEmoji}
               onAfterSendMessage={onAfterSendMessage}
             />

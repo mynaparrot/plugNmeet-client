@@ -37,7 +37,7 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
-import { getCurrentConnection } from '../livekit/utils';
+import { getMediaServerConn } from '../livekit/utils';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
@@ -223,7 +223,7 @@ export default class HandleParticipants {
       return;
     }
 
-    const mediaConn = getCurrentConnection();
+    const mediaConn = getMediaServerConn();
     // remove media for this user for the moment
     mediaConn.removeAudioSubscriber(participant.userId);
     mediaConn.removeVideoSubscriber(participant.userId);
@@ -357,7 +357,7 @@ export default class HandleParticipants {
       }),
     );
 
-    const mediaConn = getCurrentConnection();
+    const mediaConn = getMediaServerConn();
     const participant = mediaConn.room.getParticipantByIdentity(userId);
     if (participant) {
       participant.trackPublications.forEach((track) => {

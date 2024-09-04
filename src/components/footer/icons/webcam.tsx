@@ -21,7 +21,7 @@ import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSli
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 import { getWebcamResolution } from '../../../helpers/utils';
-import { getCurrentRoom } from '../../../helpers/livekit/utils';
+import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 
 const isActiveWebcamPanelSelector = createSelector(
   (state: RootState) => state.bottomIconsActivity,
@@ -46,7 +46,7 @@ const selectedVideoDeviceSelector = createSelector(
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
-  const currentRoom = getCurrentRoom();
+  const currentRoom = getMediaServerConnRoom();
 
   // we don't need this for small devices
   const showTooltip = store.getState().session.userDeviceType === 'desktop';

@@ -1,7 +1,6 @@
 import { Dispatch } from 'react';
 
-import { ConnectionStatus, IConnectLivekit } from './types';
-import { LivekitInfo } from './hooks/useLivekitConnect';
+import { ConnectionStatus, IConnectLivekit, LivekitInfo } from './types';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import ConnectLivekit from './ConnectLivekit';
 
@@ -21,25 +20,13 @@ export const createLivekitConnection = (
   return currentConnect;
 };
 
-export const getCurrentConnection = () => {
+export const getMediaServerConn = () => {
   if (typeof currentConnect === 'undefined') {
     throw new Error('connection not created');
   }
   return currentConnect;
 };
 
-export const getCurrentRoom = () => {
-  if (typeof currentConnect === 'undefined') {
-    throw new Error('connection not created');
-  }
-  return currentConnect.room;
-};
-
-export const isCurrentUserRecorder = () => {
-  const room = getCurrentRoom();
-
-  return (
-    room.localParticipant.identity === 'RECORDER_BOT' ||
-    room.localParticipant.identity === 'RTMP_BOT'
-  );
+export const getMediaServerConnRoom = () => {
+  return getMediaServerConn().room;
 };

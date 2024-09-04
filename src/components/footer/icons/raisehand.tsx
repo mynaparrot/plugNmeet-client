@@ -8,7 +8,6 @@ import {
 import { create } from '@bufbuild/protobuf';
 
 import { RootState, store, useAppSelector } from '../../../store';
-import { getCurrentRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
 
 const isActiveRaisehandSelector = createSelector(
@@ -19,7 +18,6 @@ const isActiveRaisehandSelector = createSelector(
 const RaiseHandIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
-  const currentRoom = getCurrentRoom();
   const conn = getNatsConn();
 
   const isActiveRaisehand = useAppSelector(isActiveRaisehandSelector);
@@ -39,7 +37,7 @@ const RaiseHandIcon = () => {
     if (!isActiveRaisehand) {
       data.event = NatsMsgClientToServerEvents.REQ_RAISE_HAND;
       data.msg = t('footer.notice.has-raised-hand', {
-        user: currentRoom.localParticipant.name,
+        user: conn.userName,
       }).toString();
     } else {
       data.event = NatsMsgClientToServerEvents.REQ_LOWER_HAND;

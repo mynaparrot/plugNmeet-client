@@ -20,6 +20,7 @@ import {
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
 import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
+import { toast } from 'react-toastify';
 
 import { store } from '../../store';
 import {
@@ -35,7 +36,7 @@ import {
 import HandleMediaTracks from './HandleMediaTracks';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
-import { LivekitInfo } from './hooks/useLivekitConnect';
+import { LivekitInfo } from './types';
 import i18n from '../i18n';
 import {
   ConnectionStatus,
@@ -44,7 +45,6 @@ import {
 } from './types';
 import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
-import { toast } from 'react-toastify';
 import { getNatsConn } from '../nats';
 
 export default class ConnectLivekit

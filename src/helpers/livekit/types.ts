@@ -26,6 +26,13 @@ export enum CurrentConnectionEvents {
   ScreenShareTracks = 'screenShareTracks',
 }
 
+export interface LivekitInfo {
+  livekit_host: string;
+  token: string;
+  enabledE2EE?: boolean;
+  encryption_key?: string;
+}
+
 export interface IConnectLivekit extends EventEmitter {
   get room(): Room;
   get e2eeKeyProvider(): ExternalE2EEKeyProvider;

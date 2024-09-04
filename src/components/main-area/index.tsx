@@ -11,10 +11,7 @@ import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
-import {
-  getCurrentConnection,
-  isCurrentUserRecorder,
-} from '../../helpers/livekit/utils';
+import { getMediaServerConn } from '../../helpers/livekit/utils';
 
 const columnCameraWidthSelector = createSelector(
   (state: RootState) => state.roomSettings,
@@ -86,8 +83,8 @@ const MainArea = () => {
   const headerVisible = useAppSelector(headerVisibilitySelector);
   const footerVisible = useAppSelector(footerVisibilitySelector);
   const dispatch = useAppDispatch();
-  const currentConnection = getCurrentConnection();
-  const isRecorder = isCurrentUserRecorder();
+  const currentConnection = getMediaServerConn();
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const [allowChat, setAllowChat] = useState<boolean>(true);
   const [isActiveScreenShare, setIsActiveScreenShare] =

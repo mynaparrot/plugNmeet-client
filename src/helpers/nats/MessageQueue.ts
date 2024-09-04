@@ -1,6 +1,5 @@
-import { ErrorCode } from 'nats.ws';
+import { ErrorCode, type JetStreamClient } from 'nats.ws';
 import { toast } from 'react-toastify';
-import { type JetStreamClient } from 'nats.ws';
 
 import { sleep } from '../utils';
 import i18n from '../i18n';

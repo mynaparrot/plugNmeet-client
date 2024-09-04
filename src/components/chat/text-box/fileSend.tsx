@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Room } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
@@ -11,7 +10,6 @@ import { getNatsConn } from '../../../helpers/nats';
 
 interface IFileSendProps {
   lockSendFile: boolean;
-  currentRoom: Room;
 }
 
 const selectedChatOptionSelector = createSelector(
