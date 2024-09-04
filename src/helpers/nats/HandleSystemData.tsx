@@ -116,6 +116,7 @@ export default class HandleSystemData {
       fromName: 'system',
       fromUserId: 'system',
       message: msg,
+      fromAdmin: true, // system message always from admin
     });
 
     store.dispatch(addChatMessage(body));

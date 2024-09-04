@@ -14,6 +14,7 @@ import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 export default class HandleChat {
   private _that: ConnectNats;
   private _e2eeFeatures: EndToEndEncryptionFeatures | undefined = undefined;
+  private allowViewOtherUsersList: boolean | undefined = undefined;
 
   constructor(that: ConnectNats) {
     this._that = that;
@@ -25,6 +26,21 @@ export default class HandleChat {
         // private message not for this user
         return;
       }
+    }
+    if (typeof this.allowViewOtherUsersList === 'undefined') {
+      this.allowViewOtherUsersList =
+        store.getState().session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList;
+    }
+
+    if (
+      !this.allowViewOtherUsersList &&
+      !payload.fromAdmin &&
+      !this._that.isAdmin &&
+      payload.fromUserId !== this._that.userId
+    ) {
+      // as it'd not allow viewing other users in the list
+      // so, any chat message will not be added except from admin
+      return;
     }
 
     const finalMsg = await this.handleDecryption(payload.message);

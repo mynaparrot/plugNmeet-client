@@ -72,7 +72,7 @@ export default class HandleRoomData {
   }
 
   private setWindowTitle = (title: string) => {
-    document.title = title;
+    window.document.title = title;
   };
 
   private showRecordingNotification = () => {

@@ -17,7 +17,6 @@ import ConnectNats from './ConnectNats';
 import {
   ICurrentUser,
   ICurrentUserMetadata,
-  IRoomMetadata,
 } from '../../store/slices/interfaces/session';
 import { store } from '../../store';
 import {
@@ -43,52 +42,45 @@ import { getCurrentConnection } from '../livekit/utils';
 export default class HandleParticipants {
   private _that: ConnectNats;
   private preferredLang = '';
-  private isLocalUserRecorder = false;
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
-  private _localParticipant: ICurrentUser;
-  private roomMetadata: IRoomMetadata | undefined;
+
+  private _localUserId: string | undefined;
+  private _isLocalUserAdmin: boolean = false;
+  private _isLocalUserRecorder = false;
 
   constructor(that: ConnectNats) {
     this._that = that;
-    this._localParticipant = {
-      userId: '',
-      sid: '',
-      name: '',
-      isRecorder: false,
-    };
   }
 
   public addLocalParticipantInfo = async (
     info: NatsKvUserInfo,
   ): Promise<ICurrentUser> => {
-    this.isLocalUserRecorder = this.isRecorder(info.userId);
-    const metadata = this.decodeMetadata(info.metadata);
+    this._isLocalUserRecorder = this.isRecorder(info.userId);
 
-    this._localParticipant = {
+    const metadata = this.decodeMetadata(info.metadata);
+    const localUser = {
       userId: info.userId,
       sid: info.userSid,
       name: info.name,
-      isRecorder: this.isLocalUserRecorder,
+      isRecorder: this._isLocalUserRecorder,
       metadata,
     };
+    this._localUserId = info.userId;
+    this._isLocalUserAdmin = info.isAdmin;
 
-    if (this.isLocalUserRecorder) {
+    if (this._isLocalUserRecorder) {
       this.recorderJoined();
     }
 
-    if (!this.roomMetadata) {
-      this.roomMetadata = this._that.currentRoomInfo.metadata;
-    }
-
-    store.dispatch(addCurrentUser(this._localParticipant));
+    store.dispatch(addCurrentUser(localUser));
     await this.updateParticipantMetadata(info.userId, metadata);
 
-    return this._localParticipant;
+    return localUser;
   };
 
   public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
-    if (this.isLocalUserRecorder) {
+    if (this._isLocalUserRecorder) {
       this.participantsCount++;
     }
 
@@ -104,14 +96,15 @@ export default class HandleParticipants {
       participant = p;
     }
 
-    if (this._localParticipant.userId !== participant.userId) {
+    if (this._localUserId !== participant.userId) {
       if (this.isRecorder(participant.userId)) {
         return;
       }
+      const roomMetadata = store.getState().session.currentRoom.metadata;
       if (
         !participant.isAdmin &&
-        !this._localParticipant.metadata?.isAdmin &&
-        !this.roomMetadata?.roomFeatures?.allowViewOtherUsersList
+        !this._isLocalUserAdmin &&
+        !roomMetadata?.roomFeatures?.allowViewOtherUsersList
       ) {
         return;
       }
@@ -194,7 +187,7 @@ export default class HandleParticipants {
       }),
     );
 
-    if (this._localParticipant.userId === userId) {
+    if (this._localUserId === userId) {
       if (
         this.preferredLang === '' &&
         typeof metadata.preferredLang !== 'undefined' &&
@@ -260,7 +253,7 @@ export default class HandleParticipants {
       console.error(e);
       return;
     }
-    if (this.isLocalUserRecorder) {
+    if (this._isLocalUserRecorder) {
       this.participantsCount--;
     }
 
@@ -311,18 +304,14 @@ export default class HandleParticipants {
     metadata: ICurrentUserMetadata,
     name: string,
   ) {
-    const state = store.getState();
-    if (state.session.currentUser?.isRecorder) {
+    if (this._isLocalUserRecorder) {
       // if the current user is recorder then don't need to do anything
       return;
     }
 
-    if (
-      metadata.waitForApproval &&
-      state.session.currentUser?.metadata?.isAdmin
-    ) {
+    if (metadata.waitForApproval && this._isLocalUserAdmin) {
       // we can open the participants panel if close
-      if (!state.bottomIconsActivity.isActiveParticipantsPanel) {
+      if (!store.getState().bottomIconsActivity.isActiveParticipantsPanel) {
         store.dispatch(updateIsActiveParticipantsPanel(true));
       }
       // also play notification

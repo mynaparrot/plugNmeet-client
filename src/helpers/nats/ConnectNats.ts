@@ -34,6 +34,7 @@ import {
   toBinary,
   toJsonString,
 } from '@bufbuild/protobuf';
+import { toast } from 'react-toastify';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
@@ -49,13 +50,8 @@ import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
-import {
-  ICurrentRoom,
-  ICurrentUser,
-} from '../../store/slices/interfaces/session';
 import MessageQueue from './MessageQueue';
 import { encryptMessage } from '../cryptoMessages';
-import { toast } from 'react-toastify';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -69,11 +65,10 @@ export default class ConnectNats {
 
   private readonly _roomId: string;
   private readonly _userId: string;
+  private _userName: string = '';
   private _isAdmin: boolean = false;
   private _isRecorder: boolean = false;
   private readonly _subjects: NatsSubjects;
-  private _localUserInfo: ICurrentUser | undefined;
-  private _currentRoomInfo: ICurrentRoom | undefined;
 
   private tokenRenewInterval: any;
   private pingInterval: any;
@@ -125,10 +120,6 @@ export default class ConnectNats {
     return this._isAdmin;
   }
 
-  get mediaServerConn(): IConnectLivekit | undefined {
-    return this._mediaServerConn;
-  }
-
   get roomId(): string {
     return this._roomId;
   }
@@ -141,18 +132,8 @@ export default class ConnectNats {
     return this._isRecorder;
   }
 
-  get currentRoomInfo(): ICurrentRoom {
-    if (typeof this._currentRoomInfo === 'undefined') {
-      this._currentRoomInfo = store.getState().session.currentRoom;
-    }
-    return this._currentRoomInfo;
-  }
-
-  get localUserInfo(): ICurrentUser | undefined {
-    if (typeof this._localUserInfo === 'undefined') {
-      this._localUserInfo = store.getState().session.currentUser;
-    }
-    return this._localUserInfo;
+  get mediaServerConn(): IConnectLivekit | undefined {
+    return this._mediaServerConn;
   }
 
   public openConn = async () => {
@@ -177,12 +158,12 @@ export default class ConnectNats {
     this._js = this._nc.jetstream();
     this.messageQueue.js(this._js);
 
-    this.monitorConnStatus();
+    this.monitorConnStatus().then();
 
     // now we'll subscribe to the system only
     // others will be done after received initial data
-    this.subscribeToSystemPrivate();
-    this.subscribeToSystemPublic();
+    this.subscribeToSystemPrivate().then();
+    this.subscribeToSystemPublic().then();
 
     this.startTokenRenewInterval();
     await this.startPingToServer();
@@ -227,11 +208,9 @@ export default class ConnectNats {
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
-    if (!this.localUserInfo) {
-      return;
-    }
     const e2ee =
-      this.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.endToEndEncryptionFeatures;
     if (
       e2ee &&
       e2ee.isEnabled &&
@@ -251,12 +230,13 @@ export default class ConnectNats {
 
     const isPrivate = to !== 'public';
     const data = create(ChatMessageSchema, {
-      fromName: this.localUserInfo.name,
-      fromUserId: this.localUserInfo.userId,
+      fromName: this._userName,
+      fromUserId: this._userId,
       sentAt: Date.now().toString(),
       toUserId: to !== 'public' ? to : undefined,
       isPrivate: isPrivate,
       message: msg,
+      fromAdmin: this.isAdmin,
     });
 
     const subject =
@@ -273,7 +253,7 @@ export default class ConnectNats {
         '',
         '',
         '1',
-      );
+      ).then();
     } else {
       this.sendAnalyticsData(
         AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
@@ -281,7 +261,7 @@ export default class ConnectNats {
         '',
         '',
         '1',
-      );
+      ).then();
     }
   };
 
@@ -290,13 +270,9 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (!this.localUserInfo) {
-      return;
-    }
-
     const data = create(DataChannelMessageSchema, {
       type,
-      fromUserId: this.localUserInfo.userId,
+      fromUserId: this._userId,
       toUserId: to,
       message: msg,
     });
@@ -314,13 +290,9 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (!this.localUserInfo) {
-      return;
-    }
-
     const data = create(DataChannelMessageSchema, {
       type,
-      fromUserId: this.localUserInfo.userId,
+      fromUserId: this._userId,
       toUserId: to,
       message: msg,
     });
@@ -629,8 +601,10 @@ export default class ConnectNats {
     // now local user
     if (data.localUser) {
       this._isAdmin = data.localUser.isAdmin;
-      this._localUserInfo =
-        await this.handleParticipants.addLocalParticipantInfo(data.localUser);
+      const localUser = await this.handleParticipants.addLocalParticipantInfo(
+        data.localUser,
+      );
+      this._userName = localUser.name;
     }
 
     // media info
@@ -643,9 +617,9 @@ export default class ConnectNats {
     // without proper data will give unexpected results,
     // for example, if E2EE is enabled then key will require
     // for chat or whiteboard
-    this.subscribeToChat();
-    this.subscribeToWhiteboard();
-    this.subscribeToDataChannel();
+    this.subscribeToChat().then();
+    this.subscribeToWhiteboard().then();
+    this.subscribeToDataChannel().then();
   }
 
   private async handleJoinedUsersList(msg: string) {
@@ -693,7 +667,8 @@ export default class ConnectNats {
     };
 
     const e2ee =
-      this.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.endToEndEncryptionFeatures;
     if (e2ee && e2ee.isEnabled && e2ee.encryptionKey) {
       if (!isE2EESupported()) {
         this.setErrorStatus(

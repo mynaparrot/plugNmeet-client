@@ -10,18 +10,18 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { IUseCloudRecordingReturn, RecordingType } from './IRecording';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
-import { getNatsConn } from '../../../../helpers/nats';
+import { store } from '../../../../store';
 
 const useCloudRecording = (): IUseCloudRecordingReturn => {
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_LOCAL;
   const [hasError, setHasError] = useState<boolean>(false);
   const { t } = useTranslation();
-  const conn = getNatsConn();
+  const currentRoom = store.getState().session.currentRoom;
 
   const startRecording = async () => {
     const body = create(RecordingReqSchema, {
       task: RecordingTasks.START_RECORDING,
-      sid: conn.currentRoomInfo.sid,
+      sid: currentRoom.sid,
     });
     if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
       body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
@@ -52,7 +52,7 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
   const stopRecording = async () => {
     const body = create(RecordingReqSchema, {
       task: RecordingTasks.STOP_RECORDING,
-      sid: conn.currentRoomInfo.sid,
+      sid: currentRoom.sid,
     });
     const r = await sendAPIRequest(
       'recording',
