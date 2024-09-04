@@ -34,7 +34,7 @@ export default class MessageQueue {
 
   public addToQueue = (message: Message) => {
     this._queue.push(message);
-    if ((this._state = WAITING)) this.processMessages();
+    if ((this._state = WAITING)) this.processMessages().then();
   };
 
   private async processMessages() {
