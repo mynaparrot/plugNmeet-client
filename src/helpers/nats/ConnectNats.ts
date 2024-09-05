@@ -55,6 +55,7 @@ import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
 import { encryptMessage } from '../cryptoMessages';
+import { ICurrentRoom } from '../../store/slices/interfaces/session';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -72,6 +73,9 @@ export default class ConnectNats {
   private _isAdmin: boolean = false;
   private _isRecorder: boolean = false;
   private readonly _subjects: NatsSubjects;
+  // this value won't be updated
+  // so, don't use it for metadata those will be updated
+  private _currentRoomInfo: ICurrentRoom | undefined;
 
   private tokenRenewInterval: any;
   private pingInterval: any;
@@ -216,8 +220,7 @@ export default class ConnectNats {
 
   public sendChatMsg = async (to: string, msg: string) => {
     const e2ee =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures;
+      this._currentRoomInfo?.metadata?.roomFeatures?.endToEndEncryptionFeatures;
     if (
       e2ee &&
       e2ee.isEnabled &&
@@ -236,10 +239,12 @@ export default class ConnectNats {
     }
 
     const isPrivate = to !== 'public';
+    const now = Date.now().toString();
     const data = create(ChatMessageSchema, {
+      id: now,
       fromName: this._userName,
       fromUserId: this._userId,
-      sentAt: Date.now().toString(),
+      sentAt: now,
       toUserId: to !== 'public' ? to : undefined,
       isPrivate: isPrivate,
       message: msg,
@@ -432,7 +437,6 @@ export default class ConnectNats {
     for await (const m of sub) {
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
-        payload.id = `${m.info.timestampNanos}`;
         await this.handleChat.handleMsg(payload);
       } catch (e) {
         const err = e as NatsError;
@@ -602,7 +606,7 @@ export default class ConnectNats {
 
     // add room info first
     if (data.room) {
-      await this.handleRoomData.setRoomInfo(data.room);
+      this._currentRoomInfo = await this.handleRoomData.setRoomInfo(data.room);
     }
 
     // now local user
@@ -674,8 +678,8 @@ export default class ConnectNats {
     };
 
     const e2ee =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures;
+      this._currentRoomInfo?.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+
     if (e2ee && e2ee.isEnabled && e2ee.encryptionKey) {
       if (!isE2EESupported()) {
         this.setErrorStatus(

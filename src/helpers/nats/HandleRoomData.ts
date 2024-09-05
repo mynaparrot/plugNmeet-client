@@ -30,13 +30,14 @@ export default class HandleRoomData {
     };
   }
 
-  public setRoomInfo = async (info: NatsKvRoomInfo) => {
+  public setRoomInfo = async (info: NatsKvRoomInfo): Promise<ICurrentRoom> => {
     this._room = {
       roomId: info.roomId,
       sid: info.roomSid,
     };
     store.dispatch(addCurrentRoom(this._room));
     await this.updateRoomMetadata(info.metadata);
+    return this._room;
   };
 
   public updateRoomMetadata = async (data: string) => {
@@ -126,14 +127,14 @@ export default class HandleRoomData {
     }
 
     this.welcomeMessage = this._room.metadata?.welcomeMessage;
-    const now = new Date();
     const body = create(ChatMessageSchema, {
-      id: `${now.getMilliseconds()}`,
-      sentAt: `${now.getMilliseconds()}`,
+      id: '1',
+      sentAt: Date.now().toString(),
       isPrivate: false,
       fromName: 'system',
       fromUserId: 'system',
       message: this.welcomeMessage,
+      fromAdmin: true, // system message always from admin
     });
 
     store.dispatch(addChatMessage(body));

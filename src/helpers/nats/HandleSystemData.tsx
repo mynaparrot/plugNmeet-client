@@ -107,11 +107,10 @@ export default class HandleSystemData {
   };
 
   public handleSysChatMsg = (msg: string) => {
-    const now = new Date();
-
+    const now = Date.now();
     const body = create(ChatMessageSchema, {
-      id: `${now.getMilliseconds()}`,
-      sentAt: `${now.getMilliseconds()}`,
+      id: `${now}`,
+      sentAt: `${now}`,
       isPrivate: false,
       fromName: 'system',
       fromUserId: 'system',
