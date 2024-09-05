@@ -13,6 +13,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
       - uses: actions/create-github-app-token@v1
         id: app-token
         with:
@@ -29,8 +33,8 @@ jobs:
           skip-commit: 'false'
       - name: Build project
         run: |
-          npm install
-          npm run build
+          pnpm install
+          pnpm run build
           timestamp=$(date +%s)
           echo "dev-${timestamp}" > dist/version.txt
           mkdir -p tmp/client

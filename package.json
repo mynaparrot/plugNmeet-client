@@ -4,14 +4,15 @@
   "author": "Jibon L. Costa",
   "license": "MIT",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "start": "webpack serve --config webpack.dev.js",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
-    "build-netlify": "npm run build && cp dist/assets/config_sample.js dist/assets/config.js",
+    "build-netlify": "pnpm run build && cp dist/assets/config_sample.js dist/assets/config.js",
     "lint": "prettier --write \"./src/**/*.{ts,tsx,scss}\" && eslint --fix --ext .tsx,.ts src/",
     "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet --ext .tsx,.ts src/",
     "lint-staged": "lint-staged",
     "prepare": "husky",
-    "size-limit": "npm run build && size-limit --json"
+    "size-limit": "pnpm run build && size-limit --json"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.0.0",
@@ -19,7 +20,7 @@
     "@headlessui/react": "1.7.19",
     "@reduxjs/toolkit": "2.2.7",
     "@tensorflow-models/body-pix": "2.2.1",
-    "@tensorflow/tfjs": "4.20.0",
+    "@tensorflow/tfjs": "4.21.0",
     "axios": "1.7.7",
     "copy-text-to-clipboard": "3.2.0",
     "emoji-picker-react": "4.12.0",
@@ -53,6 +54,8 @@
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.15",
     "@size-limit/preset-app": "11.1.4",
+    "@tensorflow/tfjs-backend-webgl": "4.21.0",
+    "@tensorflow/tfjs-core": "4.21.0",
     "@types/emscripten": "1.39.13",
     "@types/lodash": "4.17.7",
     "@types/react": "18.3.5",

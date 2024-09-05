@@ -21,8 +21,8 @@ cp src/assets/config_sample.js src/assets/config.js
 3) Now start server & navigate to http://localhost:3000
 
 ```
-npm install
-npm start
+pnpm install
+pnpm start
 // to build
-npm run build
+pnpm run build
 ```

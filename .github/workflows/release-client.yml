@@ -12,10 +12,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
       - name: Build project
         run: |
-          npm install
-          npm run build
+          pnpm install
+          pnpm run build
           
           ## save latest version tag
           TAG_NAME=$(curl -sL https://api.github.com/repos/mynaparrot/plugNmeet-client/releases/latest | jq -r ".tag_name")
