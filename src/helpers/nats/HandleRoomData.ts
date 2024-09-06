@@ -143,6 +143,9 @@ export default class HandleRoomData {
   };
 
   private addPreloadWhiteboardFile = async () => {
+    if (this.checkedPreloadedWhiteboardFile) {
+      return;
+    }
     // otherwise, current user info won't be updated
     // because we update room info first then local user info
     await sleep(2000);
@@ -188,6 +191,10 @@ export default class HandleRoomData {
     if (fileName !== whiteboard?.fileName) {
       // maybe one new file was uploaded & we do not change it
       this.checkedPreloadedWhiteboardFile = true;
+      if (this.toastId) {
+        toast.dismiss(this.toastId);
+        this.toastId = undefined;
+      }
       return;
     }
 
