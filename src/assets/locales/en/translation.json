@@ -59,7 +59,9 @@
     "nats-error-auth-body": "We was not able to verify your auth information. May be you are using an expired token?",
     "user-logged-out": "You logged out",
     "media-server-disconnected-reconnecting": "Media server disconnected, reconnecting...",
-    "media-server-disconnected": "Media server disconnected."
+    "media-server-disconnected": "Media server disconnected.",
+    "preloaded-whiteboard-file-processing": "Preloaded whiteboard file in progress",
+    "preloaded-whiteboard-file-processing-error": "Preloaded whiteboard file processing ended with error"
   },
   "room-metadata": {
     "session-recording": "This session is being recording",

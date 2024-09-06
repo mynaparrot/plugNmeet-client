@@ -22,6 +22,7 @@ export default class HandleRoomData {
   private _room: ICurrentRoom;
   private welcomeMessage: string | undefined = undefined;
   private checkedPreloadedWhiteboardFile = false;
+  private toastId: any = undefined;
 
   constructor() {
     this._room = {
@@ -154,13 +155,27 @@ export default class HandleRoomData {
     const whiteboard = this._room.metadata?.roomFeatures?.whiteboardFeatures;
     if (!whiteboard?.preloadFile || whiteboard.preloadFile === '') {
       // we don't have a preload file
+      // or may be processing was not successful
       this.checkedPreloadedWhiteboardFile = true;
+      if (this.toastId) {
+        toast.dismiss(this.toastId);
+        this.toastId = undefined;
+      }
       return;
     }
 
     if (!whiteboard.fileName || whiteboard.fileName === '') {
       // we have preload file, but that wasn't ready
       // we'll wait until the new update arrives
+      if (!this.toastId) {
+        this.toastId = toast.loading(
+          i18n.t('notifications.preloaded-whiteboard-file-processing'),
+          {
+            type: 'info',
+            closeButton: true,
+          },
+        );
+      }
       return;
     }
 
@@ -193,5 +208,10 @@ export default class HandleRoomData {
       handleToAddWhiteboardUploadedOfficeNewFile(f);
     }
     this.checkedPreloadedWhiteboardFile = true;
+
+    if (this.toastId) {
+      toast.dismiss(this.toastId);
+      this.toastId = undefined;
+    }
   };
 }
