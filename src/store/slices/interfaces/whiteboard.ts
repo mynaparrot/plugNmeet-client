@@ -23,17 +23,6 @@ export interface IWhiteboardFile {
   isOfficeFile: boolean;
 }
 
-// TODO: change IWhiteboardFeatures type correctly
-// ref: src/components/whiteboard/helpers/utils.ts
-// handleToAddWhiteboardUploadedOfficeNewFile
-export interface IWhiteboardFeatures {
-  preload_file?: string;
-  whiteboard_file_id: string;
-  file_name: string;
-  file_path: string;
-  total_pages: number;
-}
-
 export interface IRequestWhiteboardData {
   requested: boolean;
   sendTo: string;
@@ -58,4 +47,20 @@ export interface IWhiteboardAppState {
   viewBackgroundColor: string;
   zenModeEnabled: boolean;
   gridSize: number | null;
+}
+
+export interface WhiteboardFileConversionReq {
+  roomId: string;
+  roomSid: string;
+  userId: string;
+  filePath: string;
+}
+
+export interface WhiteboardFileConversionRes {
+  status: boolean;
+  msg: string;
+  fileName: string;
+  fileId: string;
+  filePath: string;
+  totalPages: number;
 }

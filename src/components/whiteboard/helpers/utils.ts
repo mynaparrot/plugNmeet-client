@@ -4,9 +4,9 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 import {
-  IWhiteboardFeatures,
   IWhiteboardFile,
   IWhiteboardOfficeFile,
+  WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
 import { randomString } from '../../../helpers/utils';
 import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
@@ -79,19 +79,18 @@ export const displaySavedPageData = (
   }
 };
 
-// TODO: change IWhiteboardFeatures type correctly
 export const handleToAddWhiteboardUploadedOfficeNewFile = (
-  whiteboard: IWhiteboardFeatures,
+  whiteboardFileConversionRes: WhiteboardFileConversionRes,
   uploaderWhiteboardHeight = 260,
   uploaderWhiteboardWidth = 1160,
 ) => {
   const files: Array<IWhiteboardFile> = [];
-  for (let i = 0; i < whiteboard.total_pages; i++) {
+  for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
     const fileName = 'page_' + (i + 1) + '.png';
     const file: IWhiteboardFile = {
       id: randomString(),
       currentPage: i + 1,
-      filePath: whiteboard.file_path + '/' + fileName,
+      filePath: whiteboardFileConversionRes.filePath + '/' + fileName,
       fileName,
       uploaderWhiteboardHeight,
       uploaderWhiteboardWidth,
@@ -101,10 +100,10 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
   }
 
   const newFile: IWhiteboardOfficeFile = {
-    fileId: whiteboard.whiteboard_file_id,
-    fileName: whiteboard.file_name,
-    filePath: whiteboard.file_path,
-    totalPages: whiteboard.total_pages,
+    fileId: whiteboardFileConversionRes.fileId,
+    fileName: whiteboardFileConversionRes.fileName,
+    filePath: whiteboardFileConversionRes.filePath,
+    totalPages: whiteboardFileConversionRes.totalPages,
     pageFiles: JSON.stringify(files),
   };
 

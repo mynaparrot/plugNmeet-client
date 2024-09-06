@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
-import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
+import {
+  IWhiteboardFile,
+  WhiteboardFileConversionReq,
+  WhiteboardFileConversionRes,
+} from '../../store/slices/interfaces/whiteboard';
 import { addWhiteboardOtherImageFile } from '../../store/slices/whiteboard';
 import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
@@ -88,19 +92,23 @@ const UploadFilesUI = ({
         });
         broadcastFile(filePath, fileName);
         // send analytics
-        conn.sendAnalyticsData(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
-          AnalyticsEventType.USER,
-          fileName,
-        );
-        conn.sendAnalyticsData(
-          AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
-          AnalyticsEventType.ROOM,
-          fileName,
-        );
+        conn
+          .sendAnalyticsData(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+            AnalyticsEventType.USER,
+            fileName,
+          )
+          .then();
+        conn
+          .sendAnalyticsData(
+            AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+            AnalyticsEventType.ROOM,
+            fileName,
+          )
+          .then();
         break;
       default:
-        convertFile(session, filePath);
+        convertFile(session, filePath).then();
         break;
     }
   };
@@ -109,13 +117,17 @@ const UploadFilesUI = ({
     const id = toast.loading(t('whiteboard.converting'), {
       type: 'info',
     });
-    const body: any = {
-      sid: session.currentRoom.sid,
+    const body: WhiteboardFileConversionReq = {
+      roomSid: session.currentRoom.sid,
       roomId: session.currentRoom.roomId,
-      userId: session.currentUser?.userId,
-      file_path: filePath,
+      userId: session.currentUser?.userId ?? '',
+      filePath: filePath,
     };
-    const res = await sendAPIRequest('convertWhiteboardFile', body);
+
+    const res: WhiteboardFileConversionRes = await sendAPIRequest(
+      'convertWhiteboardFile',
+      body,
+    );
     if (!res.status) {
       toast.update(id, {
         render: t(res.msg),
@@ -129,9 +141,6 @@ const UploadFilesUI = ({
     // save current page state before changes
     await saveCurrentPageData();
 
-    // is important here, otherwise file id will be invalid
-    // in handleToAddWhiteboardUploadedOfficeNewFile
-    res.whiteboard_file_id = res.file_id;
     const newFile = handleToAddWhiteboardUploadedOfficeNewFile(
       res,
       excalidrawAPI.getAppState().height,
@@ -139,19 +148,23 @@ const UploadFilesUI = ({
     );
 
     await sleep(500);
-    broadcastWhiteboardOfficeFile(newFile);
+    broadcastWhiteboardOfficeFile(newFile).then();
 
     // send analytics
-    conn.sendAnalyticsData(
-      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
-      AnalyticsEventType.USER,
-      newFile.fileName,
-    );
-    conn.sendAnalyticsData(
-      AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
-      AnalyticsEventType.ROOM,
-      newFile.fileName,
-    );
+    conn
+      .sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+        AnalyticsEventType.USER,
+        newFile.fileName,
+      )
+      .then();
+    conn
+      .sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+        AnalyticsEventType.ROOM,
+        newFile.fileName,
+      )
+      .then();
 
     toast.update(id, {
       render: t('whiteboard.file-ready'),
@@ -161,7 +174,7 @@ const UploadFilesUI = ({
     });
   };
 
-  const broadcastFile = (filePath, fileName) => {
+  const broadcastFile = (filePath: string, fileName: string) => {
     const file: IWhiteboardFile = {
       id: randomString(),
       currentPage,

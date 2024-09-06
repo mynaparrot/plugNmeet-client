@@ -43,7 +43,7 @@ const useResumableFilesUpload = ({
       target: (window as any).PLUG_N_MEET_SERVER_URL + '/api/fileUpload',
       uploadMethod: 'POST',
       query: {
-        sid: session.currentRoom.sid,
+        roomSid: session.currentRoom.sid,
         roomId: session.currentRoom.roomId,
         userId: session.currentUser?.userId,
         resumable: true,

@@ -15,7 +15,8 @@ import {
 import i18n from '../i18n';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
-import { IWhiteboardFeatures } from '../../store/slices/interfaces/whiteboard';
+import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/whiteboard';
+import { sleep } from '../utils';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
@@ -68,7 +69,7 @@ export default class HandleRoomData {
     store.dispatch(updateCurrentRoomMetadata(this._room.metadata));
     if (!this.checkedPreloadedWhiteboardFile) {
       // we'll check whiteboard preloaded file
-      await this.addPreloadWhiteboardFile();
+      this.addPreloadWhiteboardFile().then();
     }
   }
 
@@ -128,7 +129,7 @@ export default class HandleRoomData {
 
     this.welcomeMessage = this._room.metadata?.welcomeMessage;
     const body = create(ChatMessageSchema, {
-      id: '1',
+      id: '1', // to make sure it's always on top
       sentAt: Date.now().toString(),
       isPrivate: false,
       fromName: 'system',
@@ -141,14 +142,25 @@ export default class HandleRoomData {
   };
 
   private addPreloadWhiteboardFile = async () => {
+    // otherwise, current user info won't be updated
+    // because we update room info first then local user info
+    await sleep(2000);
+
     if (!store.getState().session.currentUser?.metadata?.isPresenter) {
       this.checkedPreloadedWhiteboardFile = true;
       return;
     }
 
     const whiteboard = this._room.metadata?.roomFeatures?.whiteboardFeatures;
-    if (!whiteboard?.preloadFile || whiteboard?.preloadFile === '') {
+    if (!whiteboard?.preloadFile || whiteboard.preloadFile === '') {
+      // we don't have a preload file
       this.checkedPreloadedWhiteboardFile = true;
+      return;
+    }
+
+    if (!whiteboard.fileName || whiteboard.fileName === '') {
+      // we have preload file, but that wasn't ready
+      // we'll wait until the new update arrives
       return;
     }
 
@@ -159,6 +171,7 @@ export default class HandleRoomData {
     const fileName = ff[ff.length - 1];
 
     if (fileName !== whiteboard?.fileName) {
+      // maybe one new file was uploaded & we do not change it
       this.checkedPreloadedWhiteboardFile = true;
       return;
     }
@@ -169,11 +182,13 @@ export default class HandleRoomData {
       (f) => f.fileId === whiteboard.whiteboardFileId,
     );
     if (!exist) {
-      const f: IWhiteboardFeatures = {
-        whiteboard_file_id: whiteboard.whiteboardFileId,
-        file_name: whiteboard.fileName,
-        file_path: whiteboard.filePath,
-        total_pages: whiteboard.totalPages,
+      const f: WhiteboardFileConversionRes = {
+        status: true,
+        msg: '',
+        fileId: whiteboard.whiteboardFileId,
+        fileName: whiteboard.fileName,
+        filePath: whiteboard.filePath,
+        totalPages: whiteboard.totalPages,
       };
       handleToAddWhiteboardUploadedOfficeNewFile(f);
     }
