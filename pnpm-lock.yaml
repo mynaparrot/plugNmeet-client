@@ -21,8 +21,8 @@ importers:
         specifier: 3.0.0-10
         version: 3.0.0-10
       '@nats-io/nats-core':
-        specifier: 3.0.0-26
-        version: 3.0.0-26
+        specifier: 3.0.0-27
+        version: 3.0.0-27
       '@reduxjs/toolkit':
         specifier: 2.2.7
         version: 2.2.7(react-redux@9.1.2(@types/react@18.3.5)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
@@ -396,8 +396,8 @@ packages:
   '@nats-io/jetstream@3.0.0-10':
     resolution: {integrity: sha512-FOdwBximucQszBAsSAckqhXxh0WZozKbRTMzODCudcHpOEv0jUwnoqFLG/8r607pJDX1gdiYADF5hpeV3gvh7A==}
 
-  '@nats-io/nats-core@3.0.0-26':
-    resolution: {integrity: sha512-fDNBVh0nRSKJAsGnlwyIQSlma1VHVSA/oWl5r3/ZAWPQRS/GPkZHuwz0TAXky8y5N8QXgT7lzFBqyktDldmGsQ==}
+  '@nats-io/nats-core@3.0.0-27':
+    resolution: {integrity: sha512-xJvUWoRvUTG/3K4Ppf5KXTZezicbvd2o/psMyI7YPtIxKZsZALXL/bLoNb7FB/Hw4jECioZE7LZCSK41npFD2A==}
 
   '@nats-io/nkeys@1.2.0-4':
     resolution: {integrity: sha512-61R4SO9059AyZBhoZRECHobHsY6mBOGwB5ewBrbnDKVtTehnFwyMNaORHhksFmu9K0zyUtwBWyffzKpibp2Cew==}
@@ -4516,9 +4516,9 @@ snapshots:
 
   '@nats-io/jetstream@3.0.0-10':
     dependencies:
-      '@nats-io/nats-core': 3.0.0-26
+      '@nats-io/nats-core': 3.0.0-27
 
-  '@nats-io/nats-core@3.0.0-26':
+  '@nats-io/nats-core@3.0.0-27':
     dependencies:
       '@nats-io/nkeys': 1.2.0-4
       '@nats-io/nuid': 2.0.1-2
