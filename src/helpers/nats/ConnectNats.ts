@@ -392,7 +392,7 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPrivate + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume({ max_messages: 1 });
+    const sub = await consumer.consume();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -415,7 +415,7 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPublic + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume({ max_messages: 1 });
+    const sub = await consumer.consume();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -438,7 +438,7 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.chat + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume({ max_messages: 1 });
+    const sub = await consumer.consume();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -461,7 +461,7 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.whiteboard + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume({ max_messages: 1 });
+    const sub = await consumer.consume();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -496,7 +496,7 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.dataChannel + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume({ max_messages: 1 });
+    const sub = await consumer.consume();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
