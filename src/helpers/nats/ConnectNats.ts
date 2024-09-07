@@ -1,10 +1,3 @@
-import {
-  NatsConnection,
-  NatsError,
-  tokenAuthenticator,
-  connect,
-  JetStreamClient,
-} from 'nats.ws';
 import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
 import {
@@ -35,6 +28,15 @@ import {
   toJsonString,
 } from '@bufbuild/protobuf';
 import { toast } from 'react-toastify';
+import {
+  NatsConnection,
+  NatsError,
+  wsconnect,
+  tokenAuthenticator,
+  // eslint-disable-next-line import/no-unresolved
+} from '@nats-io/nats-core';
+// eslint-disable-next-line import/no-unresolved
+import { jetstream, JetStreamClient } from '@nats-io/jetstream';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import {
@@ -149,7 +151,7 @@ export default class ConnectNats {
 
   public openConn = async () => {
     try {
-      this._nc = await connect({
+      this._nc = await wsconnect({
         servers: this._natsWSUrls,
         authenticator: tokenAuthenticator(() => this._token),
       });
@@ -166,7 +168,7 @@ export default class ConnectNats {
 
     this._setRoomConnectionStatusState('receiving-data');
     this._isRecorder = this.handleParticipants.isRecorder(this.userId);
-    this._js = this._nc.jetstream();
+    this._js = jetstream(this._nc);
     this.messageQueue.js(this._js);
 
     this.monitorConnStatus().then();
@@ -390,8 +392,10 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPrivate + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
+    const sub = await consumer.consume({ max_messages: 1 });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -411,8 +415,10 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.systemPublic + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
+    const sub = await consumer.consume({ max_messages: 1 });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -432,8 +438,10 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.chat + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
+    const sub = await consumer.consume({ max_messages: 1 });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     for await (const m of sub) {
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
@@ -453,8 +461,10 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.whiteboard + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
+    const sub = await consumer.consume({ max_messages: 1 });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     for await (const m of sub) {
       try {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
@@ -486,8 +496,10 @@ export default class ConnectNats {
 
     const consumerName = this._subjects.dataChannel + ':' + this._userId;
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
+    const sub = await consumer.consume({ max_messages: 1 });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     for await (const m of sub) {
       try {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
