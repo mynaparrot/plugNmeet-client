@@ -19,7 +19,7 @@
     "@excalidraw/excalidraw": "0.17.6",
     "@headlessui/react": "1.7.19",
     "@nats-io/jetstream": "3.0.0-10",
-    "@nats-io/nats-core": "3.0.0-26",
+    "@nats-io/nats-core": "3.0.0-27",
     "@reduxjs/toolkit": "2.2.7",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.21.0",
