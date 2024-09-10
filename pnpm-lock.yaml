@@ -69,8 +69,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.0.5-rc.6
-        version: 1.0.5-rc.6
+        specifier: 1.0.5-rc.8
+        version: 1.0.5-rc.8
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1972,6 +1972,7 @@ packages:
   follow-redirects@1.15.8:
     resolution: {integrity: sha512-xgrmBhBToVKay1q2Tao5LI26B83UhrB/vM1avwVSDzt8rx3rO6AizBAaF46EgksTVr+rFTQaqZZ9MVBfUe4nig==}
     engines: {node: '>=4.0'}
+    deprecated: Browser detection issues fixed in v1.15.9
     peerDependencies:
       debug: '*'
     peerDependenciesMeta:
@@ -3078,8 +3079,8 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
-  plugnmeet-protocol-js@1.0.5-rc.6:
-    resolution: {integrity: sha512-nycn/tijK7pirvbBQDE1+FF90duU9CfReS9vJwCVeDnH4fKOKP9Itth9fqHMx1h5hFZs7lZekY/5fjS+toaIwg==}
+  plugnmeet-protocol-js@1.0.5-rc.8:
+    resolution: {integrity: sha512-Zl8jIobr2PBWVNxF5m0gcOoHvQmsMknJ1N/il4ybkPsPlcj6Td1yL2AF0RJOPweIY0nlXkCK1rDONeMwoK0l8A==}
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -7492,7 +7493,7 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  plugnmeet-protocol-js@1.0.5-rc.6:
+  plugnmeet-protocol-js@1.0.5-rc.8:
     dependencies:
       '@bufbuild/protobuf': 2.0.0
 
