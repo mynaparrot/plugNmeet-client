@@ -69,8 +69,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.0.5-rc.11
-        version: 1.0.5-rc.11
+        specifier: 1.0.5-rc.12
+        version: 1.0.5-rc.12
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -235,8 +235,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.94.0(webpack-cli@5.1.4))
       tailwindcss:
-        specifier: 3.4.10
-        version: 3.4.10
+        specifier: 3.4.11
+        version: 3.4.11
       terser-webpack-plugin:
         specifier: 5.3.10
         version: 5.3.10(webpack@5.94.0(webpack-cli@5.1.4))
@@ -3087,8 +3087,8 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
-  plugnmeet-protocol-js@1.0.5-rc.11:
-    resolution: {integrity: sha512-lLX44+vZVef6Gs6zrXa80f/IhJH2EfJEd6ZOEX5BXDtG51Y3HNSLrrXMi3wmBh31g1P4aVzNa88XvCjcrKa+Ww==}
+  plugnmeet-protocol-js@1.0.5-rc.12:
+    resolution: {integrity: sha512-GIYpoXNwIaQCwfRHSrHvOIlsNiWmSdM83RLvRA5u3aelsij+uFBD7svWHWqGhM2kK11GNDzvVY2ZWKPb1X07jQ==}
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -3938,8 +3938,8 @@ packages:
     resolution: {integrity: sha512-7gr8p9TQP6RAHusBOSLs46F4564ZrjV8xFmw5zCmgmhGUcw2hxsShhJ6CEiHQMgPDwAQ1fWHPM0ypc4RMAig4A==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  tailwindcss@3.4.10:
-    resolution: {integrity: sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==}
+  tailwindcss@3.4.11:
+    resolution: {integrity: sha512-qhEuBcLemjSJk5ajccN9xJFtM/h0AVCPaA6C92jNP+M2J8kX+eMJHI7R2HFKUvvAsMpcfLILMCFYSeDwpMmlUg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -7503,7 +7503,7 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  plugnmeet-protocol-js@1.0.5-rc.11:
+  plugnmeet-protocol-js@1.0.5-rc.12:
     dependencies:
       '@bufbuild/protobuf': 2.0.0
 
@@ -8409,7 +8409,7 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.7.0
 
-  tailwindcss@3.4.10:
+  tailwindcss@3.4.11:
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
