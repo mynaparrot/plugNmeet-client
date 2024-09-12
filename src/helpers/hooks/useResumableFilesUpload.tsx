@@ -52,6 +52,7 @@ const useResumableFilesUpload = ({
         Authorization: session.token,
       },
       fileType: allowedFileTypes,
+      simultaneousUploads: 1,
       fileTypeErrorCallback(file) {
         toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
           type: 'error',
