@@ -5,6 +5,7 @@ import Resumable from 'resumablejs';
 import ResumableFile = Resumable.ResumableFile;
 
 import { store } from '../../store';
+import sendAPIRequest from '../api/plugNmeetAPI';
 
 export interface IUseResumableFilesUpload {
   allowedFileTypes: Array<string>;
@@ -52,7 +53,6 @@ const useResumableFilesUpload = ({
         Authorization: session.token,
       },
       fileType: allowedFileTypes,
-      simultaneousUploads: 1,
       fileTypeErrorCallback(file) {
         toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
           type: 'error',
@@ -76,10 +76,19 @@ const useResumableFilesUpload = ({
       }
     });
 
-    r.on('fileSuccess', function (file: ResumableFile, message: string) {
-      const res = JSON.parse(message);
-      setIsUploading(false);
+    r.on('fileSuccess', async (file: ResumableFile) => {
+      // file was uploaded successfully
+      // now we'll send merge request
+      const mergeReq = {
+        roomSid: session.currentRoom.sid,
+        roomId: session.currentRoom.roomId,
+        resumableIdentifier: file.uniqueIdentifier,
+        resumableFilename: file.fileName,
+        ResumableTotalChunks: file.chunks.length,
+      };
+      const res = await sendAPIRequest('/uploadedFileMerge', mergeReq, true);
 
+      setIsUploading(false);
       setTimeout(() => {
         toast.dismiss(toastId.current ?? '');
       }, 300);
@@ -89,6 +98,10 @@ const useResumableFilesUpload = ({
           filePath: res.filePath,
           fileName: res.fileName,
           fileExtension: res.fileExtension,
+        });
+      } else {
+        toast(t(res.msg), {
+          type: 'error',
         });
       }
     });
