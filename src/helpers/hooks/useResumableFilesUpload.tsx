@@ -53,6 +53,7 @@ const useResumableFilesUpload = ({
         Authorization: session.token,
       },
       fileType: allowedFileTypes,
+      prioritizeFirstAndLastChunk: true,
       fileTypeErrorCallback(file) {
         toast(t('notifications.file-type-not-allow', { filetype: file.type }), {
           type: 'error',
