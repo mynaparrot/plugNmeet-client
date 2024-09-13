@@ -85,7 +85,7 @@ const useResumableFilesUpload = ({
         roomId: session.currentRoom.roomId,
         resumableIdentifier: file.uniqueIdentifier,
         resumableFilename: file.fileName,
-        ResumableTotalChunks: file.chunks.length,
+        resumableTotalChunks: file.chunks.length,
       };
       const res = await sendAPIRequest('/uploadedFileMerge', mergeReq, true);
 
