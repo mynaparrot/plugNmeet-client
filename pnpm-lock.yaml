@@ -196,8 +196,8 @@ importers:
         specifier: 5.6.0
         version: 5.6.0(webpack@5.94.0(webpack-cli@5.1.4))
       husky:
-        specifier: 9.1.5
-        version: 9.1.5
+        specifier: 9.1.6
+        version: 9.1.6
       lint-staged:
         specifier: 15.2.10
         version: 15.2.10
@@ -1980,6 +1980,7 @@ packages:
   follow-redirects@1.15.8:
     resolution: {integrity: sha512-xgrmBhBToVKay1q2Tao5LI26B83UhrB/vM1avwVSDzt8rx3rO6AizBAaF46EgksTVr+rFTQaqZZ9MVBfUe4nig==}
     engines: {node: '>=4.0'}
+    deprecated: Browser detection issues fixed in v1.15.9
     peerDependencies:
       debug: '*'
     peerDependenciesMeta:
@@ -2237,8 +2238,8 @@ packages:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
 
-  husky@9.1.5:
-    resolution: {integrity: sha512-rowAVRUBfI0b4+niA4SJMhfQwc107VLkBUgEYYAOQAbqDCnra1nYh83hF/MDmhYs9t9n1E3DuKOrs2LYNC+0Ag==}
+  husky@9.1.6:
+    resolution: {integrity: sha512-sqbjZKK7kf44hfdE94EoX8MZNk0n7HeW37O4YrVGCF4wzgQjp+akPAkfUK5LZ6KuR/6sqeAVuXHji+RzQgOn5A==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -6717,7 +6718,7 @@ snapshots:
 
   human-signals@5.0.0: {}
 
-  husky@9.1.5: {}
+  husky@9.1.6: {}
 
   hyperdyperid@1.2.0: {}
 
