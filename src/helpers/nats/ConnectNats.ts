@@ -569,7 +569,8 @@ export default class ConnectNats {
         this.handleSystemData.handlePoll(payload);
         break;
       case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
-        this.handleSystemData.handleBreakoutRoomNotifications(payload.msg);
+      case NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED:
+        this.handleSystemData.handleBreakoutRoom(payload);
         break;
       case NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG:
         this.handleSystemData.handleSysChatMsg(payload.msg);

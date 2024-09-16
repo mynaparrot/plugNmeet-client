@@ -86,24 +86,34 @@ export default class HandleSystemData {
   };
 
   public handlePoll = (payload: NatsMsgServerToClient) => {
-    if (payload.event === NatsMsgServerToClientEvents.POLL_CREATED) {
-      toast(<NewPollMsg />, {
-        toastId: 'info-status',
-        type: 'info',
-        autoClose: false,
-      });
-      store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
-    } else if (payload.event === NatsMsgServerToClientEvents.POLL_CLOSED) {
-      store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+    switch (payload.event) {
+      case NatsMsgServerToClientEvents.POLL_CREATED:
+        toast(<NewPollMsg />, {
+          toastId: 'info-status',
+          type: 'info',
+          autoClose: false,
+        });
+        store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+        break;
+      case NatsMsgServerToClientEvents.POLL_CLOSED:
+        store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+        break;
     }
   };
 
-  public handleBreakoutRoomNotifications = (msg: string) => {
-    if (msg === '') {
-      return;
+  public handleBreakoutRoom = (payload: NatsMsgServerToClient) => {
+    switch (payload.event) {
+      case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
+        if (payload.msg !== '') {
+          store.dispatch(updateReceivedInvitationFor(payload.msg));
+          store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
+        }
+        break;
+      case NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED:
+        store.dispatch(breakoutRoomApi.util.invalidateTags(['List']));
+        store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
+        break;
     }
-    store.dispatch(updateReceivedInvitationFor(msg));
-    store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
   };
 
   public handleSysChatMsg = (msg: string) => {
