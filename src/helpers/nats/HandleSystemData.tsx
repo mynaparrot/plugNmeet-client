@@ -109,10 +109,6 @@ export default class HandleSystemData {
           store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
         }
         break;
-      case NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED:
-        store.dispatch(breakoutRoomApi.util.invalidateTags(['List']));
-        store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
-        break;
     }
   };
 
