@@ -397,14 +397,18 @@ export default class ConnectNats {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
-      m.ack();
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
+          // otherwise if connection closed then ack will not process
+          m.ack();
+        }
         await this.handleSystemEvents(payload);
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
       }
+      m.ack();
     }
   }
 
@@ -420,14 +424,18 @@ export default class ConnectNats {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
-      m.ack();
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
+          // otherwise if connection closed then ack will not process
+          m.ack();
+        }
         await this.handleSystemEvents(payload);
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
       }
+      m.ack();
     }
   };
 
@@ -443,7 +451,6 @@ export default class ConnectNats {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
-      m.ack();
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
         await this.handleChat.handleMsg(payload);
@@ -451,6 +458,7 @@ export default class ConnectNats {
         const err = e as NatsError;
         console.error(err.message);
       }
+      m.ack();
     }
   };
 
@@ -466,7 +474,6 @@ export default class ConnectNats {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
-      m.ack();
       try {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
         // whiteboard data should not process by the same sender
@@ -477,6 +484,7 @@ export default class ConnectNats {
           ) {
             // receiver specified & this user was not the receiver
             // we'll not process further
+            m.ack();
             continue;
           }
           await this.handleWhiteboard.handleWhiteboardMsg(payload);
@@ -485,6 +493,7 @@ export default class ConnectNats {
         const err = e as NatsError;
         console.error(err.message);
       }
+      m.ack();
     }
   };
 
@@ -500,7 +509,6 @@ export default class ConnectNats {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
-      m.ack();
       try {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
         if (
@@ -509,6 +517,7 @@ export default class ConnectNats {
         ) {
           // receiver specified & this user was not the receiver
           // we'll not process further
+          m.ack();
           continue;
         }
         // fromUserId check inside handleMessage method
@@ -517,6 +526,7 @@ export default class ConnectNats {
         const err = e as NatsError;
         console.error(err.message);
       }
+      m.ack();
     }
   };
 
