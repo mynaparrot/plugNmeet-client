@@ -528,7 +528,7 @@ export default class ConnectNats {
         await this.handleInitialData(payload.msg);
         this._setRoomConnectionStatusState('ready');
         break;
-      case NatsMsgServerToClientEvents.JOINED_USERS_LIST:
+      case NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST:
         await this.handleJoinedUsersList(payload.msg);
         break;
       case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
@@ -634,6 +634,13 @@ export default class ConnectNats {
     if (data.mediaServerInfo) {
       await this.createMediaServerConn(data.mediaServerInfo);
     }
+
+    // now request for users' list
+    await this.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
+      }),
+    );
 
     // now subscribe to other channels
     // some of those services need user or room info
