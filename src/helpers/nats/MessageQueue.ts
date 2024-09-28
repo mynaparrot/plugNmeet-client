@@ -1,11 +1,8 @@
 import { toast } from 'react-toastify';
 // eslint-disable-next-line import/no-unresolved
 import { type JetStreamClient } from '@nats-io/jetstream';
-// eslint-disable-next-line import/no-unresolved
-import { ErrorCode } from '@nats-io/nats-core';
 
-import { sleep } from '../utils';
-import i18n from '../i18n';
+import { formatNatsError, sleep } from '../utils';
 
 const WAITING = 'WAITING',
   PROCESSING = 'PROCESSING',
@@ -60,7 +57,7 @@ export default class MessageQueue {
           } catch (e: any) {
             console.error(e.message);
             if (i === MAX_RETRY) {
-              const msg = this.formatError(e);
+              const msg = formatNatsError(e);
               toast(msg, {
                 toastId: 'nats-status',
                 type: 'error',
@@ -72,24 +69,5 @@ export default class MessageQueue {
       }
     }
     this._state = WAITING;
-  }
-
-  private formatError(err: any) {
-    let msg = i18n.t('notifications.nats-error-request-failed').toString();
-
-    switch (err.code) {
-      case ErrorCode.NoResponders:
-        msg = i18n.t('notifications.nats-error-no-response', {
-          error: `${err.name}: ${err.message}`,
-        });
-        break;
-      case ErrorCode.Timeout:
-        msg = i18n.t('notifications.nats-error-timeout', {
-          error: `${err.name}: ${err.message}`,
-        });
-        break;
-    }
-
-    return msg;
   }
 }

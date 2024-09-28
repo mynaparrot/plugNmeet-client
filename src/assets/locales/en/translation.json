@@ -50,6 +50,7 @@
     "room-will-end-in": "This room will be ended in {{minutes}} minutes",
     "e2ee-unsupported-browser-title": "Unsupported browser",
     "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support.",
+    "nats-error-title": "Nats server connection error",
     "nats-error-no-response": "No backend server found to handle the request. Error: {{error}}",
     "nats-error-timeout": "No response found from backend server. Error: {{error}}",
     "nats-error-request-failed": "Sending request was not successful",

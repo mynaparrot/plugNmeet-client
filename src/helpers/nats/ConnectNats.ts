@@ -59,6 +59,7 @@ import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
 import { encryptMessage } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
+import { formatNatsError } from '../utils';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -161,8 +162,8 @@ export default class ConnectNats {
     } catch (e) {
       console.error(e);
       this.setErrorStatus(
-        i18n.t('notifications.nats-error-auth-title'),
-        i18n.t('nats-error-auth-body'),
+        i18n.t('notifications.nats-error-title'),
+        formatNatsError(e),
       );
       return;
     }

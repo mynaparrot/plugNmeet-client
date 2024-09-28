@@ -49,10 +49,13 @@ const UploadFilesUI = ({
   const session = store.getState().session;
   const preRefreshFileBrowser = useStorePreviousInt(refreshFileBrowser);
   const conn = getNatsConn();
+  const maxAllowedFileSize =
+    store.getState().session.currentRoom.metadata?.roomFeatures
+      ?.whiteboardFeatures?.maxAllowedFileSize;
 
   const { isUploading, result } = useResumableFilesUpload({
     allowedFileTypes,
-    maxFileSize: '30',
+    maxFileSize: maxAllowedFileSize ? maxAllowedFileSize : '30',
     files,
   });
 
