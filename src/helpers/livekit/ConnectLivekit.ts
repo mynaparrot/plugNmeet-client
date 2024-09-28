@@ -295,14 +295,6 @@ export default class ConnectLivekit
     if (this.toastIdConnecting) {
       toast.dismiss(this.toastIdConnecting);
     }
-
-    // redirect to logout url
-    const logout_url = store.getState().session.currentRoom.metadata?.logoutUrl;
-    if (reason === DisconnectReason.ROOM_DELETED && logout_url) {
-      setTimeout(() => {
-        window.location.href = logout_url;
-      }, 5000);
-    }
   };
 
   private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {

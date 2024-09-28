@@ -1,4 +1,3 @@
-import { isE2EESupported } from 'livekit-client';
 import { Dispatch } from 'react';
 import {
   AnalyticsDataMsgSchema,
@@ -37,6 +36,8 @@ import {
 } from '@nats-io/nats-core';
 // eslint-disable-next-line import/no-unresolved
 import { jetstream, JetStreamClient } from '@nats-io/jetstream';
+import { isURL } from 'validator';
+import { isE2EESupported } from 'livekit-client';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import {
@@ -209,6 +210,14 @@ export default class ConnectNats {
       text: i18n.t(msg),
     });
     this._setRoomConnectionStatusState('disconnected');
+
+    // redirect to log out url
+    setTimeout(() => {
+      const logout_url = this._currentRoomInfo?.metadata?.logoutUrl;
+      if (logout_url && logout_url !== '' && isURL(logout_url)) {
+        window.location.href = logout_url;
+      }
+    }, 3000);
   };
 
   public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
