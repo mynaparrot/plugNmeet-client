@@ -54,10 +54,10 @@ export const sendRequestedForWhiteboardData = () => {
   }
 
   donors.forEach(async (donor) => {
-    await conn.sendWhiteboardData(
+    await conn.sendDataMessage(
       DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA,
       '',
-      donor.sid,
+      donor.userId,
     );
   });
 };
