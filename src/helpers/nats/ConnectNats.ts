@@ -414,11 +414,12 @@ export default class ConnectNats {
           m.ack();
         }
         await this.handleSystemEvents(payload);
+        m.ack();
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
+        m.nak();
       }
-      m.ack();
     }
   }
 
@@ -441,11 +442,12 @@ export default class ConnectNats {
           m.ack();
         }
         await this.handleSystemEvents(payload);
+        m.ack();
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
+        m.nak();
       }
-      m.ack();
     }
   };
 
@@ -464,11 +466,12 @@ export default class ConnectNats {
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
         await this.handleChat.handleMsg(payload);
+        m.ack();
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
+        m.nak();
       }
-      m.ack();
     }
   };
 
@@ -494,16 +497,16 @@ export default class ConnectNats {
           ) {
             // receiver specified & this user was not the receiver
             // we'll not process further
-            m.ack();
             continue;
           }
           await this.handleWhiteboard.handleWhiteboardMsg(payload);
+          m.ack();
         }
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
+        m.nak();
       }
-      m.ack();
     }
   };
 
@@ -532,11 +535,12 @@ export default class ConnectNats {
         }
         // fromUserId check inside handleMessage method
         await this.handleDataMsg.handleMessage(payload);
+        m.ack();
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
+        m.nak();
       }
-      m.ack();
     }
   };
 
