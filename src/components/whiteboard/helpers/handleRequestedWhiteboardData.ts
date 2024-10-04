@@ -36,7 +36,9 @@ export const sendRequestedForWhiteboardData = () => {
   const session = store.getState().session;
   const participants = participantsSelector
     .selectAll(store.getState())
-    .filter((participant) => participant.sid !== session.currentUser?.sid);
+    .filter(
+      (participant) => participant.userId !== session.currentUser?.userId,
+    );
 
   if (!participants.length) return;
 
@@ -45,9 +47,9 @@ export const sendRequestedForWhiteboardData = () => {
   });
 
   let donors = participants;
-  if (donors.length > 2) {
+  if (donors.length > 1) {
     // we'll request data from max 2 users.
-    donors = participants.slice(0, 2);
+    donors = participants.slice(0, 1);
   }
   if (!conn) {
     conn = getNatsConn();
@@ -55,7 +57,7 @@ export const sendRequestedForWhiteboardData = () => {
 
   donors.forEach(async (donor) => {
     await conn.sendDataMessage(
-      DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA,
+      DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
       '',
       donor.userId,
     );
@@ -88,7 +90,13 @@ export const sendWhiteboardDataAsDonor = async (
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
-    await broadcastSceneOnChange(elements, true, sendTo);
+    //await broadcastSceneOnChange(elements, true, sendTo);
+    const data = JSON.stringify(elements);
+    await conn.sendDataMessage(
+      DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
+      data,
+      sendTo,
+    );
   }
 
   // finally, change the status of request

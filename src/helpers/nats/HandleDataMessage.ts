@@ -28,6 +28,17 @@ export default class HandleDataMessage {
         }
         this.handleSendInitWhiteboard(payload);
         break;
+      case DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA:
+        console.log(this._that.userId);
+        if (payload.fromUserId === this._that.userId) {
+          return;
+        }
+        console.log('DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA', payload);
+        this.handleSendInitWhiteboard(payload);
+        break;
+      case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
+        console.log('DataMsgBodyType.RES_FULL_WHITEBOARD_DATA', payload);
+        break;
       case DataMsgBodyType.USER_VISIBILITY_CHANGE:
         if (payload.fromUserId === this._that.userId) {
           return;

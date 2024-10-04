@@ -69,8 +69,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.0.5-rc.24
-        version: 1.0.5-rc.24
+        specifier: link:../protocol/js
+        version: link:../protocol/js
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -3098,9 +3098,6 @@ packages:
   pkg-dir@4.2.0:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
-
-  plugnmeet-protocol-js@1.0.5-rc.24:
-    resolution: {integrity: sha512-Ol1vXKArtbYTudEAlVbVtVGu0qY5Bpigxsh8VEArEmabUy1aUoWNAxaIk3wVn0W/3KC//jVO3fAVLzBxboen4w==}
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -7529,10 +7526,6 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
-
-  plugnmeet-protocol-js@1.0.5-rc.24:
-    dependencies:
-      '@bufbuild/protobuf': 2.1.0
 
   possible-typed-array-names@1.0.0: {}
 

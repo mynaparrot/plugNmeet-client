@@ -243,6 +243,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     excalidrawAPI?.history.clear();
   };
 
+  useEffect(() => {
+    if (excalidrawAPI && whiteboard.allExcalidrawElements !== '') {
+      const elements = JSON.parse(whiteboard.allExcalidrawElements);
+      console.log(elements);
+      //handleRemoteSceneUpdate(elements);
+    }
+    // eslint-disable-next-line
+  }, [excalidrawAPI, whiteboard.allExcalidrawElements]);
+
   // for handling draw elements
   useEffect(() => {
     // let's wait until fetchedData value change

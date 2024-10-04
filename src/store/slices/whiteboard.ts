@@ -30,6 +30,7 @@ const initialState: IWhiteboardSlice = {
     },
   ],
   refreshWhiteboard: 0,
+  allExcalidrawElements: '',
 };
 
 const whiteboardSlice = createSlice({
@@ -115,6 +116,9 @@ const whiteboardSlice = createSlice({
     doRefreshWhiteboard: (state) => {
       state.refreshWhiteboard = Date.now();
     },
+    addAllExcalidrawElements: (state, action: PayloadAction<string>) => {
+      state.allExcalidrawElements = action.payload;
+    },
   },
 });
 
@@ -129,6 +133,7 @@ export const {
   updateCurrentWhiteboardOfficeFileId,
   addWhiteboardUploadedOfficeFiles,
   doRefreshWhiteboard,
+  addAllExcalidrawElements,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;
