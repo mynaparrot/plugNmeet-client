@@ -16,7 +16,7 @@ import type {
   AppState,
 } from '@excalidraw/excalidraw/types/types';
 
-import { RootState, store, useAppSelector } from '../../store';
+import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   ReconciledElements,
@@ -43,6 +43,8 @@ import {
 } from './helpers/utils';
 
 import './style.scss';
+import { sleep } from '../../helpers/utils';
+import { addAllExcalidrawElements } from '../../store/slices/whiteboard';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -73,6 +75,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const collaborators = new Map<string, Collaborator>();
 
   const { i18n } = useTranslation();
+  const dispatch = useAppDispatch();
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
@@ -131,7 +134,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       sendWhiteboardDataAsDonor(
         excalidrawAPI,
         whiteboard.requestedWhiteboardData.sendTo,
-      );
+      ).then();
     }
   }, [excalidrawAPI, whiteboard.requestedWhiteboardData, fetchedData]);
 
@@ -165,7 +168,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
     });
 
-    // now check if any user still exist after disconnected
+    // now check if any user still exists after disconnected
     collaborators.forEach((_, i) => {
       const found = participants.find((p) => p.userId === i);
       if (!found) {
@@ -204,12 +207,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     //eslint-disable-next-line
   }, [excalidrawAPI, isPresenter]);
 
-  // if page change then we'll reset version
+  // if page changes then we'll reset the version
   useEffect(() => {
     if (previousPage && whiteboard.currentPage !== previousPage) {
       setLastBroadcastOrReceivedSceneVersion(-1);
     }
-    // for recorder & other user we'll clean from here
+    // for recorder and other user we'll clean from here
     if (
       !isPresenter &&
       previousPage &&
@@ -221,6 +224,31 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       excalidrawAPI?.addFiles([]);
     }
   }, [excalidrawAPI, whiteboard.currentPage, previousPage, isPresenter]);
+
+  const reconcileAndAddDataToWhiteboard = useCallback(
+    (excalidrawElements: string) => {
+      if (!excalidrawAPI) {
+        return;
+      }
+      try {
+        const elements = JSON.parse(excalidrawElements);
+        const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
+        const appState = excalidrawAPI.getAppState();
+
+        const reconciledElements = reconcileElements(
+          localElements,
+          elements,
+          appState,
+        );
+
+        handleRemoteSceneUpdate(reconciledElements);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    //eslint-disable-next-line
+    [excalidrawAPI, lockWhiteboard],
+  );
 
   const handleRemoteSceneUpdate = (
     elements: ReconciledElements,
@@ -243,22 +271,32 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     excalidrawAPI?.history.clear();
   };
 
+  // when receive full whiteboard data
+  // e.g., RES_FULL_WHITEBOARD_DATA
+  useEffect(() => {
+    if (whiteboard.allExcalidrawElements === '') {
+      return;
+    }
+    const updateWhiteboard = async (elements: any) => {
+      // wait before to process
+      await sleep(300);
+      reconcileAndAddDataToWhiteboard(elements);
+      // clean request
+      dispatch(addAllExcalidrawElements(''));
+    };
+    if (excalidrawAPI && whiteboard.allExcalidrawElements !== '') {
+      updateWhiteboard(whiteboard.allExcalidrawElements).then();
+    }
+    // eslint-disable-next-line
+  }, [excalidrawAPI, whiteboard.allExcalidrawElements]);
+
   // for handling draw elements
+  // mostly data from onscreen change event
   useEffect(() => {
     // let's wait until fetchedData value change
     // otherwise data won't show correctly.
     if (whiteboard.excalidrawElements && excalidrawAPI && fetchedData) {
-      const elements = JSON.parse(whiteboard.excalidrawElements);
-      const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
-      const appState = excalidrawAPI.getAppState();
-
-      const reconciledElements = reconcileElements(
-        localElements,
-        elements,
-        appState,
-      );
-
-      handleRemoteSceneUpdate(reconciledElements);
+      reconcileAndAddDataToWhiteboard(whiteboard.excalidrawElements);
     }
     //eslint-disable-next-line
   }, [excalidrawAPI, whiteboard.excalidrawElements, fetchedData]);
@@ -397,7 +435,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         const currentPageFiles = files.filter(
           (file) => file.currentPage === whiteboard.currentPage,
         );
-        handleExcalidrawAddFiles(currentPageFiles);
+        handleExcalidrawAddFiles(currentPageFiles).then();
       }
     }
     //eslint-disable-next-line
@@ -438,7 +476,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
       if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
         setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
-        broadcastSceneOnChange(elements, false);
+        broadcastSceneOnChange(elements, false).then();
       }
 
       // broadcast AppState Changes
@@ -453,7 +491,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           appState.viewBackgroundColor,
           appState.zenModeEnabled,
           appState.gridSize,
-        );
+        ).then();
       }
     }
   };
@@ -471,7 +509,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           userId: currentUser.userId,
           name: currentUser.name,
         };
-        broadcastMousePointerUpdate(msg);
+        broadcastMousePointerUpdate(msg).then();
       }
     },
     CURSOR_SYNC_TIMEOUT,

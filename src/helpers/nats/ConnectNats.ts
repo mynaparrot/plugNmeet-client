@@ -489,18 +489,18 @@ export default class ConnectNats {
     for await (const m of sub) {
       try {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
+        m.ack();
         // whiteboard data should not process by the same sender
         if (payload.fromUserId !== this._userId) {
           if (
             typeof payload.toUserId !== 'undefined' &&
             payload.toUserId !== this._userId
           ) {
-            // receiver specified & this user was not the receiver
+            // receiver specified and this user was not the receiver
             // we'll not process further
             continue;
           }
           await this.handleWhiteboard.handleWhiteboardMsg(payload);
-          m.ack();
         }
       } catch (e) {
         const err = e as NatsError;
@@ -524,18 +524,17 @@ export default class ConnectNats {
     for await (const m of sub) {
       try {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
+        m.ack();
         if (
           typeof payload.toUserId !== 'undefined' &&
           payload.toUserId !== this._userId
         ) {
           // receiver specified & this user was not the receiver
           // we'll not process further
-          m.ack();
           continue;
         }
         // fromUserId check inside handleMessage method
         await this.handleDataMsg.handleMessage(payload);
-        m.ack();
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
@@ -700,13 +699,20 @@ export default class ConnectNats {
     participants.sort((a, b) => {
       return a.joinedAt - b.joinedAt;
     });
-    const donor = participants[0];
 
-    await this.sendDataMessage(
-      DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA,
-      '',
-      donor.userId,
-    );
+    let donors = participants;
+    if (donors.length > 1) {
+      // we'll request data from max 2 users.
+      donors = participants.slice(0, 1);
+    }
+
+    for (let i = 0; i < donors.length; i++) {
+      await this.sendDataMessage(
+        DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
+        '',
+        donors[i].userId,
+      );
+    }
   }
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {

@@ -3,7 +3,10 @@ import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
-import { updateRequestedWhiteboardData } from '../../store/slices/whiteboard';
+import {
+  addAllExcalidrawElements,
+  updateRequestedWhiteboardData,
+} from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
 import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
@@ -22,11 +25,17 @@ export default class HandleDataMessage {
 
   public handleMessage = async (payload: DataChannelMessage) => {
     switch (payload.type) {
-      case DataMsgBodyType.REQ_INIT_WHITEBOARD_DATA:
-        if (payload.fromUserId === this._that.userId) {
-          return;
+      case DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA:
+        if (payload.toUserId === this._that.userId) {
+          // only if was sent for me
+          this.handleSendInitWhiteboard(payload);
         }
-        this.handleSendInitWhiteboard(payload);
+        break;
+      case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
+        if (payload.toUserId === this._that.userId) {
+          // only if was sent for me
+          store.dispatch(addAllExcalidrawElements(payload.message));
+        }
         break;
       case DataMsgBodyType.USER_VISIBILITY_CHANGE:
         if (payload.fromUserId === this._that.userId) {
