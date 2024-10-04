@@ -37,7 +37,9 @@ export const sendRequestedForWhiteboardData = () => {
   const participants = participantsSelector
     .selectAll(store.getState())
     .filter(
-      (participant) => participant.userId !== session.currentUser?.userId,
+      (participant) =>
+        participant.metadata.isPresenter &&
+        participant.userId !== session.currentUser?.userId,
     );
 
   if (!participants.length) return;
@@ -90,7 +92,6 @@ export const sendWhiteboardDataAsDonor = async (
 
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
-    //await broadcastSceneOnChange(elements, true, sendTo);
     const data = JSON.stringify(elements);
     await conn.sendDataMessage(
       DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
