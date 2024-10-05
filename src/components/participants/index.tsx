@@ -18,7 +18,7 @@ const screenHeightSelector = createSelector(
 
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
-  const allParticipants = useAppSelector(participantsSelector.selectAll);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
   const screenHeight = useAppSelector(screenHeightSelector);
 
   const [participants, setParticipants] = useState<IParticipant[]>([]);
@@ -37,18 +37,19 @@ const ParticipantsComponent = () => {
   const currentIsAdmin = session.currentUser?.metadata?.isAdmin ?? false;
 
   useEffect(() => {
-    if (!allParticipants) {
+    const participants = participantsSelector.selectAll(store.getState());
+    if (!participants.length) {
       return;
     }
     setParticipants(
-      allParticipants.filter(
+      participants.filter(
         (p) =>
           p.name !== '' &&
           p.userId !== 'RECORDER_BOT' &&
           p.userId !== 'RTMP_BOT',
       ),
     );
-  }, [allParticipants]);
+  }, [totalParticipants]);
 
   const onOpenRemoveParticipantAlert = (
     name: string,

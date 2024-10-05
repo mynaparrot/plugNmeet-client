@@ -3,7 +3,7 @@ import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { createSelector } from '@reduxjs/toolkit';
 import { concat, isEmpty } from 'lodash';
 
-import { RootState, useAppSelector } from '../../../store';
+import { RootState, store, useAppSelector } from '../../../store';
 import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import VideosComponentElms, {
@@ -23,7 +23,6 @@ const refreshWebcamsSelector = createSelector(
 );
 
 const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
-  const participants = useAppSelector(participantsSelector.selectAll);
   const refreshWebcams = useAppSelector(refreshWebcamsSelector);
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
@@ -69,9 +68,10 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
 
       if (videoTracks.length) {
         let isAdmin = false;
-        const pinWebcam = participants.find(
-          (p) => p.userId === participant.identity && p.pinWebcam,
-        );
+        const pinWebcam = participantsSelector.selectById(
+          store.getState(),
+          participant.identity,
+        ).pinWebcam;
 
         if (participant.metadata && !isEmpty(participant.metadata)) {
           const metadata: ICurrentUserMetadata = JSON.parse(

@@ -54,6 +54,9 @@ interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
 }
 
+const CURSOR_SYNC_TIMEOUT = 33;
+const collaborators = new Map<string, Collaborator>();
+
 const whiteboardSelector = (state: RootState) => state.whiteboard;
 const lockWhiteboardSelector = createSelector(
   (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
@@ -75,8 +78,6 @@ const screenWidthSelector = createSelector(
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const currentUser = store.getState().session.currentUser;
   const currentRoom = store.getState().session.currentRoom;
-  const CURSOR_SYNC_TIMEOUT = 33;
-  const collaborators = new Map<string, Collaborator>();
 
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
@@ -95,7 +96,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
   const previousPage = usePreviousPage(whiteboard.currentPage);
 
-  const participants = useAppSelector(participantsSelector.selectAll);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
   const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
   const isPresenter = useAppSelector(isPresenterSelector);
 
@@ -168,19 +169,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     //eslint-disable-next-line
   }, [excalidrawAPI, whiteboard.currentWhiteboardOfficeFileId, previousFileId]);
 
-  // for adding users to canvas as collaborators
+  // for cleaning up collaborators if disconnected
   useEffect(() => {
     if (!excalidrawAPI) {
       return;
     }
-    participants.forEach((participant) => {
-      if (participant.metadata.isAdmin) {
-        if (!collaborators.has(participant.userId)) {
-          collaborators.set(participant.userId, {});
-        }
-      }
-    });
 
+    const currentSize = collaborators.size;
+    const participants = participantsSelector.selectAll(store.getState());
     // now check if any user still exists after disconnected
     collaborators.forEach((_, i) => {
       const found = participants.find((p) => p.userId === i);
@@ -188,9 +184,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         collaborators.delete(i);
       }
     });
-    excalidrawAPI.updateScene({ collaborators });
+    if (currentSize !== collaborators.size) {
+      excalidrawAPI.updateScene({ collaborators: new Map(collaborators) });
+    }
     //eslint-disable-next-line
-  }, [excalidrawAPI, participants]);
+  }, [excalidrawAPI, totalParticipants]);
 
   // looking lock settings
   useEffect(() => {
@@ -296,7 +294,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       await sleep(300);
       reconcileAndAddDataToWhiteboard(elements);
     };
-    if (excalidrawAPI && whiteboard.allExcalidrawElements !== '') {
+    if (excalidrawAPI) {
       updateWhiteboard(whiteboard.allExcalidrawElements).then();
     }
     // eslint-disable-next-line
@@ -316,23 +314,25 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   // for handling mouse pointer location
   useEffect(() => {
     if (whiteboard.mousePointerLocation) {
-      const { pointer, button, name, userId, selectedElementIds } = JSON.parse(
-        whiteboard.mousePointerLocation,
-      );
-      if (typeof userId === 'undefined' || userId === '') {
-        return;
+      try {
+        const { pointer, button, name, userId, selectedElementIds } =
+          JSON.parse(whiteboard.mousePointerLocation);
+        if (typeof userId === 'undefined' || userId === '') {
+          return;
+        }
+
+        const user: Collaborator = {};
+        user.pointer = pointer;
+        user.button = button;
+        user.selectedElementIds = selectedElementIds;
+        user.username = name;
+        user.id = userId;
+        collaborators.set(userId, user);
+
+        excalidrawAPI?.updateScene({ collaborators: new Map(collaborators) });
+      } catch (e) {
+        console.error(e);
       }
-
-      const tmp: any = new Map(collaborators);
-      const user = tmp.get(userId) ?? {};
-      user.pointer = pointer;
-      user.button = button;
-      user.selectedElementIds = selectedElementIds;
-      user.username = name;
-      user.id = userId;
-      tmp.set(userId, user);
-
-      excalidrawAPI?.updateScene({ collaborators: tmp });
     }
     //eslint-disable-next-line
   }, [whiteboard.mousePointerLocation]);

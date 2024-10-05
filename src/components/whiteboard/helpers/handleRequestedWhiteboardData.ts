@@ -43,27 +43,17 @@ export const sendRequestedForWhiteboardData = () => {
     );
 
   if (!participants.length) return;
-
   participants.sort((a, b) => {
     return a.joinedAt - b.joinedAt;
   });
 
-  let donors = participants;
-  if (donors.length > 1) {
-    // we'll request data from max 2 users.
-    donors = participants.slice(0, 1);
-  }
+  const donor = participants[0];
   if (!conn) {
     conn = getNatsConn();
   }
-
-  donors.forEach(async (donor) => {
-    await conn.sendDataMessage(
-      DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-      '',
-      donor.userId,
-    );
-  });
+  conn
+    .sendDataMessage(DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA, '', donor.userId)
+    .then();
 };
 
 export const sendWhiteboardDataAsDonor = async (

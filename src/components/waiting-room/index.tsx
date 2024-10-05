@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { updateShowManageWaitingRoomModal } from '../../store/slices/bottomIconsActivitySlice';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { IParticipant } from '../../store/slices/interfaces/participant';
@@ -13,18 +13,20 @@ import ParticipantsList from './participantsList';
 const ManageWaitingRoom = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const participants = useAppSelector(participantsSelector.selectAll);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
 
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [waitingParticipants, setWaitingParticipants] =
     useState<IParticipant[]>();
 
   useEffect(() => {
+    const participants = participantsSelector.selectAll(store.getState());
+
     if (participants.length) {
       const waiting = participants.filter((p) => p.metadata.waitForApproval);
       setWaitingParticipants(waiting);
     }
-  }, [participants]);
+  }, [totalParticipants]);
 
   const closeModal = () => {
     setIsOpen(false);
