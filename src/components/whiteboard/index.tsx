@@ -254,16 +254,17 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           appState,
         );
 
-        handleRemoteSceneUpdate(reconciledElements);
+        handleRemoteSceneUpdate(excalidrawAPI, reconciledElements);
       } catch (e) {
         console.error(e);
       }
     },
     //eslint-disable-next-line
-    [excalidrawAPI, lockWhiteboard],
+    [excalidrawAPI],
   );
 
   const handleRemoteSceneUpdate = (
+    excalidrawAPI: ExcalidrawImperativeAPI,
     elements: ReconciledElements,
     { init = false }: { init?: boolean } = {},
   ) => {
@@ -271,7 +272,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       return;
     }
 
-    excalidrawAPI?.updateScene({
+    excalidrawAPI.updateScene({
       elements,
       commitToHistory: init,
     });
@@ -281,7 +282,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     // when we receive any messages from another peer. This UX can be pretty rough -- if you
     // undo, a user makes a change, and then try to redo, your element(s) will be lost. However,
     // right now we think this is the right tradeoff.
-    excalidrawAPI?.history.clear();
+    excalidrawAPI.history.clear();
   };
 
   // when receive full whiteboard data
