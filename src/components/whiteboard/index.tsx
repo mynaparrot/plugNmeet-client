@@ -44,7 +44,11 @@ import {
 
 import './style.scss';
 import { sleep } from '../../helpers/utils';
-import { addAllExcalidrawElements } from '../../store/slices/whiteboard';
+import {
+  addAllExcalidrawElements,
+  updateExcalidrawElements,
+  updateMousePointerLocation,
+} from '../../store/slices/whiteboard';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -99,6 +103,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
     useState<number>(0);
   const screenWidth = useAppSelector(screenWidthSelector);
+
+  // clean up store during exit
+  useEffect(() => {
+    return () => {
+      dispatch(updateExcalidrawElements(''));
+      dispatch(updateMousePointerLocation(''));
+      dispatch(addAllExcalidrawElements(''));
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const s = store.getState();
@@ -281,8 +294,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // wait before to process
       await sleep(300);
       reconcileAndAddDataToWhiteboard(elements);
-      // clean request
-      dispatch(addAllExcalidrawElements(''));
     };
     if (excalidrawAPI && whiteboard.allExcalidrawElements !== '') {
       updateWhiteboard(whiteboard.allExcalidrawElements).then();

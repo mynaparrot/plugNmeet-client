@@ -49,6 +49,9 @@ const whiteboardSlice = createSlice({
     ) => {
       state.whiteboardAppState = action.payload;
     },
+    addAllExcalidrawElements: (state, action: PayloadAction<string>) => {
+      state.allExcalidrawElements = action.payload;
+    },
     addWhiteboardOtherImageFile: (
       state,
       action: PayloadAction<IWhiteboardFile>,
@@ -115,9 +118,6 @@ const whiteboardSlice = createSlice({
     },
     doRefreshWhiteboard: (state) => {
       state.refreshWhiteboard = Date.now();
-    },
-    addAllExcalidrawElements: (state, action: PayloadAction<string>) => {
-      state.allExcalidrawElements = action.payload;
     },
   },
 });
