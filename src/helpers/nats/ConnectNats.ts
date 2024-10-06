@@ -52,14 +52,13 @@ import HandleDataMessage from './HandleDataMessage';
 import HandleWhiteboard from './HandleWhiteboard';
 import HandleChat from './HandleChat';
 import { store } from '../../store';
-import { participantsSelector } from '../../store/slices/participantSlice';
 import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
 import { encryptMessage } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import { formatNatsError } from '../utils';
+import { formatNatsError, getWhiteboardDonors } from '../utils';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -688,24 +687,10 @@ export default class ConnectNats {
 
   /**
    * This method should call when the current user is ready
-   * with an initial data & users list
+   * with an initial data and users list
    */
   private async onAfterUserReady() {
-    const participants = participantsSelector
-      .selectAll(store.getState())
-      .filter((participant) => participant.userId !== this._userId);
-
-    if (!participants.length) return;
-    participants.sort((a, b) => {
-      return a.joinedAt - b.joinedAt;
-    });
-
-    let donors = participants;
-    if (donors.length > 1) {
-      // we'll request data from max 2 users.
-      donors = participants.slice(0, 1);
-    }
-
+    const donors = getWhiteboardDonors();
     for (let i = 0; i < donors.length; i++) {
       await this.sendDataMessage(
         DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,

@@ -140,7 +140,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     if (!fetchedData && excalidrawAPI) {
       // get initial data from other users
       // who had joined before me
-      sendRequestedForWhiteboardData();
+      sendRequestedForWhiteboardData().then();
       setFetchedData(true);
     }
 

@@ -14,7 +14,6 @@ import {
   AnalyticsEventType,
 } from 'plugnmeet-protocol-js';
 
-import { participantsSelector } from '../../../store/slices/participantSlice';
 import { store } from '../../../store';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
 import {
@@ -25,6 +24,7 @@ import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboa
 import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
+import { getWhiteboardDonors } from '../../../helpers/utils';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
@@ -32,28 +32,18 @@ let preScrollX = 0,
   preScrollY = 0,
   conn: ConnectNats;
 
-export const sendRequestedForWhiteboardData = () => {
-  const session = store.getState().session;
-  const participants = participantsSelector
-    .selectAll(store.getState())
-    .filter(
-      (participant) =>
-        participant.metadata.isPresenter &&
-        participant.userId !== session.currentUser?.userId,
-    );
-
-  if (!participants.length) return;
-  participants.sort((a, b) => {
-    return a.joinedAt - b.joinedAt;
-  });
-
-  const donor = participants[0];
+export const sendRequestedForWhiteboardData = async () => {
   if (!conn) {
     conn = getNatsConn();
   }
-  conn
-    .sendDataMessage(DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA, '', donor.userId)
-    .then();
+  const donors = getWhiteboardDonors();
+  for (let i = 0; i < donors.length; i++) {
+    await conn.sendDataMessage(
+      DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
+      '',
+      donors[i].userId,
+    );
+  }
 };
 
 export const sendWhiteboardDataAsDonor = async (

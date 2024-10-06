@@ -6,6 +6,9 @@ import {
 } from '@nats-io/nats-core';
 
 import i18n from './i18n';
+import { store } from '../store';
+import { participantsSelector } from '../store/slices/participantSlice';
+import { IParticipant } from '../store/slices/interfaces/participant';
 
 export async function getDevices(kind: MediaDeviceKind) {
   let constraints: MediaStreamConstraints = {
@@ -197,4 +200,37 @@ export const formatNatsError = (err: any) => {
   }
 
   return msg;
+};
+
+export const getWhiteboardDonors = (): IParticipant[] => {
+  const s = store.getState();
+  const participants = participantsSelector
+    .selectAll(s)
+    .filter(
+      (participant) => participant.userId !== s.session.currentUser?.userId,
+    );
+
+  if (!participants.length) return [];
+  let donors: IParticipant[] = [];
+
+  if (participants.length > 1) {
+    // we can select one presenter
+    const p = participants.filter((p) => p.metadata.isPresenter);
+    if (p.length > 0) {
+      donors.push(p[0]);
+    }
+    // now select one from other users
+    const others = participants.filter((p) => !p.metadata.isPresenter);
+    if (others.length > 0) {
+      others.sort((a, b) => {
+        return a.joinedAt - b.joinedAt;
+      });
+      // select another 1 user
+      donors.push(others[0]);
+    }
+  } else {
+    donors = participants;
+  }
+
+  return donors;
 };
