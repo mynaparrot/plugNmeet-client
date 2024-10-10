@@ -35,7 +35,7 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '@nats-io/nats-core';
 // eslint-disable-next-line import/no-unresolved
-import { jetstream, JetStreamClient } from '@nats-io/jetstream';
+import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
 import { isURL } from 'validator';
 import { isE2EESupported } from 'livekit-client';
 
@@ -483,24 +483,28 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
+    const processData = async (m: JsMsg) => {
+      const payload = fromBinary(DataChannelMessageSchema, m.data);
+      // whiteboard data should not process by the same sender
+      if (payload.fromUserId !== this._userId) {
+        if (
+          typeof payload.toUserId !== 'undefined' &&
+          payload.toUserId !== this._userId
+        ) {
+          // receiver specified and this user was not the receiver
+          // we'll not process further
+          return;
+        }
+        await this.handleWhiteboard.handleWhiteboardMsg(payload);
+      }
+    };
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = fromBinary(DataChannelMessageSchema, m.data);
+        await processData(m);
         m.ack();
-        // whiteboard data should not process by the same sender
-        if (payload.fromUserId !== this._userId) {
-          if (
-            typeof payload.toUserId !== 'undefined' &&
-            payload.toUserId !== this._userId
-          ) {
-            // receiver specified and this user was not the receiver
-            // we'll not process further
-            continue;
-          }
-          await this.handleWhiteboard.handleWhiteboardMsg(payload);
-        }
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
@@ -518,22 +522,26 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
+    const processData = async (m: JsMsg) => {
+      const payload = fromBinary(DataChannelMessageSchema, m.data);
+      if (
+        typeof payload.toUserId !== 'undefined' &&
+        payload.toUserId !== this._userId
+      ) {
+        // receiver specified and this user was not the receiver
+        // we'll not process further
+        return;
+      }
+      // fromUserId check inside handleMessage method
+      await this.handleDataMsg.handleMessage(payload);
+    };
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     for await (const m of sub) {
       try {
-        const payload = fromBinary(DataChannelMessageSchema, m.data);
+        await processData(m);
         m.ack();
-        if (
-          typeof payload.toUserId !== 'undefined' &&
-          payload.toUserId !== this._userId
-        ) {
-          // receiver specified & this user was not the receiver
-          // we'll not process further
-          continue;
-        }
-        // fromUserId check inside handleMessage method
-        await this.handleDataMsg.handleMessage(payload);
       } catch (e) {
         const err = e as NatsError;
         console.error(err.message);
