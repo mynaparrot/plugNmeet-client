@@ -60,7 +60,7 @@
     "@types/emscripten": "1.39.13",
     "@types/lodash": "4.17.10",
     "@types/react": "18.3.11",
-    "@types/react-dom": "18.3.0",
+    "@types/react-dom": "18.3.1",
     "@types/sanitize-html": "2.13.0",
     "@types/video.js": "7.3.58",
     "@typescript-eslint/eslint-plugin": "8.8.1",
