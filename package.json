@@ -43,7 +43,7 @@
     "react-dom": "18.3.1",
     "react-draggable": "npm:@tdaniil/react-draggable@5.0.1",
     "react-hotkeys-hook": "4.5.1",
-    "react-i18next": "15.0.2",
+    "react-i18next": "15.0.3",
     "react-player": "2.16.0",
     "react-redux": "9.1.2",
     "react-toastify": "10.0.5",
