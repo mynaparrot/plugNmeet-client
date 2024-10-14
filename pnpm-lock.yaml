@@ -118,7 +118,7 @@ importers:
         version: 8.18.1
     devDependencies:
       '@eslint/js':
-        specifier: ^9.12.0
+        specifier: 9.12.0
         version: 9.12.0
       '@pmmmwh/react-refresh-webpack-plugin':
         specifier: 0.5.15
@@ -238,7 +238,7 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       typescript-eslint:
-        specifier: ^8.8.1
+        specifier: 8.8.1
         version: 8.8.1(eslint@9.12.0(jiti@2.3.3))(typescript@5.6.3)
       webpack:
         specifier: 5.95.0
@@ -250,7 +250,7 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(webpack-cli@5.1.4)(webpack@5.95.0)
       webpack-merge:
-        specifier: ^6.0.1
+        specifier: 6.0.1
         version: 6.0.1
 
 packages:
