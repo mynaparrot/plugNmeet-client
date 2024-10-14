@@ -121,7 +121,6 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
 
     setAllParticipants(allParticipants);
     setTotalNumWebcams(totalNumWebcams);
-    //eslint-disable-next-line
   }, [videoSubscribers, refreshWebcams]);
 
   return (

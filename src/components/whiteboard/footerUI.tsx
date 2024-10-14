@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';

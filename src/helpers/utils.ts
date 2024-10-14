@@ -1,9 +1,5 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
-import {
-  ErrorCode,
-  NatsError,
-  // eslint-disable-next-line import/no-unresolved
-} from '@nats-io/nats-core';
+import { ErrorCode, NatsError } from '@nats-io/nats-core';
 
 import i18n from './i18n';
 import { store } from '../store';

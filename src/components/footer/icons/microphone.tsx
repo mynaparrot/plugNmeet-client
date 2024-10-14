@@ -71,6 +71,7 @@ const MicrophoneIcon = () => {
       for (const [
         ,
         publication,
+        // eslint-disable-next-line no-unsafe-optional-chaining
       ] of currentRoom?.localParticipant.audioTrackPublications.entries()) {
         if (
           publication.track &&
@@ -165,6 +166,7 @@ const MicrophoneIcon = () => {
     for (const [
       ,
       publication,
+      // eslint-disable-next-line no-unsafe-optional-chaining
     ] of currentRoom?.localParticipant.audioTrackPublications.entries()) {
       if (
         publication.track &&

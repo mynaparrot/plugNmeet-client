@@ -16,7 +16,6 @@ export function buildCanvas2dPipeline(
   tflite: any,
   addFrameEvent: () => void,
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
 
   const [segmentationWidth, segmentationHeight] =
@@ -31,7 +30,6 @@ export function buildCanvas2dPipeline(
   bgImg.crossOrigin = 'anonymous';
   bgImg.src = backgroundConfig.url as string;
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const segmentationMaskCtx = segmentationMaskCanvas.getContext('2d', {
     willReadFrequently: true,
   })!;

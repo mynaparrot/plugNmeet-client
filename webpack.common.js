@@ -27,7 +27,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.[jt]sx?$/,
         loader: 'ts-loader',
         options: {
           getCustomTransformers: () => ({

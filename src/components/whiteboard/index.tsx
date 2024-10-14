@@ -166,7 +166,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       excalidrawAPI.addFiles([]);
       excalidrawAPI.history.clear();
     }
-    //eslint-disable-next-line
   }, [excalidrawAPI, whiteboard.currentWhiteboardOfficeFileId, previousFileId]);
 
   // for cleaning up collaborators if disconnected
@@ -187,7 +186,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     if (currentSize !== collaborators.size) {
       excalidrawAPI.updateScene({ collaborators: new Map(collaborators) });
     }
-    //eslint-disable-next-line
   }, [excalidrawAPI, totalParticipants]);
 
   // looking lock settings
@@ -257,7 +255,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         console.error(e);
       }
     },
-    //eslint-disable-next-line
+
     [excalidrawAPI],
   );
 

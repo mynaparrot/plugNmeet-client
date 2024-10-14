@@ -32,9 +32,7 @@ import {
   NatsError,
   wsconnect,
   tokenAuthenticator,
-  // eslint-disable-next-line import/no-unresolved
 } from '@nats-io/nats-core';
-// eslint-disable-next-line import/no-unresolved
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
 import { isURL } from 'validator';
 import { isE2EESupported } from 'livekit-client';

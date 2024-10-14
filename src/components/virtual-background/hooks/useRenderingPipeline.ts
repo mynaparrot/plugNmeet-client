@@ -1,5 +1,3 @@
-/*eslint-disable*/
-
 import { BodyPix } from '@tensorflow-models/body-pix';
 import { useEffect, useRef, useState } from 'react';
 import { BackgroundConfig } from '../helpers/backgroundHelper';

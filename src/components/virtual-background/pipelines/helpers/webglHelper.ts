@@ -1,5 +1,3 @@
-/*eslint-disable*/
-
 import { TimerWorker } from '../../helpers/timerHelper';
 
 /**

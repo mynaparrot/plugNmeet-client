@@ -1,5 +1,4 @@
 import { toast } from 'react-toastify';
-// eslint-disable-next-line import/no-unresolved
 import { type JetStreamClient } from '@nats-io/jetstream';
 
 import { formatNatsError, sleep } from '../utils';

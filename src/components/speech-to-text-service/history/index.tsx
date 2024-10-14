@@ -18,7 +18,6 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
     if (!isRecorder) {
       setShowPopover(true);
     }
-    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {

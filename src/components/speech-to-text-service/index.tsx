@@ -87,7 +87,6 @@ const SpeechToTextService = () => {
     createdMediaStream.getAudioTracks().forEach((t) => {
       t.enabled = !isMicMuted;
     });
-    //eslint-disable-next-line
   }, [createdMediaStream, isMicMuted]);
 
   const unsetRecognizer = useCallback(() => {

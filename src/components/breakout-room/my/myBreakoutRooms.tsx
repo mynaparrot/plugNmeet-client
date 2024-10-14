@@ -48,7 +48,6 @@ const MyBreakoutRooms = () => {
 
       window.open(url, '_blank');
     }
-    //eslint-disable-next-line
   }, [token]);
 
   const join = () => {

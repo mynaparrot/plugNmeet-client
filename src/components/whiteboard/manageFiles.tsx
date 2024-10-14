@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-unresolved
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import UploadFilesUI from './uploadFilesUI';

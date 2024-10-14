@@ -1,9 +1,7 @@
-// eslint-disable-next-line import/no-unresolved
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
   ExcalidrawImperativeAPI,
   NormalizedZoomValue,
-  // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import { toast } from 'react-toastify';
@@ -107,7 +105,6 @@ export const broadcastSceneOnChange = async (
       if (
         (syncAll ||
           !broadcastedElementVersions.has(element.id) ||
-          //eslint-disable-next-line
           element.version > broadcastedElementVersions.get(element.id)!) &&
         isSyncableElement(element)
       ) {

@@ -70,6 +70,7 @@ const WebcamIcon = () => {
       for (const [
         ,
         publication,
+        // eslint-disable-next-line no-unsafe-optional-chaining
       ] of currentRoom?.localParticipant.videoTrackPublications.entries()) {
         if (publication.track && publication.source === Track.Source.Camera) {
           await currentRoom.localParticipant.unpublishTrack(

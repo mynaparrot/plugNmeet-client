@@ -41,7 +41,6 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
         clearTimeout(timeout);
       }
     };
-    //eslint-disable-next-line
   }, [currentRoom?.state]);
 
   useEffect(() => {

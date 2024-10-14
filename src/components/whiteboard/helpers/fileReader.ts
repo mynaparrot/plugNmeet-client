@@ -1,10 +1,8 @@
-// eslint-disable-next-line import/no-unresolved
 import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types/types';
 import { randomInteger } from '../../../helpers/utils';
 import {
   ExcalidrawElement,
   ExcalidrawImageElement,
-  // eslint-disable-next-line import/no-unresolved
 } from '@excalidraw/excalidraw/types/element/types';
 
 export interface FileReaderResult {
@@ -30,6 +28,7 @@ export const fetchFileWithElm = async (
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
 ) => {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise<FileReaderResult>(async (resolve, reject) => {
     const res = await fetch(url);
     const imageData = await res.blob();
