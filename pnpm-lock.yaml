@@ -177,6 +177,9 @@ importers:
       eslint-plugin-react-hooks:
         specifier: 5.0.0
         version: 5.0.0(eslint@9.12.0(jiti@2.3.3))
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.12
+        version: 0.4.12(eslint@9.12.0(jiti@2.3.3))
       fork-ts-checker-webpack-plugin:
         specifier: 9.0.2
         version: 9.0.2(typescript@5.6.3)(webpack@5.95.0(webpack-cli@5.1.4))
@@ -189,6 +192,9 @@ importers:
       husky:
         specifier: 9.1.6
         version: 9.1.6
+      i:
+        specifier: ^0.3.7
+        version: 0.3.7
       lint-staged:
         specifier: 15.2.10
         version: 15.2.10
@@ -1757,6 +1763,11 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
 
+  eslint-plugin-react-refresh@0.4.12:
+    resolution: {integrity: sha512-9neVjoGv20FwYtCP6CB1dzR1vr57ZDNOXst21wd2xJ/cTlM2xLq0GWVlSNTdMn/4BtP6cHYBMCSp1wFBJ9jBsg==}
+    peerDependencies:
+      eslint: '>=7'
+
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
     engines: {node: '>=8.0.0'}
@@ -2179,6 +2190,10 @@ packages:
 
   i18next@23.16.0:
     resolution: {integrity: sha512-Ni3CG6c14teOogY19YNRl+kYaE/Rb59khy0VyHVn4uOZ97E2E/Yziyi6r3C3s9+wacjdLZiq/LLYyx+Cgd+FCw==}
+
+  i@0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -5659,6 +5674,10 @@ snapshots:
     dependencies:
       eslint: 9.12.0(jiti@2.3.3)
 
+  eslint-plugin-react-refresh@0.4.12(eslint@9.12.0(jiti@2.3.3)):
+    dependencies:
+      eslint: 9.12.0(jiti@2.3.3)
+
   eslint-scope@5.1.1:
     dependencies:
       esrecurse: 4.3.0
@@ -6196,6 +6215,8 @@ snapshots:
   i18next@23.16.0:
     dependencies:
       '@babel/runtime': 7.25.7
+
+  i@0.3.7: {}
 
   iconv-lite@0.4.24:
     dependencies:
