@@ -81,10 +81,9 @@ const FromElems = () => {
     setUsers(tmp);
   }, [participants, users]);
 
-  // if room number decrease then we'll reset otherwise user will be missing
+  // if room number decreases then we'll reset otherwise user will be missing
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error has default value
     if (totalRooms === preTotalRooms || totalRooms > preTotalRooms) {
       return;
     }

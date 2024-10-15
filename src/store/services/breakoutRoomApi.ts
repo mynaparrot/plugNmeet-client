@@ -15,16 +15,16 @@ import {
 } from 'plugnmeet-protocol-js';
 import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
 
+import { requestToRenewPnmToken } from '../../helpers/api/plugNmeetAPI';
+
 export const breakoutRoomApi = createApi({
   reducerPath: 'breakoutRoomApi',
   baseQuery: fetchBaseQuery({
     baseUrl: (window as any).PLUG_N_MEET_SERVER_URL + '/api/breakoutRoom',
     prepareHeaders: (headers, api) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error not a error
       const token = api.getState().session.token;
       headers.append('Authorization', token);
-      headers.append('Content-Type', 'application/protobuf');
       return headers;
     },
   }),
@@ -41,6 +41,17 @@ export const breakoutRoomApi = createApi({
             return toJson(BreakoutRoomResSchema, b);
           },
         };
+      },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
       },
       providesTags: ['List'],
     }),
@@ -59,6 +70,17 @@ export const breakoutRoomApi = createApi({
             return toJson(BreakoutRoomResSchema, b);
           },
         };
+      },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
       },
       invalidatesTags: ['List'],
     }),
@@ -121,6 +143,17 @@ export const breakoutRoomApi = createApi({
             return toJson(BreakoutRoomResSchema, b);
           },
         };
+      },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
       },
       providesTags: ['My_Rooms'],
     }),

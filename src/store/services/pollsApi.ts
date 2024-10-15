@@ -11,16 +11,16 @@ import {
 } from 'plugnmeet-protocol-js';
 import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
 
+import { requestToRenewPnmToken } from '../../helpers/api/plugNmeetAPI';
+
 export const pollsApi = createApi({
   reducerPath: 'pollsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: (window as any).PLUG_N_MEET_SERVER_URL + '/api/polls',
     prepareHeaders: (headers, api) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error not a error
       const token = api.getState().session.token;
       headers.append('Authorization', token);
-      headers.append('Content-Type', 'application/json');
       return headers;
     },
   }),
@@ -43,6 +43,17 @@ export const pollsApi = createApi({
             return toJson(PollResponseSchema, b);
           },
         };
+      },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
       },
       providesTags: ['List'],
     }),
@@ -128,6 +139,17 @@ export const pollsApi = createApi({
           },
         };
       },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
+      },
       providesTags: ['PollsStats'],
     }),
     createPoll: builder.mutation<PollResponse, CreatePollReq>({
@@ -143,6 +165,17 @@ export const pollsApi = createApi({
           },
         };
       },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
+      },
       invalidatesTags: ['List', 'PollsStats'],
     }),
     addResponse: builder.mutation<PollResponse, SubmitPollResponseReq>({
@@ -157,6 +190,17 @@ export const pollsApi = createApi({
             return toJson(PollResponseSchema, b);
           },
         };
+      },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
       },
       invalidatesTags: (result, error, { pollId }) => [
         { type: 'Count', id: pollId },
@@ -176,6 +220,17 @@ export const pollsApi = createApi({
             return toJson(PollResponseSchema, b);
           },
         };
+      },
+      transformErrorResponse: (response) => {
+        if (
+          // @ts-expect-error this value exists
+          typeof response.originalStatus !== 'undefined' &&
+          // @ts-expect-error this value exists
+          response.originalStatus === 401
+        ) {
+          console.info(`Got status: 401, trying to renew token.`);
+          requestToRenewPnmToken().then();
+        }
       },
       invalidatesTags: ['List', 'PollsStats'],
     }),

@@ -401,8 +401,7 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error not a error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -429,8 +428,7 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error not a error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -457,8 +455,7 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error not a error
     for await (const m of sub) {
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
@@ -497,8 +494,7 @@ export default class ConnectNats {
       }
     };
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error not a error
     for await (const m of sub) {
       try {
         await processData(m);
@@ -534,8 +530,7 @@ export default class ConnectNats {
       await this.handleDataMsg.handleMessage(payload);
     };
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error not a error
     for await (const m of sub) {
       try {
         await processData(m);

@@ -172,8 +172,7 @@ const App = () => {
     ) {
       setLoading(true);
     } else if (roomConnectionStatus === 're-connecting') {
-      //eslint-disable-next-line
-      // @ts-ignore
+      // @ts-expect-error this won't be an error
       toastId.current = toast.loading(
         t('notifications.room-disconnected-reconnecting'),
         {

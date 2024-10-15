@@ -59,8 +59,8 @@ const useResumableFilesUpload = ({
           type: 'error',
         });
       },
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+
+      // @ts-expect-error actually value exist
       maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
       maxFileSizeErrorCallback() {
         toast(t('notifications.max-file-size-exceeds'), {
@@ -128,8 +128,7 @@ const useResumableFilesUpload = ({
     });
 
     r.on('uploadStart', function () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error this value exists
       toastId.current = toast(
         t('right-panel.uploading-file', {
           fileName,

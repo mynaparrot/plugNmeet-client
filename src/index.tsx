@@ -14,8 +14,8 @@ import App from './components/app';
 import Loading from './components/extra-pages/Loading';
 
 const container = document.getElementById('plugNmeet-app');
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
+// @ts-expect-error not a error
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
