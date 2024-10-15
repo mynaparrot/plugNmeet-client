@@ -378,7 +378,7 @@ export default class ConnectLivekit
 
     const conn = getNatsConn();
     if (conn) {
-      await conn.sendAnalyticsData(
+      conn.sendAnalyticsData(
         AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
         AnalyticsEventType.USER,
         connectionQuality.toString(),

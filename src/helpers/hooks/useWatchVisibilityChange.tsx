@@ -76,14 +76,12 @@ const useWatchVisibilityChange = () => {
       return;
     }
     const data = hidden ? 'hidden' : 'visible';
-    conn.sendDataMessage(DataMsgBodyType.USER_VISIBILITY_CHANGE, data).then();
-    conn
-      .sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY,
-        AnalyticsEventType.USER,
-        data,
-      )
-      .then();
+    conn.sendDataMessage(DataMsgBodyType.USER_VISIBILITY_CHANGE, data);
+    conn.sendAnalyticsData(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_INTERFACE_VISIBILITY,
+      AnalyticsEventType.USER,
+      data,
+    );
     //eslint-disable-next-line
   }, [hidden]);
 };

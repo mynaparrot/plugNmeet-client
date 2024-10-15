@@ -24,12 +24,12 @@ const getToken = () => {
   return getAccessToken();
 };
 
-export const requestToRenewPnmToken = async () => {
+export const requestToRenewPnmToken = () => {
   const token = getToken();
   if (token) {
     const conn = getNatsConn();
     if (conn) {
-      await conn.sendMessageToSystemWorker(
+      conn.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
           msg: token,
@@ -66,7 +66,7 @@ const sendAPIRequest = async (
     // so that next try will not be failing because of the expired token
     if (err.status === 401) {
       console.info(`Got status: ${err.status}, trying to renew token.`);
-      requestToRenewPnmToken().then();
+      requestToRenewPnmToken();
     }
     const output = {
       status: false,

@@ -75,7 +75,7 @@ const UploadFilesUI = ({
     }
   }, [refreshFileBrowser, isUploading, preRefreshFileBrowser]);
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     const files = e.target.files;
     if (!files.length) {
       return;
@@ -94,20 +94,16 @@ const UploadFilesUI = ({
         });
         broadcastFile(filePath, fileName);
         // send analytics
-        conn
-          .sendAnalyticsData(
-            AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
-            AnalyticsEventType.USER,
-            fileName,
-          )
-          .then();
-        conn
-          .sendAnalyticsData(
-            AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
-            AnalyticsEventType.ROOM,
-            fileName,
-          )
-          .then();
+        conn.sendAnalyticsData(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+          AnalyticsEventType.USER,
+          fileName,
+        );
+        conn.sendAnalyticsData(
+          AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+          AnalyticsEventType.ROOM,
+          fileName,
+        );
         break;
       default:
         convertFile(session, filePath).then();
@@ -153,20 +149,16 @@ const UploadFilesUI = ({
     broadcastWhiteboardOfficeFile(newFile).then();
 
     // send analytics
-    conn
-      .sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
-        AnalyticsEventType.USER,
-        newFile.fileName,
-      )
-      .then();
-    conn
-      .sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
-        AnalyticsEventType.ROOM,
-        newFile.fileName,
-      )
-      .then();
+    conn.sendAnalyticsData(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_FILES,
+      AnalyticsEventType.USER,
+      newFile.fileName,
+    );
+    conn.sendAnalyticsData(
+      AnalyticsEvents.ANALYTICS_EVENT_ROOM_WHITEBOARD_FILES,
+      AnalyticsEventType.ROOM,
+      newFile.fileName,
+    );
 
     toast.update(id, {
       render: t('whiteboard.file-ready'),

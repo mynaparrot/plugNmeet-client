@@ -36,7 +36,7 @@ export const sendRequestedForWhiteboardData = async () => {
   }
   const donors = getWhiteboardDonors();
   for (let i = 0; i < donors.length; i++) {
-    await conn.sendDataMessage(
+    conn.sendDataMessage(
       DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
       '',
       donors[i].userId,
@@ -71,7 +71,7 @@ export const sendWhiteboardDataAsDonor = async (
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
     const data = JSON.stringify(elements);
-    await conn.sendDataMessage(
+    conn.sendDataMessage(
       DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
       data,
       sendTo,
@@ -138,8 +138,8 @@ export const broadcastScreenDataBySocket = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(DataMsgBodyType.SCENE_UPDATE, finalMsg, sendTo);
-  await conn.sendAnalyticsData(
+  conn.sendWhiteboardData(DataMsgBodyType.SCENE_UPDATE, finalMsg, sendTo);
+  conn.sendAnalyticsData(
     AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED,
     AnalyticsEventType.USER,
     '',
@@ -155,7 +155,7 @@ export const broadcastCurrentPageNumber = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
+  conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
 };
 
 export const broadcastWhiteboardOfficeFile = async (
@@ -165,7 +165,7 @@ export const broadcastWhiteboardOfficeFile = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(
+  conn.sendWhiteboardData(
     DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE,
     JSON.stringify(newFile),
     sendTo,
@@ -181,7 +181,7 @@ export const broadcastMousePointerUpdate = async (element: any) => {
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
+  conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
 };
 
 export const broadcastAppStateChanges = async (
@@ -218,7 +218,7 @@ export const broadcastAppStateChanges = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(
+  conn.sendWhiteboardData(
     DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
     finalMsg,
   );

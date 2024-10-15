@@ -35,7 +35,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   }, [t, participant?.videoTracks]);
 
   const onClick = async () => {
-    await conn.sendDataMessage(
+    conn.sendDataMessage(
       DataMsgBodyType.INFO,
       t('left-panel.menus.notice.asked-you-to', {
         name: session.currentUser?.name,

@@ -81,9 +81,9 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                     </p>
                     <p className="w-full text-base dark:text-darkText">
                       {t('polls.total-responses', {
-                        count: Number(
-                          data?.pollResponsesResult?.totalResponses,
-                        ),
+                        count: data?.pollResponsesResult?.totalResponses
+                          ? Number(data?.pollResponsesResult?.totalResponses)
+                          : 0,
                       })}
                     </p>
                     <div className="pt-5">
@@ -95,13 +95,13 @@ const ViewResult = ({ pollId, onCloseViewResult }: IViewResultProps) => {
                           return (
                             <p
                               className="relative w-full flex items-center justify-between dark:text-darkText"
-                              key={Number(o.id)}
+                              key={o.id}
                             >
                               <span className="bg-white dark:bg-darkPrimary inline-block py-1 pr-2">
                                 {o.text}
                               </span>
                               <span className="bg-white dark:bg-darkPrimary inline-block py-1 pl-2">
-                                ({Number(o.voteCount)})
+                                ({o.voteCount ?? 0})
                               </span>
                             </p>
                           );

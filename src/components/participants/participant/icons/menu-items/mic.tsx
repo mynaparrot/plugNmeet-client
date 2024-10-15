@@ -46,7 +46,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
       return;
     }
 
-    await conn.sendDataMessage(
+    conn.sendDataMessage(
       DataMsgBodyType.INFO,
       t('left-panel.menus.notice.asked-you-to', {
         name: session.currentUser?.name,

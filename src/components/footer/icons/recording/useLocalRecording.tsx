@@ -162,7 +162,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
         name: session.currentUser?.name,
       });
     }
-    await conn.sendDataMessage(DataMsgBodyType.INFO, msg);
+    conn.sendDataMessage(DataMsgBodyType.INFO, msg);
   };
 
   const resetError = () => {

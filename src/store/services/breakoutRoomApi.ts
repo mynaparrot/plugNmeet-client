@@ -22,7 +22,7 @@ export const breakoutRoomApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: (window as any).PLUG_N_MEET_SERVER_URL + '/api/breakoutRoom',
     prepareHeaders: (headers, api) => {
-      // @ts-expect-error not a error
+      // @ts-expect-error not an error
       const token = api.getState().session.token;
       headers.append('Authorization', token);
       return headers;
@@ -50,7 +50,7 @@ export const breakoutRoomApi = createApi({
           response.originalStatus === 401
         ) {
           console.info(`Got status: 401, trying to renew token.`);
-          requestToRenewPnmToken().then();
+          requestToRenewPnmToken();
         }
       },
       providesTags: ['List'],
@@ -79,7 +79,7 @@ export const breakoutRoomApi = createApi({
           response.originalStatus === 401
         ) {
           console.info(`Got status: 401, trying to renew token.`);
-          requestToRenewPnmToken().then();
+          requestToRenewPnmToken();
         }
       },
       invalidatesTags: ['List'],
@@ -152,7 +152,7 @@ export const breakoutRoomApi = createApi({
           response.originalStatus === 401
         ) {
           console.info(`Got status: 401, trying to renew token.`);
-          requestToRenewPnmToken().then();
+          requestToRenewPnmToken();
         }
       },
       providesTags: ['My_Rooms'],

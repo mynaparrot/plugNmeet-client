@@ -209,7 +209,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
       data.event = NatsMsgClientToServerEvents.REQ_LOWER_HAND;
     }
 
-    await conn.sendMessageToSystemWorker(data);
+    conn.sendMessageToSystemWorker(data);
   };
 
   useHotkeys(

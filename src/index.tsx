@@ -15,7 +15,7 @@ import Loading from './components/extra-pages/Loading';
 
 const container = document.getElementById('plugNmeet-app');
 
-// @ts-expect-error not a error
+// @ts-expect-error not an error
 const root = createRoot(container);
 root.render(
   <React.StrictMode>

@@ -27,7 +27,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
       event: NatsMsgClientToServerEvents.REQ_LOWER_OTHER_USER_HAND,
       msg: participant?.userId,
     });
-    await conn.sendMessageToSystemWorker(data);
+    conn.sendMessageToSystemWorker(data);
   };
 
   const render = () => {

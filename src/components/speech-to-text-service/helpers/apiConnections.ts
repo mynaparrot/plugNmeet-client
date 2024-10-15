@@ -232,7 +232,7 @@ export const openConnectionWithAzure = (
 export const broadcastSpeechToTextMsgs = async (msg: any) => {
   const conn = getNatsConn();
   if (typeof conn !== 'undefined') {
-    await conn.sendDataMessage(
+    conn.sendDataMessage(
       DataMsgBodyType.SPEECH_SUBTITLE_TEXT,
       JSON.stringify(msg),
     );

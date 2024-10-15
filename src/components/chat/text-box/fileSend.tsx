@@ -40,7 +40,7 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
 
   useEffect(() => {
     if (result && result.filePath && result.fileName) {
-      publishToChat(result.filePath, result.fileName);
+      publishToChat(result.filePath, result.fileName).then();
       toast(t('right-panel.file-upload-success'), {
         type: 'success',
       });
@@ -54,7 +54,7 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
     }
   };
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     const files = e.target.files;
     if (!files.length) {
       return;
@@ -72,36 +72,32 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
     await conn.sendChatMsg(selectedChatOption, message);
 
     // send analytics
-    await conn.sendAnalyticsData(
+    conn.sendAnalyticsData(
       AnalyticsEvents.ANALYTICS_EVENT_USER_CHAT_FILES,
       AnalyticsEventType.USER,
       fileName,
     );
   };
 
-  const render = () => {
-    return (
-      <>
-        <input
-          type="file"
-          id="chat-file"
-          ref={inputFile}
-          accept={accept}
-          style={{ display: 'none' }}
-          onChange={(e) => onChange(e)}
-        />
-        <button
-          disabled={lockSendFile || isUploading}
-          onClick={() => openFileBrowser()}
-          className="w-4 h-6 px-2"
-        >
-          <i className="pnm-attachment primaryColor text-[20px] opacity-50 dark:text-secondaryColor" />
-        </button>
-      </>
-    );
-  };
-
-  return <>{render()}</>;
+  return (
+    <>
+      <input
+        type="file"
+        id="chat-file"
+        ref={inputFile}
+        accept={accept}
+        style={{ display: 'none' }}
+        onChange={(e) => onChange(e)}
+      />
+      <button
+        disabled={lockSendFile || isUploading}
+        onClick={() => openFileBrowser()}
+        className="w-4 h-6 px-2"
+      >
+        <i className="pnm-attachment primaryColor text-[20px] opacity-50 dark:text-secondaryColor" />
+      </button>
+    </>
+  );
 };
 
 export default FileSend;

@@ -178,10 +178,10 @@ export default class ConnectNats {
     this.subscribeToSystemPublic().then();
 
     this.startTokenRenewInterval();
-    await this.startPingToServer();
+    this.startPingToServer();
 
     // request for initial data
-    await this.sendMessageToSystemWorker(
+    this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
       }),
@@ -218,7 +218,7 @@ export default class ConnectNats {
     }, 3000);
   };
 
-  public sendMessageToSystemWorker = async (data: NatsMsgClientToServer) => {
+  public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
     const subject =
       this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
     this.messageQueue.addToQueue({
@@ -274,7 +274,7 @@ export default class ConnectNats {
         '',
         '',
         '1',
-      ).then();
+      );
     } else {
       this.sendAnalyticsData(
         AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
@@ -282,11 +282,11 @@ export default class ConnectNats {
         '',
         '',
         '1',
-      ).then();
+      );
     }
   };
 
-  public sendWhiteboardData = async (
+  public sendWhiteboardData = (
     type: DataMsgBodyType,
     msg: string,
     to?: string,
@@ -306,7 +306,7 @@ export default class ConnectNats {
     });
   };
 
-  public sendDataMessage = async (
+  public sendDataMessage = (
     type: DataMsgBodyType,
     msg: string,
     to?: string,
@@ -326,7 +326,7 @@ export default class ConnectNats {
     });
   };
 
-  public sendAnalyticsData = async (
+  public sendAnalyticsData = (
     event_name: AnalyticsEvents,
     event_type: AnalyticsEventType = AnalyticsEventType.USER,
     hset_value?: string,
@@ -347,7 +347,7 @@ export default class ConnectNats {
       event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
       msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
     });
-    await this.sendMessageToSystemWorker(data);
+    this.sendMessageToSystemWorker(data);
   };
 
   private setErrorStatus(title: string, reason: string) {
@@ -401,7 +401,7 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // @ts-expect-error not a error
+    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -428,7 +428,7 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // @ts-expect-error not a error
+    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -455,7 +455,7 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // @ts-expect-error not a error
+    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
@@ -494,7 +494,7 @@ export default class ConnectNats {
       }
     };
 
-    // @ts-expect-error not a error
+    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         await processData(m);
@@ -530,7 +530,7 @@ export default class ConnectNats {
       await this.handleDataMsg.handleMessage(payload);
     };
 
-    // @ts-expect-error not a error
+    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         await processData(m);
@@ -599,8 +599,8 @@ export default class ConnectNats {
   }
 
   private startTokenRenewInterval() {
-    this.tokenRenewInterval = setInterval(async () => {
-      await this.sendMessageToSystemWorker(
+    this.tokenRenewInterval = setInterval(() => {
+      this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
           msg: this._token,
@@ -609,19 +609,19 @@ export default class ConnectNats {
     }, RENEW_TOKEN_FREQUENT);
   }
 
-  private async startPingToServer() {
-    const ping = async () => {
-      await this.sendMessageToSystemWorker(
+  private startPingToServer() {
+    const ping = () => {
+      this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.PING,
         }),
       );
     };
-    this.pingInterval = setInterval(async () => {
-      await ping();
+    this.pingInterval = setInterval(() => {
+      ping();
     }, PING_INTERVAL);
     // start instantly
-    await ping();
+    ping();
   }
 
   private async handleInitialData(msg: string) {
@@ -657,7 +657,7 @@ export default class ConnectNats {
     }
 
     // now request for users' list
-    await this.sendMessageToSystemWorker(
+    this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
       }),
@@ -693,7 +693,7 @@ export default class ConnectNats {
   private async onAfterUserReady() {
     const donors = getWhiteboardDonors();
     for (let i = 0; i < donors.length; i++) {
-      await this.sendDataMessage(
+      this.sendDataMessage(
         DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
         '',
         donors[i].userId,

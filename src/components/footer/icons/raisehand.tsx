@@ -43,7 +43,7 @@ const RaiseHandIcon = () => {
       data.event = NatsMsgClientToServerEvents.REQ_LOWER_HAND;
     }
 
-    await conn.sendMessageToSystemWorker(data);
+    conn.sendMessageToSystemWorker(data);
   };
 
   const render = () => {

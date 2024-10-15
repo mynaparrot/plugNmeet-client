@@ -67,10 +67,7 @@ const ReactPlayerComponent = ({
       return;
     }
     const broadcast = async (msg: string) => {
-      await conn.sendDataMessage(
-        DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
-        msg,
-      );
+      conn.sendDataMessage(DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS, msg);
     };
 
     if (paused) {
