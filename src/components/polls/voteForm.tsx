@@ -3,13 +3,17 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { create } from '@bufbuild/protobuf';
-import { SubmitPollResponseReqSchema } from 'plugnmeet-protocol-js';
+import {
+  DataMsgBodyType,
+  SubmitPollResponseReqSchema,
+} from 'plugnmeet-protocol-js';
 
 import {
   useAddResponseMutation,
   useGetPollListsQuery,
 } from '../../store/services/pollsApi';
 import { store } from '../../store';
+import { getNatsConn } from '../../helpers/nats';
 
 interface IVoteFormProps {
   onCloseForm(): void;
@@ -20,6 +24,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedOption, setSelectedOption] = useState<number>(0);
+  const conn = getNatsConn();
 
   const [addResponse, { isLoading, data }] = useAddResponseMutation();
   const { post: poll } = useGetPollListsQuery(undefined, {
@@ -49,7 +54,7 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
     onCloseForm();
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: any) => {
     e.preventDefault();
     if (selectedOption === 0) {
       return;
@@ -62,6 +67,9 @@ const VoteForm = ({ onCloseForm, pollId }: IVoteFormProps) => {
         selectedOption: `${selectedOption}`,
       }),
     );
+
+    // notify to everyone
+    conn.sendDataMessage(DataMsgBodyType.NEW_POLL_RESPONSE, pollId);
   };
 
   const renderForm = () => {

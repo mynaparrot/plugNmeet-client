@@ -96,7 +96,28 @@ export default class HandleSystemData {
         store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
         break;
       case NatsMsgServerToClientEvents.POLL_CLOSED:
-        store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+        store.dispatch(
+          pollsApi.util.invalidateTags([
+            'List',
+            'PollsStats',
+            {
+              type: 'Count',
+              id: payload.msg,
+            },
+            {
+              type: 'Selected',
+              id: payload.msg,
+            },
+            {
+              type: 'PollResult',
+              id: payload.msg,
+            },
+            {
+              type: 'PollDetails',
+              id: payload.msg,
+            },
+          ]),
+        );
         break;
     }
   };

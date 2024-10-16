@@ -71,7 +71,22 @@ export default class HandleDataMessage {
         if (payload.fromUserId === this._that.userId) {
           return;
         }
-        store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
+        store.dispatch(
+          pollsApi.util.invalidateTags([
+            {
+              type: 'Count',
+              id: payload.message,
+            },
+            {
+              type: 'Selected',
+              id: payload.message,
+            },
+            {
+              type: 'PollDetails',
+              id: payload.message,
+            },
+          ]),
+        );
         break;
       case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
         this.handleSpeechSubtitleText(payload.message);
