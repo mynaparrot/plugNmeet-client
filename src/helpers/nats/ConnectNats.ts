@@ -211,7 +211,13 @@ export default class ConnectNats {
 
     // redirect to log out url
     setTimeout(() => {
-      const logout_url = this._currentRoomInfo?.metadata?.logoutUrl;
+      const meta = this._currentRoomInfo?.metadata;
+      if (meta?.isBreakoutRoom) {
+        // if this was breakout room then we can simply close
+        window.close();
+      }
+
+      const logout_url = meta?.logoutUrl;
       if (logout_url && logout_url !== '' && isURL(logout_url)) {
         window.location.href = logout_url;
       }
