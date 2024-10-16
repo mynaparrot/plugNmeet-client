@@ -42,7 +42,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     currentWhiteboardOfficeFileIdSelector,
   );
   const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
-  const [options, setOptions] = useState<Array<JSX.Element>>();
+  const [options, setOptions] = useState<Array<React.JSX.Element>>();
   const [disablePre, setDisablePre] = useState(true);
   const [disableNext, setDisableNext] = useState(false);
   const previousPage = usePreviousPage(currentPage);
@@ -80,7 +80,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   }, [currentPage, disableNext, totalPages]);
 
   useEffect(() => {
-    const element: Array<JSX.Element> = [];
+    const element: Array<React.JSX.Element> = [];
     for (let i = 0; i < totalPages; i++) {
       element.push(
         <option key={i} value={i + 1}>

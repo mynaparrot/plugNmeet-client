@@ -36,7 +36,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
   const isMicMuted = useAppSelector(isMicMutedSelector);
   const selectedAudioDevice = useAppSelector(selectedAudioDeviceSelector);
 
-  const [devicesMenu, setDevicesMenu] = useState<Array<JSX.Element>>();
+  const [devicesMenu, setDevicesMenu] = useState<Array<React.JSX.Element>>();
   const [newDevice, setNewDevice] = useState<string>();
 
   useEffect(() => {

@@ -34,7 +34,7 @@ const AudioElements = () => {
     if (!audioSubscribers) {
       return null;
     }
-    const elms: Array<JSX.Element> = [];
+    const elms: Array<React.JSX.Element> = [];
     audioSubscribers.forEach((participant) => {
       participant.audioTrackPublications.forEach((track) => {
         if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {

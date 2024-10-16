@@ -16,7 +16,7 @@ const MicrophoneModal = ({
 }: MicrophoneModalProps) => {
   const { t } = useTranslation();
   const [selectedMic, setSelectMic] = useState<string>('');
-  const [devices, setDevices] = useState<Array<JSX.Element>>([]);
+  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const MicrophoneModal = ({
         dispatch(addAudioDevices(audioDevices));
       }
     };
-    getDeviceMics();
+    getDeviceMics().then();
   }, [dispatch]);
 
   const selectOrClose = (onlyClose = false) => {

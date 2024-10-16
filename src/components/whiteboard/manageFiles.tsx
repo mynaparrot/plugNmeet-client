@@ -40,7 +40,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
     whiteboardUploadedOfficeFilesSelector,
   );
   const [refreshFileBrowser, setRefreshFileBrowser] = useState<number>(0);
-  const [menuItems, setMenuItems] = useState<JSX.Element[]>([]);
+  const [menuItems, setMenuItems] = useState<React.JSX.Element[]>([]);
   const [fileType, setFileType] = useState<Array<string>>([]);
 
   useEffect(() => {

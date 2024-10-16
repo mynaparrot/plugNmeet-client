@@ -26,7 +26,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
   const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedWebcam, setSelectWebcam] = useState<string>('');
-  const [devices, setDevices] = useState<Array<JSX.Element>>([]);
+  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 

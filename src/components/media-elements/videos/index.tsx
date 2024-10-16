@@ -26,9 +26,9 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
   const refreshWebcams = useAppSelector(refreshWebcamsSelector);
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
-  const [allParticipants, setAllParticipants] = useState<Array<JSX.Element>>(
-    [],
-  );
+  const [allParticipants, setAllParticipants] = useState<
+    Array<React.JSX.Element>
+  >([]);
   const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
   const currentConnection = getMediaServerConn();
 
@@ -54,11 +54,11 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     }
 
     let totalNumWebcams = 0;
-    const localSubscribers: Array<JSX.Element> = [];
-    const adminPinSubscribers: Array<JSX.Element> = [];
-    const adminSubscribers: Array<JSX.Element> = [];
-    const otherPinSubscribers: Array<JSX.Element> = [];
-    const otherSubscribers: Array<JSX.Element> = [];
+    const localSubscribers: Array<React.JSX.Element> = [];
+    const adminPinSubscribers: Array<React.JSX.Element> = [];
+    const adminSubscribers: Array<React.JSX.Element> = [];
+    const otherPinSubscribers: Array<React.JSX.Element> = [];
+    const otherSubscribers: Array<React.JSX.Element> = [];
 
     videoSubscribers.forEach((participant) => {
       // we will only take if source from Camera

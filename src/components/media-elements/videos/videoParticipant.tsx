@@ -19,7 +19,7 @@ const VideoParticipant = ({
   );
 
   const renderVideoElms = useMemo(() => {
-    const elements: Array<JSX.Element> = [];
+    const elements: Array<React.JSX.Element> = [];
     participant.videoTrackPublications.forEach((track) => {
       if (track.source === Track.Source.Camera) {
         const elm = (
