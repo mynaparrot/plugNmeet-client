@@ -209,7 +209,6 @@ export default class ConnectNats {
     });
     this._setRoomConnectionStatusState('disconnected');
 
-    // redirect to log out url
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;
       if (meta?.isBreakoutRoom) {
@@ -219,6 +218,7 @@ export default class ConnectNats {
 
       const logout_url = meta?.logoutUrl;
       if (logout_url && logout_url !== '' && isURL(logout_url)) {
+        // redirect to log out url
         window.location.href = logout_url;
       }
     }, 3000);
