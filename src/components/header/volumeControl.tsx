@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, MenuButton, Transition } from '@headlessui/react';
+import { Menu, MenuButton, Transition, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
@@ -9,7 +9,6 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import { store, useAppDispatch } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
-import { MenuItems } from '@headlessui/react';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();

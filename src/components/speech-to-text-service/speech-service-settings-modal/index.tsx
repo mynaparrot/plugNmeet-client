@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
+  Field,
+  Label,
   Switch,
   Transition,
   TransitionChild,
@@ -197,11 +199,11 @@ const SpeechServiceSettingsModal = () => {
                     selectedSpeechUsers={selectedSpeechUsers}
                     setSelectedSpeechUsers={setSelectedSpeechUsers}
                   />
-                  <Switch.Group>
+                  <Field>
                     <div className="flex items-center justify-between my-4">
-                      <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText text-sm">
+                      <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText text-sm">
                         {t('speech-services.enable-translation')}
-                      </Switch.Label>
+                      </Label>
                       <Switch
                         checked={enableTranslation}
                         onChange={setEnableTranslation}
@@ -220,7 +222,7 @@ const SpeechServiceSettingsModal = () => {
                         />
                       </Switch>
                     </div>
-                  </Switch.Group>
+                  </Field>
                   {enableTranslation ? (
                     <TransLangsElm
                       selectedTransLangs={selectedTransLangs}

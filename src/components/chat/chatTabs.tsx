@@ -1,6 +1,11 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Listbox, Transition } from '@headlessui/react';
+import {
+  Listbox,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
@@ -154,13 +159,13 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-darkPrimary py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <ListboxOptions className="absolute max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-darkPrimary py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {chatOptions.map((option) => (
-                <Listbox.Option
+                <ListboxOption
                   key={option.id}
-                  className={({ active }) =>
+                  className={({ focus }) =>
                     `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                      active
+                      focus
                         ? 'bg-primaryColor text-white'
                         : 'text-gray-900 dark:text-darkText'
                     }`
@@ -202,9 +207,9 @@ const ChatTabs = () => {
                       ) : null}
                     </>
                   )}
-                </Listbox.Option>
+                </ListboxOption>
               ))}
-            </Listbox.Options>
+            </ListboxOptions>
           </Transition>
         </div>
       </Listbox>

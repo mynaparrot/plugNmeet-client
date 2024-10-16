@@ -4,8 +4,10 @@ import {
   Dialog,
   DialogTitle,
   Switch,
+  Field,
   Transition,
   TransitionChild,
+  Label,
 } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -72,11 +74,11 @@ const LockSettingsModal = () => {
 
   const showLockItems = () => {
     return (
-      <Switch.Group>
+      <Field>
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-microphone')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockMicrophone ?? false}
             onChange={(e) => updateLockSettings(e, 'mic')}
@@ -97,9 +99,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-webcams')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockWebcam ?? false}
             onChange={(e) => updateLockSettings(e, 'webcam')}
@@ -120,9 +122,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-screen-sharing')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockScreenSharing ?? false}
             onChange={(e) => updateLockSettings(e, 'screenShare')}
@@ -143,9 +145,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-whiteboard')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockWhiteboard ?? false}
             onChange={(e) => updateLockSettings(e, 'whiteboard')}
@@ -166,9 +168,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-shared-notepad')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockSharedNotepad ?? false}
             onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
@@ -189,9 +191,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-chat')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockChat ?? false}
             onChange={(e) => updateLockSettings(e, 'chat')}
@@ -212,9 +214,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-send-message')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockChatSendMessage ?? false}
             onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
@@ -235,9 +237,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-chat-file-share')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockChatFileShare ?? false}
             onChange={(e) => updateLockSettings(e, 'chatFile')}
@@ -258,9 +260,9 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('footer.modal.lock-private-chat')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={roomLockSettings?.lockPrivateChat ?? false}
             onChange={(e) => updateLockSettings(e, 'privateChat')}
@@ -279,7 +281,7 @@ const LockSettingsModal = () => {
             />
           </Switch>
         </div>
-      </Switch.Group>
+      </Field>
     );
   };
 
