@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, MenuButton, Transition } from '@headlessui/react';
 import { Room } from 'livekit-client';
 
 import MicMenuItems from './items';
@@ -15,11 +15,11 @@ const MicMenu = ({ currentRoom }: IMicMenuProps) => {
         <Menu>
           {({ open }) => (
             <>
-              <Menu.Button>
+              <MenuButton>
                 <div className="arrow-down absolute -bottom-1 -right-1 w-[15px] h-[15px] rounded-full bg-white dark:bg-secondaryColor flex items-center justify-center">
                   <i className="pnm-arrow-below text-[10px] dark:text-darkPrimary sm:text-[12px]" />
                 </div>
-              </Menu.Button>
+              </MenuButton>
 
               <Transition
                 show={open}

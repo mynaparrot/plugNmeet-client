@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 
 import MicMenuItem from './menu-items/mic';
 import WebcamMenuItem from './menu-items/webcam';
@@ -86,9 +86,9 @@ const MenuIcon = ({
         <Menu>
           {({ open }) => (
             <>
-              <Menu.Button className="relative flex-shrink-0 mt-2">
+              <MenuButton className="relative flex-shrink-0 mt-2">
                 <i className="pnm-menu-small primaryColor dark:text-secondaryColor opacity-50" />
-              </Menu.Button>
+              </MenuButton>
 
               {/* Use the Transition component. */}
               <Transition
@@ -101,12 +101,12 @@ const MenuIcon = ({
                 leaveTo="transform scale-95 opacity-0"
               >
                 {/* Mark this component as `static` */}
-                <Menu.Items
+                <MenuItems
                   static
                   className="origin-top-right z-10 absolute ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
                   {renderMenuItems()}
-                </Menu.Items>
+                </MenuItems>
               </Transition>
             </>
           )}

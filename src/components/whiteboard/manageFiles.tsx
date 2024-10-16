@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
@@ -45,14 +51,14 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
           className="border-b border-solid border-primaryColor/10 last:border-none"
           key={f.fileId}
         >
-          <Menu.Item>
+          <MenuItem>
             <button
               className="!rounded !w-full flex items-center !px-3 !py-[0.4rem] !text-[10px] lg:!text-xs transition ease-in !bg-transparent hover:!bg-primaryColor hover:text-white text-gray-700 dark:text-darkText"
               onClick={() => switchOfficeFile(f)}
             >
               {f.fileName}
             </button>
-          </Menu.Item>
+          </MenuItem>
         </div>
       );
     });
@@ -105,12 +111,12 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
           <Menu>
             {({ open }) => (
               <>
-                <Menu.Button className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer">
+                <MenuButton className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer">
                   <>
                     <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
                     {t('whiteboard.manage-files')}
                   </>
-                </Menu.Button>
+                </MenuButton>
 
                 {/* Use the Transition component. */}
                 <Transition
@@ -123,7 +129,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
                   leaveTo="transform scale-95 opacity-0"
                 >
                   {/* Mark this component as `static` */}
-                  <Menu.Items
+                  <MenuItems
                     static
                     className="origin-top-right z-10 absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                   >
@@ -131,7 +137,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
                       {menuItems}
                     </div>
                     <div className="py-3 !border-t-2 border-solid !border-primaryColor !mt-2">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           onClick={() => openFileBrowser('office')}
                           className="w-[100px] !m-auto text-xs h-7 flex items-center justify-center !bg-primaryColor hover:!bg-secondaryColor text-white"
@@ -139,9 +145,9 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
                           <i className="pnm-attachment text-white text-[14px] opacity-50 ltr:mr-1 rtl:ml-1" />
                           {t('whiteboard.upload-file')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
-                  </Menu.Items>
+                  </MenuItems>
                 </Transition>
               </>
             )}

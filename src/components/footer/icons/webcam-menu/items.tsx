@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu } from '@headlessui/react';
+import { MenuItem, MenuItems } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
     const devicesMenu = videoDevices.map((device) => {
       return (
         <div className="" role="none" key={device.id}>
-          <Menu.Item>
+          <MenuItem>
             {() => (
               <p
                 className={`${
@@ -51,7 +51,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
                 {device.label}
               </p>
             )}
-          </Menu.Item>
+          </MenuItem>
         </div>
       );
     });
@@ -88,13 +88,13 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   };
 
   return (
-    <Menu.Items
+    <MenuItems
       static
       className="origin-bottom-right z-[9999] absolute ltr:left-0 rtl:-left-4 mt-2 w-40 bottom-[40px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
     >
       {devicesMenu}
       <div className="" role="none">
-        <Menu.Item>
+        <MenuItem>
           {() => (
             <p
               className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs transition ease-in hover:bg-red-400 hover:text-white cursor-pointer"
@@ -103,9 +103,9 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
               {t('footer.menus.leave-webcam')}
             </p>
           )}
-        </Menu.Item>
+        </MenuItem>
       </div>
-    </Menu.Items>
+    </MenuItems>
   );
 };
 

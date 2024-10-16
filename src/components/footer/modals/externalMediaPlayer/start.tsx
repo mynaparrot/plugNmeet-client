@@ -1,5 +1,11 @@
 import React, { Fragment } from 'react';
-import { Dialog, Tab, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogTitle,
+  Tab,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
@@ -45,7 +51,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0"
@@ -54,8 +60,8 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-            </Transition.Child>
+              <div className="fixed inset-0 bg-black opacity-30" />
+            </TransitionChild>
 
             <span
               className="inline-block h-screen align-middle"
@@ -63,7 +69,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
             >
               &#8203;
             </span>
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
@@ -82,12 +88,12 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                   <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                 </button>
 
-                <Dialog.Title
+                <DialogTitle
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                 >
                   {t('footer.modal.external-media-player-title')}
-                </Dialog.Title>
+                </DialogTitle>
                 <hr />
                 <div className="mt-6">
                   <Tab.Group vertical>
@@ -127,7 +133,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                   </Tab.Group>
                 </div>
               </div>
-            </Transition.Child>
+            </TransitionChild>
           </div>
         </Dialog>
       </Transition>

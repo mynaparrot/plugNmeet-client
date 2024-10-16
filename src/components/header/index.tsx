@@ -1,6 +1,13 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Dialog, Menu, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogTitle,
+  Menu,
+  MenuButton,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
@@ -106,7 +113,7 @@ const Header = () => {
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -115,8 +122,8 @@ const Header = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+                <div className="fixed inset-0 bg-black opacity-30" />
+              </TransitionChild>
 
               <span
                 className="inline-block h-screen align-middle"
@@ -124,7 +131,7 @@ const Header = () => {
               >
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -143,12 +150,12 @@ const Header = () => {
                     <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
-                  <Dialog.Title
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
                   >
                     {t('header.menus.alert.confirm')}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500 dark:text-darkText">
                       {alertText}
@@ -171,7 +178,7 @@ const Header = () => {
                     </button>
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>
@@ -220,14 +227,15 @@ const Header = () => {
             <Menu>
               {({ open }) => (
                 <>
-                  <Menu.Button className="relative flex-shrink-0 p-2 rtl:-ml-4">
+                  <MenuButton className="relative flex-shrink-0 p-2 rtl:-ml-4">
                     <div className="h-5 w-5 rotate-90 ">
                       <i className="pnm-menu-small dark:text-secondaryColor" />
                     </div>
-                  </Menu.Button>
+                  </MenuButton>
 
                   {/* Use the Transition component. */}
                   <Transition
+                    as={'div'}
                     show={open}
                     enter="transition duration-100 ease-out"
                     enterFrom="transform scale-95 opacity-0"

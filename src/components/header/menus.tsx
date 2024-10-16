@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from '@headlessui/react';
+import { MenuItem, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch } from '../../store';
@@ -34,12 +34,12 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
 
   const render = () => {
     return (
-      <Menu.Items
+      <MenuItems
         static
         className="HeaderSettingMenu origin-top-right z-10 absolute ltr:right-0 rtl:-left-4 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
       >
         <div className="py-1" role="none">
-          <Menu.Item>
+          <MenuItem>
             <button
               className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
               onClick={() => showRoomSettings()}
@@ -47,10 +47,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
               <i className="pnm-settings text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
               {t('header.menus.settings')}
             </button>
-          </Menu.Item>
+          </MenuItem>
         </div>
         <div className="py-1" role="none">
-          <Menu.Item>
+          <MenuItem>
             <button
               className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
               onClick={() => showKeyboardShortcuts()}
@@ -58,10 +58,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
               <i className="pnm-keyboard text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
               {t('header.menus.keyboard-shortcuts')}
             </button>
-          </Menu.Item>
+          </MenuItem>
         </div>
         <div className="py-1" role="none">
-          <Menu.Item>
+          <MenuItem>
             <button
               className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
               onClick={() => logout()}
@@ -69,11 +69,11 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
               <i className="pnm-logout text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
               {t('header.menus.logout')}
             </button>
-          </Menu.Item>
+          </MenuItem>
         </div>
         {isAdmin ? (
           <div className="py-1" role="none">
-            <Menu.Item>
+            <MenuItem>
               <button
                 className="text-red-900 dark:text-brandRed rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in"
                 onClick={() => endRoom()}
@@ -81,10 +81,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
                 <i className="pnm-call text-red-900 dark:text-brandRed ltr:mr-2 rtl:ml-2 transition ease-in " />
                 {t('header.menus.end')}
               </button>
-            </Menu.Item>
+            </MenuItem>
           </div>
         ) : null}
-      </Menu.Items>
+      </MenuItems>
     );
   };
   return <>{render()}</>;

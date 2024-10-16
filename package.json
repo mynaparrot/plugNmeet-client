@@ -17,8 +17,8 @@
   "dependencies": {
     "@bufbuild/protobuf": "2.2.0",
     "@excalidraw/excalidraw": "0.17.6",
-    "@headlessui/react": "1.7.19",
-    "@nats-io/jetstream": "3.0.0-10",
+    "@headlessui/react": "2.1.10",
+    "@nats-io/jetstream": "3.0.0-11",
     "@nats-io/nats-core": "3.0.0-27",
     "@reduxjs/toolkit": "2.3.0",
     "@tensorflow-models/body-pix": "2.2.1",

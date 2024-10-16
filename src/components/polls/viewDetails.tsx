@@ -1,7 +1,12 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { useTranslation } from 'react-i18next';
-import { Dialog, Disclosure, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  Disclosure,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
@@ -12,6 +17,7 @@ import {
   useGetPollResponsesDetailsQuery,
 } from '../../store/services/pollsApi';
 import { getNatsConn } from '../../helpers/nats';
+import { DialogTitle } from '@headlessui/react';
 
 interface IViewDetailsProps {
   onCloseViewDetails(): void;
@@ -175,7 +181,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -184,8 +190,8 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+                <div className="fixed inset-0 bg-black opacity-30" />
+              </TransitionChild>
 
               <span
                 className="inline-block h-screen align-middle"
@@ -193,7 +199,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
               >
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -212,12 +218,12 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                     <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
-                  <Dialog.Title
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
                   >
                     {t('polls.view-details-title')}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <hr />
                   <div className="mt-2">
                     <div className="headline flex flex-wrap pb-5">
@@ -270,7 +276,7 @@ const ViewDetails = ({ pollId, onCloseViewDetails }: IViewDetailsProps) => {
                     </div>
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>

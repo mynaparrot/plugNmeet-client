@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu } from '@headlessui/react';
+import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
@@ -58,7 +58,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   const render = () => {
     return (
       <div className="" role="none">
-        <Menu.Item>
+        <MenuItem>
           {() => (
             <button
               className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -67,7 +67,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
               {text}
             </button>
           )}
-        </Menu.Item>
+        </MenuItem>
       </div>
     );
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from '@headlessui/react';
+import { MenuItem } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch } from '../../../../../store';
@@ -29,7 +29,7 @@ const PrivateChatMenuItem = ({ name, userId }: IChatMenuItemProps) => {
   };
   return (
     <div className="" role="none">
-      <Menu.Item>
+      <MenuItem>
         {() => (
           <button
             className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -38,7 +38,7 @@ const PrivateChatMenuItem = ({ name, userId }: IChatMenuItemProps) => {
             {t('left-panel.menus.items.private-chat')}
           </button>
         )}
-      </Menu.Item>
+      </MenuItem>
     </div>
   );
 };
