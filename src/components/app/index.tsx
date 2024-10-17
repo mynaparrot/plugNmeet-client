@@ -6,7 +6,6 @@ import React, {
   useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
   VerifyTokenReqSchema,
@@ -22,7 +21,7 @@ import Header from '../header';
 import MainArea from '../main-area';
 
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import StartupJoinModal from './joinModal';
 import AudioNotification from './audioNotification';
@@ -38,10 +37,6 @@ import { getAccessToken } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 
 declare const IS_PRODUCTION: boolean;
-const waitingForApprovalSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.waitForApproval,
-);
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -56,7 +51,9 @@ const App = () => {
   const [userTypeClass, setUserTypeClass] = useState('participant');
   const [currentMediaServerConn, setCurrentMediaServerConn] =
     useState<IConnectLivekit>();
-  const waitForApproval = useAppSelector(waitingForApprovalSelector);
+  const waitForApproval = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.waitForApproval,
+  );
 
   const [error, setError] = useState<IErrorPageProps | undefined>();
   const [roomConnectionStatus, setRoomConnectionStatus] =
@@ -72,7 +69,7 @@ const App = () => {
 
   useEffect(() => {
     const accessToken = getAccessToken();
-    let timeout;
+    let timeout: any;
     if (!accessToken) {
       setLoading(false);
       setError({
@@ -152,7 +149,7 @@ const App = () => {
       if (!currentMediaServerConn) {
         setRoomConnectionStatus('checking');
         timeout = setTimeout(() => {
-          verifyToken();
+          verifyToken().then();
         }, 300);
       }
     }

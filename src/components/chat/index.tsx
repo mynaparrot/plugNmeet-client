@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
-import { RootState, store, useAppSelector } from '../../store';
+import { store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
 
-const isChatLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockChat,
-);
-const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.theme,
-);
-
 const ChatComponent = () => {
-  const isChatLock = useAppSelector(isChatLockSelector);
-  const theme = useAppSelector(themeSelector);
+  const isChatLock = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockChat,
+  );
+  const theme = useAppSelector((state) => state.roomSettings.theme);
   const [show, setShow] = useState<boolean>(false);
   const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
   const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);

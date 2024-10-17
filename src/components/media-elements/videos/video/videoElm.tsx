@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../../../store';
+import { useAppSelector } from '../../../../store';
 import './style.scss';
 import { sleep } from '../../../../helpers/utils';
 
@@ -10,25 +9,18 @@ interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
 }
 
-const roomVideoQualitySelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.roomVideoQuality,
-);
-const videoObjectFitSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.videoObjectFit,
-);
-const isNatsServerConnectedSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.isNatsServerConnected,
-);
-
 const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
-  const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
-  const videoObjectFit = useAppSelector(videoObjectFitSelector);
-  const isNatsServerConnected = useAppSelector(isNatsServerConnectedSelector);
+  const roomVideoQuality = useAppSelector(
+    (state) => state.roomSettings.roomVideoQuality,
+  );
+  const videoObjectFit = useAppSelector(
+    (state) => state.roomSettings.videoObjectFit,
+  );
+  const isNatsServerConnected = useAppSelector(
+    (state) => state.roomSettings.isNatsServerConnected,
+  );
   const [videoFit, setVideoFit] = useState<any>(videoObjectFit);
 
   useEffect(() => {
@@ -59,6 +51,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   }, [track, videoObjectFit]);
 
   useEffect(() => {
+    console.log('isNatsServerConnected', isNatsServerConnected);
     const el = ref.current;
     if (!el) {
       return;

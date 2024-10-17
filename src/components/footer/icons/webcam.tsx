@@ -89,7 +89,7 @@ const WebcamIcon = () => {
         currentRoom.localParticipant.identity,
       );
       if (currentUser?.videoTracks) {
-        closeMicOnLock();
+        closeMicOnLock().then();
       }
     } else {
       setLockWebcam(false);
