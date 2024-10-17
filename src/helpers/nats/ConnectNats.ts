@@ -32,6 +32,8 @@ import {
   NatsError,
   wsconnect,
   tokenAuthenticator,
+  DebugEvents,
+  Events,
 } from '@nats-io/nats-core';
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
 import { isURL } from 'validator';
@@ -378,7 +380,6 @@ export default class ConnectNats {
           if (this._nc?.isClosed()) {
             this.messageQueue.isConnected(false);
             this.endSession('notifications.room-disconnected-network-error');
-            store.dispatch(updateIsNatsServerConnected(false));
 
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
@@ -389,19 +390,26 @@ export default class ConnectNats {
     };
 
     for await (const s of this._nc.status()) {
-      if (s.type === 'reconnecting' && !this.isRoomReconnecting) {
-        this._setRoomConnectionStatusState('re-connecting');
-        store.dispatch(updateIsNatsServerConnected(false));
+      switch (s.type) {
+        case Events.Disconnect:
+          store.dispatch(updateIsNatsServerConnected(false));
+          break;
+        case DebugEvents.Reconnecting:
+          if (!this.isRoomReconnecting) {
+            this._setRoomConnectionStatusState('re-connecting');
 
-        this.isRoomReconnecting = true;
-        startStatusChecker();
-      } else if (s.type === 'reconnect') {
-        this._setRoomConnectionStatusState('connected');
-        store.dispatch(updateIsNatsServerConnected(true));
+            this.isRoomReconnecting = true;
+            startStatusChecker();
+          }
+          break;
+        case Events.Reconnect:
+          this._setRoomConnectionStatusState('connected');
+          store.dispatch(updateIsNatsServerConnected(true));
 
-        clearInterval(this.statusCheckerInterval);
-        this.statusCheckerInterval = undefined;
-        this.isRoomReconnecting = false;
+          clearInterval(this.statusCheckerInterval);
+          this.statusCheckerInterval = undefined;
+          this.isRoomReconnecting = false;
+          break;
       }
     }
   }
