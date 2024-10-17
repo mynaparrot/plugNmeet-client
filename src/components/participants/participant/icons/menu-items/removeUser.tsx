@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from '@headlessui/react';
+import { MenuItem } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 interface IRemoveUserMenuItemProps {
@@ -21,7 +21,7 @@ const RemoveUserMenuItem = ({
     return (
       <>
         <div className="" role="none">
-          <Menu.Item>
+          <MenuItem>
             {() => (
               <button
                 className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-red-400 hover:text-white"
@@ -30,7 +30,7 @@ const RemoveUserMenuItem = ({
                 {t('left-panel.menus.items.remove-participant')}
               </button>
             )}
-          </Menu.Item>
+          </MenuItem>
         </div>
       </>
     );

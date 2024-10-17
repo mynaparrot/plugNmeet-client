@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from '@headlessui/react';
+import { Field, Label, Switch } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
@@ -24,11 +24,11 @@ const Notification = () => {
 
   const render = () => {
     return (
-      <Switch.Group>
+      <Field>
         <div className="flex items-center justify-between mb-2">
-          <Switch.Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
             {t('header.room-settings.allow-audio-notification')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={allowPlayAudioNotification}
             onChange={toggleAudioNotification}
@@ -47,7 +47,7 @@ const Notification = () => {
             />
           </Switch>
         </div>
-      </Switch.Group>
+      </Field>
     );
   };
 

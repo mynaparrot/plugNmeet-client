@@ -1,5 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Transition, Dialog } from '@headlessui/react';
+import {
+  Dialog,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { isURL, isEmpty } from 'validator';
 import { toast } from 'react-toastify';
@@ -60,7 +65,7 @@ const RtmpModal = () => {
     if (isEmpty(serverKey)) {
       return;
     }
-    let url = '';
+    let url: string;
     if (provider === 'other') {
       url = serverUrl;
     } else {
@@ -120,7 +125,7 @@ const RtmpModal = () => {
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -129,8 +134,8 @@ const RtmpModal = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+                <div className="fixed inset-0 bg-black opacity-30" />
+              </TransitionChild>
 
               <span
                 className="inline-block h-screen align-middle"
@@ -138,7 +143,7 @@ const RtmpModal = () => {
               >
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -157,12 +162,12 @@ const RtmpModal = () => {
                     <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
-                  <Dialog.Title
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                   >
                     {t('footer.modal.rtmp-title')}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <hr />
                   <div className="mt-6">
                     <form
@@ -244,7 +249,7 @@ const RtmpModal = () => {
                     </form>
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>
@@ -293,7 +298,7 @@ const RtmpModal = () => {
             onClose={onCloseAlertModal}
           >
             <div className="min-h-screen px-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -302,8 +307,8 @@ const RtmpModal = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+                <div className="fixed inset-0 bg-black opacity-30" />
+              </TransitionChild>
 
               <span
                 className="inline-block h-screen align-middle"
@@ -311,7 +316,7 @@ const RtmpModal = () => {
               >
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -330,12 +335,12 @@ const RtmpModal = () => {
                     <span className="inline-block h-[1px] w-[20px] bg-primaryColor absolute top-0 left-0 -rotate-45" />
                   </button>
 
-                  <Dialog.Title
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
                     {t('footer.modal.rtmp-close-confirm')}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
                       {t('footer.modal.rtmp-close-msg')}
@@ -358,7 +363,7 @@ const RtmpModal = () => {
                     </button>
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>

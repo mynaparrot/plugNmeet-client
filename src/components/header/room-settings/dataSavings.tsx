@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch } from '@headlessui/react';
+import { Field, Label, Switch } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { VideoQuality } from 'livekit-client';
@@ -79,11 +79,11 @@ const DataSavings = () => {
           </select>
         </div>
 
-        <Switch.Group>
+        <Field>
           <div className="flex items-center justify-between mb-2">
-            <Switch.Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+            <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
               {t('header.room-settings.show-webcams')}
-            </Switch.Label>
+            </Label>
             <Switch
               checked={activateWebcamsView}
               onChange={toggleWebcamView}
@@ -103,9 +103,9 @@ const DataSavings = () => {
             </Switch>
           </div>
           <div className="flex items-center justify-between">
-            <Switch.Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+            <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
               {t('header.room-settings.show-screen-share')}
-            </Switch.Label>
+            </Label>
             <Switch
               checked={activeScreenSharingView}
               onChange={toggleScreenShareView}
@@ -124,7 +124,7 @@ const DataSavings = () => {
               />
             </Switch>
           </div>
-        </Switch.Group>
+        </Field>
       </>
     );
   };

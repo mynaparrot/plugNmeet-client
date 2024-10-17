@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from '@headlessui/react';
+import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
@@ -99,7 +99,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
     return (
       <>
         <div className="" role="none">
-          <Menu.Item>
+          <MenuItem>
             {() => (
               <button
                 className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -110,12 +110,12 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                   : t('left-panel.menus.items.lock-microphone')}
               </button>
             )}
-          </Menu.Item>
+          </MenuItem>
         </div>
 
         {roomFeatures?.allowWebcams && !roomFeatures?.adminOnlyWebcams ? (
           <div className="" role="none">
-            <Menu.Item>
+            <MenuItem>
               {() => (
                 <button
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -126,13 +126,13 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                     : t('left-panel.menus.items.lock-webcam')}
                 </button>
               )}
-            </Menu.Item>
+            </MenuItem>
           </div>
         ) : null}
 
         {roomFeatures?.allowScreenShare ? (
           <div className="" role="none">
-            <Menu.Item>
+            <MenuItem>
               {() => (
                 <button
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -143,13 +143,13 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                     : t('left-panel.menus.items.lock-screen-sharing')}
                 </button>
               )}
-            </Menu.Item>
+            </MenuItem>
           </div>
         ) : null}
 
         {roomFeatures?.whiteboardFeatures?.allowedWhiteboard ? (
           <div className="" role="none">
-            <Menu.Item>
+            <MenuItem>
               {() => (
                 <button
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -160,13 +160,13 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                     : t('left-panel.menus.items.lock-whiteboard')}
                 </button>
               )}
-            </Menu.Item>
+            </MenuItem>
           </div>
         ) : null}
 
         {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
           <div className="" role="none">
-            <Menu.Item>
+            <MenuItem>
               {() => (
                 <button
                   className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -177,14 +177,14 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                     : t('left-panel.menus.items.lock-shared-notepad')}
                 </button>
               )}
-            </Menu.Item>
+            </MenuItem>
           </div>
         ) : null}
 
         {roomFeatures?.chatFeatures?.allowChat ? (
           <>
             <div className="" role="none">
-              <Menu.Item>
+              <MenuItem>
                 {() => (
                   <button
                     className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -195,11 +195,11 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                       : t('left-panel.menus.items.lock-chat')}
                   </button>
                 )}
-              </Menu.Item>
+              </MenuItem>
             </div>
 
             <div className="" role="none">
-              <Menu.Item>
+              <MenuItem>
                 {() => (
                   <button
                     className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -210,12 +210,12 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                       : t('left-panel.menus.items.lock-send-chat-message')}
                   </button>
                 )}
-              </Menu.Item>
+              </MenuItem>
             </div>
 
             {roomFeatures.chatFeatures.allowFileUpload ? (
               <div className="" role="none">
-                <Menu.Item>
+                <MenuItem>
                   {() => (
                     <button
                       className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -226,7 +226,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
                         : t('left-panel.menus.items.lock-send-file')}
                     </button>
                   )}
-                </Menu.Item>
+                </MenuItem>
               </div>
             ) : null}
           </>

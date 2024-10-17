@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogTitle, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
@@ -89,7 +89,7 @@ const RemoveParticipantAlertModal = ({
         className="remove-participants-popup fixed z-[99999] inset-0 overflow-y-auto"
       >
         <div className="flex items-center justify-center min-h-screen">
-          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+          <div className="fixed inset-0 bg-black opacity-30" />
 
           <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-sm rounded-3xl shadow-header relative px-4 lg:px-6 py-12 lg:py-14">
             <button
@@ -100,13 +100,13 @@ const RemoveParticipantAlertModal = ({
               <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
               <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
             </button>
-            <Dialog.Title className="mb-4 md:mb-6 text-sm">
+            <DialogTitle className="mb-4 md:mb-6 text-sm">
               <legend className="text-base font-medium text-gray-900 dark:text-white">
                 {t('left-panel.menus.notice.confirm', {
                   name,
                 })}
               </legend>
-            </Dialog.Title>
+            </DialogTitle>
 
             <div className="mb-10 pl-3">
               <p className="text-sm text-gray-500 dark:text-darkText">

@@ -2,7 +2,12 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { LocalAudioTrack, Track } from 'livekit-client';
-import { Dialog, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { toast } from 'react-toastify';
 import copy from 'copy-text-to-clipboard';
 import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
@@ -137,7 +142,7 @@ const BreakoutRoomInvitation = () => {
             static={false}
           >
             <div className="min-h-screen px-4 text-center flex items-end justify-end">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -146,8 +151,8 @@ const BreakoutRoomInvitation = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+                <div className="fixed inset-0 bg-black opacity-30" />
+              </TransitionChild>
 
               <span
                 className="inline-block h-screen align-middle"
@@ -155,7 +160,7 @@ const BreakoutRoomInvitation = () => {
               >
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -174,12 +179,12 @@ const BreakoutRoomInvitation = () => {
                     <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
-                  <Dialog.Title
+                  <DialogTitle
                     as="h3"
                     className="text-base font-medium leading-6 text-gray-900 dark:text-darkText text-left mb-2"
                   >
                     {t('breakout-room.invitation-title')}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <hr />
                   <div className="mt-2">
                     <span className="text-black dark:text-darkText text-sm">
@@ -216,7 +221,7 @@ const BreakoutRoomInvitation = () => {
                     </div>
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>

@@ -164,7 +164,6 @@ const MainArea = () => {
   const renderLeftPanel = useMemo(() => {
     return (
       <Transition
-        className="transition-left-panel"
         show={isActiveParticipantsPanel}
         unmount={false}
         enter="transform transition duration-[400ms]"
@@ -174,7 +173,9 @@ const MainArea = () => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0 -translate-x-full"
       >
-        <LeftPanel />
+        <div className="transition-left-panel">
+          <LeftPanel />
+        </div>
       </Transition>
     );
   }, [isActiveParticipantsPanel]);
@@ -199,7 +200,6 @@ const MainArea = () => {
     if (allowChat) {
       return (
         <Transition
-          className="transition-right-panel"
           show={isActiveChatPanel}
           unmount={false}
           enter="transform transition duration-[400ms]"
@@ -209,7 +209,9 @@ const MainArea = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0 translate-x-full"
         >
-          <RightPanel />
+          <div className="transition-right-panel">
+            <RightPanel />
+          </div>
         </Transition>
       );
     }

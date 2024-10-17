@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Switch } from '@headlessui/react';
+import { Field, Label, Switch } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import languages from '../../../helpers/languages';
@@ -74,11 +74,11 @@ const ApplicationSettings = () => {
             </select>
           </div>
         </div>
-        <Switch.Group>
+        <Field>
           <div className="flex items-center justify-between my-4">
-            <Switch.Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+            <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
               {t('header.room-settings.enable-dark-theme')}
-            </Switch.Label>
+            </Label>
             <Switch
               checked={theme === 'dark'}
               onChange={toggleTheme}
@@ -97,7 +97,7 @@ const ApplicationSettings = () => {
               />
             </Switch>
           </div>
-        </Switch.Group>
+        </Field>
         <div className="grid">
           <div className="flex items-center justify-start">
             <label

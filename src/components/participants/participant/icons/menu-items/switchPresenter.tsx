@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu } from '@headlessui/react';
+import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import {
   CommonResponseSchema,
@@ -56,7 +56,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
   const render = () => {
     return (
       <div className="" role="none">
-        <Menu.Item>
+        <MenuItem>
           {() => (
             <button
               className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
@@ -67,7 +67,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
                 : t('footer.icons.promote-presenter')}
             </button>
           )}
-        </Menu.Item>
+        </MenuItem>
       </div>
     );
   };

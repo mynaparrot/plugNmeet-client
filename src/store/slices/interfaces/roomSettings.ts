@@ -11,6 +11,7 @@ export enum VideoObjectFit {
 export interface IRoomSettings {
   isShowRoomSettingsModal: boolean;
   isShowKeyboardShortcuts: boolean;
+  isNatsServerConnected: boolean;
 
   audioDevices: Array<IMediaDevice>;
   videoDevices: Array<IMediaDevice>;

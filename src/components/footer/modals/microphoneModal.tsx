@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogTitle, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { getDevices } from '../../../helpers/utils';
 import { IMediaDevice } from '../../../store/slices/interfaces/roomSettings';
@@ -16,7 +16,7 @@ const MicrophoneModal = ({
 }: MicrophoneModalProps) => {
   const { t } = useTranslation();
   const [selectedMic, setSelectMic] = useState<string>('');
-  const [devices, setDevices] = useState<Array<JSX.Element>>([]);
+  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const MicrophoneModal = ({
         dispatch(addAudioDevices(audioDevices));
       }
     };
-    getDeviceMics();
+    getDeviceMics().then();
   }, [dispatch]);
 
   const selectOrClose = (onlyClose = false) => {
@@ -69,7 +69,7 @@ const MicrophoneModal = ({
           className="share-microphone-popup-wrap fixed z-[99999] inset-0 overflow-y-auto"
         >
           <div className="flex items-center justify-center min-h-screen">
-            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            <div className="fixed inset-0 bg-black opacity-30" />
 
             <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-sm rounded-3xl shadow-header relative px-6 py-14">
               <button
@@ -80,9 +80,9 @@ const MicrophoneModal = ({
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
               </button>
-              <Dialog.Title className="mb-6 dark:text-darkText">
+              <DialogTitle className="mb-6 dark:text-darkText">
                 {t('footer.modal.select-microphone')}
-              </Dialog.Title>
+              </DialogTitle>
 
               <div className="col-span-6 sm:col-span-3">
                 <select

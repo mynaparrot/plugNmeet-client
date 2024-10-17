@@ -18,7 +18,7 @@ import {
 import { ColumnCameraPosition } from '../../../store/slices/interfaces/roomSettings';
 
 interface IVideosComponentElmsProps {
-  allParticipants: JSX.Element[];
+  allParticipants: React.JSX.Element[];
   totalNumWebcams: number;
   isVertical?: boolean;
 }
@@ -60,7 +60,7 @@ const VideosComponentElms = ({
   const deviceType = store.getState().session.userDeviceType;
 
   const [participantsToRender, setParticipantsToRender] = useState<
-    Array<JSX.Element>
+    Array<React.JSX.Element>
   >([]);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(
     isVertical ? VERTICAL_PER_PAGE : DESKTOP_PER_PAGE,
@@ -117,7 +117,7 @@ const VideosComponentElms = ({
   }, [isVertical, screenWidth, columnCameraPosition, deviceOrientation]);
 
   const setParticipantsToDisplay = (
-    [...allParticipants]: Array<JSX.Element>,
+    [...allParticipants]: Array<React.JSX.Element>,
     page_number: number,
     per_page: number,
   ) => {
@@ -178,7 +178,7 @@ const VideosComponentElms = ({
     if (isVertical) {
       return participantsToRender;
     }
-    let elms: Array<JSX.Element>;
+    let elms: Array<React.JSX.Element>;
 
     if (
       deviceType === UserDeviceType.MOBILE &&

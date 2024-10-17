@@ -1,5 +1,11 @@
 import React from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
@@ -325,9 +331,9 @@ const MenusIcon = () => {
         <Menu>
           {({ open }) => (
             <>
-              <Menu.Button className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
+              <MenuButton className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
                 <i className="pnm-menu-horizontal primaryColor dark:text-darkText text-[5px] lg:text-[5px]" />
-              </Menu.Button>
+              </MenuButton>
 
               {/* Use the Transition component. */}
               <Transition
@@ -340,13 +346,13 @@ const MenusIcon = () => {
                 leaveTo="transform scale-95 opacity-0"
               >
                 {/* Mark this component as `static` */}
-                <Menu.Items
+                <MenuItems
                   static
                   className="origin-bottom-left sm:-left-20 lg:-left-28 right-0 sm:right-auto z-[9999] absolute mt-2 w-60 lg:w-72 bottom-[48px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
                   {roomFeatures?.allowRtmp ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="footer-podcast-button text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openRtmpModal()}
@@ -362,11 +368,11 @@ const MenusIcon = () => {
                             ? t('footer.icons.stop-rtmp-broadcasting')
                             : t('footer.icons.start-rtmp-broadcasting')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   <div className="py-1" role="none">
-                    <Menu.Item>
+                    <MenuItem>
                       <button
                         className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                         onClick={() => muteAllUsers()}
@@ -374,11 +380,11 @@ const MenusIcon = () => {
                         <i className="pnm-mic-mute text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                         {t('footer.menus.mute-all-users')}
                       </button>
-                    </Menu.Item>
+                    </MenuItem>
                   </div>
                   {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => toggleSharedNotepad()}
@@ -388,13 +394,13 @@ const MenusIcon = () => {
                             ? t('footer.menus.disable-shared-notepad')
                             : t('footer.menus.enable-shared-notepad')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   {roomFeatures?.externalMediaPlayerFeatures
                     ?.allowedExternalMediaPlayer ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => toggleExternalMediaPlayer()}
@@ -404,12 +410,12 @@ const MenusIcon = () => {
                             ? t('footer.menus.stop-external-media-player')
                             : t('footer.menus.start-external-media-player')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => toggleDisplayExternalLinkModal()}
@@ -419,12 +425,12 @@ const MenusIcon = () => {
                             ? t('footer.menus.stop-display-external-link')
                             : t('footer.menus.start-display-external-link')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   {roomFeatures?.waitingRoomFeatures?.isActive ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openManageWaitingRoomModal()}
@@ -432,12 +438,12 @@ const MenusIcon = () => {
                           <i className="pnm-waiting-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                           {t('footer.menus.manage-waiting-room')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openSpeechServiceSettingsModal()}
@@ -445,12 +451,12 @@ const MenusIcon = () => {
                           <i className="pnm-closed-captioning text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                           {t('footer.menus.speech-to-text-settings')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
                     <div className="py-1" role="none">
-                      <Menu.Item>
+                      <MenuItem>
                         <button
                           className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                           onClick={() => openManageBreakoutRoomModal()}
@@ -458,11 +464,11 @@ const MenusIcon = () => {
                           <i className="pnm-breakout-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                           {t('footer.menus.manage-breakout-room')}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     </div>
                   ) : null}
                   <div className="py-1" role="none">
-                    <Menu.Item>
+                    <MenuItem>
                       <button
                         className="text-gray-700 dark:text-darkText rounded group flex items-center py-1 lg:py-2 px-4 text-xs lg:text-sm ltr:text-left rtl:text-right w-full transition ease-in hover:text-secondaryColor hover:dark:text-secondaryColor"
                         onClick={() => openLockSettingsModal()}
@@ -470,9 +476,9 @@ const MenusIcon = () => {
                         <i className="pnm-lock text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                         {t('footer.menus.room-lock-settings')}
                       </button>
-                    </Menu.Item>
+                    </MenuItem>
                   </div>
-                </Menu.Items>
+                </MenuItems>
               </Transition>
             </>
           )}

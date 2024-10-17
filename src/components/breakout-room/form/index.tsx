@@ -152,7 +152,7 @@ const FromElems = () => {
       store.getState().session.currentRoom.metadata?.roomFeatures
         ?.breakoutRoomFeatures?.allowedNumberRooms ?? 6;
 
-    const options: Array<JSX.Element> = [];
+    const options: Array<React.JSX.Element> = [];
     for (let i = 0; i < max; i++) {
       options.push(
         <option key={i} value={i + 1}>

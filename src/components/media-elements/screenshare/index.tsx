@@ -36,7 +36,7 @@ const ScreenShareElements = () => {
 
   const renderElms = useMemo(() => {
     if (screenShareTracks) {
-      const elm = Array<JSX.Element>();
+      const elm = Array<React.JSX.Element>();
 
       screenShareTracks.forEach((tracks) => {
         tracks.forEach((track) => {

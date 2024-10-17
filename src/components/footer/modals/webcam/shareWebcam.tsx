@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogTitle, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, RootState, useAppDispatch } from '../../../../store';
@@ -26,7 +26,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
   const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedWebcam, setSelectWebcam] = useState<string>('');
-  const [devices, setDevices] = useState<Array<JSX.Element>>([]);
+  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -35,7 +35,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
       const mics = await getDevices('videoinput');
       const videoDevices: Array<IMediaDevice> = [];
 
-      const options = mics.map((mic) => {
+      const options = mics.map((mic, index) => {
         const device: IMediaDevice = {
           id: mic.deviceId,
           label: mic.label,
@@ -43,7 +43,10 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
         videoDevices.push(device);
 
         return (
-          <option value={mic.deviceId} key={mic.deviceId}>
+          <option
+            value={mic.deviceId}
+            key={`device-id-${mic.deviceId}-${index}`}
+          >
             {mic.label}
           </option>
         );
@@ -55,7 +58,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
         dispatch(addVideoDevices(videoDevices));
       }
     };
-    getDeviceWebcams();
+    getDeviceWebcams().then();
   }, [dispatch]);
 
   useEffect(() => {
@@ -99,7 +102,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
           className="share-webcam-popup-wrap fixed z-[99999] inset-0 overflow-y-auto"
         >
           <div className="flex items-center justify-center min-h-screen">
-            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            <div className="fixed inset-0 bg-black opacity-30" />
 
             <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-md rounded-3xl shadow-header relative px-6 py-14">
               <button
@@ -110,9 +113,9 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
                 <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
               </button>
-              <Dialog.Title className="mb-6 dark:text-darkText">
+              <DialogTitle className="mb-6 dark:text-darkText">
                 {t('footer.modal.select-webcam')}
-              </Dialog.Title>
+              </DialogTitle>
 
               <div className="col-span-6 sm:col-span-3">
                 <select

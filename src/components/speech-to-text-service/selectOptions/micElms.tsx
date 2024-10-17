@@ -1,7 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
-import { Listbox, Transition } from '@headlessui/react';
+import {
+  Listbox,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react';
 
 import { getDevices } from '../../../helpers/utils';
 
@@ -72,13 +77,13 @@ const MicElms = ({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {devices.map((d) => {
                     return (
-                      <Listbox.Option
-                        className={({ active }) =>
+                      <ListboxOption
+                        className={({ focus }) =>
                           `relative cursor-default select-none py-2 pl-7 pr-4 ${
-                            active
+                            focus
                               ? 'bg-amber-100 text-amber-900'
                               : 'text-gray-900'
                           }`
@@ -103,10 +108,10 @@ const MicElms = ({
                             ) : null}
                           </>
                         )}
-                      </Listbox.Option>
+                      </ListboxOption>
                     );
                   })}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </Listbox>

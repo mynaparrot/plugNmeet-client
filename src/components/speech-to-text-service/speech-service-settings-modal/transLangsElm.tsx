@@ -1,5 +1,10 @@
 import React, { Dispatch, Fragment, useEffect, useState } from 'react';
-import { Listbox, Transition } from '@headlessui/react';
+import {
+  Listbox,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { supportedTranslationLangs } from '../helpers/supportedLangs';
@@ -66,13 +71,13 @@ const TransLangsElm = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {supportedTranslationLangs.map((l) => (
-                <Listbox.Option
+                <ListboxOption
                   key={`trans_${l.code}`}
-                  className={({ active }) =>
+                  className={({ focus }) =>
                     `relative cursor-default select-none py-2 pr-4 pl-7 ${
-                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                      focus ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                     }`
                   }
                   value={l.code}
@@ -93,9 +98,9 @@ const TransLangsElm = ({
                       ) : null}
                     </>
                   )}
-                </Listbox.Option>
+                </ListboxOption>
               ))}
-            </Listbox.Options>
+            </ListboxOptions>
           </Transition>
         </div>
       </Listbox>

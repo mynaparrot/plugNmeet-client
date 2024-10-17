@@ -18,12 +18,17 @@ const videoObjectFitSelector = createSelector(
   (state: RootState) => state.roomSettings,
   (roomSettings) => roomSettings.videoObjectFit,
 );
+const isNatsServerConnectedSelector = createSelector(
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.isNatsServerConnected,
+);
 
 const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
   const roomVideoQuality = useAppSelector(roomVideoQualitySelector);
   const videoObjectFit = useAppSelector(videoObjectFitSelector);
+  const isNatsServerConnected = useAppSelector(isNatsServerConnectedSelector);
   const [videoFit, setVideoFit] = useState<any>(videoObjectFit);
 
   useEffect(() => {
@@ -52,6 +57,18 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       setVideoFit(videoObjectFit);
     }
   }, [track, videoObjectFit]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+    if (!isNatsServerConnected) {
+      el.pause();
+    } else if (isNatsServerConnected && el.paused) {
+      el.play().then();
+    }
+  }, [isNatsServerConnected]);
 
   const onLoadedData = () => {
     setLoaded(true);

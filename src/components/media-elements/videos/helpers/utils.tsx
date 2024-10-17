@@ -5,9 +5,11 @@ import { chunk } from 'lodash';
  * For Mobile landscape mode,
  * 2 rows for any number
  */
-export const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
+export const setForMobileLandscape = (
+  participantsToRender: React.JSX.Element[],
+) => {
   const length = participantsToRender.length;
-  const elms: Array<JSX.Element> = [];
+  const elms: Array<React.JSX.Element> = [];
 
   if (length <= 3) {
     elms.push(
@@ -37,9 +39,11 @@ export const setForMobileLandscape = (participantsToRender: JSX.Element[]) => {
  * From 4 webcam,  2 rows
  * More than 4, 3 rows
  */
-export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
+export const setForMobileAndTablet = (
+  participantsToRender: React.JSX.Element[],
+) => {
   const length = participantsToRender.length;
-  const elms: Array<JSX.Element> = [];
+  const elms: Array<React.JSX.Element> = [];
 
   if (length <= 3) {
     elms.push(
@@ -81,9 +85,9 @@ export const setForMobileAndTablet = (participantsToRender: JSX.Element[]) => {
  * From 4 to 10, 2 rows
  * More than 10, 3 rows
  */
-export const setForPC = (participantsToRender: JSX.Element[]) => {
+export const setForPC = (participantsToRender: React.JSX.Element[]) => {
   const length = participantsToRender.length;
-  const elms: Array<JSX.Element> = [];
+  const elms: Array<React.JSX.Element> = [];
 
   if (length < 4) {
     elms.push(

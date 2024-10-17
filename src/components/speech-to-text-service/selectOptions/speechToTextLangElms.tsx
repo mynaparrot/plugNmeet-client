@@ -1,5 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Listbox, Switch, Transition } from '@headlessui/react';
+import {
+  Field,
+  Label,
+  Listbox,
+  ListboxOption,
+  ListboxOptions,
+  Switch,
+  Transition,
+} from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import {
   SpeechRecognizer,
@@ -75,13 +83,13 @@ const SpeechToTextLangElms = ({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {speechService.allowedSpeechLangs?.map((l) => (
-                    <Listbox.Option
+                    <ListboxOption
                       key={l}
-                      className={({ active }) =>
+                      className={({ focus }) =>
                         `relative cursor-default select-none py-2 pl-7 pr-4 ${
-                          active
+                          focus
                             ? 'bg-amber-100 text-amber-900'
                             : 'text-gray-900'
                         }`
@@ -108,9 +116,9 @@ const SpeechToTextLangElms = ({
                           ) : null}
                         </>
                       )}
-                    </Listbox.Option>
+                    </ListboxOption>
                   ))}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </Listbox>
@@ -127,11 +135,11 @@ const SpeechToTextLangElms = ({
 
   return (
     <>
-      <Switch.Group>
+      <Field>
         <div className="flex items-center justify-between my-4">
-          <Switch.Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText">
             {t('speech-services.enable-speech-to-text')}
-          </Switch.Label>
+          </Label>
           <Switch
             checked={enableSpeechToText}
             onChange={setEnableSpeechToText}
@@ -151,7 +159,7 @@ const SpeechToTextLangElms = ({
             />
           </Switch>
         </div>
-      </Switch.Group>
+      </Field>
       {enableSpeechToText ? speechLangElms() : null}
     </>
   );

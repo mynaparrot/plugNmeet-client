@@ -1,6 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { isEmpty } from 'lodash';
 import {
   SpeechRecognizer,
@@ -104,7 +109,7 @@ const SelectOptions = ({
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0"
@@ -113,8 +118,8 @@ const SelectOptions = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-            </Transition.Child>
+              <div className="fixed inset-0 bg-black opacity-30" />
+            </TransitionChild>
 
             <span
               className="inline-block h-screen align-middle"
@@ -122,7 +127,7 @@ const SelectOptions = ({
             >
               &#8203;
             </span>
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
@@ -141,12 +146,12 @@ const SelectOptions = ({
                   <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                 </button>
 
-                <Dialog.Title
+                <DialogTitle
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
                 >
                   {t('speech-services.start-modal-title')}
-                </Dialog.Title>
+                </DialogTitle>
                 <hr />
                 <div className="mt-6">
                   {canShowSpeechSetting ? (
@@ -189,7 +194,7 @@ const SelectOptions = ({
                   ) : null}
                 </div>
               </div>
-            </Transition.Child>
+            </TransitionChild>
           </div>
         </Dialog>
       </Transition>

@@ -10,11 +10,16 @@ const roomScreenShareAudioVolumeSelector = createSelector(
   (state: RootState) => state.roomSettings.roomScreenShareAudioVolume,
   (roomScreenShareAudioVolume) => roomScreenShareAudioVolume,
 );
+const isNatsServerConnectedSelector = createSelector(
+  (state: RootState) => state.roomSettings,
+  (roomSettings) => roomSettings.isNatsServerConnected,
+);
 
 const AudioElm = ({ audioTrack }: IAudioElmProps) => {
   const roomScreenShareAudioVolume = useAppSelector(
     roomScreenShareAudioVolumeSelector,
   );
+  const isNatsServerConnected = useAppSelector(isNatsServerConnectedSelector);
   const ref = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -35,6 +40,18 @@ const AudioElm = ({ audioTrack }: IAudioElmProps) => {
   useEffect(() => {
     audioTrack.setVolume(roomScreenShareAudioVolume);
   }, [audioTrack, roomScreenShareAudioVolume]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+    if (!isNatsServerConnected) {
+      el.pause();
+    } else if (isNatsServerConnected && el.paused) {
+      el.play().then();
+    }
+  }, [isNatsServerConnected]);
 
   return (
     <div style={{ display: 'none' }}>

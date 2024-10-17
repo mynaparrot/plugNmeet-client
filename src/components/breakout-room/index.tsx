@@ -1,5 +1,10 @@
 import React, { Fragment, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch } from '../../store';
@@ -31,7 +36,7 @@ const BreakoutRoom = () => {
             static={false}
           >
             <div className="min-h-screen px-4 text-center flex items-center justify-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -40,8 +45,8 @@ const BreakoutRoom = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+                <div className="fixed inset-0 bg-black opacity-30" />
+              </TransitionChild>
 
               <span
                 className="inline-block h-screen align-middle"
@@ -49,7 +54,7 @@ const BreakoutRoom = () => {
               >
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -68,12 +73,12 @@ const BreakoutRoom = () => {
                     <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
                   </button>
 
-                  <Dialog.Title
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
                   >
                     {t('breakout-room.modal-title')}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <hr />
                   <div className="mt-2">
                     {breakoutRoomIsActive ? (
@@ -83,7 +88,7 @@ const BreakoutRoom = () => {
                     )}
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>

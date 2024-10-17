@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, MenuButton, Transition, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
@@ -59,7 +59,7 @@ const VolumeControl = () => {
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className="relative flex-shrink-0 p-2">
+            <MenuButton className="relative flex-shrink-0 p-2">
               <div className="h-4 w-4 -mt-[2px]">
                 {volume > 0 ? (
                   <i className="pnm-speaker primaryColor dark:text-secondaryColor" />
@@ -67,7 +67,7 @@ const VolumeControl = () => {
                   <i className="pnm-speaker-muted primaryColor dark:text-secondaryColor" />
                 )}
               </div>
-            </Menu.Button>
+            </MenuButton>
 
             {/* Use the Transition component. */}
             <Transition
@@ -79,7 +79,7 @@ const VolumeControl = () => {
               leaveFrom="transform scale-100 opacity-100"
               leaveTo="transform scale-95 opacity-0"
             >
-              <Menu.Items
+              <MenuItems
                 static
                 className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 rtl:left-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-darkPrimary/90 ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
               >
@@ -135,7 +135,7 @@ const VolumeControl = () => {
                     )}
                   </button>
                 </section>
-              </Menu.Items>
+              </MenuItems>
             </Transition>
           </>
         )}

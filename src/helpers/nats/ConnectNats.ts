@@ -57,6 +57,7 @@ import MessageQueue from './MessageQueue';
 import { encryptMessage } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { formatNatsError, getWhiteboardDonors } from '../utils';
+import { updateIsNatsServerConnected } from '../../store/slices/roomSettingsSlice';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -170,6 +171,9 @@ export default class ConnectNats {
     this._js = jetstream(this._nc);
     this.messageQueue.js(this._js);
 
+    // now change status to connected
+    store.dispatch(updateIsNatsServerConnected(true));
+    // start monitoring connection
     this.monitorConnStatus().then();
 
     // now we'll subscribe to the system only
@@ -374,6 +378,7 @@ export default class ConnectNats {
           if (this._nc?.isClosed()) {
             this.messageQueue.isConnected(false);
             this.endSession('notifications.room-disconnected-network-error');
+            store.dispatch(updateIsNatsServerConnected(false));
 
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
@@ -385,11 +390,14 @@ export default class ConnectNats {
 
     for await (const s of this._nc.status()) {
       if (s.type === 'reconnecting' && !this.isRoomReconnecting) {
+        this._setRoomConnectionStatusState('re-connecting');
+        store.dispatch(updateIsNatsServerConnected(false));
+
         this.isRoomReconnecting = true;
         startStatusChecker();
-        this._setRoomConnectionStatusState('re-connecting');
       } else if (s.type === 'reconnect') {
         this._setRoomConnectionStatusState('connected');
+        store.dispatch(updateIsNatsServerConnected(true));
 
         clearInterval(this.statusCheckerInterval);
         this.statusCheckerInterval = undefined;
