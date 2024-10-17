@@ -35,7 +35,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
       const mics = await getDevices('videoinput');
       const videoDevices: Array<IMediaDevice> = [];
 
-      const options = mics.map((mic) => {
+      const options = mics.map((mic, index) => {
         const device: IMediaDevice = {
           id: mic.deviceId,
           label: mic.label,
@@ -43,7 +43,10 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
         videoDevices.push(device);
 
         return (
-          <option value={mic.deviceId} key={mic.deviceId}>
+          <option
+            value={mic.deviceId}
+            key={`device-id-${mic.deviceId}-${index}`}
+          >
             {mic.label}
           </option>
         );
@@ -55,7 +58,7 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
         dispatch(addVideoDevices(videoDevices));
       }
     };
-    getDeviceWebcams();
+    getDeviceWebcams().then();
   }, [dispatch]);
 
   useEffect(() => {

@@ -16,6 +16,7 @@ import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
   isShowKeyboardShortcuts: false,
+  isNatsServerConnected: false,
 
   audioDevices: [],
   videoDevices: [],
@@ -58,6 +59,9 @@ const roomSettingsSlice = createSlice({
       action: PayloadAction<boolean>,
     ) => {
       state.isShowKeyboardShortcuts = action.payload;
+    },
+    updateIsNatsServerConnected: (state, action: PayloadAction<boolean>) => {
+      state.isNatsServerConnected = action.payload;
     },
     addAudioDevices: (state, action: PayloadAction<Array<IMediaDevice>>) => {
       state.audioDevices = action.payload;
@@ -190,6 +194,7 @@ export const {
   toggleFooterVisibility,
   updateAzureTokenInfo,
   cleanAzureToken,
+  updateIsNatsServerConnected,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;
