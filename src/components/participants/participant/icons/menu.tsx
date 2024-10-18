@@ -8,8 +8,7 @@ import LowerHandMenuItem from './menu-items/lowerHand';
 import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
 import PrivateChatMenuItem from './menu-items/privateChatMenuItem';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState, store, useAppSelector } from '../../../../store';
+import { store, useAppSelector } from '../../../../store';
 
 interface IMenuIconProps {
   userId: string;
@@ -18,25 +17,17 @@ interface IMenuIconProps {
   openRemoveParticipantAlert(userId: string, type: string): void;
 }
 
-const defaultLockSettingsSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.defaultLockSettings,
-);
-
-const currentUserLockSettingsSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.lockSettings,
-);
-
 const MenuIcon = ({
   userId,
   name,
   isAdmin,
   openRemoveParticipantAlert,
 }: IMenuIconProps) => {
-  const defaultLockSettings = useAppSelector(defaultLockSettingsSelector);
+  const defaultLockSettings = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.defaultLockSettings,
+  );
   const currentUserLockSettings = useAppSelector(
-    currentUserLockSettingsSelector,
+    (state) => state.session.currentUser?.metadata?.lockSettings,
   );
   const currentUser = store.getState().session.currentUser;
 

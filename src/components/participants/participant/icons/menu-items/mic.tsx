@@ -18,8 +18,14 @@ interface IMicMenuItemProps {
   userId: string;
 }
 const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const audioTracks = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.audioTracks,
+  );
+  const isMuted = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.isMuted,
+  );
+  const name = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.name,
   );
   const session = store.getState().session;
   const [text, setText] = useState<string>('Ask to share Microphone');
@@ -28,17 +34,17 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
   const conn = getNatsConn();
 
   useEffect(() => {
-    if (participant?.audioTracks === 0) {
+    if (!audioTracks) {
       setText(t('left-panel.menus.items.ask-to-share-microphone').toString());
       setTask('left-panel.menus.items.share-microphone');
-    } else if (participant?.isMuted) {
+    } else if (isMuted) {
       setText(t('left-panel.menus.items.ask-to-unmute-mic').toString());
       setTask('left-panel.menus.items.unmute-mic');
-    } else if (participant?.audioTracks) {
+    } else if (audioTracks) {
       setText(t('left-panel.menus.items.mute-mic').toString());
       setTask('mute');
     }
-  }, [t, participant?.isMuted, participant?.audioTracks]);
+  }, [t, isMuted, audioTracks]);
 
   const onClick = async () => {
     if (task === 'mute') {
@@ -56,7 +62,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {
-        name: participant?.name,
+        name: name,
         task: t(task),
       }),
       {
@@ -72,7 +78,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     const body = create(MuteUnMuteTrackReqSchema, {
       sid: session.currentRoom.sid,
       roomId: session.currentRoom.roomId,
-      userId: participant?.userId,
+      userId: userId,
       muted: true,
     });
     const r = await sendAPIRequest(
@@ -87,7 +93,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     if (res.status) {
       toast(
         t('left-panel.menus.notice.you-have-muted-to', {
-          name: participant?.name,
+          name: name,
         }),
         {
           toastId: 'asked-status',
@@ -118,9 +124,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
       </div>
     );
   };
-  return (
-    <>{session.currentUser?.userId !== participant?.userId ? render() : null}</>
-  );
+  return <>{session.currentUser?.userId !== userId ? render() : null}</>;
 };
 
 export default MicMenuItem;

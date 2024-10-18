@@ -13,8 +13,11 @@ interface IWebcamMenuItemProps {
 }
 const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   const { t } = useTranslation();
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const name = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.name,
+  );
+  const videoTracks = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.videoTracks,
   );
   const roomFeatures =
     store.getState().session.currentRoom.metadata?.roomFeatures;
@@ -25,14 +28,14 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   const [task, setTask] = useState<string>('');
 
   useEffect(() => {
-    if (participant?.videoTracks === 0) {
+    if (!videoTracks) {
       setText(t('left-panel.menus.items.ask-to-share-webcam').toString());
       setTask('left-panel.menus.items.share-webcam');
     } else {
       setText(t('left-panel.menus.items.ask-to-stop-webcam').toString());
       setTask('left-panel.menus.items.stop-webcam');
     }
-  }, [t, participant?.videoTracks]);
+  }, [t, videoTracks]);
 
   const onClick = async () => {
     conn.sendDataMessage(
@@ -45,7 +48,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
 
     toast(
       t('left-panel.menus.notice.you-have-asked', {
-        name: participant?.name,
+        name: name,
         task: t(task),
       }),
       {
@@ -73,7 +76,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   };
   return (
     <>
-      {session.currentUser?.userId !== participant?.userId &&
+      {session.currentUser?.userId !== userId &&
       roomFeatures?.allowWebcams &&
       !roomFeatures.adminOnlyWebcams
         ? render()

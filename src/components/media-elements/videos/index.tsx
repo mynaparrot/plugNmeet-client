@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
-import { createSelector } from '@reduxjs/toolkit';
 import { concat, isEmpty } from 'lodash';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import VideosComponentElms, {
@@ -17,13 +16,10 @@ interface IVideosComponentProps {
   isVertical?: boolean;
 }
 
-const refreshWebcamsSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.refreshWebcams,
-);
-
 const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
-  const refreshWebcams = useAppSelector(refreshWebcamsSelector);
+  const refreshWebcams = useAppSelector(
+    (state) => state.roomSettings.refreshWebcams,
+  );
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
   const [allParticipants, setAllParticipants] = useState<

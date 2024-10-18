@@ -8,12 +8,12 @@ interface IScreenShareIconProps {
 }
 
 const ScreenShareIcon = ({ userId }: IScreenShareIconProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const screenShareTrack = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.screenShareTrack,
   );
 
   const render = useMemo(() => {
-    if (participant?.screenShareTrack) {
+    if (screenShareTrack) {
       return (
         <div className="screen-share ltr:mr-2 rtl:ml-2 cursor-pointer">
           <i className="pnm-screen-share secondaryColor text-[10px]" />
@@ -21,7 +21,7 @@ const ScreenShareIcon = ({ userId }: IScreenShareIconProps) => {
       );
     }
     return null;
-  }, [participant?.screenShareTrack]);
+  }, [screenShareTrack]);
 
   return <>{render}</>;
 };

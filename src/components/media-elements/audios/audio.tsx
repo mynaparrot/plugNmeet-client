@@ -1,33 +1,29 @@
 import React, { useEffect, useRef } from 'react';
 import { RemoteAudioTrack } from 'livekit-client';
 
-import { RootState, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-import { createSelector } from '@reduxjs/toolkit';
 
 interface IAudioElmProps {
   audioTrack: RemoteAudioTrack;
   userId: string;
 }
 
-const isNatsServerConnectedSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.isNatsServerConnected,
-);
-
 const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
   const ref = useRef<HTMLAudioElement>(null);
-  const isNatsServerConnected = useAppSelector(isNatsServerConnectedSelector);
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const isNatsServerConnected = useAppSelector(
+    (state) => state.roomSettings.isNatsServerConnected,
+  );
+  const audioVolume = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.audioVolume,
   );
 
   useEffect(() => {
     const el = ref.current;
     if (el) {
       audioTrack.attach(el);
-      if (typeof participant.audioVolume !== 'undefined') {
-        audioTrack.setVolume(participant.audioVolume);
+      if (typeof audioVolume !== 'undefined') {
+        audioTrack.setVolume(audioVolume);
       }
     }
 
@@ -40,14 +36,10 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
   }, [audioTrack]);
 
   useEffect(() => {
-    if (
-      participant &&
-      audioTrack &&
-      typeof participant.audioVolume !== 'undefined'
-    ) {
-      audioTrack.setVolume(participant.audioVolume);
+    if (audioTrack && typeof audioVolume !== 'undefined') {
+      audioTrack.setVolume(audioVolume);
     }
-  }, [audioTrack, participant]);
+  }, [audioTrack, audioVolume]);
 
   useEffect(() => {
     const el = ref.current;

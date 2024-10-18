@@ -2,21 +2,17 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import './style.scss';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
 }
 
-const isNatsServerConnectedSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.isNatsServerConnected,
-);
-
 const VideoElm = ({ track }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
-  const isNatsServerConnected = useAppSelector(isNatsServerConnectedSelector);
+  const isNatsServerConnected = useAppSelector(
+    (state) => state.roomSettings.isNatsServerConnected,
+  );
   const [loaded, setLoaded] = useState<boolean>(false);
   const [self, setSelf] = useState<boolean>(false);
 
@@ -61,7 +57,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         );
       });
     } else {
-      document.exitFullscreen();
+      document.exitFullscreen().then();
     }
   };
 

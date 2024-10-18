@@ -7,12 +7,12 @@ interface VisibilityIconProps {
 }
 
 const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const visibility = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.visibility,
   );
 
   const render = useMemo(() => {
-    if (participant?.visibility === 'hidden') {
+    if (visibility === 'hidden') {
       return (
         <div className="visibility ltr:mr-2 rtl:ml-2 cursor-pointer mt-[2px]">
           <i className="pnm-eye-slash secondaryColor text-xs" />
@@ -21,7 +21,7 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
     }
 
     return null;
-  }, [participant?.visibility]);
+  }, [visibility]);
 
   return <>{render}</>;
 };

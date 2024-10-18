@@ -7,12 +7,15 @@ interface IMicStatusProps {
 }
 
 const MicStatus = ({ userId }: IMicStatusProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const audioTracks = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.audioTracks,
+  );
+  const isMuted = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.isMuted,
   );
 
   const render = () => {
-    if (participant?.isMuted) {
+    if (isMuted) {
       return (
         <p className="mute">
           <i className="pnm-mic-mute text-white text-[9px]" />
@@ -28,11 +31,7 @@ const MicStatus = ({ userId }: IMicStatusProps) => {
   };
 
   return (
-    <>
-      {participant?.audioTracks ? (
-        <div className="mic-status">{render()}</div>
-      ) : null}
-    </>
+    <>{audioTracks ? <div className="mic-status">{render()}</div> : null}</>
   );
 };
 
