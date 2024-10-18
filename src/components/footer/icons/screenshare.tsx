@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
@@ -8,30 +7,12 @@ import {
   Track,
 } from 'livekit-client';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActivitySlice';
 import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
-
-const isActiveScreenshareSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveScreenshare,
-);
-const sessionScreenSharingSelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.screenSharing,
-);
-const isScreenshareLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockScreenSharing,
-);
 
 const ScrenshareIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -39,9 +20,16 @@ const ScrenshareIcon = () => {
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
 
-  const isActiveScreenshare = useAppSelector(isActiveScreenshareSelector);
-  const sessionScreenSharing = useAppSelector(sessionScreenSharingSelector);
-  const isScreenshareLock = useAppSelector(isScreenshareLockSelector);
+  const isActiveScreenshare = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveScreenshare,
+  );
+  const sessionScreenSharing = useAppSelector(
+    (state) => state.session.screenSharing,
+  );
+  const isScreenshareLock = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
+  );
 
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [lock, setLock] = useState<boolean>(false);
@@ -93,7 +81,7 @@ const ScrenshareIcon = () => {
     }
     if (isScreenshareLock) {
       setLock(true);
-      endScreenShare();
+      endScreenShare().then();
     } else if (!isScreenshareLock) {
       setLock(false);
     }
@@ -149,7 +137,7 @@ const ScrenshareIcon = () => {
         }),
       );
     } else {
-      endScreenShare();
+      endScreenShare().then();
     }
   };
 

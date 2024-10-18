@@ -1,14 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { createLocalVideoTrack, Track } from 'livekit-client';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
@@ -23,27 +17,6 @@ import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 import { getWebcamResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 
-const isActiveWebcamPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveWebcam,
-);
-const showVideoShareModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showVideoShareModal,
-);
-const isWebcamLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockWebcam,
-);
-const virtualBackgroundSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.virtualBackground,
-);
-const selectedVideoDeviceSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedVideoDevice,
-);
-
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
@@ -51,11 +24,21 @@ const WebcamIcon = () => {
   // we don't need this for small devices
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
 
-  const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
-  const isActiveWebcam = useAppSelector(isActiveWebcamPanelSelector);
-  const isWebcamLock = useAppSelector(isWebcamLockSelector);
-  const virtualBackground = useAppSelector(virtualBackgroundSelector);
-  const selectedVideoDevice = useAppSelector(selectedVideoDeviceSelector);
+  const showVideoShareModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showVideoShareModal,
+  );
+  const isActiveWebcam = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveWebcam,
+  );
+  const isWebcamLock = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
+  );
+  const virtualBackground = useAppSelector(
+    (state) => state.bottomIconsActivity.virtualBackground,
+  );
+  const selectedVideoDevice = useAppSelector(
+    (state) => state.roomSettings.selectedVideoDevice,
+  );
   const { t } = useTranslation();
 
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
@@ -140,9 +123,9 @@ const WebcamIcon = () => {
     };
 
     if (virtualBackground.type === 'none') {
-      changeDevice(selectedVideoDevice);
+      changeDevice(selectedVideoDevice).then();
     } else {
-      changeDeviceWithVB(selectedVideoDevice);
+      changeDeviceWithVB(selectedVideoDevice).then();
     }
 
     setDeviceId(selectedVideoDevice);

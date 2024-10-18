@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { Dialog, DialogTitle, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, useAppDispatch } from '../../../../store';
+import { useAppSelector, useAppDispatch } from '../../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
@@ -17,13 +16,10 @@ interface IShareWebcamModal {
   onSelectedDevice: (deviceId: string) => void;
 }
 
-const showVideoShareModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showVideoShareModal,
-);
-
 const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
-  const showVideoShareModal = useAppSelector(showVideoShareModalSelector);
+  const showVideoShareModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showVideoShareModal,
+  );
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedWebcam, setSelectWebcam] = useState<string>('');
   const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);

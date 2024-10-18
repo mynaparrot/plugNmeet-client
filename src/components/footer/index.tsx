@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import WebcamIcon from './icons/webcam';
 import MicrophoneIcon from './icons/microphone';
 import ChatIcon from './icons/chat';
@@ -18,14 +16,11 @@ import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 
-const footerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.visibleFooter,
-);
-
 const Footer = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
-  const footerVisible = useAppSelector(footerVisibilitySelector);
+  const footerVisible = useAppSelector(
+    (state) => state.roomSettings.visibleFooter,
+  );
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const isRecorder = store.getState().session.currentUser?.isRecorder;

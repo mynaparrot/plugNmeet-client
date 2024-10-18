@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import RecordingModal from './recording/recordingModal';
 import { RecordingEvent, RecordingType } from './recording/IRecording';
 import useLocalRecording from './recording/useLocalRecording';
 import useCloudRecording from './recording/useCloudRecording';
 
-const isRecordingSelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.isActiveRecording,
-);
 const RecordingIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const {
@@ -40,7 +35,9 @@ const RecordingIcon = () => {
   const isPresenter =
     store.getState().session.currentUser?.metadata?.isPresenter;
 
-  const isRunningCloudRecording = useAppSelector(isRecordingSelector);
+  const isRunningCloudRecording = useAppSelector(
+    (state) => state.session.isActiveRecording,
+  );
   const [disable, setDisable] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [allowRecording, setAllowRecording] = useState<boolean>(true);

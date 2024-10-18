@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import {
   CreateIngressReqSchema,
@@ -10,13 +9,8 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-
-const ingressFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom?.metadata?.roomFeatures,
-  (room_features) => room_features?.ingressFeatures,
-);
 
 const Ingress = () => {
   const { t } = useTranslation();
@@ -26,7 +20,10 @@ const Ingress = () => {
     IngressInput.RTMP_INPUT,
   );
   const session = store.getState().session;
-  const ingressFeatures = useAppSelector(ingressFeaturesSelector);
+  const ingressFeatures = useAppSelector(
+    (state) =>
+      state.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures,
+  );
 
   const onSubmit = async (e) => {
     e.preventDefault();

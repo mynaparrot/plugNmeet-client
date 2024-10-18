@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   Dialog,
   DialogTitle,
@@ -10,12 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import sanitizeHtml from 'sanitize-html';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowRoomSettingsModal } from '../../../store/slices/roomSettingsSlice';
 import DataSavings from './dataSavings';
 import Notification from './notification';
@@ -23,11 +17,6 @@ import ApplicationSettings from './application';
 import Ingress from './ingress';
 
 declare const PNM_VERSION: string;
-
-const isShowRoomSettingsModalSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.isShowRoomSettingsModal,
-);
 
 const RoomSettings = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +28,7 @@ const RoomSettings = () => {
     s.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures;
 
   const isShowRoomSettingsModal = useAppSelector(
-    isShowRoomSettingsModalSelector,
+    (state) => state.roomSettings.isShowRoomSettingsModal,
   );
 
   const [categories, setCategories] = useState({

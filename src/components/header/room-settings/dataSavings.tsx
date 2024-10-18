@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Field, Label, Switch } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import { VideoQuality } from 'livekit-client';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateActivateWebcamsView,
   updateActiveScreenSharingView,
   updateRoomVideoQuality,
 } from '../../../store/slices/roomSettingsSlice';
-
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.activateWebcamsView,
-);
-
-const activeScreenSharingViewSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.activeScreenSharingView,
-);
 
 const DataSavings = () => {
   const dispatch = useAppDispatch();
@@ -32,15 +16,16 @@ const DataSavings = () => {
   const [videoQuality, setVideoQuality] = useState<VideoQuality>(
     store.getState().roomSettings.roomVideoQuality,
   );
+  const activateWebcamsView = useAppSelector(
+    (state) => state.roomSettings.activateWebcamsView,
+  );
+  const activeScreenSharingView = useAppSelector(
+    (state) => state.roomSettings.activeScreenSharingView,
+  );
 
   useEffect(() => {
     dispatch(updateRoomVideoQuality(videoQuality));
   }, [dispatch, videoQuality]);
-
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
-  const activeScreenSharingView = useAppSelector(
-    activeScreenSharingViewSelector,
-  );
 
   const toggleWebcamView = () => {
     dispatch(updateActivateWebcamsView(!activateWebcamsView));

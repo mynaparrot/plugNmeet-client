@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../store';
-
-const isActiveSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.displayExternalLinkFeatures,
-  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
-);
-const linkSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.displayExternalLinkFeatures,
-  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.link,
-);
+import { useAppSelector } from '../../store';
 
 const DisplayExternalLink = () => {
-  const link = useAppSelector(linkSelector);
-  const isActive = useAppSelector(isActiveSelector);
+  const link = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.displayExternalLinkFeatures?.link,
+  );
+  const isActive = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.displayExternalLinkFeatures?.isActive,
+  );
   const [loaded, setLoaded] = useState<boolean>();
 
   const onLoad = () => {

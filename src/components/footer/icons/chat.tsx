@@ -1,33 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useAppSelector,
-  RootState,
-  useAppDispatch,
-  store,
-} from '../../../store';
+import { useAppSelector, useAppDispatch, store } from '../../../store';
 import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
-
-const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveChatPanel,
-);
-
-const totalUnreadChatMsgsSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.totalUnreadChatMsgs,
-);
 
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
 
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
-  const totalUnreadChatMsgs = useAppSelector(totalUnreadChatMsgsSelector);
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
+  const totalUnreadChatMsgs = useAppSelector(
+    (state) => state.bottomIconsActivity.totalUnreadChatMsgs,
+  );
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [allowChat, setAllowChat] = useState<boolean>(true);
 

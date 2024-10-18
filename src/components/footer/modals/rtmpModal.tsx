@@ -5,7 +5,6 @@ import {
   Transition,
   TransitionChild,
 } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { isURL, isEmpty } from 'validator';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -16,25 +15,15 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-
-const isActiveRtmpBroadcastingSelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.isActiveRtmpBroadcasting,
-);
 
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const isActiveRtmpBroadcasting = useAppSelector(
-    isActiveRtmpBroadcastingSelector,
+    (state) => state.session.isActiveRtmpBroadcasting,
   );
   const [provider, setProvider] = useState<string>('youtube');
   const [showServerUrl, setShowServerUrl] = useState<boolean>(false);

@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { Transition } from '@headlessui/react';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
 
-import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
+import { useAppSelector, useAppDispatch, store } from '../../store';
 import ActiveSpeakers from '../active-speakers';
 import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
@@ -13,75 +12,44 @@ import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivityS
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
 
-const columnCameraWidthSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.columnCameraWidth,
-);
-const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.columnCameraPosition,
-);
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveParticipantsPanel,
-);
-const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveChatPanel,
-);
-const activeScreenSharingViewSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.activeScreenSharingView,
-);
-const isActiveWhiteboardSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveWhiteboard,
-);
-const isActiveExternalMediaPlayerSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.externalMediaPlayerFeatures,
-  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
-);
-const isActiveDisplayExternalLinkSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.displayExternalLinkFeatures,
-  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
-);
-const screenHeightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
-);
-const headerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.visibleHeader,
-);
-const footerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.visibleFooter,
-);
-
 const MainArea = () => {
-  const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
-  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
+  const columnCameraWidth = useAppSelector(
+    (state) => state.roomSettings.columnCameraWidth,
+  );
+  const columnCameraPosition = useAppSelector(
+    (state) => state.roomSettings.columnCameraPosition,
+  );
   const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
+    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
   );
   const isActiveScreenSharingView = useAppSelector(
-    activeScreenSharingViewSelector,
+    (state) => state.roomSettings.activeScreenSharingView,
   );
-  const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
+  const isActiveWhiteboard = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveWhiteboard,
+  );
   const isActiveExternalMediaPlayer = useAppSelector(
-    isActiveExternalMediaPlayerSelector,
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.externalMediaPlayerFeatures?.isActive,
   );
   const isActiveDisplayExternalLink = useAppSelector(
-    isActiveDisplayExternalLinkSelector,
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.displayExternalLinkFeatures?.isActive,
   );
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
-  const screenHeight = useAppSelector(screenHeightSelector);
-  const headerVisible = useAppSelector(headerVisibilitySelector);
-  const footerVisible = useAppSelector(footerVisibilitySelector);
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
+  const screenHeight = useAppSelector(
+    (state) => state.bottomIconsActivity.screenHeight,
+  );
+  const headerVisible = useAppSelector(
+    (state) => state.roomSettings.visibleHeader,
+  );
+  const footerVisible = useAppSelector(
+    (state) => state.roomSettings.visibleFooter,
+  );
   const dispatch = useAppDispatch();
   const currentConnection = getMediaServerConn();
   const isRecorder = store.getState().session.currentUser?.isRecorder;

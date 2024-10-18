@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
+import { useAppDispatch, useAppSelector } from '../../../../store';
 import { updateSelectedAudioDevice } from '../../../../store/slices/roomSettingsSlice';
 import {
   updateIsActiveMicrophone,
@@ -15,26 +14,19 @@ interface IMicMenuItemsProps {
   currentRoom: Room;
 }
 
-const audioDevicesSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.audioDevices,
-);
-const isMicMutedSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
-);
-const selectedAudioDeviceSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedAudioDevice,
-);
-
 const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const audioDevices = useAppSelector(audioDevicesSelector);
-  const isMicMuted = useAppSelector(isMicMutedSelector);
-  const selectedAudioDevice = useAppSelector(selectedAudioDeviceSelector);
+  const audioDevices = useAppSelector(
+    (state) => state.roomSettings.audioDevices,
+  );
+  const isMicMuted = useAppSelector(
+    (state) => state.bottomIconsActivity.isMicMuted,
+  );
+  const selectedAudioDevice = useAppSelector(
+    (state) => state.roomSettings.selectedAudioDevice,
+  );
 
   const [devicesMenu, setDevicesMenu] = useState<Array<React.JSX.Element>>();
   const [newDevice, setNewDevice] = useState<string>();
@@ -68,7 +60,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
       await currentRoom.switchActiveDevice('audioinput', id);
     };
     if (newDevice) {
-      changeDevice(newDevice);
+      changeDevice(newDevice).then();
       dispatch(updateSelectedAudioDevice(newDevice));
     }
   }, [newDevice, currentRoom, dispatch]);

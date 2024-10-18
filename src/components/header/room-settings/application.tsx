@@ -1,10 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field, Label, Switch } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 
 import languages from '../../../helpers/languages';
-import { RootState, useAppDispatch, useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateColumnCameraPosition,
   updateColumnCameraWidth,
@@ -17,30 +16,19 @@ import {
   VideoObjectFit,
 } from '../../../store/slices/interfaces/roomSettings';
 
-const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.theme,
-);
-const videoObjectFitSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.videoObjectFit,
-);
-const columnCameraWidthSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.columnCameraWidth,
-);
-const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.columnCameraPosition,
-);
-
 const ApplicationSettings = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const theme = useAppSelector(themeSelector);
-  const videoObjectFit = useAppSelector(videoObjectFitSelector);
-  const columnCameraWidth = useAppSelector(columnCameraWidthSelector);
-  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
+  const theme = useAppSelector((state) => state.roomSettings.theme);
+  const videoObjectFit = useAppSelector(
+    (state) => state.roomSettings.videoObjectFit,
+  );
+  const columnCameraWidth = useAppSelector(
+    (state) => state.roomSettings.columnCameraWidth,
+  );
+  const columnCameraPosition = useAppSelector(
+    (state) => state.roomSettings.columnCameraPosition,
+  );
 
   const toggleTheme = () => {
     dispatch(updateTheme(theme === 'light' ? 'dark' : 'light'));

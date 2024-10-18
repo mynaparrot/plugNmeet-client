@@ -1,21 +1,16 @@
 import React from 'react';
 import { Field, Label, Switch } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import { updateAllowPlayAudioNotification } from '../../../store/slices/roomSettingsSlice';
 
-const allowPlayAudioNotificationSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.allowPlayAudioNotification,
-);
 const Notification = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const allowPlayAudioNotification = useAppSelector(
-    allowPlayAudioNotificationSelector,
+    (state) => state.roomSettings.allowPlayAudioNotification,
   );
 
   const toggleAudioNotification = () => {

@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   ChangeVisibilityRes,
   ChangeVisibilityResSchema,
 } from 'plugnmeet-protocol-js';
 import { create, toBinary } from '@bufbuild/protobuf';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveChatPanel,
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-
-const isActiveWhiteboardSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveWhiteboard,
-);
-const isWhiteboardVisibleSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures,
-  (whiteboardFeatures) => whiteboardFeatures?.visible,
-);
 
 const WhiteboardIcon = () => {
   const { t } = useTranslation();
@@ -35,8 +19,14 @@ const WhiteboardIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [initiated, setInitiated] = useState<boolean>(false);
-  const isActiveWhiteboard = useAppSelector(isActiveWhiteboardSelector);
-  const isVisible = useAppSelector(isWhiteboardVisibleSelector);
+  const isActiveWhiteboard = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveWhiteboard,
+  );
+  const isVisible = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
+        ?.visible,
+  );
 
   const allowedWhiteboard =
     store.getState().session.currentRoom.metadata?.roomFeatures
@@ -104,7 +94,7 @@ const WhiteboardIcon = () => {
       });
       // wait little bit before change visibility
       setTimeout(() => {
-        sendRequest(body);
+        sendRequest(body).then();
       }, 500);
     } else if (
       !isActiveWhiteboard &&
@@ -114,7 +104,7 @@ const WhiteboardIcon = () => {
         roomId: currentRoom.roomId,
         visibleWhiteBoard: false,
       });
-      sendRequest(body);
+      sendRequest(body).then();
     }
     //eslint-disable-next-line
   }, [isActiveWhiteboard]);

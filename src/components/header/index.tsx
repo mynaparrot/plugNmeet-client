@@ -1,5 +1,4 @@
 import React, { useEffect, useState, Fragment } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   Dialog,
   DialogTitle,
@@ -16,7 +15,7 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import { useAppSelector, RootState, store, useAppDispatch } from '../../store';
+import { useAppSelector, store, useAppDispatch } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
@@ -29,23 +28,16 @@ import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 
-const roomTitleSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.roomTitle,
-);
-const roomDurationSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
-  (room_features) => room_features?.roomDuration,
-);
-const headerVisibilitySelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.visibleHeader,
-);
-
 const Header = () => {
-  const roomTitle = useAppSelector(roomTitleSelector);
-  const roomDuration = useAppSelector(roomDurationSelector);
-  const headerVisible = useAppSelector(headerVisibilitySelector);
+  const roomTitle = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.roomTitle,
+  );
+  const roomDuration = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.roomDuration,
+  );
+  const headerVisible = useAppSelector(
+    (state) => state.roomSettings.visibleHeader,
+  );
   const dispatch = useAppDispatch();
   const conn = getNatsConn();
 

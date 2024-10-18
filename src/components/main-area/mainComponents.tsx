@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';
 import AudioElements from '../media-elements/audios';
 import SharedNotepadElement from '../shared-notepad';
@@ -28,25 +27,6 @@ interface IMainComponentsProps {
   isActiveScreenSharingView: boolean;
 }
 
-const activateWebcamsViewSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.activateWebcamsView,
-);
-
-const activateSpeechServiceSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.speechToTextTranslationFeatures,
-  (speech_to_text_translation_features) =>
-    speech_to_text_translation_features?.isEnabled,
-);
-
-const isActiveSharedNotepadSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
-  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
-);
-
 const MainComponents = ({
   isActiveWhiteboard,
   isActiveExternalMediaPlayer,
@@ -57,9 +37,19 @@ const MainComponents = ({
   const isRecorder = store.getState().session.currentUser?.isRecorder;
   const currentConnection = getMediaServerConn();
 
-  const activateWebcamsView = useAppSelector(activateWebcamsViewSelector);
-  const activateSpeechService = useAppSelector(activateSpeechServiceSelector);
-  const isActiveSharedNotepad = useAppSelector(isActiveSharedNotepadSelector);
+  const activateWebcamsView = useAppSelector(
+    (state) => state.roomSettings.activateWebcamsView,
+  );
+  const activateSpeechService = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.speechToTextTranslationFeatures?.isEnabled,
+  );
+  const isActiveSharedNotepad = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.isActive,
+  );
 
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);

@@ -7,7 +7,6 @@ import {
   Transition,
 } from '@headlessui/react';
 import { toast } from 'react-toastify';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import {
   ChangeEtherpadStatusReqSchema,
@@ -21,12 +20,7 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import LockSettingsModal from '../modals/lockSettingsModal';
 import {
@@ -46,87 +40,49 @@ import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 
-const showLockSettingsModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showLockSettingsModal,
-);
-const isActiveRtmpBroadcastingSelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.isActiveRtmpBroadcasting,
-);
-const showRtmpModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showRtmpModal,
-);
-const sharedNotepadStatusSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
-  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
-);
-const isActiveExternalMediaPlayerSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.externalMediaPlayerFeatures,
-  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
-);
-const showExternalMediaPlayerModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showExternalMediaPlayerModal,
-);
-const showManageWaitingRoomModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showManageWaitingRoomModal,
-);
-const showManageBreakoutRoomModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showManageBreakoutRoomModal,
-);
-const isActiveDisplayExternalLinkSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.displayExternalLinkFeatures,
-  (displayExternalLinkFeatures) => displayExternalLinkFeatures?.isActive,
-);
-const showDisplayExternalLinkModalModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showDisplayExternalLinkModal,
-);
-const showSpeechSettingsModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showSpeechSettingsModal,
-);
-
 const MenusIcon = () => {
   const session = store.getState().session;
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const showLockSettingsModal = useAppSelector(showLockSettingsModalSelector);
-  const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
-  const showRtmpModal = useAppSelector(showRtmpModalSelector);
+  const showLockSettingsModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showLockSettingsModal,
+  );
+  const sharedNotepadStatus = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.isActive,
+  );
+  const showRtmpModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showRtmpModal,
+  );
   const isActiveRtmpBroadcasting = useAppSelector(
-    isActiveRtmpBroadcastingSelector,
+    (state) => state.session.isActiveRtmpBroadcasting,
   );
   const isActiveExternalMediaPlayer = useAppSelector(
-    isActiveExternalMediaPlayerSelector,
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.externalMediaPlayerFeatures?.isActive,
   );
   const showExternalMediaPlayerModal = useAppSelector(
-    showExternalMediaPlayerModalSelector,
+    (state) => state.bottomIconsActivity.showExternalMediaPlayerModal,
   );
   const showManageWaitingRoomModal = useAppSelector(
-    showManageWaitingRoomModalSelector,
+    (state) => state.bottomIconsActivity.showManageWaitingRoomModal,
   );
   const showManageBreakoutRoomModal = useAppSelector(
-    showManageBreakoutRoomModalSelector,
+    (state) => state.bottomIconsActivity.showManageBreakoutRoomModal,
   );
   const isActiveDisplayExternalLink = useAppSelector(
-    isActiveDisplayExternalLinkSelector,
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.displayExternalLinkFeatures?.isActive,
   );
   const showDisplayExternalLinkModal = useAppSelector(
-    showDisplayExternalLinkModalModalSelector,
+    (state) => state.bottomIconsActivity.showDisplayExternalLinkModal,
   );
   const showSpeechSettingsModal = useAppSelector(
-    showSpeechSettingsModalSelector,
+    (state) => state.bottomIconsActivity.showSpeechSettingsModal,
   );
   const roomFeatures =
     store.getState().session.currentRoom?.metadata?.roomFeatures;

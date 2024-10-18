@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   Dialog,
   DialogTitle,
@@ -17,23 +16,16 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
-const roomLockSettingsSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata,
-  (metadata) => metadata?.defaultLockSettings,
-);
 const LockSettingsModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const roomLockSettings = useAppSelector(roomLockSettingsSelector);
+  const roomLockSettings = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.defaultLockSettings,
+  );
   const session = store.getState().session;
 
   const updateLockSettings = async (status, service: string) => {
