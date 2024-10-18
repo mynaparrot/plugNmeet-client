@@ -1,14 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 
-const interimTextSelector = createSelector(
-  (state: RootState) => state.speechServices,
-  (speechServices) => speechServices.interimText,
-);
 const InterimTextElms = () => {
-  const interimText = useAppSelector(interimTextSelector);
+  const interimText = useAppSelector(
+    (state) => state.speechServices.interimText,
+  );
   const scrollToRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +9,7 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 
 import SubtitleArea from './subtitleArea';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 
 import {
   getAzureToken,
@@ -23,26 +22,22 @@ import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSli
 import SubtitleTextsHistory from './history';
 import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
 
-const speechServiceFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
-  (room_features) => room_features?.speechToTextTranslationFeatures,
-);
-const azureTokenInfoSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.azureTokenInfo,
-);
-const isMicMutedSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
-);
 const tokenRenewInterval = 8 * 60 * 1000;
 
 const SpeechToTextService = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const speechService = useAppSelector(speechServiceFeaturesSelector);
-  const azureTokenInfo = useAppSelector(azureTokenInfoSelector);
-  const isMicMuted = useAppSelector(isMicMutedSelector);
+  const speechService = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.speechToTextTranslationFeatures,
+  );
+  const azureTokenInfo = useAppSelector(
+    (state) => state.roomSettings.azureTokenInfo,
+  );
+  const isMicMuted = useAppSelector(
+    (state) => state.bottomIconsActivity.isMicMuted,
+  );
   const currentRoom = getMediaServerConnRoom();
 
   const [speechLang, setSpeechLang] = useState<string>('');
@@ -156,7 +151,7 @@ const SpeechToTextService = () => {
       }
       setOptionSelectionDisabled(false);
     };
-    getToken();
+    getToken().then();
     //eslint-disable-next-line
   }, [deviceId, mediaStream, speechLang]);
 
@@ -212,7 +207,7 @@ const SpeechToTextService = () => {
         dispatch(cleanAzureToken());
       }
     };
-    startConnection();
+    startConnection().then();
     //eslint-disable-next-line
   }, [azureTokenInfo, deviceId, mediaStream, speechLang, speechService]);
 

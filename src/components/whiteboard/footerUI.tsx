@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
-import usePreviousPage from './helpers/hooks/usePreviousPage';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
-import { createSelector } from '@reduxjs/toolkit';
-import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
-import { useTranslation } from 'react-i18next';
-import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
-import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { toast } from 'react-toastify';
 import {
   CommonResponseSchema,
@@ -15,6 +8,12 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
+import usePreviousPage from './helpers/hooks/usePreviousPage';
+import { store, useAppDispatch, useAppSelector } from '../../store';
+import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
+import { useTranslation } from 'react-i18next';
+import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
+import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import { displaySavedPageData, savePageData } from './helpers/utils';
 
@@ -22,24 +21,12 @@ interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   isPresenter: boolean;
 }
-const totalPagesSelector = createSelector(
-  (state: RootState) => state.whiteboard,
-  (whiteboard) => whiteboard.totalPages,
-);
-const currentPageSelector = createSelector(
-  (state: RootState) => state.whiteboard,
-  (whiteboard) => whiteboard.currentPage,
-);
-const currentWhiteboardOfficeFileIdSelector = createSelector(
-  (state: RootState) => state.whiteboard,
-  (whiteboard) => whiteboard.currentWhiteboardOfficeFileId,
-);
 
 const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
-  const totalPages = useAppSelector(totalPagesSelector);
-  const currentPage = useAppSelector(currentPageSelector);
+  const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
+  const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
   const currentWhiteboardOfficeFileId = useAppSelector(
-    currentWhiteboardOfficeFileIdSelector,
+    (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
   const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const [options, setOptions] = useState<Array<React.JSX.Element>>();

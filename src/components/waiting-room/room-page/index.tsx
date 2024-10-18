@@ -1,21 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 
-import { RootState, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 import Logo from './logo';
-
-const waitingRoomMessageSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures,
-  (waitingRoomFeatures) => waitingRoomFeatures?.waitingRoomMsg,
-);
 
 const WaitingRoomPage = () => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   const { t } = useTranslation();
-  const waitingRoomMessage = useAppSelector(waitingRoomMessageSelector);
+  const waitingRoomMessage = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
+        ?.waitingRoomMsg,
+  );
 
   return (
     <>

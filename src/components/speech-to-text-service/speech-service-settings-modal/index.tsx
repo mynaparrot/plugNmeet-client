@@ -9,27 +9,26 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { SpeechToTextTranslationReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
-import { RootState, useAppDispatch, useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import { enableOrDisableSpeechService } from '../helpers/apiConnections';
 import SpeechLangsElms from './speechLangsElms';
 import SpeechUsersElms from './speechUsersElms';
 import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 
-const speechServiceFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
-  (room_features) => room_features?.speechToTextTranslationFeatures,
-);
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const speechService = useAppSelector(speechServiceFeaturesSelector);
+  const speechService = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.speechToTextTranslationFeatures,
+  );
 
   const [selectedSpeechLangs, setSelectedSpeechLangs] = useState<string[]>([]);
   const [selectedSpeechUsers, setSelectedSpeechUsers] = useState<string[]>([]);

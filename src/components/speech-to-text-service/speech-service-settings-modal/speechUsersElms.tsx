@@ -7,7 +7,7 @@ import {
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 
 interface SpeechUsersElmsPros {
@@ -20,13 +20,18 @@ const SpeechUsersElms = ({
   setSelectedSpeechUsers,
 }: SpeechUsersElmsPros) => {
   const { t } = useTranslation();
-  const allParticipants = useAppSelector(participantsSelector.selectAll);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
 
-  const render = useMemo(() => {
-    const users = allParticipants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
-    );
+  return useMemo(() => {
+    const users = participantsSelector
+      .selectAll(store.getState())
+      .filter(
+        (p) =>
+          p.name !== '' &&
+          p.userId !== 'RECORDER_BOT' &&
+          p.userId !== 'RTMP_BOT',
+      );
+
     return (
       <div className="flex items-center justify-between mt-2">
         <label
@@ -94,9 +99,7 @@ const SpeechUsersElms = ({
       </div>
     );
     //eslint-disable-next-line
-  }, [allParticipants, selectedSpeechUsers]);
-
-  return render;
+  }, [totalParticipants, selectedSpeechUsers]);
 };
 
 export default SpeechUsersElms;

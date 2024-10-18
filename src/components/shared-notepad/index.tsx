@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import Draggable, {
   ControlPosition,
@@ -7,31 +6,22 @@ import Draggable, {
   DraggableEvent,
 } from 'react-draggable';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 
-const sharedNotepadFeaturesSelector = createSelector(
-  (state: RootState) => state.session.currentRoom.metadata?.roomFeatures,
-  (room_features) => room_features?.sharedNotePadFeatures,
-);
-const lockSharedNotepadSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockSharedNotepad,
-);
-const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.theme,
-);
-const isActiveSharedNotePadSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveSharedNotePad,
-);
-
 const SharedNotepadElement = () => {
-  const sharedNotepadFeatures = useAppSelector(sharedNotepadFeaturesSelector);
-  const lockSharedNotepad = useAppSelector(lockSharedNotepadSelector);
-  const theme = useAppSelector(themeSelector);
-  const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
+  const sharedNotepadFeatures = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
+  );
+  const lockSharedNotepad = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockSharedNotepad,
+  );
+  const theme = useAppSelector((state) => state.roomSettings.theme);
+  const isActiveSharedNotePad = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveSharedNotePad,
+  );
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const nodeRef = useRef(null);
