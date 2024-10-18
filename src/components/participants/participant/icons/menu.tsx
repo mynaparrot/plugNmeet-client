@@ -94,7 +94,7 @@ const MenuIcon = ({
                 {/* Mark this component as `static` */}
                 <MenuItems
                   static
-                  className="origin-top-right z-10 absolute ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+                  className="origin-top-right z-10 absolute top-0 ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
                 >
                   {renderMenuItems()}
                 </MenuItems>
