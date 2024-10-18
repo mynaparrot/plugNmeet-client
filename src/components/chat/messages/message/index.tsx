@@ -13,8 +13,8 @@ interface IMessageProps {
   currentUser?: ICurrentUser;
 }
 const Message = ({ body, currentUser }: IMessageProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, body.fromUserId),
+  const participantName = useAppSelector(
+    (state) => participantsSelector.selectById(state, body.fromUserId)?.name,
   );
   const { t } = useTranslation();
 
@@ -43,12 +43,12 @@ const Message = ({ body, currentUser }: IMessageProps) => {
     } else {
       return (
         <>
-          <Avatar participant={participant} name={body.fromName} />
+          <Avatar userId={body.fromUserId} name={body.fromName} />
           <div className="content w-[calc(100%-2rem)] pt-2">
             <p className="name pl-2 text-sm pb-1 dark:text-darkText">
-              {body.fromName ? body.fromName : participant?.name}
+              {body.fromName ? body.fromName : participantName}
               <span style={{ fontSize: '10px' }}>
-                {participant ? null : ' (offline)'}
+                {participantName ? null : ' (offline)'}
               </span>
             </p>
             <p

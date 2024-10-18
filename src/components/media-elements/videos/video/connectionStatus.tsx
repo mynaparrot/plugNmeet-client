@@ -8,7 +8,8 @@ interface IConnectionStatusProps {
 }
 const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
   const connectionQuality = useAppSelector(
-    (state) => participantsSelector.selectById(state, userId).connectionQuality,
+    (state) =>
+      participantsSelector.selectById(state, userId)?.connectionQuality,
   );
   const [color, setColor] = useState<string>('#FFFFFF');
 

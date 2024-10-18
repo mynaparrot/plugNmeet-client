@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import useVirtual from 'react-cool-virtual';
-import { createSelector } from '@reduxjs/toolkit';
 import { ChatMessage } from 'plugnmeet-protocol-js';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
 import Message from './message';
 
@@ -11,14 +10,11 @@ interface IMessagesProps {
   userId: string;
 }
 
-const isActiveChatPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveChatPanel,
-);
-
 const Messages = ({ userId }: IMessagesProps) => {
   const allMessages = useAppSelector(chatMessagesSelector.selectAll);
-  const isActiveChatPanel = useAppSelector(isActiveChatPanelSelector);
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
 
   const scrollToRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;

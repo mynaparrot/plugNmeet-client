@@ -2,13 +2,13 @@ import React, { useEffect, useState, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
+  ListboxButton,
   ListboxOption,
   ListboxOptions,
   Transition,
 } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { chatMessagesSelector } from '../../store/slices/chatMessagesSlice';
 import Messages from './messages';
 import { participantsSelector } from '../../store/slices/participantSlice';
@@ -16,19 +16,6 @@ import {
   updateSelectedChatOption,
   updateUnreadMsgFrom,
 } from '../../store/slices/roomSettingsSlice';
-
-const selectedChatOptionSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedChatOption,
-);
-const initiatePrivateChatSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.initiatePrivateChat,
-);
-const unreadMsgFromSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.unreadMsgFrom,
-);
 
 interface IChatOptions {
   id: string;
@@ -38,14 +25,21 @@ interface IChatOptions {
 const ChatTabs = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const initiatePrivateChat = useAppSelector(initiatePrivateChatSelector);
+
+  const initiatePrivateChat = useAppSelector(
+    (state) => state.roomSettings.initiatePrivateChat,
+  );
+  const unreadMsgFrom = useAppSelector(
+    (state) => state.roomSettings.unreadMsgFrom,
+  );
+  const selectedChatOption = useAppSelector(
+    (state) => state.roomSettings.selectedChatOption,
+  );
   const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
   const [privateChatUsers, setPrivateChatUsers] = useState<Map<string, string>>(
     new Map(),
   );
   const currentUser = store.getState().session.currentUser;
-  const unreadMsgFrom = useAppSelector(unreadMsgFromSelector);
-  const selectedChatOption = useAppSelector(selectedChatOptionSelector);
 
   const [chatOptions, setChatOptions] = useState<IChatOptions[]>([
     {
@@ -117,7 +111,7 @@ const ChatTabs = () => {
     }
   }, [selectedChatOption, chatOptions]);
 
-  const onChange = (id) => {
+  const onChange = (id: string) => {
     dispatch(updateSelectedChatOption(id));
     dispatch(
       updateUnreadMsgFrom({
@@ -131,7 +125,7 @@ const ChatTabs = () => {
     <div className="h-full">
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative h-10 z-10">
-          <Listbox.Button className="flex items-center justify-between py-2 text-sm text-black dark:text-darkText font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
+          <ListboxButton className="flex items-center justify-between py-2 text-sm text-black dark:text-darkText font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
             <span className="block truncate pl-4 md:pl-6">{selectedTitle}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               {unreadMsgFrom.length ? (
@@ -152,7 +146,7 @@ const ChatTabs = () => {
                 />
               </svg>
             </span>
-          </Listbox.Button>
+          </ListboxButton>
           <Transition
             as={Fragment}
             leave="transition ease-in duration-100"

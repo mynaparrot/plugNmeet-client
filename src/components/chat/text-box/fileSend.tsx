@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
 import { getNatsConn } from '../../../helpers/nats';
 
@@ -12,16 +11,13 @@ interface IFileSendProps {
   lockSendFile: boolean;
 }
 
-const selectedChatOptionSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedChatOption,
-);
-
 const FileSend = ({ lockSendFile }: IFileSendProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const [files, setFiles] = useState<Array<File>>();
-  const selectedChatOption = useAppSelector(selectedChatOptionSelector);
+  const selectedChatOption = useAppSelector(
+    (state) => state.roomSettings.selectedChatOption,
+  );
   const conn = getNatsConn();
 
   const chat_features =
