@@ -1,3 +1,5 @@
+@use 'variables';
+
 // Common SCSS
 body {
   margin: 0;
@@ -12,27 +14,27 @@ code {
 }
 
 .primaryColor {
-  color: $primaryColor;
+  color: variables.$primaryColor;
 }
 
 .secondaryColor {
-  color: $secondaryColor;
+  color: variables.$secondaryColor;
 }
 
 .bg-primaryColor {
-  background: $primaryColor;
+  background: variables.$primaryColor;
 }
 
 .bg-secondaryColor {
-  background: $secondaryColor;
+  background: variables.$secondaryColor;
 }
 
 .border-primaryColor {
-  color: $primaryColor;
+  color: variables.$primaryColor;
 }
 
 .border-secondaryColor {
-  color: $secondaryColor;
+  color: variables.$secondaryColor;
 }
 
 // Common SCSS
