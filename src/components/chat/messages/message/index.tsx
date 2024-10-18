@@ -48,7 +48,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
             <p className="name pl-2 text-sm pb-1 dark:text-darkText">
               {body.fromName ? body.fromName : participantName}
               <span style={{ fontSize: '10px' }}>
-                {participantName ? null : ' (offline)'}
+                {participantName ? '' : ' (offline)'}
               </span>
             </p>
             <p

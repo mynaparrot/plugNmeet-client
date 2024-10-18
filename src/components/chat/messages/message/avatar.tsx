@@ -21,7 +21,7 @@ const Avatar = ({ userId, name }: IAvatarProps) => {
       if (participant?.name) {
         n = participant?.name;
       }
-      return <>{n?.slice(0, 2).toUpperCase()}</>;
+      return <>{n.slice(0, 2).toUpperCase()}</>;
     }
   };
   return (

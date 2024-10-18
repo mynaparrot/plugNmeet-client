@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
 import {
   Listbox,
+  ListboxButton,
   ListboxOption,
   ListboxOptions,
   Transition,
@@ -57,7 +58,7 @@ const MicElms = ({
             disabled={disabled}
           >
             <div className="relative">
-              <Listbox.Button
+              <ListboxButton
                 className={`relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm`}
               >
                 <span className="block text-xs">
@@ -69,7 +70,7 @@ const MicElms = ({
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
                   <i className="pnm-updown text-xl primaryColor dark:text-darkText" />
                 </span>
-              </Listbox.Button>
+              </ListboxButton>
 
               <Transition
                 as={Fragment}
