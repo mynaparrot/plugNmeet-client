@@ -1,25 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
-
-const playAudioNotificationSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.playAudioNotification,
-);
-
-const allowPlayAudioNotificationSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.allowPlayAudioNotification,
-);
 
 const AudioNotification = () => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLAudioElement>(null);
-  const playAudioNotification = useAppSelector(playAudioNotificationSelector);
+  const playAudioNotification = useAppSelector(
+    (state) => state.roomSettings.playAudioNotification,
+  );
   const allowPlayAudioNotification = useAppSelector(
-    allowPlayAudioNotificationSelector,
+    (state) => state.roomSettings.allowPlayAudioNotification,
   );
   const [playing, setPlaying] = useState(false);
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';

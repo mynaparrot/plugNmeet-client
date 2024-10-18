@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 import {
@@ -9,18 +8,16 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import { RootState, useAppSelector } from '../../store';
+import { useAppSelector } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-
-const waitingRoomMessageSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures,
-  (waitingRoomFeatures) => waitingRoomFeatures?.waitingRoomMsg,
-);
 
 const UpdateRoomMessage = () => {
   const { t } = useTranslation();
-  const waitingRoomMessage = useAppSelector(waitingRoomMessageSelector);
+  const waitingRoomMessage = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
+        ?.waitingRoomMsg,
+  );
   const [message, setMessage] = useState<string>(waitingRoomMessage ?? '');
 
   const updateRoomMsg = async () => {

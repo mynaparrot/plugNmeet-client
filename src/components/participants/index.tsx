@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, store, useAppSelector } from '../../store';
+import { store, useAppSelector } from '../../store';
 import ParticipantComponent from './participant';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { IParticipant } from '../../store/slices/interfaces/participant';
@@ -11,15 +10,12 @@ import RemoveParticipantAlertModal, {
   IRemoveParticipantAlertModalData,
 } from './removeParticipantAlertModal';
 
-const screenHeightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
-);
-
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
   const totalParticipants = useAppSelector(participantsSelector.selectTotal);
-  const screenHeight = useAppSelector(screenHeightSelector);
+  const screenHeight = useAppSelector(
+    (state) => state.bottomIconsActivity.screenHeight,
+  );
 
   const [participants, setParticipants] = useState<IParticipant[]>([]);
   const { outerRef, innerRef, items } = useVirtual({

@@ -21,8 +21,9 @@ const WaitingApproval = ({
   name,
   openRemoveParticipantAlert,
 }: IWaitingApprovalProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const waitForApproval = useAppSelector(
+    (state) =>
+      participantsSelector.selectById(state, userId)?.metadata.waitForApproval,
   );
   const { t } = useTranslation();
 
@@ -56,7 +57,7 @@ const WaitingApproval = ({
   };
 
   const render = useMemo(() => {
-    if (participant?.metadata.waitForApproval) {
+    if (waitForApproval) {
       return (
         <div className="approve-btn-wrap rtl:pt-2">
           <button
@@ -77,7 +78,7 @@ const WaitingApproval = ({
 
     return null;
     //eslint-disable-next-line
-  }, [participant?.metadata.waitForApproval]);
+  }, [waitForApproval]);
 
   return <>{render}</>;
 };

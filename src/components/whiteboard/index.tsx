@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   Excalidraw,
   Footer,
@@ -16,7 +15,7 @@ import type {
   AppState,
 } from '@excalidraw/excalidraw/types/types';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   ReconciledElements,
@@ -57,53 +56,41 @@ interface WhiteboardProps {
 const CURSOR_SYNC_TIMEOUT = 33;
 const collaborators = new Map<string, Collaborator>();
 
-const whiteboardSelector = (state: RootState) => state.whiteboard;
-const lockWhiteboardSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockWhiteboard,
-);
-const isPresenterSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.isPresenter,
-);
-const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.theme,
-);
-const screenWidthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenWidth,
-);
-
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const currentUser = store.getState().session.currentUser;
   const currentRoom = store.getState().session.currentRoom;
 
+  const whiteboard = useAppSelector((state) => state.whiteboard);
+  const theme = useAppSelector((state) => state.roomSettings.theme);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
+  const lockWhiteboard = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockWhiteboard,
+  );
+  const isPresenter = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.isPresenter,
+  );
+  const screenWidth = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
+  );
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
+
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
-  const theme = useAppSelector(themeSelector);
   const [
     lastBroadcastOrReceivedSceneVersion,
     setLastBroadcastOrReceivedSceneVersion,
   ] = useState<number>(-1);
 
-  const whiteboard = useAppSelector(whiteboardSelector);
   const previousFileId = usePreviousFileId(
     whiteboard.currentWhiteboardOfficeFileId,
   );
   const previousPage = usePreviousPage(whiteboard.currentPage);
-
-  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
-  const lockWhiteboard = useAppSelector(lockWhiteboardSelector);
-  const isPresenter = useAppSelector(isPresenterSelector);
-
   const [fetchedData, setFetchedData] = useState<boolean>(false);
   const [currentWhiteboardWidth, setCurrentWhiteboardWidth] =
     useState<number>(0);
-  const screenWidth = useAppSelector(screenWidthSelector);
 
   // clean up store during exit
   useEffect(() => {

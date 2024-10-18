@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
+import { useAppDispatch, useAppSelector } from '../../../../store';
 import { updateSelectedVideoDevice } from '../../../../store/slices/roomSettingsSlice';
 import {
   updateIsActiveWebcam,
@@ -14,22 +13,17 @@ import {
 interface IWebcamMenuItemsProps {
   currentRoom: Room;
 }
-const videoDevicesSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.videoDevices,
-);
-
-const selectedVideoDeviceSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedVideoDevice,
-);
 
 const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const videoDevices = useAppSelector(videoDevicesSelector);
-  const selectedVideoDevice = useAppSelector(selectedVideoDeviceSelector);
+  const videoDevices = useAppSelector(
+    (state) => state.roomSettings.videoDevices,
+  );
+  const selectedVideoDevice = useAppSelector(
+    (state) => state.roomSettings.selectedVideoDevice,
+  );
 
   const [devicesMenu, setDevicesMenu] = useState<Array<React.JSX.Element>>();
   const [newDevice, setNewDevice] = useState<string>();

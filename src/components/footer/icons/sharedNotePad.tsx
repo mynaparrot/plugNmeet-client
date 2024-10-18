@@ -1,53 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import {
   ChangeVisibilityRes,
   ChangeVisibilityResSchema,
 } from 'plugnmeet-protocol-js';
 import { create, toBinary } from '@bufbuild/protobuf';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveChatPanel,
   updateIsActiveSharedNotePad,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
-const isActiveSharedNotePadSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveSharedNotePad,
-);
-const sharedNotepadStatusSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
-  (sharedNotePadFeatures) => sharedNotePadFeatures?.isActive,
-);
-const isSharedNotepadVisibleSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
-  (sharedNotePadFeatures) => sharedNotePadFeatures?.visible,
-);
-
 const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
-  const isActiveSharedNotePad = useAppSelector(isActiveSharedNotePadSelector);
-  const sharedNotepadStatus = useAppSelector(sharedNotepadStatusSelector);
-  const isVisible = useAppSelector(isSharedNotepadVisibleSelector);
+  const isActiveSharedNotePad = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveSharedNotePad,
+  );
+  const sharedNotepadStatus = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.isActive,
+  );
+  const isVisible = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.visible,
+  );
   const [initiated, setInitiated] = useState<boolean>(false);
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
-    // if not active then we can disable it.
+    // if not active, then we can disable it.
     if (!sharedNotepadStatus) {
       dispatch(updateIsActiveSharedNotePad(false));
     } else {
@@ -113,9 +102,9 @@ const SharedNotePadIcon = () => {
         roomId: currentRoom.roomId,
         visibleNotepad: true,
       });
-      // wait little bit before change visibility
+      // wait a little bit before change visibility
       setTimeout(() => {
-        sendRequest(body);
+        sendRequest(body).then();
       }, 500);
     } else if (
       !isActiveSharedNotePad &&
@@ -125,7 +114,7 @@ const SharedNotePadIcon = () => {
         roomId: currentRoom.roomId,
         visibleNotepad: false,
       });
-      sendRequest(body);
+      sendRequest(body).then();
     }
     //eslint-disable-next-line
   }, [isActiveSharedNotePad]);

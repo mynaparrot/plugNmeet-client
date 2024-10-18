@@ -16,8 +16,9 @@ interface ILowerHandMenuItemProps {
 }
 
 const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const raisedHand = useAppSelector(
+    (state) =>
+      participantsSelector.selectById(state, userId)?.metadata.raisedHand,
   );
   const { t } = useTranslation();
   const conn = getNatsConn();
@@ -25,7 +26,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
   const onClick = async () => {
     const data = create(NatsMsgClientToServerSchema, {
       event: NatsMsgClientToServerEvents.REQ_LOWER_OTHER_USER_HAND,
-      msg: participant?.userId,
+      msg: userId,
     });
     conn.sendMessageToSystemWorker(data);
   };
@@ -47,7 +48,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     );
   };
 
-  return <>{participant?.metadata.raisedHand ? render() : null}</>;
+  return <>{raisedHand ? render() : null}</>;
 };
 
 export default LowerHandMenuItem;

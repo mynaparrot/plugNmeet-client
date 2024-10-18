@@ -6,21 +6,15 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { updateShowKeyboardShortcutsModal } from '../../store/slices/roomSettingsSlice';
-
-const isShowKeyboardShortcutsSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.isShowKeyboardShortcuts,
-);
 
 const KeyboardShortcuts = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const isShowKeyboardShortcuts = useAppSelector(
-    isShowKeyboardShortcutsSelector,
+    (state) => state.roomSettings.isShowKeyboardShortcuts,
   );
 
   const closeModal = () => {

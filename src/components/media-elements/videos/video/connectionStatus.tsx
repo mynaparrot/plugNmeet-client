@@ -7,13 +7,14 @@ interface IConnectionStatusProps {
   userId: string;
 }
 const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const connectionQuality = useAppSelector(
+    (state) =>
+      participantsSelector.selectById(state, userId)?.connectionQuality,
   );
   const [color, setColor] = useState<string>('#FFFFFF');
 
   useEffect(() => {
-    switch (participant?.connectionQuality) {
+    switch (connectionQuality) {
       case ConnectionQuality.Excellent:
         setColor('#38f105');
         break;
@@ -29,13 +30,13 @@ const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
       default:
         setColor('#FFFFFF');
     }
-  }, [participant?.connectionQuality]);
+  }, [connectionQuality]);
 
-  const render = () => {
-    return <i style={{ color: color }} className="pnm-network text-[7px]" />;
-  };
-
-  return <div className="connection-status">{render()}</div>;
+  return (
+    <div className="connection-status">
+      <i style={{ color: color }} className="pnm-network text-[7px]" />
+    </div>
+  );
 };
 
 export default ConnectionStatus;

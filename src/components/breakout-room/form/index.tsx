@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
   BreakoutRoom,
@@ -9,12 +8,7 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { RoomType, UserType } from './types';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
@@ -23,16 +17,11 @@ import { useCreateBreakoutRoomsMutation } from '../../../store/services/breakout
 import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { RoomBox } from './roomBox';
 
-const droppedUserSelector = createSelector(
-  (state: RootState) => state.breakoutRoom,
-  (breakoutRoom) => breakoutRoom.droppedUser,
-);
-
 const FromElems = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const participants = useAppSelector(participantsSelector.selectAll);
-  const droppedUser = useAppSelector(droppedUserSelector);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
+  const droppedUser = useAppSelector((state) => state.breakoutRoom.droppedUser);
 
   const [totalRooms, setTotalRooms] = useState<number>(1);
   const preTotalRooms = useStorePreviousInt(totalRooms);
@@ -58,6 +47,7 @@ const FromElems = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    const participants = participantsSelector.selectAll(store.getState());
     // if length same this mean no changes
     if (users.length === participants.length) {
       return;
@@ -79,7 +69,7 @@ const FromElems = () => {
     });
 
     setUsers(tmp);
-  }, [participants, users]);
+  }, [totalParticipants, users]);
 
   // if room number decreases then we'll reset otherwise user will be missing
   useEffect(() => {
@@ -87,6 +77,7 @@ const FromElems = () => {
     if (totalRooms === preTotalRooms || totalRooms > preTotalRooms) {
       return;
     }
+    const participants = participantsSelector.selectAll(store.getState());
     const users: Array<UserType> = [];
     participants.forEach((p) => {
       users.push({
@@ -97,7 +88,7 @@ const FromElems = () => {
       });
     });
     setUsers(users);
-  }, [participants, totalRooms, preTotalRooms]);
+  }, [totalParticipants, totalRooms, preTotalRooms]);
 
   useEffect(() => {
     const rooms: Array<RoomType> = [

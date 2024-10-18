@@ -1,45 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { resetExternalMediaPlayer } from '../../store/slices/externalMediaPlayer';
 import VideoJsPlayerComponent from './video-js';
 import ReactPlayerComponent from './reactPlayerComponent';
 
-const isActiveSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.externalMediaPlayerFeatures,
-  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.isActive,
-);
-const playBackUrlSelector = createSelector(
-  (state: RootState) =>
-    state.session.currentRoom.metadata?.roomFeatures
-      ?.externalMediaPlayerFeatures,
-  (externalMediaPlayerFeatures) => externalMediaPlayerFeatures?.url,
-);
-const actionSelector = createSelector(
-  (state: RootState) => state.externalMediaPlayer,
-  (externalMediaPlayer) => externalMediaPlayer.action,
-);
-const seekToSelector = createSelector(
-  (state: RootState) => state.externalMediaPlayer,
-  (externalMediaPlayer) => externalMediaPlayer.seekTo,
-);
-
-const isPresenterSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata,
-  (metadata) => metadata?.isPresenter,
-);
-
 const ExternalMediaPlayer = () => {
-  const playBackUrl = useAppSelector(playBackUrlSelector);
-  const isActive = useAppSelector(isActiveSelector);
-  const action = useAppSelector(actionSelector);
-  const seekTo = useAppSelector(seekToSelector);
+  const playBackUrl = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.externalMediaPlayerFeatures?.url,
+  );
+  const isActive = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.externalMediaPlayerFeatures?.isActive,
+  );
+  const action = useAppSelector((state) => state.externalMediaPlayer.action);
+  const seekTo = useAppSelector((state) => state.externalMediaPlayer.seekTo);
   const [showVideoJsPlayer, setShowVideoJsPlayer] = useState<boolean>(false);
 
-  const isPresenter = useAppSelector(isPresenterSelector);
+  const isPresenter = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.isPresenter,
+  );
   const dispatch = useAppDispatch();
 
   const AUDIO_EXTENSIONS =

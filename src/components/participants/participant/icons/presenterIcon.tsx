@@ -8,12 +8,13 @@ interface IPresenterIconProps {
 }
 
 const PresenterIcon = ({ userId }: IPresenterIconProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const isPresenter = useAppSelector(
+    (state) =>
+      participantsSelector.selectById(state, userId)?.metadata.isPresenter,
   );
 
   const render = useMemo(() => {
-    if (participant?.metadata.isPresenter) {
+    if (isPresenter) {
       return (
         <div className="presenter ltr:mr-2 rtl:ml-2 cursor-pointer">
           <i className="pnm-presenter secondaryColor text-[10px]" />
@@ -22,7 +23,7 @@ const PresenterIcon = ({ userId }: IPresenterIconProps) => {
     }
 
     return null;
-  }, [participant?.metadata.isPresenter]);
+  }, [isPresenter]);
 
   return <>{render}</>;
 };

@@ -7,12 +7,11 @@ import {
   Transition,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { sleep } from '../../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import { updateCurrentWhiteboardOfficeFileId } from '../../store/slices/whiteboard';
@@ -22,22 +21,13 @@ interface IManageFilesProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
-const currentPageSelector = createSelector(
-  (state: RootState) => state.whiteboard,
-  (whiteboard) => whiteboard.currentPage,
-);
-const whiteboardUploadedOfficeFilesSelector = createSelector(
-  (state: RootState) => state.whiteboard,
-  (whiteboard) => whiteboard.whiteboardUploadedOfficeFiles,
-);
-
 const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const currentPage = useAppSelector(currentPageSelector);
+  const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
   const whiteboardUploadedOfficeFiles = useAppSelector(
-    whiteboardUploadedOfficeFilesSelector,
+    (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
   );
   const [refreshFileBrowser, setRefreshFileBrowser] = useState<number>(0);
   const [menuItems, setMenuItems] = useState<React.JSX.Element[]>([]);

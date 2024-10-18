@@ -14,19 +14,25 @@ interface MicIconProps {
 }
 
 const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const audioTracks = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.audioTracks,
+  );
+  const isMuted = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.isMuted,
+  );
+  const audioVolume = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.audioVolume,
   );
 
-  const [volume, setVolume] = useState<number>(participant?.audioVolume ?? 1);
+  const [volume, setVolume] = useState<number>(audioVolume ?? 1);
   const previousVolume = useStorePreviousInt(volume);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (typeof participant?.audioVolume !== 'undefined') {
-      setVolume(participant?.audioVolume);
+    if (typeof audioVolume !== 'undefined') {
+      setVolume(audioVolume);
     }
-  }, [participant?.audioVolume]);
+  }, [audioVolume]);
 
   useEffect(() => {
     if (previousVolume && volume !== previousVolume) {
@@ -94,8 +100,8 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
   }, [volume]);
 
   const render = useMemo(() => {
-    if (participant?.audioTracks) {
-      if (participant.isMuted) {
+    if (audioTracks) {
+      if (isMuted) {
         return (
           <div className="mic muted mr-2 cursor-pointer">
             <i className="pnm-mic-mute secondaryColor text-[10px]" />
@@ -115,12 +121,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
     }
 
     return null;
-  }, [
-    isRemoteParticipant,
-    renderUnmuteIcon,
-    participant?.audioTracks,
-    participant?.isMuted,
-  ]);
+  }, [isRemoteParticipant, renderUnmuteIcon, audioTracks, isMuted]);
 
   return <>{render}</>;
 };

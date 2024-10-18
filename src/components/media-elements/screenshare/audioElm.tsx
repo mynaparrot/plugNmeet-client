@@ -1,25 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import { RemoteAudioTrack } from 'livekit-client';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 
 interface IAudioElmProps {
   audioTrack: RemoteAudioTrack;
 }
-const roomScreenShareAudioVolumeSelector = createSelector(
-  (state: RootState) => state.roomSettings.roomScreenShareAudioVolume,
-  (roomScreenShareAudioVolume) => roomScreenShareAudioVolume,
-);
-const isNatsServerConnectedSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.isNatsServerConnected,
-);
 
 const AudioElm = ({ audioTrack }: IAudioElmProps) => {
   const roomScreenShareAudioVolume = useAppSelector(
-    roomScreenShareAudioVolumeSelector,
+    (state) => state.roomSettings.roomScreenShareAudioVolume,
   );
-  const isNatsServerConnected = useAppSelector(isNatsServerConnectedSelector);
+  const isNatsServerConnected = useAppSelector(
+    (state) => state.roomSettings.isNatsServerConnected,
+  );
   const ref = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {

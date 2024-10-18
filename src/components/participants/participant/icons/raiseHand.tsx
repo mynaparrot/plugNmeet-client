@@ -6,12 +6,13 @@ interface IRaiseHandIconProps {
   userId: string;
 }
 const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const raisedHand = useAppSelector(
+    (state) =>
+      participantsSelector.selectById(state, userId)?.metadata.raisedHand,
   );
 
   const render = useMemo(() => {
-    if (participant?.metadata.raisedHand) {
+    if (raisedHand) {
       return (
         <div className="hand ltr:mr-2 rtl:ml-2 cursor-pointer">
           <i className="pnm-raise-hand text-[#ffbd40] text-[10px]" />
@@ -20,7 +21,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
     } else {
       return null;
     }
-  }, [participant?.metadata.raisedHand]);
+  }, [raisedHand]);
 
   return <>{render}</>;
 };

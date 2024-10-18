@@ -1,21 +1,15 @@
 import React, { useMemo } from 'react';
-import { Tab } from '@headlessui/react';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 
 import ParticipantsComponent from '../participants';
 import PollsComponent from '../polls';
 import { useGetPollsStatsQuery } from '../../store/services/pollsApi';
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { updateSelectedTabLeftPanel } from '../../store/slices/roomSettingsSlice';
 import { useGetMyBreakoutRoomsQuery } from '../../store/services/breakoutRoomApi';
 import MyBreakoutRooms from '../breakout-room/my/myBreakoutRooms';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
-
-const selectedTabLeftPanelSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedTabLeftPanel,
-);
 
 const LeftPanel = () => {
   const { data } = useGetPollsStatsQuery();
@@ -24,7 +18,9 @@ const LeftPanel = () => {
   const dispatch = useAppDispatch();
   const allow_polls =
     store.getState().session.currentRoom.metadata?.roomFeatures?.allowPolls;
-  const selectedTabLeftPanel = useAppSelector(selectedTabLeftPanelSelector);
+  const selectedTabLeftPanel = useAppSelector(
+    (state) => state.roomSettings.selectedTabLeftPanel,
+  );
 
   const items = useMemo(() => {
     const total_running = data?.stats?.totalRunning
@@ -90,12 +86,12 @@ const LeftPanel = () => {
         <span className="inline-block w-[18px] h-[1px] bg-primaryColor dark:bg-darkText absolute rotate-45 top-[11px] left-[2px]"></span>
         <span className="inline-block w-[18px] h-[1px] bg-primaryColor dark:bg-darkText absolute -rotate-45 top-[11px] right-[2px]"></span>
       </div>
-      <Tab.Group
+      <TabGroup
         vertical
         selectedIndex={selectedTabLeftPanel}
         onChange={changeTabIndex}
       >
-        <Tab.List className="flex">
+        <TabList className="flex">
           {items.map((item) => (
             <Tab
               key={item.id}
@@ -109,10 +105,10 @@ const LeftPanel = () => {
               <div className="name relative inline-block">{item.title}</div>
             </Tab>
           ))}
-        </Tab.List>
-        <Tab.Panels className="relative h-[calc(100%-45px)]">
+        </TabList>
+        <TabPanels className="relative h-[calc(100%-45px)]">
           {items.map((item) => (
-            <Tab.Panel
+            <TabPanel
               key={item.id}
               className={`${
                 item.id === 2 || item.id === 3
@@ -121,10 +117,10 @@ const LeftPanel = () => {
               }`}
             >
               <>{item.elm}</>
-            </Tab.Panel>
+            </TabPanel>
           ))}
-        </Tab.Panels>
-      </Tab.Group>
+        </TabPanels>
+      </TabGroup>
     </div>
   );
 };

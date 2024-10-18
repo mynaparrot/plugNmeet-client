@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { isURL } from 'validator';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppSelector } from '../../store';
+import { useAppSelector } from '../../store';
 
 interface CustomLogo {
   main_logo_light?: string;
@@ -11,16 +10,11 @@ interface CustomLogo {
   waiting_room_logo_dark?: string;
 }
 
-const themeSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.theme,
-);
-
 export type logoType = 'main' | 'waiting-room';
 
 const useLogo = (logo_type: logoType = 'main') => {
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-  const theme = useAppSelector(themeSelector);
+  const theme = useAppSelector((state) => state.roomSettings.theme);
   const [logo, setLogo] = useState<string>(`${assetPath}/imgs/main-logo.png`);
 
   useEffect(() => {

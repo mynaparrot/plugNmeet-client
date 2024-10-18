@@ -1,13 +1,14 @@
 import React, { Dispatch, Fragment, useMemo } from 'react';
 import {
   Listbox,
+  ListboxButton,
   ListboxOption,
   ListboxOptions,
   Transition,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 
 interface SpeechUsersElmsPros {
@@ -20,13 +21,18 @@ const SpeechUsersElms = ({
   setSelectedSpeechUsers,
 }: SpeechUsersElmsPros) => {
   const { t } = useTranslation();
-  const allParticipants = useAppSelector(participantsSelector.selectAll);
+  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
 
-  const render = useMemo(() => {
-    const users = allParticipants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
-    );
+  return useMemo(() => {
+    const users = participantsSelector
+      .selectAll(store.getState())
+      .filter(
+        (p) =>
+          p.name !== '' &&
+          p.userId !== 'RECORDER_BOT' &&
+          p.userId !== 'RTMP_BOT',
+      );
+
     return (
       <div className="flex items-center justify-between mt-2">
         <label
@@ -41,7 +47,7 @@ const SpeechUsersElms = ({
           multiple={true}
         >
           <div className="relative mt-1 w-[150px] sm:w-[250px]">
-            <Listbox.Button className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+            <ListboxButton className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
               <span className="block">
                 {selectedSpeechUsers
                   .map((l) => users.filter((u) => u.userId === l)[0]?.name)
@@ -50,7 +56,7 @@ const SpeechUsersElms = ({
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
                 <i className="pnm-updown text-xl primaryColor dark:text-darkText" />
               </span>
-            </Listbox.Button>
+            </ListboxButton>
 
             <Transition
               as={Fragment}
@@ -94,9 +100,7 @@ const SpeechUsersElms = ({
       </div>
     );
     //eslint-disable-next-line
-  }, [allParticipants, selectedSpeechUsers]);
-
-  return render;
+  }, [totalParticipants, selectedSpeechUsers]);
 };
 
 export default SpeechUsersElms;

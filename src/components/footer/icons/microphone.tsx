@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
@@ -10,12 +9,7 @@ import {
   AnalyticsStatusSchema,
 } from 'plugnmeet-protocol-js';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveMicrophone,
   updateIsMicMuted,
@@ -30,23 +24,6 @@ import { getAudioPreset } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
 
-const isActiveMicrophoneSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveMicrophone,
-);
-const showMicrophoneModalSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.showMicrophoneModal,
-);
-const isMicLockSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockMicrophone,
-);
-const isMicMutedSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isMicMuted,
-);
-
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
@@ -58,10 +35,19 @@ const MicrophoneIcon = () => {
   const muteOnStart =
     session.currentRoom.metadata?.roomFeatures?.muteOnStart ?? false;
 
-  const showMicrophoneModal = useAppSelector(showMicrophoneModalSelector);
-  const isActiveMicrophone = useAppSelector(isActiveMicrophoneSelector);
-  const isMicLock = useAppSelector(isMicLockSelector);
-  const isMicMuted = useAppSelector(isMicMutedSelector);
+  const showMicrophoneModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showMicrophoneModal,
+  );
+  const isActiveMicrophone = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveMicrophone,
+  );
+  const isMicLock = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
+  );
+  const isMicMuted = useAppSelector(
+    (state) => state.bottomIconsActivity.isMicMuted,
+  );
 
   const [lockMic, setLockMic] = useState<boolean>(false);
 

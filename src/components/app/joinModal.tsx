@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, RootState, useAppDispatch } from '../../store';
+import { useAppSelector, useAppDispatch } from '../../store';
 import { toggleStartup } from '../../store/slices/sessionSlice';
 import { updateShowMicrophoneModal } from '../../store/slices/bottomIconsActivitySlice';
 import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
@@ -11,13 +10,9 @@ interface StartupJoinModalProps {
   onCloseModal(): void;
 }
 
-const isStartupSelector = createSelector(
-  (state: RootState) => state.session,
-  (session) => session.isStartup,
-);
 const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
   const [open, setOpen] = useState<boolean>(true);
-  const isStartup = useAppSelector(isStartupSelector);
+  const isStartup = useAppSelector((state) => state.session.isStartup);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 

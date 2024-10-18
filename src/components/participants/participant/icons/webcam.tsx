@@ -8,12 +8,12 @@ interface WebcamIconProps {
 }
 
 const WebcamIcon = ({ userId }: WebcamIconProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const videoTracks = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.videoTracks,
   );
 
   const render = useMemo(() => {
-    if (participant?.videoTracks) {
+    if (videoTracks) {
       return (
         <div className="mic ltr:mr-2 rtl:ml-2 cursor-pointer">
           <i className="pnm-webcam secondaryColor text-[10px]" />
@@ -21,7 +21,7 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
       );
     }
     return null;
-  }, [participant?.videoTracks]);
+  }, [videoTracks]);
 
   return <>{render}</>;
 };

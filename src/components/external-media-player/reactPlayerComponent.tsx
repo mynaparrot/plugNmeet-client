@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player/lazy';
-import { RootState, useAppSelector } from '../../store';
-import { createSelector } from '@reduxjs/toolkit';
-import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
+import { useAppSelector } from '../../store';
+import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 import { getNatsConn } from '../../helpers/nats';
 
 interface IReactPlayerComponentProps {
@@ -12,15 +11,6 @@ interface IReactPlayerComponentProps {
   seekTo: number;
   isPresenter: boolean;
 }
-
-const heightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
-);
-const widthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenWidth,
-);
 
 const ReactPlayerComponent = ({
   src,
@@ -34,8 +24,12 @@ const ReactPlayerComponent = ({
   const player = useRef<ReactPlayer>();
   const conn = getNatsConn();
 
-  const height = useAppSelector(heightSelector);
-  const width = useAppSelector(widthSelector);
+  const height = useAppSelector(
+    (state) => state.bottomIconsActivity.screenHeight,
+  );
+  const width = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
+  );
 
   useEffect(() => {
     if (isPresenter) {
@@ -66,7 +60,7 @@ const ReactPlayerComponent = ({
     if (!isReady || !player) {
       return;
     }
-    const broadcast = async (msg: string) => {
+    const broadcast = (msg: string) => {
       conn.sendDataMessage(DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS, msg);
     };
 

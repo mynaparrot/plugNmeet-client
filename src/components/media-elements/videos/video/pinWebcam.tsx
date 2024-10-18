@@ -12,8 +12,8 @@ interface IPinWebcamProps {
 
 const PinWebcam = ({ userId }: IPinWebcamProps) => {
   const dispatch = useAppDispatch();
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const pinWebcam = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.pinWebcam,
   );
 
   const togglePin = () => {
@@ -21,7 +21,7 @@ const PinWebcam = ({ userId }: IPinWebcamProps) => {
       updateParticipant({
         id: userId,
         changes: {
-          pinWebcam: !participant?.pinWebcam,
+          pinWebcam: !pinWebcam,
         },
       }),
     );
@@ -31,7 +31,7 @@ const PinWebcam = ({ userId }: IPinWebcamProps) => {
   const render = useMemo(() => {
     return (
       <div className="pin-webcam cursor-pointer" onClick={togglePin}>
-        {participant?.pinWebcam ? (
+        {pinWebcam ? (
           <i className="pnm-pin text-white text-[12px]" />
         ) : (
           <i className="pnm-pin -rotate-90 text-white text-[12px]" />
@@ -39,7 +39,7 @@ const PinWebcam = ({ userId }: IPinWebcamProps) => {
       </div>
     );
     //eslint-disable-next-line
-  }, [participant?.pinWebcam]);
+  }, [pinWebcam]);
 
   return <>{render}</>;
 };

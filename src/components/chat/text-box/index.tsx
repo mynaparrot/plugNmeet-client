@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import sanitizeHtml from 'sanitize-html';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
@@ -14,28 +13,21 @@ interface ITextBoxAreaProps {
   onAfterSendMessage(): void;
 }
 
-const isLockChatSendMsgSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockChatSendMessage,
-);
-
-const isLockSendFileSelector = createSelector(
-  (state: RootState) => state.session.currentUser?.metadata?.lockSettings,
-  (lock_settings) => lock_settings?.lockChatFileShare,
-);
-
-const selectedChatOptionSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.selectedChatOption,
-);
-
 const TextBoxArea = ({
   chosenEmoji,
   onAfterSendMessage,
 }: ITextBoxAreaProps) => {
-  const isLockChatSendMsg = useAppSelector(isLockChatSendMsgSelector);
-  const isLockSendFile = useAppSelector(isLockSendFileSelector);
-  const selectedChatOption = useAppSelector(selectedChatOptionSelector);
+  const isLockChatSendMsg = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
+  );
+  const isLockSendFile = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockChatFileShare,
+  );
+  const selectedChatOption = useAppSelector(
+    (state) => state.roomSettings.selectedChatOption,
+  );
 
   const { t } = useTranslation();
   const conn = getNatsConn();

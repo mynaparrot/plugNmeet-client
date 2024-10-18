@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 import {
   NatsMsgClientToServerEvents,
@@ -7,20 +6,17 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
-
-const isActiveRaisehandSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveRaisehand,
-);
 
 const RaiseHandIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const { t } = useTranslation();
   const conn = getNatsConn();
 
-  const isActiveRaisehand = useAppSelector(isActiveRaisehandSelector);
+  const isActiveRaisehand = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveRaisehand,
+  );
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
   useEffect(() => {

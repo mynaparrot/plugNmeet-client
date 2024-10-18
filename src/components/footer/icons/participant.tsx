@@ -1,20 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useAppSelector,
-  RootState,
-  useAppDispatch,
-  store,
-} from '../../../store';
+import { useAppSelector, useAppDispatch, store } from '../../../store';
 import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-
-const isActiveParticipantsPanelSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.isActiveParticipantsPanel,
-);
 
 const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +11,7 @@ const ParticipantIcon = () => {
   const { t } = useTranslation();
 
   const isActiveParticipantsPanel = useAppSelector(
-    isActiveParticipantsPanelSelector,
+    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
   );
   const participantsTotal = useAppSelector(participantsSelector.selectTotal);
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');

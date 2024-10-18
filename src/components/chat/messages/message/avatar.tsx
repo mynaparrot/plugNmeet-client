@@ -1,12 +1,16 @@
 import React from 'react';
-import { IParticipant } from '../../../../store/slices/interfaces/participant';
+
+import { participantsSelector } from '../../../../store/slices/participantSlice';
+import { store } from '../../../../store';
 
 interface IAvatarProps {
-  participant?: IParticipant;
+  userId: string;
   name: string;
 }
 
-const Avatar = ({ participant, name }: IAvatarProps) => {
+const Avatar = ({ userId, name }: IAvatarProps) => {
+  const participant = participantsSelector.selectById(store.getState(), userId);
+
   const render = () => {
     if (participant?.metadata?.profilePic) {
       return (
@@ -17,7 +21,7 @@ const Avatar = ({ participant, name }: IAvatarProps) => {
       if (participant?.name) {
         n = participant?.name;
       }
-      return <>{n?.slice(0, 2).toUpperCase()}</>;
+      return <>{n.slice(0, 2).toUpperCase()}</>;
     }
   };
   return (

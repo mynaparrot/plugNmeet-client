@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import {
@@ -34,19 +28,6 @@ const MOBILE_PER_PAGE = 6,
   VERTICAL_TOP_BOTTOM_PER_PAGE = 8,
   VERTICAL_TABLET_PORTRAIT = 5;
 
-const screenWidthSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenWidth,
-);
-const deviceOrientationSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.deviceOrientation,
-);
-const columnCameraPositionSelector = createSelector(
-  (state: RootState) => state.roomSettings,
-  (roomSettings) => roomSettings.columnCameraPosition,
-);
-
 const VideosComponentElms = ({
   allParticipants,
   totalNumWebcams,
@@ -54,9 +35,15 @@ const VideosComponentElms = ({
 }: IVideosComponentElmsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const screenWidth = useAppSelector(screenWidthSelector);
-  const deviceOrientation = useAppSelector(deviceOrientationSelector);
-  const columnCameraPosition = useAppSelector(columnCameraPositionSelector);
+  const screenWidth = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
+  );
+  const deviceOrientation = useAppSelector(
+    (state) => state.bottomIconsActivity.deviceOrientation,
+  );
+  const columnCameraPosition = useAppSelector(
+    (state) => state.roomSettings.columnCameraPosition,
+  );
   const deviceType = store.getState().session.userDeviceType;
 
   const [participantsToRender, setParticipantsToRender] = useState<

@@ -18,15 +18,16 @@ interface ISwitchPresenterMenuItemProps {
 }
 
 const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
+  const isPresenter = useAppSelector(
+    (state) =>
+      participantsSelector.selectById(state, userId)?.metadata.isPresenter,
   );
   const { t } = useTranslation();
 
   const onClick = async () => {
     const body = create(SwitchPresenterReqSchema, {
-      userId: participant?.userId,
-      task: participant?.metadata.isPresenter
+      userId: userId,
+      task: isPresenter
         ? SwitchPresenterTask.DEMOTE
         : SwitchPresenterTask.PROMOTE,
     });
@@ -62,7 +63,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
               className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
               onClick={() => onClick()}
             >
-              {participant?.metadata.isPresenter
+              {isPresenter
                 ? t('footer.icons.demote-presenter')
                 : t('footer.icons.promote-presenter')}
             </button>

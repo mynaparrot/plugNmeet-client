@@ -2,9 +2,8 @@ import React, { Dispatch, useCallback, useRef } from 'react';
 import { Popover } from '@headlessui/react';
 import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import InterimTextElms from './interimTextElms';
 
 interface PopoverPanelElmsProps {
@@ -12,17 +11,14 @@ interface PopoverPanelElmsProps {
   setShowPopover: Dispatch<boolean>;
 }
 
-const lastFinalTextsSelector = createSelector(
-  (state: RootState) => state.speechServices,
-  (speechServices) => speechServices.lastFinalTexts,
-);
-
 const PopoverPanelElms = ({
   showPopover,
   setShowPopover,
 }: PopoverPanelElmsProps) => {
   const { t } = useTranslation();
-  const lastFinalTexts = useAppSelector(lastFinalTextsSelector);
+  const lastFinalTexts = useAppSelector(
+    (state) => state.speechServices.lastFinalTexts,
+  );
 
   const nodeRef = useRef(null);
 

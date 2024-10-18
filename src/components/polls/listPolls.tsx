@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import useVirtual from 'react-cool-virtual';
-import { createSelector } from '@reduxjs/toolkit';
 import { PollInfo } from 'plugnmeet-protocol-js';
 
 import { useGetPollListsQuery } from '../../store/services/pollsApi';
 import Poll from './poll';
-import { RootState, store, useAppSelector } from '../../store';
-
-const screenHeightSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity,
-  (bottomIconsActivity) => bottomIconsActivity.screenHeight,
-);
+import { store, useAppSelector } from '../../store';
 
 const ListPolls = () => {
-  const screenHeight = useAppSelector(screenHeightSelector);
+  const screenHeight = useAppSelector(
+    (state) => state.bottomIconsActivity.screenHeight,
+  );
   const { data, isLoading } = useGetPollListsQuery();
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const [polls, setPolls] = useState<PollInfo[]>([]);
