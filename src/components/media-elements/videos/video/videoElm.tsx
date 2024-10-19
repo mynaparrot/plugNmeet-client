@@ -51,7 +51,6 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   }, [track, videoObjectFit]);
 
   useEffect(() => {
-    console.log('isNatsServerConnected', isNatsServerConnected);
     const el = ref.current;
     if (!el) {
       return;
