@@ -80,10 +80,6 @@ export default class HandleParticipants {
   };
 
   public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
-    if (this._isLocalUserRecorder) {
-      this.participantsCount++;
-    }
-
     let participant: NatsKvUserInfo;
     if (typeof p === 'string') {
       try {
@@ -96,9 +92,18 @@ export default class HandleParticipants {
       participant = p;
     }
 
+    const added = await this._addRemoteParticipant(participant);
+    if (added && this._isLocalUserRecorder) {
+      this.participantsCount++;
+    }
+  };
+
+  private async _addRemoteParticipant(
+    participant: NatsKvUserInfo,
+  ): Promise<boolean> {
     if (this._localUserId !== participant.userId) {
       if (this.isRecorder(participant.userId)) {
-        return;
+        return false;
       }
       const roomMetadata = store.getState().session.currentRoom.metadata;
       if (
@@ -106,7 +111,7 @@ export default class HandleParticipants {
         !this._isLocalUserAdmin &&
         !roomMetadata?.roomFeatures?.allowViewOtherUsersList
       ) {
-        return;
+        return false;
       }
     }
 
@@ -134,7 +139,7 @@ export default class HandleParticipants {
         );
       }
       this.onAfterUserConnectMediaUpdate(participant.userId);
-      return;
+      return false;
     }
 
     this.notificationForWaitingUser(metadata, participant.name);
@@ -159,7 +164,8 @@ export default class HandleParticipants {
     );
 
     this.onAfterUserConnectMediaUpdate(participant.userId);
-  };
+    return true;
+  }
 
   public handleParticipantMetadataUpdate = async (d: string) => {
     try {
