@@ -1,25 +1,25 @@
-@import 'variables';
-@import 'plugnmeet-fonts';
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@use 'variables';
+@use 'plugnmeet-fonts';
+@use 'tailwindcss/base';
+@use 'tailwindcss/components';
+@use 'tailwindcss/utilities';
 
-@import 'common';
-@import 'keyframes-animation';
-@import 'dark-mode';
-@import 'recorder';
+@use 'common';
+@use 'keyframes-animation';
+@use 'dark-mode';
+@use 'recorder';
 
 // Media screens
-@import 'media_screens/min_1024';
-@import 'media_screens/max_w_980_max_h_450';
-@import 'media_screens/max_h_720';
-@import 'media_screens/max_1279';
-@import 'media_screens/max_1023';
-@import 'media_screens/max_767';
-@import 'media_screens/min_641';
-@import 'media_screens/max_640';
-@import 'media_screens/max_575';
-@import 'media_screens/max_370';
-@import 'media_screens/min_1800';
-@import 'media_screens/max_1025';
-@import 'media_screens/min_641_max_1025';
+@use 'media_screens/min_1024';
+@use 'media_screens/max_w_980_max_h_450';
+@use 'media_screens/max_h_720';
+@use 'media_screens/max_1279';
+@use 'media_screens/max_1023';
+@use 'media_screens/max_767';
+@use 'media_screens/min_641';
+@use 'media_screens/max_640';
+@use 'media_screens/max_575';
+@use 'media_screens/max_370';
+@use 'media_screens/min_1800';
+@use 'media_screens/max_1025';
+@use 'media_screens/min_641_max_1025';
