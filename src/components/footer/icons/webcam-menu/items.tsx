@@ -29,9 +29,9 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   const [newDevice, setNewDevice] = useState<string>();
 
   useEffect(() => {
-    const devicesMenu = videoDevices.map((device) => {
+    const devicesMenu = videoDevices.map((device, i) => {
       return (
-        <div className="" role="none" key={device.id}>
+        <div className="" role="none" key={`${device.id}-${i}`}>
           <MenuItem>
             {() => (
               <p

@@ -32,9 +32,9 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
   const [newDevice, setNewDevice] = useState<string>();
 
   useEffect(() => {
-    const devicesMenu = audioDevices.map((device) => {
+    const devicesMenu = audioDevices.map((device, i) => {
       return (
-        <div className="" role="none" key={device.id}>
+        <div className="" role="none" key={`${device.id}-${i}`}>
           <MenuItem>
             {() => (
               <p
