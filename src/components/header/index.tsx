@@ -27,6 +27,7 @@ import DarkThemeSwitcher from './darkThemeSwitcher';
 import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
+import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 
 const Header = () => {
   const roomTitle = useAppSelector(
@@ -46,7 +47,7 @@ const Header = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [alertText, setAlertText] = useState('');
   const [task, setTask] = useState('');
-  const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
+  // const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
     if (roomTitle) {
@@ -192,36 +193,30 @@ const Header = () => {
       >
         <header
           id="main-header"
-          className={`relative z-[99999] px-4 h-[50px] shadow-header flex items-center justify-between bg-white dark:bg-darkPrimary transition-transform ${
+          className={`relative z-[99999] px-4 h-[68px] shadow-header flex items-center justify-between bg-white transition-transform ${
             headerVisible ? 'ac' : ''
           }`}
         >
-          <div
-            className={`header-before-start absolute top-0 left-[-35px] w-[300px] pointer-events-none bg-cover bg-center h-full`}
-            style={{
-              backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
-            }}
-          />
-          <div className="logo w-28 relative z-20">
+          <div className="left relative z-20 flex items-center gap-5 w-60">
             <HeaderLogo />
+            <DarkThemeSwitcher />
           </div>
           <div className="middle flex-auto relative z-20">
-            <h2 className="header-title text-base text-black dark:text-white leading-[1] text-center">
+            <h2 className="header-title text-base font-medium text-Gray-950 leading-tight text-center">
               {title}
             </h2>
           </div>
-          <div className="dark-area w-28 flex items-center justify-end relative z-20 -right-3">
+          <div className="right flex items-center justify-end relative z-20 -right-3 w-60">
             {roomDuration && Number(roomDuration) > 0 ? (
               <DurationView duration={Number(roomDuration)} />
             ) : null}
-            <DarkThemeSwitcher />
             <VolumeControl />
             <Menu>
               {({ open }) => (
                 <>
                   <MenuButton className="relative flex-shrink-0 p-2 rtl:-ml-4">
-                    <div className="h-5 w-5 rotate-90 ">
-                      <i className="pnm-menu-small dark:text-secondaryColor" />
+                    <div className="h-5 w-5">
+                      <HeaderMenuIcon />
                     </div>
                   </MenuButton>
 
@@ -242,12 +237,6 @@ const Header = () => {
               )}
             </Menu>
           </div>
-          <div
-            className={`header-before-end absolute top-0 right-[-100px] w-[350px] lg:w-[380px] rotate-[156deg] pointer-events-none bg-cover bg-center h-full`}
-            style={{
-              backgroundImage: `url("${assetPath}/imgs/header-before2.png")`,
-            }}
-          />
           {showModal ? alertModal() : null}
         </header>
       </Transition>

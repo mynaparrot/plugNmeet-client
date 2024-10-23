@@ -9,6 +9,7 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import { store, useAppDispatch } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
+import { VolumeHeader } from '../../assets/Icons/VolumeHeader';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();
@@ -62,9 +63,9 @@ const VolumeControl = () => {
             <MenuButton className="relative flex-shrink-0 p-2">
               <div className="h-4 w-4 -mt-[2px]">
                 {volume > 0 ? (
-                  <i className="pnm-speaker primaryColor dark:text-secondaryColor" />
+                  <VolumeHeader />
                 ) : (
-                  <i className="pnm-speaker-muted primaryColor dark:text-secondaryColor" />
+                  <i className="pnm-speaker-muted text-Gray-950" />
                 )}
               </div>
             </MenuButton>
