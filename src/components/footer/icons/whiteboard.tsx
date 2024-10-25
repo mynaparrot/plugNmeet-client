@@ -8,16 +8,17 @@ import { create, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
-  updateIsActiveChatPanel,
+  // updateIsActiveChatPanel,
   updateIsActiveWhiteboard,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { WhiteBoardIconSVG } from '../../../assets/Icons/WhiteBoardIconSVG';
 
 const WhiteboardIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
+  // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [initiated, setInitiated] = useState<boolean>(false);
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
@@ -34,17 +35,17 @@ const WhiteboardIcon = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
-  useEffect(() => {
-    if (isActiveWhiteboard) {
-      setIconCSS('secondaryColor');
-      if (!isRecorder) {
-        dispatch(updateIsActiveChatPanel(false));
-      }
-    } else {
-      setIconCSS('primaryColor dark:text-darkText');
-    }
-    //eslint-disable-next-line
-  }, [dispatch, isActiveWhiteboard]);
+  // useEffect(() => {
+  //   if (isActiveWhiteboard) {
+  //     setIconCSS('secondaryColor');
+  //     if (!isRecorder) {
+  //       dispatch(updateIsActiveChatPanel(false));
+  //     }
+  //   } else {
+  //     setIconCSS('primaryColor dark:text-darkText');
+  //   }
+  //   //eslint-disable-next-line
+  // }, [dispatch, isActiveWhiteboard]);
 
   useEffect(() => {
     if (!allowedWhiteboard) {
@@ -129,16 +130,14 @@ const WhiteboardIcon = () => {
   const render = () => {
     return (
       <div
-        className={`whiteboard h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
+        className={`whiteboard relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleWhiteboard()}
       >
         <span className="tooltip">{text()}</span>
         <>
-          <i
-            className={`pnm-whiteboard ${iconCSS} text-[14px] lg:text-[16px]`}
-          />
+          <WhiteBoardIconSVG />
         </>
       </div>
     );

@@ -23,6 +23,10 @@ import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSli
 import { getAudioPreset } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
+import { Microphone } from '../../../assets/Icons/Microphone';
+import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
+import { PlusIcon } from '../../../assets/Icons/PlusIcon';
+// import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
@@ -261,17 +265,45 @@ const MicrophoneIcon = () => {
 
   return (
     <div className="relative z-10">
+      <div
+        className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${
+          showTooltip ? 'has-tooltip' : ''
+        }`}
+      >
+        <span className="tooltip rtl:-left-3 rtl:microphone-rtl-left">
+          {getTooltipText()}
+        </span>
+        <div
+          className="w-11 h-11 relative flex items-center justify-center"
+          onClick={() => manageMic()}
+        >
+          {!isActiveMicrophone ? (
+            <>
+              <Microphone />
+              <span className="add absolute -top-2 -right-2 z-10">
+                <PlusIcon />
+              </span>
+            </>
+          ) : null}
+          {!isMicMuted && isActiveMicrophone ? <Microphone /> : null}
+          {isMicMuted && isActiveMicrophone ? <MicrophoneOff /> : null}
+
+          {/* <span className="blocked absolute -top-2 -right-2 z-10">
+            <BlockedIcon />
+          </span> */}
+        </div>
+        {isActiveMicrophone ? <MicMenu currentRoom={currentRoom} /> : null}
+      </div>
       {showMicrophoneModal ? (
         <MicrophoneModal
           show={showMicrophoneModal}
           onCloseMicrophoneModal={onCloseMicrophoneModal}
         />
       ) : null}
-      <div
+      {/* <div
         className={`microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 flex items-center justify-center cursor-pointer ${
           showTooltip ? 'has-tooltip' : ''
         }`}
-        onClick={() => manageMic()}
       >
         <span className="tooltip rtl:-left-3 rtl:microphone-rtl-left">
           {getTooltipText()}
@@ -295,9 +327,7 @@ const MicrophoneIcon = () => {
         {isMicMuted && isActiveMicrophone ? (
           <i className="pnm-mic-mute secondaryColor text-[12px] lg:text-[14px]" />
         ) : null}
-      </div>
-
-      {isActiveMicrophone ? <MicMenu currentRoom={currentRoom} /> : null}
+      </div> */}
     </div>
   );
 };

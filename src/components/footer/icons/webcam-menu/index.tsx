@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu, MenuButton, Transition } from '@headlessui/react';
 import { Room } from 'livekit-client';
 import WebcamMenuItems from './items';
+import { ArrowUp } from '../../../../assets/Icons/ArrowUp';
 
 interface IWebcamMenuProps {
   currentRoom: Room;
@@ -10,14 +11,12 @@ interface IWebcamMenuProps {
 const WebcamMenu = ({ currentRoom }: IWebcamMenuProps) => {
   const render = () => {
     return (
-      <div className="absolute -bottom-[3px] md:bottom-0 right-3 lg:right-6">
+      <div className="menu relative">
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton>
-                <div className="arrow-down absolute -bottom-1 -right-1 w-[15px] h-[15px] rounded-full bg-white dark:bg-secondaryColor flex items-center justify-center">
-                  <i className="pnm-arrow-below text-[10px] sm:text-[12px] dark:text-darkSecondary" />
-                </div>
+              <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
+                <ArrowUp />
               </MenuButton>
 
               {/* Use the Transition component. */}

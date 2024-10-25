@@ -34,6 +34,7 @@ module.exports = {
           100: '#E1EDFA',
           200: '#D3E5F7',
           300: '#C2DAF2',
+          700: '#4D6680',
           800: '#233240',
           950: '#0C131A',
         },
@@ -41,6 +42,8 @@ module.exports = {
           25: '#FFFAFA',
           50: '#FCF0F0',
           200: '#F7BABA',
+          400: '#FA3232',
+          600: '#CC0000',
         },
       },
       borderRadius: {

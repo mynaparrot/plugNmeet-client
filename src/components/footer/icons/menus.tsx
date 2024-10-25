@@ -39,6 +39,7 @@ import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
+import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -287,8 +288,8 @@ const MenusIcon = () => {
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton className="footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer">
-                <i className="pnm-menu-horizontal primaryColor dark:text-darkText text-[5px] lg:text-[5px]" />
+              <MenuButton className="relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950">
+                <FooterMenuIconSVG />
               </MenuButton>
 
               {/* Use the Transition component. */}

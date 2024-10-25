@@ -9,7 +9,7 @@ import ChatIcon from './icons/chat';
 import ParticipantIcon from './icons/participant';
 import RaiseHandIcon from './icons/raisehand';
 import ScreenshareIcon from './icons/screenshare';
-import RecordingIcon from './icons/recording';
+// import RecordingIcon from './icons/recording';
 import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
@@ -40,27 +40,35 @@ const Footer = () => {
         >
           <footer
             id="main-footer"
-            className={`px-2 md:px-4 shadow-footer flex items-center justify-between dark:bg-darkPrimary h-[55px] lg:h-[60px]`}
+            className={`px-2 md:px-4 shadow-footer flex items-center justify-between bg-Gray-25 h-[55px] lg:h-[76px] border-t border-Gray-200`}
             style={{ display: isRecorder ? 'none' : '' }}
           >
             <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
-              <div className="footer-left w-52 flex items-center relative z-50 rtl:justify-end">
+              <div className="footer-left w-72 flex items-center gap-4 relative z-50 rtl:justify-end">
                 <WebcamIcon />
                 <MicrophoneIcon />
               </div>
 
-              <div className="footer-middle flex items-center">
-                <ParticipantIcon />
-                <ChatIcon />
+              <div className="footer-middle flex items-center gap-4">
                 <ScreenshareIcon />
-                <RaiseHandIcon />
                 <WhiteboardIcon />
+                <RaiseHandIcon />
                 <SharedNotePadIcon />
-                <RecordingIcon />
+                {/* <RecordingIcon /> */}
                 {isAdmin ? <MenusIcon /> : null}
               </div>
 
-              <div className="footer-right w-52 hidden sm:flex items-center" />
+              <div className="footer-right w-72 flex items-center justify-end gap-4">
+                <ParticipantIcon />
+                <ChatIcon />
+                <div className="line h-6 w-[1px] bg-Gray-200"></div>
+                <button
+                  type="button"
+                  className="h-11 px-5 flex items-center rounded-[15px] shadow text-base font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600"
+                >
+                  End Meeting
+                </button>
+              </div>
               <BreakoutRoomInvitation />
             </div>
           </footer>

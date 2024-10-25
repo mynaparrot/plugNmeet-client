@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   NatsMsgClientToServerEvents,
@@ -8,6 +8,7 @@ import { create } from '@bufbuild/protobuf';
 
 import { store, useAppSelector } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
+import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
 
 const RaiseHandIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -17,15 +18,15 @@ const RaiseHandIcon = () => {
   const isActiveRaisehand = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveRaisehand,
   );
-  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
+  // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
-  useEffect(() => {
-    if (isActiveRaisehand) {
-      setIconCSS('secondaryColor');
-    } else {
-      setIconCSS('primaryColor dark:text-darkText');
-    }
-  }, [isActiveRaisehand]);
+  // useEffect(() => {
+  //   if (isActiveRaisehand) {
+  //     setIconCSS('secondaryColor');
+  //   } else {
+  //     setIconCSS('primaryColor dark:text-darkText');
+  //   }
+  // }, [isActiveRaisehand]);
 
   const toggleRaiseHand = async () => {
     const data = create(NatsMsgClientToServerSchema, {});
@@ -54,7 +55,7 @@ const RaiseHandIcon = () => {
 
     return (
       <div
-        className={`hands footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
+        className={`hands relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleRaiseHand()}
@@ -64,7 +65,7 @@ const RaiseHandIcon = () => {
             ? t('footer.icons.lower-hand')
             : t('footer.icons.raise-hand')}
         </span>
-        <i className={`pnm-raise-hand ${iconCSS} text-[14px] lg:text-[16px]`} />
+        <HandsIconSVG />
       </div>
     );
   };

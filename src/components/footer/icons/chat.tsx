@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppDispatch, store } from '../../../store';
 import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
+import { ChatIconSVG } from '../../../assets/Icons/ChatIconSVG';
 
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
@@ -16,16 +17,16 @@ const ChatIcon = () => {
   const totalUnreadChatMsgs = useAppSelector(
     (state) => state.bottomIconsActivity.totalUnreadChatMsgs,
   );
-  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
+  // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [allowChat, setAllowChat] = useState<boolean>(true);
 
-  useEffect(() => {
-    if (isActiveChatPanel) {
-      setIconCSS('secondaryColor');
-    } else {
-      setIconCSS('primaryColor dark:text-darkText');
-    }
-  }, [isActiveChatPanel]);
+  // useEffect(() => {
+  //   if (isActiveChatPanel) {
+  //     setIconCSS('secondaryColor');
+  //   } else {
+  //     setIconCSS('primaryColor dark:text-darkText');
+  //   }
+  // }, [isActiveChatPanel]);
 
   useEffect(() => {
     const metadata = store.getState().session.currentRoom
@@ -43,7 +44,7 @@ const ChatIcon = () => {
   const render = () => {
     return (
       <div
-        className={`message footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
+        className={`message relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleChatPanel()}
@@ -54,7 +55,8 @@ const ChatIcon = () => {
             : t('footer.icons.show-chat-panel')}
         </span>
 
-        <i className={`pnm-chat ${iconCSS} text-[14px] lg:text-[16px]`} />
+        {/* <i className={`pnm-chat ${iconCSS} text-[14px] lg:text-[16px]`} /> */}
+        <ChatIconSVG />
         {!isActiveChatPanel && totalUnreadChatMsgs > 0 ? (
           <div className="unseen-message-count bg-brandRed w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
             {totalUnreadChatMsgs}

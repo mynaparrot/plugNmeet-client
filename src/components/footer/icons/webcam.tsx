@@ -16,6 +16,10 @@ import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 import { getWebcamResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
+import { Camera } from '../../../assets/Icons/Camera';
+import { CameraOff } from '../../../assets/Icons/CameraOff';
+import { PlusIcon } from '../../../assets/Icons/PlusIcon';
+import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
@@ -276,33 +280,64 @@ const WebcamIcon = () => {
 
   const showButtons = () => {
     return (
-      <div className="relative z-10">
-        <div
-          className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
-            showTooltip ? 'has-tooltip' : ''
-          }`}
-          onClick={() => toggleWebcam()}
-        >
-          <span className="tooltip !-left-3 tooltip-left">
-            {getTooltipText()}
-          </span>
-
-          {!isActiveWebcam ? (
-            <i className="pnm-webcam primaryColor dark:text-darkText text-[12px] lg:text-[14px]" />
-          ) : null}
-          {lockWebcam ? (
-            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
-              <i className="pnm-lock primaryColor" />
+      <>
+        <div className="relative z-10">
+          <div
+            className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${
+              showTooltip ? 'has-tooltip' : ''
+            }`}
+          >
+            <span className="tooltip !-left-3 tooltip-left">
+              {getTooltipText()}
+            </span>
+            <div
+              className="w-11 h-11 relative flex items-center justify-center"
+              onClick={() => toggleWebcam()}
+            >
+              {isActiveWebcam ? <Camera /> : null}
+              {!isActiveWebcam ? (
+                <>
+                  <Camera />
+                  <span className="add absolute -top-2 -right-2 z-10">
+                    <PlusIcon />
+                  </span>
+                </>
+              ) : null}
+              {lockWebcam ? (
+                <>
+                  <CameraOff />
+                  <span className="blocked absolute -top-2 -right-2 z-10">
+                    <BlockedIcon />
+                  </span>
+                </>
+              ) : null}
             </div>
-          ) : null}
+            {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
+          </div>
+          {/* <div
+            className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
+              showTooltip ? 'has-tooltip' : ''
+            }`}
+          >
+            <span className="tooltip !-left-3 tooltip-left">
+              {getTooltipText()}
+            </span>
 
-          {isActiveWebcam ? (
-            <i className="pnm-webcam secondaryColor text-[12px] lg:text-[14px]" />
-          ) : null}
+            {!isActiveWebcam ? (
+              <i className="pnm-webcam primaryColor dark:text-darkText text-[12px] lg:text-[14px]" />
+            ) : null}
+            {lockWebcam ? (
+              <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
+                <i className="pnm-lock primaryColor" />
+              </div>
+            ) : null}
+
+            {isActiveWebcam ? (
+              <i className="pnm-webcam secondaryColor text-[12px] lg:text-[14px]" />
+            ) : null}
+          </div> */}
         </div>
-
-        {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
-      </div>
+      </>
     );
   };
 

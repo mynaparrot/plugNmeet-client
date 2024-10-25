@@ -14,6 +14,7 @@ import { CameraOff } from '../../assets/Icons/CameraOff';
 import { Volume } from '../../assets/Icons/Volume';
 // import MicrophoneModal from '../footer/modals/microphoneModal';
 import { Menu, MenuButton, Transition } from '@headlessui/react';
+import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 
 interface StartupJoinModalProps {
   onCloseModal(): void;
@@ -49,16 +50,55 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
           </div>
           <div className="wrapper bg-Gray-50 pt-11 pb-14 px-12 flex flex-wrap">
             <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-1/2 rounded-2xl">
-              <div className="camera bg-Gray-950 rounded-lg overflow-hidden h-[284px] w-full"></div>
+              <div className="select-cam-wrap px-4">
+                <div className="title w-full flex items-center text-sm leading-none text-Gray-700 uppercase py-1">
+                  Select one webcam
+                </div>
+                <select className="mt-1 block w-full py-2 px-3 border border-Gray-300 bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option>Fifine K420 (1d6c:1278)</option>
+                </select>
+              </div>
+              <div className="camera bg-Gray-950 rounded-lg overflow-hidden h-[284px] w-full mt-4"></div>
+              <div className="background-image-wrap flex flex-wrap items-center justify-start py-3 px-4">
+                <div
+                  className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center border-2 border-solid border-gray-300 dark:border-primaryColor transition transform scale-90 hover:scale-95 ease-in`}
+                >
+                  <i className="pnm-ban-solid dark:text-darkSecondary2" />
+                </div>
+                <div
+                  className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center border-2 border-solid border-gray-300 dark:border-primaryColor transition transform scale-90 hover:scale-95 ease-in`}
+                >
+                  <i className="pnm-blur dark:text-darkSecondary2" />
+                </div>
+
+                <div
+                  className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center transition transform scale-90 hover:scale-95 ease-in border-2 border-solid border-transparent `}
+                >
+                  <img
+                    src="./assets/backgrounds/kenny-eliason-Wp7t4cWN-68-unsplash.jpg"
+                    alt="bg-1"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div className="upload-btn-wrap relative overflow-hidden inline-block cursor-pointer pt-2 w-full">
+                  <button className="py-1 px-4 text-sm bg-white border border-dashed border-Blue text-Gray-950 transition-all duration-300 shadow-box1">
+                    Upload Background Image
+                  </button>
+                  <input
+                    className="absolute left-0 top-0 opacity-0 w-full h-full cursor-pointer"
+                    type="file"
+                  />
+                </div>
+              </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5">
                 <div className="microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
                   <div className="w-11 h-11 relative flex items-center justify-center">
                     <Microphone />
                     {/* <MicrophoneOff /> */}
-                    <span className="add absolute -top-2 -right-2">
+                    <span className="add absolute -top-2 -right-2 z-10">
                       <PlusIcon />
                     </span>
-                    <span className="blocked absolute -top-2 -right-2">
+                    <span className="blocked absolute -top-2 -right-2 z-10">
                       <BlockedIcon />
                     </span>
                   </div>
@@ -69,8 +109,6 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
                           <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
                             <ArrowUp />
                           </MenuButton>
-
-                          {/* Use the Transition component. */}
                           <Transition
                             as={'div'}
                             show={open}
@@ -81,8 +119,20 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
                             leaveFrom="transform scale-100 opacity-100"
                             leaveTo="transform scale-95 opacity-0"
                           >
-                            <div className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12">
-                              asdsad
+                            <div className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max">
+                              <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+                                Select Microphone
+                              </div>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                Default - MacBook Pro Microphone
+                                <CheckMarkIcon />
+                              </p>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                iPhone Microphone
+                              </p>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                AirPods
+                              </p>
                             </div>
                           </Transition>
                         </>
@@ -94,15 +144,56 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
                   <div className="w-11 h-11 relative flex items-center justify-center">
                     {/* <Camera /> */}
                     <CameraOff />
-                    <span className="add absolute -top-2 -right-2">
+                    <span className="add absolute -top-2 -right-2 z-10">
                       <PlusIcon />
                     </span>
-                    <span className="blocked absolute -top-2 -right-2">
+                    <span className="blocked absolute -top-2 -right-2 z-10">
                       <BlockedIcon />
                     </span>
                   </div>
-                  <div className="menu w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
-                    <ArrowUp />
+                  <div className="menu relative">
+                    <Menu>
+                      {({ open }) => (
+                        <>
+                          <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
+                            <ArrowUp />
+                          </MenuButton>
+                          <Transition
+                            as={'div'}
+                            show={open}
+                            enter="transition duration-100 ease-out"
+                            enterFrom="transform scale-95 opacity-0"
+                            enterTo="transform scale-100 opacity-100"
+                            leave="transition duration-75 ease-out"
+                            leaveFrom="transform scale-100 opacity-100"
+                            leaveTo="transform scale-95 opacity-0"
+                          >
+                            <div className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max">
+                              <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+                                Select Microphone
+                              </div>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                Default - MacBook Pro Microphone
+                                <CheckMarkIcon />
+                              </p>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                iPhone Microphone
+                              </p>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                AirPods
+                              </p>
+                              <div className="divider w-[calc(100%+16px)] relative -left-2 h-1 bg-Gray-50 mt-2"></div>
+                              <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+                                Background & Filters
+                              </div>
+                              <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                                Add Camera Background
+                              </p>
+                            </div>
+                          </Transition>
+                        </>
+                      )}
+                    </Menu>
                   </div>
                 </div>
               </div>
@@ -118,7 +209,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
                     join as a listener.
                   </p>
                 </div>
-                <div className="buttons grid gap-3 absolute bottom-0 left-0 w-full">
+                <div className="buttons grid gap-3 w-full pt-10">
                   <button
                     type="button"
                     className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-Gray-300 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-box1"

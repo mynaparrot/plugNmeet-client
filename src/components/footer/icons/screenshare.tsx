@@ -13,6 +13,7 @@ import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
+import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
 
 const ScrenshareIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -31,21 +32,21 @@ const ScrenshareIcon = () => {
       state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
   );
 
-  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
+  // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [lock, setLock] = useState<boolean>(false);
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
-  useEffect(() => {
-    if (
-      sessionScreenSharing.isActive &&
-      sessionScreenSharing.sharedBy === currentRoom.localParticipant.identity
-    ) {
-      setIconCSS('secondaryColor');
-    } else {
-      setIconCSS('primaryColor dark:text-darkText');
-    }
-    //eslint-disable-next-line
-  }, [sessionScreenSharing]);
+  // useEffect(() => {
+  //   if (
+  //     sessionScreenSharing.isActive &&
+  //     sessionScreenSharing.sharedBy === currentRoom.localParticipant.identity
+  //   ) {
+  //     setIconCSS('secondaryColor');
+  //   } else {
+  //     setIconCSS('primaryColor dark:text-darkText');
+  //   }
+  //   //eslint-disable-next-line
+  // }, [sessionScreenSharing]);
 
   const endScreenShare = useCallback(async () => {
     if (isActiveScreenshare) {
@@ -160,16 +161,14 @@ const ScrenshareIcon = () => {
   const render = () => {
     return (
       <div
-        className={`share-screen footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 hidden md:flex items-center justify-center cursor-pointer ${
+        className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
         }`}
         onClick={() => toggleScreenShare()}
       >
         <span className="tooltip">{text()}</span>
         <>
-          <i
-            className={`pnm-screen-share ${iconCSS} text-[14px] lg:text-[16px]`}
-          />
+          <ShareScreenIconSVG />
           {lock ? (
             <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
               <i className="pnm-lock primaryColor" />

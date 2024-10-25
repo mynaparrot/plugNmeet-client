@@ -9,6 +9,7 @@ import {
   updateIsActiveWebcam,
   updateVirtualBackground,
 } from '../../../../store/slices/bottomIconsActivitySlice';
+import { CheckMarkIcon } from '../../../../assets/Icons/CheckMarkIcon';
 
 interface IWebcamMenuItemsProps {
   currentRoom: Room;
@@ -32,17 +33,19 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
     const devicesMenu = videoDevices.map((device, i) => {
       return (
         <div className="" role="none" key={`${device.id}-${i}`}>
+          <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+            Select Microphone
+          </div>
           <MenuItem>
             {() => (
               <p
                 className={`${
-                  selectedVideoDevice === device.id
-                    ? 'secondaryColor'
-                    : 'text-gray-700 dark:text-darkText'
-                } rounded group flex items-center px-3 py-[0.4rem] text-[10px] lg:text-xs transition ease-in hover:bg-primaryColor hover:text-white cursor-pointer`}
+                  selectedVideoDevice === device.id ? 'bg-Gray-50' : ''
+                } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
                 onClick={() => setNewDevice(device.id)}
               >
                 {device.label}
+                {selectedVideoDevice === device.id ? <CheckMarkIcon /> : ''}
               </p>
             )}
           </MenuItem>
@@ -84,7 +87,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   return (
     <MenuItems
       static
-      className="origin-bottom-right z-[9999] absolute ltr:left-0 rtl:-left-4 mt-2 w-40 bottom-[40px] rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+      className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max"
     >
       {devicesMenu}
       <div className="" role="none">

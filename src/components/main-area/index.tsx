@@ -193,11 +193,11 @@ const MainArea = () => {
       return;
     }
     if (headerVisible && footerVisible) {
-      setHeight(screenHeight - 110);
+      setHeight(screenHeight - 144);
     } else if (headerVisible && !footerVisible) {
-      setHeight(screenHeight - 50);
+      setHeight(screenHeight - 68);
     } else if (!headerVisible && footerVisible) {
-      setHeight(screenHeight - 60);
+      setHeight(screenHeight - 76);
     } else if (!headerVisible && !footerVisible) {
       setHeight(screenHeight);
     }
