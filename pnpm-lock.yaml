@@ -114,8 +114,8 @@ importers:
         specifier: 13.12.0
         version: 13.12.0
       video.js:
-        specifier: 8.18.1
-        version: 8.18.1
+        specifier: 8.19.1
+        version: 8.19.1
     devDependencies:
       '@eslint/js':
         specifier: 9.13.0
@@ -3931,8 +3931,8 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  video.js@8.18.1:
-    resolution: {integrity: sha512-oQ4M/HD2fFgEPHfmVMWxGykRFIpOmVhK0XZ4PSsPTgN2jH6E6+92f/RI2mDXDb0yu+Fxv9fxMUm0M7Z2K3Zo9w==}
+  video.js@8.19.1:
+    resolution: {integrity: sha512-MVuayhXpzTBv5Jk3nYEU2akawPhuBBlizEbpQGx2i+6FiBmqxGjkrkLdDLOzG54ut7xapjp26IfWQLGSpeLmcQ==}
 
   videojs-contrib-quality-levels@4.1.0:
     resolution: {integrity: sha512-TfrXJJg1Bv4t6TOCMEVMwF/CoS8iENYsWNKip8zfhB5kTcegiFYezEA0eHAJPU64ZC8NQbxQgOwAsYU8VXbOWA==}
@@ -4869,7 +4869,7 @@ snapshots:
       '@typescript-eslint/types': 8.11.0
       eslint-visitor-keys: 3.4.3
 
-  '@videojs/http-streaming@3.15.0(video.js@8.18.1)':
+  '@videojs/http-streaming@3.15.0(video.js@8.19.1)':
     dependencies:
       '@babel/runtime': 7.25.7
       '@videojs/vhs-utils': 4.1.1
@@ -4878,7 +4878,7 @@ snapshots:
       m3u8-parser: 7.2.0
       mpd-parser: 1.3.1
       mux.js: 7.0.3
-      video.js: 8.18.1
+      video.js: 8.19.1
 
   '@videojs/vhs-utils@4.1.1':
     dependencies:
@@ -7954,10 +7954,10 @@ snapshots:
 
   vary@1.1.2: {}
 
-  video.js@8.18.1:
+  video.js@8.19.1:
     dependencies:
       '@babel/runtime': 7.25.7
-      '@videojs/http-streaming': 3.15.0(video.js@8.18.1)
+      '@videojs/http-streaming': 3.15.0(video.js@8.19.1)
       '@videojs/vhs-utils': 4.1.1
       '@videojs/xhr': 2.7.0
       aes-decrypter: 4.0.2
@@ -7965,14 +7965,14 @@ snapshots:
       m3u8-parser: 7.2.0
       mpd-parser: 1.3.1
       mux.js: 7.1.0
-      videojs-contrib-quality-levels: 4.1.0(video.js@8.18.1)
+      videojs-contrib-quality-levels: 4.1.0(video.js@8.19.1)
       videojs-font: 4.2.0
       videojs-vtt.js: 0.15.5
 
-  videojs-contrib-quality-levels@4.1.0(video.js@8.18.1):
+  videojs-contrib-quality-levels@4.1.0(video.js@8.19.1):
     dependencies:
       global: 4.4.0
-      video.js: 8.18.1
+      video.js: 8.19.1
 
   videojs-font@4.2.0: {}
 
