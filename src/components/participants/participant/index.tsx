@@ -34,7 +34,7 @@ const ParticipantComponent = ({
 
   return (
     <>
-      <div className="flex items-center justify-between relative">
+      <div className="flex items-center justify-between relative w-full">
         <div className="left flex items-center ">
           <Avatar participant={participant} />
           <ParticipantName

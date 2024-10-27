@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Transition } from '@headlessui/react';
+// import { Transition } from '@headlessui/react';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -58,7 +58,7 @@ const MainArea = () => {
   const [isActiveScreenShare, setIsActiveScreenShare] =
     useState<boolean>(false);
   const [height, setHeight] = useState<number>(screenHeight);
-  const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
+  // const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
     const metadata = store.getState().session.currentRoom
@@ -131,20 +131,22 @@ const MainArea = () => {
 
   const renderLeftPanel = useMemo(() => {
     return (
-      <Transition
-        show={isActiveParticipantsPanel}
-        unmount={false}
-        enter="transform transition duration-[400ms]"
-        enterFrom="opacity-0 translate-x-0"
-        enterTo="opacity-100"
-        leave="transform transition duration-[400ms]"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0 -translate-x-full"
+      // <Transition
+      //   show={isActiveParticipantsPanel}
+      //   unmount={false}
+      //   enter="transform transition duration-[400ms]"
+      //   enterFrom="opacity-0 translate-x-0"
+      //   enterTo="opacity-100"
+      //   leave="transform transition duration-[400ms]"
+      //   leaveFrom="opacity-100"
+      //   leaveTo="opacity-0 translate-x-full"
+      // >
+      <div
+        className={`transition-right-panel relative transition-all duration-300 w-[340px] ${isActiveParticipantsPanel ? '' : '-mr-[340px]'}`}
       >
-        <div className="transition-left-panel">
-          <LeftPanel />
-        </div>
-      </Transition>
+        <LeftPanel />
+      </div>
+      // </Transition>
     );
   }, [isActiveParticipantsPanel]);
 
@@ -167,20 +169,22 @@ const MainArea = () => {
   const renderRightPanel = useMemo(() => {
     if (allowChat) {
       return (
-        <Transition
-          show={isActiveChatPanel}
-          unmount={false}
-          enter="transform transition duration-[400ms]"
-          enterFrom="opacity-0 translate-x-0"
-          enterTo="opacity-100"
-          leave="transform transition duration-[400ms]"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0 translate-x-full"
+        // <Transition
+        //   show={isActiveChatPanel}
+        //   unmount={false}
+        //   enter="transform transition duration-[400ms]"
+        //   enterFrom="opacity-0 translate-x-0"
+        //   enterTo="opacity-100"
+        //   leave="transform transition duration-[400ms]"
+        //   leaveFrom="opacity-100"
+        //   leaveTo="opacity-0 translate-x-full"
+        // >
+        <div
+          className={`transition-right-panel relative transition-all duration-300 w-[350px] ${isActiveChatPanel ? '' : '-mr-[350px]'}`}
         >
-          <div className="transition-right-panel">
-            <RightPanel />
-          </div>
-        </Transition>
+          <RightPanel />
+        </div>
+        // </Transition>
       );
     }
     return null;
@@ -206,23 +210,21 @@ const MainArea = () => {
   return (
     <div
       id="main-area"
-      className={`plugNmeet-app-main-area overflow-hidden relative flex ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`}
+      className={`plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`}
       style={{ height: `${height}px` }}
     >
-      <div
+      {/* <div
         className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none bg-cover bg-center bg-no-repeat`}
         style={{
           backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
         }}
-      />
-      <div className="inner flex justify-between w-full rtl:flex-row-reverse">
-        {renderLeftPanel}
-
-        <div className="middle-area relative flex-auto">
+      /> */}
+      <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
+        <div className="middle-area relative transition-all duration-300 flex-1">
           <ActiveSpeakers />
           {renderMainComponentElms}
         </div>
-
+        {renderLeftPanel}
         {renderRightPanel}
       </div>
     </div>

@@ -587,13 +587,13 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   }
 }
 
-.transition-left-panel {
-  @apply absolute h-full shadow-panel z-[3];
-}
+// .transition-left-panel {
+//   @apply absolute h-full shadow-panel z-[3];
+// }
 
-.transition-right-panel {
-  @apply absolute right-0 h-full shadow-panel z-[2];
-}
+// .transition-right-panel {
+//   @apply absolute right-0 h-full shadow-panel z-[2];
+// }
 
 .media-player-inner {
   position: relative;

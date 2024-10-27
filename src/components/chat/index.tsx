@@ -85,13 +85,13 @@ const ChatComponent = () => {
               />
             ) : null}
           </div>
-          <div className="message-form fixed z-[99] xl:z-0 bottom-1 w-[250px] xl:w-[320px] bg-white">
+          <div className="message-form bg-white absolute bottom-0 z-30">
             <TextBoxArea
               chosenEmoji={chosenEmoji}
               onAfterSendMessage={onAfterSendMessage}
             />
             <div
-              className={`emoji-picker absolute left-2 md:-left-6 bottom-5 w-5 h-5 cursor-pointer text-secondaryColor dark:text-darkText ${
+              className={`emoji-picker absolute left-2 md:-left-0 bottom-5 w-5 h-5 cursor-pointer text-secondaryColor dark:text-darkText ${
                 isOpenEmojiPanel ? 'emoji-active' : ''
               }`}
               onClick={() => setIsOpenEmojiPanel(!isOpenEmojiPanel)}

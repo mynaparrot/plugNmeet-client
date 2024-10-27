@@ -15,7 +15,11 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import { useAppSelector, store, useAppDispatch } from '../../store';
+import {
+  useAppSelector,
+  store,
+  // useAppDispatch
+} from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
@@ -24,7 +28,7 @@ import KeyboardShortcuts from './keyboardShortcuts';
 import VolumeControl from './volumeControl';
 import DurationView from './durationView';
 import DarkThemeSwitcher from './darkThemeSwitcher';
-import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
+// import { toggleHeaderVisibility } from '../../store/slices/roomSettingsSlice';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
@@ -39,7 +43,7 @@ const Header = () => {
   const headerVisible = useAppSelector(
     (state) => state.roomSettings.visibleHeader,
   );
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const conn = getNatsConn();
 
   const { t } = useTranslation();
@@ -193,7 +197,7 @@ const Header = () => {
       >
         <header
           id="main-header"
-          className={`relative z-[99999] px-4 h-[68px] shadow-header flex items-center justify-between bg-white transition-transform ${
+          className={`relative z-[99999] px-4 h-[68px] flex items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
             headerVisible ? 'ac' : ''
           }`}
         >
@@ -240,7 +244,7 @@ const Header = () => {
           {showModal ? alertModal() : null}
         </header>
       </Transition>
-      <div
+      {/* <div
         className={`header-collapse-arrow group fixed right-0 flex items-start justify-center h-5 w-[50px] cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-lg ${
           headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-[6px]'
         }`}
@@ -254,7 +258,7 @@ const Header = () => {
         <span className="absolute right-0 top-7 w-max bg-white text-darkPrimary dark:text-white dark:bg-darkPrimary text-[10px] py-1 px-[12px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
           {headerVisible ? t('header.hide-header') : t('header.show-header')}
         </span>
-      </div>
+      </div> */}
       <RoomSettings />
       <KeyboardShortcuts />
     </>

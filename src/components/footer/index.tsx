@@ -1,8 +1,12 @@
 import React, { useMemo } from 'react';
 import { Transition } from '@headlessui/react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
-import { store, useAppDispatch, useAppSelector } from '../../store';
+import {
+  store,
+  // useAppDispatch,
+  useAppSelector,
+} from '../../store';
 import WebcamIcon from './icons/webcam';
 import MicrophoneIcon from './icons/microphone';
 import ChatIcon from './icons/chat';
@@ -14,15 +18,15 @@ import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
-import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
+// import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 
 const Footer = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const footerVisible = useAppSelector(
     (state) => state.roomSettings.visibleFooter,
   );
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  // const dispatch = useAppDispatch();
+  // const { t } = useTranslation();
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   return useMemo(() => {
@@ -40,7 +44,7 @@ const Footer = () => {
         >
           <footer
             id="main-footer"
-            className={`px-2 md:px-4 shadow-footer flex items-center justify-between bg-Gray-25 h-[55px] lg:h-[76px] border-t border-Gray-200`}
+            className={`px-2 md:px-4 flex items-center justify-between bg-Gray-25 h-[55px] lg:h-[76px] border-t border-Gray-200`}
             style={{ display: isRecorder ? 'none' : '' }}
           >
             <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
@@ -73,7 +77,7 @@ const Footer = () => {
             </div>
           </footer>
         </Transition>
-        {isRecorder ? null : (
+        {/* {isRecorder ? null : (
           <div
             className={`footer-collapse-arrow group fixed right-0 flex items-end justify-center h-5 w-[50px] cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-lg ${
               footerVisible ? 'bottom-[60px] pb-[3px]' : 'bottom-0 pb-[6px]'
@@ -91,7 +95,7 @@ const Footer = () => {
                 : t('footer.show-footer')}
             </span>
           </div>
-        )}
+        )} */}
       </>
     );
     //eslint-disable-next-line

@@ -9,6 +9,7 @@ import { IParticipant } from '../../store/slices/interfaces/participant';
 import RemoveParticipantAlertModal, {
   IRemoveParticipantAlertModalData,
 } from './removeParticipantAlertModal';
+import { SearchIconSVG } from '../../assets/Icons/SearchIconSVG';
 
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
@@ -91,18 +92,32 @@ const ParticipantsComponent = () => {
   return (
     <>
       <div className="inner-wrapper relative z-20">
-        <div className="top flex items-center justify-between font-medium mb-3 xl:mb-5">
-          <p className="text-sm text-black dark:text-white">
+        <div className="top flex items-center h-14 px-5">
+          <p className="text-base text-Gray-950 font-medium leading-tight">
             {t('left-panel.participants', {
               total: participants.length,
             })}
           </p>
         </div>
+        <div className="search-participants-wrap h-[76px] flex items-center px-5 border-y border-Gray-200">
+          <div className="w-full relative">
+            <div className="search-icon text-Gray-600 absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none">
+              <SearchIconSVG />
+            </div>
+            <input
+              type="text"
+              name="search-participants"
+              id="search-participants"
+              placeholder="Search for Participant"
+              className="text-Gray-950 placeholder:text-Gray-600 h-11 rounded-[15px] bg-white border border-Gray-200 w-full pl-10 outline-none text-sm"
+            />
+          </div>
+        </div>
 
         <div
           ref={outerRef as any}
-          style={{ height: screenHeight - 215, overflow: 'auto' }}
-          className="-mx-2 xl:-mx-4 scrollBar"
+          style={{ height: screenHeight - 276, overflow: 'auto' }}
+          className="scrollBar"
         >
           <div
             className="all-participants-wrap px-2 xl:px-4"
@@ -112,7 +127,7 @@ const ParticipantsComponent = () => {
               <li
                 key={index}
                 ref={measureRef}
-                className="mb-3 w-full list-none"
+                className="w-full list-none min-h-[60px] py-1 flex items-center"
               >
                 {renderParticipant(index)}
               </li>
