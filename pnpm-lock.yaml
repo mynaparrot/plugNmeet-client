@@ -54,8 +54,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       livekit-client:
-        specifier: 2.5.9
-        version: 2.5.9
+        specifier: 2.6.0
+        version: 2.6.0
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -425,6 +425,9 @@ packages:
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
+
+  '@livekit/mutex@1.0.0':
+    resolution: {integrity: sha512-aiUhoThBNF9UyGTxEURFzJLhhPLIVTnQiEVMjRhPnfHNKLfo2JY9xovHKIus7B78UD5hsP6DlgpmAsjrz4U0Iw==}
 
   '@livekit/protocol@1.24.0':
     resolution: {integrity: sha512-9dCsqnkMn7lvbI4NGh18zhLDsrXyUcpS++TEFgEk5Xv1WM3R2kT3EzqgL1P/mr3jaabM6rJ8wZA/KJLuQNpF5w==}
@@ -2482,8 +2485,8 @@ packages:
     resolution: {integrity: sha512-iyAZCeyD+c1gPyE9qpFu8af0Y+MRtmKOncdGoA2S5EY8iFq99dmmvkNnHiWo+pj0s7yH7l3KPIgee77tKpXPWQ==}
     engines: {node: '>=18.0.0'}
 
-  livekit-client@2.5.9:
-    resolution: {integrity: sha512-oDpK6SKYB1F+mNO+25DA0bF0cD2XoOJeD8ji4YQpzDBQv2IxeyKrQhoqXAqrYgIKuiMNkImSf+yg2v7EHSl4Og==}
+  livekit-client@2.6.0:
+    resolution: {integrity: sha512-hpxNBtyWIFCefoHjHoSjqPCw3m7AfSJVcVZw6rMsqds4u+dSpWLfYkglWP8JuPGUIssyOsZm/+bV3gBWfuOGGQ==}
 
   load-script@1.0.0:
     resolution: {integrity: sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==}
@@ -4320,6 +4323,8 @@ snapshots:
       tslib: 2.7.0
 
   '@leichtgewicht/ip-codec@2.0.5': {}
+
+  '@livekit/mutex@1.0.0': {}
 
   '@livekit/protocol@1.24.0':
     dependencies:
@@ -6533,8 +6538,9 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
 
-  livekit-client@2.5.9:
+  livekit-client@2.6.0:
     dependencies:
+      '@livekit/mutex': 1.0.0
       '@livekit/protocol': 1.24.0
       events: 3.3.0
       loglevel: 1.9.2
