@@ -29,7 +29,6 @@ import {
 import { toast } from 'react-toastify';
 import {
   NatsConnection,
-  NatsError,
   wsconnect,
   tokenAuthenticator,
   DebugEvents,
@@ -434,7 +433,7 @@ export default class ConnectNats {
         await this.handleSystemEvents(payload);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -461,7 +460,7 @@ export default class ConnectNats {
         await this.handleSystemEvents(payload);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -484,7 +483,7 @@ export default class ConnectNats {
         await this.handleChat.handleMsg(payload);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -522,7 +521,7 @@ export default class ConnectNats {
         await processData(m);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -558,7 +557,7 @@ export default class ConnectNats {
         await processData(m);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
