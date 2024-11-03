@@ -1,4 +1,4 @@
-pull_request_title: "fix(l10n): New Crowdin updates"
+pull_request_title: "fix: New Crowdin updates"
 files:
   - source: /src/assets/locales/en
     translation: /src/assets/locales/%locale%/translation.json
