@@ -3,11 +3,6 @@ on:
   push:
     branches:
       - 'main'
-
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,10 +17,6 @@ jobs:
         name: Install pnpm
         with:
           version: 9
-      - uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: simple
       - uses: actions/create-github-app-token@v1
         id: app-token
         with:
