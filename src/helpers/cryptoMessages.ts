@@ -5,15 +5,14 @@ let importedKey: null | CryptoKey = null;
 const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   let binary = '';
   const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < bytes.byteLength; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
   return window.btoa(binary);
 };
 
 const base64ToArrayBuffer = (base64: string) => {
-  const binaryString = atob(base64);
+  const binaryString = window.atob(base64);
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i);
@@ -40,9 +39,9 @@ const encryptMessage = async (message: string) => {
     return message;
   }
   const encoded = new TextEncoder().encode(message);
-
   // Generate a new IV for each encryption to ensure security
   const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+
   const cipherText = await window.crypto.subtle.encrypt(
     { name: algorithm, iv: iv },
     importedKey,
@@ -61,7 +60,6 @@ const decryptMessage = async (cipherData: string) => {
     return cipherData;
   }
   const data = base64ToArrayBuffer(cipherData);
-
   const iv = data.slice(0, IV_LENGTH);
   const cipherText = data.slice(IV_LENGTH);
 
