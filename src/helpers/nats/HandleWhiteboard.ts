@@ -1,9 +1,5 @@
 import { toast } from 'react-toastify';
-import {
-  DataChannelMessage,
-  DataMsgBodyType,
-  EndToEndEncryptionFeatures,
-} from 'plugnmeet-protocol-js';
+import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import {
@@ -18,7 +14,7 @@ import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard'
 import { decryptMessage } from '../cryptoMessages';
 
 export default class HandleWhiteboard {
-  private _e2eeFeatures: EndToEndEncryptionFeatures | undefined = undefined;
+  private _isEnabledE2EE: boolean | undefined = undefined;
 
   constructor() {}
 
@@ -65,19 +61,20 @@ export default class HandleWhiteboard {
   }
 
   private async handleDecryption(msg: string) {
-    if (typeof this._e2eeFeatures === 'undefined') {
-      this._e2eeFeatures =
-        store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+    if (typeof this._isEnabledE2EE === 'undefined') {
+      const e2ee =
+        store.getState().session.currentRoom.metadata?.roomFeatures
+          ?.endToEndEncryptionFeatures;
+      this._isEnabledE2EE = !!(
+        e2ee &&
+        e2ee.isEnabled &&
+        e2ee.includedWhiteboard &&
+        e2ee.encryptionKey
+      );
     }
-
-    if (
-      typeof this._e2eeFeatures !== 'undefined' &&
-      this._e2eeFeatures.isEnabled &&
-      this._e2eeFeatures.includedWhiteboard &&
-      this._e2eeFeatures.encryptionKey
-    ) {
+    if (this._isEnabledE2EE) {
       try {
-        return await decryptMessage(this._e2eeFeatures.encryptionKey, msg);
+        return await decryptMessage(msg);
       } catch (e: any) {
         toast('Decryption error: ' + e.message, {
           type: 'error',
@@ -85,9 +82,8 @@ export default class HandleWhiteboard {
         console.error('Decryption error:' + e.message);
         return undefined;
       }
-    } else {
-      return msg;
     }
+    return msg;
   }
 
   private isCurrentUserPresenter() {

@@ -23,10 +23,9 @@ const base64ToArrayBuffer = (base64: string) => {
 
 const importSecretKey = async (secret: string) => {
   if (importedKey) {
-    return importedKey;
+    return;
   }
   const rawKey = new TextEncoder().encode(secret);
-
   importedKey = await window.crypto.subtle.importKey(
     'raw',
     rawKey,
@@ -34,19 +33,19 @@ const importSecretKey = async (secret: string) => {
     true,
     ['encrypt', 'decrypt'],
   );
-
-  return importedKey;
 };
 
-const encryptMessage = async (secret: string, message: string) => {
-  const key = await importSecretKey(secret);
+const encryptMessage = async (message: string) => {
+  if (!importedKey) {
+    return message;
+  }
   const encoded = new TextEncoder().encode(message);
 
   // Generate a new IV for each encryption to ensure security
   const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const cipherText = await window.crypto.subtle.encrypt(
     { name: algorithm, iv: iv },
-    key,
+    importedKey,
     encoded,
   );
 
@@ -57,8 +56,10 @@ const encryptMessage = async (secret: string, message: string) => {
   return arrayBufferToBase64(arrayView.buffer);
 };
 
-const decryptMessage = async (secret: string, cipherData: string) => {
-  const key = await importSecretKey(secret);
+const decryptMessage = async (cipherData: string) => {
+  if (!importedKey) {
+    return cipherData;
+  }
   const data = base64ToArrayBuffer(cipherData);
 
   const iv = data.slice(0, IV_LENGTH);
@@ -66,7 +67,7 @@ const decryptMessage = async (secret: string, cipherData: string) => {
 
   const textData = await window.crypto.subtle.decrypt(
     { name: algorithm, iv },
-    key,
+    importedKey,
     cipherText,
   );
 

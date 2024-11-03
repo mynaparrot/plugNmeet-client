@@ -6,7 +6,6 @@ import {
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import { toast } from 'react-toastify';
 import {
-  EndToEndEncryptionFeatures,
   DataMsgBodyType,
   AnalyticsEvents,
   AnalyticsEventType,
@@ -224,21 +223,23 @@ export const broadcastAppStateChanges = async (
   );
 };
 
-let e2ee: EndToEndEncryptionFeatures | undefined = undefined;
+let isEnabledE2EE: boolean | undefined = undefined;
 const handleEncryption = async (msg: string) => {
-  if (!e2ee) {
-    e2ee =
+  if (typeof isEnabledE2EE === 'undefined') {
+    const e2ee =
       store.getState().session.currentRoom.metadata?.roomFeatures
         ?.endToEndEncryptionFeatures;
+    isEnabledE2EE = !!(
+      e2ee &&
+      e2ee.isEnabled &&
+      e2ee.includedWhiteboard &&
+      e2ee.encryptionKey
+    );
   }
-  if (
-    typeof e2ee !== 'undefined' &&
-    e2ee.isEnabled &&
-    e2ee.includedWhiteboard &&
-    e2ee.encryptionKey
-  ) {
+
+  if (isEnabledE2EE) {
     try {
-      return await encryptMessage(e2ee.encryptionKey, msg);
+      return await encryptMessage(msg);
     } catch (e: any) {
       toast('Encryption error: ' + e.message, {
         type: 'error',
@@ -246,7 +247,7 @@ const handleEncryption = async (msg: string) => {
       console.error('Encryption error:' + e.message);
       return undefined;
     }
-  } else {
-    return msg;
   }
+
+  return msg;
 };
