@@ -1,7 +1,11 @@
 name: Build and release client
 on:
-  release:
-    types: [ created ]
+  push:
+    tags:
+      - 'v*'
+  create:
+    tags:
+      - 'v*'
 jobs:
   build:
     runs-on: ubuntu-latest
