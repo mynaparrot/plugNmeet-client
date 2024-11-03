@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.6](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.5...v1.6.6) (2024-11-03)
+
+
+### Bug Fixes
+
+* upload error ([ce262e0](https://github.com/mynaparrot/plugNmeet-client/commit/ce262e02f01a491bd399f4b988243bfed7cb0229))
+
 ## [1.6.5](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.4...v1.6.5) (2024-11-03)
 
 
