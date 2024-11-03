@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.6](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.5...v1.6.6) (2024-11-03)
+
+
+### Bug Fixes
+
+* trigger the creation release workflow on tag push ([13023cc](https://github.com/mynaparrot/plugNmeet-client/commit/13023cc1f1820db096f9e5bb39af377b32fc4d28))
+
 ## [1.6.5](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.4...v1.6.5) (2024-11-03)
 
 
