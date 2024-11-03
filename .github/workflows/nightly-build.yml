@@ -18,10 +18,11 @@ jobs:
         with:
           version: 9
       - name: Check format
-        run: pnpm run format-check
-      - name: Build project
         run: |
           pnpm install
+          pnpm run format-check
+      - name: Build project
+        run: |
           pnpm run build
           timestamp=$(date +%s)
           echo "dev-${timestamp}" > dist/version.txt
