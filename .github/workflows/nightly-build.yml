@@ -7,6 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
       - name: Checkout
         uses: actions/checkout@v4
       - name: setup node
@@ -40,7 +44,3 @@ jobs:
           state-name: ".client-sync-state.json"
           exclude: |
             **/client/**
-      - uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: node
