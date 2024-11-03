@@ -1,0 +1,11 @@
+# Changelog
+
+## [1.6.5](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.4...v1.6.5) (2024-11-03)
+
+
+### Bug Fixes
+
+* clean up ([a05ec61](https://github.com/mynaparrot/plugNmeet-client/commit/a05ec61a5d3bd4fd89807802deb614308e7c20d1))
+* new Crowdin updates ([#774](https://github.com/mynaparrot/plugNmeet-client/issues/774)) ([8811d99](https://github.com/mynaparrot/plugNmeet-client/commit/8811d998e9f65a3fb7dab1d90b1d6e106efaad35))
+* rearranged ([4e60093](https://github.com/mynaparrot/plugNmeet-client/commit/4e600934d8aff44c5f1ffaa72c1800c7a324b542))
+* release-please ([7b33119](https://github.com/mynaparrot/plugNmeet-client/commit/7b3311967a4fc0c939c5c483ee515d551503491f))
