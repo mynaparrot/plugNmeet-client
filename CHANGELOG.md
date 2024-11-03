@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.8](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.7...v1.6.8) (2024-11-03)
+
+
+### Bug Fixes
+
+* trigger the creation release workflow on release created ([0a8641c](https://github.com/mynaparrot/plugNmeet-client/commit/0a8641c56d48f54bac242c9c412be609f2db3e45))
+
 ## [1.6.7](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.6...v1.6.7) (2024-11-03)
 
 
