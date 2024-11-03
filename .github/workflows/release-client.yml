@@ -50,10 +50,8 @@ jobs:
         with:
           name: upload client
           path: tmp/client.zip
-      - name: Upload to release
+      - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}
-        uses: JasonEtco/upload-to-release@master
-        with:
-          args: tmp/client.zip application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ steps.release.outputs.tag_name }} tmp/client.zip
