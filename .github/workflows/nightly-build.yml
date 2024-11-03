@@ -17,23 +17,12 @@ jobs:
         name: Install pnpm
         with:
           version: 9
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ vars.MYNA_APP_ID }}
-          private-key: ${{ secrets.MYNA_APP_SECRET }}
-      - name: 'bot: version bump'
-        uses: phips28/gh-action-bump-version@master
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        with:
-          version-type: 'prerelease'
-          commit-message: 'bump version'
-          skip-tag: 'true'
-          skip-commit: 'false'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check format
+        run: pnpm run format-check
       - name: Build project
         run: |
-          pnpm install
           pnpm run build
           timestamp=$(date +%s)
           echo "dev-${timestamp}" > dist/version.txt
