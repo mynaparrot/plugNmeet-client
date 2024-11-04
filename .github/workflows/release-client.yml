@@ -31,6 +31,7 @@ jobs:
         with:
           version: 9
       - name: Install dependencies
+        if: ${{ steps.release.outputs.release_created }}
         run: pnpm install
       - name: Build project
         if: ${{ steps.release.outputs.release_created }}
