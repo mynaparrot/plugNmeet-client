@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-please:
+  release-client:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
@@ -30,12 +30,13 @@ jobs:
         name: Install pnpm
         with:
           version: 9
+      - name: Install dependencies
+        run: pnpm install
       - name: Build project
         if: ${{ steps.release.outputs.release_created }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm install
           pnpm run build
 
           ## save latest version tag
