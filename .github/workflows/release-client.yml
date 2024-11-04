@@ -32,26 +32,17 @@ jobs:
           version: 9
       - name: Build project
         if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pnpm install
           pnpm run build
 
           ## save latest version tag
-          TAG_NAME=$(curl -sL https://api.github.com/repos/mynaparrot/plugNmeet-client/releases/latest | jq -r ".tag_name")
-          echo $TAG_NAME > dist/version.txt
+          echo ${{ steps.release.outputs.tag_name }} > dist/version.txt
 
           mkdir -p tmp/client
           rsync -ar LICENSE dist tmp/client/
           cd tmp
           zip -X -r client.zip client
-      - name: Upload artifact
-        if: ${{ steps.release.outputs.release_created }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: upload client
-          path: tmp/client.zip
-      - name: Upload Release Artifact
-        if: ${{ steps.release.outputs.release_created }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.release.outputs.tag_name }} tmp/client.zip
+          gh release upload ${{ steps.release.outputs.tag_name }} client.zip
