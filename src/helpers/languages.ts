@@ -68,6 +68,10 @@ const languages = [
     text: '日本語',
   },
   {
+    code: 'ko-KR',
+    text: '한국어',
+  },
+  {
     code: 'lv-LV',
     text: 'Latvian',
   },
