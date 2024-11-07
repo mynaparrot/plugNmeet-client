@@ -18,8 +18,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@nats-io/jetstream':
-        specifier: 3.0.0-22
-        version: 3.0.0-22
+        specifier: 3.0.0-23
+        version: 3.0.0-23
       '@nats-io/nats-core':
         specifier: 3.0.0-35
         version: 3.0.0-35
@@ -440,11 +440,8 @@ packages:
   '@livekit/protocol@1.24.0':
     resolution: {integrity: sha512-9dCsqnkMn7lvbI4NGh18zhLDsrXyUcpS++TEFgEk5Xv1WM3R2kT3EzqgL1P/mr3jaabM6rJ8wZA/KJLuQNpF5w==}
 
-  '@nats-io/jetstream@3.0.0-22':
-    resolution: {integrity: sha512-+FCSp/1mlZDhV03TGHZYk0QPPlGfrdG3jZhMFEXwPZQhbO7FEhb2H0OLEvDHyPtsqWHn1a2VtMuHwblVuLfFQQ==}
-
-  '@nats-io/nats-core@3.0.0-34':
-    resolution: {integrity: sha512-G1ohebUQkq3fev5PT/Q79s6GchZir/d+af3DDeA0yk18413vZg5mnl0ERDcyRCOAy8dx8uG70qvefi7LoCTzWQ==}
+  '@nats-io/jetstream@3.0.0-23':
+    resolution: {integrity: sha512-MiUMWHrBi4/3ldZ66Dcl1NbetBhMA0717EmWqwJQS29tXvUKaWbJx6pliLx2F6Dn1Y7qUo9x4f2gJF70ToVy4g==}
 
   '@nats-io/nats-core@3.0.0-35':
     resolution: {integrity: sha512-2oaAd+kBRSW8w5SsyQbtSqfSZwOsU6av/8Nnrif3uEZXmkxZFO750F1lfH8/riGkRfWMLqFaYPAA1IkS86uAnQ==}
@@ -4361,14 +4358,9 @@ snapshots:
     dependencies:
       '@bufbuild/protobuf': 1.10.0
 
-  '@nats-io/jetstream@3.0.0-22':
+  '@nats-io/jetstream@3.0.0-23':
     dependencies:
-      '@nats-io/nats-core': 3.0.0-34
-
-  '@nats-io/nats-core@3.0.0-34':
-    dependencies:
-      '@nats-io/nkeys': 1.2.0-7
-      '@nats-io/nuid': 2.0.1-2
+      '@nats-io/nats-core': 3.0.0-35
 
   '@nats-io/nats-core@3.0.0-35':
     dependencies:
