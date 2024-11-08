@@ -16,8 +16,8 @@ const PresenterIcon = ({ userId }: IPresenterIconProps) => {
   const render = useMemo(() => {
     if (isPresenter) {
       return (
-        <div className="presenter ltr:mr-2 rtl:ml-2 cursor-pointer">
-          <i className="pnm-presenter secondaryColor text-[10px]" />
+        <div className="presenter cursor-pointer w-8 h-8 flex items-center justify-center">
+          <i className="pnm-presenter text-Gray-950 text-base" />
         </div>
       );
     }

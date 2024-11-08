@@ -14,8 +14,8 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
   const render = useMemo(() => {
     if (visibility === 'hidden') {
       return (
-        <div className="visibility ltr:mr-2 rtl:ml-2 cursor-pointer mt-[2px]">
-          <i className="pnm-eye-slash secondaryColor text-xs" />
+        <div className="visibility cursor-pointer w-8 h-8 flex items-center justify-center">
+          <i className="pnm-eye-slash text-Gray-950 text-base" />
         </div>
       );
     }

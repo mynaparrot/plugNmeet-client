@@ -142,7 +142,7 @@ const MainArea = () => {
       //   leaveTo="opacity-0 translate-x-full"
       // >
       <div
-        className={`transition-right-panel relative transition-all duration-300 w-[340px] ${isActiveParticipantsPanel ? '' : '-mr-[340px]'}`}
+        className={`participants-panel absolute transition-all duration-300 w-[340px] right-0 ${isActiveParticipantsPanel ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <LeftPanel />
       </div>
@@ -180,7 +180,7 @@ const MainArea = () => {
         //   leaveTo="opacity-0 translate-x-full"
         // >
         <div
-          className={`transition-right-panel relative transition-all duration-300 w-[350px] ${isActiveChatPanel ? '' : '-mr-[350px]'}`}
+          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] right-0 ${isActiveChatPanel ? 'translate-x-0' : 'translate-x-full'}`}
         >
           <RightPanel />
         </div>
@@ -220,7 +220,9 @@ const MainArea = () => {
         }}
       /> */}
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
-        <div className="middle-area relative transition-all duration-300 flex-1">
+        <div
+          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel ? 'pr-[340px]' : ''} ${isActiveChatPanel ? 'pr-[350px]' : ''}`}
+        >
           <ActiveSpeakers />
           {renderMainComponentElms}
         </div>

@@ -13,7 +13,10 @@ const RightPanel = () => {
   // };
 
   return (
-    <div id="main-right-panel" className="h-full">
+    <div
+      // id="main-right-panel"
+      className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full"
+    >
       {/* {!isRecorder ? (
         <div
           className="hidden md:inline-block close absolute -left-[14px] z-20 top-1 w-6 h-6 rounded-full border border-solid border-primaryColor dark:border-darkText bg-white dark:bg-darkSecondary cursor-pointer"

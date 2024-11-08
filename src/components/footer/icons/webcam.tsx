@@ -294,10 +294,10 @@ const WebcamIcon = () => {
               className="w-11 h-11 relative flex items-center justify-center"
               onClick={() => toggleWebcam()}
             >
-              {isActiveWebcam ? <Camera /> : null}
+              {isActiveWebcam ? <Camera classes={'h-5 w-auto'} /> : null}
               {!isActiveWebcam ? (
                 <>
-                  <Camera />
+                  <Camera classes={'h-5 w-auto'} />
                   <span className="add absolute -top-2 -right-2 z-10">
                     <PlusIcon />
                   </span>
@@ -305,7 +305,7 @@ const WebcamIcon = () => {
               ) : null}
               {lockWebcam ? (
                 <>
-                  <CameraOff />
+                  <CameraOff classes={'h-5 w-auto'} />
                   <span className="blocked absolute -top-2 -right-2 z-10">
                     <BlockedIcon />
                   </span>

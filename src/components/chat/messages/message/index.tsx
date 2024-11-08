@@ -23,7 +23,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       return (
         <div className="content w-[calc(100%)] pt-2 system mb-2">
           <p
-            className="message-content max-w-fit shadow-footer text-xs bg-primaryColor text-white"
+            className="message-content max-w-fit text-xs text-Gray-950"
             dangerouslySetInnerHTML={{ __html: body.message }}
           />
         </div>

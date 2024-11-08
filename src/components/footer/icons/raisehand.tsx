@@ -65,7 +65,7 @@ const RaiseHandIcon = () => {
             ? t('footer.icons.lower-hand')
             : t('footer.icons.raise-hand')}
         </span>
-        <HandsIconSVG />
+        <HandsIconSVG classes={'h-5 w-auto'} />
       </div>
     );
   };

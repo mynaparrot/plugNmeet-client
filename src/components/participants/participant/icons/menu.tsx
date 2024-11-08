@@ -9,6 +9,7 @@ import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
 import PrivateChatMenuItem from './menu-items/privateChatMenuItem';
 import { store, useAppSelector } from '../../../../store';
+import { ParticipantsMenuIconSVG } from '../../../../assets/Icons/ParticipantsMenuIconSVG';
 
 interface IMenuIconProps {
   userId: string;
@@ -77,8 +78,9 @@ const MenuIcon = ({
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton className="relative flex-shrink-0 mt-2">
-                <i className="pnm-menu-small primaryColor dark:text-secondaryColor opacity-50" />
+              <MenuButton className="relative flex-shrink-0">
+                {/* <i className="pnm-menu-small primaryColor dark:text-secondaryColor opacity-50" /> */}
+                <ParticipantsMenuIconSVG />
               </MenuButton>
 
               {/* Use the Transition component. */}

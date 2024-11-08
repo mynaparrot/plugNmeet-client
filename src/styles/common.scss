@@ -562,9 +562,9 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
       @apply h-[calc(100%-30px)] w-[calc(100%-30px)] top-[15px] left-[15px];
     }
 
-    video.video-player.self-screen-share {
-      @apply w-[30%] left-[35%];
-    }
+    // video.video-player.self-screen-share {
+    //   @apply w-[30%] left-[35%];
+    // }
   }
 }
 
@@ -673,11 +673,11 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
     @apply z-[2];
   }
 
-  .screen-share-video {
-    button {
-      @apply right-[320px];
-    }
-  }
+  // .screen-share-video {
+  //   button {
+  //     @apply right-[320px];
+  //   }
+  // }
 }
 
 .breakout-room-list-item {

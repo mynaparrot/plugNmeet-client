@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
+import { Camera } from '../../../../assets/Icons/Camera';
+// import { CameraOff } from '../../../../assets/Icons/CameraOff';
 
 interface WebcamIconProps {
   userId: string;
@@ -15,8 +17,9 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
   const render = useMemo(() => {
     if (videoTracks) {
       return (
-        <div className="mic ltr:mr-2 rtl:ml-2 cursor-pointer">
-          <i className="pnm-webcam secondaryColor text-[10px]" />
+        <div className="mic cursor-pointer w-8 h-8 flex items-center justify-center">
+          {/* <i className="pnm-webcam secondaryColor text-[10px]" /> */}
+          <Camera classes={'h-4 w-auto'} />
         </div>
       );
     }

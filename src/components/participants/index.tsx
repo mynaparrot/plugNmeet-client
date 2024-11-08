@@ -91,7 +91,7 @@ const ParticipantsComponent = () => {
 
   return (
     <>
-      <div className="inner-wrapper relative z-20">
+      <div className="inner-wrapper relative z-20 w-full">
         <div className="top flex items-center h-14 px-5">
           <p className="text-base text-Gray-950 font-medium leading-tight">
             {t('left-panel.participants', {
@@ -120,7 +120,7 @@ const ParticipantsComponent = () => {
           className="scrollBar"
         >
           <div
-            className="all-participants-wrap px-2 xl:px-4"
+            className="all-participants-wrap px-2 xl:px-5"
             ref={innerRef as any}
           >
             {items.map(({ index, measureRef }) => (

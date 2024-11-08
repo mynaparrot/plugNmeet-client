@@ -93,8 +93,8 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
               <div className="micro-cam-wrap flex justify-center py-5 gap-5">
                 <div className="microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
                   <div className="w-11 h-11 relative flex items-center justify-center">
-                    <Microphone />
-                    {/* <MicrophoneOff /> */}
+                    <Microphone classes={'h-5 w-auto'} />
+                    {/* <MicrophoneOff classes={'h-5 w-auto'} /> */}
                     <span className="add absolute -top-2 -right-2 z-10">
                       <PlusIcon />
                     </span>
@@ -142,8 +142,8 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
                 </div>
                 <div className="cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
                   <div className="w-11 h-11 relative flex items-center justify-center">
-                    {/* <Camera /> */}
-                    <CameraOff />
+                    {/* <Camera classes={'h-5 w-auto'} /> */}
+                    <CameraOff classes={'h-5 w-auto'} />
                     <span className="add absolute -top-2 -right-2 z-10">
                       <PlusIcon />
                     </span>

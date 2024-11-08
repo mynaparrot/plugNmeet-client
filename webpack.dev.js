@@ -6,7 +6,7 @@ module.exports = merge(common, {
   devtool: 'source-map',
   devServer: {
     static: './dist',
-    port: 3003,
+    port: 3000,
     compress: true,
     open: false,
     historyApiFallback: true,

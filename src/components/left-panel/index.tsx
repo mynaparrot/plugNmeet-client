@@ -81,8 +81,8 @@ const LeftPanel = () => {
 
   return (
     <div
-      id="main-left-panel"
-      className="participants-wrapper relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full"
+      // id="main-left-panel"
+      className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full"
     >
       <div
         className="hidden md:inline-block absolute z-50 right-5 top-[18px] text-Gray-600"

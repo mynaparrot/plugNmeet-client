@@ -231,7 +231,7 @@ const MainComponents = ({
           'middle-fullscreen-wrapper h-full flex verticalsWebcamsActivated',
         );
       } else {
-        cssClasses.push('middle-fullscreen-wrapper h-full flex');
+        cssClasses.push('middle-fullscreen-wrapper h-full flex w-full');
       }
     }
     return cssClasses.join(' ');

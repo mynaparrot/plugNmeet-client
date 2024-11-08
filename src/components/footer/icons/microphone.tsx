@@ -279,14 +279,18 @@ const MicrophoneIcon = () => {
         >
           {!isActiveMicrophone ? (
             <>
-              <Microphone />
+              <Microphone classes={'h-5 w-auto'} />
               <span className="add absolute -top-2 -right-2 z-10">
                 <PlusIcon />
               </span>
             </>
           ) : null}
-          {!isMicMuted && isActiveMicrophone ? <Microphone /> : null}
-          {isMicMuted && isActiveMicrophone ? <MicrophoneOff /> : null}
+          {!isMicMuted && isActiveMicrophone ? (
+            <Microphone classes={'h-5 w-auto'} />
+          ) : null}
+          {isMicMuted && isActiveMicrophone ? (
+            <MicrophoneOff classes={'h-5 w-auto'} />
+          ) : null}
 
           {/* <span className="blocked absolute -top-2 -right-2 z-10">
             <BlockedIcon />

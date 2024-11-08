@@ -15,8 +15,8 @@ const ScreenShareIcon = ({ userId }: IScreenShareIconProps) => {
   const render = useMemo(() => {
     if (screenShareTrack) {
       return (
-        <div className="screen-share ltr:mr-2 rtl:ml-2 cursor-pointer">
-          <i className="pnm-screen-share secondaryColor text-[10px]" />
+        <div className="screen-share cursor-pointer w-8 h-8 flex items-center justify-center">
+          <i className="pnm-screen-share text-Gray-950 text-sm" />
         </div>
       );
     }

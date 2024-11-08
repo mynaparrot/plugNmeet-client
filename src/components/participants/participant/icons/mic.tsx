@@ -7,6 +7,8 @@ import {
   updateParticipant,
 } from '../../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
+import { Microphone } from '../../../../assets/Icons/Microphone';
+import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 
 interface MicIconProps {
   userId: string;
@@ -50,12 +52,12 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
 
   const renderUnmuteIcon = useCallback(() => {
     return (
-      <div className="mic ltr:mr-2 rtl:ml-2 cursor-pointer">
+      <div className="mic cursor-pointer w-8 h-8 flex items-center justify-center">
         <Menu>
           {({ open }) => (
             <>
               <MenuButton>
-                <i className="pnm-mic-unmute secondaryColor text-[10px]" />
+                <Microphone classes={'h-4 w-auto'} />
               </MenuButton>
 
               <Transition
@@ -69,7 +71,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
               >
                 <MenuItems
                   static
-                  className="volume-popup-wrapper origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                  className="volume-popup-wrapper hidden origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                 >
                   <section className="flex items-center">
                     <input
@@ -103,8 +105,9 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
     if (audioTracks) {
       if (isMuted) {
         return (
-          <div className="mic muted mr-2 cursor-pointer">
-            <i className="pnm-mic-mute secondaryColor text-[10px]" />
+          <div className="mic muted cursor-pointer w-8 h-8 flex items-center justify-center">
+            {/* <i className="pnm-mic-mute secondaryColor text-[10px]" /> */}
+            <MicrophoneOff classes={'h-4 w-auto'} />
           </div>
         );
       }
@@ -114,8 +117,9 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
       }
       // for local user don't need
       return (
-        <div className="mic mr-2 cursor-pointer">
-          <i className="pnm-mic-unmute secondaryColor text-[10px]" />
+        <div className="mic cursor-pointer w-8 h-8 flex items-center justify-center">
+          {/* <i className="pnm-mic-unmute secondaryColor text-[10px]" /> */}
+          <Microphone classes={'h-4 w-auto'} />
         </div>
       );
     }
