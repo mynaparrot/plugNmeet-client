@@ -50,14 +50,9 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveChatPanel: (state, action: PayloadAction<boolean>) => {
       // we'll close ParticipantsPanel if screen size is small
-      if (
-        state.screenWidth < 1024 &&
-        state.isActiveParticipantsPanel &&
-        action.payload
-      ) {
+      if (state.isActiveParticipantsPanel && action.payload) {
         state.isActiveParticipantsPanel = false;
       }
-
       state.isActiveChatPanel = action.payload;
 
       // if open then we'll make it 0
@@ -69,12 +64,7 @@ const bottomIconsSlice = createSlice({
       state,
       action: PayloadAction<boolean>,
     ) => {
-      // we'll close ChatPanel if screen size is small
-      if (
-        state.screenWidth < 1024 &&
-        state.isActiveChatPanel &&
-        action.payload
-      ) {
+      if (state.isActiveChatPanel && action.payload) {
         state.isActiveChatPanel = false;
       }
       state.isActiveParticipantsPanel = action.payload;

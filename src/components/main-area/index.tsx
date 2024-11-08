@@ -11,6 +11,7 @@ import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
+import { Transition } from '@headlessui/react';
 
 const MainArea = () => {
   const columnCameraWidth = useAppSelector(
@@ -87,12 +88,23 @@ const MainArea = () => {
   const customCSS = useMemo(() => {
     const css: Array<string> = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    isActiveParticipantsPanel
-      ? css.push('showParticipantsPanel')
-      : css.push('hideParticipantsPanel');
+    if (isActiveChatPanel) {
+      css.push('showChatPanel');
+      if (isActiveParticipantsPanel) {
+        css.push('hideParticipantsPanel');
+      }
+    } else {
+      css.push('hideChatPanel');
+    }
+
+    if (isActiveParticipantsPanel) {
+      css.push('showParticipantsPanel');
+      if (isActiveChatPanel) {
+        css.push('hideChatPanel');
+      }
+    } else {
+      css.push('hideParticipantsPanel');
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveScreenSharingView && isActiveScreenShare
@@ -131,22 +143,22 @@ const MainArea = () => {
 
   const renderLeftPanel = useMemo(() => {
     return (
-      // <Transition
-      //   show={isActiveParticipantsPanel}
-      //   unmount={false}
-      //   enter="transform transition duration-[400ms]"
-      //   enterFrom="opacity-0 translate-x-0"
-      //   enterTo="opacity-100"
-      //   leave="transform transition duration-[400ms]"
-      //   leaveFrom="opacity-100"
-      //   leaveTo="opacity-0 translate-x-full"
-      // >
-      <div
-        className={`participants-panel absolute transition-all duration-300 w-[340px] right-0 ${isActiveParticipantsPanel ? 'translate-x-0' : 'translate-x-full'}`}
+      <Transition
+        show={isActiveParticipantsPanel}
+        unmount={false}
+        enter="transform transition duration-[400ms]"
+        enterFrom="opacity-0 translate-x-0"
+        enterTo="opacity-100"
+        leave="transform transition duration-[400ms]"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0 translate-x-full"
       >
-        <LeftPanel />
-      </div>
-      // </Transition>
+        <div
+          className={`participants-panel absolute transition-all duration-300 w-[340px] right-0 ${isActiveParticipantsPanel ? 'translate-x-0' : 'translate-x-full'}`}
+        >
+          <LeftPanel />
+        </div>
+      </Transition>
     );
   }, [isActiveParticipantsPanel]);
 
@@ -169,22 +181,22 @@ const MainArea = () => {
   const renderRightPanel = useMemo(() => {
     if (allowChat) {
       return (
-        // <Transition
-        //   show={isActiveChatPanel}
-        //   unmount={false}
-        //   enter="transform transition duration-[400ms]"
-        //   enterFrom="opacity-0 translate-x-0"
-        //   enterTo="opacity-100"
-        //   leave="transform transition duration-[400ms]"
-        //   leaveFrom="opacity-100"
-        //   leaveTo="opacity-0 translate-x-full"
-        // >
-        <div
-          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] right-0 ${isActiveChatPanel ? 'translate-x-0' : 'translate-x-full'}`}
+        <Transition
+          show={isActiveChatPanel}
+          unmount={false}
+          enter="transform transition duration-[400ms]"
+          enterFrom="opacity-0 translate-x-0"
+          enterTo="opacity-100"
+          leave="transform transition duration-[400ms]"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0 translate-x-full"
         >
-          <RightPanel />
-        </div>
-        // </Transition>
+          <div
+            className={`chat-panel absolute transition-all duration-300 h-full w-[350px] right-0 ${isActiveChatPanel ? 'translate-x-0' : 'translate-x-full'}`}
+          >
+            <RightPanel />
+          </div>
+        </Transition>
       );
     }
     return null;
