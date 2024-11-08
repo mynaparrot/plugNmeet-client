@@ -9,7 +9,7 @@ const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
   isActiveWebcam: false,
   isActiveChatPanel: false,
-  isActiveParticipantsPanel: false,
+  isActiveParticipantsPanel: true,
   isActiveRaisehand: false,
   isActiveRecording: false,
   isActiveScreenshare: false,

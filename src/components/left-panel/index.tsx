@@ -85,7 +85,7 @@ const LeftPanel = () => {
       className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full"
     >
       <div
-        className="hidden md:inline-block absolute z-50 right-5 top-[18px] text-Gray-600"
+        className="hidden md:inline-block absolute z-50 right-5 top-[18px] text-Gray-600 cursor-pointer"
         onClick={closePanel}
       >
         <CloseIconSVG />
