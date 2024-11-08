@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-// import { Transition } from '@headlessui/react';
+import { Transition } from '@headlessui/react';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -11,7 +11,6 @@ import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
-import { Transition } from '@headlessui/react';
 
 const MainArea = () => {
   const columnCameraWidth = useAppSelector(
