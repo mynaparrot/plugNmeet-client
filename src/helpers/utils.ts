@@ -1,5 +1,5 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
-import { ErrorCode, NatsError } from '@nats-io/nats-core';
+import { errors } from '@nats-io/nats-core';
 
 import i18n from './i18n';
 import { store } from '../store';
@@ -180,18 +180,18 @@ export const getAccessToken = () => {
 export const formatNatsError = (err: any) => {
   let msg = i18n.t('notifications.nats-error-request-failed').toString();
 
-  if (err instanceof NatsError) {
-    switch (err.code) {
-      case ErrorCode.NoResponders:
-        msg = i18n.t('notifications.nats-error-no-response', {
-          error: `${err.name}: ${err.message}`,
-        });
-        break;
-      case ErrorCode.Timeout:
-        msg = i18n.t('notifications.nats-error-timeout', {
-          error: `${err.name}: ${err.message}`,
-        });
-        break;
+  if (err instanceof errors.NoRespondersError) {
+    msg = i18n.t('notifications.nats-error-no-response', {
+      error: `${err.name}: ${err.message}`,
+    });
+  } else if (err instanceof errors.TimeoutError) {
+    msg = i18n.t('notifications.nats-error-timeout', {
+      error: `${err.name}: ${err.message}`,
+    });
+  } else if (err instanceof Error) {
+    msg = err.name + ': ' + msg;
+    if (err.message !== '') {
+      msg = err.name + ': ' + err.message;
     }
   }
 

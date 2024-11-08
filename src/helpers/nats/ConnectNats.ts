@@ -29,7 +29,6 @@ import {
 import { toast } from 'react-toastify';
 import {
   NatsConnection,
-  NatsError,
   wsconnect,
   tokenAuthenticator,
   DebugEvents,
@@ -56,7 +55,7 @@ import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
-import { encryptMessage } from '../cryptoMessages';
+import { encryptMessage, importSecretKey } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { formatNatsError, getWhiteboardDonors } from '../utils';
 import { updateIsNatsServerConnected } from '../../store/slices/roomSettingsSlice';
@@ -70,6 +69,7 @@ export default class ConnectNats {
   private _js: JetStreamClient | undefined;
   private readonly _natsWSUrls: string[];
   private _token: string;
+  private _enabledE2EE: boolean = false;
 
   private readonly _roomId: string;
   private readonly _userId: string;
@@ -240,16 +240,9 @@ export default class ConnectNats {
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
-    const e2ee =
-      this._currentRoomInfo?.metadata?.roomFeatures?.endToEndEncryptionFeatures;
-    if (
-      e2ee &&
-      e2ee.isEnabled &&
-      e2ee.includedChatMessages &&
-      e2ee.encryptionKey
-    ) {
+    if (this._enabledE2EE) {
       try {
-        msg = await encryptMessage(e2ee.encryptionKey, msg);
+        msg = await encryptMessage(msg);
       } catch (e: any) {
         toast('Encryption error: ' + e.message, {
           type: 'error',
@@ -434,7 +427,7 @@ export default class ConnectNats {
         await this.handleSystemEvents(payload);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -461,7 +454,7 @@ export default class ConnectNats {
         await this.handleSystemEvents(payload);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -484,7 +477,7 @@ export default class ConnectNats {
         await this.handleChat.handleMsg(payload);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -522,7 +515,7 @@ export default class ConnectNats {
         await processData(m);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -558,7 +551,7 @@ export default class ConnectNats {
         await processData(m);
         m.ack();
       } catch (e) {
-        const err = e as NatsError;
+        const err = e as Error;
         console.error(err.message);
         m.nak();
       }
@@ -744,8 +737,10 @@ export default class ConnectNats {
         );
         return;
       } else {
+        this._enabledE2EE = true;
         info.enabledE2EE = true;
         info.encryption_key = e2ee.encryptionKey;
+        await importSecretKey(e2ee.encryptionKey);
       }
     }
 

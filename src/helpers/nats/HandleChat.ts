@@ -1,4 +1,4 @@
-import { ChatMessage, EndToEndEncryptionFeatures } from 'plugnmeet-protocol-js';
+import { ChatMessage } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
@@ -13,7 +13,7 @@ import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleChat {
   private _that: ConnectNats;
-  private _e2eeFeatures: EndToEndEncryptionFeatures | undefined = undefined;
+  private _isEnabledE2EE: boolean | undefined = undefined;
   private allowViewOtherUsersList: boolean | undefined = undefined;
 
   constructor(that: ConnectNats) {
@@ -89,18 +89,15 @@ export default class HandleChat {
   };
 
   private async handleDecryption(msg: string) {
-    if (typeof this._e2eeFeatures === 'undefined') {
-      this._e2eeFeatures =
-        store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+    if (typeof this._isEnabledE2EE === 'undefined') {
+      const e2ee =
+        store.getState().session.currentRoom.metadata?.roomFeatures
+          ?.endToEndEncryptionFeatures;
+      this._isEnabledE2EE = !!(e2ee && e2ee.isEnabled && e2ee.encryptionKey);
     }
-    if (
-      typeof this._e2eeFeatures !== 'undefined' &&
-      this._e2eeFeatures.isEnabled &&
-      this._e2eeFeatures.includedChatMessages &&
-      this._e2eeFeatures.encryptionKey
-    ) {
+    if (this._isEnabledE2EE) {
       try {
-        return await decryptMessage(this._e2eeFeatures.encryptionKey, msg);
+        return await decryptMessage(msg);
       } catch (e: any) {
         toast('Decryption error: ' + e.message, {
           type: 'error',
@@ -108,8 +105,7 @@ export default class HandleChat {
         console.error('Decryption error:' + e.message);
         return undefined;
       }
-    } else {
-      return msg;
     }
+    return msg;
   }
 }
