@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Transition } from '@headlessui/react';
+// import { Transition } from '@headlessui/react';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -142,22 +142,11 @@ const MainArea = () => {
 
   const renderLeftPanel = useMemo(() => {
     return (
-      <Transition
-        show={isActiveParticipantsPanel}
-        unmount={false}
-        enter="transform transition duration-[400ms]"
-        enterFrom="opacity-0 translate-x-0"
-        enterTo="opacity-100"
-        leave="transform transition duration-[400ms]"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0 translate-x-full"
+      <div
+        className={`participants-panel absolute transition-all duration-300 w-[340px] right-0 ${isActiveParticipantsPanel ? 'translate-x-0' : 'translate-x-[340px]'}`}
       >
-        <div
-          className={`participants-panel absolute transition-all duration-300 w-[340px] right-0 ${isActiveParticipantsPanel ? 'translate-x-0' : 'translate-x-full'}`}
-        >
-          <LeftPanel />
-        </div>
-      </Transition>
+        <LeftPanel />
+      </div>
     );
   }, [isActiveParticipantsPanel]);
 
@@ -180,22 +169,11 @@ const MainArea = () => {
   const renderRightPanel = useMemo(() => {
     if (allowChat) {
       return (
-        <Transition
-          show={isActiveChatPanel}
-          unmount={false}
-          enter="transform transition duration-[400ms]"
-          enterFrom="opacity-0 translate-x-0"
-          enterTo="opacity-100"
-          leave="transform transition duration-[400ms]"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0 translate-x-full"
+        <div
+          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] right-0 ${isActiveChatPanel ? 'translate-x-0' : 'translate-x-[350px]'}`}
         >
-          <div
-            className={`chat-panel absolute transition-all duration-300 h-full w-[350px] right-0 ${isActiveChatPanel ? 'translate-x-0' : 'translate-x-full'}`}
-          >
-            <RightPanel />
-          </div>
-        </Transition>
+          <RightPanel />
+        </div>
       );
     }
     return null;

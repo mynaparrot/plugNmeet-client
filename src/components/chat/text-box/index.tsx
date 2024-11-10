@@ -1,4 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  // useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import sanitizeHtml from 'sanitize-html';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +13,12 @@ import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 
 interface ITextBoxAreaProps {
-  chosenEmoji: string | null;
+  // chosenEmoji: string | null;
   onAfterSendMessage(): void;
 }
 
 const TextBoxArea = ({
-  chosenEmoji,
+  // chosenEmoji,
   onAfterSendMessage,
 }: ITextBoxAreaProps) => {
   const isLockChatSendMsg = useAppSelector(
@@ -83,20 +87,20 @@ const TextBoxArea = ({
     // eslint-disable-next-line
   }, []);
 
-  const addEmoji = useCallback(
-    (emoji: string) => {
-      const msg = message + emoji;
-      setMessage(msg);
-    },
-    [message],
-  );
+  // const addEmoji = useCallback(
+  //   (emoji: string) => {
+  //     const msg = message + emoji;
+  //     setMessage(msg);
+  //   },
+  //   [message],
+  // );
 
-  useEffect(() => {
-    if (chosenEmoji) {
-      addEmoji(chosenEmoji);
-    }
-    //eslint-disable-next-line
-  }, [chosenEmoji]);
+  // useEffect(() => {
+  //   if (chosenEmoji) {
+  //     addEmoji(chosenEmoji);
+  //   }
+  //   //eslint-disable-next-line
+  // }, [chosenEmoji]);
 
   const cleanHtml = (rawText: string) => {
     return sanitizeHtml(rawText, {
@@ -126,28 +130,39 @@ const TextBoxArea = ({
 
   return (
     <>
-      <div className="flex items-start justify-between h-[4.5rem] p-2 pl-10 md:pl-0">
+      <div className="flex items-center justify-between border border-Gray-200 rounded-3xl p-1.5 w-full">
+        {showSendFile ? <FileSend lockSendFile={lockSendFile} /> : null}
         <textarea
           name="message-textarea"
           id="message-textarea"
-          className="w-full bg-white dark:bg-darkSecondary2 h-14 max-h-14 mt-1 leading-[1.2] rounded-xl py-2 px-4 outline-none text-xs lg:text-sm primaryColor dark:text-white placeholder:text-primaryColor/70 dark:placeholder:text-white/70"
+          className="flex-1 outline-none text-sm text-Gray-600 font-normal h-9 mr-2 overflow-hidden"
           value={message}
           onChange={(e) => setMessage(e.currentTarget.value)}
           disabled={lockSendMsg}
           placeholder={t('right-panel.chat-box-placeholder').toString()}
           onKeyDown={(e) => onEnterPress(e)}
         />
-        <div className="btns">
-          <button
-            disabled={lockSendMsg}
-            onClick={() => sendMsg()}
-            className="w-4 h-6 p-2"
+        <button
+          disabled={lockSendMsg}
+          onClick={() => sendMsg()}
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-[#00A1F2]/30 border border-[#08C]/30 transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
           >
-            <i className="pnm-send primaryColor text-[20px] dark:text-secondaryColor" />
-          </button>
-
-          {showSendFile ? <FileSend lockSendFile={lockSendFile} /> : null}
-        </div>
+            <path
+              d="M9 15V3M9 3L4.5 7.5M9 3L13.5 7.5"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
+// import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
 import { store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
@@ -9,9 +9,9 @@ const ChatComponent = () => {
   const isChatLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockChat,
   );
-  const theme = useAppSelector((state) => state.roomSettings.theme);
+  // const theme = useAppSelector((state) => state.roomSettings.theme);
   const [show, setShow] = useState<boolean>(false);
-  const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
+  // const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
   const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
@@ -48,9 +48,9 @@ const ChatComponent = () => {
     }
   }, [isChatLock, isRecorder]);
 
-  const onEmojiClick = (data: EmojiClickData) => {
-    setChosenEmoji(`${data.emoji}`);
-  };
+  // const onEmojiClick = (data: EmojiClickData) => {
+  //   setChosenEmoji(`${data.emoji}`);
+  // };
 
   const onAfterSendMessage = () => {
     if (isOpenEmojiPanel) {
@@ -70,7 +70,7 @@ const ChatComponent = () => {
       ) : null}
       {show ? (
         <>
-          <div
+          {/* <div
             className={`emoji-selection-wrap w-[250px] xl:w-[300px] fixed z-[99] bottom-[120px] lg:bottom-[65px] right-0 left-10 md:left-auto transition ease-in ${
               isOpenEmojiPanel
                 ? 'emoji-active opacity-100 visible pointer-events-auto'
@@ -84,13 +84,13 @@ const ChatComponent = () => {
                 theme={theme === 'dark' ? Theme.DARK : Theme.LIGHT}
               />
             ) : null}
-          </div>
-          <div className="message-form bg-white absolute bottom-0 z-30">
+          </div> */}
+          <div className="message-form absolute bottom-0 z-30 h-20 border-t border-Gray-200 w-full px-5 flex items-center">
             <TextBoxArea
-              chosenEmoji={chosenEmoji}
+              // chosenEmoji={chosenEmoji}
               onAfterSendMessage={onAfterSendMessage}
             />
-            <div
+            {/* <div
               className={`emoji-picker absolute left-2 md:-left-0 bottom-5 w-5 h-5 cursor-pointer text-secondaryColor dark:text-darkText ${
                 isOpenEmojiPanel ? 'emoji-active' : ''
               }`}
@@ -101,7 +101,7 @@ const ChatComponent = () => {
               ) : (
                 <i className="pnm-emoji" />
               )}
-            </div>
+            </div> */}
           </div>
         </>
       ) : null}

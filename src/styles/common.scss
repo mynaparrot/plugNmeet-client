@@ -58,7 +58,7 @@ code {
 // ScrollBar SCSS
 .scrollBar {
   &::-webkit-scrollbar-thumb {
-    @apply bg-secondaryColor border-none rounded-[5px];
+    @apply bg-Blue border-none rounded-[5px];
   }
 
   &::-webkit-scrollbar-track {
@@ -66,7 +66,7 @@ code {
   }
 
   &::-webkit-scrollbar {
-    @apply w-2;
+    @apply w-0.5;
   }
 }
 
@@ -107,45 +107,45 @@ code {
   }
 }
 
-.message-item {
-  .system {
-    p.message-content {
-      @apply text-base leading-[20px];
-    }
-  }
+// .message-item {
+//   .system {
+//     p.message-content {
+//       @apply text-base leading-[20px];
+//     }
+//   }
 
-  p.message-content {
-    @apply p-[10px] text-sm break-words rounded-MSG;
-    span.download {
-      @apply relative;
-      i.pnm-download {
-        @apply text-base absolute -top-[2px] mr-[2px];
-      }
+//   p.message-content {
+//     @apply p-[10px] text-sm break-words rounded-MSG;
+//     span.download {
+//       @apply relative;
+//       i.pnm-download {
+//         @apply text-base absolute -top-[2px] mr-[2px];
+//       }
 
-      a {
-        @apply pl-5;
-      }
-    }
-  }
+//       a {
+//         @apply pl-5;
+//       }
+//     }
+//   }
 
-  .content.me {
-    @apply w-full;
-    p.message-content {
-      @apply ml-auto rounded-MSGME;
-      i.pnm-download {
-        @apply -top-[1px];
-      }
+//   .content.me {
+//     @apply w-full;
+//     p.message-content {
+//       @apply ml-auto rounded-MSGME;
+//       i.pnm-download {
+//         @apply -top-[1px];
+//       }
 
-      a {
-        @apply underline;
-      }
-    }
+//       a {
+//         @apply underline;
+//       }
+//     }
 
-    .name {
-      @apply text-right;
-    }
-  }
-}
+//     .name {
+//       @apply text-right;
+//     }
+//   }
+// }
 
 // Private Message Area
 
@@ -529,14 +529,14 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   }
 }
 
-.message-form {
-  background: rgb(214, 231, 255);
-  background: linear-gradient(
-    0deg,
-    rgba(214, 231, 255, 0.5) 67%,
-    rgba(214, 231, 255, 1) 100%
-  );
-}
+// .message-form {
+//   background: rgb(214, 231, 255);
+//   background: linear-gradient(
+//     0deg,
+//     rgba(214, 231, 255, 0.5) 67%,
+//     rgba(214, 231, 255, 1) 100%
+//   );
+// }
 
 .Toastify__toast-container {
   @apply z-[999999];
@@ -978,24 +978,24 @@ aside {
   }
 }
 
-.message-form {
-  textarea#message-textarea {
-    color: #004d90;
-  }
+// .message-form {
+//   textarea#message-textarea {
+//     color: #004d90;
+//   }
 
-  textarea#message-textarea::placeholder {
-    color: #004d90aa;
-  }
-}
+//   textarea#message-textarea::placeholder {
+//     color: #004d90aa;
+//   }
+// }
 
-.dark {
-  .message-form {
-    textarea#message-textarea,
-    textarea#message-textarea::placeholder {
-      color: #fff;
-    }
-  }
-}
+// .dark {
+//   .message-form {
+//     textarea#message-textarea,
+//     textarea#message-textarea::placeholder {
+//       color: #fff;
+//     }
+//   }
+// }
 
 .is-mobile {
   .footer-collapse-arrow,

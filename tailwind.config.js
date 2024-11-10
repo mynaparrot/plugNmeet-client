@@ -28,6 +28,7 @@ module.exports = {
         darkSecondary3: '#031A3E',
         darkText: '#A7CCED',
         Blue: '#00A1F2',
+        DarkBlue: '#069',
         Gray: {
           25: '#FAFCFF',
           50: '#F0F6FC',

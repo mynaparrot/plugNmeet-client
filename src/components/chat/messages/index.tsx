@@ -99,16 +99,12 @@ const Messages = ({ userId }: IMessagesProps) => {
 
   return (
     <div
-      className="relative h-full px-2 xl:px-4 pt-2 xl:pt-4 overflow-auto scrollBar scrollBar4 messages-item-wrap"
+      className="relative h-full overflow-auto scrollBar messages-item-wrap px-5"
       ref={outerRef as any}
     >
       <div ref={innerRef as any} className="inner">
         {items.map(({ index, measureRef }) => (
-          <div
-            key={index}
-            ref={measureRef}
-            className="message-item mb-2 xl:mb-3"
-          >
+          <div key={index} ref={measureRef} className="message-item pb-4">
             {renderMsg(index)}
           </div>
         ))}

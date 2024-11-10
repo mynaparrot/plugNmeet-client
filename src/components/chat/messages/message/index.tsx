@@ -21,21 +21,24 @@ const Message = ({ body, currentUser }: IMessageProps) => {
   const render = () => {
     if (body.fromUserId === 'system') {
       return (
-        <div className="content w-[calc(100%)] pt-2 system mb-2">
-          <p
-            className="message-content max-w-fit text-xs text-Gray-950"
-            dangerouslySetInnerHTML={{ __html: body.message }}
-          />
-        </div>
+        <>
+          <div className="content w-full system my-2">
+            <p
+              className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words"
+              dangerouslySetInnerHTML={{ __html: body.message }}
+            />
+          </div>
+        </>
       );
     } else if (currentUser?.userId === body.fromUserId) {
       return (
-        <div className="content me w-[calc(100%-2rem)] pt-2">
-          <p className="name pl-2 text-sm pb-1 primaryColor dark:text-darkText">
-            {t('right-panel.you')}
-          </p>
+        <div className="content me w-[calc(100%-48px)] ml-auto">
+          <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
+            <p>{t('right-panel.you')}</p>
+            <p className="time text-xs text-Gray-600">8:37AM</p>
+          </div>
           <p
-            className="message-content max-w-fit shadow-footer text-xs bg-secondaryColor text-white"
+            className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden rounded-br-none text-base text-Gray-950 break-words"
             dangerouslySetInnerHTML={{ __html: body.message }}
           />
         </div>
@@ -44,15 +47,18 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       return (
         <>
           <Avatar userId={body.fromUserId} name={body.fromName} />
-          <div className="content w-[calc(100%-2rem)] pt-2">
-            <p className="name pl-2 text-sm pb-1 dark:text-darkText">
-              {body.fromName ? body.fromName : participantName}
-              <span style={{ fontSize: '10px' }}>
-                {participantName ? '' : ' (offline)'}
-              </span>
-            </p>
+          <div className="content w-[calc(100%-48px)] flex-1">
+            <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
+              <p>
+                {body.fromName ? body.fromName : participantName}
+                <span className="text-[10px] pl-1">
+                  {participantName ? '' : ' (offline)'}
+                </span>
+              </p>
+              <p className="time text-xs text-Gray-600">8:37AM</p>
+            </div>
             <p
-              className="message-content max-w-fit bg-white shadow-footer text-xs"
+              className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words rounded-tl-none bg-Gray-50"
               dangerouslySetInnerHTML={{ __html: body.message }}
             />
           </div>
@@ -61,7 +67,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
     }
   };
 
-  return <div className="wrapper flex ">{render()}</div>;
+  return <div className="wrapper flex gap-3">{render()}</div>;
 };
 
 export default Message;

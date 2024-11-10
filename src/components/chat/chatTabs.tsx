@@ -16,6 +16,7 @@ import {
   updateSelectedChatOption,
   updateUnreadMsgFrom,
 } from '../../store/slices/roomSettingsSlice';
+import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 
 interface IChatOptions {
   id: string;
@@ -123,11 +124,27 @@ const ChatTabs = () => {
 
   return (
     <div className="h-full">
+      <div className="top flex items-center gap-2 h-14 px-5 justify-between">
+        <div className="left flex items-center gap-3">
+          <p className="text-base text-Gray-950 font-medium leading-tight">
+            Public Chat
+          </p>
+          <div className="lang h-8 w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-[11px] text-sm font-semibold text-Gray-950">
+            EN
+          </div>
+        </div>
+        <div className="text-Gray-600 cursor-pointer">
+          <CloseIconSVG />
+        </div>
+      </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative h-10 z-10">
-          <ListboxButton className="flex items-center justify-between py-2 text-sm text-black dark:text-darkText font-bold leading-5 border-b-4 border-solid transition ease-in shrink-0 border-primaryColor w-full">
-            <span className="block truncate pl-4 md:pl-6">{selectedTitle}</span>
-            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-10 w-full outline-none px-5 text-sm text-Gray-700">
+            <p className="block truncate">
+              To:{' '}
+              <span className="font-medium text-Gray-950">{selectedTitle}</span>
+            </p>
+            <span className="pointer-events-none absolute inset-y-0 right-5 flex items-center">
               {unreadMsgFrom.length ? (
                 <span className="shake pr-1 -mb-1">
                   <i className="pnm-chat shake" />
@@ -135,14 +152,18 @@ const ChatTabs = () => {
               ) : null}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
               >
+                <path d="M12 6L8 10L4 6" fill="#4D6680" />
                 <path
-                  fillRule="evenodd"
-                  d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                  clipRule="evenodd"
+                  d="M12 6L8 10L4 6H12Z"
+                  stroke="#4D6680"
+                  strokeWidth="1.67"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </span>
@@ -207,7 +228,7 @@ const ChatTabs = () => {
           </Transition>
         </div>
       </Listbox>
-      <div className="h-[calc(100%-40px)]">
+      <div className="h-[calc(100%-176px)]">
         <Messages userId={selectedChatOption} />
       </div>
     </div>

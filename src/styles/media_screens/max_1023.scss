@@ -7,14 +7,14 @@
     height: 100%;
     right: 0;
     z-index: 9999;
-    #main-right-panel {
-      .message-form {
-        position: absolute;
-      }
-      .messageModule-wrapper {
-        @apply h-[calc(100%-72px)];
-      }
-    }
+    // #main-right-panel {
+    //   .message-form {
+    //     position: absolute;
+    //   }
+    //   .messageModule-wrapper {
+    //     @apply h-[calc(100%-72px)];
+    //   }
+    // }
   }
   #main-area.fullWidthMainArea {
     .middle-fullscreen-wrapper {
