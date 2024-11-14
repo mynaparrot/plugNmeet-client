@@ -87,23 +87,12 @@ const MainArea = () => {
   const customCSS = useMemo(() => {
     const css: Array<string> = [];
 
-    if (isActiveChatPanel) {
-      css.push('showChatPanel');
-      if (isActiveParticipantsPanel) {
-        css.push('hideParticipantsPanel');
-      }
-    } else {
-      css.push('hideChatPanel');
-    }
-
-    if (isActiveParticipantsPanel) {
-      css.push('showParticipantsPanel');
-      if (isActiveChatPanel) {
-        css.push('hideChatPanel');
-      }
-    } else {
-      css.push('hideParticipantsPanel');
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isActiveParticipantsPanel
+      ? css.push('showParticipantsPanel')
+      : css.push('hideParticipantsPanel');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveScreenSharingView && isActiveScreenShare
@@ -143,7 +132,7 @@ const MainArea = () => {
   const renderLeftPanel = useMemo(() => {
     return (
       <div
-        className={`participants-panel absolute transition-all duration-300 w-[340px] ${isActiveParticipantsPanel ? 'right-0' : '-right-[340px]'}`}
+        className={`participants-panel absolute transition-all duration-300 w-[340px] -right-0 ${isActiveParticipantsPanel ? '' : 'hidden'}`}
       >
         <LeftPanel />
       </div>
@@ -170,7 +159,7 @@ const MainArea = () => {
     if (allowChat) {
       return (
         <div
-          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] ${isActiveChatPanel ? 'right-0' : '-right-[350px]'}`}
+          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] -right-0 ${isActiveChatPanel ? '' : 'hidden'}`}
         >
           <RightPanel />
         </div>
