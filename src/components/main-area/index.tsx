@@ -143,7 +143,7 @@ const MainArea = () => {
   const renderLeftPanel = useMemo(() => {
     return (
       <div
-        className={`participants-panel absolute transition-all duration-300 w-[340px] right-0 ${isActiveParticipantsPanel ? 'translate-x-0' : 'translate-x-[340px]'}`}
+        className={`participants-panel absolute transition-all duration-300 w-[340px] ${isActiveParticipantsPanel ? 'right-0' : '-right-[340px]'}`}
       >
         <LeftPanel />
       </div>
@@ -170,7 +170,7 @@ const MainArea = () => {
     if (allowChat) {
       return (
         <div
-          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] right-0 ${isActiveChatPanel ? 'translate-x-0' : 'translate-x-[350px]'}`}
+          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] ${isActiveChatPanel ? 'right-0' : '-right-[350px]'}`}
         >
           <RightPanel />
         </div>
