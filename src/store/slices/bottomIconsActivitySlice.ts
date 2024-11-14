@@ -89,10 +89,6 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
       state.isActiveWhiteboard = action.payload;
-
-      if (state.isActiveWhiteboard) {
-        state.isActiveParticipantsPanel = false;
-      }
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {
       state.screenWidth = action.payload;

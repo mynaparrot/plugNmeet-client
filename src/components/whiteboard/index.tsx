@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import throttle from 'lodash/throttle';
 import {
   Excalidraw,
@@ -73,6 +73,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const screenWidth = useAppSelector(
     (state) => state.bottomIconsActivity.screenWidth,
   );
+  const isActiveParticipantsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+  );
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -100,6 +106,19 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       dispatch(addAllExcalidrawElements(''));
     };
   }, [dispatch]);
+
+  useMemo(() => {
+    const timeout = setTimeout(() => {
+      if (excalidrawAPI) {
+        excalidrawAPI.refresh();
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+    //eslint-disable-next-line
+  }, [isActiveParticipantsPanel, isActiveChatPanel]);
 
   useEffect(() => {
     const s = store.getState();
