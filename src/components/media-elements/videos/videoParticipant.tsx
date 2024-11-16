@@ -23,7 +23,10 @@ const VideoParticipant = ({
     participant.videoTrackPublications.forEach((track) => {
       if (track.source === Track.Source.Camera) {
         const elm = (
-          <div className="video-camera-item-inner" key={track.trackSid}>
+          <div
+            className="video-camera-item-inner w-full h-full"
+            key={track.trackSid}
+          >
             <div className="name">
               {participant.name} {participantType.isLocal ? '(me)' : null}
             </div>

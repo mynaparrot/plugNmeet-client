@@ -17,6 +17,7 @@ module.exports = {
         box4: '0px 250px 100px 0px #002B4000',
         box5: '0px 390px 109px 0px #002B4000',
         IconBox: '0px 1px 2px 0px #002B400D',
+        shadowXS: '0px 1px 2px 0px rgba(26, 84, 142, 0.05)',
       },
       colors: {
         primaryColor: '#004D90',

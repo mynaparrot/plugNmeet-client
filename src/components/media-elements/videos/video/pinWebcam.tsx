@@ -30,7 +30,10 @@ const PinWebcam = ({ userId }: IPinWebcamProps) => {
 
   const render = useMemo(() => {
     return (
-      <div className="pin-webcam cursor-pointer" onClick={togglePin}>
+      <div
+        className="pin-webcam cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+        onClick={togglePin}
+      >
         {pinWebcam ? (
           <i className="pnm-pin text-white text-[12px]" />
         ) : (

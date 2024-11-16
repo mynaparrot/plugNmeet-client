@@ -379,18 +379,18 @@ code {
     @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
   }
 
-  &::after {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.1) 50%
-    );
-    @apply absolute content-[''] w-full h-full z-[99];
-  }
+  // &::after {
+  //   background: linear-gradient(
+  //     0deg,
+  //     rgba(0, 0, 0, 0.4) 0%,
+  //     rgba(0, 0, 0, 0.1) 50%
+  //   );
+  //   @apply absolute content-[''] w-full h-full z-[99];
+  // }
 
-  .name {
-    @apply absolute bottom-[10px] z-[999] text-white left-3 text-sm leading-[1];
-  }
+  // .name {
+  //   @apply absolute bottom-[10px] z-[999] text-white left-3 text-sm leading-[1];
+  // }
 
   .camera-modules {
     .camera-video-player {
@@ -400,16 +400,16 @@ code {
       }
     }
 
-    .status {
-      @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
-      > div {
-        @apply rounded-full bg-black/20 p-2 h-5 flex items-center justify-center;
-      }
-    }
+    // .status {
+    //   @apply absolute z-[999] rounded-full bottom-3 right-3 flex items-center justify-center;
+    //   > div {
+    //     @apply rounded-full bg-black/20 p-2 h-5 flex items-center justify-center;
+    //   }
+    // }
 
-    .status.PinWebcam {
-      @apply right-auto left-3 top-3 items-start;
-    }
+    // .status.PinWebcam {
+    //   @apply right-auto left-3 top-3 items-start;
+    // }
   }
 }
 

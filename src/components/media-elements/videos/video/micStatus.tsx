@@ -16,22 +16,20 @@ const MicStatus = ({ userId }: IMicStatusProps) => {
 
   const render = () => {
     if (isMuted) {
-      return (
-        <p className="mute">
-          <i className="pnm-mic-mute text-white text-[9px]" />
-        </p>
-      );
+      return <i className="pnm-mic-mute text-white text-[9px]" />;
     } else {
-      return (
-        <p className="mute">
-          <i className="pnm-mic-unmute text-white text-[9px]" />
-        </p>
-      );
+      return <i className="pnm-mic-unmute text-white text-[9px]" />;
     }
   };
 
   return (
-    <>{audioTracks ? <div className="mic-status">{render()}</div> : null}</>
+    <>
+      {audioTracks ? (
+        <div className="mic-status cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center">
+          {render()}
+        </div>
+      ) : null}
+    </>
   );
 };
 

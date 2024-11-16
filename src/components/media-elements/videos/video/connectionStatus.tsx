@@ -33,7 +33,7 @@ const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
   }, [connectionQuality]);
 
   return (
-    <div className="connection-status">
+    <div className="connection-status cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center">
       <i style={{ color: color }} className="pnm-network text-[7px]" />
     </div>
   );

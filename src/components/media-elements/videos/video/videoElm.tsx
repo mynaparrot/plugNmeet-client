@@ -4,12 +4,16 @@ import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import { useAppSelector } from '../../../../store';
 import './style.scss';
 import { sleep } from '../../../../helpers/utils';
+import ConnectionStatus from './connectionStatus';
+import MicStatus from './micStatus';
+import PinWebcam from './pinWebcam';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
+  userId: any;
 }
 
-const VideoElm = ({ track }: IVideoElmProps) => {
+const VideoElm = ({ track, userId }: IVideoElmProps) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState<boolean>();
   const roomVideoQuality = useAppSelector(
@@ -99,26 +103,31 @@ const VideoElm = ({ track }: IVideoElmProps) => {
           </div>
         </div>
       ) : null}
-      <button
-        className="absolute z-[999] top-2 right-2 p-1 bg-black/50 w-6 h-6 flex"
-        onClick={fullScreen}
-      >
-        <i className="icon pnm-fullscreen text[14px] text-white" />
-      </button>
-      {document.pictureInPictureEnabled ? (
-        <button
-          className="absolute z-[999] top-2 right-10 p-1 bg-black/50 w-6 h-6 flex"
-          onClick={pictureInPicture}
-        >
-          <i className="icon pnm-pip text[14px] text-white" />
-        </button>
-      ) : null}
       <video
         className="camera-video"
         onLoadedData={onLoadedData}
         ref={ref}
         style={{ objectFit: videoFit }}
       />
+      <div className="cam-icons w-max h-auto flex items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999]">
+        <PinWebcam userId={userId} />
+        <button
+          className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+          onClick={fullScreen}
+        >
+          <i className="icon pnm-fullscreen text[14px] text-white" />
+        </button>
+        <MicStatus userId={userId} />
+        {document.pictureInPictureEnabled ? (
+          <button
+            className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+            onClick={pictureInPicture}
+          >
+            <i className="icon pnm-pip text-[14px] text-white" />
+          </button>
+        ) : null}
+        <ConnectionStatus userId={userId} />
+      </div>
     </div>
   );
 };
