@@ -978,15 +978,15 @@ aside {
   }
 }
 
-// .message-form {
-//   textarea#message-textarea {
-//     color: #004d90;
-//   }
+.message-form {
+  //textarea#message-textarea {
+  //  color: #004d90;
+  //}
 
-//   textarea#message-textarea::placeholder {
-//     color: #004d90aa;
-//   }
-// }
+  textarea#message-textarea::placeholder {
+    font-size: 11px;
+  }
+}
 
 // .dark {
 //   .message-form {

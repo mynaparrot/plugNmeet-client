@@ -17,6 +17,7 @@ import {
   updateUnreadMsgFrom,
 } from '../../store/slices/roomSettingsSlice';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
+import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 interface IChatOptions {
   id: string;
@@ -122,6 +123,10 @@ const ChatTabs = () => {
     );
   };
 
+  const closePanel = () => {
+    dispatch(updateIsActiveChatPanel(false));
+  };
+
   return (
     <div className="h-full">
       <div className="top flex items-center gap-2 h-14 px-5 justify-between">
@@ -133,7 +138,7 @@ const ChatTabs = () => {
             EN
           </div>
         </div>
-        <div className="text-Gray-600 cursor-pointer">
+        <div className="text-Gray-600 cursor-pointer" onClick={closePanel}>
           <CloseIconSVG />
         </div>
       </div>
