@@ -22,6 +22,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
     if (body.fromUserId === 'system') {
       return (
         <>
+          {/* System Message Design */}
           <div className="content w-full system my-2">
             <p
               className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words"
@@ -32,20 +33,24 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       );
     } else if (currentUser?.userId === body.fromUserId) {
       return (
-        <div className="content me w-[calc(100%-48px)] ml-auto">
-          <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
-            <p>{t('right-panel.you')}</p>
-            <p className="time text-xs text-Gray-600">8:37AM</p>
+        <>
+          {/* Current User Message Design */}
+          <div className="content me w-[calc(100%-48px)] ml-auto">
+            <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
+              <p>{t('right-panel.you')}</p>
+              <p className="time text-xs text-Gray-600">8:37AM</p>
+            </div>
+            <p
+              className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden rounded-br-none text-base text-Gray-950 break-words"
+              dangerouslySetInnerHTML={{ __html: body.message }}
+            />
           </div>
-          <p
-            className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden rounded-br-none text-base text-Gray-950 break-words"
-            dangerouslySetInnerHTML={{ __html: body.message }}
-          />
-        </div>
+        </>
       );
     } else {
       return (
         <>
+          {/* Others User Message Design */}
           <Avatar userId={body.fromUserId} name={body.fromName} />
           <div className="content w-[calc(100%-48px)] flex-1">
             <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">

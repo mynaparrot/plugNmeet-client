@@ -2,6 +2,7 @@ import React, {
   // useCallback,
   useEffect,
   useState,
+  useRef,
 } from 'react';
 import sanitizeHtml from 'sanitize-html';
 import { isEmpty } from 'validator';
@@ -11,6 +12,7 @@ import { store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
+import { useAutosizeTextArea } from './useAutosizeTextArea';
 
 interface ITextBoxAreaProps {
   // chosenEmoji: string | null;
@@ -40,6 +42,17 @@ const TextBoxArea = ({
   const [lockSendFile, setLockSendFile] = useState<boolean>(false);
   const [showSendFile, setShowSendFile] = useState<boolean>(true);
   const [message, setMessage] = useState<string>('');
+
+  // const [textareaHeight, setTextareaHeight] = useState("");
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutosizeTextArea(textAreaRef.current, message);
+
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+
+    setMessage(val);
+  };
 
   useEffect(() => {
     const metadata = store.getState().session.currentRoom
@@ -135,12 +148,15 @@ const TextBoxArea = ({
         <textarea
           name="message-textarea"
           id="message-textarea"
-          className="flex-1 outline-none text-sm text-Gray-600 font-normal h-9 mr-2 overflow-hidden"
+          className="flex-1 outline-none text-sm text-Gray-600 font-normal h-full mr-2 overflow-hidden"
           value={message}
-          onChange={(e) => setMessage(e.currentTarget.value)}
+          // onChange={(e) => setMessage(e.currentTarget.value)}
+          onChange={handleChange}
           disabled={lockSendMsg}
           placeholder={t('right-panel.chat-box-placeholder').toString()}
           onKeyDown={(e) => onEnterPress(e)}
+          ref={textAreaRef}
+          rows={1}
         />
         <button
           disabled={lockSendMsg}

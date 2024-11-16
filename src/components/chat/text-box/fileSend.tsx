@@ -59,7 +59,7 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
   };
 
   const publishToChat = async (filePath: string, fileName: string) => {
-    const message = `<a class="download flex items-center gap-3 break-all" href="${
+    const message = `<a class="attachment-message flex items-center gap-3 break-all" href="${
       (window as any).PLUG_N_MEET_SERVER_URL +
       '/download/uploadedFile/' +
       filePath

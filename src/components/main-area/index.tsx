@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-// import { Transition } from '@headlessui/react';
+import { Transition } from '@headlessui/react';
+import clsx from 'clsx';
 
 import LeftPanel from '../left-panel';
 import RightPanel from '../right-panel';
@@ -131,11 +132,22 @@ const MainArea = () => {
 
   const renderLeftPanel = useMemo(() => {
     return (
-      <div
-        className={`participants-panel absolute transition-all duration-300 w-[340px] -right-0 ${isActiveParticipantsPanel ? '' : 'hidden'}`}
-      >
-        <LeftPanel />
-      </div>
+      <Transition show={isActiveParticipantsPanel}>
+        <div
+          className={clsx([
+            // Base styles
+            'participants-panel absolute transition ease-in-out w-[340px] right-0',
+            // Shared closed styles
+            'data-[closed]:opacity-0',
+            // Entering styles
+            'data-[enter]:duration-100 data-[enter]:data-[closed]:translate-x-full',
+            // Leaving styles
+            'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+          ])}
+        >
+          <LeftPanel />
+        </div>
+      </Transition>
     );
   }, [isActiveParticipantsPanel]);
 
@@ -158,11 +170,22 @@ const MainArea = () => {
   const renderRightPanel = useMemo(() => {
     if (allowChat) {
       return (
-        <div
-          className={`chat-panel absolute transition-all duration-300 h-full w-[350px] -right-0 ${isActiveChatPanel ? '' : 'hidden'}`}
-        >
-          <RightPanel />
-        </div>
+        <Transition show={isActiveChatPanel}>
+          <div
+            className={clsx([
+              // Base styles
+              'chat-panel absolute h-full transition ease-in-out w-[350px] right-0',
+              // Shared closed styles
+              'data-[closed]:opacity-0',
+              // Entering styles
+              'data-[enter]:duration-100 data-[enter]:data-[closed]:translate-x-full',
+              // Leaving styles
+              'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+            ])}
+          >
+            <RightPanel />
+          </div>
+        </Transition>
       );
     }
     return null;

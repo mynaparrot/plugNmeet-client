@@ -35,6 +35,9 @@ importers:
       axios:
         specifier: 1.7.7
         version: 1.7.7
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       copy-text-to-clipboard:
         specifier: 3.2.0
         version: 3.2.0
