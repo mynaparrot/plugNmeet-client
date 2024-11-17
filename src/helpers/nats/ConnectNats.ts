@@ -31,8 +31,6 @@ import {
   NatsConnection,
   wsconnect,
   tokenAuthenticator,
-  DebugEvents,
-  Events,
 } from '@nats-io/nats-core';
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
 import { isURL } from 'validator';
@@ -384,10 +382,10 @@ export default class ConnectNats {
 
     for await (const s of this._nc.status()) {
       switch (s.type) {
-        case Events.Disconnect:
+        case 'disconnect':
           store.dispatch(updateIsNatsServerConnected(false));
           break;
-        case DebugEvents.Reconnecting:
+        case 'reconnecting':
           if (!this.isRoomReconnecting) {
             this._setRoomConnectionStatusState('re-connecting');
 
@@ -395,7 +393,7 @@ export default class ConnectNats {
             startStatusChecker();
           }
           break;
-        case Events.Reconnect:
+        case 'reconnect':
           this._setRoomConnectionStatusState('connected');
           store.dispatch(updateIsNatsServerConnected(true));
 
