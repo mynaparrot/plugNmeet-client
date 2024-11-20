@@ -37,7 +37,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
     (state) => state.bottomIconsActivity.virtualBackground,
   );
 
-  const [open, setOpen] = useState<boolean>(true);
+  // const [open, setOpen] = useState<boolean>(true);
   const [audioDevices, setAudioDevices] = useState<IMediaDevice[]>([]);
   const [videoDevices, setVideoDevices] = useState<IMediaDevice[]>([]);
   const [selectedAudioDevice, setSelectedAudioDevice] = useState<string>('');
@@ -71,7 +71,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
   }, [selectedVideoDevice]);
 
   const onClose = () => {
-    setOpen(false);
+    // setOpen(false);
     dispatch(toggleStartup(false));
 
     if (selectedVideoDevice !== '') {
@@ -155,9 +155,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
     return (
       <div
         id="startupJoinModal"
-        className={`${
-          open ? '' : ''
-        } join-the-audio-popup bg-Gray-100 h-full flex items-center justify-center p-5`}
+        className={`absolute w-full join-the-audio-popup bg-Gray-100 h-full flex items-center justify-center p-5`}
       >
         {showVideoShareModal ? (
           <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
@@ -169,15 +167,11 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
           </div>
           <div className="wrapper bg-Gray-50 pt-11 pb-14 px-12 flex flex-wrap">
             <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-1/2 rounded-2xl">
-              <div className="camera bg-Gray-950 rounded-lg overflow-hidden h-[284px] w-full mt-4">
+              <div className="camera bg-Gray-950 rounded-lg overflow-hidden w-full min-h-[284px]">
                 <div
-                  style={
-                    virtualBackground.type !== 'none'
-                      ? { height: '0.5px', width: '0.5px' }
-                      : { width: 'auto' }
-                  }
+                  className={`${virtualBackground.type !== 'none' ? 'w-0 h-0' : 'w-full h-full flex'}`}
                 >
-                  <video ref={ref} autoPlay />
+                  <video className="w-full h-full" ref={ref} autoPlay />
                 </div>
                 {virtualBackground.type !== 'none' && sourcePlayback ? (
                   <VirtualBackground
@@ -208,7 +202,9 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                       <Menu>
                         {({ open }) => (
                           <>
-                            <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
+                            <MenuButton
+                              className={`w-[30px] h-11 flex items-center justify-center border border-Gray-300  rounded-r-2xl ${open ? 'bg-Gray-100' : 'bg-Gray-50'}`}
+                            >
                               <ArrowUp />
                             </MenuButton>
                             <Transition
@@ -276,7 +272,9 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                       <Menu>
                         {({ open }) => (
                           <>
-                            <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
+                            <MenuButton
+                              className={`w-[30px] h-11 flex items-center justify-center border border-Gray-300  rounded-r-2xl ${open ? 'bg-Gray-100' : 'bg-Gray-50'}`}
+                            >
                               <ArrowUp />
                             </MenuButton>
                             <Transition
@@ -363,7 +361,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   {selectedAudioDevice !== '' || selectedVideoDevice !== '' ? (
                     <button
                       type="button"
-                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-Gray-300 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-box1"
+                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => onClose()}
                     >
                       Join
@@ -371,7 +369,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   ) : (
                     <button
                       type="button"
-                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-Gray-300 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-box1"
+                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => enableMediaDevices('both')}
                     >
                       Enable Microphone and Camera
@@ -379,7 +377,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   )}
                   <button
                     type="button"
-                    className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-box1"
+                    className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
                     onClick={() => onClose()}
                   >
                     Continue as a listener

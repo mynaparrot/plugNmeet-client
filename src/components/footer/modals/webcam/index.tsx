@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, Transition } from '@headlessui/react';
-import { useTranslation } from 'react-i18next';
+import { Dialog, Transition } from '@headlessui/react';
+// import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import {
@@ -22,32 +22,32 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
   );
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedWebcam, setSelectWebcam] = useState<string>('');
-  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
+  // const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   useEffect(() => {
     const getDeviceWebcams = async () => {
       const mics = await getDevices('videoinput');
       const videoDevices: Array<IMediaDevice> = [];
 
-      const options = mics.map((mic, index) => {
-        const device: IMediaDevice = {
-          id: mic.deviceId,
-          label: mic.label,
-        };
-        videoDevices.push(device);
+      // const options = mics.map((mic, index) => {
+      //   const device: IMediaDevice = {
+      //     id: mic.deviceId,
+      //     label: mic.label,
+      //   };
+      //   videoDevices.push(device);
 
-        return (
-          <option
-            value={mic.deviceId}
-            key={`device-id-${mic.deviceId}-${index}`}
-          >
-            {mic.label}
-          </option>
-        );
-      });
-      setDevices(options);
+      //   return (
+      //     <option
+      //       value={mic.deviceId}
+      //       key={`device-id-${mic.deviceId}-${index}`}
+      //     >
+      //       {mic.label}
+      //     </option>
+      //   );
+      // });
+      // setDevices(options);
       setSelectWebcam(mics[0].deviceId);
 
       if (videoDevices.length) {
@@ -95,25 +95,18 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
         <Dialog
           open={isOpen}
           onClose={() => false}
-          className="share-webcam-popup-wrap fixed z-[99999] inset-0 overflow-y-auto"
+          id="VirtualBackgroundModel"
+          className="fixed z-[99999] inset-0 overflow-y-auto"
         >
           <div className="flex items-center justify-center min-h-screen">
-            <div className="fixed inset-0 bg-black opacity-30" />
+            <div className="fixed inset-0 bg-black opacity-50" />
 
-            <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-md rounded-3xl shadow-header relative px-6 py-14">
-              <button
-                className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
-                type="button"
-                onClick={() => onClose()}
-              >
-                <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-              </button>
-              <DialogTitle className="mb-6 dark:text-darkText">
+            <div className="popup-inner bg-white w-full max-w-xl z-50 rounded-2xl overflow-hidden border border-Gray-200 shadow-virtualPOP">
+              {/* <DialogTitle className="mb-6 dark:text-darkText">
                 {t('footer.modal.select-webcam')}
-              </DialogTitle>
+              </DialogTitle> */}
 
-              <div className="col-span-6 sm:col-span-3">
+              {/* <div className="col-span-6 sm:col-span-3">
                 <select
                   value={selectedWebcam}
                   onChange={(e) => setSelectWebcam(e.target.value)}
@@ -121,18 +114,26 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
                 >
                   {devices}
                 </select>
-              </div>
+              </div> */}
 
-              <div className="col-span-6 sm:col-span-3">
+              <div className="w-full p-2">
                 <PreviewWebcam deviceId={selectedWebcam} />
               </div>
 
-              <div className="py-3 bg-gray-50 dark:bg-transparent text-right">
+              <div className="grid grid-cols-2 gap-5 py-8 pb-5 px-5 border-t border-Gray-100">
                 <button
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
+                  className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+                  type="button"
+                  onClick={() => onClose()}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                   onClick={() => shareWebcam()}
                 >
-                  {t('share')}
+                  {/* {t('share')} */}
+                  Save Changes
                 </button>
               </div>
             </div>

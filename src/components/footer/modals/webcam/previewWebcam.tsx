@@ -80,30 +80,38 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   };
 
   return (
-    <div className="mt-5">
-      {deviceId ? (
-        <div
-          style={
-            backgroundConfig
-              ? { height: '0.5px', width: '0.5px' }
-              : { width: 'auto' }
-          }
-        >
-          <VideoBox
-            deviceId={deviceId}
-            onSourcePlayback={setSourcePlayback}
-            onMediaStream={setMediaStream}
+    <div className="">
+      <div className="w-full h-full overflow-hidden rounded-lg">
+        {deviceId ? (
+          <div
+            style={
+              backgroundConfig ? { height: '0', width: '0' } : { width: 'auto' }
+            }
+          >
+            <VideoBox
+              deviceId={deviceId}
+              onSourcePlayback={setSourcePlayback}
+              onMediaStream={setMediaStream}
+            />
+          </div>
+        ) : null}
+
+        {show && sourcePlayback && currentUser && backgroundConfig ? (
+          <VirtualBackground
+            sourcePlayback={sourcePlayback}
+            backgroundConfig={backgroundConfig}
+            id={currentUser}
           />
-        </div>
+        ) : null}
+      </div>
+      {displayVB() ? (
+        <>
+          <div className="title text-sm leading-none text-Gray-700 px-3 uppercase pt-8 pb-5">
+            Choose Background
+          </div>
+          <BackgroundItems onSelect={onSelectBg} />{' '}
+        </>
       ) : null}
-      {show && sourcePlayback && currentUser && backgroundConfig ? (
-        <VirtualBackground
-          sourcePlayback={sourcePlayback}
-          backgroundConfig={backgroundConfig}
-          id={currentUser}
-        />
-      ) : null}
-      {displayVB() ? <BackgroundItems onSelect={onSelectBg} /> : null}
     </div>
   );
 };

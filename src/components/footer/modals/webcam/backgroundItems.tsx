@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import {
   BackgroundConfig,
@@ -14,7 +14,7 @@ interface IBackgroundItemsProps {
 
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const [selectedBg, setSelectedBg] = useState<BackgroundConfig>(
     defaultBackgroundConfig,
@@ -69,47 +69,64 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-start p-3 bg-slate-100 dark:bg-transparent shadow-header">
+    <div className="grid grid-cols-6 gap-1 h-[164px] overflow-auto scrollBar mb-5">
       <div
-        className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center border-2 border-solid border-gray-300 dark:border-primaryColor transition transform scale-90 hover:scale-95 ease-in  ${
-          selectedBg.type === 'none'
-            ? 'border-[#24aef7] dark:border-[#24aef7] scale-95'
-            : ''
-        }`}
+        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('none', '')}
       >
-        <i className="pnm-ban-solid dark:text-darkSecondary2" />
+        <div
+          className={`cursor-pointer w-full h-full rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue shadow-virtualItem' : ''}`}
+        >
+          <i className="pnm-ban-solid dark:text-darkSecondary2" />
+        </div>
       </div>
       <div
-        className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center border-2 border-solid border-gray-300 dark:border-primaryColor transition transform scale-90 hover:scale-95 ease-in ${
-          selectedBg.type === 'blur'
-            ? 'border-[#24aef7] dark:border-[#24aef7] scale-95'
-            : ''
-        }`}
+        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('blur', '')}
       >
-        <i className="pnm-blur dark:text-darkSecondary2" />
+        <div
+          className={`cursor-pointer w-full h-full rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue' : ''}`}
+        >
+          <i className="pnm-blur dark:text-darkSecondary2" />
+        </div>
       </div>
       {bgImgs.map((imageUrl, i) => {
         return (
           <div
-            className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center transition transform scale-90 hover:scale-95 ease-in border-2 border-solid border-transparent ${
-              selectedBg.url === imageUrl ? 'border-[#24aef7] scale-95' : ''
-            }`}
-            key={imageUrl}
+            className={`wrap overflow-hidden rounded-2xl h-20 transition-all duration-200 ${selectedBg.url === imageUrl ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
             onClick={() => handleOnClick('image', imageUrl)}
+            key={imageUrl}
           >
-            <img
-              src={imageUrl}
-              alt={`bg-${i + 1}`}
-              className={`object-cover w-full h-full`}
-            />
+            <div
+              className={`cursor-pointer w-full h-full rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.url === imageUrl ? 'border border-Blue' : ''}`}
+            >
+              <img
+                src={imageUrl}
+                alt={`bg-${i + 1}`}
+                className={`object-cover w-full h-full`}
+              />
+            </div>
           </div>
         );
       })}
-      <div className="upload-btn-wrap relative overflow-hidden inline-block cursor-pointer pt-2 w-full">
-        <button className="btn border border-dotted border-[#24aef7] bg-transparent py-2 px-4 rounded text-xs text-secondaryColor cursor-pointer">
-          {t('footer.modal.upload-background-image')}
+      <div className="upload-btn-wrap relative border-4 border-transparent">
+        <button className="cursor-pointer h-20 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden">
+          {/* {t('footer.modal.upload-background-image')} */}
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 1V15M1 8H15"
+              stroke="#0088CC"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
         <input
           className="absolute left-0 top-0 opacity-0 w-full h-full cursor-pointer"

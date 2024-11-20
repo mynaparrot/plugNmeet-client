@@ -64,7 +64,7 @@ const OutputViewer = ({
       <canvas
         key={segmentationConfig.pipeline}
         ref={canvasRef}
-        className="render w-full my-5"
+        className="render w-full"
         width={sourcePlayback.width}
         height={sourcePlayback.height}
         id={id}

@@ -18,6 +18,9 @@ module.exports = {
         box5: '0px 390px 109px 0px #002B4000',
         IconBox: '0px 1px 2px 0px #002B400D',
         shadowXS: '0px 1px 2px 0px rgba(26, 84, 142, 0.05)',
+        buttonShadow: '0px 2px 2px 0px rgba(255, 255, 255, 0.3) inset',
+        virtualPOP: '0px 32px 64px -12px rgba(0, 43, 64, 0.14)',
+        virtualItem: '0px 24px 9px 0px rgba(12, 19, 26, 0.01)',
       },
       colors: {
         primaryColor: '#004D90',

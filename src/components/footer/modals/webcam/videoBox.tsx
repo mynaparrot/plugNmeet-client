@@ -47,7 +47,7 @@ const VideoBox = ({
   return (
     <div className="preview-camera-webcam">
       <video
-        className="my-5 w-full"
+        className="w-full"
         ref={ref}
         autoPlay
         height="50"
