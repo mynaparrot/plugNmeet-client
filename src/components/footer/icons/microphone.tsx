@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
 import {
   AnalyticsEvents,
@@ -31,7 +31,7 @@ import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const conn = getNatsConn();
 
   const session = store.getState().session;
@@ -199,19 +199,19 @@ const MicrophoneIcon = () => {
     }
   };
 
-  const getTooltipText = () => {
-    if (!isActiveMicrophone && !lockMic) {
-      return t('footer.icons.start-microphone-sharing');
-    } else if (!isActiveMicrophone && lockMic) {
-      return t('footer.icons.microphone-locked');
-    }
+  // const getTooltipText = () => {
+  //   if (!isActiveMicrophone && !lockMic) {
+  //     return t('footer.icons.start-microphone-sharing');
+  //   } else if (!isActiveMicrophone && lockMic) {
+  //     return t('footer.icons.microphone-locked');
+  //   }
 
-    if (isActiveMicrophone && !isMicMuted) {
-      return t('footer.menus.mute-microphone');
-    } else if (isActiveMicrophone && isMicMuted) {
-      return t('footer.menus.unmute-microphone');
-    }
-  };
+  //   if (isActiveMicrophone && !isMicMuted) {
+  //     return t('footer.menus.mute-microphone');
+  //   } else if (isActiveMicrophone && isMicMuted) {
+  //     return t('footer.menus.unmute-microphone');
+  //   }
+  // };
 
   const onCloseMicrophoneModal = async (deviceId?: string) => {
     dispatch(updateShowMicrophoneModal(false));
@@ -270,9 +270,9 @@ const MicrophoneIcon = () => {
           showTooltip ? 'has-tooltip' : ''
         }`}
       >
-        <span className="tooltip rtl:-left-3 rtl:microphone-rtl-left">
+        {/* <span className="tooltip rtl:-left-3 rtl:microphone-rtl-left">
           {getTooltipText()}
-        </span>
+        </span> */}
         <div
           className="w-11 h-11 relative flex items-center justify-center"
           onClick={() => manageMic()}

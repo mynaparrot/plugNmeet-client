@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { createLocalVideoTrack, Track } from 'livekit-client';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -43,7 +43,7 @@ const WebcamIcon = () => {
   const selectedVideoDevice = useAppSelector(
     (state) => state.roomSettings.selectedVideoDevice,
   );
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string>();
@@ -268,15 +268,15 @@ const WebcamIcon = () => {
     return true;
   };
 
-  const getTooltipText = () => {
-    if (!isActiveWebcam && !isWebcamLock) {
-      return t('footer.icons.start-webcam');
-    } else if (!isActiveWebcam && isWebcamLock) {
-      return t('footer.icons.webcam-locked');
-    } else if (isActiveWebcam) {
-      return t('footer.icons.leave-webcam');
-    }
-  };
+  // const getTooltipText = () => {
+  //   if (!isActiveWebcam && !isWebcamLock) {
+  //     return t('footer.icons.start-webcam');
+  //   } else if (!isActiveWebcam && isWebcamLock) {
+  //     return t('footer.icons.webcam-locked');
+  //   } else if (isActiveWebcam) {
+  //     return t('footer.icons.leave-webcam');
+  //   }
+  // };
 
   const showButtons = () => {
     return (
@@ -287,9 +287,9 @@ const WebcamIcon = () => {
               showTooltip ? 'has-tooltip' : ''
             }`}
           >
-            <span className="tooltip !-left-3 tooltip-left">
+            {/* <span className="tooltip !-left-3 tooltip-left">
               {getTooltipText()}
-            </span>
+            </span> */}
             <div
               className="w-11 h-11 relative flex items-center justify-center"
               onClick={() => toggleWebcam()}
@@ -312,7 +312,12 @@ const WebcamIcon = () => {
                 </>
               ) : null}
             </div>
-            {isActiveWebcam ? <WebcamMenu currentRoom={currentRoom} /> : null}
+            {isActiveWebcam ? (
+              <WebcamMenu
+                currentRoom={currentRoom}
+                isActiveWebcam={isActiveWebcam}
+              />
+            ) : null}
           </div>
           {/* <div
             className={`camera footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${

@@ -6,16 +6,19 @@ import { ArrowUp } from '../../../../assets/Icons/ArrowUp';
 
 interface IWebcamMenuProps {
   currentRoom: Room;
+  isActiveWebcam: any;
 }
 
-const WebcamMenu = ({ currentRoom }: IWebcamMenuProps) => {
+const WebcamMenu = ({ currentRoom, isActiveWebcam }: IWebcamMenuProps) => {
   const render = () => {
     return (
       <div className="menu relative">
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
+              <MenuButton
+                className={`w-[30px] h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isActiveWebcam ? 'bg-Gray-50 rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100' : 'border-Gray-300'}`}
+              >
                 <ArrowUp />
               </MenuButton>
 

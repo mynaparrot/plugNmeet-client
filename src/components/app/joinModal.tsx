@@ -39,9 +39,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
       <div
         id="startupJoinModal"
         className={`${
-          open
-            ? 'opacity-1 pointer-events-auto'
-            : 'pointer-events-none opacity-0'
+          open ? '' : ''
         } join-the-audio-popup bg-Gray-100 h-full flex items-center justify-center p-5`}
       >
         <div className="inner m-auto bg-Gray-50 border border-Gray-300 overflow-hidden rounded-2xl w-full max-w-5xl">
@@ -50,46 +48,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
           </div>
           <div className="wrapper bg-Gray-50 pt-11 pb-14 px-12 flex flex-wrap">
             <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-1/2 rounded-2xl">
-              <div className="select-cam-wrap px-4">
-                <div className="title w-full flex items-center text-sm leading-none text-Gray-700 uppercase py-1">
-                  Select one webcam
-                </div>
-                <select className="mt-1 block w-full py-2 px-3 border border-Gray-300 bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <option>Fifine K420 (1d6c:1278)</option>
-                </select>
-              </div>
               <div className="camera bg-Gray-950 rounded-lg overflow-hidden h-[284px] w-full mt-4"></div>
-              <div className="background-image-wrap flex flex-wrap items-center justify-start py-3 px-4">
-                <div
-                  className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center border-2 border-solid border-gray-300 dark:border-primaryColor transition transform scale-90 hover:scale-95 ease-in`}
-                >
-                  <i className="pnm-ban-solid dark:text-darkSecondary2" />
-                </div>
-                <div
-                  className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center border-2 border-solid border-gray-300 dark:border-primaryColor transition transform scale-90 hover:scale-95 ease-in`}
-                >
-                  <i className="pnm-blur dark:text-darkSecondary2" />
-                </div>
-
-                <div
-                  className={`cursor-pointer rounded-md w-[62px] h-[62px] overflow-hidden flex items-center justify-center transition transform scale-90 hover:scale-95 ease-in border-2 border-solid border-transparent `}
-                >
-                  <img
-                    src="./assets/backgrounds/kenny-eliason-Wp7t4cWN-68-unsplash.jpg"
-                    alt="bg-1"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="upload-btn-wrap relative overflow-hidden inline-block cursor-pointer pt-2 w-full">
-                  <button className="py-1 px-4 text-sm bg-white border border-dashed border-Blue text-Gray-950 transition-all duration-300 shadow-box1">
-                    Upload Background Image
-                  </button>
-                  <input
-                    className="absolute left-0 top-0 opacity-0 w-full h-full cursor-pointer"
-                    type="file"
-                  />
-                </div>
-              </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5">
                 <div className="microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
                   <div className="w-11 h-11 relative flex items-center justify-center">
@@ -233,9 +192,7 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
     );
   };
 
-  return isStartup ? (
-    <div className="z-50 w-full h-full">{render()}</div>
-  ) : null;
+  return isStartup ? <>{render()}</> : null;
 };
 
 export default StartupJoinModal;
