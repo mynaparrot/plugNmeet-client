@@ -23,7 +23,6 @@ import MainArea from '../main-area';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
-import StartupJoinModal from './joinModal';
 import AudioNotification from './audioNotification';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
@@ -35,6 +34,7 @@ import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
+import Landing from '../landing';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -239,7 +239,7 @@ const App = () => {
       }
       return renderMainApp();
     } else if (roomConnectionStatus === 'ready') {
-      return <StartupJoinModal onCloseModal={onCloseStartupModal} />;
+      return <Landing onCloseModal={onCloseStartupModal} />;
     } else {
       return null;
     }
