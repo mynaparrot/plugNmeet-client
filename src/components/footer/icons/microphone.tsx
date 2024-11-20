@@ -296,7 +296,12 @@ const MicrophoneIcon = () => {
             <BlockedIcon />
           </span> */}
         </div>
-        {isActiveMicrophone ? <MicMenu currentRoom={currentRoom} /> : null}
+        {isActiveMicrophone ? (
+          <MicMenu
+            currentRoom={currentRoom}
+            isActiveMicrophone={isActiveMicrophone}
+          />
+        ) : null}
       </div>
       {showMicrophoneModal ? (
         <MicrophoneModal

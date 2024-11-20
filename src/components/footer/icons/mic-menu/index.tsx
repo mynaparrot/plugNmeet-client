@@ -7,16 +7,19 @@ import { ArrowUp } from '../../../../assets/Icons/ArrowUp';
 
 interface IMicMenuProps {
   currentRoom: Room;
+  isActiveMicrophone: any;
 }
 
-const MicMenu = ({ currentRoom }: IMicMenuProps) => {
+const MicMenu = ({ currentRoom, isActiveMicrophone }: IMicMenuProps) => {
   const render = () => {
     return (
       <div className="menu relative">
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton className="w-[30px] h-11 flex items-center justify-center border-l border-Gray-300">
+              <MenuButton
+                className={`w-[30px] h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isActiveMicrophone ? 'bg-Gray-50 rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100' : 'border-Gray-300'}`}
+              >
                 <ArrowUp />
               </MenuButton>
 

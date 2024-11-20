@@ -142,15 +142,15 @@ const ScrenshareIcon = () => {
     }
   };
 
-  const text = () => {
-    if (isActiveScreenshare) {
-      return t('footer.icons.stop-screen-sharing');
-    } else if (!isActiveScreenshare && !lock) {
-      return t('footer.icons.start-screen-sharing');
-    } else if (lock) {
-      return t('footer.icons.screen-sharing-locked');
-    }
-  };
+  // const text = () => {
+  //   if (isActiveScreenshare) {
+  //     return t('footer.icons.stop-screen-sharing');
+  //   } else if (!isActiveScreenshare && !lock) {
+  //     return t('footer.icons.start-screen-sharing');
+  //   } else if (lock) {
+  //     return t('footer.icons.screen-sharing-locked');
+  //   }
+  // };
 
   const shouldShow = () => {
     const session = store.getState().session;
@@ -163,10 +163,10 @@ const ScrenshareIcon = () => {
       <div
         className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
-        }`}
+        } ${isActiveScreenshare ? 'bg-gray-100' : ''}`}
         onClick={() => toggleScreenShare()}
       >
-        <span className="tooltip">{text()}</span>
+        {/* <span className="tooltip">{text()}</span> */}
         <>
           <ShareScreenIconSVG />
           {lock ? (

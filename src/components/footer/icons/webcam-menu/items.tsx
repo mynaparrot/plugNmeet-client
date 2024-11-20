@@ -94,7 +94,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
         <MenuItem>
           {() => (
             <p
-              className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs transition ease-in hover:bg-red-400 hover:text-white cursor-pointer"
+              className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
               onClick={() => leaveWebcam()}
             >
               {t('footer.menus.leave-webcam')}

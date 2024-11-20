@@ -114,7 +114,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
           <MenuItem>
             {() => (
               <p
-                className="text-gray-700 dark:text-darkText rounded group flex items-center px-3 py-[0.4rem] text-xs transition ease-in hover:bg-primaryColor hover:text-white cursor-pointer"
+                className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
                 onClick={() => muteUnmuteMic()}
               >
                 {isMicMuted
@@ -128,7 +128,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
           <MenuItem>
             {() => (
               <p
-                className="text-red-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs transition ease-in hover:bg-red-400 hover:text-white cursor-pointer"
+                className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
                 onClick={() => leaveMic()}
               >
                 {t('footer.menus.leave-microphone')}
