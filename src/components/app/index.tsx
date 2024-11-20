@@ -35,6 +35,7 @@ import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import Landing from '../landing';
+import useBodyPix from '../virtual-background/hooks/useBodyPix';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -44,6 +45,9 @@ const App = () => {
   // make sure we're using correct body dir
   document.dir = i18n.dir();
   const toastId = useRef<string>(null);
+  // we'll require making ready virtual background
+  // elements as early as possible.
+  useBodyPix();
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot

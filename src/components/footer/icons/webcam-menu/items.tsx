@@ -32,24 +32,19 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   useEffect(() => {
     const devicesMenu = videoDevices.map((device, i) => {
       return (
-        <div className="" role="none" key={`${device.id}-${i}`}>
-          <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
-            Select Microphone
-          </div>
-          <MenuItem>
-            {() => (
-              <p
-                className={`${
-                  selectedVideoDevice === device.id ? 'bg-Gray-50' : ''
-                } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                onClick={() => setNewDevice(device.id)}
-              >
-                {device.label}
-                {selectedVideoDevice === device.id ? <CheckMarkIcon /> : ''}
-              </p>
-            )}
-          </MenuItem>
-        </div>
+        <MenuItem key={`${device.id}-${i}`}>
+          {() => (
+            <p
+              className={`${
+                selectedVideoDevice === device.id ? 'bg-Gray-50' : ''
+              } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
+              onClick={() => setNewDevice(device.id)}
+            >
+              {device.label}
+              {selectedVideoDevice === device.id ? <CheckMarkIcon /> : ''}
+            </p>
+          )}
+        </MenuItem>
       );
     });
     setDevicesMenu(devicesMenu);
@@ -89,7 +84,11 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
       static
       className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max"
     >
+      <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+        Select Webcams
+      </div>
       {devicesMenu}
+
       <div className="" role="none">
         <MenuItem>
           {() => (

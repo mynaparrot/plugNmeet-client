@@ -1,44 +1,96 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Menu, MenuButton, MenuItem, Transition } from '@headlessui/react';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { toggleStartup } from '../../store/slices/sessionSlice';
-import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
+import {
+  addAudioDevices,
+  addVideoDevices,
+  updateSelectedAudioDevice,
+  updateSelectedVideoDevice,
+} from '../../store/slices/roomSettingsSlice';
 import { Microphone } from '../../assets/Icons/Microphone';
 import { PlusIcon } from '../../assets/Icons/PlusIcon';
-import { Menu, MenuButton, MenuItem, Transition } from '@headlessui/react';
 import { ArrowUp } from '../../assets/Icons/ArrowUp';
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 import { Camera } from '../../assets/Icons/Camera';
 import { Volume } from '../../assets/Icons/Volume';
+import { IMediaDevice } from '../../store/slices/interfaces/roomSettings';
+import ShareWebcamModal from '../footer/modals/webcam';
+import { updateShowVideoShareModal } from '../../store/slices/bottomIconsActivitySlice';
+import VirtualBackground from '../virtual-background/virtualBackground';
+import { SourcePlayback } from '../virtual-background/helpers/sourceHelper';
 
 interface StartupJoinModalProps {
   onCloseModal(): void;
 }
 
 const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
-  const [open, setOpen] = useState<boolean>(true);
-  const isStartup = useAppSelector((state) => state.session.isStartup);
+  const ref = useRef<HTMLVideoElement>(null);
   const dispatch = useAppDispatch();
-  const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
-  const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+
+  const isStartup = useAppSelector((state) => state.session.isStartup);
+  const showVideoShareModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showVideoShareModal,
+  );
+  const virtualBackground = useAppSelector(
+    (state) => state.bottomIconsActivity.virtualBackground,
+  );
+
+  const [open, setOpen] = useState<boolean>(true);
+  const [audioDevices, setAudioDevices] = useState<IMediaDevice[]>([]);
+  const [videoDevices, setVideoDevices] = useState<IMediaDevice[]>([]);
   const [selectedAudioDevice, setSelectedAudioDevice] = useState<string>('');
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<string>('');
+  const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
 
   useEffect(() => {
-    console.log(selectedAudioDevice);
-  }, [selectedAudioDevice]);
+    const el = ref.current;
+    if (selectedVideoDevice !== '') {
+      const constraints: MediaStreamConstraints = {
+        video: {
+          deviceId: selectedVideoDevice,
+        },
+      };
+      navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
+        if (el) {
+          el.srcObject = mediaStream;
+          setSourcePlayback({
+            htmlElement: el,
+            width: 640,
+            height: 480,
+          });
+        }
+      });
+    }
+    return () => {
+      if (el) {
+        el.srcObject = null;
+      }
+    };
+  }, [selectedVideoDevice]);
 
-  const onClose = (noAudio = false) => {
+  const onClose = () => {
     setOpen(false);
     dispatch(toggleStartup(false));
-    if (noAudio) {
-      dispatch(updateRoomAudioVolume(0));
+
+    if (selectedVideoDevice !== '') {
+      dispatch(updateSelectedVideoDevice(selectedVideoDevice));
+      dispatch(addVideoDevices(videoDevices));
     }
+    if (selectedAudioDevice !== '') {
+      dispatch(updateSelectedAudioDevice(selectedAudioDevice));
+      dispatch(addAudioDevices(audioDevices));
+    }
+
     onCloseModal();
   };
 
   const enableMediaDevices = async (type: string = 'both') => {
-    const constraints: MediaStreamConstraints = {};
+    const constraints: MediaStreamConstraints = {
+      audio: false,
+      video: false,
+    };
     if (type === 'audio') {
       constraints.audio = true;
     } else if (type === 'video') {
@@ -51,27 +103,33 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     const devices = await navigator.mediaDevices.enumerateDevices();
 
-    const audio: MediaDeviceInfo[] = [];
-    const video: MediaDeviceInfo[] = [];
+    const audio: IMediaDevice[] = [];
+    const video: IMediaDevice[] = [];
 
     for (let i = 0; i < devices.length; i++) {
       const device = devices[i];
       if (device.deviceId !== '') {
         if (device.kind === 'audioinput') {
-          audio.push(device);
+          audio.push({
+            id: device.deviceId,
+            label: device.label,
+          });
         } else if (device.kind === 'videoinput') {
-          video.push(device);
+          video.push({
+            id: device.deviceId,
+            label: device.label,
+          });
         }
       }
     }
 
-    if (audio.length > 0) {
+    if (audio.length > 0 && (type === 'both' || type === 'audio')) {
       setAudioDevices(audio);
-      setSelectedAudioDevice(audio[0].deviceId);
+      setSelectedAudioDevice(audio[0].id);
     }
-    if (video.length > 0) {
+    if (video.length > 0 && (type === 'both' || type === 'video')) {
       setVideoDevices(video);
-      setSelectedVideoDevice(video[0].deviceId);
+      setSelectedVideoDevice(video[0].id);
     }
 
     stream.getTracks().forEach(function (track) {
@@ -84,6 +142,15 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
     setSelectedVideoDevice('');
   };
 
+  const disableMic = () => {
+    setAudioDevices([]);
+    setSelectedAudioDevice('');
+  };
+
+  const onSelectedDevice = async (deviceId: string) => {
+    setSelectedVideoDevice(deviceId);
+  };
+
   const render = () => {
     return (
       <div
@@ -92,13 +159,34 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
           open ? '' : ''
         } join-the-audio-popup bg-Gray-100 h-full flex items-center justify-center p-5`}
       >
+        {showVideoShareModal ? (
+          <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
+        ) : null}
+
         <div className="inner m-auto bg-Gray-50 border border-Gray-300 overflow-hidden rounded-2xl w-full max-w-5xl">
           <div className="head bg-white h-[60px] px-5 flex items-center text-Gray-950 text-lg font-medium border-b border-Gray-200">
             Microphone and camera preferences
           </div>
           <div className="wrapper bg-Gray-50 pt-11 pb-14 px-12 flex flex-wrap">
             <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-1/2 rounded-2xl">
-              <div className="camera bg-Gray-950 rounded-lg overflow-hidden h-[284px] w-full mt-4"></div>
+              <div className="camera bg-Gray-950 rounded-lg overflow-hidden h-[284px] w-full mt-4">
+                <div
+                  style={
+                    virtualBackground.type !== 'none'
+                      ? { height: '0.5px', width: '0.5px' }
+                      : { width: 'auto' }
+                  }
+                >
+                  <video ref={ref} autoPlay />
+                </div>
+                {virtualBackground.type !== 'none' && sourcePlayback ? (
+                  <VirtualBackground
+                    sourcePlayback={sourcePlayback}
+                    backgroundConfig={virtualBackground}
+                    id="preview"
+                  />
+                ) : null}
+              </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5">
                 <div className="microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
                   <div className="w-11 h-11 relative flex items-center justify-center">
@@ -110,7 +198,9 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                         </span>
                       </div>
                     ) : (
-                      <Microphone classes={'h-5 w-auto'} />
+                      <div onClick={disableMic}>
+                        <Microphone classes={'h-5 w-auto'} />
+                      </div>
                     )}
                   </div>
                   {audioDevices.length > 0 ? (
@@ -139,17 +229,16 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                                   <div
                                     className=""
                                     role="none"
-                                    key={`${device.deviceId}-${i}`}
+                                    key={`${device.id}-${i}`}
                                     onClick={() =>
-                                      setSelectedAudioDevice(device.deviceId)
+                                      setSelectedAudioDevice(device.id)
                                     }
                                   >
                                     <MenuItem>
                                       {() => (
                                         <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
                                           {device.label}
-                                          {selectedAudioDevice ===
-                                          device.deviceId ? (
+                                          {selectedAudioDevice === device.id ? (
                                             <CheckMarkIcon />
                                           ) : (
                                             ''
@@ -159,12 +248,6 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                                     </MenuItem>
                                   </div>
                                 ))}
-                                <div className="divider w-[calc(100%+16px)] relative -left-2 h-1 bg-Gray-50 mt-2"></div>
-                                <MenuItem>
-                                  <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
-                                    Close microphone
-                                  </p>
-                                </MenuItem>
                               </div>
                             </Transition>
                           </>
@@ -214,26 +297,22 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                                   <div
                                     className=""
                                     role="none"
-                                    key={`${device.deviceId}-${i}`}
+                                    key={`${device.id}-${i}`}
                                   >
                                     <MenuItem>
                                       {() => (
                                         <p
                                           className={`${
-                                            selectedAudioDevice ===
-                                            device.deviceId
+                                            selectedAudioDevice === device.id
                                               ? 'bg-Gray-50'
                                               : ''
                                           } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
                                           onClick={() =>
-                                            setSelectedVideoDevice(
-                                              device.deviceId,
-                                            )
+                                            setSelectedVideoDevice(device.id)
                                           }
                                         >
                                           {device.label}
-                                          {selectedVideoDevice ===
-                                          device.deviceId ? (
+                                          {selectedVideoDevice === device.id ? (
                                             <CheckMarkIcon />
                                           ) : (
                                             ''
@@ -247,8 +326,17 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                                 <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
                                   Background & Filters
                                 </div>
-                                <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
-                                  Add Camera Background
+                                <p
+                                  className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
+                                  onClick={() =>
+                                    dispatch(
+                                      updateShowVideoShareModal(
+                                        !showVideoShareModal,
+                                      ),
+                                    )
+                                  }
+                                >
+                                  Config Camera Background
                                 </p>
                               </div>
                             </Transition>
@@ -272,13 +360,23 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   </p>
                 </div>
                 <div className="buttons grid gap-3 w-full pt-10">
-                  <button
-                    type="button"
-                    className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-Gray-300 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-box1"
-                    onClick={() => enableMediaDevices('both')}
-                  >
-                    Enable Microphone and Camera
-                  </button>
+                  {selectedAudioDevice !== '' || selectedVideoDevice !== '' ? (
+                    <button
+                      type="button"
+                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-Gray-300 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-box1"
+                      onClick={() => onClose()}
+                    >
+                      Join
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-Gray-300 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-box1"
+                      onClick={() => enableMediaDevices('both')}
+                    >
+                      Enable Microphone and Camera
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-box1"

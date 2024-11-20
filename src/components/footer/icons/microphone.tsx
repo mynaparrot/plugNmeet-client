@@ -52,6 +52,9 @@ const MicrophoneIcon = () => {
   const isMicMuted = useAppSelector(
     (state) => state.bottomIconsActivity.isMicMuted,
   );
+  const selectedAudioDevice = useAppSelector(
+    (state) => state.roomSettings.selectedAudioDevice,
+  );
 
   const [lockMic, setLockMic] = useState<boolean>(false);
 
@@ -151,6 +154,14 @@ const MicrophoneIcon = () => {
     };
     //eslint-disable-next-line
   }, [currentRoom]);
+
+  // initially only
+  useEffect(() => {
+    if (selectedAudioDevice) {
+      onCloseMicrophoneModal(selectedAudioDevice).then();
+    }
+    //eslint-disable-next-line
+  }, []);
 
   const muteUnmuteMic = async () => {
     for (const [

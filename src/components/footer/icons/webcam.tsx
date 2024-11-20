@@ -8,7 +8,7 @@ import {
   updateShowVideoShareModal,
   updateVirtualBackground,
 } from '../../../store/slices/bottomIconsActivitySlice';
-import ShareWebcamModal from '../modals/webcam/shareWebcam';
+import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam-menu';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
@@ -152,6 +152,15 @@ const WebcamIcon = () => {
     };
   }, [virtualBgLocalTrack]);
 
+  // only for initial
+  useEffect(() => {
+    if (selectedVideoDevice !== '') {
+      setDeviceId(selectedVideoDevice);
+      createDeviceStream(selectedVideoDevice).then();
+    }
+    //eslint-disable-next-line
+  }, []);
+
   // for virtual background
   const handleVirtualBgVideoOnLoad = () => {
     const el = virtualBgVideoPlayer.current;
@@ -225,8 +234,6 @@ const WebcamIcon = () => {
         await navigator.mediaDevices.getUserMedia(constraints);
       setVirtualBgLocalTrack(mediaStream);
     }
-
-    return;
   };
 
   const onSelectedDevice = async (deviceId: string) => {

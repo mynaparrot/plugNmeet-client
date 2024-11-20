@@ -141,7 +141,8 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
       </Transition>
     );
   };
-  return <>{render()}</>;
+
+  return render();
 };
 
 export default ShareWebcamModal;
