@@ -140,7 +140,7 @@ const MainArea = () => {
             // Shared closed styles
             'data-[closed]:opacity-0',
             // Entering styles
-            'data-[enter]:duration-100 data-[enter]:data-[closed]:translate-x-full',
+            'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
             // Leaving styles
             'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
           ])}
@@ -178,7 +178,7 @@ const MainArea = () => {
               // Shared closed styles
               'data-[closed]:opacity-0',
               // Entering styles
-              'data-[enter]:duration-100 data-[enter]:data-[closed]:translate-x-full',
+              'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
               // Leaving styles
               'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
             ])}
@@ -222,7 +222,7 @@ const MainArea = () => {
       /> */}
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div
-          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel ? 'pr-[340px]' : ''} ${isActiveChatPanel ? 'pr-[350px]' : ''}`}
+          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel || isActiveChatPanel ? 'pr-[340px]' : ''}`}
         >
           <ActiveSpeakers />
           {renderMainComponentElms}
