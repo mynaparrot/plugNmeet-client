@@ -359,7 +359,11 @@ const WebcamIcon = () => {
         {showButtons()}
 
         {showVideoShareModal ? (
-          <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
+          <ShareWebcamModal
+            onSelectedDevice={onSelectedDevice}
+            selectedDeviceId={selectedVideoDevice}
+            displayWebcamSelection={true}
+          />
         ) : null}
 
         {/*For virtual background*/}

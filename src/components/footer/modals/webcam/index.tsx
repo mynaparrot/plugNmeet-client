@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-// import { useTranslation } from 'react-i18next';
+import { Dialog, DialogTitle, Transition } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import {
@@ -14,47 +14,58 @@ import { IMediaDevice } from '../../../../store/slices/interfaces/roomSettings';
 
 interface IShareWebcamModal {
   onSelectedDevice: (deviceId: string) => void;
+  displayWebcamSelection: boolean;
+  selectedDeviceId: string;
 }
 
-const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
+const ShareWebcamModal = ({
+  onSelectedDevice,
+  displayWebcamSelection,
+  selectedDeviceId,
+}: IShareWebcamModal) => {
   const showVideoShareModal = useAppSelector(
     (state) => state.bottomIconsActivity.showVideoShareModal,
   );
   const [isOpen, setIsOpen] = useState<boolean>(true);
-  const [selectedWebcam, setSelectWebcam] = useState<string>('');
-  // const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
+  const [selectedWebcam, setSelectWebcam] = useState<string>(selectedDeviceId);
+  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
   const dispatch = useAppDispatch();
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const getDeviceWebcams = async () => {
       const mics = await getDevices('videoinput');
       const videoDevices: Array<IMediaDevice> = [];
 
-      // const options = mics.map((mic, index) => {
-      //   const device: IMediaDevice = {
-      //     id: mic.deviceId,
-      //     label: mic.label,
-      //   };
-      //   videoDevices.push(device);
+      const options = mics.map((mic, index) => {
+        const device: IMediaDevice = {
+          id: mic.deviceId,
+          label: mic.label,
+        };
+        videoDevices.push(device);
 
-      //   return (
-      //     <option
-      //       value={mic.deviceId}
-      //       key={`device-id-${mic.deviceId}-${index}`}
-      //     >
-      //       {mic.label}
-      //     </option>
-      //   );
-      // });
-      // setDevices(options);
-      setSelectWebcam(mics[0].deviceId);
+        return (
+          <option
+            value={mic.deviceId}
+            key={`device-id-${mic.deviceId}-${index}`}
+          >
+            {mic.label}
+          </option>
+        );
+      });
+      setDevices(options);
+      if (selectedDeviceId !== '') {
+        setSelectWebcam(selectedDeviceId);
+      } else {
+        setSelectWebcam(mics[0].deviceId);
+      }
 
       if (videoDevices.length) {
         dispatch(addVideoDevices(videoDevices));
       }
     };
     getDeviceWebcams().then();
+    //eslint-disable-next-line
   }, [dispatch]);
 
   useEffect(() => {
@@ -102,19 +113,23 @@ const ShareWebcamModal = ({ onSelectedDevice }: IShareWebcamModal) => {
             <div className="fixed inset-0 bg-black opacity-50" />
 
             <div className="popup-inner bg-white w-full max-w-xl z-50 rounded-2xl overflow-hidden border border-Gray-200 shadow-virtualPOP">
-              {/* <DialogTitle className="mb-6 dark:text-darkText">
-                {t('footer.modal.select-webcam')}
-              </DialogTitle> */}
+              {displayWebcamSelection ? (
+                <>
+                  <DialogTitle className="mb-6 dark:text-darkText">
+                    {t('footer.modal.select-webcam')}
+                  </DialogTitle>
 
-              {/* <div className="col-span-6 sm:col-span-3">
-                <select
-                  value={selectedWebcam}
-                  onChange={(e) => setSelectWebcam(e.target.value)}
-                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-transparent dark:border-darkText dark:text-darkText rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  {devices}
-                </select>
-              </div> */}
+                  <div className="col-span-6 sm:col-span-3">
+                    <select
+                      value={selectedWebcam}
+                      onChange={(e) => setSelectWebcam(e.target.value)}
+                      className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-transparent dark:border-darkText dark:text-darkText rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                      {devices}
+                    </select>
+                  </div>
+                </>
+              ) : null}
 
               <div className="w-full p-2">
                 <PreviewWebcam deviceId={selectedWebcam} />

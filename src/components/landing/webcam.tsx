@@ -38,7 +38,11 @@ const WebcamIcon = ({
   return (
     <div className="cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
       {showVideoShareModal ? (
-        <ShareWebcamModal onSelectedDevice={onSelectedDevice} />
+        <ShareWebcamModal
+          onSelectedDevice={onSelectedDevice}
+          displayWebcamSelection={false}
+          selectedDeviceId={selectedVideoDevice}
+        />
       ) : null}
       <div
         className="w-11 h-11 relative flex items-center justify-center"
