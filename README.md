@@ -18,7 +18,7 @@ Please help us to translate Plug-N-Meet into your language. We're using [crowdin
 cp src/assets/config_sample.js src/assets/config.js
 ```
 
-3) Now start server & navigate to http://localhost:3000
+3) Now start server & navigate to http://localhost:3000/login.html
 
 ```
 pnpm install
