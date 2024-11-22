@@ -25,7 +25,7 @@ export const EndMeeting = () => {
         className="relative z-10 focus:outline-none"
         onClose={close}
       >
-        <div className="fixed inset-0 w-screen overflow-y-auto z-10">
+        <div className="EndMeetingPopup fixed inset-0 w-screen overflow-y-auto z-10">
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
