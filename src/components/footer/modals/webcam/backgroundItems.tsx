@@ -4,9 +4,9 @@ import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
 import {
   BackgroundConfig,
   backgroundImageUrls,
-  defaultBackgroundConfig,
 } from '../../../virtual-background/helpers/backgroundHelper';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
+import { store } from '../../../../store';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
@@ -15,6 +15,8 @@ interface IBackgroundItemsProps {
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
   // const { t } = useTranslation();
+  const defaultBackgroundConfig =
+    store.getState().bottomIconsActivity.virtualBackground;
 
   const [selectedBg, setSelectedBg] = useState<BackgroundConfig>(
     defaultBackgroundConfig,

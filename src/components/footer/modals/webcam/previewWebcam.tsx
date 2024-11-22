@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { SourcePlayback } from '../../../virtual-background/helpers/sourceHelper';
 import { BackgroundConfig } from '../../../virtual-background/helpers/backgroundHelper';
 import VideoBox from './videoBox';
-import { store, useAppDispatch } from '../../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import VirtualBackground from '../../../virtual-background/virtualBackground';
 import BackgroundItems from './backgroundItems';
 import { updateVirtualBackground } from '../../../../store/slices/bottomIconsActivitySlice';
@@ -16,8 +16,11 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [show, setShow] = useState<boolean>(false);
   const [previousDeviceId, setPreviousDeviceId] = useState<string>();
-  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfig>();
   const [mediaStream, setMediaStream] = useState<MediaStream>();
+
+  const virtualBackground = useAppSelector(
+    (state) => state.bottomIconsActivity.virtualBackground,
+  );
 
   const currentUser = store.getState().session.currentUser?.userId;
   const dispatch = useAppDispatch();
@@ -70,12 +73,10 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
 
     if (bg.type === 'none') {
       setShow(false);
-      setBackgroundConfig(undefined);
     } else {
       if (!show && deviceId) {
         setShow(true);
       }
-      setBackgroundConfig(bg);
     }
   };
 
@@ -85,7 +86,9 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
         {deviceId ? (
           <div
             style={
-              backgroundConfig ? { height: '0', width: '0' } : { width: 'auto' }
+              virtualBackground.type !== 'none'
+                ? { height: '0.5px', width: '0.5px' }
+                : { width: 'auto' }
             }
           >
             <VideoBox
@@ -96,10 +99,13 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
           </div>
         ) : null}
 
-        {show && sourcePlayback && currentUser && backgroundConfig ? (
+        {show &&
+        sourcePlayback &&
+        currentUser &&
+        virtualBackground.type !== 'none' ? (
           <VirtualBackground
             sourcePlayback={sourcePlayback}
-            backgroundConfig={backgroundConfig}
+            backgroundConfig={virtualBackground}
             id={currentUser}
           />
         ) : null}
