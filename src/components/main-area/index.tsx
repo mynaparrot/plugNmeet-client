@@ -174,7 +174,7 @@ const MainArea = () => {
           <div
             className={clsx([
               // Base styles
-              'chat-panel absolute h-full transition ease-in-out w-[350px] right-0',
+              'chat-panel absolute h-full transition ease-in-out w-[340px] right-0',
               // Shared closed styles
               'data-[closed]:opacity-0',
               // Entering styles

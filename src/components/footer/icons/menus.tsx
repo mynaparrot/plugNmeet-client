@@ -288,7 +288,9 @@ const MenusIcon = () => {
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton className="relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950">
+              <MenuButton
+                className={`relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${open ? 'bg-gray-100' : 'bg-white'}`}
+              >
                 <FooterMenuIconSVG />
               </MenuButton>
 

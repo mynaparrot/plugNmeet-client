@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch, store } from '../../../store';
 import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
@@ -9,7 +9,7 @@ import { ParticipantsIconSVG } from '../../../assets/Icons/ParticipantsIconSVG';
 const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const isActiveParticipantsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
@@ -31,16 +31,16 @@ const ParticipantIcon = () => {
 
   return (
     <div
-      className={`participants relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+      className={`participants relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
         showTooltip ? 'has-tooltip' : ''
-      }`}
+      } ${isActiveParticipantsPanel ? 'bg-gray-100' : 'bg-white'}`}
       onClick={() => toggleParticipantsPanel()}
     >
-      <span className="tooltip">
+      {/* <span className="tooltip">
         {isActiveParticipantsPanel
           ? t('footer.icons.hide-users-list')
           : t('footer.icons.show-users-list')}
-      </span>
+      </span> */}
 
       <ParticipantsIconSVG />
       {!isActiveParticipantsPanel ? (

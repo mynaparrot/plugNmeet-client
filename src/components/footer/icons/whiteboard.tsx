@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import {
   ChangeVisibilityRes,
   ChangeVisibilityResSchema,
@@ -13,9 +13,10 @@ import {
 } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { WhiteBoardIconSVG } from '../../../assets/Icons/WhiteBoardIconSVG';
+// import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const WhiteboardIcon = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
@@ -110,13 +111,13 @@ const WhiteboardIcon = () => {
     //eslint-disable-next-line
   }, [isActiveWhiteboard]);
 
-  const text = () => {
-    if (isActiveWhiteboard) {
-      return t('footer.icons.hide-whiteboard');
-    } else {
-      return t('footer.icons.show-whiteboard');
-    }
-  };
+  // const text = () => {
+  //   if (isActiveWhiteboard) {
+  //     return t('footer.icons.hide-whiteboard');
+  //   } else {
+  //     return t('footer.icons.show-whiteboard');
+  //   }
+  // };
 
   const toggleWhiteboard = async () => {
     const isActiveScreenShare =
@@ -130,14 +131,17 @@ const WhiteboardIcon = () => {
   const render = () => {
     return (
       <div
-        className={`whiteboard relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+        className={`whiteboard relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
-        }`}
+        } ${isActiveWhiteboard ? 'bg-gray-100' : 'bg-white'}`}
         onClick={() => toggleWhiteboard()}
       >
-        <span className="tooltip">{text()}</span>
+        {/* <span className="tooltip">{text()}</span> */}
         <>
           <WhiteBoardIconSVG />
+          {/* <span className="blocked absolute -top-2 -right-2 z-10">
+            <BlockedIcon />
+          </span> */}
         </>
       </div>
     );

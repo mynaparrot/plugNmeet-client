@@ -60,11 +60,11 @@ const OutputViewer = ({
   }, [canvasRef]);
 
   return (
-    <div className="root preview-camera-webcam">
+    <div className="root preview-camera-webcam w-full h-80 flex">
       <canvas
         key={segmentationConfig.pipeline}
         ref={canvasRef}
-        className="render w-full"
+        className="render w-full h-full object-cover"
         width={sourcePlayback.width}
         height={sourcePlayback.height}
         id={id}

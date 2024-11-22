@@ -107,7 +107,7 @@ const ShareWebcamModal = ({
           open={isOpen}
           onClose={() => false}
           id="VirtualBackgroundModel"
-          className="fixed z-[99999] inset-0 overflow-y-auto"
+          className="fixed z-[99999] inset-0 overflow-y-auto py-5 px-2"
         >
           <div className="flex items-center justify-center min-h-screen">
             <div className="fixed inset-0 bg-black opacity-50" />

@@ -14,6 +14,7 @@ import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
+import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const ScrenshareIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -161,18 +162,18 @@ const ScrenshareIcon = () => {
   const render = () => {
     return (
       <div
-        className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+        className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
-        } ${isActiveScreenshare ? 'bg-gray-100' : ''}`}
+        } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'}`}
         onClick={() => toggleScreenShare()}
       >
         {/* <span className="tooltip">{text()}</span> */}
         <>
           <ShareScreenIconSVG />
           {lock ? (
-            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white flex items-center justify-center">
-              <i className="pnm-lock primaryColor" />
-            </div>
+            <span className="blocked absolute -top-2 -right-2 z-10">
+              <BlockedIcon />
+            </span>
           ) : null}
         </>
       </div>

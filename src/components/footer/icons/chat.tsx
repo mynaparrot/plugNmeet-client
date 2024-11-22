@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch, store } from '../../../store';
 import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivitySlice';
@@ -9,7 +9,7 @@ import { ChatIconSVG } from '../../../assets/Icons/ChatIconSVG';
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const isActiveChatPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveChatPanel,
@@ -44,16 +44,16 @@ const ChatIcon = () => {
   const render = () => {
     return (
       <div
-        className={`message relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] bg-white border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+        className={`message relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
-        }`}
+        } ${isActiveChatPanel ? 'bg-gray-100' : 'bg-white'}`}
         onClick={() => toggleChatPanel()}
       >
-        <span className="tooltip">
+        {/* <span className="tooltip">
           {isActiveChatPanel
             ? t('footer.icons.hide-chat-panel')
             : t('footer.icons.show-chat-panel')}
-        </span>
+        </span> */}
 
         {/* <i className={`pnm-chat ${iconCSS} text-[14px] lg:text-[16px]`} /> */}
         <ChatIconSVG />
