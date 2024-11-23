@@ -80,7 +80,7 @@
       "settings": "Settings",
       "keyboard-shortcuts": "Keyboard Shortcuts",
       "logout": "Logout",
-      "end": "End",
+      "end": "End meeting",
       "alert": {
         "confirm": "Are you sure?",
         "logout": "You are about to leave the session.",

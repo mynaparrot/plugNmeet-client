@@ -18,7 +18,7 @@ import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
-import { EndMeeting } from './icons/EndMeeting';
+import EndMeetingButton from './icons/endMeeting';
 // import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 
 const Footer = () => {
@@ -67,7 +67,7 @@ const Footer = () => {
                 <ParticipantIcon />
                 <ChatIcon />
                 <div className="line h-6 w-[1px] bg-Gray-200"></div>
-                <EndMeeting />
+                <EndMeetingButton />
               </div>
               <BreakoutRoomInvitation />
             </div>
