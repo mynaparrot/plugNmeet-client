@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, Transition } from '@headlessui/react';
+import { Dialog, DialogTitle, Transition, Button } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -11,6 +11,7 @@ import { getDevices } from '../../../../helpers/utils';
 import PreviewWebcam from './previewWebcam';
 import { addVideoDevices } from '../../../../store/slices/roomSettingsSlice';
 import { IMediaDevice } from '../../../../store/slices/interfaces/roomSettings';
+import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 
 interface IShareWebcamModal {
   onSelectedDevice: (deviceId: string) => void;
@@ -115,15 +116,21 @@ const ShareWebcamModal = ({
             <div className="popup-inner bg-white w-full max-w-xl z-50 rounded-2xl overflow-hidden border border-Gray-200 shadow-virtualPOP">
               {displayWebcamSelection ? (
                 <>
-                  <DialogTitle className="mb-6 dark:text-darkText">
-                    {t('footer.modal.select-webcam')}
+                  <DialogTitle
+                    as="h3"
+                    className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950 pt-6 px-5 pb-2"
+                  >
+                    <span>{t('footer.modal.select-webcam')}</span>
+                    <Button onClick={() => onClose()}>
+                      <PopupCloseSVGIcon classes="text-Gray-600" />
+                    </Button>
                   </DialogTitle>
 
-                  <div className="col-span-6 sm:col-span-3">
+                  <div className="webcam-dropdown px-5 mb-4">
                     <select
                       value={selectedWebcam}
                       onChange={(e) => setSelectWebcam(e.target.value)}
-                      className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-transparent dark:border-darkText dark:text-darkText rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="block w-full py-2 px-3 border border-Gray-300 text-Gray-700 bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                       {devices}
                     </select>

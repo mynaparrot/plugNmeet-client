@@ -7,9 +7,13 @@ interface ILoadingProps {
   text: string;
 }
 const Loading = ({ text }: ILoadingProps) => {
+  const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
   return (
     <div
       className={`loader opacity-1 fixed top-0 left-0 w-full h-full bg-Gray-100 z-[999] flex flex-wrap items-center justify-center`}
+      style={{
+        backgroundImage: `url("${assetPath}/imgs/DotGrid.svg")`,
+      }}
     >
       <div className="inner">
         <div className="py-2.5 px-5 me-2 text-sm font-medium text-gray-900 inline-flex items-center capitalize">

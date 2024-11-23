@@ -81,7 +81,7 @@ const MicrophoneModal = ({
                   <select
                     value={selectedMic}
                     onChange={(e) => setSelectMic(e.target.value)}
-                    className="block w-full py-2 px-3 border border-Gray-950 bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-full py-2 px-3 border border-Gray-300 text-Gray-700 bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   >
                     {devices}
                   </select>
