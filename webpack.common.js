@@ -134,7 +134,7 @@ module.exports = {
           from: 'src/assets',
           to: 'assets',
           globOptions: {
-            ignore: ['assets/fonts', '**/assets/tflite'],
+            ignore: ['assets/fonts', '**/assets/tflite', '**/assets/Icons'],
           },
           info: { minimized: true },
         },
