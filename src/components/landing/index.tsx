@@ -13,6 +13,10 @@ import { IMediaDevice } from '../../store/slices/interfaces/roomSettings';
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
 import WebcamPreview from './webcamPreview';
+import {
+  getInputMediaDevices,
+  inputMediaDeviceKind,
+} from '../../helpers/utils';
 
 interface StartupJoinModalProps {
   onCloseModal(): void;
@@ -42,62 +46,23 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
     onCloseModal();
   };
 
-  const enableMediaDevices = async (type: string = 'both') => {
-    const constraints: MediaStreamConstraints = {
-      audio: false,
-      video: false,
-    };
-    if (type === 'audio') {
-      constraints.audio = true;
-    } else if (type === 'video') {
-      constraints.video = true;
-    } else {
-      constraints.audio = true;
-      constraints.video = true;
+  const enableMediaDevices = async (kind: inputMediaDeviceKind = 'both') => {
+    const inputDevices = await getInputMediaDevices(kind);
+
+    if (
+      inputDevices.audio.length > 0 &&
+      (kind === 'both' || kind === 'audio')
+    ) {
+      setAudioDevices(inputDevices.audio);
+      setSelectedAudioDevice(inputDevices.audio[0].id);
     }
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const devices = await navigator.mediaDevices.enumerateDevices();
-
-    const audioDevices: IMediaDevice[] = [];
-    const videoDevices: IMediaDevice[] = [];
-
-    for (let i = 0; i < devices.length; i++) {
-      const device = devices[i];
-      if (device.deviceId === '') {
-        continue;
-      }
-      if (device.kind === 'audioinput') {
-        const exist = audioDevices.find((d) => d.id === device.deviceId);
-        if (!exist) {
-          audioDevices.push({
-            id: device.deviceId,
-            label: device.label,
-          });
-        }
-      } else if (device.kind === 'videoinput') {
-        const exist = videoDevices.find((d) => d.id === device.deviceId);
-        if (!exist) {
-          videoDevices.push({
-            id: device.deviceId,
-            label: device.label,
-          });
-        }
-      }
+    if (
+      inputDevices.video.length > 0 &&
+      (kind === 'both' || kind === 'video')
+    ) {
+      setVideoDevices(inputDevices.video);
+      setSelectedVideoDevice(inputDevices.video[0].id);
     }
-
-    if (audioDevices.length > 0 && (type === 'both' || type === 'audio')) {
-      setAudioDevices(audioDevices);
-      setSelectedAudioDevice(audioDevices[0].id);
-    }
-    if (videoDevices.length > 0 && (type === 'both' || type === 'video')) {
-      setVideoDevices(videoDevices);
-      setSelectedVideoDevice(videoDevices[0].id);
-    }
-
-    stream.getTracks().forEach(function (track) {
-      track.stop();
-    });
   };
 
   const disableWebcam = () => {
@@ -169,14 +134,16 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                       Enable Microphone and Camera
                     </button>
                   )}
-                  <button
-                    type="button"
-                    className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
-                    onClick={() => onClose()}
-                  >
-                    Continue as a listener
-                    <Volume />
-                  </button>
+                  {selectedAudioDevice === '' && selectedVideoDevice === '' ? (
+                    <button
+                      type="button"
+                      className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+                      onClick={() => onClose()}
+                    >
+                      Continue as a listener
+                      <Volume />
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>

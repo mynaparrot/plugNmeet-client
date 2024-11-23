@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogTitle, Button, DialogPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { getDevices } from '../../../helpers/utils';
-import { IMediaDevice } from '../../../store/slices/interfaces/roomSettings';
+
+import { getInputMediaDevices } from '../../../helpers/utils';
 import { addAudioDevices } from '../../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../../store';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
@@ -22,29 +22,22 @@ const MicrophoneModal = ({
 
   useEffect(() => {
     const getDeviceMics = async () => {
-      const mics = await getDevices('audioinput');
-      const audioDevices: Array<IMediaDevice> = [];
+      const inputDevices = await getInputMediaDevices('audio');
+      if (!inputDevices.audio.length) {
+        return;
+      }
 
-      const options = mics.map((mic) => {
-        const device: IMediaDevice = {
-          id: mic.deviceId,
-          label: mic.label,
-        };
-        audioDevices.push(device);
-
+      const options = inputDevices.audio.map((mic) => {
         return (
-          <option value={mic.deviceId} key={mic.deviceId}>
+          <option value={mic.id} key={mic.id}>
             {mic.label}
           </option>
         );
       });
 
       setDevices(options);
-      setSelectMic(mics[0].deviceId);
-
-      if (audioDevices.length) {
-        dispatch(addAudioDevices(audioDevices));
-      }
+      setSelectMic(inputDevices.audio[0].id);
+      dispatch(addAudioDevices(inputDevices.audio));
     };
     getDeviceMics().then();
   }, [dispatch]);
@@ -89,7 +82,7 @@ const MicrophoneModal = ({
                 <div className="mt-8 grid grid-cols-2 gap-3">
                   <Button
                     className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
-                    onClick={() => selectOrClose(true)}
+                    onClick={() => selectOrClose(false)}
                   >
                     {t('join')}
                   </Button>

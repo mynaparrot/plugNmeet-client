@@ -85,11 +85,6 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
       <div className="w-full overflow-hidden rounded-lg relative bg-black min-h-80">
         {deviceId ? (
           <div
-            // style={
-            //   virtualBackground.type !== 'none'
-            //     ? { height: '0.5px', width: '0.5px' }
-            //     : { width: 'auto' }
-            // }
             className={`${virtualBackground.type !== 'none' ? 'absolute top-0 left-0 h-1 w-1 opacity-0' : 'w-full h-80'}`}
           >
             <VideoBox

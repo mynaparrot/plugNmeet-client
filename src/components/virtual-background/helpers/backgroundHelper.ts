@@ -21,7 +21,6 @@ let backgroundImageUrls = [
   'annie-spratt-OWq8w3BYMFY-unsplash',
   'evelyn-bertrand-GrIf347OtnY-unsplash',
   'steve-richey-6xqAK6oAeHA-unsplash',
-  'erol-ahmed-IHL-Jbawvvo-unsplash',
 ].map((imageName) => `${assetPath}/backgrounds/${imageName}.jpg`);
 
 if (

@@ -9,10 +9,11 @@ import { updateShowVideoShareModal } from '../../store/slices/bottomIconsActivit
 import { useAppDispatch, useAppSelector } from '../../store';
 import { IMediaDevice } from '../../store/slices/interfaces/roomSettings';
 import ShareWebcamModal from '../footer/modals/webcam';
+import { inputMediaDeviceKind } from '../../helpers/utils';
 
 interface WebcamIconProps {
   videoDevices: IMediaDevice[];
-  enableMediaDevices(type: string): Promise<void>;
+  enableMediaDevices(type: inputMediaDeviceKind): Promise<void>;
   disableWebcam(): void;
   setSelectedVideoDevice: (value: SetStateAction<string>) => void;
   selectedVideoDevice: string;

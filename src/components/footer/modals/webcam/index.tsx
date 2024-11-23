@@ -7,10 +7,9 @@ import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
 } from '../../../../store/slices/bottomIconsActivitySlice';
-import { getDevices } from '../../../../helpers/utils';
+import { getInputMediaDevices } from '../../../../helpers/utils';
 import PreviewWebcam from './previewWebcam';
 import { addVideoDevices } from '../../../../store/slices/roomSettingsSlice';
-import { IMediaDevice } from '../../../../store/slices/interfaces/roomSettings';
 import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 
 interface IShareWebcamModal {
@@ -35,35 +34,26 @@ const ShareWebcamModal = ({
 
   useEffect(() => {
     const getDeviceWebcams = async () => {
-      const mics = await getDevices('videoinput');
-      const videoDevices: Array<IMediaDevice> = [];
+      const inputDevices = await getInputMediaDevices('video');
+      if (!inputDevices.video.length) {
+        return;
+      }
 
-      const options = mics.map((mic, index) => {
-        const device: IMediaDevice = {
-          id: mic.deviceId,
-          label: mic.label,
-        };
-        videoDevices.push(device);
-
+      const options = inputDevices.video.map((mic, index) => {
         return (
-          <option
-            value={mic.deviceId}
-            key={`device-id-${mic.deviceId}-${index}`}
-          >
+          <option value={mic.id} key={`device-id-${mic.id}-${index}`}>
             {mic.label}
           </option>
         );
       });
+
       setDevices(options);
       if (selectedDeviceId !== '') {
         setSelectWebcam(selectedDeviceId);
       } else {
-        setSelectWebcam(mics[0].deviceId);
+        setSelectWebcam(inputDevices.video[0].id);
       }
-
-      if (videoDevices.length) {
-        dispatch(addVideoDevices(videoDevices));
-      }
+      dispatch(addVideoDevices(inputDevices.video));
     };
     getDeviceWebcams().then();
     //eslint-disable-next-line

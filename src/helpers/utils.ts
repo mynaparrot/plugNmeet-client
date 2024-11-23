@@ -5,40 +5,63 @@ import i18n from './i18n';
 import { store } from '../store';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { IParticipant } from '../store/slices/interfaces/participant';
+import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 
-export async function getDevices(kind: MediaDeviceKind) {
-  let constraints: MediaStreamConstraints = {
-    audio: true,
+export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
+
+export const getInputMediaDevices = async (kind: inputMediaDeviceKind) => {
+  const constraints: MediaStreamConstraints = {
+    audio: false,
+    video: false,
   };
-  if (kind === 'videoinput') {
-    constraints = {
-      video: true,
-    };
+  if (kind === 'audio') {
+    constraints.audio = true;
+  } else if (kind === 'video') {
+    constraints.video = true;
+  } else {
+    constraints.audio = true;
+    constraints.video = true;
   }
-  const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  let devices = await navigator.mediaDevices.enumerateDevices();
-  devices = devices.filter((device) => device.kind === kind);
 
-  if (devices.length > 1 && devices[0].deviceId === 'default') {
-    // find another device with matching group id, and move that to 0
-    const defaultDevice = devices[0];
-    for (let i = 1; i < devices.length; i += 1) {
-      if (devices[i].groupId === defaultDevice.groupId) {
-        const temp = devices[0];
-        devices[0] = devices[i];
-        devices[i] = temp;
-        break;
+  const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  const devices = await navigator.mediaDevices.enumerateDevices();
+
+  const audioDevices: IMediaDevice[] = [];
+  const videoDevices: IMediaDevice[] = [];
+
+  for (let i = 0; i < devices.length; i++) {
+    const device = devices[i];
+    if (device.deviceId === '') {
+      continue;
+    }
+    if (device.kind === 'audioinput') {
+      const exist = audioDevices.find((d) => d.id === device.deviceId);
+      if (!exist) {
+        audioDevices.push({
+          id: device.deviceId,
+          label: device.label,
+        });
+      }
+    } else if (device.kind === 'videoinput') {
+      const exist = videoDevices.find((d) => d.id === device.deviceId);
+      if (!exist) {
+        videoDevices.push({
+          id: device.deviceId,
+          label: device.label,
+        });
       }
     }
-    return devices.filter((device) => device !== defaultDevice);
   }
 
   stream.getTracks().forEach(function (track) {
     track.stop();
   });
 
-  return devices;
-}
+  return {
+    audio: audioDevices,
+    video: videoDevices,
+  };
+};
 
 const dec2hex = (dec) => {
   return dec.toString(16).padStart(2, '0');

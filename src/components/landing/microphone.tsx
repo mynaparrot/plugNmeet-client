@@ -6,10 +6,11 @@ import { ArrowUp } from '../../assets/Icons/ArrowUp';
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 import { Microphone } from '../../assets/Icons/Microphone';
 import { IMediaDevice } from '../../store/slices/interfaces/roomSettings';
+import { inputMediaDeviceKind } from '../../helpers/utils';
 
 interface MicrophoneIconProps {
   audioDevices: IMediaDevice[];
-  enableMediaDevices(type: string): Promise<void>;
+  enableMediaDevices(type: inputMediaDeviceKind): Promise<void>;
   disableMic(): void;
   setSelectedAudioDevice: (value: SetStateAction<string>) => void;
   selectedAudioDevice: string;

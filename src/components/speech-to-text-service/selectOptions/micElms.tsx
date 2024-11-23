@@ -9,7 +9,8 @@ import {
   Transition,
 } from '@headlessui/react';
 
-import { getDevices } from '../../../helpers/utils';
+import { getInputMediaDevices } from '../../../helpers/utils';
+import { IMediaDevice } from '../../../store/slices/interfaces/roomSettings';
 
 interface MicElmsProps {
   disabled: boolean;
@@ -23,15 +24,15 @@ const MicElms = ({
   setSelectedMicDevice,
 }: MicElmsProps) => {
   const { t } = useTranslation();
-  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [devices, setDevices] = useState<IMediaDevice[]>([]);
 
   useEffect(() => {
     const getDeviceMics = async () => {
-      const mics = await getDevices('audioinput');
-      if (mics.length) {
-        setDevices(mics);
+      const inputDevices = await getInputMediaDevices('audio');
+      if (inputDevices.audio.length) {
+        setDevices(inputDevices.audio);
         if (isEmpty(selectedMicDevice)) {
-          setSelectedMicDevice(mics[0].deviceId);
+          setSelectedMicDevice(inputDevices.audio[0].id);
         }
       }
     };
@@ -62,10 +63,7 @@ const MicElms = ({
                 className={`relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm`}
               >
                 <span className="block text-xs">
-                  {
-                    devices.filter((d) => d.deviceId === selectedMicDevice)?.[0]
-                      .label
-                  }
+                  {devices.filter((d) => d.id === selectedMicDevice)?.[0].label}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
                   <i className="pnm-updown text-xl primaryColor dark:text-darkText" />
@@ -89,8 +87,8 @@ const MicElms = ({
                               : 'text-gray-900'
                           }`
                         }
-                        key={d.deviceId}
-                        value={d.deviceId}
+                        key={d.id}
+                        value={d.id}
                         disabled={disabled}
                       >
                         {({ selected }) => (
