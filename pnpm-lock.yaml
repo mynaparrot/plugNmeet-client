@@ -18,8 +18,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@nats-io/jetstream':
-        specifier: 3.0.0-28
-        version: 3.0.0-28
+        specifier: 3.0.0-32
+        version: 3.0.0-32
       '@nats-io/nats-core':
         specifier: 3.0.0-41
         version: 3.0.0-41
@@ -440,14 +440,21 @@ packages:
   '@livekit/protocol@1.24.0':
     resolution: {integrity: sha512-9dCsqnkMn7lvbI4NGh18zhLDsrXyUcpS++TEFgEk5Xv1WM3R2kT3EzqgL1P/mr3jaabM6rJ8wZA/KJLuQNpF5w==}
 
-  '@nats-io/jetstream@3.0.0-28':
-    resolution: {integrity: sha512-qdj3x8yQxtWVRXS8iVXW+GhCvLEWdiNYKFtbLNSh34+LTipU1ftyYI5H3dNMXvCCqO6lFy+163jLLq7X7x8Hvw==}
+  '@nats-io/jetstream@3.0.0-32':
+    resolution: {integrity: sha512-/y84BfL5DvaJuZ9+98DkADzNfr1A5jiqA+xBKQqOXNnY2gmPrQPXowPLUJ8aSs67v5AFRg66jaut8+Dt3y4K+A==}
 
   '@nats-io/nats-core@3.0.0-41':
     resolution: {integrity: sha512-MS2owIXoQ7aFjMfhKkFwMOfJm0gr2nLlnEI8L+eMnWGOXJsshk4C+PNctblEAlbeofTUaa4WrtLyaQ1CaoQt4g==}
 
+  '@nats-io/nats-core@3.0.0-45':
+    resolution: {integrity: sha512-7p8X66BjMgEDAOGGM1wByZn9FGg+/o7EBOleivGv7nu3Nf93l6AGoz8L/jfqGoKiKPbF96vwYrquAXh29y7wTw==}
+
   '@nats-io/nkeys@1.2.0-8':
     resolution: {integrity: sha512-o6nfNYySzVZL7mIJA+ejD3JdMFbLn9VWtptM2cnHh4jeF/FvhPhCkn8BH4jQE7asCV/SSialu6jGhsAFV1FKkQ==}
+    engines: {node: '>=16.0.0'}
+
+  '@nats-io/nkeys@2.0.0-2':
+    resolution: {integrity: sha512-bUik5tS6J3WXc74H/MEbLkuzxQGpI9Qm9GuvwDuUsfUe1pmMsaPWsRQ/6vlYXCvnWYmVvLc6/c/wcIm/DNmEZA==}
     engines: {node: '>=16.0.0'}
 
   '@nats-io/nuid@2.0.1-2':
@@ -4361,16 +4368,25 @@ snapshots:
     dependencies:
       '@bufbuild/protobuf': 1.10.0
 
-  '@nats-io/jetstream@3.0.0-28':
+  '@nats-io/jetstream@3.0.0-32':
     dependencies:
-      '@nats-io/nats-core': 3.0.0-41
+      '@nats-io/nats-core': 3.0.0-45
 
   '@nats-io/nats-core@3.0.0-41':
     dependencies:
       '@nats-io/nkeys': 1.2.0-8
       '@nats-io/nuid': 2.0.1-2
 
+  '@nats-io/nats-core@3.0.0-45':
+    dependencies:
+      '@nats-io/nkeys': 2.0.0-2
+      '@nats-io/nuid': 2.0.1-2
+
   '@nats-io/nkeys@1.2.0-8':
+    dependencies:
+      tweetnacl: 1.0.3
+
+  '@nats-io/nkeys@2.0.0-2':
     dependencies:
       tweetnacl: 1.0.3
 
