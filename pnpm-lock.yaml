@@ -21,8 +21,8 @@ importers:
         specifier: 3.0.0-28
         version: 3.0.0-28
       '@nats-io/nats-core':
-        specifier: 3.0.0-41
-        version: 3.0.0-41
+        specifier: 3.0.0-45
+        version: 3.0.0-45
       '@reduxjs/toolkit':
         specifier: 2.3.0
         version: 2.3.0(react-redux@9.1.2(@types/react@18.3.12)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
@@ -446,8 +446,15 @@ packages:
   '@nats-io/nats-core@3.0.0-41':
     resolution: {integrity: sha512-MS2owIXoQ7aFjMfhKkFwMOfJm0gr2nLlnEI8L+eMnWGOXJsshk4C+PNctblEAlbeofTUaa4WrtLyaQ1CaoQt4g==}
 
+  '@nats-io/nats-core@3.0.0-45':
+    resolution: {integrity: sha512-7p8X66BjMgEDAOGGM1wByZn9FGg+/o7EBOleivGv7nu3Nf93l6AGoz8L/jfqGoKiKPbF96vwYrquAXh29y7wTw==}
+
   '@nats-io/nkeys@1.2.0-8':
     resolution: {integrity: sha512-o6nfNYySzVZL7mIJA+ejD3JdMFbLn9VWtptM2cnHh4jeF/FvhPhCkn8BH4jQE7asCV/SSialu6jGhsAFV1FKkQ==}
+    engines: {node: '>=16.0.0'}
+
+  '@nats-io/nkeys@2.0.0-2':
+    resolution: {integrity: sha512-bUik5tS6J3WXc74H/MEbLkuzxQGpI9Qm9GuvwDuUsfUe1pmMsaPWsRQ/6vlYXCvnWYmVvLc6/c/wcIm/DNmEZA==}
     engines: {node: '>=16.0.0'}
 
   '@nats-io/nuid@2.0.1-2':
@@ -4370,7 +4377,16 @@ snapshots:
       '@nats-io/nkeys': 1.2.0-8
       '@nats-io/nuid': 2.0.1-2
 
+  '@nats-io/nats-core@3.0.0-45':
+    dependencies:
+      '@nats-io/nkeys': 2.0.0-2
+      '@nats-io/nuid': 2.0.1-2
+
   '@nats-io/nkeys@1.2.0-8':
+    dependencies:
+      tweetnacl: 1.0.3
+
+  '@nats-io/nkeys@2.0.0-2':
     dependencies:
       tweetnacl: 1.0.3
 
