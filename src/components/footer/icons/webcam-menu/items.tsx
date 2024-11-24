@@ -26,9 +26,6 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
   const selectedVideoDevice = useAppSelector(
     (state) => state.roomSettings.selectedVideoDevice,
   );
-  // const showVideoShareModal = useAppSelector(
-  //   (state) => state.bottomIconsActivity.showVideoShareModal,
-  // );
 
   const [devicesMenu, setDevicesMenu] = useState<Array<React.JSX.Element>>();
   const [newDevice, setNewDevice] = useState<string>();
@@ -92,17 +89,6 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
         Select Webcams
       </div>
       {devicesMenu}
-      <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
-        Background & Filters
-      </div>
-      <p
-        className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
-        // onClick={() =>
-        //   dispatch(updateShowVideoShareModal(!showVideoShareModal))
-        // }
-      >
-        Config Camera Background
-      </p>
       <div className="" role="none">
         <MenuItem>
           {() => (

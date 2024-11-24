@@ -6,7 +6,6 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
-  updateVirtualBackground,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam-menu';
@@ -20,6 +19,7 @@ import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
+import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
@@ -179,7 +179,12 @@ const WebcamIcon = () => {
     }
 
     if (!isActiveWebcam) {
-      dispatch(updateShowVideoShareModal(!isActiveWebcam));
+      if (selectedVideoDevice !== '') {
+        setDeviceId(selectedVideoDevice);
+        createDeviceStream(selectedVideoDevice).then();
+      } else {
+        dispatch(updateShowVideoShareModal(!isActiveWebcam));
+      }
     } else if (isActiveWebcam) {
       // leave webcam
       for (const [
@@ -197,12 +202,14 @@ const WebcamIcon = () => {
         }
       }
       dispatch(updateIsActiveWebcam(false));
-      dispatch(updateSelectedVideoDevice(''));
-      dispatch(
-        updateVirtualBackground({
-          type: 'none',
-        }),
-      );
+      if (virtualBackground.type !== 'none') {
+        if (virtualBgLocalTrack) {
+          virtualBgLocalTrack.getTracks().forEach((t) => t.stop());
+          setVirtualBgLocalTrack(undefined);
+          setSourcePlayback(undefined);
+        }
+      }
+      setDeviceId(undefined);
     }
   };
 
@@ -304,10 +311,16 @@ const WebcamIcon = () => {
               {isActiveWebcam ? <Camera classes={'h-5 w-auto'} /> : null}
               {!isActiveWebcam ? (
                 <>
-                  <Camera classes={'h-5 w-auto'} />
-                  <span className="add absolute -top-2 -right-2 z-10">
-                    <PlusIcon />
-                  </span>
+                  {selectedVideoDevice === '' ? (
+                    <>
+                      <Camera classes={'h-5 w-auto'} />
+                      <span className="add absolute -top-2 -right-2 z-10">
+                        <PlusIcon />
+                      </span>
+                    </>
+                  ) : (
+                    <MicrophoneOff classes={'h-5 w-auto'} />
+                  )}
                 </>
               ) : null}
               {lockWebcam ? (
