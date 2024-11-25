@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.8](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.7...v1.6.8) (2024-11-25)
+
+
+### Bug Fixes
+
+* **deps:** dependencies update ([2922538](https://github.com/mynaparrot/plugNmeet-client/commit/2922538edcfad8a9925600f39d45d540d5df17ec))
+* **deps:** update dependencies ([d7f0a5e](https://github.com/mynaparrot/plugNmeet-client/commit/d7f0a5e87048e901b77dede9cbde9d969480f698))
+* **deps:** update dependency @nats-io/jetstream to v3.0.0-23 ([7eb4e92](https://github.com/mynaparrot/plugNmeet-client/commit/7eb4e92d337d44dff7aef6d8b90ef9375672db58))
+* **deps:** update dependency @nats-io/jetstream to v3.0.0-27 ([fd8bae6](https://github.com/mynaparrot/plugNmeet-client/commit/fd8bae6dabadbdd74a6fcf955191cbdd537ec3fa))
+* **deps:** update dependency @nats-io/nats-core to v3.0.0-35 ([7af7e11](https://github.com/mynaparrot/plugNmeet-client/commit/7af7e11c4bd498152fca8cc05dac4c0dbf86285f))
+* **locale:** added `한국어` ([b472966](https://github.com/mynaparrot/plugNmeet-client/commit/b472966d232fb548a679c09335d602a0fb679ff6))
+
 ## [1.6.7](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.6...v1.6.7) (2024-11-04)
 
 
