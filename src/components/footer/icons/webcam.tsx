@@ -19,7 +19,6 @@ import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
-import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
@@ -319,7 +318,7 @@ const WebcamIcon = () => {
                       </span>
                     </>
                   ) : (
-                    <MicrophoneOff classes={'h-5 w-auto'} />
+                    <CameraOff classes={'h-5 w-auto'} />
                   )}
                 </>
               ) : null}
