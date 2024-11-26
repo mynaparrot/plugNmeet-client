@@ -93,10 +93,10 @@ const ShareWebcamModal = ({
         open={isOpen}
         onClose={() => false}
         id="VirtualBackgroundModel"
-        className="fixed z-[99999] inset-0 overflow-y-auto py-5 px-2"
+        className="fixed z-[99999] inset-0 overflow-y-auto"
       >
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="fixed inset-0 bg-black opacity-50" />
+        <div className="flex items-center justify-center min-h-screen py-5 px-2">
+          <div className="fixed inset-0 bg-Gray-950/70" />
 
           <div className="popup-inner bg-white w-full max-w-xl z-50 rounded-2xl overflow-hidden border border-Gray-200 shadow-virtualPOP">
             {displayWebcamSelection ? (

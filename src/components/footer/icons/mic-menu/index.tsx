@@ -8,9 +8,14 @@ import { ArrowUp } from '../../../../assets/Icons/ArrowUp';
 interface IMicMenuProps {
   currentRoom: Room;
   isActiveMicrophone: any;
+  isMicMuted: any;
 }
 
-const MicMenu = ({ currentRoom, isActiveMicrophone }: IMicMenuProps) => {
+const MicMenu = ({
+  currentRoom,
+  isActiveMicrophone,
+  isMicMuted,
+}: IMicMenuProps) => {
   const render = () => {
     return (
       <div className="menu relative">
@@ -18,7 +23,7 @@ const MicMenu = ({ currentRoom, isActiveMicrophone }: IMicMenuProps) => {
           {({ open }) => (
             <>
               <MenuButton
-                className={`w-[30px] h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isActiveMicrophone ? 'bg-Gray-50 rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100' : 'border-Gray-300'}`}
+                className={`w-[30px] h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isMicMuted && isActiveMicrophone ? '!border-Red-200 !bg-Red-100' : ''} ${isActiveMicrophone ? 'bg-Gray-50 rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100' : 'border-Gray-300'}`}
               >
                 <ArrowUp />
               </MenuButton>

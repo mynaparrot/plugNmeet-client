@@ -131,18 +131,22 @@ const WhiteboardIcon = () => {
   const render = () => {
     return (
       <div
-        className={`whiteboard relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
-          showTooltip ? 'has-tooltip' : ''
-        } ${isActiveWhiteboard ? 'bg-gray-100' : 'bg-white'}`}
+        className={`whiteboard relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isActiveWhiteboard ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
         onClick={() => toggleWhiteboard()}
       >
-        {/* <span className="tooltip">{text()}</span> */}
-        <>
-          <WhiteBoardIconSVG />
-          {/* <span className="blocked absolute -top-2 -right-2 z-10">
+        <div
+          className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+            showTooltip ? 'has-tooltip' : ''
+          } ${isActiveWhiteboard ? 'bg-gray-100' : 'bg-white'}`}
+        >
+          {/* <span className="tooltip">{text()}</span> */}
+          <>
+            <WhiteBoardIconSVG />
+            {/* <span className="blocked absolute -top-2 -right-2 z-10">
             <BlockedIcon />
           </span> */}
-        </>
+          </>
+        </div>
       </div>
     );
   };

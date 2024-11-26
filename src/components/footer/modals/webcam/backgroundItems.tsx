@@ -77,7 +77,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         onClick={() => handleOnClick('none', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue shadow-virtualItem' : ''}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue shadow-virtualItem rounded-xl' : 'rounded-2xl'}`}
         >
           <i className="pnm-ban-solid dark:text-darkSecondary2" />
         </div>
@@ -87,7 +87,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         onClick={() => handleOnClick('blur', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue' : ''}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue shadow-virtualItem rounded-xl' : 'rounded-2xl'}`}
         >
           <i className="pnm-blur dark:text-darkSecondary2" />
         </div>
@@ -100,7 +100,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
             key={imageUrl}
           >
             <div
-              className={`cursor-pointer w-full h-full rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.url === imageUrl ? 'border border-Blue' : ''}`}
+              className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.url === imageUrl ? 'border border-Blue shadow-virtualItem rounded-xl' : 'rounded-2xl'}`}
             >
               <img
                 src={imageUrl}

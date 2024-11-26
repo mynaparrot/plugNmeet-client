@@ -49,12 +49,12 @@ const Footer = () => {
             style={{ display: isRecorder ? 'none' : '' }}
           >
             <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
-              <div className="footer-left w-72 flex items-center gap-4 relative z-50 rtl:justify-end">
+              <div className="footer-left w-72 flex items-center gap-2 relative z-50 rtl:justify-end">
                 <MicrophoneIcon />
                 <WebcamIcon />
               </div>
 
-              <div className="footer-middle flex items-center gap-4">
+              <div className="footer-middle flex items-center gap-2">
                 <ScreenshareIcon />
                 <WhiteboardIcon />
                 <RaiseHandIcon />
@@ -63,7 +63,7 @@ const Footer = () => {
                 {isAdmin ? <MenusIcon /> : null}
               </div>
 
-              <div className="footer-right w-72 flex items-center justify-end gap-4">
+              <div className="footer-right w-72 flex items-center justify-end gap-2">
                 <ParticipantIcon />
                 <ChatIcon />
                 <div className="line h-6 w-[1px] bg-Gray-200"></div>

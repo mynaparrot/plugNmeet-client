@@ -40,18 +40,22 @@ code {
 }
 
 // Common SCSS
+#headlessui-portal-root {
+  position: relative;
+  z-index: 99999;
+}
 
 // Gradient pattern
-.multi-gradient {
-  background: rgb(235, 248, 255);
-  background: linear-gradient(
-    150deg,
-    rgba(235, 248, 255, 1) 0%,
-    rgba(255, 255, 255, 1) 10%,
-    rgba(243, 237, 249, 1) 67%,
-    rgba(214, 231, 255, 1) 100%
-  );
-}
+// .multi-gradient {
+//   background: rgb(235, 248, 255);
+//   background: linear-gradient(
+//     150deg,
+//     rgba(235, 248, 255, 1) 0%,
+//     rgba(255, 255, 255, 1) 10%,
+//     rgba(243, 237, 249, 1) 67%,
+//     rgba(214, 231, 255, 1) 100%
+//   );
+// }
 
 // Gradient pattern
 

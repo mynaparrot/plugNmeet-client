@@ -275,9 +275,11 @@ const MicrophoneIcon = () => {
   };
 
   return (
-    <div className="relative z-10">
+    <div
+      className={`relative footer-icon cursor-pointer min-w-[52px] h-[52px] rounded-[20px] border-4 ${isMicMuted && isActiveMicrophone ? '!border-Red-100' : ''} ${isActiveMicrophone ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+    >
       <div
-        className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${
+        className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${isMicMuted && isActiveMicrophone ? '!border-Red-200' : ''} ${
           showTooltip ? 'has-tooltip' : ''
         }`}
       >
@@ -285,7 +287,7 @@ const MicrophoneIcon = () => {
           {getTooltipText()}
         </span> */}
         <div
-          className="w-11 h-11 relative flex items-center justify-center"
+          className="w-[42px] h-full relative flex items-center justify-center"
           onClick={() => manageMic()}
         >
           {!isActiveMicrophone ? (
@@ -311,6 +313,7 @@ const MicrophoneIcon = () => {
           <MicMenu
             currentRoom={currentRoom}
             isActiveMicrophone={isActiveMicrophone}
+            isMicMuted={isMicMuted}
           />
         ) : null}
       </div>
@@ -320,34 +323,6 @@ const MicrophoneIcon = () => {
           onCloseMicrophoneModal={onCloseMicrophoneModal}
         />
       ) : null}
-      {/* <div
-        className={`microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 flex items-center justify-center cursor-pointer ${
-          showTooltip ? 'has-tooltip' : ''
-        }`}
-      >
-        <span className="tooltip rtl:-left-3 rtl:microphone-rtl-left">
-          {getTooltipText()}
-        </span>
-
-        {!isActiveMicrophone ? (
-          <>
-            <i className="pnm-mic-unmute primaryColor dark:text-darkText text-[12px] lg:text-[14px]" />
-            {lockMic ? (
-              <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
-                <i className="pnm-lock primaryColor dark:text-darkText" />
-              </div>
-            ) : null}
-          </>
-        ) : null}
-
-        {!isMicMuted && isActiveMicrophone ? (
-          <i className="pnm-mic-unmute secondaryColor  text-[12px] lg:text-[14px]" />
-        ) : null}
-
-        {isMicMuted && isActiveMicrophone ? (
-          <i className="pnm-mic-mute secondaryColor text-[12px] lg:text-[14px]" />
-        ) : null}
-      </div> */}
     </div>
   );
 };

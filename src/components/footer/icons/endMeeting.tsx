@@ -72,7 +72,7 @@ const EndMeetingButton = () => {
         className="relative z-10 focus:outline-none"
         onClose={() => setIsOpen(false)}
       >
-        <div className="EndMeetingPopup fixed inset-0 w-screen overflow-y-auto z-10">
+        <div className="EndMeetingPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition

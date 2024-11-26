@@ -162,20 +162,30 @@ const ScrenshareIcon = () => {
   const render = () => {
     return (
       <div
+        className={`share-screen relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isActiveScreenshare ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+        onClick={() => toggleScreenShare()}
+      >
+        <div
+          className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+            showTooltip ? 'has-tooltip' : ''
+          } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'}`}
+        >
+          {/* <div
         className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
           showTooltip ? 'has-tooltip' : ''
         } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'}`}
-        onClick={() => toggleScreenShare()}
-      >
-        {/* <span className="tooltip">{text()}</span> */}
-        <>
-          <ShareScreenIconSVG />
-          {lock ? (
-            <span className="blocked absolute -top-2 -right-2 z-10">
-              <BlockedIcon />
-            </span>
-          ) : null}
-        </>
+        
+      > */}
+          {/* <span className="tooltip">{text()}</span> */}
+          <>
+            <ShareScreenIconSVG />
+            {lock ? (
+              <span className="blocked absolute -top-2 -right-2 z-10">
+                <BlockedIcon />
+              </span>
+            ) : null}
+          </>
+        </div>
       </div>
     );
   };

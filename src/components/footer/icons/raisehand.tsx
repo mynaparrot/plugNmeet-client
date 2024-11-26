@@ -55,17 +55,21 @@ const RaiseHandIcon = () => {
 
     return (
       <div
-        className={`hands relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
-          showTooltip ? 'has-tooltip' : ''
-        } ${isActiveRaisehand ? 'bg-gray-100' : 'bg-white'}`}
+        className={`raise-hand relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isActiveRaisehand ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
         onClick={() => toggleRaiseHand()}
       >
-        {/* <span className="tooltip !bottom-[62px]">
+        <div
+          className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+            showTooltip ? 'has-tooltip' : ''
+          } ${isActiveRaisehand ? 'bg-gray-100' : 'bg-white'}`}
+        >
+          {/* <span className="tooltip !bottom-[62px]">
           {isActiveRaisehand
             ? t('footer.icons.lower-hand')
             : t('footer.icons.raise-hand')}
         </span> */}
-        <HandsIconSVG classes={'h-5 w-auto'} />
+          <HandsIconSVG classes={'h-5 w-auto'} />
+        </div>
       </div>
     );
   };
