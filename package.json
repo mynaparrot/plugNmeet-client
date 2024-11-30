@@ -20,7 +20,7 @@
     "@headlessui/react": "2.2.0",
     "@nats-io/jetstream": "3.0.0-32",
     "@nats-io/nats-core": "3.0.0-45",
-    "@reduxjs/toolkit": "2.3.0",
+    "@reduxjs/toolkit": "2.4.0",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.22.0",
     "axios": "1.7.7",
