@@ -79,28 +79,32 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
     return waitingParticipants.map((p) => {
       return (
         <div
-          className="waiting-list-item mb-2 pb-2 border-b border-solid border-primaryColor w-full max-w-max"
+          className="waiting-list-item mb-2 last:mb-0 pb-2 last:pb-0 border-b last:border-b-0 border-solid border-Blue w-full"
           key={p.userId}
         >
-          <p className="text-base text-black dark:text-darkText">{p.name}</p>
-          <button
-            onClick={() => acceptUser(p.userId)}
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
-          >
-            {t('left-panel.approve')}
-          </button>
-          <button
-            onClick={() => rejectUser(p.userId, false)}
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
-          >
-            {t('left-panel.reject')}
-          </button>
-          <button
-            onClick={() => rejectUser(p.userId, true)}
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
-          >
-            {t('waiting-room.reject-and-block-user')}
-          </button>
+          <p className="text-base text-Gray-950 mb-2 capitalize font-medium">
+            {p.name}
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={() => acceptUser(p.userId)}
+              className="py-1 w-full flex items-center justify-center rounded-xl text-xs font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+            >
+              {t('left-panel.approve')}
+            </button>
+            <button
+              onClick={() => rejectUser(p.userId, false)}
+              className="py-1 w-full flex items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+            >
+              {t('left-panel.reject')}
+            </button>
+            <button
+              onClick={() => rejectUser(p.userId, true)}
+              className="py-1 w-full flex items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+            >
+              {t('waiting-room.reject-and-block-user')}
+            </button>
+          </div>
         </div>
       );
     });
@@ -108,12 +112,12 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
 
   return (
     <div className="waiting-list-wrap">
-      <p className="text-lg my-4 text-black dark:text-white font-bold ltr:text-left rtl:text-right">
+      <p className="text-lg my-4 text-Gray-950 font-medium ltr:text-left rtl:text-right">
         {t('waiting-room.list-waiting-participants', {
           count: waitingParticipants.length,
         })}
       </p>
-      <div className="waiting-list scrollBar h-[130px] overflow-auto">
+      <div className="waiting-list scrollBar h-[133px] overflow-auto">
         <div className="waiting-list-inner">{renderWaitingParticipants()}</div>
       </div>
     </div>

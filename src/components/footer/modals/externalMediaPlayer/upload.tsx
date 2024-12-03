@@ -90,7 +90,7 @@ const Upload = () => {
   return (
     <>
       <div className="ex-m-p-file-upload relative h-[80px] mt-[10px] mb-[50px]">
-        <div className="absolute -bottom-[30px] dark:text-darkText">
+        <div className="absolute -bottom-[30px] text-sm font-medium text-Gray-800">
           {t('footer.modal.external-media-player-upload-supported-files', {
             files: allowedFileTypes.map((type) => '.' + type).join(', '),
           })}
@@ -100,12 +100,12 @@ const Upload = () => {
           id="chat-file"
           accept={allowedFileTypes.map((type) => '.' + type).join(',')}
           onChange={(e) => onChange(e)}
-          className="absolute left-0 w-full h-full top-0 py-[28px] px-5 border border-dashed border-primaryColor dark:border-darkText dark:text-darkText cursor-pointer rounded"
+          className="absolute left-0 w-full h-full top-0 py-[28px] px-5 border border-dashed border-Blue cursor-pointer rounded focus:shadow-inputFocus"
         />
       </div>
-      <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
+      <div className="mt-8 flex justify-end">
         <button
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
           disabled={isUploading}
           onClick={() => upload()}
         >

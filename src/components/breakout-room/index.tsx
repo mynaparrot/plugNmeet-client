@@ -1,16 +1,12 @@
-import React, { Fragment, useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react';
+import React, { useState } from 'react';
+import { Dialog, DialogTitle, DialogPanel, Button } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch } from '../../store';
 import { updateShowManageBreakoutRoomModal } from '../../store/slices/bottomIconsActivitySlice';
 import FromElems from './form';
 import BreakoutRoomLists from './list';
+import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 
 const BreakoutRoom = () => {
   const { t } = useTranslation();
@@ -27,66 +23,34 @@ const BreakoutRoom = () => {
 
   return (
     <>
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="breakout-room-modal fixed inset-0 z-[9999] overflow-y-auto"
-          onClose={() => false}
-          static={false}
-        >
-          <div className="min-h-screen px-4 text-center flex items-center justify-center">
-            <TransitionChild
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+      <Dialog
+        open={isOpen}
+        as="div"
+        className="relative z-10 focus:outline-none"
+        onClose={() => false}
+      >
+        <div className="breakoutRoomModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <DialogPanel
+              transition
+              className="w-full max-w-5xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
             >
-              <div className="fixed inset-0 bg-black opacity-30" />
-            </TransitionChild>
-
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <TransitionChild
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-block w-full max-w-5xl h-full p-4 md:p-6 my-16 overflow-hidden text-left transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
-                <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
-                  type="button"
-                  onClick={() => closeModal()}
-                >
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-                </button>
-
-                <DialogTitle
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
-                >
-                  {t('breakout-room.modal-title')}
-                </DialogTitle>
-                <hr />
-                <div className="mt-2">
-                  {breakoutRoomIsActive ? <BreakoutRoomLists /> : <FromElems />}
-                </div>
+              <DialogTitle
+                as="h3"
+                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+              >
+                <span>{t('breakout-room.modal-title')}</span>
+                <Button onClick={() => closeModal()}>
+                  <PopupCloseSVGIcon classes="text-Gray-600" />
+                </Button>
+              </DialogTitle>
+              <div className="mt-8">
+                {breakoutRoomIsActive ? <BreakoutRoomLists /> : <FromElems />}
               </div>
-            </TransitionChild>
+            </DialogPanel>
           </div>
-        </Dialog>
-      </Transition>
+        </div>
+      </Dialog>
     </>
   );
 };

@@ -72,16 +72,16 @@ const BulkAction = ({ waitingParticipants }: IBulkActionProps) => {
   };
 
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-start">
+    <div className="my-4 grid grid-cols-2 gap-5">
       <button
         onClick={approveEveryone}
-        className="py-1 px-6 ltr:mr-4 rtl:ml-4 rounded-xl text-white text-sm block transition ease-in bg-primaryColor hover:bg-secondaryColor"
+        className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
       >
         {t('waiting-room.accept-all')}
       </button>
       <button
         onClick={rejectEveryone}
-        className="py-1 px-6 rounded-xl text-white text-sm block transition ease-in bg-primaryColor hover:bg-secondaryColor"
+        className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
       >
         {t('waiting-room.reject-all')}
       </button>

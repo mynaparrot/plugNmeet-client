@@ -1,10 +1,5 @@
-import React, { Fragment, useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react';
+import React, { useState } from 'react';
+import { Dialog, DialogTitle, DialogPanel, Button } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
@@ -17,6 +12,7 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateDisplayExternalLinkRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 
 const DisplayExternalLinkModal = () => {
   const dispatch = useAppDispatch();
@@ -102,228 +98,193 @@ const DisplayExternalLinkModal = () => {
   const renderDisplayForm = () => {
     return (
       <>
-        <Transition appear show={!isActive} as={Fragment}>
-          <Dialog
-            as="div"
-            className="external-link-modal fixed inset-0 z-[9999] overflow-y-auto"
-            onClose={() => false}
-          >
-            <div className="min-h-screen px-4 text-center">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
+        <Dialog
+          open={!isActive}
+          as="div"
+          className="relative z-10 focus:outline-none"
+          onClose={() => false}
+        >
+          <div className="rtmpModalClose fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <DialogPanel
+                transition
+                className="w-full max-w-xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
               >
-                <div className="fixed inset-0 bg-black opacity-30" />
-              </TransitionChild>
-
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
-                  <button
-                    className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
-                    type="button"
-                    onClick={() => closeStartModal()}
-                  >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-                  </button>
-
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
-                  >
-                    {t('external-display-link-display.modal-title')}
-                  </DialogTitle>
-                  <hr />
-                  <div className="mt-6">
-                    <form method="POST" onSubmit={(e) => onSubmit(e)}>
-                      <div className="">
-                        <label
-                          htmlFor="stream-key"
-                          className="block text-sm font-medium text-gray-700 dark:text-darkText"
-                        >
-                          {t('external-display-link-display.url')}
-                        </label>
-                        <input
-                          type="text"
-                          name="stream-key"
-                          id="stream-key"
-                          value={link}
-                          onChange={(e) => setLink(e.currentTarget.value)}
-                          className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
-                        />
-                        {errorMsg ? (
-                          <div className="error-msg text-xs text-red-600 py-2">
-                            {errorMsg}
-                          </div>
-                        ) : null}
-                        <div className="text-xs py-2 dark:text-darkText">
-                          {t('external-display-link-display.note')}
+                <DialogTitle
+                  as="h3"
+                  className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+                >
+                  <span>{t('external-display-link-display.modal-title')}</span>
+                  <Button onClick={() => closeStartModal()}>
+                    <PopupCloseSVGIcon classes="text-Gray-600" />
+                  </Button>
+                </DialogTitle>
+                <div className="mt-8">
+                  <form method="POST" onSubmit={(e) => onSubmit(e)}>
+                    <div className="">
+                      <label
+                        htmlFor="stream-key"
+                        className="block text-sm font-medium text-Gray-800"
+                      >
+                        {t('external-display-link-display.url')}
+                      </label>
+                      <input
+                        type="text"
+                        name="stream-key"
+                        id="stream-key"
+                        value={link}
+                        onChange={(e) => setLink(e.currentTarget.value)}
+                        className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                      />
+                      {errorMsg ? (
+                        <div className="error-msg text-xs text-red-600 py-2">
+                          {errorMsg}
                         </div>
+                      ) : null}
+                      <div className="text-xs py-2 text-Gray-800">
+                        {t('external-display-link-display.note')}
                       </div>
-                      <div className="mt-4">
-                        <fieldset>
-                          <div
-                            className="text-base font-medium text-gray-900 dark:text-white"
-                            aria-hidden="true"
-                          >
-                            {t(
-                              'external-display-link-display.send-extra-values',
-                            )}
-                          </div>
-                          <div className="mt-4 flex flex-wrap justify-between">
-                            <div className="w-1/2 md:w-1/4 mb-4">
-                              <div className="flex items-center w-full justify-center mb-2">
-                                <input
-                                  id="name"
-                                  name="name"
-                                  type="checkbox"
-                                  checked={extraValues.name}
-                                  onChange={() => {
-                                    const tmp = Object.assign({}, extraValues);
-                                    tmp.name = !extraValues.name;
-                                    setExtraValues(tmp);
-                                  }}
-                                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div className="text-sm w-full text-center">
-                                <label
-                                  htmlFor="name"
-                                  className="font-medium text-gray-700 dark:text-darkText"
-                                >
-                                  {t('external-display-link-display.name')}
-                                </label>
-                                <p className="text-gray-500 dark:text-darkText/60">
+                    </div>
+                    <div className="mt-4">
+                      <fieldset>
+                        <div
+                          className="text-base font-medium text-gray-900 "
+                          aria-hidden="true"
+                        >
+                          {t('external-display-link-display.send-extra-values')}
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-5">
+                          <div className="item flex items-start">
+                            <div className="input">
+                              <input
+                                id="name"
+                                name="name"
+                                type="checkbox"
+                                checked={extraValues.name}
+                                onChange={() => {
+                                  const tmp = Object.assign({}, extraValues);
+                                  tmp.name = !extraValues.name;
+                                  setExtraValues(tmp);
+                                }}
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                              />
+                            </div>
+                            <div className="text-base w-full pl-4">
+                              <label
+                                htmlFor="name"
+                                className="font-medium text-Gray-950"
+                              >
+                                {t('external-display-link-display.name')}
+                                <p className="text-sm opacity-70">
                                   {t('external-display-link-display.name-des')}
                                 </p>
-                              </div>
+                              </label>
                             </div>
-                            <div className="w-1/2 md:w-1/4 mb-4">
-                              <div className="flex items-center w-full justify-center mb-2">
-                                <input
-                                  id="user-id"
-                                  name="user-id"
-                                  type="checkbox"
-                                  checked={extraValues.userId}
-                                  onChange={() => {
-                                    const tmp = Object.assign({}, extraValues);
-                                    tmp.userId = !extraValues.userId;
-                                    setExtraValues(tmp);
-                                  }}
-                                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div className="text-sm w-full text-center">
-                                <label
-                                  htmlFor="user-id"
-                                  className="font-medium text-gray-700 dark:text-darkText"
-                                >
-                                  {t('external-display-link-display.user-id')}
-                                </label>
-                                <p className="text-gray-500 dark:text-darkText/60">
+                          </div>
+                          <div className="item flex items-start">
+                            <div className="input">
+                              <input
+                                id="user-id"
+                                name="user-id"
+                                type="checkbox"
+                                checked={extraValues.userId}
+                                onChange={() => {
+                                  const tmp = Object.assign({}, extraValues);
+                                  tmp.userId = !extraValues.userId;
+                                  setExtraValues(tmp);
+                                }}
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                              />
+                            </div>
+                            <div className="text-base w-full pl-4">
+                              <label
+                                htmlFor="user-id"
+                                className="font-medium text-Gray-950"
+                              >
+                                {t('external-display-link-display.user-id')}
+                                <p className="text-sm opacity-70">
                                   {t(
                                     'external-display-link-display.user-id-des',
                                   )}
                                 </p>
-                              </div>
+                              </label>
                             </div>
-                            <div className="w-1/2 md:w-1/4 mb-4">
-                              <div className="flex items-center w-full justify-center mb-2">
-                                <input
-                                  id="user-role"
-                                  name="user-role"
-                                  type="checkbox"
-                                  checked={extraValues.role}
-                                  onChange={() => {
-                                    const tmp = Object.assign({}, extraValues);
-                                    tmp.role = !extraValues.role;
-                                    setExtraValues(tmp);
-                                  }}
-                                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div className="text-sm w-full text-center">
-                                <label
-                                  htmlFor="user-role"
-                                  className="font-medium text-gray-700 dark:text-darkText"
-                                >
-                                  {t('external-display-link-display.user-role')}
-                                </label>
-                                <p className="text-gray-500 dark:text-darkText/60">
+                          </div>
+                          <div className="item flex items-start">
+                            <div className="input">
+                              <input
+                                id="user-role"
+                                name="user-role"
+                                type="checkbox"
+                                checked={extraValues.role}
+                                onChange={() => {
+                                  const tmp = Object.assign({}, extraValues);
+                                  tmp.role = !extraValues.role;
+                                  setExtraValues(tmp);
+                                }}
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                              />
+                            </div>
+                            <div className="text-base w-full pl-4">
+                              <label
+                                htmlFor="user-role"
+                                className="font-medium text-Gray-950"
+                              >
+                                {t('external-display-link-display.user-role')}
+                                <p className="text-sm opacity-70">
                                   {t(
                                     'external-display-link-display.user-role-des',
                                   )}
                                 </p>
-                              </div>
+                              </label>
                             </div>
-                            <div className="w-1/2 md:w-1/4 mb-4">
-                              <div className="flex items-center w-full justify-center mb-2">
-                                <input
-                                  id="meeting-id"
-                                  name="meeting-id"
-                                  type="checkbox"
-                                  checked={extraValues.meetingId}
-                                  onChange={() => {
-                                    const tmp = Object.assign({}, extraValues);
-                                    tmp.meetingId = !extraValues.meetingId;
-                                    setExtraValues(tmp);
-                                  }}
-                                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div className="text-sm w-full text-center">
-                                <label
-                                  htmlFor="meeting-id"
-                                  className="font-medium text-gray-700 dark:text-darkText"
-                                >
-                                  {t(
-                                    'external-display-link-display.meeting-id',
-                                  )}
-                                </label>
-                                <p className="text-gray-500 dark:text-darkText/60">
+                          </div>
+                          <div className="item flex items-start">
+                            <div className="input">
+                              <input
+                                id="meeting-id"
+                                name="meeting-id"
+                                type="checkbox"
+                                checked={extraValues.meetingId}
+                                onChange={() => {
+                                  const tmp = Object.assign({}, extraValues);
+                                  tmp.meetingId = !extraValues.meetingId;
+                                  setExtraValues(tmp);
+                                }}
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                              />
+                            </div>
+                            <div className="text-base w-full pl-4">
+                              <label
+                                htmlFor="meeting-id"
+                                className="font-medium text-Gray-950"
+                              >
+                                {t('external-display-link-display.meeting-id')}
+                                <p className="text-sm opacity-70">
                                   {t(
                                     'external-display-link-display.meeting-id-des',
                                   )}
                                 </p>
-                              </div>
+                              </label>
                             </div>
                           </div>
-                        </fieldset>
-                      </div>
-                      <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
-                        <button
-                          type="submit"
-                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
-                        >
-                          {t('external-display-link-display.display')}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div className="mt-8 flex justify-end">
+                      <button
+                        type="submit"
+                        className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                      >
+                        {t('external-display-link-display.display')}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-              </TransitionChild>
+              </DialogPanel>
             </div>
-          </Dialog>
-        </Transition>
+          </div>
+        </Dialog>
       </>
     );
   };

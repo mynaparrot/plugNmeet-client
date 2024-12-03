@@ -155,13 +155,13 @@ const FromElems = () => {
     return (
       <div className="numbers-of-room w-full sm:w-56 mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
         <label
-          className="block text-base text-black dark:text-darkText mb-1"
+          className="block text-sm font-medium text-Gray-800 mb-1"
           htmlFor="breakout-room-number"
         >
           {t('breakout-room.num-rooms')}
         </label>
         <select
-          className="w-full block outline-none border border-solid rounded p-1 h-9 bg-transparent dark:border-darkText dark:text-darkText"
+          className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
           id="breakout-room-number"
           onChange={(e) => setTotalRooms(Number(e.currentTarget.value))}
         >
@@ -227,13 +227,13 @@ const FromElems = () => {
         {renderBreakoutRoomNumbers()}
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
-            className="block text-base text-black dark:text-darkText mb-1"
+            className="block text-sm font-medium text-Gray-800 mb-1"
             htmlFor="breakout-room-duration"
           >
             {t('breakout-room.duration')}
           </label>
           <input
-            className="w-full block outline-none border border-solid rounded p-1 h-9 dark:text-darkText dark:border-darkText bg-transparent"
+            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
             id="breakout-room-duration"
             type="number"
             value={roomDuration}
@@ -244,13 +244,13 @@ const FromElems = () => {
       <div className="row flex flex-wrap justify-between items-end">
         <div className="room-welcome-messages w-full sm:max-w-[30.5rem] mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
           <label
-            className="block text-base text-black dark:text-darkText mb-1"
+            className="block text-sm font-medium text-Gray-800 mb-1"
             htmlFor="breakout-room-welcome"
           >
             {t('breakout-room.welcome-msg')}
           </label>
           <textarea
-            className="w-full block outline-none border border-solid rounded p-2 min-h-[60px] dark:text-white/90 dark:border-darkText bg-transparent"
+            className="h-20 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 py-2 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
             id="breakout-room-welcome"
             onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
             value={welcomeMsg}
@@ -258,7 +258,7 @@ const FromElems = () => {
         </div>
         <div className="random-room-select mb-4 ltr:mr-6 rtl:ml-6">
           <button
-            className="text-base text-primaryColor dark:text-secondaryColor"
+            className="h-9 w-auto ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-medium text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
             onClick={randomSelection}
           >
             {t('breakout-room.random-selection')}
@@ -281,9 +281,9 @@ const FromElems = () => {
           );
         })}
       </div>
-      <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
+      <div className="flex justify-end mt-4">
         <button
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+          className="h-9 w-auto px-10 items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
           onClick={startBreakoutRooms}
         >
           {t('breakout-room.start')}

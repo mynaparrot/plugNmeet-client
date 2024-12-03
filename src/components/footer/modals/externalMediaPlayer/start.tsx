@@ -1,10 +1,13 @@
-import React, { Fragment } from 'react';
 import {
   Dialog,
   DialogTitle,
   Tab,
-  Transition,
-  TransitionChild,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+  DialogPanel,
+  Button,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +15,7 @@ import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bot
 import { useAppDispatch } from '../../../../store';
 import DirectLink from './directLink';
 import Upload from './upload';
+import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 
 interface IStartPlaybackModalProps {
   isActive: boolean;
@@ -44,10 +48,70 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
 
   return (
     <>
-      <Transition appear show={!isActive} as={Fragment}>
+      <Dialog
+        open={!isActive}
+        as="div"
+        className="relative z-10 focus:outline-none"
+        onClose={() => false}
+      >
+        <div className="ExternalMediaPlayer fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <DialogPanel
+              transition
+              className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+            >
+              <DialogTitle
+                as="h3"
+                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+              >
+                <span>{t('footer.modal.external-media-player-title')}</span>
+                <Button onClick={() => closeStartModal()}>
+                  <PopupCloseSVGIcon classes="text-Gray-600" />
+                </Button>
+              </DialogTitle>
+              <div className="mt-8">
+                <TabGroup vertical className="outline-none">
+                  <TabList className="flex">
+                    {items.map((item) => (
+                      <Tab
+                        key={item.id}
+                        className={({ selected }) =>
+                          classNames(
+                            'w-full py-2 text-sm text-Gray-950 font-medium leading-5 border-b-4 border-solid transition ease-in outline-none',
+                            selected ? 'border-Blue' : 'border-Blue/20',
+                          )
+                        }
+                      >
+                        <div className="name relative inline-block">
+                          {item.title}
+                        </div>
+                      </Tab>
+                    ))}
+                  </TabList>
+                  <TabPanels className="relative h-[calc(100%-45px)]">
+                    {items.map((item) => (
+                      <TabPanel
+                        key={item.id}
+                        className={`${
+                          item.id === 2 || item.id === 3
+                            ? 'polls h-full outline-none'
+                            : 'pt-2 xl:pt-5 h-full overflow-auto scrollBar outline-none'
+                        }`}
+                      >
+                        <>{item.elm}</>
+                      </TabPanel>
+                    ))}
+                  </TabPanels>
+                </TabGroup>
+              </div>
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
+      {/* <Transition appear show={!isActive} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-[9999] overflow-y-auto"
+          className="External fixed inset-0 z-[9999] overflow-y-auto"
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
@@ -96,8 +160,8 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                 </DialogTitle>
                 <hr />
                 <div className="mt-6">
-                  <Tab.Group vertical>
-                    <Tab.List className="flex">
+                  <TabGroup vertical>
+                    <TabList className="flex">
                       {items.map((item) => (
                         <Tab
                           key={item.id}
@@ -115,10 +179,10 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                           </div>
                         </Tab>
                       ))}
-                    </Tab.List>
-                    <Tab.Panels className="relative h-[calc(100%-45px)]">
+                    </TabList>
+                    <TabPanels className="relative h-[calc(100%-45px)]">
                       {items.map((item) => (
-                        <Tab.Panel
+                        <TabPanel
                           key={item.id}
                           className={`${
                             item.id === 2 || item.id === 3
@@ -127,16 +191,16 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                           }`}
                         >
                           <>{item.elm}</>
-                        </Tab.Panel>
+                        </TabPanel>
                       ))}
-                    </Tab.Panels>
-                  </Tab.Group>
+                    </TabPanels>
+                  </TabGroup>
                 </div>
               </div>
             </TransitionChild>
           </div>
         </Dialog>
-      </Transition>
+      </Transition> */}
     </>
   );
 };

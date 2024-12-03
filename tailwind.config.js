@@ -22,6 +22,8 @@ module.exports = {
         virtualPOP: '0px 32px 64px -12px rgba(0, 43, 64, 0.14)',
         virtualItem: '0px 24px 9px 0px rgba(12, 19, 26, 0.01)',
         dropdownMenu: '0px 12px 16px -4px rgba(0, 43, 64, 0.08)',
+        input: '0px 1px 2px 0px rgba(0, 43, 64, 0.05)',
+        inputFocus: '0px 0px 0px 4px rgba(124, 206, 247, 0.25)',
       },
       colors: {
         primaryColor: '#004D90',

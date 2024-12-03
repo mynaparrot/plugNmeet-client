@@ -88,7 +88,7 @@ const DirectLink = () => {
           <div className="">
             <label
               htmlFor="stream-key"
-              className="block text-sm font-medium text-gray-700 dark:text-darkText"
+              className="block text-sm font-medium text-Gray-800"
             >
               {t('footer.modal.external-media-player-url')}
             </label>
@@ -98,7 +98,7 @@ const DirectLink = () => {
               id="stream-key"
               value={playBackUrl}
               onChange={onChangeUrl}
-              className="mt-1 px-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText autofill:bg-transparent"
+              className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
             />
             {errorMsg ? (
               <div className="error-msg absolute text-xs text-red-600 py-2">
@@ -108,10 +108,10 @@ const DirectLink = () => {
           </div>
         </div>
       </div>
-      <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
+      <div className="mt-8 flex justify-end">
         <button
           type="submit"
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
         >
           {t('footer.modal.external-media-player-play')}
         </button>
