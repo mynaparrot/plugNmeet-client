@@ -414,7 +414,6 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -441,7 +440,6 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
@@ -468,7 +466,6 @@ export default class ConnectNats {
     const consumer = await this._js.consumers.get(this._roomId, consumerName);
     const sub = await consumer.consume();
 
-    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         const payload = fromBinary(ChatMessageSchema, m.data);
@@ -507,7 +504,6 @@ export default class ConnectNats {
       }
     };
 
-    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         await processData(m);
@@ -543,7 +539,6 @@ export default class ConnectNats {
       await this.handleDataMsg.handleMessage(payload);
     };
 
-    // @ts-expect-error not an error
     for await (const m of sub) {
       try {
         await processData(m);
