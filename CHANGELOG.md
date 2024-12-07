@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.9](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.8...v1.6.9) (2024-12-07)
+
+
+### Bug Fixes
+
+* **deps:** bump protocol ([3e9bbfd](https://github.com/mynaparrot/plugNmeet-client/commit/3e9bbfdf9f1030c4550189880ca6dfb60c530de5))
+* **deps:** update dependencies ([0108802](https://github.com/mynaparrot/plugNmeet-client/commit/010880208a473c32844c28b769647bdf236711f1))
+* set default value for ref ([9019f35](https://github.com/mynaparrot/plugNmeet-client/commit/9019f35a05ac9f0b9459eb073db629732bb46d7f))
+
 ## [1.6.8](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.7...v1.6.8) (2024-11-25)
 
 
