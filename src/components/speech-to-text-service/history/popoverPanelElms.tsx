@@ -1,5 +1,5 @@
 import React, { Dispatch, useCallback, useRef } from 'react';
-import { Popover } from '@headlessui/react';
+import { PopoverPanel } from '@headlessui/react';
 import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
 
@@ -47,7 +47,7 @@ const PopoverPanelElms = ({
 
   return (
     <Draggable nodeRef={nodeRef}>
-      <Popover.Panel
+      <PopoverPanel
         className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
         ref={nodeRef}
         static={showPopover}
@@ -83,7 +83,7 @@ const PopoverPanelElms = ({
           })}
           <InterimTextElms />
         </div>
-      </Popover.Panel>
+      </PopoverPanel>
     </Draggable>
   );
 };

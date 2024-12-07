@@ -73,7 +73,6 @@ const FromElems = () => {
 
   // if room number decreases then we'll reset otherwise user will be missing
   useEffect(() => {
-    // @ts-expect-error has default value
     if (totalRooms === preTotalRooms || totalRooms > preTotalRooms) {
       return;
     }

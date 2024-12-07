@@ -21,7 +21,7 @@ const ReactPlayerComponent = ({
   const [paused, setPaused] = useState<boolean>(true);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
-  const player = useRef<ReactPlayer>();
+  const player = useRef<ReactPlayer | undefined>(undefined);
   const conn = getNatsConn();
 
   const height = useAppSelector(
