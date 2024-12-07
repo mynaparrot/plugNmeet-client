@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 const usePreviousFileId = (currentFileId: string) => {
-  const ref = useRef<string>();
+  const ref = useRef<string>('');
   useEffect(() => {
     ref.current = currentFileId;
   });
