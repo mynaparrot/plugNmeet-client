@@ -154,14 +154,21 @@ code {
 // Private Message Area
 
 // Webcam Area SCSS
+.all-webcam-wrapper.total-cam-2 {
+  .total-items-2 {
+    .video-camera-item.its-me {
+      @apply absolute bottom-10 right-10 w-[320px] h-[180px] z-30;
+    }
+  }
+}
 .all-webcam-wrapper {
-  @apply h-full flex items-center;
+  @apply h-full flex items-center relative;
   &::-webkit-scrollbar {
     @apply hidden;
   }
 
   .all-webcam-wrapper-inner {
-    @apply w-full h-full p-5 grid gap-2;
+    @apply w-full h-full p-3 grid gap-2;
     .camera-row-0 {
       @apply flex gap-2 justify-center;
     }
@@ -174,11 +181,11 @@ code {
       @apply flex gap-2 justify-center;
     }
 
-    .camera-row-0.total-items-2 {
-      .video-camera-item {
-        @apply w-1/2;
-      }
-    }
+    // .camera-row-0.total-items-2 {
+    //   .video-camera-item {
+    //     @apply w-1/2;
+    //   }
+    // }
 
     .camera-row-1.total-items-2 {
       .video-camera-item {

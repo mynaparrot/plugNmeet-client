@@ -24,6 +24,7 @@ module.exports = {
         dropdownMenu: '0px 12px 16px -4px rgba(0, 43, 64, 0.08)',
         input: '0px 1px 2px 0px rgba(0, 43, 64, 0.05)',
         inputFocus: '0px 0px 0px 4px rgba(124, 206, 247, 0.25)',
+        videoName: '0px 1px 4px 0px rgba(0, 0, 0, 0.25)',
       },
       colors: {
         primaryColor: '#004D90',

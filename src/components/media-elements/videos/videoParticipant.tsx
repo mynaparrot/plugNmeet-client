@@ -24,10 +24,10 @@ const VideoParticipant = ({
       if (track.source === Track.Source.Camera) {
         const elm = (
           <div
-            className="video-camera-item-inner w-full h-full"
+            className="video-camera-item-inner w-full h-full relative"
             key={track.trackSid}
           >
-            <div className="name">
+            <div className="name absolute bottom-4 left-4 text-sm font-medium text-white z-10">
               {participant.name} {participantType.isLocal ? '(me)' : null}
             </div>
             <VideoComponent userId={participant.identity} track={track} />
@@ -42,11 +42,12 @@ const VideoParticipant = ({
 
   return (
     <div
-      className={`video-camera-item relative ${isSpeaking ? 'speaking' : ''} ${
+      className={`video-camera-item relative group ${isSpeaking ? 'speaking' : ''} ${
         participantType.isAdmin ? 'admin' : 'participants'
-      }`}
+      } ${participantType.isLocal ? 'its-me' : ''}`}
     >
       {renderVideoElms}
+      <div className="bg-shadow pointer-events-none bg-gradient-to-b from-95% from-black/0 to-black/50 w-full h-full absolute bottom-0 left-0 opacity-0 transition-all duration-300 group-hover:opacity-100"></div>
     </div>
   );
 };

@@ -109,7 +109,7 @@ const VideoElm = ({ track, userId }: IVideoElmProps) => {
         ref={ref}
         style={{ objectFit: videoFit }}
       />
-      <div className="cam-icons w-max h-auto flex items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999]">
+      <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999] transition-all duration-300 opacity-0 group-hover:opacity-100">
         <PinWebcam userId={userId} />
         <button
           className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
