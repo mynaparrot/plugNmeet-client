@@ -359,6 +359,7 @@ export default class ConnectLivekit
       connectionQuality === ConnectionQuality.Lost
     ) {
       if (
+        this.room &&
         participant.identity === this.room.localParticipant.identity &&
         !(
           participant.identity === 'RECORDER_BOT' ||

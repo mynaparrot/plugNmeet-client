@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { isEmpty } from 'lodash';
@@ -19,11 +19,25 @@ const Ingress = () => {
   const [ingressType, setIngressType] = useState<IngressInput>(
     IngressInput.RTMP_INPUT,
   );
+  const [ingressTypeText, setIngressTypeText] = useState<string>('UNKNOWN');
   const session = store.getState().session;
   const ingressFeatures = useAppSelector(
     (state) =>
       state.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures,
   );
+
+  useEffect(() => {
+    switch (ingressType) {
+      case IngressInput.RTMP_INPUT:
+        setIngressTypeText('RTMP');
+        break;
+      case IngressInput.WHIP_INPUT:
+        setIngressTypeText('WHIP');
+        break;
+      default:
+        setIngressTypeText('UNKNOWN');
+    }
+  }, [ingressType]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -138,7 +152,7 @@ const Ingress = () => {
               readOnly={true}
               name="ingress_type"
               id="ingress_type"
-              value={ingressFeatures?.inputType?.toString()}
+              value={ingressTypeText}
               className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
             />
           </div>
