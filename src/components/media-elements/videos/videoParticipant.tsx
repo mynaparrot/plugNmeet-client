@@ -20,7 +20,8 @@ const VideoParticipant = ({
 
   const renderVideoElms = useMemo(() => {
     const elements: Array<React.JSX.Element> = [];
-    participant.videoTrackPublications.forEach((track) => {
+
+    for (const track of participant.videoTrackPublications.values()) {
       if (track.source === Track.Source.Camera) {
         const elm = (
           <div
@@ -35,7 +36,7 @@ const VideoParticipant = ({
         );
         elements.push(elm);
       }
-    });
+    }
     return elements;
     //eslint-disable-next-line
   }, [participant]);

@@ -56,13 +56,10 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     const otherPinSubscribers: Array<React.JSX.Element> = [];
     const otherSubscribers: Array<React.JSX.Element> = [];
 
-    videoSubscribers.forEach((participant) => {
+    for (const participant of videoSubscribers.values()) {
       // we will only take if source from Camera
-      const videoTracks = participant
-        .getTrackPublications()
-        .filter((track) => track.source === Track.Source.Camera);
-
-      if (videoTracks.length) {
+      const videoTracks = participant.getTrackPublication(Track.Source.Camera);
+      if (videoTracks) {
         let isAdmin = false;
         const pinWebcam = participantsSelector.selectById(
           store.getState(),
@@ -82,7 +79,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
         };
 
         //for (let i = 0; i < 20; i++) {
-        totalNumWebcams += videoTracks.length;
+        totalNumWebcams++;
         const elm = (
           <VideoParticipant
             key={participant.sid}
@@ -105,7 +102,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
         }
         //}
       }
-    });
+    }
 
     const allParticipants = concat(
       adminPinSubscribers,
