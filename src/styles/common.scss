@@ -433,16 +433,11 @@ code {
 // Webcam Area SCSS
 
 #main-area.fullWidthMainArea {
+  .middle-fullscreen-wrapper {
+    @apply relative;
+  }
   .all-webcam-wrapper {
-    background: rgb(235, 248, 255);
-    background: linear-gradient(
-      150deg,
-      rgba(235, 248, 255, 1) 0%,
-      rgba(255, 255, 255, 1) 10%,
-      rgba(243, 237, 249, 1) 67%,
-      rgba(214, 231, 255, 1) 100%
-    );
-    @apply absolute w-[270px] h-full block py-[30px] px-0 z-[2] left-0;
+    @apply absolute w-[212px] h-full block py-[30px] px-0 z-[2] right-0 bg-white;
     .video-camera-item {
       &::after {
         @apply bg-transparent opacity-100;
@@ -475,7 +470,7 @@ code {
   }
 
   .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-    @apply pl-[260px];
+    @apply pr-[212px];
   }
 
   .middle-fullscreen-wrapper {
