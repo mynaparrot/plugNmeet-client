@@ -56,7 +56,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     const otherPinSubscribers: Array<React.JSX.Element> = [];
     const otherSubscribers: Array<React.JSX.Element> = [];
 
-    for (const [, participant] of videoSubscribers) {
+    for (const participant of videoSubscribers.values()) {
       // we will only take if source from Camera
       const videoTracks = participant.getTrackPublication(Track.Source.Camera);
       if (videoTracks) {
