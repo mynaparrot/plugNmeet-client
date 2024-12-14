@@ -54,8 +54,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       livekit-client:
-        specifier: 2.7.3
-        version: 2.7.3
+        specifier: 2.7.5
+        version: 2.7.5
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -433,8 +433,8 @@ packages:
   '@livekit/mutex@1.0.0':
     resolution: {integrity: sha512-aiUhoThBNF9UyGTxEURFzJLhhPLIVTnQiEVMjRhPnfHNKLfo2JY9xovHKIus7B78UD5hsP6DlgpmAsjrz4U0Iw==}
 
-  '@livekit/protocol@1.29.3':
-    resolution: {integrity: sha512-5La/pm2LsSeCbm7xNe/TvHGYu7uVwDpLrlycpgo5nzofGq/TH67255vS8ni/1Y7vrFuAI8VYG/s42mcC1UF6tQ==}
+  '@livekit/protocol@1.29.4':
+    resolution: {integrity: sha512-dsqxvABHilrMA0BU5m1w8cMWSVeDjV2ZUIUDClNQZju3c30DLMfEYDHU5nmXDfaaHjNIgoRbYR7upJMozG8JJg==}
 
   '@nats-io/jetstream@3.0.0-34':
     resolution: {integrity: sha512-DMyDSCW0WdKQE0/dCI6qZVTb+Gg3oFmEvtqG3Nhf5MpwTUG8X4EDaeYsK7zx+Hj/VfQCmkXX9vg02ewswNcX8A==}
@@ -2509,8 +2509,8 @@ packages:
     resolution: {integrity: sha512-iyAZCeyD+c1gPyE9qpFu8af0Y+MRtmKOncdGoA2S5EY8iFq99dmmvkNnHiWo+pj0s7yH7l3KPIgee77tKpXPWQ==}
     engines: {node: '>=18.0.0'}
 
-  livekit-client@2.7.3:
-    resolution: {integrity: sha512-oHEmUTFjIJARi5R87PsobZx8y2HCSUwla3Nu71EqDOAMnNY9aoGMLsJVao5Y+v1TSk71rgRm991fihgxtbg5xw==}
+  livekit-client@2.7.5:
+    resolution: {integrity: sha512-sPhHYwXvG75y1LDC50dDC9k6Z49L2vc/HcMRhzhi7yBca6ofPEebpB0bmPOry4ovrnFA+a8TL1pFR2mko1/clw==}
 
   load-script@1.0.0:
     resolution: {integrity: sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==}
@@ -4358,7 +4358,7 @@ snapshots:
 
   '@livekit/mutex@1.0.0': {}
 
-  '@livekit/protocol@1.29.3':
+  '@livekit/protocol@1.29.4':
     dependencies:
       '@bufbuild/protobuf': 1.10.0
 
@@ -6589,10 +6589,10 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
 
-  livekit-client@2.7.3:
+  livekit-client@2.7.5:
     dependencies:
       '@livekit/mutex': 1.0.0
-      '@livekit/protocol': 1.29.3
+      '@livekit/protocol': 1.29.4
       events: 3.3.0
       loglevel: 1.9.2
       sdp-transform: 2.14.2
