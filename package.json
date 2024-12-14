@@ -18,7 +18,7 @@
     "@bufbuild/protobuf": "2.2.2",
     "@excalidraw/excalidraw": "0.17.6",
     "@headlessui/react": "2.2.0",
-    "@nats-io/jetstream": "3.0.0-34",
+    "@nats-io/jetstream": "3.0.0-35",
     "@nats-io/nats-core": "3.0.0-47",
     "@reduxjs/toolkit": "2.4.0",
     "@tensorflow-models/body-pix": "2.2.1",
