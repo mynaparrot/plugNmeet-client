@@ -95,7 +95,7 @@ export const setForPC = (participantsToRender: React.JSX.Element[]) => {
         {participantsToRender}
       </div>,
     );
-  } else if (length >= 4 && length <= 10) {
+  } else if (length >= 4 && length <= 6) {
     const c = chunk(participantsToRender, Math.ceil(length / 2));
     c.forEach((el, i) => {
       elms.push(

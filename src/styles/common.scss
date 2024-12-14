@@ -194,8 +194,9 @@ code {
     }
 
     .camera-row-0.total-items-3 {
+      @apply flex-wrap;
       .video-camera-item {
-        @apply w-1/3;
+        @apply w-[calc(50%-0.5rem)] h-auto;
       }
     }
 
@@ -207,7 +208,7 @@ code {
 
     .camera-row-1.total-items-5.inner-items-2 {
       .video-camera-item {
-        @apply w-1/3;
+        @apply w-1/2;
       }
     }
 

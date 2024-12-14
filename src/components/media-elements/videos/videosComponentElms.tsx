@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
@@ -34,7 +34,7 @@ const VideosComponentElms = ({
   isVertical,
 }: IVideosComponentElmsProps) => {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const screenWidth = useAppSelector(
     (state) => state.bottomIconsActivity.screenWidth,
   );
@@ -225,7 +225,7 @@ const VideosComponentElms = ({
           <div className="all-webcam-wrapper-inner">{render()}</div>
         </div>
       ) : null}
-      {deviceType === UserDeviceType.DESKTOP &&
+      {/* {deviceType === UserDeviceType.DESKTOP &&
       totalNumWebcams > 6 &&
       !isVertical ? (
         <div className="select-camera-number">
@@ -244,7 +244,7 @@ const VideosComponentElms = ({
           </select>
           <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
         </div>
-      ) : null}
+      ) : null} */}
     </>
   );
 };
