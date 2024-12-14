@@ -1,5 +1,5 @@
 import React from 'react';
-import { chunk } from 'lodash';
+import { chunk, concat } from 'lodash';
 
 /*
  * For Mobile landscape mode,
@@ -95,9 +95,17 @@ export const setForPC = (participantsToRender: React.JSX.Element[]) => {
         {participantsToRender}
       </div>,
     );
-  } else if (length >= 4 && length <= 6) {
-    const c = chunk(participantsToRender, Math.ceil(length / 2));
-    c.forEach((el, i) => {
+  } else if (length > 4 && length <= 9) {
+    let c: React.JSX.Element[][] = [];
+    if (length === 7) {
+      // 3 + 2 + 2
+      c.push(participantsToRender.slice(0, 3));
+      c = concat(c, chunk(participantsToRender.slice(3), 2));
+    } else {
+      c = chunk(participantsToRender, 3);
+    }
+    for (let i = 0; i < c.length; i++) {
+      const el = c[i];
       elms.push(
         <div
           key={i}
@@ -106,10 +114,96 @@ export const setForPC = (participantsToRender: React.JSX.Element[]) => {
           {el}
         </div>,
       );
-    });
+    }
+  } else if (length >= 10 && length <= 12) {
+    let c: React.JSX.Element[][] = [];
+    if (length === 10) {
+      // 4 + 3 + 3
+      c.push(participantsToRender.slice(0, 4));
+      c = concat(c, chunk(participantsToRender.slice(4), 3));
+    } else {
+      c = chunk(participantsToRender, 4);
+    }
+    for (let i = 0; i < c.length; i++) {
+      const el = c[i];
+      elms.push(
+        <div
+          key={i}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+        >
+          {el}
+        </div>,
+      );
+    }
+  } else if (length >= 13 && length <= 15) {
+    let c: React.JSX.Element[][] = [];
+    if (length === 13) {
+      // 5 + 4 + 4
+      c.push(participantsToRender.slice(0, 5));
+      c = concat(c, chunk(participantsToRender.slice(5), 4));
+    } else {
+      c = chunk(participantsToRender, 5);
+    }
+    for (let i = 0; i < c.length; i++) {
+      const el = c[i];
+      elms.push(
+        <div
+          key={i}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+        >
+          {el}
+        </div>,
+      );
+    }
   } else {
-    const c = chunk(participantsToRender, Math.ceil(length / 3));
-    c.forEach((el, i) => {
+    let c: React.JSX.Element[][] = [];
+    switch (length) {
+      case 16:
+        // 4 + 4 + 4 + 4
+        c = chunk(participantsToRender, 4);
+        break;
+      case 17:
+        // 5 + 4 + 4 + 4
+        c.push(participantsToRender.slice(0, 5));
+        c = concat(c, chunk(participantsToRender.slice(5), 4));
+        break;
+      case 18:
+        // 5 + 5 + 4 + 4
+        c = concat(c, chunk(participantsToRender.slice(0, 10), 5));
+        c = concat(c, chunk(participantsToRender.slice(10), 4));
+        break;
+      case 19:
+        // 5 + 5 + 5 + 4
+        c = concat(c, chunk(participantsToRender.slice(0, 15), 5));
+        c.push(participantsToRender.slice(14));
+        break;
+      case 20:
+        // 5 + 5 + 5 + 5
+        c = chunk(participantsToRender, 5);
+        break;
+      case 21:
+        // 6 + 5 + 5 + 5
+        c.push(participantsToRender.slice(0, 6));
+        c = concat(c, chunk(participantsToRender.slice(6), 5));
+        break;
+      case 22:
+        // 6 + 6 + 5 + 5
+        c = concat(c, chunk(participantsToRender.slice(0, 12), 6));
+        c = concat(c, chunk(participantsToRender.slice(12), 5));
+        break;
+      case 23:
+        // 6 + 6 + 6 + 5
+        c = concat(c, chunk(participantsToRender.slice(0, 18), 6));
+        c.push(participantsToRender.slice(18));
+        break;
+      default:
+        // 6 + 6 + 6 + 6
+        c = chunk(participantsToRender, 6);
+        break;
+    }
+
+    for (let i = 0; i < c.length; i++) {
+      const el = c[i];
       elms.push(
         <div
           key={i}
@@ -118,7 +212,7 @@ export const setForPC = (participantsToRender: React.JSX.Element[]) => {
           {el}
         </div>,
       );
-    });
+    }
   }
   return elms;
 };
