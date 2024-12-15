@@ -1,5 +1,5 @@
 import React from 'react';
-import { chunk } from 'es-toolkit';
+import { chunk, memoize } from 'es-toolkit';
 import { concat } from 'es-toolkit/compat';
 
 /*
@@ -86,7 +86,7 @@ export const setForMobileAndTablet = (
  * up to 15 webcams, 3 rows
  * More than 15, 4 rows
  */
-export const setForPC = (participantsToRender: React.JSX.Element[]) => {
+const setForPC = (participantsToRender: React.JSX.Element[]) => {
   const length = participantsToRender.length;
   let chunkParts: React.JSX.Element[][] = [];
 
@@ -195,3 +195,5 @@ export const setForPC = (participantsToRender: React.JSX.Element[]) => {
   }
   return elms;
 };
+
+export const getElmsForPc = memoize(setForPC);

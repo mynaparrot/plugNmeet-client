@@ -5,9 +5,9 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import {
+  getElmsForPc,
   setForMobileAndTablet,
   setForMobileLandscape,
-  setForPC,
 } from './helpers/utils';
 import { ColumnCameraPosition } from '../../../store/slices/interfaces/roomSettings';
 
@@ -182,7 +182,7 @@ const VideosComponentElms = ({
       elms = setForMobileAndTablet(participantsToRender);
     } else {
       // for PC
-      elms = setForPC(participantsToRender);
+      elms = getElmsForPc(participantsToRender);
     }
 
     return elms;
