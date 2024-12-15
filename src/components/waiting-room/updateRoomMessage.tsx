@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 import {
   CommonResponseSchema,
@@ -21,7 +20,7 @@ const UpdateRoomMessage = () => {
   const [message, setMessage] = useState<string>(waitingRoomMessage ?? '');
 
   const updateRoomMsg = async () => {
-    if (isEmpty(message)) {
+    if (message === '') {
       return;
     }
     const body = create(UpdateWaitingRoomMessageReqSchema, {

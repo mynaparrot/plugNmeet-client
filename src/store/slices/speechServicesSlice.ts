@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { isEmpty } from 'lodash';
 
 import {
   ISpeechServices,
@@ -35,7 +34,7 @@ const speechServicesSlice = createSlice({
       } else {
         state.interimText = undefined;
         state.finalText = action.payload.result;
-        if (!isEmpty(action.payload.result.text)) {
+        if (action.payload.result.text !== '') {
           state.lastFinalTexts.push(action.payload.result);
         }
       }

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'es-toolkit/compat';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { Track } from 'livekit-client';

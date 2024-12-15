@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
 // import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'es-toolkit/compat';
 import {
   AnalyticsEvents,
   AnalyticsEventType,

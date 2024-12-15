@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import throttle from 'lodash/throttle';
 import {
   Excalidraw,
   Footer,
   MainMenu,
   getSceneVersion,
 } from '@excalidraw/excalidraw';
+import { throttle } from 'es-toolkit/compat';
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import type {
   ExcalidrawImperativeAPI,

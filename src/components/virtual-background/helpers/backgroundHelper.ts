@@ -1,5 +1,3 @@
-import { isArray } from 'lodash';
-
 export type BackgroundConfig = {
   type: 'none' | 'blur' | 'image';
   url?: string;
@@ -25,7 +23,7 @@ let backgroundImageUrls = [
 
 if (
   typeof (window as any).PNM_VIRTUAL_BG_IMGS !== 'undefined' &&
-  isArray((window as any).PNM_VIRTUAL_BG_IMGS) &&
+  Array.isArray((window as any).PNM_VIRTUAL_BG_IMGS) &&
   (window as any).PNM_VIRTUAL_BG_IMGS.length > 0
 ) {
   const bgImgUrls: Array<string> = (window as any).PNM_VIRTUAL_BG_IMGS;

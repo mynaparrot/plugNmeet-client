@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'es-toolkit/compat';
 import ReactPlayer from 'react-player/lazy';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';

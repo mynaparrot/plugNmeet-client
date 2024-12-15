@@ -1,5 +1,6 @@
 import React from 'react';
-import { chunk, concat } from 'lodash';
+import { chunk } from 'es-toolkit';
+import { concat } from 'es-toolkit/compat';
 
 /*
  * For Mobile landscape mode,

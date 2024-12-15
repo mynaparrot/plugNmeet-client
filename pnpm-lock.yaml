@@ -44,6 +44,9 @@ importers:
       emoji-picker-react:
         specifier: 4.12.0
         version: 4.12.0(react@18.3.1)
+      es-toolkit:
+        specifier: 1.30.1
+        version: 1.30.1
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
@@ -59,9 +62,6 @@ importers:
       livekit-client:
         specifier: 2.7.5
         version: 2.7.5
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
       microsoft-cognitiveservices-speech-sdk:
         specifier: 1.41.0
         version: 1.41.0
@@ -138,9 +138,6 @@ importers:
       '@types/emscripten':
         specifier: 1.39.13
         version: 1.39.13
-      '@types/lodash':
-        specifier: 4.17.13
-        version: 4.17.13
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -788,9 +785,6 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/lodash@4.17.13':
-    resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
 
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
@@ -1776,6 +1770,9 @@ packages:
 
   es-module-lexer@1.5.4:
     resolution: {integrity: sha512-MVNK56NiMrOwitFB7cqDwq0CQutbw+0BvLshJSse0MUNU+y1FC3bUS/AQg7oUng+/wKrrki7JfmwtVHkVfPLlw==}
+
+  es-toolkit@1.30.1:
+    resolution: {integrity: sha512-ZXflqanzH8BpHkDhFa10bBf6ONDCe84EPUm7SSICGzuuROSluT2ynTPtwn9PcRelMtorCRozSknI/U0MNYp0Uw==}
 
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
@@ -4746,8 +4743,6 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/lodash@4.17.13': {}
-
   '@types/long@4.0.2': {}
 
   '@types/mime@1.3.5': {}
@@ -5788,6 +5783,8 @@ snapshots:
   es-errors@1.3.0: {}
 
   es-module-lexer@1.5.4: {}
+
+  es-toolkit@1.30.1: {}
 
   escalade@3.2.0: {}
 

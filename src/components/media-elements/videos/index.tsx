@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
-import { concat, isEmpty } from 'lodash';
+import { concat } from 'es-toolkit/compat';
 
 import { store, useAppSelector } from '../../../store';
 import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
@@ -66,7 +66,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           participant.identity,
         ).pinWebcam;
 
-        if (participant.metadata && !isEmpty(participant.metadata)) {
+        if (participant.metadata && participant.metadata !== '') {
           const metadata: ICurrentUserMetadata = JSON.parse(
             participant.metadata,
           );
@@ -78,7 +78,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           isLocal: participant instanceof LocalParticipant,
         };
 
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 11; i++) {
           totalNumWebcams++;
           const elm = (
             <VideoParticipant

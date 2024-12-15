@@ -6,7 +6,7 @@ import {
   Transition,
   TransitionChild,
 } from '@headlessui/react';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'es-toolkit/compat';
 import {
   SpeechRecognizer,
   TranslationRecognizer,

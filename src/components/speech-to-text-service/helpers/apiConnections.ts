@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import { toast } from 'react-toastify';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'es-toolkit/compat';
 import {
   AudioConfig,
   ResultReason,

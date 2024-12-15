@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'lodash';
 
 import { useAppSelector } from '../../../store';
 import Logo from './logo';
@@ -36,7 +35,7 @@ const WaitingRoomPage = () => {
             </div>
           </div>
           <p className="text-3xl dark:text-darkText w-full max-w-5xl m-auto text-center leading-normal">
-            {isEmpty(waitingRoomMessage)
+            {waitingRoomMessage === ''
               ? t('notifications.waiting-for-approval')
               : waitingRoomMessage}
           </p>
