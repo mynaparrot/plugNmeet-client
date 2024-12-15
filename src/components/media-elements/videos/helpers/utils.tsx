@@ -81,21 +81,29 @@ export const setForMobileAndTablet = (
 
 /*
  * For PC,
- * Upto 3 webcam, 1 row
- * From 4 to 10, 2 rows
- * More than 10, 3 rows
+ * up to 4 webcams, 2 rows
+ * up to 15 webcams, 3 rows
+ * More than 15, 4 rows
  */
 export const setForPC = (participantsToRender: React.JSX.Element[]) => {
   const length = participantsToRender.length;
   const elms: Array<React.JSX.Element> = [];
 
-  if (length < 4) {
-    elms.push(
-      <div key={0} className={`camera-row-0 total-items-${length}`}>
-        {participantsToRender}
-      </div>,
-    );
-  } else if (length > 4 && length <= 9) {
+  if (length <= 4) {
+    const c = chunk(participantsToRender, 2);
+    console.log(c);
+    for (let i = 0; i < c.length; i++) {
+      const el = c[i];
+      elms.push(
+        <div
+          key={i}
+          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+        >
+          {el}
+        </div>,
+      );
+    }
+  } else if (length >= 5 && length <= 9) {
     let c: React.JSX.Element[][] = [];
     if (length === 7) {
       // 3 + 2 + 2
@@ -115,49 +123,27 @@ export const setForPC = (participantsToRender: React.JSX.Element[]) => {
         </div>,
       );
     }
-  } else if (length >= 10 && length <= 12) {
-    let c: React.JSX.Element[][] = [];
-    if (length === 10) {
-      // 4 + 3 + 3
-      c.push(participantsToRender.slice(0, 4));
-      c = concat(c, chunk(participantsToRender.slice(4), 3));
-    } else {
-      c = chunk(participantsToRender, 4);
-    }
-    for (let i = 0; i < c.length; i++) {
-      const el = c[i];
-      elms.push(
-        <div
-          key={i}
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
-        >
-          {el}
-        </div>,
-      );
-    }
-  } else if (length >= 13 && length <= 15) {
-    let c: React.JSX.Element[][] = [];
-    if (length === 13) {
-      // 5 + 4 + 4
-      c.push(participantsToRender.slice(0, 5));
-      c = concat(c, chunk(participantsToRender.slice(5), 4));
-    } else {
-      c = chunk(participantsToRender, 5);
-    }
-    for (let i = 0; i < c.length; i++) {
-      const el = c[i];
-      elms.push(
-        <div
-          key={i}
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
-        >
-          {el}
-        </div>,
-      );
-    }
   } else {
     let c: React.JSX.Element[][] = [];
     switch (length) {
+      case 10:
+        // 4 + 3 + 3
+        c.push(participantsToRender.slice(0, 4));
+        c = concat(c, chunk(participantsToRender.slice(4), 3));
+        break;
+      case 11:
+      case 12:
+        c = chunk(participantsToRender, 4);
+        break;
+      case 13:
+        // 5 + 4 + 4
+        c.push(participantsToRender.slice(0, 5));
+        c = concat(c, chunk(participantsToRender.slice(5), 4));
+        break;
+      case 14:
+      case 15:
+        c = chunk(participantsToRender, 5);
+        break;
       case 16:
         // 4 + 4 + 4 + 4
         c = chunk(participantsToRender, 4);
