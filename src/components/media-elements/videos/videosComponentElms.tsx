@@ -103,15 +103,43 @@ const VideosComponentElms = ({
     //eslint-disable-next-line
   }, [isVertical, screenWidth, columnCameraPosition, deviceOrientation]);
 
-  const setParticipantsToDisplay = (
-    [...allParticipants]: Array<React.JSX.Element>,
+  const renderParticipantsByPage = (
+    allParticipants: Array<React.JSX.Element>,
     page_number: number,
     per_page: number,
   ) => {
+    let hasNextPage: boolean,
+      hasPrevPage = false;
+    // so we got pagination
+    if (page_number === 1) {
+      // then only have next
+      // so, we'll deduct per page by 1
+      // and insert pagination in that slot
+      per_page--;
+      hasNextPage = true;
+    } else {
+      hasPrevPage = true;
+      per_page--;
+      // so, we're in next page
+      if (page_number >= totalNumWebcams / per_page) {
+        hasNextPage = false;
+      } else {
+        per_page--;
+        hasNextPage = true;
+      }
+    }
+
     const display = allParticipants.slice(
       (page_number - 1) * per_page,
       page_number * per_page,
     );
+
+    if (hasNextPage) {
+      display.push(<div>next</div>);
+    }
+    if (hasPrevPage) {
+      display.splice(0, 0, <div>pre</div>);
+    }
 
     setParticipantsToRender(display);
     if (page_number === 1) {
@@ -127,7 +155,7 @@ const VideosComponentElms = ({
       setParticipantsToRender(allParticipants);
     } else {
       setCurrentPage(1);
-      setParticipantsToDisplay(allParticipants, 1, webcamPerPage);
+      renderParticipantsByPage(allParticipants, 1, webcamPerPage);
     }
     // eslint-disable-next-line
   }, [allParticipants, webcamPerPage]);
@@ -152,12 +180,12 @@ const VideosComponentElms = ({
   }, [totalNumWebcams, currentPage, webcamPerPage]);
 
   const prePage = () => {
-    setParticipantsToDisplay(allParticipants, currentPage - 1, webcamPerPage);
+    renderParticipantsByPage(allParticipants, currentPage - 1, webcamPerPage);
     setCurrentPage(currentPage - 1);
   };
 
   const nextPage = () => {
-    setParticipantsToDisplay(allParticipants, currentPage + 1, webcamPerPage);
+    renderParticipantsByPage(allParticipants, currentPage + 1, webcamPerPage);
     setCurrentPage(currentPage + 1);
   };
 
