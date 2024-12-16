@@ -115,16 +115,22 @@ const VideosComponentElms = ({
       // then only have next
       // so, we'll deduct per page by 1
       // and insert pagination in that slot
-      per_page--;
+      if (!isVertical) {
+        per_page--;
+      }
       hasNextPage = true;
     } else {
       hasPrevPage = true;
-      per_page--;
+      if (!isVertical) {
+        per_page--;
+      }
       // so, we're in next page
       if (page_number >= totalNumWebcams / per_page) {
         hasNextPage = false;
       } else {
-        per_page--;
+        if (!isVertical) {
+          per_page--;
+        }
         hasNextPage = true;
       }
     }
@@ -146,7 +152,9 @@ const VideosComponentElms = ({
         0,
         0,
         <button type="button" onClick={() => prePage(page_number)}>
-          {formatNextPreButton(allParticipants.slice(display.length))}
+          {formatNextPreButton(
+            allParticipants.slice(-(page_number - 1) * per_page),
+          )}
         </button>,
       );
     }
