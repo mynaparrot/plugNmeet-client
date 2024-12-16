@@ -168,11 +168,11 @@ const VideosComponentElms = ({
   };
 
   const formatNextPreButton = (remaining: React.JSX.Element[]) => {
-    const text: React.JSX.Element[] = [<span>More: {remaining.length}</span>];
+    const text: React.JSX.Element[] = [<span>More: {remaining.length}+</span>];
     for (let i = 0; i < remaining.length; i++) {
       if (i === 2 && remaining.length > i) {
         // so,we have more
-        text.push(<span>and {remaining.length - i} others </span>);
+        text.push(<span>and {remaining.length - i}+ others </span>);
         break;
       }
       const data = remaining[i];
