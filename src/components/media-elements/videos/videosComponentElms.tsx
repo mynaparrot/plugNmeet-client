@@ -135,10 +135,20 @@ const VideosComponentElms = ({
     );
 
     if (hasNextPage) {
-      display.push(<div>next</div>);
+      display.push(
+        <button type="button" onClick={() => nextPage(page_number)}>
+          {formatNextPreButton(allParticipants.slice(display.length))}
+        </button>,
+      );
     }
     if (hasPrevPage) {
-      display.splice(0, 0, <div>pre</div>);
+      display.splice(
+        0,
+        0,
+        <button type="button" onClick={() => prePage(page_number)}>
+          {formatNextPreButton(allParticipants.slice(display.length))}
+        </button>,
+      );
     }
 
     setParticipantsToRender(display);
@@ -147,6 +157,20 @@ const VideosComponentElms = ({
     } else {
       dispatch(setWebcamPaginating(true));
     }
+  };
+
+  const formatNextPreButton = (remaining: React.JSX.Element[]) => {
+    const text: React.JSX.Element[] = [<span>More: {remaining.length}</span>];
+    for (let i = 0; i < remaining.length; i++) {
+      if (i === 2 && remaining.length > i) {
+        // so,we have more
+        text.push(<span>and {remaining.length - i} others </span>);
+        break;
+      }
+      const data = remaining[i];
+      text.push(<span>{data.props.participant.name}</span>);
+    }
+    return <div>{text}</div>;
   };
 
   useEffect(() => {
@@ -179,14 +203,16 @@ const VideosComponentElms = ({
     }
   }, [totalNumWebcams, currentPage, webcamPerPage]);
 
-  const prePage = () => {
-    renderParticipantsByPage(allParticipants, currentPage - 1, webcamPerPage);
-    setCurrentPage(currentPage - 1);
+  const prePage = (currPage: number) => {
+    const newCurrentPage = currPage - 1;
+    renderParticipantsByPage(allParticipants, newCurrentPage, webcamPerPage);
+    setCurrentPage(newCurrentPage);
   };
 
-  const nextPage = () => {
-    renderParticipantsByPage(allParticipants, currentPage + 1, webcamPerPage);
-    setCurrentPage(currentPage + 1);
+  const nextPage = (currPage: number) => {
+    const newCurrentPage = currPage + 1;
+    renderParticipantsByPage(allParticipants, newCurrentPage, webcamPerPage);
+    setCurrentPage(newCurrentPage);
   };
 
   const videoParticipantsElms = useMemo(() => {
@@ -224,7 +250,7 @@ const VideosComponentElms = ({
           <button
             type="button"
             className="previous-cam"
-            onClick={() => prePage()}
+            onClick={() => prePage(currentPage)}
           >
             <i className="pnm-arrow-up" />
           </button>
@@ -234,7 +260,11 @@ const VideosComponentElms = ({
         <>{videoParticipantsElms}</>
 
         {showNext ? (
-          <button type="button" className="next-cam" onClick={() => nextPage()}>
+          <button
+            type="button"
+            className="next-cam"
+            onClick={() => nextPage(currentPage)}
+          >
             <i className="pnm-arrow-down" />
           </button>
         ) : null}
