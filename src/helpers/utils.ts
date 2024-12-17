@@ -254,31 +254,26 @@ export const getWhiteboardDonors = (): IParticipant[] => {
   return donors;
 };
 
-export function createDummyVideoStreamTrack(
-  width: number = 16,
-  height: number = 16,
-  enabled: boolean = false,
-  paintContent: boolean = false,
-) {
+export function createEmptyVideoStreamTrack(name: string) {
   const canvas = document.createElement('canvas');
-  // the canvas size is set to 16 by default, because electron apps seem to fail with smaller values
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = VideoPresets.h720.resolution.width;
+  canvas.height = VideoPresets.h720.resolution.height;
+
   const ctx = canvas.getContext('2d');
-  ctx?.fillRect(0, 0, canvas.width, canvas.height);
-  if (paintContent && ctx) {
-    ctx.beginPath();
-    ctx.arc(width / 2, height / 2, 50, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.fillStyle = 'grey';
-    ctx.fill();
+  if (ctx) {
+    const textString = name.toUpperCase().slice(0, 2);
+    ctx.fillStyle = '#fff';
+    ctx.font = '120px san-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(textString, canvas.width / 2, canvas.height / 2);
   }
+
   const dummyStream = canvas.captureStream();
   const [dummyTrack] = dummyStream.getTracks();
   if (!dummyTrack) {
     throw Error('Could not get empty media stream video track');
   }
-  dummyTrack.enabled = enabled;
 
   return dummyTrack;
 }

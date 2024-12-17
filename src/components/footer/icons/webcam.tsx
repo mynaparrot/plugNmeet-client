@@ -14,7 +14,7 @@ import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSli
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
 import {
-  createDummyVideoStreamTrack,
+  createEmptyVideoStreamTrack,
   getWebcamResolution,
 } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
@@ -188,8 +188,10 @@ const WebcamIcon = () => {
         dispatch(updateShowVideoShareModal(!isActiveWebcam));
       }
     } else if (isActiveWebcam) {
-      // we'll replace it by bank Stream
-      const dummy = createDummyVideoStreamTrack();
+      // we'll replace it by empty Stream
+      const dummy = createEmptyVideoStreamTrack(
+        currentRoom.localParticipant.name ?? 'User',
+      );
       await checkPreviousCameraTrackAndReplace(dummy);
 
       dispatch(updateIsActiveWebcam(false));
