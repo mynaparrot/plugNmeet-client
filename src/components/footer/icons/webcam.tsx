@@ -13,7 +13,10 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
 import VirtualBackground from '../../virtual-background/virtualBackground';
 import { SourcePlayback } from '../../virtual-background/helpers/sourceHelper';
-import { getWebcamResolution } from '../../../helpers/utils';
+import {
+  createDummyVideoStreamTrack,
+  getWebcamResolution,
+} from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
@@ -185,21 +188,10 @@ const WebcamIcon = () => {
         dispatch(updateShowVideoShareModal(!isActiveWebcam));
       }
     } else if (isActiveWebcam) {
-      // leave webcam
-      for (const [
-        ,
-        publication,
-      ] of currentRoom.localParticipant.videoTrackPublications.entries()) {
-        if (
-          publication.track &&
-          publication.track.source === Track.Source.Camera
-        ) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
-      }
+      // we'll replace it by bank Stream
+      const dummy = createDummyVideoStreamTrack();
+      await checkPreviousCameraTrackAndReplace(dummy);
+
       dispatch(updateIsActiveWebcam(false));
       if (virtualBackground.type !== 'none') {
         if (virtualBgLocalTrack) {
@@ -223,7 +215,14 @@ const WebcamIcon = () => {
         resolution,
       });
 
-      await currentRoom.localParticipant.publishTrack(track);
+      // check if already have a stream or not
+      const replaced = await checkPreviousCameraTrackAndReplace(
+        track.mediaStreamTrack,
+      );
+      if (!replaced) {
+        await currentRoom.localParticipant.publishTrack(track);
+      }
+
       dispatch(updateIsActiveWebcam(true));
     } else {
       const constraints: MediaStreamConstraints = {
@@ -242,6 +241,25 @@ const WebcamIcon = () => {
     }
   };
 
+  const checkPreviousCameraTrackAndReplace = async (
+    newTrack: MediaStreamTrack,
+  ): Promise<boolean> => {
+    let replaced = false;
+    for (const publication of currentRoom.localParticipant.videoTrackPublications.values()) {
+      if (
+        publication.track &&
+        publication.track.source === Track.Source.Camera
+      ) {
+        await publication.track.replaceTrack(newTrack, {
+          userProvidedTrack: true,
+        });
+        replaced = true;
+      }
+    }
+
+    return replaced;
+  };
+
   const onSelectedDevice = async (deviceId: string) => {
     setDeviceId(deviceId);
     await createDeviceStream(deviceId);
@@ -255,10 +273,14 @@ const WebcamIcon = () => {
     const stream = canvasRef.current.captureStream(25);
     stream.getTracks().forEach(async (track) => {
       if (track.kind === Track.Kind.Video) {
-        await currentRoom.localParticipant.publishTrack(track, {
-          source: Track.Source.Camera,
-          name: 'canvas',
-        });
+        // check if already have a stream or not
+        const replace = await checkPreviousCameraTrackAndReplace(track);
+        if (!replace) {
+          await currentRoom.localParticipant.publishTrack(track, {
+            source: Track.Source.Camera,
+            name: 'canvas',
+          });
+        }
         dispatch(updateIsActiveWebcam(true));
       }
     });
