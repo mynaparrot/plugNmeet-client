@@ -113,6 +113,7 @@
     const loginForm = document.getElementById('loginForm');
     let API_KEY, API_SECRET;
     document.getElementById('user_id').value = Date.now();
+    const toUrl = window.location.href.replace("/login.html", "")
 
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -247,7 +248,7 @@
             );
 
             if (roomJoinRes.status) {
-                window.location.href = '/?access_token=' + roomJoinRes.token;
+                window.location.href = toUrl + '/?access_token=' + roomJoinRes.token;
             } else {
                 alert(roomJoinRes.msg);
             }
