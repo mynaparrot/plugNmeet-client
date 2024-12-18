@@ -189,10 +189,10 @@ const WebcamIcon = () => {
       }
     } else if (isActiveWebcam) {
       // we'll replace it by empty Stream
-      const dummy = createEmptyVideoStreamTrack(
+      const emptyStream = createEmptyVideoStreamTrack(
         currentRoom.localParticipant.name ?? 'User',
       );
-      await checkPreviousCameraTrackAndReplace(dummy);
+      await checkPreviousCameraTrackAndReplace(emptyStream);
 
       dispatch(updateIsActiveWebcam(false));
       if (virtualBackground.type !== 'none') {
@@ -252,6 +252,10 @@ const WebcamIcon = () => {
         publication.track &&
         publication.track.source === Track.Source.Camera
       ) {
+        // disable current track
+        publication.track.mediaStreamTrack.enabled = false;
+        // enable new track
+        newTrack.enabled = true;
         await publication.track.replaceTrack(newTrack, {
           userProvidedTrack: true,
         });

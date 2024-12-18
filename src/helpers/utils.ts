@@ -254,7 +254,12 @@ export const getWhiteboardDonors = (): IParticipant[] => {
   return donors;
 };
 
+let emptyStreamTrack: MediaStreamTrack | undefined = undefined;
 export function createEmptyVideoStreamTrack(name: string) {
+  if (typeof emptyStreamTrack !== 'undefined') {
+    return emptyStreamTrack;
+  }
+
   const canvas = document.createElement('canvas');
   canvas.width = VideoPresets.h720.resolution.width;
   canvas.height = VideoPresets.h720.resolution.height;
@@ -269,11 +274,11 @@ export function createEmptyVideoStreamTrack(name: string) {
     ctx.fillText(textString, canvas.width / 2, canvas.height / 2);
   }
 
-  const dummyStream = canvas.captureStream();
-  const [dummyTrack] = dummyStream.getTracks();
-  if (!dummyTrack) {
+  const canvasStream = canvas.captureStream();
+  [emptyStreamTrack] = canvasStream.getVideoTracks();
+  if (!emptyStreamTrack) {
     throw Error('Could not get empty media stream video track');
   }
 
-  return dummyTrack;
+  return emptyStreamTrack;
 }
