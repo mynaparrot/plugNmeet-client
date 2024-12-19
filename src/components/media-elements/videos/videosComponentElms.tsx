@@ -142,20 +142,26 @@ const VideosComponentElms = ({
 
     if (hasNextPage) {
       display.push(
-        <button type="button" onClick={() => nextPage(page_number)}>
+        <div
+          className="video-camera-item order-3 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-3 pl-3"
+          onClick={() => nextPage(page_number)}
+        >
           {formatNextPreButton(allParticipants.slice(display.length))}
-        </button>,
+        </div>,
       );
     }
     if (hasPrevPage) {
       display.splice(
         0,
         0,
-        <button type="button" onClick={() => prePage(page_number)}>
+        <div
+          className="video-camera-item order-1 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-3 pl-3"
+          onClick={() => prePage(page_number)}
+        >
           {formatNextPreButton(
             allParticipants.slice(-(page_number - 1) * per_page),
           )}
-        </button>,
+        </div>,
       );
     }
 
@@ -166,19 +172,71 @@ const VideosComponentElms = ({
       dispatch(setWebcamPaginating(true));
     }
   };
+  const extractInitials = (name: any) =>
+    name
+      .split(/\s+/) // Split the name by spaces
+      .map((word) => word[0].toUpperCase()) // Get the first letter of each word in uppercase
+      .join(''); // Join the initials into a string
 
   const formatNextPreButton = (remaining: React.JSX.Element[]) => {
-    const text: React.JSX.Element[] = [<span>More: {remaining.length}+</span>];
+    const text: React.JSX.Element[] = [
+      <span className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
+        {remaining.length}+
+      </span>,
+    ];
+    const text2: React.JSX.Element[] = [<span>{remaining.length}+</span>];
     for (let i = 0; i < remaining.length; i++) {
       if (i === 2 && remaining.length > i) {
         // so,we have more
-        text.push(<span>and {remaining.length - i}+ others </span>);
+        text.push(
+          <span className="inline-block order-2">
+            and {remaining.length - i}+ others{' '}
+          </span>,
+        );
+        text2.push(
+          <span className="inline-block order-2">
+            and {remaining.length - i}+ others{' '}
+          </span>,
+        );
         break;
       }
       const data = remaining[i];
-      text.push(<span>{data.props.participant.name}</span>);
+      text.push(
+        <span className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
+          {extractInitials(data.props.participant.name)}
+        </span>,
+      );
+      text2.push(
+        <span className="inline-block order-1 pr-1">
+          {data.props.participant.name}
+        </span>,
+      );
     }
-    return <div>{text}</div>;
+    return (
+      <>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex next-pre-cam-text-middle">
+          {text}
+        </div>
+        <div>{text2}</div>
+        <div className="icon absolute top-1/2 right-5 -translate-y-1/2 w-4 h-4 flex items-start justify-end">
+          <svg
+            width="8"
+            height="13"
+            viewBox="0 0 8 13"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1.5 11.6666L6.5 6.66663L1.5 1.66663"
+              stroke="white"
+              stroke-width="1.69"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </>
+    );
   };
 
   useEffect(() => {
@@ -257,7 +315,7 @@ const VideosComponentElms = ({
         {showPre ? (
           <button
             type="button"
-            className="previous-cam"
+            className="previous-cam hidden"
             onClick={() => prePage(currentPage)}
           >
             <i className="pnm-arrow-up" />
@@ -270,7 +328,7 @@ const VideosComponentElms = ({
         {showNext ? (
           <button
             type="button"
-            className="next-cam"
+            className="next-cam hidden"
             onClick={() => nextPage(currentPage)}
           >
             <i className="pnm-arrow-down" />

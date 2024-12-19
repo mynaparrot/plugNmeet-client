@@ -173,13 +173,15 @@ code {
       @apply flex gap-2 justify-center;
     }
 
-    .camera-row-1 {
+    .camera-row-1,
+    .camera-row-2,
+    .camera-row-3 {
       @apply flex gap-2 justify-center;
     }
 
-    .camera-row-2 {
-      @apply flex gap-2 justify-center;
-    }
+    // .camera-row-2 {
+    //   @apply flex gap-2 justify-center;
+    // }
 
     // .camera-row-0.total-items-2 {
     //   .video-camera-item {
@@ -232,7 +234,7 @@ code {
 
     .camera-row-2.total-items-11.inner-items-3 {
       .video-camera-item {
-        @apply w-1/4;
+        @apply w-1/3;
       }
     }
 
@@ -250,7 +252,7 @@ code {
 
     .camera-row-2.total-items-14.inner-items-4 {
       .video-camera-item {
-        @apply w-1/5;
+        @apply w-1/4;
       }
     }
 
@@ -262,7 +264,12 @@ code {
 
     .camera-row-2.total-items-16.inner-items-4 {
       .video-camera-item {
-        @apply w-[16.3%];
+        @apply w-1/4;
+      }
+    }
+    .camera-row-3.total-items-16.inner-items-4 {
+      .video-camera-item {
+        @apply w-1/4;
       }
     }
 
@@ -280,7 +287,7 @@ code {
 
     .camera-row-2.total-items-19.inner-items-5 {
       .video-camera-item {
-        @apply w-[13.95%];
+        @apply w-1/5;
       }
     }
 
