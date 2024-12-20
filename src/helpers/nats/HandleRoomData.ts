@@ -16,7 +16,7 @@ import i18n from '../i18n';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
 import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/whiteboard';
-import { sleep } from '../utils';
+import { displayInstantNotification, sleep } from '../utils';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
@@ -86,13 +86,15 @@ export default class HandleRoomData {
 
     const isActiveRecording = store.getState().session.isActiveRecording;
     if (!isActiveRecording && this._room.metadata?.isRecording) {
-      toast(i18n.t('room-metadata.session-recording'), {
-        type: 'info',
-      });
+      displayInstantNotification(
+        i18n.t('room-metadata.session-recording'),
+        'info',
+      );
     } else if (isActiveRecording && !this._room.metadata?.isRecording) {
-      toast(i18n.t('room-metadata.session-not-recording'), {
-        type: 'info',
-      });
+      displayInstantNotification(
+        i18n.t('room-metadata.session-not-recording'),
+        'info',
+      );
     }
   };
 
@@ -105,13 +107,9 @@ export default class HandleRoomData {
     const isActiveRtmpBroadcasting =
       store.getState().session.isActiveRtmpBroadcasting;
     if (!isActiveRtmpBroadcasting && this._room.metadata?.isActiveRtmp) {
-      toast(i18n.t('room-metadata.rtmp-started'), {
-        type: 'info',
-      });
+      displayInstantNotification(i18n.t('room-metadata.rtmp-started'), 'info');
     } else if (isActiveRtmpBroadcasting && !this._room.metadata?.isActiveRtmp) {
-      toast(i18n.t('room-metadata.rtmp-stopped'), {
-        type: 'info',
-      });
+      displayInstantNotification(i18n.t('room-metadata.rtmp-stopped'), 'info');
     }
   };
 

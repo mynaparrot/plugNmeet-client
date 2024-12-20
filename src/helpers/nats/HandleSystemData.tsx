@@ -21,6 +21,7 @@ import NewPollMsg from '../../components/extra-pages/newPollMsg';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
+import { displayInstantNotification } from '../utils';
 
 export default class HandleSystemData {
   constructor() {}
@@ -33,28 +34,19 @@ export default class HandleSystemData {
     const nt = fromJsonString(NatsSystemNotificationSchema, data);
     switch (nt.type) {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
-        toast(i18n.t(nt.msg), {
-          toastId: 'info-status',
-          type: 'info',
-        });
+        displayInstantNotification(i18n.t(nt.msg), 'info');
         if (nt.withSound) {
           this.playNotification();
         }
         break;
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
-        toast(i18n.t(nt.msg), {
-          toastId: 'info-status',
-          type: 'warning',
-        });
+        displayInstantNotification(i18n.t(nt.msg), 'warning');
         if (nt.withSound) {
           this.playNotification();
         }
         break;
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
-        toast(i18n.t(nt.msg), {
-          toastId: 'info-status',
-          type: 'error',
-        });
+        displayInstantNotification(i18n.t(nt.msg), 'error');
         if (nt.withSound) {
           this.playNotification();
         }
@@ -74,13 +66,11 @@ export default class HandleSystemData {
         }),
       );
     } else {
-      toast(
+      displayInstantNotification(
         i18n.t('speech-services.token-generation-failed', {
           error: res.msg,
         }),
-        {
-          type: 'error',
-        },
+        'error',
       );
     }
   };
@@ -88,8 +78,9 @@ export default class HandleSystemData {
   public handlePoll = (payload: NatsMsgServerToClient) => {
     switch (payload.event) {
       case NatsMsgServerToClientEvents.POLL_CREATED:
+        displayInstantNotification(i18n.t('polls.new-poll'), 'info');
         toast(<NewPollMsg />, {
-          toastId: 'info-status',
+          toastId: 'poll-status',
           type: 'info',
           autoClose: false,
         });
@@ -126,6 +117,10 @@ export default class HandleSystemData {
     switch (payload.event) {
       case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
         if (payload.msg !== '') {
+          displayInstantNotification(
+            i18n.t('breakout-room.invitation-msg'),
+            'info',
+          );
           store.dispatch(updateReceivedInvitationFor(payload.msg));
           store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
         }

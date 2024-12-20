@@ -38,6 +38,7 @@ export interface IRoomSettings {
   visibleHeader: boolean;
   visibleFooter: boolean;
   azureTokenInfo?: AzureTokenInfo;
+  isPNMWindowTabVisible: boolean;
 }
 
 export interface IMediaDevice {

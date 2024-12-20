@@ -45,6 +45,7 @@ const initialState: IRoomSettings = {
   columnCameraPosition: ColumnCameraPosition.LEFT,
   visibleHeader: true,
   visibleFooter: true,
+  isPNMWindowTabVisible: true,
 };
 
 const roomSettingsSlice = createSlice({
@@ -164,6 +165,9 @@ const roomSettingsSlice = createSlice({
         state.azureTokenInfo.token = '';
       }
     },
+    updateIsPNMWindowTabVisible: (state, action: PayloadAction<boolean>) => {
+      state.isPNMWindowTabVisible = action.payload;
+    },
   },
 });
 
@@ -195,6 +199,7 @@ export const {
   updateAzureTokenInfo,
   cleanAzureToken,
   updateIsNatsServerConnected,
+  updateIsPNMWindowTabVisible,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

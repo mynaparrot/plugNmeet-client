@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import {
   ConnectionQuality,
   RemoteTrackPublication,
@@ -38,6 +37,7 @@ import {
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { getMediaServerConn } from '../livekit/utils';
+import { displayInstantNotification } from '../utils';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
@@ -322,15 +322,11 @@ export default class HandleParticipants {
       }
       // also play notification
       store.dispatch(updatePlayAudioNotification(true));
-
-      toast(
+      displayInstantNotification(
         i18n.t('waiting-room.user-waiting', {
           name: name,
         }),
-        {
-          type: 'info',
-          toastId: 'user-waiting',
-        },
+        'info',
       );
     }
   }

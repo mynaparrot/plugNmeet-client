@@ -1,5 +1,6 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
+import { toast, TypeOptions } from 'react-toastify';
 
 import i18n from './i18n';
 import { store } from '../store';
@@ -282,3 +283,30 @@ export function createEmptyVideoStreamTrack(name: string) {
 
   return emptyStreamTrack;
 }
+
+export const displayInstantNotification = (
+  message: string,
+  type: TypeOptions,
+) => {
+  toast(message, {
+    toastId: type + '-status',
+    type,
+  });
+
+  const isPNMWindowTabVisible =
+    store.getState().roomSettings.isPNMWindowTabVisible;
+  // if not visible, then we can show notification
+  if (
+    !isPNMWindowTabVisible &&
+    'Notification' in window &&
+    Notification.permission === 'granted'
+  ) {
+    // we'll see if website has any favicon icon, then we'll use it
+    const favicon = document.querySelector("link[rel*='icon']");
+    let icon: string | undefined = undefined;
+    if (favicon) {
+      icon = favicon.getAttribute('href') ?? undefined;
+    }
+    new Notification(message, { icon });
+  }
+};
