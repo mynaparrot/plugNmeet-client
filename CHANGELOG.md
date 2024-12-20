@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.10](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.9...v1.6.10) (2024-12-20)
+
+
+### Bug Fixes
+
+* **bug:** Ingress was not working in the new Nats solution. Ref: https://github.com/mynaparrot/plugNmeet-server/discussions/611 ([f3b8374](https://github.com/mynaparrot/plugNmeet-client/commit/f3b8374721e082f36ddd8f73c2636e14b7553079))
+* data message was sending to wrong user ([db628e4](https://github.com/mynaparrot/plugNmeet-client/commit/db628e4f837c7473d3b0330b633a178cf53a5f77))
+* **deps:** dependencies upgrade ([6ce82ba](https://github.com/mynaparrot/plugNmeet-client/commit/6ce82bada17f352fb1c633072fe444924aa98066))
+* **deps:** deps update ([ef77b9d](https://github.com/mynaparrot/plugNmeet-client/commit/ef77b9db2e7d993e9dee2594ad42b63a649c29ab))
+* **deps:** update dependency i18next-browser-languagedetector to v8.0.2 ([955721d](https://github.com/mynaparrot/plugNmeet-client/commit/955721d0e8d83d92d6787b432ca05b2c31796595))
+* **deps:** update dependency plugnmeet-protocol-js to v1.0.7-rc.11 ([7ee4999](https://github.com/mynaparrot/plugNmeet-client/commit/7ee4999bb6418a142a81bde4cf0b14c832111c9b))
+* **feat:** use `Notification` API to notify when the current tab is not visible. ([62b8e43](https://github.com/mynaparrot/plugNmeet-client/commit/62b8e436525a61f58e85db639aeb7a19ac27c750))
+
 ## [1.6.9](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.8...v1.6.9) (2024-12-07)
 
 
