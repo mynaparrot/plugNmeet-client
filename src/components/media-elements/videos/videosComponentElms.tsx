@@ -147,7 +147,7 @@ const VideosComponentElms = ({
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
           onClick={() => nextPage(page_number)}
         >
-          {formatNextPreButton(allParticipants.slice(display.length))}
+          {formatNextPreButton(allParticipants.slice(page_number * per_page))}
         </div>,
       );
     }
