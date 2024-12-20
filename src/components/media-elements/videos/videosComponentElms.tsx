@@ -10,6 +10,7 @@ import {
   setForMobileLandscape,
 } from './helpers/utils';
 import { ColumnCameraPosition } from '../../../store/slices/interfaces/roomSettings';
+import { ArrowRight } from '../../../assets/Icons/ArrowRight';
 
 interface IVideosComponentElmsProps {
   allParticipants: React.JSX.Element[];
@@ -143,7 +144,7 @@ const VideosComponentElms = ({
     if (hasNextPage) {
       display.push(
         <div
-          className="video-camera-item order-3 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-3 pl-3"
+          className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
           onClick={() => nextPage(page_number)}
         >
           {formatNextPreButton(allParticipants.slice(display.length))}
@@ -155,7 +156,7 @@ const VideosComponentElms = ({
         0,
         0,
         <div
-          className="video-camera-item order-1 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-3 pl-3"
+          className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
           onClick={() => prePage(page_number)}
         >
           {formatNextPreButton(
@@ -172,68 +173,52 @@ const VideosComponentElms = ({
       dispatch(setWebcamPaginating(true));
     }
   };
-  const extractInitials = (name: any) =>
+  const sliceFirstLetterOfText = (name: any) =>
     name
       .split(/\s+/) // Split the name by spaces
       .map((word) => word[0].toUpperCase()) // Get the first letter of each word in uppercase
       .join(''); // Join the initials into a string
 
   const formatNextPreButton = (remaining: React.JSX.Element[]) => {
-    const text: React.JSX.Element[] = [
-      <span className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
-        {remaining.length}+
-      </span>,
-    ];
-    const text2: React.JSX.Element[] = [<span>{remaining.length}+</span>];
+    const shortName: React.JSX.Element[] = [];
+    const fullName: React.JSX.Element[] = [];
     for (let i = 0; i < remaining.length; i++) {
       if (i === 2 && remaining.length > i) {
         // so,we have more
-        text.push(
-          <span className="inline-block order-2">
-            and {remaining.length - i}+ others{' '}
+        shortName.push(
+          <span className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
+            {remaining.length - i}+
           </span>,
         );
-        text2.push(
+        fullName.push(
           <span className="inline-block order-2">
-            and {remaining.length - i}+ others{' '}
+            and {remaining.length - i}+ others
           </span>,
         );
         break;
       }
       const data = remaining[i];
-      text.push(
+      shortName.push(
         <span className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
-          {extractInitials(data.props.participant.name)}
+          {sliceFirstLetterOfText(data.props.participant.name)}
         </span>,
       );
-      text2.push(
-        <span className="inline-block order-1 pr-1">
-          {data.props.participant.name}
+      fullName.push(
+        <span className="inline-block order-1 pr-1 capitalize">
+          {data.props.participant.name},{' '}
         </span>,
       );
     }
     return (
       <>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex next-pre-cam-text-middle">
-          {text}
+        <div className="middle-area absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex text-base font-medium">
+          {shortName}
         </div>
-        <div>{text2}</div>
+        <div className="bottom-area flex flex-wrap text-sm font-medium">
+          {fullName}
+        </div>
         <div className="icon absolute top-1/2 right-5 -translate-y-1/2 w-4 h-4 flex items-start justify-end">
-          <svg
-            width="8"
-            height="13"
-            viewBox="0 0 8 13"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1.5 11.6666L6.5 6.66663L1.5 1.66663"
-              stroke="white"
-              stroke-width="1.69"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <ArrowRight />
         </div>
       </>
     );

@@ -1084,3 +1084,8 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   right: auto;
 }
+.webcam-prev-page .icon {
+  right: auto;
+  transform: rotate(180deg);
+  top: calc(50% - 8px);
+}
