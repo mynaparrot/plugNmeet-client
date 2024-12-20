@@ -58,6 +58,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
         name: session.currentUser?.name,
         task: t(task),
       }),
+      userId,
     );
 
     toast(
