@@ -44,6 +44,7 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
         name: session.currentUser?.name,
         task: t(task),
       }),
+      userId,
     );
 
     toast(
