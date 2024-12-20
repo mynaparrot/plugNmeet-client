@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
 import { store } from '../../store';
+import { displayInstantNotification } from '../../helpers/utils';
 
 interface IDurationViewProps {
   duration: number;
@@ -59,13 +59,11 @@ const DurationView = ({ duration }: IDurationViewProps) => {
       case '30:00':
       case '10:00':
       case '5:00':
-        toast(
+        displayInstantNotification(
           t('notifications.room-will-end-in', {
             minutes: remaining,
           }),
-          {
-            type: 'warning',
-          },
+          'warning',
         );
     }
   }, [isRecorder, remaining, t]);

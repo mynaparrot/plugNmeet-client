@@ -4,12 +4,15 @@ import {
   AnalyticsEventType,
   DataMsgBodyType,
 } from 'plugnmeet-protocol-js';
+import { useDispatch } from 'react-redux';
 
 import { getNatsConn } from '../nats';
+import { updateIsPNMWindowTabVisible } from '../../store/slices/roomSettingsSlice';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
   const conn = getNatsConn();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onBlur = () => {
@@ -82,6 +85,7 @@ const useWatchVisibilityChange = () => {
       AnalyticsEventType.USER,
       data,
     );
+    dispatch(updateIsPNMWindowTabVisible(!hidden));
     //eslint-disable-next-line
   }, [hidden]);
 };

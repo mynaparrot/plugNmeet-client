@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
@@ -15,6 +14,7 @@ import {
   addExternalMediaPlayerAction,
   externalMediaPlayerSeekTo,
 } from '../../store/slices/externalMediaPlayer';
+import { displayInstantNotification } from '../utils';
 
 export default class HandleDataMessage {
   private _that: ConnectNats;
@@ -47,19 +47,13 @@ export default class HandleDataMessage {
         if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
           return;
         }
-        toast(payload.message, {
-          toastId: 'info-status',
-          type: 'info',
-        });
+        displayInstantNotification(payload.message, 'info');
         break;
       case DataMsgBodyType.ALERT:
         if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
           return;
         }
-        toast(payload.message, {
-          toastId: 'alert-status',
-          type: 'warning',
-        });
+        displayInstantNotification(payload.message, 'warning');
         break;
       case DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS:
         if (payload.fromUserId === this._that.userId) {

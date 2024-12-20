@@ -68,6 +68,12 @@ const MainArea = () => {
       setAllowChat(false);
       dispatch(updateIsActiveChatPanel(false));
     }
+
+    // ask for notification permission
+    // we'll not bother if permission was rejected before
+    if ('Notification' in window && Notification.permission !== 'denied') {
+      Notification.requestPermission().then();
+    }
   }, [dispatch]);
 
   useEffect(() => {
