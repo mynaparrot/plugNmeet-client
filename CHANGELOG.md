@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.11](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.10...v1.6.11) (2024-12-21)
+
+
+### Bug Fixes
+
+* **ci:** add beta release ([0e3ff2f](https://github.com/mynaparrot/plugNmeet-client/commit/0e3ff2f320904092c9039eed9ba0a6cd660e06e5))
+
 ## [1.6.10](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.9...v1.6.10) (2024-12-20)
 
 
