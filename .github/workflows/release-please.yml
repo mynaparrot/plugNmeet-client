@@ -1,0 +1,81 @@
+name: Build and release client
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+      - name: Install dependencies
+        run: pnpm install
+      - name: Release as beta
+        if: ${{ ! steps.release.outputs.release_created }}
+        run: |
+          # update package version
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          NEXT_VERSION=$(echo $(node -p "require('./package.json').version") | awk -F. -v OFS=. '{$NF += 1 ; print}')
+          BETA_VERSION="${NEXT_VERSION}-${git_hash}"
+          echo "New beta version for NPM: ${BETA_VERSION}"
+          npm version ${BETA_VERSION}
+          
+          # push changes
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "bump beta version"
+          git push
+          
+          # now create zip file
+          pnpm run build
+          echo ${BETA_VERSION} > dist/version.txt
+          mkdir -p tmp/client
+          rsync -ar LICENSE dist tmp/client/
+          cd tmp
+          zip -X -r client.zip client
+      - name: Upload by ftp
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        if: ${{ ! steps.release.outputs.release_created }}
+        with:
+          server: ${{ secrets.PNM_FTP_HOST }}
+          username: ${{ secrets.PNM_FTP_USER }}
+          password: ${{ secrets.PNM_FTP_PASSWORD }}
+          local-dir: "./tmp/"
+          state-name: ".client-sync-state.json"
+          exclude: |
+            **/client/**
+      - name: Release as production
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm run build
+
+          ## save latest version tag
+          echo ${{ steps.release.outputs.tag_name }} > dist/version.txt
+
+          mkdir -p tmp/client
+          rsync -ar LICENSE dist tmp/client/
+          cd tmp
+          zip -X -r client.zip client
+          gh release upload ${{ steps.release.outputs.tag_name }} client.zip
