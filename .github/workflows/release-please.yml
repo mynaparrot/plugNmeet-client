@@ -39,7 +39,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "fix(ci): bump beta version"
+          git commit -m "bump beta version"
           git push
           
           # now create zip file
@@ -60,12 +60,6 @@ jobs:
           state-name: ".client-sync-state.json"
           exclude: |
             **/client/**
-      - name: To rebase again
-        uses: googleapis/release-please-action@v4
-        if: ${{ ! steps.release.outputs.release_created }}
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: node
       - name: Release as production
         if: ${{ steps.release.outputs.release_created }}
         env:
