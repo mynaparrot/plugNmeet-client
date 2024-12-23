@@ -161,6 +161,24 @@ code {
     }
   }
 }
+.all-webcam-wrapper.total-cam-2 {
+  .all-webcam-wrapper-inner {
+    .total-items-2 {
+      .video-camera-item:not(.its-me) {
+        @apply w-full;
+      }
+    }
+  }
+}
+.all-webcam-wrapper.page-2 {
+  .all-webcam-wrapper-inner {
+    .camera-row-1.total-items-3 {
+      .video-camera-item {
+        @apply w-[calc(50%-0.5rem)] h-auto;
+      }
+    }
+  }
+}
 .all-webcam-wrapper {
   @apply h-full flex items-center relative;
   &::-webkit-scrollbar {
@@ -204,7 +222,7 @@ code {
 
     .camera-row-1.total-items-3 {
       .video-camera-item {
-        @apply w-1/3;
+        @apply w-1/2;
       }
     }
 
@@ -332,7 +350,31 @@ code {
         @apply w-1/5;
       }
     }
-
+    .inner-items-6 {
+      .video-camera-item {
+        @apply w-1/6;
+      }
+    }
+    .inner-items-2 {
+      .video-camera-item {
+        @apply w-1/2;
+      }
+    }
+    .inner-items-3 {
+      .video-camera-item {
+        @apply w-1/3;
+      }
+    }
+    .inner-items-4 {
+      .video-camera-item {
+        @apply w-1/4;
+      }
+    }
+    .inner-items-5 {
+      .video-camera-item {
+        @apply w-1/5;
+      }
+    }
     .video-camera-item.admin {
       @apply order-1;
     }
