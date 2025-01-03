@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.11](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.10...v1.6.11) (2025-01-03)
+
+
+### Bug Fixes
+
+* **ci:** added beta release ([bc98ba9](https://github.com/mynaparrot/plugNmeet-client/commit/bc98ba92c7b8fc75414b79dd8f2f2b962607057c))
+* **ci:** bump beta version ([dcd203b](https://github.com/mynaparrot/plugNmeet-client/commit/dcd203b8179604af08de8ae80453aadba9c2d925))
+* **ci:** removed rebase again ([5e0e173](https://github.com/mynaparrot/plugNmeet-client/commit/5e0e1730443b80dd5488df0423ed73b6e6aedef1))
+* **ci:** To rebase again ([79e1b93](https://github.com/mynaparrot/plugNmeet-client/commit/79e1b935e897b572919ab215693427655b1dca3f))
+* deps update ([dd47326](https://github.com/mynaparrot/plugNmeet-client/commit/dd4732611a62b9575b45dcf77a889362a0c3e85f))
+* **deps:** update dependency plugnmeet-protocol-js to v1.0.8 ([d8d170c](https://github.com/mynaparrot/plugNmeet-client/commit/d8d170c640a1c057e21b5cc59a5974f2b4649891))
+
 ## [1.6.10](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.9...v1.6.10) (2024-12-20)
 
 
