@@ -78,7 +78,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           isLocal: participant instanceof LocalParticipant,
         };
 
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 10; i++) {
           totalNumWebcams++;
           const elm = (
             <VideoParticipant

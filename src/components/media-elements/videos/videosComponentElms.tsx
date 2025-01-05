@@ -25,7 +25,7 @@ export interface VideoParticipantType {
 const MOBILE_PER_PAGE = 6,
   TABLET_PER_PAGE = 9,
   DESKTOP_PER_PAGE = 24,
-  VERTICAL_PER_PAGE = 3,
+  VERTICAL_PER_PAGE = 5,
   VERTICAL_TOP_BOTTOM_PER_PAGE = 8,
   VERTICAL_TABLET_PORTRAIT = 5;
 
@@ -55,9 +55,14 @@ const VideosComponentElms = ({
   );
 
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [showPre, setShowPre] = useState<boolean>(false);
-  const [showNext, setShowNext] = useState<boolean>(false);
+  // const [showPre, setShowPre] = useState<boolean>(false);
+  // const [showNext, setShowNext] = useState<boolean>(false);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+
+  const [extendVerticalCam, setExtendVerticalCam] = useState<boolean>(false);
+  const toggleExtendVerticalCam = () => {
+    setExtendVerticalCam(!extendVerticalCam);
+  };
 
   useEffect(() => {
     if (isVertical) {
@@ -186,7 +191,7 @@ const VideosComponentElms = ({
       if (i === 2 && remaining.length > i) {
         // so,we have more
         shortName.push(
-          <span className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
+          <span className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2 overflow-hidden">
             {remaining.length - i}+
           </span>,
         );
@@ -199,7 +204,7 @@ const VideosComponentElms = ({
       }
       const data = remaining[i];
       shortName.push(
-        <span className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2">
+        <span className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2 overflow-hidden">
           {sliceFirstLetterOfText(data.props.participant.name)}
         </span>,
       );
@@ -235,24 +240,24 @@ const VideosComponentElms = ({
     // eslint-disable-next-line
   }, [allParticipants, webcamPerPage]);
 
-  useEffect(() => {
-    if (totalNumWebcams > webcamPerPage) {
-      if (currentPage === 1) {
-        setShowPre(false);
-      } else {
-        setShowPre(true);
-      }
+  // useEffect(() => {
+  //   if (totalNumWebcams > webcamPerPage) {
+  //     if (currentPage === 1) {
+  //       setShowPre(false);
+  //     } else {
+  //       setShowPre(true);
+  //     }
 
-      if (currentPage >= totalNumWebcams / webcamPerPage) {
-        setShowNext(false);
-      } else {
-        setShowNext(true);
-      }
-    } else {
-      setShowPre(false);
-      setShowNext(false);
-    }
-  }, [totalNumWebcams, currentPage, webcamPerPage]);
+  //     if (currentPage >= totalNumWebcams / webcamPerPage) {
+  //       setShowNext(false);
+  //     } else {
+  //       setShowNext(true);
+  //     }
+  //   } else {
+  //     setShowPre(false);
+  //     setShowNext(false);
+  //   }
+  // }, [totalNumWebcams, currentPage, webcamPerPage]);
 
   const prePage = (currPage: number) => {
     const newCurrentPage = currPage - 1;
@@ -294,46 +299,69 @@ const VideosComponentElms = ({
     //eslint-disable-next-line
   }, [isVertical, participantsToRender, deviceOrientation]);
 
-  const render = () => {
-    return (
-      <>
-        {showPre ? (
-          <button
-            type="button"
-            className="previous-cam hidden"
-            onClick={() => prePage(currentPage)}
-          >
-            <i className="pnm-arrow-up" />
-          </button>
-        ) : null}
+  // const render = () => {
+  //   return (
+  //     <>
+  //       {/* {showPre ? (
+  //         <button
+  //           type="button"
+  //           className="previous-cam hidden"
+  //           onClick={() => prePage(currentPage)}
+  //         >
+  //           <i className="pnm-arrow-up" />
+  //         </button>
+  //       ) : null} */}
 
-        {/*all webcams*/}
-        <>{videoParticipantsElms}</>
+  //       {/*all webcams*/}
+  //       <>{videoParticipantsElms}</>
 
-        {showNext ? (
-          <button
-            type="button"
-            className="next-cam hidden"
-            onClick={() => nextPage(currentPage)}
-          >
-            <i className="pnm-arrow-down" />
-          </button>
-        ) : null}
-      </>
-    );
-  };
+  //       {/* {showNext ? (
+  //         <button
+  //           type="button"
+  //           className="next-cam hidden"
+  //           onClick={() => nextPage(currentPage)}
+  //         >
+  //           <i className="pnm-arrow-down" />
+  //         </button>
+  //       ) : null} */}
+  //     </>
+  //   );
+  // };
 
   return (
     <>
-      {totalNumWebcams > 0 ? (
+      {isVertical ? (
         <div
-          className={`all-webcam-wrapper total-cam-${totalNumWebcams} selected-cam-${webcamPerPage} page-${currentPage} ${
-            isVertical ? 'vertical-webcams' : ''
-          }`}
+          className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${extendVerticalCam ? 'w-[416px]' : 'w-[212px]'}`}
         >
-          <div className="all-webcam-wrapper-inner">{render()}</div>
+          {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
+          <div className="inner h-full flex flex-col justify-center gap-3 bg-white z-20">
+            {videoParticipantsElms}
+          </div>
+          <button
+            onClick={toggleExtendVerticalCam}
+            className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+          >
+            <span className={`${extendVerticalCam ? '' : 'rotate-180'}`}>
+              <ArrowRight />
+            </span>
+          </button>
         </div>
-      ) : null}
+      ) : (
+        <>
+          {totalNumWebcams > 0 ? (
+            <div
+              className={`all-webcam-wrapper total-cam-${totalNumWebcams} selected-cam-${webcamPerPage} page-${currentPage} ${
+                isVertical ? 'vertical-webcams' : ''
+              }`}
+            >
+              <div className="all-webcam-wrapper-inner">
+                {videoParticipantsElms}
+              </div>
+            </div>
+          ) : null}
+        </>
+      )}
       {/* {deviceType === UserDeviceType.DESKTOP &&
       totalNumWebcams > 6 &&
       !isVertical ? (

@@ -1131,3 +1131,48 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   transform: rotate(180deg);
   top: calc(50% - 8px);
 }
+.vertical-webcams-wrapper {
+  &:hover {
+    .extend-button {
+      @apply -left-4 opacity-100;
+    }
+  }
+  .video-camera-item {
+    @apply h-1/4 order-2;
+  }
+  .webcam-next-page {
+    @apply h-28 p-0;
+    .bottom-area {
+      @apply hidden;
+    }
+    .middle-area {
+      @apply w-full px-5;
+      span {
+        @apply h-9 w-9 text-sm;
+      }
+    }
+    .icon {
+      svg {
+        @apply rotate-90;
+      }
+    }
+  }
+  .webcam-prev-page {
+    @apply h-20 p-0;
+    .bottom-area {
+      @apply hidden;
+    }
+    .middle-area {
+      @apply w-full px-5;
+      span {
+        @apply h-9 w-9 text-sm;
+      }
+    }
+    .icon {
+      @apply left-auto right-4;
+      svg {
+        @apply rotate-90;
+      }
+    }
+  }
+}
