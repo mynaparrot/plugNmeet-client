@@ -196,4 +196,31 @@ const setForPC = (participantsToRender: React.JSX.Element[]) => {
   return elms;
 };
 
+/**
+ * We'll have two webcams in each row
+ * @param participantsToRender
+ */
+const setForPCExtendedVerticalView = (
+  participantsToRender: React.JSX.Element[],
+) => {
+  const chunkParts = chunk(participantsToRender, 2);
+  const elms: Array<React.JSX.Element> = [];
+  // each of the chunks will be a row
+  for (let i = 0; i < chunkParts.length; i++) {
+    const el = chunkParts[i];
+    elms.push(
+      <div
+        key={`camera-row-${i}`}
+        className={`camera-row-${i} total-items-${length} inner-items-${el.length} flex flex-col justify-center gap-3`}
+      >
+        {el}
+      </div>,
+    );
+  }
+  return elms;
+};
+
 export const getElmsForPc = memoize(setForPC);
+export const getElmsForPCExtendedVerticalView = memoize(
+  setForPCExtendedVerticalView,
+);

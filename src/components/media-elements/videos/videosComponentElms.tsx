@@ -6,6 +6,7 @@ import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import {
   getElmsForPc,
+  getElmsForPCExtendedVerticalView,
   setForMobileAndTablet,
   setForMobileLandscape,
 } from './helpers/utils';
@@ -26,6 +27,7 @@ const MOBILE_PER_PAGE = 6,
   TABLET_PER_PAGE = 9,
   DESKTOP_PER_PAGE = 24,
   VERTICAL_PER_PAGE = 5,
+  EXTENDED_VERTICAL_PER_PAGE = 10,
   VERTICAL_TOP_BOTTOM_PER_PAGE = 8,
   VERTICAL_TABLET_PORTRAIT = 5;
 
@@ -45,6 +47,12 @@ const VideosComponentElms = ({
   const columnCameraPosition = useAppSelector(
     (state) => state.roomSettings.columnCameraPosition,
   );
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
+  const isActiveParticipantsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+  );
   const deviceType = store.getState().session.userDeviceType;
 
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -55,14 +63,9 @@ const VideosComponentElms = ({
   );
 
   const [currentPage, setCurrentPage] = useState<number>(0);
-  // const [showPre, setShowPre] = useState<boolean>(false);
-  // const [showNext, setShowNext] = useState<boolean>(false);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
-
-  const [extendVerticalCam, setExtendVerticalCam] = useState<boolean>(false);
-  const toggleExtendVerticalCam = () => {
-    setExtendVerticalCam(!extendVerticalCam);
-  };
+  const [isExtendVerticalView, setIsExtendVerticalView] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (isVertical) {
@@ -81,7 +84,12 @@ const VideosComponentElms = ({
         setWebcamPerPage(VERTICAL_TABLET_PORTRAIT);
         return;
       }
-      setWebcamPerPage(VERTICAL_PER_PAGE);
+      if (isExtendVerticalView) {
+        setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE);
+      } else {
+        setWebcamPerPage(VERTICAL_PER_PAGE);
+      }
+
       return;
     }
     if (!screenWidth) {
@@ -107,7 +115,19 @@ const VideosComponentElms = ({
       }
     }
     //eslint-disable-next-line
-  }, [isVertical, screenWidth, columnCameraPosition, deviceOrientation]);
+  }, [
+    isVertical,
+    isExtendVerticalView,
+    screenWidth,
+    columnCameraPosition,
+    deviceOrientation,
+  ]);
+
+  useEffect(() => {
+    if (isActiveChatPanel || isActiveParticipantsPanel) {
+      setIsExtendVerticalView(false);
+    }
+  }, [isActiveChatPanel, isActiveParticipantsPanel]);
 
   const renderParticipantsByPage = (
     allParticipants: Array<React.JSX.Element>,
@@ -181,7 +201,7 @@ const VideosComponentElms = ({
   const sliceFirstLetterOfText = (name: any) =>
     name
       .split(/\s+/) // Split the name by spaces
-      .map((word) => word[0].toUpperCase()) // Get the first letter of each word in uppercase
+      .map((word: string[]) => word[0].toUpperCase()) // Get the first letter of each word in uppercase
       .join(''); // Join the initials into a string
 
   const formatNextPreButton = (remaining: React.JSX.Element[]) => {
@@ -240,25 +260,6 @@ const VideosComponentElms = ({
     // eslint-disable-next-line
   }, [allParticipants, webcamPerPage]);
 
-  // useEffect(() => {
-  //   if (totalNumWebcams > webcamPerPage) {
-  //     if (currentPage === 1) {
-  //       setShowPre(false);
-  //     } else {
-  //       setShowPre(true);
-  //     }
-
-  //     if (currentPage >= totalNumWebcams / webcamPerPage) {
-  //       setShowNext(false);
-  //     } else {
-  //       setShowNext(true);
-  //     }
-  //   } else {
-  //     setShowPre(false);
-  //     setShowNext(false);
-  //   }
-  // }, [totalNumWebcams, currentPage, webcamPerPage]);
-
   const prePage = (currPage: number) => {
     const newCurrentPage = currPage - 1;
     renderParticipantsByPage(allParticipants, newCurrentPage, webcamPerPage);
@@ -273,8 +274,13 @@ const VideosComponentElms = ({
 
   const videoParticipantsElms = useMemo(() => {
     if (isVertical) {
-      return participantsToRender;
+      if (!isExtendVerticalView) {
+        return participantsToRender;
+      } else {
+        return getElmsForPCExtendedVerticalView(participantsToRender);
+      }
     }
+
     let elms: Array<React.JSX.Element>;
 
     if (
@@ -297,71 +303,49 @@ const VideosComponentElms = ({
 
     return elms;
     //eslint-disable-next-line
-  }, [isVertical, participantsToRender, deviceOrientation]);
-
-  // const render = () => {
-  //   return (
-  //     <>
-  //       {/* {showPre ? (
-  //         <button
-  //           type="button"
-  //           className="previous-cam hidden"
-  //           onClick={() => prePage(currentPage)}
-  //         >
-  //           <i className="pnm-arrow-up" />
-  //         </button>
-  //       ) : null} */}
-
-  //       {/*all webcams*/}
-  //       <>{videoParticipantsElms}</>
-
-  //       {/* {showNext ? (
-  //         <button
-  //           type="button"
-  //           className="next-cam hidden"
-  //           onClick={() => nextPage(currentPage)}
-  //         >
-  //           <i className="pnm-arrow-down" />
-  //         </button>
-  //       ) : null} */}
-  //     </>
-  //   );
-  // };
+  }, [
+    isVertical,
+    isExtendVerticalView,
+    participantsToRender,
+    deviceOrientation,
+  ]);
 
   return (
     <>
-      {isVertical ? (
-        <div
-          className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${extendVerticalCam ? 'w-[416px]' : 'w-[212px]'}`}
-        >
-          {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
-          <div className="inner h-full flex flex-col justify-center gap-3 bg-white z-20">
-            {videoParticipantsElms}
-          </div>
-          <button
-            onClick={toggleExtendVerticalCam}
-            className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
-          >
-            <span className={`${extendVerticalCam ? '' : 'rotate-180'}`}>
-              <ArrowRight />
-            </span>
-          </button>
-        </div>
-      ) : (
+      {totalNumWebcams > 0 ? (
         <>
-          {totalNumWebcams > 0 ? (
+          {isVertical ? (
             <div
-              className={`all-webcam-wrapper total-cam-${totalNumWebcams} selected-cam-${webcamPerPage} page-${currentPage} ${
-                isVertical ? 'vertical-webcams' : ''
-              }`}
+              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isExtendVerticalView ? 'w-[416px]' : 'w-[212px]'}`}
+            >
+              {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
+              <div className="inner h-full flex flex-col justify-center gap-3 bg-white z-20">
+                {videoParticipantsElms}
+              </div>
+              {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+                <button
+                  onClick={() => setIsExtendVerticalView(!isExtendVerticalView)}
+                  className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+                >
+                  <span
+                    className={`${isExtendVerticalView ? '' : 'rotate-180'}`}
+                  >
+                    <ArrowRight />
+                  </span>
+                </button>
+              )}
+            </div>
+          ) : (
+            <div
+              className={`all-webcam-wrapper total-cam-${totalNumWebcams} selected-cam-${webcamPerPage} page-${currentPage}`}
             >
               <div className="all-webcam-wrapper-inner">
                 {videoParticipantsElms}
               </div>
             </div>
-          ) : null}
+          )}
         </>
-      )}
+      ) : null}
       {/* {deviceType === UserDeviceType.DESKTOP &&
       totalNumWebcams > 6 &&
       !isVertical ? (
