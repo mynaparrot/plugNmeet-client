@@ -31,4 +31,5 @@ export interface IBottomIconsSlice {
 
   totalUnreadChatMsgs: number;
   virtualBackground: BackgroundConfig;
+  isEnabledExtendedVerticalCamView: boolean;
 }

@@ -33,6 +33,7 @@ const initialState: IBottomIconsSlice = {
 
   totalUnreadChatMsgs: 0,
   virtualBackground: defaultBackgroundConfig,
+  isEnabledExtendedVerticalCamView: false,
 };
 
 const bottomIconsSlice = createSlice({
@@ -55,9 +56,12 @@ const bottomIconsSlice = createSlice({
       }
       state.isActiveChatPanel = action.payload;
 
-      // if open then we'll make it 0
       if (state.isActiveChatPanel) {
+        // if open then we'll make it 0
         state.totalUnreadChatMsgs = 0;
+        if (state.isEnabledExtendedVerticalCamView) {
+          state.isEnabledExtendedVerticalCamView = false;
+        }
       }
     },
     updateIsActiveParticipantsPanel: (
@@ -68,6 +72,12 @@ const bottomIconsSlice = createSlice({
         state.isActiveChatPanel = false;
       }
       state.isActiveParticipantsPanel = action.payload;
+      if (
+        state.isActiveParticipantsPanel &&
+        state.isEnabledExtendedVerticalCamView
+      ) {
+        state.isEnabledExtendedVerticalCamView = false;
+      }
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
       state.isActiveRaisehand = action.payload;
@@ -146,7 +156,6 @@ const bottomIconsSlice = createSlice({
     ) => {
       state.showSpeechSettingsModal = action.payload;
     },
-
     updateTotalUnreadChatMsgs: (state) => {
       if (!state.isActiveChatPanel) {
         state.totalUnreadChatMsgs += 1;
@@ -157,6 +166,12 @@ const bottomIconsSlice = createSlice({
       action: PayloadAction<BackgroundConfig>,
     ) => {
       state.virtualBackground = action.payload;
+    },
+    updateIsEnabledExtendedVerticalCamView: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isEnabledExtendedVerticalCamView = action.payload;
     },
   },
 });
@@ -186,6 +201,7 @@ export const {
   updateTotalUnreadChatMsgs,
   updateVirtualBackground,
   updateDisplaySpeechSettingsModal,
+  updateIsEnabledExtendedVerticalCamView,
 } = bottomIconsSlice.actions;
 
 export default bottomIconsSlice.reducer;

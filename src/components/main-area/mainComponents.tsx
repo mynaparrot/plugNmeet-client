@@ -50,6 +50,9 @@ const MainComponents = ({
       state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
         ?.isActive,
   );
+  const isEnabledExtendedVerticalCamView = useAppSelector(
+    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
+  );
 
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
@@ -230,6 +233,9 @@ const MainComponents = ({
         cssClasses.push(
           'middle-fullscreen-wrapper h-full flex verticalsWebcamsActivated',
         );
+        if (isEnabledExtendedVerticalCamView) {
+          cssClasses.push('extendedVerticalCamView');
+        }
       } else {
         cssClasses.push('middle-fullscreen-wrapper h-full flex w-full');
       }
@@ -240,6 +246,7 @@ const MainComponents = ({
     isActiveScreenShare,
     showVideoElms,
     showVerticalVideoView,
+    isEnabledExtendedVerticalCamView,
   ]);
 
   return (

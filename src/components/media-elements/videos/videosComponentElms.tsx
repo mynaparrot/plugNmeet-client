@@ -12,6 +12,7 @@ import {
 } from './helpers/utils';
 import { ColumnCameraPosition } from '../../../store/slices/interfaces/roomSettings';
 import { ArrowRight } from '../../../assets/Icons/ArrowRight';
+import { updateIsEnabledExtendedVerticalCamView } from '../../../store/slices/bottomIconsActivitySlice';
 
 interface IVideosComponentElmsProps {
   allParticipants: React.JSX.Element[];
@@ -53,6 +54,9 @@ const VideosComponentElms = ({
   const isActiveParticipantsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
   );
+  const isEnabledExtendedVerticalCamView = useAppSelector(
+    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
+  );
   const deviceType = store.getState().session.userDeviceType;
 
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -64,8 +68,6 @@ const VideosComponentElms = ({
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
-  const [isExtendVerticalView, setIsExtendVerticalView] =
-    useState<boolean>(false);
 
   useEffect(() => {
     if (isVertical) {
@@ -84,7 +86,7 @@ const VideosComponentElms = ({
         setWebcamPerPage(VERTICAL_TABLET_PORTRAIT);
         return;
       }
-      if (isExtendVerticalView) {
+      if (isEnabledExtendedVerticalCamView) {
         setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE);
       } else {
         setWebcamPerPage(VERTICAL_PER_PAGE);
@@ -117,17 +119,11 @@ const VideosComponentElms = ({
     //eslint-disable-next-line
   }, [
     isVertical,
-    isExtendVerticalView,
+    isEnabledExtendedVerticalCamView,
     screenWidth,
     columnCameraPosition,
     deviceOrientation,
   ]);
-
-  useEffect(() => {
-    if (isActiveChatPanel || isActiveParticipantsPanel) {
-      setIsExtendVerticalView(false);
-    }
-  }, [isActiveChatPanel, isActiveParticipantsPanel]);
 
   const renderParticipantsByPage = (
     allParticipants: Array<React.JSX.Element>,
@@ -276,7 +272,7 @@ const VideosComponentElms = ({
 
   const videoParticipantsElms = useMemo(() => {
     if (isVertical) {
-      if (!isExtendVerticalView) {
+      if (!isEnabledExtendedVerticalCamView) {
         return participantsToRender;
       } else {
         return getElmsForPCExtendedVerticalView(participantsToRender);
@@ -307,7 +303,7 @@ const VideosComponentElms = ({
     //eslint-disable-next-line
   }, [
     isVertical,
-    isExtendVerticalView,
+    isEnabledExtendedVerticalCamView,
     participantsToRender,
     deviceOrientation,
   ]);
@@ -318,21 +314,27 @@ const VideosComponentElms = ({
         <>
           {isVertical ? (
             <div
-              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isExtendVerticalView ? 'w-[416px] flex flex-col justify-center' : 'w-[212px] not-extended'}`}
+              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center' : 'w-[212px] not-extended'}`}
             >
               {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
               <div
-                className={`inner ${isExtendVerticalView ? `flex gap-3 h-full flex-col justify-center row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} page-${currentPage}` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
+                className={`inner ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} page-${currentPage}` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
               >
                 {videoParticipantsElms}
               </div>
               {isActiveParticipantsPanel || isActiveChatPanel ? null : (
                 <button
-                  onClick={() => setIsExtendVerticalView(!isExtendVerticalView)}
+                  onClick={() =>
+                    dispatch(
+                      updateIsEnabledExtendedVerticalCamView(
+                        !isEnabledExtendedVerticalCamView,
+                      ),
+                    )
+                  }
                   className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
                 >
                   <span
-                    className={`${isExtendVerticalView ? '' : 'rotate-180'}`}
+                    className={`${isEnabledExtendedVerticalCamView ? '' : 'rotate-180'}`}
                   >
                     <ArrowRight />
                   </span>
