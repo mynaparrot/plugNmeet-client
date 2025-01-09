@@ -141,22 +141,22 @@ const VideosComponentElms = ({
       // then only have next
       // so, we'll deduct per page by 1
       // and insert pagination in that slot
-      if (!isVertical) {
-        per_page--;
-      }
+      // if (!isVertical) {
+      per_page--;
+      // }
       hasNextPage = true;
     } else {
       hasPrevPage = true;
-      if (!isVertical) {
-        per_page--;
-      }
+      // if (!isVertical) {
+      per_page--;
+      // }
       // so, we're in next page
       if (page_number >= totalNumWebcams / per_page) {
         hasNextPage = false;
       } else {
-        if (!isVertical) {
-          per_page--;
-        }
+        // if (!isVertical) {
+        per_page--;
+        // }
         hasNextPage = true;
       }
     }
@@ -168,26 +168,28 @@ const VideosComponentElms = ({
 
     if (hasNextPage) {
       display.push(
-        <div
+        <button
+          role="button"
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
           onClick={() => nextPage(page_number)}
         >
           {formatNextPreButton(allParticipants.slice(page_number * per_page))}
-        </div>,
+        </button>,
       );
     }
     if (hasPrevPage) {
       display.splice(
         0,
         0,
-        <div
+        <button
+          role="button"
           className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
           onClick={() => prePage(page_number)}
         >
           {formatNextPreButton(
             allParticipants.slice(-(page_number - 1) * per_page),
           )}
-        </div>,
+        </button>,
       );
     }
 
@@ -316,10 +318,12 @@ const VideosComponentElms = ({
         <>
           {isVertical ? (
             <div
-              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isExtendVerticalView ? 'w-[416px]' : 'w-[212px]'}`}
+              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isExtendVerticalView ? 'w-[416px] flex flex-col justify-center' : 'w-[212px] not-extended'}`}
             >
               {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
-              <div className="inner h-full flex flex-col justify-center gap-3 bg-white z-20">
+              <div
+                className={`inner ${isExtendVerticalView ? `flex gap-3 h-full flex-col justify-center row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} page-${currentPage}` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
+              >
                 {videoParticipantsElms}
               </div>
               {isActiveParticipantsPanel || isActiveChatPanel ? null : (
