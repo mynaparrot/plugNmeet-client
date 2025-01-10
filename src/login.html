@@ -110,7 +110,7 @@
     const loginForm = document.getElementById('loginForm');
     let API_KEY, API_SECRET;
     document.getElementById('user_id').value = Date.now();
-    const toUrl = window.location.href.replace("/login.html", "")
+    const toUrl = window.location.href.replace(/\/login.*$/i, "")
 
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
