@@ -79,6 +79,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const isActiveChatPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveChatPanel,
   );
+  const isEnabledExtendedVerticalCamView = useAppSelector(
+    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
+  );
   const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -118,7 +121,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       clearTimeout(timeout);
     };
     //eslint-disable-next-line
-  }, [isActiveParticipantsPanel, isActiveChatPanel]);
+  }, [
+    isActiveParticipantsPanel,
+    isActiveChatPanel,
+    isEnabledExtendedVerticalCamView,
+  ]);
 
   useEffect(() => {
     const s = store.getState();
