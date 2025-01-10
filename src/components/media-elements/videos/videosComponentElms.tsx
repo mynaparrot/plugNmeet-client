@@ -314,7 +314,7 @@ const VideosComponentElms = ({
         <>
           {isVertical ? (
             <div
-              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center' : 'w-[212px] not-extended'}`}
+              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
             >
               {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
               <div

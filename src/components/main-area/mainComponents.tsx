@@ -225,6 +225,9 @@ const MainComponents = ({
       );
       if (showVideoElms && showVerticalVideoView) {
         cssClasses.push('verticalsWebcamsActivated');
+        if (isEnabledExtendedVerticalCamView) {
+          cssClasses.push('extendedVerticalCamView');
+        }
       }
     } else {
       if (showVideoElms && !showVerticalVideoView) {

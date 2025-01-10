@@ -520,7 +520,10 @@ code {
   }
 
   .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-    @apply pr-[212px];
+    @apply pr-[212px] transition-all duration-300;
+  }
+  .middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
+    @apply pr-[416px];
   }
 
   .middle-fullscreen-wrapper {
@@ -1153,7 +1156,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     }
   }
   .webcam-prev-page {
-    @apply h-20 p-0;
+    @apply h-28 p-0;
     .bottom-area {
       @apply hidden;
     }
@@ -1180,29 +1183,39 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   .video-camera-item {
     @apply order-2;
   }
+}
+.vertical-webcams-wrapper.extended-view-wrap {
   .webcam-next-page,
   .webcam-prev-page {
     .bottom-area {
       @apply hidden;
     }
+    .middle-area {
+      @apply w-full px-5 flex;
+    }
     .icon {
       svg {
-        @apply rotate-90;
+        @apply rotate-0;
       }
     }
   }
-  .row-count-1.total-cam-1 {
+  .webcam-prev-page {
+    .middle-area {
+      @apply justify-end;
+    }
+  }
+  .group-total-cam-1 {
     .camera-row-wrap {
       @apply grid-cols-1 h-[260px];
     }
   }
-  .row-count-1.total-cam-2 {
+  .group-total-cam-2 {
     @apply h-full max-h-[530px];
     .camera-row-wrap {
       @apply grid-cols-1;
     }
   }
-  .row-count-2.total-cam-3 {
+  .group-total-cam-3 {
     @apply gap-3;
     .camera-row-0 {
       @apply grid-cols-1 !h-2/3;
@@ -1211,29 +1224,11 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
       @apply grid-cols-1 h-1/3;
     }
   }
-  .row-count-2.total-cam-4 {
+  .group-total-cam-4 {
     @apply h-full max-h-80;
   }
-  .row-count-3.total-cam-5,
-  .row-count-3.total-cam-6,
-  .row-count-2.total-cam-20.page-3,
-  .row-count-2.total-cam-21.page-3,
-  .row-count-2.total-cam-29.page-4,
-  .row-count-2.total-cam-30.page-4 {
+  .group-total-cam-5,
+  .group-total-cam-6 {
     @apply h-full max-h-[450px];
-  }
-  .row-count-2.total-cam-11.page-2,
-  .row-count-2.total-cam-12.page-2,
-  .row-count-3.total-cam-13.page-2,
-  .row-count-3.total-cam-14.page-2,
-  .row-count-3.total-cam-22.page-3,
-  .row-count-3.total-cam-23.page-3,
-  .row-count-3.total-cam-31.page-4,
-  .row-count-3.total-cam-32.page-4 {
-    @apply h-full max-h-[530px];
-  }
-  .row-count-1.total-cam-19.page-3,
-  .row-count-1.total-cam-28.page-4 {
-    @apply h-full max-h-[260px];
   }
 }
