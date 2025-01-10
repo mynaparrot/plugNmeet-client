@@ -318,7 +318,7 @@ const VideosComponentElms = ({
             >
               {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
               <div
-                className={`inner ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} page-${currentPage}` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
+                className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
               >
                 {videoParticipantsElms}
               </div>
