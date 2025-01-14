@@ -217,11 +217,11 @@ importers:
         specifier: 2.0.9
         version: 2.0.9(react-refresh@0.14.2)(typescript@5.7.2)
       sass:
-        specifier: 1.83.0
-        version: 1.83.0
+        specifier: 1.83.4
+        version: 1.83.4
       sass-loader:
         specifier: 16.0.4
-        version: 16.0.4(sass@1.83.0)(webpack@5.97.1)
+        version: 16.0.4(sass@1.83.4)(webpack@5.97.1)
       size-limit:
         specifier: 11.1.6
         version: 11.1.6
@@ -3508,8 +3508,8 @@ packages:
       webpack:
         optional: true
 
-  sass@1.83.0:
-    resolution: {integrity: sha512-qsSxlayzoOjdvXMVLkzF84DJFc2HZEL/rFyGIKbbilYtAvlCxyuzUeff9LawTn4btVnLKg75Z8MMr1lxU1lfGw==}
+  sass@1.83.4:
+    resolution: {integrity: sha512-B1bozCeNQiOgDcLd33e2Cs2U60wZwjUUXzh900ZyQF5qUasvMdDZYbQ566LJu7cqR+sAHlAfO6RMkaID5s6qpA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -7477,14 +7477,14 @@ snapshots:
       parse-srcset: 1.0.2
       postcss: 8.4.49
 
-  sass-loader@16.0.4(sass@1.83.0)(webpack@5.97.1):
+  sass-loader@16.0.4(sass@1.83.4)(webpack@5.97.1):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
-      sass: 1.83.0
+      sass: 1.83.4
       webpack: 5.97.1(webpack-cli@6.0.1)
 
-  sass@1.83.0:
+  sass@1.83.4:
     dependencies:
       chokidar: 4.0.1
       immutable: 5.0.2
