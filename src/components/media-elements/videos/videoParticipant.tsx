@@ -5,7 +5,7 @@ import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
 import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './videosComponentElms';
-
+import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
 interface VideoParticipantProps {
   participantType: VideoParticipantType;
   participant: RemoteParticipant | LocalParticipant;
@@ -47,6 +47,15 @@ const VideoParticipant = ({
         participantType.isAdmin ? 'admin' : 'participants'
       } ${participantType.isLocal ? 'its-me' : ''}`}
     >
+      {participantType.isLocal ? (
+        <>
+          <div className="switch-camera absolute top-3 left-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full flex items-center justify-center bg-black bg-opacity-50">
+            <RepeatIconSVG />
+          </div>
+        </>
+      ) : (
+        ''
+      )}
       {renderVideoElms}
       <div className="bg-shadow pointer-events-none bg-gradient-to-b from-95% from-black/0 to-black/50 w-full h-full absolute bottom-0 left-0 opacity-0 transition-all duration-300 group-hover:opacity-100"></div>
     </div>

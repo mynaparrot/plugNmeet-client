@@ -437,7 +437,7 @@ code {
   }
 
   &::before {
-    @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px];
+    @apply absolute content-[''] w-full h-full border-[5px] border-solid border-transparent z-[999] rounded-[15px] pointer-events-none;
   }
 
   // &::after {
