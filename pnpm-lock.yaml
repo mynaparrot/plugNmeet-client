@@ -54,8 +54,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       livekit-client:
-        specifier: 2.7.5
-        version: 2.7.5
+        specifier: 2.8.1
+        version: 2.8.1
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -430,11 +430,11 @@ packages:
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
 
-  '@livekit/mutex@1.0.0':
-    resolution: {integrity: sha512-aiUhoThBNF9UyGTxEURFzJLhhPLIVTnQiEVMjRhPnfHNKLfo2JY9xovHKIus7B78UD5hsP6DlgpmAsjrz4U0Iw==}
+  '@livekit/mutex@1.1.1':
+    resolution: {integrity: sha512-EsshAucklmpuUAfkABPxJNhzj9v2sG7JuzFDL4ML1oJQSV14sqrpTYnsaOudMAw9yOaW53NU3QQTlUQoRs4czw==}
 
-  '@livekit/protocol@1.29.4':
-    resolution: {integrity: sha512-dsqxvABHilrMA0BU5m1w8cMWSVeDjV2ZUIUDClNQZju3c30DLMfEYDHU5nmXDfaaHjNIgoRbYR7upJMozG8JJg==}
+  '@livekit/protocol@1.30.0':
+    resolution: {integrity: sha512-SDI9ShVKj8N3oOSinr8inaxD3FXgmgoJlqN35uU/Yx1sdoDeQbzAuBFox7bYjM+VhnZ1V22ivIDjAsKr00H+XQ==}
 
   '@nats-io/jetstream@3.0.0-35':
     resolution: {integrity: sha512-oJdNge4IoNoA3BqZPU9hdX+4okLW2Tn+JAvxeRAV+Nh6J78/8+3O/moyhbz1AszqjakgdeEVTUF3GUa1F/fCZw==}
@@ -2495,8 +2495,8 @@ packages:
     resolution: {integrity: sha512-iyAZCeyD+c1gPyE9qpFu8af0Y+MRtmKOncdGoA2S5EY8iFq99dmmvkNnHiWo+pj0s7yH7l3KPIgee77tKpXPWQ==}
     engines: {node: '>=18.0.0'}
 
-  livekit-client@2.7.5:
-    resolution: {integrity: sha512-sPhHYwXvG75y1LDC50dDC9k6Z49L2vc/HcMRhzhi7yBca6ofPEebpB0bmPOry4ovrnFA+a8TL1pFR2mko1/clw==}
+  livekit-client@2.8.1:
+    resolution: {integrity: sha512-HPv9iHNrnBANI9ucK7CKZspx0sBZK3hjR2EbwaV08+J3RM9+tNGL2ob2n76nxJLEZG7LzdWlLZdbr4fQBP6Hkg==}
 
   load-script@1.0.0:
     resolution: {integrity: sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==}
@@ -3864,6 +3864,9 @@ packages:
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
   tweetnacl@1.0.3:
     resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
 
@@ -4331,9 +4334,9 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@livekit/mutex@1.0.0': {}
+  '@livekit/mutex@1.1.1': {}
 
-  '@livekit/protocol@1.29.4':
+  '@livekit/protocol@1.30.0':
     dependencies:
       '@bufbuild/protobuf': 1.10.0
 
@@ -6555,15 +6558,15 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
 
-  livekit-client@2.7.5:
+  livekit-client@2.8.1:
     dependencies:
-      '@livekit/mutex': 1.0.0
-      '@livekit/protocol': 1.29.4
+      '@livekit/mutex': 1.1.1
+      '@livekit/protocol': 1.30.0
       events: 3.3.0
       loglevel: 1.9.2
       sdp-transform: 2.14.2
       ts-debounce: 4.0.0
-      tslib: 2.7.0
+      tslib: 2.8.1
       typed-emitter: 2.1.0
       webrtc-adapter: 9.0.1
 
@@ -7459,7 +7462,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.1
     optional: true
 
   safe-buffer@5.1.2: {}
@@ -7919,6 +7922,8 @@ snapshots:
       webpack: 5.97.1(webpack-cli@6.0.1)
 
   tslib@2.7.0: {}
+
+  tslib@2.8.1: {}
 
   tweetnacl@1.0.3: {}
 
