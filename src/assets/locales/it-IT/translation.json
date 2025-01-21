@@ -36,7 +36,7 @@
     "room-disconnected-duplicate-entry": "Un altro utente con lo stesso userId è stato aggiunto. Codice: {{code}}",
     "room-disconnected-server-shutdown": "Arresto del server. Codice: {{code}}",
     "room-disconnected-participant-removed": "Sei stato rimosso da questa conferenza. Codice: {{code}}",
-    "room-disconnected-room-ended": "La stanza è stata chiusa. Codice: {{code}}",
+    "room-disconnected-room-ended": "La stanza è stata chiusa.",
     "room-disconnected-state-mismatch": "Stato non corrispondente. Codice: {{code}}",
     "room-disconnected-reconnecting": "Camera disconnessa, ricollegante...",
     "room-disconnected-network-error": "Camera disconnessa a causa di un errore di rete.",
@@ -151,7 +151,7 @@
     "require-ssl-des": "È necessario utilizzare un dominio abilitato SSL diverso da localhost."
   },
   "left-panel": {
-    "participants": "Partecipanti ({total}):",
+    "participants": "Partecipanti ({{total}}):",
     "approve": "Consenti",
     "reject": "Rifiuta",
     "participants-tab": "Partecipanti",
