@@ -540,18 +540,16 @@ code {
     }
   }
 
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-    @apply pr-[212px] transition-all duration-300;
-  }
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
-    @apply pr-[416px];
-  }
-
   .middle-fullscreen-wrapper {
     @apply flex-[auto] w-full h-full;
   }
 }
-
+.middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  @apply pr-[212px] transition-all duration-300;
+}
+.middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
+  @apply pr-[416px];
+}
 .SpeechHistory {
   &::before {
     content: '';

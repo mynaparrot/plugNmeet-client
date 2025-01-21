@@ -328,10 +328,10 @@ const VideosComponentElms = ({
         <div
           className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
         >
-          <div className="pin-webcam-view">{pinParticipant}</div>
           <div
             className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
           >
+            <div className="pin-webcam-view">{pinParticipant}</div>
             {videoParticipantsElms}
           </div>
           {isActiveParticipantsPanel || isActiveChatPanel ? null : (
@@ -390,6 +390,40 @@ const VideosComponentElms = ({
       // pin cam will get full view
       // TODO: here need to write new layout
       console.log('here need to write new layout', pinParticipant);
+      return (
+        <>
+          <div className={`pinView-camera-fullWidth w-full h-full p-4`}>
+            {pinParticipant}
+          </div>
+          <div
+            className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
+          >
+            <div
+              className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
+            >
+              {videoParticipantsElms}
+            </div>
+            {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+              <button
+                onClick={() =>
+                  dispatch(
+                    updateIsEnabledExtendedVerticalCamView(
+                      !isEnabledExtendedVerticalCamView,
+                    ),
+                  )
+                }
+                className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+              >
+                <span
+                  className={`${isEnabledExtendedVerticalCamView ? '' : 'rotate-180'}`}
+                >
+                  <ArrowRight />
+                </span>
+              </button>
+            )}
+          </div>
+        </>
+      );
     } else {
       return (
         <div

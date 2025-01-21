@@ -234,7 +234,7 @@ const MainComponents = ({
           cssClasses.push('extendedVerticalCamView');
         }
         if (pinCamUserId) {
-          cssClasses.push('pinWebcamActivated');
+          cssClasses.push('pinWebcamActivated verticalsWebcamsActivated');
         }
       }
     } else {
@@ -249,7 +249,7 @@ const MainComponents = ({
           cssClasses.push('extendedVerticalCamView');
         }
         if (pinCamUserId) {
-          cssClasses.push('pinWebcamActivated');
+          cssClasses.push('pinWebcamActivated verticalsWebcamsActivated');
         }
       } else {
         cssClasses.push('middle-fullscreen-wrapper h-full flex w-full');
