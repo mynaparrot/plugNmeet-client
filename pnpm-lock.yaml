@@ -214,8 +214,8 @@ importers:
         specifier: 0.14.2
         version: 0.14.2
       react-refresh-typescript:
-        specifier: 2.0.9
-        version: 2.0.9(react-refresh@0.14.2)(typescript@5.7.3)
+        specifier: 2.0.10
+        version: 2.0.10(react-refresh@0.14.2)(typescript@5.7.3)
       sass:
         specifier: 1.83.4
         version: 1.83.4
@@ -3346,10 +3346,10 @@ packages:
       redux:
         optional: true
 
-  react-refresh-typescript@2.0.9:
-    resolution: {integrity: sha512-chAnOO4vpxm/3WkgOVmti+eN8yUtkJzeGkOigV6UA9eDFz12W34e/SsYe2H5+RwYJ3+sfSZkVbiXcG1chEBxlg==}
+  react-refresh-typescript@2.0.10:
+    resolution: {integrity: sha512-Cj8ZKTPEEdSoxiopFq0tB0rq/Wl90yWzAX1LEp9CGvzvauDUmC4BHIQXzcuT8/61naq/KmkR3A9VzqdZ9c6j1g==}
     peerDependencies:
-      react-refresh: 0.10.x || 0.11.x || 0.12.x || 0.13.x || 0.14.x
+      react-refresh: 0.10.x || 0.11.x || 0.12.x || 0.13.x || 0.14.x || 0.15.x || 0.16.x || 0.17.x
       typescript: ^4.8 || ^5.0
 
   react-refresh@0.14.2:
@@ -7347,7 +7347,7 @@ snapshots:
       '@types/react': 18.3.1
       redux: 5.0.1
 
-  react-refresh-typescript@2.0.9(react-refresh@0.14.2)(typescript@5.7.3):
+  react-refresh-typescript@2.0.10(react-refresh@0.14.2)(typescript@5.7.3):
     dependencies:
       react-refresh: 0.14.2
       typescript: 5.7.3
