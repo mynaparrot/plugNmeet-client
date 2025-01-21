@@ -72,11 +72,11 @@ const VideosComponentElms = ({
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isVertical && pinParticipant) {
+    if (isVertical && isEnabledExtendedVerticalCamView && pinParticipant) {
       // for pin cam needs to use one full row
-      setWebcamPerPage(VERTICAL_PER_PAGE - 2);
+      setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE - 2);
     }
-  }, [isVertical, pinParticipant]);
+  }, [isEnabledExtendedVerticalCamView, isVertical, pinParticipant]);
 
   useEffect(() => {
     if (isVertical) {
@@ -322,7 +322,7 @@ const VideosComponentElms = ({
       return null;
     }
 
-    if (isVertical && pinParticipant) {
+    if (isVertical && isEnabledExtendedVerticalCamView && pinParticipant) {
       // vertical + pinParticipant, so vertical view will lose on row
       return (
         <div
