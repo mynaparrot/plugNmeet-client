@@ -1,23 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
+
 import VideoElm from './videoElm';
-// import ConnectionStatus from './connectionStatus';
-// import MicStatus from './micStatus';
-// import PinWebcam from './pinWebcam';
+import PinWebcam from './pinWebcam';
+import MicStatus from './micStatus';
+import ConnectionStatus from './connectionStatus';
+import { sleep } from '../../../../helpers/utils';
 
 export interface IVideoComponentProps {
   userId: string;
   track: RemoteTrackPublication | LocalTrackPublication;
+  displayPinIcon: boolean;
 }
-const VideoComponent = ({ userId, track }: IVideoComponentProps) => {
-  const render = () => {
-    return (
-      <>
-        <VideoElm track={track} userId={userId} />
-      </>
-    );
+const VideoComponent = ({
+  userId,
+  track,
+  displayPinIcon,
+}: IVideoComponentProps) => {
+  const [videoRef, setVideoRef] =
+    useState<React.RefObject<HTMLVideoElement> | null>(null);
+
+  const fullScreen = async () => {
+    if (!document.fullscreenElement) {
+      videoRef?.current?.requestFullscreen().catch((err) => {
+        alert(
+          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
+        );
+      });
+    } else {
+      await document.exitFullscreen();
+    }
   };
-  return <div className="camera-modules">{render()}</div>;
+
+  const pictureInPicture = async () => {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture();
+      await sleep(500);
+    }
+    if (videoRef && videoRef.current) {
+      await videoRef.current.requestPictureInPicture();
+    }
+  };
+
+  return (
+    <div className="camera-modules">
+      <div className="camera-video-player">
+        <VideoElm track={track} setVideoRef={setVideoRef} />
+        <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999] transition-all duration-300 opacity-0 group-hover:opacity-100">
+          {displayPinIcon ? <PinWebcam userId={userId} /> : null}
+          <button
+            className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+            onClick={fullScreen}
+          >
+            <i className="icon pnm-fullscreen text[14px] text-white" />
+          </button>
+          <MicStatus userId={userId} />
+          {document.pictureInPictureEnabled ? (
+            <button
+              className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+              onClick={pictureInPicture}
+            >
+              <i className="icon pnm-pip text-[14px] text-white" />
+            </button>
+          ) : null}
+          <ConnectionStatus userId={userId} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default VideoComponent;

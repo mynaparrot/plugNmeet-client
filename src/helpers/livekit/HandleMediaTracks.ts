@@ -20,6 +20,7 @@ import {
   ICurrentUser,
   IRoomMetadata,
 } from '../../store/slices/interfaces/session';
+import { updatePinCamUserId } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleMediaTracks {
   private that: IConnectLivekit;
@@ -255,6 +256,11 @@ export default class HandleMediaTracks {
           },
         }),
       );
+
+      if (store.getState().roomSettings.pinCamUserId === participant.identity) {
+        // so, need to unset
+        store.dispatch(updatePinCamUserId(undefined));
+      }
     }
   }
 }

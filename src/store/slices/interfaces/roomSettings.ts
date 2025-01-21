@@ -31,7 +31,6 @@ export interface IRoomSettings {
   selectedChatOption: string;
   initiatePrivateChat: InitiatePrivateChat;
   unreadMsgFrom: Array<string>;
-  refreshWebcams: number;
 
   columnCameraWidth: ColumnCameraWidth;
   columnCameraPosition: ColumnCameraPosition;
@@ -39,6 +38,7 @@ export interface IRoomSettings {
   visibleFooter: boolean;
   azureTokenInfo?: AzureTokenInfo;
   isPNMWindowTabVisible: boolean;
+  pinCamUserId?: string;
 }
 
 export interface IMediaDevice {

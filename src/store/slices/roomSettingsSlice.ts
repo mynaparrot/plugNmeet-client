@@ -39,7 +39,6 @@ const initialState: IRoomSettings = {
     userId: '',
   },
   unreadMsgFrom: [],
-  refreshWebcams: 0,
 
   columnCameraWidth: ColumnCameraWidth.FULL_WIDTH,
   columnCameraPosition: ColumnCameraPosition.LEFT,
@@ -136,9 +135,6 @@ const roomSettingsSlice = createSlice({
         state.unreadMsgFrom = tmp.filter((id) => id !== action.payload.id);
       }
     },
-    doRefreshWebcams: (state) => {
-      state.refreshWebcams = Date.now();
-    },
     updateColumnCameraWidth: (
       state,
       action: PayloadAction<ColumnCameraWidth>,
@@ -168,6 +164,9 @@ const roomSettingsSlice = createSlice({
     updateIsPNMWindowTabVisible: (state, action: PayloadAction<boolean>) => {
       state.isPNMWindowTabVisible = action.payload;
     },
+    updatePinCamUserId: (state, action: PayloadAction<string | undefined>) => {
+      state.pinCamUserId = action.payload;
+    },
   },
 });
 
@@ -191,7 +190,6 @@ export const {
   updateSelectedChatOption,
   updateInitiatePrivateChat,
   updateUnreadMsgFrom,
-  doRefreshWebcams,
   updateColumnCameraWidth,
   updateColumnCameraPosition,
   toggleHeaderVisibility,
@@ -200,6 +198,7 @@ export const {
   cleanAzureToken,
   updateIsNatsServerConnected,
   updateIsPNMWindowTabVisible,
+  updatePinCamUserId,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

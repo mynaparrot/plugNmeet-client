@@ -170,6 +170,27 @@ code {
     }
   }
 }
+// hide few icons
+.total-cam-1 {
+  // when there will be one webcam then we'll disable toggle + pin icon
+  .video-camera-item {
+    .switch-camera {
+      display: none;
+    }
+    .pin-webcam {
+      display: none;
+    }
+  }
+}
+.verticalsWebcamsActivated,
+.pinWebcamActivated {
+  .video-camera-item {
+    .switch-camera {
+      display: none;
+    }
+  }
+}
+
 .all-webcam-wrapper.page-2 {
   .all-webcam-wrapper-inner {
     .camera-row-1.total-items-3 {

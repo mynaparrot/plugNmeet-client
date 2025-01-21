@@ -1,10 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import {
-  participantsSelector,
-  updateParticipant,
-} from '../../../../store/slices/participantSlice';
-import { doRefreshWebcams } from '../../../../store/slices/roomSettingsSlice';
+import { updatePinCamUserId } from '../../../../store/slices/roomSettingsSlice';
 
 interface IPinWebcamProps {
   userId: string;
@@ -12,21 +8,28 @@ interface IPinWebcamProps {
 
 const PinWebcam = ({ userId }: IPinWebcamProps) => {
   const dispatch = useAppDispatch();
-  const pinWebcam = useAppSelector(
-    (state) => participantsSelector.selectById(state, userId)?.pinWebcam,
+  const pinCamUserId = useAppSelector(
+    (state) => state.roomSettings.pinCamUserId,
   );
+  const [isPinCamActive, setIsPinCamActive] = useState<boolean>(false);
 
-  const togglePin = () => {
-    dispatch(
-      updateParticipant({
-        id: userId,
-        changes: {
-          pinWebcam: !pinWebcam,
-        },
-      }),
-    );
-    dispatch(doRefreshWebcams());
-  };
+  useEffect(() => {
+    if (pinCamUserId && pinCamUserId === userId) {
+      setIsPinCamActive(true);
+    } else {
+      setIsPinCamActive(false);
+    }
+    //eslint-disable-next-line
+  }, [pinCamUserId]);
+
+  const togglePin = useCallback(() => {
+    if (isPinCamActive) {
+      dispatch(updatePinCamUserId(undefined));
+    } else {
+      dispatch(updatePinCamUserId(userId));
+    }
+    //eslint-disable-next-line
+  }, [isPinCamActive]);
 
   const render = useMemo(() => {
     return (
@@ -34,7 +37,7 @@ const PinWebcam = ({ userId }: IPinWebcamProps) => {
         className="pin-webcam cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
         onClick={togglePin}
       >
-        {pinWebcam ? (
+        {isPinCamActive ? (
           <i className="pnm-pin text-white text-[12px]" />
         ) : (
           <i className="pnm-pin -rotate-90 text-white text-[12px]" />
@@ -42,7 +45,7 @@ const PinWebcam = ({ userId }: IPinWebcamProps) => {
       </div>
     );
     //eslint-disable-next-line
-  }, [pinWebcam]);
+  }, [isPinCamActive]);
 
   return <>{render}</>;
 };

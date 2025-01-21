@@ -53,6 +53,9 @@ const MainComponents = ({
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
+  const pinCamUserId = useAppSelector(
+    (state) => state.roomSettings.pinCamUserId,
+  );
 
   const [showVerticalVideoView, setShowVerticalVideoView] =
     useState<boolean>(false);
@@ -243,6 +246,9 @@ const MainComponents = ({
         cssClasses.push('middle-fullscreen-wrapper h-full flex w-full');
       }
     }
+    if (showVideoElms && pinCamUserId) {
+      cssClasses.push('pinWebcamActivated');
+    }
     return cssClasses.join(' ');
   }, [
     isActiveScreenSharingView,
@@ -250,6 +256,7 @@ const MainComponents = ({
     showVideoElms,
     showVerticalVideoView,
     isEnabledExtendedVerticalCamView,
+    pinCamUserId,
   ]);
 
   return (

@@ -16,6 +16,7 @@ import { updateIsEnabledExtendedVerticalCamView } from '../../../store/slices/bo
 
 interface IVideosComponentElmsProps {
   allParticipants: React.JSX.Element[];
+  pinParticipant?: React.JSX.Element;
   totalNumWebcams: number;
   isVertical?: boolean;
 }
@@ -34,6 +35,7 @@ const MOBILE_PER_PAGE = 6,
 
 const VideosComponentElms = ({
   allParticipants,
+  pinParticipant,
   totalNumWebcams,
   isVertical,
 }: IVideosComponentElmsProps) => {
@@ -68,6 +70,13 @@ const VideosComponentElms = ({
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isVertical && pinParticipant) {
+      // for pin cam needs to use one full row
+      setWebcamPerPage(VERTICAL_PER_PAGE - 2);
+    }
+  }, [isVertical, pinParticipant]);
 
   useEffect(() => {
     if (isVertical) {
@@ -308,72 +317,93 @@ const VideosComponentElms = ({
     deviceOrientation,
   ]);
 
-  return (
-    <>
-      {totalNumWebcams > 0 ? (
-        <>
-          {isVertical ? (
-            <div
-              className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
-            >
-              {/* If we have two column of camera then we have to add these class (flex flex-col justify-center gap-3) to each column */}
-              <div
-                className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
-              >
-                {videoParticipantsElms}
-              </div>
-              {isActiveParticipantsPanel || isActiveChatPanel ? null : (
-                <button
-                  onClick={() =>
-                    dispatch(
-                      updateIsEnabledExtendedVerticalCamView(
-                        !isEnabledExtendedVerticalCamView,
-                      ),
-                    )
-                  }
-                  className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
-                >
-                  <span
-                    className={`${isEnabledExtendedVerticalCamView ? '' : 'rotate-180'}`}
-                  >
-                    <ArrowRight />
-                  </span>
-                </button>
-              )}
-            </div>
-          ) : (
-            <div
-              className={`all-webcam-wrapper total-cam-${totalNumWebcams} selected-cam-${webcamPerPage} page-${currentPage}`}
-            >
-              <div className="all-webcam-wrapper-inner">
-                {videoParticipantsElms}
-              </div>
-            </div>
-          )}
-        </>
-      ) : null}
-      {/* {deviceType === UserDeviceType.DESKTOP &&
-      totalNumWebcams > 6 &&
-      !isVertical ? (
-        <div className="select-camera-number">
-          <select
-            name="select-camera-num"
-            id="select-camera-num"
-            defaultValue="24"
-            onChange={(e) => setWebcamPerPage(Number(e.currentTarget.value))}
+  const renderView = () => {
+    if (!totalNumWebcams) {
+      return null;
+    }
+
+    if (isVertical && pinParticipant) {
+      // vertical + pinParticipant, so vertical view will lose on row
+      return (
+        <div
+          className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
+        >
+          <div className="pin-webcam-view">{pinParticipant}</div>
+          <div
+            className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
           >
-            <option value="6">6</option>
-            <option value="8">8</option>
-            <option value="12">12</option>
-            <option value="15">15</option>
-            <option value="18">18</option>
-            <option value="24">24</option>
-          </select>
-          <label htmlFor="select-camera-num">{t('app.webcams-per-page')}</label>
+            {videoParticipantsElms}
+          </div>
+          {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+            <button
+              onClick={() =>
+                dispatch(
+                  updateIsEnabledExtendedVerticalCamView(
+                    !isEnabledExtendedVerticalCamView,
+                  ),
+                )
+              }
+              className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+            >
+              <span
+                className={`${isEnabledExtendedVerticalCamView ? '' : 'rotate-180'}`}
+              >
+                <ArrowRight />
+              </span>
+            </button>
+          )}
         </div>
-      ) : null} */}
-    </>
-  );
+      );
+    } else if (isVertical) {
+      // only normal vertical view without any pin cam
+      return (
+        <div
+          className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
+        >
+          <div
+            className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
+          >
+            {videoParticipantsElms}
+          </div>
+          {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+            <button
+              onClick={() =>
+                dispatch(
+                  updateIsEnabledExtendedVerticalCamView(
+                    !isEnabledExtendedVerticalCamView,
+                  ),
+                )
+              }
+              className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+            >
+              <span
+                className={`${isEnabledExtendedVerticalCamView ? '' : 'rotate-180'}`}
+              >
+                <ArrowRight />
+              </span>
+            </button>
+          )}
+        </div>
+      );
+    } else if (pinParticipant) {
+      // normal view + pinParticipant, so all other cameras will be in vertical view
+      // pin cam will get full view
+      // TODO: here need to write new layout
+      console.log('here need to write new layout', pinParticipant);
+    } else {
+      return (
+        <div
+          className={`all-webcam-wrapper total-cam-${totalNumWebcams} selected-cam-${webcamPerPage} page-${currentPage}`}
+        >
+          <div className="all-webcam-wrapper-inner">
+            {videoParticipantsElms}
+          </div>
+        </div>
+      );
+    }
+  };
+
+  return renderView();
 };
 
 export default VideosComponentElms;
