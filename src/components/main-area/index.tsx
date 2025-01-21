@@ -72,9 +72,14 @@ const MainArea = () => {
 
     // ask for notification permission
     // we'll not bother if permission was rejected before
-    if ('Notification' in window && Notification.permission !== 'denied') {
+    if (
+      !isRecorder &&
+      'Notification' in window &&
+      Notification.permission !== 'denied'
+    ) {
       Notification.requestPermission().then();
     }
+    //eslint-disable-next-line
   }, [dispatch]);
 
   useEffect(() => {
