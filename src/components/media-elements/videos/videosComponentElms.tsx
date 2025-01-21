@@ -72,9 +72,13 @@ const VideosComponentElms = ({
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isVertical && isEnabledExtendedVerticalCamView && pinParticipant) {
-      // for pin cam needs to use one full row
-      setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE - 2);
+    if (pinParticipant) {
+      if (isVertical && isEnabledExtendedVerticalCamView) {
+        // for pin cam needs to use one full row
+        setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE - 2);
+      } else {
+        setWebcamPerPage(VERTICAL_PER_PAGE);
+      }
     }
   }, [isEnabledExtendedVerticalCamView, isVertical, pinParticipant]);
 
@@ -280,13 +284,8 @@ const VideosComponentElms = ({
   };
 
   const videoParticipantsElms = useMemo(() => {
-    if (isVertical) {
-      if (!isEnabledExtendedVerticalCamView) {
-        return participantsToRender;
-      } else {
-        return getElmsForPCExtendedVerticalView(participantsToRender);
-      }
-    } else if (pinParticipant) {
+    if (isVertical || pinParticipant) {
+      // both have same behavior
       if (!isEnabledExtendedVerticalCamView) {
         return participantsToRender;
       } else {
@@ -329,7 +328,7 @@ const VideosComponentElms = ({
       return null;
     }
 
-    if (isVertical && isEnabledExtendedVerticalCamView && pinParticipant) {
+    if (isVertical && pinParticipant) {
       // vertical + pinParticipant, so vertical view will lose on row
       return (
         <div
