@@ -226,28 +226,34 @@ const MainComponents = ({
       cssClasses.push(
         'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
       );
-      if (showVideoElms && showVerticalVideoView) {
-        cssClasses.push('verticalsWebcamsActivated');
+      if (showVideoElms) {
+        if (showVerticalVideoView) {
+          cssClasses.push('verticalsWebcamsActivated');
+        }
         if (isEnabledExtendedVerticalCamView) {
           cssClasses.push('extendedVerticalCamView');
         }
+        if (pinCamUserId) {
+          cssClasses.push('pinWebcamActivated');
+        }
       }
     } else {
-      if (showVideoElms && !showVerticalVideoView) {
+      if (showVideoElms && !showVerticalVideoView && !pinCamUserId) {
         cssClasses.push('h-full');
-      } else if (showVideoElms && showVerticalVideoView) {
-        cssClasses.push(
-          'middle-fullscreen-wrapper h-full flex verticalsWebcamsActivated',
-        );
+      } else if (showVideoElms) {
+        cssClasses.push('middle-fullscreen-wrapper h-full flex');
+        if (showVerticalVideoView) {
+          cssClasses.push('verticalsWebcamsActivated');
+        }
         if (isEnabledExtendedVerticalCamView) {
           cssClasses.push('extendedVerticalCamView');
+        }
+        if (pinCamUserId) {
+          cssClasses.push('pinWebcamActivated');
         }
       } else {
         cssClasses.push('middle-fullscreen-wrapper h-full flex w-full');
       }
-    }
-    if (showVideoElms && pinCamUserId) {
-      cssClasses.push('pinWebcamActivated');
     }
     return cssClasses.join(' ');
   }, [
