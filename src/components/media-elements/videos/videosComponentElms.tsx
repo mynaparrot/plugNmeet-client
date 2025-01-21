@@ -286,6 +286,12 @@ const VideosComponentElms = ({
       } else {
         return getElmsForPCExtendedVerticalView(participantsToRender);
       }
+    } else if (pinParticipant) {
+      if (!isEnabledExtendedVerticalCamView) {
+        return participantsToRender;
+      } else {
+        return getElmsForPCExtendedVerticalView(participantsToRender);
+      }
     }
 
     let elms: Array<React.JSX.Element>;
@@ -315,6 +321,7 @@ const VideosComponentElms = ({
     isEnabledExtendedVerticalCamView,
     participantsToRender,
     deviceOrientation,
+    pinParticipant,
   ]);
 
   const renderView = () => {
