@@ -60,6 +60,7 @@ const VideosComponentElms = ({
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
   const deviceType = store.getState().session.userDeviceType;
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const [participantsToRender, setParticipantsToRender] = useState<
     Array<React.JSX.Element>
@@ -150,22 +151,22 @@ const VideosComponentElms = ({
       // then only have next
       // so, we'll deduct per page by 1
       // and insert pagination in that slot
-      // if (!isVertical) {
-      per_page--;
-      // }
+      if (!isRecorder) {
+        per_page--;
+      }
       hasNextPage = true;
     } else {
       hasPrevPage = true;
-      // if (!isVertical) {
-      per_page--;
-      // }
+      if (!isRecorder) {
+        per_page--;
+      }
       // so, we're in next page
       if (page_number >= totalNumWebcams / per_page) {
         hasNextPage = false;
       } else {
-        // if (!isVertical) {
-        per_page--;
-        // }
+        if (!isRecorder) {
+          per_page--;
+        }
         hasNextPage = true;
       }
     }
@@ -175,7 +176,7 @@ const VideosComponentElms = ({
       page_number * per_page,
     );
 
-    if (hasNextPage) {
+    if (!isRecorder && hasNextPage) {
       display.push(
         <button
           role="button"
@@ -186,7 +187,7 @@ const VideosComponentElms = ({
         </button>,
       );
     }
-    if (hasPrevPage) {
+    if (!isRecorder && hasPrevPage) {
       display.splice(
         0,
         0,
