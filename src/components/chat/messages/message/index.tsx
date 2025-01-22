@@ -18,6 +18,15 @@ const Message = ({ body, currentUser }: IMessageProps) => {
   );
   const { t } = useTranslation();
 
+  const formatDate = (timeStamp: string) => {
+    const date = new Date(Number(timeStamp));
+    return date.toLocaleString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
+
   const render = () => {
     if (body.fromUserId === 'system') {
       return (
@@ -38,7 +47,9 @@ const Message = ({ body, currentUser }: IMessageProps) => {
           <div className="content me w-[calc(100%-48px)] ml-auto">
             <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
               <p>{t('right-panel.you')}</p>
-              <p className="time text-xs text-Gray-600">8:37AM</p>
+              <p className="time text-xs text-Gray-600">
+                {formatDate(body.sentAt)}
+              </p>
             </div>
             <p
               className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden rounded-br-none text-base text-Gray-950 break-words"
@@ -60,7 +71,10 @@ const Message = ({ body, currentUser }: IMessageProps) => {
                   {participantName ? '' : ' (offline)'}
                 </span>
               </p>
-              <p className="time text-xs text-Gray-600">8:37AM</p>
+              <p className="time text-xs text-Gray-600">
+                {' '}
+                {formatDate(body.sentAt)}
+              </p>
             </div>
             <p
               className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words rounded-tl-none bg-Gray-50"

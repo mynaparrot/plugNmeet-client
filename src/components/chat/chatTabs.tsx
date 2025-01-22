@@ -132,7 +132,7 @@ const ChatTabs = () => {
       <div className="top flex items-center gap-2 h-14 px-5 justify-between">
         <div className="left flex items-center gap-3">
           <p className="text-base text-Gray-950 font-medium leading-tight">
-            Public Chat
+            {selectedChatOption === 'public' ? 'Public Chat' : 'Private Chat'}
           </p>
           <div className="lang h-8 w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-[11px] text-sm font-semibold text-Gray-950">
             EN
