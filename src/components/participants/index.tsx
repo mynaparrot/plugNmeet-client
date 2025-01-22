@@ -44,11 +44,9 @@ const ParticipantsComponent = () => {
         p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
     if (searchParticipant) {
-      list = list.filter((p) => {
-        return p.name
-          .toLocaleLowerCase()
-          .match(searchParticipant.toLocaleLowerCase());
-      });
+      list = list.filter((p) =>
+        p.name.toLocaleLowerCase().match(searchParticipant.toLocaleLowerCase()),
+      );
     }
     setParticipants(list);
   }, [totalParticipants, searchParticipant]);
