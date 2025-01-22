@@ -9,7 +9,7 @@ const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
   isActiveWebcam: false,
   isActiveChatPanel: false,
-  isActiveParticipantsPanel: true,
+  isActiveParticipantsPanel: false,
   isActiveRaisehand: false,
   isActiveRecording: false,
   isActiveScreenshare: false,
@@ -59,9 +59,6 @@ const bottomIconsSlice = createSlice({
       if (state.isActiveChatPanel) {
         // if open then we'll make it 0
         state.totalUnreadChatMsgs = 0;
-        if (state.isEnabledExtendedVerticalCamView) {
-          state.isEnabledExtendedVerticalCamView = false;
-        }
       }
     },
     updateIsActiveParticipantsPanel: (
@@ -72,12 +69,6 @@ const bottomIconsSlice = createSlice({
         state.isActiveChatPanel = false;
       }
       state.isActiveParticipantsPanel = action.payload;
-      if (
-        state.isActiveParticipantsPanel &&
-        state.isEnabledExtendedVerticalCamView
-      ) {
-        state.isEnabledExtendedVerticalCamView = false;
-      }
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
       state.isActiveRaisehand = action.payload;

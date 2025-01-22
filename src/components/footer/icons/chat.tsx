@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 // import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch, store } from '../../../store';
-import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActiveChatPanel,
+  updateIsEnabledExtendedVerticalCamView,
+} from '../../../store/slices/bottomIconsActivitySlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { ChatIconSVG } from '../../../assets/Icons/ChatIconSVG';
 
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
+  const isRecorder = store.getState().session.currentUser?.isRecorder;
   // const { t } = useTranslation();
 
   const isActiveChatPanel = useAppSelector(
@@ -20,13 +24,17 @@ const ChatIcon = () => {
   // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const [allowChat, setAllowChat] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   if (isActiveChatPanel) {
-  //     setIconCSS('secondaryColor');
-  //   } else {
-  //     setIconCSS('primaryColor dark:text-darkText');
-  //   }
-  // }, [isActiveChatPanel]);
+  useEffect(() => {
+    // if (isActiveChatPanel) {
+    //   setIconCSS('secondaryColor');
+    // } else {
+    //   setIconCSS('primaryColor dark:text-darkText');
+    // }
+    if (isActiveChatPanel && !isRecorder) {
+      dispatch(updateIsEnabledExtendedVerticalCamView(false));
+    }
+    //eslint-disable-next-line
+  }, [isActiveChatPanel]);
 
   useEffect(() => {
     const metadata = store.getState().session.currentRoom

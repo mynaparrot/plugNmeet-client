@@ -9,7 +9,11 @@ import { useAppSelector, useAppDispatch, store } from '../../store';
 import ActiveSpeakers from '../active-speakers';
 import MainComponents from './mainComponents';
 import { IRoomMetadata } from '../../store/slices/interfaces/session';
-import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActiveChatPanel,
+  updateIsActiveParticipantsPanel,
+  updateIsEnabledExtendedVerticalCamView,
+} from '../../store/slices/bottomIconsActivitySlice';
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
 
@@ -68,6 +72,15 @@ const MainArea = () => {
     if (!metadata.roomFeatures?.chatFeatures?.allowChat) {
       setAllowChat(false);
       dispatch(updateIsActiveChatPanel(false));
+    }
+
+    // if not recorder then by default participants panel will open
+    if (!isRecorder) {
+      dispatch(updateIsActiveParticipantsPanel(true));
+    }
+    // if recorder then webcam always has extended view
+    if (isRecorder) {
+      dispatch(updateIsEnabledExtendedVerticalCamView(true));
     }
 
     // ask for notification permission
