@@ -72,7 +72,6 @@ const Message = ({ body, currentUser }: IMessageProps) => {
                 </span>
               </p>
               <p className="time text-xs text-Gray-600">
-                {' '}
                 {formatDate(body.sentAt)}
               </p>
             </div>

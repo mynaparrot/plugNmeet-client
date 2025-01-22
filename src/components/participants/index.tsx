@@ -22,6 +22,7 @@ const ParticipantsComponent = () => {
   const { outerRef, innerRef, items } = useVirtual({
     itemCount: participants.length,
   });
+  const [searchParticipant, setSearchParticipant] = useState<string>('');
 
   const [removeParticipantData, setRemoveParticipantData] =
     useState<IRemoveParticipantAlertModalData>();
@@ -38,15 +39,19 @@ const ParticipantsComponent = () => {
     if (!participants.length) {
       return;
     }
-    setParticipants(
-      participants.filter(
-        (p) =>
-          p.name !== '' &&
-          p.userId !== 'RECORDER_BOT' &&
-          p.userId !== 'RTMP_BOT',
-      ),
+    let list = participants.filter(
+      (p) =>
+        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
-  }, [totalParticipants]);
+    if (searchParticipant) {
+      list = list.filter((p) => {
+        return p.name
+          .toLocaleLowerCase()
+          .match(searchParticipant.toLocaleLowerCase());
+      });
+    }
+    setParticipants(list);
+  }, [totalParticipants, searchParticipant]);
 
   const onOpenRemoveParticipantAlert = (
     name: string,
@@ -110,6 +115,7 @@ const ParticipantsComponent = () => {
               id="search-participants"
               placeholder="Search for Participant"
               className="text-Gray-950 placeholder:text-Gray-600 h-11 rounded-[15px] bg-white border border-Gray-200 w-full pl-10 outline-none text-sm"
+              onChange={(e) => setSearchParticipant(e.target.value)}
             />
           </div>
         </div>
