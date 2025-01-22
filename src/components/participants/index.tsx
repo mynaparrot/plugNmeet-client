@@ -43,7 +43,7 @@ const ParticipantsComponent = () => {
       (p) =>
         p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
-    if (searchParticipant) {
+    if (searchParticipant !== '') {
       list = list.filter((p) =>
         p.name.toLocaleLowerCase().match(searchParticipant.toLocaleLowerCase()),
       );
