@@ -136,6 +136,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   )}
                   {selectedAudioDevice === '' && selectedVideoDevice === '' ? (
                     <button
+                      id="listenOnlyJoin"
                       type="button"
                       className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => onClose()}
