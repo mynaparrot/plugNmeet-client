@@ -104,7 +104,7 @@ const Messages = ({ userId }: IMessagesProps) => {
     >
       <div ref={innerRef as any} className="inner">
         {items.map(({ index, measureRef }) => (
-          <div key={index} ref={measureRef} className="message-item pb-4">
+          <div key={index} ref={measureRef} className="message-item py-2">
             {renderMsg(index)}
           </div>
         ))}

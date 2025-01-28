@@ -129,7 +129,7 @@ const ChatTabs = () => {
 
   return (
     <div className="h-full">
-      <div className="top flex items-center gap-2 h-14 px-5 justify-between">
+      <div className="top-chat-header flex items-center gap-2 h-14 px-5 justify-between">
         <div className="left flex items-center gap-3">
           <p className="text-base text-Gray-950 font-medium leading-tight">
             {selectedChatOption === 'public' ? 'Public Chat' : 'Private Chat'}
@@ -143,7 +143,7 @@ const ChatTabs = () => {
         </div>
       </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
-        <div className="relative h-10 z-10">
+        <div className="relative h-10 z-10 chat-tabs">
           <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-10 w-full outline-none px-5 text-sm text-Gray-700">
             <p className="block truncate">
               To:{' '}
@@ -233,7 +233,7 @@ const ChatTabs = () => {
           </Transition>
         </div>
       </Listbox>
-      <div className="h-[calc(100%-176px)]">
+      <div className="h-[calc(100%-176px)] chat-messages-container">
         <Messages userId={selectedChatOption} />
       </div>
     </div>

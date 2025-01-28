@@ -32,7 +32,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       return (
         <>
           {/* System Message Design */}
-          <div className="content w-full system my-2">
+          <div className="content w-full system">
             <p
               className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words"
               dangerouslySetInnerHTML={{ __html: body.message }}
