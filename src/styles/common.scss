@@ -1157,6 +1157,11 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   .video-camera-item {
     @apply h-1/4;
   }
+  .video-camera-item.pinCam-item {
+    .video-camera-item {
+      @apply h-full w-full;
+    }
+  }
   .webcam-next-page {
     @apply h-28 p-0;
     .bottom-area {
@@ -1175,7 +1180,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     }
   }
   .webcam-prev-page {
-    @apply h-28 p-0;
+    @apply h-28 p-0 order-1;
     .bottom-area {
       @apply hidden;
     }

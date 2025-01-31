@@ -78,7 +78,7 @@ const VideosComponentElms = ({
         // for pin cam needs to use one full row
         setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE - 2);
       } else {
-        setWebcamPerPage(VERTICAL_PER_PAGE);
+        setWebcamPerPage(VERTICAL_PER_PAGE - 1);
       }
     }
   }, [isEnabledExtendedVerticalCamView, isVertical, pinParticipant]);
@@ -336,9 +336,11 @@ const VideosComponentElms = ({
           className={`vertical-webcams-wrapper absolute right-0 top-0  bg-white h-full p-3 transition-all duration-300 z-20 ${isEnabledExtendedVerticalCamView ? 'w-[416px] flex flex-col justify-center extended-view-wrap' : 'w-[212px] not-extended'}`}
         >
           <div
-            className={`inner row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
+            className={`inner ${pinParticipant ? 'has-pin-cam' : ''} row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
           >
-            <div className="pin-webcam-view">{pinParticipant}</div>
+            <div className="pinCam-item video-camera-item">
+              {pinParticipant}
+            </div>
             {videoParticipantsElms}
           </div>
           {isActiveParticipantsPanel || isActiveChatPanel ? null : (

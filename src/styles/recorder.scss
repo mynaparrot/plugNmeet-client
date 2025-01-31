@@ -1,11 +1,14 @@
 //  Recorder CSS
 .plugNmeet-app {
   #main-area.isRecorder {
-    height: 900px !important;
-    @apply w-[1800px] m-auto;
+    // height: 900px !important;
+    // @apply w-[1800px] m-auto;
     .all-webcam-wrapper {
       @apply h-full;
     }
+    // .excalidraw-wrapper {
+    //   max-width: 1080px;
+    // }
   }
   // #main-area.fullWidthMainArea.isRecorder {
   //   .middle-fullscreen-wrapper.verticalsWebcamsActivated {
@@ -34,11 +37,11 @@
 }
 .plugNmeet-app {
   #main-area.fullWidthMainArea.isRecorder {
-    .middle-fullscreen-wrapper {
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
       padding-right: 0 !important;
-      @apply pl-[416px];
+      @apply pl-[320px];
       .vertical-webcams-wrapper {
-        @apply left-0 right-auto;
+        @apply left-0 right-auto w-[320px];
       }
     }
   }
