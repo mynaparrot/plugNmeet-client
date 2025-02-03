@@ -10,7 +10,6 @@ import {
   setForMobileAndTablet,
   setForMobileLandscape,
 } from './helpers/utils';
-import { ColumnCameraPosition } from '../../../store/slices/interfaces/roomSettings';
 import { ArrowRight } from '../../../assets/Icons/ArrowRight';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../store/slices/bottomIconsActivitySlice';
 
@@ -25,13 +24,9 @@ export interface VideoParticipantType {
   isLocal: boolean;
 }
 
-const MOBILE_PER_PAGE = 6,
-  TABLET_PER_PAGE = 9,
-  DESKTOP_PER_PAGE = 24,
+const DESKTOP_PER_PAGE = 24,
   VERTICAL_PER_PAGE = 5,
-  EXTENDED_VERTICAL_PER_PAGE = 10,
-  VERTICAL_TOP_BOTTOM_PER_PAGE = 8,
-  VERTICAL_TABLET_PORTRAIT = 5;
+  EXTENDED_VERTICAL_PER_PAGE = 10;
 
 const VideosComponentElms = ({
   allParticipants,
@@ -41,15 +36,15 @@ const VideosComponentElms = ({
 }: IVideosComponentElmsProps) => {
   const dispatch = useAppDispatch();
   // const { t } = useTranslation();
-  const screenWidth = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
+  // const screenWidth = useAppSelector(
+  //   (state) => state.bottomIconsActivity.screenWidth,
+  // );
   const deviceOrientation = useAppSelector(
     (state) => state.bottomIconsActivity.deviceOrientation,
   );
-  const columnCameraPosition = useAppSelector(
-    (state) => state.roomSettings.columnCameraPosition,
-  );
+  // const columnCameraPosition = useAppSelector(
+  //   (state) => state.roomSettings.columnCameraPosition,
+  // );
   const isActiveChatPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveChatPanel,
   );
@@ -65,23 +60,37 @@ const VideosComponentElms = ({
   const [participantsToRender, setParticipantsToRender] = useState<
     Array<React.JSX.Element>
   >([]);
-  const [webcamPerPage, setWebcamPerPage] = useState<number>(4);
+  const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
 
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+  //const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
   useEffect(() => {
     if (pinParticipant) {
-      if (isVertical && isEnabledExtendedVerticalCamView) {
-        // for pin cam needs to use one full row
-        setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE - 2);
+      if (isVertical) {
+        if (isEnabledExtendedVerticalCamView) {
+          // for pin cam needs to use one full row
+          setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE - 2);
+        } else {
+          // otherwise, one less because pin cam will always be top
+          setWebcamPerPage(VERTICAL_PER_PAGE - 1);
+        }
       } else {
-        setWebcamPerPage(VERTICAL_PER_PAGE - 1);
+        // if not vertical then it will be the same as normal
+        setWebcamPerPage(VERTICAL_PER_PAGE);
       }
+    } else if (isVertical) {
+      if (isEnabledExtendedVerticalCamView) {
+        setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE);
+      } else {
+        setWebcamPerPage(VERTICAL_PER_PAGE);
+      }
+    } else {
+      setWebcamPerPage(DESKTOP_PER_PAGE);
     }
   }, [isEnabledExtendedVerticalCamView, isVertical, pinParticipant]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (isVertical) {
       if (deviceType === UserDeviceType.DESKTOP && screenWidth > 1024) {
         if (
@@ -135,7 +144,7 @@ const VideosComponentElms = ({
     screenWidth,
     columnCameraPosition,
     deviceOrientation,
-  ]);
+  ]);*/
 
   const renderParticipantsByPage = (
     allParticipants: Array<React.JSX.Element>,
@@ -301,8 +310,7 @@ const VideosComponentElms = ({
       elms = setForMobileLandscape(participantsToRender);
     } else if (
       deviceType === UserDeviceType.MOBILE ||
-      deviceType === UserDeviceType.TABLET ||
-      isSmallScreen
+      deviceType === UserDeviceType.TABLET
     ) {
       // for mobile & tablet
       // at present we can use same logic for small screen of desktop
