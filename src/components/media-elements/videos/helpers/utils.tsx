@@ -211,7 +211,7 @@ const setForPCExtendedVerticalView = (
     elms.push(
       <div
         key={`camera-row-${i}`}
-        className={`camera-row-wrap camera-row-${i} total-items-${length} inner-items-${el.length} grid grid-cols-2 gap-3 h-full`}
+        className={`camera-row-wrap camera-row-${i} order-2 total-items-${length} inner-items-${el.length} grid grid-cols-2 gap-3 h-full`}
       >
         {el}
       </div>,

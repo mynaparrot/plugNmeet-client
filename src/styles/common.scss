@@ -1205,7 +1205,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     }
   }
   .video-camera-item {
-    @apply order-2;
+    @apply order-3;
   }
 }
 .vertical-webcams-wrapper.extended-view-wrap {
@@ -1255,4 +1255,77 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   .group-total-cam-6 {
     @apply h-full max-h-[450px];
   }
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-2.has-pin-cam
+  .pinCam-item {
+  height: 33.33% !important;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-2.has-pin-cam
+  .camera-row-wrap {
+  height: 66.66%;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-3.has-pin-cam
+  .pinCam-item {
+  height: 25% !important;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-3.has-pin-cam
+  .camera-row-wrap.camera-row-0 {
+  height: 50% !important;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-3.has-pin-cam
+  .camera-row-wrap.camera-row-1 {
+  height: 25% !important;
+}
+.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-4.has-pin-cam {
+  max-height: 34rem;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-4.has-pin-cam
+  .pinCam-item.video-camera-item {
+  height: 40%;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-4.has-pin-cam
+  .camera-row-wrap {
+  height: 30%;
+}
+.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-5.has-pin-cam,
+.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-6.has-pin-cam {
+  max-height: 45rem;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-5.has-pin-cam
+  .pinCam-item.video-camera-item,
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-6.has-pin-cam
+  .pinCam-item.video-camera-item,
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-7.has-pin-cam
+  .pinCam-item.video-camera-item,
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-8.has-pin-cam
+  .pinCam-item.video-camera-item {
+  height: 30%;
+}
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-5.has-pin-cam
+  .camera-row-wrap,
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-6.has-pin-cam
+  .camera-row-wrap,
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-7.has-pin-cam
+  .camera-row-wrap,
+.vertical-webcams-wrapper.extended-view-wrap
+  .group-total-cam-8.has-pin-cam
+  .camera-row-wrap {
+  height: 23.33%;
+}
+.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-2.has-pin-cam {
+  max-height: 640px;
 }

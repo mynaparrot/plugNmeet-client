@@ -65,9 +65,7 @@ const VideosComponentElms = ({
   const [participantsToRender, setParticipantsToRender] = useState<
     Array<React.JSX.Element>
   >([]);
-  const [webcamPerPage, setWebcamPerPage] = useState<number>(
-    isVertical ? VERTICAL_PER_PAGE : DESKTOP_PER_PAGE,
-  );
+  const [webcamPerPage, setWebcamPerPage] = useState<number>(4);
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
@@ -338,7 +336,9 @@ const VideosComponentElms = ({
           <div
             className={`inner ${pinParticipant ? 'has-pin-cam' : ''} row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
           >
-            <div className="pinCam-item video-camera-item">
+            <div
+              className={`pinCam-item video-camera-item !order-2 ${isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''}`}
+            >
               {pinParticipant}
             </div>
             {videoParticipantsElms}

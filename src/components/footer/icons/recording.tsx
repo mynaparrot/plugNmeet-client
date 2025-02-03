@@ -213,7 +213,7 @@ const RecordingIcon = () => {
             onCloseModal={(recordingType) => onCloseModal(recordingType)}
           />
         ) : null}
-        <button
+        {/* <button
           className={`${
             isRecording ? 'record' : ''
           } footer-icon h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
@@ -228,6 +228,24 @@ const RecordingIcon = () => {
               : t('footer.icons.start-recording')}
           </span>
           <i className="pnm-rec primaryColor dark:text-darkText text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+        </button> */}
+        <button
+          className={`recorder-icon relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isRecording ? 'record border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+          onClick={() => onClickRecordingBtn()}
+          disabled={disable}
+        >
+          <div
+            className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+              showTooltip ? 'has-tooltip' : ''
+            } ${isRecording ? 'bg-gray-100' : 'bg-white'}`}
+          >
+            {/* <span className="tooltip !bottom-[62px]">
+            {isActiveRaisehand
+              ? t('footer.icons.lower-hand')
+              : t('footer.icons.raise-hand')}
+          </span> */}
+            <i className="pnm-rec text-black text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+          </div>
         </button>
       </>
     );
