@@ -112,7 +112,8 @@
       "column-camera-position": "列相機位置",
       "column-camera-position-left": "左",
       "column-camera-position-top": "返回頁首",
-      "column-camera-position-bottom": "底"
+      "column-camera-position-bottom": "底",
+      "focus-active-speaker-webcam": "聚焦當前發言人網路攝像頭"
     },
     "keyboard-shortcuts": {
       "title": "鍵盤快速鍵",

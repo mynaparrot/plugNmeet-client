@@ -112,7 +112,8 @@
       "column-camera-position": "Положення камери",
       "column-camera-position-left": "Зліва",
       "column-camera-position-top": "Згори",
-      "column-camera-position-bottom": "Знизу"
+      "column-camera-position-bottom": "Знизу",
+      "focus-active-speaker-webcam": "Фокус на активній веб-камері динаміка"
     },
     "keyboard-shortcuts": {
       "title": "Гарячі клавіші",

@@ -112,7 +112,8 @@
       "column-camera-position": "Vị trí camera cột",
       "column-camera-position-left": "Bên trái",
       "column-camera-position-top": "Đỉnh",
-      "column-camera-position-bottom": "Đáy"
+      "column-camera-position-bottom": "Đáy",
+      "focus-active-speaker-webcam": "Focus active speaker webcam"
     },
     "keyboard-shortcuts": {
       "title": "Phím tắt",

@@ -112,7 +112,8 @@
       "column-camera-position": "Pozycja kamery kolumnowej",
       "column-camera-position-left": "Lewy",
       "column-camera-position-top": "Do góry",
-      "column-camera-position-bottom": "Dno"
+      "column-camera-position-bottom": "Dno",
+      "focus-active-speaker-webcam": "Aktywna kamera internetowa głośnika"
     },
     "keyboard-shortcuts": {
       "title": "Skróty klawiaturowe",

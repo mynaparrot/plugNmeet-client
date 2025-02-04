@@ -112,7 +112,8 @@
       "column-camera-position": "Kolonnikaamera asukoht",
       "column-camera-position-left": "Vasak",
       "column-camera-position-top": "Top",
-      "column-camera-position-bottom": "Alt"
+      "column-camera-position-bottom": "Alt",
+      "focus-active-speaker-webcam": "Keskenduge aktiivse kõlari veebikaamerale"
     },
     "keyboard-shortcuts": {
       "title": "Kiirklahve",

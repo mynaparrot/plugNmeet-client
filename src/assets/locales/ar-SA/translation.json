@@ -112,7 +112,8 @@
       "column-camera-position": "موضع الكاميرا العمودية",
       "column-camera-position-left": "يسار",
       "column-camera-position-top": "أعلى",
-      "column-camera-position-bottom": "قاع"
+      "column-camera-position-bottom": "قاع",
+      "focus-active-speaker-webcam": "كاميرا مكبر الصوت النشط التركيز"
     },
     "keyboard-shortcuts": {
       "title": "اختصارات لوحة المفاتيح",

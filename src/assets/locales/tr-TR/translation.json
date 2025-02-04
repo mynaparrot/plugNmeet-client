@@ -112,7 +112,8 @@
       "column-camera-position": "Sütun kamera konumu",
       "column-camera-position-left": "Sol",
       "column-camera-position-top": "Üst",
-      "column-camera-position-bottom": "Alt"
+      "column-camera-position-bottom": "Alt",
+      "focus-active-speaker-webcam": "Odak aktif hoparlör web kamerası"
     },
     "keyboard-shortcuts": {
       "title": "Klavye kısayolları",
