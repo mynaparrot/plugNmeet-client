@@ -112,7 +112,8 @@
       "column-camera-position": "Kolonnas kameras novietojums",
       "column-camera-position-left": "Pa kreisi",
       "column-camera-position-top": "Augša",
-      "column-camera-position-bottom": "Apakša"
+      "column-camera-position-bottom": "Apakša",
+      "focus-active-speaker-webcam": "Fokusējiet aktīvo skaļruņu tīmekļa kameru"
     },
     "keyboard-shortcuts": {
       "title": "Īsinājumtaustiņi",
