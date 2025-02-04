@@ -112,7 +112,8 @@
       "column-camera-position": "מיקום מצלמת עמודה",
       "column-camera-position-left": "שמאל",
       "column-camera-position-top": "סביבון",
-      "column-camera-position-bottom": "ישבן"
+      "column-camera-position-bottom": "ישבן",
+      "focus-active-speaker-webcam": "פוקוס מצלמת אינטרנט של רמקול פעיל"
     },
     "keyboard-shortcuts": {
       "title": "קיצורי מקשים",
