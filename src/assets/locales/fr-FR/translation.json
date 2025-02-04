@@ -112,7 +112,8 @@
       "column-camera-position": "Position de la caméra colonne",
       "column-camera-position-left": "Gauche",
       "column-camera-position-top": "Retour au début",
-      "column-camera-position-bottom": "Fond"
+      "column-camera-position-bottom": "Fond",
+      "focus-active-speaker-webcam": "Focus webcam des haut-parleurs actifs"
     },
     "keyboard-shortcuts": {
       "title": "Raccourcis clavier",
