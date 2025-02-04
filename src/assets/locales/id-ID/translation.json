@@ -112,7 +112,8 @@
       "column-camera-position": "Posisi kamera kolom",
       "column-camera-position-left": "Kiri",
       "column-camera-position-top": "Puncak",
-      "column-camera-position-bottom": "Dasar"
+      "column-camera-position-bottom": "Dasar",
+      "focus-active-speaker-webcam": "Fokus pembicara aktif webcam"
     },
     "keyboard-shortcuts": {
       "title": "Pintasan keyboard",
