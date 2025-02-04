@@ -112,7 +112,8 @@
       "column-camera-position": "Kolom camera positie",
       "column-camera-position-left": "Links",
       "column-camera-position-top": "Boven",
-      "column-camera-position-bottom": "Bodem"
+      "column-camera-position-bottom": "Bodem",
+      "focus-active-speaker-webcam": "Focus actieve luidspreker webcam"
     },
     "keyboard-shortcuts": {
       "title": "Sneltoetsen",

@@ -28,12 +28,19 @@ export default class HandleActiveSpeakers {
     this.activeSpeakers = [];
 
     if (participants.length) {
+      const focusActiveSpeakerWebcam =
+        store.getState().roomSettings.focusActiveSpeakerWebcam;
       const isPaginating = store.getState().session.isWebcamPaginating;
       const now = Date.now();
 
       participants.forEach((participant) => {
-        // we won't update if user is paginating & viewing webcams from other pages.
-        if (!isPaginating && this.that.videoSubscribersMap.size > 3) {
+        // we won't update if focusActiveSpeakerWebcam disabled or
+        // user is paginating to view webcams from other pages.
+        if (
+          focusActiveSpeakerWebcam &&
+          !isPaginating &&
+          this.that.videoSubscribersMap.size > 3
+        ) {
           // we'll wait a little bit before changing
           const last =
             this.lastActiveWebcamChanged +

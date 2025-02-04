@@ -112,7 +112,8 @@
       "column-camera-position": "Θέση κάμερας στήλης",
       "column-camera-position-left": "Αριστερά",
       "column-camera-position-top": "Κορυφή",
-      "column-camera-position-bottom": "Πυθμένας"
+      "column-camera-position-bottom": "Πυθμένας",
+      "focus-active-speaker-webcam": "Εστίαση ενεργής κάμερας ηχείων"
     },
     "keyboard-shortcuts": {
       "title": "Συντομεύσεις πληκτρολογίου",

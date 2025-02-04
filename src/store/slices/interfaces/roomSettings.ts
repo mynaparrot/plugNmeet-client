@@ -39,6 +39,7 @@ export interface IRoomSettings {
   azureTokenInfo?: AzureTokenInfo;
   isPNMWindowTabVisible: boolean;
   pinCamUserId?: string;
+  focusActiveSpeakerWebcam: boolean;
 }
 
 export interface IMediaDevice {

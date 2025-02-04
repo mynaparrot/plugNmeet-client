@@ -45,6 +45,7 @@ const initialState: IRoomSettings = {
   visibleHeader: true,
   visibleFooter: true,
   isPNMWindowTabVisible: true,
+  focusActiveSpeakerWebcam: true,
 };
 
 const roomSettingsSlice = createSlice({
@@ -167,6 +168,9 @@ const roomSettingsSlice = createSlice({
     updatePinCamUserId: (state, action: PayloadAction<string | undefined>) => {
       state.pinCamUserId = action.payload;
     },
+    updateFocusActiveSpeakerWebcam: (state, action: PayloadAction<boolean>) => {
+      state.focusActiveSpeakerWebcam = action.payload;
+    },
   },
 });
 
@@ -199,6 +203,7 @@ export const {
   updateIsNatsServerConnected,
   updateIsPNMWindowTabVisible,
   updatePinCamUserId,
+  updateFocusActiveSpeakerWebcam,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

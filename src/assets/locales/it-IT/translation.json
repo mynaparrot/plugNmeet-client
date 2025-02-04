@@ -112,7 +112,8 @@
       "column-camera-position": "Posizione della telecamera a colonna",
       "column-camera-position-left": "A sinistra",
       "column-camera-position-top": "In alto",
-      "column-camera-position-bottom": "Fondoschiena"
+      "column-camera-position-bottom": "Fondoschiena",
+      "focus-active-speaker-webcam": "Focus webcam altoparlante attivo"
     },
     "keyboard-shortcuts": {
       "title": "Tasti Rapidi",

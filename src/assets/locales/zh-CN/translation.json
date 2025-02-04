@@ -112,7 +112,8 @@
       "column-camera-position": "列相机位置",
       "column-camera-position-left": "左",
       "column-camera-position-top": "返回页首",
-      "column-camera-position-bottom": "底"
+      "column-camera-position-bottom": "底",
+      "focus-active-speaker-webcam": "聚焦活跃扬声器摄像头"
     },
     "keyboard-shortcuts": {
       "title": "键盘快捷键",

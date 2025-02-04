@@ -25,7 +25,7 @@ import { store, useAppDispatch, useAppSelector } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import AudioNotification from './audioNotification';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
-import useDesignCustomization from '../../helpers/hooks/useDesignCustomization';
+import useClientCustomization from '../../helpers/hooks/useClientCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
 import WaitingRoomPage from '../waiting-room/room-page';
@@ -64,7 +64,8 @@ const App = () => {
     useState<string>('loading');
 
   useKeyboardShortcuts(currentMediaServerConn?.room);
-  useDesignCustomization();
+  // to handle different customization
+  useClientCustomization();
   useWatchVisibilityChange();
   const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
     currentMediaServerConn?.room,

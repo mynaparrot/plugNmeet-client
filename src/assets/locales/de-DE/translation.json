@@ -112,7 +112,8 @@
       "column-camera-position": "Position der Säulenkamera",
       "column-camera-position-left": "Links",
       "column-camera-position-top": "Nach oben",
-      "column-camera-position-bottom": "Unteres"
+      "column-camera-position-bottom": "Unteres",
+      "focus-active-speaker-webcam": "Aktive Lautsprecher-Webcam fokussieren"
     },
     "keyboard-shortcuts": {
       "title": "Tastaturkürzel",

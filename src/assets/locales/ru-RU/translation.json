@@ -112,7 +112,8 @@
       "column-camera-position": "Положение камеры колонны",
       "column-camera-position-left": "Налево",
       "column-camera-position-top": "Вверх",
-      "column-camera-position-bottom": "Дно"
+      "column-camera-position-bottom": "Дно",
+      "focus-active-speaker-webcam": "Веб-камера активного динамика"
     },
     "keyboard-shortcuts": {
       "title": "Комбинации клавиш",

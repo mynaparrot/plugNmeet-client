@@ -112,7 +112,8 @@
       "column-camera-position": "Column camera position",
       "column-camera-position-left": "Left",
       "column-camera-position-top": "Top",
-      "column-camera-position-bottom": "Bottom"
+      "column-camera-position-bottom": "Bottom",
+      "focus-active-speaker-webcam": "Focus active speaker webcam"
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",

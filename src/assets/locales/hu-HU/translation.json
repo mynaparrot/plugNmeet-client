@@ -112,7 +112,8 @@
       "column-camera-position": "Oszlop kamera pozíciója",
       "column-camera-position-left": "Balra",
       "column-camera-position-top": "Felső",
-      "column-camera-position-bottom": "Fenék"
+      "column-camera-position-bottom": "Fenék",
+      "focus-active-speaker-webcam": "Aktív hangszóró webkamera fókuszálása"
     },
     "keyboard-shortcuts": {
       "title": "Billentyűparancsok",

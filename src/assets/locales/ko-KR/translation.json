@@ -112,7 +112,8 @@
       "column-camera-position": "세로 막대형 카메라 위치",
       "column-camera-position-left": "왼쪽",
       "column-camera-position-top": "맨 위로",
-      "column-camera-position-bottom": "밑바닥"
+      "column-camera-position-bottom": "밑바닥",
+      "focus-active-speaker-webcam": "Focus 액티브 스피커 웹캠"
     },
     "keyboard-shortcuts": {
       "title": "키보드 단축키",

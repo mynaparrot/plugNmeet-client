@@ -112,7 +112,8 @@
       "column-camera-position": "Pylväskameran sijainti",
       "column-camera-position-left": "Vasen",
       "column-camera-position-top": "Huippu",
-      "column-camera-position-bottom": "Pohja"
+      "column-camera-position-bottom": "Pohja",
+      "focus-active-speaker-webcam": "Focus active speaker webcam"
     },
     "keyboard-shortcuts": {
       "title": "Pikanäppäimet",
