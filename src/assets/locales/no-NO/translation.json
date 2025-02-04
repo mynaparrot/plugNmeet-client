@@ -112,7 +112,8 @@
       "column-camera-position": "Kolonne kameraposisjon",
       "column-camera-position-left": "Venstre",
       "column-camera-position-top": "Topp",
-      "column-camera-position-bottom": "Bunn"
+      "column-camera-position-bottom": "Bunn",
+      "focus-active-speaker-webcam": "Fokuser aktiv høyttaler webcam"
     },
     "keyboard-shortcuts": {
       "title": "Hurtigtaster",
