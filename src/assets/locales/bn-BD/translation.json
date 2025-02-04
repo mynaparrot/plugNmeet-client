@@ -112,7 +112,8 @@
       "column-camera-position": "Column ক্যামেরা অবস্থান",
       "column-camera-position-left": "বামে",
       "column-camera-position-top": "উপরে",
-      "column-camera-position-bottom": "নীচে"
+      "column-camera-position-bottom": "নীচে",
+      "focus-active-speaker-webcam": "সক্রিয় স্পিকার ওয়েবক্যাম ফোকাস করুন"
     },
     "keyboard-shortcuts": {
       "title": "কীবোর্ড শর্টকাট",
