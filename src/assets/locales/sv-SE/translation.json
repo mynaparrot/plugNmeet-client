@@ -112,7 +112,8 @@
       "column-camera-position": "Kameraposition för kolumn",
       "column-camera-position-left": "Vänster",
       "column-camera-position-top": "Topp",
-      "column-camera-position-bottom": "Botten"
+      "column-camera-position-bottom": "Botten",
+      "focus-active-speaker-webcam": "Fokusera aktiv högtalarwebbkamera"
     },
     "keyboard-shortcuts": {
       "title": "Kortkommandon",
