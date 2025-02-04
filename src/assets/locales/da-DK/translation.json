@@ -112,7 +112,8 @@
       "column-camera-position": "Kolonne kamera position",
       "column-camera-position-left": "Venstre",
       "column-camera-position-top": "Top",
-      "column-camera-position-bottom": "Bund"
+      "column-camera-position-bottom": "Bund",
+      "focus-active-speaker-webcam": "Fokusér aktiv højttaler webcam"
     },
     "keyboard-shortcuts": {
       "title": "Tastaturgenveje",
