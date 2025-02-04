@@ -75,6 +75,8 @@ const VideosComponentElms = ({
           // otherwise, one less because pin cam will always be top
           setWebcamPerPage(VERTICAL_PER_PAGE - 1);
         }
+      } else if (isEnabledExtendedVerticalCamView) {
+        setWebcamPerPage(EXTENDED_VERTICAL_PER_PAGE);
       } else {
         // if not vertical then it will be the same as normal
         setWebcamPerPage(VERTICAL_PER_PAGE);

@@ -1,5 +1,4 @@
 import React from 'react';
-import HeaderLogo from '../header/headerLogo';
 
 export interface IErrorPageProps {
   title: string;
@@ -17,10 +16,7 @@ const ErrorPage = ({ title, text }: IErrorPageProps) => {
     >
       <div className="content relative z-20 w-full max-w-xl flex items-center min-h-64 text-center rounded-2xl border border-Gray-300 overflow-hidden bg-Gray-50 px-10 py-10">
         <div className="inner w-full">
-          <div className="logo flex justify-center mb-5">
-            <HeaderLogo />
-          </div>
-          <h2 className="text-2xl font-semibold text-Gray-950 mb-4 leading-4">
+          <h2 className="text-2xl font-semibold text-Gray-950 mb-6 leading-4">
             {title}
           </h2>
           <p className="break-words text-base leading-5 text-Gray-950/90">
