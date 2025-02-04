@@ -7,6 +7,7 @@ import {
 import {
   updateColumnCameraPosition,
   updateColumnCameraWidth,
+  updateFocusActiveSpeakerWebcam,
 } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
 
@@ -25,9 +26,19 @@ export interface ICustomDesignParams {
   column_camera_position?: ColumnCameraPosition;
 }
 
-const useDesignCustomization = () => {
+const useClientCustomization = () => {
   const dispatch = useAppDispatch();
 
+  // different config related customization
+  useEffect(() => {
+    const focusActiveSpeakerWebcam =
+      typeof (window as any).FOCUS_ACTIVE_SPEAKER_WEBCAM !== 'undefined'
+        ? (window as any).FOCUS_ACTIVE_SPEAKER_WEBCAM
+        : true;
+    dispatch(updateFocusActiveSpeakerWebcam(focusActiveSpeakerWebcam));
+  }, [dispatch]);
+
+  // design customization
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const custom_design = urlParams.get('custom_design');
@@ -252,4 +263,4 @@ const useDesignCustomization = () => {
   }, [dispatch]);
 };
 
-export default useDesignCustomization;
+export default useClientCustomization;

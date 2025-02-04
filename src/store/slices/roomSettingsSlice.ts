@@ -46,6 +46,7 @@ const initialState: IRoomSettings = {
   visibleHeader: true,
   visibleFooter: true,
   isPNMWindowTabVisible: true,
+  focusActiveSpeakerWebcam: true,
 };
 
 const roomSettingsSlice = createSlice({
@@ -168,6 +169,9 @@ const roomSettingsSlice = createSlice({
     updateIsPNMWindowTabVisible: (state, action: PayloadAction<boolean>) => {
       state.isPNMWindowTabVisible = action.payload;
     },
+    updateFocusActiveSpeakerWebcam: (state, action: PayloadAction<boolean>) => {
+      state.focusActiveSpeakerWebcam = action.payload;
+    },
   },
 });
 
@@ -200,6 +204,7 @@ export const {
   cleanAzureToken,
   updateIsNatsServerConnected,
   updateIsPNMWindowTabVisible,
+  updateFocusActiveSpeakerWebcam,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

@@ -1,10 +1,10 @@
 window.PLUG_N_MEET_SERVER_URL = 'http://localhost:8080';
 
 // this is helpful for external plugin development where images or other files located
-// in other place.
+// in another place.
 // window.STATIC_ASSETS_PATH = '';
 
-// custom logo. For best, use direct https link
+// Custom logo. For best, use a direct https link
 /*window.CUSTOM_LOGO = {
   main_logo_light: 'https://mydomain.com/logo_light.png',
   main_logo_dark: 'https://mydomain.com/logo_dark.png',
@@ -15,7 +15,8 @@ window.PLUG_N_MEET_SERVER_URL = 'http://localhost:8080';
 //With Dynacast dynamically pauses video layers that are not being consumed by any subscribers, significantly reducing publishing CPU and bandwidth usage.
 window.ENABLE_DYNACAST = true;
 
-//When using simulcast, LiveKit will publish up to three versions of the stream at various resolutions. Client can pickup most appropriate one.
+//When using simulcast, LiveKit will publish up to three versions of the stream at various resolutions.
+// Client can pick up the most appropriate one.
 window.ENABLE_SIMULCAST = true;
 
 // Available options: 'vp8' | 'h264' | 'vp9' | 'av1' Default: vp8
@@ -33,11 +34,18 @@ window.DEFAULT_SCREEN_SHARE_RESOLUTION = 'h1080fps15';
 // Default: music
 window.DEFAULT_AUDIO_PRESET = 'music';
 
-//For local tracks, stop the underlying MediaStreamTrack when the track is muted (or paused) on some platforms, this option is necessary to disable the microphone recording indicator. Note: when this is enabled, and BT devices are connected, they will transition between profiles (e.g. HFP to A2DP) and there will be an audible difference in playback.
+// For local tracks, stop the underlying MediaStreamTrack when the track is muted (or paused) on some platforms,
+// this option is necessary to disable the microphone recording indicator.
+// Note: when this is enabled, and BT devices are connected,
+// they will transition between profiles (e.g., HFP to A2DP) and there will be an audible difference in playback.
 window.STOP_MIC_TRACK_ON_MUTE = true;
 
+// If true, the webcam will be relocated and arranged dependent on the active speaker.
+// Default: true
+window.FOCUS_ACTIVE_SPEAKER_WEBCAM = true;
+
 // Design customization
-// in json format
+// in JSON format
 /*window.DESIGN_CUSTOMIZATION = `{
    "primary_color": "#004D90",
    "secondary_color": "#24AEF7",

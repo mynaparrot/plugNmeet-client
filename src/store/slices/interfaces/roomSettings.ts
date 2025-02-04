@@ -39,6 +39,7 @@ export interface IRoomSettings {
   visibleFooter: boolean;
   azureTokenInfo?: AzureTokenInfo;
   isPNMWindowTabVisible: boolean;
+  focusActiveSpeakerWebcam: boolean;
 }
 
 export interface IMediaDevice {

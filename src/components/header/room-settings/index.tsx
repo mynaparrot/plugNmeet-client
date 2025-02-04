@@ -3,6 +3,10 @@ import {
   Dialog,
   DialogTitle,
   Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
   Transition,
   TransitionChild,
 } from '@headlessui/react';
@@ -70,7 +74,7 @@ const RoomSettings = () => {
     dispatch(updateShowRoomSettingsModal(false));
   };
 
-  const classNames = (...classes) => {
+  const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
   };
 
@@ -104,8 +108,8 @@ const RoomSettings = () => {
   const showTabItems = () => {
     return (
       <div className="max-w-full">
-        <Tab.Group vertical>
-          <Tab.List className="flex p-1 space-x-1 bg-primaryColor rounded-xl">
+        <TabGroup vertical>
+          <TabList className="flex p-1 space-x-1 bg-primaryColor rounded-xl">
             {Object.keys(categories).map((category) => (
               <Tab
                 key={category}
@@ -122,19 +126,22 @@ const RoomSettings = () => {
                 {t(category as any)}
               </Tab>
             ))}
-          </Tab.List>
-          <Tab.Panels className="mt-2">
-            {Object.values(categories).map((posts, idx) => (
-              <Tab.Panel key={idx} className="bg-transparent rounded-xl p-3">
+          </TabList>
+          <TabPanels className="mt-2">
+            {Object.values(categories).map((items, idx) => (
+              <TabPanel
+                key={idx}
+                className="bg-transparent rounded-xl p-3 h-[268px] scrollBar overflow-auto"
+              >
                 <ul>
-                  {posts.map((post) => (
-                    <li key={post.id}>{post.elm}</li>
+                  {items.map((item) => (
+                    <li key={item.id}>{item.elm}</li>
                   ))}
                 </ul>
-              </Tab.Panel>
+              </TabPanel>
             ))}
-          </Tab.Panels>
-        </Tab.Group>
+          </TabPanels>
+        </TabGroup>
       </div>
     );
   };
@@ -204,7 +211,7 @@ const RoomSettings = () => {
     );
   };
 
-  return <>{isShowRoomSettingsModal ? render() : null}</>;
+  return isShowRoomSettingsModal ? render() : null;
 };
 
 export default RoomSettings;
