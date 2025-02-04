@@ -69,13 +69,13 @@
 }
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 5px 0 rgba(0, 77, 144, 0.3);
+    box-shadow: 0 0 5px 0 rgba(124, 206, 247, 0.25);
   }
   65% {
-    box-shadow: 0 0 5px 13px rgb(242, 242, 242);
+    box-shadow: 0 0 5px 10px rgb(242, 242, 242);
   }
   90% {
-    box-shadow: 0 0 5px 13px rgb(242, 242, 242);
+    box-shadow: 0 0 5px 10px rgb(242, 242, 242);
   }
 }
 @keyframes lds-ripple2 {
