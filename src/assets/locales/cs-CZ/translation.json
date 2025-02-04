@@ -112,7 +112,8 @@
       "column-camera-position": "Poloha kamery ve sloupci",
       "column-camera-position-left": "Vlevo",
       "column-camera-position-top": "Vrchol",
-      "column-camera-position-bottom": "Dno"
+      "column-camera-position-bottom": "Dno",
+      "focus-active-speaker-webcam": "Zaměřit na aktivní webovou kameru reproduktora"
     },
     "keyboard-shortcuts": {
       "title": "Klávesové zkratky",
