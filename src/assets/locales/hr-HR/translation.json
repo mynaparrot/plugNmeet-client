@@ -112,7 +112,8 @@
       "column-camera-position": "Položaj kamere stupca",
       "column-camera-position-left": "Lijevo",
       "column-camera-position-top": "Vrh",
-      "column-camera-position-bottom": "Dno"
+      "column-camera-position-bottom": "Dno",
+      "focus-active-speaker-webcam": "Fokusirajte web kameru aktivnog zvučnika"
     },
     "keyboard-shortcuts": {
       "title": "Tipkovni prečaci",
