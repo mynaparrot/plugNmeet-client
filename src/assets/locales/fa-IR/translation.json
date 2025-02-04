@@ -112,7 +112,8 @@
       "column-camera-position": "موقعیت دوربین ستونی",
       "column-camera-position-left": "چپ",
       "column-camera-position-top": "بالا",
-      "column-camera-position-bottom": "پایین"
+      "column-camera-position-bottom": "پایین",
+      "focus-active-speaker-webcam": "فوکوس وب کم بلندگوی فعال"
     },
     "keyboard-shortcuts": {
       "title": "میانبر های صفحه کلید",
