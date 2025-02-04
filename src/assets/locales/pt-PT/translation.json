@@ -112,7 +112,8 @@
       "column-camera-position": "Posição da coluna de câmera",
       "column-camera-position-left": "Esquerda",
       "column-camera-position-top": "Topo",
-      "column-camera-position-bottom": "Em baixo"
+      "column-camera-position-bottom": "Em baixo",
+      "focus-active-speaker-webcam": "Focar webcam ativa"
     },
     "keyboard-shortcuts": {
       "title": "Atalhos de teclado",
