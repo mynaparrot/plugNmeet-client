@@ -112,7 +112,8 @@
       "column-camera-position": "コラムのカメラ位置",
       "column-camera-position-left": "左",
       "column-camera-position-top": "ページのトップへ",
-      "column-camera-position-bottom": "底"
+      "column-camera-position-bottom": "底",
+      "focus-active-speaker-webcam": "アクティブなスピーカーウェブカメラにフォーカス"
     },
     "keyboard-shortcuts": {
       "title": "キーボードショートカット",
