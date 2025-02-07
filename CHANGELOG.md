@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.7.0](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.10...v1.7.0) (2025-02-04)
+
+
+### Features
+
+* the ability to adjust the webcam's positioning according to the active speaker ([c6742cb](https://github.com/mynaparrot/plugNmeet-client/commit/c6742cbd5a372fca685f95dc2731fe9c273091a9))
+
+
+### Bug Fixes
+
+* **ci:** added beta release ([bc98ba9](https://github.com/mynaparrot/plugNmeet-client/commit/bc98ba92c7b8fc75414b79dd8f2f2b962607057c))
+* **ci:** bump beta version ([dcd203b](https://github.com/mynaparrot/plugNmeet-client/commit/dcd203b8179604af08de8ae80453aadba9c2d925))
+* **ci:** removed rebase again ([5e0e173](https://github.com/mynaparrot/plugNmeet-client/commit/5e0e1730443b80dd5488df0423ed73b6e6aedef1))
+* **ci:** To rebase again ([79e1b93](https://github.com/mynaparrot/plugNmeet-client/commit/79e1b935e897b572919ab215693427655b1dca3f))
+* dependencies upgrade ([2e55ff9](https://github.com/mynaparrot/plugNmeet-client/commit/2e55ff9e9b331e8f8b231b453442076245852f7b))
+* deps update ([dd47326](https://github.com/mynaparrot/plugNmeet-client/commit/dd4732611a62b9575b45dcf77a889362a0c3e85f))
+* **deps:** update dependency plugnmeet-protocol-js to v1.0.8 ([d8d170c](https://github.com/mynaparrot/plugNmeet-client/commit/d8d170c640a1c057e21b5cc59a5974f2b4649891))
+* new Crowdin updates ([#853](https://github.com/mynaparrot/plugNmeet-client/issues/853)) ([1702fd6](https://github.com/mynaparrot/plugNmeet-client/commit/1702fd6bcd8fe9ab69d5cc164bdfb0c67b1a6c55))
+* should not ask notification permission for recorder ([b33f6c2](https://github.com/mynaparrot/plugNmeet-client/commit/b33f6c2dc104e4f000eefc9cf976fae7f89d381d))
+
 ## [1.6.10](https://github.com/mynaparrot/plugNmeet-client/compare/v1.6.9...v1.6.10) (2024-12-20)
 
 
