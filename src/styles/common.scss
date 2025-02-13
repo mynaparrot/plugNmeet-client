@@ -200,6 +200,11 @@ code {
     }
   }
 }
+.all-webcam-wrapper.total-cam-2 {
+  .switch-camera {
+    @apply flex;
+  }
+}
 .all-webcam-wrapper {
   @apply h-full flex items-center relative;
   &::-webkit-scrollbar {

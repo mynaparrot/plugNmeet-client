@@ -60,7 +60,7 @@ const VideoParticipant = ({
       {participantType.isLocal && displaySwitchCamIcon ? (
         <>
           <div
-            className="switch-camera absolute top-3 left-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full flex items-center justify-center bg-black bg-opacity-50"
+            className="switch-camera absolute top-3 left-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full hidden items-center justify-center bg-black bg-opacity-50"
             onClick={() => setFloatView(!floatView)}
           >
             <RepeatIconSVG />
