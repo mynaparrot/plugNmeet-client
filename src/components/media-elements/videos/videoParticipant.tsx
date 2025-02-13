@@ -30,19 +30,14 @@ const VideoParticipant = ({
     for (const track of participant.videoTrackPublications.values()) {
       if (track.source === Track.Source.Camera) {
         const elm = (
-          <div
-            className="video-camera-item-inner w-full h-full relative"
+          <VideoComponent
+            userId={participant.identity}
+            name={participant.name ?? ''}
+            isLocal={participantType.isLocal}
+            track={track}
+            displayPinIcon={displayPinIcon}
             key={track.trackSid}
-          >
-            <div className="name absolute bottom-4 left-4 text-sm font-medium text-white z-10">
-              {participant.name} {participantType.isLocal ? '(me)' : null}
-            </div>
-            <VideoComponent
-              userId={participant.identity}
-              track={track}
-              displayPinIcon={displayPinIcon}
-            />
-          </div>
+          />
         );
         elements.push(elm);
       }
