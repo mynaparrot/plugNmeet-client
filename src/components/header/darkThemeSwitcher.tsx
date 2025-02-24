@@ -19,12 +19,12 @@ const DarkThemeSwitcher = () => {
         <>
           <div className="bg-Gray-200 p-1 rounded-[14px] overflow-hidden flex items-center">
             <div
-              className={`item w-9 h-9 rounded-xl transition-all duration-300 flex items-center justify-center ${theme === 'light' ? 'bg-white' : ''}`}
+              className={`item w-8 3xl:w-9 h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center ${theme === 'light' ? 'bg-white' : ''}`}
             >
               <SunIcon />
             </div>
             <div
-              className={`item w-9 h-9 rounded-xl transition-all duration-300 flex items-center justify-center ${theme === 'dark' ? 'bg-white' : ''}`}
+              className={`item w-8 3xl:w-9 h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center ${theme === 'dark' ? 'bg-white' : ''}`}
             >
               <MoonIcon />
             </div>

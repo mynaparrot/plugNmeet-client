@@ -129,12 +129,12 @@ const ChatTabs = () => {
 
   return (
     <div className="h-full">
-      <div className="top-chat-header flex items-center gap-2 h-14 px-5 justify-between">
+      <div className="top-chat-header flex items-center gap-2 h-10 3xl:h-14 px-3 3xl:px-5 justify-between">
         <div className="left flex items-center gap-3">
-          <p className="text-base text-Gray-950 font-medium leading-tight">
+          <p className="text-sm 3xl:text-base text-Gray-950 3xl:font-medium leading-tight">
             {selectedChatOption === 'public' ? 'Public Chat' : 'Private Chat'}
           </p>
-          <div className="lang h-8 w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-[11px] text-sm font-semibold text-Gray-950">
+          <div className="lang h-6 3xl:h-8 w-9 3xl:w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-md 3xl:rounded-[11px] text-xs 3xl:text-sm font-medium 3xl:font-semibold text-Gray-950">
             EN
           </div>
         </div>
@@ -143,13 +143,13 @@ const ChatTabs = () => {
         </div>
       </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
-        <div className="relative h-10 z-10 chat-tabs">
-          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-10 w-full outline-none px-5 text-sm text-Gray-700">
+        <div className="relative z-10 chat-tabs">
+          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-8 3xl:h-10 w-full outline-none px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700">
             <p className="block truncate">
               To:{' '}
               <span className="font-medium text-Gray-950">{selectedTitle}</span>
             </p>
-            <span className="pointer-events-none absolute inset-y-0 right-5 flex items-center">
+            <span className="pointer-events-none absolute inset-y-0 right-3 3xl:right-5 flex items-center">
               {unreadMsgFrom.length ? (
                 <span className="shake pr-1 -mb-1">
                   <i className="pnm-chat shake" />
@@ -157,10 +157,9 @@ const ChatTabs = () => {
               ) : null}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
                 viewBox="0 0 16 16"
                 fill="none"
+                className="h-auto w-3 3xl:w-4"
               >
                 <path d="M12 6L8 10L4 6" fill="#4D6680" />
                 <path
@@ -179,15 +178,13 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-darkPrimary py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <ListboxOptions className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-xs 3xl:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {chatOptions.map((option) => (
                 <ListboxOption
                   key={option.id}
                   className={({ focus }) =>
-                    `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                      focus
-                        ? 'bg-primaryColor text-white'
-                        : 'text-gray-900 dark:text-darkText'
+                    `relative cursor-pointer select-none py-1 3xl:py-2 pl-8 3xl:pl-10 pr-4 text-gray-900 ${
+                      focus ? 'bg-Gray-200' : ''
                     }`
                   }
                   value={option.id}
@@ -208,10 +205,10 @@ const ChatTabs = () => {
                         ) : null}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-secondaryColor">
+                        <span className="absolute inset-y-0 left-3 flex items-center text-secondaryColor">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
+                            className="h-auto w-4 3xl:w-5"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -233,7 +230,7 @@ const ChatTabs = () => {
           </Transition>
         </div>
       </Listbox>
-      <div className="h-[calc(100%-176px)] chat-messages-container">
+      <div className="h-[calc(100%-135px)] 3xl:h-[calc(100%-176px)] chat-messages-container">
         <Messages userId={selectedChatOption} />
       </div>
     </div>

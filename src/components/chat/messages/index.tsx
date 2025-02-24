@@ -99,7 +99,7 @@ const Messages = ({ userId }: IMessagesProps) => {
 
   return (
     <div
-      className="relative h-full overflow-auto scrollBar messages-item-wrap px-5"
+      className="relative h-full overflow-auto scrollBar messages-item-wrap px-3 3xl:px-5"
       ref={outerRef as any}
     >
       <div ref={innerRef as any} className="inner">

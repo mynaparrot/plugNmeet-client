@@ -64,6 +64,9 @@ module.exports = {
         MSG: '0 15px 15px',
         MSGME: '15px 0 15px 15px',
       },
+      screens: {
+        '3xl': '1640px',
+      },
     },
   },
   plugins: [],

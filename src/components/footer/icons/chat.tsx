@@ -52,11 +52,11 @@ const ChatIcon = () => {
   const render = () => {
     return (
       <div
-        className={`message relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isActiveChatPanel ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+        className={`message relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveChatPanel ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
         onClick={() => toggleChatPanel()}
       >
         <div
-          className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+          className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
             showTooltip ? 'has-tooltip' : ''
           } ${isActiveChatPanel ? 'bg-gray-100' : 'bg-white'}`}
         >
@@ -65,11 +65,9 @@ const ChatIcon = () => {
             ? t('footer.icons.hide-chat-panel')
             : t('footer.icons.show-chat-panel')}
         </span> */}
-
-          {/* <i className={`pnm-chat ${iconCSS} text-[14px] lg:text-[16px]`} /> */}
           <ChatIconSVG />
           {!isActiveChatPanel && totalUnreadChatMsgs > 0 ? (
-            <div className="unseen-message-count bg-brandRed w-5 h-5 rounded-full text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
+            <div className="unseen-message-count bg-secondaryColor w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
               {totalUnreadChatMsgs}
             </div>
           ) : null}

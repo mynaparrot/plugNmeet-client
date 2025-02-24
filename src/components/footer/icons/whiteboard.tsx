@@ -131,11 +131,11 @@ const WhiteboardIcon = () => {
   const render = () => {
     return (
       <div
-        className={`whiteboard relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isActiveWhiteboard ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+        className={`whiteboard relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveWhiteboard ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
         onClick={() => toggleWhiteboard()}
       >
         <div
-          className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+          className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
             showTooltip ? 'has-tooltip' : ''
           } ${isActiveWhiteboard ? 'bg-gray-100' : 'bg-white'}`}
         >

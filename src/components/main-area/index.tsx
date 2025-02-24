@@ -160,7 +160,7 @@ const MainArea = () => {
         <div
           className={clsx([
             // Base styles
-            'participants-panel absolute transition ease-in-out w-[340px] right-0',
+            'participants-panel absolute transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
             // Shared closed styles
             'data-[closed]:opacity-0',
             // Entering styles
@@ -198,7 +198,7 @@ const MainArea = () => {
           <div
             className={clsx([
               // Base styles
-              'chat-panel absolute h-full transition ease-in-out w-[340px] right-0',
+              'chat-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
               // Shared closed styles
               'data-[closed]:opacity-0',
               // Entering styles
@@ -246,7 +246,7 @@ const MainArea = () => {
       /> */}
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div
-          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel || isActiveChatPanel ? 'pr-[340px]' : ''}`}
+          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel || isActiveChatPanel ? 'pr-[300px] 3xl:pr-[340px]' : ''}`}
         >
           <ActiveSpeakers />
           {renderMainComponentElms}

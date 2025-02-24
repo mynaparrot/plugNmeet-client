@@ -3,11 +3,10 @@ import React from 'react';
 export const ParticipantsMenuIconSVG = () => {
   return (
     <svg
-      width="30"
-      height="30"
       viewBox="0 0 36 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="h-auto w-6 3xl:w-[30px]"
     >
       <path
         d="M18.0003 18.8334C18.4606 18.8334 18.8337 18.4603 18.8337 18C18.8337 17.5398 18.4606 17.1667 18.0003 17.1667C17.5401 17.1667 17.167 17.5398 17.167 18C17.167 18.4603 17.5401 18.8334 18.0003 18.8334Z"

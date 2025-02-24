@@ -34,7 +34,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
           {/* System Message Design */}
           <div className="content w-full system">
             <p
-              className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words"
+              className="message-content py-1.5 3xl:py-2.5 px-2.5 3xl:px-3.5 border border-Gray-200 rounded-lg 3xl:rounded-2xl overflow-hidden text-sm 3xl:text-base text-Gray-950 break-words"
               dangerouslySetInnerHTML={{ __html: body.message }}
             />
           </div>
@@ -44,15 +44,15 @@ const Message = ({ body, currentUser }: IMessageProps) => {
       return (
         <>
           {/* Current User Message Design */}
-          <div className="content me w-[calc(100%-48px)] ml-auto">
-            <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
+          <div className="content me w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] ml-auto">
+            <div className="name min-h-5 flex items-center text-xs 3xl:text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
               <p>{t('right-panel.you')}</p>
               <p className="time text-xs text-Gray-600">
                 {formatDate(body.sentAt)}
               </p>
             </div>
             <p
-              className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden rounded-br-none text-base text-Gray-950 break-words"
+              className="message-content py-1.5 3xl:py-2.5 px-2.5 3xl:px-3.5 border border-Gray-200 rounded-lg 3xl:rounded-2xl overflow-hidden rounded-br-none text-sm 3xl:text-base text-Gray-950 break-words"
               dangerouslySetInnerHTML={{ __html: body.message }}
             />
           </div>
@@ -63,7 +63,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
         <>
           {/* Others User Message Design */}
           <Avatar userId={body.fromUserId} name={body.fromName} />
-          <div className="content w-[calc(100%-48px)] flex-1">
+          <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1">
             <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
               <p>
                 {body.fromName ? body.fromName : participantName}
@@ -76,7 +76,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
               </p>
             </div>
             <p
-              className="message-content py-2.5 px-3.5 border border-Gray-200 rounded-2xl overflow-hidden text-base text-Gray-950 break-words rounded-tl-none bg-Gray-50"
+              className="message-content py-1.5 3xl:py-2.5 px-2.5 3xl:px-3.5 border border-Gray-200 rounded-lg 3xl:rounded-2xl overflow-hidden text-sm 3xl:text-base text-Gray-950 break-words rounded-tl-none bg-Gray-50"
               dangerouslySetInnerHTML={{ __html: body.message }}
             />
           </div>
@@ -85,7 +85,7 @@ const Message = ({ body, currentUser }: IMessageProps) => {
     }
   };
 
-  return <div className="wrapper flex gap-3">{render()}</div>;
+  return <div className="wrapper flex gap-2 3xl:gap-3">{render()}</div>;
 };
 
 export default Message;

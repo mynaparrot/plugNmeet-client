@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import {
   ChangeVisibilityRes,
   ChangeVisibilityResSchema,
@@ -14,7 +14,7 @@ import {
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const SharedNotePadIcon = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
@@ -119,13 +119,13 @@ const SharedNotePadIcon = () => {
     //eslint-disable-next-line
   }, [isActiveSharedNotePad]);
 
-  const text = () => {
-    if (isActiveSharedNotePad) {
-      return t('footer.icons.hide-shared-notepad');
-    } else {
-      return t('footer.icons.show-shared-notepad');
-    }
-  };
+  // const text = () => {
+  //   if (isActiveSharedNotePad) {
+  //     return t('footer.icons.hide-shared-notepad');
+  //   } else {
+  //     return t('footer.icons.show-shared-notepad');
+  //   }
+  // };
 
   const toggleSharedNotePad = async () => {
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
@@ -133,17 +133,33 @@ const SharedNotePadIcon = () => {
 
   const render = () => {
     return (
-      <div
-        className={`shared-notepad h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
-          showTooltip ? 'has-tooltip' : ''
-        }`}
-        onClick={() => toggleSharedNotePad()}
-      >
-        <span className="tooltip">{text()}</span>
-        <>
-          <i className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`} />
-        </>
-      </div>
+      <>
+        {/* <div
+          className={`shared-notepad h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
+            showTooltip ? 'has-tooltip' : ''
+          }`}
+          onClick={() => toggleSharedNotePad()}
+        >
+          <span className="tooltip">{text()}</span>
+          <>
+            <i className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`} />
+          </>
+        </div> */}
+        <div
+          className={`sharedNotePad relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveSharedNotePad ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+          onClick={() => toggleSharedNotePad()}
+        >
+          <div
+            className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+              showTooltip ? 'has-tooltip' : ''
+            } ${isActiveSharedNotePad ? 'bg-gray-100' : 'bg-white'}`}
+          >
+            <i
+              className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`}
+            />
+          </div>
+        </div>
+      </>
     );
   };
 

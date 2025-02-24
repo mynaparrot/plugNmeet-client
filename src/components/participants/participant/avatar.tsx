@@ -15,7 +15,7 @@ const Avatar = ({ participant }: IAvatarProps) => {
     }
   };
   return (
-    <div className="thumb h-9 w-9 rounded-xl bg-[#069] text-base font-medium text-white flex items-center justify-center">
+    <div className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-[#069] text-xs 3xl:text-base font-medium text-white flex items-center justify-center">
       {render()}
     </div>
   );

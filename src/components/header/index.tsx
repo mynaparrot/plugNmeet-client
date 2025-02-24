@@ -197,7 +197,7 @@ const Header = () => {
       >
         <header
           id="main-header"
-          className={`relative z-[99999] px-4 h-[68px] flex items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
+          className={`relative z-[99999] px-4 h-[54px] 3xl:h-[68px] flex items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
             headerVisible ? 'ac' : ''
           }`}
         >
@@ -206,7 +206,7 @@ const Header = () => {
             <DarkThemeSwitcher />
           </div>
           <div className="middle flex-auto relative z-20">
-            <h2 className="header-title text-base font-medium text-Gray-950 leading-tight text-center">
+            <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 leading-tight text-center">
               {title}
             </h2>
           </div>
@@ -218,8 +218,8 @@ const Header = () => {
             <Menu>
               {({ open }) => (
                 <>
-                  <MenuButton className="relative flex-shrink-0 p-2 rtl:-ml-4">
-                    <div className="h-5 w-5">
+                  <MenuButton className="relative flex-shrink-0 p-2">
+                    <div className="">
                       <HeaderMenuIcon />
                     </div>
                   </MenuButton>

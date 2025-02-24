@@ -1,11 +1,10 @@
 export const PlusIcon = () => {
   return (
     <svg
-      width="24"
-      height="24"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="w-auto h-5 3xl:h-6"
     >
       <g filter="url(#filter0_di_1118_716)">
         <rect x="2" y="2" width="20" height="20" rx="10" fill="#009959" />

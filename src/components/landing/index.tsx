@@ -81,11 +81,11 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
         id="startupJoinModal"
         className={`absolute w-full join-the-audio-popup bg-Gray-100 h-full flex items-center justify-center p-5`}
       >
-        <div className="inner m-auto bg-Gray-50 border border-Gray-300 overflow-hidden rounded-2xl w-full max-w-5xl">
-          <div className="head bg-white h-[60px] px-5 flex items-center text-Gray-950 text-lg font-medium border-b border-Gray-200">
+        <div className="inner m-auto bg-Gray-50 border border-Gray-300 overflow-hidden rounded-2xl w-full max-w-4xl 3xl:max-w-5xl">
+          <div className="head bg-white h-[50px] 3xl:h-[60px] px-5 flex items-center text-Gray-950 text-base 3xl:text-lg font-medium border-b border-Gray-200">
             Microphone and camera preferences
           </div>
-          <div className="wrapper bg-Gray-50 pt-11 pb-14 px-12 flex flex-wrap">
+          <div className="wrapper bg-Gray-50 pt-8 3xl:pt-11 pb-10 3xl:pb-14 px-8 3xl:px-12 flex flex-wrap">
             <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-1/2 rounded-2xl">
               <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
               <div className="micro-cam-wrap flex justify-center py-5 gap-5">
@@ -105,13 +105,13 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                 />
               </div>
             </div>
-            <div className="right w-1/2 pl-16 py-8">
+            <div className="right w-1/2 pl-8 3xl:pl-16 py-8">
               <div className="inner h-full relative">
                 <div className="texts">
-                  <h3 className="font-bold text-2xl text-Gray-950 leading-snug pb-2">
+                  <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2">
                     Almost there...
                   </h3>
-                  <p className="text-base text-Gray-800">
+                  <p className="text-sm 3xl:text-base text-Gray-800">
                     Enable your microphone and camera for full participation, or
                     join as a listener.
                   </p>
@@ -120,7 +120,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   {selectedAudioDevice !== '' || selectedVideoDevice !== '' ? (
                     <button
                       type="button"
-                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => onClose()}
                     >
                       Join
@@ -128,7 +128,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                   ) : (
                     <button
                       type="button"
-                      className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => enableMediaDevices('both')}
                     >
                       Enable Microphone and Camera
@@ -138,7 +138,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
                     <button
                       id="listenOnlyJoin"
                       type="button"
-                      className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => onClose()}
                     >
                       Continue as a listener

@@ -323,10 +323,10 @@ const WebcamIcon = () => {
     return (
       <>
         <div
-          className={`relative footer-icon cursor-pointer min-w-[52px] h-[52px] rounded-[18px] border-4 ${!isActiveWebcam && selectedVideoDevice !== '' ? '!border-Red-100' : ''} ${isActiveWebcam ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+          className={`relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4 ${!isActiveWebcam && selectedVideoDevice !== '' ? '!border-Red-100' : ''} ${isActiveWebcam ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
         >
           <div
-            className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${!isActiveWebcam && selectedVideoDevice !== '' ? '!border-Red-200' : ''}  ${
+            className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${!isActiveWebcam && selectedVideoDevice !== '' ? '!border-Red-200' : ''}  ${
               showTooltip ? 'has-tooltip' : ''
             }`}
           >
@@ -334,27 +334,29 @@ const WebcamIcon = () => {
               {getTooltipText()}
             </span> */}
             <div
-              className="w-[42px] h-full relative flex items-center justify-center"
+              className="w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center"
               onClick={() => toggleWebcam()}
             >
-              {isActiveWebcam ? <Camera classes={'h-5 w-auto'} /> : null}
+              {isActiveWebcam ? (
+                <Camera classes={'h-4 3xl:h-5 w-auto'} />
+              ) : null}
               {!isActiveWebcam ? (
                 <>
                   {selectedVideoDevice === '' ? (
                     <>
-                      <Camera classes={'h-5 w-auto'} />
+                      <Camera classes={'h-4 3xl:h-5 w-auto'} />
                       <span className="add absolute -top-2 -right-2 z-10">
                         <PlusIcon />
                       </span>
                     </>
                   ) : (
-                    <CameraOff classes={'h-5 w-auto'} />
+                    <CameraOff classes={'h-4 3xl:h-5 w-auto'} />
                   )}
                 </>
               ) : null}
               {lockWebcam ? (
                 <>
-                  <CameraOff classes={'h-5 w-auto'} />
+                  <CameraOff classes={'h-4 3xl:h-5 w-auto'} />
                   <span className="blocked absolute -top-2 -right-2 z-10">
                     <BlockedIcon />
                   </span>

@@ -25,7 +25,7 @@ const Avatar = ({ userId, name }: IAvatarProps) => {
     }
   };
   return (
-    <div className="avatar flex items-center justify-center h-9 w-9 bg-DarkBlue rounded-xl text-white font-medium">
+    <div className="avatar flex items-center justify-center h-7 3xl:h-9 w-7 3xl:w-9 bg-DarkBlue rounded-lg 3xl:rounded-xl text-white font-medium text-xs 3xl:text-base">
       {render()}
     </div>
   );

@@ -230,12 +230,12 @@ const RecordingIcon = () => {
           <i className="pnm-rec primaryColor dark:text-darkText text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
         </button> */}
         <button
-          className={`recorder-icon relative footer-icon cursor-pointer w-[52px] h-[52px] rounded-[18px] border-4 ${isRecording ? 'record border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+          className={`recorder-icon relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isRecording ? 'record border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
           onClick={() => onClickRecordingBtn()}
           disabled={disable}
         >
           <div
-            className={`h-full w-full flex items-center justify-center rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
+            className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
               showTooltip ? 'has-tooltip' : ''
             } ${isRecording ? 'bg-gray-100' : 'bg-white'}`}
           >

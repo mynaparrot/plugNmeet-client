@@ -17,9 +17,9 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
   const render = useMemo(() => {
     if (videoTracks) {
       return (
-        <div className="mic cursor-pointer w-8 h-8 flex items-center justify-center">
+        <div className="mic cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center">
           {/* <i className="pnm-webcam secondaryColor text-[10px]" /> */}
-          <Camera classes={'h-4 w-auto'} />
+          <Camera classes={'h-3 3xl:h-4 w-auto'} />
         </div>
       );
     }

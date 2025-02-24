@@ -46,16 +46,16 @@ const Footer = () => {
         >
           <footer
             id="main-footer"
-            className={`px-2 md:px-4 flex items-center justify-between bg-Gray-25 h-[55px] lg:h-[76px] border-t border-Gray-200`}
+            className={`px-2 md:px-4 flex items-center justify-between bg-Gray-25 h-[54px] 3xl:h-[76px] border-t border-Gray-200`}
             style={{ display: isRecorder ? 'none' : '' }}
           >
             <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
-              <div className="footer-left w-72 flex items-center gap-2 relative z-50 rtl:justify-end">
+              <div className="footer-left w-72 flex items-center gap-1 3xl:gap-2 relative z-50 rtl:justify-end">
                 <MicrophoneIcon />
                 <WebcamIcon />
               </div>
 
-              <div className="footer-middle flex items-center gap-2">
+              <div className="footer-middle flex items-center gap-1 3xl:gap-2">
                 <ScreenshareIcon />
                 <WhiteboardIcon />
                 <RaiseHandIcon />

@@ -61,7 +61,7 @@ const VolumeControl = () => {
         {({ open }) => (
           <>
             <MenuButton className="relative flex-shrink-0 p-2">
-              <div className="h-4 w-4 -mt-[2px]">
+              <div className="">
                 {volume > 0 ? (
                   <VolumeHeader />
                 ) : (

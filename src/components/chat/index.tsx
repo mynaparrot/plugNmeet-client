@@ -85,7 +85,7 @@ const ChatComponent = () => {
               />
             ) : null}
           </div> */}
-          <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 bg-white w-full px-5 py-4 flex items-center">
+          <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 bg-white w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
             <TextBoxArea
               // chosenEmoji={chosenEmoji}
               onAfterSendMessage={onAfterSendMessage}

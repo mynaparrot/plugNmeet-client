@@ -14,9 +14,9 @@ import { SearchIconSVG } from '../../assets/Icons/SearchIconSVG';
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
   const totalParticipants = useAppSelector(participantsSelector.selectTotal);
-  const screenHeight = useAppSelector(
-    (state) => state.bottomIconsActivity.screenHeight,
-  );
+  // const screenHeight = useAppSelector(
+  //   (state) => state.bottomIconsActivity.screenHeight,
+  // );
 
   const [participants, setParticipants] = useState<IParticipant[]>([]);
   const { outerRef, innerRef, items } = useVirtual({
@@ -95,16 +95,16 @@ const ParticipantsComponent = () => {
   return (
     <>
       <div className="inner-wrapper relative z-20 w-full">
-        <div className="top flex items-center h-14 px-5">
-          <p className="text-base text-Gray-950 font-medium leading-tight">
+        <div className="top flex items-center h-10 3xl:h-14 px-3 3xl:px-5">
+          <p className="text-sm 3xl:text-base text-Gray-950 font-medium leading-tight">
             {t('left-panel.participants', {
               total: participants.length,
             })}
           </p>
         </div>
-        <div className="search-participants-wrap h-[76px] flex items-center px-5 border-y border-Gray-200">
+        <div className="search-participants-wrap h-[55px] 3xl:h-[76px] flex items-center px-3 3xl:px-5 border-y border-Gray-200">
           <div className="w-full relative">
-            <div className="search-icon text-Gray-600 absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none">
+            <div className="search-icon text-Gray-600 absolute top-1/2 -translate-y-1/2 left-3 3xl:left-4 pointer-events-none">
               <SearchIconSVG />
             </div>
             <input
@@ -112,7 +112,7 @@ const ParticipantsComponent = () => {
               name="search-participants"
               id="search-participants"
               placeholder="Search for Participant"
-              className="text-Gray-950 placeholder:text-Gray-600 h-11 rounded-[15px] bg-white border border-Gray-200 w-full pl-10 outline-none text-sm"
+              className="text-Gray-950 placeholder:text-Gray-600 h-9 3xl:h-11 rounded-lg 3xl:rounded-[15px] bg-white border border-Gray-200 w-full pl-8 3xl:pl-10 outline-none text-xs 3xl:text-sm"
               onChange={(e) => setSearchParticipant(e.target.value)}
             />
           </div>
@@ -120,18 +120,18 @@ const ParticipantsComponent = () => {
 
         <div
           ref={outerRef as any}
-          style={{ height: screenHeight - 276, overflow: 'auto' }}
-          className="scrollBar"
+          // style={{ height: screenHeight - 276, overflow: 'auto' }}
+          className="scrollBar overflow-auto h-[calc(100vh-240px)] 3xl:h-[calc(100vh-275px)]"
         >
           <div
-            className="all-participants-wrap px-2 xl:px-5"
+            className="all-participants-wrap px-2 xl:px-3 3xl:px-5"
             ref={innerRef as any}
           >
             {items.map(({ index, measureRef }) => (
               <li
                 key={index}
                 ref={measureRef}
-                className="w-full list-none min-h-[60px] py-1 flex items-center"
+                className="w-full list-none min-h-[40px] 3xl:min-h-[60px] py-1 flex items-center"
               >
                 {renderParticipant(index)}
               </li>

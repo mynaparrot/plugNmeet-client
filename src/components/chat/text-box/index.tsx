@@ -143,12 +143,12 @@ const TextBoxArea = ({
 
   return (
     <>
-      <div className="flex items-center justify-between border border-Gray-200 rounded-3xl p-1.5 w-full">
+      <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
         {showSendFile ? <FileSend lockSendFile={lockSendFile} /> : null}
         <textarea
           name="message-textarea"
           id="message-textarea"
-          className="flex-1 outline-none text-sm text-Gray-600 font-normal h-full mr-2 overflow-hidden"
+          className="flex-1 outline-none text-xs 3xl:text-sm text-Gray-600 font-normal h-full mr-2 overflow-hidden"
           value={message}
           onChange={handleChange}
           disabled={lockSendMsg}
@@ -160,7 +160,7 @@ const TextBoxArea = ({
         <button
           disabled={lockSendMsg}
           onClick={() => sendMsg()}
-          className={`w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'}`}
+          className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

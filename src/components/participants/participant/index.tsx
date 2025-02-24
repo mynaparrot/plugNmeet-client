@@ -34,15 +34,17 @@ const ParticipantComponent = ({
 
   return (
     <>
-      <div className="flex items-center justify-between relative w-full">
-        <div className="left flex items-center gap-[10px]">
+      <div
+        className={`flex items-center justify-between relative w-full gap-2`}
+      >
+        <div className="left flex items-center gap-1.5 3xl:gap-[10px]">
           <Avatar participant={participant} />
           <ParticipantName
             name={participant.name}
             isCurrentUser={currentUser?.userId === participant.userId}
           />
         </div>
-        <div className="right ltr:ml-2 rtl:mr-2 flex-auto flex items-center justify-end">
+        <div className="right flex-auto flex items-center justify-end">
           <RaiseHandIcon userId={participant.userId} />
           <VisibilityIcon userId={participant.userId} />
           <PresenterIcon userId={participant.userId} />

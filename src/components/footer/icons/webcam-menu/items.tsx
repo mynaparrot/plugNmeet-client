@@ -38,7 +38,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
             <p
               className={`${
                 selectedVideoDevice === device.id ? 'bg-Gray-50' : ''
-              } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
+              } h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
               onClick={() => setNewDevice(device.id)}
             >
               {device.label}
@@ -85,7 +85,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
       static
       className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max"
     >
-      <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+      <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
         Select Webcams
       </div>
       {devicesMenu}
@@ -93,7 +93,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
         <MenuItem>
           {() => (
             <p
-              className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
+              className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
               onClick={() => leaveWebcam()}
             >
               {t('footer.menus.leave-webcam')}

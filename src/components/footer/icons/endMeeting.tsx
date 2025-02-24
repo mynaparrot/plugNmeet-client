@@ -61,7 +61,7 @@ const EndMeetingButton = () => {
     <>
       <Button
         onClick={open}
-        className="h-11 px-5 flex items-center rounded-[15px] text-base font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+        className="h-10 3xl:h-11 px-5 flex items-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
       >
         {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
       </Button>
