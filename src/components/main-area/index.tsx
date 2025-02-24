@@ -49,6 +49,9 @@ const MainArea = () => {
   const screenHeight = useAppSelector(
     (state) => state.bottomIconsActivity.screenHeight,
   );
+  const screenWidth = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
+  );
   const headerVisible = useAppSelector(
     (state) => state.roomSettings.visibleHeader,
   );
@@ -222,7 +225,11 @@ const MainArea = () => {
       return;
     }
     if (headerVisible && footerVisible) {
-      setHeight(screenHeight - 144);
+      if (screenWidth < 1640) {
+        setHeight(screenHeight - 108);
+      } else {
+        setHeight(screenHeight - 144);
+      }
     } else if (headerVisible && !footerVisible) {
       setHeight(screenHeight - 68);
     } else if (!headerVisible && footerVisible) {
@@ -230,7 +237,7 @@ const MainArea = () => {
     } else if (!headerVisible && !footerVisible) {
       setHeight(screenHeight);
     }
-  }, [screenHeight, isRecorder, headerVisible, footerVisible]);
+  }, [screenHeight, screenWidth, isRecorder, headerVisible, footerVisible]);
 
   return (
     <div
