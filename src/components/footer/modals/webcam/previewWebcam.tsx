@@ -82,10 +82,10 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
 
   return (
     <div className="">
-      <div className="w-full overflow-hidden rounded-lg relative bg-black min-h-80">
+      <div className="w-full overflow-hidden rounded-lg relative bg-black min-h-64 3xl:min-h-80">
         {deviceId ? (
           <div
-            className={`${virtualBackground.type !== 'none' ? 'absolute top-0 left-0 h-1 w-1 opacity-0' : 'w-full h-80'}`}
+            className={`${virtualBackground.type !== 'none' ? 'absolute top-0 left-0 h-1 w-1 opacity-0' : 'w-full h-64 3xl:h-80'}`}
           >
             <VideoBox
               deviceId={deviceId}
@@ -108,7 +108,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
       </div>
       {displayVB() ? (
         <>
-          <div className="title text-sm leading-none text-Gray-700 px-3 uppercase pt-8 pb-5">
+          <div className="title text-sm leading-none text-Gray-700 px-3 uppercase pt-5 3x:pt-8 pb-5">
             Choose Background
           </div>
           <BackgroundItems onSelect={onSelectBg} />{' '}

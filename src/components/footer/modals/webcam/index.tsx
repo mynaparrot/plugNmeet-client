@@ -98,12 +98,12 @@ const ShareWebcamModal = ({
         <div className="flex items-center justify-center min-h-screen py-5 px-2">
           <div className="fixed inset-0 bg-Gray-950/70" />
 
-          <div className="popup-inner bg-white w-full max-w-xl z-50 rounded-2xl overflow-hidden border border-Gray-200 shadow-virtualPOP">
+          <div className="popup-inner bg-white w-full max-w-lg 3xl:max-w-xl z-50 rounded-2xl overflow-hidden border border-Gray-200 shadow-virtualPOP">
             {displayWebcamSelection ? (
               <>
                 <DialogTitle
                   as="h3"
-                  className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950 pt-6 px-5 pb-2"
+                  className="flex items-center justify-between text-base 3xl:text-lg font-medium 3xl:font-semibold leading-7 text-Gray-950 pt-6 px-3 3xl:px-5 pb-2"
                 >
                   <span>{t('footer.modal.select-webcam')}</span>
                   <Button onClick={() => onClose()}>
@@ -111,7 +111,7 @@ const ShareWebcamModal = ({
                   </Button>
                 </DialogTitle>
 
-                <div className="webcam-dropdown px-5 mb-4">
+                <div className="webcam-dropdown px-3 3xl:px-5 mb-4">
                   <select
                     value={selectedWebcam}
                     onChange={(e) => setSelectWebcam(e.target.value)}
@@ -127,16 +127,16 @@ const ShareWebcamModal = ({
               <PreviewWebcam deviceId={selectedWebcam} />
             </div>
 
-            <div className="grid grid-cols-2 gap-5 py-8 pb-5 px-5 border-t border-Gray-100">
+            <div className="grid grid-cols-2 gap-5 pt-5 3xl:pt-8 pb-5 px-3 3xl:px-5 border-t border-Gray-100">
               <button
-                className="w-full h-11 text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
                 type="button"
                 onClick={() => onClose()}
               >
                 Cancel
               </button>
               <button
-                className="w-full h-11 text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                 onClick={() => shareWebcam()}
               >
                 {/* {t('share')} */}

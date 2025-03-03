@@ -58,11 +58,11 @@ const MicrophoneModal = ({
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
-              className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              className="w-full max-w-80 3xl:max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-4 3xl:p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+                className="flex items-center justify-between text-base 3xl:text-lg font-medium 3xl:font-semibold leading-7 text-Gray-950"
               >
                 <span>{t('footer.modal.select-microphone')}</span>
                 <Button onClick={() => selectOrClose(true)}>
@@ -80,7 +80,7 @@ const MicrophoneModal = ({
               </div>
               <div className="mt-8 grid grid-cols-2 gap-3">
                 <Button
-                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
                   onClick={() => selectOrClose(false)}
                 >
                   {t('join')}

@@ -163,7 +163,7 @@ const MainArea = () => {
         <div
           className={clsx([
             // Base styles
-            'participants-panel absolute transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
+            'participants-panel absolute transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-full',
             // Shared closed styles
             'data-[closed]:opacity-0',
             // Entering styles
