@@ -1,15 +1,16 @@
 import { Dispatch } from 'react';
 
-import { ConnectionStatus, IConnectLivekit, LivekitInfo } from './types';
+import { IConnectLivekit, LivekitInfo } from './types';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import ConnectLivekit from './ConnectLivekit';
+import { roomConnectionStatus } from '../../components/app/helper';
 
 let currentConnect: IConnectLivekit;
 
 export const createLivekitConnection = (
   livekitInfo: LivekitInfo,
   errorState: Dispatch<IErrorPageProps>,
-  roomConnectionStatusState: Dispatch<ConnectionStatus>,
+  roomConnectionStatusState: Dispatch<roomConnectionStatus>,
 ) => {
   currentConnect = new ConnectLivekit(
     livekitInfo,

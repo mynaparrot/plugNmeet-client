@@ -93,7 +93,11 @@ export default class HandleChat {
       const e2ee =
         store.getState().session.currentRoom.metadata?.roomFeatures
           ?.endToEndEncryptionFeatures;
-      this._isEnabledE2EE = !!(e2ee && e2ee.isEnabled && e2ee.encryptionKey);
+      this._isEnabledE2EE = !!(
+        e2ee &&
+        e2ee.isEnabled &&
+        e2ee.includedChatMessages
+      );
     }
     if (this._isEnabledE2EE) {
       try {

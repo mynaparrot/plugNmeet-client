@@ -229,12 +229,7 @@ const handleEncryption = async (msg: string) => {
     const e2ee =
       store.getState().session.currentRoom.metadata?.roomFeatures
         ?.endToEndEncryptionFeatures;
-    isEnabledE2EE = !!(
-      e2ee &&
-      e2ee.isEnabled &&
-      e2ee.includedWhiteboard &&
-      e2ee.encryptionKey
-    );
+    isEnabledE2EE = !!(e2ee && e2ee.isEnabled && e2ee.includedWhiteboard);
   }
 
   if (isEnabledE2EE) {

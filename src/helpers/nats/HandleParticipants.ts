@@ -37,7 +37,7 @@ import {
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { getMediaServerConn } from '../livekit/utils';
-import { displayInstantNotification } from '../utils';
+import { displayInstantNotification, isUserRecorder } from '../utils';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
@@ -56,7 +56,7 @@ export default class HandleParticipants {
   public addLocalParticipantInfo = async (
     info: NatsKvUserInfo,
   ): Promise<ICurrentUser> => {
-    this._isLocalUserRecorder = this.isRecorder(info.userId);
+    this._isLocalUserRecorder = isUserRecorder(info.userId);
 
     const metadata = this.decodeMetadata(info.metadata);
     const localUser = {
@@ -102,7 +102,7 @@ export default class HandleParticipants {
     participant: NatsKvUserInfo,
   ): Promise<boolean> {
     if (this._localUserId !== participant.userId) {
-      if (this.isRecorder(participant.userId)) {
+      if (isUserRecorder(participant.userId)) {
         return false;
       }
       const roomMetadata = store.getState().session.currentRoom.metadata;
@@ -267,10 +267,6 @@ export default class HandleParticipants {
     store.dispatch(removeParticipant(p.userId));
     // remove if in active speaker
     store.dispatch(removeOneSpeaker(p.userId));
-  };
-
-  public isRecorder = (userId: string) => {
-    return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
   };
 
   public clearParticipantCounterInterval = () => {

@@ -9,15 +9,6 @@ import type {
 } from 'livekit-client';
 import type EventEmitter from 'eventemitter3';
 
-export type ConnectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'disconnected'
-  | 're-connecting'
-  | 'error'
-  | 'receiving-data'
-  | 'ready';
-
 export enum CurrentConnectionEvents {
   ScreenShareStatus = 'screenShareStatus',
   VideoStatus = 'videoStatus',

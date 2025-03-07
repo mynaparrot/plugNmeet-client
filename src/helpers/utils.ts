@@ -310,3 +310,7 @@ export const displayInstantNotification = (
     new Notification(message, { icon });
   }
 };
+
+export const isUserRecorder = (userId: string) => {
+  return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
+};

@@ -40,6 +40,7 @@ export interface IRoomSettings {
   isPNMWindowTabVisible: boolean;
   pinCamUserId?: string;
   focusActiveSpeakerWebcam: boolean;
+  selfInsertedE2EESecretKey?: string;
 }
 
 export interface IMediaDevice {

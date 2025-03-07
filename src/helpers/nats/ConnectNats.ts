@@ -37,11 +37,7 @@ import { isURL } from 'validator';
 import { isE2EESupported } from 'livekit-client';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import {
-  ConnectionStatus,
-  IConnectLivekit,
-  LivekitInfo,
-} from '../livekit/types';
+import { IConnectLivekit, LivekitInfo } from '../livekit/types';
 import { createLivekitConnection } from '../livekit/utils';
 import HandleRoomData from './HandleRoomData';
 import HandleParticipants from './HandleParticipants';
@@ -55,8 +51,9 @@ import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
 import { encryptMessage, importSecretKey } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import { formatNatsError, getWhiteboardDonors } from '../utils';
+import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
 import { updateIsNatsServerConnected } from '../../store/slices/roomSettingsSlice';
+import { roomConnectionStatus } from '../../components/app/helper';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -68,6 +65,7 @@ export default class ConnectNats {
   private readonly _natsWSUrls: string[];
   private _token: string;
   private _enabledE2EE: boolean = false;
+  private _enableE2EEChat: boolean = false;
 
   private readonly _roomId: string;
   private readonly _userId: string;
@@ -85,7 +83,7 @@ export default class ConnectNats {
   private isRoomReconnecting: boolean = false;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
-  private readonly _setRoomConnectionStatusState: Dispatch<ConnectionStatus>;
+  private readonly _setRoomConnectionStatusState: Dispatch<roomConnectionStatus>;
   private readonly _setCurrentMediaServerConn: Dispatch<IConnectLivekit>;
 
   private _mediaServerConn: IConnectLivekit | undefined = undefined;
@@ -104,7 +102,7 @@ export default class ConnectNats {
     userId: string,
     subjects: NatsSubjects,
     setErrorState: Dispatch<IErrorPageProps>,
-    setRoomConnectionStatusState: Dispatch<ConnectionStatus>,
+    setRoomConnectionStatusState: Dispatch<roomConnectionStatus>,
     setCurrentMediaServerConn: Dispatch<IConnectLivekit>,
   ) {
     this._natsWSUrls = natsWSUrls;
@@ -167,7 +165,7 @@ export default class ConnectNats {
     }
 
     this._setRoomConnectionStatusState('receiving-data');
-    this._isRecorder = this.handleParticipants.isRecorder(this.userId);
+    this._isRecorder = isUserRecorder(this.userId);
     this._js = jetstream(this._nc);
     this.messageQueue.js(this._js);
 
@@ -238,7 +236,7 @@ export default class ConnectNats {
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
-    if (this._enabledE2EE) {
+    if (this._enableE2EEChat) {
       try {
         msg = await encryptMessage(msg);
       } catch (e: any) {
@@ -662,7 +660,11 @@ export default class ConnectNats {
 
     // media info
     if (data.mediaServerInfo) {
-      await this.createMediaServerConn(data.mediaServerInfo);
+      const success = await this.createMediaServerConn(data.mediaServerInfo);
+      if (!success) {
+        // if not success, then we won't do anything else
+        return;
+      }
     }
 
     // now request for users' list
@@ -712,7 +714,7 @@ export default class ConnectNats {
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
     if (typeof this._mediaServerConn !== 'undefined') {
-      return;
+      return false;
     }
     const info: LivekitInfo = {
       livekit_host: connInfo.url,
@@ -722,18 +724,34 @@ export default class ConnectNats {
     const e2ee =
       this._currentRoomInfo?.metadata?.roomFeatures?.endToEndEncryptionFeatures;
 
-    if (e2ee && e2ee.isEnabled && e2ee.encryptionKey) {
+    if (e2ee && e2ee.isEnabled) {
       if (!isE2EESupported()) {
         this.setErrorStatus(
           i18n.t('notifications.e2ee-unsupported-browser-title'),
           i18n.t('notifications.e2ee-unsupported-browser-msg'),
         );
-        return;
+        return false;
       } else {
-        this._enabledE2EE = true;
-        info.enabledE2EE = true;
-        info.encryption_key = e2ee.encryptionKey;
-        await importSecretKey(e2ee.encryptionKey);
+        let encryptionKey = e2ee.encryptionKey;
+        if (e2ee.enabledSelfInsertEncryptionKey) {
+          encryptionKey =
+            store.getState().roomSettings.selfInsertedE2EESecretKey;
+        }
+
+        if (encryptionKey) {
+          this._enabledE2EE = true;
+          this._enableE2EEChat = e2ee.includedChatMessages;
+
+          await importSecretKey(encryptionKey);
+          info.encryption_key = encryptionKey;
+          info.enabledE2EE = true;
+        } else {
+          this.setErrorStatus(
+            i18n.t('notifications.e2ee-invalid-key-title'),
+            i18n.t('notifications.e2ee-invalid-key-msg'),
+          );
+          return false;
+        }
       }
     }
 
@@ -745,5 +763,6 @@ export default class ConnectNats {
 
     this._setCurrentMediaServerConn(conn);
     this._mediaServerConn = conn;
+    return true;
   }
 }

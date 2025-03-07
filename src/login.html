@@ -176,13 +176,16 @@
                         is_allow: true,
                         is_allow_translation: true,
                     },
-                    // end_to_end_encryption_features: {
-                    //     is_enabled: true,
-                    //     included_chat_messages: true,
-                    //     // this may use more CPU for the user end.
-                    //     // do not enable it unless really necessary
-                    //     included_whiteboard: false,
-                    // }
+                    end_to_end_encryption_features: {
+                        is_enabled: true,
+                        included_chat_messages: true,
+                        // this may use more CPU for the user end.
+                        // do not enable it unless really necessary
+                        included_whiteboard: false,
+                        // if true then user will have to insert
+                        // shared key manually
+                        enabled_self_insert_encryption_key: true,
+                    }
                 },
                 // default_lock_settings: {
                 //     lock_microphone: true,

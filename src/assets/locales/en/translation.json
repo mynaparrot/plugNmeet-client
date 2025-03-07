@@ -50,6 +50,8 @@
     "room-will-end-in": "This room will be ended in {{minutes}} minutes",
     "e2ee-unsupported-browser-title": "Unsupported browser",
     "e2ee-unsupported-browser-msg": "This session has enabled end-to-end encryption which your current browser doesn't support.",
+    "e2ee-invalid-key-title": "Invalid encryption key",
+    "e2ee-invalid-key-msg": "Invalid encryption key provided",
     "nats-error-title": "Nats server connection error",
     "nats-error-no-response": "No backend server found to handle the request. Error: {{error}}",
     "nats-error-timeout": "No response found from backend server. Error: {{error}}",
@@ -149,7 +151,10 @@
     "ready": "ready",
     "webcams-per-page": "Per page.",
     "require-ssl-title": "Domain must be SSL enabled",
-    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost."
+    "require-ssl-des": "It is required to use an SSL-enabled domain other than localhost.",
+    "insert-secret-key": "Insert secret key",
+    "insert-secret-help": "Please ensure that everyone in this session uses the same key; otherwise, the encryption and decryption service will fail.",
+    "save": "Save"
   },
   "left-panel": {
     "participants": "Participants ({{total}})",

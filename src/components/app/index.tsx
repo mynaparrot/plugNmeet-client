@@ -32,10 +32,12 @@ import WaitingRoomPage from '../waiting-room/room-page';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import { IConnectLivekit } from '../../helpers/livekit/types';
-import { getAccessToken } from '../../helpers/utils';
+import { getAccessToken, isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import Landing from '../landing';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
+import { InfoToOpenConn, roomConnectionStatus } from './helper';
+import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -61,7 +63,11 @@ const App = () => {
 
   const [error, setError] = useState<IErrorPageProps | undefined>();
   const [roomConnectionStatus, setRoomConnectionStatus] =
-    useState<string>('loading');
+    useState<roomConnectionStatus>('loading');
+  const [openConnInfo, setOpenConnInfo] = useState<InfoToOpenConn | undefined>(
+    undefined,
+  );
+  const [openConn, setOpenConn] = useState<boolean>(false);
 
   useKeyboardShortcuts(currentMediaServerConn?.room);
   // to handle different customization
@@ -128,21 +134,20 @@ const App = () => {
           res.userId &&
           res.natsSubjects
         ) {
-          // we'll store the token that we received from the URL
-          dispatch(addToken(accessToken));
-          dispatch(addServerVersion(res.serverVersion ?? ''));
+          setOpenConnInfo({
+            accessToken: accessToken,
+            natsWsUrls: res.natsWsUrls,
+            natsSubjects: res.natsSubjects,
+            roomId: res.roomId,
+            userId: res.userId,
+            serverVersion: res.serverVersion ?? '',
+          });
 
-          setRoomConnectionStatus('connecting');
-          await startNatsConn(
-            res.natsWsUrls,
-            accessToken,
-            res.roomId,
-            res.userId,
-            res.natsSubjects,
-            setError,
-            setRoomConnectionStatus,
-            setCurrentMediaServerConn,
-          );
+          if (res.enabledSelfInsertEncryptionKey) {
+            setRoomConnectionStatus('insert-e2ee-key');
+          } else {
+            setOpenConn(true);
+          }
         } else {
           setError({
             title: t('app.verification-failed-title'),
@@ -194,21 +199,38 @@ const App = () => {
 
   useEffect(() => {
     if (roomConnectionStatus === 'connected') {
-      if (
-        currentMediaServerConn?.room.localParticipant.identity ===
-          'RECORDER_BOT' ||
-        currentMediaServerConn?.room.localParticipant.identity === 'RTMP_BOT'
-      ) {
+      const session = store.getState().session;
+      if (session.currentUser && isUserRecorder(session.currentUser.userId)) {
         setIsRecorder(true);
         dispatch(updateIsActiveChatPanel(false));
       }
 
-      if (store.getState().session.currentUser?.metadata?.isAdmin) {
+      if (session.currentUser?.metadata?.isAdmin) {
         setUserTypeClass('admin');
       }
     }
     //eslint-disable-next-line
   }, [roomConnectionStatus]);
+
+  useEffect(() => {
+    if (openConnInfo && openConn) {
+      // we'll store the token that we received from the URL
+      dispatch(addToken(openConnInfo.accessToken));
+      dispatch(addServerVersion(openConnInfo.serverVersion));
+
+      setRoomConnectionStatus('connecting');
+      startNatsConn(
+        openConnInfo.natsWsUrls,
+        openConnInfo.accessToken,
+        openConnInfo.roomId,
+        openConnInfo.userId,
+        openConnInfo.natsSubjects,
+        setError,
+        setRoomConnectionStatus,
+        setCurrentMediaServerConn,
+      ).then();
+    }
+  }, [dispatch, openConnInfo, openConn]);
 
   const renderMainApp = useCallback(() => {
     if (currentMediaServerConn) {
@@ -243,6 +265,8 @@ const App = () => {
         return <WaitingRoomPage />;
       }
       return renderMainApp();
+    } else if (roomConnectionStatus === 'insert-e2ee-key') {
+      return <InsertE2EEKey setOpenConn={setOpenConn} />;
     } else if (roomConnectionStatus === 'ready') {
       return <Landing onCloseModal={onCloseStartupModal} />;
     } else {

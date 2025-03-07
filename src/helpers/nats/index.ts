@@ -3,7 +3,8 @@ import { NatsSubjects } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import { ConnectionStatus, IConnectLivekit } from '../livekit/types';
+import { IConnectLivekit } from '../livekit/types';
+import { roomConnectionStatus } from '../../components/app/helper';
 
 let conn: ConnectNats | undefined = undefined;
 
@@ -14,7 +15,7 @@ export const startNatsConn = async (
   userId: string,
   subjects: NatsSubjects,
   errorState: Dispatch<IErrorPageProps>,
-  roomConnectionStatusState: Dispatch<ConnectionStatus>,
+  roomConnectionStatusState: Dispatch<roomConnectionStatus>,
   setCurrentMediaServerConn: Dispatch<IConnectLivekit>,
 ) => {
   if (typeof conn !== 'undefined') {

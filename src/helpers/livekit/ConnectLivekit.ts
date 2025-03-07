@@ -38,14 +38,11 @@ import { IErrorPageProps } from '../../components/extra-pages/Error';
 import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './types';
 import i18n from '../i18n';
-import {
-  ConnectionStatus,
-  CurrentConnectionEvents,
-  IConnectLivekit,
-} from './types';
+import { CurrentConnectionEvents, IConnectLivekit } from './types';
 import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
+import { roomConnectionStatus } from '../../components/app/helper';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -62,7 +59,7 @@ export default class ConnectLivekit
   >();
 
   private readonly _errorState: Dispatch<IErrorPageProps>;
-  private readonly _roomConnectionStatusState: Dispatch<ConnectionStatus>;
+  private readonly _roomConnectionStatusState: Dispatch<roomConnectionStatus>;
 
   private readonly token: string;
   private readonly _room: Room;
@@ -79,7 +76,7 @@ export default class ConnectLivekit
   constructor(
     livekitInfo: LivekitInfo,
     errorState: Dispatch<IErrorPageProps>,
-    roomConnectionStatusState: Dispatch<ConnectionStatus>,
+    roomConnectionStatusState: Dispatch<roomConnectionStatus>,
   ) {
     super();
     this.token = livekitInfo.token;

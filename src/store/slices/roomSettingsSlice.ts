@@ -171,6 +171,9 @@ const roomSettingsSlice = createSlice({
     updateFocusActiveSpeakerWebcam: (state, action: PayloadAction<boolean>) => {
       state.focusActiveSpeakerWebcam = action.payload;
     },
+    addSelfInsertedE2EESecretKey: (state, action: PayloadAction<string>) => {
+      state.selfInsertedE2EESecretKey = action.payload;
+    },
   },
 });
 
@@ -204,6 +207,7 @@ export const {
   updateIsPNMWindowTabVisible,
   updatePinCamUserId,
   updateFocusActiveSpeakerWebcam,
+  addSelfInsertedE2EESecretKey,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

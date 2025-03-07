@@ -68,8 +68,7 @@ export default class HandleWhiteboard {
       this._isEnabledE2EE = !!(
         e2ee &&
         e2ee.isEnabled &&
-        e2ee.includedWhiteboard &&
-        e2ee.encryptionKey
+        e2ee.includedWhiteboard
       );
     }
     if (this._isEnabledE2EE) {
