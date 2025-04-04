@@ -36,15 +36,15 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
     return (
       <MenuItems
         static
-        className="HeaderSettingMenu origin-top-right z-10 absolute ltr:right-0 rtl:-left-4 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+        className="HeaderSettingMenu origin-top-right z-10 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-none"
       >
         <div className="py-1" role="none">
           <MenuItem>
             <button
-              className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+              className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
               onClick={() => showRoomSettings()}
             >
-              <i className="pnm-settings text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
+              <i className="pnm-settings text-primaryColor text-base ltr:mr-2 rtl:ml-2 transition ease-in" />
               {t('header.menus.settings')}
             </button>
           </MenuItem>
@@ -52,10 +52,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <div className="py-1" role="none">
           <MenuItem>
             <button
-              className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+              className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
               onClick={() => showKeyboardShortcuts()}
             >
-              <i className="pnm-keyboard text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
+              <i className="pnm-keyboard text-primaryColor text-lg ltr:mr-2 rtl:ml-2 transition ease-in" />
               {t('header.menus.keyboard-shortcuts')}
             </button>
           </MenuItem>
@@ -63,26 +63,24 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <div className="py-1" role="none">
           <MenuItem>
             <button
-              className="text-gray-700 dark:text-darkText rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in hover:text-secondaryColor"
+              className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
               onClick={() => logout()}
             >
-              <i className="pnm-logout text-primaryColor dark:text-secondaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor dark:group-hover:text-white" />
+              <i className="pnm-logout text-primaryColor text-lg ltr:mr-2 rtl:ml-2 transition ease-in" />
               {t('header.menus.logout')}
             </button>
           </MenuItem>
         </div>
         {isAdmin ? (
-          <div className="py-1" role="none">
-            <MenuItem>
-              <button
-                className="text-red-900 dark:text-brandRed rounded group flex items-center py-2 px-4 text-sm text-left w-full transition ease-in"
-                onClick={() => endRoom()}
-              >
-                <i className="pnm-call text-red-900 dark:text-brandRed ltr:mr-2 rtl:ml-2 transition ease-in " />
-                {t('header.menus.end')}
-              </button>
-            </MenuItem>
-          </div>
+          <MenuItem>
+            <button
+              className="h-10 w-full 3xl:h-11 px-5 flex items-center rounded-lg text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+              onClick={() => endRoom()}
+            >
+              <i className="pnm-call text-white ltr:mr-2 rtl:ml-2 transition ease-in " />
+              {t('header.menus.end')}
+            </button>
+          </MenuItem>
         ) : null}
       </MenuItems>
     );

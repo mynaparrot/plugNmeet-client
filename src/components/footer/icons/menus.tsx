@@ -40,6 +40,14 @@ import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
+import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
+import { ExternalPlayerIconSVG } from '../../../assets/Icons/ExternalPlayerIconSVG';
+import { PlayerIconSVG } from '../../../assets/Icons/PlayerIconSVG';
+import { RoomLockIconSVG } from '../../../assets/Icons/RoomLockIconSVG';
+import { RTMPIconSVG } from '../../../assets/Icons/RTMPIconSVG';
+import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
+import { SpeechIconSVG } from '../../../assets/Icons/SpeechIconSVG';
+import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -289,7 +297,7 @@ const MenusIcon = () => {
           {({ open }) => (
             <>
               <MenuButton
-                className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${open ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+                className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border[3px] 3xl:border-4 ${open ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
               >
                 <div
                   className={`relative footer-icon flex items-center justify-center cursor-pointer w-full h-full rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${open ? 'bg-gray-100' : 'bg-white'}`}
@@ -311,144 +319,158 @@ const MenusIcon = () => {
                 {/* Mark this component as `static` */}
                 <MenuItems
                   static
-                  className="origin-bottom-left z-[9999] absolute mt-2 w-60 lg:w-72 bottom-14 shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
+                  className="origin-bottom-left z-[9999] absolute mt-2 w-[300px] bottom-14 shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
                 >
                   {roomFeatures?.allowRtmp ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`${
-                            isActiveRtmpBroadcasting ? 'bg-Gray-50' : ''
-                          } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => openRtmpModal()}
-                        >
-                          {isActiveRtmpBroadcasting ? (
-                            <div className="lds-ripple">
-                              <div className="border-secondaryColor"></div>
-                              <div className="border-secondaryColor"></div>
-                            </div>
-                          ) : null}
-                          <i className="pnm-broadcasting text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {isActiveRtmpBroadcasting
-                            ? t('footer.icons.stop-rtmp-broadcasting')
-                            : t('footer.icons.start-rtmp-broadcasting')}
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : null}
-                  <div className="" role="none">
                     <MenuItem>
                       <button
-                        className={`h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                        onClick={() => muteAllUsers()}
+                        onClick={() => openRtmpModal()}
+                        className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
                       >
-                        <i className="pnm-mic-mute text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                        {t('footer.menus.mute-all-users')}
+                        {/* {isActiveRtmpBroadcasting ? (
+                          <div className="lds-ripple">
+                            <div className="border-secondaryColor"></div>
+                            <div className="border-secondaryColor"></div>
+                          </div>
+                        ) : null} */}
+                        <RTMPIconSVG />
+                        {isActiveRtmpBroadcasting
+                          ? t('footer.icons.stop-rtmp-broadcasting')
+                          : t('footer.icons.start-rtmp-broadcasting')}
+                        {isActiveRtmpBroadcasting ? (
+                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                        ) : null}
                       </button>
                     </MenuItem>
-                  </div>
-                  {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`${
-                            sharedNotepadStatus ? 'bg-Gray-50' : ''
-                          } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => toggleSharedNotepad()}
-                        >
-                          <i className="pnm-notepad text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {sharedNotepadStatus
-                            ? t('footer.menus.disable-shared-notepad')
-                            : t('footer.menus.enable-shared-notepad')}
-                        </button>
-                      </MenuItem>
-                    </div>
                   ) : null}
                   {roomFeatures?.externalMediaPlayerFeatures
                     ?.allowedExternalMediaPlayer ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`${
-                            isActiveExternalMediaPlayer ? 'bg-Gray-50' : ''
-                          } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => toggleExternalMediaPlayer()}
-                        >
-                          <i className="pnm-file-play text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {isActiveExternalMediaPlayer
-                            ? t('footer.menus.stop-external-media-player')
-                            : t('footer.menus.start-external-media-player')}
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : null}
-                  {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`${
-                            isActiveDisplayExternalLink ? 'bg-Gray-50' : ''
-                          } h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => toggleDisplayExternalLinkModal()}
-                        >
-                          <i className="pnm-display text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {isActiveDisplayExternalLink
-                            ? t('footer.menus.stop-display-external-link')
-                            : t('footer.menus.start-display-external-link')}
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : null}
-                  {roomFeatures?.waitingRoomFeatures?.isActive ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => openManageWaitingRoomModal()}
-                        >
-                          <i className="pnm-waiting-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {t('footer.menus.manage-waiting-room')}
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : null}
-                  {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => openSpeechServiceSettingsModal()}
-                        >
-                          <i className="pnm-closed-captioning text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {t('footer.menus.speech-to-text-settings')}
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : null}
-                  {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
-                    <div className="" role="none">
-                      <MenuItem>
-                        <button
-                          className={`h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                          onClick={() => openManageBreakoutRoomModal()}
-                        >
-                          <i className="pnm-breakout-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                          {t('footer.menus.manage-breakout-room')}
-                        </button>
-                      </MenuItem>
-                    </div>
-                  ) : null}
-                  <div className="" role="none">
                     <MenuItem>
                       <button
-                        className={`h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                        onClick={() => openLockSettingsModal()}
+                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        onClick={() => toggleExternalMediaPlayer()}
                       >
-                        <i className="pnm-lock text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
-                        {t('footer.menus.room-lock-settings')}
+                        <PlayerIconSVG />
+                        {isActiveExternalMediaPlayer
+                          ? t('footer.menus.stop-external-media-player')
+                          : t('footer.menus.start-external-media-player')}
+                        {isActiveExternalMediaPlayer ? (
+                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                        ) : null}
                       </button>
                     </MenuItem>
-                  </div>
+                  ) : null}
+                  {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
+                    <MenuItem>
+                      <button
+                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        onClick={() => toggleDisplayExternalLinkModal()}
+                      >
+                        <ExternalPlayerIconSVG />
+                        {isActiveDisplayExternalLink
+                          ? t('footer.menus.stop-display-external-link')
+                          : t('footer.menus.start-display-external-link')}
+                        {isActiveDisplayExternalLink ? (
+                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                        ) : null}
+                      </button>
+                    </MenuItem>
+                  ) : null}
+                  <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+                  {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
+                    <MenuItem>
+                      <button
+                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        onClick={() => toggleSharedNotepad()}
+                      >
+                        <SharedNotepadIconSVG />
+                        {sharedNotepadStatus
+                          ? t('footer.menus.disable-shared-notepad')
+                          : t('footer.menus.enable-shared-notepad')}
+                        {/* {isActiveExternalMediaPlayer ? (
+                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                        ) : null} */}
+                      </button>
+                    </MenuItem>
+                  ) : null}
+                  {/* {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? ( */}
+                  <MenuItem>
+                    <button
+                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                      onClick={() => openSpeechServiceSettingsModal()}
+                    >
+                      <SpeechIconSVG />
+                      {t('footer.menus.speech-to-text-settings')}
+                      {/* {isActiveExternalMediaPlayer ? (
+                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                      ) : null} */}
+                    </button>
+                  </MenuItem>
+                  {/* ) : null} */}
+                  <MenuItem>
+                    <button
+                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                    >
+                      <PollsIconSVG />
+                      Open Polls
+                      {/* {isActiveExternalMediaPlayer ? (
+                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                      ) : null} */}
+                    </button>
+                  </MenuItem>
+                  <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+                  {roomFeatures?.waitingRoomFeatures?.isActive ? (
+                    <MenuItem>
+                      <button
+                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        onClick={() => openManageWaitingRoomModal()}
+                      >
+                        <i className="pnm-waiting-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
+                        {t('footer.menus.manage-waiting-room')}
+                        {/* {isActiveExternalMediaPlayer ? (
+                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                        ) : null} */}
+                      </button>
+                    </MenuItem>
+                  ) : null}
+                  {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
+                    <MenuItem>
+                      <button
+                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        onClick={() => openManageBreakoutRoomModal()}
+                      >
+                        <BreakoutRoomIconSVG />
+                        {t('footer.menus.manage-breakout-room')}
+                        {/* {isActiveExternalMediaPlayer ? (
+                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                        ) : null} */}
+                      </button>
+                    </MenuItem>
+                  ) : null}
+                  <MenuItem>
+                    <button
+                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                      onClick={() => muteAllUsers()}
+                    >
+                      <i className="pnm-mic-mute text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
+                      {t('footer.menus.mute-all-users')}
+                      {/* {isActiveExternalMediaPlayer ? (
+                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                      ) : null} */}
+                    </button>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                      onClick={() => openLockSettingsModal()}
+                    >
+                      <RoomLockIconSVG />
+                      {t('footer.menus.room-lock-settings')}
+                      {/* {isActiveExternalMediaPlayer ? (
+                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                      ) : null} */}
+                    </button>
+                  </MenuItem>
                 </MenuItems>
               </Transition>
             </>
