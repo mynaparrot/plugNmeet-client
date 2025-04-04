@@ -53,7 +53,7 @@ const VideoComponent = ({
       <Participant userId={userId} name={name} isLocal={isLocal} />
       <div className="camera-modules">
         <div className="camera-video-player">
-          <VideoElm track={track} setVideoRef={setVideoRef} />
+          <VideoElm track={track} setVideoRef={setVideoRef as any} />
           <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999] transition-all duration-300 opacity-0 group-hover:opacity-100">
             {displayPinIcon ? <PinWebcam userId={userId} /> : null}
             <button

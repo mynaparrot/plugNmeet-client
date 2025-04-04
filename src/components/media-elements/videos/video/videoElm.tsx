@@ -7,7 +7,7 @@ import './style.scss';
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
   setVideoRef: React.Dispatch<
-    React.SetStateAction<React.RefObject<HTMLVideoElement> | null>
+    React.SetStateAction<React.RefObject<HTMLVideoElement | null>>
   >;
 }
 

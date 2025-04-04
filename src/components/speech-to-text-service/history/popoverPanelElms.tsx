@@ -46,7 +46,7 @@ const PopoverPanelElms = ({
   }, [lastFinalTexts]);
 
   return (
-    <Draggable nodeRef={nodeRef}>
+    <Draggable nodeRef={nodeRef as any} bounds="#main-area">
       <PopoverPanel
         className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
         ref={nodeRef}

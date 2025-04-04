@@ -105,11 +105,12 @@ const SharedNotepadElement = () => {
           <div className="h-[calc(100%-50px)] mt-9 flex items-end justify-end">
             <Draggable
               handle="#draggable-h1"
-              nodeRef={nodeRef}
+              nodeRef={nodeRef as any}
               onStop={onStopDrag}
               position={
                 isActiveSharedNotePad ? currentPosition : { x: 0, y: 0 }
               }
+              bounds="#main-area"
             >
               <div
                 className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto"
