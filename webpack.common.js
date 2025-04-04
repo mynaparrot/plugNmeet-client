@@ -1,31 +1,41 @@
-const path = require('path');
-const fs = require('fs');
-const webpack = require('webpack');
-const tailwindcss = require('tailwindcss');
-const autoprefixer = require('autoprefixer');
-const postcssNested = require('postcss-nested');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const ReactRefreshTypeScript = require('react-refresh-typescript');
-const pkg = require('./package.json');
+import { resolve, dirname } from 'path';
+import { copyFileSync } from 'fs';
+import webpack from 'webpack';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+import postcssNested from 'postcss-nested';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import ReactRefreshTypeScript from 'react-refresh-typescript';
+import * as pkg from './package.json' with { type: 'json' };
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-module.exports = {
+const config = {
   entry: './src/index.tsx',
   optimization: {
     usedExports: true,
   },
   output: {
     filename: 'assets/js/[name].[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: resolve(dirname(''), 'dist'),
   },
   watchOptions: {
     ignored: '**/node_modules',
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    alias: {
+      '@tensorflow/tfjs$': resolve(dirname(''), './custom_tfjs/custom_tfjs.js'),
+      '@tensorflow/tfjs-core$': resolve(
+        dirname(''),
+        './custom_tfjs/custom_tfjs_core.js',
+      ),
+    },
   },
   module: {
     rules: [
@@ -67,40 +77,27 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx'],
-    alias: {
-      '@tensorflow/tfjs$': path.resolve(
-        __dirname,
-        './custom_tfjs/custom_tfjs.js',
-      ),
-      '@tensorflow/tfjs-core$': path.resolve(
-        __dirname,
-        './custom_tfjs/custom_tfjs_core.js',
-      ),
-    },
-  },
   plugins: [
     {
       apply: (compiler) => {
         compiler.hooks.initialize.tap('PlugNmeet', () => {
           // temporary work around for worker files
-          const from = path.resolve(
-            __dirname,
+          const from = resolve(
+            dirname(''),
             'node_modules',
             'livekit-client',
             'dist',
             'livekit-client.e2ee.worker.js',
           );
-          const to = path.resolve(
-            __dirname,
+          const to = resolve(
+            dirname(''),
             'src',
             'helpers',
             'livekit',
             'e2ee-worker',
             'livekit-client.e2ee.worker.js',
           );
-          fs.copyFileSync(from, to);
+          copyFileSync(from, to);
         });
       },
     },
@@ -148,3 +145,5 @@ module.exports = {
     }),
   ].filter(Boolean),
 };
+
+export default config;

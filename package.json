@@ -3,6 +3,7 @@
   "version": "1.7.0",
   "author": "Jibon L. Costa",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "start": "webpack serve --config webpack.dev.js",
