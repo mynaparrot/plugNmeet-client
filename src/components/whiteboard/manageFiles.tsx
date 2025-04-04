@@ -7,7 +7,7 @@ import {
   Transition,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import UploadFilesUI from './uploadFilesUI';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';

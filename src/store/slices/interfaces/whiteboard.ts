@@ -1,4 +1,4 @@
-import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types/types';
+import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
 
 export interface IWhiteboardSlice {
   totalPages: number;

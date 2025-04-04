@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.2.5",
-    "@excalidraw/excalidraw": "0.17.6",
+    "@excalidraw/excalidraw": "0.18.0",
     "@headlessui/react": "2.2.0",
     "@nats-io/jetstream": "3.0.0",
     "@nats-io/nats-core": "3.0.0",
@@ -37,7 +37,7 @@
     "microsoft-cognitiveservices-speech-sdk": "1.43.0",
     "mobile-detect": "1.4.5",
     "nosleep.js": "0.12.0",
-    "plugnmeet-protocol-js": "1.0.15-2",
+    "plugnmeet-protocol-js": "link:../protocol/js",
     "react": "18.3.1",
     "react-cool-virtual": "0.7.0",
     "react-dnd": "16.0.1",

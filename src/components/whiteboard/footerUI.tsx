@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import {
   CommonResponseSchema,

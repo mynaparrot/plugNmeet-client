@@ -75,6 +75,12 @@ const config = {
           filename: './assets/fonts/[name][ext]',
         },
       },
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
     ],
   },
   plugins: [

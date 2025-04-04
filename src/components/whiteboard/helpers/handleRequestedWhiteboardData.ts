@@ -1,8 +1,9 @@
-import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
   ExcalidrawImperativeAPI,
   NormalizedZoomValue,
-} from '@excalidraw/excalidraw/types/types';
+  // @ts-expect-error no problem
+  ExcalidrawElement,
+} from '@excalidraw/excalidraw/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import { toast } from 'react-toastify';
 import {
@@ -13,10 +14,6 @@ import {
 
 import { store } from '../../../store';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
-import {
-  BroadcastedExcalidrawElement,
-  PRECEDING_ELEMENT_KEY,
-} from './reconciliation';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
@@ -99,24 +96,21 @@ export const broadcastSceneOnChange = async (
   sendTo?: string,
 ) => {
   // sync out only the elements we think we need to save bandwidth.
-  const syncableElements = allElements.reduce(
-    (acc, element: BroadcastedExcalidrawElement, idx, elements) => {
-      if (
-        (syncAll ||
-          !broadcastedElementVersions.has(element.id) ||
-          element.version > broadcastedElementVersions.get(element.id)!) &&
-        isSyncableElement(element)
-      ) {
-        acc.push({
-          ...element,
-          // z-index info for the reconciler
-          [PRECEDING_ELEMENT_KEY]: idx === 0 ? '^' : elements[idx - 1]?.id,
-        });
-      }
-      return acc;
-    },
-    [] as BroadcastedExcalidrawElement[],
-  );
+  const syncableElements = allElements.reduce((acc, element) => {
+    if (
+      (syncAll ||
+        !broadcastedElementVersions.has(element.id) ||
+        element.version > broadcastedElementVersions.get(element.id)!) &&
+      isSyncableElement(element)
+    ) {
+      acc.push(element);
+    }
+    return acc;
+  }, []);
+
+  if (!syncableElements.length) {
+    return;
+  }
 
   for (const syncableElement of syncableElements) {
     broadcastedElementVersions.set(syncableElement.id, syncableElement.version);

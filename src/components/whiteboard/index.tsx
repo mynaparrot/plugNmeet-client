@@ -4,23 +4,25 @@ import {
   Footer,
   MainMenu,
   getSceneVersion,
+  CaptureUpdateAction,
+  reconcileElements,
 } from '@excalidraw/excalidraw';
 import { throttle } from 'es-toolkit/compat';
-import type { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import type {
   ExcalidrawImperativeAPI,
   Gesture,
   Collaborator,
   BinaryFileData,
   AppState,
-} from '@excalidraw/excalidraw/types/types';
+  SocketId,
+  // @ts-expect-error no problem
+  ExcalidrawElement,
+  // @ts-expect-error no problem
+  OrderedExcalidrawElement,
+} from '@excalidraw/excalidraw/types';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
-import {
-  ReconciledElements,
-  reconcileElements,
-} from './helpers/reconciliation';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { useTranslation } from 'react-i18next';
 import { IWhiteboardFile } from '../../store/slices/interfaces/whiteboard';
@@ -41,6 +43,7 @@ import {
   displaySavedPageData,
 } from './helpers/utils';
 
+import '@excalidraw/excalidraw/index.css';
 import './style.scss';
 import { sleep } from '../../helpers/utils';
 import {
@@ -48,13 +51,14 @@ import {
   updateExcalidrawElements,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
+import { ReconciledExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
 }
 
 const CURSOR_SYNC_TIMEOUT = 33;
-const collaborators = new Map<string, Collaborator>();
+const collaborators = new Map<SocketId, Collaborator>();
 
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const currentUser = store.getState().session.currentUser;
@@ -274,7 +278,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   const handleRemoteSceneUpdate = (
     excalidrawAPI: ExcalidrawImperativeAPI,
-    elements: ReconciledElements,
+    elements: ReconciledExcalidrawElement[],
     { init = false }: { init?: boolean } = {},
   ) => {
     if (!elements.length) {
@@ -283,7 +287,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
     excalidrawAPI.updateScene({
       elements,
-      commitToHistory: init,
+      captureUpdate: init
+        ? CaptureUpdateAction.IMMEDIATELY
+        : CaptureUpdateAction.NEVER,
     });
     setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
 
@@ -332,12 +338,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           return;
         }
 
-        const user: Collaborator = {};
-        user.pointer = pointer;
-        user.button = button;
-        user.selectedElementIds = selectedElementIds;
-        user.username = name;
-        user.id = userId;
+        const user: Collaborator = {
+          pointer,
+          button,
+          selectedElementIds,
+          id: userId,
+          username: name,
+        };
         collaborators.set(userId, user);
 
         excalidrawAPI?.updateScene({ collaborators: new Map(collaborators) });
@@ -381,7 +388,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         return;
       }
       const fileReadImages: Array<BinaryFileData> = [];
-      const fileReadElms: Array<ExcalidrawElement> = [];
+      const fileReadElms: Array<OrderedExcalidrawElement> = [];
 
       for (const file of files) {
         const url =

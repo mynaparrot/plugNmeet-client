@@ -1,9 +1,12 @@
-import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types/types';
-import { randomInteger } from '../../../helpers/utils';
 import {
+  BinaryFileData,
+  DataURL,
+  // @ts-expect-error no problem
   ExcalidrawElement,
+  // @ts-expect-error no problem
   ExcalidrawImageElement,
-} from '@excalidraw/excalidraw/types/element/types';
+} from '@excalidraw/excalidraw/types';
+import { randomInteger } from '../../../helpers/utils';
 
 export interface FileReaderResult {
   image: BinaryFileData;

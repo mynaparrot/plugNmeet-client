@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import ScreenShareElements from '../media-elements/screenshare';

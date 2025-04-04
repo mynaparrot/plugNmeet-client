@@ -14,7 +14,7 @@ import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import {
   AnalyticsEvents,
   AnalyticsEventType,

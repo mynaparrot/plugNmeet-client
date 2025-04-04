@@ -1,4 +1,4 @@
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';

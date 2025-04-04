@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
-import type { Theme } from '@excalidraw/excalidraw/types/element/types';
+// @ts-expect-error no problem
+import type { Theme } from '@excalidraw/excalidraw/types';
 
 import {
   ColumnCameraPosition,
