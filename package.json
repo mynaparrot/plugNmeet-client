@@ -53,7 +53,7 @@
     "video.js": "8.21.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.19.0",
+    "@eslint/js": "9.24.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.15",
     "@size-limit/preset-app": "11.1.6",
     "@tensorflow/tfjs-backend-webgl": "4.22.0",
@@ -69,7 +69,7 @@
     "copy-webpack-plugin": "12.0.2",
     "css-loader": "7.1.2",
     "css-minimizer-webpack-plugin": "7.0.0",
-    "eslint": "9.19.0",
+    "eslint": "9.24.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-prettier": "5.2.3",
     "eslint-plugin-react-hooks": "5.1.0",
