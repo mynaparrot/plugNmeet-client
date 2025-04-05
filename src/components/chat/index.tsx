@@ -59,7 +59,7 @@ const ChatComponent = () => {
   };
 
   return (
-    <>
+    <div className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full">
       <div className="h-full">
         <div className="all-MessageModule-wrap h-full">
           <ChatTabs />
@@ -105,7 +105,7 @@ const ChatComponent = () => {
           </div>
         </>
       ) : null}
-    </>
+    </div>
   );
 };
 

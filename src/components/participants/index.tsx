@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
 
-import { store, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import ParticipantComponent from './participant';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { IParticipant } from '../../store/slices/interfaces/participant';
@@ -10,9 +10,12 @@ import RemoveParticipantAlertModal, {
   IRemoveParticipantAlertModalData,
 } from './removeParticipantAlertModal';
 import { SearchIconSVG } from '../../assets/Icons/SearchIconSVG';
+import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
+import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const totalParticipants = useAppSelector(participantsSelector.selectTotal);
   // const screenHeight = useAppSelector(
   //   (state) => state.bottomIconsActivity.screenHeight,
@@ -67,6 +70,10 @@ const ParticipantsComponent = () => {
     setRemoveParticipantData(undefined);
   };
 
+  const closePanel = () => {
+    dispatch(updateIsActiveParticipantsPanel(false));
+  };
+
   const renderParticipant = (index) => {
     if (!participants.length || typeof participants[index] === 'undefined') {
       return null;
@@ -93,7 +100,13 @@ const ParticipantsComponent = () => {
   };
 
   return (
-    <>
+    <div className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full">
+      <div
+        className="hidden md:inline-block absolute z-50 right-3 3xl:right-5 top-[10px] 3xl:top-[18px] text-Gray-600 cursor-pointer"
+        onClick={closePanel}
+      >
+        <CloseIconSVG />
+      </div>
       <div className="inner-wrapper relative z-20 w-full">
         <div className="top flex items-center h-10 3xl:h-14 px-3 3xl:px-5">
           <p className="text-sm 3xl:text-base text-Gray-950 font-medium leading-tight">
@@ -148,7 +161,7 @@ const ParticipantsComponent = () => {
           closeAlertModal={onCloseAlertModal}
         />
       ) : null}
-    </>
+    </div>
   );
 };
 

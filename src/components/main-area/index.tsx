@@ -2,12 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
-import LeftPanel from '../left-panel';
-import RightPanel from '../right-panel';
-
 import { useAppSelector, useAppDispatch, store } from '../../store';
-import ActiveSpeakers from '../active-speakers';
-import MainComponents from './mainComponents';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
@@ -15,7 +10,12 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
+
+import ActiveSpeakers from '../active-speakers';
+import MainComponents from './mainComponents';
 import PollsComponent from '../polls';
+import ChatComponent from '../chat';
+import ParticipantsComponent from '../participants';
 
 const MainArea = () => {
   const columnCameraWidth = useAppSelector(
@@ -193,7 +193,7 @@ const MainArea = () => {
             'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
           ])}
         >
-          <LeftPanel />
+          <ParticipantsComponent />
         </div>
       </Transition>
     );
@@ -214,7 +214,7 @@ const MainArea = () => {
             'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
           ])}
         >
-          <RightPanel />
+          <ChatComponent />
         </div>
       </Transition>
     );
