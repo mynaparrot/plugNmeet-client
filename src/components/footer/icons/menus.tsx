@@ -9,6 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivatePollsReqSchema,
   ChangeEtherpadStatusReqSchema,
   CommonResponseSchema,
   CreateEtherpadSessionResSchema,
@@ -86,6 +87,10 @@ const MenusIcon = () => {
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures
         ?.displayExternalLinkFeatures?.isActive,
+  );
+  const isActivePoll = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
   );
   const showDisplayExternalLinkModal = useAppSelector(
     (state) => state.bottomIconsActivity.showDisplayExternalLinkModal,
@@ -270,6 +275,35 @@ const MenusIcon = () => {
     }
   };
 
+  const togglePolls = async () => {
+    const id = toast.loading(t('please-wait'), {
+      type: 'info',
+    });
+
+    const body = create(ActivatePollsReqSchema, {
+      isActive: !isActivePoll,
+    });
+    const r = await sendAPIRequest(
+      'polls/activate',
+      toBinary(ActivatePollsReqSchema, body),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+
+    if (!res.status) {
+      toast.update(id, {
+        render: t(res.msg),
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } else {
+      toast.dismiss(id);
+    }
+  };
+
   const openLockSettingsModal = () => {
     dispatch(updateShowLockSettingsModal(true));
   };
@@ -407,17 +441,17 @@ const MenusIcon = () => {
                     </button>
                   </MenuItem>
                   {/* ) : null} */}
-                  <MenuItem>
-                    <button
-                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                    >
-                      <PollsIconSVG />
-                      Open Polls
-                      {/* {isActiveExternalMediaPlayer ? (
-                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                      ) : null} */}
-                    </button>
-                  </MenuItem>
+                  {roomFeatures?.pollsFeatures?.isAllow ? (
+                    <MenuItem>
+                      <button
+                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        onClick={() => togglePolls()}
+                      >
+                        <PollsIconSVG />
+                        {isActivePoll ? 'Disable polls' : 'Enable Polls'}
+                      </button>
+                    </MenuItem>
+                  ) : null}
                   <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
                   {roomFeatures?.waitingRoomFeatures?.isActive ? (
                     <MenuItem>
