@@ -20,16 +20,19 @@ import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import EndMeetingButton from './icons/endMeeting';
 import RecordingIcon from './icons/recording';
+import PollsIcon from './icons/polls';
 // import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 
 const Footer = () => {
-  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const footerVisible = useAppSelector(
     (state) => state.roomSettings.visibleFooter,
   );
   // const dispatch = useAppDispatch();
   // const { t } = useTranslation();
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
+  const session = store.getState().session;
+  const isAdmin = session.currentUser?.metadata?.isAdmin;
+  const isRecorder = session.currentUser?.isRecorder;
+  const roomFeatures = session.currentRoom.metadata?.roomFeatures;
 
   return useMemo(() => {
     return (
@@ -60,13 +63,14 @@ const Footer = () => {
                 <WhiteboardIcon />
                 <RaiseHandIcon />
                 <SharedNotePadIcon />
+                {roomFeatures?.pollsFeatures?.isAllow ? <PollsIcon /> : null}
                 <RecordingIcon />
                 {isAdmin ? <MenusIcon /> : null}
               </div>
 
               <div className="footer-right w-72 flex items-center justify-end gap-2">
                 <ParticipantIcon />
-                <ChatIcon />
+                {roomFeatures?.chatFeatures?.allowChat ? <ChatIcon /> : null}
                 <div className="line h-6 w-[1px] bg-Gray-200"></div>
                 <EndMeetingButton />
               </div>

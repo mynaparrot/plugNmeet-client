@@ -8,7 +8,6 @@ import RightPanel from '../right-panel';
 import { useAppSelector, useAppDispatch, store } from '../../store';
 import ActiveSpeakers from '../active-speakers';
 import MainComponents from './mainComponents';
-import { IRoomMetadata } from '../../store/slices/interfaces/session';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
@@ -16,6 +15,7 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { CurrentConnectionEvents } from '../../helpers/livekit/types';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
+import PollsComponent from '../polls';
 
 const MainArea = () => {
   const columnCameraWidth = useAppSelector(
@@ -46,6 +46,9 @@ const MainArea = () => {
   const isActiveChatPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveChatPanel,
   );
+  const isActivePollsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActivePollsPanel,
+  );
   const screenHeight = useAppSelector(
     (state) => state.bottomIconsActivity.screenHeight,
   );
@@ -60,20 +63,17 @@ const MainArea = () => {
   );
   const dispatch = useAppDispatch();
   const currentConnection = getMediaServerConn();
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
+  const session = store.getState().session;
+  const isRecorder = session.currentUser?.isRecorder;
+  const roomFeatures = session.currentRoom.metadata?.roomFeatures;
 
-  const [allowChat, setAllowChat] = useState<boolean>(true);
   const [isActiveScreenShare, setIsActiveScreenShare] =
     useState<boolean>(false);
   const [height, setHeight] = useState<number>(screenHeight);
   // const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
-    const metadata = store.getState().session.currentRoom
-      .metadata as IRoomMetadata;
-
-    if (!metadata.roomFeatures?.chatFeatures?.allowChat) {
-      setAllowChat(false);
+    if (!roomFeatures?.chatFeatures?.allowChat) {
       dispatch(updateIsActiveChatPanel(false));
     }
 
@@ -121,6 +121,10 @@ const MainArea = () => {
     isActiveParticipantsPanel
       ? css.push('showParticipantsPanel')
       : css.push('hideParticipantsPanel');
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isActivePollsPanel
+      ? css.push('showPollsPanel')
+      : css.push('hidePollsPanel');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveScreenSharingView && isActiveScreenShare
@@ -143,7 +147,7 @@ const MainArea = () => {
       : css.push('hideDisplayExternalLink');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    isRecorder ? css.push(`isRecorder`) : null;
+    isRecorder ? css.push('isRecorder') : null;
 
     return css.join(' ');
   }, [
@@ -151,13 +155,30 @@ const MainArea = () => {
     isActiveScreenShare,
     isActiveChatPanel,
     isActiveParticipantsPanel,
+    isActivePollsPanel,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
     isRecorder,
   ]);
 
-  const renderLeftPanel = useMemo(() => {
+  const renderMainComponentElms = useMemo(() => {
+    return (
+      <MainComponents
+        isActiveWhiteboard={isActiveWhiteboard}
+        isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
+        isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
+        isActiveScreenSharingView={isActiveScreenSharingView}
+      />
+    );
+  }, [
+    isActiveScreenSharingView,
+    isActiveDisplayExternalLink,
+    isActiveExternalMediaPlayer,
+    isActiveWhiteboard,
+  ]);
+
+  const renderParticipantsPanel = useMemo(() => {
     return (
       <Transition show={isActiveParticipantsPanel}>
         <div
@@ -178,46 +199,47 @@ const MainArea = () => {
     );
   }, [isActiveParticipantsPanel]);
 
-  const renderMainComponentElms = useMemo(() => {
+  const renderChatPanel = useMemo(() => {
     return (
-      <MainComponents
-        isActiveWhiteboard={isActiveWhiteboard}
-        isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
-        isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
-        isActiveScreenSharingView={isActiveScreenSharingView}
-      />
+      <Transition show={isActiveChatPanel}>
+        <div
+          className={clsx([
+            // Base styles
+            'chat-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
+            // Shared closed styles
+            'data-[closed]:opacity-0',
+            // Entering styles
+            'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+            // Leaving styles
+            'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+          ])}
+        >
+          <RightPanel />
+        </div>
+      </Transition>
     );
-  }, [
-    isActiveScreenSharingView,
-    isActiveDisplayExternalLink,
-    isActiveExternalMediaPlayer,
-    isActiveWhiteboard,
-  ]);
+  }, [isActiveChatPanel]);
 
-  const renderRightPanel = useMemo(() => {
-    if (allowChat) {
-      return (
-        <Transition show={isActiveChatPanel}>
-          <div
-            className={clsx([
-              // Base styles
-              'chat-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
-              // Shared closed styles
-              'data-[closed]:opacity-0',
-              // Entering styles
-              'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
-              // Leaving styles
-              'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
-            ])}
-          >
-            <RightPanel />
-          </div>
-        </Transition>
-      );
-    }
-    return null;
-    //eslint-disable-next-line
-  }, [currentConnection, isActiveChatPanel]);
+  const renderPollsPanel = useMemo(() => {
+    return (
+      <Transition show={isActivePollsPanel}>
+        <div
+          className={clsx([
+            // Base styles
+            'polls-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
+            // Shared closed styles
+            'data-[closed]:opacity-0',
+            // Entering styles
+            'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+            // Leaving styles
+            'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+          ])}
+        >
+          <PollsComponent />
+        </div>
+      </Transition>
+    );
+  }, [isActivePollsPanel]);
 
   useEffect(() => {
     if (isRecorder) {
@@ -258,8 +280,9 @@ const MainArea = () => {
           <ActiveSpeakers />
           {renderMainComponentElms}
         </div>
-        {renderLeftPanel}
-        {renderRightPanel}
+        {renderParticipantsPanel}
+        {roomFeatures?.chatFeatures?.allowChat ? renderChatPanel : null}
+        {roomFeatures?.pollsFeatures?.isAllow ? renderPollsPanel : null}
       </div>
     </div>
   );

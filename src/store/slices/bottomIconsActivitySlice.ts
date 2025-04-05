@@ -10,6 +10,7 @@ const initialState: IBottomIconsSlice = {
   isActiveWebcam: false,
   isActiveChatPanel: false,
   isActiveParticipantsPanel: false,
+  isActivePollsPanel: false,
   isActiveRaisehand: false,
   isActiveRecording: false,
   isActiveScreenshare: false,
@@ -51,8 +52,13 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveChatPanel: (state, action: PayloadAction<boolean>) => {
       // we'll close ParticipantsPanel if screen size is small
-      if (state.isActiveParticipantsPanel && action.payload) {
-        state.isActiveParticipantsPanel = false;
+      if (action.payload) {
+        if (state.isActiveParticipantsPanel) {
+          state.isActiveParticipantsPanel = false;
+        }
+        if (state.isActivePollsPanel) {
+          state.isActivePollsPanel = false;
+        }
       }
       state.isActiveChatPanel = action.payload;
 
@@ -65,10 +71,26 @@ const bottomIconsSlice = createSlice({
       state,
       action: PayloadAction<boolean>,
     ) => {
-      if (state.isActiveChatPanel && action.payload) {
-        state.isActiveChatPanel = false;
+      if (action.payload) {
+        if (state.isActiveChatPanel) {
+          state.isActiveChatPanel = false;
+        }
+        if (state.isActivePollsPanel) {
+          state.isActivePollsPanel = false;
+        }
       }
       state.isActiveParticipantsPanel = action.payload;
+    },
+    updateIsActivePollsPanel: (state, action: PayloadAction<boolean>) => {
+      if (action.payload) {
+        if (state.isActiveChatPanel) {
+          state.isActiveChatPanel = false;
+        }
+        if (state.isActiveParticipantsPanel) {
+          state.isActiveParticipantsPanel = false;
+        }
+      }
+      state.isActivePollsPanel = action.payload;
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
       state.isActiveRaisehand = action.payload;
@@ -173,6 +195,7 @@ export const {
   updateIsActiveWebcam,
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
+  updateIsActivePollsPanel,
   updateIsActiveRaisehand,
   updateIsActiveRecording,
   updateIsActiveScreenshare,

@@ -7,6 +7,7 @@ export interface IBottomIconsSlice {
   isActiveWebcam: boolean;
   isActiveChatPanel: boolean;
   isActiveParticipantsPanel: boolean;
+  isActivePollsPanel: boolean;
   isActiveRaisehand: boolean;
   isActiveRecording: boolean;
   isActiveScreenshare: boolean;
