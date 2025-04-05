@@ -275,7 +275,7 @@ const MainArea = () => {
       /> */}
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div
-          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel || isActiveChatPanel ? 'pr-[300px] 3xl:pr-[340px]' : ''}`}
+          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel || isActiveChatPanel || isActivePollsPanel ? 'pr-[300px] 3xl:pr-[340px]' : ''}`}
         >
           <ActiveSpeakers />
           {renderMainComponentElms}
