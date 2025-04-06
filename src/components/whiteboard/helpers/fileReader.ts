@@ -136,8 +136,6 @@ const prepareForExcalidraw = (
     index: null,
   };
 
-  console.log(elm, excalidrawElement);
-
   if (
     typeof excalidrawElement !== 'undefined' &&
     excalidrawElement.type === 'image'
