@@ -28,6 +28,7 @@ export const fetchFileWithElm = async (
   is_office_file: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
+  excalidrawElement?: ExcalidrawElement,
 ) => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<FileReaderResult>(async (resolve, reject) => {
@@ -65,7 +66,7 @@ export const fetchFileWithElm = async (
 
         image.onload = async function () {
           await getFileDimension(image.height, image.width);
-          const result = prepareForExcalidraw();
+          const result = prepareForExcalidraw(excalidrawElement);
           resolve(result);
         };
 
@@ -86,7 +87,9 @@ export const fetchFileWithElm = async (
   });
 };
 
-const prepareForExcalidraw = (): FileReaderResult => {
+const prepareForExcalidraw = (
+  excalidrawElement?: ExcalidrawElement,
+): FileReaderResult => {
   const image: BinaryFileData = {
     id: fileId as any,
     dataURL: imgData as DataURL,
@@ -100,7 +103,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     reducedBy = 0.7;
   }
 
-  const elm: ExcalidrawImageElement = {
+  let elm: ExcalidrawImageElement = {
     id: fileId,
     type: 'image',
     x: excalidrawHeight * reducedBy,
@@ -124,7 +127,7 @@ const prepareForExcalidraw = (): FileReaderResult => {
     boundElements: null,
     updated: Date.now(),
     link: null,
-    status: 'pending',
+    status: 'saved',
     fileId: fileId as any,
     scale: [1, 1],
     locked: isOfficeFile, // if office file then lock it by default.
@@ -132,6 +135,15 @@ const prepareForExcalidraw = (): FileReaderResult => {
     crop: null,
     index: null,
   };
+
+  console.log(elm, excalidrawElement);
+
+  if (
+    typeof excalidrawElement !== 'undefined' &&
+    excalidrawElement.type === 'image'
+  ) {
+    elm = excalidrawElement;
+  }
 
   return {
     image,

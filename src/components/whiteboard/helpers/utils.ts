@@ -72,7 +72,7 @@ export const displaySavedPageData = (
       excalidrawAPI.updateScene({ elements });
       if (isPresenter) {
         // better to broadcast full screen
-        broadcastSceneOnChange(elements, true);
+        broadcastSceneOnChange(elements, true).then();
       }
     }
   }

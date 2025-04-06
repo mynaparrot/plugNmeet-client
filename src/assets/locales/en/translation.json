@@ -65,7 +65,8 @@
     "media-server-disconnected": "Media server disconnected.",
     "preloaded-whiteboard-file-processing": "Preloaded whiteboard file in progress",
     "preloaded-whiteboard-file-processing-error": "Preloaded whiteboard file processing ended with error",
-    "max-num-participates-exceeded": "The maximum number of participates permitted for the session has been exceeded."
+    "max-num-participates-exceeded": "The maximum number of participates permitted for the session has been exceeded.",
+    "uploading-file": "Uploading file.."
   },
   "room-metadata": {
     "session-recording": "This session is being recording",

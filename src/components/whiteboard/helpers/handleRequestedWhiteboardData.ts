@@ -1,26 +1,43 @@
 import {
+  BinaryFileData,
+  BinaryFiles,
   ExcalidrawImperativeAPI,
   NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
-import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import {
+  ExcalidrawElement,
+  ExcalidrawImageElement,
+} from '@excalidraw/excalidraw/element/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import { toast } from 'react-toastify';
 import {
   DataMsgBodyType,
   AnalyticsEvents,
   AnalyticsEventType,
+  UploadBase64EncodedDataReqSchema,
+  UploadBase64EncodedDataResSchema,
 } from 'plugnmeet-protocol-js';
 
 import { store } from '../../../store';
-import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
-import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
+import {
+  addWhiteboardOtherImageFile,
+  updateRequestedWhiteboardData,
+} from '../../../store/slices/whiteboard';
+import {
+  IWhiteboardFile,
+  IWhiteboardOfficeFile,
+} from '../../../store/slices/interfaces/whiteboard';
 import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
 import { getWhiteboardDonors } from '../../../helpers/utils';
+import i18n from '../../../helpers/i18n';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
-  DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
+  DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000,
+  uploadingCanvasBinaryFile: Map<string, string> = new Map(); // 3 hours
 let preScrollX = 0,
   preScrollY = 0,
   conn: ConnectNats;
@@ -93,9 +110,12 @@ export const broadcastSceneOnChange = async (
   allElements: readonly ExcalidrawElement[],
   syncAll: boolean,
   sendTo?: string,
+  excalidrawAPI?: ExcalidrawImperativeAPI,
+  currentPage?: number,
+  files?: BinaryFiles,
 ) => {
   // sync out only the elements we think we need to save bandwidth.
-  const syncableElements = allElements.reduce((acc: any, element) => {
+  const syncableElements = allElements.reduce((acc, element) => {
     if (
       (syncAll ||
         !broadcastedElementVersions.has(element.id) ||
@@ -105,17 +125,138 @@ export const broadcastSceneOnChange = async (
       acc.push(element);
     }
     return acc;
-  }, []);
+  }, [] as ExcalidrawElement[]);
 
   if (!syncableElements.length) {
     return;
   }
 
-  for (const syncableElement of syncableElements) {
-    broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
+  const elementsToBroadcast: ExcalidrawElement[] = [];
+  for (let i = 0; i < syncableElements.length; i++) {
+    const elm = syncableElements[i];
+    let toAdd = true;
+    if (elm.type === 'image' && elm.status === 'pending') {
+      if (!files) {
+        // this mean the file wasn't ready yet
+        continue;
+      }
+      let fileFound = false;
+      for (const canvasFile in files) {
+        const file = files[canvasFile];
+        if (file.id === elm.fileId) {
+          fileFound = true;
+          // we'll upload the file first then publish this
+          // otherwise other user will receive a blank element
+          uploadCanvasBinaryFile(
+            currentPage ?? 1,
+            elm,
+            file,
+            excalidrawAPI,
+          ).then();
+          // no need to add until we're ready
+          toAdd = false;
+          break;
+        }
+      }
+      if (!fileFound) {
+        // if no file found then we won't add
+        // because maybe the file isn't ready yet.
+        toAdd = false;
+      }
+    }
+
+    if (toAdd) {
+      broadcastedElementVersions.set(elm.id, elm.version);
+      elementsToBroadcast.push(elm);
+    }
   }
 
-  await broadcastScreenDataBySocket(syncableElements, sendTo);
+  if (!elementsToBroadcast.length) {
+    return;
+  }
+
+  await broadcastScreenDataBySocket(elementsToBroadcast, sendTo);
+};
+
+const uploadCanvasBinaryFile = async (
+  currentPage: number,
+  elm: ExcalidrawImageElement,
+  file: BinaryFileData,
+  excalidrawAPI?: ExcalidrawImperativeAPI,
+) => {
+  if (uploadingCanvasBinaryFile.has(file.id)) {
+    return;
+  }
+
+  // add in queue
+  uploadingCanvasBinaryFile.set(file.id, elm.id);
+  const id = toast.loading(i18n.t('notifications.uploading-file'), {
+    type: 'info',
+  });
+  const body = create(UploadBase64EncodedDataReqSchema, {
+    data: file.dataURL.replace(/^data:image\/?[A-z]*;base64,/, ''),
+    fileName: `${file.id}.png`,
+  });
+  const r = await sendAPIRequest(
+    'uploadBase64EncodedData',
+    toBinary(UploadBase64EncodedDataReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  const res = fromBinary(UploadBase64EncodedDataResSchema, new Uint8Array(r));
+  if (!res.status) {
+    toast.update(id, {
+      render: res.msg,
+      type: 'error',
+      isLoading: false,
+      autoClose: 3000,
+    });
+    return;
+  }
+
+  const localElements = excalidrawAPI?.getSceneElementsIncludingDeleted();
+  const newElms: ExcalidrawElement[] = [];
+  let thisElm: any = undefined;
+  localElements?.forEach((el) => {
+    if (el.id === elm.id && el.type === 'image') {
+      thisElm = structuredClone(el);
+      thisElm.status = 'saved';
+      newElms.push(thisElm);
+    } else {
+      newElms.push(el);
+    }
+  });
+
+  const fileToSend: IWhiteboardFile = {
+    id: file.id,
+    currentPage,
+    filePath: res.filePath,
+    fileName: res.fileName,
+    isOfficeFile: false,
+    uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height ?? 100,
+    uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width ?? 100,
+    excalidrawElement: thisElm,
+  };
+
+  store.dispatch(addWhiteboardOtherImageFile(fileToSend));
+  const files =
+    store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
+  conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
+
+  toast.update(id, {
+    render: i18n.t('right-panel.file-upload-success'),
+    type: 'success',
+    isLoading: false,
+    autoClose: 1000,
+  });
+
+  // finally update screen
+  excalidrawAPI?.updateScene({
+    elements: newElms,
+  });
+
+  uploadingCanvasBinaryFile.delete(file.id);
 };
 
 export const broadcastScreenDataBySocket = async (

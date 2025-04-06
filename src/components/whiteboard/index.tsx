@@ -15,6 +15,7 @@ import {
   BinaryFileData,
   AppState,
   SocketId,
+  BinaryFiles,
 } from '@excalidraw/excalidraw/types';
 import { ReconciledExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
@@ -400,7 +401,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         for (const canvasFile in canvasFiles) {
           if (canvasFiles[canvasFile].id === file.id) {
             // further check if element exist
-            const hasElm = elms.filter((el) => el.id === file.id);
+            const hasElm = elms.filter(
+              (el) => el.type === 'image' && el.fileId === file.id,
+            );
             if (hasElm.length) {
               hasFile = true;
               break;
@@ -416,6 +419,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             file.isOfficeFile,
             file.uploaderWhiteboardHeight,
             file.uploaderWhiteboardWidth,
+            file.excalidrawElement,
           );
           if (result && excalidrawAPI) {
             fileReadImages.push(result.image);
@@ -496,6 +500,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const onChange = (
     elements: readonly ExcalidrawElement[],
     appState: AppState,
+    files: BinaryFiles,
   ) => {
     if (excalidrawAPI && currentUser && elements.length) {
       if (viewModeEnabled) {
@@ -503,7 +508,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
       if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
         setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
-        broadcastSceneOnChange(elements, false).then();
+        broadcastSceneOnChange(
+          elements,
+          false,
+          undefined,
+          excalidrawAPI,
+          whiteboard.currentPage,
+          files,
+        ).then();
       }
 
       // broadcast AppState Changes
@@ -588,7 +600,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
               saveAsImage: !currentUser?.isRecorder,
             },
             tools: {
-              image: false,
+              image: true,
             },
           }}
           autoFocus={true}
