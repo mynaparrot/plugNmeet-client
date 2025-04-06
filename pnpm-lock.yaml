@@ -220,8 +220,8 @@ importers:
         specifier: 1.83.4
         version: 1.83.4
       sass-loader:
-        specifier: 16.0.4
-        version: 16.0.4(sass@1.83.4)(webpack@5.97.1)
+        specifier: 16.0.5
+        version: 16.0.5(sass@1.83.4)(webpack@5.97.1)
       size-limit:
         specifier: 11.1.6
         version: 11.1.6
@@ -3495,8 +3495,8 @@ packages:
   sanitize-html@2.15.0:
     resolution: {integrity: sha512-wIjst57vJGpLyBP8ioUbg6ThwJie5SuSIjHxJg53v5Fg+kUK+AXlb7bK3RNXpp315MvwM+0OBGCV6h5pPHsVhA==}
 
-  sass-loader@16.0.4:
-    resolution: {integrity: sha512-LavLbgbBGUt3wCiYzhuLLu65+fWXaXLmq7YxivLhEqmiupCFZ5sKUAipK3do6V80YSU0jvSxNhEdT13IXNr3rg==}
+  sass-loader@16.0.5:
+    resolution: {integrity: sha512-oL+CMBXrj6BZ/zOq4os+UECPL+bWqt6OAC6DWS8Ln8GZRcMDjlJ4JC3FBDuHJdYaFWIdKNIBYmtZtK2MaMkNIw==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       '@rspack/core': 0.x || 1.x
@@ -7502,7 +7502,7 @@ snapshots:
       parse-srcset: 1.0.2
       postcss: 8.5.1
 
-  sass-loader@16.0.4(sass@1.83.4)(webpack@5.97.1):
+  sass-loader@16.0.5(sass@1.83.4)(webpack@5.97.1):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
