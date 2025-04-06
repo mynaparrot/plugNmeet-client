@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { throttle } from 'es-toolkit/compat';
 import {
   Excalidraw,
   Footer,
@@ -7,19 +8,16 @@ import {
   CaptureUpdateAction,
   reconcileElements,
 } from '@excalidraw/excalidraw';
-import { throttle } from 'es-toolkit/compat';
-import type {
+import {
   ExcalidrawImperativeAPI,
   Gesture,
   Collaborator,
   BinaryFileData,
   AppState,
   SocketId,
-  // @ts-expect-error no problem
-  ExcalidrawElement,
-  // @ts-expect-error no problem
-  OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/types';
+import { ReconciledExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
@@ -51,7 +49,6 @@ import {
   updateExcalidrawElements,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
-import { ReconciledExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -388,7 +385,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         return;
       }
       const fileReadImages: Array<BinaryFileData> = [];
-      const fileReadElms: Array<OrderedExcalidrawElement> = [];
+      const fileReadElms: Array<ExcalidrawElement> = [];
 
       for (const file of files) {
         const url =
@@ -445,7 +442,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         if (!hasElm.length) {
           // we shouldn't push if element already there.
           // otherwise, it will override if element's position was changed
-          elements.push(element);
+          elements.push(element as any);
         }
 
         excalidrawAPI.updateScene({

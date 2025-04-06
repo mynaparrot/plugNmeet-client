@@ -1,6 +1,5 @@
 import { VideoQuality } from 'livekit-client';
-// @ts-expect-error no problem
-import type { Theme } from '@excalidraw/excalidraw/types';
+import { Theme } from '@excalidraw/excalidraw/element/types';
 
 import { AzureTokenInfo } from '../../../components/speech-to-text-service/helpers/apiConnections';
 

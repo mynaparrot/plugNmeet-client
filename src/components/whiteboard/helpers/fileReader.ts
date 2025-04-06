@@ -1,11 +1,9 @@
+import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types';
 import {
-  BinaryFileData,
-  DataURL,
-  // @ts-expect-error no problem
   ExcalidrawElement,
-  // @ts-expect-error no problem
   ExcalidrawImageElement,
-} from '@excalidraw/excalidraw/types';
+} from '@excalidraw/excalidraw/element/types';
+
 import { randomInteger } from '../../../helpers/utils';
 
 export interface FileReaderResult {
@@ -131,6 +129,8 @@ const prepareForExcalidraw = (): FileReaderResult => {
     scale: [1, 1],
     locked: isOfficeFile, // if office file then lock it by default.
     frameId: null,
+    crop: null,
+    index: null,
   };
 
   return {

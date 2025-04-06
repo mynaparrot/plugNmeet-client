@@ -1,9 +1,8 @@
 import {
   ExcalidrawImperativeAPI,
   NormalizedZoomValue,
-  // @ts-expect-error no problem
-  ExcalidrawElement,
 } from '@excalidraw/excalidraw/types';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import { toast } from 'react-toastify';
 import {
@@ -96,7 +95,7 @@ export const broadcastSceneOnChange = async (
   sendTo?: string,
 ) => {
   // sync out only the elements we think we need to save bandwidth.
-  const syncableElements = allElements.reduce((acc, element) => {
+  const syncableElements = allElements.reduce((acc: any, element) => {
     if (
       (syncAll ||
         !broadcastedElementVersions.has(element.id) ||

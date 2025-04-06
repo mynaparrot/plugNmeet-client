@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  DataMsgBodyType,
+} from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch } from '../../store';
 import { ISession } from '../../store/slices/interfaces/session';
@@ -14,13 +20,6 @@ import { randomString, sleep } from '../../helpers/utils';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { broadcastWhiteboardOfficeFile } from './helpers/handleRequestedWhiteboardData';
 import useResumableFilesUpload from '../../helpers/hooks/useResumableFilesUpload';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  DataMsgBodyType,
-} from 'plugnmeet-protocol-js';
-
 import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import {
   formatStorageKey,
