@@ -121,8 +121,8 @@ importers:
         specifier: 9.19.0
         version: 9.19.0
       '@pmmmwh/react-refresh-webpack-plugin':
-        specifier: 0.5.15
-        version: 0.5.15(react-refresh@0.14.2)(webpack-dev-server@5.2.0)(webpack@5.97.1)
+        specifier: 0.5.16
+        version: 0.5.16(react-refresh@0.14.2)(webpack-dev-server@5.2.0)(webpack@5.97.1)
       '@size-limit/preset-app':
         specifier: 11.1.6
         version: 11.1.6(size-limit@11.1.6)
@@ -550,8 +550,8 @@ packages:
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@pmmmwh/react-refresh-webpack-plugin@0.5.15':
-    resolution: {integrity: sha512-LFWllMA55pzB9D34w/wXUCf8+c+IYKuJDgxiZ3qMhl64KRMBHYM1I3VdGaD2BV5FNPV2/S2596bppxHbv2ZydQ==}
+  '@pmmmwh/react-refresh-webpack-plugin@0.5.16':
+    resolution: {integrity: sha512-kLQc9xz6QIqd2oIYyXRUiAp79kGpFBm3fEM9ahfG1HI0WI5gdZ2OVHWdmZYnwODt7ISck+QuQ6sBPrtvUBML7Q==}
     engines: {node: '>= 10.13'}
     peerDependencies:
       '@types/webpack': 4.x || 5.x
@@ -4449,7 +4449,7 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.14.2)(webpack-dev-server@5.2.0)(webpack@5.97.1)':
+  '@pmmmwh/react-refresh-webpack-plugin@0.5.16(react-refresh@0.14.2)(webpack-dev-server@5.2.0)(webpack@5.97.1)':
     dependencies:
       ansi-html: 0.0.9
       core-js-pure: 3.38.1
@@ -4457,7 +4457,7 @@ snapshots:
       html-entities: 2.5.2
       loader-utils: 2.0.4
       react-refresh: 0.14.2
-      schema-utils: 4.2.0
+      schema-utils: 4.3.0
       source-map: 0.7.4
       webpack: 5.97.1(webpack-cli@6.0.1)
     optionalDependencies:
@@ -8082,7 +8082,7 @@ snapshots:
       mime-types: 2.1.35
       on-finished: 2.4.1
       range-parser: 1.2.1
-      schema-utils: 4.2.0
+      schema-utils: 4.3.0
     optionalDependencies:
       webpack: 5.97.1(webpack-cli@6.0.1)
 
