@@ -785,6 +785,14 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   }
 }
 
+.excalidraw {
+  canvas.excalidraw__canvas.static {
+    width: 100% !important;
+  }
+  canvas.excalidraw__canvas.interactive {
+    width: 100% !important;
+  }
+}
 .excalidraw.excalidraw-modal-container {
   z-index: 99999 !important;
 }
