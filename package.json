@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.2.5",
-    "@excalidraw/excalidraw": "0.17.6",
+    "@excalidraw/excalidraw": "0.18.0",
     "@headlessui/react": "2.2.1",
     "@nats-io/jetstream": "3.0.2",
     "@nats-io/nats-core": "3.0.2",
