@@ -17,6 +17,7 @@ import {
   getInputMediaDevices,
   inputMediaDeviceKind,
 } from '../../helpers/utils';
+// import { LoadingIconSVG } from '../../assets/Icons/LoadingIconSVG';
 
 interface StartupJoinModalProps {
   onCloseModal(): void;
@@ -106,7 +107,20 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
               </div>
             </div>
             <div className="right w-1/2 pl-8 3xl:pl-16 py-8">
-              <div className="inner h-full relative">
+              {/* <div className="inner waiting-room-contents relative">
+                <div className="texts">
+                  <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center gap-2">
+                    <span className="animate-spin">
+                      <LoadingIconSVG />
+                    </span>{' '}
+                    Waiting for approval...
+                  </h3>
+                  <p className="text-sm 3xl:text-base text-Gray-800">
+                    Please wait, a moderator will approve you soon.
+                  </p>
+                </div>
+              </div> */}
+              <div className="inner relative">
                 <div className="texts">
                   <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2">
                     Almost there...
