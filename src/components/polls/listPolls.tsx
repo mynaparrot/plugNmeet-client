@@ -4,16 +4,17 @@ import { PollInfo } from 'plugnmeet-protocol-js';
 
 import { useGetPollListsQuery } from '../../store/services/pollsApi';
 import Poll from './poll';
-import { store, useAppSelector } from '../../store';
+// import { store, useAppSelector } from '../../store';
 
 const ListPolls = () => {
-  const screenHeight = useAppSelector(
-    (state) => state.bottomIconsActivity.screenHeight,
-  );
+  // const screenHeight = useAppSelector(
+  //   (state) => state.bottomIconsActivity.screenHeight,
+  // );
   const { data, isLoading } = useGetPollListsQuery();
-  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
+  // const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const [polls, setPolls] = useState<PollInfo[]>([]);
-  const { outerRef, innerRef, items } = useVirtual({
+  // const { outerRef, innerRef, items } = useVirtual({
+  const { innerRef, items } = useVirtual({
     itemCount: polls.length,
   });
 
@@ -35,9 +36,9 @@ const ListPolls = () => {
 
   return (
     <div
-      className="polls-list-wrapper relative overflow-auto scrollBar px-2 pt-2 xl:pt-3"
-      style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
-      ref={outerRef as any}
+      className="polls-list-wrapper relative overflow-auto scrollBar px-2 pt-2 xl:pt-3 h-[calc(100vh-277px)]"
+      // style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
+      // ref={outerRef as any}
     >
       <div className="polls-list-wrap-inner" ref={innerRef as any}>
         {items.map(({ index, measureRef }) => (

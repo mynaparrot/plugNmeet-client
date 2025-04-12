@@ -11,6 +11,7 @@ import { CreatePollReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { useCreatePollMutation } from '../../store/services/pollsApi';
+import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 
 interface CreatePollOptions {
   id: number;
@@ -100,71 +101,79 @@ const Create = () => {
   const renderForm = () => {
     return (
       <form onSubmit={onSubmit}>
-        <label className="text-base text-black dark:text-darkText block mb-1">
-          {t('polls.enter-question')}
-        </label>
-        <input
-          type="text"
-          name="question"
-          value={question}
-          required={true}
-          onChange={(e) => setQuestion(e.currentTarget.value)}
-          placeholder="Ask a question"
-          className="text-black placeholder:text-black/50 py-2 px-4 text-base w-full border border-solid border-primaryColor outline-none rounded-lg mb-4 bg-transparent dark:border-darkText dark:text-darkText placeholder:text-darkText"
-        />
-        <div className="flex items-start justify-between pb-2 pt-4 border-t border-solid border-primaryColor/20 dark:border-darkText/30">
-          <p className="text-lg text-black dark:text-darkText block leading-4">
+        <div className="question-area border-b border-Gray-100 px-6 pt-5 pb-6 bg-Gray-25">
+          <label className="text-sm text-Gray-800 font-medium mb-1 inline-block">
+            {t('polls.enter-question')}
+          </label>
+          <input
+            type="text"
+            name="question"
+            value={question}
+            required={true}
+            onChange={(e) => setQuestion(e.currentTarget.value)}
+            placeholder="Ask a question"
+          />
+        </div>
+
+        <div className="option-field-wrapper px-6 pt-5 pb-6">
+          <p className="text-sm text-Gray-800 font-medium mb-1 inline-block">
             {t('polls.options')}
           </p>
+          <div className="overflow-auto h-full max-h-[345px] scrollBar scrollBar2">
+            <div className="option-field-inner">
+              {options.map((elm, index) => (
+                <div className="form-inline mb-4" key={elm.id}>
+                  <div className="input-wrapper w-full flex items-center">
+                    <input
+                      type="text"
+                      required={true}
+                      name={`opt_${elm.id}`}
+                      value={elm.text}
+                      onChange={(e) => onChange(index, e)}
+                      placeholder={t('polls.option', {
+                        count: index + 1,
+                      }).toString()}
+                    />
+                    {index ? (
+                      <button
+                        type="button"
+                        className="ml-2 p-1"
+                        onClick={() => removeOption(index)}
+                      >
+                        <i className="pnm-delete w-5 h-5 dark:text-secondaryColor" />
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+              {isLoading ? (
+                <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+                  <div className="lds-ripple">
+                    <div className="border-secondaryColor" />
+                    <div className="border-secondaryColor" />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
           <button
-            className="h-7 px-3 leading-[28px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-sm font-semibold rounded-lg"
+            className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-50 hover:bg-Gray-100 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
             type="button"
             onClick={() => addOption()}
           >
             {t('polls.add-new-option')}
           </button>
         </div>
-        <div className="option-field-wrapper overflow-auto h-full max-h-[345px] scrollBar scrollBar2">
-          <div className="option-field-inner">
-            {options.map((elm, index) => (
-              <div className="form-inline mb-4" key={elm.id}>
-                <div className="input-wrapper w-full flex items-center">
-                  <input
-                    type="text"
-                    required={true}
-                    name={`opt_${elm.id}`}
-                    value={elm.text}
-                    onChange={(e) => onChange(index, e)}
-                    placeholder={t('polls.option', {
-                      count: index + 1,
-                    }).toString()}
-                    className="text-black placeholder:text-black/50 py-2 px-4 text-base w-[calc(100%-36px)] border border-solid border-primaryColor outline-none rounded-lg bg-transparent dark:text-darkText dark:border-darkText placeholder:text-darkText"
-                  />
-                  {index ? (
-                    <button
-                      type="button"
-                      className="ml-2 p-1"
-                      onClick={() => removeOption(index)}
-                    >
-                      <i className="pnm-delete w-5 h-5 dark:text-secondaryColor" />
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-            {isLoading ? (
-              <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-                <div className="lds-ripple">
-                  <div className="border-secondaryColor" />
-                  <div className="border-secondaryColor" />
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </div>
-        <div className="button-section flex items-center justify-end">
+        <div className="button-section flex items-center gap-5 py-6 px-6 border-t border-Gray-100">
           <button
-            className="h-8 px-6 leading-[32px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
+            className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+            type="button"
+            onClick={() => closeModal()}
+          >
+            Cancel
+          </button>
+          <button
+            className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
             type="submit"
           >
             {t('polls.create-poll')}
@@ -211,24 +220,23 @@ const Create = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
-                  <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
-                    type="button"
-                    onClick={() => closeModal()}
-                  >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-                  </button>
-
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white text-left mb-2"
-                  >
-                    {t('polls.create')}
-                  </DialogTitle>
-                  <hr />
-                  <div className="mt-6">{renderForm()}</div>
+                <div className="inline-block w-full max-w-lg my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-2xl">
+                  <div className="top flex items-center justify-between py-4 px-6 border-b border-Gray-100">
+                    <DialogTitle
+                      as="h3"
+                      className="text-sm 3xl:text-base font-semibold text-Gray-950"
+                    >
+                      {t('polls.create')}
+                    </DialogTitle>
+                    <button
+                      className="close-btn text-Gray-500 flex items-center justify-center"
+                      type="button"
+                      onClick={() => closeModal()}
+                    >
+                      <CloseIconSVG />
+                    </button>
+                  </div>
+                  <div className="">{renderForm()}</div>
                 </div>
               </TransitionChild>
             </div>
@@ -241,12 +249,14 @@ const Create = () => {
   return (
     <>
       {isOpen ? renderModal() : null}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="w-[calc(100%-20px)] ml-[10px] h-10 leading-[40px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg mb-2"
-      >
-        {t('polls.create')}
-      </button>
+      <div className="button-wrap px-3 3xl:px-5 py-4 border-t border-Gray-200">
+        <button
+          onClick={() => setIsOpen(true)}
+          className="h-10 3xl:h-11 px-5 flex items-center justify-center w-full rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-buttonShadow"
+        >
+          {t('polls.create')}
+        </button>
+      </div>
     </>
   );
 };

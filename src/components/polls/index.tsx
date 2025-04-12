@@ -25,9 +25,9 @@ const PollsComponent = () => {
             Pools
           </p>
         </div>
+        <ListPolls />
+        {isAdmin ? <Create /> : null}
       </div>
-      <ListPolls />
-      {isAdmin ? <Create /> : null}
     </div>
   );
 };
