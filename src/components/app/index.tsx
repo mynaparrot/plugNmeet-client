@@ -166,23 +166,17 @@ const App = () => {
       setLoading(true);
     } else if (roomConnectionStatus === 'ready') {
       setLoading(false);
-    }
-  }, [roomConnectionStatus]);
 
-  useEffect(() => {
-    if (roomConnectionStatus === 'connected') {
       const session = store.getState().session;
       if (session.currentUser && isUserRecorder(session.currentUser.userId)) {
         setIsRecorder(true);
         dispatch(updateIsActiveChatPanel(false));
       }
-
       if (session.currentUser?.metadata?.isAdmin) {
         setUserTypeClass('admin');
       }
     }
-    //eslint-disable-next-line
-  }, [roomConnectionStatus]);
+  }, [dispatch, roomConnectionStatus]);
 
   useEffect(() => {
     if (openConnInfo && openConn) {

@@ -51,6 +51,9 @@ const VideosComponentElms = ({
   const isActiveParticipantsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
   );
+  const isActivePollsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActivePollsPanel,
+  );
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
@@ -353,7 +356,9 @@ const VideosComponentElms = ({
             </div>
             {videoParticipantsElms}
           </div>
-          {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+          {isActiveParticipantsPanel ||
+          isActiveChatPanel ||
+          isActivePollsPanel ? null : (
             <button
               onClick={() =>
                 dispatch(
@@ -384,7 +389,9 @@ const VideosComponentElms = ({
           >
             {videoParticipantsElms}
           </div>
-          {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+          {isActiveParticipantsPanel ||
+          isActiveChatPanel ||
+          isActivePollsPanel ? null : (
             <button
               onClick={() =>
                 dispatch(
@@ -407,8 +414,6 @@ const VideosComponentElms = ({
     } else if (pinParticipant) {
       // normal view + pinParticipant, so all other cameras will be in vertical view
       // pin cam will get full view
-      // TODO: here need to write new layout
-      console.log('here need to write new layout', pinParticipant);
       return (
         <>
           <div className={`pinView-camera-fullWidth w-full h-full p-4`}>
@@ -422,7 +427,9 @@ const VideosComponentElms = ({
             >
               {videoParticipantsElms}
             </div>
-            {isActiveParticipantsPanel || isActiveChatPanel ? null : (
+            {isActiveParticipantsPanel ||
+            isActiveChatPanel ||
+            isActivePollsPanel ? null : (
               <button
                 onClick={() =>
                   dispatch(

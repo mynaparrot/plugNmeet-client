@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
-import { updateIsActivePollsPanel } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActivePollsPanel,
+  updateIsEnabledExtendedVerticalCamView,
+} from '../../../store/slices/bottomIconsActivitySlice';
 import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
 
 const PollsIcon = () => {
@@ -23,6 +26,9 @@ const PollsIcon = () => {
   }, [isActive]);
 
   const togglePollsPanel = () => {
+    if (!isActivePollsPanel) {
+      dispatch(updateIsEnabledExtendedVerticalCamView(false));
+    }
     dispatch(updateIsActivePollsPanel(!isActivePollsPanel));
   };
 
