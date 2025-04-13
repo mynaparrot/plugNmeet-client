@@ -175,6 +175,8 @@ const App = () => {
       if (session.currentUser?.metadata?.isAdmin) {
         setUserTypeClass('admin');
       }
+    } else if (roomConnectionStatus === 'error') {
+      setLoading(false);
     }
   }, [dispatch, roomConnectionStatus]);
 
