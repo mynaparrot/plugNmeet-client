@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { toggleStartup } from '../../store/slices/sessionSlice';
@@ -17,24 +18,73 @@ import {
   getInputMediaDevices,
   inputMediaDeviceKind,
 } from '../../helpers/utils';
-// import { LoadingIconSVG } from '../../assets/Icons/LoadingIconSVG';
+import { roomConnectionStatus } from '../app/helper';
+import { getNatsConn } from '../../helpers/nats';
+import { LoadingIconSVG } from '../../assets/Icons/LoadingIconSVG';
 
 interface StartupJoinModalProps {
-  onCloseModal(): void;
+  setIsAppReady: Dispatch<boolean>;
+  roomConnectionStatus: roomConnectionStatus;
 }
 
-const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
+const Landing = ({
+  setIsAppReady,
+  roomConnectionStatus,
+}: StartupJoinModalProps) => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
   const isStartup = useAppSelector((state) => state.session.isStartup);
+  const waitForApproval = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.waitForApproval,
+  );
+  const waitingRoomMessage = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
+        ?.waitingRoomMsg,
+  );
 
   const [audioDevices, setAudioDevices] = useState<IMediaDevice[]>([]);
   const [videoDevices, setVideoDevices] = useState<IMediaDevice[]>([]);
   const [selectedAudioDevice, setSelectedAudioDevice] = useState<string>('');
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<string>('');
+  const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(
+    undefined,
+  );
+  const [isNatsConnReady, setIsNatsConnReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    let connEstablished = false;
+    switch (roomConnectionStatus) {
+      case 'connecting':
+      case 'receiving-data':
+        setShowLoadingMsg(t('app.' + roomConnectionStatus));
+        break;
+      case 'ready':
+        setIsNatsConnReady(true);
+        setShowLoadingMsg(undefined);
+        break;
+      case 'media-server-conn-start':
+        setShowLoadingMsg('Connecting with media server');
+        break;
+      case 'media-server-conn-established':
+        connEstablished = true;
+        break;
+    }
+
+    if (connEstablished) {
+      if (waitForApproval) {
+        setShowLoadingMsg('Waiting for approval...');
+      } else {
+        dispatch(toggleStartup(false));
+        setIsAppReady(true);
+        setShowLoadingMsg(undefined);
+      }
+    }
+    //eslint-disable-next-line
+  }, [roomConnectionStatus, waitForApproval]);
 
   const onClose = () => {
-    dispatch(toggleStartup(false));
-
     if (selectedVideoDevice !== '') {
       dispatch(updateSelectedVideoDevice(selectedVideoDevice));
       dispatch(addVideoDevices(videoDevices));
@@ -44,7 +94,10 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
       dispatch(addAudioDevices(audioDevices));
     }
 
-    onCloseModal();
+    const conn = getNatsConn();
+    if (conn && conn.mediaServerConn) {
+      conn.mediaServerConn.connect().then();
+    }
   };
 
   const enableMediaDevices = async (kind: inputMediaDeviceKind = 'both') => {
@@ -107,60 +160,71 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
               </div>
             </div>
             <div className="right w-1/2 pl-8 3xl:pl-16 py-8">
-              {/* <div className="inner waiting-room-contents relative">
-                <div className="texts">
-                  <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center gap-2">
-                    <span className="animate-spin">
-                      <LoadingIconSVG />
-                    </span>{' '}
-                    Waiting for approval...
-                  </h3>
-                  <p className="text-sm 3xl:text-base text-Gray-800">
-                    Please wait, a moderator will approve you soon.
-                  </p>
+              {showLoadingMsg ? (
+                <div className="inner waiting-room-contents relative">
+                  <div className="texts">
+                    <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center gap-2">
+                      <span className="animate-spin">
+                        <LoadingIconSVG />
+                      </span>
+                      {showLoadingMsg}
+                    </h3>
+                    {roomConnectionStatus === 'media-server-conn-established' &&
+                    waitForApproval ? (
+                      <p className="text-sm 3xl:text-base text-Gray-800">
+                        {waitingRoomMessage === ''
+                          ? t('notifications.waiting-for-approval')
+                          : waitingRoomMessage}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
-              </div> */}
-              <div className="inner relative">
-                <div className="texts">
-                  <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2">
-                    Almost there...
-                  </h3>
-                  <p className="text-sm 3xl:text-base text-Gray-800">
-                    Enable your microphone and camera for full participation, or
-                    join as a listener.
-                  </p>
+              ) : null}
+              {!showLoadingMsg && isNatsConnReady ? (
+                <div className="inner relative">
+                  <div className="texts">
+                    <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2">
+                      Almost there...
+                    </h3>
+                    <p className="text-sm 3xl:text-base text-Gray-800">
+                      Enable your microphone and camera for full participation,
+                      or join as a listener.
+                    </p>
+                  </div>
+                  <div className="buttons grid gap-3 w-full pt-10">
+                    {selectedAudioDevice !== '' ||
+                    selectedVideoDevice !== '' ? (
+                      <button
+                        type="button"
+                        className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                        onClick={() => onClose()}
+                      >
+                        Join
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                        onClick={() => enableMediaDevices('both')}
+                      >
+                        Enable Microphone and Camera
+                      </button>
+                    )}
+                    {selectedAudioDevice === '' &&
+                    selectedVideoDevice === '' ? (
+                      <button
+                        id="listenOnlyJoin"
+                        type="button"
+                        className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+                        onClick={() => onClose()}
+                      >
+                        Continue as a listener
+                        <Volume />
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-                <div className="buttons grid gap-3 w-full pt-10">
-                  {selectedAudioDevice !== '' || selectedVideoDevice !== '' ? (
-                    <button
-                      type="button"
-                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
-                      onClick={() => onClose()}
-                    >
-                      Join
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
-                      onClick={() => enableMediaDevices('both')}
-                    >
-                      Enable Microphone and Camera
-                    </button>
-                  )}
-                  {selectedAudioDevice === '' && selectedVideoDevice === '' ? (
-                    <button
-                      id="listenOnlyJoin"
-                      type="button"
-                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
-                      onClick={() => onClose()}
-                    >
-                      Continue as a listener
-                      <Volume />
-                    </button>
-                  ) : null}
-                </div>
-              </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -168,7 +232,7 @@ const Landing = ({ onCloseModal }: StartupJoinModalProps) => {
     );
   };
 
-  return isStartup ? <>{render()}</> : null;
+  return isStartup ? render() : null;
 };
 
 export default Landing;

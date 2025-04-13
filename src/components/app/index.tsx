@@ -1,43 +1,35 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   VerifyTokenReqSchema,
   VerifyTokenRes,
   VerifyTokenResSchema,
 } from 'plugnmeet-protocol-js';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
 import Footer from '../footer';
 import Header from '../header';
 import MainArea from '../main-area';
+import Landing from '../landing';
+import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
 
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import { store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import AudioNotification from './audioNotification';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useClientCustomization from '../../helpers/hooks/useClientCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
-import WaitingRoomPage from '../waiting-room/room-page';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken, isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
-import Landing from '../landing';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import { InfoToOpenConn, roomConnectionStatus } from './helper';
-import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -46,7 +38,6 @@ const App = () => {
   const { t, i18n } = useTranslation();
   // make sure we're using correct body dir
   document.dir = i18n.dir();
-  const toastId = useRef<string>(null);
   // we'll require making ready virtual background
   // elements as early as possible.
   useBodyPix();
@@ -57,9 +48,6 @@ const App = () => {
   const [userTypeClass, setUserTypeClass] = useState('participant');
   const [currentMediaServerConn, setCurrentMediaServerConn] =
     useState<IConnectLivekit>();
-  const waitForApproval = useAppSelector(
-    (state) => state.session.currentUser?.metadata?.waitForApproval,
-  );
 
   const [error, setError] = useState<IErrorPageProps | undefined>();
   const [roomConnectionStatus, setRoomConnectionStatus] =
@@ -68,6 +56,7 @@ const App = () => {
     undefined,
   );
   const [openConn, setOpenConn] = useState<boolean>(false);
+  const [isAppReady, setIsAppReady] = useState<boolean>(false);
 
   useKeyboardShortcuts(currentMediaServerConn?.room);
   // to handle different customization
@@ -115,8 +104,6 @@ const App = () => {
           res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
         } catch (error: any) {
           console.error(error);
-
-          setRoomConnectionStatus('ready');
           setLoading(false);
           setError({
             title: t('app.verification-failed-title'),
@@ -124,9 +111,6 @@ const App = () => {
           });
           return;
         }
-
-        setRoomConnectionStatus('ready');
-        setLoading(false);
         if (
           res.status &&
           res.natsWsUrls.length &&
@@ -144,11 +128,13 @@ const App = () => {
           });
 
           if (res.enabledSelfInsertEncryptionKey) {
+            setLoading(false);
             setRoomConnectionStatus('insert-e2ee-key');
           } else {
             setOpenConn(true);
           }
         } else {
+          setLoading(false);
           setError({
             title: t('app.verification-failed-title'),
             text: t(res.msg),
@@ -178,23 +164,9 @@ const App = () => {
       roomConnectionStatus === 'receiving-data'
     ) {
       setLoading(true);
-    } else if (roomConnectionStatus === 're-connecting') {
-      // @ts-expect-error this won't be an error
-      toastId.current = toast.loading(
-        t('notifications.room-disconnected-reconnecting'),
-        {
-          type: 'warning',
-          closeButton: false,
-          autoClose: false,
-        },
-      );
-    } else {
+    } else if (roomConnectionStatus === 'ready') {
       setLoading(false);
-      if (toastId.current) {
-        toast.dismiss(toastId.current);
-      }
     }
-    //eslint-disable-next-line
   }, [roomConnectionStatus]);
 
   useEffect(() => {
@@ -246,34 +218,25 @@ const App = () => {
     return null;
   }, [isRecorder, currentMediaServerConn]);
 
-  const onCloseStartupModal = async () => {
-    if (currentMediaServerConn) {
-      await currentMediaServerConn.connect();
-    }
-  };
-
   const renderElms = useMemo(() => {
     if (loading) {
-      return <Loading text={t(('app.' + roomConnectionStatus) as any)} />;
+      return <Loading text={t('app.' + roomConnectionStatus)} />;
     } else if (error && !loading) {
       return <ErrorPage title={error.title} text={error.text} />;
-    } else if (
-      roomConnectionStatus === 'connected' ||
-      roomConnectionStatus === 're-connecting'
-    ) {
-      if (waitForApproval) {
-        return <WaitingRoomPage />;
-      }
-      return renderMainApp();
     } else if (roomConnectionStatus === 'insert-e2ee-key') {
       return <InsertE2EEKey setOpenConn={setOpenConn} />;
-    } else if (roomConnectionStatus === 'ready') {
-      return <Landing onCloseModal={onCloseStartupModal} />;
+    } else if (isAppReady) {
+      return renderMainApp();
     } else {
-      return null;
+      return (
+        <Landing
+          setIsAppReady={setIsAppReady}
+          roomConnectionStatus={roomConnectionStatus}
+        />
+      );
     }
     //eslint-disable-next-line
-  }, [loading, error, roomConnectionStatus, waitForApproval, renderMainApp]);
+  }, [loading, error, roomConnectionStatus, renderMainApp, isAppReady]);
 
   return (
     <div

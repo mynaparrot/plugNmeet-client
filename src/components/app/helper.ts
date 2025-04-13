@@ -10,7 +10,9 @@ export type roomConnectionStatus =
   | 'error'
   | 'receiving-data'
   | 'insert-e2ee-key'
-  | 'ready';
+  | 'ready'
+  | 'media-server-conn-start'
+  | 'media-server-conn-established';
 
 export interface InfoToOpenConn {
   accessToken: string;

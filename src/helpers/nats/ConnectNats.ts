@@ -66,6 +66,7 @@ export default class ConnectNats {
   private _token: string;
   private _enabledE2EE: boolean = false;
   private _enableE2EEChat: boolean = false;
+  private toastIdConnecting: any = undefined;
 
   private readonly _roomId: string;
   private readonly _userId: string;
@@ -385,14 +386,25 @@ export default class ConnectNats {
           break;
         case 'reconnecting':
           if (!this.isRoomReconnecting) {
-            this._setRoomConnectionStatusState('re-connecting');
+            this.toastIdConnecting = toast.loading(
+              i18n.t('notifications.room-disconnected-reconnecting'),
+              {
+                type: 'warning',
+                closeButton: false,
+                autoClose: false,
+              },
+            );
 
+            store.dispatch(updateIsNatsServerConnected(false));
             this.isRoomReconnecting = true;
             startStatusChecker();
           }
           break;
         case 'reconnect':
-          this._setRoomConnectionStatusState('connected');
+          if (this.toastIdConnecting) {
+            toast.dismiss(this.toastIdConnecting);
+            this.toastIdConnecting = undefined;
+          }
           store.dispatch(updateIsNatsServerConnected(true));
 
           clearInterval(this.statusCheckerInterval);

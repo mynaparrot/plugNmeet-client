@@ -121,7 +121,7 @@ export default class ConnectLivekit
   }
 
   public connect = async () => {
-    this._roomConnectionStatusState('connecting');
+    this._roomConnectionStatusState('media-server-conn-start');
 
     try {
       await this._room.connect(this.url, this.token);
@@ -131,7 +131,7 @@ export default class ConnectLivekit
       }
       // we'll prepare our information
       await this.initiateParticipants();
-      this._roomConnectionStatusState('connected');
+      this._roomConnectionStatusState('media-server-conn-established');
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
