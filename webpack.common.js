@@ -23,6 +23,7 @@ const config = {
   },
   watchOptions: {
     ignored: '**/node_modules',
+    aggregateTimeout: 1000,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
@@ -38,13 +39,19 @@ const config = {
     rules: [
       {
         test: /\.[jt]sx?$/,
-        loader: 'ts-loader',
-        options: {
-          getCustomTransformers: () => ({
-            before: [!isProduction && ReactRefreshTypeScript()].filter(Boolean),
-          }),
-          transpileOnly: true,
-        },
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              getCustomTransformers: () => ({
+                before: [!isProduction && ReactRefreshTypeScript()].filter(Boolean),
+              }),
+              // handle by ForkTsCheckerWebpackPlugin
+              // transpileOnly: true,
+            },
+          }
+        ],
       },
       {
         test: /\.(scss|css)$/,
@@ -127,7 +134,9 @@ const config = {
       template: './src/login.html',
       inject: false,
     }),
-    new ForkTsCheckerWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin({
+      async: !isProduction,
+    }),
     new CopyPlugin({
       patterns: [
         {
