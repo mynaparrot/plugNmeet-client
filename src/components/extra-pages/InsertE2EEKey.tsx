@@ -67,12 +67,6 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
               <button className="text-center py-1 px-3 mt-1 transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg">
                 {t('app.save')}
               </button>
-              {/*<button
-                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
-                type="submit"
-              >
-                {t('app.save')}
-              </button>*/}
             </div>
           </form>
         </div>

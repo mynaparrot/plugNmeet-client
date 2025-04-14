@@ -141,12 +141,10 @@ const App = () => {
         }
       };
 
-      if (!currentMediaServerConn) {
-        setRoomConnectionStatus('checking');
-        timeout = setTimeout(() => {
-          verifyToken().then();
-        }, 300);
-      }
+      setRoomConnectionStatus('checking');
+      timeout = setTimeout(() => {
+        verifyToken().then();
+      }, 300);
     }
 
     return () => {
@@ -154,29 +152,7 @@ const App = () => {
         clearTimeout(timeout);
       }
     };
-  }, [t, dispatch, currentMediaServerConn, setError, setRoomConnectionStatus]);
-
-  useEffect(() => {
-    if (
-      roomConnectionStatus === 'connecting' ||
-      roomConnectionStatus === 'checking' ||
-      roomConnectionStatus === 'receiving-data'
-    ) {
-      setLoading(true);
-    } else if (roomConnectionStatus === 'ready') {
-      setLoading(false);
-
-      const session = store.getState().session;
-      if (session.currentUser && isUserRecorder(session.currentUser.userId)) {
-        dispatch(updateIsActiveChatPanel(false));
-      }
-      if (session.currentUser?.metadata?.isAdmin) {
-        setUserTypeClass('admin');
-      }
-    } else if (roomConnectionStatus === 'error') {
-      setLoading(false);
-    }
-  }, [dispatch, roomConnectionStatus]);
+  }, [t]);
 
   useEffect(() => {
     if (openConnInfo && openConn) {
@@ -198,29 +174,54 @@ const App = () => {
     }
   }, [dispatch, openConnInfo, openConn]);
 
+  useEffect(() => {
+    switch (roomConnectionStatus) {
+      case 'connecting':
+      case 'checking':
+      case 'receiving-data':
+        setLoading(true);
+        break;
+      case 'error':
+        setLoading(false);
+        break;
+      case 'ready': {
+        setLoading(false);
+        const session = store.getState().session;
+        if (session.currentUser && isUserRecorder(session.currentUser.userId)) {
+          dispatch(updateIsActiveChatPanel(false));
+        }
+        if (session.currentUser?.metadata?.isAdmin) {
+          setUserTypeClass('admin');
+        }
+        break;
+      }
+    }
+  }, [dispatch, roomConnectionStatus]);
+
   const renderElms = useMemo(() => {
-    if (loading) {
-      return <Loading text={t('app.' + roomConnectionStatus)} />;
-    } else if (error && !loading) {
-      return <ErrorPage title={error.title} text={error.text} />;
-    } else if (roomConnectionStatus === 'insert-e2ee-key') {
-      return <InsertE2EEKey setOpenConn={setOpenConn} />;
-    } else if (isAppReady) {
-      return (
-        <div className="plugNmeet-app overflow-hidden h-screen">
-          <Header />
-          <MainArea />
-          <Footer />
-          <AudioNotification />
-        </div>
-      );
-    } else {
-      return (
-        <Landing
-          setIsAppReady={setIsAppReady}
-          roomConnectionStatus={roomConnectionStatus}
-        />
-      );
+    switch (true) {
+      case loading:
+        return <Loading text={t('app.' + roomConnectionStatus)} />;
+      case error && !loading:
+        return <ErrorPage title={error.title} text={error.text} />;
+      case roomConnectionStatus === 'insert-e2ee-key':
+        return <InsertE2EEKey setOpenConn={setOpenConn} />;
+      case isAppReady:
+        return (
+          <div className="plugNmeet-app overflow-hidden h-screen">
+            <Header />
+            <MainArea />
+            <Footer />
+            <AudioNotification />
+          </div>
+        );
+      default:
+        return (
+          <Landing
+            setIsAppReady={setIsAppReady}
+            roomConnectionStatus={roomConnectionStatus}
+          />
+        );
     }
     //eslint-disable-next-line
   }, [loading, error, roomConnectionStatus, isAppReady]);
