@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
@@ -44,7 +44,6 @@ const App = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
-  const [isRecorder, setIsRecorder] = useState<boolean>(false);
   const [userTypeClass, setUserTypeClass] = useState('participant');
   const [currentMediaServerConn, setCurrentMediaServerConn] =
     useState<IConnectLivekit>();
@@ -169,7 +168,6 @@ const App = () => {
 
       const session = store.getState().session;
       if (session.currentUser && isUserRecorder(session.currentUser.userId)) {
-        setIsRecorder(true);
         dispatch(updateIsActiveChatPanel(false));
       }
       if (session.currentUser?.metadata?.isAdmin) {
@@ -200,20 +198,6 @@ const App = () => {
     }
   }, [dispatch, openConnInfo, openConn]);
 
-  const renderMainApp = useCallback(() => {
-    if (currentMediaServerConn) {
-      return (
-        <div className="plugNmeet-app overflow-hidden h-screen">
-          {!isRecorder ? <Header /> : null}
-          <MainArea />
-          <Footer />
-          <AudioNotification />
-        </div>
-      );
-    }
-    return null;
-  }, [isRecorder, currentMediaServerConn]);
-
   const renderElms = useMemo(() => {
     if (loading) {
       return <Loading text={t('app.' + roomConnectionStatus)} />;
@@ -222,7 +206,14 @@ const App = () => {
     } else if (roomConnectionStatus === 'insert-e2ee-key') {
       return <InsertE2EEKey setOpenConn={setOpenConn} />;
     } else if (isAppReady) {
-      return renderMainApp();
+      return (
+        <div className="plugNmeet-app overflow-hidden h-screen">
+          <Header />
+          <MainArea />
+          <Footer />
+          <AudioNotification />
+        </div>
+      );
     } else {
       return (
         <Landing
@@ -232,7 +223,7 @@ const App = () => {
       );
     }
     //eslint-disable-next-line
-  }, [loading, error, roomConnectionStatus, renderMainApp, isAppReady]);
+  }, [loading, error, roomConnectionStatus, isAppReady]);
 
   return (
     <div

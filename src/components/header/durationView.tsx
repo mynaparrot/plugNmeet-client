@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { store } from '../../store';
+import { store, useAppSelector } from '../../store';
 import { displayInstantNotification } from '../../helpers/utils';
 
-interface IDurationViewProps {
-  duration: number;
-}
-const DurationView = ({ duration }: IDurationViewProps) => {
+const DurationView = () => {
   const { t } = useTranslation();
   const isRecorder = store.getState().session.currentUser?.isRecorder;
+  const roomDuration = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.roomDuration,
+  );
 
   const [remaining, setRemaining] = useState<string>('00:00');
   // if duration is less than 60 minutes then we'll show clock only.
   const [showClock, setShowClock] = useState<boolean>(false);
 
   useEffect(() => {
+    const duration = Number(roomDuration);
+    if (!duration || duration == 0) {
+      return;
+    }
+
     const startedAt = store.getState().session.currentRoom.metadata?.startedAt;
     const start = startedAt ? Number(startedAt) * 1000 : Date.now();
     let diff, minutes, seconds;
@@ -47,7 +52,7 @@ const DurationView = ({ duration }: IDurationViewProps) => {
         clearInterval(interval);
       }
     };
-  }, [duration]);
+  }, [roomDuration]);
 
   useEffect(() => {
     if (isRecorder) {
@@ -68,7 +73,7 @@ const DurationView = ({ duration }: IDurationViewProps) => {
     }
   }, [isRecorder, remaining, t]);
 
-  return (
+  return !roomDuration ? null : (
     <>
       {showClock ? (
         <div className="timer text-xs md:text-sm border border-solid border-primaryColor dark:border-darkText/80 dark:text-darkText/80 sm:py-[2px] px-3 rounded-lg mt-[2px] mr-[6px]">

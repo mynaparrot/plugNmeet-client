@@ -32,19 +32,20 @@ import DarkThemeSwitcher from './darkThemeSwitcher';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
+import { isUserRecorder } from '../../helpers/utils';
 
 const Header = () => {
   const roomTitle = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomTitle,
-  );
-  const roomDuration = useAppSelector(
-    (state) => state.session.currentRoom.metadata?.roomFeatures?.roomDuration,
   );
   const headerVisible = useAppSelector(
     (state) => state.roomSettings.visibleHeader,
   );
   // const dispatch = useAppDispatch();
   const conn = getNatsConn();
+  const isRecorder = isUserRecorder(
+    store.getState().session.currentUser?.userId ?? '',
+  );
 
   const { t } = useTranslation();
   const [title, setTitle] = useState<string>('');
@@ -183,7 +184,7 @@ const Header = () => {
     );
   };
 
-  return (
+  return isRecorder ? null : (
     <>
       <Transition
         show={headerVisible}
@@ -211,9 +212,7 @@ const Header = () => {
             </h2>
           </div>
           <div className="right flex items-center justify-end relative z-20 -right-3 w-60">
-            {roomDuration && Number(roomDuration) > 0 ? (
-              <DurationView duration={Number(roomDuration)} />
-            ) : null}
+            <DurationView />
             <VolumeControl />
             <Menu>
               {({ open }) => (
@@ -244,21 +243,6 @@ const Header = () => {
           {showModal ? alertModal() : null}
         </header>
       </Transition>
-      {/* <div
-        className={`header-collapse-arrow group fixed right-0 flex items-start justify-center h-5 w-[50px] cursor-pointer z-[2] bg-white dark:bg-darkPrimary rounded-bl-lg ${
-          headerVisible ? 'top-[50px] pt-[3px]' : 'top-0 pt-[6px]'
-        }`}
-        onClick={() => dispatch(toggleHeaderVisibility())}
-      >
-        <i
-          className={`text-[10px] sm:text-[12px] dark:text-secondaryColor pnm-arrow-below ${
-            headerVisible ? 'rotate-180' : ''
-          }`}
-        ></i>
-        <span className="absolute right-0 top-7 w-max bg-white text-darkPrimary dark:text-white dark:bg-darkPrimary text-[10px] py-1 px-[12px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
-          {headerVisible ? t('header.hide-header') : t('header.show-header')}
-        </span>
-      </div> */}
       <RoomSettings />
       <KeyboardShortcuts />
     </>
