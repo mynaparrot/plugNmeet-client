@@ -382,6 +382,8 @@ export default class ConnectNats {
     for await (const s of this._nc.status()) {
       switch (s.type) {
         case 'disconnect':
+          // when nats connection drops during that time, it disconnects first
+          // then start reconnecting, so we can set false here only
           store.dispatch(updateIsNatsServerConnected(false));
           break;
         case 'reconnecting':
@@ -394,8 +396,6 @@ export default class ConnectNats {
                 autoClose: false,
               },
             );
-
-            store.dispatch(updateIsNatsServerConnected(false));
             this.isRoomReconnecting = true;
             startStatusChecker();
           }
