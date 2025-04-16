@@ -14,7 +14,7 @@ const ListPolls = () => {
   // const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const [polls, setPolls] = useState<PollInfo[]>([]);
   // const { outerRef, innerRef, items } = useVirtual({
-  const { innerRef, items } = useVirtual({
+  const { outerRef, innerRef, items } = useVirtual({
     itemCount: polls.length,
   });
 
@@ -37,8 +37,8 @@ const ListPolls = () => {
   return (
     <div
       className="polls-list-wrapper relative overflow-auto scrollBar px-2 pt-2 xl:pt-3 h-[calc(100vh-277px)]"
-      // style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
-      // ref={outerRef as any}
+      //style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
+      ref={outerRef as any}
     >
       <div className="polls-list-wrap-inner" ref={innerRef as any}>
         {items.map(({ index, measureRef }) => (
