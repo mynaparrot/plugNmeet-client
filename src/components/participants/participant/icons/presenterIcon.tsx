@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
@@ -13,19 +13,11 @@ const PresenterIcon = ({ userId }: IPresenterIconProps) => {
       participantsSelector.selectById(state, userId)?.metadata.isPresenter,
   );
 
-  const render = useMemo(() => {
-    if (isPresenter) {
-      return (
-        <div className="presenter cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center">
-          <i className="pnm-presenter text-Gray-950 text-sm 3xl:text-base" />
-        </div>
-      );
-    }
-
-    return null;
-  }, [isPresenter]);
-
-  return <>{render}</>;
+  return !isPresenter ? null : (
+    <div className="presenter cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center">
+      <i className="pnm-presenter text-Gray-950 text-sm 3xl:text-base" />
+    </div>
+  );
 };
 
 export default PresenterIcon;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
@@ -56,31 +56,22 @@ const WaitingApproval = ({
     openRemoveParticipantAlert(userId, 'reject');
   };
 
-  const render = useMemo(() => {
-    if (waitForApproval) {
-      return (
-        <div className="approve-btn-wrap rtl:pt-2">
-          <button
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
-            onClick={approve}
-          >
-            {t('left-panel.approve')}
-          </button>
-          <button
-            className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
-            onClick={reject}
-          >
-            {t('left-panel.reject')}
-          </button>
-        </div>
-      );
-    }
-
-    return null;
-    //eslint-disable-next-line
-  }, [waitForApproval]);
-
-  return <>{render}</>;
+  return !waitForApproval ? null : (
+    <div className="approve-btn-wrap rtl:pt-2">
+      <button
+        className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
+        onClick={approve}
+      >
+        {t('left-panel.approve')}
+      </button>
+      <button
+        className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
+        onClick={reject}
+      >
+        {t('left-panel.reject')}
+      </button>
+    </div>
+  );
 };
 
 export default WaitingApproval;
