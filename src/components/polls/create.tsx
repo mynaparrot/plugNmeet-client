@@ -12,6 +12,8 @@ import { create } from '@bufbuild/protobuf';
 
 import { useCreatePollMutation } from '../../store/services/pollsApi';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
+import { TrashIconSVG } from '../../assets/Icons/TrashIconSVG';
+import { PlusCircleIconSVG } from '../../assets/Icons/PlusCircleIconSVG';
 
 interface CreatePollOptions {
   id: number;
@@ -102,7 +104,7 @@ const Create = () => {
     return (
       <form onSubmit={onSubmit}>
         <div className="question-area border-b border-Gray-100 px-6 pt-5 pb-6 bg-Gray-25">
-          <label className="text-sm text-Gray-800 font-medium mb-1 inline-block">
+          <label className="text-sm text-Gray-800 font-medium mb-2 inline-block">
             {t('polls.enter-question')}
           </label>
           <input
@@ -112,18 +114,19 @@ const Create = () => {
             required={true}
             onChange={(e) => setQuestion(e.currentTarget.value)}
             placeholder="Ask a question"
+            className="default-input"
           />
         </div>
 
         <div className="option-field-wrapper px-6 pt-5 pb-6">
-          <p className="text-sm text-Gray-800 font-medium mb-1 inline-block">
+          <p className="text-sm text-Gray-800 font-medium mb-2 inline-block">
             {t('polls.options')}
           </p>
-          <div className="overflow-auto h-full max-h-[345px] scrollBar scrollBar2">
-            <div className="option-field-inner">
+          <div className="overflow-auto h-full max-h-[345px] scrollBar scrollBar2 mb-5">
+            <div className="option-field-inner grid gap-5">
               {options.map((elm, index) => (
-                <div className="form-inline mb-4" key={elm.id}>
-                  <div className="input-wrapper w-full flex items-center">
+                <div className="form-inline" key={elm.id}>
+                  <div className="input-wrapper w-full flex items-center gap-2">
                     <input
                       type="text"
                       required={true}
@@ -133,14 +136,15 @@ const Create = () => {
                       placeholder={t('polls.option', {
                         count: index + 1,
                       }).toString()}
+                      className="default-input flex-1"
                     />
                     {index ? (
                       <button
                         type="button"
-                        className="ml-2 p-1"
+                        className="h-11 w-11 border border-Red-200 bg-Red-50 text-Red-600 shadow-buttonShadow rounded-[15px] flex items-center justify-center cursor-pointer"
                         onClick={() => removeOption(index)}
                       >
-                        <i className="pnm-delete w-5 h-5 dark:text-secondaryColor" />
+                        <TrashIconSVG />
                       </button>
                     ) : null}
                   </div>
@@ -162,6 +166,7 @@ const Create = () => {
             onClick={() => addOption()}
           >
             {t('polls.add-new-option')}
+            <PlusCircleIconSVG />
           </button>
         </div>
         <div className="button-section flex items-center gap-5 py-6 px-6 border-t border-Gray-100">
@@ -202,7 +207,7 @@ const Create = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <div className="fixed inset-0 bg-black opacity-30" />
+                <div className="fixed inset-0 bg-Gray-950 opacity-70" />
               </TransitionChild>
 
               <span

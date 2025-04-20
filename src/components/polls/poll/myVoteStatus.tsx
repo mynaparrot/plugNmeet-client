@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGetUserSelectedOptionQuery } from '../../../store/services/pollsApi';
 import { store } from '../../../store';
-import VoteForm from '../voteForm';
+// import VoteForm from '../voteForm';
 
 interface IMyVoteStatusProps {
   pollId: string;
@@ -29,9 +29,9 @@ const MyVoteStatus = ({ pollId }: IMyVoteStatusProps) => {
     setShowVoteForm(true);
   };
 
-  const onCloseForm = () => {
-    setShowVoteForm(false);
-  };
+  // const onCloseForm = () => {
+  //   setShowVoteForm(false);
+  // };
 
   return (
     <>
@@ -50,7 +50,8 @@ const MyVoteStatus = ({ pollId }: IMyVoteStatusProps) => {
         )}
       </div>
       {showVoteForm ? (
-        <VoteForm onCloseForm={onCloseForm} pollId={pollId} />
+        // <VoteForm onCloseForm={onCloseForm} pollId={pollId} />
+        <></>
       ) : null}
     </>
   );

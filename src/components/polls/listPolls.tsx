@@ -36,7 +36,7 @@ const ListPolls = () => {
 
   return (
     <div
-      className="polls-list-wrapper relative overflow-auto scrollBar px-2 pt-2 xl:pt-3 h-[calc(100vh-277px)]"
+      className="polls-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 h-[calc(100vh-277px)]"
       //style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
       ref={outerRef as any}
     >
@@ -45,7 +45,7 @@ const ListPolls = () => {
           <div
             key={index}
             ref={measureRef}
-            className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md"
+            className="poll-item relative overflow-hidden bg-Gray-50 rounded-xl"
           >
             {renderPoll(index)}
           </div>
