@@ -21,8 +21,8 @@ import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken, isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
-import useBodyPix from '../virtual-background/hooks/useBodyPix';
 import { InfoToOpenConn, roomConnectionStatus, verifyToken } from './helper';
+import { loadBodyPix } from '../virtual-background/helpers/utils';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,7 @@ const App = () => {
   document.dir = i18n.dir();
   // we'll require making ready virtual background
   // elements as early as possible.
-  useBodyPix();
+  loadBodyPix().then();
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
