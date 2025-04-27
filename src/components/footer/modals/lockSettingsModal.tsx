@@ -1,4 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -8,13 +11,10 @@ import {
   TransitionChild,
   Label,
 } from '@headlessui/react';
-import { toast } from 'react-toastify';
-import { useTranslation } from 'react-i18next';
 import {
   CommonResponseSchema,
   UpdateUserLockSettingsReqSchema,
 } from 'plugnmeet-protocol-js';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
@@ -23,42 +23,54 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 const LockSettingsModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const [isBusy, setIsBusy] = useState<boolean>(false);
+
   const roomLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
   const session = store.getState().session;
 
-  const updateLockSettings = async (status, service: string) => {
-    const direction = status ? 'lock' : 'unlock';
+  const updateLockSettings = useCallback(
+    async (status: boolean, service: string) => {
+      if (isBusy) {
+        return;
+      }
+      setIsBusy(true);
 
-    const body = create(UpdateUserLockSettingsReqSchema, {
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.roomId,
-      userId: 'all',
-      service,
-      direction,
-    });
-
-    const r = await sendAPIRequest(
-      'updateLockSettings',
-      toBinary(UpdateUserLockSettingsReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (res.status) {
-      toast(t('footer.notice.applied-settings'), {
-        toastId: 'lock-setting-status',
-        type: 'info',
+      const direction = status ? 'lock' : 'unlock';
+      const body = create(UpdateUserLockSettingsReqSchema, {
+        roomSid: session.currentRoom.sid,
+        roomId: session.currentRoom.roomId,
+        userId: 'all',
+        service,
+        direction,
       });
-    } else {
-      toast(res.msg, {
-        type: 'error',
-      });
-    }
-  };
+
+      const r = await sendAPIRequest(
+        'updateLockSettings',
+        toBinary(UpdateUserLockSettingsReqSchema, body),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+
+      if (res.status) {
+        toast(t('footer.notice.applied-settings'), {
+          toastId: 'lock-setting-status',
+          type: 'info',
+        });
+      } else {
+        toast(res.msg, {
+          type: 'error',
+        });
+      }
+
+      setIsBusy(false);
+    },
+    //eslint-disable-next-line
+    [isBusy],
+  );
 
   const closeModal = () => {
     dispatch(updateShowLockSettingsModal(false));
@@ -277,71 +289,67 @@ const LockSettingsModal = () => {
     );
   };
 
-  const render = () => {
-    return (
-      <>
-        <Transition appear show={true} as={Fragment}>
-          <Dialog
-            as="div"
-            className="lockSettingsModal fixed inset-0 z-[9999] overflow-y-auto"
-            onClose={() => false}
-          >
-            <div className="min-h-screen px-4 text-center">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0 bg-black opacity-30" />
-              </TransitionChild>
+  return (
+    <>
+      <Transition appear show={true} as={Fragment}>
+        <Dialog
+          as="div"
+          className="lockSettingsModal fixed inset-0 z-[9999] overflow-y-auto"
+          onClose={() => false}
+        >
+          <div className="min-h-screen px-4 text-center">
+            <TransitionChild
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black opacity-30" />
+            </TransitionChild>
 
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
-                  <button
-                    className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
-                    type="button"
-                    onClick={() => closeModal()}
-                  >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-                  </button>
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <TransitionChild
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+                <button
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
+                  type="button"
+                  onClick={() => closeModal()}
+                >
+                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
+                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+                </button>
 
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
-                  >
-                    {t('footer.modal.lock-settings-title')}
-                  </DialogTitle>
-                  <hr />
-                  <div className="mt-6">{showLockItems()}</div>
-                </div>
-              </TransitionChild>
-            </div>
-          </Dialog>
-        </Transition>
-      </>
-    );
-  };
-
-  return <>{render()}</>;
+                <DialogTitle
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
+                >
+                  {t('footer.modal.lock-settings-title')}
+                </DialogTitle>
+                <hr />
+                <div className="mt-6">{showLockItems()}</div>
+              </div>
+            </TransitionChild>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
+  );
 };
 
 export default LockSettingsModal;
