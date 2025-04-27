@@ -619,12 +619,12 @@ export default class ConnectNats {
 
   private startTokenRenewInterval() {
     this.tokenRenewInterval = setInterval(() => {
-      this.sendMessageToSystemWorker(
-        create(NatsMsgClientToServerSchema, {
-          event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
-          msg: this._token,
-        }),
-      );
+      // this.sendMessageToSystemWorker(
+      //   create(NatsMsgClientToServerSchema, {
+      //     event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
+      //     msg: this._token,
+      //   }),
+      // );
     }, RENEW_TOKEN_FREQUENT);
   }
 

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
 import {
   CreateBreakoutRoomsReq,
   BreakoutRoomRes,
@@ -13,9 +14,8 @@ import {
   JoinBreakoutRoomReqSchema,
   EndBreakoutRoomReqSchema,
 } from 'plugnmeet-protocol-js';
-import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
 
-import { requestToRenewPnmToken } from '../../helpers/api/plugNmeetAPI';
+import { renewTokenOnError } from './utils';
 
 export const breakoutRoomApi = createApi({
   reducerPath: 'breakoutRoomApi',
@@ -42,17 +42,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
-      transformErrorResponse: (response) => {
-        if (
-          // @ts-expect-error this value exists
-          typeof response.originalStatus !== 'undefined' &&
-          // @ts-expect-error this value exists
-          response.originalStatus === 401
-        ) {
-          console.info(`Got status: 401, trying to renew token.`);
-          requestToRenewPnmToken();
-        }
-      },
+      transformErrorResponse: renewTokenOnError,
       providesTags: ['List'],
     }),
     createBreakoutRooms: builder.mutation<
@@ -71,17 +61,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
-      transformErrorResponse: (response) => {
-        if (
-          // @ts-expect-error this value exists
-          typeof response.originalStatus !== 'undefined' &&
-          // @ts-expect-error this value exists
-          response.originalStatus === 401
-        ) {
-          console.info(`Got status: 401, trying to renew token.`);
-          requestToRenewPnmToken();
-        }
-      },
+      transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
     increaseDuration: builder.mutation<
@@ -100,6 +80,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
+      transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
     broadcastBreakoutRoomMsg: builder.mutation<
@@ -118,6 +99,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
+      transformErrorResponse: renewTokenOnError,
     }),
     joinRoom: builder.mutation<BreakoutRoomRes, JoinBreakoutRoomReq>({
       query(body) {
@@ -132,6 +114,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
+      transformErrorResponse: renewTokenOnError,
     }),
     getMyBreakoutRooms: builder.query<BreakoutRoomRes, void>({
       query: () => {
@@ -144,17 +127,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
-      transformErrorResponse: (response) => {
-        if (
-          // @ts-expect-error this value exists
-          typeof response.originalStatus !== 'undefined' &&
-          // @ts-expect-error this value exists
-          response.originalStatus === 401
-        ) {
-          console.info(`Got status: 401, trying to renew token.`);
-          requestToRenewPnmToken();
-        }
-      },
+      transformErrorResponse: renewTokenOnError,
       providesTags: ['My_Rooms'],
     }),
     endSingleRoom: builder.mutation<BreakoutRoomRes, EndBreakoutRoomReq>({
@@ -170,6 +143,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
+      transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
     endAllRooms: builder.mutation<BreakoutRoomRes, void>({
@@ -184,6 +158,7 @@ export const breakoutRoomApi = createApi({
           },
         };
       },
+      transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
   }),
