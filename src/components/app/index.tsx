@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import {
-  VerifyTokenReqSchema,
-  VerifyTokenRes,
-  VerifyTokenResSchema,
-} from 'plugnmeet-protocol-js';
 
 import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
@@ -15,7 +9,6 @@ import MainArea from '../main-area';
 import Landing from '../landing';
 import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
 
-import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { store, useAppDispatch } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import AudioNotification from './audioNotification';
@@ -29,9 +22,7 @@ import { IConnectLivekit } from '../../helpers/livekit/types';
 import { getAccessToken, isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import useBodyPix from '../virtual-background/hooks/useBodyPix';
-import { InfoToOpenConn, roomConnectionStatus } from './helper';
-
-declare const IS_PRODUCTION: boolean;
+import { InfoToOpenConn, roomConnectionStatus, verifyToken } from './helper';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -68,7 +59,6 @@ const App = () => {
 
   useEffect(() => {
     const accessToken = getAccessToken();
-    let timeout: any;
     if (!accessToken) {
       setLoading(false);
       setError({
@@ -85,74 +75,18 @@ const App = () => {
         text: t('app.require-ssl-des'),
       });
     } else {
-      const verifyToken = async () => {
-        let res: VerifyTokenRes;
-        try {
-          const r = await sendAPIRequest(
-            'verifyToken',
-            toBinary(
-              VerifyTokenReqSchema,
-              create(VerifyTokenReqSchema, {
-                isProduction: IS_PRODUCTION,
-              }),
-            ),
-            false,
-            'application/protobuf',
-            'arraybuffer',
-          );
-          res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
-        } catch (error: any) {
-          console.error(error);
-          setLoading(false);
-          setError({
-            title: t('app.verification-failed-title'),
-            text: t('app.token-not-valid'),
-          });
-          return;
-        }
-        if (
-          res.status &&
-          res.natsWsUrls.length &&
-          res.roomId &&
-          res.userId &&
-          res.natsSubjects
-        ) {
-          setOpenConnInfo({
-            accessToken: accessToken,
-            natsWsUrls: res.natsWsUrls,
-            natsSubjects: res.natsSubjects,
-            roomId: res.roomId,
-            userId: res.userId,
-            serverVersion: res.serverVersion ?? '',
-          });
-
-          if (res.enabledSelfInsertEncryptionKey) {
-            setLoading(false);
-            setRoomConnectionStatus('insert-e2ee-key');
-          } else {
-            setOpenConn(true);
-          }
-        } else {
-          setLoading(false);
-          setError({
-            title: t('app.verification-failed-title'),
-            text: t(res.msg),
-          });
-        }
-      };
-
       setRoomConnectionStatus('checking');
-      timeout = setTimeout(() => {
-        verifyToken().then();
-      }, 300);
+      verifyToken(
+        accessToken,
+        setLoading,
+        setError,
+        setOpenConnInfo,
+        setRoomConnectionStatus,
+        setOpenConn,
+      ).then();
     }
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [t]);
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (openConnInfo && openConn) {

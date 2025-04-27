@@ -1,7 +1,8 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { once } from 'es-toolkit';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   CommonResponseSchema,
@@ -12,11 +13,11 @@ import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { store } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { getNatsConn } from '../../../helpers/nats';
+import { sleep } from '../../../helpers/utils';
 
 const EndMeetingButton = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>('');
-  const [isBusy, setIsBusy] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const conn = getNatsConn();
@@ -33,12 +34,7 @@ const EndMeetingButton = () => {
     setIsOpen(true);
   }
 
-  const onConfirm = useCallback(async () => {
-    if (isBusy) {
-      return;
-    }
-    setIsBusy(true);
-
+  const onConfirm = once(async () => {
     if (!isAdmin) {
       await conn.endSession('notifications.user-logged-out');
     } else {
@@ -49,6 +45,7 @@ const EndMeetingButton = () => {
       const body = create(RoomEndAPIReqSchema, {
         roomId: session.currentRoom.roomId,
       });
+      await sleep(2000);
       const r = await sendAPIRequest(
         'endRoom',
         toBinary(RoomEndAPIReqSchema, body),
@@ -68,9 +65,7 @@ const EndMeetingButton = () => {
         toast.dismiss(id);
       }
     }
-    setIsBusy(false);
-    //eslint-disable-next-line
-  }, [isBusy]);
+  });
 
   return (
     <>
