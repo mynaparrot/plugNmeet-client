@@ -27,21 +27,6 @@ export async function loadBodyPix() {
   return bodyPixStore;
 }
 
-export const fetchModel = once(async (modelFileName: string) => {
-  const modelResponse = await fetch(
-    `${assetPath}/models/${modelFileName}.tflite`,
-  );
-  return await modelResponse.arrayBuffer();
-});
-
-const loadTFLiteModule = once(async () => {
-  return await createTFLiteModule();
-});
-
-const loadTFLiteSIMD = once(async () => {
-  return await createTFLiteSIMDModule();
-});
-
 export const loadTFLite = once(
   async (segmentationConfig: SegmentationConfig) => {
     let selectedTFLite: TFLite,
@@ -49,7 +34,7 @@ export const loadTFLite = once(
 
     if (segmentationConfig.backend === 'wasmSimd') {
       try {
-        selectedTFLite = await loadTFLiteSIMD();
+        selectedTFLite = await createTFLiteSIMDModule();
         isSIMDSupported = true;
       } catch (error) {
         console.error(
@@ -60,7 +45,7 @@ export const loadTFLite = once(
       }
     } else {
       try {
-        selectedTFLite = await loadTFLiteModule();
+        selectedTFLite = await createTFLiteModule();
       } catch (error) {
         console.error('Failed to create TFLite WebAssembly module.', error);
         return { selectedTFLite: undefined, isSIMDSupported };
@@ -73,7 +58,10 @@ export const loadTFLite = once(
     );
     console.log('Loading tflite model:', modelFileName);
 
-    const model = await fetchModel(modelFileName);
+    const modelResponse = await fetch(
+      `${assetPath}/models/${modelFileName}.tflite`,
+    );
+    const model = await modelResponse.arrayBuffer();
     console.log('Model buffer size:', model.byteLength);
 
     const modelBufferOffset = selectedTFLite._getModelBufferMemoryOffset();
