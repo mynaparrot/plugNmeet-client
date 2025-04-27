@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
@@ -16,10 +16,12 @@ import { getNatsConn } from '../../../helpers/nats';
 const EndMeetingButton = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>('');
+  const [isBusy, setIsBusy] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const conn = getNatsConn();
-  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
+  const session = store.getState().session;
+  const isAdmin = session.currentUser?.metadata?.isAdmin;
 
   function open() {
     if (isAdmin) {
@@ -31,16 +33,22 @@ const EndMeetingButton = () => {
     setIsOpen(true);
   }
 
-  const onConfirm = async () => {
+  const onConfirm = useCallback(async () => {
+    if (isBusy) {
+      return;
+    }
+    setIsBusy(true);
+
     if (!isAdmin) {
       await conn.endSession('notifications.user-logged-out');
     } else {
-      const session = store.getState().session;
+      const id = toast.loading(t('notifications.ending-session'), {
+        type: 'info',
+      });
 
       const body = create(RoomEndAPIReqSchema, {
         roomId: session.currentRoom.roomId,
       });
-
       const r = await sendAPIRequest(
         'endRoom',
         toBinary(RoomEndAPIReqSchema, body),
@@ -50,12 +58,19 @@ const EndMeetingButton = () => {
       );
       const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
       if (!res.status) {
-        toast(res.msg, {
+        toast.update(id, {
+          render: t(res.msg),
           type: 'error',
+          isLoading: false,
+          autoClose: 3000,
         });
+      } else {
+        toast.dismiss(id);
       }
     }
-  };
+    setIsBusy(false);
+    //eslint-disable-next-line
+  }, [isBusy]);
 
   return (
     <>
