@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { PollInfo } from 'plugnmeet-protocol-js';
+import React, { useState, useEffect } from 'react';
+import { PollInfo, ClosePollReqSchema } from 'plugnmeet-protocol-js';
+import { toast } from 'react-toastify';
 
-import TotalResponses from './totalResponses';
-import MyVoteStatus from './myVoteStatus';
+// import TotalResponses from './totalResponses';
+// import MyVoteStatus from './myVoteStatus';
 import { useTranslation } from 'react-i18next';
 import { store } from '../../../store';
-import ViewDetails from '../viewDetails';
+// import ViewDetails from '../viewDetails';
 import ViewResult from '../viewResult';
 import VoteForm from '../voteForm';
 import {
@@ -16,6 +17,8 @@ import {
   MenuItems,
 } from '@headlessui/react';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
+import { create } from '@bufbuild/protobuf';
+import { useClosePollMutation } from '../../../store/services/pollsApi';
 
 interface IPollPros {
   item: PollInfo;
@@ -24,12 +27,36 @@ interface IPollPros {
 const Poll = ({ item }: IPollPros) => {
   const { t } = useTranslation();
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
-  const [viewDetails, setViewDetails] = useState<boolean>(false);
+  // const [viewDetails, setViewDetails] = useState<boolean>(false);
   const [viewResult, setViewResult] = useState<boolean>(false);
+  const [closePoll, { isLoading, data: closePollRes }] = useClosePollMutation();
+
+  const endPoll = () => {
+    closePoll(
+      create(ClosePollReqSchema, {
+        pollId: item.id,
+      }),
+    );
+  };
+
+  useEffect(() => {
+    if (!isLoading && closePollRes) {
+      if (closePollRes.status) {
+        toast(t('polls.end-poll-success'), {
+          type: 'info',
+        });
+      } else {
+        toast(t(closePollRes.msg), {
+          type: 'error',
+        });
+      }
+    }
+    //eslint-disable-next-line
+  }, [isLoading, closePollRes]);
 
   return (
     <>
-      <div className="polls-item-inner mb-4">
+      <div className="polls-item-inner">
         <div className="head min-h-10 flex items-center justify-between w-full px-4 text-sm text-Gray-700 gap-3">
           <div className="left flex items-center gap-3">
             <span className="uppercase"> Poll 01</span>{' '}
@@ -65,13 +92,33 @@ const Poll = ({ item }: IPollPros) => {
                   >
                     <MenuItems
                       static
-                      className="origin-top-right z-10 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-none"
+                      className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-none"
                     >
                       <MenuItem>
-                        <button className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative">
+                        <button className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative">
                           Menu Item
                         </button>
                       </MenuItem>
+                      <MenuItem>
+                        <button className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative">
+                          Menu Item
+                        </button>
+                      </MenuItem>
+                      {item?.isRunning ? (
+                        <>
+                          <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+                          <MenuItem>
+                            <button
+                              onClick={endPoll}
+                              className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Red-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                            >
+                              {t('polls.end-poll')}
+                            </button>
+                          </MenuItem>
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </MenuItems>
                   </Transition>
                 </>
@@ -84,7 +131,7 @@ const Poll = ({ item }: IPollPros) => {
         </div>
       </div>
 
-      <div className="wrap relative pb-7">
+      {/* <div className="wrap relative pb-7">
         <div className="poll-title text-md text-primaryColor dark:text-darkText">
           {item.question}
         </div>
@@ -114,16 +161,16 @@ const Poll = ({ item }: IPollPros) => {
             </button>
           ) : null}
         </div>
-      </div>
+      </div> */}
 
       <>
-        {isAdmin && viewDetails ? (
+        {/* {isAdmin && viewDetails ? (
           <ViewDetails
             onCloseViewDetails={() => setViewDetails(false)}
             pollId={item.id}
             item={item}
           />
-        ) : null}
+        ) : null} */}
 
         {/*only if result published*/}
         {!isAdmin && !item.isRunning && viewResult ? (

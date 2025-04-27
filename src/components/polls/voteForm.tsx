@@ -1,10 +1,4 @@
-import React, { useState, useEffect } from 'react';
-// import {
-//   Dialog,
-//   DialogTitle,
-//   Transition,
-//   TransitionChild,
-// } from '@headlessui/react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { create } from '@bufbuild/protobuf';
@@ -19,6 +13,7 @@ import { PollInfo } from 'plugnmeet-protocol-js';
 import {
   useAddResponseMutation,
   useGetPollListsQuery,
+  useGetPollResponsesDetailsQuery,
 } from '../../store/services/pollsApi';
 import { store } from '../../store';
 import { getNatsConn } from '../../helpers/nats';
@@ -46,6 +41,29 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
     }),
   });
 
+  const { data: pollResponses } = useGetPollResponsesDetailsQuery(pollId);
+
+  const respondents = useMemo(() => {
+    const obj = {};
+    if (
+      pollResponses?.responses.all_respondents &&
+      pollResponses?.responses.all_respondents !== ''
+    ) {
+      const respondents: Array<string> = JSON.parse(
+        pollResponses?.responses.all_respondents,
+      );
+      respondents.forEach((r) => {
+        const data = r.split(':');
+        if (typeof obj[data[1]] === 'undefined') {
+          obj[data[1]] = [];
+        }
+        obj[data[1]].push(data[2]);
+      });
+    }
+
+    return obj;
+  }, [pollResponses]);
+
   useEffect(() => {
     if (!isLoading && data) {
       if (data.status) {
@@ -61,6 +79,146 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
     }
     //eslint-disable-next-line
   }, [isLoading, data]);
+
+  // const getOptSelectedCount = (id) => {
+  //   if (typeof pollResponses?.responses[id + '_count'] !== 'undefined') {
+  //     return pollResponses?.responses[id + '_count'];
+  //   } else {
+  //     return 0;
+  //   }
+  // };
+  // const getRespondentsById = (id) => {
+  //   if (typeof respondents[id] !== 'undefined') {
+  //     return respondents[id].map((r, i) => {
+  //       return (
+  //         <p className="px-[14px] text-xs font-medium text-Gray-800" key={i}>
+  //           {r}
+  //         </p>
+  //       );
+  //     });
+  //   }
+
+  //   return null;
+  // };
+
+  const getRespondentsById = (id) => {
+    if (typeof respondents[id] !== 'undefined') {
+      return respondents[id].map((r, i) => {
+        const parts = r.trim().split(/\s+/);
+        const firstNameInitial = parts[0]?.[0] || '';
+        const lastNameInitial = parts[parts.length - 1]?.[0] || '';
+        const initials = `${firstNameInitial}${lastNameInitial}`.toUpperCase();
+
+        return (
+          <>
+            <p
+              className="text-xs font-medium text-Gray-800 w-max flex items-center gap-1"
+              key={i}
+            >
+              <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 flex items-center justify-center text-white text-[8px] font-medium">
+                {initials}
+              </span>{' '}
+              {r}
+            </p>
+            <p className="line text-Gray-300 text-xs font-medium last:hidden">
+              |
+            </p>
+          </>
+        );
+      });
+    }
+    return null;
+  };
+  const renderOptions = () => {
+    return item?.options.map((o) => {
+      return (
+        // <div className="">
+        <Disclosure as="div" key={o.id}>
+          {({ open }) => (
+            <div className="bg-Gray-50 rounded-xl border border-gray-300">
+              <Disclosure.Button
+                // className={`flex items-center justify-between gap-3 w-full px-[14px] bg-white h-9 rounded-xl  shadow-buttonShadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
+                className={`w-full relative h-full`}
+              >
+                {/* <span className="text-sm text-Gray-800">
+                    {o.text} ({getOptSelectedCount(o.id)})
+                  </span> */}
+                <div
+                  key={o.id}
+                  className={`relative pointer-events-none flex items-center min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden ${open ? 'border-b border-gray-300' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    id={`option-${o.id}`}
+                    value={o.id}
+                    name={`option-${o.id}`}
+                    checked={selectedOption === o.id}
+                    // onChange={(e) =>
+                    //   setSelectedOption(Number(e.currentTarget.value))
+                    // }
+                    className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+                  />
+                  <label
+                    className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+                    htmlFor={`option-${o.id}`}
+                  >
+                    {o.text}
+                  </label>
+                  <div
+                    className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
+                    style={{ width: '50%' }}
+                  ></div>
+                </div>
+                <motion.div
+                  animate={{ rotate: open ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-2 top-2.5"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path d="M12 6.5L8 10.5L4 6.5" fill="#7493B3" />
+                    <path
+                      d="M12 6.5L8 10.5L4 6.5H12Z"
+                      stroke="#7493B3"
+                      strokeWidth="1.67"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </motion.div>
+              </Disclosure.Button>
+
+              <AnimatePresence>
+                {open && (
+                  <Disclosure.Panel
+                    static
+                    as={motion.div}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    // transition={{ duration: 0.2 }}
+                    className=" w-full"
+                  >
+                    <div className="overflow-auto w-[263px] px-2.5">
+                      <div className="wrap flex gap-2 py-2 relative w-max group">
+                        {getRespondentsById(o.id)}
+                      </div>
+                    </div>
+                  </Disclosure.Panel>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </Disclosure>
+        // </div>
+      );
+    });
+  };
 
   // const closeModal = () => {
   //   setIsOpen(false);
@@ -84,6 +242,8 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
     // notify to everyone
     conn.sendDataMessage(DataMsgBodyType.NEW_POLL_RESPONSE, pollId);
   };
+
+  console.log('poll', item);
 
   const renderForm = () => {
     return (
@@ -130,55 +290,65 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
                     // transition={{ duration: 0.2 }}
                     className=""
                   >
-                    <div className="relative grid gap-2 mt-2">
-                      {poll?.options.map((o) => {
-                        return (
-                          <div
-                            key={o.id}
-                            className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden"
-                          >
-                            <input
-                              type="radio"
-                              id={`option-${o.id}`}
-                              value={o.id}
-                              name={`option-${o.id}`}
-                              checked={selectedOption === o.id}
-                              onChange={(e) =>
-                                setSelectedOption(Number(e.currentTarget.value))
-                              }
-                              className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-                            />
-                            <label
-                              className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-                              htmlFor={`option-${o.id}`}
-                            >
-                              {o.text}
-                            </label>
-                            <div
-                              className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
-                              style={{ width: '50%' }}
-                            ></div>
-                          </div>
-                        );
-                      })}
-                      {isLoading ? (
-                        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-                          <div className="lds-ripple">
-                            <div className="border-secondaryColor" />
-                            <div className="border-secondaryColor" />
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
+                    {item.isRunning ? (
+                      <>
+                        <div className="relative grid gap-2 mt-2">
+                          {poll?.options.map((o) => {
+                            return (
+                              <div
+                                key={o.id}
+                                className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden"
+                              >
+                                <input
+                                  type="radio"
+                                  id={`option-${o.id}`}
+                                  value={o.id}
+                                  name={`option-${o.id}`}
+                                  checked={selectedOption === o.id}
+                                  onChange={(e) =>
+                                    setSelectedOption(
+                                      Number(e.currentTarget.value),
+                                    )
+                                  }
+                                  className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+                                />
+                                <label
+                                  className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+                                  htmlFor={`option-${o.id}`}
+                                >
+                                  {o.text}
+                                </label>
+                                <div
+                                  className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
+                                  style={{ width: '50%' }}
+                                ></div>
+                              </div>
+                            );
+                          })}
 
-                    <div className="button-section flex items-center justify-end mt-3">
-                      <button
-                        className="h-7 px-6 leading-[28px] text-center transition ease-in bg-primaryColor hover:bg-secondaryColor text-white text-base font-semibold rounded-lg"
-                        type="submit"
-                      >
-                        {t('polls.submit')}
-                      </button>
-                    </div>
+                          {isLoading ? (
+                            <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+                              <div className="lds-ripple">
+                                <div className="border-secondaryColor" />
+                                <div className="border-secondaryColor" />
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                        <div className="button-section flex items-center justify-end mt-3">
+                          <button
+                            className="h-8 px-5 flex items-center justify-center w-full rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-buttonShadow"
+                            type="submit"
+                          >
+                            {t('polls.submit')}
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="relative grid gap-2 mt-2">
+                        {renderOptions()}
+                      </div>
+                    )}
                     <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
                       <div className="total-vote text-sm text-Gray-700">
                         Total Votes: 42/66
@@ -199,10 +369,6 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
             </>
           )}
         </Disclosure>
-
-        {/* <p className="text-base text-black dark:text-white block mb-2 pb-1 border-b border-solid border-primaryColor/20 dark:border-darkText/20">
-            {t('polls.select-option')}
-          </p> */}
       </form>
     );
   };

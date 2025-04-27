@@ -62,6 +62,7 @@ module.exports = {
         Blue2: {
           500: '#00A1F2',
           600: '#08C',
+          700: '#069',
         },
       },
       borderRadius: {
