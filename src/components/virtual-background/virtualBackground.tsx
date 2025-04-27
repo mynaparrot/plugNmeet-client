@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BodyPix } from '@tensorflow-models/body-pix';
 
 import OutputViewer from './outputViewer';
 import { defaultPostProcessingConfig } from './helpers/postProcessingHelper';
@@ -7,12 +8,12 @@ import {
   BackgroundConfig,
   defaultBackgroundConfig,
 } from './helpers/backgroundHelper';
-import useBodyPix from './hooks/useBodyPix';
 import useTFLite from './hooks/useTFLite';
 import {
   defaultSegmentationConfig,
   SegmentationConfig,
 } from './helpers/segmentationHelper';
+import { loadBodyPix } from './helpers/utils';
 
 interface IVirtualBackgroundProps {
   sourcePlayback: SourcePlayback;
@@ -29,12 +30,12 @@ const VirtualBackground = ({
 }: IVirtualBackgroundProps) => {
   const [segmentationConfig, setSegmentationConfig] =
     useState<SegmentationConfig>(defaultSegmentationConfig);
+  const [bodyPix, setBodyPix] = useState<BodyPix | undefined>(undefined);
 
-  const bodyPix = useBodyPix();
   const { tflite, isSIMDSupported } = useTFLite(segmentationConfig);
 
   useEffect(() => {
-    if (bodyPix) {
+    loadBodyPix().then((pix) => {
       setSegmentationConfig((previousSegmentationConfig) => {
         if (
           previousSegmentationConfig.backend === 'wasmSimd' &&
@@ -45,8 +46,8 @@ const VirtualBackground = ({
           return previousSegmentationConfig;
         }
       });
-    }
-    // eslint-disable-next-line
+      setBodyPix(pix);
+    });
   }, [isSIMDSupported]);
 
   return (
