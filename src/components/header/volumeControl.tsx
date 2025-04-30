@@ -59,7 +59,7 @@ const VolumeControl = () => {
     return (
       <Menu>
         {({ open }) => (
-          <>
+          <div>
             <MenuButton className="relative flex-shrink-0 p-2">
               <div className="">
                 {volume > 0 ? (
@@ -138,7 +138,7 @@ const VolumeControl = () => {
                 </section>
               </MenuItems>
             </Transition>
-          </>
+          </div>
         )}
       </Menu>
     );

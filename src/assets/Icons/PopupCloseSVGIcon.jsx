@@ -11,9 +11,9 @@ export const PopupCloseSVGIcon = ({ classes }) => {
       <path
         d="M15 5L5 15M5 5L15 15"
         stroke="CurrentColor"
-        stroke-width="1.69"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.69"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

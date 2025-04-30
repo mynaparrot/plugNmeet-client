@@ -216,7 +216,7 @@ const Header = () => {
             <VolumeControl />
             <Menu>
               {({ open }) => (
-                <>
+                <div>
                   <MenuButton className="relative flex-shrink-0 p-2">
                     <div className="">
                       <HeaderMenuIcon />
@@ -236,7 +236,7 @@ const Header = () => {
                   >
                     <HeaderMenus onOpenAlert={(e) => onOpenAlert(e)} />
                   </Transition>
-                </>
+                </div>
               )}
             </Menu>
           </div>

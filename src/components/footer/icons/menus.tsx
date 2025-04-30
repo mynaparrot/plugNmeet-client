@@ -329,7 +329,7 @@ const MenusIcon = () => {
       <div className="menu relative z-10">
         <Menu>
           {({ open }) => (
-            <>
+            <div>
               <MenuButton
                 className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border[3px] 3xl:border-4 ${open ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
               >
@@ -507,7 +507,7 @@ const MenusIcon = () => {
                   </MenuItem>
                 </MenuItems>
               </Transition>
-            </>
+            </div>
           )}
         </Menu>
       </div>
