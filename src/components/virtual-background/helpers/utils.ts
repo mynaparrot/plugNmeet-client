@@ -28,7 +28,16 @@ const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 let bodyPixStore: tfBodyPix.BodyPix;
 let isCalled = false;
 
-export async function loadBodyPix() {
+const loadTFLiteSIMDModule = once(async () => {
+  try {
+    return await createTFLiteSIMDModule();
+  } catch (error) {
+    console.error('Failed to create TFLite SIMD WebAssembly module.', error);
+  }
+  return undefined;
+});
+
+export async function loadBodyPix(loadSimdModule: boolean) {
   if (isCalled) {
     return bodyPixStore;
   }
@@ -37,6 +46,10 @@ export async function loadBodyPix() {
   await tf.ready();
   bodyPixStore = await tfBodyPix.load();
   console.log('TensorFlow.js and BodyPix loaded');
+
+  if (loadSimdModule) {
+    loadTFLiteSIMDModule().then();
+  }
   return bodyPixStore;
 }
 
@@ -46,16 +59,12 @@ export const loadTFLite = once(
       isSIMDSupported: boolean = false;
 
     if (segmentationConfig.backend === 'wasmSimd') {
-      try {
-        selectedTFLite = await createTFLiteSIMDModule();
-        isSIMDSupported = true;
-      } catch (error) {
-        console.error(
-          'Failed to create TFLite SIMD WebAssembly module.',
-          error,
-        );
+      const loadedTFLite = await loadTFLiteSIMDModule();
+      if (typeof loadedTFLite === 'undefined') {
         return { selectedTFLite: undefined, isSIMDSupported };
       }
+      selectedTFLite = loadedTFLite;
+      isSIMDSupported = true;
     } else {
       try {
         selectedTFLite = await createTFLiteModule();

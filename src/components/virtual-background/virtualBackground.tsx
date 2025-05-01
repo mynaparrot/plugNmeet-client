@@ -35,7 +35,7 @@ const VirtualBackground = ({
   const { tflite, isSIMDSupported } = useTFLite(segmentationConfig);
 
   useEffect(() => {
-    loadBodyPix().then((pix) => {
+    loadBodyPix(false).then((pix) => {
       setSegmentationConfig((previousSegmentationConfig) => {
         if (
           previousSegmentationConfig.backend === 'wasmSimd' &&

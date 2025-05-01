@@ -31,7 +31,7 @@ const App = () => {
   document.dir = i18n.dir();
   // we'll require making ready virtual background
   // elements as early as possible.
-  loadBodyPix().then();
+  loadBodyPix(true).then();
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
