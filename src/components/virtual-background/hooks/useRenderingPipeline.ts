@@ -1,13 +1,14 @@
 import { BodyPix } from '@tensorflow-models/body-pix';
 import { useEffect, useRef, useState } from 'react';
+
 import { BackgroundConfig } from '../helpers/backgroundHelper';
 import { RenderingPipeline } from '../helpers/renderingPipelineHelper';
 import { SegmentationConfig } from '../helpers/segmentationHelper';
 import { SourcePlayback } from '../helpers/sourceHelper';
-import { TFLite } from './useTFLite';
 import { createTimerWorker } from '../helpers/timerHelper';
 import { buildWebGL2Pipeline } from '../pipelines/webgl2/webgl2Pipeline';
 import { buildCanvas2dPipeline } from '../pipelines/canvas2d/canvas2dPipeline';
+import { TFLite } from '../helpers/utils';
 declare const IS_PRODUCTION: boolean;
 
 function useRenderingPipeline(

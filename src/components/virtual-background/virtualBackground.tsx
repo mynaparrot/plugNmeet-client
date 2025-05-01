@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, RefObject } from 'react';
 import { BodyPix } from '@tensorflow-models/body-pix';
 
 import OutputViewer from './outputViewer';
@@ -19,7 +19,7 @@ interface IVirtualBackgroundProps {
   sourcePlayback: SourcePlayback;
   backgroundConfig?: BackgroundConfig;
   id: string;
-  onCanvasRef?: (canvasRef: React.MutableRefObject<HTMLCanvasElement>) => void;
+  onCanvasRef?: (canvasRef: RefObject<HTMLCanvasElement>) => void;
 }
 
 const VirtualBackground = ({

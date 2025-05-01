@@ -6,6 +6,7 @@ import {
   SegmentationConfig,
 } from '../../helpers/segmentationHelper';
 import { SourcePlayback } from '../../helpers/sourceHelper';
+import { TFLite } from '../../helpers/utils';
 
 export function buildCanvas2dPipeline(
   sourcePlayback: SourcePlayback,
@@ -13,7 +14,7 @@ export function buildCanvas2dPipeline(
   segmentationConfig: SegmentationConfig,
   canvas: HTMLCanvasElement,
   bodyPix: BodyPix,
-  tflite: any,
+  tflite: TFLite,
   addFrameEvent: () => void,
 ) {
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!;

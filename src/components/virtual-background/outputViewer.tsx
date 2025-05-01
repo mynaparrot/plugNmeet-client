@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, RefObject } from 'react';
 import { BodyPix } from '@tensorflow-models/body-pix';
 
 import { BackgroundConfig } from './helpers/backgroundHelper';
@@ -6,6 +6,7 @@ import { PostProcessingConfig } from './helpers/postProcessingHelper';
 import { SegmentationConfig } from './helpers/segmentationHelper';
 import { SourcePlayback } from './helpers/sourceHelper';
 import useRenderingPipeline from './hooks/useRenderingPipeline';
+import { TFLite } from './helpers/utils';
 
 type OutputViewerProps = {
   sourcePlayback: SourcePlayback;
@@ -13,9 +14,9 @@ type OutputViewerProps = {
   segmentationConfig: SegmentationConfig;
   postProcessingConfig: PostProcessingConfig;
   bodyPix: BodyPix;
-  tflite: any;
+  tflite: TFLite;
   id: string;
-  onCanvasRef?: (canvasRef: React.MutableRefObject<HTMLCanvasElement>) => void;
+  onCanvasRef?: (canvasRef: RefObject<HTMLCanvasElement>) => void;
 };
 
 const OutputViewer = ({

@@ -2,7 +2,6 @@ import * as tfBodyPix from '@tensorflow-models/body-pix';
 import * as tf from '@tensorflow/tfjs';
 import { once } from 'es-toolkit';
 
-import { TFLite } from '../hooks/useTFLite';
 import {
   getTFLiteModelFileName,
   SegmentationConfig,
@@ -10,6 +9,20 @@ import {
 
 declare function createTFLiteModule(): Promise<TFLite>;
 declare function createTFLiteSIMDModule(): Promise<TFLite>;
+
+export interface TFLite extends EmscriptenModule {
+  _getModelBufferMemoryOffset(): number;
+  _getInputMemoryOffset(): number;
+  _getInputHeight(): number;
+  _getInputWidth(): number;
+  _getInputChannelCount(): number;
+  _getOutputMemoryOffset(): number;
+  _getOutputHeight(): number;
+  _getOutputWidth(): number;
+  _getOutputChannelCount(): number;
+  _loadModel(bufferSize: number): number;
+  _runInference(): number;
+}
 
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 let bodyPixStore: tfBodyPix.BodyPix;

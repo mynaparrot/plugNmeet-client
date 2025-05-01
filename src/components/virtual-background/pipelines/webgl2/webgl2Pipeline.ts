@@ -17,9 +17,9 @@ import {
   inputResolutions,
   SegmentationConfig,
 } from '../../helpers/segmentationHelper';
-import { TFLite } from '../../hooks/useTFLite';
 import { TimerWorker } from '../../helpers/timerHelper';
 import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
+import { TFLite } from '../../helpers/utils';
 
 export function buildWebGL2Pipeline(
   sourcePlayback: SourcePlayback,

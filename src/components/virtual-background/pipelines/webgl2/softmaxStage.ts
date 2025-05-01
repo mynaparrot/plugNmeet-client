@@ -8,6 +8,7 @@ import {
   createTexture,
   glsl,
 } from '../helpers/webglHelper';
+import { TFLite } from '../../helpers/utils';
 
 export function buildSoftmaxStage(
   gl: WebGL2RenderingContext,
@@ -15,7 +16,7 @@ export function buildSoftmaxStage(
   positionBuffer: WebGLBuffer,
   texCoordBuffer: WebGLBuffer,
   segmentationConfig: SegmentationConfig,
-  tflite: any,
+  tflite: TFLite,
   outputTexture: WebGLTexture,
 ) {
   const fragmentShaderSource = glsl`#version 300 es
