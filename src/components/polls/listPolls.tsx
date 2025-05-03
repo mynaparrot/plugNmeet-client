@@ -3,7 +3,7 @@ import useVirtual from 'react-cool-virtual';
 import { PollInfo } from 'plugnmeet-protocol-js';
 
 import { useGetPollListsQuery } from '../../store/services/pollsApi';
-import Poll from './poll';
+import PollItem from './new-poll';
 // import { store, useAppSelector } from '../../store';
 
 const ListPolls = () => {
@@ -31,7 +31,7 @@ const ListPolls = () => {
       return null;
     }
     const poll = polls[index];
-    return <Poll key={poll.id} item={poll} />;
+    return <PollItem key={poll.id} item={poll} index={index} />;
   };
 
   return (

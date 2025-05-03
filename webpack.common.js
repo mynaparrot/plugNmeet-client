@@ -23,7 +23,7 @@ const config = {
   },
   watchOptions: {
     ignored: '**/node_modules',
-    aggregateTimeout: 1000,
+    aggregateTimeout: 1500,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],

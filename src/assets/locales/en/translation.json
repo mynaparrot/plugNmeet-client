@@ -336,6 +336,7 @@
     "user-waiting": "{{name}} is waiting for approval"
   },
   "polls": {
+    "poll-num": "Poll {{index}}",
     "create": "Create new poll",
     "enter-question": "Enter question",
     "question": "Question",

@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
   Transition,
   TransitionChild,
 } from '@headlessui/react';
@@ -147,7 +149,7 @@ const ViewDetails = ({
         <Disclosure as="div" key={o.id}>
           {({ open }) => (
             <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden">
-              <Disclosure.Button
+              <DisclosureButton
                 className={`flex items-center justify-between gap-3 w-full px-[14px] bg-white h-9 rounded-xl  shadow-buttonShadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
               >
                 <span className="text-sm text-Gray-800">
@@ -175,11 +177,11 @@ const ViewDetails = ({
                     />
                   </svg>
                 </motion.div>
-              </Disclosure.Button>
+              </DisclosureButton>
 
               <AnimatePresence>
                 {open && (
-                  <Disclosure.Panel
+                  <DisclosurePanel
                     static
                     as={motion.div}
                     initial={{ opacity: 0, height: 0 }}
@@ -194,7 +196,7 @@ const ViewDetails = ({
                       <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/2"></div>
                       <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-3/4"></div>
                     </div>
-                  </Disclosure.Panel>
+                  </DisclosurePanel>
                 )}
               </AnimatePresence>
             </div>

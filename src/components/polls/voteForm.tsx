@@ -6,7 +6,11 @@ import {
   DataMsgBodyType,
   SubmitPollResponseReqSchema,
 } from 'plugnmeet-protocol-js';
-import { Disclosure } from '@headlessui/react';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PollInfo } from 'plugnmeet-protocol-js';
 
@@ -18,6 +22,7 @@ import {
 import { store } from '../../store';
 import { getNatsConn } from '../../helpers/nats';
 import ViewDetails from './viewDetails';
+import PollOptions from './poll/pollOptions';
 
 interface IVoteFormProps {
   // onCloseForm(): void;
@@ -136,7 +141,7 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
         <Disclosure as="div" key={o.id}>
           {({ open }) => (
             <div className="bg-Gray-50 rounded-xl border border-gray-300">
-              <Disclosure.Button
+              <DisclosureButton
                 // className={`flex items-center justify-between gap-3 w-full px-[14px] bg-white h-9 rounded-xl  shadow-buttonShadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
                 className={`w-full relative h-full`}
               >
@@ -191,11 +196,11 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
                     />
                   </svg>
                 </motion.div>
-              </Disclosure.Button>
+              </DisclosureButton>
 
               <AnimatePresence>
                 {open && (
-                  <Disclosure.Panel
+                  <DisclosurePanel
                     static
                     as={motion.div}
                     initial={{ opacity: 0, height: 0 }}
@@ -209,7 +214,7 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
                         {getRespondentsById(o.id)}
                       </div>
                     </div>
-                  </Disclosure.Panel>
+                  </DisclosurePanel>
                 )}
               </AnimatePresence>
             </div>
@@ -251,7 +256,7 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
         <Disclosure defaultOpen={true} as="div">
           {({ open }) => (
             <>
-              <Disclosure.Button className="flex items-center justify-between gap-3 w-full">
+              <DisclosureButton className="flex items-center justify-between gap-3 w-full">
                 <label className="text-sm text-Gray-800 font-medium block">
                   {poll?.question}
                 </label>
@@ -277,11 +282,11 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
                     />
                   </svg>
                 </motion.div>
-              </Disclosure.Button>
+              </DisclosureButton>
 
               <AnimatePresence>
                 {open && (
-                  <Disclosure.Panel
+                  <DisclosurePanel
                     static
                     as={motion.div}
                     initial={{ opacity: 0, height: 0 }}
@@ -293,38 +298,12 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
                     {item.isRunning ? (
                       <>
                         <div className="relative grid gap-2 mt-2">
-                          {poll?.options.map((o) => {
-                            return (
-                              <div
-                                key={o.id}
-                                className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden"
-                              >
-                                <input
-                                  type="radio"
-                                  id={`option-${o.id}`}
-                                  value={o.id}
-                                  name={`option-${o.id}`}
-                                  checked={selectedOption === o.id}
-                                  onChange={(e) =>
-                                    setSelectedOption(
-                                      Number(e.currentTarget.value),
-                                    )
-                                  }
-                                  className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-                                />
-                                <label
-                                  className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-                                  htmlFor={`option-${o.id}`}
-                                >
-                                  {o.text}
-                                </label>
-                                <div
-                                  className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
-                                  style={{ width: '50%' }}
-                                ></div>
-                              </div>
-                            );
-                          })}
+                          <PollOptions
+                            pollId={pollId}
+                            options={poll?.options}
+                            selectedOption={selectedOption}
+                            setSelectedOption={setSelectedOption}
+                          />
 
                           {isLoading ? (
                             <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
@@ -363,7 +342,7 @@ const VoteForm = ({ pollId, item }: IVoteFormProps) => {
                         </button>
                       ) : null}
                     </div>
-                  </Disclosure.Panel>
+                  </DisclosurePanel>
                 )}
               </AnimatePresence>
             </>
