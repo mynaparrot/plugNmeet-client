@@ -25,8 +25,10 @@ export interface TFLite extends EmscriptenModule {
 }
 
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-let bodyPixStore: tfBodyPix.BodyPix;
-let isCalled = false;
+let bodyPixStore: tfBodyPix.BodyPix,
+  isCalled = false,
+  loadedModel = '',
+  modelResponse: Response;
 
 const loadTFLiteSIMDModule = once(async () => {
   try {
@@ -36,6 +38,17 @@ const loadTFLiteSIMDModule = once(async () => {
   }
   return undefined;
 });
+
+async function fetchModel(modelFileName: string): Promise<Response> {
+  if (loadedModel === modelFileName) {
+    return modelResponse;
+  }
+  loadedModel = modelFileName;
+  console.log('Loading tflite model:', modelFileName);
+  modelResponse = await fetch(`${assetPath}/models/${modelFileName}.tflite`);
+  console.log('Loaded tflite model:', modelFileName);
+  return modelResponse;
+}
 
 export async function loadBodyPix(loadSimdModule: boolean) {
   if (isCalled) {
@@ -49,6 +62,7 @@ export async function loadBodyPix(loadSimdModule: boolean) {
 
   if (loadSimdModule) {
     loadTFLiteSIMDModule().then();
+    fetchModel('segm_lite_v681').then();
   }
   return bodyPixStore;
 }
@@ -78,11 +92,8 @@ export const loadTFLite = once(
       segmentationConfig.model,
       segmentationConfig.inputResolution,
     );
-    console.log('Loading tflite model:', modelFileName);
 
-    const modelResponse = await fetch(
-      `${assetPath}/models/${modelFileName}.tflite`,
-    );
+    const modelResponse = await fetchModel(modelFileName);
     const model = await modelResponse.arrayBuffer();
     console.log('Model buffer size:', model.byteLength);
 
