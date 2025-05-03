@@ -61,8 +61,7 @@ export async function loadBodyPix(loadSimdModule: boolean) {
   console.log('TensorFlow.js and BodyPix loaded');
 
   if (loadSimdModule) {
-    loadTFLiteSIMDModule().then();
-    fetchModel('segm_lite_v681').then();
+    loadTFLiteSIMDModule().then(() => fetchModel('segm_lite_v681').then());
   }
   return bodyPixStore;
 }
