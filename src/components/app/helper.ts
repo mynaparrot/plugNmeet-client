@@ -4,7 +4,6 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   NatsSubjects,
   VerifyTokenReqSchema,
-  VerifyTokenRes,
   VerifyTokenResSchema,
 } from 'plugnmeet-protocol-js';
 
@@ -46,30 +45,19 @@ export const verifyToken = once(
     setRoomConnectionStatus: Dispatch<SetStateAction<roomConnectionStatus>>,
     setOpenConn: Dispatch<SetStateAction<boolean>>,
   ) => {
-    let res: VerifyTokenRes;
-    try {
-      const r = await sendAPIRequest(
-        'verifyToken',
-        toBinary(
-          VerifyTokenReqSchema,
-          create(VerifyTokenReqSchema, {
-            isProduction: IS_PRODUCTION,
-          }),
-        ),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
-    } catch (error: any) {
-      console.error(error);
-      setLoading(false);
-      setError({
-        title: i18n.t('app.verification-failed-title'),
-        text: i18n.t('app.token-not-valid'),
-      });
-      return;
-    }
+    const r = await sendAPIRequest(
+      'verifyToken',
+      toBinary(
+        VerifyTokenReqSchema,
+        create(VerifyTokenReqSchema, {
+          isProduction: IS_PRODUCTION,
+        }),
+      ),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
 
     if (
       res.status &&
