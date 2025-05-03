@@ -69,6 +69,7 @@ const EndMeetingButton = () => {
       }
     }
     setIsBusy(false);
+    setIsOpen(false);
     //eslint-disable-next-line
   }, [isBusy]);
 
