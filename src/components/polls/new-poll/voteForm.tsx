@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  CreatePollOptions,
   DataMsgBodyType,
   SubmitPollResponseReqSchema,
 } from 'plugnmeet-protocol-js';
@@ -13,22 +12,23 @@ import {
   useGetUserSelectedOptionQuery,
 } from '../../../store/services/pollsApi';
 import { getNatsConn } from '../../../helpers/nats';
+import { PollDataWithOption } from '../utils';
 
 interface PollFormProps {
-  pollId: string;
-  options: CreatePollOptions[];
+  pollDataWithOption: PollDataWithOption;
   isRunning: boolean;
 }
 
-const PollForm = ({ pollId, options, isRunning }: PollFormProps) => {
+const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<number>();
   const conn = getNatsConn();
+  const currentUser = store.getState().session.currentUser;
 
   const [voted, setVoted] = useState<boolean>(false);
   const { data } = useGetUserSelectedOptionQuery({
-    pollId,
-    userId: store.getState().session.currentUser?.userId || '',
+    pollId: pollDataWithOption.pollId,
+    userId: currentUser?.userId || '',
   });
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const PollForm = ({ pollId, options, isRunning }: PollFormProps) => {
     }
     addResponse(
       create(SubmitPollResponseReqSchema, {
-        pollId: pollId,
+        pollId: pollDataWithOption.pollId,
         userId: store.getState().session.currentUser?.userId ?? '',
         name: store.getState().session.currentUser?.name ?? '',
         selectedOption: `${selectedOption}`,
@@ -56,7 +56,10 @@ const PollForm = ({ pollId, options, isRunning }: PollFormProps) => {
 
     // notify to everyone
     if (conn) {
-      conn.sendDataMessage(DataMsgBodyType.NEW_POLL_RESPONSE, pollId);
+      conn.sendDataMessage(
+        DataMsgBodyType.NEW_POLL_RESPONSE,
+        pollDataWithOption.pollId,
+      );
     }
   };
 
@@ -70,38 +73,60 @@ const PollForm = ({ pollId, options, isRunning }: PollFormProps) => {
     [voted, isRunning],
   );
 
-  return (
-    <form className="group" onSubmit={onSubmit} name={`voteForm-${pollId}`}>
-      {options.map((o) => {
-        return (
-          <>
-            <div
-              key={o.id}
-              className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden my-2"
-              onClick={() => onClickSelectOption(o.id)}
+  const canViewPercentage = () => {
+    if (!isRunning) {
+      console.log(isRunning);
+      return true;
+    }
+    return !!currentUser?.metadata?.isAdmin;
+  };
+
+  const pollOption = useMemo(() => {
+    const elms: Array<React.JSX.Element> = [];
+    for (const key in pollDataWithOption.options) {
+      const o = pollDataWithOption.options[key];
+      elms.push(
+        <>
+          <div
+            key={o.id}
+            className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden my-2"
+            onClick={() => onClickSelectOption(o.id)}
+          >
+            <input
+              type="radio"
+              id={`option-${pollDataWithOption.pollId}-${o.id}`}
+              value={o.id}
+              name={`option-${pollDataWithOption.pollId}`}
+              checked={selectedOption === o.id}
+              className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+            />
+            <label
+              className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+              htmlFor={`option-${pollDataWithOption.pollId}`}
             >
-              <input
-                type="radio"
-                id={`option-${pollId}-${o.id}`}
-                value={o.id}
-                name={`option-${pollId}`}
-                checked={selectedOption === o.id}
-                className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-              />
-              <label
-                className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-                htmlFor={`option-${pollId}`}
-              >
-                {o.text}
-              </label>
+              {o.text}
+            </label>
+            {canViewPercentage() ? (
               <div
                 className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
-                style={{ width: '50%' }}
+                style={{ width: o.responsesPercentage + '%' }}
               ></div>
-            </div>
-          </>
-        );
-      })}
+            ) : null}
+          </div>
+        </>,
+      );
+    }
+    return elms;
+    //eslint-disable-next-line
+  }, [onClickSelectOption, pollDataWithOption.options, selectedOption]);
+
+  return (
+    <form
+      className="group"
+      onSubmit={onSubmit}
+      name={`voteForm-${pollDataWithOption.pollId}`}
+    >
+      {pollOption}
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button

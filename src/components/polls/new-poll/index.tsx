@@ -1,21 +1,71 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollInfo } from 'plugnmeet-protocol-js';
 
 import { store } from '../../../store';
 import TopMenu from './topMenu';
 import PollForm from './voteForm';
-import ViewDetails from '../viewDetails';
+import { useGetPollResponsesDetailsQuery } from '../../../store/services/pollsApi';
+import { PollDataWithOption } from '../utils';
+import DetailsModal from './details';
 
-interface Props {
+interface PollItemProps {
   item: PollInfo;
   index: number;
 }
 
-const PollItem = ({ item, index }: Props) => {
+const PollItem = ({ item, index }: PollItemProps) => {
   const { t } = useTranslation();
   const currenUser = store.getState().session.currentUser;
   const [viewDetails, setViewDetails] = useState<boolean>(false);
+  const [pollDataWithOption, setPollDataWithOption] =
+    useState<PollDataWithOption>();
+
+  const { data: pollResponses } = useGetPollResponsesDetailsQuery(item.id);
+
+  useMemo(() => {
+    const obj: PollDataWithOption = {
+      options: {},
+      pollId: item.id,
+      question: item.question,
+      totalRespondents: 0,
+      allRespondents: [],
+    };
+
+    for (let i = 0; i < item.options.length; i++) {
+      const option = item.options[i];
+      const pollDataOption = {
+        id: option.id,
+        text: option.text,
+        responsesPercentage: 0,
+        respondents: [],
+      };
+      if (pollResponses && pollResponses.responses) {
+        const count = Number(pollResponses.responses[`${option.id}_count`]);
+        if (count > 0) {
+          const total = Number(pollResponses.responses.total_resp);
+          pollDataOption.responsesPercentage = (count / total) * 100;
+        }
+      }
+      obj.options[option.id] = pollDataOption;
+    }
+
+    if (pollResponses && pollResponses.responses) {
+      if (pollResponses.responses.all_respondents) {
+        const respondents: Array<string> = JSON.parse(
+          pollResponses.responses.all_respondents,
+        );
+        for (let i = 0; i < respondents.length; i++) {
+          const r = respondents[i];
+          const data = r.split(':');
+          obj.options[data[1]].respondents.push(data[2]);
+          obj.allRespondents.push(data[0]);
+        }
+      }
+      obj.totalRespondents = Number(pollResponses.responses.total_resp);
+    }
+    setPollDataWithOption(obj);
+  }, [item, pollResponses]);
 
   return (
     <>
@@ -38,15 +88,18 @@ const PollItem = ({ item, index }: Props) => {
           </div>
         </div>
         <div className="bg-white px-4 py-4 border border-Gray-200 shadow-buttonShadow rounded-xl">
-          <PollForm
-            pollId={item.id}
-            options={item.options}
-            isRunning={item.isRunning}
-          />
+          {!pollDataWithOption ? null : (
+            <PollForm
+              pollDataWithOption={pollDataWithOption}
+              isRunning={item.isRunning}
+            />
+          )}
         </div>
         <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
           <div className="total-vote text-sm text-Gray-700">
-            Total Votes: 42/66
+            {t('polls.total', {
+              count: pollDataWithOption?.totalRespondents ?? 0,
+            })}
           </div>
           {currenUser?.metadata?.isAdmin ? (
             <>
@@ -57,11 +110,11 @@ const PollItem = ({ item, index }: Props) => {
               >
                 {t('polls.view-details')}
               </button>
-              {!viewDetails ? null : (
-                <ViewDetails
+              {!viewDetails || !pollDataWithOption ? null : (
+                <DetailsModal
                   onCloseViewDetails={() => setViewDetails(false)}
-                  pollId={item.id}
-                  item={item}
+                  pollDataWithOption={pollDataWithOption}
+                  isRunning={item.isRunning}
                 />
               )}
             </>

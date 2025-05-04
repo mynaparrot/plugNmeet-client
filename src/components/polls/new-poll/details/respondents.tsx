@@ -1,0 +1,102 @@
+import React, { useMemo } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react';
+
+import { getFormatedRespondents, PollDataWithOption } from '../../utils';
+
+interface RespondentsProps {
+  pollDataWithOption: PollDataWithOption;
+}
+
+const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
+  const { t } = useTranslation();
+
+  const renderOptions = useMemo(() => {
+    const elms: Array<React.JSX.Element> = [];
+    for (const key in pollDataWithOption.options) {
+      const o = pollDataWithOption.options[key];
+      const elm = (
+        <Disclosure as="div" key={o.id}>
+          {({ open }) => (
+            <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden">
+              <DisclosureButton
+                className={`flex items-center justify-between gap-3 w-full px-[14px] bg-white h-9 rounded-xl  shadow-buttonShadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
+              >
+                <span className="text-sm text-Gray-800">
+                  {o.text} ({o.respondents.length})
+                </span>
+                <motion.div
+                  animate={{ rotate: open ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className=""
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path d="M12 6.5L8 10.5L4 6.5" fill="#7493B3" />
+                    <path
+                      d="M12 6.5L8 10.5L4 6.5H12Z"
+                      stroke="#7493B3"
+                      strokeWidth="1.67"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </motion.div>
+              </DisclosureButton>
+
+              <AnimatePresence>
+                {open && (
+                  <DisclosurePanel
+                    static
+                    as={motion.div}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    // transition={{ duration: 0.2 }}
+                    className=""
+                  >
+                    <div className="wrap grid grid-cols-4 gap-2 py-2 relative">
+                      {getFormatedRespondents(o.respondents)}
+                      <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/4"></div>
+                      <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/2"></div>
+                      <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-3/4"></div>
+                    </div>
+                  </DisclosurePanel>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </Disclosure>
+      );
+      elms.push(elm);
+    }
+    return elms;
+  }, [pollDataWithOption]);
+
+  return (
+    <>
+      <div className="px-5 py-5">
+        <p className="text-sm font-medium text-Gray-800 mb-4">
+          {t('polls.total-responses', {
+            count: pollDataWithOption.totalRespondents,
+          })}
+        </p>
+      </div>
+      <div className="relative">
+        <div className="wrap grid gap-3">{renderOptions}</div>
+      </div>
+    </>
+  );
+};
+
+export default Respondents;
