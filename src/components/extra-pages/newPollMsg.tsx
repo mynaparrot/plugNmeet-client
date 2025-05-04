@@ -2,8 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch } from '../../store';
-import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
-import { updateSelectedTabLeftPanel } from '../../store/slices/roomSettingsSlice';
+import { updateIsActivePollsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 interface INewPollMsgProps {
   closeToast?(): void;
@@ -14,8 +13,7 @@ const NewPollMsg = ({ closeToast }: INewPollMsgProps) => {
   const dispatch = useAppDispatch();
 
   const openPoll = () => {
-    dispatch(updateIsActiveParticipantsPanel(true));
-    dispatch(updateSelectedTabLeftPanel(1));
+    dispatch(updateIsActivePollsPanel(true));
     if (closeToast) {
       closeToast();
     }

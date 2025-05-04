@@ -84,7 +84,13 @@ const PollItem = ({ item, index }: PollItemProps) => {
             )}
           </div>
           <div className="menu relative -mr-4">
-            <TopMenu itemId={item.id} isRunning={item.isRunning} />
+            {!pollDataWithOption ? null : (
+              <TopMenu
+                isRunning={item.isRunning}
+                setViewDetails={setViewDetails}
+                pollDataWithOption={pollDataWithOption}
+              />
+            )}
           </div>
         </div>
         <div className="bg-white px-4 py-4 border border-Gray-200 shadow-buttonShadow rounded-xl">

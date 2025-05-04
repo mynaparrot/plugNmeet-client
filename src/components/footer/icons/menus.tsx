@@ -27,6 +27,7 @@ import LockSettingsModal from '../modals/lockSettingsModal';
 import {
   updateDisplayExternalLinkRoomModal,
   updateDisplaySpeechSettingsModal,
+  updateIsActivePollsPanel,
   updateIsActiveSharedNotePad,
   updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
@@ -301,6 +302,7 @@ const MenusIcon = () => {
       });
     } else {
       toast.dismiss(id);
+      dispatch(updateIsActivePollsPanel(true));
     }
   };
 

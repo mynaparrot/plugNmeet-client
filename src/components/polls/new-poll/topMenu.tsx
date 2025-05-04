@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import {
   Menu,
   MenuButton,
@@ -13,20 +13,26 @@ import { useTranslation } from 'react-i18next';
 
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import { useClosePollMutation } from '../../../store/services/pollsApi';
+import { PollDataWithOption, publishPollResultByChat } from '../utils';
 
 interface TopMenuProps {
-  itemId: string;
   isRunning: boolean;
+  setViewDetails: Dispatch<SetStateAction<boolean>>;
+  pollDataWithOption: PollDataWithOption;
 }
 
-const TopMenu = ({ itemId, isRunning }: TopMenuProps) => {
+const TopMenu = ({
+  isRunning,
+  setViewDetails,
+  pollDataWithOption,
+}: TopMenuProps) => {
   const { t } = useTranslation();
   const [closePoll, { data: closePollRes }] = useClosePollMutation();
 
   const endPoll = () => {
     closePoll(
       create(ClosePollReqSchema, {
-        pollId: itemId,
+        pollId: pollDataWithOption.pollId,
       }),
     );
   };
@@ -54,8 +60,6 @@ const TopMenu = ({ itemId, isRunning }: TopMenuProps) => {
               <FooterMenuIconSVG />
             </div>
           </MenuButton>
-
-          {/* Use the Transition component. */}
           <Transition
             as={'div'}
             show={open}
@@ -71,29 +75,32 @@ const TopMenu = ({ itemId, isRunning }: TopMenuProps) => {
               className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-none"
             >
               <MenuItem>
-                <button className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative">
-                  Menu Item
+                <button
+                  className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                  onClick={() => setViewDetails(true)}
+                >
+                  View details
                 </button>
               </MenuItem>
-              <MenuItem>
-                <button className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative">
-                  Menu Item
-                </button>
-              </MenuItem>
+              <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
               {isRunning ? (
-                <>
-                  <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
-                  <MenuItem>
-                    <button
-                      onClick={endPoll}
-                      className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Red-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
-                    >
-                      {t('polls.end-poll')}
-                    </button>
-                  </MenuItem>
-                </>
+                <MenuItem>
+                  <button
+                    onClick={endPoll}
+                    className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Red-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                  >
+                    {t('polls.end-poll')}
+                  </button>
+                </MenuItem>
               ) : (
-                <></>
+                <MenuItem>
+                  <button
+                    className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                    onClick={() => publishPollResultByChat(pollDataWithOption)}
+                  >
+                    Publish result
+                  </button>
+                </MenuItem>
               )}
             </MenuItems>
           </Transition>
