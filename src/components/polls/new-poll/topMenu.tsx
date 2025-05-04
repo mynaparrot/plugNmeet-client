@@ -27,9 +27,12 @@ const TopMenu = ({
   pollDataWithOption,
 }: TopMenuProps) => {
   const { t } = useTranslation();
-  const [closePoll, { data: closePollRes }] = useClosePollMutation();
+  const [closePoll, { data: closePollRes, isLoading }] = useClosePollMutation();
 
   const endPoll = () => {
+    if (isLoading) {
+      return;
+    }
     closePoll(
       create(ClosePollReqSchema, {
         pollId: pollDataWithOption.pollId,
