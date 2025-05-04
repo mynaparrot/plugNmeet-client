@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollInfo } from 'plugnmeet-protocol-js';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react';
 
 import { store } from '../../../store';
 import TopMenu from './topMenu';
@@ -94,12 +100,60 @@ const PollItem = ({ item, index }: PollItemProps) => {
           </div>
         </div>
         <div className="bg-white px-4 py-4 border border-Gray-200 shadow-buttonShadow rounded-xl">
-          {!pollDataWithOption ? null : (
-            <PollForm
-              pollDataWithOption={pollDataWithOption}
-              isRunning={item.isRunning}
-            />
-          )}
+          <Disclosure defaultOpen={true} as="div">
+            {({ open }) => (
+              <>
+                <DisclosureButton className="flex items-center justify-between gap-3 w-full">
+                  <label className="text-sm text-Gray-800 font-medium block">
+                    {item.question}
+                  </label>
+                  <motion.div
+                    animate={{ rotate: open ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="rotate-180"
+                    >
+                      <path
+                        d="M11.9999 10L7.99988 6L3.99988 10"
+                        stroke="#7493B3"
+                        strokeWidth="1.67"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </motion.div>
+                </DisclosureButton>
+
+                <AnimatePresence>
+                  {open && (
+                    <DisclosurePanel
+                      static
+                      as={motion.div}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      // transition={{ duration: 0.2 }}
+                      className=""
+                    >
+                      {!pollDataWithOption ? null : (
+                        <PollForm
+                          pollDataWithOption={pollDataWithOption}
+                          isRunning={item.isRunning}
+                        />
+                      )}
+                    </DisclosurePanel>
+                  )}
+                </AnimatePresence>
+              </>
+            )}
+          </Disclosure>
         </div>
         <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
           <div className="total-vote text-sm text-Gray-700">
