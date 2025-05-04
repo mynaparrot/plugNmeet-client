@@ -71,6 +71,9 @@ const Create = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (isLoading) {
+      return;
+    }
     const body = create(CreatePollReqSchema, {
       question,
       options,

@@ -11,9 +11,13 @@ interface EndPollBtnProps {
 
 const EndPollBtn = ({ pollId }: EndPollBtnProps) => {
   const { t } = useTranslation();
-  const [closePoll] = useClosePollMutation();
+  const [closePoll, { isLoading }] = useClosePollMutation();
 
   const endPoll = () => {
+    if (isLoading) {
+      return;
+    }
+
     closePoll(
       create(ClosePollReqSchema, {
         pollId: pollId,
