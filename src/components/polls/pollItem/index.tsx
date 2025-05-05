@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollInfo } from 'plugnmeet-protocol-js';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -11,7 +11,10 @@ import {
 import { store } from '../../../store';
 import TopMenu from './topMenu';
 import PollForm from './voteForm';
-import { useGetPollResponsesDetailsQuery } from '../../../store/services/pollsApi';
+import {
+  useGetPollResponsesDetailsQuery,
+  useGetPollResponsesResultQuery,
+} from '../../../store/services/pollsApi';
 import { PollDataWithOption } from '../utils';
 import DetailsModal from './details';
 
@@ -27,9 +30,41 @@ const PollItem = ({ item, index }: PollItemProps) => {
   const [pollDataWithOption, setPollDataWithOption] =
     useState<PollDataWithOption>();
 
-  const { data: pollResponses } = useGetPollResponsesDetailsQuery(item.id);
+  // to load data with details, valid for admin
+  const [skipGetPollResponsesDetails, setSkipGetPollResponsesDetails] =
+    useState<boolean>(true);
+  const { data: pollDetailsResponses } = useGetPollResponsesDetailsQuery(
+    item.id,
+    {
+      skip: skipGetPollResponsesDetails,
+    },
+  );
 
+  // load only the results for all other users
+  const [skipGetPollResult, setSkipGetPollResult] = useState<boolean>(true);
+  const { data: pollResponsesResult } = useGetPollResponsesResultQuery(
+    item.id,
+    {
+      skip: skipGetPollResult,
+    },
+  );
+
+  useEffect(() => {
+    if (currenUser?.metadata?.isAdmin) {
+      setSkipGetPollResponsesDetails(false);
+    } else {
+      if (!item.isRunning) {
+        // result only can receive if this poll closed
+        setSkipGetPollResult(false);
+      }
+    }
+    //eslint-disable-next-line
+  }, [item.isRunning]);
+
+  // for admin with details
   useMemo(() => {
+    // for all users, we'll need to build option
+    // otherwise non-admin user won't see poll's options
     const obj: PollDataWithOption = {
       options: {},
       pollId: item.id,
@@ -46,20 +81,22 @@ const PollItem = ({ item, index }: PollItemProps) => {
         responsesPercentage: 0,
         respondents: [],
       };
-      if (pollResponses && pollResponses.responses) {
-        const count = Number(pollResponses.responses[`${option.id}_count`]);
+      if (pollDetailsResponses && pollDetailsResponses.responses) {
+        const count = Number(
+          pollDetailsResponses.responses[`${option.id}_count`],
+        );
         if (count > 0) {
-          const total = Number(pollResponses.responses.total_resp);
+          const total = Number(pollDetailsResponses.responses.total_resp);
           pollDataOption.responsesPercentage = (count / total) * 100;
         }
       }
       obj.options[option.id] = pollDataOption;
     }
 
-    if (pollResponses && pollResponses.responses) {
-      if (pollResponses.responses.all_respondents) {
+    if (pollDetailsResponses && pollDetailsResponses.responses) {
+      if (pollDetailsResponses.responses.all_respondents) {
         const respondents: Array<string> = JSON.parse(
-          pollResponses.responses.all_respondents,
+          pollDetailsResponses.responses.all_respondents,
         );
         for (let i = 0; i < respondents.length; i++) {
           const r = respondents[i];
@@ -75,10 +112,52 @@ const PollItem = ({ item, index }: PollItemProps) => {
           });
         }
       }
-      obj.totalRespondents = Number(pollResponses.responses.total_resp);
+      obj.totalRespondents = Number(pollDetailsResponses.responses.total_resp);
     }
     setPollDataWithOption(obj);
-  }, [item, pollResponses]);
+  }, [item, pollDetailsResponses]);
+
+  // for all other users with limited info
+  useMemo(() => {
+    if (!pollResponsesResult || !pollResponsesResult.pollResponsesResult) {
+      return;
+    }
+    const result = pollResponsesResult.pollResponsesResult;
+    const totalResponses = Number(result.totalResponses);
+
+    const obj: PollDataWithOption = {
+      options: {},
+      pollId: item.id,
+      question: item.question,
+      totalRespondents: totalResponses,
+      allRespondents: [],
+    };
+
+    const options = pollResponsesResult.pollResponsesResult.options;
+    for (let i = 0; i < options.length; i++) {
+      const option = options[i];
+      const pollDataOption = {
+        id: Number(option.id),
+        text: option.text,
+        responsesPercentage: 0,
+        respondents: [],
+      };
+
+      const voteCount = Number(option.voteCount);
+      if (voteCount > 0) {
+        pollDataOption.responsesPercentage = (voteCount / totalResponses) * 100;
+      }
+      obj.options[option.id] = pollDataOption;
+    }
+    setPollDataWithOption(obj);
+  }, [item, pollResponsesResult]);
+
+  const canViewTotal = () => {
+    if (!item.isRunning) {
+      return true;
+    }
+    return !!currenUser?.metadata?.isAdmin;
+  };
 
   return (
     <>
@@ -97,7 +176,7 @@ const PollItem = ({ item, index }: PollItemProps) => {
             )}
           </div>
           <div className="menu relative -mr-4">
-            {!pollDataWithOption ? null : (
+            {!currenUser?.metadata?.isAdmin || !pollDataWithOption ? null : (
               <TopMenu
                 isRunning={item.isRunning}
                 setViewDetails={setViewDetails}
@@ -163,11 +242,13 @@ const PollItem = ({ item, index }: PollItemProps) => {
           </Disclosure>
         </div>
         <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
-          <div className="total-vote text-sm text-Gray-700">
-            {t('polls.total', {
-              count: pollDataWithOption?.totalRespondents ?? 0,
-            })}
-          </div>
+          {canViewTotal() ? (
+            <div className="total-vote text-sm text-Gray-700">
+              {t('polls.total', {
+                count: pollDataWithOption?.totalRespondents ?? 0,
+              })}
+            </div>
+          ) : null}
           {currenUser?.metadata?.isAdmin ? (
             <>
               <button

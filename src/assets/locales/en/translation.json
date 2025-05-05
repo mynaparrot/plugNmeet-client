@@ -363,7 +363,7 @@
     "view-result-title": "Poll result",
     "end-poll": "End poll",
     "end-poll-success": "Poll was ended successfully",
-    "publish-result": "Publish result",
+    "publish-result": "Publish summary",
     "total": "Total: {{count}}",
     "not-respondents-total": "Total not respondents: {{count}}"
   },
