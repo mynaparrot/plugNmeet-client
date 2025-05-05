@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
+import { toast } from 'react-toastify';
 import {
   DataMsgBodyType,
   SubmitPollResponseReqSchema,
@@ -13,7 +14,6 @@ import {
 } from '../../../store/services/pollsApi';
 import { getNatsConn } from '../../../helpers/nats';
 import { PollDataWithOption } from '../utils';
-import { toast } from 'react-toastify';
 
 interface PollFormProps {
   pollDataWithOption: PollDataWithOption;
@@ -76,8 +76,8 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           type: 'error',
         });
       }
+      setLocked(false);
     }
-    setLocked(false);
   }, [addReqResponse, isLoading, t]);
 
   const onClickSelectOption = useCallback(

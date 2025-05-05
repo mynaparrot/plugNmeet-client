@@ -47,8 +47,8 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           type: 'error',
         });
       }
+      setLocked(false);
     }
-    setLocked(false);
     //eslint-disable-next-line
   }, [isLoading, data]);
 
