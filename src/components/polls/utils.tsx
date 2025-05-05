@@ -12,17 +12,22 @@ export interface PollDataWithOption {
     [key: string]: PollDataOption;
   };
   totalRespondents: number;
-  allRespondents: string[];
+  allRespondents: Respondents[];
 }
 
 interface PollDataOption {
   id: number;
   text: string;
   responsesPercentage: number;
-  respondents: string[];
+  respondents: Respondents[];
 }
 
-export const getFormatedRespondents = (respondents: string[]) => {
+export interface Respondents {
+  userId: string;
+  name: string;
+}
+
+export const getFormatedRespondents = (respondents: Respondents[]) => {
   // for (let i = 0; i < 50; i++) {
   //   respondents.push(`user_${i}`);
   // }
@@ -34,25 +39,23 @@ export const getFormatedRespondents = (respondents: string[]) => {
 
     for (let j = 0; j < users.length; j++) {
       const user = users[j];
-      const parts = user.trim().split(/\s+/);
+      const parts = user.name.trim().split(/\s+/);
       const firstNameInitial = parts[0]?.[0] || '';
       const lastNameInitial = parts[parts.length - 1]?.[0] || '';
       const initials = `${firstNameInitial}${lastNameInitial}`.toUpperCase();
       nameElms.push(
-        <>
-          <p
-            className="text-xs font-medium text-Gray-800 w-max flex items-center gap-1 px-[14px]"
-            key={initials + '_' + j}
-          >
-            <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 flex items-center justify-center text-white text-[8px] font-medium">
-              {initials}
-            </span>
-            {user}
-          </p>
-        </>,
+        <p
+          className="text-xs font-medium text-Gray-800 w-max flex items-center gap-1 px-[14px]"
+          key={user.userId}
+        >
+          <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 flex items-center justify-center text-white text-[8px] font-medium">
+            {initials}
+          </span>
+          {user.name}
+        </p>,
       );
     }
-    elms.push(<div>{nameElms}</div>);
+    elms.push(<div key={i}>{nameElms}</div>);
   }
   return elms;
 };

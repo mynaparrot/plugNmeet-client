@@ -102,33 +102,31 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     for (const key in pollDataWithOption.options) {
       const o = pollDataWithOption.options[key];
       elms.push(
-        <>
-          <div
-            key={`option-${pollDataWithOption.pollId}-${o.id}`}
-            className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden my-2"
-            onClick={() => onClickSelectOption(o.id)}
+        <div
+          key={`option-${pollDataWithOption.pollId}-${o.id}`}
+          className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden my-2"
+          onClick={() => onClickSelectOption(o.id)}
+        >
+          <input
+            type="radio"
+            id={`option-${pollDataWithOption.pollId}-${o.id}`}
+            readOnly={true}
+            checked={selectedOption === o.id}
+            className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+          />
+          <label
+            className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+            htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
           >
-            <input
-              type="radio"
-              id={`option-${pollDataWithOption.pollId}-${o.id}`}
-              readOnly={true}
-              checked={selectedOption === o.id}
-              className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-            />
-            <label
-              className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-              htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
-            >
-              {o.text}
-            </label>
-            {canViewPercentage() ? (
-              <div
-                className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
-                style={{ width: o.responsesPercentage + '%' }}
-              ></div>
-            ) : null}
-          </div>
-        </>,
+            {o.text}
+          </label>
+          {canViewPercentage() ? (
+            <div
+              className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
+              style={{ width: o.responsesPercentage + '%' }}
+            ></div>
+          ) : null}
+        </div>,
       );
     }
     return elms;

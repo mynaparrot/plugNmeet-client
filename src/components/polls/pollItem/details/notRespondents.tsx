@@ -2,7 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { differenceWith } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { getFormatedRespondents, PollDataWithOption } from '../../utils';
+import {
+  getFormatedRespondents,
+  PollDataWithOption,
+  Respondents,
+} from '../../utils';
 import { store, useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 
@@ -20,11 +24,11 @@ const NotRespondents = ({ pollDataWithOption }: NotRespondentsProps) => {
       return [];
     }
     const participants = participantsSelector.selectAll(store.getState());
-    const notRespondents = differenceWith(
+    const notRespondents: Respondents[] = differenceWith(
       participants,
       pollDataWithOption.allRespondents,
-      (a, b) => a.userId === b,
-    ).map((p) => p.name);
+      (a, b) => a.userId === b.userId,
+    ).map((p) => ({ userId: p.userId, name: p.name }));
 
     setNotResNum(notRespondents.length);
     return getFormatedRespondents(notRespondents);

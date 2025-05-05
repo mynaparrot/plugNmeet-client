@@ -63,9 +63,16 @@ const PollItem = ({ item, index }: PollItemProps) => {
         );
         for (let i = 0; i < respondents.length; i++) {
           const r = respondents[i];
+          // format => userId:optionSelected:name
           const data = r.split(':');
-          obj.options[data[1]].respondents.push(data[2]);
-          obj.allRespondents.push(data[0]);
+          obj.options[data[1]].respondents.push({
+            userId: data[0],
+            name: data[2],
+          });
+          obj.allRespondents.push({
+            userId: data[0],
+            name: data[2],
+          });
         }
       }
       obj.totalRespondents = Number(pollResponses.responses.total_resp);
