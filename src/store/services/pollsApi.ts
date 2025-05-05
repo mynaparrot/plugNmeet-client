@@ -186,7 +186,7 @@ export const pollsApi = createApi({
         };
       },
       transformErrorResponse: renewTokenOnError,
-      invalidatesTags: ['List', 'PollsStats', 'PollDetails', 'PollResult'],
+      invalidatesTags: ['List', 'PollsStats'],
     }),
   }),
 });
