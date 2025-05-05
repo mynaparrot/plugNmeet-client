@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { create } from '@bufbuild/protobuf';
 import { CreatePollReqSchema } from 'plugnmeet-protocol-js';
-import { once } from 'es-toolkit';
 
 import { useCreatePollMutation } from '../../../store/services/pollsApi';
 import { CreatePollOptions } from './index';
@@ -22,6 +21,7 @@ interface FormViewProps {
 const FormView = ({ setIsOpen }: FormViewProps) => {
   const { t } = useTranslation();
   const [question, setQuestion] = useState<string>('');
+  const [locked, setLocked] = useState<boolean>(false);
   const [createPoll, { isLoading, data }] = useCreatePollMutation();
 
   const [options, setOptions] = useState<CreatePollOptions[]>([
@@ -41,27 +41,29 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
         toast(t('polls.created-successfully'), {
           type: 'info',
         });
+        setIsOpen(false);
       } else {
         toast(t(data.msg), {
           type: 'error',
         });
       }
     }
+    setLocked(false);
     //eslint-disable-next-line
   }, [isLoading, data]);
 
-  const onSubmit = once((e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isLoading) {
+    if (isLoading || locked) {
       return;
     }
+    setLocked(true);
     const body = create(CreatePollReqSchema, {
       question,
       options,
     });
     createPoll(body);
-    setIsOpen(false);
-  });
+  };
 
   return (
     <form onSubmit={onSubmit}>

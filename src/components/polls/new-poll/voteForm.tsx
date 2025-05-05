@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
-import { once } from 'es-toolkit';
 import {
   DataMsgBodyType,
   SubmitPollResponseReqSchema,
@@ -14,6 +13,7 @@ import {
 } from '../../../store/services/pollsApi';
 import { getNatsConn } from '../../../helpers/nats';
 import { PollDataWithOption } from '../utils';
+import { toast } from 'react-toastify';
 
 interface PollFormProps {
   pollDataWithOption: PollDataWithOption;
@@ -23,6 +23,7 @@ interface PollFormProps {
 const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<number>();
+  const [locked, setLocked] = useState<boolean>(false);
   const conn = getNatsConn();
   const currentUser = store.getState().session.currentUser;
 
@@ -31,7 +32,6 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     pollId: pollDataWithOption.pollId,
     userId: currentUser?.userId || '',
   });
-
   useEffect(() => {
     if (data && data.status && data.voted && Number(data.voted) > 0) {
       setVoted(true);
@@ -39,13 +39,15 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     }
   }, [data]);
 
-  const [addResponse, { isLoading }] = useAddResponseMutation();
-  const onSubmit = once((e: any) => {
+  const [addResponse, { isLoading, data: addReqResponse }] =
+    useAddResponseMutation();
+  const onSubmit = (e: any) => {
     e.preventDefault();
 
-    if (selectedOption === 0 || isLoading) {
+    if (locked || selectedOption === 0 || isLoading) {
       return;
     }
+    setLocked(true);
     addResponse(
       create(SubmitPollResponseReqSchema, {
         pollId: pollDataWithOption.pollId,
@@ -62,7 +64,21 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
         pollDataWithOption.pollId,
       );
     }
-  });
+  };
+  useEffect(() => {
+    if (!isLoading && addReqResponse) {
+      if (addReqResponse.status) {
+        toast(t('polls.response-added'), {
+          type: 'info',
+        });
+      } else {
+        toast(t(addReqResponse.msg), {
+          type: 'error',
+        });
+      }
+    }
+    setLocked(false);
+  }, [addReqResponse, isLoading, t]);
 
   const onClickSelectOption = useCallback(
     (val: number) => {
@@ -128,6 +144,14 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       name={`voteForm-${pollDataWithOption.pollId}`}
     >
       {pollOption}
+      {isLoading ? (
+        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <div className="lds-ripple">
+            <div className="border-secondaryColor" />
+            <div className="border-secondaryColor" />
+          </div>
+        </div>
+      ) : null}
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button
