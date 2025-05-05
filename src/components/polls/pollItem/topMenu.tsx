@@ -56,6 +56,14 @@ const TopMenu = ({
 
   return (
     <>
+      {isLoading ? (
+        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <div className="lds-ripple">
+            <div className="border-secondaryColor" />
+            <div className="border-secondaryColor" />
+          </div>
+        </div>
+      ) : null}
       <Menu>
         {({ open }) => (
           <>
