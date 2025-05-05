@@ -161,7 +161,7 @@ const PollItem = ({ item, index }: PollItemProps) => {
 
   return (
     <>
-      <div className="polls-item-inner">
+      <div className="polls-item-inner bg-Gray-50 rounded-xl">
         <div className="head min-h-10 flex items-center justify-between w-full px-4 text-sm text-Gray-700 gap-3">
           <div className="left flex items-center gap-3">
             <span className="uppercase">
@@ -240,33 +240,33 @@ const PollItem = ({ item, index }: PollItemProps) => {
               </>
             )}
           </Disclosure>
-        </div>
-        <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
-          {canViewTotal() ? (
-            <div className="total-vote text-sm text-Gray-700">
-              {t('polls.total', {
-                count: pollDataWithOption?.totalRespondents ?? 0,
-              })}
-            </div>
-          ) : null}
-          {currenUser?.metadata?.isAdmin ? (
-            <>
-              <button
-                type="button"
-                onClick={() => setViewDetails(true)}
-                className="view-details h-8 px-3 bg-Gray-50 rounded-[11px] text-sm text-Gray-800 font-semibold flex items-center hover:bg-Gray-100 transition-all duration-300 cursor-pointer"
-              >
-                {t('polls.view-details')}
-              </button>
-              {!viewDetails || !pollDataWithOption ? null : (
-                <DetailsModal
-                  onCloseViewDetails={() => setViewDetails(false)}
-                  pollDataWithOption={pollDataWithOption}
-                  isRunning={item.isRunning}
-                />
-              )}
-            </>
-          ) : null}
+          <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
+            {canViewTotal() ? (
+              <div className="total-vote text-sm text-Gray-700">
+                {t('polls.total', {
+                  count: pollDataWithOption?.totalRespondents ?? 0,
+                })}
+              </div>
+            ) : null}
+            {currenUser?.metadata?.isAdmin ? (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setViewDetails(true)}
+                  className="view-details h-8 px-3 bg-Gray-50 rounded-[11px] text-sm text-Gray-800 font-semibold flex items-center hover:bg-Gray-100 transition-all duration-300 cursor-pointer"
+                >
+                  {t('polls.view-details')}
+                </button>
+                {!viewDetails || !pollDataWithOption ? null : (
+                  <DetailsModal
+                    onCloseViewDetails={() => setViewDetails(false)}
+                    pollDataWithOption={pollDataWithOption}
+                    isRunning={item.isRunning}
+                  />
+                )}
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </>
