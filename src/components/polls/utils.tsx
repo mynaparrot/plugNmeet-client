@@ -55,7 +55,11 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
         </p>,
       );
     }
-    elms.push(<div key={i}>{nameElms}</div>);
+    elms.push(
+      <div className="grid gap-2" key={i}>
+        {nameElms}
+      </div>,
+    );
   }
   return elms;
 };

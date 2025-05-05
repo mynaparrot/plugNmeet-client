@@ -121,10 +121,15 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             {o.text}
           </label>
           {canViewPercentage() ? (
-            <div
-              className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
-              style={{ width: o.responsesPercentage + '%' }}
-            ></div>
+            <>
+              <div
+                className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
+                style={{ width: o.responsesPercentage + '%' }}
+              ></div>
+              <div className="per absolute top-1/2 -translate-y-1/2 right-4 text-xs text-Gray-700">
+                {Math.floor(o.responsesPercentage) + '%'}
+              </div>
+            </>
           ) : null}
         </div>,
       );
@@ -151,7 +156,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button
-            className="h-8 px-5 flex items-center justify-center w-full rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-buttonShadow"
+            className="h-8 px-5 flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-buttonShadow"
             type="submit"
           >
             {t('polls.submit')}

@@ -91,9 +91,9 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
             count: pollDataWithOption.totalRespondents,
           })}
         </p>
-      </div>
-      <div className="relative">
-        <div className="wrap grid gap-3">{renderOptions}</div>
+        <div className="relative">
+          <div className="wrap grid gap-3">{renderOptions}</div>
+        </div>
       </div>
     </>
   );
