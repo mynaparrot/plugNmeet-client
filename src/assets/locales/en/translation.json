@@ -336,13 +336,14 @@
     "user-waiting": "{{name}} is waiting for approval"
   },
   "polls": {
+    "title": "Polls",
     "poll-num": "Poll {{index}}",
     "create": "Create new poll",
     "enter-question": "Enter question",
     "question": "Question",
     "options": "Options",
     "option": "Option {{count}}",
-    "total-responses": "Total responses: {{count}}",
+    "total-responses": "Total respondents: {{count}}",
     "remove-option": "Remove",
     "add-new-option": "Add more option",
     "create-poll": "Create poll",
@@ -364,7 +365,7 @@
     "end-poll-success": "Poll was ended successfully",
     "publish-result": "Publish result",
     "total": "Total: {{count}}",
-    "not-respondents-total": "Not respondents: {{count}}"
+    "not-respondents-total": "Total not respondents: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Manage breakout rooms",

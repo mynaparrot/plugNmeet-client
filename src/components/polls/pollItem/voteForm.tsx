@@ -92,7 +92,6 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
 
   const canViewPercentage = () => {
     if (!isRunning) {
-      console.log(isRunning);
       return true;
     }
     return !!currentUser?.metadata?.isAdmin;
@@ -105,21 +104,20 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       elms.push(
         <>
           <div
-            key={o.id}
+            key={`option-${pollDataWithOption.pollId}-${o.id}`}
             className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden my-2"
             onClick={() => onClickSelectOption(o.id)}
           >
             <input
               type="radio"
               id={`option-${pollDataWithOption.pollId}-${o.id}`}
-              value={o.id}
-              name={`option-${pollDataWithOption.pollId}`}
+              readOnly={true}
               checked={selectedOption === o.id}
               className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
             />
             <label
               className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-              htmlFor={`option-${pollDataWithOption.pollId}`}
+              htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
             >
               {o.text}
             </label>

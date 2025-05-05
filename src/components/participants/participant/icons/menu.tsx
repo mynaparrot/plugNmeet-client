@@ -75,7 +75,7 @@ const MenuIcon = ({
   const render = () => {
     return (
       <>
-        <Menu>
+        <Menu as="div">
           {({ open }) => (
             <>
               <MenuButton className="relative flex-shrink-0">

@@ -64,7 +64,7 @@ const TopMenu = ({
           </div>
         </div>
       ) : null}
-      <Menu>
+      <Menu as="div">
         {({ open }) => (
           <>
             <MenuButton className="relative flex-shrink-0 p-2 mr-2">
@@ -73,7 +73,7 @@ const TopMenu = ({
               </div>
             </MenuButton>
             <Transition
-              as={'div'}
+              as="div"
               show={open}
               enter="transition duration-100 ease-out"
               enterFrom="transform scale-95 opacity-0"

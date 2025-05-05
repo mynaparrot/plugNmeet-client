@@ -22,7 +22,7 @@ const Create = () => {
   const renderModal = () => {
     return (
       <>
-        <Transition appear show={isOpen} as={Fragment}>
+        <Transition appear show={isOpen} as="div">
           <Dialog
             as="div"
             className="fixed inset-0 z-[9999] overflow-y-auto"
@@ -30,7 +30,7 @@ const Create = () => {
           >
             <div className="min-h-screen px-4 text-center">
               <TransitionChild
-                as={Fragment}
+                as="div"
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
                 enterTo="opacity-100"

@@ -42,7 +42,7 @@ export const getFormatedRespondents = (respondents: string[]) => {
         <>
           <p
             className="text-xs font-medium text-Gray-800 w-max flex items-center gap-1 px-[14px]"
-            key={initials + '_' + i}
+            key={initials + '_' + j}
           >
             <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 flex items-center justify-center text-white text-[8px] font-medium">
               {initials}
