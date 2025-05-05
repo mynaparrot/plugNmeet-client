@@ -1,5 +1,5 @@
 import React from 'react';
-import Create from './create';
+import Create from './create/index';
 import ListPolls from './listPolls';
 import { store, useAppDispatch } from '../../store';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { create } from '@bufbuild/protobuf';
+import { once } from 'es-toolkit';
 import {
   DataMsgBodyType,
   SubmitPollResponseReqSchema,
 } from 'plugnmeet-protocol-js';
-import { useTranslation } from 'react-i18next';
-import { create } from '@bufbuild/protobuf';
 
 import { store } from '../../../store';
 import {
@@ -39,7 +40,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   }, [data]);
 
   const [addResponse, { isLoading }] = useAddResponseMutation();
-  const onSubmit = (e: any) => {
+  const onSubmit = once((e: any) => {
     e.preventDefault();
 
     if (selectedOption === 0 || isLoading) {
@@ -61,7 +62,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
         pollDataWithOption.pollId,
       );
     }
-  };
+  });
 
   const onClickSelectOption = useCallback(
     (val: number) => {
