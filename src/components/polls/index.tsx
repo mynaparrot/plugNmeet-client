@@ -1,6 +1,6 @@
 import React from 'react';
 import Create from './create/index';
-import ListPolls from './listPolls';
+import PollsList from './PollsList';
 import { store, useAppDispatch } from '../../store';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActivePollsPanel } from '../../store/slices/bottomIconsActivitySlice';
@@ -25,7 +25,7 @@ const PollsComponent = () => {
             Pools
           </p>
         </div>
-        <ListPolls />
+        <PollsList />
         {isAdmin ? <Create /> : null}
       </div>
     </div>

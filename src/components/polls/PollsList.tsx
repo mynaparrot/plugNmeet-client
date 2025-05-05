@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import useVirtual from 'react-cool-virtual';
 import { PollInfo } from 'plugnmeet-protocol-js';
 
 import { useGetPollListsQuery } from '../../store/services/pollsApi';
-import PollItem from './new-poll';
+import PollItem from './pollItem';
 // import { store, useAppSelector } from '../../store';
 
-const ListPolls = () => {
+const PollsList = () => {
   // const screenHeight = useAppSelector(
   //   (state) => state.bottomIconsActivity.screenHeight,
   // );
   const { data, isLoading } = useGetPollListsQuery();
   // const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const [polls, setPolls] = useState<PollInfo[]>([]);
-  // const { outerRef, innerRef, items } = useVirtual({
-  const { outerRef, innerRef, items } = useVirtual({
-    itemCount: polls.length,
-  });
 
   useEffect(() => {
     if (data && data.polls) {
@@ -26,29 +21,14 @@ const ListPolls = () => {
     }
   }, [data]);
 
-  const renderPoll = (index) => {
-    if (!polls.length || typeof polls[index] === 'undefined') {
-      return null;
-    }
-    const poll = polls[index];
-    return <PollItem key={poll.id} item={poll} index={index} />;
-  };
-
   return (
     <div
       className="polls-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 h-[calc(100vh-277px)]"
       //style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
-      ref={outerRef as any}
     >
-      <div className="polls-list-wrap-inner" ref={innerRef as any}>
-        {items.map(({ index, measureRef }) => (
-          <div
-            key={index}
-            ref={measureRef}
-            className="poll-item relative overflow-hidden bg-Gray-50 rounded-xl"
-          >
-            {renderPoll(index)}
-          </div>
+      <div className="polls-list-wrap-inner">
+        {polls.map((poll, index) => (
+          <PollItem key={poll.id} item={poll} index={index} />
         ))}
         {isLoading ? (
           <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
@@ -63,4 +43,4 @@ const ListPolls = () => {
   );
 };
 
-export default ListPolls;
+export default PollsList;
