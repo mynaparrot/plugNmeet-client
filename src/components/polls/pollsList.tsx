@@ -28,7 +28,11 @@ const PollsList = () => {
     >
       <div className="polls-list-wrap-inner">
         {polls.map((poll, index) => (
-          <PollItem key={poll.id} item={poll} index={index} />
+          <PollItem
+            key={poll.id}
+            item={poll}
+            serialNum={polls.length - index}
+          />
         ))}
         {isFetching ? (
           <>

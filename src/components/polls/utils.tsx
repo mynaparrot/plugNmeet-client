@@ -28,9 +28,12 @@ export interface Respondents {
 }
 
 export const getFormatedRespondents = (respondents: Respondents[]) => {
-  // for (let i = 0; i < 50; i++) {
-  //   respondents.push(`user_${i}`);
-  // }
+  /*for (let i = 0; i < 50; i++) {
+    respondents.push({
+      userId: `${i}`,
+      name: `user_${i}`,
+    });
+  }*/
   const elms: Array<React.JSX.Element> = [];
   const ck = chunk(respondents, 10);
   for (let i = 0, len = ck.length; i < len; i++) {
@@ -60,6 +63,12 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
         {nameElms}
       </div>,
     );
+  }
+  if (elms.length < 4) {
+    const blank = 4 - elms.length;
+    for (let j = 0; j < blank; j++) {
+      elms.push(<div className="grid gap-2" key={j}></div>);
+    }
   }
   return elms;
 };

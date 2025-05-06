@@ -20,10 +20,10 @@ import DetailsModal from './details';
 
 interface PollItemProps {
   item: PollInfo;
-  index: number;
+  serialNum: number;
 }
 
-const PollItem = ({ item, index }: PollItemProps) => {
+const PollItem = ({ item, serialNum }: PollItemProps) => {
   const { t } = useTranslation();
   const currenUser = store.getState().session.currentUser;
   const [viewDetails, setViewDetails] = useState<boolean>(false);
@@ -166,7 +166,7 @@ const PollItem = ({ item, index }: PollItemProps) => {
           <div className="left flex items-center gap-3">
             <span className="uppercase">
               {t('polls.poll-num', {
-                index: index + 1,
+                index: serialNum,
               })}
             </span>
             {item.isRunning ? null : (
