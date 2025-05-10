@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Field,
@@ -41,6 +41,18 @@ const ApplicationSettings = () => {
   const focusActiveSpeakerWebcam = useAppSelector(
     (state) => state.roomSettings.focusActiveSpeakerWebcam,
   );
+  const [selectedLangText, setSelectedLangText] = useState<string>();
+
+  useEffect(() => {
+    const lang = i18n.languages[0];
+    for (let i = 0; i < languages.length; i++) {
+      const l = languages[i];
+      if (l.code === lang) {
+        setSelectedLangText(l.text);
+        break;
+      }
+    }
+  }, [i18n.languages]);
 
   const toggleTheme = () => {
     dispatch(updateTheme(theme === 'light' ? 'dark' : 'light'));
@@ -62,7 +74,7 @@ const ApplicationSettings = () => {
           >
             <div className="relative mt-1">
               <ListboxButton className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                <span className="block truncate">{i18n.languages[0]}</span>
+                <span className="block truncate">{selectedLangText}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   icon
                 </span>
