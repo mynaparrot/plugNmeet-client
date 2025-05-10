@@ -1,6 +1,13 @@
 import React, { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field, Label, Switch } from '@headlessui/react';
+import {
+  Field,
+  Label,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Switch,
+} from '@headlessui/react';
 import { Listbox, Transition } from '@headlessui/react';
 
 import languages from '../../../helpers/languages';
@@ -51,30 +58,30 @@ const ApplicationSettings = () => {
           </label>
           <Listbox
             value={i18n.languages[0]}
-            // onChange={(e) => i18n.changeLanguage(e.target.value)}
+            onChange={(e) => i18n.changeLanguage(e)}
           >
             <div className="relative mt-1">
-              <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+              <ListboxButton className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                 <span className="block truncate">{i18n.languages[0]}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   icon
                 </span>
-              </Listbox.Button>
+              </ListboxButton>
               <Transition
                 as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
                   {languages.map(({ code, text }) => {
                     return (
-                      <Listbox.Option
+                      <ListboxOption
                         key={code}
                         value={code}
-                        className={({ active }) =>
+                        className={({ focus }) =>
                           `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                            active
+                            focus
                               ? 'bg-amber-100 text-amber-900'
                               : 'text-gray-900'
                           }`
@@ -96,28 +103,13 @@ const ApplicationSettings = () => {
                             ) : null}
                           </>
                         )}
-                      </Listbox.Option>
+                      </ListboxOption>
                     );
                   })}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </Listbox>
-          <select
-            id="language"
-            name="language"
-            value={i18n.languages[0]}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300   bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            {languages.map(({ code, text }) => {
-              return (
-                <option key={code} value={code}>
-                  {text}
-                </option>
-              );
-            })}
-          </select>
         </div>
       </div>
       <Field>
