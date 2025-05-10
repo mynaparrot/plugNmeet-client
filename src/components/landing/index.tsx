@@ -20,7 +20,7 @@ import {
 } from '../../helpers/utils';
 import { roomConnectionStatus } from '../app/helper';
 import { getNatsConn } from '../../helpers/nats';
-import { LoadingIconSVG } from '../../assets/Icons/LoadingIconSVG';
+import { LoadingIcon } from '../../assets/Icons/Loading';
 
 interface StartupJoinModalProps {
   setIsAppReady: Dispatch<boolean>;
@@ -157,9 +157,10 @@ const Landing = ({
               <div className="inner waiting-room-contents relative -mt-10">
                 <div className="texts">
                   <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center gap-2">
-                    <span className="animate-spin">
-                      <LoadingIconSVG />
-                    </span>
+                    <LoadingIcon
+                      className={'inline w-7 h-7 text-Gray-200 animate-spin'}
+                      fillColor={'#004D90'}
+                    />
                     {showLoadingMsg}
                   </h3>
                   {roomConnectionStatus === 'media-server-conn-established' &&
