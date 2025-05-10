@@ -79,6 +79,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           onChange={(e) => setQuestion(e.currentTarget.value)}
           placeholder="Ask a question"
           className="default-input"
+          autoComplete="off"
         />
       </div>
       <OptionsView options={options} setOptions={setOptions} />

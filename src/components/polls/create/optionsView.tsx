@@ -55,6 +55,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
                     count: index + 1,
                   }).toString()}
                   className="default-input flex-1"
+                  autoComplete="off"
                 />
                 {index ? (
                   <button

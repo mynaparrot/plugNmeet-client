@@ -127,7 +127,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
                 style={{ width: o.responsesPercentage + '%' }}
               ></div>
               <div className="per absolute top-1/2 -translate-y-1/2 right-4 text-xs text-Gray-700">
-                {Math.floor(o.responsesPercentage) + '%'}
+                {o.responsesPercentage + '%'}
               </div>
             </>
           ) : null}

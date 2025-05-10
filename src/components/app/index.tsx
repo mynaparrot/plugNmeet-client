@@ -19,7 +19,7 @@ import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChan
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import { IConnectLivekit } from '../../helpers/livekit/types';
-import { getAccessToken, isUserRecorder } from '../../helpers/utils';
+import { isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import { InfoToOpenConn, roomConnectionStatus, verifyToken } from './helper';
 import { loadBodyPix } from '../virtual-background/helpers/utils';
@@ -58,34 +58,13 @@ const App = () => {
   useThemeSettings();
 
   useEffect(() => {
-    const accessToken = getAccessToken();
-    if (!accessToken) {
-      setLoading(false);
-      setError({
-        title: t('app.token-missing-title'),
-        text: t('app.token-missing-des'),
-      });
-    } else if (
-      window.location.protocol === 'http:' &&
-      window.location.hostname !== 'localhost'
-    ) {
-      setLoading(false);
-      setError({
-        title: t('app.require-ssl-title'),
-        text: t('app.require-ssl-des'),
-      });
-    } else {
-      setRoomConnectionStatus('checking');
-      verifyToken(
-        accessToken,
-        setLoading,
-        setError,
-        setOpenConnInfo,
-        setRoomConnectionStatus,
-        setOpenConn,
-      ).then();
-    }
-    //eslint-disable-next-line
+    verifyToken(
+      setLoading,
+      setError,
+      setOpenConnInfo,
+      setRoomConnectionStatus,
+      setOpenConn,
+    ).then();
   }, []);
 
   useEffect(() => {

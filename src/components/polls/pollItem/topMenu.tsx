@@ -82,7 +82,7 @@ const TopMenu = ({
                   className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                   onClick={() => setViewDetails(true)}
                 >
-                  View details
+                  {t('polls.view-details')}
                 </button>
               </MenuItem>
               <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
@@ -101,7 +101,7 @@ const TopMenu = ({
                     className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                     onClick={() => publishPollResultByChat(pollDataWithOption)}
                   >
-                    Publish result
+                    {t('polls.publish-result')}
                   </button>
                 </MenuItem>
               )}

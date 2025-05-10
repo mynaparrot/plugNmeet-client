@@ -343,7 +343,7 @@
     "question": "Question",
     "options": "Options",
     "option": "Option {{count}}",
-    "total-responses": "Total respondents: {{count}}",
+    "total-responses": "Respondents: {{count}}",
     "remove-option": "Remove",
     "add-new-option": "Add more option",
     "create-poll": "Create poll",
@@ -357,7 +357,7 @@
     "new-poll": "New poll has been started",
     "poll-running": "Running",
     "poll-closed": "Closed",
-    "view-details": "View details",
+    "view-details": "Details",
     "view-result": "View result",
     "view-details-title": "Poll information",
     "view-result-title": "Poll result",
@@ -365,7 +365,7 @@
     "end-poll-success": "Poll was ended successfully",
     "publish-result": "Publish summary",
     "total": "Total: {{count}}",
-    "not-respondents-total": "Total not respondents: {{count}}"
+    "not-respondents-total": "Not respondents: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Manage breakout rooms",

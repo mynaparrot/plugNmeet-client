@@ -10,6 +10,7 @@ import {
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { IErrorPageProps } from '../extra-pages/Error';
 import i18n from '../../helpers/i18n';
+import { getAccessToken } from '../../helpers/utils';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -38,13 +39,32 @@ export interface InfoToOpenConn {
 
 export const verifyToken = once(
   async (
-    accessToken: string,
     setLoading: Dispatch<SetStateAction<boolean>>,
     setError: Dispatch<SetStateAction<IErrorPageProps | undefined>>,
     setOpenConnInfo: Dispatch<SetStateAction<InfoToOpenConn | undefined>>,
     setRoomConnectionStatus: Dispatch<SetStateAction<roomConnectionStatus>>,
     setOpenConn: Dispatch<SetStateAction<boolean>>,
   ) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      setLoading(false);
+      setError({
+        title: i18n.t('app.token-missing-title'),
+        text: i18n.t('app.token-missing-des'),
+      });
+      return;
+    } else if (
+      window.location.protocol === 'http:' &&
+      window.location.hostname !== 'localhost'
+    ) {
+      setLoading(false);
+      setError({
+        title: i18n.t('app.require-ssl-title'),
+        text: i18n.t('app.require-ssl-des'),
+      });
+      return;
+    }
+
     const r = await sendAPIRequest(
       'verifyToken',
       toBinary(

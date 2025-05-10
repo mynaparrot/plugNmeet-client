@@ -87,7 +87,9 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
         );
         if (count > 0) {
           const total = Number(pollDetailsResponses.responses.total_resp);
-          pollDataOption.responsesPercentage = (count / total) * 100;
+          pollDataOption.responsesPercentage = Math.round(
+            (count / total + Number.EPSILON) * 100,
+          );
         }
       }
       obj.options[option.id] = pollDataOption;
@@ -243,7 +245,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
             {canViewTotal() ? (
               <div className="total-vote text-sm text-Gray-700">
-                {t('polls.total', {
+                {t('polls.total-responses', {
                   count: pollDataWithOption?.totalRespondents ?? 0,
                 })}
               </div>
