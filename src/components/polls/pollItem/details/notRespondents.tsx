@@ -41,11 +41,8 @@ const NotRespondents = ({ pollDataWithOption }: NotRespondentsProps) => {
           count: notResNum,
         })}
       </p>
-      <div className="wrap grid grid-cols-4 gap-2 py-2 relative overflow-hidden rounded-xl bg-Gray-50 border border-gray-300">
-        {render}
-        <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/4"></div>
-        <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/2"></div>
-        <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-3/4"></div>
+      <div className="wrap relative rounded-xl bg-Gray-50 border border-gray-300 overflow-auto">
+        <div className="inner flex">{render}</div>
       </div>
     </div>
   );

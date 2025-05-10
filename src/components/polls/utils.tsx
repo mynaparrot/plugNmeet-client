@@ -34,6 +34,12 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
       name: `user_${i}`,
     });
   }*/
+  for (let i = 0; i < 35; i++) {
+    respondents.push({
+      userId: `${i}`,
+      name: `user_${i}`,
+    });
+  }
   const elms: Array<React.JSX.Element> = [];
   const ck = chunk(respondents, 10);
   for (let i = 0, len = ck.length; i < len; i++) {
@@ -48,7 +54,7 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
       const initials = `${firstNameInitial}${lastNameInitial}`.toUpperCase();
       nameElms.push(
         <p
-          className="text-xs font-medium text-Gray-800 w-max flex items-center gap-1 px-[14px]"
+          className="text-xs w-[156.5px] font-medium text-Gray-800 flex items-center gap-1 px-[14px]"
           key={user.userId}
         >
           <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 flex items-center justify-center text-white text-[8px] font-medium">
@@ -59,7 +65,10 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
       );
     }
     elms.push(
-      <div className="grid gap-2" key={i}>
+      <div
+        className="grid gap-2 content-start border-r border-Gray-300 py-2 w-max last:border-none"
+        key={i}
+      >
         {nameElms}
       </div>,
     );

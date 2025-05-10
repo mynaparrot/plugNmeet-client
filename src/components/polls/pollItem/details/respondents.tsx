@@ -23,7 +23,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
       const elm = (
         <Disclosure as="div" key={o.id}>
           {({ open }) => (
-            <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden">
+            <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden w-[632px]">
               <DisclosureButton
                 className={`flex items-center justify-between gap-3 w-full px-[14px] bg-white h-9 rounded-xl  shadow-buttonShadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
               >
@@ -65,11 +65,10 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
                     // transition={{ duration: 0.2 }}
                     className=""
                   >
-                    <div className="wrap grid grid-cols-4 gap-2 py-2 relative">
-                      {getFormatedRespondents(o.respondents)}
-                      <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/4"></div>
-                      <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-1/2"></div>
-                      <div className="line absolute h-full w-[1px] bg-Gray-300 top-0 left-3/4"></div>
+                    <div className="wrap relative rounded-xl overflow-auto">
+                      <div className="inner flex">
+                        {getFormatedRespondents(o.respondents)}
+                      </div>
                     </div>
                   </DisclosurePanel>
                 )}

@@ -26,7 +26,7 @@ const PollsList = () => {
       className="polls-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 h-[calc(100vh-220px)] 3xl:h-[calc(100vh-277px)]"
       //style={{ height: isAdmin ? screenHeight - 200 : screenHeight - 150 }}
     >
-      <div className="polls-list-wrap-inner">
+      <div className="polls-list-wrap-inner grid gap-4">
         {polls.map((poll, index) => (
           <PollItem
             key={poll.id}
@@ -36,13 +36,13 @@ const PollsList = () => {
         ))}
         {isFetching ? (
           <>
-            {/* <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-          <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
-          </div>
-        </div> */}
-            <div className="loading"></div>
+            <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+              <div className="lds-ripple">
+                <div className="border-secondaryColor" />
+                <div className="border-secondaryColor" />
+              </div>
+            </div>
+            {/* <div className="loading"></div> */}
           </>
         ) : null}
       </div>
