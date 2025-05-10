@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field, Label, Switch } from '@headlessui/react';
+import { Listbox, Transition } from '@headlessui/react';
 
 import languages from '../../../helpers/languages';
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -44,16 +45,70 @@ const ApplicationSettings = () => {
         <div className="flex items-center justify-start">
           <label
             htmlFor="language"
-            className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+            className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right"
           >
             {t('header.room-settings.language')}
           </label>
+          <Listbox
+            value={i18n.languages[0]}
+            // onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <div className="relative mt-1">
+              <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                <span className="block truncate">{i18n.languages[0]}</span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  icon
+                </span>
+              </Listbox.Button>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                  {languages.map(({ code, text }) => {
+                    return (
+                      <Listbox.Option
+                        key={code}
+                        value={code}
+                        className={({ active }) =>
+                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                            active
+                              ? 'bg-amber-100 text-amber-900'
+                              : 'text-gray-900'
+                          }`
+                        }
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${
+                                selected ? 'font-medium' : 'font-normal'
+                              }`}
+                            >
+                              {text}
+                            </span>
+                            {selected ? (
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                icon
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    );
+                  })}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
           <select
             id="language"
             name="language"
             value={i18n.languages[0]}
             onChange={(e) => i18n.changeLanguage(e.target.value)}
-            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300   bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             {languages.map(({ code, text }) => {
               return (
@@ -67,7 +122,7 @@ const ApplicationSettings = () => {
       </div>
       <Field>
         <div className="flex items-center justify-between my-4">
-          <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
             {t('header.room-settings.enable-dark-theme')}
           </Label>
           <Switch
@@ -93,7 +148,7 @@ const ApplicationSettings = () => {
         <div className="flex items-center justify-start">
           <label
             htmlFor="video-object-fit"
-            className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+            className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right"
           >
             {t('header.room-settings.video-object-fit')}
           </label>
@@ -104,7 +159,7 @@ const ApplicationSettings = () => {
             onChange={(e) =>
               dispatch(updateVideoObjectFit(e.target.value as VideoObjectFit))
             }
-            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300   bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option key={VideoObjectFit.COVER} value={VideoObjectFit.COVER}>
               {t('header.room-settings.video-object-fit-cover')}
@@ -119,7 +174,7 @@ const ApplicationSettings = () => {
         <div className="flex items-center justify-start">
           <label
             htmlFor="column-camera-width"
-            className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+            className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right"
           >
             {t('header.room-settings.column-camera-width')}
           </label>
@@ -132,7 +187,7 @@ const ApplicationSettings = () => {
                 updateColumnCameraWidth(e.target.value as ColumnCameraWidth),
               )
             }
-            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300   bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option
               key={ColumnCameraWidth.FULL_WIDTH}
@@ -159,7 +214,7 @@ const ApplicationSettings = () => {
         <div className="flex items-center justify-start">
           <label
             htmlFor="column-camera-position"
-            className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+            className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right"
           >
             {t('header.room-settings.column-camera-position')}
           </label>
@@ -174,7 +229,7 @@ const ApplicationSettings = () => {
                 ),
               )
             }
-            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-3/5 py-2 px-3 border border-gray-300   bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option
               key={ColumnCameraPosition.LEFT}
@@ -199,7 +254,7 @@ const ApplicationSettings = () => {
       </div>
       <Field>
         <div className="flex items-center justify-between my-4">
-          <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
             {t('header.room-settings.focus-active-speaker-webcam')}
           </Label>
           <Switch
