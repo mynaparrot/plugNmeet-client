@@ -9,7 +9,9 @@ export default merge(common, {
   devtool: 'source-map',
   devServer: {
     static: './dist',
+    host: 'localhost',
     port: 3000,
+    allowedHosts: 'all',
     compress: true,
     open: false,
     historyApiFallback: true,

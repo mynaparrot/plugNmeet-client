@@ -10,6 +10,8 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
+import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
 interface IWaitingApprovalProps {
   userId: string;
@@ -57,18 +59,20 @@ const WaitingApproval = ({
   };
 
   return !waitForApproval ? null : (
-    <div className="approve-btn-wrap rtl:pt-2">
+    <div className="approve-btn-wrap absolute right-0 top-0 flex gap-2.5 items-center justify-end h-full w-auto bg-white">
       <button
-        className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-primaryColor hover:bg-secondaryColor"
+        className="h-6 px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-buttonShadow"
         onClick={approve}
       >
+        <CheckMarkIcon />
         {t('left-panel.approve')}
       </button>
       <button
-        className="text-xs text-white py-[1px] px-2 rounded-lg transition ease-in bg-red-600 hover:bg-red-800 ltr:ml-2 rtl:mr-2"
+        className="h-6 w-6 flex items-center rounded-[8px] text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
         onClick={reject}
       >
-        {t('left-panel.reject')}
+        <CloseIconSVG />
+        {/* {t('left-panel.reject')} */}
       </button>
     </div>
   );

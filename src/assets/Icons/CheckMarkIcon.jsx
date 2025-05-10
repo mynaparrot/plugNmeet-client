@@ -9,7 +9,7 @@ export const CheckMarkIcon = () => {
     >
       <path
         d="M16.6693 5L7.5026 14.1667L3.33594 10"
-        stroke="#0088CC"
+        stroke="CurrentColor"
         strokeWidth="1.67"
         strokeLinecap="round"
         strokeLinejoin="round"

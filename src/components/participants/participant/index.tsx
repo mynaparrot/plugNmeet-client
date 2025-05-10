@@ -64,13 +64,11 @@ const ParticipantComponent = ({
           ) : null}
         </div>
         {currentUser?.metadata?.isAdmin ? (
-          <div className="approve-wrap absolute ltr:right-0 rtl:left-0 top-5">
-            <WaitingApproval
-              userId={participant.userId}
-              name={participant.name}
-              openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
-            />
-          </div>
+          <WaitingApproval
+            userId={participant.userId}
+            name={participant.name}
+            openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+          />
         ) : null}
       </div>
     </>
