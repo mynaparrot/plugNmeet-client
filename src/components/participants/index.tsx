@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
 
@@ -20,13 +20,12 @@ const ParticipantsComponent = () => {
   // const screenHeight = useAppSelector(
   //   (state) => state.bottomIconsActivity.screenHeight,
   // );
-
   const [participants, setParticipants] = useState<IParticipant[]>([]);
   const { outerRef, innerRef, items } = useVirtual({
     itemCount: participants.length,
   });
-  const [searchParticipant, setSearchParticipant] = useState<string>('');
 
+  const [searchParticipant, setSearchParticipant] = useState<string>('');
   const [removeParticipantData, setRemoveParticipantData] =
     useState<IRemoveParticipantAlertModalData>();
 
@@ -37,22 +36,56 @@ const ParticipantsComponent = () => {
     false;
   const currentIsAdmin = session.currentUser?.metadata?.isAdmin ?? false;
 
+  const updateParticipantsList = useCallback(
+    (searchParticipant: string = '') => {
+      const participants = participantsSelector.selectAll(store.getState());
+      if (!participants.length) {
+        return;
+      }
+      let list = participants.filter(
+        (p) =>
+          p.name !== '' &&
+          p.userId !== 'RECORDER_BOT' &&
+          p.userId !== 'RTMP_BOT',
+      );
+      if (searchParticipant !== '') {
+        list = list.filter((p) =>
+          p.name
+            .toLocaleLowerCase()
+            .match(searchParticipant.toLocaleLowerCase()),
+        );
+      }
+      if (currentIsAdmin) {
+        list.sort((a, b) =>
+          a.metadata.waitForApproval === b.metadata.waitForApproval
+            ? 0
+            : a.metadata.waitForApproval
+              ? -1
+              : 1,
+        );
+      }
+      setParticipants(list);
+    },
+    //eslint-disable-next-line
+    [],
+  );
+
+  // we'll only update users' list when number change
+  // otherwise in every other event this will rerender
   useEffect(() => {
-    const participants = participantsSelector.selectAll(store.getState());
-    if (!participants.length) {
+    if (!totalParticipants) {
       return;
     }
-    let list = participants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
-    );
-    if (searchParticipant !== '') {
-      list = list.filter((p) =>
-        p.name.toLocaleLowerCase().match(searchParticipant.toLocaleLowerCase()),
-      );
-    }
-    setParticipants(list);
+    updateParticipantsList(searchParticipant);
+    //eslint-disable-next-line
   }, [totalParticipants, searchParticipant]);
+
+  const onAfterApprovalUpdateList = useCallback(() => {
+    // otherwise, sorting value won't be valid because
+    // waiting for approval users will be on top
+    updateParticipantsList(searchParticipant);
+    //eslint-disable-next-line
+  }, [searchParticipant]);
 
   const onOpenRemoveParticipantAlert = (
     name: string,
@@ -95,6 +128,7 @@ const ParticipantsComponent = () => {
         participant={participant}
         isRemoteParticipant={isRemoteParticipant}
         openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+        onAfterApprovalUpdateList={onAfterApprovalUpdateList}
       />
     );
   };

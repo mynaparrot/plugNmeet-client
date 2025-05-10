@@ -17,11 +17,13 @@ interface IWaitingApprovalProps {
   userId: string;
   name: string;
   openRemoveParticipantAlert(userId: string, type: string): void;
+  onAfterApprovalUpdateList(): void;
 }
 const WaitingApproval = ({
   userId,
   name,
   openRemoveParticipantAlert,
+  onAfterApprovalUpdateList,
 }: IWaitingApprovalProps) => {
   const waitForApproval = useAppSelector(
     (state) =>
@@ -47,6 +49,7 @@ const WaitingApproval = ({
       toast(t('left-panel.menus.notice.user-approved', { name: name }), {
         type: 'info',
       });
+      onAfterApprovalUpdateList();
     } else {
       toast(t(res.msg), {
         type: 'error',

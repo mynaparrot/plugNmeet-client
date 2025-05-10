@@ -17,12 +17,14 @@ interface IParticipantComponentProps {
   participant: IParticipant;
   isRemoteParticipant: boolean;
   openRemoveParticipantAlert(name: string, userId: string, type: string): void;
+  onAfterApprovalUpdateList(): void;
 }
 
 const ParticipantComponent = ({
   participant,
   isRemoteParticipant,
   openRemoveParticipantAlert,
+  onAfterApprovalUpdateList,
 }: IParticipantComponentProps) => {
   const currentUser = store.getState().session.currentUser;
 
@@ -68,6 +70,7 @@ const ParticipantComponent = ({
             userId={participant.userId}
             name={participant.name}
             openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+            onAfterApprovalUpdateList={onAfterApprovalUpdateList}
           />
         ) : null}
       </div>
