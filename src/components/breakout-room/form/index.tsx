@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
@@ -142,7 +142,7 @@ const FromElems = () => {
       store.getState().session.currentRoom.metadata?.roomFeatures
         ?.breakoutRoomFeatures?.allowedNumberRooms ?? 6;
 
-    const options: Array<React.JSX.Element> = [];
+    const options: Array<ReactElement> = [];
     for (let i = 0; i < max; i++) {
       options.push(
         <option key={i} value={i + 1}>

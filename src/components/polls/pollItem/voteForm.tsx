@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
 import { toast } from 'react-toastify';
@@ -98,7 +104,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   };
 
   const pollOption = useMemo(() => {
-    const elms: Array<React.JSX.Element> = [];
+    const elms: Array<ReactElement> = [];
     for (const key in pollDataWithOption.options) {
       const o = pollDataWithOption.options[key];
       elms.push(

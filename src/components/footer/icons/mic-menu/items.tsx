@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
     (state) => state.roomSettings.selectedAudioDevice,
   );
 
-  const [devicesMenu, setDevicesMenu] = useState<Array<React.JSX.Element>>();
+  const [devicesMenu, setDevicesMenu] = useState<Array<ReactElement>>();
   const [newDevice, setNewDevice] = useState<string>();
 
   useEffect(() => {
@@ -100,47 +100,43 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
     dispatch(updateSelectedAudioDevice(''));
   };
 
-  const menuItems = () => {
-    return (
-      <MenuItems
-        static
-        className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max"
-      >
-        <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
-          Select Microphone
-        </div>
-        {devicesMenu}
-        <div className="" role="none">
-          <MenuItem>
-            {() => (
-              <p
-                className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
-                onClick={() => muteUnmuteMic()}
-              >
-                {isMicMuted
-                  ? t('footer.menus.unmute-microphone')
-                  : t('footer.menus.mute-microphone')}
-              </p>
-            )}
-          </MenuItem>
-        </div>
-        <div className="" role="none">
-          <MenuItem>
-            {() => (
-              <p
-                className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
-                onClick={() => leaveMic()}
-              >
-                {t('footer.menus.leave-microphone')}
-              </p>
-            )}
-          </MenuItem>
-        </div>
-      </MenuItems>
-    );
-  };
-
-  return <>{menuItems()}</>;
+  return (
+    <MenuItems
+      static
+      className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max"
+    >
+      <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
+        Select Microphone
+      </div>
+      {devicesMenu}
+      <div className="" role="none">
+        <MenuItem>
+          {() => (
+            <p
+              className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
+              onClick={() => muteUnmuteMic()}
+            >
+              {isMicMuted
+                ? t('footer.menus.unmute-microphone')
+                : t('footer.menus.mute-microphone')}
+            </p>
+          )}
+        </MenuItem>
+      </div>
+      <div className="" role="none">
+        <MenuItem>
+          {() => (
+            <p
+              className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
+              onClick={() => leaveMic()}
+            >
+              {t('footer.menus.leave-microphone')}
+            </p>
+          )}
+        </MenuItem>
+      </div>
+    </MenuItems>
+  );
 };
 
 export default MicMenuItems;

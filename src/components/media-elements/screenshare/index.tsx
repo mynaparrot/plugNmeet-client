@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 import {
   LocalTrackPublication,
   RemoteAudioTrack,
@@ -36,7 +36,7 @@ const ScreenShareElements = () => {
 
   const renderElms = useMemo(() => {
     if (screenShareTracks) {
-      const elm = Array<React.JSX.Element>();
+      const elm = Array<ReactElement>();
 
       screenShareTracks.forEach((tracks) => {
         tracks.forEach((track) => {

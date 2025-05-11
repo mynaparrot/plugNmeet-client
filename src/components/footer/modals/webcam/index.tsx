@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { Dialog, DialogTitle, Transition, Button } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,7 @@ const ShareWebcamModal = ({
   );
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [selectedWebcam, setSelectWebcam] = useState<string>(selectedDeviceId);
-  const [devices, setDevices] = useState<Array<React.JSX.Element>>([]);
+  const [devices, setDevices] = useState<Array<ReactElement>>([]);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -57,7 +57,7 @@ const ShareWebcamModal = ({
     };
     getDeviceWebcams().then();
     //eslint-disable-next-line
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (showVideoShareModal) {

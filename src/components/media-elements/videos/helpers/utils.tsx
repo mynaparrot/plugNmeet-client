@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { chunk, memoize } from 'es-toolkit';
 import { concat } from 'es-toolkit/compat';
 
@@ -6,11 +6,9 @@ import { concat } from 'es-toolkit/compat';
  * For Mobile landscape mode,
  * 2 rows for any number
  */
-export const setForMobileLandscape = (
-  participantsToRender: React.JSX.Element[],
-) => {
+export const setForMobileLandscape = (participantsToRender: ReactElement[]) => {
   const length = participantsToRender.length;
-  const elms: Array<React.JSX.Element> = [];
+  const elms: Array<ReactElement> = [];
 
   if (length <= 3) {
     elms.push(
@@ -40,11 +38,9 @@ export const setForMobileLandscape = (
  * From 4 webcam,  2 rows
  * More than 4, 3 rows
  */
-export const setForMobileAndTablet = (
-  participantsToRender: React.JSX.Element[],
-) => {
+export const setForMobileAndTablet = (participantsToRender: ReactElement[]) => {
   const length = participantsToRender.length;
-  const elms: Array<React.JSX.Element> = [];
+  const elms: Array<ReactElement> = [];
 
   if (length <= 3) {
     elms.push(
@@ -86,9 +82,9 @@ export const setForMobileAndTablet = (
  * up to 15 webcams, 3 rows
  * More than 15, 4 rows
  */
-const setForPC = (participantsToRender: React.JSX.Element[]) => {
+const setForPC = (participantsToRender: ReactElement[]) => {
   const length = participantsToRender.length;
-  let chunkParts: React.JSX.Element[][] = [];
+  let chunkParts: ReactElement[][] = [];
 
   switch (length) {
     case 1:
@@ -180,7 +176,7 @@ const setForPC = (participantsToRender: React.JSX.Element[]) => {
       break;
   }
 
-  const elms: Array<React.JSX.Element> = [];
+  const elms: Array<ReactElement> = [];
   // each of the chunks will be a row
   for (let i = 0; i < chunkParts.length; i++) {
     const el = chunkParts[i];
@@ -200,11 +196,9 @@ const setForPC = (participantsToRender: React.JSX.Element[]) => {
  * We'll have two webcams in each row
  * @param participantsToRender
  */
-const setForPCExtendedVerticalView = (
-  participantsToRender: React.JSX.Element[],
-) => {
+const setForPCExtendedVerticalView = (participantsToRender: ReactElement[]) => {
   const chunkParts = chunk(participantsToRender, 2);
-  const elms: Array<React.JSX.Element> = [];
+  const elms: Array<ReactElement> = [];
   // each of the chunks will be a row
   for (let i = 0; i < chunkParts.length; i++) {
     const el = chunkParts[i];

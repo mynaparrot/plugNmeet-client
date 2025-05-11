@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -12,10 +12,11 @@ import {
 } from './helpers/utils';
 import { ArrowRight } from '../../../assets/Icons/ArrowRight';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../store/slices/bottomIconsActivitySlice';
+import { VideoParticipantProps } from './videoParticipant';
 
 interface IVideosComponentElmsProps {
-  allParticipants: React.JSX.Element[];
-  pinParticipant?: React.JSX.Element;
+  allParticipants: ReactElement<VideoParticipantProps>[];
+  pinParticipant?: ReactElement<VideoParticipantProps>;
   totalNumWebcams: number;
   isVertical?: boolean;
 }
@@ -61,7 +62,7 @@ const VideosComponentElms = ({
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const [participantsToRender, setParticipantsToRender] = useState<
-    Array<React.JSX.Element>
+    Array<ReactElement>
   >([]);
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
 
@@ -152,7 +153,7 @@ const VideosComponentElms = ({
   ]);*/
 
   const renderParticipantsByPage = (
-    allParticipants: Array<React.JSX.Element>,
+    allParticipants: Array<ReactElement<VideoParticipantProps>>,
     page_number: number,
     per_page: number,
   ) => {
@@ -228,9 +229,11 @@ const VideosComponentElms = ({
       .map((word: string[]) => word[0].toUpperCase()) // Get the first letter of each word in uppercase
       .join(''); // Join the initials into a string
 
-  const formatNextPreButton = (remaining: React.JSX.Element[]) => {
-    const shortName: React.JSX.Element[] = [];
-    const fullName: React.JSX.Element[] = [];
+  const formatNextPreButton = (
+    remaining: ReactElement<VideoParticipantProps>[],
+  ) => {
+    const shortName: ReactElement[] = [];
+    const fullName: ReactElement[] = [];
     for (let i = 0; i < remaining.length; i++) {
       if (i === 2 && remaining.length > i) {
         // so,we have more
@@ -306,7 +309,7 @@ const VideosComponentElms = ({
       }
     }
 
-    let elms: Array<React.JSX.Element>;
+    let elms: Array<ReactElement>;
 
     if (
       deviceType === UserDeviceType.MOBILE &&

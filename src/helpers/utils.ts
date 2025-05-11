@@ -54,9 +54,11 @@ export const getInputMediaDevices = async (kind: inputMediaDeviceKind) => {
     }
   }
 
-  stream.getTracks().forEach(function (track) {
+  const tracks = stream.getTracks();
+  for (let i = 0; i < tracks.length; i++) {
+    const track = tracks[i];
     track.stop();
-  });
+  }
 
   return {
     audio: audioDevices,

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 import {
   RemoteParticipant,
   LocalParticipant,
@@ -34,7 +34,7 @@ const AudioElements = () => {
     if (!audioSubscribers) {
       return null;
     }
-    const elms: Array<React.JSX.Element> = [];
+    const elms: Array<ReactElement> = [];
     audioSubscribers.forEach((participant) => {
       participant.audioTrackPublications.forEach((track) => {
         if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {

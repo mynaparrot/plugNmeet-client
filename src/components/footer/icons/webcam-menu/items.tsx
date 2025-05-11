@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
     (state) => state.roomSettings.selectedVideoDevice,
   );
 
-  const [devicesMenu, setDevicesMenu] = useState<Array<React.JSX.Element>>();
+  const [devicesMenu, setDevicesMenu] = useState<Array<ReactElement>>();
   const [newDevice, setNewDevice] = useState<string>();
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlic
 import { VideoParticipantType } from './videosComponentElms';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
 
-interface VideoParticipantProps {
+export interface VideoParticipantProps {
   participantType: VideoParticipantType;
   participant: RemoteParticipant | LocalParticipant;
   displayPinIcon: boolean;

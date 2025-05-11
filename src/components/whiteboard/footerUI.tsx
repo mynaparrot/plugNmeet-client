@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import {
@@ -29,7 +29,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
   const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
-  const [options, setOptions] = useState<Array<React.JSX.Element>>();
+  const [options, setOptions] = useState<Array<ReactElement>>();
   const [disablePre, setDisablePre] = useState(true);
   const [disableNext, setDisableNext] = useState(false);
   const previousPage = usePreviousPage(currentPage);
@@ -67,7 +67,7 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
   }, [currentPage, disableNext, totalPages]);
 
   useEffect(() => {
-    const element: Array<React.JSX.Element> = [];
+    const element: Array<ReactElement> = [];
     for (let i = 0; i < totalPages; i++) {
       element.push(
         <option key={i} value={i + 1}>

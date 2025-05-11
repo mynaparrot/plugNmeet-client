@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { chunk } from 'es-toolkit';
 import ReactDOMServer from 'react-dom/server';
 
@@ -34,16 +34,10 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
       name: `user_${i}`,
     });
   }*/
-  for (let i = 0; i < 35; i++) {
-    respondents.push({
-      userId: `${i}`,
-      name: `user_${i}`,
-    });
-  }
-  const elms: Array<React.JSX.Element> = [];
+  const elms: Array<ReactElement> = [];
   const ck = chunk(respondents, 10);
   for (let i = 0, len = ck.length; i < len; i++) {
-    const nameElms: Array<React.JSX.Element> = [];
+    const nameElms: Array<ReactElement> = [];
     const users = ck[i];
 
     for (let j = 0; j < users.length; j++) {
@@ -88,7 +82,7 @@ export const publishPollResultByChat = async (
   const conn = getNatsConn();
 
   const formatOptions = () => {
-    const elms: Array<React.JSX.Element> = [];
+    const elms: Array<ReactElement> = [];
     for (const key in pollDataWithOption.options) {
       const o = pollDataWithOption.options[key];
       elms.push(<p key={o.id}>{`${o.text} (${o.respondents.length})`}</p>);

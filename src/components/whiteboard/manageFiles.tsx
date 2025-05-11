@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import {
   Menu,
   MenuButton,
@@ -30,7 +30,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
   );
   const [refreshFileBrowser, setRefreshFileBrowser] = useState<number>(0);
-  const [menuItems, setMenuItems] = useState<React.JSX.Element[]>([]);
+  const [menuItems, setMenuItems] = useState<ReactElement[]>([]);
   const [fileType, setFileType] = useState<Array<string>>([]);
 
   useEffect(() => {

@@ -48,9 +48,11 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   useEffect(() => {
     return () => {
       if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => {
+        const tracks = mediaStream.getTracks();
+        for (let i = 0; i < tracks.length; i++) {
+          const track = tracks[i];
           track.stop();
-        });
+        }
       }
     };
   }, [mediaStream]);
@@ -83,7 +85,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
   return (
     <div className="">
       <div className="w-full overflow-hidden rounded-lg relative bg-black min-h-64 3xl:min-h-80">
-        {deviceId ? (
+        {deviceId !== '' ? (
           <div
             className={`${virtualBackground.type !== 'none' ? 'absolute top-0 left-0 h-1 w-1 opacity-0' : 'w-full h-64 3xl:h-80'}`}
           >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { concat } from 'es-toolkit/compat';
 
@@ -7,7 +7,7 @@ import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
 import VideosComponentElms, {
   VideoParticipantType,
 } from './videosComponentElms';
-import VideoParticipant from './videoParticipant';
+import VideoParticipant, { VideoParticipantProps } from './videoParticipant';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
 import { updatePinCamUserId } from '../../../store/slices/roomSettingsSlice';
@@ -24,10 +24,10 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
   const [allParticipants, setAllParticipants] = useState<
-    Array<React.JSX.Element>
+    Array<ReactElement<VideoParticipantProps>>
   >([]);
   const [pinParticipant, setPinParticipant] = useState<
-    React.JSX.Element | undefined
+    ReactElement<VideoParticipantProps> | undefined
   >(undefined);
   const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
   const currentConnection = getMediaServerConn();
@@ -60,10 +60,11 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     }
 
     let totalNumWebcams = 0;
-    const localSubscribers: Array<React.JSX.Element> = [];
-    let pinSubscribers: React.JSX.Element | undefined = undefined;
-    const adminSubscribers: Array<React.JSX.Element> = [];
-    const otherSubscribers: Array<React.JSX.Element> = [];
+    const localSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
+    let pinSubscribers: ReactElement<VideoParticipantProps> | undefined =
+      undefined;
+    const adminSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
+    const otherSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
 
     for (const participant of videoSubscribers.values()) {
       // we will only take if source from Camera

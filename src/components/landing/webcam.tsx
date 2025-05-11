@@ -66,7 +66,7 @@ const WebcamIcon = ({
       </div>
       {videoDevices.length > 0 ? (
         <div className="menu relative">
-          <Menu>
+          <Menu as="div">
             {({ open }) => (
               <>
                 <MenuButton

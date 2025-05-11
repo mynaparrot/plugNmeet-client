@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -17,7 +17,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
   const { t } = useTranslation();
 
   const renderOptions = useMemo(() => {
-    const elms: Array<React.JSX.Element> = [];
+    const elms: Array<ReactElement> = [];
     for (const key in pollDataWithOption.options) {
       const o = pollDataWithOption.options[key];
       const elm = (
