@@ -101,7 +101,7 @@ const RoomSettings = () => {
     });
     return (
       <div
-        className="absolute inset-x-0 -bottom-4 text-center text-Gray-950 text-xs 3xl:text-sm"
+        className="absolute inset-x-0 -bottom-4 text-center text-Gray-950 text-xs"
         dangerouslySetInnerHTML={{ __html: text }}
       ></div>
     );

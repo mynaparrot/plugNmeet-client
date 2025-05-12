@@ -7,8 +7,9 @@ import {
   ListboxOption,
   ListboxOptions,
   Switch,
+  Listbox,
+  Transition,
 } from '@headlessui/react';
-import { Listbox, Transition } from '@headlessui/react';
 
 import languages from '../../../helpers/languages';
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -24,6 +25,8 @@ import {
   ColumnCameraWidth,
   VideoObjectFit,
 } from '../../../store/slices/interfaces/roomSettings';
+import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
+import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 
 const ApplicationSettings = () => {
   const { t, i18n } = useTranslation();
@@ -58,25 +61,55 @@ const ApplicationSettings = () => {
     dispatch(updateTheme(theme === 'light' ? 'dark' : 'light'));
   };
 
+  const getVideoObjectFitText = (value: VideoObjectFit) => {
+    return value === VideoObjectFit.COVER
+      ? t('header.room-settings.video-object-fit-cover')
+      : t('header.room-settings.video-object-fit-contain');
+  };
+
+  const getColumnCameraWidthText = (value: ColumnCameraWidth) => {
+    switch (value) {
+      case ColumnCameraWidth.FULL_WIDTH:
+        return t('header.room-settings.column-camera-width-default');
+      case ColumnCameraWidth.MEDIUM_WIDTH:
+        return t('header.room-settings.column-camera-width-medium');
+      case ColumnCameraWidth.SMALL_WIDTH:
+        return t('header.room-settings.column-camera-width-small');
+    }
+  };
+
+  const getColumnCameraPositionText = (value: ColumnCameraPosition) => {
+    switch (value) {
+      case ColumnCameraPosition.LEFT:
+        return t('header.room-settings.column-camera-position-left');
+      case ColumnCameraPosition.TOP:
+        return t('header.room-settings.column-camera-position-top');
+      case ColumnCameraPosition.BOTTOM:
+        return t('header.room-settings.column-camera-position-bottom');
+    }
+  };
+
   return (
     <div className="s">
-      <div className="grid">
+      <Field>
         <div className="flex items-center justify-start">
-          <label
+          <Label
             htmlFor="language"
-            className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right"
+            className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right"
           >
             {t('header.room-settings.language')}
-          </label>
+          </Label>
           <Listbox
             value={i18n.languages[0]}
             onChange={(e) => i18n.changeLanguage(e)}
           >
-            <div className="relative mt-1">
-              <ListboxButton className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <div className="relative w-full max-w-[250px]">
+              <ListboxButton
+                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm text-Gray-950`}
+              >
                 <span className="block truncate">{selectedLangText}</span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                  icon
+                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                  <DropdownIconSVG />
                 </span>
               </ListboxButton>
               <Transition
@@ -85,32 +118,24 @@ const ApplicationSettings = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <ListboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
                   {languages.map(({ code, text }) => {
                     return (
                       <ListboxOption
                         key={code}
                         value={code}
-                        className={({ focus }) =>
-                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                            focus
-                              ? 'bg-amber-100 text-amber-900'
-                              : 'text-gray-900'
-                          }`
+                        className={({ focus, selected }) =>
+                          `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                            focus ? 'bg-Blue2-50' : ''
+                          } ${selected ? 'bg-Blue2-50' : ''}`
                         }
                       >
                         {({ selected }) => (
                           <>
-                            <span
-                              className={`block truncate ${
-                                selected ? 'font-medium' : 'font-normal'
-                              }`}
-                            >
-                              {text}
-                            </span>
+                            <span className={`block truncate`}>{text}</span>
                             {selected ? (
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                icon
+                              <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                                <CheckMarkIcon />
                               </span>
                             ) : null}
                           </>
@@ -123,7 +148,7 @@ const ApplicationSettings = () => {
             </div>
           </Listbox>
         </div>
-      </div>
+      </Field>
       <Field>
         <div className="flex items-center justify-between my-4">
           <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
@@ -133,9 +158,7 @@ const ApplicationSettings = () => {
             checked={theme === 'dark'}
             onChange={toggleTheme}
             className={`${
-              theme === 'dark'
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
+              theme === 'dark' ? 'bg-Blue2-500' : 'bg-Gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span
@@ -146,6 +169,64 @@ const ApplicationSettings = () => {
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
+        </div>
+      </Field>
+      {/* Video Object Fit Dropdown */}
+      <Field>
+        <div className="flex items-center justify-start">
+          <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
+            {t('header.room-settings.video-object-fit')}
+          </Label>
+          <Listbox
+            value={videoObjectFit}
+            onChange={(value) => dispatch(updateVideoObjectFit(value))}
+          >
+            <div className="relative w-full max-w-[250px]">
+              <ListboxButton
+                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm text-Gray-950`}
+              >
+                <span className="block truncate">
+                  {getVideoObjectFitText(videoObjectFit)}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                  <DropdownIconSVG />
+                </span>
+              </ListboxButton>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                  {Object.values(VideoObjectFit).map((value) => (
+                    <ListboxOption
+                      key={value}
+                      value={value}
+                      className={({ focus, selected }) =>
+                        `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                          focus ? 'bg-Blue2-50' : ''
+                        } ${selected ? 'bg-Blue2-50' : ''}`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span className={`block truncate`}>
+                            {getVideoObjectFitText(value)}
+                          </span>
+                          {selected ? (
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                              <CheckMarkIcon />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Transition>
+            </div>
+          </Listbox>
         </div>
       </Field>
       <div className="grid">
@@ -174,6 +255,64 @@ const ApplicationSettings = () => {
           </select>
         </div>
       </div>
+      {/* Column Camera Width Dropdown */}
+      <Field>
+        <div className="flex items-center justify-start py-2">
+          <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
+            {t('header.room-settings.column-camera-width')}
+          </Label>
+          <Listbox
+            value={columnCameraWidth}
+            onChange={(value) => dispatch(updateColumnCameraWidth(value))}
+          >
+            <div className="relative w-full max-w-[250px]">
+              <ListboxButton
+                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm text-Gray-950`}
+              >
+                <span className="block truncate">
+                  {getColumnCameraWidthText(columnCameraWidth)}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                  <DropdownIconSVG />
+                </span>
+              </ListboxButton>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                  {Object.values(ColumnCameraWidth).map((value) => (
+                    <ListboxOption
+                      key={value}
+                      value={value}
+                      className={({ focus, selected }) =>
+                        `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                          focus ? 'bg-Blue2-50' : ''
+                        } ${selected ? 'bg-Blue2-50' : ''}`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span className={`block truncate`}>
+                            {getColumnCameraWidthText(value)}
+                          </span>
+                          {selected ? (
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                              <CheckMarkIcon />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Transition>
+            </div>
+          </Listbox>
+        </div>
+      </Field>
       <div className="grid py-2">
         <div className="flex items-center justify-start">
           <label
@@ -214,6 +353,64 @@ const ApplicationSettings = () => {
           </select>
         </div>
       </div>
+      {/* Column Camera Position Dropdown */}
+      <Field>
+        <div className="flex items-center justify-start">
+          <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
+            {t('header.room-settings.column-camera-position')}
+          </Label>
+          <Listbox
+            value={columnCameraPosition}
+            onChange={(value) => dispatch(updateColumnCameraPosition(value))}
+          >
+            <div className="relative w-full max-w-[250px]">
+              <ListboxButton
+                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm text-Gray-950`}
+              >
+                <span className="block truncate">
+                  {getColumnCameraPositionText(columnCameraPosition)}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                  <DropdownIconSVG />
+                </span>
+              </ListboxButton>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <ListboxOptions className="absolute bottom-11 z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                  {Object.values(ColumnCameraPosition).map((value) => (
+                    <ListboxOption
+                      key={value}
+                      value={value}
+                      className={({ focus, selected }) =>
+                        `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                          focus ? 'bg-Blue2-50' : ''
+                        } ${selected ? 'bg-Blue2-50' : ''}`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span className={`block truncate`}>
+                            {getColumnCameraPositionText(value)}
+                          </span>
+                          {selected ? (
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                              <CheckMarkIcon />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Transition>
+            </div>
+          </Listbox>
+        </div>
+      </Field>
       <div className="grid">
         <div className="flex items-center justify-start">
           <label
@@ -269,9 +466,7 @@ const ApplicationSettings = () => {
               )
             }
             className={`${
-              focusActiveSpeakerWebcam
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
+              focusActiveSpeakerWebcam ? 'bg-Blue2-500' : 'bg-Gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span

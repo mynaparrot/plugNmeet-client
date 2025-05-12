@@ -21,16 +21,14 @@ const Notification = () => {
     return (
       <Field>
         <div className="flex items-center justify-between mb-2">
-          <Label className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
             {t('header.room-settings.allow-audio-notification')}
           </Label>
           <Switch
             checked={allowPlayAudioNotification}
             onChange={toggleAudioNotification}
             className={`${
-              allowPlayAudioNotification
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
+              allowPlayAudioNotification ? 'bg-Blue2-500' : 'bg-Gray-200'
             } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
           >
             <span

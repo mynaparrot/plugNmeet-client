@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { isEmpty } from 'es-toolkit/compat';
@@ -8,9 +8,20 @@ import {
   IngressInput,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import {
+  Field,
+  Label,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Listbox,
+  Transition,
+} from '@headlessui/react';
 
 import { store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
+import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 
 const Ingress = () => {
   const { t } = useTranslation();
@@ -76,6 +87,17 @@ const Ingress = () => {
     }
   };
 
+  const getIngressTypeText = (type: IngressInput) => {
+    switch (type) {
+      case IngressInput.RTMP_INPUT:
+        return t('ingress-features.ingress-type-rtmp');
+      case IngressInput.WHIP_INPUT:
+        return t('ingress-features.ingress-type-whip');
+      default:
+        return '';
+    }
+  };
+
   const renderFrom = () => {
     return (
       <>
@@ -83,7 +105,7 @@ const Ingress = () => {
           <div className="flex items-center justify-between mb-2">
             <label
               htmlFor="quality"
-              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+              className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right"
             >
               {t('ingress-features.ingress-type')}
             </label>
@@ -102,10 +124,73 @@ const Ingress = () => {
               </option>
             </select>
           </div>
+          {/* Ingress Type Dropdown */}
+          <Field>
+            <div className="flex items-center justify-between mb-2">
+              <Label
+                htmlFor="ingress-type"
+                className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right"
+              >
+                {t('ingress-features.ingress-type')}
+              </Label>
+              <Listbox
+                value={ingressType}
+                onChange={(value) => setIngressType(value)}
+              >
+                <div className="relative w-full max-w-[250px]">
+                  <ListboxButton
+                    className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm`}
+                  >
+                    <span className="block truncate">
+                      {getIngressTypeText(ingressType)}
+                    </span>
+                    <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                      <DropdownIconSVG />
+                    </span>
+                  </ListboxButton>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                      {[IngressInput.RTMP_INPUT, IngressInput.WHIP_INPUT].map(
+                        (type) => (
+                          <ListboxOption
+                            key={type}
+                            value={type}
+                            className={({ focus, selected }) =>
+                              `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                                focus ? 'bg-Blue2-50' : ''
+                              } ${selected ? 'bg-Blue2-50' : ''}`
+                            }
+                          >
+                            {({ selected }) => (
+                              <>
+                                <span className={`block truncate`}>
+                                  {getIngressTypeText(type)}
+                                </span>
+                                {selected ? (
+                                  <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                                    <CheckMarkIcon />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </ListboxOption>
+                        ),
+                      )}
+                    </ListboxOptions>
+                  </Transition>
+                </div>
+              </Listbox>
+            </div>
+          </Field>
           <div className="flex items-center justify-between mb-2">
             <label
               htmlFor="stream-key"
-              className="pr-4 w-full dark:text-darkText ltr:text-left rtl:text-right"
+              className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right"
             >
               {t('ingress-features.join-as-name')}
             </label>
@@ -115,7 +200,7 @@ const Ingress = () => {
               id="name"
               value={name}
               onChange={(e) => setName(e.currentTarget.value)}
-              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
+              className="default-input !rounded-[8px] w-full max-w-[250px] !h-10"
             />
             {errorMsg ? (
               <div className="error-msg text-xs text-red-600 py-2">
@@ -123,10 +208,10 @@ const Ingress = () => {
               </div>
             ) : null}
           </div>
-          <div className="pb-3 pt-4 bg-gray-50 dark:bg-transparent text-right mt-4">
+          <div className="text-right mt-4">
             <button
               type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+              className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
             >
               {t('ingress-features.gen-link')}
             </button>
