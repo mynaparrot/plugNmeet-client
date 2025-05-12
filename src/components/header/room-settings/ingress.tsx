@@ -87,7 +87,7 @@ const Ingress = () => {
     }
   };
 
-  const getIngressTypeText = (type: IngressInput) => {
+  const getIngressTypeText = (type: number) => {
     switch (type) {
       case IngressInput.RTMP_INPUT:
         return t('ingress-features.ingress-type-rtmp');
@@ -102,29 +102,6 @@ const Ingress = () => {
     return (
       <>
         <form method="POST" onSubmit={(e) => onSubmit(e)}>
-          <div className="flex items-center justify-between mb-2">
-            <label
-              htmlFor="quality"
-              className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right"
-            >
-              {t('ingress-features.ingress-type')}
-            </label>
-            <select
-              id="quality"
-              name="quality"
-              className="mt-1 block py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              value={ingressType}
-              onChange={(e) => setIngressType(Number(e.target.value))}
-            >
-              <option value={IngressInput.RTMP_INPUT}>
-                {t('ingress-features.ingress-type-rtmp')}
-              </option>
-              <option value={IngressInput.WHIP_INPUT}>
-                {t('ingress-features.ingress-type-whip')}
-              </option>
-            </select>
-          </div>
-          {/* Ingress Type Dropdown */}
           <Field>
             <div className="flex items-center justify-between mb-2">
               <Label
@@ -155,11 +132,11 @@ const Ingress = () => {
                     leaveTo="opacity-0"
                   >
                     <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
-                      {[IngressInput.RTMP_INPUT, IngressInput.WHIP_INPUT].map(
-                        (type) => (
+                      {Object.values(IngressInput).map((val) =>
+                        typeof val !== 'number' ? null : (
                           <ListboxOption
-                            key={type}
-                            value={type}
+                            key={val}
+                            value={val}
                             className={({ focus, selected }) =>
                               `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
                                 focus ? 'bg-Blue2-50' : ''
@@ -169,7 +146,7 @@ const Ingress = () => {
                             {({ selected }) => (
                               <>
                                 <span className={`block truncate`}>
-                                  {getIngressTypeText(type)}
+                                  {getIngressTypeText(val)}
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">

@@ -62,32 +62,6 @@ const DataSavings = () => {
   const render = () => {
     return (
       <>
-        <div className="flex items-center justify-between mb-2">
-          <label
-            htmlFor="quality"
-            className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right"
-          >
-            {t('header.room-settings.video-quality')}
-          </label>
-          <select
-            id="quality"
-            name="quality"
-            className="mt-1 block py-2 px-3 border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            value={videoQuality}
-            onChange={(e) => setVideoQuality(Number(e.target.value))}
-          >
-            <option value={VideoQuality.LOW}>
-              {t('header.room-settings.low')}
-            </option>
-            <option value={VideoQuality.MEDIUM}>
-              {t('header.room-settings.medium')}
-            </option>
-            <option value={VideoQuality.HIGH}>
-              {t('header.room-settings.high')}
-            </option>
-          </select>
-        </div>
-        {/* Video Quality Dropdown */}
         <Field>
           <div className="flex items-center justify-between mb-2">
             <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
@@ -115,34 +89,32 @@ const DataSavings = () => {
                   leaveTo="opacity-0"
                 >
                   <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
-                    {[
-                      VideoQuality.LOW,
-                      VideoQuality.MEDIUM,
-                      VideoQuality.HIGH,
-                    ].map((quality) => (
-                      <ListboxOption
-                        key={quality}
-                        value={quality}
-                        className={({ focus, selected }) =>
-                          `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
-                            focus ? 'bg-Blue2-50' : ''
-                          } ${selected ? 'bg-Blue2-50' : ''}`
-                        }
-                      >
-                        {({ selected }) => (
-                          <>
-                            <span className={`block truncate`}>
-                              {getVideoQualityText(quality)}
-                            </span>
-                            {selected ? (
-                              <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
-                                <CheckMarkIcon />
+                    {Object.values(VideoQuality).map((quality) =>
+                      typeof quality !== 'number' ? null : (
+                        <ListboxOption
+                          key={`videoQuality-${quality}`}
+                          value={quality}
+                          className={({ focus, selected }) =>
+                            `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                              focus ? 'bg-Blue2-50' : ''
+                            } ${selected ? 'bg-Blue2-50' : ''}`
+                          }
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span className={`block truncate`}>
+                                {getVideoQualityText(quality)}
                               </span>
-                            ) : null}
-                          </>
-                        )}
-                      </ListboxOption>
-                    ))}
+                              {selected ? (
+                                <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                                  <CheckMarkIcon />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </ListboxOption>
+                      ),
+                    )}
                   </ListboxOptions>
                 </Transition>
               </div>
