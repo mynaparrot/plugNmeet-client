@@ -1,12 +1,18 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
 import { toast, TypeOptions } from 'react-toastify';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import {
+  UploadBase64EncodedDataReqSchema,
+  UploadBase64EncodedDataResSchema,
+} from 'plugnmeet-protocol-js';
 
 import i18n from './i18n';
 import { store } from '../store';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
+import sendAPIRequest from './api/plugNmeetAPI';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -315,4 +321,45 @@ export const displayInstantNotification = (
 
 export const isUserRecorder = (userId: string) => {
   return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
+};
+
+export const uploadBase64EncodedFile = async (
+  fileName: string,
+  base64EncodedData: string,
+) => {
+  const id = toast.loading(i18n.t('notifications.uploading-file'), {
+    type: 'info',
+  });
+  const parts = base64EncodedData.split('base64,');
+  const body = create(UploadBase64EncodedDataReqSchema, {
+    data: parts[1],
+    fileName,
+  });
+  const r = await sendAPIRequest(
+    'uploadBase64EncodedData',
+    toBinary(UploadBase64EncodedDataReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+
+  const res = fromBinary(UploadBase64EncodedDataResSchema, new Uint8Array(r));
+  if (!res.status) {
+    toast.update(id, {
+      render: res.msg,
+      type: 'error',
+      isLoading: false,
+      autoClose: 3000,
+    });
+    return undefined;
+  }
+
+  toast.update(id, {
+    render: i18n.t('right-panel.file-upload-success'),
+    type: 'success',
+    isLoading: false,
+    autoClose: 1000,
+  });
+
+  return res;
 };

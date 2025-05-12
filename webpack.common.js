@@ -21,10 +21,6 @@ const config = {
     filename: 'assets/js/[name].[contenthash].js',
     path: resolve(dirname(''), 'dist'),
   },
-  watchOptions: {
-    ignored: '**/node_modules',
-    aggregateTimeout: 1500,
-  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {

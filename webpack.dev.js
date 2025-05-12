@@ -3,6 +3,10 @@ import common from './webpack.common.js';
 
 export default merge(common, {
   mode: 'development',
+  watchOptions: {
+    ignored: '**/node_modules',
+    aggregateTimeout: 3000,
+  },
   optimization: {
     usedExports: true,
   },

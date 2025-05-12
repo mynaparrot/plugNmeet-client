@@ -14,8 +14,6 @@ import {
   DataMsgBodyType,
   AnalyticsEvents,
   AnalyticsEventType,
-  UploadBase64EncodedDataReqSchema,
-  UploadBase64EncodedDataResSchema,
 } from 'plugnmeet-protocol-js';
 
 import { store } from '../../../store';
@@ -30,10 +28,10 @@ import {
 import { encryptMessage } from '../../../helpers/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
-import { getWhiteboardDonors } from '../../../helpers/utils';
-import i18n from '../../../helpers/i18n';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import {
+  getWhiteboardDonors,
+  uploadBase64EncodedFile,
+} from '../../../helpers/utils';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000,
@@ -190,28 +188,8 @@ const uploadCanvasBinaryFile = async (
 
   // add in queue
   uploadingCanvasBinaryFile.set(file.id, elm.id);
-  const id = toast.loading(i18n.t('notifications.uploading-file'), {
-    type: 'info',
-  });
-  const body = create(UploadBase64EncodedDataReqSchema, {
-    data: file.dataURL.replace(/^data:image\/?[A-z]*;base64,/, ''),
-    fileName: `${file.id}.png`,
-  });
-  const r = await sendAPIRequest(
-    'uploadBase64EncodedData',
-    toBinary(UploadBase64EncodedDataReqSchema, body),
-    false,
-    'application/protobuf',
-    'arraybuffer',
-  );
-  const res = fromBinary(UploadBase64EncodedDataResSchema, new Uint8Array(r));
-  if (!res.status) {
-    toast.update(id, {
-      render: res.msg,
-      type: 'error',
-      isLoading: false,
-      autoClose: 3000,
-    });
+  const res = await uploadBase64EncodedFile(`${file.id}.png`, file.dataURL);
+  if (!res || !res.status) {
     return;
   }
 
@@ -243,13 +221,6 @@ const uploadCanvasBinaryFile = async (
   const files =
     store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
   conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
-
-  toast.update(id, {
-    render: i18n.t('right-panel.file-upload-success'),
-    type: 'success',
-    isLoading: false,
-    autoClose: 1000,
-  });
 
   // finally update screen
   excalidrawAPI?.updateScene({
