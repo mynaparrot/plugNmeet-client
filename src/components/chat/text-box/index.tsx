@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import sanitizeHtml from 'sanitize-html';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 
 import { store, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 import { useAutosizeTextArea } from './useAutosizeTextArea';
-import { uploadDataTransferItemFile } from '../utils';
+import { publishFileAttachmentToChat } from '../utils';
+import { uploadResumableFile } from '../../../helpers/utils';
 
 interface ITextBoxAreaProps {
   // chosenEmoji: string | null;
@@ -34,6 +34,8 @@ const TextBoxArea = ({
 
   const { t } = useTranslation();
   const conn = getNatsConn();
+  const chatFeatures =
+    store.getState().session.currentRoom.metadata?.roomFeatures?.chatFeatures;
 
   const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
   const [lockSendFile, setLockSendFile] = useState<boolean>(false);
@@ -144,15 +146,36 @@ const TextBoxArea = ({
     }
 
     if (e.clipboardData && e.clipboardData.items) {
+      const files: File[] = [];
       const items: DataTransferItemList = e.clipboardData.items;
+
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
-          const fileName = Date.now().toString() + '.png';
-          const blob: any = items[i].getAsFile();
-          uploadDataTransferItemFile(fileName, blob);
           e.preventDefault();
-          break;
+          const f = items[i].getAsFile();
+          if (f) {
+            files.push(
+              new File([f], Date.now().toString() + '.png', {
+                type: f.type,
+              }),
+            );
+          }
         }
+      }
+
+      if (files.length) {
+        uploadResumableFile(
+          chatFeatures?.allowedFileTypes ?? [],
+          chatFeatures?.maxFileSize,
+          files,
+          (result) => {
+            publishFileAttachmentToChat(
+              result.filePath,
+              result.fileName,
+            ).then();
+          },
+          undefined,
+        );
       }
     }
   };
@@ -163,42 +186,25 @@ const TextBoxArea = ({
       return;
     }
 
-    const chatFeatures =
-      store.getState().session.currentRoom.metadata?.roomFeatures?.chatFeatures;
-    const maxFileSize = chatFeatures?.maxFileSize
-      ? Number(chatFeatures.maxFileSize) * 1000000
-      : 1000000;
-
     if (e.dataTransfer && e.dataTransfer.files) {
-      // we'll upload the first file only
-      const item: File = e.dataTransfer.files[0];
-      if (item.size > maxFileSize) {
-        toast(t('notifications.max-file-size-exceeds'), {
-          type: 'error',
-          autoClose: 3000,
-        });
-        return;
+      const files: File[] = [];
+      for (const f of e.dataTransfer.files) {
+        files.push(f);
       }
-      const filename = item.name;
-      const extension = filename.slice(
-        ((filename.lastIndexOf('.') - 1) >>> 0) + 2,
-      );
-      const allowed = chatFeatures?.allowedFileTypes.find(
-        (t) => t === extension,
-      );
-      if (!allowed) {
-        toast(
-          t('notifications.file-type-not-allow', {
-            filetype: item.type,
-          }),
-          {
-            type: 'error',
-            autoClose: 3000,
+      if (files.length > 0) {
+        uploadResumableFile(
+          chatFeatures?.allowedFileTypes ?? [],
+          chatFeatures?.maxFileSize,
+          files,
+          (result: any) => {
+            publishFileAttachmentToChat(
+              result.filePath,
+              result.fileName,
+            ).then();
           },
+          undefined,
         );
-        return;
       }
-      uploadDataTransferItemFile(item.name, item);
     }
   };
 

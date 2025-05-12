@@ -6,6 +6,8 @@ import {
   UploadBase64EncodedDataReqSchema,
   UploadBase64EncodedDataResSchema,
 } from 'plugnmeet-protocol-js';
+import Resumable from 'resumablejs';
+import ResumableFile = Resumable.ResumableFile;
 
 import i18n from './i18n';
 import { store } from '../store';
@@ -13,6 +15,7 @@ import { participantsSelector } from '../store/slices/participantSlice';
 import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 import sendAPIRequest from './api/plugNmeetAPI';
+import { IUseResumableFilesUploadResult } from './hooks/useResumableFilesUpload';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -362,4 +365,149 @@ export const uploadBase64EncodedFile = async (
   });
 
   return res;
+};
+
+let isUploadingFile = false,
+  toastId = '';
+export const uploadResumableFile = (
+  allowedFileTypes: Array<string>,
+  maxFileSize: string | undefined,
+  files: Array<File>,
+  onSuccess: (result: IUseResumableFilesUploadResult) => void,
+  isUploading?: (uploading: boolean) => void,
+) => {
+  if (isUploadingFile) {
+    toast(i18n.t('notifications.please-wait-other-task-to-finish'), {
+      type: 'info',
+      autoClose: 3000,
+    });
+    return;
+  }
+
+  isUploadingFile = true;
+  const session = store.getState().session;
+  let fileName = '';
+
+  const r = new Resumable({
+    target: (window as any).PLUG_N_MEET_SERVER_URL + '/api/fileUpload',
+    uploadMethod: 'POST',
+    query: {
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.roomId,
+      userId: session.currentUser?.userId,
+      resumable: true,
+    },
+    headers: {
+      Authorization: session.token,
+    },
+    fileType: allowedFileTypes,
+    prioritizeFirstAndLastChunk: true,
+    fileTypeErrorCallback(file) {
+      toast(
+        i18n.t('notifications.file-type-not-allow', { filetype: file.type }),
+        {
+          type: 'error',
+        },
+      );
+      isUploadingFile = false;
+    },
+
+    // @ts-expect-error actually value exist
+    maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
+    maxFileSizeErrorCallback() {
+      toast(i18n.t('notifications.max-file-size-exceeds'), {
+        type: 'error',
+      });
+      isUploadingFile = false;
+    },
+  });
+
+  r.on('fileAdded', function (file) {
+    fileName = file.fileName;
+    if (!r.isUploading()) {
+      if (isUploading) {
+        isUploading(true);
+      }
+      r.upload();
+    }
+  });
+
+  r.on('fileSuccess', async (file: ResumableFile) => {
+    // file was uploaded successfully
+    // now we'll send merge request
+    const mergeReq = {
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.roomId,
+      resumableIdentifier: file.uniqueIdentifier,
+      resumableFilename: file.fileName,
+      resumableTotalChunks: file.chunks.length,
+    };
+    const res = await sendAPIRequest('/uploadedFileMerge', mergeReq, true);
+
+    if (isUploading) {
+      isUploading(false);
+    }
+    isUploadingFile = false;
+
+    setTimeout(() => {
+      toast.dismiss(toastId);
+    }, 300);
+
+    if (res.status && res.filePath && res.fileName) {
+      onSuccess({
+        filePath: res.filePath,
+        fileName: res.fileName,
+        fileExtension: res.fileExtension,
+      });
+    } else {
+      toast(i18n.t(res.msg), {
+        type: 'error',
+      });
+    }
+  });
+
+  r.on('fileError', function (file, message) {
+    isUploadingFile = false;
+    if (isUploading) {
+      isUploading(false);
+    }
+
+    setTimeout(() => {
+      toast.dismiss(toastId);
+    }, 300);
+
+    try {
+      const res = JSON.parse(message);
+      toast(i18n.t(res.msg), {
+        type: 'error',
+      });
+    } catch (e) {
+      console.error(e);
+      toast(i18n.t('right-panel.file-upload-default-error'), {
+        type: 'error',
+      });
+    }
+  });
+
+  r.on('uploadStart', function () {
+    // @ts-expect-error this value exists
+    toastId = toast(
+      i18n.t('right-panel.uploading-file', {
+        fileName,
+      }),
+      {
+        closeButton: false,
+        progress: 0,
+      },
+    );
+  });
+
+  r.on('fileProgress', function (file) {
+    const progress = file.progress(false);
+    toast.update(toastId, {
+      progress: Number(progress),
+    });
+  });
+
+  r.addFiles(files);
 };

@@ -2,22 +2,6 @@ import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import { getNatsConn } from '../../helpers/nats';
-import { uploadBase64EncodedFile } from '../../helpers/utils';
-
-export const uploadDataTransferItemFile = (
-  fileName: string,
-  file: Blob | File,
-) => {
-  const reader = new FileReader();
-  reader.onload = async function (event: any) {
-    const base64String = event.target.result;
-    const res = await uploadBase64EncodedFile(fileName, base64String);
-    if (res && res.status) {
-      publishFileAttachmentToChat(res.filePath, res.fileName).then();
-    }
-  };
-  reader.readAsDataURL(file);
-};
 
 export const publishFileAttachmentToChat = async (
   filePath: string,
