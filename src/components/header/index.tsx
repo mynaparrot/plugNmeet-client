@@ -6,6 +6,7 @@ import {
   MenuButton,
   Transition,
   TransitionChild,
+  Button,
 } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +34,7 @@ import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 import { isUserRecorder } from '../../helpers/utils';
+import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 
 const Header = () => {
   const roomTitle = useAppSelector(
@@ -107,28 +109,10 @@ const Header = () => {
         <Transition appear show={showModal} as={Fragment}>
           <Dialog
             as="div"
-            className="AlertModal fixed inset-0 z-[9999] overflow-y-auto"
+            className="LogoutModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
             onClose={() => false}
           >
-            <div className="min-h-screen px-4 text-center">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0 bg-black opacity-30" />
-              </TransitionChild>
-
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
+            <div className="flex min-h-full items-center justify-center p-4">
               <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -138,38 +122,31 @@ const Header = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
-                  <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
-                    type="button"
-                    onClick={() => onCloseAlertModal()}
-                  >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-                  </button>
-
+                <div className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out">
                   <DialogTitle
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
+                    className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
                   >
-                    {t('header.menus.alert.confirm')}
+                    <span>{t('header.menus.alert.confirm')}</span>
+                    <Button onClick={() => onCloseAlertModal()}>
+                      <PopupCloseSVGIcon classes="text-Gray-600" />
+                    </Button>
                   </DialogTitle>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500 dark:text-darkText">
-                      {alertText}
-                    </p>
+                  <hr />
+                  <div className="mt-4">
+                    <p className="text-sm text-Gray-900">{alertText}</p>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-8 flex items-center justify-end gap-2">
                     <button
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 ltr:mr-4 rtl:ml-4 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                      className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
                       onClick={() => onCloseAlertModal(true)}
                     >
                       {t('ok')}
                     </button>
                     <button
                       type="button"
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium bg-primaryColor hover:bg-secondaryColor text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                      className="h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
                       onClick={() => onCloseAlertModal(false)}
                     >
                       {t('close')}
