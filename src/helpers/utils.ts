@@ -404,11 +404,8 @@ export const uploadResumableFile = (
 
     fileType: allowedFileTypes,
     fileTypeErrorCallback(file) {
-      const extension = file.name.slice(
-        ((file.name.lastIndexOf('.') - 1) >>> 0) + 2,
-      );
       toast(
-        i18n.t('notifications.file-type-not-allow', { filetype: extension }),
+        i18n.t('notifications.file-type-not-allow', { filetype: file.type }),
         {
           type: 'error',
         },
