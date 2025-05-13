@@ -446,11 +446,16 @@ const MenusIcon = () => {
                   {roomFeatures?.pollsFeatures?.isAllow ? (
                     <MenuItem>
                       <button
-                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`relative h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => togglePolls()}
                       >
                         <PollsIconSVG />
                         {isActivePoll ? 'Disable polls' : 'Enable Polls'}
+                        {isActivePoll ? (
+                          <>
+                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
+                          </>
+                        ) : null}
                       </button>
                     </MenuItem>
                   ) : null}
