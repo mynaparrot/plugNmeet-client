@@ -400,11 +400,15 @@ export const uploadResumableFile = (
     headers: {
       Authorization: session.token,
     },
-    fileType: allowedFileTypes,
     prioritizeFirstAndLastChunk: true,
+
+    fileType: allowedFileTypes,
     fileTypeErrorCallback(file) {
+      const extension = file.name.slice(
+        ((file.name.lastIndexOf('.') - 1) >>> 0) + 2,
+      );
       toast(
-        i18n.t('notifications.file-type-not-allow', { filetype: file.type }),
+        i18n.t('notifications.file-type-not-allow', { filetype: extension }),
         {
           type: 'error',
         },

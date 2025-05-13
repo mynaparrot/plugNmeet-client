@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, DragEvent } from 'react';
 // import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
 import { store, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
+import { uploadResumableFile } from '../../helpers/utils';
+import { publishFileAttachmentToChat } from './utils';
 
 const ChatComponent = () => {
   const isChatLock = useAppSelector(
@@ -58,8 +60,46 @@ const ChatComponent = () => {
     }
   };
 
+  const handleOnDrop = (e: DragEvent) => {
+    e.preventDefault();
+
+    const session = store.getState().session;
+    const chatFeatures =
+      session.currentRoom.metadata?.roomFeatures?.chatFeatures;
+
+    const lockSettings = session.currentUser?.metadata?.lockSettings;
+    if (lockSettings?.lockChatSendMessage || lockSettings?.lockChatFileShare) {
+      return;
+    }
+
+    if (e.dataTransfer && e.dataTransfer.files) {
+      const files: File[] = [];
+      for (const f of e.dataTransfer.files) {
+        files.push(f);
+      }
+      if (files.length > 0) {
+        uploadResumableFile(
+          chatFeatures?.allowedFileTypes ?? [],
+          chatFeatures?.maxFileSize,
+          files,
+          (result: any) => {
+            publishFileAttachmentToChat(
+              result.filePath,
+              result.fileName,
+            ).then();
+          },
+          undefined,
+        );
+      }
+    }
+  };
+
   return (
-    <div className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full">
+    <div
+      className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full"
+      onDrop={handleOnDrop}
+      onDragOver={(e) => e.preventDefault()}
+    >
       <div className="h-full">
         <div className="all-MessageModule-wrap h-full">
           <ChatTabs />

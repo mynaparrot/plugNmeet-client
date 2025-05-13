@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, ClipboardEvent } from 'react';
 import sanitizeHtml from 'sanitize-html';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
@@ -140,23 +140,27 @@ const TextBoxArea = ({
     }
   };
 
-  const handleOnPaste = (e) => {
+  const handleOnPaste = (e: ClipboardEvent) => {
     if (isLockSendFile || isLockChatSendMsg) {
       return;
     }
 
     if (e.clipboardData && e.clipboardData.items) {
       const files: File[] = [];
-      const items: DataTransferItemList = e.clipboardData.items;
+      const items = e.clipboardData.items;
 
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           e.preventDefault();
           const f = items[i].getAsFile();
           if (f) {
+            const extension = f.name.slice(
+              ((f.name.lastIndexOf('.') - 1) >>> 0) + 2,
+            );
             files.push(
-              new File([f], Date.now().toString() + '.png', {
+              new File([f], Date.now().toString() + '.' + extension, {
                 type: f.type,
+                lastModified: f.lastModified,
               }),
             );
           }
@@ -180,39 +184,8 @@ const TextBoxArea = ({
     }
   };
 
-  const handleOnDrop = (e) => {
-    e.preventDefault();
-    if (isLockSendFile || isLockChatSendMsg) {
-      return;
-    }
-
-    if (e.dataTransfer && e.dataTransfer.files) {
-      const files: File[] = [];
-      for (const f of e.dataTransfer.files) {
-        files.push(f);
-      }
-      if (files.length > 0) {
-        uploadResumableFile(
-          chatFeatures?.allowedFileTypes ?? [],
-          chatFeatures?.maxFileSize,
-          files,
-          (result: any) => {
-            publishFileAttachmentToChat(
-              result.filePath,
-              result.fileName,
-            ).then();
-          },
-          undefined,
-        );
-      }
-    }
-  };
-
   return (
-    <div
-      className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full"
-      onDrop={handleOnDrop}
-    >
+    <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
       {showSendFile ? <FileSend lockSendFile={lockSendFile} /> : null}
       <textarea
         name="message-textarea"
