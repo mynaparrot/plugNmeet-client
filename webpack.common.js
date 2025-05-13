@@ -109,7 +109,7 @@ const config = {
     },
     new webpack.DefinePlugin({
       IS_PRODUCTION: isProduction,
-      PNM_VERSION: JSON.stringify(pkg.version),
+      PNM_VERSION: JSON.stringify(pkg.default.version),
       BUILD_TIME: Math.floor(Date.now() / 1000),
       process: {
         env: {
