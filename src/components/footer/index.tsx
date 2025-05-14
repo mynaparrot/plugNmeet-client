@@ -63,7 +63,7 @@ const Footer = () => {
                 <WhiteboardIcon />
                 <RaiseHandIcon />
                 <SharedNotePadIcon />
-                {roomFeatures?.pollsFeatures?.isAllow ? <PollsIcon /> : null}
+                <PollsIcon />
                 <RecordingIcon />
                 {isAdmin ? <MenusIcon /> : null}
               </div>

@@ -370,12 +370,14 @@ const MenusIcon = () => {
                           </div>
                         ) : null} */}
                         <RTMPIconSVG />
-                        {isActiveRtmpBroadcasting
-                          ? t('footer.icons.stop-rtmp-broadcasting')
-                          : t('footer.icons.start-rtmp-broadcasting')}
                         {isActiveRtmpBroadcasting ? (
-                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                        ) : null}
+                          <>
+                            {t('footer.icons.stop-rtmp-broadcasting')}
+                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                          </>
+                        ) : (
+                          t('footer.icons.start-rtmp-broadcasting')
+                        )}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -387,12 +389,14 @@ const MenusIcon = () => {
                         onClick={() => toggleExternalMediaPlayer()}
                       >
                         <PlayerIconSVG />
-                        {isActiveExternalMediaPlayer
-                          ? t('footer.menus.stop-external-media-player')
-                          : t('footer.menus.start-external-media-player')}
                         {isActiveExternalMediaPlayer ? (
-                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                        ) : null}
+                          <>
+                            {t('footer.menus.stop-external-media-player')}
+                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                          </>
+                        ) : (
+                          t('footer.menus.start-external-media-player')
+                        )}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -403,12 +407,14 @@ const MenusIcon = () => {
                         onClick={() => toggleDisplayExternalLinkModal()}
                       >
                         <ExternalPlayerIconSVG />
-                        {isActiveDisplayExternalLink
-                          ? t('footer.menus.stop-display-external-link')
-                          : t('footer.menus.start-display-external-link')}
                         {isActiveDisplayExternalLink ? (
-                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                        ) : null}
+                          <>
+                            {t('footer.menus.stop-display-external-link')}
+                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                          </>
+                        ) : (
+                          t('footer.menus.start-display-external-link')
+                        )}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -420,12 +426,14 @@ const MenusIcon = () => {
                         onClick={() => toggleSharedNotepad()}
                       >
                         <SharedNotepadIconSVG />
-                        {sharedNotepadStatus
-                          ? t('footer.menus.disable-shared-notepad')
-                          : t('footer.menus.enable-shared-notepad')}
-                        {/* {isActiveExternalMediaPlayer ? (
-                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                        ) : null} */}
+                        {sharedNotepadStatus ? (
+                          <>
+                            {t('footer.menus.disable-shared-notepad')}
+                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                          </>
+                        ) : (
+                          t('footer.menus.enable-shared-notepad')
+                        )}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -437,9 +445,6 @@ const MenusIcon = () => {
                     >
                       <SpeechIconSVG />
                       {t('footer.menus.speech-to-text-settings')}
-                      {/* {isActiveExternalMediaPlayer ? (
-                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                      ) : null} */}
                     </button>
                   </MenuItem>
                   {/* ) : null} */}
@@ -450,12 +455,14 @@ const MenusIcon = () => {
                         onClick={() => togglePolls()}
                       >
                         <PollsIconSVG />
-                        {isActivePoll ? 'Disable polls' : 'Enable Polls'}
                         {isActivePoll ? (
                           <>
+                            {t('footer.menus.disable-polls')}
                             <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
                           </>
-                        ) : null}
+                        ) : (
+                          t('footer.menus.enable-polls')
+                        )}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -468,9 +475,6 @@ const MenusIcon = () => {
                       >
                         <i className="pnm-waiting-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                         {t('footer.menus.manage-waiting-room')}
-                        {/* {isActiveExternalMediaPlayer ? (
-                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                        ) : null} */}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -482,9 +486,6 @@ const MenusIcon = () => {
                       >
                         <BreakoutRoomIconSVG />
                         {t('footer.menus.manage-breakout-room')}
-                        {/* {isActiveExternalMediaPlayer ? (
-                          <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                        ) : null} */}
                       </button>
                     </MenuItem>
                   ) : null}
@@ -495,9 +496,6 @@ const MenusIcon = () => {
                     >
                       <i className="pnm-mic-mute text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
                       {t('footer.menus.mute-all-users')}
-                      {/* {isActiveExternalMediaPlayer ? (
-                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                      ) : null} */}
                     </button>
                   </MenuItem>
                   <MenuItem>
@@ -507,9 +505,6 @@ const MenusIcon = () => {
                     >
                       <RoomLockIconSVG />
                       {t('footer.menus.room-lock-settings')}
-                      {/* {isActiveExternalMediaPlayer ? (
-                        <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
-                      ) : null} */}
                     </button>
                   </MenuItem>
                 </MenuItems>
