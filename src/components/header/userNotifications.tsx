@@ -22,7 +22,7 @@ const UserNotifications = () => {
   );
   const [notificationElms, setNotificationElms] = useState<ReactElement[]>([]);
   const [hasUnreadNotifications, setHasUnreadNotifications] =
-    useState<boolean>(false);
+    useState<number>(0);
 
   const displayToast = (notification: UserNotification) => {
     toast(notification.message, {
@@ -30,7 +30,7 @@ const UserNotifications = () => {
       autoClose: notification.autoClose,
       toastId: notification.newInstance ? undefined : toastId.current,
     });
-    setHasUnreadNotifications(true);
+    setHasUnreadNotifications((prevState) => prevState + 1);
   };
 
   useEffect(() => {
@@ -95,10 +95,10 @@ const UserNotifications = () => {
   const displayIcon = useCallback(
     (open: boolean) => {
       if (open) {
-        setHasUnreadNotifications(false);
+        setHasUnreadNotifications(0);
       }
-      if (hasUnreadNotifications) {
-        return <>Notif!</>;
+      if (hasUnreadNotifications > 0) {
+        return <>Notif({hasUnreadNotifications})</>;
       } else {
         return <>Notif</>;
       }
