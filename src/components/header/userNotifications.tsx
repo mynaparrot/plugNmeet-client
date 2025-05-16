@@ -95,7 +95,7 @@ const UserNotifications = () => {
   const displayIcon = useCallback(
     (open: boolean) => {
       if (open) {
-        setHasUnreadNotifications(0);
+        setTimeout(() => setHasUnreadNotifications(0), 300);
       }
       if (hasUnreadNotifications > 0) {
         return <>Notif({hasUnreadNotifications})</>;
