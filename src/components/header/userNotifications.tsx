@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  ReactElement,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useState, ReactElement, useRef, useEffect } from 'react';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { toast } from 'react-toastify';
 
@@ -37,7 +31,7 @@ const UserNotifications = () => {
     if (!userNotifications.length) {
       return;
     }
-    // get the first element to display notification
+    // get the last element to display as notification
     const toDisplay = userNotifications[userNotifications.length - 1];
     displayToast(toDisplay);
 
@@ -92,19 +86,16 @@ const UserNotifications = () => {
     //eslint-disable-next-line
   }, [userNotifications]);
 
-  const displayIcon = useCallback(
-    (open: boolean) => {
-      if (open) {
-        setTimeout(() => setHasUnreadNotifications(0), 300);
-      }
-      if (hasUnreadNotifications > 0) {
-        return <>Notif({hasUnreadNotifications})</>;
-      } else {
-        return <>Notif</>;
-      }
-    },
-    [hasUnreadNotifications],
-  );
+  const displayIcon = (open: boolean) => {
+    if (open) {
+      setTimeout(() => setHasUnreadNotifications(0), 300);
+    }
+    if (hasUnreadNotifications > 0) {
+      return <>Notif({hasUnreadNotifications})</>;
+    } else {
+      return <>Notif</>;
+    }
+  };
 
   return (
     <Popover className="relative">
