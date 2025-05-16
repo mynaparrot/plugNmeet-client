@@ -9,6 +9,7 @@ import {
   InitiatePrivateChat,
   IRoomSettings,
   UnreadMsgFromPayload,
+  UserNotification,
   VideoObjectFit,
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
@@ -46,6 +47,7 @@ const initialState: IRoomSettings = {
   visibleFooter: true,
   isPNMWindowTabVisible: true,
   focusActiveSpeakerWebcam: true,
+  userNotifications: [],
 };
 
 const roomSettingsSlice = createSlice({
@@ -174,6 +176,12 @@ const roomSettingsSlice = createSlice({
     addSelfInsertedE2EESecretKey: (state, action: PayloadAction<string>) => {
       state.selfInsertedE2EESecretKey = action.payload;
     },
+    addUserNotification: (state, action: PayloadAction<UserNotification>) => {
+      if (!action.payload.created) {
+        action.payload.created = Date.now();
+      }
+      state.userNotifications.push(action.payload);
+    },
   },
 });
 
@@ -208,6 +216,7 @@ export const {
   updatePinCamUserId,
   updateFocusActiveSpeakerWebcam,
   addSelfInsertedE2EESecretKey,
+  addUserNotification,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

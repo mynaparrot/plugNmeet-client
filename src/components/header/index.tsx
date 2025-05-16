@@ -19,6 +19,7 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   useAppSelector,
   store,
+  useAppDispatch,
   // useAppDispatch
 } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
@@ -35,6 +36,8 @@ import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 import { isUserRecorder } from '../../helpers/utils';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
+import UserNotifications from './userNotifications';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 const Header = () => {
   const roomTitle = useAppSelector(
@@ -43,6 +46,7 @@ const Header = () => {
   const headerVisible = useAppSelector(
     (state) => state.roomSettings.visibleHeader,
   );
+  const dispatch = useAppDispatch();
   // const dispatch = useAppDispatch();
   const conn = getNatsConn();
   const isRecorder = isUserRecorder(
@@ -182,6 +186,20 @@ const Header = () => {
           <div className="left relative z-20 flex items-center gap-5 w-60">
             <HeaderLogo />
             <DarkThemeSwitcher />
+            <div
+              onClick={() => {
+                dispatch(
+                  addUserNotification({
+                    message: 'Test: ' + Date.now(),
+                    typeOption: 'success',
+                    notificationCat: 'default',
+                    newInstance: true,
+                  }),
+                );
+              }}
+            >
+              Test
+            </div>
           </div>
           <div className="middle flex-auto relative z-20">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 leading-tight text-center">
@@ -190,6 +208,7 @@ const Header = () => {
           </div>
           <div className="right flex items-center justify-end relative z-20 -right-3 w-60">
             <DurationView />
+            <UserNotifications />
             <VolumeControl />
             <Menu>
               {({ open }) => (

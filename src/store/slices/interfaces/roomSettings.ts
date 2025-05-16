@@ -1,5 +1,6 @@
 import { VideoQuality } from 'livekit-client';
 import { Theme } from '@excalidraw/excalidraw/element/types';
+import type { TypeOptions } from 'react-toastify';
 
 import { AzureTokenInfo } from '../../../components/speech-to-text-service/helpers/apiConnections';
 
@@ -41,6 +42,7 @@ export interface IRoomSettings {
   pinCamUserId?: string;
   focusActiveSpeakerWebcam: boolean;
   selfInsertedE2EESecretKey?: string;
+  userNotifications: UserNotification[];
 }
 
 export interface IMediaDevice {
@@ -69,3 +71,18 @@ export enum ColumnCameraPosition {
   TOP = 'top',
   BOTTOM = 'bottom',
 }
+
+export interface UserNotification {
+  message: string;
+  typeOption: TypeOptions;
+  notificationCat: NotificationCats;
+  data?: string;
+  newInstance?: boolean;
+  autoClose?: number | false;
+  created?: number;
+}
+
+export type NotificationCats =
+  | 'new-poll-created'
+  | 'breakout-room-invitation'
+  | 'default';
