@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../store';
-import { displayInstantNotification } from '../../helpers/utils';
+import { store, useAppDispatch, useAppSelector } from '../../store';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 const DurationView = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const isRecorder = store.getState().session.currentUser?.isRecorder;
   const roomDuration = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomFeatures?.roomDuration,
@@ -64,14 +65,17 @@ const DurationView = () => {
       case '30:00':
       case '10:00':
       case '5:00':
-        displayInstantNotification(
-          t('notifications.room-will-end-in', {
-            minutes: remaining,
+        dispatch(
+          addUserNotification({
+            message: t('notifications.room-will-end-in', {
+              minutes: remaining,
+            }),
+            typeOption: 'warning',
           }),
-          'warning',
         );
     }
-  }, [isRecorder, remaining, t]);
+    //eslint-disable-next-line
+  }, [remaining]);
 
   return !roomDuration ? null : (
     <>

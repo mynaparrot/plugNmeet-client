@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
@@ -12,6 +11,7 @@ import {
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
 import { decryptMessage } from '../cryptoMessages';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleWhiteboard {
   private _isEnabledE2EE: boolean | undefined = undefined;
@@ -75,9 +75,12 @@ export default class HandleWhiteboard {
       try {
         return await decryptMessage(msg);
       } catch (e: any) {
-        toast('Decryption error: ' + e.message, {
-          type: 'error',
-        });
+        store.dispatch(
+          addUserNotification({
+            message: 'Decryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
         console.error('Decryption error:' + e.message);
         return undefined;
       }

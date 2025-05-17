@@ -34,10 +34,13 @@ import {
   updateIsActiveParticipantsPanel,
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
-import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
+import {
+  addUserNotification,
+  updatePlayAudioNotification,
+} from '../../store/slices/roomSettingsSlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { getMediaServerConn } from '../livekit/utils';
-import { displayInstantNotification, isUserRecorder } from '../utils';
+import { isUserRecorder } from '../utils';
 
 export default class HandleParticipants {
   private _that: ConnectNats;
@@ -318,11 +321,13 @@ export default class HandleParticipants {
       }
       // also play notification
       store.dispatch(updatePlayAudioNotification(true));
-      displayInstantNotification(
-        i18n.t('waiting-room.user-waiting', {
-          name: name,
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('waiting-room.user-waiting', {
+            name: name,
+          }),
+          typeOption: 'info',
         }),
-        'info',
       );
     }
   }

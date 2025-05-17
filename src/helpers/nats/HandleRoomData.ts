@@ -16,7 +16,8 @@ import i18n from '../i18n';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
 import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/whiteboard';
-import { displayInstantNotification, sleep } from '../utils';
+import { sleep } from '../utils';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
@@ -86,14 +87,18 @@ export default class HandleRoomData {
 
     const isActiveRecording = store.getState().session.isActiveRecording;
     if (!isActiveRecording && this._room.metadata?.isRecording) {
-      displayInstantNotification(
-        i18n.t('room-metadata.session-recording'),
-        'info',
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('room-metadata.session-recording'),
+          typeOption: 'info',
+        }),
       );
     } else if (isActiveRecording && !this._room.metadata?.isRecording) {
-      displayInstantNotification(
-        i18n.t('room-metadata.session-not-recording'),
-        'info',
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('room-metadata.session-not-recording'),
+          typeOption: 'info',
+        }),
       );
     }
   };
@@ -107,9 +112,19 @@ export default class HandleRoomData {
     const isActiveRtmpBroadcasting =
       store.getState().session.isActiveRtmpBroadcasting;
     if (!isActiveRtmpBroadcasting && this._room.metadata?.isActiveRtmp) {
-      displayInstantNotification(i18n.t('room-metadata.rtmp-started'), 'info');
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('room-metadata.rtmp-started'),
+          typeOption: 'info',
+        }),
+      );
     } else if (isActiveRtmpBroadcasting && !this._room.metadata?.isActiveRtmp) {
-      displayInstantNotification(i18n.t('room-metadata.rtmp-stopped'), 'info');
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('room-metadata.rtmp-stopped'),
+          typeOption: 'info',
+        }),
+      );
     }
   };
 

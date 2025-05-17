@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
   CommonResponseSchema,
@@ -10,13 +9,15 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { IUseCloudRecordingReturn, RecordingType } from './IRecording';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
-import { store } from '../../../../store';
+import { store, useAppDispatch } from '../../../../store';
+import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
 
 const useCloudRecording = (): IUseCloudRecordingReturn => {
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_LOCAL;
   const [hasError, setHasError] = useState<boolean>(false);
   const { t } = useTranslation();
   const currentRoom = store.getState().session.currentRoom;
+  const dispatch = useAppDispatch();
 
   const startRecording = async () => {
     const body = create(RecordingReqSchema, {
@@ -43,10 +44,12 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
       msg = res.msg;
     }
 
-    toast(t(msg), {
-      toastId: 'recording-status',
-      type: 'info',
-    });
+    dispatch(
+      addUserNotification({
+        message: t(msg),
+        typeOption: 'info',
+      }),
+    );
   };
 
   const stopRecording = async () => {
@@ -69,10 +72,12 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
       msg = res.msg;
     }
 
-    toast(t(msg).toString(), {
-      toastId: 'recording-status',
-      type: 'info',
-    });
+    dispatch(
+      addUserNotification({
+        message: t(msg),
+        typeOption: 'info',
+      }),
+    );
   };
 
   const resetError = () => {

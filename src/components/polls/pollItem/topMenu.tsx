@@ -8,12 +8,13 @@ import {
 } from '@headlessui/react';
 import { create } from '@bufbuild/protobuf';
 import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import { useClosePollMutation } from '../../../store/services/pollsApi';
 import { PollDataWithOption, publishPollResultByChat } from '../utils';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { useAppDispatch } from '../../../store';
 
 interface TopMenuProps {
   isRunning: boolean;
@@ -27,6 +28,7 @@ const TopMenu = ({
   pollDataWithOption,
 }: TopMenuProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [closePoll, { data: closePollRes, isLoading }] = useClosePollMutation();
 
   const endPoll = () => {
@@ -43,16 +45,22 @@ const TopMenu = ({
   useEffect(() => {
     if (closePollRes) {
       if (closePollRes.status) {
-        toast(t('polls.end-poll-success'), {
-          type: 'info',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('polls.end-poll-success'),
+            typeOption: 'info',
+          }),
+        );
       } else {
-        toast(t(closePollRes.msg), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t(closePollRes.msg),
+            typeOption: 'error',
+          }),
+        );
       }
     }
-  }, [closePollRes, t]);
+  }, [closePollRes, dispatch, t]);
 
   return (
     <Menu as="div">

@@ -16,6 +16,7 @@ import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 import sendAPIRequest from './api/plugNmeetAPI';
 import { IUseResumableFilesUploadResult } from './hooks/useResumableFilesUpload';
+import { addUserNotification } from '../store/slices/roomSettingsSlice';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -377,10 +378,12 @@ export const uploadResumableFile = (
   isUploading?: (uploading: boolean) => void,
 ) => {
   if (isUploadingFile) {
-    toast(i18n.t('notifications.please-wait-other-task-to-finish'), {
-      type: 'info',
-      autoClose: 3000,
-    });
+    store.dispatch(
+      addUserNotification({
+        message: i18n.t('notifications.please-wait-other-task-to-finish'),
+        typeOption: 'warning',
+      }),
+    );
     return;
   }
 
@@ -404,11 +407,13 @@ export const uploadResumableFile = (
 
     fileType: allowedFileTypes,
     fileTypeErrorCallback(file) {
-      toast(
-        i18n.t('notifications.file-type-not-allow', { filetype: file.type }),
-        {
-          type: 'error',
-        },
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('notifications.file-type-not-allow', {
+            filetype: file.type,
+          }),
+          typeOption: 'error',
+        }),
       );
       isUploadingFile = false;
     },
@@ -416,9 +421,12 @@ export const uploadResumableFile = (
     // @ts-expect-error actually value exist
     maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
     maxFileSizeErrorCallback() {
-      toast(i18n.t('notifications.max-file-size-exceeds'), {
-        type: 'error',
-      });
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('notifications.max-file-size-exceeds'),
+          typeOption: 'error',
+        }),
+      );
       isUploadingFile = false;
     },
   });
@@ -479,14 +487,20 @@ export const uploadResumableFile = (
 
     try {
       const res = JSON.parse(message);
-      toast(i18n.t(res.msg), {
-        type: 'error',
-      });
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t(res.msg),
+          typeOption: 'error',
+        }),
+      );
     } catch (e) {
       console.error(e);
-      toast(i18n.t('right-panel.file-upload-default-error'), {
-        type: 'error',
-      });
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('right-panel.file-upload-default-error'),
+          typeOption: 'error',
+        }),
+      );
     }
   });
 

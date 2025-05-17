@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import RecordingModal from './recording/recordingModal';
 import { RecordingEvent, RecordingType } from './recording/IRecording';
 import useLocalRecording from './recording/useLocalRecording';
 import useCloudRecording from './recording/useCloudRecording';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const RecordingIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
+  const dispatch = useAppDispatch();
   const {
     hasError: localRecordingError,
     recordingEvent: localRecordingEvent,
@@ -142,10 +143,12 @@ const RecordingIcon = () => {
 
         const timer = setTimeout(() => {
           setDisable(false);
-          toast(t('footer.notice.recording-did-not-stop'), {
-            toastId: 'recording-status',
-            type: 'error',
-          });
+          dispatch(
+            addUserNotification({
+              message: t('footer.notice.recording-did-not-stop'),
+              typeOption: 'error',
+            }),
+          );
         }, 30000);
         setTimer(timer);
       }
@@ -164,10 +167,12 @@ const RecordingIcon = () => {
 
       const timer = setTimeout(() => {
         setDisable(false);
-        toast(t('footer.notice.recording-not-start'), {
-          toastId: 'recording-status',
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('footer.notice.recording-not-start'),
+            typeOption: 'error',
+          }),
+        );
       }, 30000);
       setTimer(timer);
     }

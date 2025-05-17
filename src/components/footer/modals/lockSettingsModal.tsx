@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useState } from 'react';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -19,6 +18,7 @@ import {
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const LockSettingsModal = () => {
   const dispatch = useAppDispatch();
@@ -56,14 +56,19 @@ const LockSettingsModal = () => {
       const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
       if (res.status) {
-        toast(t('footer.notice.applied-settings'), {
-          toastId: 'lock-setting-status',
-          type: 'info',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('footer.notice.applied-settings'),
+            typeOption: 'info',
+          }),
+        );
       } else {
-        toast(res.msg, {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: res.msg,
+            typeOption: 'error',
+          }),
+        );
       }
 
       setIsBusy(false);

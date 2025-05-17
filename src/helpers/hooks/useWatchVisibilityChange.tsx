@@ -4,15 +4,15 @@ import {
   AnalyticsEventType,
   DataMsgBodyType,
 } from 'plugnmeet-protocol-js';
-import { useDispatch } from 'react-redux';
 
 import { getNatsConn } from '../nats';
 import { updateIsPNMWindowTabVisible } from '../../store/slices/roomSettingsSlice';
+import { useAppDispatch } from '../../store';
 
 const useWatchVisibilityChange = () => {
   const [hidden, setHidden] = useState<boolean>(false);
   const conn = getNatsConn();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const onBlur = () => {

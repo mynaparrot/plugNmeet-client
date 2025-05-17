@@ -75,11 +75,12 @@ export enum ColumnCameraPosition {
 export interface UserNotification {
   message: string;
   typeOption: TypeOptions;
-  notificationCat: NotificationCats;
+  notificationCat?: NotificationCats;
   data?: string;
   newInstance?: boolean;
   autoClose?: number | false;
   created?: number;
+  disableToastNotification?: boolean;
 }
 
 export type NotificationCats =

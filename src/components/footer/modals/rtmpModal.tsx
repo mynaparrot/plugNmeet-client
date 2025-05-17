@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogPanel, Button } from '@headlessui/react';
 import { isURL, isEmpty } from 'validator';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
   CommonResponseSchema,
@@ -14,6 +13,7 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
@@ -91,11 +91,12 @@ const RtmpModal = () => {
     if (!res.status) {
       msg = res.msg;
     }
-
-    toast(t(msg), {
-      toastId: 'rtmp-status',
-      type: 'info',
-    });
+    dispatch(
+      addUserNotification({
+        message: t(msg),
+        typeOption: 'info',
+      }),
+    );
 
     dispatch(updateShowRtmpModal(false));
   };
@@ -234,11 +235,12 @@ const RtmpModal = () => {
     if (!res.status) {
       msg = res.msg;
     }
-
-    toast(t(msg), {
-      toastId: 'rtmp-status',
-      type: 'info',
-    });
+    dispatch(
+      addUserNotification({
+        message: t(msg),
+        typeOption: 'info',
+      }),
+    );
   };
 
   const alertModal = () => {

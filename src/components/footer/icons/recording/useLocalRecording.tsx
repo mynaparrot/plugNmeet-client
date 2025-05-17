@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { Track } from 'livekit-client';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
@@ -9,13 +8,15 @@ import {
   RecordingEvent,
   RecordingType,
 } from './IRecording';
-import { store } from '../../../../store';
+import { store, useAppDispatch } from '../../../../store';
 import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../../helpers/nats';
+import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
 
 const useLocalRecording = (): IUseLocalRecordingReturn => {
   const currentRoom = getMediaServerConnRoom();
   const conn = getNatsConn();
+  const dispatch = useAppDispatch();
 
   const [recordingEvent, setRecordingEvent] = useState<RecordingEvent>(
     RecordingEvent.NONE,
@@ -45,10 +46,12 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
       startRecorder(captureStream);
     } catch (e) {
       const err = `Error: ${e}`;
-      toast(err, {
-        toastId: 'recording-status',
-        type: 'error',
-      });
+      dispatch(
+        addUserNotification({
+          message: err,
+          typeOption: 'info',
+        }),
+      );
       setHasError(true);
       setCaptureStream(null);
     }
@@ -152,7 +155,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
     setRecorder(recorder);
   };
 
-  const broadcastNotification = async (start = true) => {
+  const broadcastNotification = (start = true) => {
     let msg = t('notifications.local-recording-ended', {
       name: session.currentUser?.name,
     });

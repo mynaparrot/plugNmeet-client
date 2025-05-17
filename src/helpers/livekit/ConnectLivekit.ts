@@ -43,6 +43,7 @@ import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -367,10 +368,12 @@ export default class ConnectLivekit
         if (connectionQuality === ConnectionQuality.Lost) {
           msg = i18n.t('notifications.your-connection-quality-lost');
         }
-        toast(msg, {
-          toastId: 'connection-status',
-          type: 'error',
-        });
+        store.dispatch(
+          addUserNotification({
+            message: msg,
+            typeOption: 'error',
+          }),
+        );
       }
     }
 
