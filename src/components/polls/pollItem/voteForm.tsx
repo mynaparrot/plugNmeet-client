@@ -7,19 +7,19 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
-import { toast } from 'react-toastify';
 import {
   DataMsgBodyType,
   SubmitPollResponseReqSchema,
 } from 'plugnmeet-protocol-js';
 
-import { store } from '../../../store';
+import { store, useAppDispatch } from '../../../store';
 import {
   useAddResponseMutation,
   useGetUserSelectedOptionQuery,
 } from '../../../store/services/pollsApi';
 import { getNatsConn } from '../../../helpers/nats';
 import { PollDataWithOption } from '../utils';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 interface PollFormProps {
   pollDataWithOption: PollDataWithOption;
@@ -28,6 +28,7 @@ interface PollFormProps {
 
 const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [selectedOption, setSelectedOption] = useState<number>();
   const [locked, setLocked] = useState<boolean>(false);
   const conn = getNatsConn();
@@ -74,17 +75,23 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   useEffect(() => {
     if (!isLoading && addReqResponse) {
       if (addReqResponse.status) {
-        toast(t('polls.response-added'), {
-          type: 'info',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('polls.response-added'),
+            typeOption: 'info',
+          }),
+        );
       } else {
-        toast(t(addReqResponse.msg), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t(addReqResponse.msg),
+            typeOption: 'error',
+          }),
+        );
       }
       setLocked(false);
     }
-  }, [addReqResponse, isLoading, t]);
+  }, [addReqResponse, dispatch, isLoading, t]);
 
   const onClickSelectOption = useCallback(
     (val: number) => {

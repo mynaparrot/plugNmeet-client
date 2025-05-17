@@ -147,7 +147,9 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
 
       const voteCount = Number(option.voteCount);
       if (voteCount > 0) {
-        pollDataOption.responsesPercentage = (voteCount / totalResponses) * 100;
+        pollDataOption.responsesPercentage = Math.round(
+          (voteCount / totalResponses + Number.EPSILON) * 100,
+        );
       }
       obj.options[option.id] = pollDataOption;
     }

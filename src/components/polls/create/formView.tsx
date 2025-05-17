@@ -6,13 +6,14 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { create } from '@bufbuild/protobuf';
 import { CreatePollReqSchema } from 'plugnmeet-protocol-js';
 
 import { useCreatePollMutation } from '../../../store/services/pollsApi';
 import { CreatePollOptions } from './index';
 import OptionsView from './optionsView';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { useAppDispatch } from '../../../store';
 
 interface FormViewProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -20,6 +21,7 @@ interface FormViewProps {
 
 const FormView = ({ setIsOpen }: FormViewProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [question, setQuestion] = useState<string>('');
   const [locked, setLocked] = useState<boolean>(false);
   const [createPoll, { isLoading, data }] = useCreatePollMutation();
@@ -38,19 +40,25 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   useEffect(() => {
     if (!isLoading && data) {
       if (data.status) {
-        toast(t('polls.created-successfully'), {
-          type: 'info',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('polls.created-successfully'),
+            typeOption: 'info',
+          }),
+        );
         setIsOpen(false);
       } else {
-        toast(t(data.msg), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t(data.msg),
+            typeOption: 'error',
+          }),
+        );
       }
       setLocked(false);
     }
     //eslint-disable-next-line
-  }, [isLoading, data]);
+  }, [isLoading, data, dispatch]);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
