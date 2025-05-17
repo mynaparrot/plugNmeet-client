@@ -1,6 +1,8 @@
 import React from 'react';
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
+import { Microphone } from '../../../../assets/Icons/Microphone';
+import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 
 interface IMicStatusProps {
   userId: string;
@@ -16,16 +18,16 @@ const MicStatus = ({ userId }: IMicStatusProps) => {
 
   const render = () => {
     if (isMuted) {
-      return <i className="pnm-mic-mute text-white text-[9px]" />;
+      return <MicrophoneOff classes={'h-4 w-auto'} />;
     } else {
-      return <i className="pnm-mic-unmute text-white text-[9px]" />;
+      return <Microphone classes={'h-4 w-auto'} />;
     }
   };
 
   return (
     <>
       {audioTracks ? (
-        <div className="mic-status cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center">
+        <div className="mic-status cursor-pointer w-7 h-7 text-white rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute right-3 top-3">
           {render()}
         </div>
       ) : null}
