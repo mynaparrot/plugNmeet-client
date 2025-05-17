@@ -20,7 +20,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const acceptUser = async (userId: string) => {
+  const acceptUser = async (userId: string, name: string) => {
     const body = create(ApproveWaitingUsersReqSchema, {
       userId: userId,
     });
@@ -99,7 +99,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
           </p>
           <div className="grid grid-cols-3 gap-2">
             <button
-              onClick={() => acceptUser(p.userId)}
+              onClick={() => acceptUser(p.userId, p.name)}
               className="py-1 w-full flex items-center justify-center rounded-xl text-xs font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
             >
               {t('left-panel.approve')}
