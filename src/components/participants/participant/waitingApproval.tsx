@@ -1,17 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import {
   ApproveWaitingUsersReqSchema,
   CommonResponseSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import { useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 interface IWaitingApprovalProps {
   userId: string;
@@ -30,6 +30,7 @@ const WaitingApproval = ({
       participantsSelector.selectById(state, userId)?.metadata.waitForApproval,
   );
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const approve = async () => {
     const body = create(ApproveWaitingUsersReqSchema, {
@@ -46,14 +47,20 @@ const WaitingApproval = ({
     const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
-      toast(t('left-panel.menus.notice.user-approved', { name: name }), {
-        type: 'info',
-      });
+      dispatch(
+        addUserNotification({
+          message: t('left-panel.menus.notice.user-approved', { name: name }),
+          typeOption: 'info',
+        }),
+      );
       onAfterApprovalUpdateList();
     } else {
-      toast(t(res.msg), {
-        type: 'error',
-      });
+      dispatch(
+        addUserNotification({
+          message: t(res.msg),
+          typeOption: 'error',
+        }),
+      );
     }
   };
 
