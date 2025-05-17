@@ -18,13 +18,22 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
+import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 
 interface IChatOptions {
   id: string;
   title: string;
 }
 
+const languages = [
+  { id: 1, value: 'EN', name: 'English' },
+  { id: 2, value: 'BN', name: 'Bangla' },
+  { id: 3, value: 'CH', name: 'Chinese' },
+  { id: 4, value: 'GR', name: 'Germany' },
+];
+
 const ChatTabs = () => {
+  const [language, setLanguage] = useState(languages[1]);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -134,9 +143,31 @@ const ChatTabs = () => {
           <p className="text-sm 3xl:text-base text-Gray-950 3xl:font-medium leading-tight">
             {selectedChatOption === 'public' ? 'Public Chat' : 'Private Chat'}
           </p>
-          <div className="lang h-6 3xl:h-8 w-9 3xl:w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-md 3xl:rounded-[11px] text-xs 3xl:text-sm font-medium 3xl:font-semibold text-Gray-950">
-            EN
-          </div>
+          <Listbox value={language} onChange={setLanguage}>
+            <ListboxButton className="lang h-6 3xl:h-8 w-9 3xl:w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-md 3xl:rounded-[11px] text-xs 3xl:text-sm font-medium 3xl:font-semibold text-Gray-950">
+              {language.value}
+            </ListboxButton>
+            <ListboxOptions
+              anchor="bottom"
+              transition
+              className="border border-gray-200 rounded-xl shadow-dropdownMenu bg-white overflow-hidden w-40 py-1.5"
+            >
+              {languages.map((lang) => (
+                <ListboxOption key={lang.value} value={lang}>
+                  {({ selected }) => (
+                    <div className="text-sm text-Gray-950 hover:bg-Gray-50 flex items-center justify-between px-3 3xl:px-4 py-2">
+                      <span>{lang.name}</span>{' '}
+                      {selected ? (
+                        <span>
+                          <CheckMarkIcon />
+                        </span>
+                      ) : null}
+                    </div>
+                  )}
+                </ListboxOption>
+              ))}
+            </ListboxOptions>
+          </Listbox>
         </div>
         <div className="text-Gray-600 cursor-pointer" onClick={closePanel}>
           <CloseIconSVG />
