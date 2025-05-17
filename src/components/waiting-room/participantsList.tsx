@@ -9,8 +9,8 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { IParticipant } from '../../store/slices/interfaces/participant';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import { toast } from 'react-toastify';
-import { store } from '../../store';
+import { store, useAppDispatch } from '../../store';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 interface IParticipantsListProps {
   waitingParticipants: IParticipant[];
@@ -18,8 +18,9 @@ interface IParticipantsListProps {
 
 const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const acceptUser = async (userId: string) => {
+  const acceptUser = async (userId: string, name: string) => {
     const body = create(ApproveWaitingUsersReqSchema, {
       userId: userId,
     });
@@ -34,13 +35,19 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
     const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
-      toast(t('left-panel.menus.notice.user-approved', { name: name }), {
-        type: 'info',
-      });
+      dispatch(
+        addUserNotification({
+          message: t('left-panel.menus.notice.user-approved', { name: name }),
+          typeOption: 'info',
+        }),
+      );
     } else {
-      toast(t(res.msg), {
-        type: 'error',
-      });
+      dispatch(
+        addUserNotification({
+          message: t(res.msg),
+          typeOption: 'error',
+        }),
+      );
     }
   };
 
@@ -64,14 +71,19 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
     const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
-      toast(t('left-panel.menus.notice.participant-removed'), {
-        toastId: 'user-remove-status',
-        type: 'info',
-      });
+      dispatch(
+        addUserNotification({
+          message: t('left-panel.menus.notice.participant-removed'),
+          typeOption: 'info',
+        }),
+      );
     } else {
-      toast(t(res.msg), {
-        type: 'error',
-      });
+      dispatch(
+        addUserNotification({
+          message: t(res.msg),
+          typeOption: 'error',
+        }),
+      );
     }
   };
 
@@ -87,7 +99,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
           </p>
           <div className="grid grid-cols-3 gap-2">
             <button
-              onClick={() => acceptUser(p.userId)}
+              onClick={() => acceptUser(p.userId, p.name)}
               className="py-1 w-full flex items-center justify-center rounded-xl text-xs font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
             >
               {t('left-panel.approve')}

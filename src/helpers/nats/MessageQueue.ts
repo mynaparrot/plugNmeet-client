@@ -1,7 +1,8 @@
-import { toast } from 'react-toastify';
 import { type JetStreamClient } from '@nats-io/jetstream';
 
 import { formatNatsError, sleep } from '../utils';
+import { store } from '../../store';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 const WAITING = 'WAITING',
   PROCESSING = 'PROCESSING',
@@ -57,10 +58,12 @@ export default class MessageQueue {
             console.error(e.message);
             if (i === MAX_RETRY) {
               const msg = formatNatsError(e);
-              toast(msg, {
-                toastId: 'nats-status',
-                type: 'error',
-              });
+              store.dispatch(
+                addUserNotification({
+                  message: msg,
+                  typeOption: 'error',
+                }),
+              );
             }
             await sleep(RETRY_INTERVAL);
           }

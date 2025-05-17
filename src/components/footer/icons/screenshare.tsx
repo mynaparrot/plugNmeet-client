@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import {
   createLocalScreenTracks,
   ScreenShareCaptureOptions,
@@ -14,6 +13,7 @@ import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 // import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const ScrenshareIcon = () => {
@@ -106,10 +106,12 @@ const ScrenshareIcon = () => {
 
     if (!isActiveScreenshare) {
       if (sessionScreenSharing.isActive) {
-        toast(t('footer.notice.already-active-screen-sharing'), {
-          toastId: 'dup-screen-share',
-          type: 'warning',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('footer.notice.already-active-screen-sharing'),
+            typeOption: 'error',
+          }),
+        );
         return;
       }
 

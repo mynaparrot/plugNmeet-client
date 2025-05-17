@@ -9,7 +9,6 @@ import {
   ExcalidrawImageElement,
 } from '@excalidraw/excalidraw/element/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
-import { toast } from 'react-toastify';
 import {
   DataMsgBodyType,
   AnalyticsEvents,
@@ -32,6 +31,7 @@ import {
   getWhiteboardDonors,
   uploadBase64EncodedFile,
 } from '../../../helpers/utils';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000,
@@ -341,9 +341,12 @@ const handleEncryption = async (msg: string) => {
     try {
       return await encryptMessage(msg);
     } catch (e: any) {
-      toast('Encryption error: ' + e.message, {
-        type: 'error',
-      });
+      store.dispatch(
+        addUserNotification({
+          message: 'Encryption error: ' + e.message,
+          typeOption: 'error',
+        }),
+      );
       console.error('Encryption error:' + e.message);
       return undefined;
     }

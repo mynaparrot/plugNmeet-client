@@ -1,5 +1,3 @@
-import React from 'react';
-import { toast } from 'react-toastify';
 import { create, fromJsonString } from '@bufbuild/protobuf';
 import {
   NatsMsgServerToClient,
@@ -12,16 +10,15 @@ import {
 
 import { store } from '../../store';
 import {
+  addUserNotification,
   updateAzureTokenInfo,
   updatePlayAudioNotification,
 } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
-import NewPollMsg from '../../components/extra-pages/newPollMsg';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import { displayInstantNotification } from '../utils';
 
 export default class HandleSystemData {
   constructor() {}
@@ -34,19 +31,35 @@ export default class HandleSystemData {
     const nt = fromJsonString(NatsSystemNotificationSchema, data);
     switch (nt.type) {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
-        displayInstantNotification(i18n.t(nt.msg), 'info');
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t(nt.msg),
+            typeOption: 'info',
+          }),
+        );
+
         if (nt.withSound) {
           this.playNotification();
         }
         break;
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
-        displayInstantNotification(i18n.t(nt.msg), 'warning');
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t(nt.msg),
+            typeOption: 'warning',
+          }),
+        );
         if (nt.withSound) {
           this.playNotification();
         }
         break;
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
-        displayInstantNotification(i18n.t(nt.msg), 'error');
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t(nt.msg),
+            typeOption: 'error',
+          }),
+        );
         if (nt.withSound) {
           this.playNotification();
         }
@@ -66,11 +79,13 @@ export default class HandleSystemData {
         }),
       );
     } else {
-      displayInstantNotification(
-        i18n.t('speech-services.token-generation-failed', {
-          error: res.msg,
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('speech-services.token-generation-failed', {
+            error: res.msg,
+          }),
+          typeOption: 'error',
         }),
-        'error',
       );
     }
   };
@@ -78,12 +93,14 @@ export default class HandleSystemData {
   public handlePoll = (payload: NatsMsgServerToClient) => {
     switch (payload.event) {
       case NatsMsgServerToClientEvents.POLL_CREATED:
-        displayInstantNotification(i18n.t('polls.new-poll'), 'info');
-        toast(<NewPollMsg />, {
-          toastId: 'poll-status',
-          type: 'info',
-          autoClose: false,
-        });
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t('polls.new-poll'),
+            typeOption: 'info',
+            notificationCat: 'new-poll-created',
+            autoClose: false,
+          }),
+        );
         store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
         break;
       case NatsMsgServerToClientEvents.POLL_CLOSED:
@@ -117,9 +134,14 @@ export default class HandleSystemData {
     switch (payload.event) {
       case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
         if (payload.msg !== '') {
-          displayInstantNotification(
-            i18n.t('breakout-room.invitation-msg'),
-            'info',
+          store.dispatch(
+            addUserNotification({
+              message: i18n.t('breakout-room.invitation-msg'),
+              typeOption: 'info',
+              notificationCat: 'breakout-room-invitation',
+              data: payload.msg,
+              disableToastNotification: true,
+            }),
           );
           store.dispatch(updateReceivedInvitationFor(payload.msg));
           store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));

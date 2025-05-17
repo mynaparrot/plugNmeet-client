@@ -8,7 +8,6 @@ import {
   TransitionChild,
   Button,
 } from '@headlessui/react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
   CommonResponseSchema,
@@ -36,8 +35,8 @@ import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 import { isUserRecorder } from '../../helpers/utils';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
-import UserNotifications from './userNotifications';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import UserNotifications from './user-notifications';
 
 const Header = () => {
   const roomTitle = useAppSelector(
@@ -100,9 +99,12 @@ const Header = () => {
       );
       const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
       if (!res.status) {
-        toast(res.msg, {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: res.msg,
+            typeOption: 'error',
+          }),
+        );
       }
     }
   };

@@ -52,7 +52,10 @@ import MessageQueue from './MessageQueue';
 import { encryptMessage, importSecretKey } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
-import { updateIsNatsServerConnected } from '../../store/slices/roomSettingsSlice';
+import {
+  addUserNotification,
+  updateIsNatsServerConnected,
+} from '../../store/slices/roomSettingsSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
@@ -241,9 +244,12 @@ export default class ConnectNats {
       try {
         msg = await encryptMessage(msg);
       } catch (e: any) {
-        toast('Encryption error: ' + e.message, {
-          type: 'error',
-        });
+        store.dispatch(
+          addUserNotification({
+            message: 'Encryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
         console.error('Encryption error:' + e.message);
         return;
       }

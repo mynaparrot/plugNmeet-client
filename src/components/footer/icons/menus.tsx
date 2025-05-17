@@ -50,6 +50,7 @@ import { RTMPIconSVG } from '../../../assets/Icons/RTMPIconSVG';
 import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
 import { SpeechIconSVG } from '../../../assets/Icons/SpeechIconSVG';
 import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const MenusIcon = () => {
   const session = store.getState().session;
@@ -120,15 +121,19 @@ const MenusIcon = () => {
     const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
-      toast(t('footer.notice.muted-all-microphone'), {
-        toastId: 'asked-status',
-        type: 'info',
-      });
+      dispatch(
+        addUserNotification({
+          message: t('footer.notice.muted-all-microphone'),
+          typeOption: 'info',
+        }),
+      );
     } else {
-      toast(t(res.msg), {
-        toastId: 'asked-status',
-        type: 'error',
-      });
+      dispatch(
+        addUserNotification({
+          message: t(res.msg),
+          typeOption: 'error',
+        }),
+      );
     }
   };
 
@@ -149,9 +154,12 @@ const MenusIcon = () => {
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
-        toast(t(res.msg), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t(res.msg),
+            typeOption: 'error',
+          }),
+        );
       }
     } else if (host && !sharedNotepadStatus) {
       const body = create(ChangeEtherpadStatusReqSchema, {
@@ -169,9 +177,12 @@ const MenusIcon = () => {
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(true));
       } else {
-        toast(t(res.msg), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t(res.msg),
+            typeOption: 'error',
+          }),
+        );
       }
     } else if (host && sharedNotepadStatus) {
       const body = create(ChangeEtherpadStatusReqSchema, {
@@ -189,9 +200,12 @@ const MenusIcon = () => {
       if (res.status) {
         dispatch(updateIsActiveSharedNotePad(false));
       } else {
-        toast(t(res.msg), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t(res.msg),
+            typeOption: 'error',
+          }),
+        );
       }
     }
   };
@@ -199,9 +213,12 @@ const MenusIcon = () => {
   const toggleExternalMediaPlayer = async () => {
     if (!isActiveExternalMediaPlayer) {
       if (isActiveDisplayExternalLink) {
-        toast(t('notifications.need-to-disable-display-external-link'), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('notifications.need-to-disable-display-external-link'),
+            typeOption: 'error',
+          }),
+        );
       } else {
         dispatch(updateShowExternalMediaPlayerModal(true));
       }
@@ -239,9 +256,12 @@ const MenusIcon = () => {
   const toggleDisplayExternalLinkModal = async () => {
     if (!isActiveDisplayExternalLink) {
       if (isActiveExternalMediaPlayer) {
-        toast(t('notifications.need-to-disable-external-media-player'), {
-          type: 'error',
-        });
+        dispatch(
+          addUserNotification({
+            message: t('notifications.need-to-disable-external-media-player'),
+            typeOption: 'error',
+          }),
+        );
       } else {
         dispatch(updateDisplayExternalLinkRoomModal(true));
       }

@@ -14,7 +14,8 @@ import {
   addExternalMediaPlayerAction,
   externalMediaPlayerSeekTo,
 } from '../../store/slices/externalMediaPlayer';
-import { displayInstantNotification } from '../utils';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import i18n from '../i18n';
 
 export default class HandleDataMessage {
   private _that: ConnectNats;
@@ -47,13 +48,23 @@ export default class HandleDataMessage {
         if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
           return;
         }
-        displayInstantNotification(payload.message, 'info');
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t(payload.message),
+            typeOption: 'info',
+          }),
+        );
         break;
       case DataMsgBodyType.ALERT:
         if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
           return;
         }
-        displayInstantNotification(payload.message, 'warning');
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t(payload.message),
+            typeOption: 'warning',
+          }),
+        );
         break;
       case DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS:
         if (payload.fromUserId === this._that.userId) {

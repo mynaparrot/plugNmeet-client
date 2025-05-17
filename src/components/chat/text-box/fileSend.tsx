@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
-import { store } from '../../../store';
+import { store, useAppDispatch } from '../../../store';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
 import { publishFileAttachmentToChat } from '../utils';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 interface IFileSendProps {
   lockSendFile: boolean;
@@ -13,6 +13,7 @@ interface IFileSendProps {
 const FileSend = ({ lockSendFile }: IFileSendProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [files, setFiles] = useState<Array<File>>();
 
   const chat_features =
@@ -32,9 +33,12 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
   useEffect(() => {
     if (result && result.filePath && result.fileName) {
       publishFileAttachmentToChat(result.filePath, result.fileName).then();
-      toast(t('right-panel.file-upload-success'), {
-        type: 'success',
-      });
+      dispatch(
+        addUserNotification({
+          message: t('right-panel.file-upload-success'),
+          typeOption: 'success',
+        }),
+      );
     }
     //eslint-disable-next-line
   }, [result]);

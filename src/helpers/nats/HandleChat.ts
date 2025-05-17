@@ -1,5 +1,4 @@
 import { ChatMessage } from 'plugnmeet-protocol-js';
-import { toast } from 'react-toastify';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
@@ -9,7 +8,10 @@ import {
   updateIsActiveChatPanel,
   updateTotalUnreadChatMsgs,
 } from '../../store/slices/bottomIconsActivitySlice';
-import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
+import {
+  addUserNotification,
+  updateUnreadMsgFrom,
+} from '../../store/slices/roomSettingsSlice';
 
 export default class HandleChat {
   private _that: ConnectNats;
@@ -103,9 +105,12 @@ export default class HandleChat {
       try {
         return await decryptMessage(msg);
       } catch (e: any) {
-        toast('Decryption error: ' + e.message, {
-          type: 'error',
-        });
+        store.dispatch(
+          addUserNotification({
+            message: 'Decryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
         console.error('Decryption error:' + e.message);
         return undefined;
       }

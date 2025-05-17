@@ -1,15 +1,15 @@
 import React, { Dispatch, FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { addSelfInsertedE2EESecretKey } from '../../store/slices/roomSettingsSlice';
+import { useAppDispatch } from '../../store';
 
 export interface IInsertE2EEKeyProps {
   setOpenConn: Dispatch<boolean>;
 }
 
 const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
