@@ -1,11 +1,18 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  Transition,
+} from '@headlessui/react';
 
 import { store, useAppSelector } from '../../../store';
 import { UserNotification } from '../../../store/slices/interfaces/roomSettings';
 import NewPoll from './newPoll';
 import NewBreakoutRoom from './newBreakoutRoom';
+import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
+import clsx from 'clsx';
 
 const UserNotifications = () => {
   const toastId = useRef<number | string>('toastId');
@@ -90,20 +97,49 @@ const UserNotifications = () => {
       setTimeout(() => setHasUnreadNotifications(0), 300);
     }
     if (hasUnreadNotifications > 0) {
-      return <>Notif({hasUnreadNotifications})</>;
+      return (
+        <div className="relative">
+          <NotifyIconSVG />
+          <span className="unseen-notification-count bg-secondaryColor w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
+            {hasUnreadNotifications}
+          </span>
+        </div>
+      );
     } else {
-      return <>Notif</>;
+      return <NotifyIconSVG />;
     }
   };
 
   return (
-    <Popover className="relative">
+    <Popover className="relative flex">
       {({ open }) => (
         <>
-          <PopoverButton>{displayIcon(open)}</PopoverButton>
-          <PopoverPanel anchor="bottom" className="flex flex-col">
-            {notificationElms}
-          </PopoverPanel>
+          <PopoverButton className="p-2">{displayIcon(open)}</PopoverButton>
+          <Transition show={open}>
+            <div
+              className={clsx([
+                // Base styles
+                'notifications-panel fixed transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-[calc(100%-144px)] top-[68px] bg-Gray-25 border-l border-Gray-200',
+                // Shared closed styles
+                'data-[closed]:opacity-0',
+                // Entering styles
+                'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+                // Leaving styles
+                'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+              ])}
+            >
+              <PopoverPanel className="flex flex-col">
+                <div className="top flex items-center h-10 px-3 border-b border-Gray-200">
+                  <p className="text-sm text-Gray-950 font-medium leading-tight">
+                    Notifications
+                  </p>
+                </div>
+                <div className="scrollBar overflow-auto h-[calc(100vh-184px)] px-3 py-4">
+                  <div className="inner grid gap-2">{notificationElms}</div>
+                </div>
+              </PopoverPanel>
+            </div>
+          </Transition>
         </>
       )}
     </Popover>
