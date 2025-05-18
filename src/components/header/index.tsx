@@ -188,20 +188,6 @@ const Header = () => {
           <div className="left relative z-20 flex items-center gap-5 w-60">
             <HeaderLogo />
             <DarkThemeSwitcher />
-            <div
-              onClick={() => {
-                dispatch(
-                  addUserNotification({
-                    message: 'Test: ' + Date.now(),
-                    typeOption: 'success',
-                    notificationCat: 'default',
-                    newInstance: true,
-                  }),
-                );
-              }}
-            >
-              Test
-            </div>
           </div>
           <div className="middle flex-auto relative z-20">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 leading-tight text-center">
