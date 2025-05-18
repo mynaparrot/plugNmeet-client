@@ -3,13 +3,14 @@ import sanitizeHtml from 'sanitize-html';
 import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 import { useAutosizeTextArea } from './useAutosizeTextArea';
 import { publishFileAttachmentToChat } from '../utils';
 import { uploadResumableFile } from '../../../helpers/utils';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 interface ITextBoxAreaProps {
   // chosenEmoji: string | null;
@@ -32,6 +33,7 @@ const TextBoxArea = ({
     (state) => state.roomSettings.selectedChatOption,
   );
 
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const conn = getNatsConn();
   const chatFeatures =
@@ -173,10 +175,15 @@ const TextBoxArea = ({
           chatFeatures?.maxFileSize,
           files,
           (result) => {
-            publishFileAttachmentToChat(
-              result.filePath,
-              result.fileName,
-            ).then();
+            publishFileAttachmentToChat(result.filePath, result.fileName).then(
+              () =>
+                dispatch(
+                  addUserNotification({
+                    message: t('right-panel.file-upload-success'),
+                    typeOption: 'success',
+                  }),
+                ),
+            );
           },
           undefined,
         );

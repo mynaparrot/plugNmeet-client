@@ -6,6 +6,7 @@ import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
 import { useClosePollMutation } from '../../../../store/services/pollsApi';
 import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../../../store';
+import { LoadingIcon } from '../../../../assets/Icons/Loading';
 
 interface EndPollBtnProps {
   pollId: string;
@@ -50,11 +51,11 @@ const EndPollBtn = ({ pollId }: EndPollBtnProps) => {
   return (
     <>
       {isLoading ? (
-        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-          <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
-          </div>
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <LoadingIcon
+            className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
+            fillColor={'#004D90'}
+          />
         </div>
       ) : null}
       <button

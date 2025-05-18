@@ -20,6 +20,7 @@ import {
 import { getNatsConn } from '../../../helpers/nats';
 import { PollDataWithOption } from '../utils';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { LoadingIcon } from '../../../assets/Icons/Loading';
 
 interface PollFormProps {
   pollDataWithOption: PollDataWithOption;
@@ -159,11 +160,11 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     >
       {pollOption}
       {isLoading ? (
-        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-          <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
-          </div>
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <LoadingIcon
+            className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
+            fillColor={'#004D90'}
+          />
         </div>
       ) : null}
       {!isRunning || voted || !selectedOption ? null : (

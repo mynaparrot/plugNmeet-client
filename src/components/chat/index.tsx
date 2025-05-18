@@ -1,16 +1,20 @@
 import React, { useEffect, useState, DragEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 // import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
-import { store, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
 import { uploadResumableFile } from '../../helpers/utils';
 import { publishFileAttachmentToChat } from './utils';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 const ChatComponent = () => {
   const isChatLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockChat,
   );
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   // const theme = useAppSelector((state) => state.roomSettings.theme);
   const [show, setShow] = useState<boolean>(false);
   // const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
@@ -83,10 +87,15 @@ const ChatComponent = () => {
           chatFeatures?.maxFileSize,
           files,
           (result: any) => {
-            publishFileAttachmentToChat(
-              result.filePath,
-              result.fileName,
-            ).then();
+            publishFileAttachmentToChat(result.filePath, result.fileName).then(
+              () =>
+                dispatch(
+                  addUserNotification({
+                    message: t('right-panel.file-upload-success'),
+                    typeOption: 'success',
+                  }),
+                ),
+            );
           },
           undefined,
         );

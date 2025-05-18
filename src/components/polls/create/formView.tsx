@@ -14,6 +14,7 @@ import { CreatePollOptions } from './index';
 import OptionsView from './optionsView';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../../store';
+import { LoadingIcon } from '../../../assets/Icons/Loading';
 
 interface FormViewProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -92,11 +93,11 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
       </div>
       <OptionsView options={options} setOptions={setOptions} />
       {isLoading ? (
-        <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
-          <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
-          </div>
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <LoadingIcon
+            className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
+            fillColor={'#004D90'}
+          />
         </div>
       ) : null}
       <div className="button-section flex items-center gap-5 py-6 px-6 border-t border-Gray-100">
