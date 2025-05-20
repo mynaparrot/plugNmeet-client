@@ -44,16 +44,16 @@ const BroadcastingMsg = () => {
   };
 
   return (
-    <div className="broadcasting-message pb-4 mb-4 border-b border-solid border-primaryColor/50 flex flex-wrap items-end">
+    <div className="broadcasting-message pb-4 mb-4 border-b border-solid border-Gray-200 grid gap-2">
       <textarea
         value={msg}
         onChange={(e) => setMsg(e.currentTarget.value)}
-        className="w-full sm:w-[calc(100%-12rem)] block outline-none border border-solid border-primaryColor dark:border-darkText rounded p-2 min-h-[60px] bg-transparent dark:text-darkText"
+        className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
       ></textarea>
       <button
         onClick={send}
         disabled={disable}
-        className="inline-flex w-44 sm:ml-4 mt-2 justify-center px-3 py-1 text-sm font-medium text-white bg-primaryColor rounded-md hover:bg-secondaryColor focus:outline-none"
+        className="h-9 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
       >
         {t('breakout-room.broadcast-msg')}
       </button>

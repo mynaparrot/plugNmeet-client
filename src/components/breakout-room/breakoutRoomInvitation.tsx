@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LocalAudioTrack, Track } from 'livekit-client';
 import {
+  Button,
   Dialog,
   DialogTitle,
   Transition,
@@ -22,6 +23,7 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
 import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
+import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 
 const BreakoutRoomInvitation = () => {
   const { t } = useTranslation();
@@ -133,29 +135,11 @@ const BreakoutRoomInvitation = () => {
         <Transition appear show={receivedInvitationFor !== ''} as={Fragment}>
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="breakoutRoomModalInvite fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
             onClose={() => false}
             static={false}
           >
-            <div className="min-h-screen px-4 text-center flex items-end justify-end">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0 bg-black opacity-30" />
-              </TransitionChild>
-
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
+            <div className="min-h-full flex p-4 items-end justify-end">
               <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -165,51 +149,47 @@ const BreakoutRoomInvitation = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-max h-full p-6 my-4 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-lg">
-                  <button
-                    className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
-                    type="button"
-                    onClick={() => closeModal()}
-                  >
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
-                  </button>
-
+                <div className="inline-block w-max h-full bg-white border border-Gray-200 shadow-virtualPOP p-4 rounded-xl overflow-hidden duration-300 ease-out">
                   <DialogTitle
                     as="h3"
-                    className="text-base font-medium leading-6 text-gray-900 dark:text-darkText text-left mb-2"
+                    className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 mb-2"
                   >
-                    {t('breakout-room.invitation-title')}
+                    <span>{t('breakout-room.invitation-title')}</span>
+                    <Button onClick={() => closeModal()}>
+                      <PopupCloseSVGIcon classes="text-Gray-600" />
+                    </Button>
                   </DialogTitle>
                   <hr />
                   <div className="mt-2">
-                    <span className="text-black dark:text-darkText text-sm">
+                    <span className="text-black text-sm">
                       {t('breakout-room.invitation-msg')}
                     </span>
 
                     {joinLink !== '' ? (
-                      <div className="invite-link">
-                        <label className="text-black dark:text-darkText text-sm">
+                      <div className="invite-link mt-2">
+                        <label className="text-black text-sm block mb-1">
                           {t('breakout-room.join-text-label')}
                         </label>
-                        <input
-                          type="text"
-                          readOnly={true}
-                          value={joinLink}
-                          className="inline-block outline-none border border-solid rounded p-1 h-7 text-sm mx-1 bg-transparent dark:text-darkText dark:border-darkText"
-                        />
-                        <button
-                          onClick={copyUrl}
-                          className="text-center py-1 px-3 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
-                        >
-                          {copyText}
-                        </button>
+                        <div className="wrap flex items-center gap-1">
+                          <input
+                            type="text"
+                            readOnly={true}
+                            value={joinLink}
+                            className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-7 rounded-[15px] outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                          />
+                          <button
+                            onClick={copyUrl}
+                            className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+                          >
+                            {copyText}
+                          </button>
+                        </div>
                       </div>
                     ) : null}
 
-                    <div className="button-section flex items-center justify-start">
+                    <div className="button-section flex items-center justify-start mt-4">
                       <button
-                        className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+                        className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
                         onClick={join}
                       >
                         {t('breakout-room.join')}

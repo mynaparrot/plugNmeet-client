@@ -37,14 +37,15 @@ const BreakoutRoom = () => {
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950 mb-2"
               >
                 <span>{t('breakout-room.modal-title')}</span>
                 <Button onClick={() => closeModal()}>
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <div className="mt-8">
+              <hr />
+              <div className="mt-4">
                 {breakoutRoomIsActive ? <BreakoutRoomLists /> : <FromElems />}
               </div>
             </DialogPanel>

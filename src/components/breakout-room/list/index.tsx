@@ -45,7 +45,7 @@ const BreakoutRoomLists = () => {
         <RoomLists />
         <div className="btn pb-3 pt-4 bg-gray-50 dark:bg-transparent flex items-end justify-end">
           <button
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-secondaryColor"
+            className="h-9 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-400 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
             onClick={() => endAll()}
             disabled={disable}
           >

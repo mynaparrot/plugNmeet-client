@@ -38,7 +38,7 @@ const BreakoutRoomDuration = ({ duration, created }: IDurationProps) => {
 
   return (
     <>
-      <div className="timer text-xs md:text-sm border border-solid border-primaryColor dark:border-white dark:text-white sm:py-[2px] px-3 rounded-br-lg -mt-[1px] -ml-[1px]">
+      <div className="h-7 px-4 flex items-center justify-center rounded-xl bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow">
         {remaining}
       </div>
     </>

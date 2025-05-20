@@ -13,7 +13,7 @@ const BreakoutRoomUsers = ({ users }: IBreakoutRoomUsersProps) => {
       {users.map((user) => {
         return (
           <p
-            className="inline-block pr-2 mr-2 border-r border-solid border-black leading-4 last:border-none last:mr-0 last:pr-0"
+            className="inline-block pr-2 mr-2 border-r border-solid border-black leading-4 last:border-none last:mr-0 last:pr-0 text-sm text-Gray-950"
             key={user.id}
           >
             {user.name} (

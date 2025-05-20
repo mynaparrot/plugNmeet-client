@@ -67,9 +67,9 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
   };
 
   return (
-    <div className="join-btn mr-4">
+    <div className="join-btn mr-1">
       <button
-        className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+        className="h-7 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
         onClick={join}
         disabled={disable}
       >
