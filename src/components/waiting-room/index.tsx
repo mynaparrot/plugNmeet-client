@@ -46,23 +46,24 @@ const ManageWaitingRoom = () => {
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
-              className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              className="w-full max-w-xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out"
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+                className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
               >
                 <span>{t('waiting-room.modal-title')}</span>
                 <Button onClick={() => closeModal()}>
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <div className="mt-8">
+              <hr />
+              <div className="mt-4">
                 <UpdateRoomMessage />
-                <BulkAction waitingParticipants={waitingParticipants ?? []} />
                 <ParticipantsList
                   waitingParticipants={waitingParticipants ?? []}
                 />
+                <BulkAction waitingParticipants={waitingParticipants ?? []} />
               </div>
             </DialogPanel>
           </div>

@@ -59,7 +59,7 @@ const UpdateRoomMessage = () => {
       ></textarea>
       <button
         onClick={updateRoomMsg}
-        className="h-9 ml-auto mt-4 px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+        className="h-9 ml-auto mt-2 px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
       >
         {t('waiting-room.update-msg')}
       </button>
