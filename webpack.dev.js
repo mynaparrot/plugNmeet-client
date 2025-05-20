@@ -11,6 +11,10 @@ export default merge(common, {
     usedExports: true,
   },
   devtool: 'source-map',
+  cache: {
+    type: 'memory',
+    maxGenerations: 1,
+  },
   devServer: {
     static: './dist',
     host: 'localhost',
