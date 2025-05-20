@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import {
   CommonResponseSchema,
   UpdateWaitingRoomMessageReqSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 const UpdateRoomMessage = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const waitingRoomMessage = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
@@ -37,13 +38,19 @@ const UpdateRoomMessage = () => {
     const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
-      toast(t('waiting-room.updated-msg'), {
-        type: 'info',
-      });
+      dispatch(
+        addUserNotification({
+          message: t('waiting-room.updated-msg'),
+          typeOption: 'info',
+        }),
+      );
     } else {
-      toast(t(res.msg), {
-        type: 'error',
-      });
+      dispatch(
+        addUserNotification({
+          message: t(res.msg),
+          typeOption: 'error',
+        }),
+      );
     }
   };
 

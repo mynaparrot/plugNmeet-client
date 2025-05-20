@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ApproveWaitingUsersReqSchema,
@@ -87,7 +87,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
     }
   };
 
-  const renderWaitingParticipants = () => {
+  const renderWaitingParticipants = useCallback(() => {
     return waitingParticipants.map((p) => {
       return (
         <div
@@ -120,7 +120,8 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
         </div>
       );
     });
-  };
+    //eslint-disable-next-line
+  }, [waitingParticipants]);
 
   return (
     <div className="waiting-list-wrap">

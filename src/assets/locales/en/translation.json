@@ -336,7 +336,8 @@
     "reject-all": "Reject everyone",
     "list-waiting-participants": "Waiting participants list ({{count}})",
     "reject-and-block-user": "Reject & Block",
-    "user-waiting": "{{name}} is waiting for approval"
+    "user-waiting": "{{name}} is waiting for approval",
+    "no-pending-user": "No users are pending approval."
   },
   "polls": {
     "title": "Polls",
