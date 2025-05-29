@@ -18,7 +18,7 @@ export default merge(common, {
   devServer: {
     static: './dist',
     host: 'localhost',
-    port: 3000,
+    port: 3001,
     allowedHosts: 'all',
     compress: true,
     open: false,

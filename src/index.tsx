@@ -6,7 +6,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
 import 'react-toastify/dist/ReactToastify.css';
-import './styles/index.scss';
+import './styles/index.css';
+import './styles/common.scss';
 import './helpers/i18n';
 
 import { store } from './store';
