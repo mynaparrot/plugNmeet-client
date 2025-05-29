@@ -41,12 +41,14 @@ const config = {
             loader: 'ts-loader',
             options: {
               getCustomTransformers: () => ({
-                before: [!isProduction && ReactRefreshTypeScript()].filter(Boolean),
+                before: [!isProduction && ReactRefreshTypeScript()].filter(
+                  Boolean,
+                ),
               }),
               // handle by ForkTsCheckerWebpackPlugin
               // transpileOnly: true,
             },
-          }
+          },
         ],
       },
       {
@@ -61,7 +63,11 @@ const config = {
             options: {
               sourceMap: true,
               postcssOptions: {
-                plugins: [tailwindcss, autoprefixer, postcssNested],
+                plugins: [
+                  'tailwindcss', // Just use the string name now
+                  autoprefixer,
+                  // postcssNested, // Uncomment if you want to use postcss-nested
+                ],
               },
             },
           },
@@ -78,8 +84,8 @@ const config = {
       {
         test: /\.m?js/,
         resolve: {
-          fullySpecified: false
-        }
+          fullySpecified: false,
+        },
       },
     ],
   },
