@@ -1,9 +1,7 @@
 import { resolve, dirname } from 'path';
 import { copyFileSync } from 'fs';
 import webpack from 'webpack';
-import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
-import postcssNested from 'postcss-nested';
+import tailwindcssPostcss from '@tailwindcss/postcss';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -63,11 +61,7 @@ const config = {
             options: {
               sourceMap: true,
               postcssOptions: {
-                plugins: [
-                  'tailwindcss', // Just use the string name now
-                  autoprefixer,
-                  // postcssNested, // Uncomment if you want to use postcss-nested
-                ],
+                plugins: [tailwindcssPostcss],
               },
             },
           },
