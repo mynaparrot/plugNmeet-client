@@ -3,8 +3,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import tailwindcss from 'tailwindcss';
+import checker from 'vite-plugin-checker';
 
 const isProduction = process.env.NODE_ENV === 'production';
+const BUILD_INTERVAL = 1500;
 
 export default defineConfig({
   root: join(__dirname, 'src'),
@@ -29,6 +31,9 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    watch: {
+      interval: BUILD_INTERVAL,
+    },
   },
   build: {
     outDir: '../dist',
@@ -53,14 +58,17 @@ export default defineConfig({
           return 'assets/js/[name][extname]';
         },
       },
-      watch: {
-        include: 'src/**',
-        buildDelay: 1500,
-      },
+    },
+    watch: {
+      include: 'src/**',
+      clearScreen: false,
     },
   },
   plugins: [
     react(),
+    checker({
+      typescript: true,
+    }),
     viteStaticCopy({
       targets: [
         {
