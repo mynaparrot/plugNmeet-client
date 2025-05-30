@@ -38,6 +38,7 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: true,
     emitAssets: true,
+    sourcemap: !isProduction,
     rollupOptions: {
       output: {
         compact: true,
@@ -49,12 +50,21 @@ export default defineConfig({
             return 'assets/fonts/[name][extname]';
           }
           if (/\.css$/.test(name)) {
+            if (name === 'vendor.css') {
+              return 'assets/css/vendor.[hash][extname]';
+            }
             return 'assets/css/main.[hash][extname]';
           }
           if (/\.ico$/.test(name)) {
             return 'assets/imgs/[name][extname]';
           }
           return 'assets/js/[name][extname]';
+        },
+        manualChunks: (id) => {
+          if (id.includes('node_modules') && /\.css$/.test(id)) {
+            return 'vendor';
+          }
+          return null;
         },
       },
       watch: {
