@@ -8,6 +8,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   root: join(__dirname, 'src'),
+  base: '',
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {
