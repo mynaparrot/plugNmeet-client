@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import tailwindcss from 'tailwindcss';
-import checker from 'vite-plugin-checker';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const BUILD_INTERVAL = 1500;
@@ -66,9 +65,6 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    checker({
-      typescript: true,
-    }),
     viteStaticCopy({
       targets: [
         {
