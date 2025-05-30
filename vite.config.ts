@@ -57,10 +57,10 @@ export default defineConfig({
           return 'assets/js/[name][extname]';
         },
       },
-    },
-    watch: {
-      include: 'src/**',
-      clearScreen: false,
+      watch: {
+        exclude: 'node_modules/**',
+        buildDelay: BUILD_INTERVAL,
+      },
     },
   },
   plugins: [
