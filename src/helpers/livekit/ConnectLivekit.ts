@@ -172,13 +172,10 @@ export default class ConnectLivekit
     };
 
     if (this.enabledE2EE && isE2EESupported()) {
-      const workerMaker = new Worker(
-        new URL(
-          '../../../node_modules/livekit-client/dist/livekit-client.e2ee.worker.js',
-          import.meta.url,
-        ),
-      );
+      const assetPath = (window as any).STATIC_ASSETS_PATH ?? '/assets';
+      const lkWorker = assetPath + '/livekit-client.e2ee.worker.js';
 
+      const workerMaker = new Worker(new URL(lkWorker, import.meta.url));
       roomOptions.e2ee = {
         keyProvider: this._e2eeKeyProvider,
         worker: workerMaker.worker,
