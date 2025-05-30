@@ -89,10 +89,6 @@ export default defineConfig({
           src: 'login.html',
           dest: './',
         },
-        {
-          src: '../node_modules/livekit-client/dist/livekit-client.e2ee.worker.js',
-          dest: 'assets/',
-        },
       ],
     }),
   ],

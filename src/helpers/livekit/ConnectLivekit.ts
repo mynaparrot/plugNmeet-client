@@ -21,6 +21,8 @@ import {
 import { EventEmitter } from 'eventemitter3';
 import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
+// @ts-expect-error not an error
+import LkWorker from 'livekit-client/e2ee-worker?worker';
 
 import { store } from '../../store';
 import {
@@ -39,7 +41,6 @@ import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './types';
 import i18n from '../i18n';
 import { CurrentConnectionEvents, IConnectLivekit } from './types';
-import { CrossOriginWorkerMaker as Worker } from '../cross-origin-worker';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
@@ -172,13 +173,9 @@ export default class ConnectLivekit
     };
 
     if (this.enabledE2EE && isE2EESupported()) {
-      const assetPath = (window as any).STATIC_ASSETS_PATH ?? '/assets';
-      const lkWorker = assetPath + '/livekit-client.e2ee.worker.js';
-
-      const workerMaker = new Worker(new URL(lkWorker, import.meta.url));
       roomOptions.e2ee = {
         keyProvider: this._e2eeKeyProvider,
-        worker: workerMaker.worker,
+        worker: new LkWorker(),
       };
     }
 
