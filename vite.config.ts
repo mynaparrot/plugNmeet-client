@@ -70,9 +70,6 @@ function assetFileNames(names: string[]) {
     return 'assets/fonts/[name][extname]';
   }
   if (/\.css$/.test(name)) {
-    if (name === 'vendor.css') {
-      return 'assets/css/vendor.[hash][extname]';
-    }
     return 'assets/css/main.[hash][extname]';
   }
   if (/\.ico$/.test(name)) {
@@ -82,10 +79,6 @@ function assetFileNames(names: string[]) {
 }
 
 function manualChunks(id: string) {
-  if (id.includes('node_modules') && /\.css$/.test(id)) {
-    return 'vendor';
-  }
-
   if (id.includes('node_modules') && /\.js$/.test(id)) {
     const modulePath = id.split('node_modules/')[1];
     const topLevelFolder = modulePath.split('/')[0];
@@ -93,37 +86,37 @@ function manualChunks(id: string) {
       return topLevelFolder;
     }
 
-    const scopedPackageName = modulePath.split('/')[1];
+    const packageName = modulePath.split('/')[1];
     switch (true) {
-      case scopedPackageName.includes('@tensorflow'):
+      case packageName.includes('@tensorflow'):
         return 'tensorflow';
-      case scopedPackageName.includes('mermaid'):
+      case packageName.includes('mermaid'):
         return 'mermaid';
-      case scopedPackageName.includes('@excalidraw'):
+      case packageName.includes('@excalidraw'):
         return 'excalidraw';
-      case scopedPackageName.includes('microsoft-cognitiveservices-speech-sdk'):
+      case packageName.includes('microsoft-cognitiveservices-speech-sdk'):
         return 'microsoft-speech-sdk';
-      case scopedPackageName.includes('lodash'):
-      case scopedPackageName.includes('validator'):
+      case packageName.includes('lodash'):
+      case packageName.includes('validator'):
         return 'utils';
-      case scopedPackageName.includes('react-dnd'):
-      case scopedPackageName.includes('dnd-core'):
-      case scopedPackageName.includes('react-cool-virtual'):
-      case scopedPackageName.includes('react-virtual'):
-      case scopedPackageName.includes('react-hotkeys-hook'):
-      case scopedPackageName.includes('react-draggable'):
-      case scopedPackageName.includes('react-player'):
-      case scopedPackageName.includes('@headlessui'):
-      case scopedPackageName.includes('i18next'):
+      case packageName.includes('react-dnd'):
+      case packageName.includes('dnd-core'):
+      case packageName.includes('react-cool-virtual'):
+      case packageName.includes('react-virtual'):
+      case packageName.includes('react-hotkeys-hook'):
+      case packageName.includes('react-draggable'):
+      case packageName.includes('react-player'):
+      case packageName.includes('@headlessui'):
+      case packageName.includes('i18next'):
         return 'react-libs';
-      case scopedPackageName.includes('plugnmeet-protocol'):
-      case scopedPackageName.includes('@bufbuild'):
-      case scopedPackageName.includes('axios'):
-      case scopedPackageName.includes('@nats-io'):
-      case scopedPackageName.includes('redux'):
+      case packageName.includes('plugnmeet-protocol'):
+      case packageName.includes('@bufbuild'):
+      case packageName.includes('axios'):
+      case packageName.includes('@nats-io'):
+      case packageName.includes('redux'):
         return 'pnm';
       default:
-        if (!scopedPackageName.includes('react')) {
+        if (!packageName.includes('react')) {
           return 'vendor';
         }
     }
@@ -138,7 +131,6 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
         src: [
           'assets/audio',
           'assets/backgrounds',
-          'assets/fonts',
           'assets/imgs',
           'assets/locales',
           'assets/lti',
