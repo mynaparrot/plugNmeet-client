@@ -1,4 +1,4 @@
-import { resolve, join } from 'path';
+import { join, resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -63,6 +63,51 @@ export default defineConfig({
         manualChunks: (id) => {
           if (id.includes('node_modules') && /\.css$/.test(id)) {
             return 'vendor';
+          }
+
+          if (id.includes('node_modules') && /\.js$/.test(id)) {
+            const modulePath = id.split('node_modules/')[1];
+            const topLevelFolder = modulePath.split('/')[0];
+            if (topLevelFolder !== '.pnpm') {
+              return topLevelFolder;
+            }
+
+            const scopedPackageName = modulePath.split('/')[1];
+            switch (true) {
+              case scopedPackageName.includes('@tensorflow'):
+                return 'tensorflow';
+              case scopedPackageName.includes('@excalidraw'):
+              case scopedPackageName.includes('mermaid'):
+                return 'excalidraw';
+              case scopedPackageName.includes('lodash'):
+                return 'lodash';
+              case scopedPackageName.includes('@headlessui'):
+                return 'headlessui';
+              case scopedPackageName.includes('validator'):
+                return 'validator';
+              case scopedPackageName.includes(
+                'microsoft-cognitiveservices-speech-sdk',
+              ):
+                return 'microsoft-speech-sdk';
+              case scopedPackageName.includes('react-dnd'):
+              case scopedPackageName.includes('dnd-core'):
+                return 'dnd';
+              case scopedPackageName.includes('i18next'):
+                return 'i18next';
+              case scopedPackageName.includes('plugnmeet-protocol'):
+              case scopedPackageName.includes('@bufbuild'):
+              case scopedPackageName.includes('axios'):
+              case scopedPackageName.includes('@nats-io'):
+                return 'pnm';
+              case scopedPackageName.includes('@radix'):
+                return 'radix';
+              case scopedPackageName.includes('redux'):
+                return 'redux';
+              default:
+                if (!scopedPackageName.includes('react')) {
+                  return 'vendor';
+                }
+            }
           }
           return null;
         },
