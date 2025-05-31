@@ -110,6 +110,7 @@
     const loginForm = document.getElementById('loginForm');
     let API_KEY, API_SECRET;
     document.getElementById('user_id').value = Date.now();
+    document.getElementById('name').value = "user-" + Math.floor(Math.random() * 100);
     const toUrl = window.location.href.replace(/\/login.*$/i, "")
 
     loginForm.addEventListener('submit', (e) => {

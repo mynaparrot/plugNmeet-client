@@ -42,7 +42,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         compact: true,
-        entryFileNames: 'assets/js/main.[hash].js',
+        entryFileNames: 'assets/js/main-module.[hash].js',
         chunkFileNames: 'assets/chunks/[name].[hash].js',
         assetFileNames: ({ names }) => {
           const name = names[0];
@@ -76,33 +76,33 @@ export default defineConfig({
             switch (true) {
               case scopedPackageName.includes('@tensorflow'):
                 return 'tensorflow';
-              case scopedPackageName.includes('@excalidraw'):
               case scopedPackageName.includes('mermaid'):
+                return 'mermaid';
+              case scopedPackageName.includes('@excalidraw'):
                 return 'excalidraw';
-              case scopedPackageName.includes('lodash'):
-                return 'lodash';
-              case scopedPackageName.includes('@headlessui'):
-                return 'headlessui';
-              case scopedPackageName.includes('validator'):
-                return 'validator';
               case scopedPackageName.includes(
                 'microsoft-cognitiveservices-speech-sdk',
               ):
                 return 'microsoft-speech-sdk';
+              case scopedPackageName.includes('lodash'):
+              case scopedPackageName.includes('validator'):
+                return 'utils';
               case scopedPackageName.includes('react-dnd'):
               case scopedPackageName.includes('dnd-core'):
-                return 'dnd';
+              case scopedPackageName.includes('react-cool-virtual'):
+              case scopedPackageName.includes('react-virtual'):
+              case scopedPackageName.includes('react-hotkeys-hook'):
+              case scopedPackageName.includes('react-draggable'):
+              case scopedPackageName.includes('react-player'):
+              case scopedPackageName.includes('@headlessui'):
               case scopedPackageName.includes('i18next'):
-                return 'i18next';
+                return 'react-libs';
               case scopedPackageName.includes('plugnmeet-protocol'):
               case scopedPackageName.includes('@bufbuild'):
               case scopedPackageName.includes('axios'):
               case scopedPackageName.includes('@nats-io'):
-                return 'pnm';
-              case scopedPackageName.includes('@radix'):
-                return 'radix';
               case scopedPackageName.includes('redux'):
-                return 'redux';
+                return 'pnm';
               default:
                 if (!scopedPackageName.includes('react')) {
                   return 'vendor';
