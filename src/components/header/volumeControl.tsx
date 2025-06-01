@@ -60,7 +60,7 @@ const VolumeControl = () => {
       <Menu>
         {({ open }) => (
           <div>
-            <MenuButton className="relative flex-shrink-0 p-2">
+            <MenuButton className="relative shrink-0 p-2">
               <div className="">
                 {volume > 0 ? (
                   <VolumeHeader />
@@ -82,9 +82,9 @@ const VolumeControl = () => {
             >
               <MenuItems
                 static
-                className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 rtl:left-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-darkPrimary/90 ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 rtl:left-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary/90 ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 focus:outline-hidden"
               >
-                <p className="text-sm dark:text-darkText">
+                <p className="text-sm dark:text-dark-text">
                   {t('header.room-audio-volume')}
                 </p>
                 <section className="flex items-center">
@@ -104,13 +104,13 @@ const VolumeControl = () => {
                   </p>
                   <button className="w-5 h-5">
                     {volume > 0 ? (
-                      <i className="pnm-speaker primaryColor dark:text-secondaryColor" />
+                      <i className="pnm-speaker primaryColor dark:text-secondary-color" />
                     ) : (
-                      <i className="pnm-speaker-muted primaryColor dark:text-secondaryColor" />
+                      <i className="pnm-speaker-muted primaryColor dark:text-secondary-color" />
                     )}
                   </button>
                 </section>
-                <p className="text-sm dark:text-darkText mt-2">
+                <p className="text-sm dark:text-dark-text mt-2">
                   {t('header.room-screen-share-audio-volume')}
                 </p>
                 <section className="flex items-center">
@@ -130,9 +130,9 @@ const VolumeControl = () => {
                   </p>
                   <button className="w-5 h-5">
                     {screenShareAudioVolume > 0 ? (
-                      <i className="pnm-speaker primaryColor dark:text-secondaryColor" />
+                      <i className="pnm-speaker primaryColor dark:text-secondary-color" />
                     ) : (
-                      <i className="pnm-speaker-muted primaryColor dark:text-secondaryColor" />
+                      <i className="pnm-speaker-muted primaryColor dark:text-secondary-color" />
                     )}
                   </button>
                 </section>

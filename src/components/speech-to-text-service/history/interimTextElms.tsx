@@ -27,11 +27,11 @@ const InterimTextElms = () => {
     <>
       {interimText ? (
         <div className="sentence w-full pt-2">
-          <p className="date text-sm pb-1 primaryColor dark:text-darkText">
+          <p className="date text-sm pb-1 primaryColor dark:text-dark-text">
             <span className="text-xs">{interimText.time}</span>{' '}
             {interimText.from}:
           </p>
-          <p className="message-content max-w-fit shadow-footer text-sm bg-secondaryColor text-white py-1 px-2 rounded">
+          <p className="message-content max-w-fit shadow-footer text-sm bg-secondary-color text-white py-1 px-2 rounded-sm">
             {interimText.text}
           </p>
         </div>

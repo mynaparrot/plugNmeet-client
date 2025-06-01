@@ -66,7 +66,7 @@ const TopMenu = ({
     <Menu as="div">
       {({ open }) => (
         <>
-          <MenuButton className="relative flex-shrink-0 p-2 mr-2">
+          <MenuButton className="relative shrink-0 p-2 mr-2">
             <div className="">
               <FooterMenuIconSVG />
             </div>
@@ -83,7 +83,7 @@ const TopMenu = ({
           >
             <MenuItems
               static
-              className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-none"
+              className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-hidden"
             >
               <MenuItem>
                 <button

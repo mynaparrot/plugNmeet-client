@@ -38,7 +38,7 @@ const PollsIcon = () => {
       onClick={() => togglePollsPanel()}
     >
       <div
-        className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950  ${isActivePollsPanel ? 'bg-gray-100' : 'bg-white'}`}
+        className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow-sm transition-all duration-300 hover:bg-gray-100 text-Gray-950  ${isActivePollsPanel ? 'bg-gray-100' : 'bg-white'}`}
       >
         <PollsIconSVG />
       </div>

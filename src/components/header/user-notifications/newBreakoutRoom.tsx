@@ -85,24 +85,24 @@ const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
 
   return (
     <>
-      <span className="text-black dark:text-darkText">
+      <span className="text-black dark:text-dark-text">
         {t('breakout-room.invitation-msg')}
       </span>
       <div>
         {joinLink !== '' ? (
           <div className="invite-link">
-            <label className="text-black dark:text-darkText text-sm">
+            <label className="text-black dark:text-dark-text text-sm">
               {t('breakout-room.join-text-label')}
             </label>
             <input
               type="text"
               readOnly={true}
               value={joinLink}
-              className="inline-block outline-none border border-solid rounded p-1 h-7 text-sm mx-1 bg-transparent dark:text-darkText dark:border-darkText"
+              className="inline-block outline-hidden border border-solid rounded-sm p-1 h-7 text-sm mx-1 bg-transparent dark:text-dark-text dark:border-dark-text"
             />
             <button
               onClick={copyUrl}
-              className="text-center py-1 px-3 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+              className="text-center py-1 px-3 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
             >
               {copyText}
             </button>
@@ -111,7 +111,7 @@ const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
       </div>
       <div className="button-section flex items-center justify-start">
         <button
-          className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+          className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
           onClick={join}
         >
           {t('breakout-room.join')}

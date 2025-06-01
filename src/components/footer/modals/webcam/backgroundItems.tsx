@@ -77,19 +77,19 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         onClick={() => handleOnClick('none', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue shadow-virtualItem rounded-xl' : 'rounded-2xl'}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue shadow-virtual-item rounded-xl' : 'rounded-2xl'}`}
         >
-          <i className="pnm-ban-solid dark:text-darkSecondary2" />
+          <i className="pnm-ban-solid dark:text-dark-secondary2" />
         </div>
       </div>
       <div
-        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
-        onClick={() => handleOnClick('blur', '')}
+        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'blur-sm' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+        onClick={() => handleOnClick('blur-sm', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue shadow-virtualItem rounded-xl' : 'rounded-2xl'}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'blur-sm' ? 'border border-Blue shadow-virtual-item rounded-xl' : 'rounded-2xl'}`}
         >
-          <i className="pnm-blur dark:text-darkSecondary2" />
+          <i className="pnm-blur dark:text-dark-secondary2" />
         </div>
       </div>
       {bgImgs.map((imageUrl, i) => {
@@ -100,7 +100,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
             key={imageUrl}
           >
             <div
-              className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.url === imageUrl ? 'border border-Blue shadow-virtualItem rounded-xl' : 'rounded-2xl'}`}
+              className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.url === imageUrl ? 'border border-Blue shadow-virtual-item rounded-xl' : 'rounded-2xl'}`}
             >
               <img
                 src={imageUrl}

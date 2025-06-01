@@ -36,7 +36,7 @@ const DefaultSubtitleLangElms = ({
     <div className="flex items-center justify-between">
       <label
         htmlFor="language"
-        className="pr-4 w-auto dark:text-darkText text-sm"
+        className="pr-4 w-auto dark:text-dark-text text-sm"
       >
         {t('speech-services.default-subtitle-lang-label')}
       </label>
@@ -46,7 +46,7 @@ const DefaultSubtitleLangElms = ({
         multiple={false}
       >
         <div className="relative mt-1 w-[150px] sm:w-[250px]">
-          <ListboxButton className="relative mt-1 min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+          <ListboxButton className="relative mt-1 min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-dark-text dark:text-dark-text bg-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 text-sm">
             <span className="block">
               {availableSubtitleLangs
                 .map((l) =>
@@ -55,7 +55,7 @@ const DefaultSubtitleLangElms = ({
                 .join('')}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
-              <i className="pnm-updown text-xl primaryColor dark:text-darkText" />
+              <i className="pnm-updown text-xl primaryColor dark:text-dark-text" />
             </span>
           </ListboxButton>
 
@@ -65,7 +65,7 @@ const DefaultSubtitleLangElms = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <ListboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto scrollBar scrollBar4 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
               {availableSubtitleLangs.map((l) => (
                 <ListboxOption
                   key={`trans_${l.code}`}

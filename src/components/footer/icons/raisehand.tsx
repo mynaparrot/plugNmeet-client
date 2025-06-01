@@ -24,7 +24,7 @@ const RaiseHandIcon = () => {
   //   if (isActiveRaisehand) {
   //     setIconCSS('secondaryColor');
   //   } else {
-  //     setIconCSS('primaryColor dark:text-darkText');
+  //     setIconCSS('primaryColor dark:text-dark-text');
   //   }
   // }, [isActiveRaisehand]);
 
@@ -63,7 +63,7 @@ const RaiseHandIcon = () => {
             showTooltip ? 'has-tooltip' : ''
           } ${isActiveRaisehand ? 'bg-gray-100' : 'bg-white'}`}
         >
-          {/* <span className="tooltip !bottom-[62px]">
+          {/* <span className="tooltip bottom-[62px]!">
           {isActiveRaisehand
             ? t('footer.icons.lower-hand')
             : t('footer.icons.raise-hand')}

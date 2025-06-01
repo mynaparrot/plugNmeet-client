@@ -186,11 +186,11 @@ const MainArea = () => {
             // Base styles
             'participants-panel absolute transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-full',
             // Shared closed styles
-            'data-[closed]:opacity-0',
+            'data-closed:opacity-0',
             // Entering styles
-            'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+            'data-enter:duration-300 data-enter:data-closed:translate-x-full',
             // Leaving styles
-            'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+            'data-leave:duration-300 data-leave:data-closed:translate-x-full',
           ])}
         >
           <ParticipantsComponent />
@@ -207,11 +207,11 @@ const MainArea = () => {
             // Base styles
             'chat-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
             // Shared closed styles
-            'data-[closed]:opacity-0',
+            'data-closed:opacity-0',
             // Entering styles
-            'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+            'data-enter:duration-300 data-enter:data-closed:translate-x-full',
             // Leaving styles
-            'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+            'data-leave:duration-300 data-leave:data-closed:translate-x-full',
           ])}
         >
           <ChatComponent />
@@ -228,11 +228,11 @@ const MainArea = () => {
             // Base styles
             'polls-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
             // Shared closed styles
-            'data-[closed]:opacity-0',
+            'data-closed:opacity-0',
             // Entering styles
-            'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+            'data-enter:duration-300 data-enter:data-closed:translate-x-full',
             // Leaving styles
-            'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+            'data-leave:duration-300 data-leave:data-closed:translate-x-full',
           ])}
         >
           <PollsComponent />

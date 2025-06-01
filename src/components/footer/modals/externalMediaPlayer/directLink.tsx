@@ -98,7 +98,7 @@ const DirectLink = () => {
               id="stream-key"
               value={playBackUrl}
               onChange={onChangeUrl}
-              className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+              className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             />
             {errorMsg ? (
               <div className="error-msg absolute text-xs text-red-600 py-2">
@@ -111,7 +111,7 @@ const DirectLink = () => {
       <div className="mt-8 flex justify-end">
         <button
           type="submit"
-          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
         >
           {t('footer.modal.external-media-player-play')}
         </button>

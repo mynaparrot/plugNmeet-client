@@ -53,7 +53,7 @@ const SpeechToTextLangElms = ({
         <div className="flex items-center justify-between">
           <label
             htmlFor="speech-lang"
-            className="pr-4 w-auto dark:text-darkText text-sm"
+            className="pr-4 w-auto dark:text-dark-text text-sm"
           >
             {t('speech-services.speech-lang-label')}
           </label>
@@ -64,7 +64,7 @@ const SpeechToTextLangElms = ({
           >
             <div className="relative mt-1 w-[150px] sm:w-[250px]">
               <ListboxButton
-                className={`relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-darkText dark:text-darkText bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm ${
+                className={`relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-dark-text dark:text-dark-text bg-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 text-sm ${
                   recognizer !== undefined ? 'opacity-70' : ''
                 }`}
               >
@@ -74,7 +74,7 @@ const SpeechToTextLangElms = ({
                     .join('')}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
-                  <i className="pnm-updown text-xl primaryColor dark:text-darkText" />
+                  <i className="pnm-updown text-xl primaryColor dark:text-dark-text" />
                 </span>
               </ListboxButton>
 
@@ -84,7 +84,7 @@ const SpeechToTextLangElms = ({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
                   {speechService.allowedSpeechLangs?.map((l) => (
                     <ListboxOption
                       key={l}
@@ -138,7 +138,7 @@ const SpeechToTextLangElms = ({
     <>
       <Field>
         <div className="flex items-center justify-between my-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text">
             {t('speech-services.enable-speech-to-text')}
           </Label>
           <Switch
@@ -147,9 +147,9 @@ const SpeechToTextLangElms = ({
             disabled={recognizer !== undefined}
             className={`${
               enableSpeechToText
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${

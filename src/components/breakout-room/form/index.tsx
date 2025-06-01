@@ -160,7 +160,7 @@ const FromElems = () => {
           {t('breakout-room.num-rooms')}
         </label>
         <select
-          className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+          className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
           id="breakout-room-number"
           onChange={(e) => setTotalRooms(Number(e.currentTarget.value))}
         >
@@ -232,7 +232,7 @@ const FromElems = () => {
             {t('breakout-room.duration')}
           </label>
           <input
-            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             id="breakout-room-duration"
             type="number"
             value={roomDuration}
@@ -241,7 +241,7 @@ const FromElems = () => {
         </div>
       </div>
       <div className="row flex flex-wrap justify-between items-end">
-        <div className="room-welcome-messages w-full sm:max-w-[30.5rem] mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
+        <div className="room-welcome-messages w-full sm:max-w-122 mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
           <label
             className="block text-sm font-medium text-Gray-800 mb-1"
             htmlFor="breakout-room-welcome"
@@ -249,7 +249,7 @@ const FromElems = () => {
             {t('breakout-room.welcome-msg')}
           </label>
           <textarea
-            className="h-20 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 py-2 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+            className="h-20 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             id="breakout-room-welcome"
             onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
             value={welcomeMsg}
@@ -257,7 +257,7 @@ const FromElems = () => {
         </div>
         <div className="random-room-select mb-4 ltr:mr-6 rtl:ml-6">
           <button
-            className="h-9 w-auto ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-medium text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+            className="h-9 w-auto ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-medium text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             onClick={randomSelection}
           >
             {t('breakout-room.random-selection')}
@@ -282,7 +282,7 @@ const FromElems = () => {
       </div>
       <div className="flex justify-end mt-4">
         <button
-          className="h-9 w-auto px-10 items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+          className="h-9 w-auto px-10 items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
           onClick={startBreakoutRooms}
         >
           {t('breakout-room.start')}

@@ -65,13 +65,15 @@ const useClientCustomization = () => {
     if (designCustomParams.primary_color) {
       css += '.primaryColor{ color: ' + designCustomParams.primary_color + '}';
       css +=
-        '.text-primaryColor { color: ' + designCustomParams.primary_color + '}';
+        '.text-primary-color { color: ' +
+        designCustomParams.primary_color +
+        '}';
       css +=
         '.placeholder\\:text-primaryColor\\/70::placeholder { color: ' +
         designCustomParams.primary_color +
         '}';
       css +=
-        '.bg-primaryColor { background: ' +
+        '.bg-primary-color { background: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
@@ -79,7 +81,7 @@ const useClientCustomization = () => {
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.border-primaryColor { border-color: ' +
+        '.border-primary-color { border-color: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
@@ -102,11 +104,11 @@ const useClientCustomization = () => {
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.text-secondaryColor { color: ' +
+        '.text-secondary-color { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.bg-secondaryColor { background: ' +
+        '.bg-secondary-color { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
@@ -126,7 +128,7 @@ const useClientCustomization = () => {
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.border-secondaryColor { border-color: ' +
+        '.border-secondary-color { border-color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=

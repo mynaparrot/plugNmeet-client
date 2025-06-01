@@ -141,7 +141,7 @@ const SpeechServiceSettingsModal = () => {
       <Transition appear show={true} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-[9999] overflow-y-auto"
+          className="fixed inset-0 z-9999 overflow-y-auto"
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
@@ -172,14 +172,14 @@ const SpeechServiceSettingsModal = () => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[inherit] text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[inherit] text-left align-middle transition-all transform bg-white dark:bg-dark-primary shadow-xl rounded-2xl">
                 <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
                   type="button"
                   onClick={() => closeModal()}
                 >
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
                 </button>
 
                 <DialogTitle
@@ -200,7 +200,7 @@ const SpeechServiceSettingsModal = () => {
                   />
                   <Field>
                     <div className="flex items-center justify-between my-4">
-                      <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText text-sm">
+                      <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text text-sm">
                         {t('speech-services.enable-translation')}
                       </Label>
                       <Switch
@@ -208,9 +208,9 @@ const SpeechServiceSettingsModal = () => {
                         onChange={setEnableTranslation}
                         className={`${
                           enableTranslation
-                            ? 'bg-primaryColor dark:bg-darkSecondary2'
-                            : 'bg-gray-200 dark:bg-secondaryColor'
-                        } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                            ? 'bg-primary-color dark:bg-dark-secondary2'
+                            : 'bg-gray-200 dark:bg-secondary-color'
+                        } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
                       >
                         <span
                           className={`${
@@ -240,7 +240,7 @@ const SpeechServiceSettingsModal = () => {
                 <div className="py-3 bg-gray-50 dark:bg-transparent text-right mt-4">
                   {!speechService?.isEnabled ? (
                     <button
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden"
                       onClick={() => enableOrUpdateService()}
                     >
                       {t('speech-services.enable-service')}
@@ -249,13 +249,13 @@ const SpeechServiceSettingsModal = () => {
                   {speechService?.isEnabled ? (
                     <>
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none ltr:mr-2 rtl:ml-2"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden ltr:mr-2 rtl:ml-2"
                         onClick={() => enableOrUpdateService()}
                       >
                         {t('speech-services.update-service')}
                       </button>
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondaryColor hover:bg-secondaryColor focus:outline-none"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-secondary-color hover:bg-secondary-color focus:outline-hidden"
                         onClick={() => stopService()}
                       >
                         {t('speech-services.stop-service')}

@@ -60,7 +60,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
                 {index ? (
                   <button
                     type="button"
-                    className="h-11 w-11 border border-Red-200 bg-Red-50 text-Red-600 shadow-buttonShadow rounded-[15px] flex items-center justify-center cursor-pointer"
+                    className="h-11 w-11 border border-Red-200 bg-Red-50 text-Red-600 shadow-button-shadow rounded-[15px] flex items-center justify-center cursor-pointer"
                     onClick={() => removeOption(index)}
                   >
                     <TrashIconSVG />
@@ -72,7 +72,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
         </div>
       </div>
       <button
-        className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-50 hover:bg-Gray-100 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+        className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-50 hover:bg-Gray-100 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
         type="button"
         onClick={() => addOption()}
       >

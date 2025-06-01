@@ -85,7 +85,7 @@ const LockSettingsModal = () => {
     return (
       <Field>
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-microphone')}
           </Label>
           <Switch
@@ -93,9 +93,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'mic')}
             className={`${
               roomLockSettings?.lockMicrophone
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -108,7 +108,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-webcams')}
           </Label>
           <Switch
@@ -116,9 +116,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'webcam')}
             className={`${
               roomLockSettings?.lockWebcam
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -131,7 +131,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-screen-sharing')}
           </Label>
           <Switch
@@ -139,9 +139,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'screenShare')}
             className={`${
               roomLockSettings?.lockScreenSharing
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -154,7 +154,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-whiteboard')}
           </Label>
           <Switch
@@ -162,9 +162,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'whiteboard')}
             className={`${
               roomLockSettings?.lockWhiteboard
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -177,7 +177,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-shared-notepad')}
           </Label>
           <Switch
@@ -185,9 +185,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
             className={`${
               roomLockSettings?.lockSharedNotepad
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -200,7 +200,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-chat')}
           </Label>
           <Switch
@@ -208,9 +208,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'chat')}
             className={`${
               roomLockSettings?.lockChat
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -223,7 +223,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-send-message')}
           </Label>
           <Switch
@@ -231,9 +231,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
             className={`${
               roomLockSettings?.lockChatSendMessage
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -246,7 +246,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-chat-file-share')}
           </Label>
           <Switch
@@ -254,9 +254,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'chatFile')}
             className={`${
               roomLockSettings?.lockChatFileShare
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -269,7 +269,7 @@ const LockSettingsModal = () => {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-darkText ltr:text-left rtl:text-right">
+          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
             {t('footer.modal.lock-private-chat')}
           </Label>
           <Switch
@@ -277,9 +277,9 @@ const LockSettingsModal = () => {
             onChange={(e) => updateLockSettings(e, 'privateChat')}
             className={`${
               roomLockSettings?.lockPrivateChat
-                ? 'bg-primaryColor dark:bg-darkSecondary2'
-                : 'bg-gray-200 dark:bg-secondaryColor'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                ? 'bg-primary-color dark:bg-dark-secondary2'
+                : 'bg-gray-200 dark:bg-secondary-color'
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
           >
             <span
               className={`${
@@ -299,7 +299,7 @@ const LockSettingsModal = () => {
       <Transition appear show={true} as={Fragment}>
         <Dialog
           as="div"
-          className="lockSettingsModal fixed inset-0 z-[9999] overflow-y-auto"
+          className="lockSettingsModal fixed inset-0 z-9999 overflow-y-auto"
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
@@ -330,14 +330,14 @@ const LockSettingsModal = () => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-dark-primary shadow-xl rounded-2xl">
                 <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
                   type="button"
                   onClick={() => closeModal()}
                 >
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
                 </button>
 
                 <DialogTitle

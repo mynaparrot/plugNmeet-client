@@ -1,0 +1,5 @@
+@media only screen and (max-height: 720px) {
+  .externalMediaPlayerWrapper {
+    @apply max-w-[900px];
+  }
+}

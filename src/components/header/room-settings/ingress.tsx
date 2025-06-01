@@ -116,7 +116,7 @@ const Ingress = () => {
               >
                 <div className="relative w-full max-w-[250px]">
                   <ListboxButton
-                    className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm`}
+                    className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus:shadow-input-focus text-left text-sm`}
                   >
                     <span className="block truncate">
                       {getIngressTypeText(ingressType)}
@@ -131,7 +131,7 @@ const Ingress = () => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
                       {Object.values(IngressInput).map((val) =>
                         typeof val !== 'number' ? null : (
                           <ListboxOption
@@ -177,7 +177,7 @@ const Ingress = () => {
               id="name"
               value={name}
               onChange={(e) => setName(e.currentTarget.value)}
-              className="default-input !rounded-[8px] w-full max-w-[250px] !h-10"
+              className="default-input rounded-[8px]! w-full max-w-[250px] h-10!"
             />
             {errorMsg ? (
               <div className="error-msg text-xs text-red-600 py-2">
@@ -188,7 +188,7 @@ const Ingress = () => {
           <div className="text-right mt-4">
             <button
               type="submit"
-              className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+              className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             >
               {t('ingress-features.gen-link')}
             </button>
@@ -205,7 +205,7 @@ const Ingress = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="ingress_type"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-dark-text"
             >
               {t('ingress-features.ingress-type')}
             </label>
@@ -215,13 +215,13 @@ const Ingress = () => {
               name="ingress_type"
               id="ingress_type"
               value={ingressTypeText}
-              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
+              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-xs sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-dark-text bg-transparent dark:text-dark-text"
             />
           </div>
         </div>
         <div className="grid">
           <div className="flex items-center justify-start">
-            <label htmlFor="url" className="pr-4 w-full dark:text-darkText">
+            <label htmlFor="url" className="pr-4 w-full dark:text-dark-text">
               {t('ingress-features.stream-url')}
             </label>
             <input
@@ -230,7 +230,7 @@ const Ingress = () => {
               name="url"
               id="url"
               value={ingressFeatures?.url}
-              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
+              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-xs sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-dark-text bg-transparent dark:text-dark-text"
             />
           </div>
         </div>
@@ -238,7 +238,7 @@ const Ingress = () => {
           <div className="flex items-center justify-start">
             <label
               htmlFor="stream_key"
-              className="pr-4 w-full dark:text-darkText"
+              className="pr-4 w-full dark:text-dark-text"
             >
               {t('ingress-features.stream-key')}
             </label>
@@ -248,7 +248,7 @@ const Ingress = () => {
               name="stream_key"
               id="stream_key"
               value={ingressFeatures?.streamKey}
-              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-darkText bg-transparent dark:text-darkText"
+              className="mt-1 px-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-xs sm:text-sm rounded-md h-10 border border-solid border-black/50 dark:border-dark-text bg-transparent dark:text-dark-text"
             />
           </div>
         </div>

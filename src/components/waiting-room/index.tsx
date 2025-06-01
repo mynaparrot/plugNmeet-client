@@ -29,7 +29,7 @@ const ManageWaitingRoom = () => {
     <Dialog
       open={isOpen}
       as="div"
-      className="relative z-10 focus:outline-none"
+      className="relative z-10 focus:outline-hidden"
       onClose={() => false}
     >
       <div className="showManageWaitingRoomModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">

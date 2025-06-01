@@ -64,11 +64,11 @@ const MyBreakoutRooms = () => {
       return null;
     }
     return (
-      <div className="poll-item relative overflow-hidden border border-solid border-primaryColor/70 dark:border-darkText/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md">
-        <div className="poll-title text-md text-primaryColor dark:text-darkText">
+      <div className="poll-item relative overflow-hidden border border-solid border-primary-color/70 dark:border-dark-text/70 px-2 py-8 rounded-lg mb-4 transition ease-in hover:shadow-md">
+        <div className="poll-title text-md text-primary-color dark:text-dark-text">
           {myRooms.room?.title}
         </div>
-        <div className="total-vote rounded-bl-lg bg-secondaryColor absolute top-0 right-0 text-white text-[10px] py-1 px-3 uppercase">
+        <div className="total-vote rounded-bl-lg bg-secondary-color absolute top-0 right-0 text-white text-[10px] py-1 px-3 uppercase">
           <strong>{t('polls.total')}: </strong> {myRooms.room?.users.length}
         </div>
 
@@ -80,13 +80,13 @@ const MyBreakoutRooms = () => {
             />
           </div>
         ) : (
-          <div className="status absolute top-0 left-0 bg-secondaryColor text-[10px] text-white py-1 px-3 uppercase rounded-br-lg">
+          <div className="status absolute top-0 left-0 bg-secondary-color text-[10px] text-white py-1 px-3 uppercase rounded-br-lg">
             {t('breakout-room.not-started')}
           </div>
         )}
 
         <div className="btn">
-          <p className="absolute left-2 bottom-2 text-xs dark:text-secondaryColor">
+          <p className="absolute left-2 bottom-2 text-xs dark:text-secondary-color">
             {myRooms.room?.users.filter(
               (u) => u.joined === true && u.id === userId,
             ).length
@@ -95,7 +95,7 @@ const MyBreakoutRooms = () => {
           </p>
           <button
             onClick={join}
-            className="absolute right-0 bottom-0 transition ease-in bg-primaryColor hover:bg-secondaryColor text-[10px] text-white pt-1 pb-[2px] px-3 uppercase rounded-tl-lg"
+            className="absolute right-0 bottom-0 transition ease-in bg-primary-color hover:bg-secondary-color text-[10px] text-white pt-1 pb-[2px] px-3 uppercase rounded-tl-lg"
             disabled={!!isLoading}
           >
             {t('breakout-room.join')}
@@ -112,10 +112,10 @@ const MyBreakoutRooms = () => {
       <div className="polls-list-wrap-inner">
         {render()}
         {isLoadingMyRooms ? (
-          <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <div className="loading absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
             <div className="lds-ripple">
-              <div className="border-secondaryColor" />
-              <div className="border-secondaryColor" />
+              <div className="border-secondary-color" />
+              <div className="border-secondary-color" />
             </div>
           </div>
         ) : null}

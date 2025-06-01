@@ -57,14 +57,14 @@ const MicrophoneModal = ({
     <Dialog
       open={show}
       as="div"
-      className="relative z-10 focus:outline-none"
+      className="relative z-10 focus:outline-hidden"
       onClose={() => false}
     >
       <div className="SelectMicrophonePopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
         <div className="flex min-h-full items-center justify-center p-4">
           <DialogPanel
             transition
-            className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-4 3xl:p-6 rounded-xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+            className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-4 3xl:p-6 rounded-xl duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
           >
             <DialogTitle
               as="h3"
@@ -79,7 +79,7 @@ const MicrophoneModal = ({
             <div className="microphone-dropdown mt-4">
               <Listbox value={selectedMic} onChange={setSelectMic}>
                 <div className="relative">
-                  <ListboxButton className="relative w-full h-10 rounded-[8px] border border-Gray-300 bg-white shadow-input px-3 outline-none focus:border-Blue2-500 focus:shadow-inputFocus text-left text-sm text-Gray-950">
+                  <ListboxButton className="relative w-full h-10 rounded-[8px] border border-Gray-300 bg-white shadow-input px-3 outline-hidden focus:border-Blue2-500 focus:shadow-input-focus text-left text-sm text-Gray-950">
                     <span className="block truncate">
                       {devices.find((d) => d.id === selectedMic)?.label ||
                         t('footer.modal.select-microphone')}
@@ -94,7 +94,7 @@ const MicrophoneModal = ({
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
                       {devices.map((device) => (
                         <ListboxOption
                           key={device.id}
@@ -129,7 +129,7 @@ const MicrophoneModal = ({
 
             <div className="mt-8 grid grid-cols-2 gap-3">
               <Button
-                className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+                className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
                 onClick={() => selectOrClose(false)}
               >
                 {t('join')}

@@ -330,7 +330,7 @@ const WebcamIcon = () => {
               showTooltip ? 'has-tooltip' : ''
             }`}
           >
-            {/* <span className="tooltip !-left-3 tooltip-left">
+            {/* <span className="tooltip -left-3! tooltip-left">
               {getTooltipText()}
             </span> */}
             <div

@@ -53,7 +53,7 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
                 {t('app.insert-secret-key')}
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-hidden focus:shadow-outline"
                 id="secretKey"
                 type="password"
                 placeholder="******************"
@@ -64,7 +64,7 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
               </p>
             </div>
             <div className="flex justify-center w-md">
-              <button className="text-center py-1 px-3 mt-1 transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg">
+              <button className="text-center py-1 px-3 mt-1 transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg">
                 {t('app.save')}
               </button>
             </div>

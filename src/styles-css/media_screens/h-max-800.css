@@ -1,0 +1,14 @@
+@media screen and (max-height: 800px) {
+  #main-area.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .all-webcam-wrapper-inner {
+    @apply w-full flex;
+  }
+  #main-area.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .all-webcam-wrapper-inner .camera-row-0 {
+    @apply w-8/12;
+  }
+  #main-area.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .all-webcam-wrapper-inner .camera-row-1 {
+    @apply w-4/12;
+  }
+  #main-area.hideParticipantsPanel.hideChatPanel .all-webcam-wrapper.total-cam-3 .all-webcam-wrapper-inner .camera-row-1 .video-camera-item {
+    @apply w-full;
+  }
+}

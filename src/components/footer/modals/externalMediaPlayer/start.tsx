@@ -51,14 +51,14 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
       <Dialog
         open={!isActive}
         as="div"
-        className="relative z-10 focus:outline-none"
+        className="relative z-10 focus:outline-hidden"
         onClose={() => false}
       >
         <div className="ExternalMediaPlayer fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
-              className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
             >
               <DialogTitle
                 as="h3"
@@ -70,14 +70,14 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                 </Button>
               </DialogTitle>
               <div className="mt-8">
-                <TabGroup vertical className="outline-none">
+                <TabGroup vertical className="outline-hidden">
                   <TabList className="flex">
                     {items.map((item) => (
                       <Tab
                         key={item.id}
                         className={({ selected }) =>
                           classNames(
-                            'w-full py-2 text-sm text-Gray-950 font-medium leading-5 border-b-4 border-solid transition ease-in outline-none',
+                            'w-full py-2 text-sm text-Gray-950 font-medium leading-5 border-b-4 border-solid transition ease-in outline-hidden',
                             selected ? 'border-Blue' : 'border-Blue/20',
                           )
                         }
@@ -94,8 +94,8 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                         key={item.id}
                         className={`${
                           item.id === 2 || item.id === 3
-                            ? 'polls h-full outline-none'
-                            : 'pt-2 xl:pt-5 h-full overflow-auto scrollBar outline-none'
+                            ? 'polls h-full outline-hidden'
+                            : 'pt-2 xl:pt-5 h-full overflow-auto scrollBar outline-hidden'
                         }`}
                       >
                         <>{item.elm}</>
@@ -111,7 +111,7 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
       {/* <Transition appear show={!isActive} as={Fragment}>
         <Dialog
           as="div"
-          className="External fixed inset-0 z-[9999] overflow-y-auto"
+          className="External fixed inset-0 z-9999 overflow-y-auto"
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
@@ -142,14 +142,14 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-dark-primary shadow-xl rounded-2xl">
                 <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
                   type="button"
                   onClick={() => closeStartModal()}
                 >
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
                 </button>
 
                 <DialogTitle
@@ -167,10 +167,10 @@ const StartPlaybackModal = ({ isActive }: IStartPlaybackModalProps) => {
                           key={item.id}
                           className={({ selected }) =>
                             classNames(
-                              'w-full py-2 text-xs text-black dark:text-darkText font-bold leading-5 border-b-4 border-solid transition ease-in',
+                              'w-full py-2 text-xs text-black dark:text-dark-text font-bold leading-5 border-b-4 border-solid transition ease-in',
                               selected
-                                ? 'border-[#004d90]'
-                                : 'border-[#004d90]/20',
+                                ? 'border-primary-color'
+                                : 'border-primary-color/20',
                             )
                           }
                         >

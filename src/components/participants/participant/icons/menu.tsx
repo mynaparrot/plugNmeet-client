@@ -78,8 +78,8 @@ const MenuIcon = ({
         <Menu as="div">
           {({ open }) => (
             <>
-              <MenuButton className="relative flex-shrink-0">
-                {/* <i className="pnm-menu-small primaryColor dark:text-secondaryColor opacity-50" /> */}
+              <MenuButton className="relative shrink-0">
+                {/* <i className="pnm-menu-small primaryColor dark:text-secondary-color opacity-50" /> */}
                 <ParticipantsMenuIconSVG />
               </MenuButton>
 
@@ -96,7 +96,7 @@ const MenuIcon = ({
                 {/* Mark this component as `static` */}
                 <MenuItems
                   static
-                  className="origin-top-right z-10 absolute top-0 ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+                  className="origin-top-right z-10 absolute top-0 ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-dark-primary ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 dark:divide-secondary-color focus:outline-hidden"
                 >
                   {renderMenuItems()}
                 </MenuItems>

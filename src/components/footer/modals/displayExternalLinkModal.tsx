@@ -101,14 +101,14 @@ const DisplayExternalLinkModal = () => {
         <Dialog
           open={!isActive}
           as="div"
-          className="relative z-10 focus:outline-none"
+          className="relative z-10 focus:outline-hidden"
           onClose={() => false}
         >
           <div className="rtmpModalClose fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
             <div className="flex min-h-full items-center justify-center p-4">
               <DialogPanel
                 transition
-                className="w-full max-w-xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                className="w-full max-w-xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
               >
                 <DialogTitle
                   as="h3"
@@ -134,7 +134,7 @@ const DisplayExternalLinkModal = () => {
                         id="stream-key"
                         value={link}
                         onChange={(e) => setLink(e.currentTarget.value)}
-                        className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                        className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                       />
                       {errorMsg ? (
                         <div className="error-msg text-xs text-red-600 py-2">
@@ -166,7 +166,7 @@ const DisplayExternalLinkModal = () => {
                                   tmp.name = !extraValues.name;
                                   setExtraValues(tmp);
                                 }}
-                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus mt-1"
                               />
                             </div>
                             <div className="text-base w-full pl-4">
@@ -193,7 +193,7 @@ const DisplayExternalLinkModal = () => {
                                   tmp.userId = !extraValues.userId;
                                   setExtraValues(tmp);
                                 }}
-                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus mt-1"
                               />
                             </div>
                             <div className="text-base w-full pl-4">
@@ -222,7 +222,7 @@ const DisplayExternalLinkModal = () => {
                                   tmp.role = !extraValues.role;
                                   setExtraValues(tmp);
                                 }}
-                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus mt-1"
                               />
                             </div>
                             <div className="text-base w-full pl-4">
@@ -251,7 +251,7 @@ const DisplayExternalLinkModal = () => {
                                   tmp.meetingId = !extraValues.meetingId;
                                   setExtraValues(tmp);
                                 }}
-                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus mt-1"
+                                className="border border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus mt-1"
                               />
                             </div>
                             <div className="text-base w-full pl-4">
@@ -274,7 +274,7 @@ const DisplayExternalLinkModal = () => {
                     <div className="mt-8 flex justify-end">
                       <button
                         type="submit"
-                        className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                        className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                       >
                         {t('external-display-link-display.display')}
                       </button>

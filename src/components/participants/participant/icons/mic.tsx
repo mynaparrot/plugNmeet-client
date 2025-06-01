@@ -71,7 +71,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
               >
                 <MenuItems
                   static
-                  className="volume-popup-wrapper hidden origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                  className="volume-popup-wrapper hidden origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-hidden"
                 >
                   <section className="flex items-center">
                     <input

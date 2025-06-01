@@ -36,7 +36,7 @@ const RoomLists = () => {
         {/* <Disclosure>
           {({ open }) => (
             <>
-              <Disclosure.Button className="flex items-center w-full justify-between rounded-lg transition ease-in bg-secondaryColor px-4 py-2 text-left text-sm font-medium text-white hover:bg-primaryColor outline-none">
+              <Disclosure.Button className="flex items-center w-full justify-between rounded-lg transition ease-in bg-secondary-color px-4 py-2 text-left text-sm font-medium text-white hover:bg-primary-color outline-hidden">
                 <p>{room.title}</p>
                 <div className="flex items-center">
                   {room.started ? (
@@ -65,7 +65,7 @@ const RoomLists = () => {
                   </svg>
                 </div>
               </Disclosure.Button>
-              <Disclosure.Panel className="sm:px-4 py-6 text-sm text-gray-500 dark:text-darkText">
+              <Disclosure.Panel className="sm:px-4 py-6 text-sm text-gray-500 dark:text-dark-text">
                 <div className="row flex flex-wrap items-center justify-between mb-4">
                   <ExtendDuration breakoutRoomId={room.id} />
                   <div className="row flex mb-2">
@@ -82,7 +82,7 @@ const RoomLists = () => {
           {({ open }) => (
             <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden w-full">
               <DisclosureButton
-                className={`flex items-center justify-between gap-3 w-full pl-[14px] pr-2 bg-white h-9 rounded-xl  shadow-buttonShadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
+                className={`flex items-center justify-between gap-3 w-full pl-[14px] pr-2 bg-white h-9 rounded-xl  shadow-button-shadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
               >
                 <span className="text-sm text-Gray-800">{room.title}</span>
                 <div className="right flex items-center gap-2">
@@ -157,7 +157,7 @@ const RoomLists = () => {
   return (
     <div className="breakout-room-list-wrapper min-h-[90px] relative">
       {isLoading ? (
-        <div className="absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto pointer-events-none">
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto pointer-events-none">
           <LoadingIcon
             className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
             fillColor={'#004D90'}

@@ -1,0 +1,34 @@
+.dark .main-app-bg::before {
+  @apply absolute content-[""] w-full h-full bg-[#001222] opacity-70;
+}
+.dark .waiting-room::before {
+  @apply absolute content-[""] w-full h-full bg-[#001222] opacity-70;
+}
+.dark .error-app-bg::before {
+  @apply absolute content-[""] w-full h-full bg-[#001222] opacity-70;
+}
+.dark .multi-gradient {
+  background: #031a3e;
+}
+.dark .Toastify__toast {
+  background: #222;
+  color: #fff;
+}
+.dark button.Toastify__close-button svg path {
+  fill: #fff;
+}
+.dark .wb-page-navigation button:disabled {
+  background-color: var(--button-gray-1) !important;
+}
+.dark .header-before-start {
+  opacity: 0.4;
+}
+.dark .header-before-end {
+  opacity: 0.1;
+}
+.dark .select-camera-number {
+  color: #a7cced;
+}
+.dark .select-camera-number select#select-camera-num {
+  border-color: #a7cced;
+}

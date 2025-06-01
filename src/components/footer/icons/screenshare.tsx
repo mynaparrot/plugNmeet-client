@@ -44,7 +44,7 @@ const ScrenshareIcon = () => {
   //   ) {
   //     setIconCSS('secondaryColor');
   //   } else {
-  //     setIconCSS('primaryColor dark:text-darkText');
+  //     setIconCSS('primaryColor dark:text-dark-text');
   //   }
   //   //eslint-disable-next-line
   // }, [sessionScreenSharing]);

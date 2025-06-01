@@ -25,7 +25,7 @@ const Create = () => {
         <Transition appear show={isOpen} as="div">
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="fixed inset-0 z-9999 overflow-y-auto"
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
@@ -90,7 +90,7 @@ const Create = () => {
       <div className="button-wrap px-3 3xl:px-5 py-4 border-t border-Gray-200">
         <button
           onClick={() => setIsOpen(true)}
-          className="h-10 3xl:h-11 px-5 flex items-center justify-center w-full rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-buttonShadow"
+          className="h-10 3xl:h-11 px-5 flex items-center justify-center w-full rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow"
         >
           {t('polls.create')}
         </button>

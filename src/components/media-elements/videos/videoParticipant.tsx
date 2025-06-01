@@ -63,7 +63,7 @@ const VideoParticipant = ({
         </>
       ) : null}
       {renderVideoElms}
-      <div className="bg-shadow pointer-events-none bg-gradient-to-b from-95% from-black/0 to-black/50 w-full h-full absolute bottom-0 left-0 opacity-0 transition-all duration-300 group-hover:opacity-100"></div>
+      <div className="bg-shadow pointer-events-none bg-linear-to-b from-95% from-black/0 to-black/50 w-full h-full absolute bottom-0 left-0 opacity-0 transition-all duration-300 group-hover:opacity-100"></div>
     </div>
   );
 };

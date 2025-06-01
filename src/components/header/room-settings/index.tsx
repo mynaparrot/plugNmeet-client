@@ -117,10 +117,10 @@ const RoomSettings = () => {
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-Gray-950 rounded-lg outline-none',
+                    'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-Gray-950 rounded-lg outline-hidden',
                     'ring-white ring-opacity-60',
                     selected
-                      ? 'bg-white shadow text-Gray-950'
+                      ? 'bg-white shadow-sm text-Gray-950'
                       : 'hover:bg-white/40',
                   )
                 }

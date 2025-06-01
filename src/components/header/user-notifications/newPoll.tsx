@@ -10,12 +10,12 @@ const NewPoll = () => {
 
   return (
     <>
-      <span className="text-black dark:text-darkText">
+      <span className="text-black dark:text-dark-text">
         {t('polls.new-poll')}
       </span>
       <div className="button-section flex items-center justify-start">
         <button
-          className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primaryColor hover:bg-secondaryColor text-white font-semibold rounded-lg"
+          className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
           onClick={() => dispatch(updateIsActivePollsPanel(true))}
         >
           {t('open')}

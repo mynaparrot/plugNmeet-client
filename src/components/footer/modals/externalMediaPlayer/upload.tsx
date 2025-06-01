@@ -100,12 +100,12 @@ const Upload = () => {
           id="chat-file"
           accept={allowedFileTypes.map((type) => '.' + type).join(',')}
           onChange={(e) => onChange(e)}
-          className="absolute left-0 w-full h-full top-0 py-[28px] px-5 border border-dashed border-Blue cursor-pointer rounded focus:shadow-inputFocus"
+          className="absolute left-0 w-full h-full top-0 py-[28px] px-5 border border-dashed border-Blue cursor-pointer rounded-sm focus:shadow-input-focus"
         />
       </div>
       <div className="mt-8 flex justify-end">
         <button
-          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
           disabled={isUploading}
           onClick={() => upload()}
         >

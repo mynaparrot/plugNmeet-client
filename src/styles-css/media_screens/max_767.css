@@ -1,0 +1,20 @@
+@media screen and (max-width: 767px) {
+  .transition-right-panel {
+    @apply w-full;
+  }
+  .transition-right-panel .messageModule-wrapper {
+    @apply w-full;
+  }
+  .transition-left-panel {
+    @apply w-full;
+  }
+  .transition-left-panel #main-left-panel {
+    @apply w-full;
+  }
+  .is-mobile.portrait-device #main-area {
+    @apply h-[calc(100vh-180px)];
+  }
+  .private-m-tab::before {
+    @apply absolute content-[""] h-1 w-full bg-[rgb(0,77,144,0.2)];
+  }
+}
