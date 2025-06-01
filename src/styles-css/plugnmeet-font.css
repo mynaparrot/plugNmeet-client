@@ -6,14 +6,19 @@
   font-style: normal;
   font-display: block;
 }
+
 @font-face {
-  font-family: "Nunito Sans";
-  src: url("../assets/fonts/NunitoSans-Regular.woff2");
-  src: url("../assets/fonts/NunitoSans-Bold.woff2");
-  src: url("../assets/fonts/NunitoSans-Italic.woff2");
-  src: url("../assets/fonts/NunitoSans-ExtraBold.woff2");
-  src: url("../assets/fonts/NunitoSans-SemiBold.woff2");
+  font-family: 'Inter';
+  font-style: normal;
+  src: url("../assets/fonts/InterVariable.woff2") format("woff2");
 }
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  src: url("../assets/fonts/InterVariable-Italic.woff2") format("woff2");
+}
+
 i {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: "plugnmeet" !important;
