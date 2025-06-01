@@ -43,7 +43,7 @@ import {
 } from './helpers/utils';
 
 import '@excalidraw/excalidraw/index.css';
-import './style.scss';
+import './style.css';
 import { sleep } from '../../helpers/utils';
 import {
   addAllExcalidrawElements,

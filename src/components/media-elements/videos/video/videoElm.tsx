@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
-import './style.scss';
+import './style.css';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
