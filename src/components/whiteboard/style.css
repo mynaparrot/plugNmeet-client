@@ -1,3 +1,5 @@
+@reference '../../styles-css/variables.css';
+
 #plugNmeet-app {
   .excalidraw-wrapper {
     .excalidraw {
@@ -101,9 +103,9 @@
       .library-menu-browse-button {
         padding: 0.5rem 1rem;
         color: #fff !important;
-        @apply bg-primaryColor;
+        @apply --color-primary-color;
         &:hover {
-          @apply bg-secondaryColor;
+          @apply --color-primary-color;
         }
       }
       .library-menu-items-container__header {
