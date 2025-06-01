@@ -130,7 +130,7 @@ importers:
         specifier: 11.2.0
         version: 11.2.0(size-limit@11.2.0)
       '@tailwindcss/postcss':
-        specifier: ^4.1.8
+        specifier: 4.1.8
         version: 4.1.8
       '@types/emscripten':
         specifier: 1.40.1
