@@ -1,6 +1,7 @@
-@import 'tailwindcss';
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import './plugnmeet-font.css' layer(base);
+
+@import 'tailwindcss';
 @import './common.css' layer(utilities);
 @import './keyframes-animation.css' layer(utilities);
 @import './dark-mode.css' layer(utilities);

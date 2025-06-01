@@ -1,24 +1,37 @@
-.plugNmeet-app #main-area.isRecorder .all-webcam-wrapper {
-  @apply h-full;
+.plugNmeet-app {
+  #main-area.isRecorder {
+    .all-webcam-wrapper {
+      @apply h-full;
+    }
+  }
+  .isRecorder {
+    .transition-right-panel {
+      @apply relative;
+    }
+    .all-MessageModule-wrap {
+      .top-chat-header,
+      .chat-tabs {
+        @apply hidden;
+      }
+      .chat-messages-container {
+        @apply h-full;
+      }
+    }
+  }
+  .isRecorder.showScreenShare {
+    .middle-area {
+      @apply flex items-center justify-center;
+    }
+  }
 }
-.plugNmeet-app .isRecorder .transition-right-panel {
-  @apply relative;
-}
-.plugNmeet-app .isRecorder .all-MessageModule-wrap .top-chat-header,
-.plugNmeet-app .isRecorder .all-MessageModule-wrap .chat-tabs {
-  @apply hidden;
-}
-.plugNmeet-app .isRecorder .all-MessageModule-wrap .chat-messages-container {
-  @apply h-full;
-}
-.plugNmeet-app .isRecorder.showScreenShare .middle-area {
-  @apply flex items-center justify-center;
-}
-
-.plugNmeet-app #main-area.fullWidthMainArea.isRecorder .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  padding-right: 0 !important;
-  @apply pl-[320px];
-}
-.plugNmeet-app #main-area.fullWidthMainArea.isRecorder .middle-fullscreen-wrapper.verticalsWebcamsActivated .vertical-webcams-wrapper {
-  @apply left-0 right-auto w-[320px];
+.plugNmeet-app {
+  #main-area.fullWidthMainArea.isRecorder {
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+      padding-right: 0 !important;
+      @apply pl-[320px];
+      .vertical-webcams-wrapper {
+        @apply left-0 right-auto w-[320px];
+      }
+    }
+  }
 }

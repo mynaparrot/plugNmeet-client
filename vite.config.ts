@@ -2,7 +2,7 @@ import { join, resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy, ViteStaticCopyOptions } from 'vite-plugin-static-copy';
-import tailwindcss from '@tailwindcss/postcss';
+import tailwindcss from '@tailwindcss/vite';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const BUILD_INTERVAL = 1500;
@@ -18,14 +18,6 @@ const config = defineConfig({
         __dirname,
         './custom_tfjs/custom_tfjs_core.js',
       ),
-    },
-  },
-  css: {
-    postcss: {
-      plugins: [tailwindcss],
-    },
-    preprocessorOptions: {
-      scss: {},
     },
   },
   server: {
@@ -53,7 +45,7 @@ const config = defineConfig({
       },
     },
   },
-  plugins: [react(), viteStaticCopy(getStaticFilesToCopy())],
+  plugins: [react(), tailwindcss(), viteStaticCopy(getStaticFilesToCopy())],
   define: {
     IS_PRODUCTION: isProduction,
     PNM_VERSION: JSON.stringify(process.env.npm_package_version),
