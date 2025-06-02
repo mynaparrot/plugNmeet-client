@@ -9,8 +9,8 @@
     "start": "vite",
     "build": "vite build",
     "build-netlify": "pnpm run build && cp dist/assets/config_sample.js dist/assets/config.js",
-    "lint": "prettier --write \"./src/**/*.{ts,tsx,scss}\" && eslint --fix",
-    "format-check": "prettier --check \"./src/**/*.{ts,tsx,scss}\" && eslint --quiet",
+    "lint": "prettier --write \"./src/**/*.{ts,tsx,css}\" && eslint --fix",
+    "format-check": "prettier --check \"./src/**/*.{ts,tsx,css}\" && eslint --quiet",
     "lint-staged": "lint-staged",
     "prepare": "husky",
     "size-limit": "pnpm run build && size-limit --json"
@@ -69,7 +69,6 @@
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-prettier": "5.4.0",
     "eslint-plugin-react-hooks": "5.2.0",
-    "eslint-plugin-react-refresh": "0.4.20",
     "globals": "16.2.0",
     "husky": "9.1.7",
     "lint-staged": "16.0.0",
@@ -81,7 +80,7 @@
     "vite-plugin-static-copy": "3.0.0"
   },
   "lint-staged": {
-    "*.{ts,tsx,scss}": [
+    "*.{ts,tsx,css}": [
       "prettier --write"
     ],
     "*.{ts,tsx}": [

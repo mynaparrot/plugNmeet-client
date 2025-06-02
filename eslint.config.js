@@ -1,21 +1,25 @@
-const js = require('@eslint/js');
-const globals = require('globals');
-const reactHooks = require('eslint-plugin-react-hooks');
-const reactRefresh = require('eslint-plugin-react-refresh');
-const tsEslint = require('typescript-eslint');
-const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { defineConfig } from "eslint/config";
+import js from "@eslint/js";
+import prettierRecommended from "eslint-plugin-prettier/recommended";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks"
+import tsEslint from "typescript-eslint";
 
-module.exports = tsEslint.config(
-    {ignores: ['dist']},
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export default defineConfig([
     {
+        ignores: ['dist/', '**/node_modules/', '.git/'],
         extends: [
             js.configs.recommended,
-            ...tsEslint.configs.recommended,
-            eslintPluginPrettierRecommended,
+            tsEslint.configs.recommended,
+            prettierRecommended,
         ],
-        files: ['**/*.{ts,tsx}'],
+        files: ['src/**/*.{ts,tsx}'],
         languageOptions: {
-            ecmaVersion: 2020,
             globals: globals.browser,
             parser: tsEslint.parser,
             parserOptions: {
@@ -24,15 +28,11 @@ module.exports = tsEslint.config(
             },
         },
         plugins: {
-            'react-hooks': reactHooks,
-            'react-refresh': reactRefresh,
+            'react-hooks': reactHooks
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
-            'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'warn',
             '@typescript-eslint/no-explicit-any': 'off',
-            'react-refresh/only-export-components': 'warn',
             'prettier/prettier': [
                 'error',
                 {
@@ -47,4 +47,4 @@ module.exports = tsEslint.config(
             ],
         },
     },
-);
+]);

@@ -11,41 +11,86 @@
   #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper {
     @apply absolute h-auto w-full z-9 p-0 bottom-0 pt-0;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner {
     @apply m-0 py-0 px-[15px] flex-wrap gap-0;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item {
     @apply w-full m-[5px] h-[100px] pb-0 max-w-[150px];
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item .connection-status {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item
+    .connection-status {
     @apply hidden;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item .mic-status {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item
+    .mic-status {
     @apply hidden;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item .name {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item
+    .name {
     @apply text-xs left-[5px];
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item .camera-video-player button {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item
+    .camera-video-player
+    button {
     @apply right-0 top-0;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item .status.PinWebcam {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item
+    .status.PinWebcam {
     @apply left-0 top-0;
   }
-  #main-area.fullWidthMainArea .all-webcam-wrapper.vertical-webcams .all-webcam-wrapper-inner {
+  #main-area.fullWidthMainArea
+    .all-webcam-wrapper.vertical-webcams
+    .all-webcam-wrapper-inner {
     display: flex !important;
     @apply justify-center flex-nowrap;
   }
-  #main-area.fullWidthMainArea .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam {
+  #main-area.fullWidthMainArea
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.next-cam {
     @apply -right-[42px] w-[100px] left-auto h-5 top-[45px] -rotate-90;
   }
-  #main-area.fullWidthMainArea .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam {
+  #main-area.fullWidthMainArea
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.previous-cam {
     @apply right-auto w-[100px] -left-[42px] h-5 top-[45px] -rotate-90;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     @apply pl-0;
   }
-  #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated .screen-share-video button {
+  #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .screen-share-video
+    button {
     @apply bottom-[165px];
   }
   .share-screen-wrapper.is-share-screen-running .screen-share-video button {
@@ -71,7 +116,13 @@
   }
   #main-right-panel {
     background: rgb(235, 248, 255);
-    background: linear-gradient(150deg, rgb(235, 248, 255) 0%, rgb(255, 255, 255) 10%, rgb(243, 237, 249) 67%, rgb(214, 231, 255) 100%);
+    background: linear-gradient(
+      150deg,
+      rgb(235, 248, 255) 0%,
+      rgb(255, 255, 255) 10%,
+      rgb(243, 237, 249) 67%,
+      rgb(214, 231, 255) 100%
+    );
   }
   .dark #main-right-panel {
     background: #001222;
@@ -93,7 +144,9 @@
     height: 100% !important;
     @apply top-0;
   }
-  .landscape-device.is-mobile #main-area.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  .landscape-device.is-mobile
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     @apply pl-[140px];
   }
   .private-m-tab {
@@ -102,7 +155,11 @@
   .excalidraw-wrapper {
     @apply mt-2 h-[calc(100%-20px)];
   }
-  body #plugNmeet-app .excalidraw-wrapper .excalidraw button.scroll-back-to-content {
+  body
+    #plugNmeet-app
+    .excalidraw-wrapper
+    .excalidraw
+    button.scroll-back-to-content {
     bottom: 35px !important;
   }
 }

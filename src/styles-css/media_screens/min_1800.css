@@ -1,14 +1,20 @@
 @media screen and (min-width: 1800px) {
-  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     @apply pl-[360px];
   }
-  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated {
     @apply pl-[280px];
   }
-  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated .all-webcam-wrapper {
+  #main-area.column-camera-position-left.column-camera-width-medium.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .all-webcam-wrapper {
     @apply w-[360px];
   }
-  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea .middle-fullscreen-wrapper.verticalsWebcamsActivated .all-webcam-wrapper {
+  #main-area.column-camera-position-left.column-camera-width-small.fullWidthMainArea
+    .middle-fullscreen-wrapper.verticalsWebcamsActivated
+    .all-webcam-wrapper {
     @apply w-[280px];
   }
   #main-area.column-camera-width-medium.fullWidthMainArea #main-left-panel {

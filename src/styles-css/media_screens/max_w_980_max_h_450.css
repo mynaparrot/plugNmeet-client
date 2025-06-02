@@ -1,21 +1,46 @@
 @media only screen and (max-width: 980px) and (max-height: 450px) {
-  .landscape-device #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper {
+  .landscape-device
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper {
     @apply bottom-auto right-auto w-[140px] left-0 h-full py-5 px-0;
   }
-  .landscape-device #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner {
+  .landscape-device
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner {
     display: block !important;
     @apply py-0 px-[5px];
   }
-  .landscape-device #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item {
+  .landscape-device
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .video-camera-item {
     @apply h-[31.33%] my-1 mx-0;
   }
-  .landscape-device #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner button.next-cam {
+  .landscape-device
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.next-cam {
     @apply top-auto bottom-0 rotate-0 left-0 w-full;
   }
-  .landscape-device #main-area.fullWidthMainArea .middle-fullscreen-wrapper .all-webcam-wrapper .all-webcam-wrapper-inner button.previous-cam {
+  .landscape-device
+    #main-area.fullWidthMainArea
+    .middle-fullscreen-wrapper
+    .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    button.previous-cam {
     @apply top-0 rotate-0 left-0 w-full;
   }
-  .landscape-device .share-screen-wrapper.is-share-screen-running .screen-share-video button {
+  .landscape-device
+    .share-screen-wrapper.is-share-screen-running
+    .screen-share-video
+    button {
     @apply bottom-[55px];
   }
 }

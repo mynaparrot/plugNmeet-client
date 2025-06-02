@@ -34,40 +34,70 @@
   .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-2 {
     @apply flex-wrap;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-2 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-2
+    .video-camera-item {
     @apply w-full h-1/2;
   }
   .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-3 {
     @apply flex-wrap;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-3 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-3
+    .video-camera-item {
     @apply w-full h-1/3;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-4.inner-items-2 {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-4.inner-items-2 {
     @apply flex-nowrap;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-4.inner-items-2 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-4.inner-items-2
+    .video-camera-item {
     @apply w-1/2 h-full;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-5.inner-items-2 {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-5.inner-items-2 {
     @apply flex-nowrap;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-5.inner-items-2 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-5.inner-items-2
+    .video-camera-item {
     @apply w-1/2 h-full;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-1.total-items-5.inner-items-2 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-1.total-items-5.inner-items-2
+    .video-camera-item {
     @apply w-1/2;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-2.total-items-5.inner-items-1 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-2.total-items-5.inner-items-1
+    .video-camera-item {
     @apply w-1/2;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-2.total-items-6.inner-items-1 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-2.total-items-6.inner-items-1
+    .video-camera-item {
     @apply w-1/2;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-6.inner-items-2 {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-6.inner-items-2 {
     @apply flex-nowrap;
   }
-  .all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-6.inner-items-2 .video-camera-item {
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-6.inner-items-2
+    .video-camera-item {
     @apply w-1/2 h-full;
   }
 }
