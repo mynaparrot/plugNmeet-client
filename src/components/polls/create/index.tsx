@@ -56,7 +56,7 @@ const Create = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <div className="inline-block w-full max-w-lg my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-2xl">
+                <div className="inline-block relative z-50 w-full max-w-lg my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-2xl">
                   <div className="top flex items-center justify-between py-4 px-6 border-b border-Gray-100">
                     <DialogTitle
                       as="h3"
