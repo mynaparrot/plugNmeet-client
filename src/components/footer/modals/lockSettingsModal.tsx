@@ -9,6 +9,7 @@ import {
   Transition,
   TransitionChild,
   Label,
+  Button,
 } from '@headlessui/react';
 import {
   CommonResponseSchema,
@@ -19,6 +20,7 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowLockSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 
 const LockSettingsModal = () => {
   const dispatch = useAppDispatch();
@@ -83,214 +85,220 @@ const LockSettingsModal = () => {
 
   const showLockItems = () => {
     return (
-      <Field>
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-microphone')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockMicrophone ?? false}
-            onChange={(e) => updateLockSettings(e, 'mic')}
-            className={`${
-              roomLockSettings?.lockMicrophone
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+      <>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-microphone')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockMicrophone ?? false}
+              onChange={(e) => updateLockSettings(e, 'mic')}
               className={`${
                 roomLockSettings?.lockMicrophone
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-webcams')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockWebcam ?? false}
-            onChange={(e) => updateLockSettings(e, 'webcam')}
-            className={`${
-              roomLockSettings?.lockWebcam
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockMicrophone
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-webcams')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockWebcam ?? false}
+              onChange={(e) => updateLockSettings(e, 'webcam')}
               className={`${
-                roomLockSettings?.lockWebcam
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-screen-sharing')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockScreenSharing ?? false}
-            onChange={(e) => updateLockSettings(e, 'screenShare')}
-            className={`${
-              roomLockSettings?.lockScreenSharing
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                roomLockSettings?.lockWebcam ? 'bg-Blue2-500' : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockWebcam
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-screen-sharing')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockScreenSharing ?? false}
+              onChange={(e) => updateLockSettings(e, 'screenShare')}
               className={`${
                 roomLockSettings?.lockScreenSharing
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-whiteboard')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockWhiteboard ?? false}
-            onChange={(e) => updateLockSettings(e, 'whiteboard')}
-            className={`${
-              roomLockSettings?.lockWhiteboard
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockScreenSharing
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-whiteboard')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockWhiteboard ?? false}
+              onChange={(e) => updateLockSettings(e, 'whiteboard')}
               className={`${
                 roomLockSettings?.lockWhiteboard
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-shared-notepad')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockSharedNotepad ?? false}
-            onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
-            className={`${
-              roomLockSettings?.lockSharedNotepad
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockWhiteboard
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-shared-notepad')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockSharedNotepad ?? false}
+              onChange={(e) => updateLockSettings(e, 'sharedNotepad')}
               className={`${
                 roomLockSettings?.lockSharedNotepad
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-chat')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockChat ?? false}
-            onChange={(e) => updateLockSettings(e, 'chat')}
-            className={`${
-              roomLockSettings?.lockChat
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockSharedNotepad
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-chat')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockChat ?? false}
+              onChange={(e) => updateLockSettings(e, 'chat')}
               className={`${
-                roomLockSettings?.lockChat
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-send-message')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockChatSendMessage ?? false}
-            onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
-            className={`${
-              roomLockSettings?.lockChatSendMessage
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                roomLockSettings?.lockChat ? 'bg-Blue2-500' : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockChat
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-send-message')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockChatSendMessage ?? false}
+              onChange={(e) => updateLockSettings(e, 'sendChatMsg')}
               className={`${
                 roomLockSettings?.lockChatSendMessage
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-chat-file-share')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockChatFileShare ?? false}
-            onChange={(e) => updateLockSettings(e, 'chatFile')}
-            className={`${
-              roomLockSettings?.lockChatFileShare
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockChatSendMessage
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-chat-file-share')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockChatFileShare ?? false}
+              onChange={(e) => updateLockSettings(e, 'chatFile')}
               className={`${
                 roomLockSettings?.lockChatFileShare
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text ltr:text-left rtl:text-right">
-            {t('footer.modal.lock-private-chat')}
-          </Label>
-          <Switch
-            checked={roomLockSettings?.lockPrivateChat ?? false}
-            onChange={(e) => updateLockSettings(e, 'privateChat')}
-            className={`${
-              roomLockSettings?.lockPrivateChat
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
-          >
-            <span
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockChatFileShare
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+        <Field>
+          <div className="flex items-center justify-between my-4">
+            <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
+              {t('footer.modal.lock-private-chat')}
+            </Label>
+            <Switch
+              checked={roomLockSettings?.lockPrivateChat ?? false}
+              onChange={(e) => updateLockSettings(e, 'privateChat')}
               className={`${
                 roomLockSettings?.lockPrivateChat
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-      </Field>
+                  ? 'bg-Blue2-500'
+                  : 'bg-Gray-200'
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  roomLockSettings?.lockPrivateChat
+                    ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                    : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </Switch>
+          </div>
+        </Field>
+      </>
     );
   };
 
@@ -299,28 +307,10 @@ const LockSettingsModal = () => {
       <Transition appear show={true} as={Fragment}>
         <Dialog
           as="div"
-          className="lockSettingsModal fixed inset-0 z-9999 overflow-y-auto"
+          className="lockSettingsModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
           onClose={() => false}
         >
-          <div className="min-h-screen px-4 text-center">
-            <TransitionChild
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-black opacity-30" />
-            </TransitionChild>
-
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
+          <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
@@ -330,24 +320,18 @@ const LockSettingsModal = () => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-dark-primary shadow-xl rounded-2xl">
-                <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
-                  type="button"
-                  onClick={() => closeModal()}
-                >
-                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
-                </button>
-
+              <div className="w-full max-w-2xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out">
                 <DialogTitle
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
+                  className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
                 >
-                  {t('footer.modal.lock-settings-title')}
+                  <span>{t('footer.modal.lock-settings-title')}</span>
+                  <Button onClick={() => closeModal()}>
+                    <PopupCloseSVGIcon classes="text-Gray-600" />
+                  </Button>
                 </DialogTitle>
                 <hr />
-                <div className="mt-6">{showLockItems()}</div>
+                <div className="mt-4">{showLockItems()}</div>
               </div>
             </TransitionChild>
           </div>

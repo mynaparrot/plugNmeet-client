@@ -9,7 +9,10 @@ body {
 code {
   font-family: 'Inter', sans-serif;
 }
-
+section.Toastify {
+  position: relative;
+  z-index: 99999;
+}
 .primaryColor {
   color: #004d90;
 }

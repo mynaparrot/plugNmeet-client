@@ -128,6 +128,14 @@
         appearance: none;
         background-position: right 0.75rem center;
       }
+      .logo {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      .logo img {
+        height: 55px;
+      }
       @media screen and (max-width: 767px) {
         .inputs-wrapper {
           grid-template-columns: 1fr;
@@ -152,7 +160,9 @@
   </head>
   <body>
     <div class="container">
-      <h5 class="card-title">Quick Login</h5>
+      <div class="logo">
+        <img src="./assets/imgs/main-logo.png" alt="main-logo" />
+      </div>
       <div class="form">
         <form action="#" method="POST" id="loginForm">
           <div class="inputs-wrapper">
