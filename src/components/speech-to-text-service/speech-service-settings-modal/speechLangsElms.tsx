@@ -25,7 +25,7 @@ const SpeechLangsElms = ({
     <div className="flex items-center justify-between">
       <label
         htmlFor="language"
-        className="pr-4 w-auto dark:text-dark-text text-sm"
+        className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right flex-1"
       >
         {t('speech-services.speech-langs-label')}
       </label>
@@ -34,7 +34,7 @@ const SpeechLangsElms = ({
         onChange={setSelectedMicDevice}
         multiple={true}
       >
-        <div className="relative mt-1 w-[150px] sm:w-[250px]">
+        <div className="relative w-[190px]">
           <ListboxButton className="relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-dark-text dark:text-dark-text bg-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 text-sm">
             <span className="block">
               {selectedSpeechLangs
