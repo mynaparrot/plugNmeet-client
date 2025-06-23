@@ -228,10 +228,10 @@ const SpeechServiceSettingsModal = () => {
                     }
                   />
                 </div>
-                <div className="py-3 bg-gray-50 dark:bg-transparent text-right mt-4">
+                <div className="text-right mt-4">
                   {!speechService?.isEnabled ? (
                     <button
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden"
+                      className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       onClick={() => enableOrUpdateService()}
                     >
                       {t('speech-services.enable-service')}
@@ -240,13 +240,13 @@ const SpeechServiceSettingsModal = () => {
                   {speechService?.isEnabled ? (
                     <>
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden ltr:mr-2 rtl:ml-2"
+                        className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                         onClick={() => enableOrUpdateService()}
                       >
                         {t('speech-services.update-service')}
                       </button>
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-secondary-color hover:bg-secondary-color focus:outline-hidden"
+                        className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                         onClick={() => stopService()}
                       >
                         {t('speech-services.stop-service')}

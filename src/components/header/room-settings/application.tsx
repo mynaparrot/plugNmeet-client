@@ -57,7 +57,7 @@ const ApplicationSettings = () => {
           >
             <div className="relative w-full max-w-[250px]">
               <ListboxButton
-                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus:shadow-input-focus text-left text-sm text-Gray-950`}
+                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950`}
               >
                 <span className="block truncate">
                   {getLangText(i18n.languages[0])}
