@@ -17,27 +17,18 @@ const DarkThemeSwitcher = () => {
     <div className="dark-mode">
       <button onClick={toggleDarkMode}>
         <>
-          <div className="bg-Gray-200 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden flex items-center">
+          <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden flex items-center cursor-pointer transition-all duration-300">
             <div
-              className={`item w-8 3xl:w-9 h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center ${theme === 'light' ? 'bg-white' : ''}`}
+              className={`item w-8 3xl:w-9 h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white dark:opacity-30 ${theme === 'light' ? 'bg-white dark:bg-Gray-950' : ''}`}
             >
               <SunIcon />
             </div>
             <div
-              className={`item w-8 3xl:w-9 h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center ${theme === 'dark' ? 'bg-white' : ''}`}
+              className={`item w-8 3xl:w-9 h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white ${theme === 'dark' ? 'bg-white dark:bg-Gray-950' : ''}`}
             >
               <MoonIcon />
             </div>
           </div>
-          {/* {theme === 'dark' ? (
-            <div className="moon w-8 h-8 rounded-full flex items-center justify-center">
-              <i className="pnm-moon w-4 h-4 text-primary-color dark:text-secondary-color" />
-            </div>
-          ) : (
-            <div className="sun w-8 h-8 rounded-full flex items-center justify-center">
-              <i className="pnm-sun w-4 h-4 text-primary-color dark:text-secondary-color" />
-            </div>
-          )} */}
         </>
       </button>
     </div>
