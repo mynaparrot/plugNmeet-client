@@ -10,6 +10,7 @@ import {
 import { store, useAppDispatch } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { VolumeHeader } from '../../assets/Icons/VolumeHeader';
+import { VolumeMutedSVG } from '../../assets/Icons/VolumeMutedSVG';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();
@@ -62,11 +63,7 @@ const VolumeControl = () => {
           <div>
             <MenuButton className="relative shrink-0 p-2">
               <div className="">
-                {volume > 0 ? (
-                  <VolumeHeader />
-                ) : (
-                  <i className="pnm-speaker-muted text-Gray-950" />
-                )}
+                {volume > 0 ? <VolumeHeader /> : <VolumeMutedSVG />}
               </div>
             </MenuButton>
 
@@ -82,9 +79,9 @@ const VolumeControl = () => {
             >
               <MenuItems
                 static
-                className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 rtl:left-0 top-4 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary/90 ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 focus:outline-hidden"
+                className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 top-6 rtl:left-0 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white border-Gray-100 border"
               >
-                <p className="text-sm dark:text-dark-text">
+                <p className="text-sm text-Gray-950">
                   {t('header.room-audio-volume')}
                 </p>
                 <section className="flex items-center">
@@ -99,18 +96,18 @@ const VolumeControl = () => {
                     }}
                     className="range flex-1"
                   />
-                  <p className="w-10 text-center text-sm dark:text-white">
+                  <p className="w-10 text-center text-sm text-Gray-950">
                     {Math.round(volume * 100)}
                   </p>
                   <button className="w-5 h-5">
                     {volume > 0 ? (
-                      <i className="pnm-speaker primaryColor dark:text-secondary-color" />
+                      <i className="pnm-speaker text-Gray-950" />
                     ) : (
-                      <i className="pnm-speaker-muted primaryColor dark:text-secondary-color" />
+                      <i className="pnm-speaker-muted  text-Gray-950" />
                     )}
                   </button>
                 </section>
-                <p className="text-sm dark:text-dark-text mt-2">
+                <p className="text-sm mt-2 text-Gray-950">
                   {t('header.room-screen-share-audio-volume')}
                 </p>
                 <section className="flex items-center">
@@ -125,14 +122,14 @@ const VolumeControl = () => {
                     }}
                     className="range flex-1"
                   />
-                  <p className="w-10 text-center text-sm dark:text-white">
+                  <p className="w-10 text-center text-sm text-Gray-950">
                     {Math.round(screenShareAudioVolume * 100)}
                   </p>
                   <button className="w-5 h-5">
                     {screenShareAudioVolume > 0 ? (
-                      <i className="pnm-speaker primaryColor dark:text-secondary-color" />
+                      <i className="pnm-speaker text-Gray-950" />
                     ) : (
-                      <i className="pnm-speaker-muted primaryColor dark:text-secondary-color" />
+                      <i className="pnm-speaker-muted text-Gray-950" />
                     )}
                   </button>
                 </section>
