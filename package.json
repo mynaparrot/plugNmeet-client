@@ -9,9 +9,9 @@
     "start": "vite",
     "build": "vite build",
     "build-netlify": "pnpm run build && cp dist/assets/config_sample.js dist/assets/config.js",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
-    "format:check": "prettier --check .",
+    "lint": "eslint src/**/*.{jsx,ts,tsx} --fix && prettier --write src/**/*.{jsx,ts,tsx}",
+    "lint:check": "eslint src/**/*.{jsx,ts,tsx}",
+    "format:check": "prettier --check src/**/*.{jsx,ts,tsx}",
     "prepare": "husky",
     "size-limit": "pnpm run build && size-limit --json"
   },

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const LoadingIcon = ({className,fillColor}) => {
+export const LoadingIcon = ({ className, fillColor }) => {
   return (
     <svg
       aria-hidden="true"
