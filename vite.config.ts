@@ -35,8 +35,12 @@ export default defineConfig({
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
         chunkFileNames: 'assets/chunks/[name].[hash].js',
-        assetFileNames: (assetInfo) => assetFileNames(assetInfo.name),
+        assetFileNames: ({ names }) => assetFileNames(names),
         manualChunks: (id) => manualChunks(id),
+      },
+      watch: {
+        exclude: 'node_modules/**',
+        buildDelay: BUILD_INTERVAL,
       },
     },
   },
@@ -55,63 +59,61 @@ export default defineConfig({
   },
 });
 
-function assetFileNames(name: string | undefined) {
-  if (!name) {
-    return 'assets/misc/[name][extname]';
-  }
-  if (/\.(woff2?|ttf|eot|otf)$/.test(name)) {
+function assetFileNames(names: string[]) {
+  const name = names[0];
+  if (/\.(woff2?|ttf|eot)$/.test(name)) {
     return 'assets/fonts/[name][extname]';
   }
   if (/\.css$/.test(name)) {
     return 'assets/css/main.[hash][extname]';
   }
-  if (/\.(png|jpg|jpeg|gif|svg|ico|webp)$/.test(name)) {
+  if (/\.ico$/.test(name)) {
     return 'assets/imgs/[name][extname]';
   }
   return 'assets/js/[name][extname]';
 }
 
 function manualChunks(id: string) {
-  if (id.includes('node_modules')) {
+  if (id.includes('node_modules') && /\.js$/.test(id)) {
     const modulePath = id.split('node_modules/')[1];
     const topLevelFolder = modulePath.split('/')[0];
+    if (topLevelFolder !== '.pnpm') {
+      return topLevelFolder;
+    }
 
-    if (topLevelFolder === '.pnpm') {
-      const packageName = modulePath.split('/')[1];
-      switch (true) {
-        case packageName.includes('@tensorflow'):
-          return 'vendor.tensorflow';
-        case packageName.includes('mermaid'):
-          return 'vendor.mermaid';
-        case packageName.includes('@excalidraw'):
-          return 'vendor.excalidraw';
-        case packageName.includes('microsoft-cognitiveservices-speech-sdk'):
-          return 'vendor.microsoft-speech-sdk';
-        case packageName.includes('lodash'):
-        case packageName.includes('validator'):
-          return 'vendor.utils';
-        case packageName.includes('react-dnd'):
-        case packageName.includes('dnd-core'):
-        case packageName.includes('react-cool-virtual'):
-        case packageName.includes('react-hotkeys-hook'):
-        case packageName.includes('react-draggable'):
-        case packageName.includes('react-player'):
-        case packageName.includes('@headlessui'):
-        case packageName.includes('i18next'):
-          return 'vendor.react-libs';
-        case packageName.includes('plugnmeet-protocol'):
-        case packageName.includes('@bufbuild'):
-        case packageName.includes('axios'):
-        case packageName.includes('@nats-io'):
-        case packageName.includes('redux'):
-          return 'vendor.pnm';
-        default:
-          if (!packageName.includes('react')) {
-            return 'vendor.default';
-          }
-      }
-    } else {
-      return `vendor.${topLevelFolder}`;
+    const packageName = modulePath.split('/')[1];
+    switch (true) {
+      case packageName.includes('@tensorflow'):
+        return 'tensorflow';
+      case packageName.includes('mermaid'):
+        return 'mermaid';
+      case packageName.includes('@excalidraw'):
+        return 'excalidraw';
+      case packageName.includes('microsoft-cognitiveservices-speech-sdk'):
+        return 'microsoft-speech-sdk';
+      case packageName.includes('lodash'):
+      case packageName.includes('validator'):
+        return 'utils';
+      case packageName.includes('react-dnd'):
+      case packageName.includes('dnd-core'):
+      case packageName.includes('react-cool-virtual'):
+      case packageName.includes('react-virtual'):
+      case packageName.includes('react-hotkeys-hook'):
+      case packageName.includes('react-draggable'):
+      case packageName.includes('react-player'):
+      case packageName.includes('@headlessui'):
+      case packageName.includes('i18next'):
+        return 'react-libs';
+      case packageName.includes('plugnmeet-protocol'):
+      case packageName.includes('@bufbuild'):
+      case packageName.includes('axios'):
+      case packageName.includes('@nats-io'):
+      case packageName.includes('redux'):
+        return 'pnm';
+      default:
+        if (!packageName.includes('react')) {
+          return 'vendor';
+        }
     }
   }
   return null;
