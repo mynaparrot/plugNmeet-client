@@ -1,5 +1,5 @@
 import { join, resolve } from 'path';
-import { defineConfig } from 'rolldown-vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy, ViteStaticCopyOptions } from 'vite-plugin-static-copy';
 import tailwindcss from '@tailwindcss/vite';
@@ -36,13 +36,7 @@ export default defineConfig({
         entryFileNames: 'assets/js/main-module.[hash].js',
         chunkFileNames: 'assets/chunks/[name].[hash].js',
         assetFileNames: ({ names }) => assetFileNames(names),
-        advancedChunks: {
-          groups: [
-            {
-              name: (moduleId: string) => manualChunks(moduleId),
-            },
-          ],
-        },
+        manualChunks: manualChunks,
       },
       watch: {
         exclude: 'node_modules/**',

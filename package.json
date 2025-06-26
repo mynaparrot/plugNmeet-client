@@ -58,7 +58,7 @@
   "devDependencies": {
     "@eslint/js": "9.29.0",
     "@size-limit/preset-app": "11.2.0",
-    "@tailwindcss/vite": "4.1.10",
+    "@tailwindcss/vite": "4.1.11",
     "@types/emscripten": "1.40.1",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
@@ -74,10 +74,10 @@
     "husky": "9.1.7",
     "lint-staged": "16.1.2",
     "prettier": "3.6.1",
-    "tailwindcss": "4.1.10",
+    "tailwindcss": "4.1.11",
     "typescript": "5.8.3",
     "typescript-eslint": "8.35.0",
-    "rolldown-vite": "7.0.2",
+    "vite": "7.0.0",
     "vite-plugin-static-copy": "3.1.0"
   },
   "lint-staged": {
