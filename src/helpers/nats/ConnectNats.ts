@@ -33,6 +33,7 @@ import {
   tokenAuthenticator,
 } from '@nats-io/nats-core';
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
+// @ts-expect-error no exported in types
 import { isURL } from 'validator';
 import { isE2EESupported } from 'livekit-client';
 
@@ -67,7 +68,6 @@ export default class ConnectNats {
   private _js: JetStreamClient | undefined;
   private readonly _natsWSUrls: string[];
   private _token: string;
-  private _enabledE2EE: boolean = false;
   private _enableE2EEChat: boolean = false;
   private toastIdConnecting: any = undefined;
 
@@ -757,7 +757,6 @@ export default class ConnectNats {
         }
 
         if (encryptionKey) {
-          this._enabledE2EE = true;
           this._enableE2EEChat = e2ee.includedChatMessages;
 
           await importSecretKey(encryptionKey);
