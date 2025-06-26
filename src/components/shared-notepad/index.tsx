@@ -126,12 +126,12 @@ const SharedNotepadElement = () => {
                 >
                   <div className="line h-0.5 w-6 bg-white"></div>
                 </div>
-                <div className="inner w-full h-full border-t-[28px] border-solid border-primaryColor">
+                <div className="inner w-full h-full border-t-28 border-solid border-primary-color">
                   {!loaded ? (
                     <div className="loading absolute left-[50%] top-[40%] flex justify-center">
                       <div className="lds-ripple">
-                        <div className="border-secondaryColor"></div>
-                        <div className="border-secondaryColor"></div>
+                        <div className="border-secondary-color"></div>
+                        <div className="border-secondary-color"></div>
                       </div>
                     </div>
                   ) : null}

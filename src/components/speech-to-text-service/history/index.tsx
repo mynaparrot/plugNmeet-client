@@ -31,12 +31,12 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
         className="absolute left-[2.7rem] lg:left-[3.1rem] bottom-1"
         onClick={() => setShowPopover(!showPopover)}
       >
-        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
+        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-dark-secondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
           <span className="tooltip">
             {t('speech-services.subtitle-history-modal-title')}
           </span>
           <i
-            className={`pnm-timeline-solid dark:text-darkText text-[12px] lg:text-[14px] ${
+            className={`pnm-timeline-solid dark:text-dark-text text-[12px] lg:text-[14px] ${
               showPopover ? 'secondaryColor' : 'primaryColor'
             }`}
           ></i>

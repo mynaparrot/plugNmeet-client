@@ -80,7 +80,7 @@ const DurationView = () => {
   return !roomDuration ? null : (
     <>
       {showClock ? (
-        <div className="timer text-xs md:text-sm border border-solid border-primaryColor dark:border-darkText/80 dark:text-darkText/80 sm:py-[2px] px-3 rounded-lg mt-[2px] mr-[6px]">
+        <div className="timer text-xs md:text-sm border border-solid border-primary-color dark:border-dark-text/80 dark:text-dark-text/80 sm:py-[2px] px-3 rounded-lg mt-[2px] mr-[6px]">
           {remaining}
         </div>
       ) : null}

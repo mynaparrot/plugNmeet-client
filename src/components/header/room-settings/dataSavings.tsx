@@ -73,7 +73,7 @@ const DataSavings = () => {
             >
               <div className="relative w-full max-w-[250px]">
                 <ListboxButton
-                  className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus focus:shadow-inputFocus text-left text-sm`}
+                  className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus:shadow-input-focus text-left text-sm`}
                 >
                   <span className="block truncate">
                     {getVideoQualityText(videoQuality)}
@@ -88,7 +88,7 @@ const DataSavings = () => {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdownMenu border border-Gray-100 focus:outline-none scrollBar scrollBar2 grid gap-0.5">
+                  <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
                     {Object.values(VideoQuality).map((quality) =>
                       typeof quality !== 'number' ? null : (
                         <ListboxOption
@@ -132,7 +132,7 @@ const DataSavings = () => {
               onChange={toggleWebcamView}
               className={`${
                 activateWebcamsView ? 'bg-Blue2-500' : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -152,7 +152,7 @@ const DataSavings = () => {
               onChange={toggleScreenShareView}
               className={`${
                 activeScreenSharingView ? 'bg-Blue2-500' : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2`}
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${

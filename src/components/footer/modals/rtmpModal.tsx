@@ -107,14 +107,14 @@ const RtmpModal = () => {
         <Dialog
           open={!isActiveRtmpBroadcasting}
           as="div"
-          className="relative z-10 focus:outline-none"
+          className="relative z-10 focus:outline-hidden"
           onClose={() => false}
         >
           <div className="rtmpModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
             <div className="flex min-h-full items-center justify-center p-4">
               <DialogPanel
                 transition
-                className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
               >
                 <DialogTitle
                   as="h3"
@@ -144,7 +144,7 @@ const RtmpModal = () => {
                           <select
                             id="provider"
                             name="provider"
-                            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                             onChange={(e) => setProvider(e.currentTarget.value)}
                             value={provider}
                           >
@@ -169,7 +169,7 @@ const RtmpModal = () => {
                               onChange={(e) =>
                                 setServerUrl(e.currentTarget.value)
                               }
-                              className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                              className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                             />
                           </div>
                         ) : null}
@@ -188,7 +188,7 @@ const RtmpModal = () => {
                             onChange={(e) =>
                               setServerKey(e.currentTarget.value)
                             }
-                            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                           />
                         </div>
                       </div>
@@ -196,7 +196,7 @@ const RtmpModal = () => {
                     <div className="mt-8 flex justify-end">
                       <button
                         type="submit"
-                        className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                        className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                       >
                         {t('footer.modal.rtmp-start-broadcast')}
                       </button>
@@ -249,14 +249,14 @@ const RtmpModal = () => {
         <Dialog
           open={isActiveRtmpBroadcasting}
           as="div"
-          className="relative z-10 focus:outline-none"
+          className="relative z-10 focus:outline-hidden"
           onClose={onCloseAlertModal}
         >
           <div className="rtmpModalClose fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
             <div className="flex min-h-full items-center justify-center p-4">
               <DialogPanel
                 transition
-                className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
               >
                 <DialogTitle
                   as="h3"
@@ -272,13 +272,13 @@ const RtmpModal = () => {
                 </div>
                 <div className="mt-8 grid grid-cols-2 gap-3">
                   <Button
-                    className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+                    className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
                     onClick={() => onCloseAlertModal(true)}
                   >
                     {t('ok')}
                   </Button>
                   <Button
-                    className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+                    className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
                     onClick={() => onCloseAlertModal(false)}
                   >
                     {t('close')}

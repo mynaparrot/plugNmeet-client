@@ -150,7 +150,7 @@ const ChatTabs = () => {
             <ListboxOptions
               anchor="bottom"
               transition
-              className="border border-gray-200 rounded-xl shadow-dropdownMenu bg-white overflow-hidden w-40 py-1.5"
+              className="border border-gray-200 rounded-xl shadow-dropdown-menu bg-white overflow-hidden w-40 py-1.5"
             >
               {languages.map((lang) => (
                 <ListboxOption key={lang.value} value={lang}>
@@ -175,7 +175,7 @@ const ChatTabs = () => {
       </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative z-10 chat-tabs">
-          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-8 3xl:h-10 w-full outline-none px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700">
+          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-8 3xl:h-10 w-full outline-hidden px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700">
             <p className="block truncate">
               To:{' '}
               <span className="font-medium text-Gray-950">{selectedTitle}</span>
@@ -209,7 +209,7 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-xs 3xl:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <ListboxOptions className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-xs 3xl:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden">
               {chatOptions.map((option) => (
                 <ListboxOption
                   key={option.id}
@@ -236,7 +236,7 @@ const ChatTabs = () => {
                         ) : null}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-3 flex items-center text-secondaryColor">
+                        <span className="absolute inset-y-0 left-3 flex items-center text-secondary-color">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-auto w-4 3xl:w-5"

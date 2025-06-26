@@ -1,66 +1,5 @@
-// .excalidraw .App-menu_top .buttonList {
-//   display: flex;
-// }
+@reference '../../styles-css/index.css';
 
-// :root[dir='ltr']
-//   .excalidraw
-//   .layer-ui__wrapper
-//   .zen-mode-transition.App-menu_bottom--transition-left {
-//   transform: none;
-// }
-
-// .excalidraw .panelColumn {
-//   text-align: left;
-// }
-
-// .export-wrapper {
-//   display: flex;
-//   flex-direction: column;
-//   margin: 50px;
-
-//   /*&__checkbox {*/
-//   /*     display: flex;*/
-//   /* }*/
-// }
-
-// .excalidraw {
-//   --color-primary: #004d90;
-//   --color-primary-darker: #004d90;
-//   --color-primary-darkest: #004d90;
-//   --color-primary-light: #24aef7;
-// }
-
-// .App-toolbar label:last-child {
-//   display: none !important;
-// }
-
-// .HelpDialog--header {
-//   display: none !important;
-// }
-
-// .excalidraw .Stack_horizontal {
-//   justify-content: start !important;
-// }
-
-// .wb-page-navigation button {
-//   margin: 0 10px !important;
-// }
-
-// .wb-page-navigation .pre {
-//   margin-left: 0 !important;
-// }
-
-// .wb-page-navigation .next {
-//   margin-right: 0 !important;
-// }
-
-// .wb-page-navigation button:disabled {
-//   background-color: #f4f4f4 !important;
-// }
-
-// .wb-page-navigation button:disabled i {
-//   opacity: 0.2;
-// }
 #plugNmeet-app {
   .excalidraw-wrapper {
     .excalidraw {
@@ -95,15 +34,6 @@
           display: none !important;
         }
       }
-      // label[title='Library'],
-      // label[title='کتابخانه'],
-      // label[title='Bibliothèque'],
-      // label[title='Bibliothek'],
-      // label[title='Libreria'],
-      // label[title='Kütüphane'],
-      // label[title='Biblioteca'],
-      // label[title='ライブラリ'],
-      // label[title='Библиотека']
       label[title] {
         .sidebar-trigger {
           &:hover {
@@ -173,13 +103,13 @@
       .library-menu-browse-button {
         padding: 0.5rem 1rem;
         color: #fff !important;
-        @apply bg-primaryColor;
+        @apply text-primary-color;
         &:hover {
-          @apply bg-secondaryColor;
+          @apply text-primary-color;
         }
       }
       .library-menu-items-container__header {
-        @apply text-primaryColor dark:text-secondaryColor text-base font-medium;
+        @apply text-primary-color dark:text-secondary-color text-base font-medium;
       }
       .App-toolbar-content {
         padding: 0;
@@ -202,13 +132,6 @@
               }
             }
           }
-          // label.active {
-          //   &:hover {
-          //     svg {
-          //       color: #000;
-          //     }
-          //   }
-          // }
         }
       }
       button.scroll-back-to-content {

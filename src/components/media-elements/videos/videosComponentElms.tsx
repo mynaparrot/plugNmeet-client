@@ -353,7 +353,7 @@ const VideosComponentElms = ({
             className={`inner ${pinParticipant ? 'has-pin-cam' : ''} row-count-${videoParticipantsElms.length} total-cam-${totalNumWebcams} group-total-cam-${participantsToRender.length} page-${currentPage} ${isEnabledExtendedVerticalCamView ? `flex gap-3 h-full flex-col justify-center` : 'h-full flex flex-col justify-center gap-3 bg-white z-20'}`}
           >
             <div
-              className={`pinCam-item video-camera-item !order-2 ${isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''}`}
+              className={`pinCam-item video-camera-item order-2! ${isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''}`}
             >
               {pinParticipant}
             </div>

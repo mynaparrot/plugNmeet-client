@@ -175,11 +175,11 @@ const BreakoutRoomInvitation = () => {
                             type="text"
                             readOnly={true}
                             value={joinLink}
-                            className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-7 rounded-[15px] outline-none focus:border-[rgba(0,161,242,1)] focus:shadow-inputFocus"
+                            className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-7 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
                           />
                           <button
                             onClick={copyUrl}
-                            className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+                            className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
                           >
                             {copyText}
                           </button>
@@ -189,7 +189,7 @@ const BreakoutRoomInvitation = () => {
 
                     <div className="button-section flex items-center justify-start mt-4">
                       <button
-                        className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow"
+                        className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
                         onClick={join}
                       >
                         {t('breakout-room.join')}

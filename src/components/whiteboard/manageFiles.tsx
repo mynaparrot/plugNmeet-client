@@ -38,12 +38,12 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
       return (
         <div
           role="none"
-          className="border-b border-solid border-primaryColor/10 last:border-none"
+          className="border-b border-solid border-primary-color/10 last:border-none"
           key={f.fileId}
         >
           <MenuItem>
             <button
-              className="!rounded !w-full flex items-center !px-3 !py-[0.4rem] !text-[10px] lg:!text-xs transition ease-in !bg-transparent hover:!bg-primaryColor hover:text-white text-gray-700 dark:text-darkText"
+              className="!rounded w-full! flex items-center px-3! py-[0.4rem]! text-[10px]! lg:text-xs! transition ease-in bg-transparent! hover:bg-primary-color! hover:text-white text-gray-700 dark:text-dark-text"
               onClick={() => switchOfficeFile(f)}
             >
               {f.fileName}
@@ -91,7 +91,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
     return (
       <>
         {/*<button
-          className="h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer"
+          className="h-[30px] lg:h-[32px] max-w text-xs px-2! rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer"
           onClick={() => openFileBrowser('image')}
         >
           <i className="pnm-blank-img text-[14px] ltr:mr-1 rtl:ml-1" />
@@ -101,7 +101,7 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
           <Menu>
             {({ open }) => (
               <div>
-                <MenuButton className="manage-icon h-[30px] lg:h-[32px] max-w text-xs !px-2 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer">
+                <MenuButton className="manage-icon h-[30px] lg:h-[32px] max-w text-xs px-2! rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer">
                   <>
                     <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
                     {t('whiteboard.manage-files')}
@@ -121,16 +121,16 @@ const ManageFiles = ({ excalidrawAPI }: IManageFilesProps) => {
                   {/* Mark this component as `static` */}
                   <MenuItems
                     static
-                    className="origin-top-right z-10 absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-darkPrimary ring-1 ring-black dark:ring-secondaryColor ring-opacity-5 divide-y divide-gray-100 dark:divide-secondaryColor focus:outline-none"
+                    className="origin-top-right z-10 absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-dark-primary ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 dark:divide-secondary-color focus:outline-hidden"
                   >
                     <div className="item-wrapper-uploaded-file overflow-x-hidden overflow-y-auto max-h-[170px] scrollBar scrollBar2">
                       {menuItems}
                     </div>
-                    <div className="py-3 !border-t-2 border-solid !border-primaryColor !mt-2">
+                    <div className="py-3 border-t-2! border-solid border-primary-color! mt-2!">
                       <MenuItem>
                         <button
                           onClick={() => openFileBrowser('office')}
-                          className="w-[100px] !m-auto text-xs h-7 flex items-center justify-center !bg-primaryColor hover:!bg-secondaryColor text-white"
+                          className="w-[100px] m-auto! text-xs h-7 flex items-center justify-center bg-primary-color! hover:bg-secondary-color! text-white"
                         >
                           <i className="pnm-attachment text-white text-[14px] opacity-50 ltr:mr-1 rtl:ml-1" />
                           {t('whiteboard.upload-file')}

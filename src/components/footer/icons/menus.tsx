@@ -356,7 +356,7 @@ const MenusIcon = () => {
                 className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border[3px] 3xl:border-4 ${open ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
               >
                 <div
-                  className={`relative footer-icon flex items-center justify-center cursor-pointer w-full h-full rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${open ? 'bg-gray-100' : 'bg-white'}`}
+                  className={`relative footer-icon flex items-center justify-center cursor-pointer w-full h-full rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow-sm transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${open ? 'bg-gray-100' : 'bg-white'}`}
                 >
                   <FooterMenuIconSVG />
                 </div>
@@ -375,7 +375,7 @@ const MenusIcon = () => {
                 {/* Mark this component as `static` */}
                 <MenuItems
                   static
-                  className="origin-bottom-left z-[9999] absolute mt-2 w-[300px] bottom-14 shadow-dropdownMenu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
+                  className="origin-bottom-left z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
                 >
                   {roomFeatures?.allowRtmp ? (
                     <MenuItem>
@@ -385,8 +385,8 @@ const MenusIcon = () => {
                       >
                         {/* {isActiveRtmpBroadcasting ? (
                           <div className="lds-ripple">
-                            <div className="border-secondaryColor"></div>
-                            <div className="border-secondaryColor"></div>
+                            <div className="border-secondary-color"></div>
+                            <div className="border-secondary-color"></div>
                           </div>
                         ) : null} */}
                         <RTMPIconSVG />
@@ -493,7 +493,7 @@ const MenusIcon = () => {
                         className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => openManageWaitingRoomModal()}
                       >
-                        <i className="pnm-waiting-room text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
+                        <i className="pnm-waiting-room text-primary-color ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondary-color" />
                         {t('footer.menus.manage-waiting-room')}
                       </button>
                     </MenuItem>
@@ -514,7 +514,7 @@ const MenusIcon = () => {
                       className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => muteAllUsers()}
                     >
-                      <i className="pnm-mic-mute text-primaryColor ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondaryColor" />
+                      <i className="pnm-mic-mute text-primary-color ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondary-color" />
                       {t('footer.menus.mute-all-users')}
                     </button>
                   </MenuItem>

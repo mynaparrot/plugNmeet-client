@@ -86,19 +86,19 @@ const RemoveParticipantAlertModal = ({
       <Dialog
         open={true}
         onClose={() => onCloseRemoveParticipantAlert()}
-        className="remove-participants-popup fixed z-[99999] inset-0 overflow-y-auto"
+        className="remove-participants-popup fixed z-99999 inset-0 overflow-y-auto"
       >
         <div className="flex items-center justify-center min-h-screen">
           <div className="fixed inset-0 bg-black opacity-30" />
 
-          <div className="popup-inner bg-white dark:bg-darkPrimary w-full max-w-sm rounded-3xl shadow-header relative px-4 lg:px-6 py-12 lg:py-14">
+          <div className="popup-inner bg-white dark:bg-dark-primary w-full max-w-sm rounded-3xl shadow-header relative px-4 lg:px-6 py-12 lg:py-14">
             <button
-              className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-none"
+              className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-hidden"
               type="button"
               onClick={() => onCloseRemoveParticipantAlert()}
             >
-              <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-              <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+              <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
+              <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
             </button>
             <DialogTitle className="mb-4 md:mb-6 text-sm">
               <legend className="text-base font-medium text-gray-900 dark:text-white">
@@ -109,7 +109,7 @@ const RemoveParticipantAlertModal = ({
             </DialogTitle>
 
             <div className="mb-10 pl-3">
-              <p className="text-sm text-gray-500 dark:text-darkText">
+              <p className="text-sm text-gray-500 dark:text-dark-text">
                 {t('left-panel.menus.notice.want-to-block')}
               </p>
               <div className="mt-4 pl-2 space-y-4">
@@ -126,7 +126,7 @@ const RemoveParticipantAlertModal = ({
                   />
                   <label
                     htmlFor="yes"
-                    className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                    className="ml-3 block text-sm font-medium text-gray-700 dark:text-dark-text"
                   >
                     {t('yes')}
                   </label>
@@ -144,7 +144,7 @@ const RemoveParticipantAlertModal = ({
                   />
                   <label
                     htmlFor="no"
-                    className="ml-3 block text-sm font-medium text-gray-700 dark:text-darkText"
+                    className="ml-3 block text-sm font-medium text-gray-700 dark:text-dark-text"
                   >
                     {t('no')}
                   </label>
@@ -153,14 +153,14 @@ const RemoveParticipantAlertModal = ({
             </div>
 
             <button
-              className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium text-white bg-red-600 mr-4 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+              className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium text-white bg-red-600 mr-4 border border-transparent rounded-md hover:bg-red-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
               onClick={() => onCloseRemoveParticipantAlert(true)}
             >
               {t('left-panel.menus.notice.remove')}
             </button>
 
             <button
-              className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium bg-primaryColor hover:bg-secondaryColor text-white border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+              className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium bg-primary-color hover:bg-secondary-color text-white border border-transparent rounded-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
               onClick={() => onCloseRemoveParticipantAlert(false)}
             >
               {t('cancel')}

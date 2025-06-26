@@ -159,7 +159,7 @@ const ParticipantsComponent = () => {
               name="search-participants"
               id="search-participants"
               placeholder="Search for Participant"
-              className="text-Gray-950 placeholder:text-Gray-600 h-9 3xl:h-11 rounded-lg 3xl:rounded-[15px] bg-white border border-Gray-200 w-full pl-8 3xl:pl-10 outline-none text-xs 3xl:text-sm"
+              className="text-Gray-950 placeholder:text-Gray-600 h-9 3xl:h-11 rounded-lg 3xl:rounded-[15px] bg-white border border-Gray-200 w-full pl-8 3xl:pl-10 outline-hidden text-xs 3xl:text-sm"
               onChange={(e) => setSearchParticipant(e.target.value)}
             />
           </div>

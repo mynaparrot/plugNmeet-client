@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
-import './style.scss';
+import './style.css';
 import { useAppSelector } from '../../../store';
 
 interface IVideoElmProps {
@@ -66,13 +66,13 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       {!loaded ? (
         <div className="loading flex justify-center">
           <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
+            <div className="border-secondary-color" />
+            <div className="border-secondary-color" />
           </div>
         </div>
       ) : null}
       <button
-        className="absolute z-[99] bottom-0 right-0 p-1 bg-black/50"
+        className="absolute z-99 bottom-0 right-0 p-1 bg-black/50"
         onClick={fullScreen}
       >
         <i className="icon pnm-fullscreen text[20px] text-white" />

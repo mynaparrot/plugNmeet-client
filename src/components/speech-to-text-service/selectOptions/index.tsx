@@ -105,7 +105,7 @@ const SelectOptions = ({
       <Transition appear show={showModal} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-[9999] overflow-y-auto"
+          className="fixed inset-0 z-9999 overflow-y-auto"
           onClose={() => false}
         >
           <div className="min-h-screen px-4 text-center">
@@ -136,14 +136,14 @@ const SelectOptions = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[initial] text-left align-middle transition-all transform bg-white dark:bg-darkPrimary shadow-xl rounded-2xl">
+              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[initial] text-left align-middle transition-all transform bg-white dark:bg-dark-primary shadow-xl rounded-2xl">
                 <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-none"
+                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
                   type="button"
                   onClick={() => setShowModal(false)}
                 >
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-[1px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
+                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
                 </button>
 
                 <DialogTitle
@@ -175,7 +175,7 @@ const SelectOptions = ({
                   <>
                     {canShowSpeechSetting ? (
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden"
                         onClick={() => startOrStopService()}
                       >
                         {recognizer
@@ -186,7 +186,7 @@ const SelectOptions = ({
                   </>
                   {!canShowSpeechSetting ? (
                     <button
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryColor hover:bg-secondaryColor focus:outline-none"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden"
                       onClick={() => startOrStopService()}
                     >
                       {t('speech-services.start-service')}
@@ -205,12 +205,12 @@ const SelectOptions = ({
     <div className="show-speech-setting absolute bottom-1 left-1">
       {modalElm()}
       <button onClick={() => setShowModal(true)}>
-        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-darkSecondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
-          <span className="tooltip !-left-3 ltr:tooltip-left rtl:tooltip-right">
+        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-dark-secondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
+          <span className="tooltip -left-3! ltr:tooltip-left rtl:tooltip-right">
             {t('speech-services.subtitle-settings')}
           </span>
           <i
-            className={`pnm-closed-captioning dark:text-darkText text-[12px] lg:text-[14px] ${
+            className={`pnm-closed-captioning dark:text-dark-text text-[12px] lg:text-[14px] ${
               showModal ? 'secondaryColor' : 'primaryColor'
             }`}
           ></i>

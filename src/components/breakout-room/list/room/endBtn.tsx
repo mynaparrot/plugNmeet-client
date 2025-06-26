@@ -40,7 +40,7 @@ const EndBtn = ({ breakoutRoomId }: IEndBtnProps) => {
   return (
     <div className="end-room-btn">
       <button
-        className="h-7 ml-auto px-3 flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-400 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+        className="h-7 ml-auto px-3 flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-400 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
         onClick={endRoom}
         disabled={disable}
       >

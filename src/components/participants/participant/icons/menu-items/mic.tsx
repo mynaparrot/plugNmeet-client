@@ -115,7 +115,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
         <MenuItem>
           {() => (
             <button
-              className="text-gray-900 dark:text-darkText group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primaryColor hover:text-white"
+              className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
               onClick={() => onClick()}
             >
               {text}

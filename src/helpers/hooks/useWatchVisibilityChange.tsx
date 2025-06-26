@@ -22,11 +22,11 @@ const useWatchVisibilityChange = () => {
       setHidden(false);
     };
 
-    window.addEventListener('blur', onBlur, false);
+    window.addEventListener('blur-sm', onBlur, false);
     window.addEventListener('focus', onFocus, false);
 
     return () => {
-      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('blur-sm', onBlur);
       window.removeEventListener('focus', onFocus);
     };
   }, []);

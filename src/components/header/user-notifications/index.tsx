@@ -100,7 +100,7 @@ const UserNotifications = () => {
       return (
         <div className="relative">
           <NotifyIconSVG />
-          <span className="unseen-notification-count bg-secondaryColor w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
+          <span className="unseen-notification-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
             {hasUnreadNotifications}
           </span>
         </div>
@@ -121,11 +121,11 @@ const UserNotifications = () => {
                 // Base styles
                 'notifications-panel fixed transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-[calc(100%-144px)] top-[68px] bg-Gray-25 border-l border-Gray-200',
                 // Shared closed styles
-                'data-[closed]:opacity-0',
+                'data-closed:opacity-0',
                 // Entering styles
-                'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-x-full',
+                'data-enter:duration-300 data-enter:data-closed:translate-x-full',
                 // Leaving styles
-                'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-x-full',
+                'data-leave:duration-300 data-leave:data-closed:translate-x-full',
               ])}
             >
               <PopoverPanel className="flex flex-col">

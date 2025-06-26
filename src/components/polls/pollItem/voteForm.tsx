@@ -123,7 +123,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       elms.push(
         <div
           key={`option-${pollDataWithOption.pollId}-${o.id}`}
-          className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-buttonShadow rounded-xl px-2 overflow-hidden my-2"
+          className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-button-shadow rounded-xl px-2 overflow-hidden my-2"
           onClick={() => onClickSelectOption(o.id)}
         >
           <input
@@ -131,7 +131,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             id={`option-${pollDataWithOption.pollId}-${o.id}`}
             readOnly={true}
             checked={selectedOption === o.id}
-            className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-buttonShadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+            className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
           />
           <label
             className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
@@ -168,7 +168,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     >
       {pollOption}
       {isLoading ? (
-        <div className="absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
           <LoadingIcon
             className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
             fillColor={'#004D90'}
@@ -178,7 +178,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button
-            className="h-8 px-5 flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-buttonShadow"
+            className="h-8 px-5 flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow"
             type="submit"
           >
             {t('polls.submit')}

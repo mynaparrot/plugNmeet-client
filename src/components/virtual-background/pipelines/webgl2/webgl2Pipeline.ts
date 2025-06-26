@@ -136,7 +136,7 @@ export function buildWebGL2Pipeline(
     canvas,
   );
   const backgroundStage =
-    backgroundConfig.type === 'blur'
+    backgroundConfig.type === 'blur-sm'
       ? buildBackgroundBlurStage(
           gl,
           vertexShader,
@@ -201,7 +201,7 @@ export function buildWebGL2Pipeline(
         postProcessingConfig.lightWrapping,
       );
       backgroundImageStage.updateBlendMode(postProcessingConfig.blendMode);
-    } else if (backgroundConfig.type === 'blur') {
+    } else if (backgroundConfig.type === 'blur-sm') {
       const backgroundBlurStage = backgroundStage as BackgroundBlurStage;
       backgroundBlurStage.updateCoverage(postProcessingConfig.coverage);
     } else {

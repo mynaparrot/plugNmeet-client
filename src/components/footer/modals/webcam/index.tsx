@@ -93,7 +93,7 @@ const ShareWebcamModal = ({
         open={isOpen}
         onClose={() => false}
         id="VirtualBackgroundModel"
-        className="fixed z-[99999] inset-0 overflow-y-auto"
+        className="fixed z-99999 inset-0 overflow-y-auto"
       >
         <div className="flex items-center justify-center min-h-screen py-5 px-2">
           <div className="fixed inset-0 bg-Gray-950/70" />
@@ -115,7 +115,7 @@ const ShareWebcamModal = ({
                   <select
                     value={selectedWebcam}
                     onChange={(e) => setSelectWebcam(e.target.value)}
-                    className="block w-full py-2 px-3 border border-Gray-300 text-Gray-700 bg-transparent rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-full py-2 px-3 border border-Gray-300 text-Gray-700 bg-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   >
                     {devices}
                   </select>
@@ -129,14 +129,14 @@ const ShareWebcamModal = ({
 
             <div className="grid grid-cols-2 gap-5 pt-5 3xl:pt-8 pb-5 px-3 3xl:px-5 border-t border-Gray-100">
               <button
-                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-buttonShadow"
+                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
                 type="button"
                 onClick={() => onClose()}
               >
                 Cancel
               </button>
               <button
-                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                 onClick={() => shareWebcam()}
               >
                 {/* {t('share')} */}

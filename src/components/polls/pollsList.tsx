@@ -36,7 +36,7 @@ const PollsList = () => {
           />
         ))}
         {isFetching ? (
-          <div className="absolute text-center top-1/2 -translate-y-1/2 z-[999] left-0 right-0 m-auto">
+          <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
             <LoadingIcon
               className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
               fillColor={'#004D90'}

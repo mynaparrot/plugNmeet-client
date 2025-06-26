@@ -48,23 +48,23 @@ const PopoverPanelElms = ({
   return (
     <Draggable nodeRef={nodeRef as any} bounds="#main-area">
       <PopoverPanel
-        className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-darkPrimary shadow-xl rounded-2xl h-ful"
+        className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-dark-primary shadow-xl rounded-2xl h-ful"
         ref={nodeRef}
         static={showPopover}
       >
         <h2 className="relative text-lg font-medium leading-6 text-gray-900 dark:text-white p-5 pb-3 px-3 cursor-move">
           {t('speech-services.subtitle-history-modal-title')}
           <button
-            className="absolute ltr:right-10 rtl:left-10 w-[25px] h-[25px] outline-none"
+            className="absolute ltr:right-10 rtl:left-10 w-[25px] h-[25px] outline-hidden"
             onClick={() => downloadTexts()}
           >
             <i className="pnm-download" />
           </button>
           <button
-            className="absolute top-7 ltr:right-3 rtl:left-3 w-[25px] h-[25px] outline-none"
+            className="absolute top-7 ltr:right-3 rtl:left-3 w-[25px] h-[25px] outline-hidden"
             onClick={() => setShowPopover(!showPopover)}
           >
-            <span className="inline-block h-[2px] w-[20px] bg-primaryColor dark:bg-darkText absolute top-0 left-0 -rotate-0" />
+            <span className="inline-block h-[2px] w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-0" />
           </button>
         </h2>
         <hr />
@@ -72,10 +72,10 @@ const PopoverPanelElms = ({
           {lastFinalTexts.slice(-50).map((t) => {
             return (
               <div key={t.id} className="sentence w-full pt-2">
-                <p className="date text-sm pb-1 primaryColor dark:text-darkText">
+                <p className="date text-sm pb-1 primaryColor dark:text-dark-text">
                   <span className="text-xs">{t.time}</span> {t.from}:
                 </p>
-                <p className="message-content max-w-fit shadow-footer text-sm bg-secondaryColor text-white py-1 px-2 rounded">
+                <p className="message-content max-w-fit shadow-footer text-sm bg-secondary-color text-white py-1 px-2 rounded-sm">
                   {t.text}
                 </p>
               </div>

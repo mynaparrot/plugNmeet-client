@@ -28,8 +28,8 @@ const DisplayExternalLink = () => {
         {!loaded ? (
           <div className="loading absolute left-[50%] top-[40%] flex justify-center">
             <div className="lds-ripple">
-              <div className="border-secondaryColor"></div>
-              <div className="border-secondaryColor"></div>
+              <div className="border-secondary-color"></div>
+              <div className="border-secondary-color"></div>
             </div>
           </div>
         ) : null}

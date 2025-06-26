@@ -1,0 +1,12 @@
+@media screen and (max-width: 1025px) {
+  button.previous-cam {
+    @apply w-[95px] h-[25px] -left-[43px];
+  }
+  button.next-cam {
+    @apply w-[95px] h-[25px] -right-[43px];
+  }
+  .footer-collapse-arrow,
+  .header-collapse-arrow {
+    display: none;
+  }
+}

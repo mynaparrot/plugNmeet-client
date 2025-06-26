@@ -174,7 +174,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
               })}
             </span>
             {item.isRunning ? null : (
-              <div className="border border-Red-200 bg-Red-100 shadow-buttonShadow rounded-full h-[22px] px-1.5 text-xs text-Red-700 font-medium flex items-center">
+              <div className="border border-Red-200 bg-Red-100 shadow-button-shadow rounded-full h-[22px] px-1.5 text-xs text-Red-700 font-medium flex items-center">
                 {t('polls.poll-closed')}
               </div>
             )}
@@ -189,7 +189,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
             )}
           </div>
         </div>
-        <div className="bg-white px-4 py-4 border border-Gray-200 shadow-buttonShadow rounded-xl">
+        <div className="bg-white px-4 py-4 border border-Gray-200 shadow-button-shadow rounded-xl">
           <Disclosure defaultOpen={true} as="div">
             {({ open }) => (
               <>

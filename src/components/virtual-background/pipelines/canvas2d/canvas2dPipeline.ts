@@ -140,7 +140,7 @@ export function buildCanvas2dPipeline(
     ctx.filter = 'none';
 
     if (postProcessingConfig?.smoothSegmentationMask) {
-      if (backgroundConfig.type === 'blur') {
+      if (backgroundConfig.type === 'blur-sm') {
         ctx.filter = 'blur(8px)'; // FIXME Does not work on Safari
       } else if (backgroundConfig.type === 'image') {
         ctx.filter = 'blur(4px)'; // FIXME Does not work on Safari
@@ -155,7 +155,7 @@ export function buildCanvas2dPipeline(
 
     ctx.drawImage(sourcePlayback.htmlElement, 0, 0);
 
-    if (backgroundConfig.type === 'blur') {
+    if (backgroundConfig.type === 'blur-sm') {
       blurBackground();
     } else if (backgroundConfig.type === 'image') {
       ctx.globalCompositeOperation = 'destination-over';

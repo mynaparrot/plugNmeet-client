@@ -20,7 +20,7 @@ const SubtitleFontSize = () => {
 
   return (
     <div className="flex items-center justify-between mt-2">
-      <p className="text-sm dark:text-darkText">
+      <p className="text-sm dark:text-dark-text">
         {t('speech-services.subtitle-font-size')}
       </p>
       <section className="flex items-center w-[150px] sm:w-[250px]">

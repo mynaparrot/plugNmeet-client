@@ -43,7 +43,7 @@ import {
 } from './helpers/utils';
 
 import '@excalidraw/excalidraw/index.css';
-import './style.scss';
+import './style.css';
 import { sleep } from '../../helpers/utils';
 import {
   addAllExcalidrawElements,
@@ -582,7 +582,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   return (
     <>
-      <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-[0]">
+      <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
         <Excalidraw
           excalidrawAPI={(api: ExcalidrawImperativeAPI) =>
             handleOnReadyExcalidrawRef(api)

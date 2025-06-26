@@ -39,7 +39,7 @@ const DetailsModal = ({
         <Transition appear show={isOpen} as="div">
           <Dialog
             as="div"
-            className="fixed inset-0 z-[9999] overflow-y-auto"
+            className="fixed inset-0 z-9999 overflow-y-auto"
             onClose={() => false}
           >
             <div className="min-h-screen px-4 text-center">
@@ -78,7 +78,7 @@ const DetailsModal = ({
                     >
                       <span className="uppercase"> Poll 01</span>{' '}
                       {isRunning ? null : (
-                        <div className="border border-Red-200 bg-Red-100 shadow-buttonShadow rounded-full h-[22px] px-1.5 text-xs text-Red-700 font-medium flex items-center">
+                        <div className="border border-Red-200 bg-Red-100 shadow-button-shadow rounded-full h-[22px] px-1.5 text-xs text-Red-700 font-medium flex items-center">
                           {t('polls.poll-closed')}
                         </div>
                       )}

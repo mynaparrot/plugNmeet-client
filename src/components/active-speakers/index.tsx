@@ -21,7 +21,7 @@ const ActiveSpeakers = () => {
   }, [activeSpeakers, participantIds]);
 
   return activeSpeakersElms ? (
-    <div className="active-speakers-wrap flex w-full items-center justify-center absolute top-0 left-0 z-[9999]">
+    <div className="active-speakers-wrap flex w-full items-center justify-center absolute top-0 left-0 z-9999">
       {activeSpeakersElms}
     </div>
   ) : null;

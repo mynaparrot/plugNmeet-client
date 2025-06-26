@@ -1,15 +1,12 @@
 @use 'variables';
 @use 'plugnmeet-fonts';
-@use 'tailwindcss/base';
-@use 'tailwindcss/components';
-@use 'tailwindcss/utilities';
+@use 'tailwindcss';
 
 @use 'common';
 @use 'keyframes-animation';
 @use 'dark-mode';
 @use 'recorder';
 
-// Media screens
 @use 'media_screens/min_1024';
 @use 'media_screens/max_w_980_max_h_450';
 @use 'media_screens/max_h_720';
@@ -24,4 +21,4 @@
 @use 'media_screens/min_1800';
 @use 'media_screens/max_1025';
 @use 'media_screens/min_641_max_1025';
-@use 'media_screens/h-max-800.scss';
+@use 'media_screens/h-max-800';

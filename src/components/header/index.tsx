@@ -145,14 +145,14 @@ const Header = () => {
 
                   <div className="mt-8 flex items-center justify-end gap-2">
                     <button
-                      className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-buttonShadow"
+                      className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
                       onClick={() => onCloseAlertModal(true)}
                     >
                       {t('ok')}
                     </button>
                     <button
                       type="button"
-                      className="h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-buttonShadow"
+                      className="h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       onClick={() => onCloseAlertModal(false)}
                     >
                       {t('close')}
@@ -181,7 +181,7 @@ const Header = () => {
       >
         <header
           id="main-header"
-          className={`relative z-[99999] px-4 h-[54px] 3xl:h-[68px] flex items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
+          className={`relative z-99999 px-4 h-[54px] 3xl:h-[68px] flex items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
             headerVisible ? 'ac' : ''
           }`}
         >
@@ -201,7 +201,7 @@ const Header = () => {
             <Menu>
               {({ open }) => (
                 <div>
-                  <MenuButton className="relative flex-shrink-0 p-2">
+                  <MenuButton className="relative shrink-0 p-2">
                     <div className="">
                       <HeaderMenuIcon />
                     </div>

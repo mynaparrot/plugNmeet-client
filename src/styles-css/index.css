@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+@import './plugnmeet-font.css' layer(base);
+@import './variables.css' layer(theme);
+
+@import './common.css' layer(utilities);
+@import './keyframes-animation.css' layer(utilities);
+@import './dark-mode.css' layer(utilities);
+@import './recorder.css' layer(utilities);
+
+@import './media_screens/min_1024.css' layer(utilities);
+@import './media_screens/max_w_980_max_h_450.css' layer(utilities);
+@import './media_screens/max_h_720.css' layer(utilities);
+@import './media_screens/max_1640.css' layer(utilities);
+@import './media_screens/max_1279.css' layer(utilities);
+@import './media_screens/max_1023.css' layer(utilities);
+@import './media_screens/max_767.css' layer(utilities);
+@import './media_screens/min_641.css' layer(utilities);
+@import './media_screens/max_640.css' layer(utilities);
+@import './media_screens/max_370.css' layer(utilities);
+@import './media_screens/min_1800.css' layer(utilities);
+@import './media_screens/max_1025.css' layer(utilities);
+@import './media_screens/min_641_max_1025.css' layer(utilities);
+@import './media_screens/h-max-800.css' layer(utilities);
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}

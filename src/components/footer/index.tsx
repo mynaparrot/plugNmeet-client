@@ -71,7 +71,7 @@ const Footer = () => {
               <div className="footer-right w-72 flex items-center justify-end gap-2">
                 <ParticipantIcon />
                 {roomFeatures?.chatFeatures?.allowChat ? <ChatIcon /> : null}
-                <div className="line h-6 w-[1px] bg-Gray-200"></div>
+                <div className="line h-6 w-px bg-Gray-200"></div>
                 <EndMeetingButton />
               </div>
               <BreakoutRoomInvitation />
@@ -80,17 +80,17 @@ const Footer = () => {
         </Transition>
         {/* {isRecorder ? null : (
           <div
-            className={`footer-collapse-arrow group fixed right-0 flex items-end justify-center h-5 w-[50px] cursor-pointer z-[1] bg-white dark:bg-darkPrimary rounded-tl-lg ${
+            className={`footer-collapse-arrow group fixed right-0 flex items-end justify-center h-5 w-[50px] cursor-pointer z-1 bg-white dark:bg-dark-primary rounded-tl-lg ${
               footerVisible ? 'bottom-[60px] pb-[3px]' : 'bottom-0 pb-[6px]'
             }`}
             onClick={() => dispatch(toggleFooterVisibility())}
           >
             <i
-              className={` text-[10px] sm:text-[12px] dark:text-secondaryColor pnm-arrow-below ${
+              className={` text-[10px] sm:text-[12px] dark:text-secondary-color pnm-arrow-below ${
                 footerVisible ? '' : 'rotate-180'
               }`}
             ></i>
-            <span className="absolute right-0 bottom-7 w-max text-darkPrimary dark:text-white bg-white dark:bg-darkPrimary text-[12px] py-1 px-[10px] rounded opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
+            <span className="absolute right-0 bottom-7 w-max text-dark-primary dark:text-white bg-white dark:bg-dark-primary text-[12px] py-1 px-[10px] rounded-sm opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
               {footerVisible
                 ? t('footer.hide-footer')
                 : t('footer.show-footer')}

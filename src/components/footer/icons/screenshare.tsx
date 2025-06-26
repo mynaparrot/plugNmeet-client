@@ -44,7 +44,7 @@ const ScrenshareIcon = () => {
   //   ) {
   //     setIconCSS('secondaryColor');
   //   } else {
-  //     setIconCSS('primaryColor dark:text-darkText');
+  //     setIconCSS('primaryColor dark:text-dark-text');
   //   }
   //   //eslint-disable-next-line
   // }, [sessionScreenSharing]);
@@ -164,13 +164,13 @@ const ScrenshareIcon = () => {
   const render = () => {
     return (
       <div
-        className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveScreenshare ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lock ? '!border-Red-100 pointer-events-none' : ''}`}
+        className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveScreenshare ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lock ? 'border-Red-100! pointer-events-none' : ''}`}
         onClick={() => toggleScreenShare()}
       >
         <div
           className={`h-full relative w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
             showTooltip ? 'has-tooltip' : ''
-          } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'} ${lock ? '!border-Red-200 text-Red-400' : ''}`}
+          } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'} ${lock ? 'border-Red-200! text-Red-400' : ''}`}
         >
           {/* <div
         className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${

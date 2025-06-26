@@ -38,7 +38,7 @@ const BreakoutRoomDuration = ({ duration, created }: IDurationProps) => {
 
   return (
     <>
-      <div className="h-7 px-4 flex items-center justify-center rounded-xl bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-buttonShadow">
+      <div className="h-7 px-4 flex items-center justify-center rounded-xl bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow">
         {remaining}
       </div>
     </>

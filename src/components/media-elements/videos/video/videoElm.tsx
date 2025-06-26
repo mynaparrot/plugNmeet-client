@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
-import './style.scss';
+import './style.css';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
@@ -79,10 +79,10 @@ const VideoElm = ({ track, setVideoRef }: IVideoElmProps) => {
   return (
     <>
       {!loaded ? (
-        <div className="loading absolute text-center top-3 z-[999] left-0 right-0 m-auto">
+        <div className="loading absolute text-center top-3 z-999 left-0 right-0 m-auto">
           <div className="lds-ripple">
-            <div className="border-secondaryColor" />
-            <div className="border-secondaryColor" />
+            <div className="border-secondary-color" />
+            <div className="border-secondary-color" />
           </div>
         </div>
       ) : null}

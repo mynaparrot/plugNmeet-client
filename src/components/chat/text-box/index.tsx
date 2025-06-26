@@ -197,7 +197,7 @@ const TextBoxArea = ({
       <textarea
         name="message-textarea"
         id="message-textarea"
-        className="flex-1 outline-none text-xs 3xl:text-sm text-Gray-600 font-normal h-10 mr-2 overflow-hidden"
+        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 font-normal h-10 mr-2 overflow-hidden"
         value={message}
         onChange={handleChange}
         disabled={lockSendMsg}
