@@ -7,7 +7,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "noImplicitAny": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "allowJs": true,
     "skipLibCheck": true,

@@ -29,7 +29,7 @@ export default defineConfig([
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      '@typescript-eslint/no-explicit-any': 'off', // Kept from original config
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ]);
