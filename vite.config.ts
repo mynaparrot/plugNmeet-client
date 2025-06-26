@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy, ViteStaticCopyOptions } from 'vite-plugin-static-copy';
 import tailwindcss from '@tailwindcss/vite';
+import { swc } from 'rollup-plugin-swc3';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const BUILD_INTERVAL = 1500;
@@ -45,6 +46,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    swc(),
     react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
     tailwindcss(),
     viteStaticCopy(getStaticFilesToCopy()),
