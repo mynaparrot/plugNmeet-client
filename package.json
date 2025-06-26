@@ -65,7 +65,7 @@
     "@types/sanitize-html": "2.16.0",
     "@types/video.js": "7.3.58",
     "@vitejs/plugin-react": "4.6.0",
-    "babel-plugin-react-compiler": "0.0.0-experimental-32d3781-20250625",
+    "babel-plugin-react-compiler": "19.1.0-rc.2",
     "eslint": "9.29.0",
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-prettier": "5.5.1",
