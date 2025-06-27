@@ -1,6 +1,6 @@
 import { join, resolve } from 'path';
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import { viteStaticCopy, ViteStaticCopyOptions } from 'vite-plugin-static-copy';
 import tailwindcss from '@tailwindcss/vite';
 import { swc } from 'rollup-plugin-swc3';
@@ -47,7 +47,7 @@ export default defineConfig({
   },
   plugins: [
     swc(),
-    react({ babel: { plugins: [['babel-plugin-react-compiler', {}]] } }),
+    react(),
     tailwindcss(),
     viteStaticCopy(getStaticFilesToCopy()),
   ],
