@@ -105,7 +105,7 @@ const SharedNotepadElement = () => {
           <div className="h-[calc(100%-50px)] mt-9 flex items-end justify-end">
             <Draggable
               handle="#draggable-h1"
-              nodeRef={nodeRef as any}
+              nodeRef={nodeRef}
               onStop={onStopDrag}
               position={
                 isActiveSharedNotePad ? currentPosition : { x: 0, y: 0 }
