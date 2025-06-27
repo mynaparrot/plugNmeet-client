@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { viteStaticCopy, ViteStaticCopyOptions } from 'vite-plugin-static-copy';
 import tailwindcss from '@tailwindcss/vite';
-import { swc } from 'rollup-plugin-swc3';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const BUILD_INTERVAL = 1500;
@@ -45,12 +44,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [
-    swc(),
-    react(),
-    tailwindcss(),
-    viteStaticCopy(getStaticFilesToCopy()),
-  ],
+  plugins: [react(), tailwindcss(), viteStaticCopy(getStaticFilesToCopy())],
   define: {
     IS_PRODUCTION: isProduction,
     PNM_VERSION: JSON.stringify(process.env.npm_package_version),
