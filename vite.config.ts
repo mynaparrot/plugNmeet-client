@@ -78,50 +78,46 @@ function assetFileNames(names: string[]) {
   return 'assets/js/[name][extname]';
 }
 
+const vendorChunkMap: Record<string, string[]> = {
+  tensorflow: ['@tensorflow'],
+  mermaid: ['mermaid'],
+  excalidraw: ['@excalidraw'],
+  'microsoft-speech-sdk': ['microsoft-cognitiveservices-speech-sdk'],
+  utils: ['lodash', 'validator'],
+  'react-libs': [
+    'react-dnd',
+    'dnd-core',
+    'react-cool-virtual',
+    'react-virtual',
+    'react-hotkeys-hook',
+    'react-draggable',
+    'react-player',
+    '@headlessui',
+    'i18next',
+  ],
+  pnm: ['plugnmeet-protocol', '@bufbuild', 'axios', '@nats-io', 'redux'],
+};
+
 function manualChunks(id: string) {
   if (id.includes('node_modules')) {
+    const modulePath = id.split('node_modules/')[1];
+    const topLevelFolder = modulePath.split('/')[0];
+    if (topLevelFolder !== '.pnpm') {
+      return topLevelFolder;
+    }
+
     if (/\.css$/.test(id)) {
       return 'vendor';
     } else if (/\.js$/.test(id)) {
-      const modulePath = id.split('node_modules/')[1];
-      const topLevelFolder = modulePath.split('/')[0];
-      if (topLevelFolder !== '.pnpm') {
-        return topLevelFolder;
-      }
-
       const packageName = modulePath.split('/')[1];
-      switch (true) {
-        case packageName.includes('@tensorflow'):
-          return 'tensorflow';
-        case packageName.includes('mermaid'):
-          return 'mermaid';
-        case packageName.includes('@excalidraw'):
-          return 'excalidraw';
-        case packageName.includes('microsoft-cognitiveservices-speech-sdk'):
-          return 'microsoft-speech-sdk';
-        case packageName.includes('lodash'):
-        case packageName.includes('validator'):
-          return 'utils';
-        case packageName.includes('react-dnd'):
-        case packageName.includes('dnd-core'):
-        case packageName.includes('react-cool-virtual'):
-        case packageName.includes('react-virtual'):
-        case packageName.includes('react-hotkeys-hook'):
-        case packageName.includes('react-draggable'):
-        case packageName.includes('react-player'):
-        case packageName.includes('@headlessui'):
-        case packageName.includes('i18next'):
-          return 'react-libs';
-        case packageName.includes('plugnmeet-protocol'):
-        case packageName.includes('@bufbuild'):
-        case packageName.includes('axios'):
-        case packageName.includes('@nats-io'):
-        case packageName.includes('redux'):
-          return 'pnm';
-        default:
-          if (!packageName.includes('react')) {
-            return 'vendor';
-          }
+      for (const chunk in vendorChunkMap) {
+        if (vendorChunkMap[chunk].some((pkg) => packageName.includes(pkg))) {
+          return chunk;
+        }
+      }
+      if (!packageName.includes('react')) {
+        // If it's not a React related package, we can consider it as vendor
+        return 'vendor';
       }
     }
   }
