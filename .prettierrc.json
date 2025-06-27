@@ -5,5 +5,8 @@
   "bracketSpacing": true,
   "trailingComma": "all",
   "arrowParens": "always",
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "plugins": [
+    "@prettier/plugin-oxc"
+  ]
 }

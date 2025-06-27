@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "unicorn", "typescript", "oxc"],
+  "ignorePatterns": [
+    "dist/",
+    "**/node_modules/",
+    ".git/"
+  ],
+  "categories": {
+    "correctness": "off"
+  },
+  "env": {
+    "browser": true
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
+}
