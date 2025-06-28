@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.1...v1.7.2) (2025-06-27)
+
+
+### Bug Fixes
+
+* bump proto ([7a41f40](https://github.com/mynaparrot/plugNmeet-client/commit/7a41f40326370623bb10e9c372c1abda152664ce))
+
 ## [1.7.1](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.0...v1.7.1) (2025-04-10)
 
 
