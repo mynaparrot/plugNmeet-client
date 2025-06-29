@@ -40,10 +40,6 @@ export default defineConfig({
         advancedChunks: {
           groups: [
             {
-              test: /node_modules\/react(-dom)?/,
-              name: 'react',
-            },
-            {
               name: (moduleId: string) => manualChunks(moduleId),
             },
           ],
@@ -129,8 +125,11 @@ function manualChunks(id: string) {
           return chunk;
         }
       }
-      if (!packageName.includes('react')) {
-        // If it's not a React related package, we can consider it as vendor
+
+      if (/react(-dom)?/.test(packageName)) {
+        return 'react';
+      } else {
+        // If we can't find a specific chunk, we can return 'vendor'
         return 'vendor';
       }
     }
