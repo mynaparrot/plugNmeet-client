@@ -132,8 +132,8 @@ const Landing = ({
         <div className="head bg-white h-[50px] 3xl:h-[60px] px-5 flex items-center text-Gray-950 text-base 3xl:text-lg font-medium border-b border-Gray-200">
           Microphone and camera preferences
         </div>
-        <div className="wrapper bg-Gray-50 pt-8 3xl:pt-11 pb-10 3xl:pb-14 px-8 3xl:px-12 flex flex-wrap">
-          <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-1/2 rounded-2xl">
+        <div className="wrapper bg-Gray-50 pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
+          <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
             <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
             <div className="micro-cam-wrap flex justify-center py-5 gap-5">
               <MicrophoneIcon
@@ -152,10 +152,10 @@ const Landing = ({
               />
             </div>
           </div>
-          <div className="right w-1/2 pl-8 3xl:pl-16 py-8 flex items-center">
+          <div className="right w-full md:w-1/2 md:pl-8 3xl:pl-16 sm:py-8 flex items-center">
             {showLoadingMsg ? (
               <div className="inner waiting-room-contents relative -mt-10">
-                <div className="texts">
+                <div className="texts text-center md:text-left">
                   <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center gap-2">
                     <LoadingIcon
                       className={'inline w-7 h-7 text-Gray-200 animate-spin'}
@@ -174,8 +174,8 @@ const Landing = ({
                 </div>
               </div>
             ) : (
-              <div className="inner relative">
-                <div className="texts">
+              <div className="inner relative w-full">
+                <div className="texts text-center md:text-left">
                   <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2">
                     Almost there...
                   </h3>
@@ -188,7 +188,7 @@ const Landing = ({
                   {selectedAudioDevice !== '' || selectedVideoDevice !== '' ? (
                     <button
                       type="button"
-                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                      className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       onClick={() => onClose()}
                     >
                       Join
@@ -196,7 +196,7 @@ const Landing = ({
                   ) : (
                     <button
                       type="button"
-                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                      className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       onClick={() => enableMediaDevices('both')}
                     >
                       Enable Microphone and Camera
@@ -206,7 +206,7 @@ const Landing = ({
                     <button
                       id="listenOnlyJoin"
                       type="button"
-                      className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+                      className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
                       onClick={() => onClose()}
                     >
                       Continue as a listener
