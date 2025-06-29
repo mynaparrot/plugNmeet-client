@@ -34,8 +34,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
-        chunkFileNames: ({ name }) => chunkFileNames(name),
-        cssEntryFileNames: 'assets/css/[name].[hash][extname]',
+        chunkFileNames: 'assets/chunks/[name].[hash].js',
         assetFileNames: ({ names }) => assetFileNames(names),
         advancedChunks: {
           groups: [
@@ -79,15 +78,6 @@ function assetFileNames(names: string[]) {
   return 'assets/js/[name][extname]';
 }
 
-function chunkFileNames(name: string) {
-  if (name.includes('rolldown-runtime')) {
-    // so that we can load it with the main module
-    return 'assets/js/runtime.[hash].js';
-  }
-
-  return 'assets/chunks/[name].[hash].js';
-}
-
 const vendorChunkMap: Record<string, string[]> = {
   tensorflow: ['@tensorflow'],
   mermaid: ['mermaid'],
@@ -109,32 +99,33 @@ const vendorChunkMap: Record<string, string[]> = {
 };
 
 function manualChunks(id: string) {
-  if (id.includes('node_modules')) {
-    const modulePath = id.split('node_modules/')[1];
-    const topLevelFolder = modulePath.split('/')[0];
-    if (topLevelFolder !== '.pnpm') {
-      return topLevelFolder;
+  if (!id.includes('node_modules')) {
+    return null;
+  }
+
+  const modulePath = id.split('node_modules/')[1];
+  const topLevelFolder = modulePath.split('/')[0];
+  if (topLevelFolder !== '.pnpm') {
+    return topLevelFolder;
+  }
+
+  if (/\.css$/.test(id)) {
+    return 'vendor';
+  } else if (/\.js$/.test(id)) {
+    const packageName = modulePath.split('/')[1];
+    for (const chunk in vendorChunkMap) {
+      if (vendorChunkMap[chunk].some((pkg) => packageName.includes(pkg))) {
+        return chunk;
+      }
     }
 
-    if (/\.css$/.test(id)) {
+    if (/react(-dom)?/.test(packageName)) {
+      return 'react';
+    } else {
+      // If we can't find a specific chunk, we can return 'vendor'
       return 'vendor';
-    } else if (/\.js$/.test(id)) {
-      const packageName = modulePath.split('/')[1];
-      for (const chunk in vendorChunkMap) {
-        if (vendorChunkMap[chunk].some((pkg) => packageName.includes(pkg))) {
-          return chunk;
-        }
-      }
-
-      if (/react(-dom)?/.test(packageName)) {
-        return 'react';
-      } else {
-        // If we can't find a specific chunk, we can return 'vendor'
-        return 'vendor';
-      }
     }
   }
-  return null;
 }
 
 function getStaticFilesToCopy(): ViteStaticCopyOptions {
