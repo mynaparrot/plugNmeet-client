@@ -34,10 +34,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
-        chunkFileNames: 'assets/chunks/[name].[hash].js',
+        chunkFileNames: ({ name }) => chunkFileNames(name),
+        cssEntryFileNames: 'assets/css/[name].[hash][extname]',
         assetFileNames: ({ names }) => assetFileNames(names),
         advancedChunks: {
           groups: [
+            {
+              test: /node_modules\/react(-dom)?/,
+              name: 'react',
+            },
             {
               name: (moduleId: string) => manualChunks(moduleId),
             },
@@ -67,15 +72,24 @@ function assetFileNames(names: string[]) {
     return 'assets/fonts/[name][extname]';
   }
   if (/\.css$/.test(name)) {
-    if (name.includes('vendor')) {
-      return 'assets/css/vendor.[hash][extname]';
+    if (name.includes('index.')) {
+      return 'assets/css/main.[hash][extname]';
     }
-    return 'assets/css/main.[hash][extname]';
+    return 'assets/css/[name].[hash][extname]';
   }
   if (/\.ico$/.test(name)) {
     return 'assets/imgs/[name][extname]';
   }
   return 'assets/js/[name][extname]';
+}
+
+function chunkFileNames(name: string) {
+  if (name.includes('rolldown-runtime')) {
+    // so that we can load it with the main module
+    return 'assets/js/runtime.[hash].js';
+  }
+
+  return 'assets/chunks/[name].[hash].js';
 }
 
 const vendorChunkMap: Record<string, string[]> = {
