@@ -35,6 +35,7 @@ export default class HandleSystemData {
           addUserNotification({
             message: i18n.t(nt.msg),
             typeOption: 'info',
+            newInstance: true,
           }),
         );
 
@@ -47,6 +48,7 @@ export default class HandleSystemData {
           addUserNotification({
             message: i18n.t(nt.msg),
             typeOption: 'warning',
+            newInstance: true,
           }),
         );
         if (nt.withSound) {
@@ -58,6 +60,7 @@ export default class HandleSystemData {
           addUserNotification({
             message: i18n.t(nt.msg),
             typeOption: 'error',
+            newInstance: true,
           }),
         );
         if (nt.withSound) {
