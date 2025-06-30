@@ -59,7 +59,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     }
     initialRef.current = true;
 
-    window.onresize = () => {
+    window.addEventListener('resize', () => {
       setScreenWidth(window.innerWidth);
       dispatch(updateScreenHeight(window.innerHeight));
       adjustScreenSize();
@@ -76,7 +76,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
         // if both open better to close one
         dispatch(updateIsActiveParticipantsPanel(false));
       }
-    };
+    });
 
     setScreenWidth(window.innerWidth);
     dispatch(updateScreenWidth(window.innerWidth));
@@ -107,7 +107,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
 
     if (isSmallDevice) {
       // Prevent display sleep for mobile devices
-      noSleep.enable();
+      noSleep.enable().then();
     }
 
     const os = md.os();

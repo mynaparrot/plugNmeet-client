@@ -28,16 +28,18 @@ const AudioNotification = () => {
 
   useEffect(() => {
     const el = ref.current;
+    const playing = () => setPlaying(true);
+    const ended = () => setPlaying(false);
     if (el) {
-      el.addEventListener('playing', () => setPlaying(true));
-      el.addEventListener('ended', () => setPlaying(false));
+      el.addEventListener('playing', playing);
+      el.addEventListener('ended', ended);
     }
 
     return () => {
       if (el) {
         el.pause();
-        el.removeEventListener('playing', () => setPlaying(true));
-        el.removeEventListener('ended', () => setPlaying(false));
+        el.removeEventListener('playing', playing);
+        el.removeEventListener('ended', ended);
       }
     };
   }, []);

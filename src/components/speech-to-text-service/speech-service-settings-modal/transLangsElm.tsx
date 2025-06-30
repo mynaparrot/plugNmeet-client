@@ -57,9 +57,9 @@ const TransLangsElm = ({
               {selectedTransLangs
                 .map((l) => {
                   if (!l) return [];
-                  return supportedTranslationLangs.filter(
+                  return supportedTranslationLangs.find(
                     (lang) => lang.code === l,
-                  )[0].name;
+                  )?.name;
                 })
                 .join(', ')}
             </span>

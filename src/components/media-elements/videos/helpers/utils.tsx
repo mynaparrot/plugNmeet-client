@@ -21,7 +21,6 @@ export const setForMobileLandscape = (participantsToRender: ReactElement[]) => {
     c.forEach((el, i) => {
       elms.push(
         <div
-          key={i}
           className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
@@ -53,7 +52,6 @@ export const setForMobileAndTablet = (participantsToRender: ReactElement[]) => {
     c.forEach((el, i) => {
       elms.push(
         <div
-          key={i}
           className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}
@@ -65,7 +63,6 @@ export const setForMobileAndTablet = (participantsToRender: ReactElement[]) => {
     c.forEach((el, i) => {
       elms.push(
         <div
-          key={i}
           className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
         >
           {el}

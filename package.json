@@ -9,8 +9,8 @@
     "start": "vite",
     "build": "vite build",
     "build-netlify": "pnpm run build && cp dist/assets/config_sample.js dist/assets/config.js",
-    "lint": "oxlint --fix src",
-    "lint:check": "oxlint src",
+    "lint": "oxlint --config=./.oxlintrc.json --fix",
+    "lint:check": "oxlint --config=./.oxlintrc.json",
     "format:check": "prettier --check src/**/*.{jsx,ts,tsx}",
     "prepare": "husky",
     "size-limit": "pnpm run build && size-limit --json"

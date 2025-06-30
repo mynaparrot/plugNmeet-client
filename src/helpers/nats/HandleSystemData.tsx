@@ -21,8 +21,6 @@ import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 
 export default class HandleSystemData {
-  constructor() {}
-
   /**
    * To handle various notifications
    * @param data

@@ -1,6 +1,6 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
-import { toast, TypeOptions } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   UploadBase64EncodedDataReqSchema,
@@ -296,33 +296,6 @@ export function createEmptyVideoStreamTrack(name: string) {
   return emptyStreamTrack;
 }
 
-export const displayInstantNotification = (
-  message: string,
-  type: TypeOptions,
-) => {
-  toast(message, {
-    toastId: type + '-status',
-    type,
-  });
-
-  const isPNMWindowTabVisible =
-    store.getState().roomSettings.isPNMWindowTabVisible;
-  // if not visible, then we can show notification
-  if (
-    !isPNMWindowTabVisible &&
-    'Notification' in window &&
-    Notification.permission === 'granted'
-  ) {
-    // we'll see if website has any favicon icon, then we'll use it
-    const favicon = document.querySelector("link[rel*='icon']");
-    let icon: string | undefined = undefined;
-    if (favicon) {
-      icon = favicon.getAttribute('href') ?? undefined;
-    }
-    new Notification(message, { icon });
-  }
-};
-
 export const isUserRecorder = (userId: string) => {
   return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
 };
@@ -475,7 +448,7 @@ export const uploadResumableFile = (
     }
   });
 
-  r.on('fileError', function (file, message) {
+  r.on('fileError', function (_file, message) {
     isUploadingFile = false;
     if (isUploading) {
       isUploading(false);

@@ -53,7 +53,7 @@ const UploadFilesUI = ({
 
   const { isUploading, result } = useResumableFilesUpload({
     allowedFileTypes,
-    maxFileSize: maxAllowedFileSize ? maxAllowedFileSize : '30',
+    maxFileSize: maxAllowedFileSize ?? '30',
     files,
   });
 

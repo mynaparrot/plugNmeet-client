@@ -132,6 +132,7 @@ const RoomSettings = () => {
           <TabPanels className="mt-2">
             {Object.values(categories).map((items, idx) => (
               <TabPanel
+                // oxlint-disable-next-line no-array-index-key
                 key={idx}
                 className="bg-transparent rounded-xl p-3 min-h-[316px] scrollBar overflow-auto"
               >

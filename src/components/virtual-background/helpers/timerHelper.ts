@@ -32,20 +32,21 @@ export function createTimerWorker(): TimerWorker {
     URL.createObjectURL(new Blob([timerWorker], { type: 'text/javascript' })),
   );
 
-  worker.onmessage = (event: MessageEvent<TimerData>) => {
+  worker.addEventListener('message', (event: MessageEvent<TimerData>) => {
     const callback = callbacks.get(event.data.callbackId);
     if (!callback) {
       return;
     }
     callbacks.delete(event.data.callbackId);
     callback();
-  };
+  });
 
   let nextCallbackId = 1;
 
   function setTimeout(callback: () => void, timeoutMs = 0) {
     const callbackId = nextCallbackId++;
     callbacks.set(callbackId, callback);
+    // oxlint-disable-next-line require-post-message-target-origin
     worker.postMessage({ callbackId, timeoutMs });
     return callbackId;
   }
@@ -54,6 +55,7 @@ export function createTimerWorker(): TimerWorker {
     if (!callbacks.has(callbackId)) {
       return;
     }
+    // oxlint-disable-next-line require-post-message-target-origin
     worker.postMessage({ callbackId });
     callbacks.delete(callbackId);
   }

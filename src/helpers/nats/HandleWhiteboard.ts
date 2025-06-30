@@ -16,8 +16,6 @@ import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 export default class HandleWhiteboard {
   private _isEnabledE2EE: boolean | undefined = undefined;
 
-  constructor() {}
-
   public handleWhiteboardMsg = async (payload: DataChannelMessage) => {
     let finalMsg: string | undefined;
 

@@ -42,9 +42,9 @@ const SpeechLangsElms = ({
               {selectedSpeechLangs
                 .map((l) => {
                   if (!l) return [];
-                  return supportedSpeechToTextLangs.filter(
+                  return supportedSpeechToTextLangs.find(
                     (lang) => lang.code === l,
-                  )[0].name;
+                  )?.name;
                 })
                 .join(', ')}
             </span>

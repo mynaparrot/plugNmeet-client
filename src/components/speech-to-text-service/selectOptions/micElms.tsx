@@ -36,7 +36,7 @@ const MicElms = ({
         }
       }
     };
-    getDeviceMics();
+    getDeviceMics().then();
     //eslint-disable-next-line
   }, []);
 
@@ -63,7 +63,7 @@ const MicElms = ({
                 className={`relative min-h-[36px] w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-dark-text dark:text-dark-text bg-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 text-sm`}
               >
                 <span className="block text-xs">
-                  {devices.filter((d) => d.id === selectedMicDevice)?.[0].label}
+                  {devices.find((d) => d.id === selectedMicDevice)?.label}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
                   <i className="pnm-updown text-xl primaryColor dark:text-dark-text" />

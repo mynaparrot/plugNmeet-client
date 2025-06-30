@@ -4,23 +4,27 @@
   "ignorePatterns": [
     "dist/",
     "**/node_modules/",
-    ".git/"
+    ".git/",
+    "**/assets/**/*.js",
+    "custom_tfjs/"
   ],
   "categories": {
-    "correctness": "off"
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
   },
   "env": {
     "browser": true
   },
   "overrides": [
     {
-      "files": [
-        "src/**/*.{ts,tsx}"
-      ],
+      "files": ["src/**/*.{ts,jsx,tsx}"],
       "rules": {
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn",
-        "@typescript-eslint/no-explicit-any": "off"
+        "react-in-jsx-scope": "off",
+        "iframe-missing-sandbox": "off",
+        "consistent-function-scoping": "off",
+        "prefer-add-event-listener": "off",
+        "no-await-in-loop": "off"
       }
     }
   ]

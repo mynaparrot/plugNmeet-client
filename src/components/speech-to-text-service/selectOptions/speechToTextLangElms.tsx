@@ -105,9 +105,9 @@ const SpeechToTextLangElms = ({
                             }`}
                           >
                             {
-                              supportedSpeechToTextLangs.filter(
+                              supportedSpeechToTextLangs.find(
                                 (lang) => lang.code === l,
-                              )[0].name
+                              )?.name
                             }
                           </span>
                           {selected ? (

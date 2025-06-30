@@ -52,7 +52,7 @@ const SpeechUsersElms = ({
             <ListboxButton className="min-h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
               <span className="block">
                 {selectedSpeechUsers
-                  .map((l) => users.filter((u) => u.userId === l)[0]?.name)
+                  .map((l) => users.find((u) => u.userId === l)?.name)
                   .join(', ')}
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">

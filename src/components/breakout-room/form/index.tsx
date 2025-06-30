@@ -73,7 +73,7 @@ const FromElems = () => {
 
   // if room number decreases then we'll reset otherwise user will be missing
   useEffect(() => {
-    if (totalRooms === preTotalRooms || totalRooms > preTotalRooms) {
+    if (totalRooms >= preTotalRooms) {
       return;
     }
     const participants = participantsSelector.selectAll(store.getState());

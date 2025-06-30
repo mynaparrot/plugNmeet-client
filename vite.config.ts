@@ -69,13 +69,13 @@ function assetFileNames(names: string[]) {
   if (/\.(woff2?|ttf|eot)$/.test(name)) {
     return 'assets/fonts/[name][extname]';
   }
-  if (/\.css$/.test(name)) {
-    if (name.includes('index.')) {
+  if (name.endsWith('.css')) {
+    if (name.startsWith('index.')) {
       return 'assets/css/main.[hash][extname]';
     }
     return 'assets/css/[name].[hash][extname]';
   }
-  if (/\.ico$/.test(name)) {
+  if (name.endsWith('.ico')) {
     return 'assets/imgs/[name][extname]';
   }
   return 'assets/js/[name][extname]';
@@ -112,9 +112,9 @@ function manualChunks(id: string) {
     return topLevelFolder;
   }
 
-  if (/\.css$/.test(id)) {
+  if (id.endsWith('.css')) {
     return 'vendor';
-  } else if (/\.js$/.test(id)) {
+  } else if (id.endsWith('.js')) {
     const packageName = modulePath.split('/')[1];
     for (const chunk in vendorChunkMap) {
       if (vendorChunkMap[chunk].some((pkg) => packageName.includes(pkg))) {

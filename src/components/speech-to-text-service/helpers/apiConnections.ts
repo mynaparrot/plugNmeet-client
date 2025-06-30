@@ -68,6 +68,7 @@ export const openConnectionWithAzure = (
     return;
   }
 
+  // oxlint-disable-next-line prefer-array-find
   const sl = supportedSpeechToTextLangs.filter((l) => l.code === speechLang)[0];
   let transLangs: Array<string> = [];
 
@@ -80,6 +81,7 @@ export const openConnectionWithAzure = (
     speechService.allowedSpeechLangs
       ?.filter((l) => l !== sl.code)
       .forEach((s) => {
+        // oxlint-disable-next-line prefer-array-find
         const speechObj = supportedSpeechToTextLangs.filter(
           (l) => l.code === s,
         );

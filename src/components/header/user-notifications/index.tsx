@@ -49,6 +49,7 @@ const UserNotifications = () => {
         if (favicon) {
           icon = favicon.getAttribute('href') ?? undefined;
         }
+        // oxlint-disable-next-line no-new
         new Notification(notification.message, { icon });
       }
     }

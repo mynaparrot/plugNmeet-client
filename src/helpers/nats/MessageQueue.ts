@@ -1,4 +1,4 @@
-import { type JetStreamClient } from '@nats-io/jetstream';
+import type { JetStreamClient } from '@nats-io/jetstream';
 
 import { formatNatsError, sleep } from '../utils';
 import { store } from '../../store';
@@ -19,8 +19,6 @@ export default class MessageQueue {
   private _js: JetStreamClient | undefined;
   private readonly _queue: Array<Message> = [];
   private _state = WAITING;
-
-  constructor() {}
 
   public isConnected = (value: boolean) => {
     this._isConnected = value;

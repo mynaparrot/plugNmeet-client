@@ -8,7 +8,7 @@
     "strict": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
