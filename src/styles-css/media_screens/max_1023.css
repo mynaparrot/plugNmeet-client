@@ -1,4 +1,4 @@
-@media screen and (max-width: 1023px) {
+/* @media screen and (max-width: 1023px) {
   .transition-left-panel {
     @apply absolute h-full z-9999;
   }
@@ -162,4 +162,4 @@
     button.scroll-back-to-content {
     bottom: 35px !important;
   }
-}
+} */

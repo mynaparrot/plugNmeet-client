@@ -14,7 +14,7 @@ const DarkThemeSwitcher = () => {
   };
 
   return (
-    <div className="dark-mode">
+    <div className="dark-mode hidden md:inline">
       <button onClick={toggleDarkMode}>
         <>
           <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden flex items-center cursor-pointer transition-all duration-300">

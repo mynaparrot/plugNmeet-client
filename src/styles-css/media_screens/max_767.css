@@ -1,4 +1,4 @@
-@media screen and (max-width: 767px) {
+/* @media screen and (max-width: 767px) {
   .transition-right-panel {
     @apply w-full;
   }
@@ -17,4 +17,4 @@
   .private-m-tab::before {
     @apply absolute content-[""] h-1 w-full bg-[rgb(0,77,144,0.2)];
   }
-}
+} */

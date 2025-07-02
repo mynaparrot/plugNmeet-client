@@ -1,4 +1,4 @@
-@media screen and (max-height: 800px) {
+/* @media screen and (max-height: 800px) {
   #main-area.hideParticipantsPanel.hideChatPanel
     .all-webcam-wrapper.total-cam-3
     .all-webcam-wrapper-inner {
@@ -23,4 +23,4 @@
     .video-camera-item {
     @apply w-full;
   }
-}
+} */

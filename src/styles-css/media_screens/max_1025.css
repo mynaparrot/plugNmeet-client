@@ -1,4 +1,4 @@
-@media screen and (max-width: 1025px) {
+/* @media screen and (max-width: 1025px) {
   button.previous-cam {
     @apply w-[95px] h-[25px] -left-[43px];
   }
@@ -9,4 +9,4 @@
   .header-collapse-arrow {
     display: none;
   }
-}
+} */

@@ -13,7 +13,7 @@ section.Toastify {
   position: relative;
   z-index: 99999;
 }
-.primaryColor {
+/* .primaryColor {
   color: #004d90;
 }
 
@@ -35,7 +35,7 @@ section.Toastify {
 
 .border-secondaryColor {
   color: #24aef7;
-}
+} */
 
 #headlessui-portal-root {
   position: relative;
@@ -65,13 +65,11 @@ input.polls-checkbox::before {
     @apply w-0.5;
   }
 }
-
 .scrollBar2 {
   &::-webkit-scrollbar {
     @apply w-[2px];
   }
 }
-
 .scrollBar4 {
   &::-webkit-scrollbar {
     @apply w-1;
@@ -84,7 +82,7 @@ input.polls-checkbox::before {
   }
 }
 
-.private-m-tab .inner2::-webkit-scrollbar-track {
+/* .private-m-tab .inner2::-webkit-scrollbar-track {
   @apply bg-[rgb(224,226,231)];
 }
 .private-m-tab .inner2::-webkit-scrollbar {
@@ -92,44 +90,29 @@ input.polls-checkbox::before {
 }
 .private-m-tab .inner2::-webkit-scrollbar-thumb {
   @apply bg-secondary-color border-none rounded-[5px];
+} */
+
+.all-webcam-wrapper.total-cam-2 .total-items-2 .video-camera-item.its-me {
+  @apply absolute bottom-10 right-10 w-[320px] h-[180px] z-30;
+}
+.all-webcam-wrapper.total-cam-2
+  .all-webcam-wrapper-inner
+  .total-items-2
+  .video-camera-item:not(.its-me) {
+  @apply w-full;
 }
 
-.all-webcam-wrapper.total-cam-2 {
-  .total-items-2 {
-    .video-camera-item.its-me {
-      @apply absolute bottom-10 right-10 w-[320px] h-[180px] z-30;
-    }
-  }
+.total-cam-1 .video-camera-item .switch-camera {
+  display: none;
 }
-.all-webcam-wrapper.total-cam-2 {
-  .all-webcam-wrapper-inner {
-    .total-items-2 {
-      .video-camera-item:not(.its-me) {
-        @apply w-full;
-      }
-    }
-  }
+.total-cam-1 .video-camera-item .pin-webcam {
+  display: none;
 }
 
-.total-cam-1 {
-  .video-camera-item {
-    .switch-camera {
-      display: none;
-    }
-    .pin-webcam {
-      display: none;
-    }
-  }
-}
-
-.verticalsWebcamsActivated,
-.pinWebcamActivated {
-  .video-camera-item {
-    .switch-camera {
-      display: none;
-    }
-  }
-}
+/* .verticalsWebcamsActivated,
+.pinWebcamActivated .video-camera-item .switch-camera {
+  display: none;
+} */
 
 .all-webcam-wrapper.page-2
   .all-webcam-wrapper-inner

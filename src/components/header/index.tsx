@@ -181,20 +181,20 @@ const Header = () => {
       >
         <header
           id="main-header"
-          className={`relative z-99999 px-4 h-[54px] 3xl:h-[68px] flex items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
+          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 sm:py-0 flex flex-wrap sm:flex-nowrap items-center justify-between bg-white transition-transform border-b border-Gray-200 ${
             headerVisible ? 'ac' : ''
           }`}
         >
-          <div className="left relative z-20 flex items-center gap-5 w-60">
+          <div className="left relative z-20 flex items-center gap-3 sm:gap-5 w-1/2 sm:w-40 order-1">
             <HeaderLogo />
             <DarkThemeSwitcher />
           </div>
-          <div className="middle flex-auto relative z-20">
+          <div className="middle flex-auto relative z-20 order-3 sm:order-2">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 leading-tight text-center">
               {title}
             </h2>
           </div>
-          <div className="right flex items-center justify-end relative z-20 -right-3 w-60">
+          <div className="right flex items-center justify-end relative z-20 -right-3 w-1/2 sm:w-40 order-2 sm:order-3">
             <DurationView />
             <UserNotifications />
             <VolumeControl />

@@ -1,4 +1,4 @@
-@media only screen and (max-width: 980px) and (max-height: 450px) {
+/* @media only screen and (max-width: 980px) and (max-height: 450px) {
   .landscape-device
     #main-area.fullWidthMainArea
     .middle-fullscreen-wrapper
@@ -43,4 +43,4 @@
     button {
     @apply bottom-[55px];
   }
-}
+} */

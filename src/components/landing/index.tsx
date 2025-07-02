@@ -129,7 +129,7 @@ const Landing = ({
       className={`absolute w-full join-the-audio-popup bg-Gray-100 h-full flex items-center justify-center p-5`}
     >
       <div className="inner m-auto bg-Gray-50 border border-Gray-300 overflow-hidden rounded-2xl w-full max-w-4xl 3xl:max-w-5xl">
-        <div className="head bg-white h-[50px] 3xl:h-[60px] px-5 flex items-center text-Gray-950 text-base 3xl:text-lg font-medium border-b border-Gray-200">
+        <div className="head bg-white h-[50px] 3xl:h-[60px] px-3 sm:px-5 flex justify-center sm:justify-start text-center sm:text-left items-center text-Gray-950 text-sm sm:text-base 3xl:text-lg font-medium border-b border-Gray-200">
           Microphone and camera preferences
         </div>
         <div className="wrapper bg-Gray-50 pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">

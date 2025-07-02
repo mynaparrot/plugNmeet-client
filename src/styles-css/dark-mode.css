@@ -1,4 +1,4 @@
-.dark .main-app-bg::before {
+/* .dark .main-app-bg::before {
   @apply absolute content-[""] w-full h-full bg-[#001222] opacity-70;
 }
 .dark .waiting-room::before {
@@ -31,4 +31,4 @@
 }
 .dark .select-camera-number select#select-camera-num {
   border-color: #a7cced;
-}
+} */
