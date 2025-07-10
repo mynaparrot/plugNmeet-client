@@ -33,7 +33,6 @@ import {
   tokenAuthenticator,
 } from '@nats-io/nats-core';
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
-// @ts-expect-error no exported in types
 import { isURL } from 'validator';
 import { isE2EESupported } from 'livekit-client';
 
@@ -776,6 +775,7 @@ export default class ConnectNats {
       info,
       this._setErrorState,
       this._setRoomConnectionStatusState,
+      this._userId,
     );
 
     this._setCurrentMediaServerConn(conn);

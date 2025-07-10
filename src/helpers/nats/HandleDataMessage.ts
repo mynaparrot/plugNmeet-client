@@ -16,6 +16,7 @@ import {
 } from '../../store/slices/externalMediaPlayer';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
+import { ConnectionQuality } from 'livekit-client';
 
 export default class HandleDataMessage {
   private _that: ConnectNats;
@@ -95,6 +96,16 @@ export default class HandleDataMessage {
         break;
       case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
         this.handleSpeechSubtitleText(payload.message);
+        break;
+      case DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE:
+        store.dispatch(
+          updateParticipant({
+            id: payload.fromUserId,
+            changes: {
+              connectionQuality: payload.message as ConnectionQuality,
+            },
+          }),
+        );
         break;
     }
   };

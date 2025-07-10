@@ -19,7 +19,11 @@ import {
   VideoPresets,
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
-import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  DataMsgBodyType,
+} from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 // @ts-expect-error not an error
 import LkWorker from 'livekit-client/e2ee-worker?worker';
@@ -37,9 +41,8 @@ import {
 
 import HandleMediaTracks from './HandleMediaTracks';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import { LivekitInfo } from './types';
+import { CurrentConnectionEvents, IConnectLivekit, LivekitInfo } from './types';
 import i18n from '../i18n';
-import { CurrentConnectionEvents, IConnectLivekit } from './types';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
@@ -64,6 +67,7 @@ export default class ConnectLivekit
   private readonly _roomConnectionStatusState: Dispatch<roomConnectionStatus>;
 
   private readonly token: string;
+  private readonly localUserId: string;
   private readonly _room: Room;
   private readonly url: string;
   private readonly enabledE2EE: boolean = false;
@@ -78,9 +82,11 @@ export default class ConnectLivekit
     livekitInfo: LivekitInfo,
     errorState: Dispatch<IErrorPageProps>,
     roomConnectionStatusState: Dispatch<roomConnectionStatus>,
+    localUserId: string,
   ) {
     super();
     this.token = livekitInfo.token;
+    this.localUserId = localUserId;
     this.url = livekitInfo.livekit_host;
 
     this._errorState = errorState;
@@ -196,7 +202,6 @@ export default class ConnectLivekit
     });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
-    room.on(RoomEvent.ConnectionQualityChanged, this.connectionQualityChanged);
 
     room.on(
       RoomEvent.LocalTrackPublished,
@@ -234,6 +239,11 @@ export default class ConnectLivekit
         }),
       );
     });
+
+    room.localParticipant.on(
+      'connectionQualityChanged',
+      this.localUserConnectionQualityChanged,
+    );
 
     return room;
   };
@@ -342,13 +352,12 @@ export default class ConnectLivekit
     console.error(error);
   };
 
-  private async connectionQualityChanged(
+  private async localUserConnectionQualityChanged(
     connectionQuality: ConnectionQuality,
-    participant: Participant,
   ) {
     store.dispatch(
       updateParticipant({
-        id: participant.identity,
+        id: this.localUserId,
         changes: {
           connectionQuality: connectionQuality,
         },
@@ -359,25 +368,16 @@ export default class ConnectLivekit
       connectionQuality === ConnectionQuality.Poor ||
       connectionQuality === ConnectionQuality.Lost
     ) {
-      if (
-        this.room &&
-        participant.identity === this.room.localParticipant.identity &&
-        !(
-          participant.identity === 'RECORDER_BOT' ||
-          participant.identity === 'RTMP_BOT'
-        )
-      ) {
-        let msg = i18n.t('notifications.your-connection-quality-not-good');
-        if (connectionQuality === ConnectionQuality.Lost) {
-          msg = i18n.t('notifications.your-connection-quality-lost');
-        }
-        store.dispatch(
-          addUserNotification({
-            message: msg,
-            typeOption: 'error',
-          }),
-        );
+      let msg = i18n.t('notifications.your-connection-quality-not-good');
+      if (connectionQuality === ConnectionQuality.Lost) {
+        msg = i18n.t('notifications.your-connection-quality-lost');
       }
+      store.dispatch(
+        addUserNotification({
+          message: msg,
+          typeOption: 'error',
+        }),
+      );
     }
 
     const conn = getNatsConn();
@@ -386,6 +386,10 @@ export default class ConnectLivekit
         AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
         AnalyticsEventType.USER,
         connectionQuality.toString(),
+      );
+      conn.sendDataMessage(
+        DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
+        connectionQuality,
       );
     }
   }
