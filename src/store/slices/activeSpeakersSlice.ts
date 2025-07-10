@@ -1,4 +1,8 @@
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { IActiveSpeaker } from './interfaces/activeSpeakers';
 
@@ -24,6 +28,15 @@ const activeSpeakerAdapter = createEntityAdapter({
 });
 export const activeSpeakersSelector = activeSpeakerAdapter.getSelectors(
   (state: RootState) => state.activeSpeakers,
+);
+
+// 2. Get the base selector that returns all speakers as an array
+export const selectAllSpeakers = activeSpeakersSelector.selectAll;
+
+// 3. Create the new, memoized selector for only speaking participants
+export const selectSpeakingParticipants = createSelector(
+  [selectAllSpeakers], // Input selector(s)
+  (speakers) => speakers.filter((speaker) => speaker.isSpeaking), // Transformer function
 );
 
 const activeSpeakersSlice = createSlice({

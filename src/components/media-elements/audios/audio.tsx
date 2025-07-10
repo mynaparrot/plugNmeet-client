@@ -3,6 +3,7 @@ import { RemoteAudioTrack } from 'livekit-client';
 
 import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
+import { useAudioActivity } from '../../../helpers/hooks/useAudioActivity';
 
 interface IAudioElmProps {
   audioTrack: RemoteAudioTrack;
@@ -10,6 +11,8 @@ interface IAudioElmProps {
 }
 
 const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
+  const audioActivity = useAudioActivity(audioTrack);
+
   const ref = useRef<HTMLAudioElement>(null);
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
@@ -34,6 +37,10 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
     };
     //eslint-disable-next-line
   }, [audioTrack]);
+
+  useEffect(() => {
+    console.log(audioActivity);
+  }, [audioActivity]);
 
   useEffect(() => {
     if (audioTrack && typeof audioVolume !== 'undefined') {
