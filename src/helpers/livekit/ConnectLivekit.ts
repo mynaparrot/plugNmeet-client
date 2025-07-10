@@ -37,7 +37,6 @@ import {
 
 import HandleMediaTracks from './HandleMediaTracks';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import HandleActiveSpeakers from './HandleActiveSpeakers';
 import { LivekitInfo } from './types';
 import i18n from '../i18n';
 import { CurrentConnectionEvents, IConnectLivekit } from './types';
@@ -45,6 +44,7 @@ import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { addOrUpdateSpeaker } from '../../store/slices/activeSpeakersSlice';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -73,7 +73,6 @@ export default class ConnectLivekit
   private wasNormalDisconnected: boolean = false;
 
   private handleMediaTracks: HandleMediaTracks;
-  private handleActiveSpeakers: HandleActiveSpeakers;
 
   constructor(
     livekitInfo: LivekitInfo,
@@ -94,7 +93,6 @@ export default class ConnectLivekit
     }
 
     this.handleMediaTracks = new HandleMediaTracks(this);
-    this.handleActiveSpeakers = new HandleActiveSpeakers(this);
 
     // clean session data
     sessionStorage.clear();
@@ -197,10 +195,6 @@ export default class ConnectLivekit
       }
     });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
-    room.on(
-      RoomEvent.ActiveSpeakersChanged,
-      this.handleActiveSpeakers.activeSpeakersChanged,
-    );
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
     room.on(RoomEvent.ConnectionQualityChanged, this.connectionQualityChanged);
 
@@ -227,6 +221,19 @@ export default class ConnectLivekit
       RoomEvent.TrackStreamStateChanged,
       this.handleMediaTracks.trackStreamStateChanged,
     );
+
+    // for local participant we'll use simple way
+    room.localParticipant.on('isSpeakingChanged', (isSpeaking: boolean) => {
+      store.dispatch(
+        addOrUpdateSpeaker({
+          userId: room.localParticipant.identity,
+          name: room.localParticipant.name ?? '',
+          isSpeaking: isSpeaking,
+          audioLevel: isSpeaking ? 1 : 0,
+          lastSpokeAt: Date.now(),
+        }),
+      );
+    });
 
     return room;
   };
@@ -286,7 +293,6 @@ export default class ConnectLivekit
       text: this.getDisconnectErrorReasonText(reason),
     });
 
-    this.handleActiveSpeakers.onLivekitDisconnect();
     if (this.toastIdConnecting) {
       toast.dismiss(this.toastIdConnecting);
     }
