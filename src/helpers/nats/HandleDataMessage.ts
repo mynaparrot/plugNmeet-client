@@ -1,4 +1,5 @@
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
+import { ConnectionQuality } from 'livekit-client';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
@@ -84,6 +85,16 @@ export default class HandleDataMessage {
         break;
       case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
         this.handleSpeechSubtitleText(payload.message);
+        break;
+      case DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE:
+        store.dispatch(
+          updateParticipant({
+            id: payload.fromUserId,
+            changes: {
+              connectionQuality: payload.message as ConnectionQuality,
+            },
+          }),
+        );
         break;
     }
   };

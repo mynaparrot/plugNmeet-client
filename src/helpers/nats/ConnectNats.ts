@@ -741,6 +741,7 @@ export default class ConnectNats {
       info,
       this._setErrorState,
       this._setRoomConnectionStatusState,
+      this._userId,
     );
 
     this._setCurrentMediaServerConn(conn);

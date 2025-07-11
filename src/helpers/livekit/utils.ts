@@ -10,11 +10,13 @@ export const createLivekitConnection = (
   livekitInfo: LivekitInfo,
   errorState: Dispatch<IErrorPageProps>,
   roomConnectionStatusState: Dispatch<ConnectionStatus>,
+  localUserId: string,
 ) => {
   currentConnect = new ConnectLivekit(
     livekitInfo,
     errorState,
     roomConnectionStatusState,
+    localUserId,
   );
 
   return currentConnect;

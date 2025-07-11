@@ -19,7 +19,11 @@ import {
   VideoPresets,
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
-import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  DataMsgBodyType,
+} from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 
 import { store } from '../../store';
@@ -65,6 +69,7 @@ export default class ConnectLivekit
   private readonly _roomConnectionStatusState: Dispatch<ConnectionStatus>;
 
   private readonly token: string;
+  private readonly localUserId: string;
   private readonly _room: Room;
   private readonly url: string;
   private readonly enabledE2EE: boolean = false;
@@ -79,10 +84,12 @@ export default class ConnectLivekit
     livekitInfo: LivekitInfo,
     errorState: Dispatch<IErrorPageProps>,
     roomConnectionStatusState: Dispatch<ConnectionStatus>,
+    localUserId: string,
   ) {
     super();
     this.token = livekitInfo.token;
     this.url = livekitInfo.livekit_host;
+    this.localUserId = localUserId;
 
     this._errorState = errorState;
     this._roomConnectionStatusState = roomConnectionStatusState;
@@ -201,7 +208,6 @@ export default class ConnectLivekit
     });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
-    room.on(RoomEvent.ConnectionQualityChanged, this.connectionQualityChanged);
 
     room.on(
       RoomEvent.LocalTrackPublished,
@@ -239,6 +245,11 @@ export default class ConnectLivekit
         }),
       );
     });
+
+    room.localParticipant.on(
+      'connectionQualityChanged',
+      this.localUserConnectionQualityChanged,
+    );
 
     return room;
   };
@@ -347,13 +358,12 @@ export default class ConnectLivekit
     console.error(error);
   };
 
-  private async connectionQualityChanged(
+  private async localUserConnectionQualityChanged(
     connectionQuality: ConnectionQuality,
-    participant: Participant,
   ) {
     store.dispatch(
       updateParticipant({
-        id: participant.identity,
+        id: this.localUserId,
         changes: {
           connectionQuality: connectionQuality,
         },
@@ -364,23 +374,14 @@ export default class ConnectLivekit
       connectionQuality === ConnectionQuality.Poor ||
       connectionQuality === ConnectionQuality.Lost
     ) {
-      if (
-        this.room &&
-        participant.identity === this.room.localParticipant.identity &&
-        !(
-          participant.identity === 'RECORDER_BOT' ||
-          participant.identity === 'RTMP_BOT'
-        )
-      ) {
-        let msg = i18n.t('notifications.your-connection-quality-not-good');
-        if (connectionQuality === ConnectionQuality.Lost) {
-          msg = i18n.t('notifications.your-connection-quality-lost');
-        }
-        toast(msg, {
-          toastId: 'connection-status',
-          type: 'error',
-        });
+      let msg = i18n.t('notifications.your-connection-quality-not-good');
+      if (connectionQuality === ConnectionQuality.Lost) {
+        msg = i18n.t('notifications.your-connection-quality-lost');
       }
+      toast(msg, {
+        toastId: 'connection-status',
+        type: 'error',
+      });
     }
 
     const conn = getNatsConn();
@@ -389,6 +390,10 @@ export default class ConnectLivekit
         AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
         AnalyticsEventType.USER,
         connectionQuality.toString(),
+      );
+      conn.sendDataMessage(
+        DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
+        connectionQuality,
       );
     }
   }
