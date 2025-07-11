@@ -20,6 +20,7 @@ import {
   ICurrentUser,
   IRoomMetadata,
 } from '../../store/slices/interfaces/session';
+import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 
 export default class HandleMediaTracks {
   private that: IConnectLivekit;
@@ -227,6 +228,8 @@ export default class HandleMediaTracks {
       this.that.removeScreenShareTrack(participant.identity);
     } else if (track.source === Track.Source.Microphone) {
       this.that.removeAudioSubscriber(participant.identity);
+      // remove from active speaker list as well
+      store.dispatch(removeOneSpeaker(participant.identity));
       store.dispatch(
         updateParticipant({
           id: participant.identity,

@@ -41,6 +41,7 @@ const AudioElements = () => {
           elms.push(
             <AudioElm
               userId={participant.identity}
+              name={participant.name ?? ''}
               audioTrack={track.audioTrack}
               key={track.trackSid}
             />,

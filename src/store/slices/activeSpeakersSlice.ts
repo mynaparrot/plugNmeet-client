@@ -1,4 +1,8 @@
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { IActiveSpeaker } from './interfaces/activeSpeakers';
 
@@ -26,23 +30,22 @@ export const activeSpeakersSelector = activeSpeakerAdapter.getSelectors(
   (state: RootState) => state.activeSpeakers,
 );
 
+export const selectAllSpeakers = activeSpeakersSelector.selectAll;
+
+export const selectSpeakingParticipants = createSelector(
+  [selectAllSpeakers], // Input selector(s)
+  (speakers) => speakers.filter((speaker) => speaker.isSpeaking),
+);
+
 const activeSpeakersSlice = createSlice({
   name: 'activeSpeakers',
   initialState: activeSpeakerAdapter.getInitialState(),
   reducers: {
-    addSpeaker: activeSpeakerAdapter.addOne,
-    addManySpeakers: activeSpeakerAdapter.addMany,
-    setAllSpeakers: activeSpeakerAdapter.setAll,
-    removeSpeakers: activeSpeakerAdapter.removeAll,
     removeOneSpeaker: activeSpeakerAdapter.removeOne,
+    addOrUpdateSpeaker: activeSpeakerAdapter.upsertOne,
   },
 });
 
-export const {
-  addSpeaker,
-  addManySpeakers,
-  removeSpeakers,
-  removeOneSpeaker,
-  setAllSpeakers,
-} = activeSpeakersSlice.actions;
+export const { removeOneSpeaker, addOrUpdateSpeaker } =
+  activeSpeakersSlice.actions;
 export default activeSpeakersSlice.reducer;
