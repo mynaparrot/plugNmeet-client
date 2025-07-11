@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.3](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.2...v1.7.3) (2025-07-11)
+
+
+### Bug Fixes
+
+* **refactor:** connection quality share by individual user for more accuracy ([b12756f](https://github.com/mynaparrot/plugNmeet-client/commit/b12756f1803a8094f7ccda00f74baa461a913ff3))
+* **refactor:** remove livekit dependency for active speaker as not always reliable ([6953580](https://github.com/mynaparrot/plugNmeet-client/commit/6953580fc33ed344a883b62b08a847c2b6f42374))
+
 ## [1.7.2](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.1...v1.7.2) (2025-06-27)
 
 
