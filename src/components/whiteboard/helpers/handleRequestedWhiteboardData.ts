@@ -24,7 +24,7 @@ import {
   IWhiteboardFile,
   IWhiteboardOfficeFile,
 } from '../../../store/slices/interfaces/whiteboard';
-import { encryptMessage } from '../../../helpers/cryptoMessages';
+import { encryptMessage } from '../../../helpers/libs/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
 import {

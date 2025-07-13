@@ -21,7 +21,11 @@ import {
   IRoomMetadata,
 } from '../../store/slices/interfaces/session';
 import { updatePinCamUserId } from '../../store/slices/roomSettingsSlice';
-import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
+import {
+  addOrUpdateSpeaker,
+  removeOneSpeaker,
+} from '../../store/slices/activeSpeakersSlice';
+import { audioActivityManager } from '../libs/AudioActivityManager';
 
 export default class HandleMediaTracks {
   private that: IConnectLivekit;
@@ -37,6 +41,7 @@ export default class HandleMediaTracks {
     participant: LocalParticipant,
   ) => {
     this.addSubscriber(track, participant);
+    this.addSpeaker(track, participant);
   };
 
   public localTrackUnpublished = (
@@ -44,6 +49,7 @@ export default class HandleMediaTracks {
     participant: LocalParticipant,
   ) => {
     this.removeSubscriber(track, participant);
+    this.removeSpeaker(track, participant);
   };
 
   public trackSubscribed = (
@@ -52,6 +58,7 @@ export default class HandleMediaTracks {
     participant: RemoteParticipant,
   ) => {
     this.addSubscriber(track, participant);
+    this.addSpeaker(track, participant);
   };
 
   public trackUnsubscribed = (
@@ -59,9 +66,10 @@ export default class HandleMediaTracks {
     participant: RemoteParticipant,
   ) => {
     this.removeSubscriber(track, participant);
+    this.removeSpeaker(track, participant);
   };
 
-  public trackMuted = (_: TrackPublication, participant: Participant) => {
+  public trackMuted = (track: TrackPublication, participant: Participant) => {
     store.dispatch(
       updateParticipant({
         id: participant.identity,
@@ -74,9 +82,10 @@ export default class HandleMediaTracks {
     if (participant.identity === this.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(true));
     }
+    this.removeSpeaker(track, participant);
   };
 
-  public trackUnmuted = (_: TrackPublication, participant: Participant) => {
+  public trackUnmuted = (track: TrackPublication, participant: Participant) => {
     store.dispatch(
       updateParticipant({
         id: participant.identity,
@@ -89,6 +98,7 @@ export default class HandleMediaTracks {
     if (participant.identity === this.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(false));
     }
+    this.addSpeaker(track, participant);
   };
 
   public trackSubscriptionFailed = (
@@ -229,8 +239,6 @@ export default class HandleMediaTracks {
       this.that.removeScreenShareTrack(participant.identity);
     } else if (track.source === Track.Source.Microphone) {
       this.that.removeAudioSubscriber(participant.identity);
-      // remove from active speaker list as well
-      store.dispatch(removeOneSpeaker(participant.identity));
       store.dispatch(
         updateParticipant({
           id: participant.identity,
@@ -265,5 +273,53 @@ export default class HandleMediaTracks {
         store.dispatch(updatePinCamUserId(undefined));
       }
     }
+  }
+
+  /**
+   * addSpeaker will only add speaker is track was from microphone
+   * so, it can be trigger from any track
+   * @param track
+   * @param participant
+   * @private
+   */
+  private addSpeaker(track: TrackPublication, participant: Participant) {
+    if (
+      track.source !== Track.Source.Microphone ||
+      !track.audioTrack ||
+      !track.audioTrack.mediaStream ||
+      track.audioTrack.isMuted
+    ) {
+      return;
+    }
+
+    audioActivityManager.addStream(track.audioTrack.mediaStream, (activity) => {
+      store.dispatch(
+        addOrUpdateSpeaker({
+          userId: participant.identity,
+          name: participant.name ?? '',
+          isSpeaking: activity.isSpeaking,
+          audioLevel: activity.audioLevel,
+          lastSpokeAt: activity.lastSpokeAt,
+        }),
+      );
+    });
+  }
+
+  /**
+   * removeSpeaker will only remove speaker is track was from microphone
+   * @param track
+   * @param participant
+   * @private
+   */
+  private removeSpeaker(track: TrackPublication, participant: Participant) {
+    if (
+      track.source !== Track.Source.Microphone ||
+      !track.audioTrack ||
+      !track.audioTrack.mediaStream
+    ) {
+      return;
+    }
+    audioActivityManager.removeStream(track.audioTrack.mediaStream.id);
+    store.dispatch(removeOneSpeaker(participant.identity));
   }
 }

@@ -47,7 +47,6 @@ import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
-import { addOrUpdateSpeaker } from '../../store/slices/activeSpeakersSlice';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -227,19 +226,7 @@ export default class ConnectLivekit
       this.handleMediaTracks.trackStreamStateChanged,
     );
 
-    // for local participant we'll use simple way
-    room.localParticipant.on('isSpeakingChanged', (isSpeaking: boolean) => {
-      store.dispatch(
-        addOrUpdateSpeaker({
-          userId: room.localParticipant.identity,
-          name: room.localParticipant.name ?? '',
-          isSpeaking: isSpeaking,
-          audioLevel: isSpeaking ? 1 : 0,
-          lastSpokeAt: Date.now(),
-        }),
-      );
-    });
-
+    // for individual local user events
     room.localParticipant.on(
       'connectionQualityChanged',
       this.localUserConnectionQualityChanged,

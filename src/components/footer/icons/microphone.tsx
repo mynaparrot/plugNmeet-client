@@ -304,6 +304,11 @@ const MicrophoneIcon = () => {
           {isMicMuted && isActiveMicrophone ? (
             <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
           ) : null}
+          {lockMic ? (
+            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
+              <i className="pnm-lock primaryColor" />
+            </div>
+          ) : null}
 
           {/* <span className="blocked absolute -top-2 -right-2 z-10">
             <BlockedIcon />

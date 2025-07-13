@@ -49,7 +49,7 @@ import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
-import { encryptMessage, importSecretKey } from '../cryptoMessages';
+import { encryptMessage, importSecretKey } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
 import {
@@ -57,6 +57,7 @@ import {
   updateIsNatsServerConnected,
 } from '../../store/slices/roomSettingsSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
+import { audioActivityManager } from '../libs/AudioActivityManager';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -213,6 +214,8 @@ export default class ConnectNats {
       text: i18n.t(msg),
     });
     this._setRoomConnectionStatusState('disconnected');
+    // clean audioActivityManager
+    audioActivityManager.destroy();
 
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;

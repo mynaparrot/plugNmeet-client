@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { throttle } from 'es-toolkit';
 
 import { useAppSelector } from '../../store';
@@ -10,13 +10,9 @@ import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 4000;
 
-const ActiveSpeakers = () => {
-  const activeSpeakers = useAppSelector(selectSpeakingParticipants);
-  const participantIds = useAppSelector(participantsSelector.selectIds);
-  const room = getMediaServerConn();
-
-  const reOrderWebcams = throttle((activeSpeakers: IActiveSpeaker[]) => {
-    if (typeof room === 'undefined' || !activeSpeakers.length) {
+const reOrderWebcams = throttle(
+  (speakers: IActiveSpeaker[], room: ReturnType<typeof getMediaServerConn>) => {
+    if (typeof room === 'undefined' || !speakers.length) {
       return;
     }
     if (room.videoSubscribersMap.size < 3) {
@@ -24,34 +20,60 @@ const ActiveSpeakers = () => {
       return;
     }
 
-    for (let i = 0; i < activeSpeakers.length; i++) {
-      const speaker = activeSpeakers[i];
+    for (let i = 0; i < speakers.length; i++) {
+      const speaker = speakers[i];
       const participant = room.room.getParticipantByIdentity(speaker.userId);
-      // if this use has video then we can update to reorder
+      // if this user has video then we can update to reorder
       if (participant && participant.videoTrackPublications.size) {
         room.addVideoSubscriber(participant);
       }
     }
-  }, ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION);
+  },
+  ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION,
+  { edges: ['leading'] },
+);
+
+const ActiveSpeakers = () => {
+  const activeSpeakers = useAppSelector(selectSpeakingParticipants);
+  const participantIds = useAppSelector(participantsSelector.selectIds);
+  const room = getMediaServerConn();
+
+  useEffect(() => {
+    if (activeSpeakers.length > 0) {
+      reOrderWebcams(activeSpeakers, room);
+    }
+
+    // cancel any pending throttled calls when the component unmounts.
+    return () => {
+      reOrderWebcams.cancel();
+    };
+  }, [activeSpeakers, room]);
 
   const activeSpeakersElms = useMemo(() => {
-    if (!activeSpeakers.length) {
+    // Create a Set for efficient O(1) lookups.
+    const participantIdSet = new Set(participantIds);
+
+    // Filter the speakers first, which is more performant.
+    const validSpeakers = activeSpeakers.filter((speaker) =>
+      participantIdSet.has(speaker.userId),
+    );
+
+    if (!validSpeakers.length) {
       return null;
     }
-    reOrderWebcams(activeSpeakers);
-    return activeSpeakers.map((speaker) => {
-      if (participantIds.find((p) => p === String(speaker.userId))) {
-        return <SpeakerComponent key={speaker.userId} speaker={speaker} />;
-      }
-    });
-    //eslint-disable-next-line
+
+    return validSpeakers.map((speaker) => (
+      <SpeakerComponent key={speaker.userId} speaker={speaker} />
+    ));
   }, [activeSpeakers, participantIds]);
 
-  return activeSpeakersElms ? (
-    <div className="active-speakers-wrap flex w-full items-center justify-center absolute top-0 left-0 z-9999">
-      {activeSpeakersElms}
-    </div>
-  ) : null;
+  return (
+    activeSpeakersElms && (
+      <div className="active-speakers-wrap flex w-full items-center justify-center absolute top-0 left-0 z-9999">
+        {activeSpeakersElms}
+      </div>
+    )
+  );
 };
 
 export default ActiveSpeakers;

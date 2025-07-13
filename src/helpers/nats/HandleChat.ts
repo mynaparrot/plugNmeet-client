@@ -2,7 +2,7 @@ import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
-import { decryptMessage } from '../cryptoMessages';
+import { decryptMessage } from '../libs/cryptoMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
   updateIsActiveChatPanel,

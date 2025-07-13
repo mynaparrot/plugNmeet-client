@@ -3,7 +3,7 @@ import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 
 import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
-import { activeSpeakersSelector } from '../../../store/slices/activeSpeakersSlice';
+import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './videosComponentElms';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
 
@@ -19,8 +19,8 @@ const VideoParticipant = ({
   displayPinIcon,
   displaySwitchCamIcon,
 }: VideoParticipantProps) => {
-  const isSpeaking = useAppSelector((state) =>
-    activeSpeakersSelector.selectById(state, participant.identity),
+  const isSpeaking = useAppSelector(
+    selectIsSpeakingByUserId(participant.identity),
   );
   const [floatView, setFloatView] = useState<boolean>(true);
 

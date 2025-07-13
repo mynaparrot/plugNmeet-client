@@ -10,7 +10,7 @@ import {
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
-import { decryptMessage } from '../cryptoMessages';
+import { decryptMessage } from '../libs/cryptoMessages';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 export default class HandleWhiteboard {
