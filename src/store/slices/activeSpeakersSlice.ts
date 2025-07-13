@@ -33,9 +33,20 @@ export const activeSpeakersSelector = activeSpeakerAdapter.getSelectors(
 export const selectAllSpeakers = activeSpeakersSelector.selectAll;
 
 export const selectSpeakingParticipants = createSelector(
-  [selectAllSpeakers], // Input selector(s)
+  [selectAllSpeakers],
   (speakers) => speakers.filter((speaker) => speaker.isSpeaking),
 );
+
+export const selectIsSpeakingByUserId = (userId: string) =>
+  createSelector(
+    // First, we use the efficient `selectById` to get the specific speaker.
+    // This selector is already provided by createEntityAdapter.
+    (state: RootState) => activeSpeakersSelector.selectById(state, userId),
+    // By using `!!`, we guarantee the selector always returns a boolean.
+    (speaker) => {
+      return !!speaker?.isSpeaking;
+    },
+  );
 
 const activeSpeakersSlice = createSlice({
   name: 'activeSpeakers',
