@@ -281,7 +281,7 @@ const MicrophoneIcon = () => {
       <div
         className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${isMicMuted && isActiveMicrophone ? 'border-Red-200!' : ''} ${
           showTooltip ? 'has-tooltip' : ''
-        }`}
+        } ${lockMic ? 'border-Red-200! text-Red-400' : ''}`}
       >
         {/* <span className="tooltip rtl:-left-3 rtl:microphone-rtl-left">
           {getTooltipText()}
@@ -294,7 +294,11 @@ const MicrophoneIcon = () => {
             <>
               <Microphone classes={'h-4 3xl:h-5 w-auto'} />
               <span className="add absolute -top-2 -right-2 z-10">
-                <PlusIcon />
+                {lockMic ? (
+                  <i className="pnm-lock primaryColor" />
+                ) : (
+                  <PlusIcon />
+                )}
               </span>
             </>
           ) : null}
@@ -304,12 +308,6 @@ const MicrophoneIcon = () => {
           {isMicMuted && isActiveMicrophone ? (
             <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
           ) : null}
-          {lockMic ? (
-            <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
-              <i className="pnm-lock primaryColor" />
-            </div>
-          ) : null}
-
           {/* <span className="blocked absolute -top-2 -right-2 z-10">
             <BlockedIcon />
           </span> */}

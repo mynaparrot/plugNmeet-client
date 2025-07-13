@@ -14,7 +14,6 @@ import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
-// import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const ScrenshareIcon = () => {
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
@@ -183,10 +182,9 @@ const ScrenshareIcon = () => {
             <ShareScreenIconSVG />
             {lock ? (
               <>
-                {/* <span className="blocked absolute -top-2 -right-2 z-10">
-                  <BlockedIcon />
-                </span> */}
-                <div className="w-7 absolute h-0.5 bg-Red-400 rotate-45"></div>
+                <span className="add absolute -top-2 -right-2 z-10">
+                  <i className="pnm-lock primaryColor" />
+                </span>
               </>
             ) : null}
           </>

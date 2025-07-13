@@ -21,7 +21,6 @@ import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
-import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
@@ -328,7 +327,7 @@ const WebcamIcon = () => {
           <div
             className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-200!' : ''}  ${
               showTooltip ? 'has-tooltip' : ''
-            }`}
+            } ${lockWebcam ? 'border-Red-200! text-Red-400' : ''}`}
           >
             {/* <span className="tooltip -left-3! tooltip-left">
               {getTooltipText()}
@@ -346,7 +345,11 @@ const WebcamIcon = () => {
                     <>
                       <Camera classes={'h-4 3xl:h-5 w-auto'} />
                       <span className="add absolute -top-2 -right-2 z-10">
-                        <PlusIcon />
+                        {lockWebcam ? (
+                          <i className="pnm-lock primaryColor" />
+                        ) : (
+                          <PlusIcon />
+                        )}
                       </span>
                     </>
                   ) : (
@@ -354,14 +357,14 @@ const WebcamIcon = () => {
                   )}
                 </>
               ) : null}
-              {lockWebcam ? (
+              {/*{lockWebcam ? (
                 <>
                   <CameraOff classes={'h-4 3xl:h-5 w-auto'} />
                   <span className="blocked absolute -top-2 -right-2 z-10">
                     <BlockedIcon />
                   </span>
                 </>
-              ) : null}
+              ) : null}*/}
             </div>
             {isActiveWebcam ? (
               <WebcamMenu
