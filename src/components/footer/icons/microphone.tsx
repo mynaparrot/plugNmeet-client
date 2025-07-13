@@ -82,7 +82,7 @@ const MicrophoneIcon = () => {
         currentRoom.localParticipant.identity,
       );
       if (currentUser?.audioTracks) {
-        closeMicOnLock();
+        closeMicOnLock().then();
       }
     } else {
       setLockMic(false);

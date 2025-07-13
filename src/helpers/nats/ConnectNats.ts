@@ -57,6 +57,7 @@ import { encryptMessage, importSecretKey } from '../cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { formatNatsError, getWhiteboardDonors } from '../utils';
 import { updateIsNatsServerConnected } from '../../store/slices/roomSettingsSlice';
+import { audioActivityManager } from '../libs/AudioActivityManager';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -212,6 +213,9 @@ export default class ConnectNats {
       text: i18n.t(msg),
     });
     this._setRoomConnectionStatusState('disconnected');
+
+    // clean audio activities
+    audioActivityManager.destroy();
 
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;
