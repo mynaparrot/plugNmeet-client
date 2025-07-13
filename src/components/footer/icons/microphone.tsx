@@ -288,6 +288,12 @@ const MicrophoneIcon = () => {
           </>
         ) : null}
 
+        {lockMic ? (
+          <div className="arrow-down absolute -bottom-1 -right-1 w-[16px] h-[16px] rounded-full bg-white dark:bg-darkSecondary3 flex items-center justify-center">
+            <i className="pnm-lock primaryColor" />
+          </div>
+        ) : null}
+
         {!isMicMuted && isActiveMicrophone ? (
           <i className="pnm-mic-unmute secondaryColor  text-[12px] lg:text-[14px]" />
         ) : null}
