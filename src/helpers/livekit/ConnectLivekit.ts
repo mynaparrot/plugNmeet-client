@@ -74,7 +74,7 @@ export default class ConnectLivekit
   private readonly enabledE2EE: boolean = false;
   private readonly encryptionKey: string | undefined = '';
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
-  private toastIdConnecting: any = undefined;
+  private toastIdConnecting: string | number | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
 
   private handleMediaTracks: HandleMediaTracks;
@@ -200,9 +200,16 @@ export default class ConnectLivekit
         },
       );
     });
-    room.on(RoomEvent.Reconnected, () => {
-      if (this.toastIdConnecting) {
+    room.on(RoomEvent.Connected, () => {
+      if (typeof this.toastIdConnecting !== 'undefined') {
         toast.dismiss(this.toastIdConnecting);
+        this.toastIdConnecting = undefined;
+      }
+    });
+    room.on(RoomEvent.Reconnected, () => {
+      if (typeof this.toastIdConnecting !== 'undefined') {
+        toast.dismiss(this.toastIdConnecting);
+        this.toastIdConnecting = undefined;
       }
     });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
@@ -286,6 +293,10 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
+    if (typeof this.toastIdConnecting !== 'undefined') {
+      toast.dismiss(this.toastIdConnecting);
+    }
+
     if (this.wasNormalDisconnected) {
       // no need to show any message
       return;
@@ -295,10 +306,6 @@ export default class ConnectLivekit
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-
-    if (this.toastIdConnecting) {
-      toast.dismiss(this.toastIdConnecting);
-    }
   };
 
   private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {
