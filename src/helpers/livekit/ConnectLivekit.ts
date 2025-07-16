@@ -72,7 +72,7 @@ export default class ConnectLivekit
   private readonly enabledE2EE: boolean = false;
   private readonly encryptionKey: string | undefined = '';
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
-  private toastIdConnecting: any = undefined;
+  private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
 
   private handleMediaTracks: HandleMediaTracks;
@@ -195,13 +195,15 @@ export default class ConnectLivekit
       );
     });
     room.on(RoomEvent.Connected, () => {
-      if (this.toastIdConnecting) {
+      if (typeof this.toastIdConnecting !== 'undefined') {
         toast.dismiss(this.toastIdConnecting);
+        this.toastIdConnecting = undefined;
       }
     });
     room.on(RoomEvent.Reconnected, () => {
-      if (this.toastIdConnecting) {
+      if (typeof this.toastIdConnecting !== 'undefined') {
         toast.dismiss(this.toastIdConnecting);
+        this.toastIdConnecting = undefined;
       }
     });
     room.on(RoomEvent.Disconnected, this.onDisconnected);
@@ -285,7 +287,7 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
-    if (this.toastIdConnecting) {
+    if (typeof this.toastIdConnecting !== 'undefined') {
       toast.dismiss(this.toastIdConnecting);
     }
 
