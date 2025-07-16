@@ -194,6 +194,11 @@ export default class ConnectLivekit
         },
       );
     });
+    room.on(RoomEvent.Connected, () => {
+      if (this.toastIdConnecting) {
+        toast.dismiss(this.toastIdConnecting);
+      }
+    });
     room.on(RoomEvent.Reconnected, () => {
       if (this.toastIdConnecting) {
         toast.dismiss(this.toastIdConnecting);
@@ -280,6 +285,10 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
+    if (this.toastIdConnecting) {
+      toast.dismiss(this.toastIdConnecting);
+    }
+
     if (this.wasNormalDisconnected) {
       // no need to show any message
       return;
@@ -289,10 +298,6 @@ export default class ConnectLivekit
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-
-    if (this.toastIdConnecting) {
-      toast.dismiss(this.toastIdConnecting);
-    }
   };
 
   private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {
