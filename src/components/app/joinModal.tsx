@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector, useAppDispatch } from '../../store';
+import { useAppSelector, useAppDispatch, store } from '../../store';
 import { toggleStartup } from '../../store/slices/sessionSlice';
 import { updateShowMicrophoneModal } from '../../store/slices/bottomIconsActivitySlice';
 import { updateRoomAudioVolume } from '../../store/slices/roomSettingsSlice';
@@ -15,6 +15,9 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
   const isStartup = useAppSelector((state) => state.session.isStartup);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const isMicLock =
+    !!store.getState().session.currentUser?.metadata?.lockSettings
+      ?.lockMicrophone;
 
   const onClose = (noAudio = false) => {
     setOpen(false);
@@ -53,18 +56,20 @@ const StartupJoinModal = ({ onCloseModal }: StartupJoinModalProps) => {
             {t('app.how-to-join')}
           </p>
           <div className="btn flex justify-center">
-            <button
-              type="button"
-              className="microphone bg-transparent ltr:mr-4 rtl:ml-4 text-center"
-              onClick={() => shareMic()}
-            >
-              <div className="h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary3 hover:bg-[#ECF4FF] hover:dark:bg-darkSecondary2 mb-1 flex items-center justify-center cursor-pointer">
-                <i className="pnm-mic-unmute primaryColor dark:text-secondaryColor text-xl" />
-              </div>
-              <p className="text-sm md:text-base primaryColor dark:text-darkText font-normal">
-                {t('app.microphone')}
-              </p>
-            </button>
+            {!isMicLock && (
+              <button
+                type="button"
+                className="microphone bg-transparent ltr:mr-4 rtl:ml-4 text-center"
+                onClick={() => shareMic()}
+              >
+                <div className="h-[40px] md:h-[60px] w-[40px] md:w-[60px] m-auto overflow-hidden rounded-full bg-[#F2F2F2] dark:bg-darkSecondary3 hover:bg-[#ECF4FF] hover:dark:bg-darkSecondary2 mb-1 flex items-center justify-center cursor-pointer">
+                  <i className="pnm-mic-unmute primaryColor dark:text-secondaryColor text-xl" />
+                </div>
+                <p className="text-sm md:text-base primaryColor dark:text-darkText font-normal">
+                  {t('app.microphone')}
+                </p>
+              </button>
+            )}
             <button
               type="button"
               id="listenOnlyJoin"
