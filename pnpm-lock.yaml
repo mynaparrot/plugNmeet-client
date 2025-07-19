@@ -54,8 +54,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       livekit-client:
-        specifier: 2.15.2
-        version: 2.15.2(@types/dom-mediacapture-record@1.0.22)
+        specifier: 2.15.3
+        version: 2.15.3(@types/dom-mediacapture-record@1.0.22)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -2530,8 +2530,8 @@ packages:
     resolution: {integrity: sha512-LWzX2KsqcB1wqQ4AHgYb4RsDXauQiqhjLk+6hjbaeHG4zpjjVAB6wC/gz6X0l+Du1cN3pUB5ZlrvTbhGSNnUQQ==}
     engines: {node: '>=18.0.0'}
 
-  livekit-client@2.15.2:
-    resolution: {integrity: sha512-hf0A0JFN7M0iVGZxMfTk6a3cW7TNTVdqxkykjKBweORlqhQX1ITVloh6aLvplLZOxpkUE5ZVLz1DeS3+ERglog==}
+  livekit-client@2.15.3:
+    resolution: {integrity: sha512-MAziO1DxQfLJx/oSAEUczZiqrkZ4/SZNXbNexA4Sna5cQZkCzEwZcKPjRcPVbzhjlhHmyjABzWW+yXtykVhFkg==}
     peerDependencies:
       '@types/dom-mediacapture-record': ^1
 
@@ -6612,7 +6612,7 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
 
-  livekit-client@2.15.2(@types/dom-mediacapture-record@1.0.22):
+  livekit-client@2.15.3(@types/dom-mediacapture-record@1.0.22):
     dependencies:
       '@livekit/mutex': 1.1.1
       '@livekit/protocol': 1.39.3
