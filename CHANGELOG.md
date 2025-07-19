@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.7.3](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.2...v1.7.3) (2025-07-19)
+
+
+### Bug Fixes
+
+* **bug:** fix indicator ([cb53fda](https://github.com/mynaparrot/plugNmeet-client/commit/cb53fda3f4a0aa89c3868015bb88166e93964d0f))
+* **bug:** fix indicator ([22ad2ff](https://github.com/mynaparrot/plugNmeet-client/commit/22ad2ff25280be308a8832226217ca2422d55fa5))
+* **bug:** invalid speaking indicator for video element ([28ec364](https://github.com/mynaparrot/plugNmeet-client/commit/28ec364e7d357660d580a988ef3f760b9be8b323))
+* **bug:** microphone lock wasn't working ([62d1490](https://github.com/mynaparrot/plugNmeet-client/commit/62d1490e5726bda602aac625fb96bafaf088bec0))
+* **deps:** dependencies update ([e1f22e5](https://github.com/mynaparrot/plugNmeet-client/commit/e1f22e512691e5ac52081141a4082ee8c19935a3))
+* if mic lock then disable to show option in the join modal ([70c571b](https://github.com/mynaparrot/plugNmeet-client/commit/70c571bd5472f2ea64921ac0c15190378f385ffd))
+* **improve:** provide better centralized audio level controller for speaker activities ([c47480d](https://github.com/mynaparrot/plugNmeet-client/commit/c47480d16d54f5ee8016aab1ae9b31c20b252593))
+* **refactor:** connection quality share by individual user for more accuracy ([b12756f](https://github.com/mynaparrot/plugNmeet-client/commit/b12756f1803a8094f7ccda00f74baa461a913ff3))
+* **refactor:** remove livekit dependency for active speaker as not always reliable ([6953580](https://github.com/mynaparrot/plugNmeet-client/commit/6953580fc33ed344a883b62b08a847c2b6f42374))
+* verify toastIdConnecting before disconnect ([b151529](https://github.com/mynaparrot/plugNmeet-client/commit/b151529c96dcae6d1b22036c9011ad1b53150b26))
+
 ## [1.7.2](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.1...v1.7.2) (2025-06-27)
 
 
