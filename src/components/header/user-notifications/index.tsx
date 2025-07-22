@@ -115,7 +115,9 @@ const UserNotifications = () => {
     <Popover className="relative flex">
       {({ open }) => (
         <>
-          <PopoverButton className="p-2">{displayIcon(open)}</PopoverButton>
+          <PopoverButton className="p-2 text-Gra dark:text-white cursor-pointer">
+            {displayIcon(open)}
+          </PopoverButton>
           <Transition show={open}>
             <div
               className={clsx([

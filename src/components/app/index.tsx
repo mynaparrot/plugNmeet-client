@@ -141,7 +141,7 @@ const App = () => {
 
   return (
     <div
-      className={`${orientationClass} ${deviceClass} ${userTypeClass} bg-Gray-50`}
+      className={`${orientationClass} ${deviceClass} ${userTypeClass} bg-Gray-50 dark:bg-dark-secondary`}
       style={{ height: screenHeight }}
     >
       {renderElms}
