@@ -322,7 +322,7 @@ const WebcamIcon = () => {
     return (
       <>
         <div
-          className={`relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4 ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-100!' : ''} ${isActiveWebcam ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+          className={`relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4 ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-100!' : ''} ${isActiveWebcam ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lockWebcam ? 'border-Red-100! pointer-events-none' : ''}`}
         >
           <div
             className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-200!' : ''}  ${
