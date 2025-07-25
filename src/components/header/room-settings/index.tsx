@@ -118,7 +118,7 @@ const RoomSettings = () => {
                 className={({ selected }) =>
                   classNames(
                     'w-full py-1 text-xs sm:text-sm leading-5 font-medium text-Gray-950 rounded-lg outline-hidden',
-                    'ring-white ring-opacity-60',
+                    'ring-white ring-opacity-60 cursor-pointer',
                     selected
                       ? 'bg-white shadow-sm text-Gray-950'
                       : 'hover:bg-white/40',
@@ -172,7 +172,10 @@ const RoomSettings = () => {
                     className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
                   >
                     <span>{t('header.room-settings.title')}</span>
-                    <Button onClick={() => closeModal()}>
+                    <Button
+                      className="cursor-pointer"
+                      onClick={() => closeModal()}
+                    >
                       <PopupCloseSVGIcon classes="text-Gray-600" />
                     </Button>
                   </DialogTitle>

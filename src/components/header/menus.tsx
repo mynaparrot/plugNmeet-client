@@ -36,7 +36,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
       <div className="py-1" role="none">
         <MenuItem>
           <button
-            className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
+            className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative cursor-pointer"
             onClick={() => showRoomSettings()}
           >
             <i className="pnm-settings text-primary-color text-base ltr:mr-2 rtl:ml-2 transition ease-in" />
@@ -47,7 +47,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
       <div className="py-1" role="none">
         <MenuItem>
           <button
-            className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
+            className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative cursor-pointer"
             onClick={() => showKeyboardShortcuts()}
           >
             <i className="pnm-keyboard text-primary-color text-lg ltr:mr-2 rtl:ml-2 transition ease-in" />
@@ -58,7 +58,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
       <div className="py-1" role="none">
         <MenuItem>
           <button
-            className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
+            className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative cursor-pointer"
             onClick={() => logout()}
           >
             <i className="pnm-logout text-primary-color text-lg ltr:mr-2 rtl:ml-2 transition ease-in" />

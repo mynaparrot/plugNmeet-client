@@ -57,7 +57,7 @@ const ApplicationSettings = () => {
           >
             <div className="relative w-full max-w-[250px]">
               <ListboxButton
-                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950`}
+                className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 cursor-pointer`}
               >
                 <span className="block truncate">
                   {getLangText(i18n.languages[0])}
@@ -79,7 +79,7 @@ const ApplicationSettings = () => {
                         key={code}
                         value={code}
                         className={({ focus, selected }) =>
-                          `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                          `relative select-none py-2 px-3 rounded-[8px] cursor-pointer ${
                             focus ? 'bg-Blue2-50' : ''
                           } ${selected ? 'bg-Blue2-50' : ''}`
                         }
@@ -113,7 +113,7 @@ const ApplicationSettings = () => {
             onChange={toggleTheme}
             className={`${
               theme === 'dark' ? 'bg-Blue2-500' : 'bg-Gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer`}
           >
             <span
               className={`${
@@ -139,7 +139,7 @@ const ApplicationSettings = () => {
             }
             className={`${
               focusActiveSpeakerWebcam ? 'bg-Blue2-500' : 'bg-Gray-200'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer`}
           >
             <span
               className={`${

@@ -116,7 +116,7 @@ const Ingress = () => {
               >
                 <div className="relative w-full max-w-[250px]">
                   <ListboxButton
-                    className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus:shadow-input-focus text-left text-sm`}
+                    className={`h-10 full cursor-pointer rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus:shadow-input-focus text-left text-sm`}
                   >
                     <span className="block truncate">
                       {getIngressTypeText(ingressType)}
@@ -138,7 +138,7 @@ const Ingress = () => {
                             key={val}
                             value={val}
                             className={({ focus, selected }) =>
-                              `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                              `relative select-none py-2 px-3 rounded-[8px] cursor-pointer ${
                                 focus ? 'bg-Blue2-50' : ''
                               } ${selected ? 'bg-Blue2-50' : ''}`
                             }
@@ -188,7 +188,7 @@ const Ingress = () => {
           <div className="text-right mt-4">
             <button
               type="submit"
-              className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+              className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer"
             >
               {t('ingress-features.gen-link')}
             </button>

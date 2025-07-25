@@ -77,7 +77,7 @@ const EndMeetingButton = () => {
     <>
       <Button
         onClick={open}
-        className="h-10 3xl:h-11 px-5 flex items-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+        className="h-10 3xl:h-11 px-5 flex items-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
       >
         {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
       </Button>
@@ -99,7 +99,10 @@ const EndMeetingButton = () => {
                 className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950"
               >
                 <span>{t('header.menus.alert.confirm')}</span>
-                <Button onClick={() => setIsOpen(false)}>
+                <Button
+                  className="cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
@@ -108,13 +111,13 @@ const EndMeetingButton = () => {
               </div>
               <div className="mt-5 3xl:mt-8 grid grid-cols-2 gap-3">
                 <Button
-                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
+                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
                   {t('close')}
                 </Button>
                 <Button
-                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
                   onClick={onConfirm}
                 >
                   {t('ok')}

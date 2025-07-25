@@ -134,7 +134,10 @@ const Header = () => {
                     className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
                   >
                     <span>{t('header.menus.alert.confirm')}</span>
-                    <Button onClick={() => onCloseAlertModal()}>
+                    <Button
+                      className="cursor-pointer"
+                      onClick={() => onCloseAlertModal()}
+                    >
                       <PopupCloseSVGIcon classes="text-Gray-600" />
                     </Button>
                   </DialogTitle>
@@ -145,14 +148,14 @@ const Header = () => {
 
                   <div className="mt-8 flex items-center justify-end gap-2">
                     <button
-                      className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+                      className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
                       onClick={() => onCloseAlertModal(true)}
                     >
                       {t('ok')}
                     </button>
                     <button
                       type="button"
-                      className="h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                      className="h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer"
                       onClick={() => onCloseAlertModal(false)}
                     >
                       {t('close')}
