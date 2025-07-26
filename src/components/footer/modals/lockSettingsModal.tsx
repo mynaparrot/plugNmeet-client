@@ -98,7 +98,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockMicrophone
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -120,7 +120,7 @@ const LockSettingsModal = () => {
               onChange={(e) => updateLockSettings(e, 'webcam')}
               className={`${
                 roomLockSettings?.lockWebcam ? 'bg-Blue2-500' : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -144,7 +144,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockScreenSharing
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -168,7 +168,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockWhiteboard
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -192,7 +192,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockSharedNotepad
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -214,7 +214,7 @@ const LockSettingsModal = () => {
               onChange={(e) => updateLockSettings(e, 'chat')}
               className={`${
                 roomLockSettings?.lockChat ? 'bg-Blue2-500' : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -238,7 +238,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockChatSendMessage
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -262,7 +262,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockChatFileShare
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -286,7 +286,7 @@ const LockSettingsModal = () => {
                 roomLockSettings?.lockPrivateChat
                   ? 'bg-Blue2-500'
                   : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              } relative cursor-pointer inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -326,7 +326,10 @@ const LockSettingsModal = () => {
                   className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
                 >
                   <span>{t('footer.modal.lock-settings-title')}</span>
-                  <Button onClick={() => closeModal()}>
+                  <Button
+                    className="cursor-pointer"
+                    onClick={() => closeModal()}
+                  >
                     <PopupCloseSVGIcon classes="text-Gray-600" />
                   </Button>
                 </DialogTitle>

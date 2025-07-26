@@ -155,7 +155,10 @@ const BreakoutRoomInvitation = () => {
                     className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 mb-2"
                   >
                     <span>{t('breakout-room.invitation-title')}</span>
-                    <Button onClick={() => closeModal()}>
+                    <Button
+                      className="cursor-pointer"
+                      onClick={() => closeModal()}
+                    >
                       <PopupCloseSVGIcon classes="text-Gray-600" />
                     </Button>
                   </DialogTitle>

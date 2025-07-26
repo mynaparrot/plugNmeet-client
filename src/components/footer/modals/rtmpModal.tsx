@@ -121,7 +121,10 @@ const RtmpModal = () => {
                   className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
                 >
                   <span>{t('footer.modal.rtmp-title')}</span>
-                  <Button onClick={() => closeStartModal()}>
+                  <Button
+                    className="cursor-pointer"
+                    onClick={() => closeStartModal()}
+                  >
                     <PopupCloseSVGIcon classes="text-Gray-600" />
                   </Button>
                 </DialogTitle>
@@ -196,7 +199,7 @@ const RtmpModal = () => {
                     <div className="mt-8 flex justify-end">
                       <button
                         type="submit"
-                        className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+                        className="h-9 w-1/2 cursor-pointer text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       >
                         {t('footer.modal.rtmp-start-broadcast')}
                       </button>

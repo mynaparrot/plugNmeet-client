@@ -53,7 +53,7 @@ const BroadcastingMsg = () => {
       <button
         onClick={send}
         disabled={disable}
-        className="h-9 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
+        className="h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
       >
         {t('breakout-room.broadcast-msg')}
       </button>

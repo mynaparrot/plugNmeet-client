@@ -257,7 +257,7 @@ const FromElems = () => {
         </div>
         <div className="random-room-select mb-4 ltr:mr-6 rtl:ml-6">
           <button
-            className="h-9 w-auto ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-medium text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            className="h-9 w-auto ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={randomSelection}
           >
             {t('breakout-room.random-selection')}
@@ -282,7 +282,7 @@ const FromElems = () => {
       </div>
       <div className="flex justify-end mt-4">
         <button
-          className="h-9 w-auto px-10 items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+          className="h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={startBreakoutRooms}
         >
           {t('breakout-room.start')}
