@@ -106,7 +106,7 @@ const ShareWebcamModal = ({
                   className="flex items-center justify-between text-base 3xl:text-lg font-medium 3xl:font-semibold leading-7 text-Gray-950 pt-6 px-3 3xl:px-5 pb-2"
                 >
                   <span>{t('footer.modal.select-webcam')}</span>
-                  <Button onClick={() => onClose()}>
+                  <Button className="cursor-pointer" onClick={() => onClose()}>
                     <PopupCloseSVGIcon classes="text-Gray-600" />
                   </Button>
                 </DialogTitle>
@@ -129,14 +129,14 @@ const ShareWebcamModal = ({
 
             <div className="grid grid-cols-2 gap-5 pt-5 3xl:pt-8 pb-5 px-3 3xl:px-5 border-t border-Gray-100">
               <button
-                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+                className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
                 type="button"
                 onClick={() => onClose()}
               >
                 Cancel
               </button>
               <button
-                className="w-full h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                 onClick={() => shareWebcam()}
               >
                 {/* {t('share')} */}

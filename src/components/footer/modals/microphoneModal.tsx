@@ -71,7 +71,10 @@ const MicrophoneModal = ({
               className="flex items-center justify-between text-base 3xl:text-lg font-medium 3xl:font-semibold leading-7 text-Gray-950"
             >
               <span>{t('footer.modal.select-microphone')}</span>
-              <Button onClick={() => selectOrClose(true)}>
+              <Button
+                className="cursor-pointer"
+                onClick={() => selectOrClose(true)}
+              >
                 <PopupCloseSVGIcon classes="text-Gray-600" />
               </Button>
             </DialogTitle>
@@ -79,7 +82,7 @@ const MicrophoneModal = ({
             <div className="microphone-dropdown mt-4">
               <Listbox value={selectedMic} onChange={setSelectMic}>
                 <div className="relative">
-                  <ListboxButton className="relative w-full h-10 rounded-[8px] border border-Gray-300 bg-white shadow-input px-3 outline-hidden focus:border-Blue2-500 focus:shadow-input-focus text-left text-sm text-Gray-950">
+                  <ListboxButton className="relative cursor-pointer w-full h-10 rounded-[8px] border border-Gray-300 bg-white shadow-input px-3 outline-hidden focus:border-Blue2-500 focus:shadow-input-focus text-left text-sm text-Gray-950">
                     <span className="block truncate">
                       {devices.find((d) => d.id === selectedMic)?.label ||
                         t('footer.modal.select-microphone')}
@@ -100,7 +103,7 @@ const MicrophoneModal = ({
                           key={device.id}
                           value={device.id}
                           className={({ focus, selected }) =>
-                            `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
+                            `relative select-none py-2 px-3 cursor-pointer rounded-[8px] ${
                               focus ? 'bg-Blue2-50' : ''
                             } ${selected ? 'bg-Blue2-50' : ''}`
                           }
@@ -129,7 +132,7 @@ const MicrophoneModal = ({
 
             <div className="mt-8 grid grid-cols-2 gap-3">
               <Button
-                className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
+                className="h-9 cursor-pointer w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
                 onClick={() => selectOrClose(false)}
               >
                 {t('join')}
