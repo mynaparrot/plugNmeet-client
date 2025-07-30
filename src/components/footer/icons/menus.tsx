@@ -381,7 +381,7 @@ const MenusIcon = () => {
                     <MenuItem>
                       <button
                         onClick={() => openRtmpModal()}
-                        className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
+                        className="h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
                       >
                         {/* {isActiveRtmpBroadcasting ? (
                           <div className="lds-ripple">
@@ -405,7 +405,7 @@ const MenusIcon = () => {
                     ?.allowedExternalMediaPlayer ? (
                     <MenuItem>
                       <button
-                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => toggleExternalMediaPlayer()}
                       >
                         <PlayerIconSVG />
@@ -423,7 +423,7 @@ const MenusIcon = () => {
                   {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
                     <MenuItem>
                       <button
-                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => toggleDisplayExternalLinkModal()}
                       >
                         <ExternalPlayerIconSVG />
@@ -442,7 +442,7 @@ const MenusIcon = () => {
                   {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
                     <MenuItem>
                       <button
-                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => toggleSharedNotepad()}
                       >
                         <SharedNotepadIconSVG />
@@ -460,7 +460,7 @@ const MenusIcon = () => {
                   {/* {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? ( */}
                   <MenuItem>
                     <button
-                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                      className={`h-11 w-full flex cursor-pointer items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => openSpeechServiceSettingsModal()}
                     >
                       <SpeechIconSVG />
@@ -471,7 +471,7 @@ const MenusIcon = () => {
                   {roomFeatures?.pollsFeatures?.isAllow ? (
                     <MenuItem>
                       <button
-                        className={`relative h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => togglePolls()}
                       >
                         <PollsIconSVG />
@@ -490,7 +490,7 @@ const MenusIcon = () => {
                   {roomFeatures?.waitingRoomFeatures?.isActive ? (
                     <MenuItem>
                       <button
-                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => openManageWaitingRoomModal()}
                       >
                         <i className="pnm-waiting-room text-primary-color ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondary-color" />
@@ -501,7 +501,7 @@ const MenusIcon = () => {
                   {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
                     <MenuItem>
                       <button
-                        className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => openManageBreakoutRoomModal()}
                       >
                         <BreakoutRoomIconSVG />
@@ -511,7 +511,7 @@ const MenusIcon = () => {
                   ) : null}
                   <MenuItem>
                     <button
-                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                      className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => muteAllUsers()}
                     >
                       <i className="pnm-mic-mute text-primary-color ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondary-color" />
@@ -520,7 +520,7 @@ const MenusIcon = () => {
                   </MenuItem>
                   <MenuItem>
                     <button
-                      className={`h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
+                      className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => openLockSettingsModal()}
                     >
                       <RoomLockIconSVG />

@@ -155,7 +155,7 @@ const ChatTabs = () => {
               {languages.map((lang) => (
                 <ListboxOption key={lang.value} value={lang}>
                   {({ selected }) => (
-                    <div className="text-sm text-Gray-950 hover:bg-Gray-50 flex items-center justify-between px-3 3xl:px-4 py-2">
+                    <div className="text-sm cursor-pointer text-Gray-950 hover:bg-Gray-50 flex items-center justify-between px-3 3xl:px-4 py-2">
                       <span>{lang.name}</span>{' '}
                       {selected ? (
                         <span>

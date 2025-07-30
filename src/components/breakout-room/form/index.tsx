@@ -255,7 +255,7 @@ const FromElems = () => {
             value={welcomeMsg}
           ></textarea>
         </div>
-        <div className="random-room-select mb-4 ltr:mr-6 rtl:ml-6">
+        <div className="random-room-select mb-4 rtl:ml-6">
           <button
             className="h-9 w-auto ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={randomSelection}

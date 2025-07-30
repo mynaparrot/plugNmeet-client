@@ -100,19 +100,19 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
           <div className="flex gap-1">
             <button
               onClick={() => acceptUser(p.userId, p.name)}
-              className="py-1 px-3 flex items-center justify-center rounded-xl text-xs font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
+              className="py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
             >
               {t('left-panel.approve')}
             </button>
             <button
               onClick={() => rejectUser(p.userId, false)}
-              className="py-1 px-3 flex items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+              className="py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
             >
               {t('left-panel.reject')}
             </button>
             <button
               onClick={() => rejectUser(p.userId, true)}
-              className="py-1 px-3 flex items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-600 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+              className="py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-600 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
             >
               {t('waiting-room.reject-and-block-user')}
             </button>
