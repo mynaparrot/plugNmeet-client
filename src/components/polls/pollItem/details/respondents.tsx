@@ -25,7 +25,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
           {({ open }) => (
             <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden w-[632px]">
               <DisclosureButton
-                className={`flex items-center justify-between gap-3 w-full pl-[14px] pr-2 bg-white h-9 rounded-xl  shadow-button-shadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
+                className={`flex items-center cursor-pointer justify-between gap-3 w-full pl-[14px] pr-2 bg-white h-9 rounded-xl  shadow-button-shadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
               >
                 <span className="text-sm text-Gray-800">
                   {o.text} ({o.respondents.length})

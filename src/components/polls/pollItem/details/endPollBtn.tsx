@@ -59,7 +59,7 @@ const EndPollBtn = ({ pollId }: EndPollBtnProps) => {
         </div>
       ) : null}
       <button
-        className="h-10 3xl:h-11 px-5 flex items-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+        className="h-10 3xl:h-11 cursor-pointer px-5 flex items-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
         onClick={endPoll}
       >
         {t('polls.end-poll')}

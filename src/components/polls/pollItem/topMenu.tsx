@@ -66,7 +66,7 @@ const TopMenu = ({
     <Menu as="div">
       {({ open }) => (
         <>
-          <MenuButton className="relative shrink-0 p-2 mr-2">
+          <MenuButton className="relative shrink-0 p-2 mr-2 cursor-pointer">
             <div className="">
               <FooterMenuIconSVG />
             </div>
@@ -87,7 +87,7 @@ const TopMenu = ({
             >
               <MenuItem>
                 <button
-                  className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                  className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Gray-50 text-sm gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                   onClick={() => setViewDetails(true)}
                 >
                   {t('polls.view-details')}
@@ -98,7 +98,7 @@ const TopMenu = ({
                 <MenuItem>
                   <button
                     onClick={endPoll}
-                    className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Red-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Red-50 text-sm gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                   >
                     {t('polls.end-poll')}
                   </button>
@@ -106,7 +106,7 @@ const TopMenu = ({
               ) : (
                 <MenuItem>
                   <button
-                    className="h-9 3xl:h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Gray-50 text-sm gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                     onClick={() => publishPollResultByChat(pollDataWithOption)}
                   >
                     {t('polls.publish-result')}

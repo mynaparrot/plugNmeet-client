@@ -42,25 +42,7 @@ const DetailsModal = ({
             className="fixed inset-0 z-9999 overflow-y-auto"
             onClose={() => false}
           >
-            <div className="min-h-screen px-4 text-center">
-              <TransitionChild
-                as="div"
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0 bg-Gray-950 opacity-70" />
-              </TransitionChild>
-
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
+            <div className="min-h-screen px-4 text-center bg-Gray-950/70 flex items-center justify-center">
               <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -84,14 +66,14 @@ const DetailsModal = ({
                       )}
                     </DialogTitle>
                     <button
-                      className="close-btn text-Gray-500 flex items-center justify-center"
+                      className="close-btn text-Gray-500 flex items-center justify-center cursor-pointer"
                       type="button"
                       onClick={() => closeModal()}
                     >
                       <CloseIconSVG />
                     </button>
                   </div>
-                  <div className="q-headline px-5 py-6 border border-Gray-100 bg-Gray-25 text-sm font-medium text-Gray-800">
+                  <div className="q-headline px-5 py-3 border border-Gray-100 bg-Gray-25 text-sm font-medium text-Gray-800">
                     <p className="">Q: {pollDataWithOption.question}</p>
                   </div>
                   <Respondents pollDataWithOption={pollDataWithOption} />

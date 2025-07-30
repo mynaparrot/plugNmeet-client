@@ -193,10 +193,10 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           <Disclosure defaultOpen={true} as="div">
             {({ open }) => (
               <>
-                <DisclosureButton className="flex items-center justify-between gap-3 w-full">
-                  <label className="text-sm text-Gray-800 font-medium block">
+                <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
+                  <span className="text-sm text-Gray-800 font-medium block">
                     {item.question}
-                  </label>
+                  </span>
                   <motion.div
                     animate={{ rotate: open ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
