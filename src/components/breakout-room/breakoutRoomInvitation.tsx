@@ -182,7 +182,7 @@ const BreakoutRoomInvitation = () => {
                           />
                           <button
                             onClick={copyUrl}
-                            className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
+                            className="h-7 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                           >
                             {copyText}
                           </button>
@@ -192,7 +192,7 @@ const BreakoutRoomInvitation = () => {
 
                     <div className="button-section flex items-center justify-start mt-4">
                       <button
-                        className="h-7 ml-auto px-5 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
+                        className="h-7 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                         onClick={join}
                       >
                         {t('breakout-room.join')}
