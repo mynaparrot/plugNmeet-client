@@ -79,7 +79,10 @@ const RecordingModal = ({
                     className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
                   >
                     <span>{t('footer.icons.how-to-record')}</span>
-                    <Button onClick={() => closeModal()}>
+                    <Button
+                      className="cursor-pointer"
+                      onClick={() => closeModal()}
+                    >
                       <PopupCloseSVGIcon classes="text-Gray-600" />
                     </Button>
                   </DialogTitle>
@@ -157,7 +160,7 @@ const RecordingModal = ({
                       <div className="mt-4">
                         <button
                           type="submit"
-                          className="h-10 px-5 flex items-center ml-auto justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow"
+                          className="h-10 cursor-pointer px-5 flex items-center ml-auto justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-Dark-blue transition-all duration-300 hover:bg-Dark-blue shadow-button-shadow"
                         >
                           {t('footer.icons.start-recording')}
                         </button>

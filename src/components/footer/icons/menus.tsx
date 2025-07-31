@@ -389,7 +389,9 @@ const MenusIcon = () => {
                             <div className="border-secondary-color"></div>
                           </div>
                         ) : null} */}
-                        <RTMPIconSVG />
+                        <span className="icon flex w-6 h-auto justify-center">
+                          <RTMPIconSVG />
+                        </span>
                         {isActiveRtmpBroadcasting ? (
                           <>
                             {t('footer.icons.stop-rtmp-broadcasting')}
@@ -408,7 +410,9 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => toggleExternalMediaPlayer()}
                       >
-                        <PlayerIconSVG />
+                        <span className="icon flex w-6 h-auto justify-center">
+                          <PlayerIconSVG />
+                        </span>
                         {isActiveExternalMediaPlayer ? (
                           <>
                             {t('footer.menus.stop-external-media-player')}
@@ -426,7 +430,9 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => toggleDisplayExternalLinkModal()}
                       >
-                        <ExternalPlayerIconSVG />
+                        <button className="icon flex w-6 h-auto justify-center">
+                          <ExternalPlayerIconSVG />
+                        </button>
                         {isActiveDisplayExternalLink ? (
                           <>
                             {t('footer.menus.stop-display-external-link')}
@@ -445,7 +451,9 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => toggleSharedNotepad()}
                       >
-                        <SharedNotepadIconSVG />
+                        <span className="icon flex w-6 h-auto justify-center">
+                          <SharedNotepadIconSVG />
+                        </span>
                         {sharedNotepadStatus ? (
                           <>
                             {t('footer.menus.disable-shared-notepad')}
@@ -463,7 +471,9 @@ const MenusIcon = () => {
                       className={`h-11 w-full flex cursor-pointer items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => openSpeechServiceSettingsModal()}
                     >
-                      <SpeechIconSVG />
+                      <span className="icon flex w-6 h-auto justify-center">
+                        <SpeechIconSVG />
+                      </span>
                       {t('footer.menus.speech-to-text-settings')}
                     </button>
                   </MenuItem>
@@ -474,7 +484,9 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => togglePolls()}
                       >
-                        <PollsIconSVG />
+                        <span className="icon flex w-6 h-auto justify-center">
+                          <PollsIconSVG />
+                        </span>
                         {isActivePoll ? (
                           <>
                             {t('footer.menus.disable-polls')}
@@ -493,7 +505,9 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => openManageWaitingRoomModal()}
                       >
-                        <i className="pnm-waiting-room text-primary-color ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondary-color" />
+                        <span className="icon flex w-6 h-auto justify-center">
+                          <i className="pnm-waiting-room text-primary-color  transition ease-in group-hover:text-secondary-color" />
+                        </span>
                         {t('footer.menus.manage-waiting-room')}
                       </button>
                     </MenuItem>
@@ -504,7 +518,9 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => openManageBreakoutRoomModal()}
                       >
-                        <BreakoutRoomIconSVG />
+                        <span className="icon flex w-6 h-auto justify-center">
+                          <BreakoutRoomIconSVG />
+                        </span>
                         {t('footer.menus.manage-breakout-room')}
                       </button>
                     </MenuItem>
@@ -514,7 +530,9 @@ const MenusIcon = () => {
                       className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => muteAllUsers()}
                     >
-                      <i className="pnm-mic-mute text-primary-color ltr:mr-2 rtl:ml-2 transition ease-in group-hover:text-secondary-color" />
+                      <span className="icon flex w-6 h-auto justify-center">
+                        <i className="pnm-mic-mute text-primary-color transition ease-in group-hover:text-secondary-color" />
+                      </span>
                       {t('footer.menus.mute-all-users')}
                     </button>
                   </MenuItem>
@@ -523,7 +541,9 @@ const MenusIcon = () => {
                       className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                       onClick={() => openLockSettingsModal()}
                     >
-                      <RoomLockIconSVG />
+                      <span className="icon flex w-6 h-auto justify-center">
+                        <RoomLockIconSVG />
+                      </span>
                       {t('footer.menus.room-lock-settings')}
                     </button>
                   </MenuItem>
