@@ -462,7 +462,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
 }
 
 #main-footer .record {
-  animation-name: pulse;
+  animation-name: pulse2;
   animation-duration: 1.5s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;

@@ -67,15 +67,15 @@
     transform: none;
   }
 }
-@keyframes pulse {
+@keyframes pulse2 {
   0% {
-    box-shadow: 0 0 5px 0 rgba(124, 206, 247, 0.25);
+    box-shadow: 0 0 5px 0 rgba(242, 0, 0, 0.25);
   }
   65% {
-    box-shadow: 0 0 5px 10px rgb(242, 242, 242);
+    box-shadow: 0 0 5px 10px rgb(242, 0, 0);
   }
   90% {
-    box-shadow: 0 0 5px 10px rgb(242, 242, 242);
+    box-shadow: 0 0 5px 10px rgb(242, 0, 0);
   }
 }
 @keyframes lds-ripple2 {
