@@ -43,6 +43,13 @@ const Landing = ({
       state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
         ?.waitingRoomMsg,
   );
+  const lockMicrophone = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
+  );
+  const lockWebcam = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
+  );
 
   const [audioDevices, setAudioDevices] = useState<IMediaDevice[]>([]);
   const [videoDevices, setVideoDevices] = useState<IMediaDevice[]>([]);
@@ -136,20 +143,24 @@ const Landing = ({
           <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
             <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
             <div className="micro-cam-wrap flex justify-center py-5 gap-5">
-              <MicrophoneIcon
-                audioDevices={audioDevices}
-                enableMediaDevices={enableMediaDevices}
-                disableMic={disableMic}
-                setSelectedAudioDevice={setSelectedAudioDevice}
-                selectedAudioDevice={selectedAudioDevice}
-              />
-              <WebcamIcon
-                videoDevices={videoDevices}
-                enableMediaDevices={enableMediaDevices}
-                disableWebcam={disableWebcam}
-                setSelectedVideoDevice={setSelectedVideoDevice}
-                selectedVideoDevice={selectedVideoDevice}
-              />
+              {!lockMicrophone && (
+                <MicrophoneIcon
+                  audioDevices={audioDevices}
+                  enableMediaDevices={enableMediaDevices}
+                  disableMic={disableMic}
+                  setSelectedAudioDevice={setSelectedAudioDevice}
+                  selectedAudioDevice={selectedAudioDevice}
+                />
+              )}
+              {!lockWebcam && (
+                <WebcamIcon
+                  videoDevices={videoDevices}
+                  enableMediaDevices={enableMediaDevices}
+                  disableWebcam={disableWebcam}
+                  setSelectedVideoDevice={setSelectedVideoDevice}
+                  selectedVideoDevice={selectedVideoDevice}
+                />
+              )}
             </div>
           </div>
           <div className="right w-full md:w-1/2 md:pl-8 3xl:pl-16 sm:py-8 flex items-center">
@@ -197,6 +208,7 @@ const Landing = ({
                     <button
                       type="button"
                       className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                      disabled={lockMicrophone}
                       onClick={() => enableMediaDevices('both')}
                     >
                       Enable Microphone and Camera
