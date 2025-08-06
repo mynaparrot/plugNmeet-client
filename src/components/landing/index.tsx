@@ -142,7 +142,7 @@ const Landing = ({
         <div className="wrapper bg-Gray-50 pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
           <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
             <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
-            <div className="micro-cam-wrap flex justify-center py-5 gap-5">
+            <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
               {!lockMicrophone && (
                 <MicrophoneIcon
                   audioDevices={audioDevices}
