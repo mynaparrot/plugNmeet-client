@@ -395,7 +395,7 @@ const MenusIcon = () => {
                         {isActiveRtmpBroadcasting ? (
                           <>
                             {t('footer.icons.stop-rtmp-broadcasting')}
-                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
                           </>
                         ) : (
                           t('footer.icons.start-rtmp-broadcasting')
@@ -416,7 +416,7 @@ const MenusIcon = () => {
                         {isActiveExternalMediaPlayer ? (
                           <>
                             {t('footer.menus.stop-external-media-player')}
-                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
                           </>
                         ) : (
                           t('footer.menus.start-external-media-player')
@@ -436,7 +436,7 @@ const MenusIcon = () => {
                         {isActiveDisplayExternalLink ? (
                           <>
                             {t('footer.menus.stop-display-external-link')}
-                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
                           </>
                         ) : (
                           t('footer.menus.start-display-external-link')
@@ -457,7 +457,7 @@ const MenusIcon = () => {
                         {sharedNotepadStatus ? (
                           <>
                             {t('footer.menus.disable-shared-notepad')}
-                            <div className="isActive absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[rgba(0,136,204,1)] right-3"></div>
+                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
                           </>
                         ) : (
                           t('footer.menus.enable-shared-notepad')
