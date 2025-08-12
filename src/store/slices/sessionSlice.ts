@@ -25,6 +25,7 @@ const initialState: ISession = {
   totalAudioSubscribers: 0,
   totalVideoSubscribers: 0,
   userDeviceType: UserDeviceType.DESKTOP,
+  isCloud: false,
   currentRoom: {
     sid: '',
     roomId: '',
@@ -173,6 +174,9 @@ const sessionSlice = createSlice({
     updateUserDeviceType: (state, action: PayloadAction<UserDeviceType>) => {
       state.userDeviceType = action.payload;
     },
+    updateIsCloud: (state, action: PayloadAction<boolean>) => {
+      state.isCloud = action.payload;
+    },
   },
 });
 
@@ -190,6 +194,7 @@ export const {
   updateTotalAudioSubscribers,
   updateMuteOnStart,
   updateUserDeviceType,
+  updateIsCloud,
 } = sessionSlice.actions;
 
 export default sessionSlice.reducer;

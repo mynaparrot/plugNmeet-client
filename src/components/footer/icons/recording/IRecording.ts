@@ -1,3 +1,5 @@
+import { CloudRecordingVariants } from 'plugnmeet-protocol-js';
+
 export enum RecordingEvent {
   NONE = 'none',
   STARTED_RECORDING = 'started_recording',
@@ -23,7 +25,12 @@ export interface IUseLocalRecordingReturn {
 export interface IUseCloudRecordingReturn {
   TYPE_OF_RECORDING: RecordingType;
   hasError: boolean;
-  startRecording: () => Promise<void>;
+  startRecording: (variant?: CloudRecordingVariants) => Promise<void>;
   stopRecording: () => Promise<void>;
   resetError: () => void;
+}
+
+export interface SelectedRecordingType {
+  type: RecordingType;
+  variant?: CloudRecordingVariants;
 }

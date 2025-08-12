@@ -19,6 +19,7 @@ export interface ISession {
   totalVideoSubscribers: number;
   totalAudioSubscribers: number;
   userDeviceType: UserDeviceType;
+  isCloud: boolean;
 }
 
 export interface ICurrentUser {

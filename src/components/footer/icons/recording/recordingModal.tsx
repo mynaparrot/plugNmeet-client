@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,15 +7,19 @@ import {
   Button,
 } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import { RecordingFeatures } from 'plugnmeet-protocol-js';
+import {
+  RecordingFeatures,
+  CloudRecordingVariants,
+} from 'plugnmeet-protocol-js';
 
-import { RecordingType } from './IRecording';
+import { RecordingType, SelectedRecordingType } from './IRecording';
 import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
+import { store } from '../../../../store';
 
 interface IRecordingModalProps {
   showModal: boolean;
   recordingFeatures?: RecordingFeatures;
-  onCloseModal(recordingType: RecordingType): void;
+  onCloseModal(selected: SelectedRecordingType): void;
 }
 
 const RecordingModal = ({
@@ -23,20 +27,29 @@ const RecordingModal = ({
   recordingFeatures,
   onCloseModal,
 }: IRecordingModalProps) => {
-  const [recordingType, setRecordingType] = useState<RecordingType | undefined>(
-    undefined,
-  );
+  const [recordingType, setRecordingType] = useState<
+    SelectedRecordingType | undefined
+  >(undefined);
   const { t } = useTranslation();
+  const isCloud = store.getState().session.isCloud;
+  const e2eeFeatures =
+    store.getState().session.currentRoom?.metadata?.roomFeatures
+      ?.endToEndEncryptionFeatures;
 
-  const startRecording = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (recordingType) {
-      onCloseModal(recordingType);
-    }
-  };
+  const startRecording = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (recordingType) {
+        onCloseModal(recordingType);
+      }
+    },
+    [recordingType, onCloseModal],
+  );
 
   const closeModal = () => {
-    onCloseModal(RecordingType.RECORDING_TYPE_NONE);
+    onCloseModal({
+      type: RecordingType.RECORDING_TYPE_NONE,
+    });
   };
 
   const displayModal = () => {
@@ -98,62 +111,98 @@ const RecordingModal = ({
                           {t('footer.icons.recording-types-des')}
                         </p>
                         <div className="mt-4 pl-2 space-y-4">
-                          {recordingFeatures?.isAllowLocal ? (
-                            <>
-                              <div className="relative flex items-center overflow-hidden my-2">
-                                <input
-                                  type="radio"
-                                  value="1"
-                                  name="block"
-                                  id="yes"
-                                  checked={
-                                    recordingType ===
-                                    RecordingType.RECORDING_TYPE_LOCAL
-                                  }
-                                  onChange={() =>
-                                    setRecordingType(
-                                      RecordingType.RECORDING_TYPE_LOCAL,
-                                    )
-                                  }
-                                  className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-                                />
-                                <label
-                                  className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-                                  htmlFor="yes"
-                                >
-                                  {t('footer.icons.local-recording')}
-                                </label>
-                              </div>
-                            </>
-                          ) : null}
-                          {recordingFeatures?.isAllowCloud ? (
+                          {recordingFeatures?.isAllowLocal && (
                             <>
                               <div className="relative flex items-center overflow-hidden my-2">
                                 <input
                                   type="radio"
                                   value="0"
                                   name="block"
-                                  id="no"
+                                  id="local"
                                   checked={
-                                    recordingType ===
-                                    RecordingType.RECORDING_TYPE_CLOUD
+                                    recordingType?.type ===
+                                    RecordingType.RECORDING_TYPE_LOCAL
                                   }
                                   onChange={() =>
-                                    setRecordingType(
-                                      RecordingType.RECORDING_TYPE_CLOUD,
-                                    )
+                                    setRecordingType({
+                                      type: RecordingType.RECORDING_TYPE_LOCAL,
+                                    })
                                   }
                                   className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
                                 />
                                 <label
                                   className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
-                                  htmlFor="no"
+                                  htmlFor="local"
+                                >
+                                  {t('footer.icons.local-recording')}
+                                </label>
+                              </div>
+                            </>
+                          )}
+                          {recordingFeatures?.isAllowCloud && (
+                            <>
+                              <div className="relative flex items-center overflow-hidden my-2">
+                                <input
+                                  type="radio"
+                                  value="1"
+                                  name="block"
+                                  id="full-screen"
+                                  disabled={
+                                    !!e2eeFeatures?.enabledSelfInsertEncryptionKey
+                                  }
+                                  checked={
+                                    recordingType?.variant ===
+                                    CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING
+                                  }
+                                  onChange={() => {
+                                    setRecordingType({
+                                      type: RecordingType.RECORDING_TYPE_CLOUD,
+                                      variant:
+                                        CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING,
+                                    });
+                                  }}
+                                  className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+                                />
+                                <label
+                                  className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+                                  htmlFor="full-screen"
                                 >
                                   {t('footer.icons.cloud-recording')}
                                 </label>
                               </div>
+                              {isCloud && (
+                                <div className="relative flex items-center overflow-hidden my-2">
+                                  <input
+                                    type="radio"
+                                    value="3"
+                                    name="block"
+                                    id="media-only"
+                                    disabled={!!e2eeFeatures?.isEnabled}
+                                    checked={
+                                      recordingType?.variant ===
+                                      CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING
+                                    }
+                                    onChange={() => {
+                                      setRecordingType({
+                                        type: RecordingType.RECORDING_TYPE_CLOUD,
+                                        variant:
+                                          CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING,
+                                      });
+                                    }}
+                                    className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+                                  />
+                                  <label
+                                    className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+                                    htmlFor="media-only"
+                                  >
+                                    {t(
+                                      'footer.icons.cloud-media-only-recording',
+                                    )}
+                                  </label>
+                                </div>
+                              )}
                             </>
-                          ) : null}
+                          )}
                         </div>
                       </div>
 

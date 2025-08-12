@@ -11,6 +11,8 @@ import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { IErrorPageProps } from '../extra-pages/Error';
 import i18n from '../../helpers/i18n';
 import { getAccessToken } from '../../helpers/utils';
+import { store } from '../../store';
+import { updateIsCloud } from '../../store/slices/sessionSlice';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -94,6 +96,7 @@ export const verifyToken = once(
         userId: res.userId,
         serverVersion: res.serverVersion ?? '',
       });
+      store.dispatch(updateIsCloud(!!res.isCloud));
 
       if (res.enabledSelfInsertEncryptionKey) {
         setLoading(false);

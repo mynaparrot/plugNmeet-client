@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import RecordingModal from './recording/recordingModal';
-import { RecordingEvent, RecordingType } from './recording/IRecording';
+import {
+  RecordingEvent,
+  RecordingType,
+  SelectedRecordingType,
+} from './recording/IRecording';
 import useLocalRecording from './recording/useLocalRecording';
 import useCloudRecording from './recording/useCloudRecording';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
@@ -155,15 +159,19 @@ const RecordingIcon = () => {
     }
   };
 
-  const startRecording = async (recordingType: RecordingType) => {
-    if (recordingType === RecordingType.RECORDING_TYPE_LOCAL) {
+  const startRecording = async (
+    selectedRecordingType: SelectedRecordingType,
+  ) => {
+    if (selectedRecordingType.type === RecordingType.RECORDING_TYPE_LOCAL) {
       setDisable(true);
-      setRecordingType(recordingType);
+      setRecordingType(selectedRecordingType.type);
       startLocalRecording();
-    } else if (recordingType === RecordingType.RECORDING_TYPE_CLOUD) {
+    } else if (
+      selectedRecordingType.type === RecordingType.RECORDING_TYPE_CLOUD
+    ) {
       setDisable(true);
-      setRecordingType(recordingType);
-      await startCloudRecording();
+      setRecordingType(selectedRecordingType.type);
+      await startCloudRecording(selectedRecordingType.variant);
 
       const timer = setTimeout(() => {
         setDisable(false);
@@ -178,9 +186,9 @@ const RecordingIcon = () => {
     }
   };
 
-  const onCloseModal = async (recordingType: RecordingType) => {
+  const onCloseModal = (selectedRecordingType: SelectedRecordingType) => {
     setOpenModal(false);
-    await startRecording(recordingType);
+    startRecording(selectedRecordingType).then();
   };
 
   // for auto cloud recording
@@ -195,7 +203,7 @@ const RecordingIcon = () => {
       roomMetadata.roomFeatures?.recordingFeatures?.enableAutoCloudRecording
     ) {
       timeout = setTimeout(async () => {
-        await startRecording(RecordingType.RECORDING_TYPE_CLOUD);
+        await startRecording({ type: RecordingType.RECORDING_TYPE_CLOUD });
       }, 1000);
     }
     setCheckedAutoRecording(true);
@@ -215,7 +223,7 @@ const RecordingIcon = () => {
           <RecordingModal
             showModal={openModal}
             recordingFeatures={roomMetadata.roomFeatures?.recordingFeatures}
-            onCloseModal={(recordingType) => onCloseModal(recordingType)}
+            onCloseModal={onCloseModal}
           />
         ) : null}
         {/* <button
