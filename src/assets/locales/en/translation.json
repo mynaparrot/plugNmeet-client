@@ -268,7 +268,7 @@
       "manage-breakout-room": "Manage breakout room",
       "start-display-external-link": "Display external link",
       "stop-display-external-link": "Stop display external link",
-      "speech-to-text-settings": "Speech to text/translation",
+      "speech-to-text-settings": "Transcription & Translation",
       "enable-polls": "Enable polls",
       "disable-polls": "Disable polls"
     },
@@ -429,7 +429,7 @@
     "stream-key": "Stream key/secret"
   },
   "speech-services": {
-    "modal-settings-title": "Speech to text/translation settings",
+    "modal-settings-title": "Transcription & Translation Settings",
     "enable-speech-to-text": "Enable speech to text",
     "speech-langs-label": "Speech languages",
     "speech-users-label": "Speech users",

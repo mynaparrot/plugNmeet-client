@@ -35,10 +35,10 @@ const DefaultSubtitleLangElms = ({
   }, [selectedSpeechLangs, selectedTransLangs, t]);
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="">
       <label
         htmlFor="language"
-        className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right flex-1"
+        className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right block mb-2"
       >
         {t('speech-services.default-subtitle-lang-label')}
       </label>
@@ -47,8 +47,8 @@ const DefaultSubtitleLangElms = ({
         onChange={setSelectedDefaultSubtitleLang}
         multiple={false}
       >
-        <div className="relative w-[190px]">
-          <ListboxButton className="h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
+        <div className="relative w-full">
+          <ListboxButton className="min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
             <span className="block truncate">
               {availableSubtitleLangs
                 .map((l) =>

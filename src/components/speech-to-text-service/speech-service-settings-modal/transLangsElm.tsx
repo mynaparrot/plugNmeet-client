@@ -39,10 +39,10 @@ const TransLangsElm = ({
   }, [selectedItems]);
 
   return (
-    <div className="flex items-center justify-between mb-2">
+    <div className="">
       <label
         htmlFor="language"
-        className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right flex-1"
+        className="w-full text-sm text-Gray-800 font-medium ltr:text-left rtl:text-right block mb-2"
       >
         {t('speech-services.translation-langs-label', { num: max })}
       </label>
@@ -51,8 +51,8 @@ const TransLangsElm = ({
         onChange={setSelectedItems}
         multiple={true}
       >
-        <div className="relative w-[190px]">
-          <ListboxButton className="min-h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
+        <div className="relative w-full">
+          <ListboxButton className="min-h-11 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
             <span className="block">
               {selectedTransLangs
                 .map((l) => {

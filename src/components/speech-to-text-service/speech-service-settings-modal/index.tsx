@@ -22,6 +22,7 @@ import SpeechUsersElms from './speechUsersElms';
 import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
+import RangeSlider from './RangeSlider';
 
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();
@@ -31,6 +32,10 @@ const SpeechServiceSettingsModal = () => {
       state.session.currentRoom.metadata?.roomFeatures
         ?.speechToTextTranslationFeatures,
   );
+
+  const [enabledTranscription, setEnabledTranscription] = useState(false);
+
+  const [slideRangeValue, setSlideRangeValue] = useState(14);
 
   const [selectedSpeechLangs, setSelectedSpeechLangs] = useState<string[]>([]);
   const [selectedSpeechUsers, setSelectedSpeechUsers] = useState<string[]>([]);
@@ -156,57 +161,98 @@ const SpeechServiceSettingsModal = () => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl duration-300 ease-out">
+              <div className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP rounded-xl duration-300 ease-out">
                 <DialogTitle
                   as="h3"
-                  className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
+                  className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 py-5 px-5 text-Gray-950 border-b border-Gray-100"
                 >
                   <span>{t('speech-services.modal-settings-title')}</span>
                   <Button onClick={() => closeModal()}>
                     <PopupCloseSVGIcon classes="text-Gray-600" />
                   </Button>
                 </DialogTitle>
-                {/* <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
-                  type="button"
-                  onClick={() => closeModal()}
-                >
-                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
-                </button>
-
-                <DialogTitle
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
-                >
-                  {t('speech-services.modal-settings-title')}
-                </DialogTitle> */}
-                <hr />
-                <div className="mt-4">
-                  <SpeechLangsElms
-                    selectedSpeechLangs={selectedSpeechLangs}
-                    setSelectedMicDevice={setSelectedSpeechLangs}
-                  />
-                  <SpeechUsersElms
-                    selectedSpeechUsers={selectedSpeechUsers}
-                    setSelectedSpeechUsers={setSelectedSpeechUsers}
-                  />
-                  <Field>
-                    <div className="flex items-center justify-between my-4">
-                      <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right">
-                        {t('speech-services.enable-translation')}
+                <div className="main-wrap">
+                  <Field className="py-4 px-5 bg-Gray-25 border-b border-dotted border-Gray-100">
+                    <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
+                      <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
+                        Enable Transcription
+                      </Label>
+                      <Switch
+                        checked={enabledTranscription}
+                        onChange={setEnabledTranscription}
+                        className={`${
+                          enabledTranscription ? 'bg-Blue2-500' : 'bg-Gray-200'
+                        } relative outline-none inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden cursor-pointer`}
+                      >
+                        <span
+                          className={`${
+                            enabledTranscription
+                              ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                              : 'ltr:translate-x-1 rtl:-translate-x-0.5'
+                          } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+                        />
+                      </Switch>
+                    </div>
+                  </Field>
+                  {enabledTranscription ? (
+                    <div className="py-8 px-5 grid gap-4">
+                      <SpeechLangsElms
+                        selectedSpeechLangs={selectedSpeechLangs}
+                        setSelectedMicDevice={setSelectedSpeechLangs}
+                      />
+                      <SpeechUsersElms
+                        selectedSpeechUsers={selectedSpeechUsers}
+                        setSelectedSpeechUsers={setSelectedSpeechUsers}
+                      />
+                      <DefaultSubtitleLangElms
+                        selectedSpeechLangs={selectedSpeechLangs}
+                        selectedTransLangs={selectedTransLangs}
+                        selectedDefaultSubtitleLang={
+                          selectedDefaultSubtitleLang
+                        }
+                        setSelectedDefaultSubtitleLang={
+                          setSelectedDefaultSubtitleLang
+                        }
+                      />
+                      <div className="font-size">
+                        <div className="top flex justify-between items-center mb-3">
+                          <label
+                            htmlFor="transcription-size"
+                            className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right block"
+                          >
+                            Transcription Font Size
+                          </label>
+                          <div className="count text-xs text-Gray-800 font-medium bg-Gray-25 border border-Gray-300 shadow-Icon-box rounded-[7px] py-0.5 px-2">
+                            {slideRangeValue}
+                          </div>
+                        </div>
+                        <RangeSlider
+                          min={5}
+                          max={30}
+                          value={slideRangeValue}
+                          onChange={setSlideRangeValue}
+                          thumbSize={20}
+                          trackHeight={8}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                  <Field className="py-4 px-5 bg-Gray-25 border-y border-dotted border-Gray-100">
+                    <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
+                      <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
+                        Enable Translation
                       </Label>
                       <Switch
                         checked={enableTranslation}
                         onChange={setEnableTranslation}
                         className={`${
                           enableTranslation ? 'bg-Blue2-500' : 'bg-Gray-200'
-                        } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+                        } relative outline-none inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden cursor-pointer`}
                       >
                         <span
                           className={`${
                             enableTranslation
-                              ? 'ltr:translate-x-6 rtl:-translate-x-5'
+                              ? 'ltr:translate-x-5 rtl:-translate-x-5'
                               : 'ltr:translate-x-1 rtl:-translate-x-0.5'
                           } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
                         />
@@ -214,45 +260,49 @@ const SpeechServiceSettingsModal = () => {
                     </div>
                   </Field>
                   {enableTranslation ? (
-                    <TransLangsElm
-                      selectedTransLangs={selectedTransLangs}
-                      setSelectedTransLangs={setSelectedTransLangs}
-                    />
+                    <div className="py-8 px-5 grid gap-4">
+                      <TransLangsElm
+                        selectedTransLangs={selectedTransLangs}
+                        setSelectedTransLangs={setSelectedTransLangs}
+                      />
+                    </div>
                   ) : null}
-                  <DefaultSubtitleLangElms
-                    selectedSpeechLangs={selectedSpeechLangs}
-                    selectedTransLangs={selectedTransLangs}
-                    selectedDefaultSubtitleLang={selectedDefaultSubtitleLang}
-                    setSelectedDefaultSubtitleLang={
-                      setSelectedDefaultSubtitleLang
-                    }
-                  />
                 </div>
-                <div className="text-right mt-4">
-                  {!speechService?.isEnabled ? (
+                <div className="bottom-area py-5 px-5 text-Gray-950 border-t border-Gray-100 grid grid-cols-2 gap-5">
+                  <div className="left">
                     <button
-                      className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                      onClick={() => enableOrUpdateService()}
+                      className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+                      onClick={() => closeModal()}
                     >
-                      {t('speech-services.enable-service')}
+                      Cancel
                     </button>
-                  ) : null}
-                  {speechService?.isEnabled ? (
-                    <>
+                  </div>
+                  <div className="right">
+                    {!speechService?.isEnabled ? (
                       <button
-                        className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                        className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                         onClick={() => enableOrUpdateService()}
                       >
-                        {t('speech-services.update-service')}
+                        {t('speech-services.enable-service')}
                       </button>
-                      <button
-                        className="h-10 px-8 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                        onClick={() => stopService()}
-                      >
-                        {t('speech-services.stop-service')}
-                      </button>
-                    </>
-                  ) : null}
+                    ) : null}
+                    {speechService?.isEnabled ? (
+                      <>
+                        <button
+                          className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                          onClick={() => enableOrUpdateService()}
+                        >
+                          {t('speech-services.update-service')}
+                        </button>
+                        <button
+                          className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                          onClick={() => stopService()}
+                        >
+                          {t('speech-services.stop-service')}
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </TransitionChild>
