@@ -172,6 +172,13 @@ const RecordingModal = ({
                                   >
                                     {t('footer.icons.cloud-recording')}
                                   </label>
+                                  {e2eeFeatures?.enabledSelfInsertEncryptionKey && (
+                                    <p className="text-xs text-Red-400 pl-[26px]">
+                                      {t(
+                                        'notifications.cloud-recording-not-supported-self-key',
+                                      )}
+                                    </p>
+                                  )}
                                 </div>
                               </div>
                               {isCloud && (
@@ -207,13 +214,13 @@ const RecordingModal = ({
                                       )}
                                     </label>
                                   </div>
-                                  {e2eeFeatures?.isEnabled ? (
-                                    <>
-                                      <p className="text-sm text-Gray-900 pl-[26px]">
-                                        (text)
-                                      </p>
-                                    </>
-                                  ) : null}
+                                  {e2eeFeatures?.isEnabled && (
+                                    <p className="text-xs text-Red-400 pl-[26px]">
+                                      {t(
+                                        'notifications.media-only-recording-not-support-e2ee',
+                                      )}
+                                    </p>
+                                  )}
                                 </div>
                               )}
                             </>
