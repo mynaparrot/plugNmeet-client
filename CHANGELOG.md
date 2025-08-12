@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.4](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.3...v1.7.4) (2025-08-12)
+
+
+### Bug Fixes
+
+* dependencies upgrade ([8c5e0da](https://github.com/mynaparrot/plugNmeet-client/commit/8c5e0dadb4324fa3fb9c45771067cf33c4d0af7f))
+
 ## [1.7.3](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.2...v1.7.3) (2025-07-19)
 
 
