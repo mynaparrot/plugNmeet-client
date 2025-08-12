@@ -171,7 +171,9 @@ const RecordingModal = ({
                                 </label>
                               </div>
                               {isCloud && (
-                                <div className="relative flex items-center overflow-hidden my-2">
+                                <div
+                                  className={`relative flex items-center opacity-50 overflow-hidden my-2 ${e2eeFeatures?.isEnabled ? ' opacity-50 pointer-events-none' : ''}`}
+                                >
                                   <input
                                     type="radio"
                                     value="3"
