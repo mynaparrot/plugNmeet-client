@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
+import { useTranslation } from 'react-i18next';
 
 import './style.css';
 import { useAppSelector } from '../../../store';
@@ -9,6 +10,7 @@ interface IVideoElmProps {
 }
 
 const VideoElm = ({ track }: IVideoElmProps) => {
+  const { t } = useTranslation();
   const ref = useRef<HTMLVideoElement>(null);
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
@@ -89,7 +91,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       {self ? (
         <>
           <div className="text absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
-            You are now sharing your screen
+            {t('notifications.you-are-sharing-screen')}
           </div>
         </>
       ) : null}

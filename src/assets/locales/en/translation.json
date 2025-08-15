@@ -70,7 +70,8 @@
     "ending-session": "Session is ending; please wait...",
     "please-wait-other-task-to-finish": "Please wait until other task is finish",
     "cloud-recording-not-supported-self-key": "Cloud recording not available while self inserted encryption key feature enabled",
-    "media-only-recording-not-support-e2ee": "Cloud media only recording not available while E2EE encryption feature enabled"
+    "media-only-recording-not-support-e2ee": "Cloud media only recording not available while E2EE encryption feature enabled",
+    "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view."
   },
   "room-metadata": {
     "session-recording": "This session is being recording",
