@@ -64,7 +64,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   return (
     <div className="screen-share-video relative">
       {!loaded ? (
-        <div className="loading flex justify-center">
+        <div className="loading absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center">
           <div className="lds-ripple">
             <div className="border-secondary-color" />
             <div className="border-secondary-color" />
@@ -81,9 +81,18 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         onLoadedData={onLoadedData}
         ref={ref}
         className={`video-player absolute ${
-          self ? 'self-screen-share' : 'remote-screen-share'
+          self
+            ? 'self-screen-share !w-auto !h-52 !left-1/2 !top-1/2 !-translate-x-1/2 !-translate-y-1/2'
+            : 'remote-screen-share'
         }`}
       />
+      {self ? (
+        <>
+          <div className="text absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
+            You are now sharing your screen
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };
