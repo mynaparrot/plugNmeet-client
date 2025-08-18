@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 interface RangeSliderProps {
   min?: number;
@@ -12,7 +12,7 @@ interface RangeSliderProps {
   thumbColor?: string;
 }
 
-const RangeSlider: React.FC<RangeSliderProps> = ({
+const RangeSlider = ({
   min = 0,
   max = 100,
   value: propValue = 50,
@@ -22,7 +22,7 @@ const RangeSlider: React.FC<RangeSliderProps> = ({
   filledColor = 'linear-gradient(90deg, #F0F8FC 0%, #BAE3F7 25%, #32B7FA 50%, #00A1F2 75%, #0088CC 100%)',
   emptyColor = 'rgba(225, 237, 250, 1)',
   thumbColor = '#fff',
-}) => {
+}: RangeSliderProps) => {
   const [internalValue, setInternalValue] = useState<number>(propValue);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -31,75 +31,64 @@ const RangeSlider: React.FC<RangeSliderProps> = ({
   // Use controlled component pattern
   const value = onChange !== undefined ? propValue : internalValue;
 
+  const updateValueFromPosition = useCallback(
+    (clientX: number) => {
+      if (!sliderRef.current) return;
+
+      const rect = sliderRef.current.getBoundingClientRect();
+      let position = (clientX - rect.left) / rect.width;
+      position = Math.max(0, Math.min(1, position)); // Clamp between 0-1
+
+      const newValue = Math.round(min + position * (max - min));
+
+      if (onChange) {
+        onChange(newValue);
+      } else {
+        setInternalValue(newValue);
+      }
+    },
+    [min, max, onChange, setInternalValue],
+  );
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      updateValueFromPosition(e.clientX);
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updateValueFromPosition(e.touches[0].clientX);
+      }
+    };
+
+    const handleMouseUp = () => setIsDragging(false);
+    const handleTouchEnd = () => setIsDragging(false);
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isDragging, updateValueFromPosition]);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
     updateValueFromPosition(e.clientX);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    updateValueFromPosition(e.clientX);
-  };
-
-  const handleMouseUp = (e: MouseEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    setIsDragging(false);
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('mouseup', handleMouseUp);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     setIsDragging(true);
     updateValueFromPosition(e.touches[0].clientX);
-    window.addEventListener('touchmove', handleTouchMove as any);
-    window.addEventListener('touchend', handleTouchEnd);
   };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isDragging || e.touches.length === 0) return;
-    e.preventDefault();
-    updateValueFromPosition(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: TouchEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    setIsDragging(false);
-    window.removeEventListener('touchmove', handleTouchMove as any);
-    window.removeEventListener('touchend', handleTouchEnd);
-  };
-
-  const updateValueFromPosition = (clientX: number) => {
-    if (!sliderRef.current) return;
-
-    const rect = sliderRef.current.getBoundingClientRect();
-    let position = (clientX - rect.left) / rect.width;
-    position = Math.max(0, Math.min(1, position)); // Clamp between 0-1
-
-    const newValue = Math.round(min + position * (max - min));
-
-    if (onChange) {
-      onChange(newValue);
-    } else {
-      setInternalValue(newValue);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      // Cleanup event listeners
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('touchmove', handleTouchMove as any);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  });
 
   const fillPercentage = ((value - min) / (max - min)) * 100;
 
