@@ -22,7 +22,7 @@ import SpeechUsersElms from './speechUsersElms';
 import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
-import RangeSlider from './RangeSlider';
+import RangeSlider from './rangeSlider';
 
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();
