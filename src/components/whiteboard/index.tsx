@@ -14,10 +14,10 @@ import {
   ExcalidrawProps,
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
-import { useTranslation } from 'react-i18next';
 import {
   broadcastAppStateChanges,
   broadcastMousePointerUpdate,

@@ -3,10 +3,11 @@ import {
   BinaryFileData,
   ExcalidrawImperativeAPI,
 } from '@excalidraw/excalidraw/types';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+
 import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from '../fileReader';
-import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 interface IUseWhiteboardFiles {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
