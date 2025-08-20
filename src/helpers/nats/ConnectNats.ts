@@ -423,23 +423,28 @@ export default class ConnectNats {
     }
   }
 
-  private async subscribeToSystemPrivate() {
+  /**
+   * Subscribe to a stream
+   * @param streamName
+   * @param consumerNameSuffix
+   * @param handler
+   * @private
+   */
+  private async _subscribe(
+    streamName: string,
+    consumerNameSuffix: string,
+    handler: (m: JsMsg) => Promise<void>,
+  ) {
     if (typeof this._js === 'undefined') {
       return;
     }
-
-    const consumerName = this._subjects.systemPrivate + ':' + this._userId;
-    const consumer = await this._js.consumers.get(this._roomId, consumerName);
+    const consumerName = consumerNameSuffix + ':' + this._userId;
+    const consumer = await this._js.consumers.get(streamName, consumerName);
     const sub = await consumer.consume();
 
     for await (const m of sub) {
       try {
-        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-          // otherwise if connection closed then ack will not process
-          m.ack();
-        }
-        await this.handleSystemEvents(payload);
+        await handler(m);
         m.ack();
       } catch (e) {
         const err = e as Error;
@@ -449,179 +454,139 @@ export default class ConnectNats {
     }
   }
 
-  private subscribeToSystemPublic = async () => {
-    if (typeof this._js === 'undefined') {
-      return;
-    }
-
-    const consumerName = this._subjects.systemPublic + ':' + this._userId;
-    const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
-
-    for await (const m of sub) {
-      try {
+  /**
+   * All the system private events will be handled here
+   * @private
+   */
+  private async subscribeToSystemPrivate() {
+    await this._subscribe(
+      this._roomId,
+      this._subjects.systemPrivate,
+      async (m) => {
         const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
         if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-          // otherwise if connection closed then ack will not process
-          m.ack();
+          m.ack(); // Ack early before session ends
         }
         await this.handleSystemEvents(payload);
-        m.ack();
-      } catch (e) {
-        const err = e as Error;
-        console.error(err.message);
-        m.nak();
-      }
-    }
+      },
+    );
+  }
+
+  /**
+   * All the system public events will be handled here
+   */
+  private subscribeToSystemPublic = async () => {
+    await this._subscribe(
+      this._roomId,
+      this._subjects.systemPublic,
+      async (m) => {
+        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
+          m.ack(); // Ack early before session ends
+        }
+        await this.handleSystemEvents(payload);
+      },
+    );
   };
 
+  /**
+   * All the events related with chat will be handled here,
+   * including public and private
+   * Encrypted text will also be handled by HandleChat
+   */
   private subscribeToChat = async () => {
-    if (typeof this._js === 'undefined') {
-      return;
-    }
-
-    const consumerName = this._subjects.chat + ':' + this._userId;
-    const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
-
-    for await (const m of sub) {
-      try {
-        const payload = fromBinary(ChatMessageSchema, m.data);
-        await this.handleChat.handleMsg(payload);
-        m.ack();
-      } catch (e) {
-        const err = e as Error;
-        console.error(err.message);
-        m.nak();
-      }
-    }
+    await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
+      const payload = fromBinary(ChatMessageSchema, m.data);
+      await this.handleChat.handleMsg(payload);
+    });
   };
 
+  /**
+   * All the events related with whiteboard will be handled here
+   */
   private subscribeToWhiteboard = async () => {
-    if (typeof this._js === 'undefined') {
-      return;
-    }
-
-    const consumerName = this._subjects.whiteboard + ':' + this._userId;
-    const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
-
-    const processData = async (m: JsMsg) => {
-      const payload = fromBinary(DataChannelMessageSchema, m.data);
-      // whiteboard data should not process by the same sender
-      if (payload.fromUserId !== this._userId) {
-        if (
-          typeof payload.toUserId !== 'undefined' &&
-          payload.toUserId !== this._userId
-        ) {
-          // receiver specified and this user was not the receiver
-          // we'll not process further
-          return;
+    await this._subscribe(
+      this._roomId,
+      this._subjects.whiteboard,
+      async (m) => {
+        const payload = fromBinary(DataChannelMessageSchema, m.data);
+        if (payload.fromUserId !== this._userId) {
+          await this.handleWhiteboard.handleWhiteboardMsg(payload);
         }
-        await this.handleWhiteboard.handleWhiteboardMsg(payload);
-      }
-    };
-
-    for await (const m of sub) {
-      try {
-        await processData(m);
-        m.ack();
-      } catch (e) {
-        const err = e as Error;
-        console.error(err.message);
-        m.nak();
-      }
-    }
+      },
+    );
   };
 
+  /**
+   * subscribeToDataChannel to communicate with each other
+   * Mostly with client to client
+   */
   private subscribeToDataChannel = async () => {
-    if (typeof this._js === 'undefined') {
-      return;
-    }
-
-    const consumerName = this._subjects.dataChannel + ':' + this._userId;
-    const consumer = await this._js.consumers.get(this._roomId, consumerName);
-    const sub = await consumer.consume();
-
-    const processData = async (m: JsMsg) => {
-      const payload = fromBinary(DataChannelMessageSchema, m.data);
-      if (
-        typeof payload.toUserId !== 'undefined' &&
-        payload.toUserId !== this._userId
-      ) {
-        // receiver specified and this user was not the receiver
-        // we'll not process further
-        return;
-      }
-      // fromUserId check inside handleMessage method
-      await this.handleDataMsg.handleMessage(payload);
-    };
-
-    for await (const m of sub) {
-      try {
-        await processData(m);
-        m.ack();
-      } catch (e) {
-        const err = e as Error;
-        console.error(err.message);
-        m.nak();
-      }
-    }
+    await this._subscribe(
+      this._roomId,
+      this._subjects.dataChannel,
+      async (m) => {
+        const payload = fromBinary(DataChannelMessageSchema, m.data);
+        await this.handleDataMsg.handleMessage(payload);
+      },
+    );
   };
 
+  /**
+   * systemEventHandlers maps will contain all the events both public and private
+   */
+  private readonly systemEventHandlers: {
+    [key in NatsMsgServerToClientEvents]?: (
+      payload: NatsMsgServerToClient,
+    ) => void | Promise<void>;
+  } = {
+    [NatsMsgServerToClientEvents.RES_INITIAL_DATA]: async (p) => {
+      await this.handleInitialData(p.msg);
+      this._setRoomConnectionStatusState('ready');
+    },
+    [NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST]: (p) =>
+      this.handleJoinedUsersList(p.msg),
+    [NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE]: (p) =>
+      this.handleRoomData.updateRoomMetadata(p.msg),
+    [NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN]: (p) => {
+      this._token = p.msg.toString();
+      store.dispatch(addToken(this._token));
+    },
+    [NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION]: (p) => {
+      !this._isRecorder && this.handleSystemData.handleNotification(p.msg);
+    },
+    [NatsMsgServerToClientEvents.USER_JOINED]: (p) =>
+      this.handleParticipants.addRemoteParticipant(p.msg),
+    [NatsMsgServerToClientEvents.USER_DISCONNECTED]: (p) =>
+      this.handleParticipants.handleParticipantDisconnected(p.msg),
+    [NatsMsgServerToClientEvents.USER_OFFLINE]: (p) =>
+      this.handleParticipants.handleParticipantOffline(p.msg),
+    [NatsMsgServerToClientEvents.USER_METADATA_UPDATE]: (p) =>
+      this.handleParticipants.handleParticipantMetadataUpdate(p.msg),
+    [NatsMsgServerToClientEvents.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN]: (p) =>
+      this.handleSystemData.handleAzureToken(p.msg),
+    [NatsMsgServerToClientEvents.SESSION_ENDED]: (p) => this.endSession(p.msg),
+    [NatsMsgServerToClientEvents.POLL_CREATED]: (p) =>
+      this.handleSystemData.handlePoll(p),
+    [NatsMsgServerToClientEvents.POLL_CLOSED]: (p) =>
+      this.handleSystemData.handlePoll(p),
+    [NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM]: (p) =>
+      this.handleSystemData.handleBreakoutRoom(p),
+    [NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED]: (p) =>
+      this.handleSystemData.handleBreakoutRoom(p),
+    [NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG]: (p) =>
+      this.handleSystemData.handleSysChatMsg(p.msg),
+  };
+
+  /**
+   * Handle system events
+   * @param payload
+   * @private
+   */
   private async handleSystemEvents(payload: NatsMsgServerToClient) {
-    switch (payload.event) {
-      case NatsMsgServerToClientEvents.RES_INITIAL_DATA:
-        await this.handleInitialData(payload.msg);
-        this._setRoomConnectionStatusState('ready');
-        break;
-      case NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST:
-        await this.handleJoinedUsersList(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE:
-        await this.handleRoomData.updateRoomMetadata(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN:
-        this._token = payload.msg.toString();
-        store.dispatch(addToken(this._token));
-        break;
-      case NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION:
-        if (!this._isRecorder) {
-          // no notification for recorder
-          this.handleSystemData.handleNotification(payload.msg);
-        }
-        break;
-      case NatsMsgServerToClientEvents.USER_JOINED:
-        await this.handleParticipants.addRemoteParticipant(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.USER_DISCONNECTED:
-        this.handleParticipants.handleParticipantDisconnected(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.USER_OFFLINE:
-        this.handleParticipants.handleParticipantOffline(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.USER_METADATA_UPDATE:
-        await this.handleParticipants.handleParticipantMetadataUpdate(
-          payload.msg,
-        );
-        break;
-      case NatsMsgServerToClientEvents.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN:
-        this.handleSystemData.handleAzureToken(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.SESSION_ENDED:
-        await this.endSession(payload.msg);
-        break;
-      case NatsMsgServerToClientEvents.POLL_CREATED:
-      case NatsMsgServerToClientEvents.POLL_CLOSED:
-        this.handleSystemData.handlePoll(payload);
-        break;
-      case NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM:
-      case NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED:
-        this.handleSystemData.handleBreakoutRoom(payload);
-        break;
-      case NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG:
-        this.handleSystemData.handleSysChatMsg(payload.msg);
-        break;
+    const handler = this.systemEventHandlers[payload.event];
+    if (handler) {
+      await handler(payload);
     }
   }
 
