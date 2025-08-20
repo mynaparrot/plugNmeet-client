@@ -20,9 +20,16 @@ import { displaySavedPageData, savePageData } from './helpers/utils';
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   isPresenter: boolean;
+  isFollowing?: boolean;
+  setIsFollowing?: (value: boolean) => void;
 }
 
-const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
+const FooterUI = ({
+  excalidrawAPI,
+  isPresenter,
+  isFollowing,
+  setIsFollowing,
+}: IFooterUIProps) => {
   const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
   const currentWhiteboardOfficeFileId = useAppSelector(
@@ -127,6 +134,12 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
     setCurrentPage(currentPage + 1);
   };
 
+  const handleFollowPresenter = () => {
+    if (setIsFollowing) {
+      setIsFollowing(!isFollowing);
+    }
+  };
+
   const renderForAdmin = () => {
     return (
       <div className="flex wb-page-navigation ml-2">
@@ -202,6 +215,26 @@ const FooterUI = ({ excalidrawAPI, isPresenter }: IFooterUIProps) => {
             <i className="pnm-presenter text-[14px]" />
           </button>
         ) : null}
+        <button
+          className={`w-auto h-8 px-2 rounded-lg border border-solid flex items-center justify-center ltr:mr-2 rtl:ml-2 transition-colors ${
+            isFollowing
+              ? 'border-primary-color text-primary-color dark:text-primary-color'
+              : 'border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8]'
+          }`}
+          onClick={handleFollowPresenter}
+          title={
+            isFollowing
+              ? t('whiteboard.unfollow-presenter-tooltip')
+              : t('whiteboard.follow-presenter-tooltip')
+          }
+        >
+          <i
+            className={`pnm-device-connected text-[14px] ltr:mr-1 rtl:ml-1 ${
+              isFollowing ? 'animate-pulse' : ''
+            }`}
+          />
+          {isFollowing ? t('whiteboard.unfollow') : t('whiteboard.follow')}
+        </button>
         {t('whiteboard.page', { count: currentPage })}
       </div>
     );

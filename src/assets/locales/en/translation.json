@@ -329,7 +329,11 @@
     "file-ready": "File is ready",
     "upload-file": "Upload file",
     "manage-files": "Files",
-    "upload-image": "Image"
+    "upload-image": "Image",
+    "follow-presenter-tooltip": "Follow presenter",
+    "unfollow-presenter-tooltip": "Stop following presenter",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
   },
   "waiting-room": {
     "modal-title": "Manage waiting room",

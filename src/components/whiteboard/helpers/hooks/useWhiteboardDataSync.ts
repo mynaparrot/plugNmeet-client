@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useEffect, useState } from 'react';
 import {
   ExcalidrawImperativeAPI,
   AppState,
@@ -17,11 +17,15 @@ import { sleep } from '../../../../helpers/utils';
 interface IUseWhiteboardDataSync {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   fetchedData: boolean;
+  isFollowing: boolean;
+  isProgrammaticScroll: RefObject<boolean>;
 }
 
 const useWhiteboardDataSync = ({
   excalidrawAPI,
   fetchedData,
+  isFollowing,
+  isProgrammaticScroll,
 }: IUseWhiteboardDataSync) => {
   const whiteboard = useAppSelector((state) => state.whiteboard);
   const [
@@ -104,7 +108,7 @@ const useWhiteboardDataSync = ({
 
   // for handling AppState changes
   useEffect(() => {
-    if (excalidrawAPI && whiteboard.whiteboardAppState) {
+    if (excalidrawAPI && whiteboard.whiteboardAppState && isFollowing) {
       // Receiver's current state from the API
       const receiverState = excalidrawAPI.getAppState();
       // Sender's state from Redux
@@ -117,19 +121,35 @@ const useWhiteboardDataSync = ({
         gridSize: senderState.gridSize ?? undefined,
       };
 
-      // if width isn't same then we will avoid changes
-      // otherwise in small devices it will be problem.
-      if (receiverState.width >= senderState.width) {
-        appState.scrollX = senderState.scrollX;
-        appState.scrollY = senderState.scrollY;
-        appState.zoom = {
-          value: senderState.zoomValue,
-        };
-      }
+      // we calculate the new scroll position for the receiver
+      // so that their viewport is centered on the same
+      // scene coordinates as the sender's. This provides an intuitive "follow-me"
+      // experience, ensuring both users are looking at the same focal point.
+      const senderZoom = senderState.zoomValue;
 
+      appState.zoom = { value: senderZoom };
+      appState.scrollX =
+        senderState.scrollX +
+        (receiverState.width - senderState.width) / (2 * senderZoom);
+      appState.scrollY =
+        senderState.scrollY +
+        (receiverState.height - senderState.height) / (2 * senderZoom);
+
+      isProgrammaticScroll.current = true;
       excalidrawAPI.updateScene({ appState: appState as AppState });
+      // Use a timeout to ensure the flag is reset after the onScrollChange event has fired.
+      setTimeout(() => {
+        if (isProgrammaticScroll) {
+          isProgrammaticScroll.current = false;
+        }
+      }, 100);
     }
-  }, [excalidrawAPI, whiteboard.whiteboardAppState]);
+  }, [
+    excalidrawAPI,
+    whiteboard.whiteboardAppState,
+    isFollowing,
+    isProgrammaticScroll,
+  ]);
 
   return {
     lastBroadcastOrReceivedSceneVersion,

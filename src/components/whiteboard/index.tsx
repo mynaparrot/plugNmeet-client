@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { throttle } from 'es-toolkit/compat';
 import {
   Excalidraw,
@@ -11,6 +11,7 @@ import {
   Gesture,
   AppState,
   BinaryFiles,
+  ExcalidrawProps,
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
@@ -74,6 +75,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   // State and Refs
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
+  const isProgrammaticScroll = useRef(false);
+  const [isFollowing, setIsFollowing] = useState(true);
   const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
   const previousPage = usePreviousPage(currentPage);
 
@@ -88,7 +91,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const {
     lastBroadcastOrReceivedSceneVersion,
     setLastBroadcastOrReceivedSceneVersion,
-  } = useWhiteboardDataSync({ excalidrawAPI, fetchedData });
+  } = useWhiteboardDataSync({
+    excalidrawAPI,
+    fetchedData,
+    isFollowing,
+    isProgrammaticScroll,
+  });
   useWhiteboardFiles({ excalidrawAPI, lastBroadcastOrReceivedSceneVersion });
   useWhiteboardResizeHandler({ excalidrawAPI });
 
@@ -120,6 +128,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   useEffect(() => {
     if (previousPage && currentPage !== previousPage) {
       setLastBroadcastOrReceivedSceneVersion(-1);
+      setIsFollowing(true);
     }
     // for recorder and other user we'll clean from here
     if (!isPresenter && previousPage && currentPage !== previousPage) {
@@ -187,6 +196,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     CURSOR_SYNC_TIMEOUT,
   );
 
+  const onScrollChange: ExcalidrawProps['onScrollChange'] = () => {
+    if (!isPresenter && !isProgrammaticScroll.current) {
+      setIsFollowing(false);
+    }
+  };
+
   const renderTopRightUI = () => (
     <>
       {isPresenter && excalidrawAPI && (
@@ -199,6 +214,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     <FooterUI
       excalidrawAPI={excalidrawAPI}
       isPresenter={isPresenter ?? false}
+      isFollowing={isFollowing}
+      setIsFollowing={setIsFollowing}
     />
   );
 
@@ -215,6 +232,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         excalidrawAPI={handleOnReadyExcalidrawRef}
         onChange={onChange}
         onPointerUpdate={onPointerUpdate}
+        onScrollChange={onScrollChange}
         viewModeEnabled={viewModeEnabled}
         isCollaborating={true}
         theme={theme}
