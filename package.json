@@ -64,7 +64,7 @@
     "@types/react-dom": "19.1.7",
     "@types/sanitize-html": "2.16.0",
     "@types/video.js": "7.3.58",
-    "@vitejs/plugin-react-oxc": "0.4.1",
+    "@vitejs/plugin-react": "5.0.1",
     "husky": "9.1.7",
     "lint-staged": "16.1.5",
     "oxlint": "1.12.0",
