@@ -49,7 +49,11 @@ import HandleSystemData from './HandleSystemData';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
-import { encryptMessage, importSecretKey } from '../libs/cryptoMessages';
+import {
+  encryptMessage,
+  importSecretKeyFromMaterial,
+  importSecretKeyFromPlainText,
+} from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
 import {
@@ -725,8 +729,12 @@ export default class ConnectNats {
 
         if (encryptionKey) {
           this._enableE2EEChat = e2ee.includedChatMessages;
+          if (e2ee.enabledSelfInsertEncryptionKey) {
+            await importSecretKeyFromMaterial(encryptionKey);
+          } else {
+            await importSecretKeyFromPlainText(encryptionKey);
+          }
 
-          await importSecretKey(encryptionKey);
           info.encryption_key = encryptionKey;
           info.enabledE2EE = true;
         } else {

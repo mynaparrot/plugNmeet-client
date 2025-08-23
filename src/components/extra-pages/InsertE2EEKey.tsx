@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { addSelfInsertedE2EESecretKey } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
+import { arrayBufferToBase64 } from '../../helpers/libs/cryptoMessages';
 
 export interface IInsertE2EEKeyProps {
   setOpenConn: Dispatch<boolean>;
@@ -21,16 +22,15 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
     }
 
     const encoder = new TextEncoder();
-    // we'll hash the inserted password to make it stronger
+    // Hash the user-provided secret to create a 256-bit (32-byte) key.
+    // this will ensure we're never storing a user's plain password
     const hashBuffer = await window.crypto.subtle.digest(
       'SHA-256',
       encoder.encode(secretKey as string),
     );
-    const base64String = btoa(
-      String.fromCharCode(...new Uint8Array(hashBuffer)),
-    );
-    // key must contain 32 characters
-    dispatch(addSelfInsertedE2EESecretKey(base64String.slice(0, 32)));
+
+    const base64Key = arrayBufferToBase64(hashBuffer);
+    dispatch(addSelfInsertedE2EESecretKey(base64Key));
     setOpenConn(true);
   };
 
