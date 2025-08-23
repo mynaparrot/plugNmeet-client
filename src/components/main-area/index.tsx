@@ -18,49 +18,41 @@ import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 
 const MainArea = () => {
-  const columnCameraWidth = useAppSelector(
-    (state) => state.roomSettings.columnCameraWidth,
-  );
-  const columnCameraPosition = useAppSelector(
-    (state) => state.roomSettings.columnCameraPosition,
-  );
-  const isActiveParticipantsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  );
-  const isActiveScreenSharingView = useAppSelector(
-    (state) => state.roomSettings.activeScreenSharingView,
-  );
-  const isActiveWhiteboard = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveWhiteboard,
-  );
-  const isActiveExternalMediaPlayer = useAppSelector(
-    (state) =>
+  const {
+    columnCameraWidth,
+    columnCameraPosition,
+    isActiveParticipantsPanel,
+    isActiveScreenSharingView,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+    isActiveChatPanel,
+    isActivePollsPanel,
+    screenHeight,
+    screenWidth,
+    headerVisible,
+    footerVisible,
+  } = useAppSelector((state) => ({
+    columnCameraWidth: state.roomSettings.columnCameraWidth,
+    columnCameraPosition: state.roomSettings.columnCameraPosition,
+    isActiveParticipantsPanel:
+      state.bottomIconsActivity.isActiveParticipantsPanel,
+    isActiveScreenSharingView: state.roomSettings.activeScreenSharingView,
+    isActiveWhiteboard: state.bottomIconsActivity.isActiveWhiteboard,
+    isActiveExternalMediaPlayer:
       state.session.currentRoom.metadata?.roomFeatures
         ?.externalMediaPlayerFeatures?.isActive,
-  );
-  const isActiveDisplayExternalLink = useAppSelector(
-    (state) =>
+    isActiveDisplayExternalLink:
       state.session.currentRoom.metadata?.roomFeatures
         ?.displayExternalLinkFeatures?.isActive,
-  );
-  const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
-  );
-  const isActivePollsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActivePollsPanel,
-  );
-  const screenHeight = useAppSelector(
-    (state) => state.bottomIconsActivity.screenHeight,
-  );
-  const screenWidth = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
-  const headerVisible = useAppSelector(
-    (state) => state.roomSettings.visibleHeader,
-  );
-  const footerVisible = useAppSelector(
-    (state) => state.roomSettings.visibleFooter,
-  );
+    isActiveChatPanel: state.bottomIconsActivity.isActiveChatPanel,
+    isActivePollsPanel: state.bottomIconsActivity.isActivePollsPanel,
+    screenHeight: state.bottomIconsActivity.screenHeight,
+    screenWidth: state.bottomIconsActivity.screenWidth,
+    headerVisible: state.roomSettings.visibleHeader,
+    footerVisible: state.roomSettings.visibleFooter,
+  }));
+
   const dispatch = useAppDispatch();
   const currentConnection = getMediaServerConn();
   const session = store.getState().session;
@@ -115,38 +107,32 @@ const MainArea = () => {
   const customCSS = useMemo(() => {
     const css: Array<string> = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
     isActiveParticipantsPanel
       ? css.push('showParticipantsPanel')
       : css.push('hideParticipantsPanel');
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
     isActivePollsPanel
       ? css.push('showPollsPanel')
       : css.push('hidePollsPanel');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveScreenSharingView && isActiveScreenShare
       ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveWhiteboard
       ? css.push('showWhiteboard fullWidthMainArea')
       : css.push('hideWhiteboard');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveExternalMediaPlayer
       ? css.push('showExternalMediaPlayer fullWidthMainArea')
       : css.push('hideExternalMediaPlayer');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isActiveDisplayExternalLink
       ? css.push('showDisplayExternalLink fullWidthMainArea')
       : css.push('hideDisplayExternalLink');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isRecorder ? css.push('isRecorder') : null;
 
     return css.join(' ');
@@ -178,68 +164,30 @@ const MainArea = () => {
     isActiveWhiteboard,
   ]);
 
-  const renderParticipantsPanel = useMemo(() => {
-    return (
-      <Transition show={isActiveParticipantsPanel}>
-        <div
-          className={clsx([
-            // Base styles
-            'participants-panel absolute transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-full',
-            // Shared closed styles
-            'data-closed:opacity-0',
-            // Entering styles
-            'data-enter:duration-300 data-enter:data-closed:translate-x-full',
-            // Leaving styles
-            'data-leave:duration-300 data-leave:data-closed:translate-x-full',
-          ])}
-        >
-          <ParticipantsComponent />
-        </div>
-      </Transition>
-    );
-  }, [isActiveParticipantsPanel]);
-
-  const renderChatPanel = useMemo(() => {
-    return (
-      <Transition show={isActiveChatPanel}>
-        <div
-          className={clsx([
-            // Base styles
-            'chat-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
-            // Shared closed styles
-            'data-closed:opacity-0',
-            // Entering styles
-            'data-enter:duration-300 data-enter:data-closed:translate-x-full',
-            // Leaving styles
-            'data-leave:duration-300 data-leave:data-closed:translate-x-full',
-          ])}
-        >
-          <ChatComponent />
-        </div>
-      </Transition>
-    );
-  }, [isActiveChatPanel]);
-
-  const renderPollsPanel = useMemo(() => {
-    return (
-      <Transition show={isActivePollsPanel}>
-        <div
-          className={clsx([
-            // Base styles
-            'polls-panel absolute h-full transition ease-in-out w-[300px] 3xl:w-[340px] right-0',
-            // Shared closed styles
-            'data-closed:opacity-0',
-            // Entering styles
-            'data-enter:duration-300 data-enter:data-closed:translate-x-full',
-            // Leaving styles
-            'data-leave:duration-300 data-leave:data-closed:translate-x-full',
-          ])}
-        >
-          <PollsComponent />
-        </div>
-      </Transition>
-    );
-  }, [isActivePollsPanel]);
+  const renderPanel = (
+    isActive: boolean,
+    panelClass: string,
+    Component: React.ElementType,
+  ) => (
+    <Transition
+      show={isActive}
+      enter="transition-transform duration-300 ease-in-out"
+      enterFrom="translate-x-full"
+      enterTo="translate-x-0"
+      leave="transition-transform duration-300 ease-in-out"
+      leaveFrom="translate-x-0"
+      leaveTo="translate-x-full"
+    >
+      <div
+        className={clsx(
+          panelClass,
+          'absolute w-[300px] 3xl:w-[340px] right-0 h-full',
+        )}
+      >
+        <Component />
+      </div>
+    </Transition>
+  );
 
   useEffect(() => {
     if (isRecorder) {
@@ -280,9 +228,15 @@ const MainArea = () => {
           <ActiveSpeakers />
           {renderMainComponentElms}
         </div>
-        {renderParticipantsPanel}
-        {roomFeatures?.chatFeatures?.allowChat ? renderChatPanel : null}
-        {roomFeatures?.pollsFeatures?.isAllow ? renderPollsPanel : null}
+        {renderPanel(
+          isActiveParticipantsPanel,
+          'participants-panel',
+          ParticipantsComponent,
+        )}
+        {roomFeatures?.chatFeatures?.allowChat &&
+          renderPanel(isActiveChatPanel, 'chat-panel', ChatComponent)}
+        {roomFeatures?.pollsFeatures?.isAllow &&
+          renderPanel(isActivePollsPanel, 'polls-panel', PollsComponent)}
       </div>
     </div>
   );
