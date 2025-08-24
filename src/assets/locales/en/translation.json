@@ -244,7 +244,7 @@
       "stop-recording": "Stop Recording",
       "start-recording": "Start Recording",
       "how-to-record": "How would you like to record?",
-      "recording-types-des": "You can choose how to record. For best results with local recording, please use Google Chrome.",
+      "recording-types-des": "Choose how to record the session. 'Full Screen' saves the entire meeting layout to the cloud. 'Media Only' saves just the audio, video, and screen shares to the cloud. 'Record to Your Computer' saves the recording directly to your device (for best results, please use Google Chrome).",
       "local-recording": "Record to Your Computer",
       "cloud-recording": "Cloud Record: Full Screen",
       "cloud-media-only-recording": "Cloud Record: Media Only",
