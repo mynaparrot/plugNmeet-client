@@ -270,9 +270,11 @@ const UserNotifications = () => {
                           Poll created:{' '}
                           <strong>“How was today’s class?”</strong>
                         </p>
-                        <div className="bottom flex justify-between text-Gray-800 text-xs">
+                        <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
                           <span className="">12:04 AM</span>{' '}
-                          <span className="underline cursor-pointer">Open</span>
+                          <button className="h-6 cursor-pointer px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow">
+                            Open
+                          </button>
                         </div>
                       </div>
                     </div>
