@@ -179,7 +179,7 @@ const ScrenshareIcon = () => {
       > */}
           {/* <span className="tooltip">{text()}</span> */}
           <>
-            <ShareScreenIconSVG />
+            <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
             {lock ? (
               <>
                 <span className="add absolute -top-2 -right-2 z-10">

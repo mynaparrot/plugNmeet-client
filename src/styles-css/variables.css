@@ -48,10 +48,13 @@
   --color-Red-600: #cc0000;
   --color-Red-700: #900;
 
+  --color-Green-100: rgba(225, 250, 239, 1);
+
   --color-Blue2-50: #f0f8fc;
   --color-Blue2-500: #00a1f2;
   --color-Blue2-600: #08c;
   --color-Blue2-700: #069;
+  --color-Blue2-800: rgba(0, 85, 128, 1);
 
   --radius-tlbl-d: 0 0 20px 20px;
   --radius-trbr-d: 20px 20px 0 0;
