@@ -21,6 +21,7 @@ import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
 import { CheckMarkIconSVG } from '../../../assets/Icons/CheckMarkIconSVG';
 import { LinksIconSVG } from '../../../assets/Icons/LinksIconSVG';
 import { UploadIconSVG } from '../../../assets/Icons/UploadIconSVG';
+import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 
 const UserNotifications = () => {
   const toastId = useRef<number | string>('toastId');
@@ -129,9 +130,11 @@ const UserNotifications = () => {
 
   return (
     <Popover className="relative flex">
-      {({ open }) => (
+      {({ open, close }) => (
         <>
-          <PopoverButton className="p-2 bg-Gray-50 rounded-[10px] cursor-pointer">
+          <PopoverButton
+            className={`p-2 rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
+          >
             {displayIcon(open)}
           </PopoverButton>
           <Transition show={open}>
@@ -148,10 +151,18 @@ const UserNotifications = () => {
               ])}
             >
               <PopoverPanel className="flex flex-col">
-                <div className="top flex items-center h-10 px-3 border-b border-Gray-200">
+                <div className="top flex items-center justify-between h-10 px-3 border-b border-Gray-200">
                   <p className="text-sm text-Gray-950 font-medium leading-tight">
                     Notifications
                   </p>
+                  <div
+                    className="close cursor-pointer"
+                    onClick={async () => {
+                      close();
+                    }}
+                  >
+                    <PopupCloseSVGIcon classes="text-Gray-600" />
+                  </div>
                 </div>
                 <div className="scrollBar overflow-auto h-[calc(100vh-184px)] py-4">
                   <div className="inner grid gap-2">
@@ -259,7 +270,10 @@ const UserNotifications = () => {
                           Poll created:{' '}
                           <strong>“How was today’s class?”</strong>
                         </p>
-                        <span className="text-Gray-800 text-xs">12:04 AM</span>
+                        <div className="bottom flex justify-between text-Gray-800 text-xs">
+                          <span className="">12:04 AM</span>{' '}
+                          <span className="underline cursor-pointer">Open</span>
+                        </div>
                       </div>
                     </div>
                     <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
