@@ -22,7 +22,7 @@ import SpeechUsersElms from './speechUsersElms';
 import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
-import RangeSlider from './rangeSlider';
+import RangeSlider from '../../../helpers/libs/rangeSlider';
 
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();
@@ -167,7 +167,10 @@ const SpeechServiceSettingsModal = () => {
                   className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 py-5 px-5 text-Gray-950 border-b border-Gray-100"
                 >
                   <span>{t('speech-services.modal-settings-title')}</span>
-                  <Button onClick={() => closeModal()}>
+                  <Button
+                    onClick={() => closeModal()}
+                    className="cursor-pointer"
+                  >
                     <PopupCloseSVGIcon classes="text-Gray-600" />
                   </Button>
                 </DialogTitle>

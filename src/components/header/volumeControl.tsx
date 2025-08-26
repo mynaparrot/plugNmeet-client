@@ -11,6 +11,7 @@ import { store, useAppDispatch } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { VolumeHeader } from '../../assets/Icons/VolumeHeader';
 import { VolumeMutedSVG } from '../../assets/Icons/VolumeMutedSVG';
+import RangeSlider from '../../helpers/libs/rangeSlider';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();
@@ -84,8 +85,8 @@ const VolumeControl = () => {
                 <p className="text-sm text-Gray-950">
                   {t('header.room-audio-volume')}
                 </p>
-                <section className="flex items-center">
-                  <input
+                <section className="flex items-center pl-3">
+                  {/* <input
                     type="range"
                     min={0}
                     max={1}
@@ -95,6 +96,14 @@ const VolumeControl = () => {
                       setVolume(event.target.valueAsNumber);
                     }}
                     className="range flex-1"
+                  /> */}
+                  <RangeSlider
+                    min={1}
+                    max={100}
+                    value={volume}
+                    onChange={setVolume}
+                    thumbSize={20}
+                    trackHeight={8}
                   />
                   <p className="w-10 text-center text-sm text-Gray-950">
                     {Math.round(volume * 100)}
@@ -110,8 +119,8 @@ const VolumeControl = () => {
                 <p className="text-sm mt-2 text-Gray-950">
                   {t('header.room-screen-share-audio-volume')}
                 </p>
-                <section className="flex items-center">
-                  <input
+                <section className="flex items-center pl-3">
+                  {/* <input
                     type="range"
                     min={0}
                     max={1}
@@ -121,6 +130,14 @@ const VolumeControl = () => {
                       setScreenShareAudioVolume(event.target.valueAsNumber);
                     }}
                     className="range flex-1"
+                  /> */}
+                  <RangeSlider
+                    min={0}
+                    max={100}
+                    value={screenShareAudioVolume}
+                    onChange={setScreenShareAudioVolume}
+                    thumbSize={20}
+                    trackHeight={8}
                   />
                   <p className="w-10 text-center text-sm text-Gray-950">
                     {Math.round(screenShareAudioVolume * 100)}
