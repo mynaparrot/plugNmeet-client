@@ -53,6 +53,7 @@ input.polls-checkbox::before {
 }
 
 .scrollBar {
+  overflow-x: hidden;
   &::-webkit-scrollbar-thumb {
     @apply bg-Blue border-none rounded-[5px];
   }
