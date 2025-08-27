@@ -18,40 +18,49 @@ import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 
 const MainArea = () => {
-  const {
-    columnCameraWidth,
-    columnCameraPosition,
-    isActiveParticipantsPanel,
-    isActiveScreenSharingView,
-    isActiveWhiteboard,
-    isActiveExternalMediaPlayer,
-    isActiveDisplayExternalLink,
-    isActiveChatPanel,
-    isActivePollsPanel,
-    screenHeight,
-    screenWidth,
-    headerVisible,
-    footerVisible,
-  } = useAppSelector((state) => ({
-    columnCameraWidth: state.roomSettings.columnCameraWidth,
-    columnCameraPosition: state.roomSettings.columnCameraPosition,
-    isActiveParticipantsPanel:
-      state.bottomIconsActivity.isActiveParticipantsPanel,
-    isActiveScreenSharingView: state.roomSettings.activeScreenSharingView,
-    isActiveWhiteboard: state.bottomIconsActivity.isActiveWhiteboard,
-    isActiveExternalMediaPlayer:
+  const columnCameraWidth = useAppSelector(
+    (state) => state.roomSettings.columnCameraWidth,
+  );
+  const columnCameraPosition = useAppSelector(
+    (state) => state.roomSettings.columnCameraPosition,
+  );
+  const isActiveParticipantsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+  );
+  const isActiveScreenSharingView = useAppSelector(
+    (state) => state.roomSettings.activeScreenSharingView,
+  );
+  const isActiveWhiteboard = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveWhiteboard,
+  );
+  const isActiveExternalMediaPlayer = useAppSelector(
+    (state) =>
       state.session.currentRoom.metadata?.roomFeatures
         ?.externalMediaPlayerFeatures?.isActive,
-    isActiveDisplayExternalLink:
+  );
+  const isActiveDisplayExternalLink = useAppSelector(
+    (state) =>
       state.session.currentRoom.metadata?.roomFeatures
         ?.displayExternalLinkFeatures?.isActive,
-    isActiveChatPanel: state.bottomIconsActivity.isActiveChatPanel,
-    isActivePollsPanel: state.bottomIconsActivity.isActivePollsPanel,
-    screenHeight: state.bottomIconsActivity.screenHeight,
-    screenWidth: state.bottomIconsActivity.screenWidth,
-    headerVisible: state.roomSettings.visibleHeader,
-    footerVisible: state.roomSettings.visibleFooter,
-  }));
+  );
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
+  const isActivePollsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActivePollsPanel,
+  );
+  const screenHeight = useAppSelector(
+    (state) => state.bottomIconsActivity.screenHeight,
+  );
+  const screenWidth = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
+  );
+  const headerVisible = useAppSelector(
+    (state) => state.roomSettings.visibleHeader,
+  );
+  const footerVisible = useAppSelector(
+    (state) => state.roomSettings.visibleFooter,
+  );
 
   const dispatch = useAppDispatch();
   const currentConnection = getMediaServerConn();

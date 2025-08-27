@@ -33,25 +33,25 @@ const MainComponents = ({
   isActiveDisplayExternalLink,
   isActiveScreenSharingView,
 }: IMainComponentsProps) => {
-  const {
-    activateWebcamsView,
-    activateSpeechService,
-    isActiveSharedNotepad,
-    isEnabledExtendedVerticalCamView,
-    pinCamUserId,
-  } = useAppSelector((state) => ({
-    isRecorder: state.session.currentUser?.isRecorder,
-    activateWebcamsView: state.roomSettings.activateWebcamsView,
-    activateSpeechService:
+  const activateWebcamsView = useAppSelector(
+    (state) => state.roomSettings.activateWebcamsView,
+  );
+  const activateSpeechService = useAppSelector(
+    (state) =>
       state.session.currentRoom.metadata?.roomFeatures
         ?.speechToTextTranslationFeatures?.isEnabled,
-    isActiveSharedNotepad:
+  );
+  const isActiveSharedNotepad = useAppSelector(
+    (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
         ?.isActive,
-    isEnabledExtendedVerticalCamView:
-      state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
-    pinCamUserId: state.roomSettings.pinCamUserId,
-  }));
+  );
+  const isEnabledExtendedVerticalCamView = useAppSelector(
+    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
+  );
+  const pinCamUserId = useAppSelector(
+    (state) => state.roomSettings.pinCamUserId,
+  );
 
   const dispatch = useAppDispatch();
   const isRecorder = store.getState().session.currentUser?.isRecorder;
