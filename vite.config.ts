@@ -35,7 +35,7 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: true,
     sourcemap: !isProduction,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
         chunkFileNames: 'assets/chunks/[name].[hash].js',
