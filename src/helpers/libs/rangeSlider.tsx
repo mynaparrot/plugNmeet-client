@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
+import { throttle } from 'es-toolkit';
 
 interface RangeSliderProps {
   min?: number;
@@ -50,25 +57,30 @@ const RangeSlider = ({
     [min, max, onChange, setInternalValue],
   );
 
+  const throttledUpdate = useMemo(
+    () => throttle(updateValueFromPosition, 16), // throttle to ~60fps
+    [updateValueFromPosition],
+  );
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      updateValueFromPosition(e.clientX);
+      throttledUpdate(e.clientX);
     };
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-        updateValueFromPosition(e.touches[0].clientX);
+        throttledUpdate(e.touches[0].clientX);
       }
     };
 
     const handleMouseUp = () => setIsDragging(false);
     const handleTouchEnd = () => setIsDragging(false);
 
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      window.addEventListener('touchmove', handleTouchMove);
-      window.addEventListener('touchend', handleTouchEnd);
-    }
+    if (!isDragging) return;
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
@@ -76,7 +88,7 @@ const RangeSlider = ({
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isDragging, updateValueFromPosition]);
+  }, [isDragging, throttledUpdate]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();

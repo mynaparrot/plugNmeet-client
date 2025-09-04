@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Menu, MenuButton, Transition, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { throttle } from 'es-toolkit';
 
-import useStorePreviousInt from '../../helpers/hooks/useStorePreviousInt';
 import {
   updateRoomAudioVolume,
   updateRoomScreenShareAudioVolume,
 } from '../../store/slices/roomSettingsSlice';
-import { store, useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { VolumeHeader } from '../../assets/Icons/VolumeHeader';
 import { VolumeMutedSVG } from '../../assets/Icons/VolumeMutedSVG';
@@ -17,45 +17,37 @@ const VolumeControl = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const [volume, setVolume] = useState<number>(
-    store.getState().roomSettings.roomAudioVolume,
+  const volume = useAppSelector((state) => state.roomSettings.roomAudioVolume);
+  const screenShareAudioVolume = useAppSelector(
+    (state) => state.roomSettings.roomScreenShareAudioVolume,
   );
-  const [screenShareAudioVolume, setScreenShareAudioVolume] = useState<number>(
-    store.getState().roomSettings.roomScreenShareAudioVolume,
-  );
-  const previousVolume = useStorePreviousInt(volume);
-  const previousScreenShareAudioVolume = useStorePreviousInt(
-    screenShareAudioVolume,
-  );
+  const participantIds = useAppSelector((state) => state.participants.ids);
 
-  useEffect(() => {
-    if (previousVolume && volume !== previousVolume) {
-      dispatch(updateRoomAudioVolume(volume));
+  const handleVolumeChange = useMemo(() => {
+    const throttled = (newVolume: number) => {
+      const adjustedVolume = newVolume / 100;
+      dispatch(updateRoomAudioVolume(adjustedVolume));
 
-      const participantIds = store.getState().participants.ids;
       participantIds.forEach((id) => {
         dispatch(
           updateParticipant({
             id: id,
             changes: {
-              audioVolume: volume,
+              audioVolume: adjustedVolume,
             },
           }),
         );
       });
-    }
-    //eslint-disable-next-line
-  }, [volume, previousVolume]);
+    };
+    return throttle(throttled, 100);
+  }, [dispatch, participantIds]);
 
-  useEffect(() => {
-    if (
-      previousScreenShareAudioVolume &&
-      screenShareAudioVolume !== previousScreenShareAudioVolume
-    ) {
-      dispatch(updateRoomScreenShareAudioVolume(screenShareAudioVolume));
-    }
-    //eslint-disable-next-line
-  }, [screenShareAudioVolume, previousScreenShareAudioVolume]);
+  const handleScreenShareVolumeChange = useMemo(() => {
+    const throttled = (newVolume: number) => {
+      dispatch(updateRoomScreenShareAudioVolume(newVolume / 100));
+    };
+    return throttle(throttled, 100);
+  }, [dispatch]);
 
   const render = () => {
     return (
@@ -86,22 +78,11 @@ const VolumeControl = () => {
                   {t('header.room-audio-volume')}
                 </p>
                 <section className="flex items-center pl-3">
-                  {/* <input
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    value={volume}
-                    onChange={(event) => {
-                      setVolume(event.target.valueAsNumber);
-                    }}
-                    className="range flex-1"
-                  /> */}
                   <RangeSlider
-                    min={1}
+                    min={0}
                     max={100}
-                    value={volume}
-                    onChange={setVolume}
+                    value={volume * 100}
+                    onChange={handleVolumeChange}
                     thumbSize={20}
                     trackHeight={8}
                   />
@@ -120,22 +101,11 @@ const VolumeControl = () => {
                   {t('header.room-screen-share-audio-volume')}
                 </p>
                 <section className="flex items-center pl-3">
-                  {/* <input
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    value={screenShareAudioVolume}
-                    onChange={(event) => {
-                      setScreenShareAudioVolume(event.target.valueAsNumber);
-                    }}
-                    className="range flex-1"
-                  /> */}
                   <RangeSlider
                     min={0}
                     max={100}
-                    value={screenShareAudioVolume}
-                    onChange={setScreenShareAudioVolume}
+                    value={screenShareAudioVolume * 100}
+                    onChange={handleScreenShareVolumeChange}
                     thumbSize={20}
                     trackHeight={8}
                   />
