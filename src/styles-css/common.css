@@ -432,15 +432,15 @@ input.polls-checkbox::before {
 }
 
 .tooltip {
-  @apply invisible absolute shadow-lg rounded-sm text-[13px] text-dark-primary dark:text-dark-text py-[6px] px-[10px] inline-block bg-gray-100 dark:bg-dark-secondary2 w-[150px] m-0 bottom-[52px] text-center;
+  @apply invisible absolute shadow-lg rounded-sm text-[13px] text-dark-primary dark:text-dark-text py-[6px] px-[10px] inline-block bg-Gray-50 dark:bg-dark-secondary2 w-[150px] m-0 bottom-[52px] text-center;
 }
 .tooltip::before {
   content: '';
-  @apply absolute h-[12px] w-[12px] bg-gray-100 dark:bg-dark-secondary2 bottom-[-6px] left-0 right-0 m-auto rotate-45 border border-solid border-dark-primary/40;
+  @apply absolute h-[12px] w-[12px] bg-Gray-50 dark:bg-dark-secondary2 bottom-[-6px] left-0 right-0 m-auto rotate-45 border border-solid border-dark-primary/40;
 }
 .tooltip::after {
   content: '';
-  @apply absolute h-2 w-full bg-gray-100 dark:bg-dark-secondary2 left-0 bottom-0 rounded-sm;
+  @apply absolute h-2 w-full bg-Gray-50 dark:bg-dark-secondary2 left-0 bottom-0 rounded-sm;
 }
 
 .tooltip-left::before {

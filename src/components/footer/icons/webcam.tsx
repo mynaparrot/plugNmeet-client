@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { createLocalVideoTrack, Track } from 'livekit-client';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -44,7 +44,7 @@ const WebcamIcon = () => {
   const selectedVideoDevice = useAppSelector(
     (state) => state.roomSettings.selectedVideoDevice,
   );
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const [lockWebcam, setLockWebcam] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string>();
@@ -308,15 +308,15 @@ const WebcamIcon = () => {
     return true;
   };
 
-  // const getTooltipText = () => {
-  //   if (!isActiveWebcam && !isWebcamLock) {
-  //     return t('footer.icons.start-webcam');
-  //   } else if (!isActiveWebcam && isWebcamLock) {
-  //     return t('footer.icons.webcam-locked');
-  //   } else if (isActiveWebcam) {
-  //     return t('footer.icons.leave-webcam');
-  //   }
-  // };
+  const getTooltipText = () => {
+    if (!isActiveWebcam && !isWebcamLock) {
+      return t('footer.icons.start-webcam');
+    } else if (!isActiveWebcam && isWebcamLock) {
+      return t('footer.icons.webcam-locked');
+    } else if (isActiveWebcam) {
+      return t('footer.icons.leave-webcam');
+    }
+  };
 
   const showButtons = () => {
     return (
@@ -329,9 +329,7 @@ const WebcamIcon = () => {
               showTooltip ? 'has-tooltip' : ''
             } ${lockWebcam ? 'border-Red-200! text-Red-400' : ''}`}
           >
-            {/* <span className="tooltip -left-3! tooltip-left">
-              {getTooltipText()}
-            </span> */}
+            <span className="tooltip">{getTooltipText()}</span>
             <div
               className="w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center"
               onClick={() => toggleWebcam()}

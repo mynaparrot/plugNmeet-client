@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from 'react';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch, store } from '../../../store';
 import {
@@ -14,7 +14,7 @@ const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const isRecorder = store.getState().session.currentUser?.isRecorder;
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const isActiveParticipantsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
@@ -48,11 +48,11 @@ const ParticipantIcon = () => {
           showTooltip ? 'has-tooltip' : ''
         } ${isActiveParticipantsPanel ? 'bg-gray-100' : 'bg-white'}`}
       >
-        {/* <span className="tooltip">
-        {isActiveParticipantsPanel
-          ? t('footer.icons.hide-users-list')
-          : t('footer.icons.show-users-list')}
-      </span> */}
+        <span className="tooltip">
+          {isActiveParticipantsPanel
+            ? t('footer.icons.hide-users-list')
+            : t('footer.icons.show-users-list')}
+        </span>
         <ParticipantsIconSVG />
         {!isActiveParticipantsPanel ? (
           <div className="unseen-message-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">

@@ -144,15 +144,15 @@ const ScrenshareIcon = () => {
     }
   };
 
-  // const text = () => {
-  //   if (isActiveScreenshare) {
-  //     return t('footer.icons.stop-screen-sharing');
-  //   } else if (!isActiveScreenshare && !lock) {
-  //     return t('footer.icons.start-screen-sharing');
-  //   } else if (lock) {
-  //     return t('footer.icons.screen-sharing-locked');
-  //   }
-  // };
+  const text = () => {
+    if (isActiveScreenshare) {
+      return t('footer.icons.stop-screen-sharing');
+    } else if (!isActiveScreenshare && !lock) {
+      return t('footer.icons.start-screen-sharing');
+    } else if (lock) {
+      return t('footer.icons.screen-sharing-locked');
+    }
+  };
 
   const shouldShow = () => {
     const session = store.getState().session;
@@ -177,7 +177,7 @@ const ScrenshareIcon = () => {
         } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'}`}
         
       > */}
-          {/* <span className="tooltip">{text()}</span> */}
+          <span className="tooltip">{text()}</span>
           <>
             <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
             {lock ? (

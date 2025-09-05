@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch, store } from '../../../store';
 import {
@@ -13,7 +13,7 @@ const ChatIcon = () => {
   const session = store.getState().session;
   const showTooltip = session.userDeviceType === 'desktop';
   const isRecorder = session.currentUser?.isRecorder;
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const isActiveChatPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveChatPanel,
@@ -49,11 +49,11 @@ const ChatIcon = () => {
           showTooltip ? 'has-tooltip' : ''
         } ${isActiveChatPanel ? 'bg-gray-100' : 'bg-white'}`}
       >
-        {/* <span className="tooltip">
+        <span className="tooltip">
           {isActiveChatPanel
             ? t('footer.icons.hide-chat-panel')
             : t('footer.icons.show-chat-panel')}
-        </span> */}
+        </span>
         <ChatIconSVG />
         {!isActiveChatPanel && totalUnreadChatMsgs > 0 ? (
           <div className="unseen-message-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">

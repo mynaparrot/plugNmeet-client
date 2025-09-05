@@ -63,11 +63,11 @@ const RaiseHandIcon = () => {
             showTooltip ? 'has-tooltip' : ''
           } ${isActiveRaisehand ? 'bg-gray-100 dark:bg-Gray-700' : 'bg-white dark:bg-Gray-800'}`}
         >
-          {/* <span className="tooltip bottom-[62px]!">
-          {isActiveRaisehand
-            ? t('footer.icons.lower-hand')
-            : t('footer.icons.raise-hand')}
-        </span> */}
+          <span className="tooltip bottom-[62px]!">
+            {isActiveRaisehand
+              ? t('footer.icons.lower-hand')
+              : t('footer.icons.raise-hand')}
+          </span>
           <HandsIconSVG classes={'h-5 w-auto'} />
         </div>
       </div>

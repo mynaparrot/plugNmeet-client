@@ -252,11 +252,11 @@ const RecordingIcon = () => {
               showTooltip ? 'has-tooltip' : ''
             } ${isRecording ? 'bg-gray-100' : 'bg-white'}`}
           >
-            {/* <span className="tooltip bottom-[62px]!">
-            {isActiveRaisehand
-              ? t('footer.icons.lower-hand')
-              : t('footer.icons.raise-hand')}
-          </span> */}
+            <span className="tooltip bottom-[62px]!">
+              {isRecording
+                ? t('footer.icons.stop-recording')
+                : t('footer.icons.start-recording')}
+            </span>
             <i className="pnm-rec text-black text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
           </div>
         </button>

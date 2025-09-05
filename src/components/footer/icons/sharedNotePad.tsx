@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   ChangeVisibilityRes,
   ChangeVisibilityResSchema,
@@ -14,7 +14,7 @@ import {
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const SharedNotePadIcon = () => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const [iconCSS, setIconCSS] = useState<string>('primaryColor');
@@ -119,13 +119,13 @@ const SharedNotePadIcon = () => {
     //eslint-disable-next-line
   }, [isActiveSharedNotePad]);
 
-  // const text = () => {
-  //   if (isActiveSharedNotePad) {
-  //     return t('footer.icons.hide-shared-notepad');
-  //   } else {
-  //     return t('footer.icons.show-shared-notepad');
-  //   }
-  // };
+  const text = () => {
+    if (isActiveSharedNotePad) {
+      return t('footer.icons.hide-shared-notepad');
+    } else {
+      return t('footer.icons.show-shared-notepad');
+    }
+  };
 
   const toggleSharedNotePad = async () => {
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
@@ -154,6 +154,7 @@ const SharedNotePadIcon = () => {
               showTooltip ? 'has-tooltip' : ''
             } ${isActiveSharedNotePad ? 'bg-gray-100' : 'bg-white'}`}
           >
+            <span className="tooltip">{text()}</span>
             <i
               className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`}
             />
