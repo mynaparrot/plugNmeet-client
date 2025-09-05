@@ -69,9 +69,9 @@ const WaitingApproval = ({
   };
 
   return !waitForApproval ? null : (
-    <div className="approve-btn-wrap absolute right-0 top-0 flex gap-2.5 items-center justify-end h-full w-auto bg-white">
+    <div className="approve-btn-wrap absolute right-0 top-0 flex gap-1 items-center justify-end h-full w-auto bg-white">
       <button
-        className="h-6 cursor-pointer px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
+        className="h-6 cursor-pointer px-1.5 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
         onClick={approve}
       >
         <CheckMarkIcon />
