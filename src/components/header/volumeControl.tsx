@@ -55,7 +55,7 @@ const VolumeControl = () => {
         {({ open }) => (
           <div>
             <MenuButton
-              className={`relative shrink-0 p-0 w-8 h-8 flex items-center justify-center rounded-[10px] ${volume > 0 ? 'bg-Gray-50' : null}`}
+              className={`relative shrink-0 p-0 w-8 h-8 flex items-center justify-center rounded-[10px] ${open ? 'bg-Gray-50' : null}`}
             >
               <div className="text-gray-700 dark:text-white cursor-pointer">
                 {volume > 0 ? <VolumeHeader /> : <VolumeMutedSVG />}
