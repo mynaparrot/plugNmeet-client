@@ -54,7 +54,9 @@ const VolumeControl = () => {
       <Menu>
         {({ open }) => (
           <div>
-            <MenuButton className="relative shrink-0 p-2 ">
+            <MenuButton
+              className={`relative shrink-0 p-0 w-8 h-8 flex items-center justify-center rounded-[10px] ${volume > 0 ? 'bg-Gray-50' : null}`}
+            >
               <div className="text-gray-700 dark:text-white cursor-pointer">
                 {volume > 0 ? <VolumeHeader /> : <VolumeMutedSVG />}
               </div>
@@ -86,7 +88,7 @@ const VolumeControl = () => {
                     thumbSize={20}
                     trackHeight={8}
                   />
-                  <p className="w-10 text-center text-sm text-Gray-950">
+                  <p className="w-10 text-center text-sm text-Gray-950 ml-3">
                     {Math.round(volume * 100)}
                   </p>
                   <button className="w-5 h-5">
@@ -109,7 +111,7 @@ const VolumeControl = () => {
                     thumbSize={20}
                     trackHeight={8}
                   />
-                  <p className="w-10 text-center text-sm text-Gray-950">
+                  <p className="w-10 text-center text-sm text-Gray-950 ml-3">
                     {Math.round(screenShareAudioVolume * 100)}
                   </p>
                   <button className="w-5 h-5">

@@ -188,23 +188,25 @@ const Header = () => {
             headerVisible ? 'ac' : ''
           }`}
         >
-          <div className="left relative z-20 flex items-center gap-3 sm:gap-5 w-1/2 sm:w-40 order-1">
+          <div className="left relative z-20 flex items-center gap-3 sm:gap-5 w-1/2 sm:w-3/3 order-1">
             <HeaderLogo />
             <DarkThemeSwitcher />
           </div>
-          <div className="middle flex-auto relative z-20 order-3 sm:order-2">
+          <div className="middle w-full sm:w-3/3 relative z-20 order-3 sm:order-2">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center">
               {title}
             </h2>
           </div>
-          <div className="right flex items-center justify-end relative z-20 -right-3 w-1/2 sm:w-40 order-2 sm:order-3">
+          <div className="right flex items-center justify-end relative z-20 -right-3 w-1/2 sm:w-3/3 order-2 sm:order-3 gap-0.5">
             <DurationView />
             <UserNotifications />
             <VolumeControl />
             <Menu>
               {({ open }) => (
                 <div>
-                  <MenuButton className="relative shrink-0 p-2">
+                  <MenuButton
+                    className={`relative shrink-0 w-8 h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
+                  >
                     <div className="text-gray-700 dark:text-white cursor-pointer">
                       <HeaderMenuIcon />
                     </div>

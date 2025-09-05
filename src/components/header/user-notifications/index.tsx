@@ -133,7 +133,7 @@ const UserNotifications = () => {
       {({ open, close }) => (
         <>
           <PopoverButton
-            className={`p-2 rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
+            className={`w-8 h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
           >
             {displayIcon(open)}
           </PopoverButton>
