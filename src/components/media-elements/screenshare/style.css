@@ -2,6 +2,6 @@ video::-webkit-media-controls {
   display: none !important;
 }
 
-video::media-controls {
+video:media-controls {
   display: none !important;
 }
