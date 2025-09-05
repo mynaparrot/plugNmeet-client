@@ -8,6 +8,7 @@ import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { useJoinRoomMutation } from '../../../store/services/breakoutRoomApi';
 import { updateReceivedInvitationFor } from '../../../store/slices/breakoutRoomSlice';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
 
 interface NewBreakoutRoomProps {
   receivedInvitationFor: string | undefined;
@@ -85,37 +86,45 @@ const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
 
   return (
     <>
-      <span className="text-black dark:text-dark-text">
-        {t('breakout-room.invitation-msg')}
-      </span>
-      <div>
-        {joinLink !== '' ? (
-          <div className="invite-link">
-            <label className="text-black dark:text-dark-text text-sm">
-              {t('breakout-room.join-text-label')}
-            </label>
-            <input
-              type="text"
-              readOnly={true}
-              value={joinLink}
-              className="inline-block outline-hidden border border-solid rounded-sm p-1 h-7 text-sm mx-1 bg-transparent dark:text-dark-text dark:border-dark-text"
-            />
+      <div className="notification notif-breakoutRoom flex gap-4 py-2 px-4 border-b border-Gray-200">
+        <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
+          <BreakoutRoomIconSVG classes="w-[15px]" />
+        </div>
+        <div className="text flex-1 text-Gray-800 text-sm">
+          <p>
+            {/* Poll created:{' '}
+                  <strong>“How was today’s class?”</strong> */}
+            {t('breakout-room.invitation-msg')}
+          </p>
+          {joinLink !== '' ? (
+            <div className="invite-link">
+              <label className="text-black dark:text-dark-text text-sm">
+                {t('breakout-room.join-text-label')}
+              </label>
+              <input
+                type="text"
+                readOnly={true}
+                value={joinLink}
+                className="inline-block outline-hidden border border-solid rounded-sm p-1 h-7 text-sm mx-1 bg-transparent dark:text-dark-text dark:border-dark-text"
+              />
+              <button
+                onClick={copyUrl}
+                className="text-center py-1 px-3 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
+              >
+                {copyText}
+              </button>
+            </div>
+          ) : null}
+          <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
+            <span className="">12:04 AM</span>{' '}
             <button
-              onClick={copyUrl}
-              className="text-center py-1 px-3 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
+              onClick={join}
+              className="h-6 cursor-pointer px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
             >
-              {copyText}
+              {t('breakout-room.join')}
             </button>
           </div>
-        ) : null}
-      </div>
-      <div className="button-section flex items-center justify-start">
-        <button
-          className="text-center py-1 px-3 mt-1 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
-          onClick={join}
-        >
-          {t('breakout-room.join')}
-        </button>
+        </div>
       </div>
     </>
   );

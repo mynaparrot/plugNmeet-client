@@ -518,8 +518,8 @@ const MenusIcon = () => {
                         className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
                         onClick={() => openManageBreakoutRoomModal()}
                       >
-                        <span className="icon flex w-6 h-auto justify-center">
-                          <BreakoutRoomIconSVG />
+                        <span className="icon flex justify-center">
+                          <BreakoutRoomIconSVG classes="w-6 h-auto text-Blue2-800" />
                         </span>
                         {t('footer.menus.manage-breakout-room')}
                       </button>

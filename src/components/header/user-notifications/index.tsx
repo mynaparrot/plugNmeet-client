@@ -13,14 +13,14 @@ import NewPoll from './newPoll';
 import NewBreakoutRoom from './newBreakoutRoom';
 import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
 import clsx from 'clsx';
-import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
-import { SpeechIconSVG } from '../../../assets/Icons/SpeechIconSVG';
-import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
-import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
-import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
-import { CheckMarkIconSVG } from '../../../assets/Icons/CheckMarkIconSVG';
-import { LinksIconSVG } from '../../../assets/Icons/LinksIconSVG';
-import { UploadIconSVG } from '../../../assets/Icons/UploadIconSVG';
+// import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
+// import { SpeechIconSVG } from '../../../assets/Icons/SpeechIconSVG';
+// import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
+// import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
+// import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
+// import { CheckMarkIconSVG } from '../../../assets/Icons/CheckMarkIconSVG';
+// import { LinksIconSVG } from '../../../assets/Icons/LinksIconSVG';
+// import { UploadIconSVG } from '../../../assets/Icons/UploadIconSVG';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 
 const UserNotifications = () => {
@@ -86,17 +86,77 @@ const UserNotifications = () => {
           );
           break;
         default:
+          switch (notif.typeOption) {
+            case 'info':
+              elm = (
+                <div
+                  className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
+                  key={notif.created}
+                >
+                  <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
+                    <NotifyIconSVG classes="w-[15px] h-auto" />
+                  </div>
+                  <div className="text flex-1 text-Gray-800 text-sm">
+                    <p>{notif.message}</p>
+                    <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
+                      <span className="">12:04 AM</span>
+                    </div>
+                  </div>
+                </div>
+              );
+              break;
+            case 'warning':
+              elm = (
+                <div
+                  className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
+                  key={notif.created}
+                >
+                  <div className="icon w-9 h-9 rounded-full bg-Green-100 text-Green-700 relative inline-flex items-center justify-center">
+                    <NotifyIconSVG classes="w-[15px] h-auto" />
+                  </div>
+                  <div className="text flex-1 text-Gray-800 text-sm">
+                    <p>{notif.message}</p>
+                    <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
+                      <span className="">12:04 AM</span>
+                    </div>
+                  </div>
+                </div>
+              );
+              break;
+            case 'error':
+              elm = (
+                <div
+                  className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
+                  key={notif.created}
+                >
+                  <div className="icon w-9 h-9 rounded-full bg-Red-100 text-Red-600 relative inline-flex items-center justify-center">
+                    <NotifyIconSVG classes="w-[15px] h-auto" />
+                  </div>
+                  <div className="text flex-1 text-Gray-800 text-sm">
+                    <p>{notif.message}</p>
+                    <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
+                      <span className="">12:04 AM</span>
+                    </div>
+                  </div>
+                </div>
+              );
+              break;
+            default:
+          }
           elm = (
-            <div className="flex items-center gap-2" key={notif.created}>
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                fill="var(--toastify-icon-color-info)"
-              >
-                <path d="M12 0a12 12 0 1012 12A12.013 12.013 0 0012 0zm.25 5a1.5 1.5 0 11-1.5 1.5 1.5 1.5 0 011.5-1.5zm2.25 13.5h-4a1 1 0 010-2h.75a.25.25 0 00.25-.25v-4.5a.25.25 0 00-.25-.25h-.75a1 1 0 010-2h1a2 2 0 012 2v4.75a.25.25 0 00.25.25h.75a1 1 0 110 2z"></path>
-              </svg>
-              <div className="flex-1">{notif.message}</div>
+            <div
+              className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
+              key={notif.created}
+            >
+              <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
+                <NotifyIconSVG classes="w-[15px] h-auto" />
+              </div>
+              <div className="text flex-1 text-Gray-800 text-sm">
+                <p>{notif.message}</p>
+                <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
+                  <span className="">12:04 AM</span>
+                </div>
+              </div>
             </div>
           );
       }
@@ -167,7 +227,7 @@ const UserNotifications = () => {
                 <div className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4">
                   <div className="inner grid gap-2">
                     {notificationElms}
-                    <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
+                    {/* <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
                       <div className="name w-9 h-9 rounded-xl bg-Blue2-700 text-sm font-medium uppercase text-white relative inline-flex items-center justify-center">
                         NB
                         <span className="w-5 h-5 bg-Gray-100 border border-white inline-flex items-center justify-center p-[2px] rounded-full absolute -bottom-1 -right-1 text-Blue2-700">
@@ -261,23 +321,7 @@ const UserNotifications = () => {
                         <span className="text-Gray-800 text-xs">12:04 AM</span>
                       </div>
                     </div>
-                    <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
-                      <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
-                        <PollsIconSVG classes="w-[15px]" />
-                      </div>
-                      <div className="text flex-1 text-Gray-800 text-sm">
-                        <p>
-                          Poll created:{' '}
-                          <strong>“How was today’s class?”</strong>
-                        </p>
-                        <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
-                          <span className="">12:04 AM</span>{' '}
-                          <button className="h-6 cursor-pointer px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow">
-                            Open
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+
                     <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
                       <div className="name w-9 h-9 rounded-xl bg-Blue2-700 text-sm font-medium uppercase text-white relative inline-flex items-center justify-center">
                         NB
@@ -310,7 +354,7 @@ const UserNotifications = () => {
                         <p>Moderator approved your request to join.</p>
                         <span className="text-Gray-800 text-xs">12:04 AM</span>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </PopoverPanel>
