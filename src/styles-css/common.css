@@ -459,7 +459,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
 }
 
 .has-tooltip:hover .tooltip {
-  @apply visible z-50;
+  @apply visible z-[9];
 }
 
 #main-footer .record {
