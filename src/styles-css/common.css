@@ -1154,3 +1154,9 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 .vertical-webcams-wrapper.extended-view-wrap .group-total-cam-2.has-pin-cam {
   max-height: 640px;
 }
+.Toastify__toast.notification-toast {
+  padding: 0 !important;
+}
+.Toastify__toast.notification-toast .Toastify__toast-icon {
+  display: none !important;
+}

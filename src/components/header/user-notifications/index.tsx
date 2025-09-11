@@ -44,6 +44,7 @@ const UserNotifications = () => {
       type: notification.typeOption,
       autoClose: notification.autoClose,
       toastId: notification.newInstance ? undefined : toastId.current,
+      className: 'notification-toast',
     });
 
     const isPNMWindowTabVisible =
@@ -145,7 +146,7 @@ const UserNotifications = () => {
           }
           elm = (
             <div
-              className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
+              className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200 w-full"
               key={notif.created}
             >
               <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
