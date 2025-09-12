@@ -69,6 +69,14 @@ const UserNotifications = () => {
     if (!userNotifications.length) {
       return;
     }
+    const formatDate = (timeStamp?: number) => {
+      const date = new Date(timeStamp ?? 0);
+      return date.toLocaleString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+    };
 
     const elms: ReactElement[] = [];
     for (let i = userNotifications.length - 1; i >= 0; i--) {
@@ -100,7 +108,7 @@ const UserNotifications = () => {
                   <div className="text flex-1 text-Gray-800 text-sm">
                     <p>{notif.message}</p>
                     <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                      <span className="">12:04 AM</span>
+                      <span className="">{formatDate(notif.created)}</span>
                     </div>
                   </div>
                 </div>
@@ -118,7 +126,7 @@ const UserNotifications = () => {
                   <div className="text flex-1 text-Gray-800 text-sm">
                     <p>{notif.message}</p>
                     <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                      <span className="">12:04 AM</span>
+                      <span className="">{formatDate(notif.created)}</span>
                     </div>
                   </div>
                 </div>
@@ -136,7 +144,7 @@ const UserNotifications = () => {
                   <div className="text flex-1 text-Gray-800 text-sm">
                     <p>{notif.message}</p>
                     <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                      <span className="">12:04 AM</span>
+                      <span className="">{formatDate(notif.created)}</span>
                     </div>
                   </div>
                 </div>
@@ -155,7 +163,7 @@ const UserNotifications = () => {
               <div className="text flex-1 text-Gray-800 text-sm">
                 <p>{notif.message}</p>
                 <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                  <span className="">12:04 AM</span>
+                  <span className="">{formatDate(notif.created)}</span>
                 </div>
               </div>
             </div>
