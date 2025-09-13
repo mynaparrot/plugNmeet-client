@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@eslint/js": "9.31.0",
-    "@pmmmwh/react-refresh-webpack-plugin": "0.5.16",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.6.1",
     "@size-limit/preset-app": "11.2.0",
     "@tensorflow/tfjs-backend-webgl": "4.22.0",
     "@tensorflow/tfjs-core": "4.22.0",
