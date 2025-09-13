@@ -62,7 +62,7 @@
     "@types/lodash": "4.17.16",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.1",
-    "@types/sanitize-html": "2.15.0",
+    "@types/sanitize-html": "2.16.0",
     "@types/video.js": "7.3.58",
     "autoprefixer": "10.4.21",
     "clean-webpack-plugin": "4.0.0",
