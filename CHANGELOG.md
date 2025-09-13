@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.5](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.4...v1.7.5) (2025-09-13)
+
+
+### Bug Fixes
+
+* protocol update ([8c6d23a](https://github.com/mynaparrot/plugNmeet-client/commit/8c6d23a7ba2b38a12a41451195e897d1a231414d))
+
 ## [1.7.4](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.3...v1.7.4) (2025-08-12)
 
 
