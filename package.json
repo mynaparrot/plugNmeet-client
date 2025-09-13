@@ -44,7 +44,7 @@
     "react-draggable": "npm:@tdaniil/react-draggable@5.0.1",
     "react-hotkeys-hook": "5.1.0",
     "react-i18next": "15.6.1",
-    "react-player": "2.16.0",
+    "react-player": "2.16.1",
     "react-redux": "9.2.0",
     "react-toastify": "11.0.5",
     "resumablejs": "1.1.0",
