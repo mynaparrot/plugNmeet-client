@@ -224,14 +224,14 @@ const MainComponents = ({
     const cssClasses: Array<string> = [];
     if (isActiveScreenSharingView && isActiveScreenShare) {
       cssClasses.push(
-        'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running',
+        'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running relative',
       );
       if (showVideoElms) {
         if (showVerticalVideoView) {
-          cssClasses.push('verticalsWebcamsActivated');
+          cssClasses.push('verticalsWebcamsActivated relative');
         }
         if (isEnabledExtendedVerticalCamView) {
-          cssClasses.push('extendedVerticalCamView');
+          cssClasses.push('extendedVerticalCamView relative');
         }
         if (pinCamUserId) {
           cssClasses.push(
@@ -241,14 +241,14 @@ const MainComponents = ({
       }
     } else {
       if (showVideoElms && !showVerticalVideoView && !pinCamUserId) {
-        cssClasses.push('h-full');
+        cssClasses.push('h-full relative');
       } else if (showVideoElms) {
-        cssClasses.push('middle-fullscreen-wrapper h-full flex');
+        cssClasses.push('middle-fullscreen-wrapper h-full flex relative');
         if (showVerticalVideoView) {
-          cssClasses.push('verticalsWebcamsActivated');
+          cssClasses.push('verticalsWebcamsActivated relative');
         }
         if (isEnabledExtendedVerticalCamView) {
-          cssClasses.push('extendedVerticalCamView');
+          cssClasses.push('extendedVerticalCamView relative');
         }
         if (pinCamUserId) {
           cssClasses.push(
@@ -256,7 +256,9 @@ const MainComponents = ({
           );
         }
       } else {
-        cssClasses.push('middle-fullscreen-wrapper h-full flex w-full');
+        cssClasses.push(
+          'middle-fullscreen-wrapper h-full flex w-full relative',
+        );
       }
     }
     return cssClasses.join(' ');

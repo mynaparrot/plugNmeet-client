@@ -111,9 +111,31 @@ const SubtitleArea = () => {
           className="sub-title w-11/12 absolute bottom-4  left-1/2 -translate-x-1/2 pointer-events-none px-10 flex items-center"
           style={{ fontSize: speechServices.subtitleFontSize }}
         >
-          <p className="py-1 px-2 bg-black text-white m-auto inline-block break-words text-center whitespace-pre-wrap">
+          <div className="inline-flex items-center gap-3 py-1.5 px-2 bg-Gray-950/70 text-white m-auto break-words text-center whitespace-pre-wrap border border-white/15 rounded-lg overflow-hidden shadow-virtual-item">
+            <div className="flex items-center h-7 rounded-lg overflow-hidden border border-white/15">
+              <div className="icon px-1.5">
+                <svg
+                  width="15"
+                  height="14"
+                  viewBox="0 0 15 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.5 5.66667L1.5 8.33333M4.5 3L4.5 11M7.5 1V13M10.5 3V11M13.5 5.66667V8.33333"
+                    stroke="white"
+                    strokeWidth="1.33"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div className="text-xs font-semibold text-white bg-white/10 h-full flex items-center px-1.5">
+                EN
+              </div>
+            </div>
             {subtitleText}
-          </p>
+          </div>
         </div>
       ) : null}
     </>

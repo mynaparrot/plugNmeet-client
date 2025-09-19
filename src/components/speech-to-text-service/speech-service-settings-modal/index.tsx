@@ -271,41 +271,39 @@ const SpeechServiceSettingsModal = () => {
                     </div>
                   ) : null}
                 </div>
-                <div className="bottom-area py-5 px-5 text-Gray-950 border-t border-Gray-100 grid grid-cols-2 gap-5">
-                  <div className="left">
+                <div
+                  className={`bottom-area py-5 px-5 text-Gray-950 border-t border-Gray-100 grid ${speechService?.isEnabled ? 'grid-cols-3 gap-x-2' : 'grid-cols-2 gap-x-5'}`}
+                >
+                  <button
+                    className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+                    onClick={() => closeModal()}
+                  >
+                    Cancel
+                  </button>
+                  {!speechService?.isEnabled ? (
                     <button
-                      className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
-                      onClick={() => closeModal()}
+                      className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                      onClick={() => enableOrUpdateService()}
                     >
-                      Cancel
+                      {t('speech-services.enable-service')}
                     </button>
-                  </div>
-                  <div className="right">
-                    {!speechService?.isEnabled ? (
+                  ) : null}
+                  {speechService?.isEnabled ? (
+                    <>
                       <button
-                        className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                        className="order-3 h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                         onClick={() => enableOrUpdateService()}
                       >
-                        {t('speech-services.enable-service')}
+                        {t('speech-services.update-service')}
                       </button>
-                    ) : null}
-                    {speechService?.isEnabled ? (
-                      <>
-                        <button
-                          className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                          onClick={() => enableOrUpdateService()}
-                        >
-                          {t('speech-services.update-service')}
-                        </button>
-                        <button
-                          className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                          onClick={() => stopService()}
-                        >
-                          {t('speech-services.stop-service')}
-                        </button>
-                      </>
-                    ) : null}
-                  </div>
+                      <button
+                        className="order-2 h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+                        onClick={() => stopService()}
+                      >
+                        {t('speech-services.stop-service')}
+                      </button>
+                    </>
+                  ) : null}
                 </div>
               </div>
             </TransitionChild>

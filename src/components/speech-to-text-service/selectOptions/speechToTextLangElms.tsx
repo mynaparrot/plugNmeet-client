@@ -18,6 +18,8 @@ import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
 import MicElms from './micElms';
+import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
+import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
 interface SpeechToTextLangElmsPros {
   speechService: SpeechToTextTranslationFeatures;
@@ -50,10 +52,10 @@ const SpeechToTextLangElms = ({
   const speechLangElms = () => {
     return (
       <>
-        <div className="flex items-center justify-between">
+        <div className="">
           <label
             htmlFor="speech-lang"
-            className="pr-4 w-auto dark:text-dark-text text-sm"
+            className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right mb-2 block"
           >
             {t('speech-services.speech-lang-label')}
           </label>
@@ -62,9 +64,9 @@ const SpeechToTextLangElms = ({
             onChange={setSelectedSpeechLang}
             disabled={recognizer !== undefined}
           >
-            <div className="relative mt-1 w-[150px] sm:w-[250px]">
+            <div className="relative w-full">
               <ListboxButton
-                className={`relative h-9 w-full cursor-default py-1 pl-3 pr-7 text-left border border-gray-300 dark:border-dark-text dark:text-dark-text bg-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 text-sm ${
+                className={`min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 ${
                   recognizer !== undefined ? 'opacity-70' : ''
                 }`}
               >
@@ -73,8 +75,8 @@ const SpeechToTextLangElms = ({
                     .map((l) => (l.code === selectedSpeechLang ? l.name : null))
                     .join('')}
                 </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 ">
-                  <i className="pnm-updown text-xl primaryColor dark:text-dark-text" />
+                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                  <DropdownIconSVG />
                 </span>
               </ListboxButton>
 
@@ -84,26 +86,20 @@ const SpeechToTextLangElms = ({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full scrollBar scrollBar4 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
+                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
                   {speechService.allowedSpeechLangs?.map((l) => (
                     <ListboxOption
                       key={l}
-                      className={({ focus }) =>
-                        `relative cursor-default select-none py-2 pl-7 pr-4 ${
-                          focus
-                            ? 'bg-amber-100 text-amber-900'
-                            : 'text-gray-900'
-                        }`
+                      className={({ focus, selected }) =>
+                        `relative cursor-default select-none py-2 px-3 rounded-[8px] truncate ${
+                          focus ? 'bg-Blue2-50' : ''
+                        } ${selected ? 'bg-Blue2-50' : ''}`
                       }
                       value={l}
                     >
                       {({ selected }) => (
                         <>
-                          <span
-                            className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
-                            }`}
-                          >
+                          <span className={`block`}>
                             {
                               supportedSpeechToTextLangs.find(
                                 (lang) => lang.code === l,
@@ -111,8 +107,8 @@ const SpeechToTextLangElms = ({
                             }
                           </span>
                           {selected ? (
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-amber-600">
-                              <i className="pnm-check w-4 h-4" />
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                              <CheckMarkIcon />
                             </span>
                           ) : null}
                         </>
@@ -136,9 +132,9 @@ const SpeechToTextLangElms = ({
 
   return (
     <>
-      <Field>
-        <div className="flex items-center justify-between my-4">
-          <Label className="ltr:pr-4 rtl:pl-4 w-full dark:text-dark-text">
+      <Field className="py-4 px-5 bg-Gray-25 border-y border-dotted border-Gray-100">
+        <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
+          <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
             {t('speech-services.enable-speech-to-text')}
           </Label>
           <Switch
@@ -146,22 +142,22 @@ const SpeechToTextLangElms = ({
             onChange={setEnableSpeechToText}
             disabled={recognizer !== undefined}
             className={`${
-              enableSpeechToText
-                ? 'bg-primary-color dark:bg-dark-secondary2'
-                : 'bg-gray-200 dark:bg-secondary-color'
-            } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2`}
+              enableSpeechToText ? 'bg-Blue2-500' : 'bg-Gray-200'
+            } relative outline-none inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden cursor-pointer`}
           >
             <span
               className={`${
                 enableSpeechToText
-                  ? 'ltr:translate-x-6 rtl:-translate-x-6'
-                  : 'ltr:translate-x-1 rtl:translate-x-0'
+                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                  : 'ltr:translate-x-1 rtl:-translate-x-0.5'
               } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
             />
           </Switch>
         </div>
       </Field>
-      {enableSpeechToText ? speechLangElms() : null}
+      {enableSpeechToText ? (
+        <div className="px-5 grid gap-4">{speechLangElms()}</div>
+      ) : null}
     </>
   );
 };

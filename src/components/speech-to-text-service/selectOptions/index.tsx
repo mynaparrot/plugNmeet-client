@@ -5,6 +5,7 @@ import {
   DialogTitle,
   Transition,
   TransitionChild,
+  Button,
 } from '@headlessui/react';
 import { isEmpty } from 'es-toolkit/compat';
 import {
@@ -17,6 +18,7 @@ import { store } from '../../../store';
 import SpeechToTextLangElms from './speechToTextLangElms';
 import SubtitleLangElms from './subtitleLangElms';
 import SubtitleFontSize from './subtitleFontSize';
+import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 
 interface SelectOptionsProps {
   optionSelectionDisabled: boolean;
@@ -105,28 +107,10 @@ const SelectOptions = ({
       <Transition appear show={showModal} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-9999 overflow-y-auto"
+          className="showSpeechSettingPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
           onClose={() => false}
         >
-          <div className="min-h-screen px-4 text-center">
-            <TransitionChild
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-black opacity-30" />
-            </TransitionChild>
-
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
+          <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
@@ -136,24 +120,20 @@ const SelectOptions = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-lg p-6 my-8 overflow-[initial] text-left align-middle transition-all transform bg-white dark:bg-dark-primary shadow-xl rounded-2xl">
-                <button
-                  className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                >
-                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
-                  <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
-                </button>
-
+              <div className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP rounded-xl duration-300 ease-out">
                 <DialogTitle
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-2 ltr:text-left rtl:text-right"
+                  className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 py-5 px-5 text-Gray-950 border-b border-Gray-100"
                 >
-                  {t('speech-services.start-modal-title')}
+                  <span>{t('speech-services.start-modal-title')}</span>
+                  <Button
+                    onClick={() => setShowModal(false)}
+                    className="cursor-pointer"
+                  >
+                    <PopupCloseSVGIcon classes="text-Gray-600" />
+                  </Button>
                 </DialogTitle>
-                <hr />
-                <div className="mt-6">
+                <div className="grid gap-4">
                   {canShowSpeechSetting ? (
                     <SpeechToTextLangElms
                       recognizer={recognizer}
@@ -171,11 +151,11 @@ const SelectOptions = ({
                   />
                   <SubtitleFontSize />
                 </div>
-                <div className="pt-5 bg-gray-50 dark:bg-transparent text-right">
+                <div className="bottom-area py-5 px-5 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5">
                   <>
                     {canShowSpeechSetting ? (
                       <button
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden"
+                        className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                         onClick={() => startOrStopService()}
                       >
                         {recognizer
@@ -186,7 +166,7 @@ const SelectOptions = ({
                   </>
                   {!canShowSpeechSetting ? (
                     <button
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-primary-color hover:bg-secondary-color focus:outline-hidden"
+                      className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       onClick={() => startOrStopService()}
                     >
                       {t('speech-services.start-service')}
