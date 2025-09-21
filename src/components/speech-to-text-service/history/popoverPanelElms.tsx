@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppSelector } from '../../../store';
 import InterimTextElms from './interimTextElms';
+import { DownloadIconSVG } from '../../../assets/Icons/DownloadIconSVG';
+import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 
 interface PopoverPanelElmsProps {
   showPopover: boolean;
@@ -46,36 +48,43 @@ const PopoverPanelElms = ({
   }, [lastFinalTexts]);
 
   return (
-    <Draggable nodeRef={nodeRef} bounds="#main-area">
+    <Draggable
+      nodeRef={nodeRef}
+      // bounds="#main-area"
+    >
       <PopoverPanel
-        className="SpeechHistory absolute left-0 z-10 mx-1 bottom-14 w-full max-w-md bg-white dark:bg-dark-primary shadow-xl rounded-2xl h-ful"
+        className="SpeechHistory absolute left-5 z-10 bottom-28 w-full max-w-[330px] bg-Gray-950/85 h-ful rounded-lg"
         ref={nodeRef}
         static={showPopover}
       >
-        <h2 className="relative text-lg font-medium leading-6 text-gray-900 dark:text-white p-5 pb-3 px-3 cursor-move">
-          {t('speech-services.subtitle-history-modal-title')}
-          <button
-            className="absolute ltr:right-10 rtl:left-10 w-[25px] h-[25px] outline-hidden"
-            onClick={() => downloadTexts()}
-          >
-            <i className="pnm-download" />
-          </button>
-          <button
-            className="absolute top-7 ltr:right-3 rtl:left-3 w-[25px] h-[25px] outline-hidden"
-            onClick={() => setShowPopover(!showPopover)}
-          >
-            <span className="inline-block h-[2px] w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-0" />
-          </button>
+        <h2 className="relative text-sm font-medium leading-6 text-white px-4 cursor-move flex items-center h-10 justify-between border-b border-white/15">
+          <div className="left">
+            {t('speech-services.subtitle-history-modal-title')}
+          </div>
+          <div className="right flex items-center justify-center gap-3">
+            <button
+              className="w-5 h-5 flex items-center justify-center cursor-pointer"
+              onClick={() => downloadTexts()}
+            >
+              <DownloadIconSVG />
+            </button>
+            <button
+              className="w-5 h-5 flex items-center justify-center cursor-pointer"
+              onClick={() => setShowPopover(!showPopover)}
+            >
+              <CloseIconSVG />
+            </button>
+          </div>
         </h2>
-        <hr />
-        <div className="p-3 pb-8 text-primary dark:text-white h-[200px] overflow-hidden overflow-y-auto scrollBar scrollBar4">
+        <div className="px-4 py-6 h-[300px] overflow-hidden overflow-y-auto scrollBar scrollBar4 scrollBarDark  grid gap-3">
           {lastFinalTexts.slice(-50).map((t) => {
             return (
-              <div key={t.id} className="sentence w-full pt-2">
-                <p className="date text-sm pb-1 primaryColor dark:text-dark-text">
-                  <span className="text-xs">{t.time}</span> {t.from}:
+              <div key={t.id} className="sentence w-full text-sm text-white">
+                <p className="flex justify-between items-end pb-1.5 font-medium capitalize">
+                  <span>{t.from}</span>
+                  <span className="font-normal">{t.time}</span>
                 </p>
-                <p className="message-content max-w-fit shadow-footer text-sm bg-secondary-color text-white py-1 px-2 rounded-sm">
+                <p className="message-content w-full p-2 border border-white/10 bg-white/10 rounded-[15px] rounded-tl-none">
                   {t.text}
                 </p>
               </div>

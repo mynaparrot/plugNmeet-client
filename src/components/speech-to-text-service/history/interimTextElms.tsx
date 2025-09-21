@@ -26,17 +26,17 @@ const InterimTextElms = () => {
   return (
     <>
       {interimText ? (
-        <div className="sentence w-full pt-2">
-          <p className="date text-sm pb-1 primaryColor dark:text-dark-text">
-            <span className="text-xs">{interimText.time}</span>{' '}
-            {interimText.from}:
+        <div className="sentence w-full text-sm text-white">
+          <p className="flex justify-between items-end pb-1 font-medium capitalize">
+            <span>{interimText.from}</span>
+            <span className="font-normal">{interimText.time}</span>
           </p>
-          <p className="message-content max-w-fit shadow-footer text-sm bg-secondary-color text-white py-1 px-2 rounded-sm">
+          <p className="message-content w-full p-2 border border-white/10 bg-white/10 rounded-[15px] rounded-tl-none">
             {interimText.text}
           </p>
         </div>
       ) : null}
-      <div className="pt-[5px]" ref={scrollToRef} />
+      <div className="empty:hidden" ref={scrollToRef} />
     </>
   );
 };

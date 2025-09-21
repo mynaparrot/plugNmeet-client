@@ -182,15 +182,15 @@ const SelectOptions = ({
   };
 
   return (
-    <div className="show-speech-setting absolute bottom-1 left-1">
+    <div className="show-speech-setting absolute bottom-14 left-2">
       {modalElm()}
       <button onClick={() => setShowModal(true)}>
-        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-dark-secondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
-          <span className="tooltip -left-3! ltr:tooltip-left rtl:tooltip-right">
+        <div className="chat-history-settings relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 shadow-virtual-item flex items-center justify-center has-tooltip">
+          {/* <span className="tooltip -left-3! ltr:tooltip-left rtl:tooltip-right">
             {t('speech-services.subtitle-settings')}
-          </span>
+          </span> */}
           <i
-            className={`pnm-closed-captioning dark:text-dark-text text-[12px] lg:text-[14px] ${
+            className={`pnm-closed-captioning text-white text-[12px] lg:text-[14px] ${
               showModal ? 'secondaryColor' : 'primaryColor'
             }`}
           ></i>

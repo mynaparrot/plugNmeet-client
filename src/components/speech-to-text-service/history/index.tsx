@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Popover } from '@headlessui/react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import PopoverPanelElms from './popoverPanelElms';
 import { store } from '../../../store';
+import { ChatHistoryIconSVG } from '../../../assets/Icons/ChatHistoryIconSVG';
 
 interface SubtitleTextsHistoryProps {
   isOpenPopover: (open: boolean) => void;
 }
 
 const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const [showPopover, setShowPopover] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,18 +29,14 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
   return (
     <Popover className="subtitleTextsHistory relative">
       <button
-        className="absolute left-[2.7rem] lg:left-[3.1rem] bottom-1"
+        className="absolute left-[3.8rem] bottom-14"
         onClick={() => setShowPopover(!showPopover)}
       >
-        <div className="microphone footer-icon relative h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] rounded-full bg-[#F2F2F2] dark:bg-dark-secondary2 hover:bg-[#ECF4FF] flex items-center justify-center cursor-pointer has-tooltip">
-          <span className="tooltip">
+        <div className="chat-history-icon relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 shadow-virtual-item flex items-center justify-center">
+          {/* <span className="tooltip">
             {t('speech-services.subtitle-history-modal-title')}
-          </span>
-          <i
-            className={`pnm-timeline-solid dark:text-dark-text text-[12px] lg:text-[14px] ${
-              showPopover ? 'secondaryColor' : 'primaryColor'
-            }`}
-          ></i>
+          </span> */}
+          <ChatHistoryIconSVG />
         </div>
       </button>
       {showPopover ? (
