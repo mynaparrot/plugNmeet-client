@@ -325,15 +325,13 @@ const WebcamIcon = () => {
           className={`relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4 ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-100!' : ''} ${isActiveWebcam ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lockWebcam ? 'border-Red-100! pointer-events-none' : ''}`}
         >
           <div
-            className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-200!' : ''}  ${
-              showTooltip ? 'has-tooltip' : ''
-            } ${lockWebcam ? 'border-Red-200! text-Red-400' : ''}`}
+            className={`cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950  ${!isActiveWebcam && selectedVideoDevice !== '' ? 'border-Red-200!' : ''}  ${lockWebcam ? 'border-Red-200! text-Red-400' : ''}`}
           >
-            <span className="tooltip">{getTooltipText()}</span>
             <div
-              className="w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center"
+              className={`w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center ${showTooltip ? 'has-tooltip' : ''}`}
               onClick={() => toggleWebcam()}
             >
+              <span className="tooltip">{getTooltipText()}</span>
               {isActiveWebcam ? (
                 <Camera classes={'h-4 3xl:h-5 w-auto'} />
               ) : null}

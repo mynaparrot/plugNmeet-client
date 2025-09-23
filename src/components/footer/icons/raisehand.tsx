@@ -63,7 +63,7 @@ const RaiseHandIcon = () => {
             showTooltip ? 'has-tooltip' : ''
           } ${isActiveRaisehand ? 'bg-gray-100 dark:bg-Gray-700' : 'bg-white dark:bg-Gray-800'}`}
         >
-          <span className="tooltip bottom-[62px]!">
+          <span className="tooltip">
             {isActiveRaisehand
               ? t('footer.icons.lower-hand')
               : t('footer.icons.raise-hand')}

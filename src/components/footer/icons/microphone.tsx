@@ -279,17 +279,15 @@ const MicrophoneIcon = () => {
       className={`relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4 ${isMicMuted && isActiveMicrophone ? 'border-Red-100!' : ''} ${isActiveMicrophone ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lockMic ? 'border-Red-100! pointer-events-none' : ''}`}
     >
       <div
-        className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${isMicMuted && isActiveMicrophone ? 'border-Red-200!' : ''} ${
-          showTooltip ? 'has-tooltip' : ''
-        } ${lockMic ? 'border-Red-200! text-Red-400' : ''}`}
+        className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${isMicMuted && isActiveMicrophone ? 'border-Red-200!' : ''} ${lockMic ? 'border-Red-200! text-Red-400' : ''}`}
       >
-        <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
-          {getTooltipText()}
-        </span>
         <div
-          className="w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center"
+          className={`w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center ${showTooltip ? 'has-tooltip' : ''}`}
           onClick={() => manageMic()}
         >
+          <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
+            {getTooltipText()}
+          </span>
           {!isActiveMicrophone ? (
             <>
               <Microphone classes={'h-4 3xl:h-5 w-auto'} />

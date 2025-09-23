@@ -252,7 +252,7 @@ const RecordingIcon = () => {
               showTooltip ? 'has-tooltip' : ''
             } ${isRecording ? 'bg-gray-100' : 'bg-white'}`}
           >
-            <span className="tooltip bottom-[62px]!">
+            <span className="tooltip">
               {isRecording
                 ? t('footer.icons.stop-recording')
                 : t('footer.icons.start-recording')}
