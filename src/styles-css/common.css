@@ -1165,3 +1165,13 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 .Toastify__toast.notification-toast .Toastify__toast-icon {
   display: none !important;
 }
+.gradient {
+  background: linear-gradient(
+    90deg,
+    #f0f8fc 0%,
+    #bae3f7 25%,
+    #32b7fa 50%,
+    #00a1f2 75%,
+    #0088cc 100%
+  );
+}
