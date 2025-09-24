@@ -21,7 +21,7 @@ import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import EndMeetingButton from './icons/endMeeting';
 import RecordingIcon from './icons/recording';
 import PollsIcon from './icons/polls';
-import { Translation } from './icons/translation';
+import Translation from './icons/translation';
 // import { toggleFooterVisibility } from '../../store/slices/roomSettingsSlice';
 
 const Footer = () => {
@@ -65,8 +65,8 @@ const Footer = () => {
                 <RaiseHandIcon />
                 <SharedNotePadIcon />
                 <PollsIcon />
-                <RecordingIcon />
                 <Translation />
+                <RecordingIcon />
                 {isAdmin ? <MenusIcon /> : null}
               </div>
 

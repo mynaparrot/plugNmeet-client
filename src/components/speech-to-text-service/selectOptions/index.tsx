@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -14,11 +14,12 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
-import { store } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import SpeechToTextLangElms from './speechToTextLangElms';
 import SubtitleLangElms from './subtitleLangElms';
 import SubtitleFontSize from './subtitleFontSize';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
+import { updateDisplaySpeechSettingOptionsModal } from '../../../store/slices/bottomIconsActivitySlice';
 
 interface SelectOptionsProps {
   optionSelectionDisabled: boolean;
@@ -43,9 +44,12 @@ const SelectOptions = ({
   onOpenSelectedOptionsModal,
 }: SelectOptionsProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const currentUser = store.getState().session.currentUser;
+  const isActiveDisplayOptionsModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
+  );
 
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [canShowSpeechSetting, setCanShowSpeechSetting] =
     useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
@@ -62,7 +66,7 @@ const SelectOptions = ({
         setSelectedSubtitleLang(speechService.defaultSubtitleLang);
       }
     }
-    //eslint-disable-next-line
+    //oxlint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -73,11 +77,17 @@ const SelectOptions = ({
   }, [currentUser?.userId, speechService]);
 
   useEffect(() => {
-    if (showModal) {
+    if (isActiveDisplayOptionsModal) {
       onOpenSelectedOptionsModal();
     }
     //eslint-disable-next-line
-  }, [showModal]);
+  }, [isActiveDisplayOptionsModal]);
+
+  const toggleDisplayOptionsModal = useCallback(() => {
+    dispatch(
+      updateDisplaySpeechSettingOptionsModal(!isActiveDisplayOptionsModal),
+    );
+  }, [dispatch, isActiveDisplayOptionsModal]);
 
   const startOrStopService = () => {
     if (optionSelectionDisabled) {
@@ -99,12 +109,12 @@ const SelectOptions = ({
       });
     }
 
-    setShowModal(false);
+    toggleDisplayOptionsModal();
   };
 
-  const modalElm = () => {
-    return (
-      <Transition appear show={showModal} as={Fragment}>
+  return (
+    <div className="show-speech-setting absolute bottom-14 left-2">
+      <Transition appear show={isActiveDisplayOptionsModal} as={Fragment}>
         <Dialog
           as="div"
           className="showSpeechSettingPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
@@ -127,7 +137,7 @@ const SelectOptions = ({
                 >
                   <span>{t('speech-services.start-modal-title')}</span>
                   <Button
-                    onClick={() => setShowModal(false)}
+                    onClick={() => toggleDisplayOptionsModal()}
                     className="cursor-pointer"
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600" />
@@ -178,24 +188,6 @@ const SelectOptions = ({
           </div>
         </Dialog>
       </Transition>
-    );
-  };
-
-  return (
-    <div className="show-speech-setting absolute bottom-14 left-2">
-      {modalElm()}
-      <button onClick={() => setShowModal(true)}>
-        <div className="chat-history-settings relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 shadow-virtual-item flex items-center justify-center has-tooltip">
-          {/* <span className="tooltip -left-3! ltr:tooltip-left rtl:tooltip-right">
-            {t('speech-services.subtitle-settings')}
-          </span> */}
-          <i
-            className={`pnm-closed-captioning text-white text-[12px] lg:text-[14px] ${
-              showModal ? 'secondaryColor' : 'primaryColor'
-            }`}
-          ></i>
-        </div>
-      </button>
     </div>
   );
 };

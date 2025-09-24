@@ -269,7 +269,6 @@ const SpeechToTextService = () => {
             <SubtitleTextsHistory isOpenPopover={setIsOpenPopover} />
           </div>
           {!isOpenPopover ? <SubtitleArea /> : null}
-          <SubtitleArea />
         </div>
       ) : null}
     </>

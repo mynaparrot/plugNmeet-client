@@ -31,6 +31,7 @@ const initialState: IBottomIconsSlice = {
   showManageBreakoutRoomModal: false,
   showDisplayExternalLinkModal: false,
   showSpeechSettingsModal: false,
+  showSpeechSettingOptionsModal: false,
 
   totalUnreadChatMsgs: 0,
   virtualBackground: defaultBackgroundConfig,
@@ -169,6 +170,12 @@ const bottomIconsSlice = createSlice({
     ) => {
       state.showSpeechSettingsModal = action.payload;
     },
+    updateDisplaySpeechSettingOptionsModal: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.showSpeechSettingOptionsModal = action.payload;
+    },
     updateTotalUnreadChatMsgs: (state) => {
       if (!state.isActiveChatPanel) {
         state.totalUnreadChatMsgs += 1;
@@ -215,6 +222,7 @@ export const {
   updateTotalUnreadChatMsgs,
   updateVirtualBackground,
   updateDisplaySpeechSettingsModal,
+  updateDisplaySpeechSettingOptionsModal,
   updateIsEnabledExtendedVerticalCamView,
 } = bottomIconsSlice.actions;
 

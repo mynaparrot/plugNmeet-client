@@ -22,7 +22,6 @@ import SpeechUsersElms from './speechUsersElms';
 import TransLangsElm from './transLangsElm';
 import DefaultSubtitleLangElms from './defaultSubtitleLangElms';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
-import RangeSlider from '../../../helpers/libs/rangeSlider';
 
 const SpeechServiceSettingsModal = () => {
   const { t } = useTranslation();
@@ -32,18 +31,25 @@ const SpeechServiceSettingsModal = () => {
       state.session.currentRoom.metadata?.roomFeatures
         ?.speechToTextTranslationFeatures,
   );
+  const [enabledTranscription, setEnabledTranscription] = useState<boolean>(
+    !!speechService?.isEnabled,
+  );
 
-  const [enabledTranscription, setEnabledTranscription] = useState(false);
+  const [selectedSpeechLangs, setSelectedSpeechLangs] = useState<string[]>(
+    speechService?.allowedSpeechLangs ?? [],
+  );
+  const [selectedSpeechUsers, setSelectedSpeechUsers] = useState<string[]>(
+    speechService?.allowedSpeechUsers ?? [],
+  );
 
-  const [slideRangeValue, setSlideRangeValue] = useState(14);
-
-  const [selectedSpeechLangs, setSelectedSpeechLangs] = useState<string[]>([]);
-  const [selectedSpeechUsers, setSelectedSpeechUsers] = useState<string[]>([]);
-
-  const [enableTranslation, setEnableTranslation] = useState(false);
-  const [selectedTransLangs, setSelectedTransLangs] = useState<string[]>([]);
+  const [enableTranslation, setEnableTranslation] = useState<boolean>(
+    !!speechService?.isEnabledTranslation,
+  );
+  const [selectedTransLangs, setSelectedTransLangs] = useState<string[]>(
+    speechService?.allowedTransLangs ?? [],
+  );
   const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] =
-    useState<string>('');
+    useState<string>(speechService?.defaultSubtitleLang ?? '');
 
   useEffect(() => {
     if (speechService?.allowedSpeechLangs) {
@@ -217,27 +223,6 @@ const SpeechServiceSettingsModal = () => {
                           setSelectedDefaultSubtitleLang
                         }
                       />
-                      <div className="font-size">
-                        <div className="top flex justify-between items-center mb-3">
-                          <label
-                            htmlFor="transcription-size"
-                            className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right block"
-                          >
-                            Transcription Font Size
-                          </label>
-                          <div className="count text-xs text-Gray-800 font-medium bg-Gray-25 border border-Gray-300 shadow-Icon-box rounded-[7px] py-0.5 px-2">
-                            {slideRangeValue}
-                          </div>
-                        </div>
-                        <RangeSlider
-                          min={5}
-                          max={30}
-                          value={slideRangeValue}
-                          onChange={setSlideRangeValue}
-                          thumbSize={20}
-                          trackHeight={8}
-                        />
-                      </div>
                     </div>
                   ) : null}
                   <Field className="py-4 px-5 bg-Gray-25 border-y border-dotted border-Gray-100">

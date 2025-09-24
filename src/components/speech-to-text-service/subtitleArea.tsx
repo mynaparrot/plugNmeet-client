@@ -131,7 +131,7 @@ const SubtitleArea = () => {
                 </svg>
               </div>
               <div className="text-xs font-semibold text-white bg-white/10 h-full flex items-center px-1.5">
-                EN
+                {speechServices.selectedSubtitleLang.toUpperCase()}
               </div>
             </div>
             {subtitleText}

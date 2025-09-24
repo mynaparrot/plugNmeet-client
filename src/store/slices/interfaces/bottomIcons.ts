@@ -29,6 +29,7 @@ export interface IBottomIconsSlice {
   showManageBreakoutRoomModal: boolean;
   showDisplayExternalLinkModal: boolean;
   showSpeechSettingsModal: boolean;
+  showSpeechSettingOptionsModal: boolean;
 
   totalUnreadChatMsgs: number;
   virtualBackground: BackgroundConfig;
