@@ -7,7 +7,6 @@ import {
   UploadBase64EncodedDataResSchema,
 } from 'plugnmeet-protocol-js';
 import Resumable from 'resumablejs';
-import ResumableFile = Resumable.ResumableFile;
 
 import i18n from './i18n';
 import { store } from '../store';
@@ -17,6 +16,7 @@ import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 import sendAPIRequest from './api/plugNmeetAPI';
 import { IUseResumableFilesUploadResult } from './hooks/useResumableFilesUpload';
 import { addUserNotification } from '../store/slices/roomSettingsSlice';
+import ResumableFile = Resumable.ResumableFile;
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -349,8 +349,13 @@ export const uploadResumableFile = (
   files: Array<File>,
   onSuccess: (result: IUseResumableFilesUploadResult) => void,
   isUploading?: (uploading: boolean) => void,
+  uploadingProgress?: (progress: number) => void,
+  onError?: (msg: string) => void,
 ) => {
   if (isUploadingFile) {
+    if (onError) {
+      onError(i18n.t('notifications.please-wait-other-task-to-finish'));
+    }
     store.dispatch(
       addUserNotification({
         message: i18n.t('notifications.please-wait-other-task-to-finish'),
@@ -380,6 +385,13 @@ export const uploadResumableFile = (
 
     fileType: allowedFileTypes,
     fileTypeErrorCallback(file) {
+      if (onError) {
+        onError(
+          i18n.t('notifications.file-type-not-allow', {
+            filetype: file.type,
+          }),
+        );
+      }
       store.dispatch(
         addUserNotification({
           message: i18n.t('notifications.file-type-not-allow', {
@@ -394,6 +406,9 @@ export const uploadResumableFile = (
     // @ts-expect-error actually value exist
     maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
     maxFileSizeErrorCallback() {
+      if (onError) {
+        onError(i18n.t('notifications.max-file-size-exceeds'));
+      }
       store.dispatch(
         addUserNotification({
           message: i18n.t('notifications.max-file-size-exceeds'),
@@ -442,6 +457,9 @@ export const uploadResumableFile = (
         fileExtension: res.fileExtension,
       });
     } else {
+      if (onError) {
+        onError(i18n.t(res.msg));
+      }
       toast(i18n.t(res.msg), {
         type: 'error',
       });
@@ -466,6 +484,9 @@ export const uploadResumableFile = (
           typeOption: 'error',
         }),
       );
+      if (onError) {
+        onError(i18n.t(res.msg));
+      }
     } catch (e) {
       console.error(e);
       store.dispatch(
@@ -474,6 +495,9 @@ export const uploadResumableFile = (
           typeOption: 'error',
         }),
       );
+      if (onError) {
+        onError(i18n.t('right-panel.file-upload-default-error'));
+      }
     }
   });
 
@@ -492,6 +516,9 @@ export const uploadResumableFile = (
 
   r.on('fileProgress', function (file) {
     const progress = file.progress(false);
+    if (uploadingProgress !== undefined) {
+      uploadingProgress(Number(progress));
+    }
     toast.update(toastId, {
       progress: Number(progress),
     });

@@ -3,15 +3,15 @@ import { throttle } from 'es-toolkit/compat';
 import {
   Excalidraw,
   Footer,
-  MainMenu,
   getSceneVersion,
+  MainMenu,
 } from '@excalidraw/excalidraw';
 import {
-  ExcalidrawImperativeAPI,
-  Gesture,
   AppState,
   BinaryFiles,
+  ExcalidrawImperativeAPI,
   ExcalidrawProps,
+  Gesture,
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ import {
 import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
-import ManageFiles from './manageFiles';
+import ManageFiles from './manage-office-files';
 import useWhiteboardPermissions from './helpers/hooks/useWhiteboardPermissions';
 import useCollaborators from './helpers/hooks/useCollaborators';
 import useWhiteboardLifecycle from './helpers/hooks/useWhiteboardLifecycle';
@@ -50,7 +50,9 @@ const CURSOR_SYNC_TIMEOUT = 33;
 
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
+    useState<boolean>(false);
 
   // Selectors
   const currentUser = useAppSelector((state) => state.session.currentUser);
@@ -205,7 +207,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const renderTopRightUI = () => (
     <>
       {isPresenter && excalidrawAPI && (
-        <ManageFiles excalidrawAPI={excalidrawAPI} />
+        <div className="menu relative z-10">
+          <button
+            onClick={() => setIsOpenManageFilesUI(true)}
+            className="manage-icon h-[30px] lg:h-[32px] max-w text-xs px-2! rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] font-semibold flex items-center justify-center cursor-pointer"
+          >
+            <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
+            {t('whiteboard.manage-files')}
+          </button>
+        </div>
       )}
     </>
   );
@@ -228,6 +238,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   return (
     <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
+      {isPresenter && excalidrawAPI && (
+        <ManageFiles
+          excalidrawAPI={excalidrawAPI}
+          onClose={() => setIsOpenManageFilesUI(false)}
+          isOpen={isOpenManageFilesUI}
+        />
+      )}
       <Excalidraw
         excalidrawAPI={handleOnReadyExcalidrawRef}
         onChange={onChange}
