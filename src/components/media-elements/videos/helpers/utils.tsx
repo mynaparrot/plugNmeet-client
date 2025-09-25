@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
 import { chunk, memoize } from 'es-toolkit';
-import { concat } from 'es-toolkit/compat';
 
 /*
  * For Mobile landscape mode,
@@ -75,102 +74,41 @@ export const setForMobileAndTablet = (participantsToRender: ReactElement[]) => {
 
 /*
  * For PC,
- * up to 4 webcams, 2 rows
- * up to 15 webcams, 3 rows
- * More than 15, 4 rows
+ * This function dynamically calculates a balanced grid layout for webcams.
+ * General rules:
+ * - 1-2 webcams: 1 row
+ * - 3-6 webcams: 2 rows
+ * - 7-15 webcams: 3 rows
+ * - 16+ webcams: 4 rows
+ * Webcams will fillup from top to bottom
+ * for example numbers like 7 (3-2-2 layout); 10 (4-3-3 layout); 17 (5-4-4-4 layout)
  */
-const setForPC = (participantsToRender: ReactElement[]) => {
-  const length = participantsToRender.length;
-  let chunkParts: ReactElement[][] = [];
+const setForPC = (participants: ReactElement[]) => {
+  const n = participants.length;
+  if (n === 0) {
+    return [];
+  }
 
-  switch (length) {
-    case 1:
-    case 2:
-      chunkParts.push(participantsToRender);
-      break;
-    case 3:
-    case 4:
-      // 2 rows
-      chunkParts = chunk(participantsToRender, 2);
-      break;
-    case 5:
-    case 6:
-    case 8:
-    case 9:
-      // 3 rows
-      chunkParts = chunk(participantsToRender, 3);
-      break;
-    case 7:
-      // 3 + 2 + 2
-      chunkParts.push(participantsToRender.slice(0, 3));
-      chunkParts = concat(chunkParts, chunk(participantsToRender.slice(3), 2));
-      break;
-    case 10:
-      // 4 + 3 + 3
-      chunkParts.push(participantsToRender.slice(0, 4));
-      chunkParts = concat(chunkParts, chunk(participantsToRender.slice(4), 3));
-      break;
-    case 11:
-    case 12:
-      // 3 rows
-      chunkParts = chunk(participantsToRender, 4);
-      break;
-    case 13:
-      // 5 + 4 + 4
-      chunkParts.push(participantsToRender.slice(0, 5));
-      chunkParts = concat(chunkParts, chunk(participantsToRender.slice(5), 4));
-      break;
-    case 14:
-    case 15:
-      // 3 rows
-      chunkParts = chunk(participantsToRender, 5);
-      break;
-    case 16:
-      // 4 + 4 + 4 + 4
-      chunkParts = chunk(participantsToRender, 4);
-      break;
-    case 17:
-      // 5 + 4 + 4 + 4
-      chunkParts.push(participantsToRender.slice(0, 5));
-      chunkParts = concat(chunkParts, chunk(participantsToRender.slice(5), 4));
-      break;
-    case 18:
-      // 5 + 5 + 4 + 4
-      chunkParts = concat(
-        chunk(participantsToRender.slice(0, 10), 5),
-        chunk(participantsToRender.slice(10), 4),
-      );
-      break;
-    case 19:
-      // 5 + 5 + 5 + 4
-      chunkParts = chunk(participantsToRender.slice(0, 15), 5);
-      chunkParts.push(participantsToRender.slice(14));
-      break;
-    case 20:
-      // 5 + 5 + 5 + 5
-      chunkParts = chunk(participantsToRender, 5);
-      break;
-    case 21:
-      // 6 + 5 + 5 + 5
-      chunkParts.push(participantsToRender.slice(0, 6));
-      chunkParts = concat(chunkParts, chunk(participantsToRender.slice(6), 5));
-      break;
-    case 22:
-      // 6 + 6 + 5 + 5
-      chunkParts = concat(
-        chunk(participantsToRender.slice(0, 12), 6),
-        chunk(participantsToRender.slice(12), 5),
-      );
-      break;
-    case 23:
-      // 6 + 6 + 6 + 5
-      chunkParts = chunk(participantsToRender.slice(0, 18), 6);
-      chunkParts.push(participantsToRender.slice(18));
-      break;
-    default:
-      // 6 + 6 + 6 + 6
-      chunkParts = chunk(participantsToRender, 6);
-      break;
+  // Determine the number of rows.
+  let numRows: number;
+  if (n <= 2) numRows = 1;
+  else if (n <= 6) numRows = 2;
+  else if (n <= 15) numRows = 3;
+  else numRows = 4;
+
+  // Calculate items per row and the remainder.
+  const itemsPerRow = Math.floor(n / numRows);
+  const remainder = n % numRows;
+
+  const chunkParts: ReactElement[][] = [];
+  let currentIndex = 0;
+
+  for (let i = 0; i < numRows; i++) {
+    // Distribute the remainder among the first rows.
+    const rowSize = itemsPerRow + (i < remainder ? 1 : 0);
+    const end = currentIndex + rowSize;
+    chunkParts.push(participants.slice(currentIndex, end));
+    currentIndex = end;
   }
 
   const elms: Array<ReactElement> = [];
@@ -180,7 +118,7 @@ const setForPC = (participantsToRender: ReactElement[]) => {
     elms.push(
       <div
         key={`camera-row-${i}`}
-        className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+        className={`camera-row-${i} total-items-${n} inner-items-${el.length}`}
       >
         {el}
       </div>,
