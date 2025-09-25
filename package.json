@@ -17,7 +17,7 @@
   "dependencies": {
     "@bufbuild/protobuf": "2.8.0",
     "@excalidraw/excalidraw": "0.17.6",
-    "@headlessui/react": "2.2.1",
+    "@headlessui/react": "2.2.9",
     "@nats-io/jetstream": "3.1.0",
     "@nats-io/nats-core": "3.1.0",
     "@reduxjs/toolkit": "2.6.1",
