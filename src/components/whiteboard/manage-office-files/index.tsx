@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { useTranslation } from 'react-i18next';
@@ -27,22 +27,17 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
   const dispatch = useAppDispatch();
 
   const inputFile = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
   const [selectedOfficeFile, setOnSelectOfficeFile] = useState<
     IWhiteboardOfficeFile | undefined
   >(undefined);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setFiles([]);
-    }
-  }, [isOpen]);
+  const [disableUploading, setDisableUploading] = useState<boolean>(false);
 
   const switchOfficeFile = async (f: IWhiteboardOfficeFile) => {
     await saveCurrentPageData();
     dispatch(updateCurrentWhiteboardOfficeFileId(f.fileId));
     await sleep(500);
-    broadcastWhiteboardOfficeFile(f).then();
+    await broadcastWhiteboardOfficeFile(f);
   };
 
   const saveCurrentPageData = async () => {
@@ -61,7 +56,9 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
-    setFiles(selectedFiles);
+    if (selectedFiles.length) {
+      setSelectedFile(selectedFiles[0]);
+    }
   };
 
   const addToWhiteboard = useCallback(() => {
@@ -77,7 +74,8 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
       open={isOpen}
       as="div"
       className="relative z-10 focus:outline-hidden"
-      onClose={() => onClose()}
+      unmount={false}
+      onClose={() => false}
     >
       <div className="excalidrawUploadFiles fixed inset-0 w-screen overflow-y-auto z-10">
         <div className="flex min-h-full items-center justify-center py-4">
@@ -98,7 +96,8 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
               <div className="input-wrap relative rounded-xl border border-dashed border-Gray-200 py-8 px-6 cursor-pointer">
                 <input
                   type="file"
-                  multiple
+                  multiple={false}
+                  disabled={disableUploading}
                   ref={inputFile}
                   onChange={onChange}
                   accept={allowedFileTypes.join(',')}
@@ -106,7 +105,7 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
                 />
                 <div className="text-wrap text-sm font-medium text-center cursor-pointer">
                   <p className="text-Gray-950 font-semibold pb-1">
-                    Drag and drop your files to upload
+                    Drag and drop your file to upload
                   </p>
                   <p className="text-Gray-700">Max file size: 50 MB</p>
                   <div className="divider flex justify-center items-center gap-3 py-3">
@@ -116,19 +115,20 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
                   </div>
                   <button className="h-9 w-auto m-auto px-4 flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer">
                     <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
-                    Select Files
+                    Select a File
                   </button>
                 </div>
               </div>
               <div className="file-preview-list grid gap-2 pt-4">
-                {files.map((file, idx) => (
+                {selectedFile && (
                   <UploadingFile
-                    key={idx + file.name}
+                    key={selectedFile.name + selectedFile.lastModified}
                     excalidrawAPI={excalidrawAPI}
                     allowedFileTypes={allowedFileTypes}
-                    file={file}
+                    file={selectedFile}
+                    setDisableUploading={setDisableUploading}
                   />
-                ))}
+                )}
                 <UploadedOfficeFiles
                   onSelectOfficeFile={setOnSelectOfficeFile}
                 />
@@ -144,7 +144,7 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
               <button
                 className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Blue2-500 border border-Blue2-600 transition-all duration-300 hover:bg-Blue2-600  shadow-button-shadow cursor-pointer"
                 onClick={addToWhiteboard}
-                disabled={selectedOfficeFile === undefined}
+                disabled={selectedOfficeFile === undefined || disableUploading}
               >
                 Add to Whiteboard
               </button>

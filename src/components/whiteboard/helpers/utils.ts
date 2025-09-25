@@ -82,6 +82,7 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
   uploaderWhiteboardHeight = 260,
   uploaderWhiteboardWidth = 1160,
+  appendOnly?: boolean,
 ) => {
   const files: Array<IWhiteboardFile> = [];
   for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
@@ -104,6 +105,7 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
     filePath: whiteboardFileConversionRes.filePath,
     totalPages: whiteboardFileConversionRes.totalPages,
     pageFiles: JSON.stringify(files),
+    appendOnly: appendOnly,
   };
 
   store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));

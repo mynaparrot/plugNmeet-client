@@ -38,6 +38,7 @@ export interface IWhiteboardOfficeFile {
   totalPages: number;
   currentPage?: number;
   pageFiles: string;
+  appendOnly?: boolean; // only broadcasting, not select as current
 }
 
 export interface IWhiteboardAppState {

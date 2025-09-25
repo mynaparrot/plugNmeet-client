@@ -93,28 +93,38 @@ const whiteboardSlice = createSlice({
       state,
       action: PayloadAction<IWhiteboardOfficeFile>,
     ) => {
+      const payload = structuredClone(action.payload);
+      const appendOnly = !!payload.appendOnly;
+
       const exist = state.whiteboardUploadedOfficeFiles.filter(
-        (f) => f.fileId === action.payload.fileId,
+        (f) => f.fileId === payload.fileId,
       );
       if (!exist.length) {
         const tmp = [...state.whiteboardUploadedOfficeFiles];
-        tmp.push(action.payload);
+        // this value only helpful during broadcasting
+        // storing will make things confusing
+        delete payload.appendOnly;
+        tmp.push(payload);
         state.whiteboardUploadedOfficeFiles = tmp;
       }
+      if (appendOnly) {
+        // we won't select this as current file
+        return;
+      }
 
-      // set new file as current selected
-      state.currentWhiteboardOfficeFileId = action.payload.fileId;
+      // set the new file as current selected
+      state.currentWhiteboardOfficeFileId = payload.fileId;
       // update current file pages
-      state.whiteboardOfficeFilePagesAndOtherImages = action.payload.pageFiles;
+      state.whiteboardOfficeFilePagesAndOtherImages = payload.pageFiles;
 
       // update current page
-      if (action.payload.currentPage) {
-        state.currentPage = action.payload.currentPage;
+      if (payload.currentPage) {
+        state.currentPage = payload.currentPage;
       } else {
         state.currentPage = 1;
       }
       // update total page
-      state.totalPages = action.payload.totalPages;
+      state.totalPages = payload.totalPages;
     },
     doRefreshWhiteboard: (state) => {
       state.refreshWhiteboard = Date.now();

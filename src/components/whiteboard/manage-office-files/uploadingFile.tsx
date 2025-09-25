@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
@@ -24,6 +31,7 @@ interface UploadingFileProp {
   excalidrawAPI: ExcalidrawImperativeAPI;
   allowedFileTypes: string[];
   file: File;
+  setDisableUploading: Dispatch<SetStateAction<boolean>>;
 }
 type message = {
   isError: boolean;
@@ -33,6 +41,7 @@ const UploadingFile = ({
   excalidrawAPI,
   allowedFileTypes,
   file,
+  setDisableUploading,
 }: UploadingFileProp) => {
   const { t } = useTranslation();
   const session = store.getState().session;
@@ -46,6 +55,11 @@ const UploadingFile = ({
   const [removeView, setRemoveView] = useState<boolean>(false);
   const [isWorking, setIsWorking] = useState<boolean>(false);
   const uploadInitiated = useRef(false);
+
+  useEffect(() => {
+    setDisableUploading(isWorking);
+    // oxlint-disable-next-line exhaustive-deps
+  }, [isWorking]);
 
   useEffect(() => {
     if (uploadInitiated.current) {
@@ -117,10 +131,11 @@ const UploadingFile = ({
       res,
       excalidrawAPI.getAppState().height,
       excalidrawAPI.getAppState().width,
+      true, // just broadcasting, not select as current file
     );
 
     await sleep(500);
-    broadcastWhiteboardOfficeFile(newFile).then();
+    await broadcastWhiteboardOfficeFile(newFile);
 
     // send analytics
     conn.sendAnalyticsData(
@@ -143,6 +158,7 @@ const UploadingFile = ({
     setMessage({ isError: false, msg: t('whiteboard.file-ready') });
     await sleep(1000);
     setRemoveView(true);
+    setIsWorking(false);
   };
 
   const handleDelete = useCallback(() => {
