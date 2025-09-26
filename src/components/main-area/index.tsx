@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { Transition } from '@headlessui/react';
-import clsx from 'clsx';
 
 import { store, useAppDispatch } from '../../store';
 import {
@@ -118,10 +117,7 @@ const MainArea = () => {
       leaveTo="translate-x-full"
     >
       <div
-        className={clsx(
-          panelClass,
-          'absolute w-[300px] 3xl:w-[340px] right-0 h-full',
-        )}
+        className={`${panelClass} absolute w-[300px] 3xl:w-[340px] right-0 h-full`}
       >
         <Component />
       </div>
@@ -143,10 +139,17 @@ const MainArea = () => {
     return screenHeight;
   }, [screenHeight, screenWidth, isRecorder, headerVisible, footerVisible]);
 
+  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
+  const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
+    isActiveParticipantsPanel || isActiveChatPanel || isActivePollsPanel
+      ? 'pr-[300px] 3xl:pr-[340px]'
+      : ''
+  }`;
+
   return (
     <div
       id="main-area"
-      className={`plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`}
+      className={mainAreaClasses}
       style={{ height: `${height}px` }}
     >
       {/* <div
@@ -156,9 +159,7 @@ const MainArea = () => {
         }}
       /> */}
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
-        <div
-          className={`middle-area relative transition-all duration-300 w-full ${isActiveParticipantsPanel || isActiveChatPanel || isActivePollsPanel ? 'pr-[300px] 3xl:pr-[340px]' : ''}`}
-        >
+        <div className={middleAreaClasses}>
           <ActiveSpeakers />
           {renderMainComponentElms}
         </div>
