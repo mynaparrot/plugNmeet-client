@@ -19,12 +19,18 @@ const VerticalLayout = ({
   currentPage,
 }: IVerticalLayoutProps) => {
   const dispatch = useAppDispatch();
-  const {
-    isEnabledExtendedVerticalCamView,
-    isActiveChatPanel,
-    isActiveParticipantsPanel,
-    isActivePollsPanel,
-  } = useAppSelector((state) => state.bottomIconsActivity);
+  const isEnabledExtendedVerticalCamView = useAppSelector(
+    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
+  );
+  const isActiveChatPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveChatPanel,
+  );
+  const isActiveParticipantsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+  );
+  const isActivePollsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.isActivePollsPanel,
+  );
 
   const videoParticipantsElms = useMemo(() => {
     if (!isEnabledExtendedVerticalCamView) {
@@ -55,7 +61,7 @@ const VerticalLayout = ({
   return (
     <div className={wrapperClasses}>
       <div className={innerClasses}>
-        {pinParticipant ? (
+        {pinParticipant && (
           <div
             className={`pinCam-item video-camera-item order-2! ${
               isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''
@@ -63,10 +69,10 @@ const VerticalLayout = ({
           >
             {pinParticipant}
           </div>
-        ) : null}
+        )}
         {videoParticipantsElms}
       </div>
-      {canShowExtendButton ? (
+      {canShowExtendButton && (
         <button
           onClick={() =>
             dispatch(
@@ -85,7 +91,7 @@ const VerticalLayout = ({
             <ArrowRight />
           </span>
         </button>
-      ) : null}
+      )}
     </div>
   );
 };

@@ -51,7 +51,7 @@ const VideoParticipant = ({
         participantType.isAdmin ? 'admin' : 'participants'
       } ${participantType.isLocal && floatView ? 'its-me' : ''}`}
     >
-      {participantType.isLocal && displaySwitchCamIcon ? (
+      {participantType.isLocal && displaySwitchCamIcon && (
         <>
           <div
             className="switch-camera absolute top-3 left-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full hidden items-center justify-center bg-black bg-opacity-50"
@@ -60,7 +60,7 @@ const VideoParticipant = ({
             <RepeatIconSVG />
           </div>
         </>
-      ) : null}
+      )}
       {renderVideoElms}
       <div className="bg-shadow pointer-events-none bg-linear-to-b from-95% from-black/0 to-black/50 w-full h-full absolute bottom-0 left-0 opacity-0 transition-all duration-300 group-hover:opacity-100"></div>
     </div>

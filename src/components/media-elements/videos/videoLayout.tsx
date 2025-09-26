@@ -191,33 +191,36 @@ const VideoLayout = ({
     return display;
   }, [allParticipants, webcamPerPage, currentPage, isRecorder]);
 
+  const allParticipantsCount = useMemo(
+    () => allParticipants.length,
+    [allParticipants],
+  );
+
   useEffect(() => {
-    // Reset to page 1 when participants or layout changes,
-    // but only if we are not already in the middle of pagination.
-    if (!isWebcamPaginating) {
+    // This effect manages the current page number.
+    // It resets to page 1 if the layout changes (and we're not paginating),
+    // or initializes the page to 1 if it's currently 0, and we have participants.
+    if (
+      (!isWebcamPaginating && currentPage !== 1) ||
+      (allParticipantsCount > 0 && currentPage === 0)
+    ) {
       setCurrentPage(1);
     }
-  }, [allParticipants, webcamPerPage, isWebcamPaginating]);
+  }, [allParticipantsCount, webcamPerPage, isWebcamPaginating, currentPage]);
 
   useEffect(() => {
     // This effect handles the side-effects of pagination
     setParticipantsToRender(paginatedParticipants);
     const isPaginating =
-      allParticipants.length > webcamPerPage && currentPage > 0;
+      allParticipantsCount > webcamPerPage && currentPage > 1;
     dispatch(setWebcamPaginating(isPaginating));
   }, [
     paginatedParticipants,
-    allParticipants.length,
+    allParticipantsCount,
     webcamPerPage,
     currentPage,
     dispatch,
   ]);
-
-  useEffect(() => {
-    if (allParticipants.length > 0 && currentPage === 0) {
-      setCurrentPage(1);
-    }
-  }, [allParticipants, currentPage]);
 
   const prePage = (currPage: number) => {
     const newCurrentPage = currPage - 1;
