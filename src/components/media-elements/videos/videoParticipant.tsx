@@ -4,7 +4,7 @@ import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
 import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
-import { VideoParticipantType } from './videosComponentElms';
+import { VideoParticipantType } from './';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
 
 export interface VideoParticipantProps {
@@ -43,8 +43,7 @@ const VideoParticipant = ({
       }
     }
     return elements;
-    //eslint-disable-next-line
-  }, [participant, displayPinIcon]);
+  }, [participant, displayPinIcon, participantType]);
 
   return (
     <div

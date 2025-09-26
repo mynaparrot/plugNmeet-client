@@ -7,9 +7,14 @@ const participantAdapter = createEntityAdapter({
   sortComparer: (a: IParticipant, b: IParticipant) =>
     a.name.localeCompare(b.name),
 });
+
 export const participantsSelector = participantAdapter.getSelectors(
   (state: RootState) => state.participants,
 );
+
+export const getParticipantByUserId = (state: RootState, userId: string) => {
+  return participantsSelector.selectById(state, userId);
+};
 
 const participantsSlice = createSlice({
   name: 'participants',

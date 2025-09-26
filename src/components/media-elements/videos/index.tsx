@@ -1,19 +1,22 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { concat } from 'es-toolkit/compat';
 
-import { useAppDispatch, useAppSelector } from '../../../store';
-import { ICurrentUserMetadata } from '../../../store/slices/interfaces/session';
-import VideosComponentElms, {
-  VideoParticipantType,
-} from './videosComponentElms';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
+import VideoLayout from './videoLayout';
 import VideoParticipant, { VideoParticipantProps } from './videoParticipant';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
 import { updatePinCamUserId } from '../../../store/slices/roomSettingsSlice';
+import { getParticipantByUserId } from '../../../store/slices/participantSlice';
 
 interface IVideosComponentProps {
   isVertical?: boolean;
+}
+
+export interface VideoParticipantType {
+  isAdmin: boolean;
+  isLocal: boolean;
 }
 
 const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
@@ -23,13 +26,6 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
   );
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
-  const [allParticipants, setAllParticipants] = useState<
-    Array<ReactElement<VideoParticipantProps>>
-  >([]);
-  const [pinParticipant, setPinParticipant] = useState<
-    ReactElement<VideoParticipantProps> | undefined
-  >(undefined);
-  const [totalNumWebcams, setTotalNumWebcams] = useState<number>(0);
   const currentConnection = getMediaServerConn();
 
   useEffect(() => {
@@ -48,17 +44,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     };
   }, [currentConnection]);
 
-  useEffect(() => {
-    if (!pinCamUserId && pinParticipant) {
-      setPinParticipant(undefined);
-    }
-  }, [pinCamUserId, pinParticipant]);
-
-  useEffect(() => {
-    if (!videoSubscribers) {
-      return;
-    }
-
+  const { allParticipants, pinParticipant, totalNumWebcams } = useMemo(() => {
     let totalNumWebcams = 0;
     const localSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
     let pinSubscribers: ReactElement<VideoParticipantProps> | undefined =
@@ -66,7 +52,11 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     const adminSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
     const otherSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
 
-    for (const participant of videoSubscribers.values()) {
+    const subscribers = videoSubscribers
+      ? Array.from(videoSubscribers.values())
+      : [];
+
+    for (const participant of subscribers) {
       // we will only take if source from Camera
       const videoTracks = participant.getTrackPublication(Track.Source.Camera);
       if (videoTracks) {
@@ -74,19 +64,18 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           displayPinIcon = true,
           displaySwitchCamIcon = true;
 
-        if (participant.metadata && participant.metadata !== '') {
-          const metadata: ICurrentUserMetadata = JSON.parse(
-            participant.metadata,
-          );
-          isAdmin = metadata.isAdmin;
-        }
+        const pp = getParticipantByUserId(
+          store.getState(),
+          participant.identity,
+        );
+        isAdmin = !!pp?.metadata?.isAdmin;
 
         const participantType: VideoParticipantType = {
           isAdmin,
           isLocal: participant instanceof LocalParticipant,
         };
 
-        if (videoSubscribers.size == 1) {
+        if (subscribers.length === 1) {
           displayPinIcon = false;
           displaySwitchCamIcon = false;
         }
@@ -123,21 +112,33 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
       otherSubscribers,
     );
 
+    let finalPinParticipant: ReactElement<VideoParticipantProps> | undefined =
+      undefined;
     if (totalNumWebcams > 1 && pinSubscribers) {
       // only then we can activate pin cam
-      setPinParticipant(pinSubscribers);
+      finalPinParticipant = pinSubscribers;
     } else if (pinSubscribers) {
       // otherwise treat as normal
       allParticipants.push(pinSubscribers);
-      dispatch(updatePinCamUserId(undefined));
     }
 
-    setAllParticipants(allParticipants);
-    setTotalNumWebcams(totalNumWebcams);
-  }, [videoSubscribers, pinCamUserId, dispatch]);
+    return {
+      allParticipants,
+      pinParticipant: finalPinParticipant,
+      totalNumWebcams,
+    };
+  }, [videoSubscribers, pinCamUserId]);
+
+  useEffect(() => {
+    // If a pinCamUserId is set, but we couldn't find a matching participant
+    // (e.g., they left or turned off their camera), we should clear the pin.
+    if (pinCamUserId && !pinParticipant) {
+      dispatch(updatePinCamUserId(undefined));
+    }
+  }, [pinCamUserId, pinParticipant, dispatch]);
 
   return (
-    <VideosComponentElms
+    <VideoLayout
       allParticipants={allParticipants}
       pinParticipant={pinParticipant}
       totalNumWebcams={totalNumWebcams}
