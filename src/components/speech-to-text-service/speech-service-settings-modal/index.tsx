@@ -181,6 +181,9 @@ const SpeechServiceSettingsModal = () => {
                   </Button>
                 </DialogTitle>
                 <div className="main-wrap">
+                  {/* <div className="error-message mx-5 my-2 px-3 py-2 border border-Red-400 bg-Red-25 rounded-lg text-sm text-center">
+                    Error message from translation
+                  </div> */}
                   <Field className="py-4 px-5 bg-Gray-25 border-b border-dotted border-Gray-100">
                     <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
                       <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
