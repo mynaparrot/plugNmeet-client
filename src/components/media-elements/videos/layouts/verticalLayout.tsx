@@ -79,7 +79,7 @@ const VerticalLayout = ({
               ),
             )
           }
-          className="extend-button absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+          className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
         >
           <span
             className={`${

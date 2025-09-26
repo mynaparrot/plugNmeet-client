@@ -29,7 +29,7 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
   return (
     <Popover className="subtitleTextsHistory relative">
       <button
-        className="absolute left-[3.8rem] bottom-14"
+        className="absolute left-5 bottom-14"
         onClick={() => setShowPopover(!showPopover)}
       >
         <div className="chat-history-icon relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 shadow-virtual-item flex items-center justify-center">
