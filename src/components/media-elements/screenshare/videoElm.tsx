@@ -1,6 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import './style.css';
 import { useAppSelector } from '../../../store';
@@ -15,14 +22,10 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
   );
-  const [loaded, setLoaded] = useState<boolean>(false);
-  const [self, setSelf] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const self = useMemo(() => track instanceof LocalTrackPublication, [track]);
 
   useEffect(() => {
-    if (track instanceof LocalTrackPublication) {
-      setSelf(true);
-    }
-
     const el = ref.current;
     if (el) {
       track.videoTrack?.attach(el);
@@ -43,15 +46,13 @@ const VideoElm = ({ track }: IVideoElmProps) => {
     if (!isNatsServerConnected) {
       el.pause();
     } else if (isNatsServerConnected && el.paused) {
-      el.play().then();
+      el.play().catch((e) => console.error('screenshare play failed', e));
     }
   }, [isNatsServerConnected]);
 
-  const onLoadedData = () => {
-    setLoaded(true);
-  };
+  const onLoadedData = useCallback(() => setIsLoaded(true), []);
 
-  const fullScreen = () => {
+  const fullScreen = useCallback(() => {
     if (!document.fullscreenElement) {
       ref.current?.requestFullscreen().catch((err) => {
         alert(
@@ -59,42 +60,44 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         );
       });
     } else {
-      document.exitFullscreen().then();
+      document
+        .exitFullscreen()
+        .catch((e) => console.error('exit fullscreen failed', e));
     }
-  };
+  }, []);
 
   return (
-    <div className="screen-share-video relative">
-      {!loaded ? (
+    <div className="screen-share-video group relative">
+      {!isLoaded && (
         <div className="loading absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center">
           <div className="lds-ripple">
             <div className="border-secondary-color" />
             <div className="border-secondary-color" />
           </div>
         </div>
-      ) : null}
-      <button
-        className="absolute z-99 bottom-0 right-0 p-1 bg-black/50"
-        onClick={fullScreen}
-      >
-        <i className="icon pnm-fullscreen text[20px] text-white" />
-      </button>
+      )}
+      {isLoaded && (
+        <button
+          className="absolute z-99 bottom-2 right-2 p-1 bg-black/50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={fullScreen}
+        >
+          <i className="icon pnm-fullscreen text-[18px] text-white" />
+        </button>
+      )}
       <video
         onLoadedData={onLoadedData}
         ref={ref}
-        className={`video-player absolute ${
-          self
-            ? 'self-screen-share !w-auto !h-52 !left-1/2 !top-1/2 !-translate-x-1/2 !-translate-y-1/2'
-            : 'remote-screen-share'
-        }`}
+        className={clsx('video-player absolute', {
+          'self-screen-share !w-auto !h-52 !left-1/2 !top-1/2 !-translate-x-1/2 !-translate-y-1/2':
+            self,
+          'remote-screen-share': !self,
+        })}
       />
-      {self ? (
-        <>
-          <div className="text absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
-            {t('notifications.you-are-sharing-screen')}
-          </div>
-        </>
-      ) : null}
+      {self && (
+        <div className="text absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
+          {t('notifications.you-are-sharing-screen')}
+        </div>
+      )}
     </div>
   );
 };

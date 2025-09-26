@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
@@ -8,6 +8,7 @@ import Header from '../header';
 import MainArea from '../main-area';
 import Landing from '../landing';
 import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
+import DummyAudio from './dummyAudio';
 
 import { store, useAppDispatch } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
@@ -126,6 +127,7 @@ const App = () => {
             <MainArea />
             <Footer />
             <AudioNotification />
+            <DummyAudio />
           </div>
         );
       default:

@@ -61,7 +61,7 @@ const ScreenShareElements = () => {
     }
   }, [screenShareTracks]);
 
-  return <>{renderElms ?? null}</>;
+  return <>{renderElms}</>;
 };
 
 export default ScreenShareElements;

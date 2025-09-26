@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -20,8 +21,6 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
     const ref = useRef<HTMLVideoElement>(null);
     useImperativeHandle(fRef, () => ref.current!, []);
 
-    const [loaded, setLoaded] = useState<boolean>();
-
     const roomVideoQuality = useAppSelector(
       (state) => state.roomSettings.roomVideoQuality,
     );
@@ -35,6 +34,9 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
     const videoFit = useMemo(() => {
       return track.trackName === 'canvas' ? 'contain' : videoObjectFit;
     }, [track.trackName, videoObjectFit]);
+
+    const [loaded, setLoaded] = useState<boolean>();
+    const onLoadedData = useCallback(() => setLoaded(true), []);
 
     useEffect(() => {
       const el = ref.current;
@@ -79,7 +81,7 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
         )}
         <video
           className="camera-video"
-          onLoadedData={() => setLoaded(true)}
+          onLoadedData={onLoadedData}
           ref={ref}
           style={{ objectFit: videoFit }}
         />

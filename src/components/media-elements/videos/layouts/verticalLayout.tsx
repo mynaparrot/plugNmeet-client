@@ -1,6 +1,7 @@
 import React, { ReactElement, useMemo } from 'react';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { useAppDispatch, useAppSelector } from '../../../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../../store/slices/bottomIconsActivitySlice';
 import { getElmsForPCExtendedVerticalView } from '../helpers/utils';
 import { ArrowRight } from '../../../../assets/Icons/ArrowRight';
@@ -12,6 +13,14 @@ interface IVerticalLayoutProps {
   currentPage: number;
 }
 
+const canShowExtendButtonSelector = createSelector(
+  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
+  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
+  (state: RootState) => state.bottomIconsActivity.isActivePollsPanel,
+  (isActiveParticipantsPanel, isActiveChatPanel, isActivePollsPanel) =>
+    !isActiveParticipantsPanel && !isActiveChatPanel && !isActivePollsPanel,
+);
+
 const VerticalLayout = ({
   participantsToRender,
   pinParticipant,
@@ -22,15 +31,7 @@ const VerticalLayout = ({
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
-  const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
-  );
-  const isActiveParticipantsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  );
-  const isActivePollsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActivePollsPanel,
-  );
+  const canShowExtendButton = useAppSelector(canShowExtendButtonSelector);
 
   const videoParticipantsElms = useMemo(() => {
     if (!isEnabledExtendedVerticalCamView) {
@@ -38,9 +39,6 @@ const VerticalLayout = ({
     }
     return getElmsForPCExtendedVerticalView(participantsToRender);
   }, [isEnabledExtendedVerticalCamView, participantsToRender]);
-
-  const canShowExtendButton =
-    !isActiveParticipantsPanel && !isActiveChatPanel && !isActivePollsPanel;
 
   const wrapperClasses = `vertical-webcams-wrapper absolute right-0 top-0 bg-white h-full p-3 transition-all duration-300 z-20 ${
     isEnabledExtendedVerticalCamView
