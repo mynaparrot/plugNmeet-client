@@ -255,23 +255,21 @@ const SpeechToTextService = () => {
   };
 
   return (
-    <>
-      {speechService ? (
-        <div className="speechService absolute bottom-0 w-full z-50 left-0">
-          <div className="wrap">
-            <SelectOptions
-              optionSelectionDisabled={optionSelectionDisabled}
-              speechService={speechService}
-              recognizer={recognizer}
-              onCloseSelectedOptions={onCloseSelectedOptions}
-              onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
-            />
-            <SubtitleTextsHistory isOpenPopover={setIsOpenPopover} />
-          </div>
-          {!isOpenPopover ? <SubtitleArea /> : null}
+    speechService && (
+      <div className="speechService absolute bottom-0 w-full z-50 left-0">
+        <div className="wrap">
+          <SelectOptions
+            optionSelectionDisabled={optionSelectionDisabled}
+            speechService={speechService}
+            recognizer={recognizer}
+            onCloseSelectedOptions={onCloseSelectedOptions}
+            onOpenSelectedOptionsModal={onOpenSelectedOptionsModal}
+          />
+          <SubtitleTextsHistory isOpenPopover={setIsOpenPopover} />
         </div>
-      ) : null}
-    </>
+        {!isOpenPopover ? <SubtitleArea /> : null}
+      </div>
+    )
   );
 };
 

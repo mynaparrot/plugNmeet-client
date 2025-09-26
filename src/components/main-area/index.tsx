@@ -1,77 +1,47 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
-import { useAppSelector, useAppDispatch, store } from '../../store';
+import { store, useAppDispatch } from '../../store';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
   updateIsEnabledExtendedVerticalCamView,
 } from '../../store/slices/bottomIconsActivitySlice';
-import { CurrentConnectionEvents } from '../../helpers/livekit/types';
-import { getMediaServerConn } from '../../helpers/livekit/utils';
+
+import { useMainAreaState } from './hooks/useMainAreaState';
+import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
 
 import ActiveSpeakers from '../active-speakers';
-import MainComponents from './mainComponents';
+import MainView from './mainView';
 import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 
 const MainArea = () => {
-  const columnCameraWidth = useAppSelector(
-    (state) => state.roomSettings.columnCameraWidth,
-  );
-  const columnCameraPosition = useAppSelector(
-    (state) => state.roomSettings.columnCameraPosition,
-  );
-  const isActiveParticipantsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  );
-  const isActiveScreenSharingView = useAppSelector(
-    (state) => state.roomSettings.activeScreenSharingView,
-  );
-  const isActiveWhiteboard = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveWhiteboard,
-  );
-  const isActiveExternalMediaPlayer = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.externalMediaPlayerFeatures?.isActive,
-  );
-  const isActiveDisplayExternalLink = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.isActive,
-  );
-  const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
-  );
-  const isActivePollsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActivePollsPanel,
-  );
-  const screenHeight = useAppSelector(
-    (state) => state.bottomIconsActivity.screenHeight,
-  );
-  const screenWidth = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
-  const headerVisible = useAppSelector(
-    (state) => state.roomSettings.visibleHeader,
-  );
-  const footerVisible = useAppSelector(
-    (state) => state.roomSettings.visibleFooter,
-  );
-
   const dispatch = useAppDispatch();
-  const currentConnection = getMediaServerConn();
   const session = store.getState().session;
   const isRecorder = session.currentUser?.isRecorder;
   const roomFeatures = session.currentRoom.metadata?.roomFeatures;
 
-  const [isActiveScreenShare, setIsActiveScreenShare] =
-    useState<boolean>(false);
-  const [height, setHeight] = useState<number>(screenHeight);
-  // const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
+  const {
+    columnCameraWidth,
+    columnCameraPosition,
+    isActiveParticipantsPanel,
+    isActiveScreenSharingView,
+    hasScreenShareSubscribers,
+    isActiveWebcamsView,
+    hasVideoSubscribers,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+    isActiveChatPanel,
+    isActivePollsPanel,
+    screenHeight,
+    screenWidth,
+    headerVisible,
+    footerVisible,
+  } = useMainAreaState();
 
   useEffect(() => {
     if (!roomFeatures?.chatFeatures?.allowChat) {
@@ -99,75 +69,35 @@ const MainArea = () => {
     //eslint-disable-next-line
   }, [dispatch]);
 
-  useEffect(() => {
-    setIsActiveScreenShare(currentConnection.screenShareTracksMap.size > 0);
-    currentConnection.on(
-      CurrentConnectionEvents.ScreenShareStatus,
-      setIsActiveScreenShare,
-    );
-    return () => {
-      currentConnection.off(
-        CurrentConnectionEvents.ScreenShareStatus,
-        setIsActiveScreenShare,
-      );
-    };
-  }, [currentConnection]);
-
-  const customCSS = useMemo(() => {
-    const css: Array<string> = [];
-
-    isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
-
-    isActiveParticipantsPanel
-      ? css.push('showParticipantsPanel')
-      : css.push('hideParticipantsPanel');
-
-    isActivePollsPanel
-      ? css.push('showPollsPanel')
-      : css.push('hidePollsPanel');
-
-    isActiveScreenSharingView && isActiveScreenShare
-      ? css.push('showScreenShare fullWidthMainArea')
-      : css.push('hideScreenShare');
-
-    isActiveWhiteboard
-      ? css.push('showWhiteboard fullWidthMainArea')
-      : css.push('hideWhiteboard');
-
-    isActiveExternalMediaPlayer
-      ? css.push('showExternalMediaPlayer fullWidthMainArea')
-      : css.push('hideExternalMediaPlayer');
-
-    isActiveDisplayExternalLink
-      ? css.push('showDisplayExternalLink fullWidthMainArea')
-      : css.push('hideDisplayExternalLink');
-
-    isRecorder ? css.push('isRecorder') : null;
-
-    return css.join(' ');
-  }, [
-    isActiveScreenSharingView,
-    isActiveScreenShare,
+  const customCSS = useMainAreaCustomCSS({
     isActiveChatPanel,
     isActiveParticipantsPanel,
     isActivePollsPanel,
+    isActiveScreenSharingView,
+    hasScreenShareSubscribers,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
     isRecorder,
-  ]);
+  });
 
   const renderMainComponentElms = useMemo(() => {
     return (
-      <MainComponents
+      <MainView
         isActiveWhiteboard={isActiveWhiteboard}
         isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
         isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
         isActiveScreenSharingView={isActiveScreenSharingView}
+        hasScreenShareSubscribers={hasScreenShareSubscribers}
+        isActiveWebcamsView={isActiveWebcamsView}
+        hasVideoSubscribers={hasVideoSubscribers}
       />
     );
   }, [
     isActiveScreenSharingView,
+    hasScreenShareSubscribers,
+    isActiveWebcamsView,
+    hasVideoSubscribers,
     isActiveDisplayExternalLink,
     isActiveExternalMediaPlayer,
     isActiveWhiteboard,
@@ -198,24 +128,19 @@ const MainArea = () => {
     </Transition>
   );
 
-  useEffect(() => {
+  const height = useMemo(() => {
     if (isRecorder) {
-      setHeight(screenHeight);
-      return;
+      return screenHeight;
     }
     if (headerVisible && footerVisible) {
-      if (screenWidth < 1640) {
-        setHeight(screenHeight - 108);
-      } else {
-        setHeight(screenHeight - 144);
-      }
+      return screenWidth < 1640 ? screenHeight - 108 : screenHeight - 144;
     } else if (headerVisible && !footerVisible) {
-      setHeight(screenHeight - 68);
+      return screenHeight - 68;
     } else if (!headerVisible && footerVisible) {
-      setHeight(screenHeight - 76);
-    } else if (!headerVisible && !footerVisible) {
-      setHeight(screenHeight);
+      return screenHeight - 76;
     }
+    // if both are hidden
+    return screenHeight;
   }, [screenHeight, screenWidth, isRecorder, headerVisible, footerVisible]);
 
   return (
