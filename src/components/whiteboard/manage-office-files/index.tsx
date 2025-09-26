@@ -77,7 +77,7 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
       unmount={false}
       onClose={() => false}
     >
-      <div className="excalidrawUploadFiles fixed inset-0 w-screen overflow-y-auto z-10">
+      <div className="excalidrawUploadFiles fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
         <div className="flex min-h-full items-center justify-center py-4">
           <DialogPanel
             transition

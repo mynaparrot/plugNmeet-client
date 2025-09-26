@@ -20,7 +20,7 @@ const UploadedOfficeFiles = ({ onSelectOfficeFile }: UploadedOfficeFiles) => {
     return (
       <div
         key={file.fileId}
-        className="flex gap-4 py-2 px-3 bg-Gray-50 w-full rounded-xl"
+        className={`flex gap-4 py-2 px-3 w-full rounded-xl ${currentWhiteboardOfficeFileId === file.fileId ? 'border-2 border-Blue2-500 bg-Blue2-50' : 'border border-Gray-100 bg-white'}`}
         onClick={() => onSelectOfficeFile(file)}
       >
         <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
@@ -31,13 +31,13 @@ const UploadedOfficeFiles = ({ onSelectOfficeFile }: UploadedOfficeFiles) => {
             <div className="left">
               <p className="break-all">{file.fileName}</p>
             </div>
-            <div className="right">
+            {/* <div className="right">
               {currentWhiteboardOfficeFileId === file.fileId && (
                 <>Selected icon</>
               )}
-            </div>
+            </div> */}
           </div>
-          <div className="progress-bar flex gap-2 items-center">
+          <div className="progress-bar flex gap-2 items-center text-xs pt-0.5">
             Total pages: {file.totalPages}
           </div>
         </div>

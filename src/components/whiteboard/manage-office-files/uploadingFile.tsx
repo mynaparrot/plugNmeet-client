@@ -169,7 +169,9 @@ const UploadingFile = ({
 
   return (
     !removeView && (
-      <div className="flex gap-4 py-2 px-3 bg-Gray-50 w-full rounded-xl">
+      <div
+        className={`flex gap-4 py-2 px-3 bg-Gray-50 w-full rounded-xl ${message && message.isError ? 'border border-Red-400' : ''}`}
+      >
         <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
           <FileIconSVG />
         </div>
@@ -181,14 +183,14 @@ const UploadingFile = ({
                 {file.size}KB
               </div>
             </div>
-            <div className="right" onClick={handleDelete}>
+            <div className="right cursor-pointer" onClick={handleDelete}>
               <TrashSVG />
             </div>
           </div>
           <div className="progress-bar flex gap-2 items-center">
-            {message ? (
+            {message && message.isError ? (
               <p
-                className={message.isError ? 'text-red-500' : 'text-green-500'}
+                className={`text-xs pt-0.5 ${message.isError ? 'text-red-500' : 'text-green-500'}`}
               >
                 {message.msg}
               </p>
