@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 import { HandsIconSVG } from '../../../../assets/Icons/HandsIconSVG';
@@ -17,8 +18,8 @@ const Participant = ({ userId, name, isLocal }: IParticipantProps) => {
 
   return (
     <div className="name absolute bottom-4 left-4 text-sm font-medium text-white z-10 flex items-center gap-2">
-      {name} {isLocal ? '(me)' : null}
-      {raisedHand ? <HandsIconSVG classes="h-4 w-auto" /> : null}
+      {name} {isLocal && '(me)'}
+      {raisedHand && <HandsIconSVG classes="h-4 w-auto" />}
     </div>
   );
 };

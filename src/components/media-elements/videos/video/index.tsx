@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import VideoElm from './videoElm';
@@ -23,8 +23,7 @@ const VideoComponent = ({
   track,
   displayPinIcon,
 }: IVideoComponentProps) => {
-  const [videoRef, setVideoRef] =
-    useState<React.RefObject<HTMLVideoElement> | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const fullScreen = async () => {
     if (!document.fullscreenElement) {
@@ -54,7 +53,7 @@ const VideoComponent = ({
       <div className="camera-modules">
         <div className="camera-video-player">
           <MicStatus userId={userId} />
-          <VideoElm track={track} setVideoRef={setVideoRef as any} />
+          <VideoElm track={track} ref={videoRef} />
           <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-999 transition-all duration-300 opacity-0 group-hover:opacity-100">
             {displayPinIcon ? <PinWebcam userId={userId} /> : null}
             <button

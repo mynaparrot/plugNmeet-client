@@ -16,22 +16,16 @@ const MicStatus = ({ userId }: IMicStatusProps) => {
     (state) => participantsSelector.selectById(state, userId)?.isMuted,
   );
 
-  const render = () => {
-    if (isMuted) {
-      return <MicrophoneOff classes={'h-4 w-auto'} />;
-    } else {
-      return <Microphone classes={'h-4 w-auto'} />;
-    }
-  };
-
   return (
-    <>
-      {audioTracks ? (
-        <div className="mic-status cursor-pointer w-7 h-7 text-white rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute right-3 top-3">
-          {render()}
-        </div>
-      ) : null}
-    </>
+    audioTracks && (
+      <div className="mic-status cursor-pointer w-7 h-7 text-white rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute right-3 top-3">
+        {isMuted ? (
+          <MicrophoneOff classes={'h-4 w-auto'} />
+        ) : (
+          <Microphone classes={'h-4 w-auto'} />
+        )}
+      </div>
+    )
   );
 };
 
