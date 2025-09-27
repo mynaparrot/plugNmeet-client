@@ -47,6 +47,7 @@ import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -521,24 +522,31 @@ export default class ConnectLivekit
       return;
     }
 
+    const activeSpeakers = activeSpeakersSelector.selectAll(store.getState());
     const mediaSubscribersToArray = Array.from(this._videoSubscribersMap);
     mediaSubscribersToArray.sort((a, b) => {
       const aPrt = a[1];
       const bPart = b[1];
 
-      if (aPrt.isSpeaking && bPart.isSpeaking) {
-        return bPart.audioLevel - aPrt.audioLevel;
-      }
+      const aSpeaker = activeSpeakers.find((s) => s.userId === aPrt.identity);
+      const bSpeaker = activeSpeakers.find((s) => s.userId === bPart.identity);
+
+      const aIsSpeaking = aSpeaker?.isSpeaking ?? false;
+      const bIsSpeaking = bSpeaker?.isSpeaking ?? false;
+
       // speaker goes first
-      if (aPrt.isSpeaking !== bPart.isSpeaking) {
-        if (aPrt.isSpeaking) {
-          return -1;
-        } else {
-          return 1;
-        }
+      if (aIsSpeaking !== bIsSpeaking) {
+        return aIsSpeaking ? -1 : 1;
       }
 
       // last active speaker first
+      const aLastSpoke = aSpeaker?.lastSpokeAt ?? 0;
+      const bLastSpoke = bSpeaker?.lastSpokeAt ?? 0;
+      if (aLastSpoke !== bLastSpoke) {
+        return bLastSpoke - aLastSpoke;
+      }
+
+      // then LiveKit's last active speaker
       if (aPrt.lastSpokeAt !== bPart.lastSpokeAt) {
         const aLast = aPrt.lastSpokeAt?.getTime() ?? 0;
         const bLast = bPart.lastSpokeAt?.getTime() ?? 0;

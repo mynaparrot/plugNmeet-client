@@ -38,8 +38,17 @@ const ActiveSpeakers = () => {
   const participantIds = useAppSelector(participantsSelector.selectIds);
   const room = getMediaServerConn();
 
+  const speakingParticipantIds = useMemo(
+    () =>
+      activeSpeakers
+        .map((p) => p.userId)
+        .sort()
+        .join(','),
+    [activeSpeakers],
+  );
+
   useEffect(() => {
-    if (activeSpeakers.length > 0) {
+    if (speakingParticipantIds) {
       reOrderWebcams(activeSpeakers, room);
     }
 
@@ -47,7 +56,8 @@ const ActiveSpeakers = () => {
     return () => {
       reOrderWebcams.cancel();
     };
-  }, [activeSpeakers, room]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [speakingParticipantIds, room]);
 
   const activeSpeakersElms = useMemo(() => {
     // Create a Set for efficient O(1) lookups.
