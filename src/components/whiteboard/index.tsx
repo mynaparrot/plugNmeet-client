@@ -23,10 +23,8 @@ import {
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
 } from './helpers/handleRequestedWhiteboardData';
-import FooterUI from './footerUI';
 import usePreviousFileId from './helpers/hooks/usePreviousFileId';
 import usePreviousPage from './helpers/hooks/usePreviousPage';
-import ManageFiles from './manage-office-files';
 import useWhiteboardPermissions from './helpers/hooks/useWhiteboardPermissions';
 import useCollaborators from './helpers/hooks/useCollaborators';
 import useWhiteboardLifecycle from './helpers/hooks/useWhiteboardLifecycle';
@@ -38,6 +36,9 @@ import {
   updateExcalidrawElements,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
+
+import ManageOfficeFilesModal from './manage-office-files';
+import FooterUI from './footerUI';
 
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
@@ -239,7 +240,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   return (
     <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
       {isPresenter && excalidrawAPI && (
-        <ManageFiles
+        <ManageOfficeFilesModal
           excalidrawAPI={excalidrawAPI}
           onClose={() => setIsOpenManageFilesUI(false)}
           isOpen={isOpenManageFilesUI}

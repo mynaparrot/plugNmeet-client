@@ -1,14 +1,21 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../../store';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
+import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
 
-interface UploadedOfficeFiles {
+interface UploadedFilesListProps {
   onSelectOfficeFile: (fileId: IWhiteboardOfficeFile) => void;
+  selectedFileId?: string;
 }
 
-const UploadedOfficeFiles = ({ onSelectOfficeFile }: UploadedOfficeFiles) => {
+const UploadedFilesList = ({
+  onSelectOfficeFile,
+  selectedFileId,
+}: UploadedFilesListProps) => {
+  const { t } = useTranslation();
   const whiteboardUploadedOfficeFiles = useAppSelector(
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
   );
@@ -17,10 +24,21 @@ const UploadedOfficeFiles = ({ onSelectOfficeFile }: UploadedOfficeFiles) => {
   );
 
   return whiteboardUploadedOfficeFiles.map((file) => {
+    const isCurrentlyInUse = currentWhiteboardOfficeFileId === file.fileId;
+    const isSelectedInModal = selectedFileId === file.fileId;
+
+    let classNames =
+      'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
+    if (isSelectedInModal) {
+      classNames += ' border-2 border-Blue2-500 bg-Blue2-50';
+    } else {
+      classNames += ' border border-Gray-100 bg-white hover:bg-Gray-50';
+    }
+
     return (
       <div
         key={file.fileId}
-        className={`flex gap-4 py-2 px-3 w-full rounded-xl ${currentWhiteboardOfficeFileId === file.fileId ? 'border-2 border-Blue2-500 bg-Blue2-50' : 'border border-Gray-100 bg-white'}`}
+        className={classNames}
         onClick={() => onSelectOfficeFile(file)}
       >
         <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
@@ -31,14 +49,12 @@ const UploadedOfficeFiles = ({ onSelectOfficeFile }: UploadedOfficeFiles) => {
             <div className="left">
               <p className="break-all">{file.fileName}</p>
             </div>
-            {/* <div className="right">
-              {currentWhiteboardOfficeFileId === file.fileId && (
-                <>Selected icon</>
-              )}
-            </div> */}
+            <div className="right">{isCurrentlyInUse && <SelectedIcon />}</div>
           </div>
           <div className="progress-bar flex gap-2 items-center text-xs pt-0.5">
-            Total pages: {file.totalPages}
+            {t('whiteboard.total-pages', {
+              count: file.totalPages,
+            })}
           </div>
         </div>
       </div>
@@ -46,4 +62,4 @@ const UploadedOfficeFiles = ({ onSelectOfficeFile }: UploadedOfficeFiles) => {
   });
 };
 
-export default UploadedOfficeFiles;
+export default UploadedFilesList;

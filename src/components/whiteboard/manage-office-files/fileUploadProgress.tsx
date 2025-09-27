@@ -27,7 +27,7 @@ import {
 } from '../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
 
-interface UploadingFileProp {
+interface FileUploadProgressProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   allowedFileTypes: string[];
   file: File;
@@ -37,12 +37,12 @@ type message = {
   isError: boolean;
   msg: string;
 };
-const UploadingFile = ({
+const FileUploadProgress = ({
   excalidrawAPI,
   allowedFileTypes,
   file,
   setDisableUploading,
-}: UploadingFileProp) => {
+}: FileUploadProgressProps) => {
   const { t } = useTranslation();
   const session = store.getState().session;
   const conn = getNatsConn();
@@ -188,7 +188,7 @@ const UploadingFile = ({
             </div>
           </div>
           <div className="progress-bar flex gap-2 items-center">
-            {message && message.isError ? (
+            {message ? (
               <p
                 className={`text-xs pt-0.5 ${message.isError ? 'text-red-500' : 'text-green-500'}`}
               >
@@ -214,4 +214,4 @@ const UploadingFile = ({
   );
 };
 
-export default UploadingFile;
+export default FileUploadProgress;

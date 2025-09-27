@@ -7,21 +7,28 @@ import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { sleep } from '../../../helpers/utils';
 import { updateCurrentWhiteboardOfficeFileId } from '../../../store/slices/whiteboard';
 import { store, useAppDispatch } from '../../../store';
-import UploadingFile from './uploadingFile';
-import UploadedOfficeFiles from './uploadedOfficeFiles';
+import FileUploadProgress from './fileUploadProgress';
+import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
 import { formatStorageKey } from '../helpers/utils';
 
-interface ManageFilesProps {
+interface ManageOfficeFilesModalProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
+const ManageOfficeFilesModal = ({
+  excalidrawAPI,
+  isOpen,
+  onClose,
+}: ManageOfficeFilesModalProps) => {
   // prettier-ignore
   const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
+  const maxAllowedFileSize =
+    store.getState().session.currentRoom.metadata?.roomFeatures
+      ?.whiteboardFeatures?.maxAllowedFileSize;
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -87,7 +94,7 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
               as="h3"
               className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100"
             >
-              <span>Upload Files</span>
+              <span>{t('whiteboard.upload-files-title')}</span>
               <Button className="cursor-pointer" onClick={() => onClose()}>
                 <PopupCloseSVGIcon classes="text-Gray-600" />
               </Button>
@@ -105,23 +112,27 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
                 />
                 <div className="text-wrap text-sm font-medium text-center cursor-pointer">
                   <p className="text-Gray-950 font-semibold pb-1">
-                    Drag and drop your file to upload
+                    {t('whiteboard.drag-drop-file')}
                   </p>
-                  <p className="text-Gray-700">Max file size: 50 MB</p>
+                  <p className="text-Gray-700">
+                    {t('whiteboard.max-file-size', {
+                      size: maxAllowedFileSize,
+                    })}
+                  </p>
                   <div className="divider flex justify-center items-center gap-3 py-3">
                     <span className="line inline-block h-[1px] w-20 bg-Gray-200"></span>
-                    <span className="text-Gray-600">OR</span>
+                    <span className="text-Gray-600">{t('whiteboard.or')}</span>
                     <span className="line inline-block h-[1px] w-20 bg-Gray-200"></span>
                   </div>
                   <button className="h-9 w-auto m-auto px-4 flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer">
                     <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
-                    Select a File
+                    {t('whiteboard.select-file')}
                   </button>
                 </div>
               </div>
               <div className="file-preview-list grid gap-2 pt-4">
                 {selectedFile && (
-                  <UploadingFile
+                  <FileUploadProgress
                     key={selectedFile.name + selectedFile.lastModified}
                     excalidrawAPI={excalidrawAPI}
                     allowedFileTypes={allowedFileTypes}
@@ -129,8 +140,9 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
                     setDisableUploading={setDisableUploading}
                   />
                 )}
-                <UploadedOfficeFiles
+                <UploadedFilesList
                   onSelectOfficeFile={setOnSelectOfficeFile}
+                  selectedFileId={selectedOfficeFile?.fileId}
                 />
               </div>
             </div>
@@ -146,7 +158,7 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
                 onClick={addToWhiteboard}
                 disabled={selectedOfficeFile === undefined || disableUploading}
               >
-                Add to Whiteboard
+                {t('whiteboard.add-to-whiteboard')}
               </button>
             </div>
           </DialogPanel>
@@ -156,4 +168,4 @@ const ManageFiles = ({ excalidrawAPI, isOpen, onClose }: ManageFilesProps) => {
   );
 };
 
-export default ManageFiles;
+export default ManageOfficeFilesModal;

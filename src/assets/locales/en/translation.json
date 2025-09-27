@@ -333,7 +333,14 @@
     "follow-presenter-tooltip": "Follow the Presenter",
     "unfollow-presenter-tooltip": "Stop Following the Presenter",
     "follow": "Follow",
-    "unfollow": "Unfollow"
+    "unfollow": "Unfollow",
+    "upload-files-title": "Upload Files",
+    "drag-drop-file": "Drag and drop your file to upload",
+    "max-file-size": "Max file size: {{size}} MB",
+    "or": "OR",
+    "select-file": "Select a File",
+    "add-to-whiteboard": "Add to Whiteboard",
+    "total-pages": "Total pages: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",
