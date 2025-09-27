@@ -59,6 +59,15 @@ export default class HandleMediaTracks {
   ) => {
     this.addSubscriber(track, participant);
     this.addSpeaker(track, participant);
+    // we can also update connection quality
+    store.dispatch(
+      updateParticipant({
+        id: participant.identity,
+        changes: {
+          connectionQuality: participant.connectionQuality,
+        },
+      }),
+    );
   };
 
   public trackUnsubscribed = (
