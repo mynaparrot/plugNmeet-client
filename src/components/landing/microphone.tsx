@@ -1,5 +1,6 @@
 import React, { SetStateAction } from 'react';
 import { Menu, MenuButton, MenuItem, Transition } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import { PlusIcon } from '../../assets/Icons/PlusIcon';
 import { ArrowUp } from '../../assets/Icons/ArrowUp';
@@ -23,6 +24,8 @@ const MicrophoneIcon = ({
   enableMediaDevices,
   disableMic,
 }: MicrophoneIconProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
       <div
@@ -42,7 +45,7 @@ const MicrophoneIcon = ({
           <Microphone classes={'h-5 w-auto'} />
         )}
       </div>
-      {audioDevices.length > 0 ? (
+      {audioDevices.length > 0 && (
         <div className="menu relative">
           <Menu>
             {({ open }) => (
@@ -64,7 +67,7 @@ const MicrophoneIcon = ({
                 >
                   <div className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max">
                     <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
-                      Select Microphone
+                      {t('landing.mic-menu-title')}
                     </div>
                     {audioDevices.map((device, i) => (
                       <div
@@ -93,7 +96,7 @@ const MicrophoneIcon = ({
             )}
           </Menu>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };

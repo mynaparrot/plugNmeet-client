@@ -44,22 +44,22 @@ const WebcamPreview = ({ selectedVideoDevice }: WebcamPreviewProps) => {
 
   return (
     <div className="camera bg-Gray-950 rounded-lg overflow-hidden w-full h-64 sm:h-72 3xl:h-80">
-      {selectedVideoDevice !== '' ? (
+      {selectedVideoDevice !== '' && (
         <>
           <div
             className={`${virtualBackground.type !== 'none' ? 'w-0.5 h-0.5' : 'w-full h-full flex'}`}
           >
             <video className="w-full h-full" ref={ref} autoPlay />
           </div>
-          {virtualBackground.type !== 'none' && sourcePlayback ? (
+          {virtualBackground.type !== 'none' && sourcePlayback && (
             <VirtualBackground
               sourcePlayback={sourcePlayback}
               backgroundConfig={virtualBackground}
               id="preview"
             />
-          ) : null}
+          )}
         </>
-      ) : null}
+      )}
     </div>
   );
 };

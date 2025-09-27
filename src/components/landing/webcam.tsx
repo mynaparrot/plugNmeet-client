@@ -1,5 +1,6 @@
 import React, { SetStateAction } from 'react';
 import { Menu, MenuButton, MenuItem, Transition } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import { Camera } from '../../assets/Icons/Camera';
 import { PlusIcon } from '../../assets/Icons/PlusIcon';
@@ -27,24 +28,21 @@ const WebcamIcon = ({
   selectedVideoDevice,
 }: WebcamIconProps) => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const showVideoShareModal = useAppSelector(
     (state) => state.bottomIconsActivity.showVideoShareModal,
   );
 
-  const onSelectedDevice = async (deviceId: string) => {
-    setSelectedVideoDevice(deviceId);
-  };
-
   return (
     <div className="cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950">
-      {showVideoShareModal ? (
+      {showVideoShareModal && (
         <ShareWebcamModal
-          onSelectedDevice={onSelectedDevice}
           displayWebcamSelection={false}
+          onSelectedDevice={setSelectedVideoDevice}
           selectedDeviceId={selectedVideoDevice}
         />
-      ) : null}
+      )}
       <div
         className="w-11 h-11 relative flex items-center justify-center"
         onClick={() =>
@@ -64,7 +62,7 @@ const WebcamIcon = ({
           <Camera classes={'h-5 w-auto'} />
         )}
       </div>
-      {videoDevices.length > 0 ? (
+      {videoDevices.length > 0 && (
         <div className="menu relative">
           <Menu as="div">
             {({ open }) => (
@@ -86,7 +84,7 @@ const WebcamIcon = ({
                 >
                   <div className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max">
                     <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
-                      Select Microphone
+                      {t('landing.webcam-menu-title')}
                     </div>
                     {videoDevices.map((device, i) => (
                       <div className="" role="none" key={`${device.id}-${i}`}>
@@ -109,17 +107,17 @@ const WebcamIcon = ({
                     ))}
                     <div className="divider w-[calc(100%+16px)] relative -left-2 h-1 bg-Gray-50 mt-2"></div>
                     <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
-                      Background & Filters
+                      {t('landing.background-filter-title')}
                     </div>
                     <p
-                      className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
+                      className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-gray-50 cursor-pointer"
                       onClick={() =>
                         dispatch(
                           updateShowVideoShareModal(!showVideoShareModal),
                         )
                       }
                     >
-                      Config Camera Background
+                      {t('landing.config-background-btn')}
                     </p>
                   </div>
                 </Transition>
@@ -127,7 +125,7 @@ const WebcamIcon = ({
             )}
           </Menu>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };

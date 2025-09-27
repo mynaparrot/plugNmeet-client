@@ -416,6 +416,19 @@
     "user-joined": "Joined",
     "not-joined": "Not Joined"
   },
+  "landing": {
+    "connecting-media-server": "Connecting to the media server...",
+    "modal-title": "Microphone and Camera Preferences",
+    "ready-to-join": "Ready to join?",
+    "join-prompt": "Enable your microphone and camera to participate fully, or join as a listener.",
+    "enable-mic-cam-btn": "Enable Microphone and Camera",
+    "join-as-listener-btn": "Join as a listener",
+    "webcam-menu-title": "Select Camera",
+    "mic-menu-title": "Select Microphone",
+    "background-filter-title": "Background & Filters",
+    "config-background-btn": "Configure Camera Background",
+    "waiting-for-approval-title": "Waiting for Approval"
+  },
   "external-display-link-display": {
     "modal-title": "Share External Link",
     "url": "URL",
