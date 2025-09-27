@@ -11,7 +11,9 @@ import {
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { getAzureToken, renewAzureToken } from './helpers/apiConnections';
 import { cleanAzureToken } from '../../store/slices/roomSettingsSlice';
-import SelectOptions, { OnCloseSelectedOptions } from './selectOptions';
+import SpeechSettingsModal, {
+  OnCloseSelectedOptions,
+} from './speech-settings-modal';
 import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSlice';
 import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
 
@@ -279,7 +281,7 @@ const SpeechToTextService = () => {
     speechService && (
       <div className="speechService absolute bottom-0 w-full z-20 left-0">
         <div className="wrap">
-          <SelectOptions
+          <SpeechSettingsModal
             optionSelectionDisabled={optionSelectionDisabled}
             speechService={speechService}
             recognizer={recognizer}

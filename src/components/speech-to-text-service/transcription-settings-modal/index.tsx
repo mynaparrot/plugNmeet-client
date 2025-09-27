@@ -25,7 +25,7 @@ import SpeechUsersSelector from './speechUsersSelector';
 import TransLangsSelector from './transLangsSelector';
 import DefaultSubtitleLangSelector from './defaultSubtitleLangSelector';
 
-const SpeechServiceSettingsModal = () => {
+const TranscriptionSettingsModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const speechService = useAppSelector(
@@ -284,4 +284,4 @@ const SpeechServiceSettingsModal = () => {
   );
 };
 
-export default SpeechServiceSettingsModal;
+export default TranscriptionSettingsModal;

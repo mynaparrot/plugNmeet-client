@@ -40,7 +40,7 @@ import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
 import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
-import SpeechServiceSettingsModal from '../../speech-to-text-service/speech-service-settings-modal';
+import TranscriptionSettingsModal from '../../speech-to-text-service/transcription-settings-modal';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
 import { ExternalPlayerIconSVG } from '../../../assets/Icons/ExternalPlayerIconSVG';
@@ -567,7 +567,7 @@ const MenusIcon = () => {
       {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
       {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
       {showDisplayExternalLinkModal ? <DisplayExternalLinkModal /> : null}
-      {showSpeechSettingsModal ? <SpeechServiceSettingsModal /> : null}
+      {showSpeechSettingsModal ? <TranscriptionSettingsModal /> : null}
     </>
   );
 };

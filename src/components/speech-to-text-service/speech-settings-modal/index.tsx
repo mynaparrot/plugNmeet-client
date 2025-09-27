@@ -28,7 +28,7 @@ import SpeechInputSettings from './speechInputSettings';
 import SubtitleFontSizeSlider from './subtitleFontSizeSlider';
 import SubtitleLangSelector from './subtitleLangSelector';
 
-interface SelectOptionsProps {
+interface SpeechSettingsModalProps {
   optionSelectionDisabled: boolean;
   speechService: SpeechToTextTranslationFeatures;
   recognizer: SpeechRecognizer | TranslationRecognizer | undefined;
@@ -43,13 +43,13 @@ export interface OnCloseSelectedOptions {
   stopService: boolean;
 }
 
-const SelectOptions = ({
+const SpeechSettingsModal = ({
   optionSelectionDisabled,
   speechService,
   recognizer,
   onCloseSelectedOptions,
   onOpenSelectedOptionsModal,
-}: SelectOptionsProps) => {
+}: SpeechSettingsModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const currentUser = store.getState().session.currentUser;
@@ -191,4 +191,4 @@ const SelectOptions = ({
   );
 };
 
-export default SelectOptions;
+export default SpeechSettingsModal;

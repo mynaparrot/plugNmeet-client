@@ -1,142 +1,148 @@
 import React, { useEffect, useState } from 'react';
+import { isEmpty } from 'es-toolkit/compat';
 
 import { TextWithInfo } from '../../../store/slices/interfaces/speechServices';
 import { useAppSelector } from '../../../store';
 
-interface FinalTexts {
-  first?: TextWithInfo;
-  second?: TextWithInfo;
-}
+const MAX_SUBTITLE_CHARS = 150;
 
 const LiveSubtitle = () => {
-  const speechServices = useAppSelector((state) => state.speechServices);
-
-  const [finalTexts, setFinalTexts] = useState<FinalTexts>({
-    first: undefined,
-    second: undefined,
-  });
-  const [subtitleText, setSubtitleText] = useState<string | undefined>(
-    undefined,
+  const newFinalText = useAppSelector(
+    (state) => state.speechServices.finalText,
+  );
+  const interimText = useAppSelector(
+    (state) => state.speechServices.interimText,
+  );
+  const selectedSubtitleLang = useAppSelector(
+    (state) => state.speechServices.selectedSubtitleLang,
+  );
+  const subtitleFontSize = useAppSelector(
+    (state) => state.speechServices.subtitleFontSize,
   );
 
-  // This effect manages a "rolling" display of the last two final text segments.
+  // Line 1: The last stable, final text.
+  const [lastFinalText, setLastFinalText] = useState<
+    TextWithInfo | undefined
+  >();
+  // This will be the source for what's rendered on line 2, with a delay for removal.
+  const [displayLine2, setDisplayLine2] = useState<TextWithInfo | undefined>();
+  const [isLine2FadingOut, setIsLine2FadingOut] = useState(false);
+
+  // When a new final text arrives from the store, it becomes our stable "Line 1".
   useEffect(() => {
-    if (speechServices.finalText) {
-      setFinalTexts((prevState) => ({
-        first: prevState.second,
-        second: speechServices.finalText,
-      }));
-    }
-    // setFinalTexts is stable, but it's good practice to include it.
-  }, [speechServices.finalText, setFinalTexts]);
-
-  // This effect combines the final and interim texts into a single string for display
-  // and sets a timer to clear the subtitle after a delay.
-  useEffect(() => {
-    const hasFinalText = finalTexts.first || finalTexts.second;
-    const hasInterimText = speechServices.interimText;
-
-    if (!hasFinalText && !hasInterimText) {
-      return;
-    }
-
-    let lastLineFrom = '';
-    const text: string[] = [];
-
-    // Combine the last two final texts.
-    if (finalTexts.first && finalTexts.first.from === finalTexts.second?.from) {
-      // If from the same speaker, combine them on one line.
-      const t = `${finalTexts.first.text} ${finalTexts.second?.text}`;
-      text.push(`${finalTexts.first.from}:`, t.slice(-50));
-      lastLineFrom = finalTexts.first.from;
-    } else {
-      // If from different speakers, show them on separate lines.
-      if (finalTexts.first) {
-        text.push(
-          `${finalTexts.first.from}:`,
-          finalTexts.first.text.slice(-20),
-        );
-        lastLineFrom = finalTexts.first.from;
-      }
-
-      if (finalTexts.second) {
-        if (finalTexts.first) text.push('\n'); // Add a newline if there was a first text.
-        text.push(
-          `${finalTexts.second.from}:`,
-          finalTexts.second.text.slice(-50),
-        );
-        lastLineFrom = finalTexts.second.from;
-      }
-    }
-
-    // Add the interim (real-time) text.
-    if (speechServices.interimText) {
-      if (speechServices.interimText.text.length > 100) {
-        // If interim text is very long, show only that to prevent overflow.
-        text.length = 0;
-        text.push(
-          `${speechServices.interimText.from}:`,
-          speechServices.interimText.text.slice(-200),
-        );
-      } else {
-        if (lastLineFrom === speechServices.interimText.from) {
-          // Same speaker, append to the current line.
-          text.push(speechServices.interimText.text);
-        } else {
-          // Different speaker, start a new line.
-          if (lastLineFrom !== '') text.push('\n');
-          text.push(
-            `${speechServices.interimText.from}:`,
-            speechServices.interimText.text,
-          );
+    if (newFinalText) {
+      setLastFinalText((prevFinalText) => {
+        // If there's a previous final text and it's from the same speaker...
+        if (prevFinalText && prevFinalText.from === newFinalText.from) {
+          // ...append the new text to the old one to create a continuous sentence.
+          return {
+            ...newFinalText, // Use new id, time from the latest text
+            text: `${prevFinalText.text} ${newFinalText.text}`,
+          };
         }
-      }
+        // Otherwise, it's a new speaker, so we start a new final text.
+        return newFinalText;
+      });
+    }
+  }, [newFinalText]);
+
+  // This effect will clear the subtitles after a period of inactivity.
+  // It also manages the delayed removal of the second line.
+  useEffect(() => {
+    let clearAllTimer: NodeJS.Timeout;
+    let clearLine2Timer: NodeJS.Timeout;
+
+    if (interimText) {
+      // If new interim text arrives, update line 2 immediately.
+      setIsLine2FadingOut(false);
+      setDisplayLine2(interimText);
+    } else {
+      // If interim text disappears, start the fade-out process.
+      setIsLine2FadingOut(true);
+      // Then, after the fade-out animation completes, remove the element.
+      clearLine2Timer = setTimeout(() => {
+        setDisplayLine2(undefined);
+        setIsLine2FadingOut(false);
+      }, 500); // This should match the transition duration.
     }
 
-    if (!text.length) {
+    // If there's no text, do nothing.
+    if (!lastFinalText && !interimText) {
       return;
     }
 
-    // Set the text and schedule it to be cleared.
-    setSubtitleText(text.join(' '));
-    const clear = setTimeout(() => {
-      setSubtitleText(undefined);
+    clearAllTimer = setTimeout(() => {
+      setLastFinalText(undefined);
     }, 10000);
 
-    return () => clearTimeout(clear);
-  }, [finalTexts, speechServices.interimText]);
+    return () => {
+      clearTimeout(clearAllTimer);
+      clearTimeout(clearLine2Timer);
+    };
+  }, [lastFinalText, interimText]);
+
+  // Prepare the text for Line 1 and Line 2 based on what's available.
+  let line1: { from: string; text: string; isInterim?: boolean } | undefined;
+  let line2: { from: string; text: string; isInterim?: boolean } | undefined;
+
+  if (lastFinalText && !isEmpty(lastFinalText.text)) {
+    // Standard case: final text on line 1, interim on line 2.
+    line1 = {
+      from: lastFinalText.from,
+      text: lastFinalText.text.slice(-MAX_SUBTITLE_CHARS),
+    };
+    if (displayLine2) {
+      line2 = {
+        from: displayLine2.from,
+        text: displayLine2.text.slice(-MAX_SUBTITLE_CHARS),
+        isInterim: true,
+      };
+    }
+  } else if (interimText) {
+    // Initial case: No final text yet, so interim text goes on line 1.
+    line1 = {
+      from: interimText.from,
+      text: interimText.text.slice(-MAX_SUBTITLE_CHARS),
+      isInterim: true,
+    };
+  }
 
   return (
-    speechServices.selectedSubtitleLang !== '' &&
-    subtitleText !== undefined && (
+    selectedSubtitleLang !== '' && // only show if user has selected a lang
+    (lastFinalText || interimText) && (
       <div
         className="sub-title w-11/12 absolute bottom-4  left-1/2 -translate-x-1/2 pointer-events-none px-10 flex items-center"
-        style={{ fontSize: speechServices.subtitleFontSize }}
+        style={{ fontSize: subtitleFontSize }}
       >
-        <div className="inline-flex items-center gap-3 py-1.5 px-2 bg-Gray-950/70 text-white m-auto break-words text-center whitespace-pre-wrap border border-white/15 rounded-lg overflow-hidden shadow-virtual-item">
-          <div className="flex items-center h-7 rounded-lg overflow-hidden border border-white/15">
-            <div className="icon px-1.5">
-              <svg
-                width="15"
-                height="14"
-                viewBox="0 0 15 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.5 5.66667L1.5 8.33333M4.5 3L4.5 11M7.5 1V13M10.5 3V11M13.5 5.66667V8.33333"
-                  stroke="white"
-                  strokeWidth="1.33"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div className="text-xs font-semibold text-white bg-white/10 h-full flex items-center px-1.5">
-              {speechServices.selectedSubtitleLang.toUpperCase()}
-            </div>
+        <div className="inline-block p-2 bg-Gray-950/70 text-white m-auto break-words text-center whitespace-pre-wrap border border-white/15 rounded-lg overflow-hidden shadow-virtual-item">
+          {/* Line 1 */}
+          <div
+            className={`line-1 transition-opacity duration-300 ease-in-out ${
+              line1?.isInterim ? 'opacity-70' : 'opacity-100'
+            }`}
+          >
+            {line1 ? (
+              <>
+                <span className="font-bold">{line1.from}:</span>{' '}
+                <span key={line1.isInterim ? 'interim' : 'final'}>
+                  {line1.text}
+                </span>
+              </>
+            ) : (
+              // Use a non-breaking space to maintain height
+              <>&nbsp;</>
+            )}
           </div>
-          {subtitleText}
+          {/* Line 2: Only show if there's content for it */}
+          {line2 && (
+            <div
+              className={`line-2 transition-opacity duration-500 ease-in-out ${
+                isLine2FadingOut ? 'opacity-0' : 'opacity-70'
+              }`}
+            >
+              <span className="font-bold">{line2.from}:</span> {line2.text}
+            </div>
+          )}
         </div>
       </div>
     )
