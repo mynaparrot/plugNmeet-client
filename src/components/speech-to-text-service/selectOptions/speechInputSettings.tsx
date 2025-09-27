@@ -17,11 +17,11 @@ import {
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
-import MicElms from './micElms';
 import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
+import MicSelector from './micSelector';
 
-interface SpeechToTextLangElmsPros {
+interface ISpeechInputSettingsProps {
   speechService: SpeechToTextTranslationFeatures;
   recognizer: SpeechRecognizer | TranslationRecognizer | undefined;
   selectedSpeechLang: string;
@@ -30,14 +30,14 @@ interface SpeechToTextLangElmsPros {
   setSelectedMicDevice: React.Dispatch<string>;
 }
 
-const SpeechToTextLangElms = ({
+const SpeechInputSettings = ({
   speechService,
   recognizer,
   selectedSpeechLang,
   setSelectedSpeechLang,
   selectedMicDevice,
   setSelectedMicDevice,
-}: SpeechToTextLangElmsPros) => {
+}: ISpeechInputSettingsProps) => {
   const { t } = useTranslation();
   const [enableSpeechToText, setEnableSpeechToText] = useState<boolean>(true);
 
@@ -121,7 +121,7 @@ const SpeechToTextLangElms = ({
           </Listbox>
         </div>
 
-        <MicElms
+        <MicSelector
           disabled={recognizer !== undefined}
           selectedMicDevice={selectedMicDevice}
           setSelectedMicDevice={setSelectedMicDevice}
@@ -155,11 +155,11 @@ const SpeechToTextLangElms = ({
           </Switch>
         </div>
       </Field>
-      {enableSpeechToText ? (
+      {enableSpeechToText && (
         <div className="px-5 grid gap-4">{speechLangElms()}</div>
-      ) : null}
+      )}
     </>
   );
 };
 
-export default SpeechToTextLangElms;
+export default SpeechInputSettings;

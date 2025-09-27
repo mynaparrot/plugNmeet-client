@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Dispatch, Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import {
@@ -14,17 +14,17 @@ import { IMediaDevice } from '../../../store/slices/interfaces/roomSettings';
 import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
-interface MicElmsProps {
+interface IMicSelectorProps {
   disabled: boolean;
   selectedMicDevice: string;
-  setSelectedMicDevice: React.Dispatch<string>;
+  setSelectedMicDevice: Dispatch<string>;
 }
 
-const MicElms = ({
+const MicSelector = ({
   disabled,
   selectedMicDevice,
   setSelectedMicDevice,
-}: MicElmsProps) => {
+}: IMicSelectorProps) => {
   const { t } = useTranslation();
   const [devices, setDevices] = useState<IMediaDevice[]>([]);
 
@@ -42,11 +42,8 @@ const MicElms = ({
     //eslint-disable-next-line
   }, []);
 
-  const render = () => {
-    if (!devices.length) {
-      return null;
-    }
-    return (
+  return (
+    devices.length && (
       <div className="selectMicroPhone">
         <label
           htmlFor="microphone"
@@ -107,10 +104,8 @@ const MicElms = ({
           </div>
         </Listbox>
       </div>
-    );
-  };
-
-  return render();
+    )
+  );
 };
 
-export default MicElms;
+export default MicSelector;

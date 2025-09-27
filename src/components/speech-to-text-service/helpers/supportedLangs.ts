@@ -253,10 +253,19 @@ const supportedTranslationLangs = [
   { name: 'Yucatec Maya	', code: 'yua' },
 ];
 
+// Create Maps for efficient lookups (O(1) complexity)
+const speechLangsMap = new Map(
+  supportedSpeechToTextLangs.map((lang) => [lang.code, lang]),
+);
+const translationLangsMap = new Map(
+  supportedTranslationLangs.map((lang) => [lang.code, lang]),
+);
+
 const getSubtitleLangs = (
   speechLangs?: string[],
   transLangs?: string[],
 ): Array<SupportedLangs> => {
+  // If the language lists are not provided, fall back to the Redux store.
   if (!speechLangs || !transLangs) {
     const speechService =
       store.getState().session.currentRoom.metadata?.roomFeatures
@@ -269,44 +278,34 @@ const getSubtitleLangs = (
     }
   }
 
-  const langs: Array<SupportedLangs> = [
+  const uniqueLangCodes = new Set<string>();
+
+  // 1. Get unique locale codes from the allowed speech languages
+  speechLangs?.forEach((code) => {
+    const speechLang = speechLangsMap.get(code);
+    if (speechLang) {
+      uniqueLangCodes.add(speechLang.locale);
+    }
+  });
+
+  // 2. Add the allowed translation languages
+  transLangs?.forEach((code) => {
+    uniqueLangCodes.add(code);
+  });
+
+  // 3. Build the final list of language objects
+  const availableLangs = Array.from(uniqueLangCodes)
+    .map((code) => translationLangsMap.get(code))
+    .filter((lang): lang is SupportedLangs => !!lang);
+
+  // 4. Prepend the "Select" option and return
+  return [
     {
       name: i18n.t('speech-services.select-one-lang'),
       code: '',
     },
+    ...availableLangs,
   ];
-
-  if (speechLangs) {
-    for (let i = 0; i < speechLangs.length; i++) {
-      const l = speechLangs[i];
-      const r = supportedSpeechToTextLangs.filter((lang) => lang.code === l);
-      if (!r.length) {
-        continue;
-      }
-      const find = langs.find((ll) => ll.code === r[0].locale);
-      if (!find) {
-        const obj = supportedTranslationLangs.filter(
-          (lang) => lang.code === r[0].locale,
-        );
-        langs.push(...obj);
-      }
-    }
-  }
-  if (transLangs) {
-    for (let i = 0; i < transLangs.length; i++) {
-      const l = transLangs[i];
-      const r = supportedTranslationLangs.filter((lang) => lang.code === l);
-      if (!r.length) {
-        continue;
-      }
-      const find = langs.find((ll) => ll.code === r[0].code);
-      if (!find) {
-        langs.push(...r);
-      }
-    }
-  }
-
-  return langs;
 };
 
 export {

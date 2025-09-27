@@ -1,11 +1,17 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Button,
   Dialog,
   DialogTitle,
   Transition,
   TransitionChild,
-  Button,
 } from '@headlessui/react';
 import { isEmpty } from 'es-toolkit/compat';
 import {
@@ -15,11 +21,12 @@ import {
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import SpeechToTextLangElms from './speechToTextLangElms';
-import SubtitleLangElms from './subtitleLangElms';
-import SubtitleFontSize from './subtitleFontSize';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { updateDisplaySpeechSettingOptionsModal } from '../../../store/slices/bottomIconsActivitySlice';
+
+import SpeechInputSettings from './speechInputSettings';
+import SubtitleFontSizeSlider from './subtitleFontSizeSlider';
+import SubtitleLangSelector from './subtitleLangSelector';
 
 interface SelectOptionsProps {
   optionSelectionDisabled: boolean;
@@ -50,31 +57,23 @@ const SelectOptions = ({
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
 
-  const [canShowSpeechSetting, setCanShowSpeechSetting] =
-    useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
-  const [selectedSubtitleLang, setSelectedSubtitleLang] = useState<string>('');
+  const [selectedSubtitleLang, setSelectedSubtitleLang] = useState<string>(
+    () => {
+      const current = store.getState().speechServices.selectedSubtitleLang;
+      if (!isEmpty(current)) {
+        return current;
+      }
+      return speechService.defaultSubtitleLang ?? '';
+    },
+  );
   const [selectedMicDevice, setSelectedMicDevice] = useState<string>('');
 
-  useEffect(() => {
-    const selectedSubtitleLang =
-      store.getState().speechServices.selectedSubtitleLang;
-    if (!isEmpty(selectedSubtitleLang)) {
-      setSelectedSubtitleLang(selectedSubtitleLang);
-    } else {
-      if (speechService.defaultSubtitleLang) {
-        setSelectedSubtitleLang(speechService.defaultSubtitleLang);
-      }
-    }
-    //oxlint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    const haveUser = speechService.allowedSpeechUsers?.find(
+  const canShowSpeechSetting = useMemo(() => {
+    return !!speechService.allowedSpeechUsers?.find(
       (u) => u === currentUser?.userId,
     );
-    setCanShowSpeechSetting(!!haveUser);
-  }, [currentUser?.userId, speechService]);
+  }, [currentUser?.userId, speechService.allowedSpeechUsers]);
 
   useEffect(() => {
     if (isActiveDisplayOptionsModal) {
@@ -145,7 +144,7 @@ const SelectOptions = ({
                 </DialogTitle>
                 <div className="grid gap-4">
                   {canShowSpeechSetting ? (
-                    <SpeechToTextLangElms
+                    <SpeechInputSettings
                       recognizer={recognizer}
                       speechService={speechService}
                       selectedSpeechLang={selectedSpeechLang}
@@ -154,12 +153,12 @@ const SelectOptions = ({
                       setSelectedMicDevice={setSelectedMicDevice}
                     />
                   ) : null}
-                  <SubtitleLangElms
+                  <SubtitleLangSelector
                     speechService={speechService}
                     selectedSubtitleLang={selectedSubtitleLang}
                     setSelectedSubtitleLang={setSelectedSubtitleLang}
                   />
-                  <SubtitleFontSize />
+                  <SubtitleFontSizeSlider />
                 </div>
                 <div className="bottom-area py-5 px-5 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5">
                   <>

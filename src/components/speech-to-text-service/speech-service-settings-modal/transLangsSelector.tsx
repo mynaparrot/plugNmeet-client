@@ -13,15 +13,15 @@ import { store } from '../../../store';
 import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
-interface TransLangsElmPros {
+interface TransLangsSelectorProps {
   selectedTransLangs: Array<string>;
   setSelectedTransLangs: Dispatch<Array<string>>;
 }
 
-const TransLangsElm = ({
+const TransLangsSelector = ({
   selectedTransLangs,
   setSelectedTransLangs,
-}: TransLangsElmPros) => {
+}: TransLangsSelectorProps) => {
   const { t } = useTranslation();
   const max =
     store.getState().session.currentRoom.metadata?.roomFeatures
@@ -105,4 +105,4 @@ const TransLangsElm = ({
   );
 };
 
-export default TransLangsElm;
+export default TransLangsSelector;

@@ -1,4 +1,4 @@
-import React, { Fragment, Dispatch } from 'react';
+import React, { Dispatch, Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
@@ -8,45 +8,50 @@ import {
   Transition,
 } from '@headlessui/react';
 
-import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
+import { getSubtitleLangs } from '../helpers/supportedLangs';
 import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
-interface SpeechLangsElmsProps {
-  selectedSpeechLangs: Array<string>;
-  setSelectedMicDevice: Dispatch<Array<string>>;
+interface DefaultSubtitleLangSelectorProps {
+  selectedSpeechLangs: string[];
+  selectedTransLangs: string[];
+  selectedDefaultSubtitleLang: string;
+  setSelectedDefaultSubtitleLang: Dispatch<string>;
 }
-
-const SpeechLangsElms = ({
+const DefaultSubtitleLangSelector = ({
   selectedSpeechLangs,
-  setSelectedMicDevice,
-}: SpeechLangsElmsProps) => {
+  selectedTransLangs,
+  selectedDefaultSubtitleLang,
+  setSelectedDefaultSubtitleLang,
+}: DefaultSubtitleLangSelectorProps) => {
   const { t } = useTranslation();
+
+  const availableSubtitleLangs = useMemo(
+    () => getSubtitleLangs(selectedSpeechLangs, selectedTransLangs),
+    [selectedSpeechLangs, selectedTransLangs],
+  );
 
   return (
     <div className="">
       <label
         htmlFor="language"
-        className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right mb-2 block"
+        className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right block mb-2"
       >
-        {t('speech-services.speech-langs-label')}
+        {t('speech-services.default-subtitle-lang-label')}
       </label>
       <Listbox
-        value={selectedSpeechLangs}
-        onChange={setSelectedMicDevice}
-        multiple={true}
+        value={selectedDefaultSubtitleLang}
+        onChange={setSelectedDefaultSubtitleLang}
+        multiple={false}
       >
         <div className="relative w-full">
-          <ListboxButton className="min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
-            <span className="block">
-              {selectedSpeechLangs
-                .map((l) => {
-                  if (!l) return [];
-                  return supportedSpeechToTextLangs.find(
-                    (lang) => lang.code === l,
-                  )?.name;
-                })
-                .join(', ')}
+          <ListboxButton className="min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
+            <span className="block truncate">
+              {availableSubtitleLangs
+                .map((l) =>
+                  l && l.code === selectedDefaultSubtitleLang ? l.name : '',
+                )
+                .join('')}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
               <DropdownIconSVG />
@@ -60,11 +65,11 @@ const SpeechLangsElms = ({
             leaveTo="opacity-0"
           >
             <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
-              {supportedSpeechToTextLangs.map((l) => (
+              {availableSubtitleLangs.map((l) => (
                 <ListboxOption
-                  key={l.code}
+                  key={`trans_${l.code}`}
                   className={({ focus, selected }) =>
-                    `relative cursor-default select-none py-2 px-3 rounded-[8px] truncate ${
+                    `relative cursor-default select-none py-2 px-3 rounded-[8px] ${
                       focus ? 'bg-Blue2-50' : ''
                     } ${selected ? 'bg-Blue2-50' : ''}`
                   }
@@ -72,7 +77,7 @@ const SpeechLangsElms = ({
                 >
                   {({ selected }) => (
                     <>
-                      <span className={`block`}>{l.name}</span>
+                      <span className={`block truncate`}>{l.name}</span>
                       {selected ? (
                         <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
                           <CheckMarkIcon />
@@ -90,4 +95,4 @@ const SpeechLangsElms = ({
   );
 };
 
-export default SpeechLangsElms;
+export default DefaultSubtitleLangSelector;

@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import {
   Listbox,
   ListboxButton,
@@ -9,31 +9,29 @@ import {
 import { useTranslation } from 'react-i18next';
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
-import { getSubtitleLangs, SupportedLangs } from '../helpers/supportedLangs';
+import { getSubtitleLangs } from '../helpers/supportedLangs';
 import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
-interface SubtitleLangElmsPros {
+interface ISubtitleLangSelectorProps {
   speechService: SpeechToTextTranslationFeatures;
   selectedSubtitleLang: string;
   setSelectedSubtitleLang: React.Dispatch<string>;
 }
 
-const SubtitleLangElms = ({
+const SubtitleLangSelector = ({
   speechService,
   selectedSubtitleLang,
   setSelectedSubtitleLang,
-}: SubtitleLangElmsPros) => {
+}: ISubtitleLangSelectorProps) => {
   const { t } = useTranslation();
-  const [displayLangs, setDisplayLangs] = useState<Array<SupportedLangs>>([]);
 
-  useMemo(() => {
-    const langs = getSubtitleLangs(
+  const displayLangs = useMemo(() => {
+    return getSubtitleLangs(
       speechService.allowedSpeechLangs,
       speechService.allowedTransLangs,
     );
-    setDisplayLangs(langs);
-  }, [speechService]);
+  }, [speechService.allowedSpeechLangs, speechService.allowedTransLangs]);
 
   return (
     <div className="px-5">
@@ -93,4 +91,4 @@ const SubtitleLangElms = ({
   );
 };
 
-export default SubtitleLangElms;
+export default SubtitleLangSelector;

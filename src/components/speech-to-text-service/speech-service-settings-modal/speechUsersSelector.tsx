@@ -13,15 +13,15 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
 import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 
-interface SpeechUsersElmsPros {
+interface SpeechUsersSelectorProps {
   selectedSpeechUsers: Array<string>;
   setSelectedSpeechUsers: Dispatch<Array<string>>;
 }
 
-const SpeechUsersElms = ({
+const SpeechUsersSelector = ({
   selectedSpeechUsers,
   setSelectedSpeechUsers,
-}: SpeechUsersElmsPros) => {
+}: SpeechUsersSelectorProps) => {
   const { t } = useTranslation();
   const totalParticipants = useAppSelector(participantsSelector.selectTotal);
 
@@ -34,6 +34,14 @@ const SpeechUsersElms = ({
           p.userId !== 'RECORDER_BOT' &&
           p.userId !== 'RTMP_BOT',
       );
+
+    // For performance, create a Map for instant user lookups (O(1))
+    // This avoids searching the full user array for every selected user.
+    const userMap = new Map(users.map((u) => [u.userId, u.name]));
+    const selectedNames = selectedSpeechUsers
+      .map((id) => userMap.get(id)) // O(1) lookup
+      .filter(Boolean)
+      .join(', ');
 
     return (
       <div className="">
@@ -50,11 +58,7 @@ const SpeechUsersElms = ({
         >
           <div className="relative w-full">
             <ListboxButton className="min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950">
-              <span className="block">
-                {selectedSpeechUsers
-                  .map((l) => users.find((u) => u.userId === l)?.name)
-                  .join(', ')}
-              </span>
+              <span className="block">{selectedNames}</span>
               <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                 <DropdownIconSVG />
               </span>
@@ -99,4 +103,4 @@ const SpeechUsersElms = ({
   }, [totalParticipants, selectedSpeechUsers]);
 };
 
-export default SpeechUsersElms;
+export default SpeechUsersSelector;

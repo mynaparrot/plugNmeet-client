@@ -2,10 +2,11 @@ import React, { Dispatch, useCallback, useEffect, useRef } from 'react';
 import { PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../../store';
+import { DownloadIconSVG } from '../../../../assets/Icons/DownloadIconSVG';
+import { CloseIconSVG } from '../../../../assets/Icons/CloseIconSVG';
+
 import InterimTextElms from './interimTextElms';
-import { DownloadIconSVG } from '../../../assets/Icons/DownloadIconSVG';
-import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 
 interface PopoverPanelElmsProps {
   showPopover: boolean;
