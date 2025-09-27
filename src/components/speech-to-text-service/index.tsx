@@ -91,14 +91,14 @@ const SpeechToTextService = () => {
       handleMuteUnmute(localAudioTrack);
     }
 
-    currentRoom.on('trackMuted', handleMuteUnmute);
-    currentRoom.on('trackUnmuted', handleMuteUnmute);
+    currentRoom.localParticipant.on('trackMuted', handleMuteUnmute);
+    currentRoom.localParticipant.on('trackUnmuted', handleMuteUnmute);
 
     return () => {
-      currentRoom.off('trackMuted', handleMuteUnmute);
-      currentRoom.off('trackUnmuted', handleMuteUnmute);
+      currentRoom.localParticipant.off('trackMuted', handleMuteUnmute);
+      currentRoom.localParticipant.off('trackUnmuted', handleMuteUnmute);
     };
-  }, [createdMediaStream, currentRoom.localParticipant, currentRoom]);
+  }, [createdMediaStream, currentRoom.localParticipant]);
 
   const unsetRecognizer = useCallback(() => {
     if (recognizer) {
