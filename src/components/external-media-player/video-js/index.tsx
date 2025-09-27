@@ -27,7 +27,7 @@ const VideoJsPlayerComponent = ({
     () => ({
       controls: isPresenter,
       responsive: true,
-      fluid: true,
+      fluid: false,
       sources: [
         {
           src,

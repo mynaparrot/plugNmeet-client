@@ -36,7 +36,7 @@ const PlayerComponent = ({ options, onReady }: IPlayerComponentProps) => {
   return (
     <div className="react-js-player-wrap">
       <div data-vjs-player>
-        <video ref={videoRef} className="video-js" />
+        <video ref={videoRef} className="video-js" playsInline />
       </div>
     </div>
   );

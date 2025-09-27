@@ -521,7 +521,10 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   margin: auto;
 }
 .media-player-inner > div > div {
-  @apply overflow-hidden pb-[56.25%] relative;
+  @apply overflow-hidden !pb-[56.25%] relative !w-full !h-0;
+}
+.media-player-inner > div > div .video-js {
+  @apply !absolute !w-full !h-full left-0 top-0;
 }
 .media-player-inner iframe {
   @apply left-0 top-0 h-full w-full absolute;
