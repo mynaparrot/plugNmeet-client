@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { store } from '../../../../store';
 import { ChatHistoryIconSVG } from '../../../../assets/Icons/ChatHistoryIconSVG';
 
-import PopoverPanelElms from './popoverPanelElms';
+import SubtitleHistoryPanel from './subtitleHistoryPanel';
 
 interface SubtitleTextsHistoryProps {
   isOpenPopover: (open: boolean) => void;
@@ -34,14 +34,16 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
         onClick={() => setShowPopover(!showPopover)}
       >
         <div className="chat-history-icon relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 shadow-virtual-item flex items-center justify-center">
-          <span className="tooltip">
-            {t('speech-services.subtitle-history-modal-title')}
-          </span>
+          {!showPopover && (
+            <span className="tooltip">
+              {t('speech-services.subtitle-history-modal-title')}
+            </span>
+          )}
           <ChatHistoryIconSVG />
         </div>
       </button>
       {showPopover ? (
-        <PopoverPanelElms
+        <SubtitleHistoryPanel
           setShowPopover={setShowPopover}
           showPopover={showPopover}
         />

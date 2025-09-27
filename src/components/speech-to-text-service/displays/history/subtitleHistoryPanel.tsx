@@ -2,24 +2,27 @@ import React, { Dispatch, useCallback, useEffect, useRef } from 'react';
 import { PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../../../store';
+import { useAppSelector } from '../../../../store';
 import { DownloadIconSVG } from '../../../../assets/Icons/DownloadIconSVG';
 import { CloseIconSVG } from '../../../../assets/Icons/CloseIconSVG';
+import InterimTextDisplay from './interimTextDisplay';
+import { ScrollToBottomIconSVG } from '../../../../assets/Icons/ScrollToBottom';
 
-import InterimTextElms from './interimTextElms';
-
-interface PopoverPanelElmsProps {
+interface SubtitleHistoryPanelProps {
   showPopover: boolean;
   setShowPopover: Dispatch<boolean>;
 }
 
-const PopoverPanelElms = ({
+const SubtitleHistoryPanel = ({
   showPopover,
   setShowPopover,
-}: PopoverPanelElmsProps) => {
+}: SubtitleHistoryPanelProps) => {
   const { t } = useTranslation();
   const lastFinalTexts = useAppSelector(
     (state) => state.speechServices.lastFinalTexts,
+  );
+  const selectedSubtitleLang = useAppSelector(
+    (state) => state.speechServices.selectedSubtitleLang,
   );
 
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -34,32 +37,57 @@ const PopoverPanelElms = ({
       return `${t.time} ${t.from}:\n${t.text}`;
     });
 
-    const lang = store.getState().speechServices.selectedSubtitleLang;
     const formBlob = new Blob([texts.join('\n\n')], {
       type: 'text/plain;charset=UTF-8',
     });
 
     const link = document.createElement('a');
     link.setAttribute('href', window.URL.createObjectURL(formBlob));
-    link.setAttribute('download', `subtitle_texts_${lang}.txt`);
+    link.setAttribute('download', `subtitle_texts_${selectedSubtitleLang}.txt`);
     document.body.appendChild(link);
 
     link.click();
     link.remove();
-  }, [lastFinalTexts]);
+  }, [lastFinalTexts, selectedSubtitleLang]);
+
+  const forceScrollToBottom = useCallback(() => {
+    const container = scrollableContainerRef.current;
+    if (container) {
+      // A small timeout ensures the scroll happens after the panel is fully rendered.
+      setTimeout(() => {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      }, 100);
+    }
+  }, []);
 
   const scrollToBottom = useCallback(() => {
-    if (scrollableContainerRef.current) {
-      scrollableContainerRef.current.scrollTo({
-        top: scrollableContainerRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
+    const container = scrollableContainerRef.current;
+    if (container) {
+      // Only scroll if the user is near the bottom.
+      // This prevents interrupting them if they've scrolled up to read history.
+      const isScrolledToBottom =
+        container.scrollHeight - container.clientHeight <=
+        container.scrollTop + 200; // 200px threshold is more forgiving
+
+      if (isScrolledToBottom) {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: 'smooth',
+        });
+      }
     }
   }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [lastFinalTexts, scrollToBottom]);
+  }, [lastFinalTexts.length, scrollToBottom]);
+
+  // Always scroll to the bottom when the panel is first opened.
+  useEffect(() => {
+    if (showPopover) {
+      forceScrollToBottom();
+    }
+  }, [showPopover, forceScrollToBottom]);
 
   return (
     <PopoverPanel
@@ -77,6 +105,12 @@ const PopoverPanelElms = ({
             onClick={() => downloadTexts()}
           >
             <DownloadIconSVG />
+          </button>
+          <button
+            className="w-5 h-5 flex items-center justify-center cursor-pointer"
+            onClick={() => forceScrollToBottom()}
+          >
+            <ScrollToBottomIconSVG />
           </button>
           <button
             className="w-5 h-5 flex items-center justify-center cursor-pointer"
@@ -103,10 +137,10 @@ const PopoverPanelElms = ({
             </div>
           );
         })}
-        <InterimTextElms scrollToBottom={scrollToBottom} />
+        <InterimTextDisplay scrollToBottom={scrollToBottom} />
       </div>
     </PopoverPanel>
   );
 };
 
-export default PopoverPanelElms;
+export default SubtitleHistoryPanel;

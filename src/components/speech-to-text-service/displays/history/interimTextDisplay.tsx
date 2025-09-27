@@ -3,18 +3,18 @@ import { throttle } from 'es-toolkit';
 
 import { useAppSelector } from '../../../../store';
 
-interface IInterimTextElmsProps {
+interface IInterimTextDisplayProps {
   scrollToBottom: () => void;
 }
 
-const InterimTextElms = ({ scrollToBottom }: IInterimTextElmsProps) => {
+const InterimTextDisplay = ({ scrollToBottom }: IInterimTextDisplayProps) => {
   const interimText = useAppSelector(
     (state) => state.speechServices.interimText,
   );
 
   const throttledScroll = useMemo(
     () =>
-      throttle(scrollToBottom, 500, {
+      throttle(scrollToBottom, 200, {
         edges: ['trailing'],
       }),
     [scrollToBottom],
@@ -39,4 +39,4 @@ const InterimTextElms = ({ scrollToBottom }: IInterimTextElmsProps) => {
   );
 };
 
-export default InterimTextElms;
+export default InterimTextDisplay;
