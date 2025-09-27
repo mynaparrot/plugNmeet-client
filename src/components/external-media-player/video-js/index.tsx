@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // @ts-expect-error won't be a problem
 import { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
@@ -23,16 +23,19 @@ const VideoJsPlayerComponent = ({
   const [player, setPlayer] = useState<VideoJsPlayer>();
   const conn = getNatsConn();
 
-  const [options] = useState<VideoJsPlayerOptions>({
-    controls: isPresenter,
-    responsive: true,
-    fluid: true,
-    sources: [
-      {
-        src,
-      },
-    ],
-  });
+  const options: VideoJsPlayerOptions = useMemo(
+    () => ({
+      controls: isPresenter,
+      responsive: true,
+      fluid: true,
+      sources: [
+        {
+          src,
+        },
+      ],
+    }),
+    [src, isPresenter],
+  );
 
   useEffect(() => {
     if (isPresenter || !player) {
@@ -57,34 +60,46 @@ const VideoJsPlayerComponent = ({
   }, [seekTo, player, isPresenter]);
 
   useEffect(() => {
-    const broadcast = async (msg: string) => {
+    if (!player || !isPresenter) {
+      return;
+    }
+
+    const broadcast = (msg: string) => {
       conn.sendDataMessage(DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS, msg);
     };
 
-    if (player) {
-      player.on('pause', () => {
-        const msg = {
-          action: 'pause',
-        };
-        broadcast(JSON.stringify(msg));
-      });
-      player.on('play', () => {
-        const msg = {
-          action: 'play',
-          seekTo: player.currentTime(),
-        };
-        broadcast(JSON.stringify(msg));
-      });
-      player.on('seeked', () => {
-        const msg = {
-          action: 'seeked',
-          seekTo: player.currentTime(),
-        };
-        broadcast(JSON.stringify(msg));
-      });
-    }
-    //eslint-disable-next-line
-  }, [player]);
+    const onPause = () => {
+      const msg = {
+        action: 'pause',
+      };
+      broadcast(JSON.stringify(msg));
+    };
+    const onPlay = () => {
+      const msg = {
+        action: 'play',
+        seekTo: player.currentTime(),
+      };
+      broadcast(JSON.stringify(msg));
+    };
+    const onSeeked = () => {
+      const msg = {
+        action: 'seeked',
+        seekTo: player.currentTime(),
+      };
+      broadcast(JSON.stringify(msg));
+    };
+
+    player.on('pause', onPause);
+    player.on('play', onPlay);
+    player.on('seeked', onSeeked);
+
+    return () => {
+      // player can be disposed already, so check for existence of methods
+      player.off?.('pause', onPause);
+      player.off?.('play', onPlay);
+      player.off?.('seeked', onSeeked);
+    };
+  }, [player, isPresenter, conn]);
 
   const onReady = (player: VideoJsPlayer) => {
     setPlayer(player);

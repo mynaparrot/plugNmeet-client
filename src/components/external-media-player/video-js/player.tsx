@@ -17,18 +17,16 @@ const PlayerComponent = ({ options, onReady }: IPlayerComponentProps) => {
     const videoElement = videoRef.current;
     if (videoElement && !player) {
       const player = videojs(videoElement, options, () => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         onReady && onReady(player);
       });
       setPlayer(player);
     }
-    //eslint-disable-next-line
-  }, [videoRef]);
+  }, [player, videoRef, options, onReady]);
 
   // Dispose the Video.js player when the functional component unmounts
   useEffect(() => {
     return () => {
-      if (player) {
+      if (player && !player.isDisposed()) {
         player.dispose();
         setPlayer(undefined);
       }
