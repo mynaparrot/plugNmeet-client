@@ -478,6 +478,7 @@
     "select-one-lang": "Select a language",
     "subtitle-history-modal-title": "Caption History",
     "azure-error": "Microsoft Azure service error: {{error}}",
-    "speech-to-text-stopped": "Transcription service has stopped."
+    "speech-to-text-stopped": "Transcription service has stopped.",
+    "enable-transcription": "Enable Transcription"
   }
 }
