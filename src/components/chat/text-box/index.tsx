@@ -1,10 +1,16 @@
-import React, { useEffect, useState, useRef, ClipboardEvent } from 'react';
+import React, {
+  ClipboardEvent,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import sanitizeHtml from 'sanitize-html';
-import { isEmpty } from 'validator';
 import { useTranslation } from 'react-i18next';
+import { isEmpty } from 'es-toolkit/compat';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 import { useAutosizeTextArea } from './useAutosizeTextArea';
@@ -12,15 +18,15 @@ import { publishFileAttachmentToChat } from '../utils';
 import { uploadResumableFile } from '../../../helpers/utils';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
-interface ITextBoxAreaProps {
-  // chosenEmoji: string | null;
-  onAfterSendMessage(): void;
-}
+const TextBoxArea = () => {
+  const dispatch = useAppDispatch();
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useTranslation();
+  const conn = getNatsConn();
+  const session = store.getState().session;
+  const isAdmin = !!session.currentUser?.metadata?.isAdmin;
+  const chatFeatures = session.currentRoom.metadata?.roomFeatures?.chatFeatures;
 
-const TextBoxArea = ({
-  // chosenEmoji,
-  onAfterSendMessage,
-}: ITextBoxAreaProps) => {
   const isLockChatSendMsg = useAppSelector(
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
@@ -32,21 +38,11 @@ const TextBoxArea = ({
   const selectedChatOption = useAppSelector(
     (state) => state.roomSettings.selectedChatOption,
   );
+  const defaultLockSettings = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.defaultLockSettings,
+  );
 
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation();
-  const conn = getNatsConn();
-  const chatFeatures =
-    store.getState().session.currentRoom.metadata?.roomFeatures?.chatFeatures;
-
-  const [lockSendMsg, setLockSendMsg] = useState<boolean>(false);
-  const [lockSendFile, setLockSendFile] = useState<boolean>(false);
-  const [showSendFile, setShowSendFile] = useState<boolean>(true);
   const [message, setMessage] = useState<string>('');
-
-  // const [textareaHeight, setTextareaHeight] = useState("");
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
   useAutosizeTextArea(textAreaRef.current, message);
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -55,66 +51,32 @@ const TextBoxArea = ({
     setMessage(val);
   };
 
-  useEffect(() => {
-    const metadata = store.getState().session.currentRoom
-      .metadata as IRoomMetadata;
+  const showSendFile = useMemo(
+    () => !!chatFeatures?.allowFileUpload,
+    [chatFeatures],
+  );
 
-    if (!metadata.roomFeatures?.chatFeatures?.allowFileUpload) {
-      setShowSendFile(false);
+  const isMsgSendingLocked = useMemo(() => {
+    if (isAdmin) return false;
+
+    // User-specific setting takes precedence.
+    if (typeof isLockChatSendMsg !== 'undefined') {
+      return isLockChatSendMsg;
     }
-  }, []);
+    // Otherwise, fall back to the room's default setting.
+    return !!defaultLockSettings?.lockChatSendMessage;
+  }, [isAdmin, isLockChatSendMsg, defaultLockSettings?.lockChatSendMessage]);
 
-  useEffect(() => {
-    if (isLockChatSendMsg) {
-      setLockSendMsg(true);
-    } else {
-      setLockSendMsg(false);
+  const isFileSendingLocked = useMemo(() => {
+    if (isAdmin) return false;
+
+    // User-specific setting takes precedence.
+    if (typeof isLockSendFile !== 'undefined') {
+      return isLockSendFile;
     }
-    if (isLockSendFile) {
-      setLockSendFile(true);
-    } else {
-      setLockSendFile(false);
-    }
-  }, [isLockChatSendMsg, isLockSendFile]);
-
-  // default room lock settings
-  useEffect(() => {
-    const lock_chat_send_message =
-      store.getState().session.currentRoom.metadata?.defaultLockSettings
-        ?.lockChatSendMessage;
-    const lock_chat_file_share =
-      store.getState().session.currentRoom.metadata?.defaultLockSettings
-        ?.lockChatFileShare;
-
-    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
-
-    if (lock_chat_send_message && !isAdmin) {
-      if (isLockChatSendMsg) {
-        setLockSendMsg(true);
-      }
-    }
-    if (lock_chat_file_share && !isAdmin) {
-      if (isLockChatSendMsg) {
-        setLockSendFile(true);
-      }
-    }
-    // eslint-disable-next-line
-  }, []);
-
-  // const addEmoji = useCallback(
-  //   (emoji: string) => {
-  //     const msg = message + emoji;
-  //     setMessage(msg);
-  //   },
-  //   [message],
-  // );
-
-  // useEffect(() => {
-  //   if (chosenEmoji) {
-  //     addEmoji(chosenEmoji);
-  //   }
-  //   //eslint-disable-next-line
-  // }, [chosenEmoji]);
+    // Otherwise, fall back to the room's default setting.
+    return !!defaultLockSettings?.lockChatFileShare;
+  }, [isAdmin, isLockSendFile, defaultLockSettings?.lockChatFileShare]);
 
   const cleanHtml = (rawText: string) => {
     return sanitizeHtml(rawText, {
@@ -123,93 +85,103 @@ const TextBoxArea = ({
     });
   };
 
-  const sendMsg = async () => {
-    const msg = cleanHtml(message);
-    if (isEmpty(msg)) {
-      return;
-    }
-
-    await conn.sendChatMsg(selectedChatOption, msg.replace(/\r?\n/g, '<br />'));
-    setMessage('');
-
-    onAfterSendMessage();
-  };
-
-  const onEnterPress = async (e: any) => {
-    if (e.keyCode == 13 && e.shiftKey == false) {
-      e.preventDefault();
-      await sendMsg();
-    }
-  };
-
-  const handleOnPaste = (e: ClipboardEvent) => {
-    if (isLockSendFile || isLockChatSendMsg) {
-      return;
-    }
-
-    if (e.clipboardData && e.clipboardData.items) {
-      const files: File[] = [];
-      const items = e.clipboardData.items;
-
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-          e.preventDefault();
-          const f = items[i].getAsFile();
-          if (f) {
-            const extension = f.name.slice(
-              ((f.name.lastIndexOf('.') - 1) >>> 0) + 2,
-            );
-            files.push(
-              new File([f], Date.now().toString() + '.' + extension, {
-                type: f.type,
-                lastModified: f.lastModified,
-              }),
-            );
-          }
-        }
+  const sendMsg = useCallback(async () => {
+    if (conn) {
+      const msg = cleanHtml(message);
+      if (isEmpty(msg)) {
+        return;
       }
 
-      if (files.length) {
-        uploadResumableFile(
-          chatFeatures?.allowedFileTypes ?? [],
-          chatFeatures?.maxFileSize,
-          files,
-          (result) => {
-            publishFileAttachmentToChat(result.filePath, result.fileName).then(
-              () =>
+      await conn.sendChatMsg(
+        selectedChatOption,
+        msg.replace(/\r?\n/g, '<br />'),
+      );
+      setMessage('');
+    }
+  }, [conn, message, selectedChatOption]);
+
+  const onEnterPress = useCallback(
+    async (e: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        await sendMsg();
+      }
+    },
+    [sendMsg],
+  );
+
+  const handleOnPaste = useCallback(
+    (e: ClipboardEvent) => {
+      if (isFileSendingLocked || isMsgSendingLocked) {
+        return;
+      }
+
+      if (e.clipboardData && e.clipboardData.items) {
+        const files: File[] = [];
+        const items = e.clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf('image') !== -1) {
+            e.preventDefault();
+            const f = items[i].getAsFile();
+            if (f) {
+              const extension = f.name.slice(
+                ((f.name.lastIndexOf('.') - 1) >>> 0) + 2,
+              );
+              files.push(
+                new File([f], Date.now().toString() + '.' + extension, {
+                  type: f.type,
+                  lastModified: f.lastModified,
+                }),
+              );
+            }
+          }
+        }
+
+        if (files.length) {
+          uploadResumableFile(
+            chatFeatures?.allowedFileTypes ?? [],
+            chatFeatures?.maxFileSize,
+            files,
+            (result) => {
+              publishFileAttachmentToChat(
+                result.filePath,
+                result.fileName,
+              ).then(() =>
                 dispatch(
                   addUserNotification({
                     message: t('right-panel.file-upload-success'),
                     typeOption: 'success',
                   }),
                 ),
-            );
-          },
-          undefined,
-        );
+              );
+            },
+          );
+        }
       }
-    }
-  };
+    },
+    [isFileSendingLocked, isMsgSendingLocked, chatFeatures, dispatch, t],
+  );
 
   return (
     <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
-      {showSendFile ? <FileSend lockSendFile={lockSendFile} /> : null}
+      {showSendFile ? <FileSend lockSendFile={isFileSendingLocked} /> : null}
       <textarea
         name="message-textarea"
         id="message-textarea"
         className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 font-normal h-10 mr-2 overflow-hidden"
         value={message}
         onChange={handleChange}
-        disabled={lockSendMsg}
+        disabled={isMsgSendingLocked}
         placeholder={t('right-panel.chat-box-placeholder').toString()}
-        onKeyDown={(e) => onEnterPress(e)}
+        onKeyDown={onEnterPress}
         ref={textAreaRef}
         rows={1}
         onPaste={handleOnPaste}
       />
       <button
-        disabled={lockSendMsg}
-        onClick={() => sendMsg()}
+        disabled={isMsgSendingLocked}
+        onClick={sendMsg}
         className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'}`}
       >
         <svg

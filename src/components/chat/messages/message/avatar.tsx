@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { participantsSelector } from '../../../../store/slices/participantSlice';
-import { store } from '../../../../store';
+import { useAppSelector } from '../../../../store';
 
 interface IAvatarProps {
   userId: string;
@@ -9,24 +9,32 @@ interface IAvatarProps {
 }
 
 const Avatar = ({ userId, name }: IAvatarProps) => {
-  const participant = participantsSelector.selectById(store.getState(), userId);
+  const participant = useAppSelector((state) =>
+    participantsSelector.selectById(state, userId),
+  );
 
-  const render = () => {
-    if (participant?.metadata?.profilePic) {
-      return (
-        <img src={participant?.metadata.profilePic} alt={participant.name} />
-      );
-    } else {
-      let n = name;
-      if (participant?.name) {
-        n = participant?.name;
-      }
-      return <>{n.slice(0, 2).toUpperCase()}</>;
-    }
-  };
+  const nameParts = name.trim().split(/\s+/);
+  const firstNameInitial = nameParts[0]?.[0] || '';
+  let lastNameInitial = '';
+
+  if (nameParts.length > 1) {
+    lastNameInitial = nameParts[nameParts.length - 1]?.[0] || '';
+  } else if (nameParts[0]?.length > 1) {
+    lastNameInitial = nameParts[0].slice(-1);
+  }
+  const initials = `${firstNameInitial}${lastNameInitial}`.toLocaleUpperCase();
+
   return (
-    <div className="avatar flex items-center justify-center h-7 3xl:h-9 w-7 3xl:w-9 bg-DarkBlue rounded-lg 3xl:rounded-xl text-white font-medium text-xs 3xl:text-base">
-      {render()}
+    <div className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-[#069] text-xs 3xl:text-base font-medium text-white flex items-center justify-center overflow-hidden">
+      {participant && participant.metadata.profilePic ? (
+        <img
+          src={participant.metadata.profilePic}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        initials
+      )}
     </div>
   );
 };

@@ -1,6 +1,5 @@
-import React, { useEffect, useState, DragEvent } from 'react';
+import React, { DragEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-// import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
@@ -10,83 +9,79 @@ import { publishFileAttachmentToChat } from './utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
 const ChatComponent = () => {
-  const isChatLock = useAppSelector(
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  // Values that can change during the session (e.g., admin changes lock settings)
+  const isChatLocked = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockChat,
   );
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation();
-  // const theme = useAppSelector((state) => state.roomSettings.theme);
-  const [show, setShow] = useState<boolean>(false);
-  // const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
-  const [isOpenEmojiPanel, setIsOpenEmojiPanel] = useState(false);
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
+  const isLockChatSendMessage = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
+  );
+  const isLockChatFileShare = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockChatFileShare,
+  );
+  const defaultLockSettings = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.defaultLockSettings,
+  );
 
-  // default room lock settings
-  useEffect(() => {
-    const isLock =
-      store.getState().session.currentRoom.metadata?.defaultLockSettings
-        ?.lockChat;
-    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
+  // Values that are static for the session
+  const session = store.getState().session;
+  const isRecorder = session.currentUser?.isRecorder;
+  const isAdmin = session.currentUser?.metadata?.isAdmin;
+  const chatFeatures = session.currentRoom.metadata?.roomFeatures?.chatFeatures;
 
-    if (isLock && !isAdmin) {
-      if (isChatLock) {
-        setShow(false);
-      }
-    }
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
+  const canShowChatInput = useMemo(() => {
+    // Recorders can never chat.
     if (isRecorder) {
-      setShow(false);
+      return false;
     }
-  }, [isRecorder]);
-
-  useEffect(() => {
-    if (isRecorder) {
-      return;
+    // Admins can always chat (unless they are a recorder, which is handled above).
+    if (isAdmin) {
+      return true;
     }
 
-    if (isChatLock) {
-      setShow(false);
-    } else {
-      setShow(true);
+    // Determine the final lock status by respecting user-specific overrides.
+    let finalChatLockStatus = defaultLockSettings?.lockChat;
+    if (typeof isChatLocked !== 'undefined') {
+      // User-specific setting takes precedence.
+      finalChatLockStatus = isChatLocked;
     }
-  }, [isChatLock, isRecorder]);
 
-  // const onEmojiClick = (data: EmojiClickData) => {
-  //   setChosenEmoji(`${data.emoji}`);
-  // };
-
-  const onAfterSendMessage = () => {
-    if (isOpenEmojiPanel) {
-      setIsOpenEmojiPanel(false);
+    let finalMsgSendLockStatus = defaultLockSettings?.lockChatSendMessage;
+    if (typeof isLockChatSendMessage !== 'undefined') {
+      // User-specific setting takes precedence.
+      finalMsgSendLockStatus = isLockChatSendMessage;
     }
-  };
+
+    // A non-admin can chat if neither the chat feature nor message sending is locked.
+    return !finalChatLockStatus && !finalMsgSendLockStatus;
+  }, [
+    isRecorder,
+    isAdmin,
+    isChatLocked,
+    isLockChatSendMessage,
+    defaultLockSettings,
+  ]);
 
   const handleOnDrop = (e: DragEvent) => {
     e.preventDefault();
 
-    const session = store.getState().session;
-    const chatFeatures =
-      session.currentRoom.metadata?.roomFeatures?.chatFeatures;
-
-    const lockSettings = session.currentUser?.metadata?.lockSettings;
-    if (lockSettings?.lockChatSendMessage || lockSettings?.lockChatFileShare) {
+    if (isLockChatSendMessage || isLockChatFileShare) {
       return;
     }
 
     if (e.dataTransfer && e.dataTransfer.files) {
-      const files: File[] = [];
-      for (const f of e.dataTransfer.files) {
-        files.push(f);
-      }
-      if (files.length > 0) {
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length) {
         uploadResumableFile(
           chatFeatures?.allowedFileTypes ?? [],
           chatFeatures?.maxFileSize,
           files,
-          (result: any) => {
+          (result) => {
             publishFileAttachmentToChat(result.filePath, result.fileName).then(
               () =>
                 dispatch(
@@ -97,7 +92,6 @@ const ChatComponent = () => {
                 ),
             );
           },
-          undefined,
         );
       }
     }
@@ -114,46 +108,14 @@ const ChatComponent = () => {
           <ChatTabs />
         </div>
       </div>
-      {isRecorder ? (
+      {isRecorder && (
         <div className="w-full h-px hiddenAnimation absolute z-50 bottom-0 bg-linear-to-r from-primary-color to-secondary-color" />
-      ) : null}
-      {show ? (
-        <>
-          {/* <div
-            className={`emoji-selection-wrap w-[250px] xl:w-[300px] fixed z-99 bottom-[120px] lg:bottom-[65px] right-0 left-10 md:left-auto transition ease-in ${
-              isOpenEmojiPanel
-                ? 'emoji-active opacity-100 visible pointer-events-auto'
-                : 'opacity-0 invisible pointer-events-none'
-            }`}
-          >
-            {isOpenEmojiPanel ? (
-              <EmojiPicker
-                onEmojiClick={onEmojiClick}
-                lazyLoadEmojis={true}
-                theme={theme === 'dark' ? Theme.DARK : Theme.LIGHT}
-              />
-            ) : null}
-          </div> */}
-          <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 bg-white w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
-            <TextBoxArea
-              // chosenEmoji={chosenEmoji}
-              onAfterSendMessage={onAfterSendMessage}
-            />
-            {/* <div
-              className={`emoji-picker absolute left-2 md:-left-0 bottom-5 w-5 h-5 cursor-pointer text-secondary-color dark:text-dark-text ${
-                isOpenEmojiPanel ? 'emoji-active' : ''
-              }`}
-              onClick={() => setIsOpenEmojiPanel(!isOpenEmojiPanel)}
-            >
-              {isOpenEmojiPanel ? (
-                <i className="pnm-cross" />
-              ) : (
-                <i className="pnm-emoji" />
-              )}
-            </div> */}
-          </div>
-        </>
-      ) : null}
+      )}
+      {canShowChatInput && (
+        <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 bg-white w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
+          <TextBoxArea />
+        </div>
+      )}
     </div>
   );
 };

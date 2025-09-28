@@ -1,6 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import useVirtual from 'react-cool-virtual';
-import { ChatMessage } from 'plugnmeet-protocol-js';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { debounce } from 'es-toolkit';
 
 import { store, useAppSelector } from '../../../store';
 import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
@@ -12,104 +17,63 @@ interface IMessagesProps {
 
 const Messages = ({ userId }: IMessagesProps) => {
   const allMessages = useAppSelector(chatMessagesSelector.selectAll);
-  const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
-  );
 
-  const scrollToRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [autoScrollToBottom, setAutoScrollToBottom] = useState<boolean>(true);
 
-  const { outerRef, innerRef, items, scrollToItem } = useVirtual({
-    itemCount: chatMessages.length,
-    onScroll: (event) => {
-      if (event.visibleStopIndex === chatMessages.length - 1) {
-        setAutoScrollToBottom(true);
-      } else {
-        setAutoScrollToBottom(false);
-      }
-    },
-  });
-
-  useEffect(() => {
-    let chatMessages: ChatMessage[] = [];
+  const chatMessages = useMemo(() => {
     if (userId === 'public') {
-      chatMessages = allMessages.filter((m) => !m.isPrivate);
-    } else {
-      chatMessages = allMessages.filter(
-        (m) =>
-          m.isPrivate && (m.fromUserId === userId || m.toUserId === userId),
-      );
+      return allMessages.filter((m) => !m.isPrivate);
     }
-
-    setChatMessages(chatMessages);
+    return allMessages.filter(
+      (m) => m.isPrivate && (m.fromUserId === userId || m.toUserId === userId),
+    );
   }, [allMessages, userId]);
 
-  const scrollToBottom = () => {
-    if (!chatMessages.length || !autoScrollToBottom) {
-      return;
+  const scrollToBottom = useCallback(() => {
+    if (autoScrollToBottom && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
     }
-    if (scrollToRef.current) {
-      scrollToItem(
-        {
-          index: chatMessages.length - 1,
-          smooth: true,
-        },
-        () => {
-          if (scrollToRef.current) {
-            scrollToRef.current.scrollIntoView({
-              behavior: 'smooth',
-              block: 'end',
-              inline: 'nearest',
-            });
-          }
-        },
-      );
-    }
-  };
+  }, [autoScrollToBottom]);
+
+  // We debounce the scroll to prevent it from firing on every single message
+  // in a rapid burst. It will only scroll once after the messages stop arriving.
+  // oxlint-disable-next-line exhaustive-deps
+  const debouncedScrollToBottom = useCallback(
+    debounce(() => scrollToBottom(), 50),
+    [scrollToBottom],
+  );
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      scrollToBottom();
-    }, 500);
-    return () => {
-      clearTimeout(timeout);
-    };
-    //eslint-disable-next-line
-  }, [chatMessages.length]);
+    // When new messages arrive, trigger the debounced scroll.
+    debouncedScrollToBottom();
+  }, [chatMessages, debouncedScrollToBottom]);
 
-  // if we don't do this then scrolling won't go to bottom
-  useEffect(() => {
-    if (isActiveChatPanel) {
-      setTimeout(() => {
-        scrollToBottom();
-      }, 500);
+  const handleScroll = () => {
+    const element = messagesContainerRef.current;
+    if (element) {
+      // Check if the user is at or very near the bottom (with a 1px tolerance)
+      const isAtBottom =
+        element.scrollHeight - element.scrollTop <= element.clientHeight + 1;
+      setAutoScrollToBottom(isAtBottom);
     }
-    //eslint-disable-next-line
-  }, [isActiveChatPanel]);
-
-  const renderMsg = (index) => {
-    if (!chatMessages.length || typeof chatMessages[index] === 'undefined') {
-      return null;
-    }
-    const body = chatMessages[index];
-    return <Message key={body.id} body={body} currentUser={currentUser} />;
   };
 
   return (
     <div
       className="relative h-full overflow-auto scrollBar messages-item-wrap px-3 3xl:px-5"
-      ref={outerRef as any}
+      ref={messagesContainerRef}
+      onScroll={handleScroll}
     >
-      <div ref={innerRef as any} className="inner">
-        {items.map(({ index, measureRef }) => (
-          <div key={index} ref={measureRef} className="message-item py-2">
-            {renderMsg(index)}
-          </div>
-        ))}
-        <div ref={scrollToRef} />
-      </div>
+      {chatMessages.map((message) => (
+        <div key={message.id} className="message-item py-2">
+          <Message body={message} currentUser={currentUser} />
+        </div>
+      ))}
     </div>
   );
 };

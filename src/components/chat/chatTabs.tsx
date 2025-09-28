@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
@@ -47,80 +47,55 @@ const ChatTabs = () => {
     (state) => state.roomSettings.selectedChatOption,
   );
   const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
-  const [privateChatUsers, setPrivateChatUsers] = useState<Map<string, string>>(
-    new Map(),
-  );
   const currentUser = store.getState().session.currentUser;
 
-  const [chatOptions, setChatOptions] = useState<IChatOptions[]>([
-    {
-      id: 'public',
-      title: t('left-panel.public-chat'),
-    },
-  ]);
-  const [selectedTitle, setSelectedTitle] = useState<string>(
-    t('left-panel.public-chat').toString(),
-  );
-
-  useEffect(() => {
+  const privateChatUsers = useMemo(() => {
+    const users = new Map<string, string>();
     if (initiatePrivateChat.userId !== '') {
-      privateChatUsers.set(
-        initiatePrivateChat.userId,
-        initiatePrivateChat.name,
-      );
-      setPrivateChatUsers(new Map(privateChatUsers));
+      users.set(initiatePrivateChat.userId, initiatePrivateChat.name);
     }
     chatMessages.forEach((m) => {
       if (m.isPrivate) {
         if (m.fromUserId !== currentUser?.userId) {
-          if (!privateChatUsers.has(m.fromUserId)) {
-            privateChatUsers.set(m.fromUserId, m.fromName ?? '');
-            setPrivateChatUsers(new Map(privateChatUsers));
-          }
+          users.set(m.fromUserId, m.fromName ?? '');
         } else if (
           m.fromUserId === currentUser?.userId &&
           m.toUserId &&
           m.toUserId !== currentUser?.userId
         ) {
-          if (!privateChatUsers.has(m.toUserId)) {
-            const user = participantsSelector.selectById(
-              store.getState(),
-              m.toUserId,
-            );
-            if (user) {
-              privateChatUsers.set(user.userId, user.name);
-              setPrivateChatUsers(new Map(privateChatUsers));
-            }
+          const user = participantsSelector.selectById(
+            store.getState(),
+            m.toUserId,
+          );
+          if (user) {
+            users.set(user.userId, user.name);
           }
         }
       }
     });
+    return users;
+  }, [initiatePrivateChat, chatMessages, currentUser?.userId]);
 
-    //eslint-disable-next-line
-  }, [initiatePrivateChat, chatMessages]);
-
-  useEffect(() => {
-    const options = [
+  const chatOptions = useMemo(() => {
+    const options: IChatOptions[] = [
       {
         id: 'public',
         title: t('left-panel.public-chat'),
       },
     ];
-    privateChatUsers.forEach((u, id) => {
+    privateChatUsers.forEach((name, id) => {
       options.push({
         id,
-        title: u,
+        title: name,
       });
     });
-    setChatOptions(options);
+    return options;
   }, [privateChatUsers, t]);
 
-  useEffect(() => {
-    const tmp = chatOptions.filter((o) => o.id === selectedChatOption);
-    if (tmp.length) {
-      setSelectedTitle(tmp[0].title);
-    }
-  }, [selectedChatOption, chatOptions]);
+  const selectedTitle = useMemo(() => {
+    const selected = chatOptions.find((o) => o.id === selectedChatOption);
+    return selected?.title ?? t('left-panel.public-chat');
+  }, [selectedChatOption, chatOptions, t]);
 
   const onChange = (id: string) => {
     dispatch(updateSelectedChatOption(id));
@@ -141,7 +116,9 @@ const ChatTabs = () => {
       <div className="top-chat-header flex items-center gap-2 h-10 3xl:h-14 px-3 3xl:px-5 justify-between">
         <div className="left flex items-center gap-3">
           <p className="text-sm 3xl:text-base text-Gray-950 3xl:font-medium leading-tight">
-            {selectedChatOption === 'public' ? 'Public Chat' : 'Private Chat'}
+            {selectedChatOption === 'public'
+              ? t('left-panel.public-chat')
+              : t('left-panel.menus.items.private-chat')}
           </p>
           <Listbox value={language} onChange={setLanguage}>
             <ListboxButton className="lang h-6 3xl:h-8 w-9 3xl:w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-md 3xl:rounded-[11px] text-xs 3xl:text-sm font-medium 3xl:font-semibold text-Gray-950">
