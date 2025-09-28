@@ -10,6 +10,7 @@ import React, {
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
+import { LoadingIcon } from '../../../../assets/Icons/Loading';
 import './style.css';
 
 interface IVideoElmProps {
@@ -72,11 +73,11 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
     return (
       <>
         {!loaded && (
-          <div className="loading absolute text-center top-3 z-999 left-0 right-0 m-auto">
-            <div className="lds-ripple">
-              <div className="border-secondary-color" />
-              <div className="border-secondary-color" />
-            </div>
+          <div className="loading-status absolute flex h-full w-full items-center justify-center bg-black/50">
+            <LoadingIcon
+              className="inline h-8 w-8 animate-spin text-gray-200"
+              fillColor="#004D90"
+            />
           </div>
         )}
         <video

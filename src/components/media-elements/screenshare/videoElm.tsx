@@ -11,6 +11,7 @@ import clsx from 'clsx';
 
 import './style.css';
 import { useAppSelector } from '../../../store';
+import { LoadingIcon } from '../../../assets/Icons/Loading';
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
@@ -69,11 +70,11 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   return (
     <div className="screen-share-video group relative">
       {!isLoaded && (
-        <div className="loading absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center">
-          <div className="lds-ripple">
-            <div className="border-secondary-color" />
-            <div className="border-secondary-color" />
-          </div>
+        <div className="loading-status absolute flex h-full w-full items-center justify-center bg-black/50">
+          <LoadingIcon
+            className="inline h-10 w-10 animate-spin text-gray-200"
+            fillColor="#004D90"
+          />
         </div>
       )}
       {isLoaded && (

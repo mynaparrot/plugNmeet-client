@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ConnectionQuality } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
@@ -12,24 +12,19 @@ const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
     (state) =>
       participantsSelector.selectById(state, userId)?.connectionQuality,
   );
-  const [color, setColor] = useState<string>('#FFFFFF');
 
-  useEffect(() => {
+  const color = useMemo(() => {
     switch (connectionQuality) {
       case ConnectionQuality.Excellent:
-        setColor('#38f105');
-        break;
+        return '#38f105';
       case ConnectionQuality.Good:
-        setColor('#c8f6bd');
-        break;
+        return '#c8f6bd';
       case ConnectionQuality.Poor:
-        setColor('#FF0000');
-        break;
+        return '#FF0000';
       case ConnectionQuality.Lost:
-        setColor('#e03131');
-        break;
+        return '#e03131';
       default:
-        setColor('#FFFFFF');
+        return '#FFFFFF';
     }
   }, [connectionQuality]);
 
