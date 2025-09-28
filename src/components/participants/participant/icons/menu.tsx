@@ -9,6 +9,7 @@ import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
 import PrivateChatMenuItem from './menu-items/privateChatMenuItem';
 import { store, useAppSelector } from '../../../../store';
+import IconWrapper from './iconWrapper';
 import { ParticipantsMenuIconSVG } from '../../../../assets/Icons/ParticipantsMenuIconSVG';
 
 interface IMenuIconProps {
@@ -74,7 +75,7 @@ const MenuIcon = ({
 
   const render = () => {
     return (
-      <>
+      <IconWrapper>
         <Menu as="div">
           {({ open }) => (
             <>
@@ -104,7 +105,7 @@ const MenuIcon = ({
             </>
           )}
         </Menu>
-      </>
+      </IconWrapper>
     );
   };
 

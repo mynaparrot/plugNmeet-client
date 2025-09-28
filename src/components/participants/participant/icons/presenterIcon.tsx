@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAppSelector } from '../../../../store';
+import IconWrapper from './iconWrapper';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 
 interface IPresenterIconProps {
@@ -13,10 +14,12 @@ const PresenterIcon = ({ userId }: IPresenterIconProps) => {
       participantsSelector.selectById(state, userId)?.metadata.isPresenter,
   );
 
-  return !isPresenter ? null : (
-    <div className="presenter cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center">
-      <i className="pnm-presenter text-Gray-950 text-sm 3xl:text-base" />
-    </div>
+  return (
+    isPresenter && (
+      <IconWrapper>
+        <i className="pnm-presenter text-Gray-950 text-sm 3xl:text-base" />
+      </IconWrapper>
+    )
   );
 };
 

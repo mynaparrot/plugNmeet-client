@@ -2,7 +2,9 @@ import React from 'react';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
+import IconWrapper from './iconWrapper';
 import { Camera } from '../../../../assets/Icons/Camera';
+
 // import { CameraOff } from '../../../../assets/Icons/CameraOff';
 
 interface WebcamIconProps {
@@ -15,10 +17,9 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
   );
 
   return !videoTracks ? null : (
-    <div className="mic cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center">
-      {/* <i className="pnm-webcam secondaryColor text-[10px]" /> */}
+    <IconWrapper>
       <Camera classes={'h-3 3xl:h-4 w-auto'} />
-    </div>
+    </IconWrapper>
   );
 };
 

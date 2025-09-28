@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '../../../../store';
+import IconWrapper from './iconWrapper';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 
 interface VisibilityIconProps {
@@ -11,11 +12,13 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
     (state) => participantsSelector.selectById(state, userId)?.visibility,
   );
 
-  return visibility === 'hidden' ? (
-    <div className="visibility cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center">
-      <i className="pnm-eye-slash text-Gray-950 text-sm 3xl:text-base" />
-    </div>
-  ) : null;
+  return (
+    visibility === 'hidden' && (
+      <IconWrapper>
+        <i className="pnm-eye-slash text-Gray-950 text-sm 3xl:text-base" />
+      </IconWrapper>
+    )
+  );
 };
 
 export default VisibilityIcon;

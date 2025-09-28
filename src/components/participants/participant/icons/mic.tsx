@@ -9,6 +9,7 @@ import {
 import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
 import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
+import IconWrapper from './iconWrapper';
 
 interface MicIconProps {
   userId: string;
@@ -52,7 +53,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
 
   const renderUnmuteIcon = useCallback(() => {
     return (
-      <div className="mic cursor-pointer w-6 3xl:w-8 h-6 3xl:h-8 flex items-center justify-center relative">
+      <div className="mic-unmute-wrapper relative flex items-center justify-center">
         <Menu>
           {({ open }) => (
             <>
@@ -104,30 +105,20 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
   const render = useMemo(() => {
     if (audioTracks) {
       if (isMuted) {
-        return (
-          <div className="mic muted cursor-pointer w-8 h-8 flex items-center justify-center">
-            {/* <i className="pnm-mic-mute secondaryColor text-[10px]" /> */}
-            <MicrophoneOff classes={'h-4 w-auto'} />
-          </div>
-        );
+        return <MicrophoneOff classes={'h-4 w-auto'} />;
       }
       // if this user is a remote Participant then we can control volume.
       if (isRemoteParticipant) {
         return renderUnmuteIcon();
       }
       // for local user don't need
-      return (
-        <div className="mic cursor-pointer w-8 h-8 flex items-center justify-center">
-          {/* <i className="pnm-mic-unmute secondaryColor text-[10px]" /> */}
-          <Microphone classes={'h-4 w-auto'} />
-        </div>
-      );
+      return <Microphone classes={'h-4 w-auto'} />;
     }
 
     return null;
   }, [isRemoteParticipant, renderUnmuteIcon, audioTracks, isMuted]);
 
-  return <>{render}</>;
+  return render ? <IconWrapper>{render}</IconWrapper> : null;
 };
 
 export default MicIcon;
