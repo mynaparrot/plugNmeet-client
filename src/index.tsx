@@ -1,4 +1,4 @@
-import React, { Suspense, StrictMode } from 'react';
+import React, { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
 import 'react-toastify/dist/ReactToastify.css';
-import './styles-css/index.css';
+import './styles/index.css';
 import './helpers/i18n';
 
 import { store } from './store';
