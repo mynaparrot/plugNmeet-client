@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react';
-import { Transition } from '@headlessui/react';
 
 import { store, useAppDispatch } from '../../store';
 import {
@@ -16,6 +15,7 @@ import MainView from './mainView';
 import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
+import SidePanel from './sidePanel';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
@@ -102,28 +102,6 @@ const MainArea = () => {
     isActiveWhiteboard,
   ]);
 
-  const renderPanel = (
-    isActive: boolean,
-    panelClass: string,
-    Component: React.ElementType,
-  ) => (
-    <Transition
-      show={isActive}
-      enter="transition-transform duration-300 ease-in-out"
-      enterFrom="translate-x-full"
-      enterTo="translate-x-0"
-      leave="transition-transform duration-300 ease-in-out"
-      leaveFrom="translate-x-0"
-      leaveTo="translate-x-full"
-    >
-      <div
-        className={`${panelClass} absolute w-[300px] 3xl:w-[340px] right-0 h-full`}
-      >
-        <Component />
-      </div>
-    </Transition>
-  );
-
   const height = useMemo(() => {
     if (isRecorder) {
       return screenHeight;
@@ -163,15 +141,22 @@ const MainArea = () => {
           <ActiveSpeakers />
           {renderMainComponentElms}
         </div>
-        {renderPanel(
-          isActiveParticipantsPanel,
-          'participants-panel',
-          ParticipantsComponent,
+        <SidePanel
+          isActive={isActiveParticipantsPanel}
+          panelClass="participants-panel"
+        >
+          <ParticipantsComponent />
+        </SidePanel>
+        {roomFeatures?.chatFeatures?.allowChat && (
+          <SidePanel isActive={isActiveChatPanel} panelClass="chat-panel">
+            <ChatComponent />
+          </SidePanel>
         )}
-        {roomFeatures?.chatFeatures?.allowChat &&
-          renderPanel(isActiveChatPanel, 'chat-panel', ChatComponent)}
-        {roomFeatures?.pollsFeatures?.isAllow &&
-          renderPanel(isActivePollsPanel, 'polls-panel', PollsComponent)}
+        {roomFeatures?.pollsFeatures?.isAllow && (
+          <SidePanel isActive={isActivePollsPanel} panelClass="polls-panel">
+            <PollsComponent />
+          </SidePanel>
+        )}
       </div>
     </div>
   );
