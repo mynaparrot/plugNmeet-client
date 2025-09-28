@@ -14,9 +14,10 @@ const PublishResultBtn = ({
 }: PublishResultBtnProps) => {
   const { t } = useTranslation();
 
-  const publishByChat = async () => {
-    await publishPollResultByChat(pollDataWithOption);
-    onCloseViewDetails();
+  const publishByChat = () => {
+    publishPollResultByChat(pollDataWithOption).finally(() =>
+      onCloseViewDetails(),
+    );
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import {
   Menu,
   MenuButton,
@@ -6,61 +6,33 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { create } from '@bufbuild/protobuf';
-import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
 import { useTranslation } from 'react-i18next';
 
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
-import { useClosePollMutation } from '../../../store/services/pollsApi';
 import { PollDataWithOption, publishPollResultByChat } from '../utils';
-import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
-import { useAppDispatch } from '../../../store';
+import { useEndPoll } from '../hooks/useEndPoll';
 
-interface TopMenuProps {
+interface PollActionsMenuProps {
   isRunning: boolean;
   setViewDetails: Dispatch<SetStateAction<boolean>>;
   pollDataWithOption: PollDataWithOption;
 }
 
-const TopMenu = ({
+const PollActionsMenu = ({
   isRunning,
   setViewDetails,
   pollDataWithOption,
-}: TopMenuProps) => {
+}: PollActionsMenuProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const [closePoll, { data: closePollRes, isLoading }] = useClosePollMutation();
+  const { endPoll, isEndingPoll } = useEndPoll();
+  const [isPublishing, setIsPublishing] = useState(false);
 
-  const endPoll = () => {
-    if (isLoading) {
-      return;
-    }
-    closePoll(
-      create(ClosePollReqSchema, {
-        pollId: pollDataWithOption.pollId,
-      }),
-    );
+  const handlePublish = () => {
+    setIsPublishing(true);
+    publishPollResultByChat(pollDataWithOption).finally(() => {
+      setIsPublishing(false);
+    });
   };
-
-  useEffect(() => {
-    if (closePollRes) {
-      if (closePollRes.status) {
-        dispatch(
-          addUserNotification({
-            message: t('polls.end-poll-success'),
-            typeOption: 'info',
-          }),
-        );
-      } else {
-        dispatch(
-          addUserNotification({
-            message: t(closePollRes.msg),
-            typeOption: 'error',
-          }),
-        );
-      }
-    }
-  }, [closePollRes, dispatch, t]);
 
   return (
     <Menu as="div">
@@ -97,8 +69,9 @@ const TopMenu = ({
               {isRunning ? (
                 <MenuItem>
                   <button
-                    onClick={endPoll}
-                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Red-50 text-sm gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                    onClick={() => endPoll(pollDataWithOption.pollId)}
+                    disabled={isEndingPoll}
+                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Red-50 text-sm gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
                   >
                     {t('polls.end-poll')}
                   </button>
@@ -106,8 +79,9 @@ const TopMenu = ({
               ) : (
                 <MenuItem>
                   <button
-                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Gray-50 text-sm gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
-                    onClick={() => publishPollResultByChat(pollDataWithOption)}
+                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Gray-50 text-sm gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
+                    onClick={handlePublish}
+                    disabled={isPublishing}
                   >
                     {t('polls.publish-result')}
                   </button>
@@ -121,4 +95,4 @@ const TopMenu = ({
   );
 };
 
-export default TopMenu;
+export default PollActionsMenu;

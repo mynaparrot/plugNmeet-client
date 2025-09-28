@@ -24,7 +24,6 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [question, setQuestion] = useState<string>('');
-  const [locked, setLocked] = useState<boolean>(false);
   const [createPoll, { isLoading, data }] = useCreatePollMutation();
 
   const [options, setOptions] = useState<CreatePollOptions[]>([
@@ -39,8 +38,9 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   ]);
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if (data) {
       if (data.status) {
+        // On success
         dispatch(
           addUserNotification({
             message: t('polls.created-successfully'),
@@ -49,6 +49,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
         );
         setIsOpen(false);
       } else {
+        // On failure
         dispatch(
           addUserNotification({
             message: t(data.msg),
@@ -56,17 +57,26 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           }),
         );
       }
-      setLocked(false);
     }
-    //eslint-disable-next-line
-  }, [isLoading, data, dispatch]);
+  }, [data, dispatch, setIsOpen, t]);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isLoading || locked) {
+    if (isLoading) {
       return;
     }
-    setLocked(true);
+
+    // Prevent submission if any option is empty
+    if (options.some((opt) => opt.text.trim() === '')) {
+      dispatch(
+        addUserNotification({
+          message: t('polls.fill-all-options'),
+          typeOption: 'error',
+        }),
+      );
+      return;
+    }
+
     const body = create(CreatePollReqSchema, {
       question,
       options,
@@ -92,14 +102,14 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
         />
       </div>
       <OptionsView options={options} setOptions={setOptions} />
-      {isLoading ? (
+      {isLoading && (
         <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
           <LoadingIcon
             className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
             fillColor={'#004D90'}
           />
         </div>
-      ) : null}
+      )}
       <div className="button-section flex items-center gap-5 py-6 px-6 border-t border-Gray-100">
         <button
           className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
@@ -109,8 +119,9 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           {t('close')}
         </button>
         <button
-          className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+          className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
+          disabled={isLoading}
         >
           {t('polls.create-poll')}
         </button>

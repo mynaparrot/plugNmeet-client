@@ -1,4 +1,8 @@
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { IParticipant } from './interfaces/participant';
 
@@ -15,6 +19,17 @@ export const participantsSelector = participantAdapter.getSelectors(
 export const getParticipantByUserId = (state: RootState, userId: string) => {
   return participantsSelector.selectById(state, userId);
 };
+
+export const selectBasicParticipants = createSelector(
+  [participantsSelector.selectAll],
+  (participants) =>
+    participants.map((p) => ({
+      userId: p.userId,
+      sid: p.sid,
+      name: p.name,
+      isAdmin: !!p.metadata?.isAdmin,
+    })),
+);
 
 const participantsSlice = createSlice({
   name: 'participants',

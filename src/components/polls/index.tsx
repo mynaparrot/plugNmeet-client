@@ -1,10 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 import Create from './create/index';
 import PollsList from './pollsList';
 import { store, useAppDispatch } from '../../store';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActivePollsPanel } from '../../store/slices/bottomIconsActivitySlice';
-import { useTranslation } from 'react-i18next';
 
 const PollsComponent = () => {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ const PollsComponent = () => {
           </p>
         </div>
         <PollsList />
-        {isAdmin ? <Create /> : null}
+        {isAdmin && <Create />}
       </div>
     </div>
   );

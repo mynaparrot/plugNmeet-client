@@ -36,31 +36,37 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const currentUser = store.getState().session.currentUser;
 
   const [voted, setVoted] = useState<boolean>(false);
-  const { data } = useGetUserSelectedOptionQuery({
+  const { data: userVoteData } = useGetUserSelectedOptionQuery({
     pollId: pollDataWithOption.pollId,
     userId: currentUser?.userId || '',
   });
   useEffect(() => {
-    if (data && data.status && data.voted && Number(data.voted) > 0) {
+    if (
+      userVoteData &&
+      userVoteData.status &&
+      userVoteData.voted &&
+      Number(userVoteData.voted) > 0
+    ) {
+      // only when we've valid vote
       setVoted(true);
-      setSelectedOption(Number(data.voted));
+      setSelectedOption(Number(userVoteData.voted));
     }
-  }, [data]);
+  }, [userVoteData]);
 
   const [addResponse, { isLoading, data: addReqResponse }] =
     useAddResponseMutation();
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (locked || selectedOption === 0 || isLoading) {
+    if (locked || !selectedOption || isLoading) {
       return;
     }
     setLocked(true);
     addResponse(
       create(SubmitPollResponseReqSchema, {
         pollId: pollDataWithOption.pollId,
-        userId: store.getState().session.currentUser?.userId ?? '',
-        name: store.getState().session.currentUser?.name ?? '',
+        userId: currentUser?.userId ?? '',
+        name: currentUser?.name ?? '',
         selectedOption: `${selectedOption}`,
       }),
     );
@@ -73,26 +79,28 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       );
     }
   };
-  useEffect(() => {
-    if (!isLoading && addReqResponse) {
-      if (addReqResponse.status) {
-        dispatch(
-          addUserNotification({
-            message: t('polls.response-added'),
-            typeOption: 'info',
-          }),
-        );
-      } else {
-        dispatch(
-          addUserNotification({
-            message: t(addReqResponse.msg),
-            typeOption: 'error',
-          }),
-        );
-      }
+
+  useMemo(() => {
+    if (addReqResponse) {
+      const message = addReqResponse.status
+        ? t('polls.response-added')
+        : t(addReqResponse.msg);
+      const typeOption = addReqResponse.status ? 'info' : 'error';
+
+      dispatch(
+        addUserNotification({
+          message,
+          typeOption,
+        }),
+      );
+    }
+
+    if (!isLoading) {
       setLocked(false);
     }
-  }, [addReqResponse, dispatch, isLoading, t]);
+    // We only want this to run when the response comes back.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addReqResponse]);
 
   const onClickSelectOption = useCallback(
     (val: number) => {
@@ -101,7 +109,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       }
       setSelectedOption(val);
     },
-    [voted, isRunning],
+    [isRunning, voted],
   );
 
   const canViewPercentage = () => {
@@ -123,23 +131,22 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       elms.push(
         <div
           key={`option-${pollDataWithOption.pollId}-${o.id}`}
-          className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-button-shadow rounded-xl px-2 overflow-hidden my-2"
+          className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-button-shadow rounded-xl px-2 overflow-hidden my-2 cursor-pointer"
           onClick={() => onClickSelectOption(o.id)}
         >
           <input
             type="radio"
             id={`option-${pollDataWithOption.pollId}-${o.id}`}
-            readOnly={true}
             checked={selectedOption === o.id}
             className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
           />
           <label
-            className="text-sm text-Gray-900 absolute w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+            className="text-sm text-Gray-900 w-full h-full pl-7 z-10 flex items-center cursor-pointer"
             htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
           >
             {o.text}
           </label>
-          {canViewPercentage() ? (
+          {canViewPercentage() && (
             <>
               <div
                 className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
@@ -152,12 +159,12 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
                 {o.responsesPercentage + '%'}
               </div>
             </>
-          ) : null}
+          )}
         </div>,
       );
     }
     return elms;
-    //eslint-disable-next-line
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [onClickSelectOption, pollDataWithOption.options, selectedOption]);
 
   return (
@@ -167,14 +174,14 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       name={`voteForm-${pollDataWithOption.pollId}`}
     >
       {pollOption}
-      {isLoading ? (
+      {isLoading && (
         <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
           <LoadingIcon
             className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
             fillColor={'#004D90'}
           />
         </div>
-      ) : null}
+      )}
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button
