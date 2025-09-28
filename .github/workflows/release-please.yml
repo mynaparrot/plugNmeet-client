@@ -50,7 +50,7 @@ jobs:
           cd tmp
           zip -X -r client.zip client
       - name: Upload by ftp
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         if: ${{ ! steps.release.outputs.release_created }}
         with:
           server: ${{ secrets.PNM_FTP_HOST }}
