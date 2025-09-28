@@ -34,7 +34,7 @@ const ScreenShareElements = () => {
     };
   }, [currentConnection]);
 
-  const renderElms = useMemo(() => {
+  return useMemo(() => {
     if (screenShareTracks) {
       const elm = Array<ReactElement>();
 
@@ -60,8 +60,6 @@ const ScreenShareElements = () => {
       return null;
     }
   }, [screenShareTracks]);
-
-  return <>{renderElms}</>;
 };
 
 export default ScreenShareElements;

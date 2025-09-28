@@ -1,8 +1,8 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 import {
-  RemoteParticipant,
   LocalParticipant,
   RemoteAudioTrack,
+  RemoteParticipant,
 } from 'livekit-client';
 
 import AudioElm from './audio';
@@ -30,7 +30,7 @@ const AudioElements = () => {
     };
   }, [currentConnection]);
 
-  const renderElms = useMemo(() => {
+  return useMemo(() => {
     if (!audioSubscribers) {
       return null;
     }
@@ -51,8 +51,6 @@ const AudioElements = () => {
 
     return elms;
   }, [audioSubscribers]);
-
-  return <>{renderElms}</>;
 };
 
 export default AudioElements;
