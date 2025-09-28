@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -19,25 +19,26 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   const videoTracks = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.videoTracks,
   );
-  const roomFeatures =
-    store.getState().session.currentRoom.metadata?.roomFeatures;
-  const conn = getNatsConn();
 
   const session = store.getState().session;
-  const [text, setText] = useState<string>('Ask to share Webcam');
-  const [task, setTask] = useState<string>('');
+  const roomFeatures = session.currentRoom.metadata?.roomFeatures;
+  const conn = getNatsConn();
 
-  useEffect(() => {
+  const { text, task } = useMemo(() => {
     if (!videoTracks) {
-      setText(t('left-panel.menus.items.ask-to-share-webcam').toString());
-      setTask('left-panel.menus.items.share-webcam');
+      return {
+        text: t('left-panel.menus.items.ask-to-share-webcam'),
+        task: 'left-panel.menus.items.share-webcam',
+      };
     } else {
-      setText(t('left-panel.menus.items.ask-to-stop-webcam').toString());
-      setTask('left-panel.menus.items.stop-webcam');
+      return {
+        text: t('left-panel.menus.items.ask-to-stop-webcam'),
+        task: 'left-panel.menus.items.stop-webcam',
+      };
     }
   }, [t, videoTracks]);
 
-  const onClick = async () => {
+  const handleWebcamAction = async () => {
     conn.sendDataMessage(
       DataMsgBodyType.INFO,
       t('left-panel.menus.notice.asked-you-to', {
@@ -59,30 +60,25 @@ const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
     );
   };
 
-  const render = () => {
-    return (
-      <div className="" role="none">
-        <MenuItem>
-          {() => (
-            <button
-              className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
-              onClick={() => onClick()}
-            >
-              {text}
-            </button>
-          )}
-        </MenuItem>
-      </div>
-    );
-  };
+  // Conditions to show this menu item
+  const shouldShow =
+    session.currentUser?.userId !== userId &&
+    roomFeatures?.allowWebcams &&
+    !roomFeatures.adminOnlyWebcams;
+
+  if (!shouldShow) {
+    return null;
+  }
+
   return (
-    <>
-      {session.currentUser?.userId !== userId &&
-      roomFeatures?.allowWebcams &&
-      !roomFeatures.adminOnlyWebcams
-        ? render()
-        : null}
-    </>
+    <MenuItem>
+      <button
+        className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
+        onClick={handleWebcamAction}
+      >
+        {text}
+      </button>
+    </MenuItem>
   );
 };
 

@@ -16,10 +16,12 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
     (state) => participantsSelector.selectById(state, userId)?.videoTracks,
   );
 
-  return !videoTracks ? null : (
-    <IconWrapper>
-      <Camera classes={'h-3 3xl:h-4 w-auto'} />
-    </IconWrapper>
+  return (
+    videoTracks > 0 && (
+      <IconWrapper>
+        <Camera classes={'h-3 3xl:h-4 w-auto'} />
+      </IconWrapper>
+    )
   );
 };
 

@@ -17,7 +17,7 @@ const PrivateChatMenuItem = ({ name, userId }: IChatMenuItemProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const onClick = () => {
+  const initiatePrivateChat = () => {
     dispatch(updateIsActiveChatPanel(true));
     dispatch(
       updateInitiatePrivateChat({
@@ -33,7 +33,7 @@ const PrivateChatMenuItem = ({ name, userId }: IChatMenuItemProps) => {
         {() => (
           <button
             className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
-            onClick={() => onClick()}
+            onClick={initiatePrivateChat}
           >
             {t('left-panel.menus.items.private-chat')}
           </button>

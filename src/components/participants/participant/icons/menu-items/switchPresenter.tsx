@@ -24,7 +24,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
   );
   const { t } = useTranslation();
 
-  const onClick = async () => {
+  const togglePresenterStatus = async () => {
     const body = create(SwitchPresenterReqSchema, {
       userId: userId,
       task: isPresenter
@@ -54,26 +54,20 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
     }
   };
 
-  const render = () => {
-    return (
-      <div className="" role="none">
-        <MenuItem>
-          {() => (
-            <button
-              className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
-              onClick={() => onClick()}
-            >
-              {isPresenter
-                ? t('footer.icons.demote-presenter')
-                : t('footer.icons.promote-presenter')}
-            </button>
-          )}
-        </MenuItem>
-      </div>
-    );
-  };
-
-  return render();
+  return (
+    <MenuItem>
+      {() => (
+        <button
+          className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
+          onClick={togglePresenterStatus}
+        >
+          {isPresenter
+            ? t('footer.icons.demote-presenter')
+            : t('footer.icons.promote-presenter')}
+        </button>
+      )}
+    </MenuItem>
+  );
 };
 
 export default SwitchPresenterMenuItem;

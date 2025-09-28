@@ -13,10 +13,12 @@ const ScreenShareIcon = ({ userId }: IScreenShareIconProps) => {
     (state) => participantsSelector.selectById(state, userId)?.screenShareTrack,
   );
 
-  return !screenShareTrack ? null : (
-    <IconWrapper>
-      <i className="pnm-screen-share text-Gray-950 text-[10px] 3xl:text-sm" />
-    </IconWrapper>
+  return (
+    screenShareTrack > 0 && (
+      <IconWrapper>
+        <i className="pnm-screen-share text-Gray-950 text-[10px] 3xl:text-sm" />
+      </IconWrapper>
+    )
   );
 };
 

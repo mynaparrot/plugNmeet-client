@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
+import { debounce } from 'es-toolkit';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import {
   participantsSelector,
   updateParticipant,
 } from '../../../../store/slices/participantSlice';
-import useStorePreviousInt from '../../../../helpers/hooks/useStorePreviousInt';
 import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 import IconWrapper from './iconWrapper';
+import RangeSlider from '../../../../helpers/libs/rangeSlider';
 
 interface MicIconProps {
   userId: string;
@@ -28,30 +29,38 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
   );
 
   const [volume, setVolume] = useState<number>(audioVolume ?? 1);
-  const previousVolume = useStorePreviousInt(volume);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (typeof audioVolume !== 'undefined') {
+    // Sync from store to local state, but only if the value is actually different.
+    // This prevents the infinite loop by ignoring the "echo" of our own update.
+    if (typeof audioVolume !== 'undefined' && audioVolume !== volume) {
       setVolume(audioVolume);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioVolume]);
 
-  useEffect(() => {
-    if (previousVolume && volume !== previousVolume) {
+  // Create a debounced version of the dispatch function.
+  // This will only run 200ms after the last time it was called.
+  // oxlint-disable-next-line exhaustive-deps
+  const debouncedUpdate = useCallback(
+    debounce((newVolume: number) => {
       dispatch(
         updateParticipant({
           id: userId,
-          changes: {
-            audioVolume: volume,
-          },
+          changes: { audioVolume: newVolume },
         }),
       );
-    }
-    //eslint-disable-next-line
-  }, [volume, previousVolume]);
+    }, 200),
+    [dispatch, userId],
+  );
 
-  const renderUnmuteIcon = useCallback(() => {
+  useEffect(() => {
+    // When volume changes, call the debounced function.
+    debouncedUpdate(volume);
+  }, [volume, debouncedUpdate]);
+
+  const renderVolumeControl = useCallback(() => {
     return (
       <div className="mic-unmute-wrapper relative flex items-center justify-center">
         <Menu>
@@ -72,20 +81,21 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
               >
                 <MenuItems
                   static
-                  className="volume-popup-wrapper hidden origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-hidden"
+                  className="volume-popup-wrapper origin-top-right z-10 absolute ltr:-right-6 rtl:-left-6 -top-2 mt-2 w-48 xl:w-60 py-5 px-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-hidden"
                 >
                   <section className="flex items-center">
-                    <input
-                      type="range"
-                      min={0}
-                      max={1}
-                      step={0.05}
-                      value={volume}
-                      onChange={(event) => {
-                        setVolume(event.target.valueAsNumber);
-                      }}
-                      className="range flex-1"
-                    />
+                    <div className="flex-1">
+                      <RangeSlider
+                        min={0}
+                        max={100}
+                        value={Math.round(volume * 100)}
+                        onChange={(newValue) => {
+                          setVolume(newValue / 100);
+                        }}
+                        thumbSize={16}
+                        trackHeight={4}
+                      />
+                    </div>
                     <p className="w-10 text-center text-sm">
                       {Math.round(volume * 100)}
                     </p>
@@ -103,20 +113,20 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
   }, [volume]);
 
   const render = useMemo(() => {
-    if (audioTracks) {
+    if (audioTracks > 0) {
       if (isMuted) {
         return <MicrophoneOff classes={'h-4 w-auto'} />;
       }
-      // if this user is a remote Participant then we can control volume.
+      // if this user is a remote Participant, then we can control volume.
       if (isRemoteParticipant) {
-        return renderUnmuteIcon();
+        return renderVolumeControl();
       }
       // for local user don't need
       return <Microphone classes={'h-4 w-auto'} />;
     }
 
     return null;
-  }, [isRemoteParticipant, renderUnmuteIcon, audioTracks, isMuted]);
+  }, [isRemoteParticipant, renderVolumeControl, audioTracks, isMuted]);
 
   return render ? <IconWrapper>{render}</IconWrapper> : null;
 };

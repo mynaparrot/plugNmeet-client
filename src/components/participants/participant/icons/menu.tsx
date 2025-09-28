@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 
 import MicMenuItem from './menu-items/mic';
@@ -8,7 +8,7 @@ import LowerHandMenuItem from './menu-items/lowerHand';
 import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
 import PrivateChatMenuItem from './menu-items/privateChatMenuItem';
-import { store, useAppSelector } from '../../../../store';
+import { useAppSelector } from '../../../../store';
 import IconWrapper from './iconWrapper';
 import { ParticipantsMenuIconSVG } from '../../../../assets/Icons/ParticipantsMenuIconSVG';
 
@@ -28,88 +28,88 @@ const MenuIcon = ({
   const defaultLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
-  const currentUserLockSettings = useAppSelector(
-    (state) => state.session.currentUser?.metadata?.lockSettings,
-  );
-  const currentUser = store.getState().session.currentUser;
+  const currentUser = useAppSelector((state) => state.session.currentUser);
 
-  const renderMenuItems = () => {
+  const menuItems = useMemo(() => {
+    const items: ReactElement[] = [];
+
     if (currentUser?.metadata?.isAdmin) {
-      return (
-        <>
-          <MicMenuItem userId={userId} />
-          <WebcamMenuItem userId={userId} />
-          <PrivateChatMenuItem userId={userId} name={name} />
-          <SwitchPresenterMenuItem userId={userId} />
-          <LowerHandMenuItem userId={userId} />
-          <LockSettingMenuItem userId={userId} />
-          <RemoveUserMenuItem
-            onOpenAlert={openRemoveParticipantAlert}
-            userId={userId}
-          />
-        </>
+      items.push(
+        <MicMenuItem key="mic" userId={userId} />,
+        <WebcamMenuItem key="webcam" userId={userId} />,
+        <PrivateChatMenuItem key="chat" userId={userId} name={name} />,
+        <SwitchPresenterMenuItem key="presenter" userId={userId} />,
+        <LowerHandMenuItem key="lower-hand" userId={userId} />,
+        <LockSettingMenuItem key="lock" userId={userId} />,
+        <RemoveUserMenuItem
+          key="remove"
+          onOpenAlert={openRemoveParticipantAlert}
+          userId={userId}
+        />,
+      );
+      return items;
+    }
+
+    // For non-admins, check if they can send private messages.
+    const canSendPrivateMessage =
+      !currentUser?.metadata?.lockSettings?.lockPrivateChat &&
+      !defaultLockSettings?.lockChat &&
+      !defaultLockSettings?.lockPrivateChat;
+
+    // Or if they can send a message to an admin.
+    const canSendPrivateMessageToAdmin =
+      !defaultLockSettings?.lockChat &&
+      defaultLockSettings?.lockPrivateChat &&
+      isAdmin;
+
+    if (canSendPrivateMessage || canSendPrivateMessageToAdmin) {
+      items.push(
+        <PrivateChatMenuItem key="chat" userId={userId} name={name} />,
       );
     }
 
-    // if lock then user won't be able to send private messages to each other
-    if (
-      !currentUser?.metadata?.isAdmin &&
-      !currentUserLockSettings?.lockPrivateChat &&
-      !defaultLockSettings?.lockChat &&
-      !defaultLockSettings?.lockPrivateChat
-    ) {
-      return <PrivateChatMenuItem userId={userId} name={name} />;
-    }
+    return items;
+  }, [
+    currentUser,
+    defaultLockSettings,
+    isAdmin,
+    name,
+    openRemoveParticipantAlert,
+    userId,
+  ]);
 
-    // user can always send private messages to admin if chat isn't lock
-    if (
-      !defaultLockSettings?.lockChat &&
-      defaultLockSettings?.lockPrivateChat &&
-      isAdmin
-    ) {
-      return <PrivateChatMenuItem userId={userId} name={name} />;
-    }
-
+  if (menuItems.length === 0) {
     return null;
-  };
-
-  const render = () => {
-    return (
-      <IconWrapper>
-        <Menu as="div">
-          {({ open }) => (
-            <>
-              <MenuButton className="relative shrink-0">
-                {/* <i className="pnm-menu-small primaryColor dark:text-secondary-color opacity-50" /> */}
-                <ParticipantsMenuIconSVG />
-              </MenuButton>
-
-              {/* Use the Transition component. */}
-              <Transition
-                show={open}
-                enter="transition duration-100 ease-out"
-                enterFrom="transform scale-95 opacity-0"
-                enterTo="transform scale-100 opacity-100 z-10"
-                leave="transition duration-75 ease-out"
-                leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-95 opacity-0"
+  }
+  return (
+    <IconWrapper>
+      <Menu as="div">
+        {({ open }) => (
+          <>
+            <MenuButton className="relative shrink-0">
+              <ParticipantsMenuIconSVG />
+            </MenuButton>
+            <Transition
+              show={open}
+              enter="transition duration-100 ease-out"
+              enterFrom="transform scale-95 opacity-0"
+              enterTo="transform scale-100 opacity-100 z-10"
+              leave="transition duration-75 ease-out"
+              leaveFrom="transform scale-100 opacity-100"
+              leaveTo="transform scale-95 opacity-0"
+            >
+              <MenuItems
+                static
+                className="origin-top-right z-10 absolute top-0 ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-dark-primary ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 dark:divide-secondary-color focus:outline-hidden"
               >
-                {/* Mark this component as `static` */}
-                <MenuItems
-                  static
-                  className="origin-top-right z-10 absolute top-0 ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-dark-primary ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 dark:divide-secondary-color focus:outline-hidden"
-                >
-                  {renderMenuItems()}
-                </MenuItems>
-              </Transition>
-            </>
-          )}
-        </Menu>
-      </IconWrapper>
-    );
-  };
-
-  return <>{renderMenuItems() !== null ? render() : null}</>;
+                {menuItems}
+              </MenuItems>
+            </Transition>
+          </>
+        )}
+      </Menu>
+    </IconWrapper>
+  );
 };
 
 export default MenuIcon;

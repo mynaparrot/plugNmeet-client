@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -28,50 +28,24 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     (state) => participantsSelector.selectById(state, userId)?.name,
   );
   const session = store.getState().session;
-  const [text, setText] = useState<string>('Ask to share Microphone');
-  const [task, setTask] = useState<string>('');
   const { t } = useTranslation();
   const conn = getNatsConn();
 
-  useEffect(() => {
+  const { text, task } = useMemo(() => {
     if (!audioTracks) {
-      setText(t('left-panel.menus.items.ask-to-share-microphone').toString());
-      setTask('left-panel.menus.items.share-microphone');
+      return {
+        text: t('left-panel.menus.items.ask-to-share-microphone'),
+        task: 'left-panel.menus.items.share-microphone',
+      };
     } else if (isMuted) {
-      setText(t('left-panel.menus.items.ask-to-unmute-mic').toString());
-      setTask('left-panel.menus.items.unmute-mic');
-    } else if (audioTracks) {
-      setText(t('left-panel.menus.items.mute-mic').toString());
-      setTask('mute');
+      return {
+        text: t('left-panel.menus.items.ask-to-unmute-mic'),
+        task: 'left-panel.menus.items.unmute-mic',
+      };
     }
-  }, [t, isMuted, audioTracks]);
-
-  const onClick = async () => {
-    if (task === 'mute') {
-      await muteAudio();
-      return;
-    }
-
-    conn.sendDataMessage(
-      DataMsgBodyType.INFO,
-      t('left-panel.menus.notice.asked-you-to', {
-        name: session.currentUser?.name,
-        task: t(task),
-      }),
-      userId,
-    );
-
-    toast(
-      t('left-panel.menus.notice.you-have-asked', {
-        name: name,
-        task: t(task),
-      }),
-      {
-        toastId: 'asked-status',
-        type: 'info',
-      },
-    );
-  };
+    // if audioTracks > 0 and not muted
+    return { text: t('left-panel.menus.items.mute-mic'), task: 'mute' };
+  }, [audioTracks, isMuted, t]);
 
   const muteAudio = async () => {
     const session = store.getState().session;
@@ -109,23 +83,48 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
     }
   };
 
-  const render = () => {
-    return (
-      <div className="" role="none">
-        <MenuItem>
-          {() => (
-            <button
-              className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
-              onClick={() => onClick()}
-            >
-              {text}
-            </button>
-          )}
-        </MenuItem>
-      </div>
+  const handleMicAction = async () => {
+    if (task === 'mute') {
+      await muteAudio();
+      return;
+    }
+
+    conn.sendDataMessage(
+      DataMsgBodyType.INFO,
+      t('left-panel.menus.notice.asked-you-to', {
+        name: session.currentUser?.name,
+        task: t(task),
+      }),
+      userId,
+    );
+
+    toast(
+      t('left-panel.menus.notice.you-have-asked', {
+        name: name,
+        task: t(task),
+      }),
+      {
+        toastId: 'asked-status',
+        type: 'info',
+      },
     );
   };
-  return <>{session.currentUser?.userId !== userId ? render() : null}</>;
+
+  // This menu item is for controlling other users, not oneself.
+  if (session.currentUser?.userId === userId) {
+    return null;
+  }
+
+  return (
+    <MenuItem>
+      <button
+        className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
+        onClick={handleMicAction}
+      >
+        {text}
+      </button>
+    </MenuItem>
+  );
 };
 
 export default MicMenuItem;

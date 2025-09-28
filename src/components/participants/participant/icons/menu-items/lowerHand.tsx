@@ -2,8 +2,8 @@ import React from 'react';
 import { MenuItem } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import {
-  NatsMsgClientToServerSchema,
   NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
@@ -23,7 +23,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
   const { t } = useTranslation();
   const conn = getNatsConn();
 
-  const onClick = async () => {
+  const lowerHand = async () => {
     const data = create(NatsMsgClientToServerSchema, {
       event: NatsMsgClientToServerEvents.REQ_LOWER_OTHER_USER_HAND,
       msg: userId,
@@ -31,24 +31,22 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
     conn.sendMessageToSystemWorker(data);
   };
 
-  const render = () => {
-    return (
+  return (
+    raisedHand && (
       <div className="" role="none">
         <MenuItem>
           {() => (
             <button
               className="text-gray-900 dark:text-dark-text group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs lg:text-sm transition ease-in hover:bg-primary-color hover:text-white"
-              onClick={() => onClick()}
+              onClick={lowerHand}
             >
               {t('footer.icons.lower-hand')}
             </button>
           )}
         </MenuItem>
       </div>
-    );
-  };
-
-  return <>{raisedHand ? render() : null}</>;
+    )
+  );
 };
 
 export default LowerHandMenuItem;
