@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import { Dialog, DialogTitle, DialogPanel, Button } from '@headlessui/react';
+import React from 'react';
+import { createSelector } from '@reduxjs/toolkit';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -10,27 +11,26 @@ import BulkAction from './bulkAction';
 import ParticipantsList from './participantsList';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 
+const selectWaitingParticipants = createSelector(
+  [participantsSelector.selectAll],
+  (participants) => participants.filter((p) => p.metadata.waitForApproval),
+);
+
 const ManageWaitingRoom = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const allParticipants = useAppSelector(participantsSelector.selectAll);
-  const [isOpen, setIsOpen] = useState<boolean>(true);
-
-  const waitingParticipants = useMemo(() => {
-    return allParticipants.filter((p) => p.metadata.waitForApproval);
-  }, [allParticipants]);
+  const waitingParticipants = useAppSelector(selectWaitingParticipants);
 
   const closeModal = () => {
-    setIsOpen(false);
     dispatch(updateShowManageWaitingRoomModal(false));
   };
 
   return (
     <Dialog
-      open={isOpen}
+      open={true}
       as="div"
       className="relative z-10 focus:outline-hidden"
-      onClose={() => false}
+      onClose={closeModal}
     >
       <div className="showManageWaitingRoomModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
         <div className="flex min-h-full items-center justify-center p-4">
@@ -43,9 +43,9 @@ const ManageWaitingRoom = () => {
               className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
             >
               <span>{t('waiting-room.modal-title')}</span>
-              <Button className="cursor-pointer" onClick={() => closeModal()}>
+              <button className="cursor-pointer" onClick={closeModal}>
                 <PopupCloseSVGIcon classes="text-Gray-600" />
-              </Button>
+              </button>
             </DialogTitle>
             <hr />
             <div className="mt-4">
