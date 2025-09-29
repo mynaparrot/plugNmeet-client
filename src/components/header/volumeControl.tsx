@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { VolumeHeader } from '../../assets/Icons/VolumeHeader';
 import { VolumeMutedSVG } from '../../assets/Icons/VolumeMutedSVG';
-import RangeSlider from '../../helpers/libs/rangeSlider';
+import RangeSlider from '../../helpers/ui/rangeSlider';
 
 const VolumeControl = () => {
   const dispatch = useAppDispatch();

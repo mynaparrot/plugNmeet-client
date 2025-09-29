@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import {
-  Dialog,
   Button,
+  Dialog,
   DialogTitle,
   Tab,
   TabGroup,
@@ -27,60 +27,37 @@ declare const PNM_VERSION: string;
 const RoomSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const s = store.getState();
-  const serverVersion = s.session.serverVersion;
-  const copyright_conf = s.session.currentRoom?.metadata?.copyrightConf;
-  const ingressFeatures =
-    s.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures;
+  const { serverVersion, currentUser, currentRoom } = store.getState().session;
+  const copyright_conf = currentRoom?.metadata?.copyrightConf;
+  const ingressFeatures = currentRoom?.metadata?.roomFeatures?.ingressFeatures;
 
   const isShowRoomSettingsModal = useAppSelector(
     (state) => state.roomSettings.isShowRoomSettingsModal,
   );
 
-  const [categories, setCategories] = useState({
-    'header.room-settings.application': [
-      {
-        id: 1,
-        elm: <ApplicationSettings />,
-      },
-    ],
-    'header.room-settings.data-savings': [
-      {
-        id: 2,
-        elm: <DataSavings />,
-      },
-    ],
-    'header.room-settings.notifications': [
-      {
-        id: 3,
-        elm: <Notification />,
-      },
-    ],
-  });
-
-  useEffect(() => {
-    if (s.session?.currentUser?.metadata?.isAdmin && ingressFeatures?.isAllow) {
-      categories['header.room-settings.ingress'] = [
-        {
-          id: 4,
-          elm: <Ingress />,
-        },
-      ];
-    }
-
-    setCategories(categories);
-    //eslint-disable-next-line
-  }, []);
+  const baseCategories = {
+    'header.room-settings.application': <ApplicationSettings />,
+    'header.room-settings.data-savings': <DataSavings />,
+    'header.room-settings.notifications': <Notification />,
+  };
+  if (currentUser?.metadata?.isAdmin && ingressFeatures?.isAllow) {
+    baseCategories['header.room-settings.ingress'] = <Ingress />;
+  }
+  const categories = baseCategories;
 
   const closeModal = () => {
     dispatch(updateShowRoomSettingsModal(false));
   };
 
+  if (!isShowRoomSettingsModal) {
+    return null;
+  }
+
   const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
   };
 
-  const displayBottomText = () => {
+  const renderModalFooter = () => {
     let text = '';
     if (
       copyright_conf &&
@@ -107,7 +84,7 @@ const RoomSettings = () => {
     );
   };
 
-  const showTabItems = () => {
+  const renderTabs = () => {
     return (
       <div className="max-w-full">
         <TabGroup vertical>
@@ -125,20 +102,18 @@ const RoomSettings = () => {
                   )
                 }
               >
-                {t(category as any)}
+                {t(category)}
               </Tab>
             ))}
           </TabList>
           <TabPanels className="mt-2">
-            {Object.values(categories).map((items, idx) => (
+            {Object.values(categories).map((elm, idx) => (
               <TabPanel
                 // oxlint-disable-next-line no-array-index-key
                 key={idx}
                 className="bg-transparent rounded-xl p-3 min-h-[316px] scrollBar overflow-auto"
               >
-                {items.map((item) => (
-                  <div key={item.id}>{item.elm}</div>
-                ))}
+                {elm}
               </TabPanel>
             ))}
           </TabPanels>
@@ -147,53 +122,44 @@ const RoomSettings = () => {
     );
   };
 
-  const render = () => {
-    return (
-      <>
-        <Transition appear show={isShowRoomSettingsModal} as={Fragment}>
-          <Dialog
-            as="div"
-            className="SettingsPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
-            onClose={() => false}
+  return (
+    <Transition appear show={true} as={Fragment}>
+      <Dialog
+        as="div"
+        className="SettingsPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
+        onClose={closeModal}
+      >
+        <div className="flex min-h-full items-center justify-center p-4">
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
           >
-            <div className="flex min-h-full items-center justify-center p-4">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+            <div className="w-full max-w-2xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out">
+              <DialogTitle
+                as="h3"
+                className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
               >
-                <div className="w-full max-w-2xl bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out">
-                  <DialogTitle
-                    as="h3"
-                    className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
-                  >
-                    <span>{t('header.room-settings.title')}</span>
-                    <Button
-                      className="cursor-pointer"
-                      onClick={() => closeModal()}
-                    >
-                      <PopupCloseSVGIcon classes="text-Gray-600" />
-                    </Button>
-                  </DialogTitle>
-                  <hr />
-                  <div className="wrap relative mt-4">
-                    {showTabItems()}
-                    {displayBottomText()}
-                  </div>
-                </div>
-              </TransitionChild>
+                <span>{t('header.room-settings.title')}</span>
+                <Button className="cursor-pointer" onClick={closeModal}>
+                  <PopupCloseSVGIcon classes="text-Gray-600" />
+                </Button>
+              </DialogTitle>
+              <hr />
+              <div className="wrap relative mt-4">
+                {renderTabs()}
+                {renderModalFooter()}
+              </div>
             </div>
-          </Dialog>
-        </Transition>
-      </>
-    );
-  };
-
-  return isShowRoomSettingsModal ? render() : null;
+          </TransitionChild>
+        </div>
+      </Dialog>
+    </Transition>
+  );
 };
 
 export default RoomSettings;

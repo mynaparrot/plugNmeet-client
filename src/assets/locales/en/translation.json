@@ -445,7 +445,8 @@
     "meeting-id": "Meeting ID",
     "meeting-id-des": "The meeting's original ID",
     "user-role": "User Role",
-    "user-role-des": "The user's role (admin or participant)"
+    "user-role-des": "The user's role (admin or participant)",
+    "iframe-title": "Embedded external content"
   },
   "ingress-features": {
     "ingress-type": "Input Type",

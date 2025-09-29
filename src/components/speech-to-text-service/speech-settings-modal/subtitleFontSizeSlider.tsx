@@ -4,7 +4,7 @@ import { throttle } from 'es-toolkit/compat';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { updateSubtitleFontSize } from '../../../store/slices/speechServicesSlice';
-import RangeSlider from '../../../helpers/libs/rangeSlider';
+import RangeSlider from '../../../helpers/ui/rangeSlider';
 
 const SubtitleFontSizeSlider = () => {
   const { t } = useTranslation();

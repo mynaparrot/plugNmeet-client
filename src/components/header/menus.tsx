@@ -16,18 +16,6 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const logout = () => {
-    onOpenAlert('logout');
-  };
-
-  const showRoomSettings = () => {
-    dispatch(updateShowRoomSettingsModal(true));
-  };
-
-  const showKeyboardShortcuts = () => {
-    dispatch(updateShowKeyboardShortcutsModal(true));
-  };
-
   return (
     <MenuItems
       static
@@ -37,7 +25,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <MenuItem>
           <button
             className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative cursor-pointer"
-            onClick={() => showRoomSettings()}
+            onClick={() => dispatch(updateShowRoomSettingsModal(true))}
           >
             <i className="pnm-settings text-primary-color text-base ltr:mr-2 rtl:ml-2 transition ease-in" />
             {t('header.menus.settings')}
@@ -48,7 +36,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <MenuItem>
           <button
             className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative cursor-pointer"
-            onClick={() => showKeyboardShortcuts()}
+            onClick={() => dispatch(updateShowKeyboardShortcutsModal(true))}
           >
             <i className="pnm-keyboard text-primary-color text-lg ltr:mr-2 rtl:ml-2 transition ease-in" />
             {t('header.menus.keyboard-shortcuts')}
@@ -59,7 +47,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         <MenuItem>
           <button
             className="h-11 w-full flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative cursor-pointer"
-            onClick={() => logout()}
+            onClick={() => onOpenAlert('logout')}
           >
             <i className="pnm-logout text-primary-color text-lg ltr:mr-2 rtl:ml-2 transition ease-in" />
             {t('header.menus.logout')}

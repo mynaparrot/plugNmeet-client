@@ -1,31 +1,21 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import {
-  Field,
-  Label,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Switch,
-  Listbox,
-  Transition,
-} from '@headlessui/react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { VideoQuality } from 'livekit-client';
 
-import { store, useAppDispatch, useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateActivateWebcamsView,
   updateActiveScreenSharingView,
   updateRoomVideoQuality,
 } from '../../../store/slices/roomSettingsSlice';
-import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
-import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
+import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
+import Dropdown from '../../../helpers/ui/dropdown';
 
 const DataSavings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const [videoQuality, setVideoQuality] = useState<VideoQuality>(
-    store.getState().roomSettings.roomVideoQuality,
+  const videoQuality = useAppSelector(
+    (state) => state.roomSettings.roomVideoQuality,
   );
   const activateWebcamsView = useAppSelector(
     (state) => state.roomSettings.activateWebcamsView,
@@ -33,10 +23,6 @@ const DataSavings = () => {
   const activeScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
   );
-
-  useEffect(() => {
-    dispatch(updateRoomVideoQuality(videoQuality));
-  }, [dispatch, videoQuality]);
 
   const toggleWebcamView = () => {
     dispatch(updateActivateWebcamsView(!activateWebcamsView));
@@ -59,116 +45,35 @@ const DataSavings = () => {
     }
   };
 
-  const render = () => {
-    return (
-      <>
-        <Field>
-          <div className="flex items-center justify-between mb-2">
-            <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
-              {t('header.room-settings.video-quality')}
-            </Label>
-            <Listbox
-              value={videoQuality}
-              onChange={(value) => setVideoQuality(value)}
-            >
-              <div className="relative w-full max-w-[250px]">
-                <ListboxButton
-                  className={`h-10 full rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus cursor-pointer text-left text-sm`}
-                >
-                  <span className="block truncate">
-                    {getVideoQualityText(videoQuality)}
-                  </span>
-                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-                    <DropdownIconSVG />
-                  </span>
-                </ListboxButton>
-                <Transition
-                  as={Fragment}
-                  leave="transition ease-in duration-100"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
-                    {Object.values(VideoQuality).map((quality) =>
-                      typeof quality !== 'number' ? null : (
-                        <ListboxOption
-                          key={`videoQuality-${quality}`}
-                          value={quality}
-                          className={({ focus, selected }) =>
-                            `relative select-none py-2 px-3 rounded-[8px] cursor-pointer ${
-                              focus ? 'bg-Blue2-50' : ''
-                            } ${selected ? 'bg-Blue2-50' : ''}`
-                          }
-                        >
-                          {({ selected }) => (
-                            <>
-                              <span className={`block truncate`}>
-                                {getVideoQualityText(quality)}
-                              </span>
-                              {selected ? (
-                                <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
-                                  <CheckMarkIcon />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </ListboxOption>
-                      ),
-                    )}
-                  </ListboxOptions>
-                </Transition>
-              </div>
-            </Listbox>
-          </div>
-        </Field>
+  return (
+    <div className="mt-2">
+      <Dropdown
+        label={t('header.room-settings.video-quality')}
+        id="video-quality"
+        value={videoQuality}
+        onChange={(v) => dispatch(updateRoomVideoQuality(v as VideoQuality))}
+        options={Object.values(VideoQuality)
+          .filter((q) => typeof q === 'number')
+          .map((q) => {
+            return {
+              value: q,
+              text: getVideoQualityText(q as VideoQuality),
+            };
+          })}
+      />
 
-        <Field>
-          <div className="flex items-center justify-between mb-2">
-            <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
-              {t('header.room-settings.show-webcams')}
-            </Label>
-            <Switch
-              checked={activateWebcamsView}
-              onChange={toggleWebcamView}
-              className={`${
-                activateWebcamsView ? 'bg-Blue2-500' : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer`}
-            >
-              <span
-                className={`${
-                  activateWebcamsView
-                    ? 'ltr:translate-x-6 rtl:-translate-x-6'
-                    : 'ltr:translate-x-1 rtl:translate-x-0'
-                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-              />
-            </Switch>
-          </div>
-          <div className="flex items-center justify-between">
-            <Label className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right">
-              {t('header.room-settings.show-screen-share')}
-            </Label>
-            <Switch
-              checked={activeScreenSharingView}
-              onChange={toggleScreenShareView}
-              className={`${
-                activeScreenSharingView ? 'bg-Blue2-500' : 'bg-Gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer`}
-            >
-              <span
-                className={`${
-                  activeScreenSharingView
-                    ? 'ltr:translate-x-6 rtl:-translate-x-6'
-                    : 'ltr:translate-x-1 rtl:translate-x-0'
-                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-              />
-            </Switch>
-          </div>
-        </Field>
-      </>
-    );
-  };
-
-  return <div className="mt-2">{render()}</div>;
+      <SettingsSwitch
+        label={t('header.room-settings.show-webcams')}
+        enabled={activateWebcamsView}
+        onChange={toggleWebcamView}
+      />
+      <SettingsSwitch
+        label={t('header.room-settings.show-screen-share')}
+        enabled={activeScreenSharingView}
+        onChange={toggleScreenShareView}
+      />
+    </div>
+  );
 };
 
 export default DataSavings;

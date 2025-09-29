@@ -28,7 +28,7 @@ import {
   removeParticipant,
   updateParticipant,
 } from '../../store/slices/participantSlice';
-import languages from '../languages';
+import { languagesMap } from '../languages';
 import i18n from '../i18n';
 import {
   updateIsActiveParticipantsPanel,
@@ -203,13 +203,9 @@ export default class HandleParticipants {
         metadata.preferredLang !== ''
       ) {
         this.preferredLang = metadata.preferredLang;
-        for (let i = 0; i < languages.length; i++) {
-          const lan = languages[i];
-          if (lan.code.toLowerCase() === metadata.preferredLang.toLowerCase()) {
-            // we'll only change if we've found the right language
-            await i18n.changeLanguage(lan.code);
-            break;
-          }
+        const lang = languagesMap.get(metadata.preferredLang.toLowerCase());
+        if (lang) {
+          await i18n.changeLanguage(lang.code);
         }
       }
 

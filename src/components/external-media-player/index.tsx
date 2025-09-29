@@ -44,8 +44,9 @@ const ExternalMediaPlayer = () => {
     //eslint-disable-next-line
   }, [dispatch, playBackUrl]);
 
-  const render = () => {
-    return (
+  return (
+    isActive &&
+    playBackUrl && (
       <div className="externalMediaPlayerWrapper m-auto w-full flex items-center justify-center max-w-[1000px] flex-1 p-4">
         <div className="media-player-inner">
           {showVideoJsPlayer ? (
@@ -65,10 +66,8 @@ const ExternalMediaPlayer = () => {
           )}
         </div>
       </div>
-    );
-  };
-
-  return <>{isActive && playBackUrl ? render() : null}</>;
+    )
+  );
 };
 
 export default ExternalMediaPlayer;

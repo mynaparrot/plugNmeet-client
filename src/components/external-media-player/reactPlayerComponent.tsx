@@ -96,19 +96,17 @@ const ReactPlayerComponent = ({
   };
 
   return (
-    <>
-      <ReactPlayer
-        ref={ref}
-        url={src}
-        width={width * 0.7}
-        height={height * 0.7}
-        playing={playing}
-        controls={isPresenter}
-        onReady={onReady}
-        onPause={onPause}
-        onPlay={onPlay}
-      />
-    </>
+    <ReactPlayer
+      ref={ref}
+      url={src}
+      width={width * 0.7}
+      height={height * 0.7}
+      playing={playing}
+      controls={isPresenter}
+      onReady={onReady}
+      onPause={onPause}
+      onPlay={onPlay}
+    />
   );
 };
 

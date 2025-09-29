@@ -10,7 +10,7 @@ import {
 import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 import IconWrapper from './iconWrapper';
-import RangeSlider from '../../../../helpers/libs/rangeSlider';
+import RangeSlider from '../../../../helpers/ui/rangeSlider';
 
 interface MicIconProps {
   userId: string;
