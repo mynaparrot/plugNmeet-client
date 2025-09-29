@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updatePlayAudioNotification } from '../../store/slices/roomSettingsSlice';
@@ -12,37 +12,22 @@ const AudioNotification = () => {
   const allowPlayAudioNotification = useAppSelector(
     (state) => state.roomSettings.allowPlayAudioNotification,
   );
-  const [playing, setPlaying] = useState(false);
   const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
 
   useEffect(() => {
     const el = ref.current;
-    // we'll play only if audio notification is enabled
-    if (playAudioNotification) {
-      if (!playing && allowPlayAudioNotification) {
-        el?.play();
-      }
+    if (playAudioNotification && allowPlayAudioNotification && el?.paused) {
+      el.play().catch((e) => {
+        // Autoplay was prevented.
+        console.error('Error playing notification sound:', e);
+      });
+      // Reset the trigger immediately after attempting to play.
+      dispatch(updatePlayAudioNotification(false));
+    } else if (playAudioNotification) {
+      // If we received a request but didn't play, we still need to reset the trigger.
       dispatch(updatePlayAudioNotification(false));
     }
-  }, [playAudioNotification, playing, allowPlayAudioNotification, dispatch]);
-
-  useEffect(() => {
-    const el = ref.current;
-    const playing = () => setPlaying(true);
-    const ended = () => setPlaying(false);
-    if (el) {
-      el.addEventListener('playing', playing);
-      el.addEventListener('ended', ended);
-    }
-
-    return () => {
-      if (el) {
-        el.pause();
-        el.removeEventListener('playing', playing);
-        el.removeEventListener('ended', ended);
-      }
-    };
-  }, []);
+  }, [playAudioNotification, allowPlayAudioNotification, dispatch]);
 
   return (
     <div style={{ display: 'none' }}>

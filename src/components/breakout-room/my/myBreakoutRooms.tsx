@@ -9,7 +9,7 @@ import {
   useJoinRoomMutation,
 } from '../../../store/services/breakoutRoomApi';
 import { store } from '../../../store';
-import Duration from '../list/room/duration';
+import Duration from '../manage-active-rooms/room/duration';
 
 const MyBreakoutRooms = () => {
   const { t } = useTranslation();

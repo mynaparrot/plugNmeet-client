@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBroadcastBreakoutRoomMsgMutation } from '../../../store/services/breakoutRoomApi';
 import { toast } from 'react-toastify';
 import { BroadcastBreakoutRoomMsgReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
-const BroadcastingMsg = () => {
+import { useBroadcastBreakoutRoomMsgMutation } from '../../../store/services/breakoutRoomApi';
+
+const BroadcastMessageForm = () => {
   const { t } = useTranslation();
   const [msg, setMsg] = useState<string>('');
-  const [disable, setDisable] = useState<boolean>(false);
   const [broadcastMsg, { isLoading, data }] =
     useBroadcastBreakoutRoomMsgMutation();
-
-  useEffect(() => {
-    setDisable(!!isLoading);
-  }, [isLoading]);
 
   useEffect(() => {
     if (data) {
@@ -29,11 +25,10 @@ const BroadcastingMsg = () => {
         });
       }
     }
-    //eslint-disable-next-line
-  }, [data]);
+  }, [data, t]);
 
   const send = () => {
-    if (msg === '') {
+    if (msg.trim() === '') {
       return;
     }
     broadcastMsg(
@@ -52,8 +47,8 @@ const BroadcastingMsg = () => {
       ></textarea>
       <button
         onClick={send}
-        disabled={disable}
-        className="h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+        disabled={isLoading || msg.trim() === ''}
+        className="h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {t('breakout-room.broadcast-msg')}
       </button>
@@ -61,4 +56,4 @@ const BroadcastingMsg = () => {
   );
 };
 
-export default BroadcastingMsg;
+export default BroadcastMessageForm;

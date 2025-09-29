@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { create } from '@bufbuild/protobuf';
@@ -13,32 +13,13 @@ interface IJoinBtnProps {
 
 const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
   const { t } = useTranslation();
-  const [disable, setDisable] = useState<boolean>(false);
-  const [token, setToken] = useState<string>('');
-  const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
+  const [joinRoom, { isLoading, isSuccess, isError, data, error }] =
+    useJoinRoomMutation();
 
   useEffect(() => {
-    setDisable(!!isLoading);
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (!isLoading && data) {
-      if (!data.status) {
-        toast(t(data.msg), {
-          type: 'error',
-        });
-        return;
-      }
-
-      setToken(data.token ?? '');
-    }
-    //eslint-disable-next-line
-  }, [data, isLoading]);
-
-  useEffect(() => {
-    if (token !== '') {
+    if (isSuccess && data?.status && data.token) {
       const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('access_token', token);
+      searchParams.set('access_token', data.token);
       const url =
         location.protocol +
         '//' +
@@ -47,31 +28,34 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
         '?' +
         searchParams.toString();
 
-      const opened = window.open(url, '_blank');
-      if (!opened) {
+      if (!window.open(url, '_blank')) {
         toast(t('breakout-room.open-tab-error'), {
           type: 'error',
         });
       }
+    } else if ((isSuccess && !data?.status) || isError) {
+      const msg = data?.msg ?? (error as any)?.data?.msg ?? 'Error';
+      toast(t(msg), {
+        type: 'error',
+      });
     }
-    //eslint-disable-next-line
-  }, [token]);
+  }, [isSuccess, isError, data, error, t]);
 
-  const join = () => {
+  const handleJoin = useCallback(() => {
     joinRoom(
       create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: breakoutRoomId,
         userId: store.getState().session.currentUser?.userId ?? '',
       }),
     );
-  };
+  }, [joinRoom, breakoutRoomId]);
 
   return (
     <div className="join-btn mr-1">
       <button
-        className="h-7 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-        onClick={join}
-        disabled={disable}
+        className="h-7 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={handleJoin}
+        disabled={isLoading}
       >
         {t('breakout-room.join')}
       </button>

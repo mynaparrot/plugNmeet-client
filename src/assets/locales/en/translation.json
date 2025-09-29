@@ -71,7 +71,8 @@
     "please-wait-other-task-to-finish": "Please wait for the current action to finish.",
     "cloud-recording-not-supported-self-key": "Cloud recording is not available when using a custom security key.",
     "media-only-recording-not-support-e2ee": "Recording only audio and video is not available when end-to-end encryption is enabled.",
-    "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view."
+    "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view.",
+    "new-system-message-in-chat": "A new system message has been posted in the public chat."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",

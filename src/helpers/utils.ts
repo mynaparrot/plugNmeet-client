@@ -526,3 +526,16 @@ export const uploadResumableFile = (
 
   r.addFiles(files);
 };
+
+export const generateAvatarInitial = (name: string) => {
+  const nameParts = name.trim().split(/\s+/);
+  const firstNameInitial = nameParts[0]?.[0] || '';
+  let lastNameInitial = '';
+
+  if (nameParts.length > 1) {
+    lastNameInitial = nameParts[nameParts.length - 1]?.[0] || '';
+  } else if (nameParts[0]?.length > 1) {
+    lastNameInitial = nameParts[0].slice(-1);
+  }
+  return `${firstNameInitial}${lastNameInitial}`.toLocaleUpperCase();
+};

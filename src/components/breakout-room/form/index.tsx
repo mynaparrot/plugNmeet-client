@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
@@ -8,28 +8,29 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
+import RoomNumberSelector from './roomNumberSelector';
+import RoomBox from './roomBox';
+
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { RoomType, UserType } from './types';
-import { participantsSelector } from '../../../store/slices/participantSlice';
+import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
 import { useCreateBreakoutRoomsMutation } from '../../../store/services/breakoutRoomApi';
 import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
-import { RoomBox } from './roomBox';
 
 const FromElems = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
+  const participants = useAppSelector(selectBasicParticipants);
   const droppedUser = useAppSelector((state) => state.breakoutRoom.droppedUser);
 
   const [totalRooms, setTotalRooms] = useState<number>(1);
   const preTotalRooms = useStorePreviousInt(totalRooms);
   const [roomDuration, setRoomDuration] = useState<number>(15);
   const [welcomeMsg, setWelcomeMsg] = useState<string>(
-    store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
+    () => store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
   );
-  const [rooms, setRooms] = useState<Array<RoomType>>();
   const [users, setUsers] = useState<Array<UserType>>([]);
   const [createBreakoutRoom, { isLoading, data }] =
     useCreateBreakoutRoomsMutation();
@@ -47,64 +48,47 @@ const FromElems = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const participants = participantsSelector.selectAll(store.getState());
-    // if length same this mean no changes
-    if (users.length === participants.length) {
-      return;
-    }
-
-    const tmp: Array<UserType> = [];
-    participants.forEach((p) => {
-      const has = users.filter((u) => u.id === p.userId);
-      if (has.length) {
-        tmp.push(has[0]);
-      } else {
-        tmp.push({
-          id: p.userId,
-          name: p.name,
-          roomId: 0,
-          joined: false,
-        });
+    // Sync users state with participants from the store
+    const existingUsersMap = new Map(users.map((u) => [u.id, u]));
+    const newUsers = participants.map((p) => {
+      const existingUser = existingUsersMap.get(p.userId);
+      if (existingUser) {
+        return existingUser;
       }
+      return { id: p.userId, name: p.name, roomId: 0, joined: false };
     });
-
-    setUsers(tmp);
-  }, [totalParticipants, users]);
+    setUsers(newUsers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participants]);
 
   // if room number decreases then we'll reset otherwise user will be missing
   useEffect(() => {
     if (totalRooms >= preTotalRooms) {
       return;
     }
-    const participants = participantsSelector.selectAll(store.getState());
-    const users: Array<UserType> = [];
-    participants.forEach((p) => {
-      users.push({
-        id: p.userId,
-        name: p.name,
-        roomId: 0,
-        joined: false,
-      });
-    });
-    setUsers(users);
-  }, [totalParticipants, totalRooms, preTotalRooms]);
+    // Move users from deleted rooms back to the main room
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.roomId > totalRooms ? { ...user, roomId: 0 } : user,
+      ),
+    );
+  }, [totalRooms, preTotalRooms]);
 
-  useEffect(() => {
-    const rooms: Array<RoomType> = [
+  const roomList = useMemo(() => {
+    const generatedRooms: Array<RoomType> = [
       {
         id: 0,
         name: t('breakout-room.main-room'),
       },
     ];
     for (let i = 0; i < totalRooms; i++) {
-      rooms.push({
+      generatedRooms.push({
         id: i + 1,
         name: t('breakout-room.new-room', { num: i + 1 }),
       });
     }
-    setRooms(rooms);
-    //eslint-disable-next-line
-  }, [totalRooms]);
+    return generatedRooms;
+  }, [totalRooms, t]);
 
   useEffect(() => {
     if (droppedUser.id === '') {
@@ -118,8 +102,8 @@ const FromElems = () => {
     });
 
     setUsers(newUsers);
-    //eslint-disable-next-line
-  }, [droppedUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [droppedUser]); // users is intentionally omitted
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -134,48 +118,15 @@ const FromElems = () => {
         });
       }
     }
-    //eslint-disable-next-line
-  }, [isLoading, data]);
-
-  const renderBreakoutRoomNumbers = () => {
-    const max =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.breakoutRoomFeatures?.allowedNumberRooms ?? 6;
-
-    const options: Array<ReactElement> = [];
-    for (let i = 0; i < max; i++) {
-      options.push(
-        <option key={i} value={i + 1}>
-          {i + 1}
-        </option>,
-      );
-    }
-
-    return (
-      <div className="numbers-of-room w-full sm:w-56 mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
-        <label
-          className="block text-sm font-medium text-Gray-800 mb-1"
-          htmlFor="breakout-room-number"
-        >
-          {t('breakout-room.num-rooms')}
-        </label>
-        <select
-          className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
-          id="breakout-room-number"
-          onChange={(e) => setTotalRooms(Number(e.currentTarget.value))}
-        >
-          {options}
-        </select>
-      </div>
-    );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, dispatch, t]); // isLoading is not needed
 
   const randomSelection = () => {
-    if (!users || !rooms) {
+    if (!users.length || !roomList.length) {
       return;
     }
     const tmp = [...users];
-    const tmpRooms = [...rooms];
+    const tmpRooms = [...roomList];
     tmpRooms.shift();
 
     for (let i = 0; i < tmp.length; i++) {
@@ -186,9 +137,9 @@ const FromElems = () => {
     setUsers(tmp);
   };
 
-  const startBreakoutRooms = () => {
+  const handleStartBreakoutRooms = useCallback(() => {
     const tmp: Array<BreakoutRoom> = [];
-    rooms?.forEach((r) => {
+    roomList.forEach((r) => {
       if (r.id !== 0) {
         const u = users.filter((u) => u.roomId === r.id);
         if (u.length) {
@@ -218,12 +169,15 @@ const FromElems = () => {
       rooms: tmp,
     });
     createBreakoutRoom(req);
-  };
+  }, [roomList, users, roomDuration, welcomeMsg, createBreakoutRoom, t]);
 
   return (
     <div className="break-out-room-main-area">
       <div className="row flex flex-wrap justify-start items-end">
-        {renderBreakoutRoomNumbers()}
+        <RoomNumberSelector
+          totalRooms={totalRooms}
+          setTotalRooms={setTotalRooms}
+        />
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
             className="block text-sm font-medium text-Gray-800 mb-1"
@@ -265,7 +219,7 @@ const FromElems = () => {
         </div>
       </div>
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
-        {rooms?.map((room) => {
+        {roomList.map((room) => {
           return (
             <div
               className="room-box-wrap w-[calc(50%-6px)] m-[3px] sm:m-0 sm:w-auto"
@@ -283,7 +237,7 @@ const FromElems = () => {
       <div className="flex justify-end mt-4">
         <button
           className="h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-          onClick={startBreakoutRooms}
+          onClick={handleStartBreakoutRooms}
         >
           {t('breakout-room.start')}
         </button>

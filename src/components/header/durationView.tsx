@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { useRoomDurationCountdown } from '../../helpers/hooks/useRoomDurationCountdown';
 
 const DurationView = () => {
   const { t } = useTranslation();
@@ -11,48 +12,26 @@ const DurationView = () => {
   const roomDuration = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomFeatures?.roomDuration,
   );
+  const startedAt = useAppSelector(
+    (state) => state.session.currentRoom.metadata?.startedAt,
+  );
 
-  const [remaining, setRemaining] = useState<string>('00:00');
-  // if duration is less than 60 minutes then we'll show clock only.
-  const [showClock, setShowClock] = useState<boolean>(false);
-
-  useEffect(() => {
+  const endTime = useMemo(() => {
     const duration = Number(roomDuration);
-    if (!duration || duration == 0) {
-      return;
+    if (!duration) {
+      return 0;
     }
+    const startTimeInMs = startedAt ? Number(startedAt) * 1000 : Date.now();
+    const durationInMs = duration * 60 * 1000;
+    return startTimeInMs + durationInMs;
+  }, [roomDuration, startedAt]);
 
-    const startedAt = store.getState().session.currentRoom.metadata?.startedAt;
-    const start = startedAt ? Number(startedAt) * 1000 : Date.now();
-    let diff, minutes, seconds;
-    setRemaining('00:00');
+  const remaining = useRoomDurationCountdown(endTime);
 
-    const timer = () => {
-      diff = duration * 60 - (((Date.now() - start) / 1000) | 0);
-
-      minutes = (diff / 60) | 0;
-      seconds = diff % 60 | 0;
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      seconds = seconds < 10 ? '0' + seconds : seconds;
-
-      setRemaining(minutes + ':' + seconds);
-      if (minutes < 60) {
-        setShowClock(true);
-      }
-      if (diff <= 0) {
-        setRemaining('00:00');
-      }
-    };
-
-    const interval = setInterval(() => {
-      timer();
-    }, 1000);
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
+  // Show the clock only if the initial room duration is 60 minutes or less.
+  const showClock = useMemo(() => {
+    const duration = Number(roomDuration);
+    return duration > 0 && duration <= 60;
   }, [roomDuration]);
 
   useEffect(() => {
@@ -74,17 +53,14 @@ const DurationView = () => {
           }),
         );
     }
-    //eslint-disable-next-line
-  }, [remaining]);
+  }, [remaining, isRecorder, dispatch, t]);
 
-  return !roomDuration ? null : (
-    <>
-      {showClock ? (
-        <div className="timer text-xs md:text-sm border border-solid border-primary-color dark:border-dark-text/80 dark:text-dark-text/80 sm:py-[2px] px-3 rounded-lg mt-[2px] mr-[6px]">
-          {remaining}
-        </div>
-      ) : null}
-    </>
+  return (
+    showClock && (
+      <div className="timer text-xs md:text-sm border border-solid border-primary-color dark:border-dark-text/80 dark:text-dark-text/80 sm:py-[2px] px-3 rounded-lg mt-[2px] mr-[6px]">
+        {remaining}
+      </div>
+    )
   );
 };
 

@@ -1,11 +1,11 @@
 import { create, fromJsonString } from '@bufbuild/protobuf';
 import {
+  ChatMessageSchema,
+  GenerateAzureTokenResSchema,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
   NatsSystemNotificationSchema,
   NatsSystemNotificationTypes,
-  GenerateAzureTokenResSchema,
-  ChatMessageSchema,
 } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
@@ -169,6 +169,13 @@ export default class HandleSystemData {
     });
 
     store.dispatch(addChatMessage(body));
+    store.dispatch(
+      addUserNotification({
+        message: i18n.t('notifications.new-system-message-in-chat'),
+        typeOption: 'info',
+        newInstance: true,
+      }),
+    );
   };
 
   private playNotification() {

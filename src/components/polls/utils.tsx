@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 
 import { getNatsConn } from '../../helpers/nats';
 import i18n from '../../helpers/i18n';
+import { generateAvatarInitial } from '../../helpers/utils';
 
 export interface PollDataWithOption {
   pollId: string;
@@ -28,10 +29,7 @@ export interface Respondents {
 }
 
 const RespondentItem = ({ user }: { user: Respondents }) => {
-  const parts = user.name.trim().split(/\s+/);
-  const firstNameInitial = parts[0]?.[0] || '';
-  const lastNameInitial = parts[parts.length - 1]?.[0] || '';
-  const initials = `${firstNameInitial}${lastNameInitial}`.toUpperCase();
+  const initials = generateAvatarInitial(user.name);
 
   return (
     <p
