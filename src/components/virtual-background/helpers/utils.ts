@@ -26,10 +26,8 @@ export interface TFLite extends EmscriptenModule {
 }
 
 const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
-let bodyPixStore: tfBodyPix.BodyPix,
-  isCalled = false,
-  loadedModel = '',
-  modelResponse: Response;
+
+const modelCache = new Map<string, ArrayBuffer>();
 
 const loadTFLiteSIMDModule = once(async () => {
   try {
@@ -43,32 +41,39 @@ const loadTFLiteSIMDModule = once(async () => {
   return undefined;
 });
 
-async function fetchModel(modelFileName: string): Promise<Response> {
-  if (loadedModel === modelFileName) {
-    return modelResponse;
+async function fetchModel(modelFileName: string): Promise<ArrayBuffer> {
+  if (modelCache.has(modelFileName)) {
+    return modelCache.get(modelFileName)!;
   }
-  loadedModel = modelFileName;
   displayLog('Loading tflite model:', modelFileName);
-  modelResponse = await fetch(`${assetPath}/models/${modelFileName}.tflite`);
+  const response = await fetch(`${assetPath}/models/${modelFileName}.tflite`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch model: ${response.statusText}`);
+  }
+  const model = await response.arrayBuffer();
+  modelCache.set(modelFileName, model);
   displayLog('Loaded tflite model:', modelFileName);
-  return modelResponse;
+  return model;
 }
 
-export async function loadBodyPix(loadSimdModule: boolean) {
-  if (isCalled) {
-    return bodyPixStore;
-  }
-  isCalled = true;
+export const loadBodyPix = once(async (loadSimdModule: boolean) => {
   displayLog('Loading TensorFlow.js and BodyPix segmentation model');
   await tf.ready();
-  bodyPixStore = await tfBodyPix.load();
+  const bodyPix = await tfBodyPix.load();
   displayLog('TensorFlow.js and BodyPix loaded');
 
   if (loadSimdModule) {
-    loadTFLiteSIMDModule().then(() => fetchModel('segm_lite_v681').then());
+    // Pre-load the SIMD module and a default model in the background.
+    // This is fire-and-forget, so we handle errors locally.
+    try {
+      await loadTFLiteSIMDModule();
+      await fetchModel('segm_lite_v681');
+    } catch (e) {
+      console.error('Failed to pre-load SIMD model', e);
+    }
   }
-  return bodyPixStore;
-}
+  return bodyPix;
+});
 
 export const loadTFLite = once(
   async (segmentationConfig: SegmentationConfig) => {
@@ -96,8 +101,7 @@ export const loadTFLite = once(
       segmentationConfig.inputResolution,
     );
 
-    const modelResponse = await fetchModel(modelFileName);
-    const model = await modelResponse.arrayBuffer();
+    const model = await fetchModel(modelFileName);
     displayLog('Model buffer size:', model.byteLength);
 
     const modelBufferOffset = selectedTFLite._getModelBufferMemoryOffset();

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, RefObject } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import { BodyPix } from '@tensorflow-models/body-pix';
 
 import OutputViewer from './outputViewer';
@@ -51,20 +51,20 @@ const VirtualBackground = ({
   }, [isSIMDSupported]);
 
   return (
-    <>
-      {sourcePlayback && bodyPix && tflite ? (
-        <OutputViewer
-          sourcePlayback={sourcePlayback}
-          backgroundConfig={backgroundConfig ?? defaultBackgroundConfig}
-          segmentationConfig={segmentationConfig}
-          postProcessingConfig={defaultPostProcessingConfig}
-          bodyPix={bodyPix}
-          tflite={tflite}
-          id={id}
-          onCanvasRef={onCanvasRef}
-        />
-      ) : null}
-    </>
+    sourcePlayback &&
+    bodyPix &&
+    tflite && (
+      <OutputViewer
+        sourcePlayback={sourcePlayback}
+        backgroundConfig={backgroundConfig ?? defaultBackgroundConfig}
+        segmentationConfig={segmentationConfig}
+        postProcessingConfig={defaultPostProcessingConfig}
+        bodyPix={bodyPix}
+        tflite={tflite}
+        id={id}
+        onCanvasRef={onCanvasRef}
+      />
+    )
   );
 };
 

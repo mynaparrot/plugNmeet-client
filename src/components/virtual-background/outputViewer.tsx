@@ -1,4 +1,4 @@
-import React, { useEffect, RefObject } from 'react';
+import React, { RefObject, useEffect } from 'react';
 import { BodyPix } from '@tensorflow-models/body-pix';
 
 import { BackgroundConfig } from './helpers/backgroundHelper';
@@ -38,27 +38,16 @@ const OutputViewer = ({
   );
 
   useEffect(() => {
+    if (onCanvasRef && canvasRef.current) {
+      onCanvasRef(canvasRef);
+    }
+  }, [onCanvasRef, canvasRef]);
+
+  useEffect(() => {
     if (pipeline) {
       pipeline.updatePostProcessingConfig(postProcessingConfig);
     }
   }, [pipeline, postProcessingConfig]);
-
-  useEffect(() => {
-    const sendCanvasRef = () => {
-      if (onCanvasRef && canvasRef) {
-        onCanvasRef(canvasRef);
-      }
-    };
-
-    const timeout = setTimeout(() => {
-      sendCanvasRef();
-    }, 500);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-    // eslint-disable-next-line
-  }, [canvasRef]);
 
   return (
     <div className="root preview-camera-webcam w-full h-64 3xl:h-80 flex">
