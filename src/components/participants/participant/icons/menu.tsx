@@ -83,7 +83,7 @@ const MenuIcon = ({
   }
   return (
     <IconWrapper>
-      <Menu as="div">
+      <Menu as="div" className="flex items-center">
         {({ open }) => (
           <>
             <MenuButton className="relative shrink-0">
@@ -100,7 +100,7 @@ const MenuIcon = ({
             >
               <MenuItems
                 static
-                className="origin-top-right z-10 absolute top-0 ltr:right-0 rtl:left-0 mt-2 w-44 rounded-md shadow-lg bg-white dark:bg-dark-primary ring-1 ring-black dark:ring-secondary-color ring-opacity-5 divide-y divide-gray-100 dark:divide-secondary-color focus:outline-hidden"
+                className="origin-top-right z-10 absolute top-8 ltr:right-0 rtl:left-0 w-44 rounded-md shadow-lg bg-white dark:bg-dark-primary ring-1 ring-Gray-100 divide-y divide-Gray-100 focus:outline-hidden"
               >
                 {menuItems}
               </MenuItems>
