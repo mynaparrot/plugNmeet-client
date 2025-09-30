@@ -1,23 +1,12 @@
-import React, { useEffect, useState, Fragment } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  Button,
-  DialogPanel,
-  Listbox,
-  Transition,
-  ListboxOptions,
-  ListboxOption,
-  ListboxButton,
-} from '@headlessui/react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getInputMediaDevices } from '../../../helpers/utils';
 import { addAudioDevices } from '../../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../../store';
-import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
-import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
-import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
+import Modal from '../../../helpers/ui/modal';
+import Dropdown from '../../../helpers/ui/dropdown';
+import ActionButton from '../../../helpers/ui/actionButton';
 
 interface MicrophoneModalProps {
   show: boolean;
@@ -54,94 +43,28 @@ const MicrophoneModal = ({
   };
 
   return (
-    <Dialog
-      open={show}
-      as="div"
-      className="relative z-10 focus:outline-hidden"
-      onClose={() => false}
+    <Modal
+      show={show}
+      onClose={() => selectOrClose(true)}
+      title={t('footer.modal.select-microphone')}
+      renderButtons={() => (
+        <ActionButton onClick={() => selectOrClose(false)}>
+          {t('join')}
+        </ActionButton>
+      )}
     >
-      <div className="SelectMicrophonePopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
-        <div className="flex min-h-full items-center justify-center p-4">
-          <DialogPanel
-            transition
-            className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-4 3xl:p-6 rounded-xl duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-          >
-            <DialogTitle
-              as="h3"
-              className="flex items-center justify-between text-base 3xl:text-lg font-medium 3xl:font-semibold leading-7 text-Gray-950"
-            >
-              <span>{t('footer.modal.select-microphone')}</span>
-              <Button
-                className="cursor-pointer"
-                onClick={() => selectOrClose(true)}
-              >
-                <PopupCloseSVGIcon classes="text-Gray-600" />
-              </Button>
-            </DialogTitle>
-
-            <div className="microphone-dropdown mt-4">
-              <Listbox value={selectedMic} onChange={setSelectMic}>
-                <div className="relative">
-                  <ListboxButton className="relative cursor-pointer w-full h-10 rounded-[8px] border border-Gray-300 bg-white shadow-input px-3 outline-hidden focus:border-Blue2-500 focus:shadow-input-focus text-left text-sm text-Gray-950">
-                    <span className="block truncate">
-                      {devices.find((d) => d.id === selectedMic)?.label ||
-                        t('footer.modal.select-microphone')}
-                    </span>
-                    <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                      <DropdownIconSVG />
-                    </span>
-                  </ListboxButton>
-                  <Transition
-                    as={Fragment}
-                    leave="transition ease-in duration-100"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
-                      {devices.map((device) => (
-                        <ListboxOption
-                          key={device.id}
-                          value={device.id}
-                          className={({ focus, selected }) =>
-                            `relative select-none py-2 px-3 cursor-pointer rounded-[8px] ${
-                              focus ? 'bg-Blue2-50' : ''
-                            } ${selected ? 'bg-Blue2-50' : ''}`
-                          }
-                        >
-                          {({ selected }) => (
-                            <>
-                              <span
-                                className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
-                              >
-                                {device.label}
-                              </span>
-                              {selected ? (
-                                <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
-                                  <CheckMarkIcon />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </ListboxOption>
-                      ))}
-                    </ListboxOptions>
-                  </Transition>
-                </div>
-              </Listbox>
-            </div>
-
-            <div className="mt-8 grid grid-cols-2 gap-3">
-              <Button
-                className="h-9 cursor-pointer w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
-                onClick={() => selectOrClose(false)}
-              >
-                {t('join')}
-              </Button>
-            </div>
-          </DialogPanel>
-        </div>
-      </div>
-    </Dialog>
+      <Dropdown
+        id="microphone"
+        value={selectedMic}
+        onChange={setSelectMic}
+        options={devices.map((d) => {
+          return {
+            value: d.id,
+            text: d.label,
+          };
+        })}
+      />
+    </Modal>
   );
 };
 

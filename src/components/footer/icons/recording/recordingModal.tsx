@@ -1,20 +1,17 @@
-import React, { Fragment, useCallback, useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-  Button,
-} from '@headlessui/react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  RecordingFeatures,
   CloudRecordingVariants,
+  RecordingFeatures,
 } from 'plugnmeet-protocol-js';
 
 import { RecordingType, SelectedRecordingType } from './IRecording';
-import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 import { store } from '../../../../store';
+import Modal from '../../../../helpers/ui/modal';
+import ActionButton from '../../../../helpers/ui/actionButton';
+import RadioOptions, {
+  IRadioOption,
+} from '../../../../helpers/ui/radioOptions';
 
 interface IRecordingModalProps {
   showModal: boolean;
@@ -52,202 +49,85 @@ const RecordingModal = ({
     });
   };
 
-  const displayModal = () => {
-    return (
-      <>
-        <Transition appear show={showModal} as={Fragment}>
-          <Dialog
-            as="div"
-            className="recordingModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
-            onClose={() => false}
-          >
-            <div className="flex min-h-full items-center justify-center p-4">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <div className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out">
-                  {/* <button
-                    className="close-btn absolute top-8 ltr:right-6 rtl:left-6 w-[25px] h-[25px] outline-hidden"
-                    type="button"
-                    onClick={() => closeModal()}
-                  >
-                    <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
-                    <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
-                  </button>
+  const radioOptions = useMemo(() => {
+    const options: IRadioOption[] = [];
+    if (recordingFeatures?.isAllowLocal) {
+      options.push({
+        id: 'local',
+        value: RecordingType.RECORDING_TYPE_LOCAL,
+        label: t('footer.icons.local-recording'),
+      });
+    }
+    if (recordingFeatures?.isAllowCloud) {
+      options.push({
+        id: 'full-screen',
+        value: CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING,
+        label: t('footer.icons.cloud-recording'),
+        disabled: !!e2eeFeatures?.enabledSelfInsertEncryptionKey,
+        description: e2eeFeatures?.enabledSelfInsertEncryptionKey
+          ? t('notifications.cloud-recording-not-supported-self-key')
+          : undefined,
+      });
+      if (isCloud) {
+        options.push({
+          id: 'media-only',
+          value: CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING,
+          label: t('footer.icons.cloud-media-only-recording'),
+          disabled: !!e2eeFeatures?.isEnabled,
+          description: e2eeFeatures?.isEnabled
+            ? t('notifications.media-only-recording-not-support-e2ee')
+            : undefined,
+        });
+      }
+    }
+    return options;
+  }, [recordingFeatures, isCloud, e2eeFeatures, t]);
 
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white ltr:text-left rtl:text-right mb-2"
-                  >
-                    {t('footer.icons.how-to-record')}
-                  </DialogTitle> */}
-                  <DialogTitle
-                    as="h3"
-                    className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2"
-                  >
-                    <span>{t('footer.icons.how-to-record')}</span>
-                    <Button
-                      className="cursor-pointer"
-                      onClick={() => closeModal()}
-                    >
-                      <PopupCloseSVGIcon classes="text-Gray-600" />
-                    </Button>
-                  </DialogTitle>
-                  <hr />
-                  <div className="mt-4">
-                    <form
-                      action="#"
-                      method="POST"
-                      onSubmit={(e) => startRecording(e)}
-                    >
-                      <div className="">
-                        <p className="text-sm text-Gray-950">
-                          {t('footer.icons.recording-types-des')}
-                        </p>
-                        <div className="mt-4 pl-2 space-y-4">
-                          {recordingFeatures?.isAllowLocal && (
-                            <>
-                              <div className="relative my-2">
-                                <div className="wrap flex items-center overflow-hidden">
-                                  <input
-                                    type="radio"
-                                    value="0"
-                                    name="block"
-                                    id="local"
-                                    checked={
-                                      recordingType?.type ===
-                                      RecordingType.RECORDING_TYPE_LOCAL
-                                    }
-                                    onChange={() =>
-                                      setRecordingType({
-                                        type: RecordingType.RECORDING_TYPE_LOCAL,
-                                      })
-                                    }
-                                    className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-                                  />
-                                  <label
-                                    className="flex-1 text-sm text-Gray-900 w-full h-full z-10 pl-2 cursor-pointer"
-                                    htmlFor="local"
-                                  >
-                                    {t('footer.icons.local-recording')}
-                                  </label>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                          {recordingFeatures?.isAllowCloud && (
-                            <>
-                              <div className="relative my-2">
-                                <div className="wrap flex items-center overflow-hidden">
-                                  <input
-                                    type="radio"
-                                    value="1"
-                                    name="block"
-                                    id="full-screen"
-                                    disabled={
-                                      !!e2eeFeatures?.enabledSelfInsertEncryptionKey
-                                    }
-                                    checked={
-                                      recordingType?.variant ===
-                                      CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING
-                                    }
-                                    onChange={() => {
-                                      setRecordingType({
-                                        type: RecordingType.RECORDING_TYPE_CLOUD,
-                                        variant:
-                                          CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING,
-                                      });
-                                    }}
-                                    className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-                                  />
-                                  <label
-                                    className="flex-1 text-sm text-Gray-900 w-full h-full z-10 pl-2 cursor-pointer"
-                                    htmlFor="full-screen"
-                                  >
-                                    {t('footer.icons.cloud-recording')}
-                                  </label>
-                                </div>
-                                {e2eeFeatures?.enabledSelfInsertEncryptionKey && (
-                                  <p className="text-xs text-Red-400 pl-[26px]">
-                                    {t(
-                                      'notifications.cloud-recording-not-supported-self-key',
-                                    )}
-                                  </p>
-                                )}
-                              </div>
-                              {isCloud && (
-                                <div
-                                  className={`relative my-2 ${e2eeFeatures?.isEnabled ? ' opacity-50 pointer-events-none' : ''}`}
-                                >
-                                  <div className="wrap flex items-center overflow-hidden">
-                                    <input
-                                      type="radio"
-                                      value="3"
-                                      name="block"
-                                      id="media-only"
-                                      disabled={!!e2eeFeatures?.isEnabled}
-                                      checked={
-                                        recordingType?.variant ===
-                                        CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING
-                                      }
-                                      onChange={() => {
-                                        setRecordingType({
-                                          type: RecordingType.RECORDING_TYPE_CLOUD,
-                                          variant:
-                                            CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING,
-                                        });
-                                      }}
-                                      className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
-                                    />
-                                    <label
-                                      className="flex-1 text-sm text-Gray-900 w-full h-full z-10 pl-2 cursor-pointer"
-                                      htmlFor="media-only"
-                                    >
-                                      {t(
-                                        'footer.icons.cloud-media-only-recording',
-                                      )}
-                                    </label>
-                                  </div>
-                                  {e2eeFeatures?.isEnabled && (
-                                    <p className="text-xs text-Red-400 pl-[26px]">
-                                      {t(
-                                        'notifications.media-only-recording-not-support-e2ee',
-                                      )}
-                                    </p>
-                                  )}
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <button
-                          type="submit"
-                          className="h-10 cursor-pointer px-5 flex items-center ml-auto justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-Dark-blue transition-all duration-300 hover:bg-Dark-blue shadow-button-shadow"
-                        >
-                          {t('footer.icons.start-recording')}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </TransitionChild>
-            </div>
-          </Dialog>
-        </Transition>
-      </>
-    );
+  const handleRadioChange = (value: any) => {
+    if (value === RecordingType.RECORDING_TYPE_LOCAL) {
+      setRecordingType({ type: RecordingType.RECORDING_TYPE_LOCAL });
+    } else {
+      setRecordingType({
+        type: RecordingType.RECORDING_TYPE_CLOUD,
+        variant: value,
+      });
+    }
   };
 
-  return displayModal();
+  const getCheckedValue = () => {
+    if (recordingType?.type === RecordingType.RECORDING_TYPE_LOCAL) {
+      return RecordingType.RECORDING_TYPE_LOCAL;
+    }
+    return recordingType?.variant;
+  };
+
+  return (
+    <Modal
+      show={showModal}
+      onClose={closeModal}
+      title={t('footer.icons.how-to-record')}
+      renderButtons={() => (
+        <ActionButton
+          buttonType="submit"
+          onClick={(e) => startRecording(e as any)}
+        >
+          {t('footer.icons.start-recording')}
+        </ActionButton>
+      )}
+    >
+      <form action="#" method="POST" onSubmit={(e) => startRecording(e)}>
+        <p className="text-sm text-Gray-950">
+          {t('footer.icons.recording-types-des')}
+        </p>
+        <RadioOptions
+          name="recording-type"
+          options={radioOptions}
+          checked={getCheckedValue()}
+          onChange={handleRadioChange}
+        />
+      </form>
+    </Modal>
+  );
 };
 
 export default RecordingModal;

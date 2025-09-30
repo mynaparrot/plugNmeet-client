@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ChangeVisibilityRes,
-  ChangeVisibilityResSchema,
-} from 'plugnmeet-protocol-js';
-import { create, toBinary } from '@bufbuild/protobuf';
+import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveChatPanel,
   updateIsActiveSharedNotePad,
 } from '../../../store/slices/bottomIconsActivitySlice';
-import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
 const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const [iconCSS, setIconCSS] = useState<string>('primaryColor');
   const isActiveSharedNotePad = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveSharedNotePad,
   );
@@ -26,13 +20,6 @@ const SharedNotePadIcon = () => {
       state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
         ?.isActive,
   );
-  const isVisible = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
-        ?.visible,
-  );
-  const [initiated, setInitiated] = useState<boolean>(false);
-  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   useEffect(() => {
@@ -46,78 +33,11 @@ const SharedNotePadIcon = () => {
 
   useEffect(() => {
     if (isActiveSharedNotePad) {
-      setIconCSS('secondaryColor');
       if (!isRecorder) {
         dispatch(updateIsActiveChatPanel(false));
       }
-    } else {
-      setIconCSS('primaryColor dark:text-dark-text');
     }
-    //eslint-disable-next-line
-  }, [isActiveSharedNotePad, dispatch]);
-
-  useEffect(() => {
-    if (!sharedNotepadStatus) {
-      return;
-    }
-
-    if (isVisible) {
-      dispatch(updateIsActiveSharedNotePad(true));
-    } else {
-      dispatch(updateIsActiveSharedNotePad(false));
-    }
-    //eslint-disable-next-line
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!isAdmin || isRecorder) {
-      return;
-    }
-    const currentRoom = store.getState().session.currentRoom;
-
-    if (
-      !initiated &&
-      currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
-    ) {
-      setInitiated(true);
-      return;
-    } else if (!initiated) {
-      setInitiated(true);
-    }
-
-    const sendRequest = async (body: ChangeVisibilityRes) => {
-      await sendAPIRequest(
-        'changeVisibility',
-        toBinary(ChangeVisibilityResSchema, body),
-        false,
-        'application/protobuf',
-      );
-    };
-
-    if (
-      isActiveSharedNotePad &&
-      !currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
-    ) {
-      const body = create(ChangeVisibilityResSchema, {
-        roomId: currentRoom.roomId,
-        visibleNotepad: true,
-      });
-      // wait a little bit before change visibility
-      setTimeout(() => {
-        sendRequest(body).then();
-      }, 500);
-    } else if (
-      !isActiveSharedNotePad &&
-      currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible
-    ) {
-      const body = create(ChangeVisibilityResSchema, {
-        roomId: currentRoom.roomId,
-        visibleNotepad: false,
-      });
-      sendRequest(body).then();
-    }
-    //eslint-disable-next-line
-  }, [isActiveSharedNotePad]);
+  }, [isActiveSharedNotePad, dispatch, isRecorder]);
 
   const text = () => {
     if (isActiveSharedNotePad) {
@@ -131,40 +51,28 @@ const SharedNotePadIcon = () => {
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
   };
 
-  const render = () => {
-    return (
-      <>
-        {/* <div
-          className={`shared-notepad h-[35px] lg:h-[40px] w-[35px] lg:w-[40px] relative rounded-full bg-[#F2F2F2] dark:bg-dark-secondary2 hover:bg-[#ECF4FF] ltr:mr-3 lg:ltr:mr-6 rtl:ml-3 lg:rtl:ml-6 flex items-center justify-center cursor-pointer ${
+  const iconClasses = clsx('pnm-notepad text-[14px] lg:text-[16px]', {
+    secondaryColor: isActiveSharedNotePad,
+    'primaryColor dark:text-dark-text': !isActiveSharedNotePad,
+  });
+
+  return (
+    sharedNotepadStatus && (
+      <div
+        className={`sharedNotePad relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveSharedNotePad ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
+        onClick={() => toggleSharedNotePad()}
+      >
+        <div
+          className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
             showTooltip ? 'has-tooltip' : ''
-          }`}
-          onClick={() => toggleSharedNotePad()}
+          } ${isActiveSharedNotePad ? 'bg-gray-100' : 'bg-white'}`}
         >
           <span className="tooltip">{text()}</span>
-          <>
-            <i className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`} />
-          </>
-        </div> */}
-        <div
-          className={`sharedNotePad relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveSharedNotePad ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
-          onClick={() => toggleSharedNotePad()}
-        >
-          <div
-            className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
-              showTooltip ? 'has-tooltip' : ''
-            } ${isActiveSharedNotePad ? 'bg-gray-100' : 'bg-white'}`}
-          >
-            <span className="tooltip">{text()}</span>
-            <i
-              className={`pnm-notepad ${iconCSS} text-[14px] lg:text-[16px]`}
-            />
-          </div>
+          <i className={iconClasses} />
         </div>
-      </>
-    );
-  };
-
-  return <>{sharedNotepadStatus ? render() : null}</>;
+      </div>
+    )
+  );
 };
 
 export default SharedNotePadIcon;

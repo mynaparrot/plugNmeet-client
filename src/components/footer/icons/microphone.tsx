@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { createLocalTracks, ParticipantEvent, Track } from 'livekit-client';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import {
+  createLocalTracks,
+  LocalTrackPublication,
+  ParticipantEvent,
+  Track,
+} from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
+import clsx from 'clsx';
 import {
   AnalyticsEvents,
   AnalyticsEventType,
@@ -16,17 +22,18 @@ import {
   updateShowMicrophoneModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import MicMenu from './mic-menu';
-import { participantsSelector } from '../../../store/slices/participantSlice';
 import MicrophoneModal from '../modals/microphoneModal';
 import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
-import { updateSelectedAudioDevice } from '../../../store/slices/roomSettingsSlice';
-import { getAudioPreset } from '../../../helpers/utils';
+import {
+  addAudioDevices,
+  updateSelectedAudioDevice,
+} from '../../../store/slices/roomSettingsSlice';
+import { getAudioPreset, getInputMediaDevices } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
 import { Microphone } from '../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
-// import { BlockedIcon } from '../../../assets/Icons/BlockedIcon';
 
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
@@ -34,10 +41,16 @@ const MicrophoneIcon = () => {
   const { t } = useTranslation();
   const conn = getNatsConn();
 
-  const session = store.getState().session;
-  const showTooltip = session.userDeviceType === 'desktop';
-  const muteOnStart =
-    session.currentRoom.metadata?.roomFeatures?.muteOnStart ?? false;
+  const { showTooltip, muteOnStart, isAdmin } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      showTooltip: session.userDeviceType === 'desktop',
+      muteOnStart:
+        session.currentRoom.metadata?.roomFeatures?.muteOnStart ?? false,
+      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isRecorder: !!session.currentUser?.isRecorder,
+    };
+  }, []);
 
   const showMicrophoneModal = useAppSelector(
     (state) => state.bottomIconsActivity.showMicrophoneModal,
@@ -56,45 +69,34 @@ const MicrophoneIcon = () => {
     (state) => state.roomSettings.selectedAudioDevice,
   );
 
-  const [lockMic, setLockMic] = useState<boolean>(false);
+  const isLocked = useMemo(() => !isAdmin && isMicLock, [isAdmin, isMicLock]);
 
   // for change in mic lock setting
   useEffect(() => {
-    const closeMicOnLock = async () => {
-      for (const [
-        ,
-        publication,
-        // eslint-disable-next-line no-unsafe-optional-chaining
-      ] of currentRoom?.localParticipant.audioTrackPublications.entries()) {
-        if (
-          publication.track &&
-          publication.source === Track.Source.Microphone
-        ) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
+    const closeMicOnLock = async (publication: LocalTrackPublication) => {
+      if (publication.track && publication.source === Track.Source.Microphone) {
+        await currentRoom.localParticipant.unpublishTrack(
+          publication.track,
+          true,
+        );
       }
 
       dispatch(updateIsActiveMicrophone(false));
       dispatch(updateIsMicMuted(false));
     };
 
-    if (isMicLock) {
-      setLockMic(true);
-
-      const currentUser = participantsSelector.selectById(
-        store.getState(),
-        currentRoom.localParticipant.identity,
-      );
-      if (currentUser?.audioTracks) {
-        closeMicOnLock();
+    if (isLocked) {
+      if (!currentRoom) {
+        return;
       }
-    } else {
-      setLockMic(false);
+      const mic = currentRoom.localParticipant.getTrackPublication(
+        Track.Source.Microphone,
+      );
+      if (mic) {
+        closeMicOnLock(mic).then();
+      }
     }
-  }, [isMicLock, currentRoom, dispatch]);
+  }, [isLocked, currentRoom, dispatch]);
 
   // default room lock settings
   useEffect(() => {
@@ -103,23 +105,20 @@ const MicrophoneIcon = () => {
         ?.lockMicrophone;
     const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
-    if (isLock && !isAdmin) {
-      if (isMicLock !== false) {
-        setLockMic(true);
-      }
+    if (isLock && !isAdmin && isMicLock !== false) {
+      // we don't need to do anything as `isLocked` will be true
     }
     // eslint-disable-next-line
   }, []);
 
-  // for speaking to send stats
-  useEffect(() => {
-    if (!currentRoom) {
-      return;
-    }
-    const speakingHandler = (speaking: boolean) => {
+  const speakingHandler = useCallback(
+    (speaking: boolean) => {
+      if (!currentRoom) {
+        return;
+      }
       if (!speaking) {
         const lastSpokeAt = currentRoom.localParticipant.lastSpokeAt?.getTime();
-        if (lastSpokeAt && lastSpokeAt > 0) {
+        if (lastSpokeAt) {
           const cal = Date.now() - lastSpokeAt;
           // send analytics
           conn.sendAnalyticsData(
@@ -140,7 +139,15 @@ const MicrophoneIcon = () => {
           '1',
         );
       }
-    };
+    },
+    [currentRoom, conn],
+  );
+
+  // for speaking to send stats
+  useEffect(() => {
+    if (!currentRoom) {
+      return;
+    }
 
     currentRoom.localParticipant.on(
       ParticipantEvent.IsSpeakingChanged,
@@ -152,23 +159,13 @@ const MicrophoneIcon = () => {
         speakingHandler,
       );
     };
-    //eslint-disable-next-line
-  }, [currentRoom]);
+  }, [currentRoom, speakingHandler]);
 
-  // initially only
-  useEffect(() => {
-    if (selectedAudioDevice) {
-      onCloseMicrophoneModal(selectedAudioDevice).then();
+  const muteUnmuteMic = useCallback(async () => {
+    if (!currentRoom) {
+      return;
     }
-    //eslint-disable-next-line
-  }, []);
-
-  const muteUnmuteMic = async () => {
-    for (const [
-      ,
-      publication,
-      // eslint-disable-next-line no-unsafe-optional-chaining
-    ] of currentRoom?.localParticipant.audioTrackPublications.entries()) {
+    for (const publication of currentRoom.localParticipant.audioTrackPublications.values()) {
       if (
         publication.track &&
         publication.track.source === Track.Source.Microphone
@@ -198,22 +195,22 @@ const MicrophoneIcon = () => {
         }
       }
     }
-  };
+  }, [currentRoom, conn, dispatch]);
 
-  const manageMic = async () => {
-    if (!isActiveMicrophone && !lockMic) {
+  const manageMic = useCallback(async () => {
+    if (!isActiveMicrophone && !isLocked) {
       dispatch(updateShowMicrophoneModal(true));
     }
 
     if (isActiveMicrophone) {
       await muteUnmuteMic();
     }
-  };
+  }, [isActiveMicrophone, isLocked, dispatch, muteUnmuteMic]);
 
   const getTooltipText = () => {
-    if (!isActiveMicrophone && !lockMic) {
+    if (!isActiveMicrophone && !isLocked) {
       return t('footer.icons.start-microphone-sharing');
-    } else if (!isActiveMicrophone && lockMic) {
+    } else if (!isActiveMicrophone && isLocked) {
       return t('footer.icons.microphone-locked');
     }
 
@@ -224,107 +221,140 @@ const MicrophoneIcon = () => {
     }
   };
 
-  const onCloseMicrophoneModal = async (deviceId?: string) => {
-    dispatch(updateShowMicrophoneModal(false));
+  const onCloseMicrophoneModal = useCallback(
+    async (deviceId?: string) => {
+      dispatch(updateShowMicrophoneModal(false));
 
-    if (isEmpty(deviceId)) {
-      return;
-    }
-
-    const localTracks = await createLocalTracks({
-      audio: {
-        deviceId: deviceId,
-      },
-      video: false,
-    });
-    for (let i = 0; i < localTracks.length; i++) {
-      const track = localTracks[i];
-      if (track.kind === Track.Kind.Audio) {
-        await currentRoom?.localParticipant.publishTrack(track, {
-          audioPreset: getAudioPreset(),
-        });
-        dispatch(updateIsActiveMicrophone(true));
+      if (isEmpty(deviceId) || !currentRoom) {
+        return;
       }
-    }
-    if (muteOnStart) {
-      setTimeout(async () => {
-        const audioTracks =
-          currentRoom?.localParticipant.audioTrackPublications;
 
-        if (audioTracks) {
-          for (const [, publication] of audioTracks.entries()) {
-            if (
-              publication.track &&
-              publication.track.source === Track.Source.Microphone
-            ) {
-              if (!publication.isMuted) {
-                await publication.track.mute();
-                dispatch(updateIsMicMuted(true));
-                // we'll disable it as it was first time only.
-                dispatch(updateMuteOnStart(false));
+      const localTracks = await createLocalTracks({
+        audio: {
+          deviceId: deviceId,
+        },
+        video: false,
+      });
+      for (let i = 0; i < localTracks.length; i++) {
+        const track = localTracks[i];
+        if (track.kind === Track.Kind.Audio) {
+          await currentRoom.localParticipant.publishTrack(track, {
+            audioPreset: getAudioPreset(),
+          });
+          dispatch(updateIsActiveMicrophone(true));
+        }
+      }
+      if (muteOnStart) {
+        setTimeout(async () => {
+          const audioTracks =
+            currentRoom.localParticipant.audioTrackPublications;
+
+          if (audioTracks) {
+            for (const [, publication] of audioTracks.entries()) {
+              if (
+                publication.track &&
+                publication.track.source === Track.Source.Microphone
+              ) {
+                if (!publication.isMuted) {
+                  await publication.track.mute();
+                  dispatch(updateIsMicMuted(true));
+                  // we'll disable it as it was first time only.
+                  dispatch(updateMuteOnStart(false));
+                }
               }
             }
           }
-        }
-      }, 500);
-    }
+        }, 500);
+      }
 
-    if (deviceId != null) {
-      dispatch(updateSelectedAudioDevice(deviceId));
-    }
-  };
+      if (deviceId != null) {
+        dispatch(updateSelectedAudioDevice(deviceId));
+      }
+    },
+    [dispatch, currentRoom, muteOnStart],
+  );
+
+  // initially only
+  useEffect(() => {
+    const getDevices = async () => {
+      const devices = await getInputMediaDevices('audio');
+      dispatch(addAudioDevices(devices.audio));
+      if (selectedAudioDevice) {
+        onCloseMicrophoneModal(selectedAudioDevice).then();
+      }
+    };
+    getDevices().then();
+    //eslint-disable-next-line
+  }, [onCloseMicrophoneModal]);
+
+  const wrapperClasses = clsx(
+    'relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
+    {
+      'border-Red-100!': isMicMuted && isActiveMicrophone,
+      'border-[rgba(124,206,247,0.25)]': isActiveMicrophone,
+      'border-transparent': !isActiveMicrophone,
+      'border-Red-100! pointer-events-none': isLocked,
+    },
+  );
+
+  const micWrapClasses = clsx(
+    'microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950',
+    {
+      'border-Red-200!': isMicMuted && isActiveMicrophone,
+      'border-Red-200! text-Red-400': isLocked,
+    },
+  );
+
+  const iconDivClasses = clsx(
+    'w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center',
+    {
+      'has-tooltip': showTooltip,
+    },
+  );
 
   return (
-    <div
-      className={`relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4 ${isMicMuted && isActiveMicrophone ? 'border-Red-100!' : ''} ${isActiveMicrophone ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lockMic ? 'border-Red-100! pointer-events-none' : ''}`}
-    >
-      <div
-        className={`microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-200 text-Gray-950 ${isMicMuted && isActiveMicrophone ? 'border-Red-200!' : ''} ${lockMic ? 'border-Red-200! text-Red-400' : ''}`}
-      >
-        <div
-          className={`w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center ${showTooltip ? 'has-tooltip' : ''}`}
-          onClick={() => manageMic()}
-        >
-          <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
-            {getTooltipText()}
-          </span>
-          {!isActiveMicrophone ? (
-            <>
+    <>
+      <div className={wrapperClasses}>
+        <div className={micWrapClasses}>
+          <div className={iconDivClasses} onClick={manageMic}>
+            <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
+              {getTooltipText()}
+            </span>
+            {!isActiveMicrophone ? (
+              <>
+                <Microphone classes={'h-4 3xl:h-5 w-auto'} />
+                <span className="add absolute -top-2 -right-2 z-10">
+                  {isLocked ? (
+                    <i className="pnm-lock primaryColor" />
+                  ) : (
+                    <PlusIcon />
+                  )}
+                </span>
+              </>
+            ) : null}
+            {!isMicMuted && isActiveMicrophone && (
               <Microphone classes={'h-4 3xl:h-5 w-auto'} />
-              <span className="add absolute -top-2 -right-2 z-10">
-                {lockMic ? (
-                  <i className="pnm-lock primaryColor" />
-                ) : (
-                  <PlusIcon />
-                )}
-              </span>
-            </>
-          ) : null}
-          {!isMicMuted && isActiveMicrophone ? (
-            <Microphone classes={'h-4 3xl:h-5 w-auto'} />
-          ) : null}
-          {isMicMuted && isActiveMicrophone ? (
-            <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
-          ) : null}
-          {/* <span className="blocked absolute -top-2 -right-2 z-10">
-            <BlockedIcon />
-          </span> */}
+            )}
+            {isMicMuted && isActiveMicrophone && (
+              <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
+            )}
+          </div>
+          {isActiveMicrophone && (
+            <MicMenu
+              currentRoom={currentRoom}
+              isActiveMicrophone={isActiveMicrophone}
+              isMicMuted={isMicMuted}
+            />
+          )}
         </div>
-        {isActiveMicrophone ? (
-          <MicMenu
-            currentRoom={currentRoom}
-            isActiveMicrophone={isActiveMicrophone}
-            isMicMuted={isMicMuted}
-          />
-        ) : null}
       </div>
-      {showMicrophoneModal ? (
+      {showMicrophoneModal && (
         <MicrophoneModal
           show={showMicrophoneModal}
           onCloseMicrophoneModal={onCloseMicrophoneModal}
         />
-      ) : null}
-    </div>
+      )}
+    </>
   );
 };
 

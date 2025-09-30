@@ -1,13 +1,35 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { updateIsActivePollsPanel } from '../../../store/slices/bottomIconsActivitySlice';
-import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '../../../store';
 import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
+import ActionButton from '../../../helpers/ui/actionButton';
 
-const NewPoll = () => {
+interface INewPollProps {
+  createdAt: number | undefined;
+  onClosePopover?: () => void;
+}
+
+const NewPoll = ({ createdAt, onClosePopover }: INewPollProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
+  const openPollsPanel = useCallback(() => {
+    dispatch(updateIsActivePollsPanel(true));
+    if (onClosePopover) {
+      onClosePopover();
+    }
+  }, [dispatch, onClosePopover]);
+
+  const formatDate = (timeStamp?: number) => {
+    const date = new Date(timeStamp ?? 0);
+    return date.toLocaleString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
 
   return (
     <div className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200">
@@ -15,19 +37,15 @@ const NewPoll = () => {
         <PollsIconSVG classes="w-[15px]" />
       </div>
       <div className="text flex-1 text-Gray-800 text-sm">
-        <p>
-          {/* Poll created:{' '}
-            <strong>“How was today’s class?”</strong> */}
-          {t('polls.new-poll')}
-        </p>
+        <p>{t('polls.new-poll')}</p>
         <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
-          <span className="">12:04 AM</span>{' '}
-          <button
-            onClick={() => dispatch(updateIsActivePollsPanel(true))}
-            className="h-6 cursor-pointer px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
+          <span className="">{formatDate(createdAt)}</span>{' '}
+          <ActionButton
+            onClick={openPollsPanel}
+            custom="h-5 w-auto px-2 !text-[10px] !rounded-md bg-Blue2-500 hover:bg-Blue2-600 border-Blue2-600"
           >
             {t('open')}
-          </button>
+          </ActionButton>
         </div>
       </div>
     </div>

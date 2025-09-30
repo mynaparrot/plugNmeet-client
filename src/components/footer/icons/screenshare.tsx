@@ -1,22 +1,21 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   createLocalScreenTracks,
   ScreenShareCaptureOptions,
   Track,
 } from 'livekit-client';
+import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActivitySlice';
 import { updateScreenSharing } from '../../../store/slices/sessionSlice';
-import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const ScrenshareIcon = () => {
-  const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
@@ -31,29 +30,24 @@ const ScrenshareIcon = () => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
   );
+  const { isAdmin, isScreenShareAllowed, showTooltip } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isScreenShareAllowed:
+        !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
+      showTooltip: session.userDeviceType === 'desktop',
+    };
+  }, []);
 
-  // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
-  const [lock, setLock] = useState<boolean>(false);
-  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
-
-  // useEffect(() => {
-  //   if (
-  //     sessionScreenSharing.isActive &&
-  //     sessionScreenSharing.sharedBy === currentRoom.localParticipant.identity
-  //   ) {
-  //     setIconCSS('secondaryColor');
-  //   } else {
-  //     setIconCSS('primaryColor dark:text-dark-text');
-  //   }
-  //   //eslint-disable-next-line
-  // }, [sessionScreenSharing]);
+  const isLocked = useMemo(
+    () => !isAdmin && isScreenshareLock,
+    [isAdmin, isScreenshareLock],
+  );
 
   const endScreenShare = useCallback(async () => {
-    if (isActiveScreenshare) {
-      for (const [
-        ,
-        publication,
-      ] of currentRoom.localParticipant.trackPublications.entries()) {
+    if (isActiveScreenshare && currentRoom) {
+      for (const publication of currentRoom.localParticipant.trackPublications.values()) {
         if (
           (publication.source === Track.Source.ScreenShare ||
             publication.source === Track.Source.ScreenShareAudio) &&
@@ -77,17 +71,11 @@ const ScrenshareIcon = () => {
 
   // for change in lock setting
   useEffect(() => {
-    if (isAdmin) {
-      return;
-    }
-    if (isScreenshareLock) {
-      setLock(true);
+    if (isLocked) {
       endScreenShare().then();
-    } else if (!isScreenshareLock) {
-      setLock(false);
     }
     //eslint-disable-next-line
-  }, [endScreenShare, isScreenshareLock]);
+  }, [isLocked]);
 
   // for special case when user cancels sharing from browser directly,
   // we will check & disable button status.
@@ -99,7 +87,7 @@ const ScrenshareIcon = () => {
   }, [sessionScreenSharing]);
 
   const toggleScreenShare = async () => {
-    if (lock) {
+    if (isLocked) {
       return;
     }
 
@@ -111,6 +99,10 @@ const ScrenshareIcon = () => {
             typeOption: 'error',
           }),
         );
+        return;
+      }
+
+      if (!currentRoom) {
         return;
       }
 
@@ -147,53 +139,49 @@ const ScrenshareIcon = () => {
   const text = () => {
     if (isActiveScreenshare) {
       return t('footer.icons.stop-screen-sharing');
-    } else if (!isActiveScreenshare && !lock) {
+    } else if (!isActiveScreenshare && !isLocked) {
       return t('footer.icons.start-screen-sharing');
-    } else if (lock) {
+    } else if (isLocked) {
       return t('footer.icons.screen-sharing-locked');
     }
   };
 
-  const shouldShow = () => {
-    const session = store.getState().session;
-    const metadata = session.currentRoom.metadata as IRoomMetadata;
-    return metadata.roomFeatures?.allowScreenShare;
-  };
+  const wrapperClasses = clsx(
+    'share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
+    {
+      'border-[rgba(124,206,247,0.25)]': isActiveScreenshare,
+      'border-transparent': !isActiveScreenshare,
+      'border-Red-100! pointer-events-none': isLocked,
+    },
+  );
 
-  const render = () => {
-    return (
-      <div
-        className={`share-screen relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveScreenshare ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'} ${lock ? 'border-Red-100! pointer-events-none' : ''}`}
-        onClick={() => toggleScreenShare()}
-      >
-        <div
-          className={`h-full relative w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
-            showTooltip ? 'has-tooltip' : ''
-          } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'} ${lock ? 'border-Red-200! text-Red-400' : ''}`}
-        >
-          {/* <div
-        className={`share-screen relative footer-icon flex items-center justify-center cursor-pointer w-11 h-11 rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
-          showTooltip ? 'has-tooltip' : ''
-        } ${isActiveScreenshare ? 'bg-gray-100' : 'bg-white'}`}
-        
-      > */}
-          <span className="tooltip">{text()}</span>
-          <>
-            <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
-            {lock ? (
-              <>
-                <span className="add absolute -top-2 -right-2 z-10">
-                  <i className="pnm-lock primaryColor" />
-                </span>
-              </>
-            ) : null}
-          </>
-        </div>
+  const innerDivClasses = clsx(
+    'h-full relative w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950',
+    {
+      'has-tooltip': showTooltip,
+      'bg-gray-100': isActiveScreenshare,
+      'bg-white': !isActiveScreenshare,
+      'border-Red-200! text-Red-400': isLocked,
+    },
+  );
+
+  if (!isScreenShareAllowed) {
+    return null;
+  }
+
+  return (
+    <div className={wrapperClasses} onClick={() => toggleScreenShare()}>
+      <div className={innerDivClasses}>
+        <span className="tooltip">{text()}</span>
+        <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
+        {isLocked && (
+          <span className="add absolute -top-2 -right-2 z-10">
+            <i className="pnm-lock primaryColor" />
+          </span>
+        )}
       </div>
-    );
-  };
-
-  return <>{shouldShow() ? render() : null}</>;
+    </div>
+  );
 };
 
 export default ScrenshareIcon;

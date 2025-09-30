@@ -12,13 +12,13 @@ import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFiles
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch } from '../../../../store';
+import ActionButton from '../../../../helpers/ui/actionButton';
 
 const Upload = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const [files, setFiles] = useState<Array<File>>();
-  const [tmpFiles, setTmpFiles] = useState<Array<File>>();
   const allowedFileTypes = ['mp4', 'mp3', 'webm'];
 
   const { isUploading, result } = useResumableFilesUpload({
@@ -27,8 +27,12 @@ const Upload = () => {
     files,
   });
 
+  const isFileSelected = files && files.length > 0;
+
   useEffect(() => {
-    const sendPlaybackLink = async (playBackUrl) => {
+    const sendPlaybackLink = async (playBackUrl: string) => {
+      // if the modal is already closed, we don't need to do anything.
+      // This can happen if the user closes the modal while the file is uploading.
       const id = toast.loading(
         t('footer.notice.external-media-player-starting'),
         {
@@ -68,49 +72,46 @@ const Upload = () => {
         '/download/uploadedFile/' +
         result.filePath;
 
-      sendPlaybackLink(playback);
+      sendPlaybackLink(playback).then();
     }
-    //eslint-disable-next-line
-  }, [result]);
+  }, [result, t, dispatch]);
 
-  const upload = () => {
-    if (!isUploading && tmpFiles) {
-      setFiles([...tmpFiles]);
-    }
-  };
-
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files.length) {
-      return;
+    if (files && files.length) {
+      setFiles([...files]);
     }
-    setTmpFiles([...files]);
   };
 
   return (
     <>
-      <div className="ex-m-p-file-upload relative h-[80px] mt-[10px] mb-[50px]">
-        <div className="absolute -bottom-[30px] text-sm font-medium text-Gray-800">
+      <div className="upload-area relative h-20 mt-2.5 mb-12">
+        <div className="absolute -bottom-7 text-sm font-medium text-Gray-800">
           {t('footer.modal.external-media-player-upload-supported-files', {
             files: allowedFileTypes.map((type) => '.' + type).join(', '),
           })}
         </div>
         <input
           type="file"
-          id="chat-file"
+          id="media-file"
           accept={allowedFileTypes.map((type) => '.' + type).join(',')}
           onChange={(e) => onChange(e)}
-          className="absolute left-0 w-full h-full top-0 py-[28px] px-5 border border-dashed border-Blue cursor-pointer rounded-sm focus:shadow-input-focus"
+          className="absolute left-0 w-full h-full top-0 opacity-0 cursor-pointer"
+          disabled={isUploading}
         />
+        <label
+          htmlFor="media-file"
+          className="w-full h-full py-7 px-5 border border-dashed border-Blue cursor-pointer rounded-sm focus:shadow-input-focus flex items-center justify-center text-center text-Gray-800"
+        >
+          {isFileSelected
+            ? files[0].name
+            : t('footer.modal.external-media-player-select-file')}
+        </label>
       </div>
       <div className="mt-8 flex justify-end">
-        <button
-          className="h-9 w-1/2 flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
-          disabled={isUploading}
-          onClick={() => upload()}
-        >
-          {t('footer.modal.external-media-player-upload-file-play')}
-        </button>
+        <ActionButton isLoading={isUploading} disabled={!isFileSelected}>
+          {t('footer.modal.external-media-player-play')}
+        </ActionButton>
       </div>
     </>
   );

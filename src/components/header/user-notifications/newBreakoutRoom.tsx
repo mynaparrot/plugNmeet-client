@@ -1,27 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
 import copy from 'copy-text-to-clipboard';
+import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch } from '../../../store';
-import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { useJoinRoomMutation } from '../../../store/services/breakoutRoomApi';
 import { updateReceivedInvitationFor } from '../../../store/slices/breakoutRoomSlice';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import ActionButton from '../../../helpers/ui/actionButton';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
 
 interface NewBreakoutRoomProps {
   receivedInvitationFor: string | undefined;
+  createdAt: number | undefined;
 }
 
-const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
+const NewBreakoutRoom = ({
+  receivedInvitationFor,
+  createdAt,
+}: NewBreakoutRoomProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
-
   const [joinLink, setJoinLink] = useState<string>('');
   const [copyText, setCopyText] = useState<string>(
     t('breakout-room.copy').toString(),
+  );
+  const userId = useMemo(
+    () => store.getState().session.currentUser?.userId,
+    [],
   );
 
   useEffect(() => {
@@ -61,27 +69,40 @@ const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
     //eslint-disable-next-line
   }, [isLoading, data]);
 
-  const join = () => {
+  const join = useCallback(() => {
     if (!receivedInvitationFor) {
-      addUserNotification({
-        message: t('breakout-room.user-joined'),
-        typeOption: 'error',
-        newInstance: true,
-      });
+      dispatch(
+        addUserNotification({
+          message: t('breakout-room.user-joined'),
+          typeOption: 'error',
+          newInstance: true,
+        }),
+      );
       return;
     }
-    const userId = store.getState().session.currentUser?.userId;
     joinRoom(
       create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: receivedInvitationFor,
         userId: userId,
       }),
     );
-  };
+  }, [receivedInvitationFor, userId, joinRoom, dispatch, t]);
 
-  const copyUrl = () => {
+  const copyUrl = useCallback(() => {
     copy(joinLink);
     setCopyText(t('breakout-room.copied').toString());
+    setTimeout(() => {
+      setCopyText(t('breakout-room.copy').toString());
+    }, 1000);
+  }, [joinLink, t]);
+
+  const formatDate = (timeStamp?: number) => {
+    const date = new Date(timeStamp ?? 0);
+    return date.toLocaleString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
   };
 
   return (
@@ -90,12 +111,8 @@ const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
         <BreakoutRoomIconSVG classes="w-[15px]" />
       </div>
       <div className="text flex-1 text-Gray-800 text-sm">
-        <p>
-          {/* Poll created:{' '}
-                  <strong>“How was today’s class?”</strong> */}
-          {t('breakout-room.invitation-msg')}
-        </p>
-        {joinLink !== '' ? (
+        <p>{t('breakout-room.invitation-msg')}</p>
+        {joinLink !== '' && (
           <div className="invite-link">
             <label className="text-black dark:text-dark-text text-sm">
               {t('breakout-room.join-text-label')}
@@ -113,15 +130,18 @@ const NewBreakoutRoom = ({ receivedInvitationFor }: NewBreakoutRoomProps) => {
               {copyText}
             </button>
           </div>
-        ) : null}
+        )}
         <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
-          <span className="">12:04 AM</span>{' '}
-          <button
-            onClick={join}
-            className="h-6 cursor-pointer px-2 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
-          >
-            {t('breakout-room.join')}
-          </button>
+          <span className="">{formatDate(createdAt)}</span>{' '}
+          <div className="btn-group">
+            <ActionButton
+              onClick={join}
+              isLoading={isLoading}
+              custom="h-6 w-auto px-2 !text-xs !rounded-[8px] bg-Blue2-500 hover:bg-Blue2-600 border-Blue2-600"
+            >
+              {t('breakout-room.join')}
+            </ActionButton>
+          </div>
         </div>
       </div>
     </div>

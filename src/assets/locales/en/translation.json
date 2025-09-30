@@ -256,6 +256,10 @@
       "hide-shared-notepad": "Hide Shared Notepad",
       "show-whiteboard": "Show Whiteboard",
       "hide-whiteboard": "Hide Whiteboard",
+      "show-polls-panel": "Show Polls",
+      "hide-polls-panel": "Hide Polls",
+      "show-translation-settings": "Show Transcription Settings",
+      "hide-translation-settings": "Hide Transcription Settings",
       "promote-presenter": "Make Presenter",
       "demote-presenter": "Remove as Presenter"
     },
@@ -321,6 +325,7 @@
       "external-media-player-upload-file": "Upload a File",
       "external-media-player-upload-file-play": "Upload and Play",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
+      "external-media-player-select-file": "Select a media file",
       "upload-background-image": "Upload background image",
       "shared-notepad": "Shared Notepad"
     }

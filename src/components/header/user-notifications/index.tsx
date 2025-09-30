@@ -6,29 +6,22 @@ import {
   PopoverPanel,
   Transition,
 } from '@headlessui/react';
+import clsx from 'clsx';
+
+import NewPoll from './newPoll';
+import NewBreakoutRoom from './newBreakoutRoom';
+import GenericNotification from './genericNotification';
 
 import { store, useAppSelector } from '../../../store';
 import { UserNotification } from '../../../store/slices/interfaces/roomSettings';
-import NewPoll from './newPoll';
-import NewBreakoutRoom from './newBreakoutRoom';
-import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
-import clsx from 'clsx';
-// import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
-// import { SpeechIconSVG } from '../../../assets/Icons/SpeechIconSVG';
-// import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
-// import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
-// import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
-// import { CheckMarkIconSVG } from '../../../assets/Icons/CheckMarkIconSVG';
-// import { LinksIconSVG } from '../../../assets/Icons/LinksIconSVG';
-// import { UploadIconSVG } from '../../../assets/Icons/UploadIconSVG';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
+import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
 
 const UserNotifications = () => {
   const toastId = useRef<number | string>('toastId');
   const userNotifications = useAppSelector(
     (state) => state.roomSettings.userNotifications,
   );
-  const [notificationElms, setNotificationElms] = useState<ReactElement[]>([]);
   const [hasUnreadNotifications, setHasUnreadNotifications] =
     useState<number>(0);
 
@@ -69,114 +62,35 @@ const UserNotifications = () => {
     if (!userNotifications.length) {
       return;
     }
-    const formatDate = (timeStamp?: number) => {
-      const date = new Date(timeStamp ?? 0);
-      return date.toLocaleString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      });
-    };
 
-    const elms: ReactElement[] = [];
-    for (let i = userNotifications.length - 1; i >= 0; i--) {
-      const notif = userNotifications[i];
-      let elm: ReactElement;
-      switch (notif.notificationCat) {
-        case 'new-poll-created':
-          elm = <NewPoll key={notif.created} />;
-          break;
-        case 'breakout-room-invitation':
-          elm = (
-            <NewBreakoutRoom
-              key={notif.created}
-              receivedInvitationFor={notif.data}
-            />
-          );
-          break;
-        default:
-          switch (notif.typeOption) {
-            case 'info':
-              elm = (
-                <div
-                  className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
-                  key={notif.created}
-                >
-                  <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
-                    <NotifyIconSVG classes="w-[15px] h-auto" />
-                  </div>
-                  <div className="text flex-1 text-Gray-800 text-sm">
-                    <p>{notif.message}</p>
-                    <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                      <span className="">{formatDate(notif.created)}</span>
-                    </div>
-                  </div>
-                </div>
-              );
-              break;
-            case 'warning':
-              elm = (
-                <div
-                  className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
-                  key={notif.created}
-                >
-                  <div className="icon w-9 h-9 rounded-full bg-Green-100 text-Green-700 relative inline-flex items-center justify-center">
-                    <NotifyIconSVG classes="w-[15px] h-auto" />
-                  </div>
-                  <div className="text flex-1 text-Gray-800 text-sm">
-                    <p>{notif.message}</p>
-                    <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                      <span className="">{formatDate(notif.created)}</span>
-                    </div>
-                  </div>
-                </div>
-              );
-              break;
-            case 'error':
-              elm = (
-                <div
-                  className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
-                  key={notif.created}
-                >
-                  <div className="icon w-9 h-9 rounded-full bg-Red-100 text-Red-600 relative inline-flex items-center justify-center">
-                    <NotifyIconSVG classes="w-[15px] h-auto" />
-                  </div>
-                  <div className="text flex-1 text-Gray-800 text-sm">
-                    <p>{notif.message}</p>
-                    <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                      <span className="">{formatDate(notif.created)}</span>
-                    </div>
-                  </div>
-                </div>
-              );
-              break;
-            default:
-          }
-          elm = (
-            <div
-              className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200 w-full"
-              key={notif.created}
-            >
-              <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
-                <NotifyIconSVG classes="w-[15px] h-auto" />
-              </div>
-              <div className="text flex-1 text-Gray-800 text-sm">
-                <p>{notif.message}</p>
-                <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                  <span className="">{formatDate(notif.created)}</span>
-                </div>
-              </div>
-            </div>
-          );
-      }
-      // get the last element to display as notification
-      if (i === userNotifications.length - 1) {
-        displayToast(elm, notif);
-      }
-      elms.push(elm);
+    // get the last element to display as notification
+    const lastNotif = userNotifications[userNotifications.length - 1];
+    let toastElm: ReactElement;
+
+    switch (lastNotif.notificationCat) {
+      case 'new-poll-created':
+        toastElm = (
+          <NewPoll key={lastNotif.created} createdAt={lastNotif.created} />
+        );
+        break;
+      case 'breakout-room-invitation':
+        toastElm = (
+          <NewBreakoutRoom
+            key={lastNotif.created}
+            receivedInvitationFor={lastNotif.data}
+            createdAt={lastNotif.created}
+          />
+        );
+        break;
+      default:
+        toastElm = (
+          <GenericNotification
+            key={lastNotif.created}
+            notification={lastNotif}
+          />
+        );
     }
-
-    setNotificationElms(elms);
+    displayToast(toastElm, lastNotif);
   }, [userNotifications]);
 
   const displayIcon = (open: boolean) => {
@@ -235,7 +149,33 @@ const UserNotifications = () => {
                 </div>
                 <div className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4">
                   <div className="inner grid gap-2">
-                    {notificationElms}
+                    {[...userNotifications].toReversed().map((notif) => {
+                      switch (notif.notificationCat) {
+                        case 'new-poll-created':
+                          return (
+                            <NewPoll
+                              key={notif.created}
+                              createdAt={notif.created}
+                              onClosePopover={close}
+                            />
+                          );
+                        case 'breakout-room-invitation':
+                          return (
+                            <NewBreakoutRoom
+                              key={notif.created}
+                              receivedInvitationFor={notif.data}
+                              createdAt={notif.created}
+                            />
+                          );
+                        default:
+                          return (
+                            <GenericNotification
+                              key={notif.created}
+                              notification={notif}
+                            />
+                          );
+                      }
+                    })}
                     {/* <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
                       <div className="name w-9 h-9 rounded-xl bg-Blue2-700 text-sm font-medium uppercase text-white relative inline-flex items-center justify-center">
                         NB

@@ -1,5 +1,4 @@
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
@@ -7,11 +6,12 @@ import {
   CommonResponseSchema,
   RoomEndAPIReqSchema,
 } from 'plugnmeet-protocol-js';
+import { Button } from '@headlessui/react';
 
-import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { store } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { getNatsConn } from '../../../helpers/nats';
+import ConfirmationModal from '../../../helpers/ui/confirmationModal';
 
 const EndMeetingButton = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,8 +20,13 @@ const EndMeetingButton = () => {
 
   const { t } = useTranslation();
   const conn = getNatsConn();
-  const session = store.getState().session;
-  const isAdmin = session.currentUser?.metadata?.isAdmin;
+  const { isAdmin, roomId } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      isAdmin: session.currentUser?.metadata?.isAdmin,
+      roomId: session.currentRoom.roomId,
+    };
+  }, []);
 
   function open() {
     if (isAdmin) {
@@ -47,7 +52,7 @@ const EndMeetingButton = () => {
       });
 
       const body = create(RoomEndAPIReqSchema, {
-        roomId: session.currentRoom.roomId,
+        roomId: roomId,
       });
       const r = await sendAPIRequest(
         'endRoom',
@@ -70,8 +75,7 @@ const EndMeetingButton = () => {
     }
     setIsBusy(false);
     setIsOpen(false);
-    //eslint-disable-next-line
-  }, [isBusy]);
+  }, [isBusy, isAdmin, conn, roomId, t]);
 
   return (
     <>
@@ -82,51 +86,13 @@ const EndMeetingButton = () => {
         {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
       </Button>
 
-      <Dialog
-        open={isOpen}
-        as="div"
-        className="relative z-10 focus:outline-hidden"
+      <ConfirmationModal
+        show={isOpen}
         onClose={() => setIsOpen(false)}
-      >
-        <div className="EndMeetingPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-            >
-              <DialogTitle
-                as="h3"
-                className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950"
-              >
-                <span>{t('header.menus.alert.confirm')}</span>
-                <Button
-                  className="cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <PopupCloseSVGIcon classes="text-Gray-600" />
-                </Button>
-              </DialogTitle>
-              <div className="mt-5 3xl:mt-8 text-xs 3xl:text-sm leading-5 text-Gray-700">
-                {alertText}
-              </div>
-              <div className="mt-5 3xl:mt-8 grid grid-cols-2 gap-3">
-                <Button
-                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {t('close')}
-                </Button>
-                <Button
-                  className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
-                  onClick={onConfirm}
-                >
-                  {t('ok')}
-                </Button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
+        onConfirm={onConfirm}
+        title={t('header.menus.alert.confirm')}
+        text={alertText}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
@@ -29,76 +29,48 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
     (state) => state.roomSettings.selectedAudioDevice,
   );
 
-  const [devicesMenu, setDevicesMenu] = useState<Array<ReactElement>>();
-  const [newDevice, setNewDevice] = useState<string>();
+  const handleDeviceChange = useCallback(
+    async (deviceId: string) => {
+      await currentRoom.switchActiveDevice('audioinput', deviceId);
+      dispatch(updateSelectedAudioDevice(deviceId));
+    },
+    [currentRoom, dispatch],
+  );
 
-  useEffect(() => {
-    const devicesMenu = audioDevices.map((device, i) => {
-      return (
-        <div className="" role="none" key={`${device.id}-${i}`}>
-          <MenuItem>
-            {() => (
-              <p
-                className={`${
-                  selectedAudioDevice === device.id ? 'bg-Gray-50' : ''
-                } h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
-                onClick={() => setNewDevice(device.id)}
-              >
-                {device.label}
-                {selectedAudioDevice === device.id ? <CheckMarkIcon /> : ''}
-              </p>
-            )}
-          </MenuItem>
-        </div>
-      );
-    });
-    setDevicesMenu(devicesMenu);
-  }, [audioDevices, selectedAudioDevice]);
-
-  useEffect(() => {
-    const changeDevice = async (id: string) => {
-      await currentRoom.switchActiveDevice('audioinput', id);
-    };
-    if (newDevice) {
-      changeDevice(newDevice).then();
-      dispatch(updateSelectedAudioDevice(newDevice));
-    }
-  }, [newDevice, currentRoom, dispatch]);
-
-  const muteUnmuteMic = () => {
-    currentRoom?.localParticipant.audioTrackPublications.forEach(
-      async (publication) => {
-        if (
-          publication.track &&
-          publication.track.source === Track.Source.Microphone
-        ) {
-          if (publication.isMuted) {
-            await publication.track.unmute();
-            dispatch(updateIsMicMuted(false));
-          } else {
-            await publication.track.mute();
-            dispatch(updateIsMicMuted(true));
-          }
+  const muteUnmuteMic = useCallback(async () => {
+    if (!currentRoom) return;
+    for (const publication of currentRoom.localParticipant.audioTrackPublications.values()) {
+      if (
+        publication.track &&
+        publication.track.source === Track.Source.Microphone
+      ) {
+        if (publication.isMuted) {
+          await publication.track.unmute();
+          dispatch(updateIsMicMuted(false));
+        } else {
+          await publication.track.mute();
+          dispatch(updateIsMicMuted(true));
         }
-      },
-    );
-  };
+      }
+    }
+  }, [currentRoom, dispatch]);
 
-  const leaveMic = () => {
-    currentRoom?.localParticipant.audioTrackPublications.forEach(
-      async (publication) => {
-        if (publication.track && publication.kind === Track.Kind.Audio) {
+  const leaveMic = useCallback(async () => {
+    if (!currentRoom) return;
+    for (const publication of currentRoom.localParticipant.audioTrackPublications.values()) {
+      if (publication.track && publication.kind === Track.Kind.Audio) {
+        if (publication.track) {
           await currentRoom.localParticipant.unpublishTrack(
             publication.track,
             true,
           );
         }
-      },
-    );
+      }
+    }
     dispatch(updateIsActiveMicrophone(false));
     dispatch(updateIsMicMuted(false));
     dispatch(updateSelectedAudioDevice(''));
-  };
+  }, [currentRoom, dispatch]);
 
   return (
     <MenuItems
@@ -108,13 +80,27 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
       <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
         Select Microphone
       </div>
-      {devicesMenu}
+      {audioDevices.map((device) => (
+        <MenuItem key={device.id}>
+          {() => (
+            <p
+              className={`${
+                selectedAudioDevice === device.id ? 'bg-Gray-50' : ''
+              } h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50`}
+              onClick={() => handleDeviceChange(device.id)}
+            >
+              {device.label}
+              {selectedAudioDevice === device.id ? <CheckMarkIcon /> : ''}
+            </p>
+          )}
+        </MenuItem>
+      ))}
       <div className="" role="none">
         <MenuItem>
           {() => (
             <p
               className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
-              onClick={() => muteUnmuteMic()}
+              onClick={muteUnmuteMic}
             >
               {isMicMuted
                 ? t('footer.menus.unmute-microphone')
@@ -128,7 +114,7 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
           {() => (
             <p
               className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 hover:text-red-700"
-              onClick={() => leaveMic()}
+              onClick={leaveMic}
             >
               {t('footer.menus.leave-microphone')}
             </p>

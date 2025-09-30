@@ -1,21 +1,50 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '../../../../store';
-import StartPlaybackModal from './start';
+import DirectLink from './directLink';
+import Upload from './upload';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
+import Modal from '../../../../helpers/ui/modal';
+import Tabs from '../../../../helpers/ui/Tabs';
 
 const ExternalMediaPlayerModal = () => {
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
   const externalMediaPlayerIsActive = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
+      !!state.session.currentRoom.metadata?.roomFeatures
         ?.externalMediaPlayerFeatures?.isActive,
   );
 
+  const items = [
+    {
+      id: 1,
+      title: t('footer.modal.external-media-player-direct-link'),
+      content: <DirectLink />,
+    },
+    {
+      id: 2,
+      title: t('footer.modal.external-media-player-upload-file'),
+      content: <Upload />,
+    },
+  ];
+
+  const closeStartModal = () => {
+    dispatch(updateShowExternalMediaPlayerModal(false));
+  };
+
   return (
-    <>
-      {!externalMediaPlayerIsActive ? (
-        <StartPlaybackModal isActive={externalMediaPlayerIsActive ?? false} />
-      ) : null}
-    </>
+    !externalMediaPlayerIsActive && (
+      <Modal
+        show={!externalMediaPlayerIsActive}
+        onClose={closeStartModal}
+        title={t('footer.modal.external-media-player-title')}
+      >
+        <Tabs items={items} vertical />
+      </Modal>
+    )
   );
 };
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Menu, MenuButton, Transition } from '@headlessui/react';
 import { Room } from 'livekit-client';
+
 import WebcamMenuItems from './items';
-import { ArrowUp } from '../../../../assets/Icons/ArrowUp';
+import { ArrowUp } from '../../../../../assets/Icons/ArrowUp';
 
 interface IWebcamMenuProps {
   currentRoom: Room;

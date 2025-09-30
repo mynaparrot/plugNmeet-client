@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogPanel, Button } from '@headlessui/react';
-import { isURL, isEmpty } from 'validator';
+import React, { useCallback, useEffect, useState } from 'react';
+import { isEmpty, isURL } from 'validator';
 import { useTranslation } from 'react-i18next';
 import {
   CommonResponseSchema,
@@ -12,8 +11,12 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowRtmpModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import Dropdown from '../../../helpers/ui/dropdown';
+import FormattedInputField from '../../../helpers/ui/formattedInputField';
+import ConfirmationModal from '../../../helpers/ui/confirmationModal';
+import ActionButton from '../../../helpers/ui/actionButton';
+import Modal from '../../../helpers/ui/modal';
 
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
@@ -25,9 +28,10 @@ const RtmpModal = () => {
   const [showServerUrl, setShowServerUrl] = useState<boolean>(false);
   const [serverUrl, setServerUrl] = useState<string>('');
   const [serverKey, setServerKey] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const providers = {
-    youtube: 'rtmp://a.rtmp.youtube.com/live2/',
-    facebook: 'rtmps://live-api-s.facebook.com:443/rtmp/',
+    youtube: 'rtmp://a.rtmp.youtube.com/live2',
+    facebook: 'rtmps://live-api-s.facebook.com:443/rtmp',
   };
 
   useEffect(() => {
@@ -42,184 +46,117 @@ const RtmpModal = () => {
     dispatch(updateShowRtmpModal(false));
   };
 
-  const startBroadcasting = async (e) => {
-    e.preventDefault();
-    if (provider === 'other' && isEmpty(serverUrl)) {
-      return;
-    }
-    if (isEmpty(serverKey)) {
-      return;
-    }
-    let url: string;
-    if (provider === 'other') {
-      url = serverUrl;
-    } else {
-      url = providers[provider];
-    }
+  const startBroadcasting = useCallback(
+    async (e: React.FormEvent | React.MouseEvent) => {
+      e.preventDefault();
+      if (provider === 'other' && isEmpty(serverUrl)) {
+        return;
+      }
+      if (isEmpty(serverKey)) {
+        return;
+      }
+      let url: string;
+      if (provider === 'other') {
+        url = serverUrl;
+      } else {
+        url = providers[provider];
+      }
 
-    const isvalid = isURL(url, {
-      protocols: ['rtmp', 'rtmps'],
-    });
+      const isvalid = isURL(url, {
+        protocols: ['rtmp', 'rtmps'],
+      });
 
-    if (!isvalid) {
-      return;
-    }
+      if (!isvalid) {
+        return;
+      }
 
-    const body = create(RecordingReqSchema, {
-      task: RecordingTasks.START_RTMP,
-      sid: store.getState().session.currentRoom.sid,
-      rtmpUrl: url + '/' + serverKey,
-    });
+      setIsLoading(true);
+      const body = create(RecordingReqSchema, {
+        task: RecordingTasks.START_RTMP,
+        sid: store.getState().session.currentRoom.sid,
+        rtmpUrl: url + '/' + serverKey,
+      });
 
-    if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
-      body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
-        /\s/g,
-        '',
+      if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
+        body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
+          /\s/g,
+          '',
+        );
+      }
+
+      const r = await sendAPIRequest(
+        'rtmp',
+        toBinary(RecordingReqSchema, body),
+        false,
+        'application/protobuf',
+        'arraybuffer',
       );
-    }
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+      let msg = 'footer.notice.rtmp-starting';
 
-    const r = await sendAPIRequest(
-      'rtmp',
-      toBinary(RecordingReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-    let msg = 'footer.notice.rtmp-starting';
+      if (!res.status) {
+        msg = res.msg;
+      }
+      dispatch(
+        addUserNotification({
+          message: t(msg),
+          typeOption: 'info',
+        }),
+      );
 
-    if (!res.status) {
-      msg = res.msg;
-    }
-    dispatch(
-      addUserNotification({
-        message: t(msg),
-        typeOption: 'info',
-      }),
-    );
+      dispatch(updateShowRtmpModal(false));
+      setIsLoading(false);
+    },
+    // oxlint-disable-next-line exhaustive-deps
+    [provider, serverUrl, serverKey, dispatch, t],
+  );
 
-    dispatch(updateShowRtmpModal(false));
-  };
-
-  const renderStartBroadcast = () => {
+  const renderStartBroadcastModal = () => {
     return (
-      <>
-        <Dialog
-          open={!isActiveRtmpBroadcasting}
-          as="div"
-          className="relative z-10 focus:outline-hidden"
-          onClose={() => false}
-        >
-          <div className="rtmpModal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <DialogPanel
-                transition
-                className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-              >
-                <DialogTitle
-                  as="h3"
-                  className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
-                >
-                  <span>{t('footer.modal.rtmp-title')}</span>
-                  <Button
-                    className="cursor-pointer"
-                    onClick={() => closeStartModal()}
-                  >
-                    <PopupCloseSVGIcon classes="text-Gray-600" />
-                  </Button>
-                </DialogTitle>
-                <div className="mt-5">
-                  <form
-                    action="#"
-                    method="POST"
-                    onSubmit={(e) => startBroadcasting(e)}
-                  >
-                    <div className="s">
-                      <div className="grid gap-3">
-                        <div className="">
-                          <label
-                            htmlFor="provider"
-                            className="block text-sm font-medium text-Gray-800"
-                          >
-                            {t('footer.modal.rtmp-select-provider')}
-                          </label>
-
-                          <select
-                            id="provider"
-                            name="provider"
-                            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
-                            onChange={(e) => setProvider(e.currentTarget.value)}
-                            value={provider}
-                          >
-                            <option value="youtube">YouTube</option>
-                            <option value="facebook">Facebook</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
-                        {showServerUrl ? (
-                          <div className="">
-                            <label
-                              htmlFor="stream-url"
-                              className="block text-sm font-medium text-Gray-800"
-                            >
-                              {t('footer.modal.rtmp-server-url')}
-                            </label>
-                            <input
-                              type="text"
-                              name="stream-url"
-                              id="stream-url"
-                              value={serverUrl}
-                              onChange={(e) =>
-                                setServerUrl(e.currentTarget.value)
-                              }
-                              className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
-                            />
-                          </div>
-                        ) : null}
-                        <div className="">
-                          <label
-                            htmlFor="stream-key"
-                            className="block text-sm font-medium text-Gray-800"
-                          >
-                            {t('footer.modal.rtmp-stream-key')}
-                          </label>
-                          <input
-                            type="text"
-                            name="stream-key"
-                            id="stream-key"
-                            value={serverKey}
-                            onChange={(e) =>
-                              setServerKey(e.currentTarget.value)
-                            }
-                            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 mt-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-8 flex justify-end">
-                      <button
-                        type="submit"
-                        className="h-9 w-1/2 cursor-pointer text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                      >
-                        {t('footer.modal.rtmp-start-broadcast')}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </DialogPanel>
-            </div>
+      <Modal
+        show={!isActiveRtmpBroadcasting}
+        onClose={closeStartModal}
+        title={t('footer.modal.rtmp-title')}
+        renderButtons={() => (
+          <ActionButton onClick={startBroadcasting} isLoading={isLoading}>
+            {t('footer.modal.rtmp-start-broadcast')}
+          </ActionButton>
+        )}
+      >
+        <div className="s">
+          <div className="grid gap-3">
+            <Dropdown
+              label={t('footer.modal.rtmp-select-provider')}
+              id="provider"
+              value={provider}
+              onChange={setProvider}
+              options={[
+                { value: 'youtube', text: 'YouTube' },
+                { value: 'facebook', text: 'Facebook' },
+                { value: 'other', text: 'Other' },
+              ]}
+            />
+            {showServerUrl && (
+              <FormattedInputField
+                label={t('footer.modal.rtmp-server-url')}
+                id="stream-url"
+                value={serverUrl}
+                onChange={(e) => setServerUrl(e.currentTarget.value)}
+              />
+            )}
+            <FormattedInputField
+              label={t('footer.modal.rtmp-stream-key')}
+              id="stream-key"
+              value={serverKey}
+              onChange={(e) => setServerKey(e.currentTarget.value)}
+            />
           </div>
-        </Dialog>
-      </>
+        </div>
+      </Modal>
     );
   };
 
-  const onCloseAlertModal = async (status = false) => {
-    dispatch(updateShowRtmpModal(false));
-    if (!status) {
-      return;
-    }
-
+  const handleStopBroadcast = async () => {
     const body = create(RecordingReqSchema, {
       task: RecordingTasks.STOP_RTMP,
       sid: store.getState().session.currentRoom.sid,
@@ -244,59 +181,19 @@ const RtmpModal = () => {
         typeOption: 'info',
       }),
     );
+    dispatch(updateShowRtmpModal(false));
   };
 
-  const alertModal = () => {
-    return (
-      <>
-        <Dialog
-          open={isActiveRtmpBroadcasting}
-          as="div"
-          className="relative z-10 focus:outline-hidden"
-          onClose={onCloseAlertModal}
-        >
-          <div className="rtmpModalClose fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <DialogPanel
-                transition
-                className="w-full max-w-96 bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-              >
-                <DialogTitle
-                  as="h3"
-                  className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
-                >
-                  <span>{t('footer.modal.rtmp-close-confirm')}</span>
-                  <Button onClick={() => onCloseAlertModal()}>
-                    <PopupCloseSVGIcon classes="text-Gray-600" />
-                  </Button>
-                </DialogTitle>
-                <div className="mt-8 text-sm leading-5 text-Gray-700">
-                  {t('footer.modal.rtmp-close-msg')}
-                </div>
-                <div className="mt-8 grid grid-cols-2 gap-3">
-                  <Button
-                    className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow"
-                    onClick={() => onCloseAlertModal(true)}
-                  >
-                    {t('ok')}
-                  </Button>
-                  <Button
-                    className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
-                    onClick={() => onCloseAlertModal(false)}
-                  >
-                    {t('close')}
-                  </Button>
-                </div>
-              </DialogPanel>
-            </div>
-          </div>
-        </Dialog>
-      </>
-    );
-  };
-
-  return (
-    <>{!isActiveRtmpBroadcasting ? renderStartBroadcast() : alertModal()}</>
+  return !isActiveRtmpBroadcasting ? (
+    renderStartBroadcastModal()
+  ) : (
+    <ConfirmationModal
+      show={isActiveRtmpBroadcasting}
+      onClose={() => dispatch(updateShowRtmpModal(false))}
+      onConfirm={handleStopBroadcast}
+      title={t('footer.modal.rtmp-close-confirm')}
+      text={t('footer.modal.rtmp-close-msg')}
+    />
   );
 };
 

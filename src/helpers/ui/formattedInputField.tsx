@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Field, Label } from '@headlessui/react';
 
 interface IFormattedInputFieldProps {
-  label: string;
+  label?: string;
   id: string;
   value?: string;
   readOnly?: boolean;
@@ -20,21 +20,24 @@ const FormattedInputField = ({
   onChange,
 }: IFormattedInputFieldProps) => {
   const inputClasses = clsx(
-    'default-input rounded-[8px] w-full max-w-[250px] h-10',
+    'default-input rounded-[8px] h-10 w-full',
     {
       'dark:border-dark-text bg-transparent dark:text-dark-text cursor-default':
         readOnly,
     },
+    label ? 'max-w-[250px]' : '',
   );
 
   return (
     <Field as="div" className="flex items-center justify-between mb-2">
-      <Label
-        htmlFor={id}
-        className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
-      >
-        {label}
-      </Label>
+      {label ? (
+        <Label
+          htmlFor={id}
+          className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
+        >
+          {label}
+        </Label>
+      ) : null}
       <input
         type="text"
         name={id}

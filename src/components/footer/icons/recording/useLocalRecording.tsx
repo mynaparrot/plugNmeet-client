@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Track } from 'livekit-client';
+import { LocalTrackPublication, ParticipantEvent, Track } from 'livekit-client';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import {
@@ -24,9 +24,12 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
   const [hasError, setHasError] = useState<boolean>(false);
   const [captureStream, setCaptureStream] = useState<MediaStream | null>(null);
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
+  const audioCtx = useRef<AudioContext | null>(null);
+  const audioDest = useRef<MediaStreamAudioDestinationNode | null>(null);
+  const micSource = useRef<MediaStreamAudioSourceNode | null>(null);
 
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_LOCAL;
-  let recordingData: Array<Blob> = [];
+  const recordingData = useRef<Blob[]>([]);
   const displayMediaOptions = {
     preferCurrentTab: true,
     video: true,
@@ -34,6 +37,48 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
   };
   const session = store.getState().session;
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const onTrackPublished = (track: LocalTrackPublication) => {
+      if (
+        track.source === Track.Source.Microphone &&
+        track.track?.mediaStream &&
+        audioCtx.current &&
+        audioDest.current
+      ) {
+        // if mic is enabled after recording started
+        micSource.current = audioCtx.current.createMediaStreamSource(
+          track.track.mediaStream,
+        );
+        micSource.current.connect(audioDest.current);
+      }
+    };
+    const onTrackUnpublished = (track: LocalTrackPublication) => {
+      if (track.source === Track.Source.Microphone && micSource.current) {
+        micSource.current.disconnect();
+      }
+    };
+
+    currentRoom.localParticipant.on(
+      ParticipantEvent.LocalTrackPublished,
+      onTrackPublished,
+    );
+    currentRoom.localParticipant.on(
+      ParticipantEvent.LocalTrackUnpublished,
+      onTrackUnpublished,
+    );
+
+    return () => {
+      currentRoom.localParticipant.off(
+        ParticipantEvent.LocalTrackPublished,
+        onTrackPublished,
+      );
+      currentRoom.localParticipant.off(
+        ParticipantEvent.LocalTrackUnpublished,
+        onTrackUnpublished,
+      );
+    };
+  }, [currentRoom]);
 
   const startRecording = async () => {
     if (captureStream) {
@@ -68,24 +113,50 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
     }
   };
 
+  // if the user stops sharing screen from the browser UI
+  useEffect(() => {
+    if (!captureStream) {
+      return;
+    }
+
+    const onScreenShareEnded = () => {
+      stopRecording();
+    };
+
+    const videoTrack = captureStream.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.addEventListener('ended', onScreenShareEnded);
+    }
+
+    return () => {
+      if (videoTrack) {
+        videoTrack.removeEventListener('ended', onScreenShareEnded);
+      }
+    };
+    //oxlint-disable-next-line
+  }, [captureStream]);
+
   const startRecorder = (captureStream: MediaStream) => {
     const date = new Date();
     const fileName = `${conn.roomId}_${date.toLocaleString()}`;
 
-    const ctx = new AudioContext();
-    const dest = ctx.createMediaStreamDestination();
+    audioCtx.current = new AudioContext();
+    audioDest.current = audioCtx.current.createMediaStreamDestination();
 
     if (captureStream.getAudioTracks().length) {
-      ctx.createMediaStreamSource(captureStream).connect(dest);
+      audioCtx.current
+        .createMediaStreamSource(captureStream)
+        .connect(audioDest.current);
     }
 
-    const localTrack = currentRoom.localParticipant.getTrackPublicationByName(
+    const localTrack = currentRoom.localParticipant.getTrackPublication(
       Track.Source.Microphone,
     );
     if (localTrack?.audioTrack?.mediaStream) {
-      ctx
-        .createMediaStreamSource(localTrack?.audioTrack?.mediaStream)
-        .connect(dest);
+      micSource.current = audioCtx.current.createMediaStreamSource(
+        localTrack.audioTrack.mediaStream,
+      );
+      micSource.current.connect(audioDest.current);
     }
 
     let mimeType = 'video/webm';
@@ -96,8 +167,8 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
     const videoTrack = captureStream.getVideoTracks()[0];
     const streams = [videoTrack];
 
-    if (dest.stream.getTracks().length) {
-      const mixedTracks = dest.stream.getTracks()[0];
+    if (audioDest.current.stream.getTracks().length) {
+      const mixedTracks = audioDest.current.stream.getTracks()[0];
       streams.push(mixedTracks);
     }
 
@@ -113,14 +184,14 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
     };
 
     recorder.ondataavailable = (e) => {
-      recordingData.push(e.data);
+      recordingData.current.push(e.data);
     };
 
     recorder.onstop = () => {
       setRecordingEvent(RecordingEvent.STOPPED_RECORDING);
       setHasError(false);
 
-      const blobData = new Blob(recordingData, { type: mimeType });
+      const blobData = new Blob(recordingData.current, { type: mimeType });
       const url = URL.createObjectURL(blobData);
       const a: any = document.createElement('a');
       document.body.appendChild(a);
@@ -137,7 +208,13 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
       }
 
       setRecorder(null);
-      recordingData = [];
+      recordingData.current = [];
+      if (audioCtx.current && audioCtx.current.state !== 'closed') {
+        audioCtx.current.close().then(() => {
+          audioCtx.current = null;
+          audioDest.current = null;
+        });
+      }
       broadcastNotification(false);
     };
 
@@ -148,7 +225,13 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
         setCaptureStream(null);
       }
       setRecorder(null);
-      recordingData = [];
+      recordingData.current = [];
+      if (audioCtx.current && audioCtx.current.state !== 'closed') {
+        audioCtx.current.close().then(() => {
+          audioCtx.current = null;
+          audioDest.current = null;
+        });
+      }
     };
 
     recorder.start();

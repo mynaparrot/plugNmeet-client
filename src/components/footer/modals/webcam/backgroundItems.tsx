@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
-// import { useTranslation } from 'react-i18next';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 import {
   BackgroundConfig,
   backgroundImageUrls,
 } from '../../../virtual-background/helpers/backgroundHelper';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
-import { store } from '../../../../store';
+import { useAppSelector } from '../../../../store';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
@@ -14,13 +13,10 @@ interface IBackgroundItemsProps {
 
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
-  // const { t } = useTranslation();
-  const defaultBackgroundConfig =
-    store.getState().bottomIconsActivity.virtualBackground;
-
-  const [selectedBg, setSelectedBg] = useState<BackgroundConfig>(
-    defaultBackgroundConfig,
+  const selectedBg = useAppSelector(
+    (state) => state.bottomIconsActivity.virtualBackground,
   );
+
   const [bgImgs, setBgImgs] = useState<Array<string>>(backgroundImageUrls);
   const [files, setFiles] = useState<Array<File>>();
   const customFileRef = useRef<HTMLInputElement>(null);
@@ -55,7 +51,6 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
       type,
       url,
     };
-    setSelectedBg(bg);
     onSelect(bg);
   };
 
@@ -113,7 +108,6 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
       })}
       <div className="upload-btn-wrap relative border-4 border-transparent">
         <button className="cursor-pointer h-20 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden">
-          {/* {t('footer.modal.upload-background-image')} */}
           <svg
             width="16"
             height="16"

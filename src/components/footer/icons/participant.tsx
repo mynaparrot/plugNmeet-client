@@ -1,64 +1,72 @@
-// import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
-import { useAppSelector, useAppDispatch, store } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveParticipantsPanel,
   updateIsEnabledExtendedVerticalCamView,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { ParticipantsIconSVG } from '../../../assets/Icons/ParticipantsIconSVG';
-import { useEffect } from 'react';
 
 const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
-  const showTooltip = store.getState().session.userDeviceType === 'desktop';
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
   const { t } = useTranslation();
+  const { showTooltip, isRecorder } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      showTooltip: session.userDeviceType === 'desktop',
+      isRecorder: !!session.currentUser?.isRecorder,
+    };
+  }, []);
 
   const isActiveParticipantsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
   );
   const participantsTotal = useAppSelector(participantsSelector.selectTotal);
-  // const [iconCSS, setIconCSS] = useState<string>('primaryColor');
 
   useEffect(() => {
-    // if (isActiveParticipantsPanel) {
-    //   setIconCSS('secondaryColor');
-    // } else {
-    //   setIconCSS('primaryColor dark:text-dark-text');
-    // }
     if (isActiveParticipantsPanel && !isRecorder) {
       dispatch(updateIsEnabledExtendedVerticalCamView(false));
     }
-    //eslint-disable-next-line
-  }, [isActiveParticipantsPanel]);
+  }, [isActiveParticipantsPanel, isRecorder, dispatch]);
 
-  const toggleParticipantsPanel = () => {
+  const toggleParticipantsPanel = useCallback(() => {
     dispatch(updateIsActiveParticipantsPanel(!isActiveParticipantsPanel));
-  };
+  }, [dispatch, isActiveParticipantsPanel]);
+
+  const wrapperClasses = clsx(
+    'participants relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
+    {
+      'border-[rgba(124,206,247,0.25)]': isActiveParticipantsPanel,
+      'border-transparent': !isActiveParticipantsPanel,
+    },
+  );
+
+  const innerDivClasses = clsx(
+    'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950',
+    {
+      'has-tooltip': showTooltip,
+      'bg-gray-100': isActiveParticipantsPanel,
+      'bg-white': !isActiveParticipantsPanel,
+    },
+  );
 
   return (
-    <div
-      className={`participants relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveParticipantsPanel ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
-      onClick={() => toggleParticipantsPanel()}
-    >
-      <div
-        className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
-          showTooltip ? 'has-tooltip' : ''
-        } ${isActiveParticipantsPanel ? 'bg-gray-100' : 'bg-white'}`}
-      >
+    <div className={wrapperClasses} onClick={toggleParticipantsPanel}>
+      <div className={innerDivClasses}>
         <span className="tooltip">
           {isActiveParticipantsPanel
             ? t('footer.icons.hide-users-list')
             : t('footer.icons.show-users-list')}
         </span>
         <ParticipantsIconSVG />
-        {!isActiveParticipantsPanel ? (
+        {!isActiveParticipantsPanel && (
           <div className="unseen-message-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
             {participantsTotal}
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );

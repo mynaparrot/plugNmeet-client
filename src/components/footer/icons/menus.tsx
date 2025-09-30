@@ -1,35 +1,11 @@
-import React from 'react';
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from '@headlessui/react';
-import { toast } from 'react-toastify';
+import React, { useCallback, useMemo } from 'react';
+import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivatePollsReqSchema,
-  ChangeEtherpadStatusReqSchema,
-  CommonResponseSchema,
-  CreateEtherpadSessionResSchema,
-  ExternalDisplayLinkReqSchema,
-  ExternalDisplayLinkTask,
-  ExternalMediaPlayerReqSchema,
-  ExternalMediaPlayerTask,
-  MuteUnMuteTrackReqSchema,
-} from 'plugnmeet-protocol-js';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import LockSettingsModal from '../modals/lockSettingsModal';
 import {
-  updateDisplayExternalLinkRoomModal,
   updateDisplaySpeechSettingsModal,
-  updateIsActivePollsPanel,
-  updateIsActiveSharedNotePad,
-  updateShowExternalMediaPlayerModal,
   updateShowLockSettingsModal,
   updateShowManageBreakoutRoomModal,
   updateShowManageWaitingRoomModal,
@@ -50,31 +26,22 @@ import { RTMPIconSVG } from '../../../assets/Icons/RTMPIconSVG';
 import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
 import { SpeechIconSVG } from '../../../assets/Icons/SpeechIconSVG';
 import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
-import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import AdminMenuItem from './menus/menuItem';
+import useSharedNotepad from './menus/hooks/useSharedNotepad';
+import usePolls from './menus/hooks/usePolls';
+import useMuteAll from './menus/hooks/useMuteAll';
+import useExternalMediaPlayer from './menus/hooks/useExternalMediaPlayer';
+import useDisplayExternalLink from './menus/hooks/useDisplayExternalLink';
 
 const MenusIcon = () => {
-  const session = store.getState().session;
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const showLockSettingsModal = useAppSelector(
-    (state) => state.bottomIconsActivity.showLockSettingsModal,
-  );
-  const sharedNotepadStatus = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
-        ?.isActive,
-  );
   const showRtmpModal = useAppSelector(
     (state) => state.bottomIconsActivity.showRtmpModal,
   );
   const isActiveRtmpBroadcasting = useAppSelector(
     (state) => state.session.isActiveRtmpBroadcasting,
-  );
-  const isActiveExternalMediaPlayer = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.externalMediaPlayerFeatures?.isActive,
   );
   const showExternalMediaPlayerModal = useAppSelector(
     (state) => state.bottomIconsActivity.showExternalMediaPlayerModal,
@@ -85,269 +52,52 @@ const MenusIcon = () => {
   const showManageBreakoutRoomModal = useAppSelector(
     (state) => state.bottomIconsActivity.showManageBreakoutRoomModal,
   );
-  const isActiveDisplayExternalLink = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.isActive,
-  );
-  const isActivePoll = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
-  );
   const showDisplayExternalLinkModal = useAppSelector(
     (state) => state.bottomIconsActivity.showDisplayExternalLinkModal,
+  );
+  const showLockSettingsModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showLockSettingsModal,
   );
   const showSpeechSettingsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingsModal,
   );
-  const roomFeatures =
-    store.getState().session.currentRoom?.metadata?.roomFeatures;
+  const { roomFeatures } = useMemo(() => {
+    return {
+      roomFeatures:
+        store.getState().session.currentRoom?.metadata?.roomFeatures,
+    };
+  }, []);
 
-  const muteAllUsers = async () => {
-    const body = create(MuteUnMuteTrackReqSchema, {
-      sid: session.currentRoom.sid,
-      roomId: session.currentRoom.roomId,
-      userId: 'all',
-      muted: true,
-    });
+  const { toggleSharedNotepad, sharedNotepadStatus } = useSharedNotepad();
+  const { togglePolls, isActivePoll } = usePolls();
+  const { muteAllUsers } = useMuteAll();
+  const { toggleExternalMediaPlayer, isActiveExternalMediaPlayer } =
+    useExternalMediaPlayer();
+  const { toggleDisplayExternalLinkModal, isActiveDisplayExternalLink } =
+    useDisplayExternalLink();
 
-    const r = await sendAPIRequest(
-      'muteUnmuteTrack',
-      toBinary(MuteUnMuteTrackReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (res.status) {
-      dispatch(
-        addUserNotification({
-          message: t('footer.notice.muted-all-microphone'),
-          typeOption: 'info',
-        }),
-      );
-    } else {
-      dispatch(
-        addUserNotification({
-          message: t(res.msg),
-          typeOption: 'error',
-        }),
-      );
-    }
-  };
-
-  const toggleSharedNotepad = async () => {
-    const host =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.sharedNotePadFeatures?.host;
-
-    if (!host && !sharedNotepadStatus) {
-      const r = await sendAPIRequest(
-        'etherpad/create',
-        {},
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveSharedNotePad(true));
-      } else {
-        dispatch(
-          addUserNotification({
-            message: t(res.msg),
-            typeOption: 'error',
-          }),
-        );
-      }
-    } else if (host && !sharedNotepadStatus) {
-      const body = create(ChangeEtherpadStatusReqSchema, {
-        roomId: store.getState().session.currentRoom.roomId,
-        isActive: true,
-      });
-      const r = await sendAPIRequest(
-        'etherpad/changeStatus',
-        toBinary(ChangeEtherpadStatusReqSchema, body),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveSharedNotePad(true));
-      } else {
-        dispatch(
-          addUserNotification({
-            message: t(res.msg),
-            typeOption: 'error',
-          }),
-        );
-      }
-    } else if (host && sharedNotepadStatus) {
-      const body = create(ChangeEtherpadStatusReqSchema, {
-        roomId: store.getState().session.currentRoom.roomId,
-        isActive: false,
-      });
-      const r = await sendAPIRequest(
-        'etherpad/changeStatus',
-        toBinary(ChangeEtherpadStatusReqSchema, body),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveSharedNotePad(false));
-      } else {
-        dispatch(
-          addUserNotification({
-            message: t(res.msg),
-            typeOption: 'error',
-          }),
-        );
-      }
-    }
-  };
-
-  const toggleExternalMediaPlayer = async () => {
-    if (!isActiveExternalMediaPlayer) {
-      if (isActiveDisplayExternalLink) {
-        dispatch(
-          addUserNotification({
-            message: t('notifications.need-to-disable-display-external-link'),
-            typeOption: 'error',
-          }),
-        );
-      } else {
-        dispatch(updateShowExternalMediaPlayerModal(true));
-      }
-      return;
-    }
-
-    const id = toast.loading(t('please-wait'), {
-      type: 'info',
-    });
-
-    const body = create(ExternalMediaPlayerReqSchema, {
-      task: ExternalMediaPlayerTask.END_PLAYBACK,
-    });
-    const r = await sendAPIRequest(
-      'externalMediaPlayer',
-      toBinary(ExternalMediaPlayerReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (!res.status) {
-      toast.update(id, {
-        render: t(res.msg),
-        type: 'error',
-        isLoading: false,
-        autoClose: 3000,
-      });
-    } else {
-      toast.dismiss(id);
-    }
-  };
-
-  const toggleDisplayExternalLinkModal = async () => {
-    if (!isActiveDisplayExternalLink) {
-      if (isActiveExternalMediaPlayer) {
-        dispatch(
-          addUserNotification({
-            message: t('notifications.need-to-disable-external-media-player'),
-            typeOption: 'error',
-          }),
-        );
-      } else {
-        dispatch(updateDisplayExternalLinkRoomModal(true));
-      }
-      return;
-    }
-    const body = create(ExternalDisplayLinkReqSchema, {
-      task: ExternalDisplayLinkTask.STOP_EXTERNAL_LINK,
-    });
-
-    const id = toast.loading(t('please-wait'), {
-      type: 'info',
-    });
-
-    const r = await sendAPIRequest(
-      'externalDisplayLink',
-      toBinary(ExternalDisplayLinkReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (!res.status) {
-      toast.update(id, {
-        render: t(res.msg),
-        type: 'error',
-        isLoading: false,
-        autoClose: 3000,
-      });
-    } else {
-      toast.dismiss(id);
-    }
-  };
-
-  const togglePolls = async () => {
-    const id = toast.loading(t('please-wait'), {
-      type: 'info',
-    });
-
-    const body = create(ActivatePollsReqSchema, {
-      isActive: !isActivePoll,
-    });
-    const r = await sendAPIRequest(
-      'polls/activate',
-      toBinary(ActivatePollsReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (!res.status) {
-      toast.update(id, {
-        render: t(res.msg),
-        type: 'error',
-        isLoading: false,
-        autoClose: 3000,
-      });
-    } else {
-      toast.dismiss(id);
-      dispatch(updateIsActivePollsPanel(true));
-    }
-  };
-
-  const openLockSettingsModal = () => {
+  const openLockSettingsModal = useCallback(() => {
     dispatch(updateShowLockSettingsModal(true));
-  };
+  }, [dispatch]);
 
-  const openRtmpModal = () => {
+  const openRtmpModal = useCallback(() => {
     dispatch(updateShowRtmpModal(true));
-  };
+  }, [dispatch]);
 
-  const openManageWaitingRoomModal = () => {
+  const openManageWaitingRoomModal = useCallback(() => {
     dispatch(updateShowManageWaitingRoomModal(true));
-  };
+  }, [dispatch]);
 
-  const openSpeechServiceSettingsModal = () => {
+  const openSpeechServiceSettingsModal = useCallback(() => {
     dispatch(updateDisplaySpeechSettingsModal(true));
-  };
+  }, [dispatch]);
 
-  const openManageBreakoutRoomModal = () => {
+  const openManageBreakoutRoomModal = useCallback(() => {
     dispatch(updateShowManageBreakoutRoomModal(true));
-  };
+  }, [dispatch]);
 
-  const render = () => {
-    return (
+  return (
+    <>
       <div className="menu relative z-10">
         <Menu>
           {({ open }) => (
@@ -364,7 +114,6 @@ const MenusIcon = () => {
                 </div>
               </MenuButton>
 
-              {/* Use the Transition component. */}
               <Transition
                 show={open}
                 enter="transition duration-100 ease-out"
@@ -374,193 +123,117 @@ const MenusIcon = () => {
                 leaveFrom="transform scale-100 opacity-100"
                 leaveTo="transform scale-95 opacity-0"
               >
-                {/* Mark this component as `static` */}
                 <MenuItems
                   static
                   className="origin-bottom-left z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
                 >
-                  {roomFeatures?.allowRtmp ? (
-                    <MenuItem>
-                      <button
-                        onClick={() => openRtmpModal()}
-                        className="h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
-                      >
-                        {/* {isActiveRtmpBroadcasting ? (
-                          <div className="lds-ripple">
-                            <div className="border-secondary-color"></div>
-                            <div className="border-secondary-color"></div>
-                          </div>
-                        ) : null} */}
-                        <span className="icon flex w-6 h-auto justify-center">
-                          <RTMPIconSVG />
-                        </span>
-                        {isActiveRtmpBroadcasting ? (
-                          <>
-                            {t('footer.icons.stop-rtmp-broadcasting')}
-                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
-                          </>
-                        ) : (
-                          t('footer.icons.start-rtmp-broadcasting')
-                        )}
-                      </button>
-                    </MenuItem>
-                  ) : null}
+                  {roomFeatures?.allowRtmp && (
+                    <AdminMenuItem
+                      onClick={openRtmpModal}
+                      isActive={isActiveRtmpBroadcasting}
+                      icon={<RTMPIconSVG />}
+                      text={
+                        isActiveRtmpBroadcasting
+                          ? t('footer.icons.stop-rtmp-broadcasting')
+                          : t('footer.icons.start-rtmp-broadcasting')
+                      }
+                    />
+                  )}
                   {roomFeatures?.externalMediaPlayerFeatures
-                    ?.allowedExternalMediaPlayer ? (
-                    <MenuItem>
-                      <button
-                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                        onClick={() => toggleExternalMediaPlayer()}
-                      >
-                        <span className="icon flex w-6 h-auto justify-center">
-                          <PlayerIconSVG />
-                        </span>
-                        {isActiveExternalMediaPlayer ? (
-                          <>
-                            {t('footer.menus.stop-external-media-player')}
-                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
-                          </>
-                        ) : (
-                          t('footer.menus.start-external-media-player')
-                        )}
-                      </button>
-                    </MenuItem>
-                  ) : null}
-                  {roomFeatures?.displayExternalLinkFeatures?.isAllow ? (
-                    <MenuItem>
-                      <button
-                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                        onClick={() => toggleDisplayExternalLinkModal()}
-                      >
-                        <button className="icon flex w-6 h-auto justify-center">
-                          <ExternalPlayerIconSVG />
-                        </button>
-                        {isActiveDisplayExternalLink ? (
-                          <>
-                            {t('footer.menus.stop-display-external-link')}
-                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
-                          </>
-                        ) : (
-                          t('footer.menus.start-display-external-link')
-                        )}
-                      </button>
-                    </MenuItem>
-                  ) : null}
+                    ?.allowedExternalMediaPlayer && (
+                    <AdminMenuItem
+                      onClick={toggleExternalMediaPlayer}
+                      isActive={isActiveExternalMediaPlayer}
+                      icon={<PlayerIconSVG />}
+                      text={
+                        isActiveExternalMediaPlayer
+                          ? t('footer.menus.stop-external-media-player')
+                          : t('footer.menus.start-external-media-player')
+                      }
+                    />
+                  )}
+                  {roomFeatures?.displayExternalLinkFeatures?.isAllow && (
+                    <AdminMenuItem
+                      onClick={toggleDisplayExternalLinkModal}
+                      isActive={isActiveDisplayExternalLink}
+                      icon={<ExternalPlayerIconSVG />}
+                      text={
+                        isActiveDisplayExternalLink
+                          ? t('footer.menus.stop-display-external-link')
+                          : t('footer.menus.start-display-external-link')
+                      }
+                    />
+                  )}
                   <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
-                  {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad ? (
-                    <MenuItem>
-                      <button
-                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                        onClick={() => toggleSharedNotepad()}
-                      >
-                        <span className="icon flex w-6 h-auto justify-center">
-                          <SharedNotepadIconSVG />
-                        </span>
-                        {sharedNotepadStatus ? (
-                          <>
-                            {t('footer.menus.disable-shared-notepad')}
-                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
-                          </>
-                        ) : (
-                          t('footer.menus.enable-shared-notepad')
-                        )}
-                      </button>
-                    </MenuItem>
-                  ) : null}
-                  {/* {roomFeatures?.speechToTextTranslationFeatures?.isAllow ? ( */}
-                  <MenuItem>
-                    <button
-                      className={`h-11 w-full flex cursor-pointer items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                      onClick={() => openSpeechServiceSettingsModal()}
-                    >
-                      <span className="icon flex w-6 h-auto justify-center text-Blue2-800">
-                        <SpeechIconSVG classes="w-6" />
-                      </span>
-                      {t('footer.menus.speech-to-text-settings')}
-                    </button>
-                  </MenuItem>
-                  {/* ) : null} */}
-                  {roomFeatures?.pollsFeatures?.isAllow ? (
-                    <MenuItem>
-                      <button
-                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                        onClick={() => togglePolls()}
-                      >
-                        <span className="icon flex w-6 h-auto justify-center">
-                          <PollsIconSVG classes="text-Blue2-800" />
-                        </span>
-                        {isActivePoll ? (
-                          <>
-                            {t('footer.menus.disable-polls')}
-                            <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 absolute top-1/2 -translate-y-1/2 right-3"></div>
-                          </>
-                        ) : (
-                          t('footer.menus.enable-polls')
-                        )}
-                      </button>
-                    </MenuItem>
-                  ) : null}
+                  {roomFeatures?.sharedNotePadFeatures
+                    ?.allowedSharedNotePad && (
+                    <AdminMenuItem
+                      onClick={toggleSharedNotepad}
+                      isActive={sharedNotepadStatus}
+                      icon={<SharedNotepadIconSVG />}
+                      text={
+                        sharedNotepadStatus
+                          ? t('footer.menus.disable-shared-notepad')
+                          : t('footer.menus.enable-shared-notepad')
+                      }
+                    />
+                  )}
+                  {roomFeatures?.speechToTextTranslationFeatures?.isAllow && (
+                    <AdminMenuItem
+                      onClick={openSpeechServiceSettingsModal}
+                      icon={<SpeechIconSVG classes="w-6 text-Blue2-800" />}
+                      text={t('footer.menus.speech-to-text-settings')}
+                    />
+                  )}
+                  {roomFeatures?.pollsFeatures?.isAllow && (
+                    <AdminMenuItem
+                      onClick={togglePolls}
+                      isActive={isActivePoll}
+                      icon={<PollsIconSVG classes="text-Blue2-800" />}
+                      text={
+                        isActivePoll
+                          ? t('footer.menus.disable-polls')
+                          : t('footer.menus.enable-polls')
+                      }
+                    />
+                  )}
                   <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
-                  {roomFeatures?.waitingRoomFeatures?.isActive ? (
-                    <MenuItem>
-                      <button
-                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                        onClick={() => openManageWaitingRoomModal()}
-                      >
-                        <span className="icon flex w-6 h-auto justify-center">
-                          <i className="pnm-waiting-room text-primary-color  transition ease-in group-hover:text-secondary-color" />
-                        </span>
-                        {t('footer.menus.manage-waiting-room')}
-                      </button>
-                    </MenuItem>
-                  ) : null}
-                  {roomFeatures?.breakoutRoomFeatures?.isAllow ? (
-                    <MenuItem>
-                      <button
-                        className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                        onClick={() => openManageBreakoutRoomModal()}
-                      >
-                        <span className="icon flex justify-center">
-                          <BreakoutRoomIconSVG classes="w-6 h-auto text-Blue2-800" />
-                        </span>
-                        {t('footer.menus.manage-breakout-room')}
-                      </button>
-                    </MenuItem>
-                  ) : null}
-                  <MenuItem>
-                    <button
-                      className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                      onClick={() => muteAllUsers()}
-                    >
-                      <span className="icon flex w-6 h-auto justify-center">
-                        <i className="pnm-mic-mute text-primary-color transition ease-in group-hover:text-secondary-color" />
-                      </span>
-                      {t('footer.menus.mute-all-users')}
-                    </button>
-                  </MenuItem>
-                  <MenuItem>
-                    <button
-                      className={`h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative`}
-                      onClick={() => openLockSettingsModal()}
-                    >
-                      <span className="icon flex w-6 h-auto justify-center">
-                        <RoomLockIconSVG />
-                      </span>
-                      {t('footer.menus.room-lock-settings')}
-                    </button>
-                  </MenuItem>
+                  {roomFeatures?.waitingRoomFeatures?.isActive && (
+                    <AdminMenuItem
+                      onClick={openManageWaitingRoomModal}
+                      icon={
+                        <i className="pnm-waiting-room text-primary-color  transition ease-in group-hover:text-secondary-color" />
+                      }
+                      text={t('footer.menus.manage-waiting-room')}
+                    />
+                  )}
+                  {roomFeatures?.breakoutRoomFeatures?.isAllow && (
+                    <AdminMenuItem
+                      onClick={openManageBreakoutRoomModal}
+                      icon={
+                        <BreakoutRoomIconSVG classes="w-6 h-auto text-Blue2-800" />
+                      }
+                      text={t('footer.menus.manage-breakout-room')}
+                    />
+                  )}
+                  <AdminMenuItem
+                    onClick={muteAllUsers}
+                    icon={
+                      <i className="pnm-mic-mute text-primary-color transition ease-in group-hover:text-secondary-color" />
+                    }
+                    text={t('footer.menus.mute-all-users')}
+                  />
+                  <AdminMenuItem
+                    onClick={openLockSettingsModal}
+                    icon={<RoomLockIconSVG />}
+                    text={t('footer.menus.room-lock-settings')}
+                  />
                 </MenuItems>
               </Transition>
             </div>
           )}
         </Menu>
       </div>
-    );
-  };
-
-  return (
-    <>
-      {render()}
       {showLockSettingsModal ? <LockSettingsModal /> : null}
       {showRtmpModal ? <RtmpModal /> : null}
       {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}

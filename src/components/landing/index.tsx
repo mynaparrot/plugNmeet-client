@@ -151,12 +151,12 @@ const Landing = ({
                       {showLoadingMsg}
                     </h3>
                     {roomConnectionStatus === 'media-server-conn-established' &&
-                    waitForApproval ? (
-                      <p className="text-sm 3xl:text-base text-Gray-800">
-                        {waitingRoomMessage ||
-                          t('notifications.waiting-for-approval')}
-                      </p>
-                    ) : null}
+                      waitForApproval && (
+                        <p className="text-sm 3xl:text-base text-Gray-800">
+                          {waitingRoomMessage ||
+                            t('notifications.waiting-for-approval')}
+                        </p>
+                      )}
                   </div>
                 </div>
               ) : (
