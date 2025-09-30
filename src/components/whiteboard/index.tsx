@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { throttle } from 'es-toolkit/compat';
 import {
   Excalidraw,
@@ -16,7 +16,7 @@ import {
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   broadcastAppStateChanges,
@@ -54,9 +54,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const { i18n, t } = useTranslation();
   const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
     useState<boolean>(false);
+  const { currentUser, isRecorder } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return { currentUser, isRecorder: !!currentUser?.isRecorder };
+  }, []);
 
   // Selectors
-  const currentUser = useAppSelector((state) => state.session.currentUser);
   const isPresenter = useAppSelector(
     (state) => state.session.currentUser?.metadata?.isPresenter,
   );
@@ -64,7 +68,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockWhiteboard,
   );
-  const isRecorder = !!currentUser?.isRecorder;
 
   const theme = useAppSelector((state) => state.roomSettings.theme);
   const screenWidth = useAppSelector(

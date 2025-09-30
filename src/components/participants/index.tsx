@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
 import { createSelector } from '@reduxjs/toolkit';
@@ -64,12 +64,22 @@ const ParticipantsComponent = () => {
   const [removeParticipantData, setRemoveParticipantData] =
     useState<IRemoveParticipantAlertModalData>();
 
-  const session = store.getState().session;
-  const currentUser = session.currentUser;
-  const currentIsAdmin = !!currentUser?.metadata?.isAdmin;
-  const currentUserUserId = currentUser?.userId;
-  const allowViewOtherUsers =
-    !!session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList;
+  const {
+    currentUser,
+    currentIsAdmin,
+    currentUserUserId,
+    allowViewOtherUsers,
+  } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return {
+      currentUser,
+      currentIsAdmin: !!currentUser?.metadata?.isAdmin,
+      currentUserUserId: currentUser?.userId,
+      allowViewOtherUsers:
+        !!session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList,
+    };
+  }, []);
 
   const participants = useAppSelector((state) =>
     selectFilteredParticipants(state, {

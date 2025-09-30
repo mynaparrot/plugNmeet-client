@@ -19,9 +19,13 @@ import SidePanel from './sidePanel';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
-  const session = store.getState().session;
-  const isRecorder = session.currentUser?.isRecorder;
-  const roomFeatures = session.currentRoom.metadata?.roomFeatures;
+  const { isRecorder, roomFeatures } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      isRecorder: session.currentUser?.isRecorder,
+      roomFeatures: session.currentRoom.metadata?.roomFeatures,
+    };
+  }, []);
 
   const {
     columnCameraWidth,
