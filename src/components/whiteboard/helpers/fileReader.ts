@@ -3,7 +3,6 @@ import {
   ExcalidrawElement,
   ExcalidrawImageElement,
 } from '@excalidraw/excalidraw/element/types';
-
 import { randomInteger } from '../../../helpers/utils';
 
 export interface FileReaderResult {
@@ -11,83 +10,97 @@ export interface FileReaderResult {
   elm: ExcalidrawElement;
 }
 
-let fileId = '',
-  fileMimeType = '',
-  imgData = '',
-  fileHeight: number,
-  fileWidth: number,
-  lastVersion,
-  excalidrawHeight,
-  excalidrawWidth,
-  isOfficeFile = false;
-
 export const fetchFileWithElm = async (
   url: string,
   file_id: string,
-  last_version: number,
   is_office_file: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
   excalidrawElement?: ExcalidrawElement,
-) => {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise<FileReaderResult>(async (resolve, reject) => {
+): Promise<FileReaderResult | null> => {
+  try {
     const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
+      return null;
+    }
     const imageData = await res.blob();
-    if (!imageData) {
-      reject(null);
-    }
 
-    fileId = file_id;
-    lastVersion = last_version;
-    excalidrawHeight = uploaderWhiteboardHeight;
-    excalidrawWidth = uploaderWhiteboardWidth;
-    isOfficeFile = is_office_file;
-    if (lastVersion < 0) {
-      lastVersion = 1;
-    }
-    const readerBase64 = new FileReader();
-    readerBase64.readAsDataURL(imageData);
+    const imgData = (await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(imageData);
+    })) as string;
 
-    readerBase64.onload = () => {
-      imgData = readerBase64.result as string;
-      fileMimeType = imgData.substring(
-        'data:'.length,
-        imgData.indexOf(';base64'),
+    const fileMimeType = imgData.substring(
+      'data:'.length,
+      imgData.indexOf(';base64'),
+    );
+
+    const excalidrawHeight = uploaderWhiteboardHeight ?? 260;
+    const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
+
+    if (
+      fileMimeType === 'image/png' ||
+      fileMimeType === 'image/jpeg' ||
+      fileMimeType === 'image/jpg'
+    ) {
+      const image = new Image();
+      image.src = imgData;
+      await new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = reject;
+      });
+
+      const { fileHeight, fileWidth } = getFileDimension(
+        image.height,
+        image.width,
+        excalidrawWidth,
       );
-
-      if (
-        fileMimeType === 'image/png' ||
-        fileMimeType === 'image/jpeg' ||
-        fileMimeType === 'image/jpg'
-      ) {
-        const image = new Image();
-        image.src = imgData;
-
-        image.onload = async function () {
-          await getFileDimension(image.height, image.width);
-          const result = prepareForExcalidraw(excalidrawElement);
-          resolve(result);
-        };
-
-        image.onerror = async function () {
-          console.error('can not open image file');
-          reject(null);
-        };
-      } else if (fileMimeType == 'image/svg+xml') {
-        fileHeight = excalidrawHeight * 0.8;
-        fileWidth = excalidrawWidth * 0.7;
-        const result = prepareForExcalidraw();
-        resolve(result);
-      } else {
-        console.error('unsupported file');
-        reject(null);
-      }
-    };
-  });
+      return prepareForExcalidraw(
+        file_id,
+        imgData,
+        fileMimeType,
+        fileHeight,
+        fileWidth,
+        excalidrawHeight,
+        excalidrawWidth,
+        is_office_file,
+        excalidrawElement,
+      );
+    } else if (fileMimeType === 'image/svg+xml') {
+      const fileHeight = excalidrawHeight * 0.8;
+      const fileWidth = excalidrawWidth * 0.7;
+      return prepareForExcalidraw(
+        file_id,
+        imgData,
+        fileMimeType,
+        fileHeight,
+        fileWidth,
+        excalidrawHeight,
+        excalidrawWidth,
+        is_office_file,
+        excalidrawElement,
+      );
+    } else {
+      console.error('unsupported file type:', fileMimeType);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching or processing file:', error);
+    return null;
+  }
 };
 
 const prepareForExcalidraw = (
+  fileId: string,
+  imgData: string,
+  fileMimeType: string,
+  fileHeight: number,
+  fileWidth: number,
+  excalidrawHeight: number,
+  excalidrawWidth: number,
+  isOfficeFile: boolean,
   excalidrawElement?: ExcalidrawElement,
 ): FileReaderResult => {
   const image: BinaryFileData = {
@@ -121,7 +134,7 @@ const prepareForExcalidraw = (
     groupIds: [],
     roundness: null,
     seed: randomInteger(),
-    version: lastVersion + 1,
+    version: 1,
     versionNonce: randomInteger(),
     isDeleted: false,
     boundElements: null,
@@ -130,7 +143,7 @@ const prepareForExcalidraw = (
     status: 'saved',
     fileId: fileId as any,
     scale: [1, 1],
-    locked: isOfficeFile, // if office file then lock it by default.
+    locked: isOfficeFile,
     frameId: null,
     crop: null,
     index: null,
@@ -149,15 +162,20 @@ const prepareForExcalidraw = (
   };
 };
 
-const getFileDimension = async (height: number, width: number) => {
-  fileHeight = Number(`${height}`);
-  fileWidth = Number(`${width}`);
+const getFileDimension = (
+  height: number,
+  width: number,
+  excalidrawWidth: number,
+) => {
+  let fileHeight = height;
+  let fileWidth = width;
 
   const excalidrawActualWidth = excalidrawWidth - 150;
   const reducedBy = 0.01;
 
   while (fileWidth > excalidrawActualWidth) {
-    fileHeight -= fileHeight * reducedBy;
-    fileWidth -= fileWidth * reducedBy;
+    fileHeight *= 1 - reducedBy;
+    fileWidth *= 1 - reducedBy;
   }
+  return { fileHeight, fileWidth };
 };

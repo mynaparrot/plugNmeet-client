@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
@@ -7,7 +8,7 @@ import {
   IWhiteboardOfficeFile,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import { randomString } from '../../../helpers/utils';
+import { randomString, sleep } from '../../../helpers/utils';
 import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
 
 const defaultPreloadedLibraryItems = [
@@ -61,20 +62,31 @@ export const savePageData = (
 };
 
 export const displaySavedPageData = (
-  excalidrawAPI: ExcalidrawImperativeAPI,
+  getExcalidrawAPI: () => ExcalidrawImperativeAPI | null,
   isPresenter: boolean,
   page: number,
+  isSwitching?: RefObject<boolean>,
 ) => {
   const data = sessionStorage.getItem(formatStorageKey(page));
+  const excalidrawAPI = getExcalidrawAPI();
   if (data && excalidrawAPI) {
     const elements = JSON.parse(data);
     if (Array.isArray(elements) && elements.length) {
       excalidrawAPI.updateScene({ elements });
       if (isPresenter) {
         // better to broadcast full screen
-        broadcastSceneOnChange(elements, true).then();
+        sleep(1000).then(() => {
+          const latestElms =
+            getExcalidrawAPI()?.getSceneElementsIncludingDeleted();
+          broadcastSceneOnChange(latestElms ?? elements, true).then();
+          if (isSwitching) {
+            isSwitching.current = false;
+          }
+        });
       }
     }
+  } else if (isSwitching) {
+    isSwitching.current = false;
   }
 };
 

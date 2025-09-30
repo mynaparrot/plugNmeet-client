@@ -9,15 +9,13 @@ import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm } from '../fileReader';
 
-interface IUseWhiteboardFiles {
+interface IUseWhiteboardFileElementsSync {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
-  lastBroadcastOrReceivedSceneVersion: number;
 }
 
-const useWhiteboardFiles = ({
+const useWhiteboardFileElementsSync = ({
   excalidrawAPI,
-  lastBroadcastOrReceivedSceneVersion,
-}: IUseWhiteboardFiles) => {
+}: IUseWhiteboardFileElementsSync) => {
   const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
     (state) => state.whiteboard.whiteboardOfficeFilePagesAndOtherImages,
   );
@@ -57,7 +55,6 @@ const useWhiteboardFiles = ({
           const result = await fetchFileWithElm(
             url,
             file.id,
-            lastBroadcastOrReceivedSceneVersion,
             file.isOfficeFile,
             file.uploaderWhiteboardHeight,
             file.uploaderWhiteboardWidth,
@@ -88,7 +85,7 @@ const useWhiteboardFiles = ({
         excalidrawAPI.updateScene({ elements });
       });
     },
-    [excalidrawAPI, lastBroadcastOrReceivedSceneVersion],
+    [excalidrawAPI],
   );
 
   useEffect(() => {
@@ -101,7 +98,7 @@ const useWhiteboardFiles = ({
           const currentPageFiles = files.filter(
             (file) => file.currentPage === currentPage,
           );
-          handleExcalidrawAddFiles(currentPageFiles);
+          handleExcalidrawAddFiles(currentPageFiles).then();
         }
       } catch (e) {
         console.error('Failed to parse whiteboard files', e);
@@ -115,4 +112,4 @@ const useWhiteboardFiles = ({
   ]);
 };
 
-export default useWhiteboardFiles;
+export default useWhiteboardFileElementsSync;
