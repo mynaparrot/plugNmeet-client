@@ -1,25 +1,25 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
+import { toBinary } from '@bufbuild/protobuf';
 import {
-  PollResponse,
-  CreatePollReq,
-  SubmitPollResponseReq,
   ClosePollReq,
-  PollResponseSchema,
-  CreatePollReqSchema,
-  SubmitPollResponseReqSchema,
   ClosePollReqSchema,
+  CreatePollReq,
+  CreatePollReqSchema,
+  PollResponse,
+  PollResponseSchema,
+  SubmitPollResponseReq,
+  SubmitPollResponseReqSchema,
 } from 'plugnmeet-protocol-js';
 
-import { renewTokenOnError } from './utils';
+import { handleProtobufResponse, renewTokenOnError } from './utils';
+import { RootState } from '../index';
 
 export const pollsApi = createApi({
   reducerPath: 'pollsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: (window as any).PLUG_N_MEET_SERVER_URL + '/api/polls',
-    prepareHeaders: (headers, api) => {
-      // @ts-expect-error not an error
-      const token = api.getState().session.token;
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).session.token;
       headers.append('Authorization', token);
       return headers;
     },
@@ -37,11 +37,7 @@ export const pollsApi = createApi({
       query: () => {
         return {
           url: 'listPolls',
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -51,11 +47,7 @@ export const pollsApi = createApi({
       query: (poll_id) => {
         return {
           url: `countTotalResponses/${poll_id}`,
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -72,11 +64,7 @@ export const pollsApi = createApi({
       query: ({ pollId, userId }) => {
         return {
           url: `userSelectedOption/${pollId}/${userId}`,
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -90,11 +78,7 @@ export const pollsApi = createApi({
       query: (poll_id) => {
         return {
           url: `pollResponsesDetails/${poll_id}`,
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -108,11 +92,7 @@ export const pollsApi = createApi({
       query: (poll_id) => {
         return {
           url: `pollResponsesResult/${poll_id}`,
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -126,11 +106,7 @@ export const pollsApi = createApi({
       query: () => {
         return {
           url: 'pollsStats',
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -142,11 +118,7 @@ export const pollsApi = createApi({
           url: 'create',
           method: 'POST',
           body: toBinary(CreatePollReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -158,11 +130,7 @@ export const pollsApi = createApi({
           url: 'submitResponse',
           method: 'POST',
           body: toBinary(SubmitPollResponseReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -178,11 +146,7 @@ export const pollsApi = createApi({
           url: 'closePoll',
           method: 'POST',
           body: toBinary(ClosePollReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(PollResponseSchema, new Uint8Array(buf));
-            return toJson(PollResponseSchema, b);
-          },
+          responseHandler: handleProtobufResponse(PollResponseSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,

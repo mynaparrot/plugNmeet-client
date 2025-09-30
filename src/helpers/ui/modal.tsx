@@ -14,7 +14,7 @@ import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 interface IModalProps {
   show: boolean;
   onClose: () => void;
-  title: string;
+  title: string | React.ReactNode;
   children: React.ReactNode;
   maxWidth?: string;
   customClass?: string;
@@ -63,11 +63,10 @@ const Modal = ({
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <hr />
               <div className="mt-5">{children}</div>
-              {renderButtons ? (
+              {renderButtons && (
                 <div className="mt-8 flex justify-end">{renderButtons()}</div>
-              ) : null}
+              )}
             </DialogPanel>
           </TransitionChild>
         </div>

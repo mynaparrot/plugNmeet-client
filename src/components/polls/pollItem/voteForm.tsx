@@ -31,7 +31,6 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [selectedOption, setSelectedOption] = useState<number>();
-  const [locked, setLocked] = useState<boolean>(false);
   const conn = getNatsConn();
   const currentUser = store.getState().session.currentUser;
 
@@ -55,13 +54,13 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
 
   const [addResponse, { isLoading, data: addReqResponse }] =
     useAddResponseMutation();
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (locked || !selectedOption || isLoading) {
+    if (!selectedOption || isLoading) {
       return;
     }
-    setLocked(true);
     addResponse(
       create(SubmitPollResponseReqSchema, {
         pollId: pollDataWithOption.pollId,
@@ -80,7 +79,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     }
   };
 
-  useMemo(() => {
+  useEffect(() => {
     if (addReqResponse) {
       const message = addReqResponse.status
         ? t('polls.response-added')
@@ -93,10 +92,6 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           typeOption,
         }),
       );
-    }
-
-    if (!isLoading) {
-      setLocked(false);
     }
     // We only want this to run when the response comes back.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,6 +133,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             type="radio"
             id={`option-${pollDataWithOption.pollId}-${o.id}`}
             checked={selectedOption === o.id}
+            readOnly
             className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
           />
           <label

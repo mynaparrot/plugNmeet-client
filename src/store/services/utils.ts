@@ -1,5 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { requestToRenewPnmToken } from '../../helpers/api/plugNmeetAPI';
+import { fromBinary, toJson } from '@bufbuild/protobuf';
 
 export function renewTokenOnError(response: FetchBaseQueryError) {
   if (
@@ -12,3 +13,10 @@ export function renewTokenOnError(response: FetchBaseQueryError) {
     requestToRenewPnmToken();
   }
 }
+
+export const handleProtobufResponse =
+  (schema: any) => async (res: Response) => {
+    const buf = await res.arrayBuffer();
+    const binary = fromBinary(schema, new Uint8Array(buf));
+    return toJson(schema, binary);
+  };

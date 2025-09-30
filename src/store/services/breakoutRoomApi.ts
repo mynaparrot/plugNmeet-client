@@ -1,29 +1,29 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { fromBinary, toBinary, toJson } from '@bufbuild/protobuf';
+import { toBinary } from '@bufbuild/protobuf';
 import {
-  CreateBreakoutRoomsReq,
   BreakoutRoomRes,
-  IncreaseBreakoutRoomDurationReq,
-  BroadcastBreakoutRoomMsgReq,
-  JoinBreakoutRoomReq,
-  EndBreakoutRoomReq,
   BreakoutRoomResSchema,
-  CreateBreakoutRoomsReqSchema,
-  IncreaseBreakoutRoomDurationReqSchema,
+  BroadcastBreakoutRoomMsgReq,
   BroadcastBreakoutRoomMsgReqSchema,
-  JoinBreakoutRoomReqSchema,
+  CreateBreakoutRoomsReq,
+  CreateBreakoutRoomsReqSchema,
+  EndBreakoutRoomReq,
   EndBreakoutRoomReqSchema,
+  IncreaseBreakoutRoomDurationReq,
+  IncreaseBreakoutRoomDurationReqSchema,
+  JoinBreakoutRoomReq,
+  JoinBreakoutRoomReqSchema,
 } from 'plugnmeet-protocol-js';
 
-import { renewTokenOnError } from './utils';
+import { RootState } from '..';
+import { handleProtobufResponse, renewTokenOnError } from './utils';
 
 export const breakoutRoomApi = createApi({
   reducerPath: 'breakoutRoomApi',
   baseQuery: fetchBaseQuery({
     baseUrl: (window as any).PLUG_N_MEET_SERVER_URL + '/api/breakoutRoom',
-    prepareHeaders: (headers, api) => {
-      // @ts-expect-error not an error
-      const token = api.getState().session.token;
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).session.token;
       headers.append('Authorization', token);
       return headers;
     },
@@ -35,11 +35,7 @@ export const breakoutRoomApi = createApi({
       query: () => {
         return {
           url: 'listRooms',
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -54,11 +50,7 @@ export const breakoutRoomApi = createApi({
           url: 'create',
           method: 'POST',
           body: toBinary(CreateBreakoutRoomsReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -73,11 +65,7 @@ export const breakoutRoomApi = createApi({
           url: 'increaseDuration',
           method: 'POST',
           body: toBinary(IncreaseBreakoutRoomDurationReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -92,11 +80,7 @@ export const breakoutRoomApi = createApi({
           url: 'sendMsg',
           method: 'POST',
           body: toBinary(BroadcastBreakoutRoomMsgReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -107,11 +91,7 @@ export const breakoutRoomApi = createApi({
           url: 'join',
           method: 'POST',
           body: toBinary(JoinBreakoutRoomReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -120,11 +100,7 @@ export const breakoutRoomApi = createApi({
       query: () => {
         return {
           url: 'myRooms',
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -136,11 +112,7 @@ export const breakoutRoomApi = createApi({
           url: 'endRoom',
           method: 'POST',
           body: toBinary(EndBreakoutRoomReqSchema, body),
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
@@ -151,11 +123,7 @@ export const breakoutRoomApi = createApi({
         return {
           url: 'endAllRooms',
           method: 'POST',
-          responseHandler: async (res) => {
-            const buf = await res.arrayBuffer();
-            const b = fromBinary(BreakoutRoomResSchema, new Uint8Array(buf));
-            return toJson(BreakoutRoomResSchema, b);
-          },
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
         };
       },
       transformErrorResponse: renewTokenOnError,
