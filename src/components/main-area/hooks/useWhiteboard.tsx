@@ -16,21 +16,6 @@ export const useWhiteboard = (
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
 
-  // effect to save whiteboard data when it's hidden or screen sharing starts
-  useEffect(() => {
-    if (
-      ((isActiveWhiteboard && isActiveScreenShare) || !isActiveWhiteboard) &&
-      excalidrawAPI
-    ) {
-      const s = store.getState();
-      const isPresenter = s.session.currentUser?.metadata?.isPresenter;
-      if (isPresenter) {
-        const lastPage = s.whiteboard.currentPage;
-        savePageData(excalidrawAPI, lastPage);
-      }
-    }
-  }, [isActiveWhiteboard, isActiveScreenShare, excalidrawAPI]);
-
   // effect to refresh whiteboard when video elements are shown
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -44,8 +29,20 @@ export const useWhiteboard = (
   }, [showVideoElms, isActiveWhiteboard, dispatch]);
 
   return useMemo(() => {
-    return !isActiveScreenShare && isActiveWhiteboard ? (
-      <Whiteboard onReadyExcalidrawAPI={excalidrawRefCallback} />
-    ) : null;
+    const whiteboardWillBeVisible = !isActiveScreenShare && isActiveWhiteboard;
+
+    if (whiteboardWillBeVisible) {
+      return <Whiteboard onReadyExcalidrawAPI={excalidrawRefCallback} />;
+    } else if (excalidrawAPI) {
+      // if whiteboard will not be visible, we'll save the data before returning null
+      const s = store.getState();
+      const isPresenter = s.session.currentUser?.metadata?.isPresenter;
+      if (isPresenter) {
+        const lastPage = s.whiteboard.currentPage;
+        savePageData(excalidrawAPI, lastPage);
+      }
+    }
+    return null;
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [isActiveScreenShare, isActiveWhiteboard, excalidrawRefCallback]);
 };
