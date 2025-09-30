@@ -37,26 +37,25 @@ const FooterUI = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const currentUser = store.getState().session.currentUser;
-  const isAdmin = currentUser?.metadata?.isAdmin;
-  const isRecorder = currentUser?.isRecorder;
+  const { currentUser, isAdmin, isRecorder } = useMemo(() => {
+    const currentUser = store.getState().session.currentUser;
+    return {
+      currentUser,
+      isAdmin: currentUser?.metadata?.isAdmin,
+      isRecorder: currentUser?.isRecorder,
+    };
+  }, []);
 
   useEffect(() => {
-    if (previousPage && currentPage !== previousPage && excalidrawAPI) {
-      savePreviousPageData(excalidrawAPI, previousPage);
+    if (
+      isPresenter &&
+      previousPage &&
+      currentPage !== previousPage &&
+      excalidrawAPI
+    ) {
+      savePageData(excalidrawAPI, previousPage);
     }
-    //eslint-disable-next-line
-  }, [currentPage, previousPage, excalidrawAPI]);
-
-  const savePreviousPageData = (
-    excalidrawAPI: ExcalidrawImperativeAPI,
-    previousPage: number,
-  ) => {
-    if (!excalidrawAPI) {
-      return;
-    }
-    savePageData(excalidrawAPI, previousPage);
-  };
+  }, [isPresenter, currentPage, previousPage, excalidrawAPI]);
 
   const debouncedSetCurrentPage = useMemo(
     () =>
