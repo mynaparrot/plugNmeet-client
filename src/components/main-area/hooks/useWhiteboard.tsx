@@ -1,9 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { store, useAppDispatch } from '../../../store';
 import { doRefreshWhiteboard } from '../../../store/slices/whiteboard';
-import { useCallbackRefState } from '../../whiteboard/helpers/hooks/useCallbackRefState';
 import { savePageData } from '../../whiteboard/helpers/utils';
 import Whiteboard from '../../whiteboard';
 
@@ -14,7 +13,7 @@ export const useWhiteboard = (
 ) => {
   const dispatch = useAppDispatch();
   const [excalidrawAPI, excalidrawRefCallback] =
-    useCallbackRefState<ExcalidrawImperativeAPI>();
+    useState<ExcalidrawImperativeAPI>();
 
   // effect to refresh whiteboard when video elements are shown
   useEffect(() => {

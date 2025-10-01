@@ -3,6 +3,7 @@ import React, {
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -21,15 +22,13 @@ import {
   WhiteboardFileConversionReq,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import {
-  formatStorageKey,
-  handleToAddWhiteboardUploadedOfficeNewFile,
-} from '../helpers/utils';
+import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
 
 interface FileUploadProgressProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   allowedFileTypes: string[];
+  maxAllowedFileSize: string;
   file: File;
   setDisableUploading: Dispatch<SetStateAction<boolean>>;
 }
@@ -40,15 +39,21 @@ type message = {
 const FileUploadProgress = ({
   excalidrawAPI,
   allowedFileTypes,
+  maxAllowedFileSize,
   file,
   setDisableUploading,
 }: FileUploadProgressProps) => {
   const { t } = useTranslation();
-  const session = store.getState().session;
   const conn = getNatsConn();
-  const maxAllowedFileSize =
-    store.getState().session.currentRoom.metadata?.roomFeatures
-      ?.whiteboardFeatures?.maxAllowedFileSize;
+
+  const { roomSid, roomId, userId } = useMemo(() => {
+    const { currentRoom, currentUser } = store.getState().session;
+    return {
+      roomSid: currentRoom.sid,
+      roomId: currentRoom.roomId,
+      userId: currentUser?.userId,
+    };
+  }, []);
 
   const [uploadingProgress, setUploadingProgress] = useState<number>(0);
   const [message, setMessage] = useState<message | undefined>(undefined);
@@ -70,7 +75,7 @@ const FileUploadProgress = ({
 
     uploadResumableFile(
       allowedFileTypes,
-      maxAllowedFileSize ? maxAllowedFileSize : '30',
+      maxAllowedFileSize,
       files,
       (result) => convertFile(result.filePath),
       (isUploading) => setIsWorking(isUploading),
@@ -81,20 +86,6 @@ const FileUploadProgress = ({
     // oxlint-disable-next-line
   }, [uploadInitiated, file]);
 
-  const saveCurrentPageData = async () => {
-    if (!excalidrawAPI) {
-      return;
-    }
-    const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-    if (elms.length) {
-      const currentPageNumber = store.getState().whiteboard.currentPage;
-      sessionStorage.setItem(
-        formatStorageKey(currentPageNumber),
-        JSON.stringify(elms),
-      );
-    }
-  };
-
   const convertFile = async (filePath: string) => {
     const id = toast.loading(t('whiteboard.converting'), {
       type: 'info',
@@ -102,9 +93,9 @@ const FileUploadProgress = ({
     setMessage({ isError: false, msg: t('whiteboard.converting') });
     setIsWorking(true);
     const body: WhiteboardFileConversionReq = {
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.roomId,
-      userId: session.currentUser?.userId ?? '',
+      roomSid: roomSid,
+      roomId: roomId,
+      userId: userId ?? '',
       filePath: filePath,
     };
 
@@ -123,9 +114,6 @@ const FileUploadProgress = ({
       });
       return;
     }
-
-    // save current page state before changes
-    await saveCurrentPageData();
 
     const newFile = handleToAddWhiteboardUploadedOfficeNewFile(
       res,

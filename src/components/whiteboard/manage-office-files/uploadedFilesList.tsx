@@ -8,12 +8,12 @@ import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
 
 interface UploadedFilesListProps {
   onSelectOfficeFile: (fileId: IWhiteboardOfficeFile) => void;
-  selectedFileId?: string;
+  selectedOfficeFile?: IWhiteboardOfficeFile;
 }
 
 const UploadedFilesList = ({
   onSelectOfficeFile,
-  selectedFileId,
+  selectedOfficeFile,
 }: UploadedFilesListProps) => {
   const { t } = useTranslation();
   const whiteboardUploadedOfficeFiles = useAppSelector(
@@ -25,7 +25,7 @@ const UploadedFilesList = ({
 
   return whiteboardUploadedOfficeFiles.map((file) => {
     const isCurrentlyInUse = currentWhiteboardOfficeFileId === file.fileId;
-    const isSelectedInModal = selectedFileId === file.fileId;
+    const isSelectedInModal = selectedOfficeFile?.fileId === file.fileId;
 
     let classNames =
       'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';

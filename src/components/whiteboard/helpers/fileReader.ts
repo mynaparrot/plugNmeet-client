@@ -10,6 +10,9 @@ export interface FileReaderResult {
   elm: ExcalidrawElement;
 }
 
+// A simple in-memory cache to store fetched image data (base64) by URL.
+const imageCache = new Map<string, string>();
+
 export const fetchFileWithElm = async (
   url: string,
   file_id: string,
@@ -19,18 +22,27 @@ export const fetchFileWithElm = async (
   excalidrawElement?: ExcalidrawElement,
 ): Promise<FileReaderResult | null> => {
   try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
-      return null;
-    }
-    const imageData = await res.blob();
+    let imgData: string;
 
-    const imgData = (await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.readAsDataURL(imageData);
-    })) as string;
+    if (imageCache.has(url)) {
+      // Cache hit: Use the cached base64 data.
+      imgData = imageCache.get(url)!;
+    } else {
+      // Cache miss: Fetch the file and convert it to base64.
+      const res = await fetch(url);
+      if (!res.ok) {
+        console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
+        return null;
+      }
+      const imageData = await res.blob();
+      imgData = (await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(imageData);
+      })) as string;
+      // Store the result in the cache for future use.
+      imageCache.set(url, imgData);
+    }
 
     const fileMimeType = imgData.substring(
       'data:'.length,

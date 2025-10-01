@@ -26,7 +26,6 @@ import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
-import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
 import {
   broadcastAppStateChanges,
   broadcastMousePointerUpdate,
@@ -60,8 +59,6 @@ const CURSOR_SYNC_TIMEOUT = 33;
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
   const { i18n, t } = useTranslation();
-  const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
-    useState<boolean>(false);
   const { currentUser, isRecorder } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
@@ -93,9 +90,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   // State and Refs
-  const [excalidrawAPI, excalidrawRefCallback] =
-    useCallbackRefState<ExcalidrawImperativeAPI>();
+  const [excalidrawAPI, setExcalidrawAPI] =
+    useState<ExcalidrawImperativeAPI | null>(null);
   const [isFollowing, setIsFollowing] = useState(true);
+  const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
+    useState<boolean>(false);
 
   const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
   const previousPage = usePrevious(currentPage);
@@ -165,6 +164,42 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [excalidrawAPI, handleRemoteSceneUpdate],
   );
 
+  const handleSwitchPageOrDocument = useCallback(() => {
+    // 1. Do nothing if Excalidraw API is not ready.
+    if (!excalidrawAPI) return;
+
+    // 2. Set a flag to prevent other actions during the transition.
+    isSwitching.current = true;
+
+    // 3. Clean up the whiteboard for all users.
+    excalidrawAPI.updateScene({ elements: [] });
+    excalidrawAPI.addFiles([]);
+    excalidrawAPI.history.clear();
+
+    // 4. Reset scene version tracking and re-enable the following mode.
+    setLastBroadcastOrReceivedSceneVersion(-1);
+    setIsFollowing(true);
+
+    // 5. If the user is the presenter, load the switched page/document data if previously saved.
+    if (isPresenter) {
+      displaySavedPageData(
+        () => excalidrawAPI,
+        isPresenter,
+        currentPage,
+        isSwitching,
+      );
+    } else {
+      // 6. If not the presenter, simply end the switching state.
+      // They will receive the new data from the presenter.
+      isSwitching.current = false; // No data to load, so we can stop switching.
+    }
+  }, [
+    excalidrawAPI,
+    isPresenter,
+    currentPage,
+    setLastBroadcastOrReceivedSceneVersion,
+  ]);
+
   // when receive full whiteboard data
   useEffect(() => {
     if (allExcalidrawElements !== '' && excalidrawAPI) {
@@ -220,63 +255,21 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // Effect for file changes
   useEffect(() => {
-    if (excalidrawAPI && currentWhiteboardOfficeFileId !== previousFileId) {
-      isSwitching.current = true;
-      setLastBroadcastOrReceivedSceneVersion(-1);
-      excalidrawAPI.updateScene({ elements: [] });
-      excalidrawAPI.addFiles([]);
-      excalidrawAPI.history.clear();
-
-      if (isPresenter) {
-        displaySavedPageData(
-          () => excalidrawAPI,
-          isPresenter,
-          currentPage,
-          isSwitching,
-        );
-      } else {
-        isSwitching.current = false;
-      }
+    if (currentWhiteboardOfficeFileId !== previousFileId) {
+      handleSwitchPageOrDocument();
     }
   }, [
-    excalidrawAPI,
     currentWhiteboardOfficeFileId,
     previousFileId,
-    setLastBroadcastOrReceivedSceneVersion,
-    isPresenter,
-    currentPage,
+    handleSwitchPageOrDocument,
   ]);
 
   // Effect for page changes
   useEffect(() => {
-    if (previousPage && currentPage !== previousPage && excalidrawAPI) {
-      isSwitching.current = true;
-      setLastBroadcastOrReceivedSceneVersion(-1);
-      setIsFollowing(true);
-
-      if (isPresenter) {
-        excalidrawAPI.updateScene({ elements: [] });
-        displaySavedPageData(
-          () => excalidrawAPI,
-          isPresenter,
-          currentPage,
-          isSwitching,
-        );
-      } else {
-        // for recorder and other user we'll clean from here
-        excalidrawAPI.updateScene({ elements: [] });
-        excalidrawAPI.addFiles([]);
-        excalidrawAPI.history.clear();
-        isSwitching.current = false; // No data to load, so we can stop switching.
-      }
+    if (previousPage && currentPage !== previousPage) {
+      handleSwitchPageOrDocument();
     }
-  }, [
-    excalidrawAPI,
-    currentPage,
-    previousPage,
-    isPresenter,
-    setLastBroadcastOrReceivedSceneVersion,
-  ]);
+  }, [currentPage, previousPage, handleSwitchPageOrDocument]);
 
   const handleCanvasChange = (
     elements: readonly ExcalidrawElement[],
@@ -376,13 +369,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     />
   );
 
-  const handleOnReadyExcalidrawRef = (api: ExcalidrawImperativeAPI) => {
-    if (api) {
-      excalidrawRefCallback(api);
-      onReadyExcalidrawAPI(api);
-    }
-  };
-
   return (
     <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
       {isPresenter && excalidrawAPI && (
@@ -393,7 +379,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         />
       )}
       <Excalidraw
-        excalidrawAPI={handleOnReadyExcalidrawRef}
+        excalidrawAPI={(api: ExcalidrawImperativeAPI) => {
+          if (api) {
+            setExcalidrawAPI(api);
+            onReadyExcalidrawAPI(api);
+          }
+        }}
         onChange={handleCanvasChange}
         onPointerUpdate={onPointerUpdate}
         onScrollChange={onScrollChange}
