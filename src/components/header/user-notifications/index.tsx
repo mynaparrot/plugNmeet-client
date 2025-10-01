@@ -149,7 +149,7 @@ const UserNotifications = () => {
                 </div>
                 <div className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4">
                   <div className="inner grid gap-2">
-                    {[...userNotifications].toReversed().map((notif) => {
+                    {[...userNotifications].reverse().map((notif) => {
                       switch (notif.notificationCat) {
                         case 'new-poll-created':
                           return (
