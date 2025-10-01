@@ -6,7 +6,7 @@ import {
   SwitchPresenterReqSchema,
   SwitchPresenterTask,
 } from 'plugnmeet-protocol-js';
-import { debounce } from 'es-toolkit/compat';
+import { debounce } from 'es-toolkit';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { useTranslation } from 'react-i18next';
 

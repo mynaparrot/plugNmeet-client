@@ -5,7 +5,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { throttle } from 'es-toolkit/compat';
+import { throttle } from 'es-toolkit';
+import { useTranslation } from 'react-i18next';
 import {
   CaptureUpdateAction,
   Excalidraw,
@@ -22,7 +23,7 @@ import {
   Gesture,
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
-import { useTranslation } from 'react-i18next';
+import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -132,7 +133,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
       try {
         // 2. Parse the incoming elements from the remote source.
-        const parsedElements = JSON.parse(remoteElements);
+        const parsedElements: RemoteExcalidrawElement[] =
+          JSON.parse(remoteElements);
         // 3. Exit if there are no elements to process.
         if (!parsedElements || !parsedElements.length) {
           return;

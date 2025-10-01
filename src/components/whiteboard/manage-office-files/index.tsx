@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
-import { debounce } from 'es-toolkit/compat';
+import { debounce } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
