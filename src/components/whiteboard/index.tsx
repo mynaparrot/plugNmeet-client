@@ -21,7 +21,6 @@ import {
   ExcalidrawProps,
   Gesture,
 } from '@excalidraw/excalidraw/types';
-import { ReconciledExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { useTranslation } from 'react-i18next';
 
@@ -120,50 +119,64 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   });
   useWhiteboardFileElementsSync({ excalidrawAPI });
 
-  const handleRemoteSceneUpdate = useCallback(
-    (
-      elements: ReconciledExcalidrawElement[],
-      { init = false }: { init?: boolean } = {},
-    ) => {
-      if (!excalidrawAPI || !elements.length) {
-        return;
-      }
-      excalidrawAPI.updateScene({
-        elements,
-        captureUpdate: init
-          ? CaptureUpdateAction.IMMEDIATELY
-          : CaptureUpdateAction.NEVER,
-      });
-      setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
-      excalidrawAPI.history.clear();
-    },
-    [excalidrawAPI, setLastBroadcastOrReceivedSceneVersion],
-  );
-
-  const reconcileAndAddDataToWhiteboard = useCallback(
-    (remoteElements: string) => {
+  /**
+   * Reconciles remote scene elements with local ones and updates the canvas.
+   * @param remoteElements The JSON string of the remote Excalidraw elements.
+   * @param init A flag to indicate if this is the initial scene load.
+   */
+  const reconcileAndUpdateScene = useCallback(
+    (remoteElements: string, { init = false }: { init?: boolean } = {}) => {
+      // 1. Do nothing if Excalidraw API is not ready.
       if (!excalidrawAPI) {
         return;
       }
       try {
-        const elements = JSON.parse(remoteElements);
+        // 2. Parse the incoming elements from the remote source.
+        const parsedElements = JSON.parse(remoteElements);
+        // 3. Exit if there are no elements to process.
+        if (!parsedElements || !parsedElements.length) {
+          return;
+        }
+
+        // 4. Get the current local elements and app state from the canvas.
         const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
         const appState = excalidrawAPI.getAppState();
 
+        // 5. Reconcile local elements with remote elements to prevent conflicts
+        // and merge changes smoothly.
         const reconciledElements = reconcileElements(
           localElements,
-          elements,
+          parsedElements,
           appState,
         );
 
-        handleRemoteSceneUpdate(reconciledElements);
+        // 6. Update the Excalidraw scene with the reconciled elements.
+        // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,
+        // as it's a sync operation, not a user action.
+        excalidrawAPI.updateScene({
+          elements: reconciledElements,
+          captureUpdate: init
+            ? CaptureUpdateAction.IMMEDIATELY
+            : CaptureUpdateAction.NEVER,
+        });
+        // 7. Update the scene version to the latest received version.
+        // This prevents re-broadcasting of the same data.
+        setLastBroadcastOrReceivedSceneVersion(
+          getSceneVersion(reconciledElements),
+        );
+        // 8. Clear the history to ensure a clean state after the remote update.
+        excalidrawAPI.history.clear();
       } catch (e) {
         console.error(e);
       }
     },
-    [excalidrawAPI, handleRemoteSceneUpdate],
+    [excalidrawAPI, setLastBroadcastOrReceivedSceneVersion],
   );
 
+  /**
+   * Handles the logic for switching between whiteboard pages or office documents.
+   * It cleans the canvas and prepares it for new data.
+   */
   const handleSwitchPageOrDocument = useCallback(() => {
     // 1. Do nothing if Excalidraw API is not ready.
     if (!excalidrawAPI) return;
@@ -203,25 +216,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   // when receive full whiteboard data
   useEffect(() => {
     if (allExcalidrawElements !== '' && excalidrawAPI) {
-      const updateWhiteboard = async (elements: string) => {
-        await sleep(300);
-        reconcileAndAddDataToWhiteboard(elements);
-      };
-      updateWhiteboard(allExcalidrawElements).then();
+      sleep(300).then(() => reconcileAndUpdateScene(allExcalidrawElements));
     }
-  }, [excalidrawAPI, allExcalidrawElements, reconcileAndAddDataToWhiteboard]);
+  }, [excalidrawAPI, allExcalidrawElements, reconcileAndUpdateScene]);
 
   // for handling draw elements
   useEffect(() => {
     if (excalidrawElements && excalidrawAPI && fetchedData) {
-      reconcileAndAddDataToWhiteboard(excalidrawElements);
+      reconcileAndUpdateScene(excalidrawElements);
     }
-  }, [
-    excalidrawAPI,
-    excalidrawElements,
-    fetchedData,
-    reconcileAndAddDataToWhiteboard,
-  ]);
+  }, [excalidrawAPI, excalidrawElements, fetchedData, reconcileAndUpdateScene]);
 
   // clean up store during exit
   useEffect(() => {
