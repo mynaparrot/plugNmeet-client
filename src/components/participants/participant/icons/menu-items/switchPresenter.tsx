@@ -58,7 +58,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
     <MenuItem>
       {() => (
         <button
-          className="text-Gray-900 group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs font-medium transition ease-in hover:bg-Blue2-500 hover:text-white"
+          className="text-Gray-900 cursor-pointer group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs font-medium transition ease-in hover:bg-Blue2-500 hover:text-white"
           onClick={togglePresenterStatus}
         >
           {isPresenter

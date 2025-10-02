@@ -67,7 +67,11 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
           {({ open }) => (
             <>
               <MenuButton>
-                <Microphone classes={'h-3 3xl:h-4 w-auto'} />
+                {volume ? (
+                  <Microphone classes="h-3 3xl:h-4 w-auto" />
+                ) : (
+                  <MicrophoneOff classes="h-4 w-auto" />
+                )}
               </MenuButton>
 
               <Transition
@@ -84,7 +88,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                   className="volume-popup-wrapper z-10 absolute ltr:-right-6 rtl:-left-6 top-3 mt-2 w-48 xl:w-60 py-4 px-2 rounded-md shadow-virtual-pOP bg-white ring-1 ring-Gray-100 focus:outline-hidden"
                 >
                   <section className="flex items-center">
-                    <div className="flex-1">
+                    <div className="flex-1 px-1">
                       <RangeSlider
                         min={0}
                         max={100}
@@ -100,7 +104,11 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                       {Math.round(volume * 100)}
                     </p>
                     <button className="w-5 h-5">
-                      <i className="pnm-speaker primaryColor" />
+                      {volume ? (
+                        <Microphone classes="h-3 3xl:h-4 w-auto" />
+                      ) : (
+                        <MicrophoneOff classes="h-4 w-auto" />
+                      )}
                     </button>
                   </section>
                 </MenuItems>
