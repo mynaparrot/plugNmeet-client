@@ -32,7 +32,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const dispatch = useAppDispatch();
   const [selectedOption, setSelectedOption] = useState<number>();
   const conn = getNatsConn();
-  const currentUser = store.getState().session.currentUser;
+  const currentUser = useMemo(() => store.getState().session.currentUser, []);
 
   const [voted, setVoted] = useState<boolean>(false);
   const { data: userVoteData } = useGetUserSelectedOptionQuery({

@@ -234,13 +234,13 @@ const MenusIcon = () => {
           )}
         </Menu>
       </div>
-      {showLockSettingsModal ? <LockSettingsModal /> : null}
-      {showRtmpModal ? <RtmpModal /> : null}
-      {showExternalMediaPlayerModal ? <ExternalMediaPlayerModal /> : null}
-      {showManageWaitingRoomModal ? <ManageWaitingRoom /> : null}
-      {showManageBreakoutRoomModal ? <BreakoutRoom /> : null}
-      {showDisplayExternalLinkModal ? <DisplayExternalLinkModal /> : null}
-      {showSpeechSettingsModal ? <TranscriptionSettingsModal /> : null}
+      {showLockSettingsModal && <LockSettingsModal />}
+      {showRtmpModal && <RtmpModal />}
+      {showExternalMediaPlayerModal && <ExternalMediaPlayerModal />}
+      {showManageWaitingRoomModal && <ManageWaitingRoom />}
+      {showManageBreakoutRoomModal && <BreakoutRoom />}
+      {showDisplayExternalLinkModal && <DisplayExternalLinkModal />}
+      {showSpeechSettingsModal && <TranscriptionSettingsModal />}
     </>
   );
 };

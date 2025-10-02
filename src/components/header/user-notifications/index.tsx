@@ -1,4 +1,10 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { toast } from 'react-toastify';
 import {
   Popover,
@@ -24,6 +30,11 @@ const UserNotifications = () => {
   );
   const [hasUnreadNotifications, setHasUnreadNotifications] =
     useState<number>(0);
+
+  const reversedNotifications = useMemo(
+    () => [...userNotifications].reverse(),
+    [userNotifications],
+  );
 
   const displayToast = (
     message: string | ReactElement,
@@ -149,7 +160,7 @@ const UserNotifications = () => {
                 </div>
                 <div className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4">
                   <div className="inner grid gap-2">
-                    {[...userNotifications].toReversed().map((notif) => {
+                    {reversedNotifications.map((notif) => {
                       switch (notif.notificationCat) {
                         case 'new-poll-created':
                           return (

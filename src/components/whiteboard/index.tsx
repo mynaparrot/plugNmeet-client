@@ -1,10 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { throttle } from 'es-toolkit/compat';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { throttle } from 'es-toolkit';
+import { useTranslation } from 'react-i18next';
 import {
+  CaptureUpdateAction,
   Excalidraw,
   Footer,
   getSceneVersion,
   MainMenu,
+  reconcileElements,
 } from '@excalidraw/excalidraw';
 import {
   AppState,
@@ -14,28 +23,26 @@ import {
   Gesture,
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
-import { useTranslation } from 'react-i18next';
+import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
-import { useAppDispatch, useAppSelector } from '../../store';
-import { useCallbackRefState } from './helpers/hooks/useCallbackRefState';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
   broadcastAppStateChanges,
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
 } from './helpers/handleRequestedWhiteboardData';
-import usePreviousFileId from './helpers/hooks/usePreviousFileId';
-import usePreviousPage from './helpers/hooks/usePreviousPage';
-import useWhiteboardPermissions from './helpers/hooks/useWhiteboardPermissions';
-import useCollaborators from './helpers/hooks/useCollaborators';
-import useWhiteboardLifecycle from './helpers/hooks/useWhiteboardLifecycle';
-import useWhiteboardDataSync from './helpers/hooks/useWhiteboardDataSync';
-import useWhiteboardFiles from './helpers/hooks/useWhiteboardFiles';
-import useWhiteboardResizeHandler from './helpers/hooks/useWhiteboardResizeHandler';
+import usePrevious from './helpers/hooks/usePrevious';
+import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
+import useWhiteboardDataSharer from './helpers/hooks/useWhiteboardDataSharer';
+import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
+import useWhiteboardFileElementsSync from './helpers/hooks/useWhiteboardFileElementsSync';
 import {
   addAllExcalidrawElements,
   updateExcalidrawElements,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
+import { displaySavedPageData } from './helpers/utils';
+import { sleep } from '../../helpers/utils';
 
 import ManageOfficeFilesModal from './manage-office-files';
 import FooterUI from './footerUI';
@@ -52,11 +59,13 @@ const CURSOR_SYNC_TIMEOUT = 33;
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
   const { i18n, t } = useTranslation();
-  const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
-    useState<boolean>(false);
+  const { currentUser, isRecorder } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return { currentUser, isRecorder: !!currentUser?.isRecorder };
+  }, []);
 
   // Selectors
-  const currentUser = useAppSelector((state) => state.session.currentUser);
   const isPresenter = useAppSelector(
     (state) => state.session.currentUser?.metadata?.isPresenter,
   );
@@ -64,7 +73,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockWhiteboard,
   );
-  const isRecorder = !!currentUser?.isRecorder;
 
   const theme = useAppSelector((state) => state.roomSettings.theme);
   const screenWidth = useAppSelector(
@@ -74,34 +82,152 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
+  const allExcalidrawElements = useAppSelector(
+    (state) => state.whiteboard.allExcalidrawElements,
+  );
+  const excalidrawElements = useAppSelector(
+    (state) => state.whiteboard.excalidrawElements,
+  );
 
   // State and Refs
-  const [excalidrawAPI, excalidrawRefCallback] =
-    useCallbackRefState<ExcalidrawImperativeAPI>();
-  const isProgrammaticScroll = useRef(false);
+  const [excalidrawAPI, setExcalidrawAPI] =
+    useState<ExcalidrawImperativeAPI | null>(null);
   const [isFollowing, setIsFollowing] = useState(true);
-  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
-  const previousPage = usePreviousPage(currentPage);
+  const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
+    useState<boolean>(false);
+
+  const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
+  const previousPage = usePrevious(currentPage);
+
+  const isProgrammaticScroll = useRef(false);
+  const isSwitching = useRef(false);
 
   // Custom Hooks for modularity
-  const { viewModeEnabled } = useWhiteboardPermissions({
+  const { viewModeEnabled } = useWhiteboardSetup({
     excalidrawAPI,
     isPresenter,
     lockWhiteboard,
+    isRecorder,
   });
-  useCollaborators({ excalidrawAPI });
-  const { fetchedData } = useWhiteboardLifecycle({ excalidrawAPI });
+  const { fetchedData } = useWhiteboardDataSharer({ excalidrawAPI });
   const {
     lastBroadcastOrReceivedSceneVersion,
     setLastBroadcastOrReceivedSceneVersion,
-  } = useWhiteboardDataSync({
+  } = useWhiteboardAppStateSync({
     excalidrawAPI,
-    fetchedData,
     isFollowing,
     isProgrammaticScroll,
   });
-  useWhiteboardFiles({ excalidrawAPI, lastBroadcastOrReceivedSceneVersion });
-  useWhiteboardResizeHandler({ excalidrawAPI });
+  useWhiteboardFileElementsSync({ excalidrawAPI });
+
+  /**
+   * Reconciles remote scene elements with local ones and updates the canvas.
+   * @param remoteElements The JSON string of the remote Excalidraw elements.
+   * @param init A flag to indicate if this is the initial scene load.
+   */
+  const reconcileAndUpdateScene = useCallback(
+    (remoteElements: string, { init = false }: { init?: boolean } = {}) => {
+      // 1. Do nothing if Excalidraw API is not ready.
+      if (!excalidrawAPI) {
+        return;
+      }
+      try {
+        // 2. Parse the incoming elements from the remote source.
+        const parsedElements: RemoteExcalidrawElement[] =
+          JSON.parse(remoteElements);
+        // 3. Exit if there are no elements to process.
+        if (!parsedElements || !parsedElements.length) {
+          return;
+        }
+
+        // 4. Get the current local elements and app state from the canvas.
+        const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
+        const appState = excalidrawAPI.getAppState();
+
+        // 5. Reconcile local elements with remote elements to prevent conflicts
+        // and merge changes smoothly.
+        const reconciledElements = reconcileElements(
+          localElements,
+          parsedElements,
+          appState,
+        );
+
+        // 6. Update the Excalidraw scene with the reconciled elements.
+        // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,
+        // as it's a sync operation, not a user action.
+        excalidrawAPI.updateScene({
+          elements: reconciledElements,
+          captureUpdate: init
+            ? CaptureUpdateAction.IMMEDIATELY
+            : CaptureUpdateAction.NEVER,
+        });
+        // 7. Update the scene version to the latest received version.
+        // This prevents re-broadcasting of the same data.
+        setLastBroadcastOrReceivedSceneVersion(
+          getSceneVersion(reconciledElements),
+        );
+        // 8. Clear the history to ensure a clean state after the remote update.
+        excalidrawAPI.history.clear();
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [excalidrawAPI, setLastBroadcastOrReceivedSceneVersion],
+  );
+
+  /**
+   * Handles the logic for switching between whiteboard pages or office documents.
+   * It cleans the canvas and prepares it for new data.
+   */
+  const handleSwitchPageOrDocument = useCallback(() => {
+    // 1. Do nothing if Excalidraw API is not ready.
+    if (!excalidrawAPI) return;
+
+    // 2. Set a flag to prevent other actions during the transition.
+    isSwitching.current = true;
+
+    // 3. Clean up the whiteboard for all users.
+    excalidrawAPI.updateScene({ elements: [] });
+    excalidrawAPI.addFiles([]);
+    excalidrawAPI.history.clear();
+
+    // 4. Reset scene version tracking and re-enable the following mode.
+    setLastBroadcastOrReceivedSceneVersion(-1);
+    setIsFollowing(true);
+
+    // 5. If the user is the presenter, load the switched page/document data if previously saved.
+    if (isPresenter) {
+      displaySavedPageData(
+        () => excalidrawAPI,
+        isPresenter,
+        currentPage,
+        isSwitching,
+      );
+    } else {
+      // 6. If not the presenter, simply end the switching state.
+      // They will receive the new data from the presenter.
+      isSwitching.current = false; // No data to load, so we can stop switching.
+    }
+  }, [
+    excalidrawAPI,
+    isPresenter,
+    currentPage,
+    setLastBroadcastOrReceivedSceneVersion,
+  ]);
+
+  // when receive full whiteboard data
+  useEffect(() => {
+    if (allExcalidrawElements !== '' && excalidrawAPI) {
+      sleep(300).then(() => reconcileAndUpdateScene(allExcalidrawElements));
+    }
+  }, [excalidrawAPI, allExcalidrawElements, reconcileAndUpdateScene]);
+
+  // for handling draw elements
+  useEffect(() => {
+    if (excalidrawElements && excalidrawAPI && fetchedData) {
+      reconcileAndUpdateScene(excalidrawElements);
+    }
+  }, [excalidrawAPI, excalidrawElements, fetchedData, reconcileAndUpdateScene]);
 
   // clean up store during exit
   useEffect(() => {
@@ -112,61 +238,75 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     };
   }, [dispatch]);
 
+  // on mount: if presenter, display saved data
+  useEffect(() => {
+    if (excalidrawAPI) {
+      // if presenter then we'll fetch storage to display after initialize excalidraw
+      const isPresenter =
+        store.getState().session.currentUser?.metadata?.isPresenter;
+      if (isPresenter) {
+        isSwitching.current = true;
+        const timeout = setTimeout(() => {
+          displaySavedPageData(
+            () => excalidrawAPI,
+            true,
+            store.getState().whiteboard.currentPage,
+            isSwitching,
+          );
+        }, 100);
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [excalidrawAPI]);
+
   // Effect for file changes
   useEffect(() => {
-    if (excalidrawAPI && currentWhiteboardOfficeFileId !== previousFileId) {
-      setLastBroadcastOrReceivedSceneVersion(-1);
-      excalidrawAPI.updateScene({ elements: [] });
-      excalidrawAPI.addFiles([]);
-      excalidrawAPI.history.clear();
+    if (currentWhiteboardOfficeFileId !== previousFileId) {
+      handleSwitchPageOrDocument();
     }
   }, [
-    excalidrawAPI,
     currentWhiteboardOfficeFileId,
     previousFileId,
-    setLastBroadcastOrReceivedSceneVersion,
+    handleSwitchPageOrDocument,
   ]);
 
   // Effect for page changes
   useEffect(() => {
     if (previousPage && currentPage !== previousPage) {
-      setLastBroadcastOrReceivedSceneVersion(-1);
-      setIsFollowing(true);
+      handleSwitchPageOrDocument();
     }
-    // for recorder and other user we'll clean from here
-    if (!isPresenter && previousPage && currentPage !== previousPage) {
-      excalidrawAPI?.updateScene({ elements: [] });
-      excalidrawAPI?.addFiles([]);
-    }
-  }, [
-    excalidrawAPI,
-    currentPage,
-    previousPage,
-    isPresenter,
-    setLastBroadcastOrReceivedSceneVersion,
-  ]);
+  }, [currentPage, previousPage, handleSwitchPageOrDocument]);
 
-  const onChange = (
+  const handleCanvasChange = (
     elements: readonly ExcalidrawElement[],
     appState: AppState,
     files: BinaryFiles,
   ) => {
-    if (!excalidrawAPI || !currentUser || !elements.length || viewModeEnabled) {
+    if (
+      !excalidrawAPI || // API not ready
+      !currentUser || // User not available
+      !elements.length || // No elements to sync
+      isSwitching.current // A page/file switch is in progress
+    ) {
       return;
     }
 
-    if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
-      setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
-      broadcastSceneOnChange(
-        elements,
-        false,
-        undefined,
-        excalidrawAPI,
-        currentPage,
-        files,
-      );
+    // Presenters or unlocked users can broadcast scene changes.
+    if (isPresenter || lockWhiteboard === false) {
+      if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
+        setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
+        broadcastSceneOnChange(
+          elements,
+          false,
+          undefined,
+          excalidrawAPI,
+          currentPage,
+          files,
+        ).then();
+      }
     }
 
+    // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
     if (isPresenter) {
       broadcastAppStateChanges(
         appState.height,
@@ -178,13 +318,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         appState.viewBackgroundColor,
         appState.zenModeEnabled,
         appState.gridSize,
-      );
+      ).then();
     }
   };
 
   const onPointerUpdate = throttle(
     (payload: { pointer; button; pointersMap: Gesture['pointers'] }) => {
-      if (viewModeEnabled || !currentUser || payload.pointersMap.size >= 2) {
+      // Only broadcast pointer if user is presenter or is unlocked, and not using multi-touch.
+      if (
+        (!isPresenter && lockWhiteboard !== false) ||
+        !currentUser ||
+        payload.pointersMap.size >= 2
+      ) {
         return;
       }
       const msg = {
@@ -194,7 +339,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         userId: currentUser.userId,
         name: currentUser.name,
       };
-      broadcastMousePointerUpdate(msg);
+      broadcastMousePointerUpdate(msg).then();
     },
     CURSOR_SYNC_TIMEOUT,
   );
@@ -230,13 +375,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     />
   );
 
-  const handleOnReadyExcalidrawRef = (api: ExcalidrawImperativeAPI) => {
-    if (api) {
-      excalidrawRefCallback(api);
-      onReadyExcalidrawAPI(api);
-    }
-  };
-
   return (
     <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
       {isPresenter && excalidrawAPI && (
@@ -247,8 +385,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         />
       )}
       <Excalidraw
-        excalidrawAPI={handleOnReadyExcalidrawRef}
-        onChange={onChange}
+        excalidrawAPI={(api: ExcalidrawImperativeAPI) => {
+          if (api) {
+            setExcalidrawAPI(api);
+            onReadyExcalidrawAPI(api);
+          }
+        }}
+        onChange={handleCanvasChange}
         onPointerUpdate={onPointerUpdate}
         onScrollChange={onScrollChange}
         viewModeEnabled={viewModeEnabled}
@@ -269,15 +412,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         detectScroll={true}
         langCode={i18n.languages[0]}
         renderTopRightUI={renderTopRightUI}
-        //renderFooter={renderFooter}
         libraryReturnUrl=""
       >
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
           <MainMenu.DefaultItems.Help />
-          {screenWidth <= 767 ? renderFooter() : null}
+          {screenWidth <= 767 && renderFooter()}
         </MainMenu>
-        {screenWidth > 767 ? <Footer>{renderFooter()}</Footer> : null}
+        {screenWidth > 767 && <Footer>{renderFooter()}</Footer>}
       </Excalidraw>
     </div>
   );

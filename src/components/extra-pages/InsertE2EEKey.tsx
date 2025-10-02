@@ -1,5 +1,6 @@
 import React, { Dispatch, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { addSelfInsertedE2EESecretKey } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
@@ -15,9 +16,13 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     const secretKey = data.get('secretKey');
     if (!secretKey) {
+      toast(t('notifications.e2ee-empty-key-msg'), {
+        type: 'error',
+      });
       return;
     }
 

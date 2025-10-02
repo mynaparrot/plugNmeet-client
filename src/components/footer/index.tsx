@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { store } from '../../store';
 import WebcamIcon from './icons/webcam';
@@ -17,11 +17,14 @@ import PollsIcon from './icons/polls';
 import Translation from './icons/translation';
 
 const Footer = () => {
-  const { currentRoom, currentUser } = store.getState().session;
-  const isAdmin = !!currentUser?.metadata?.isAdmin;
-  const isRecorder = !!currentUser?.isRecorder;
-  const allowChat =
-    !!currentRoom.metadata?.roomFeatures?.chatFeatures?.allowChat;
+  const { isAdmin, isRecorder, allowChat } = useMemo(() => {
+    const { currentRoom, currentUser } = store.getState().session;
+    return {
+      isAdmin: !!currentUser?.metadata?.isAdmin,
+      isRecorder: !!currentUser?.isRecorder,
+      allowChat: !!currentRoom.metadata?.roomFeatures?.chatFeatures?.allowChat,
+    };
+  }, []);
 
   return (
     <footer

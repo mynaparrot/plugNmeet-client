@@ -25,8 +25,10 @@ interface PollItemProps {
 
 const PollItem = ({ item, serialNum }: PollItemProps) => {
   const { t } = useTranslation();
-  const currenUser = store.getState().session.currentUser;
-  const isAdmin = !!currenUser?.metadata?.isAdmin;
+  const isAdmin = useMemo(
+    () => !!store.getState().session.currentUser?.metadata?.isAdmin,
+    [],
+  );
   const [viewDetails, setViewDetails] = useState<boolean>(false);
 
   // to load data with details, valid for admin

@@ -16,16 +16,23 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 const WhiteboardIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const showTooltip = store.getState().session.userDeviceType === 'desktop';
   const isInitialMount = useRef(true);
+  const isLocalAction = useRef(false);
 
-  const session = store.getState().session;
-  const allowedWhiteboard =
-    session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
-      ?.allowedWhiteboard;
-  const currentUser = session.currentUser;
-  const isAdmin = currentUser?.metadata?.isAdmin;
-  const isRecorder = currentUser?.isRecorder;
+  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder } =
+    useMemo(() => {
+      const session = store.getState().session;
+      const currentUser = session.currentUser;
+      return {
+        showTooltip: session.userDeviceType === 'desktop',
+        allowedWhiteboard:
+          session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
+            ?.allowedWhiteboard,
+        currentUserId: currentUser?.userId,
+        isAdmin: currentUser?.metadata?.isAdmin,
+        isRecorder: currentUser?.isRecorder,
+      };
+    }, []);
 
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
@@ -37,8 +44,8 @@ const WhiteboardIcon = () => {
   );
   const isPresenter = useAppSelector(
     (state) =>
-      !!participantsSelector.selectById(state, currentUser?.userId ?? '')
-        ?.metadata.isPresenter,
+      !!participantsSelector.selectById(state, currentUserId ?? '')?.metadata
+        .isPresenter,
   );
 
   const canControlWhiteboard = useMemo(() => {
@@ -48,6 +55,12 @@ const WhiteboardIcon = () => {
 
   useEffect(() => {
     if (!allowedWhiteboard) {
+      return;
+    }
+
+    // If the change was initiated locally, we don't need to process the echo.
+    if (isLocalAction.current) {
+      isLocalAction.current = false;
       return;
     }
 
@@ -84,6 +97,8 @@ const WhiteboardIcon = () => {
         visibleWhiteBoard: isActive,
       });
       await sendRequest(body);
+      // After sending, we can listen for remote changes again.
+      isLocalAction.current = false;
     }, 500),
     [],
   );
@@ -101,35 +116,31 @@ const WhiteboardIcon = () => {
     debouncedSendRequest(isActiveWhiteboard);
   }, [canControlWhiteboard, isActiveWhiteboard, debouncedSendRequest]);
 
-  const text = () => {
-    if (isActiveWhiteboard) {
-      return t('footer.icons.hide-whiteboard');
-    } else {
-      return t('footer.icons.show-whiteboard');
-    }
-  };
-
-  const toggleWhiteboard = async () => {
-    const isActiveScreenShare =
-      store.getState().bottomIconsActivity.isActiveScreenshare;
-    if (isActiveScreenShare) {
+  const toggleWhiteboard = useCallback(() => {
+    // prevent toggling whiteboard during screen sharing
+    if (store.getState().bottomIconsActivity.isActiveScreenshare) {
       return;
     }
+    isLocalAction.current = true;
     dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
-  };
+  }, [dispatch, isActiveWhiteboard]);
 
   return (
     allowedWhiteboard && (
       <div
         className={`whiteboard relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${isActiveWhiteboard ? 'border-[rgba(124,206,247,0.25)]' : 'border-transparent'}`}
-        onClick={() => toggleWhiteboard()}
+        onClick={toggleWhiteboard}
       >
         <div
           className={`h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 ${
             showTooltip ? 'has-tooltip' : ''
           } ${isActiveWhiteboard ? 'bg-gray-100' : 'bg-white'}`}
         >
-          <span className="tooltip">{text()}</span>
+          <span className="tooltip">
+            {isActiveWhiteboard
+              ? t('footer.icons.hide-whiteboard')
+              : t('footer.icons.show-whiteboard')}
+          </span>
           <WhiteBoardIconSVG />
         </div>
       </div>

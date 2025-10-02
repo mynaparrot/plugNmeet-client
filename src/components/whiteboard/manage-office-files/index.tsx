@@ -1,17 +1,17 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import { debounce } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
-import { sleep } from '../../../helpers/utils';
 import { updateCurrentWhiteboardOfficeFileId } from '../../../store/slices/whiteboard';
 import { store, useAppDispatch } from '../../../store';
 import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
-import { formatStorageKey } from '../helpers/utils';
+import { savePageData } from '../helpers/utils';
 
 interface ManageOfficeFilesModalProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
@@ -24,57 +24,54 @@ const ManageOfficeFilesModal = ({
   isOpen,
   onClose,
 }: ManageOfficeFilesModalProps) => {
-  // prettier-ignore
-  const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
-  const maxAllowedFileSize =
-    store.getState().session.currentRoom.metadata?.roomFeatures
-      ?.whiteboardFeatures?.maxAllowedFileSize;
-
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
+  const { allowedFileTypes, maxAllowedFileSize } = useMemo(() => {
+    const maxAllowedFileSize =
+      store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.whiteboardFeatures?.maxAllowedFileSize ?? '30';
+    // prettier-ignore
+    const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
+    return {
+      maxAllowedFileSize,
+      allowedFileTypes,
+    };
+  }, []);
+
   const inputFile = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
-  const [selectedOfficeFile, setOnSelectOfficeFile] = useState<
+  const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+  const [selectedOfficeFile, setSelectedOfficeFile] = useState<
     IWhiteboardOfficeFile | undefined
   >(undefined);
   const [disableUploading, setDisableUploading] = useState<boolean>(false);
 
-  const switchOfficeFile = async (f: IWhiteboardOfficeFile) => {
-    await saveCurrentPageData();
-    dispatch(updateCurrentWhiteboardOfficeFileId(f.fileId));
-    await sleep(500);
-    await broadcastWhiteboardOfficeFile(f);
-  };
-
-  const saveCurrentPageData = async () => {
-    if (!excalidrawAPI) {
-      return;
-    }
-    const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-    if (elms.length) {
-      const currentPageNumber = store.getState().whiteboard.currentPage;
-      sessionStorage.setItem(
-        formatStorageKey(currentPageNumber),
-        JSON.stringify(elms),
-      );
-    }
-  };
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
     if (selectedFiles.length) {
-      setSelectedFile(selectedFiles[0]);
+      setFileToUpload(selectedFiles[0]);
     }
   };
 
-  const addToWhiteboard = useCallback(() => {
-    if (selectedOfficeFile) {
-      switchOfficeFile(selectedOfficeFile).then();
-      onClose();
-    }
-    //oxlint-disable-next-line
-  }, [selectedOfficeFile]);
+  const debouncedAddToWhiteboard = useMemo(
+    () =>
+      debounce(async (officeFile: IWhiteboardOfficeFile) => {
+        if (excalidrawAPI) {
+          // save current file information
+          const { currentPage, currentWhiteboardOfficeFileId } =
+            store.getState().whiteboard;
+          savePageData(
+            excalidrawAPI,
+            currentPage,
+            currentWhiteboardOfficeFileId,
+          );
+        }
+        dispatch(updateCurrentWhiteboardOfficeFileId(officeFile.fileId));
+        await broadcastWhiteboardOfficeFile(officeFile);
+        onClose();
+      }, 300),
+    [excalidrawAPI, dispatch, onClose],
+  );
 
   return (
     <Dialog
@@ -106,7 +103,7 @@ const ManageOfficeFilesModal = ({
                   multiple={false}
                   disabled={disableUploading}
                   ref={inputFile}
-                  onChange={onChange}
+                  onChange={handleFileChange}
                   accept={allowedFileTypes.join(',')}
                   className="w-full h-full absolute top-0 left-0 opacity-0 cursor-pointer"
                 />
@@ -131,18 +128,19 @@ const ManageOfficeFilesModal = ({
                 </div>
               </div>
               <div className="file-preview-list grid gap-2 pt-4">
-                {selectedFile && (
+                {fileToUpload && (
                   <FileUploadProgress
-                    key={selectedFile.name + selectedFile.lastModified}
+                    key={fileToUpload.name + fileToUpload.lastModified}
                     excalidrawAPI={excalidrawAPI}
                     allowedFileTypes={allowedFileTypes}
-                    file={selectedFile}
+                    maxAllowedFileSize={maxAllowedFileSize}
+                    file={fileToUpload}
                     setDisableUploading={setDisableUploading}
                   />
                 )}
                 <UploadedFilesList
-                  onSelectOfficeFile={setOnSelectOfficeFile}
-                  selectedFileId={selectedOfficeFile?.fileId}
+                  onSelectOfficeFile={setSelectedOfficeFile}
+                  selectedOfficeFile={selectedOfficeFile}
                 />
               </div>
             </div>
@@ -155,7 +153,10 @@ const ManageOfficeFilesModal = ({
               </button>
               <button
                 className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Blue2-500 border border-Blue2-600 transition-all duration-300 hover:bg-Blue2-600  shadow-button-shadow cursor-pointer"
-                onClick={addToWhiteboard}
+                onClick={() => {
+                  if (selectedOfficeFile)
+                    debouncedAddToWhiteboard(selectedOfficeFile);
+                }}
                 disabled={selectedOfficeFile === undefined || disableUploading}
               >
                 {t('whiteboard.add-to-whiteboard')}

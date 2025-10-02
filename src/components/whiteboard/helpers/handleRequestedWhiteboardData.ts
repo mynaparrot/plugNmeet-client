@@ -10,9 +10,9 @@ import {
 } from '@excalidraw/excalidraw/element/types';
 import { isInvisiblySmallElement } from '@excalidraw/excalidraw';
 import {
-  DataMsgBodyType,
   AnalyticsEvents,
   AnalyticsEventType,
+  DataMsgBodyType,
 } from 'plugnmeet-protocol-js';
 
 import { store } from '../../../store';
@@ -112,6 +112,10 @@ export const broadcastSceneOnChange = async (
   currentPage?: number,
   files?: BinaryFiles,
 ) => {
+  if (syncAll) {
+    broadcastedElementVersions.clear();
+  }
+
   // sync out only the elements we think we need to save bandwidth.
   const syncableElements = allElements.reduce((acc, element) => {
     if (
@@ -130,43 +134,34 @@ export const broadcastSceneOnChange = async (
   }
 
   const elementsToBroadcast: ExcalidrawElement[] = [];
-  for (let i = 0; i < syncableElements.length; i++) {
-    const elm = syncableElements[i];
-    let toAdd = true;
+  for (const elm of syncableElements) {
     if (elm.type === 'image' && elm.status === 'pending') {
-      if (!files) {
-        // this mean the file wasn't ready yet
-        continue;
+      // This is a new image. We need to upload its data first.
+      // The `files` object contains the binary data for elements on the canvas.
+      const fileData = elm.fileId && files?.[elm.fileId];
+
+      if (fileData) {
+        // We found the data. Let's upload it.
+        // The `uploadCanvasBinaryFile` function will handle broadcasting
+        // the 'saved' status of the element once the upload is complete.
+        uploadCanvasBinaryFile(
+          currentPage ?? 1,
+          elm,
+          fileData,
+          excalidrawAPI,
+        ).then();
       }
-      let fileFound = false;
-      for (const canvasFile in files) {
-        const file = files[canvasFile];
-        if (file.id === elm.fileId) {
-          fileFound = true;
-          // we'll upload the file first then publish this
-          // otherwise other user will receive a blank element
-          uploadCanvasBinaryFile(
-            currentPage ?? 1,
-            elm,
-            file,
-            excalidrawAPI,
-          ).then();
-          // no need to add until we're ready
-          toAdd = false;
-          break;
-        }
-      }
-      if (!fileFound) {
-        // if no file found then we won't add
-        // because maybe the file isn't ready yet.
-        toAdd = false;
-      }
+      // We must record the version of the pending element so that when it
+      // becomes "saved", the version bump is detected.
+      broadcastedElementVersions.set(elm.id, elm.version);
+      // We don't broadcast the 'pending' element itself. We wait for the
+      // upload to finish and broadcast the 'saved' element then.
+      continue;
     }
 
-    if (toAdd) {
-      broadcastedElementVersions.set(elm.id, elm.version);
-      elementsToBroadcast.push(elm);
-    }
+    // For all other elements, we add them to the broadcast list.
+    broadcastedElementVersions.set(elm.id, elm.version);
+    elementsToBroadcast.push(elm);
   }
 
   if (!elementsToBroadcast.length) {
@@ -186,48 +181,61 @@ const uploadCanvasBinaryFile = async (
     return;
   }
 
-  // add in queue
-  uploadingCanvasBinaryFile.set(file.id, elm.id);
-  const res = await uploadBase64EncodedFile(`${file.id}.png`, file.dataURL);
-  if (!res || !res.status) {
-    return;
-  }
+  try {
+    // Add to the queue to prevent duplicate uploads.
+    uploadingCanvasBinaryFile.set(file.id, elm.id);
 
-  const localElements = excalidrawAPI?.getSceneElementsIncludingDeleted();
-  const newElms: ExcalidrawElement[] = [];
-  let thisElm: any = undefined;
-  localElements?.forEach((el) => {
-    if (el.id === elm.id && el.type === 'image') {
-      thisElm = structuredClone(el);
-      thisElm.status = 'saved';
-      newElms.push(thisElm);
-    } else {
-      newElms.push(el);
+    const res = await uploadBase64EncodedFile(`${file.id}.png`, file.dataURL);
+    if (!res || !res.status) {
+      // If upload fails, we stop here. The `finally` block will clean up the queue.
+      console.error('Failed to upload canvas binary file.');
+      return;
     }
-  });
 
-  const fileToSend: IWhiteboardFile = {
-    id: file.id,
-    currentPage,
-    filePath: res.filePath,
-    fileName: res.fileName,
-    isOfficeFile: false,
-    uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height ?? 100,
-    uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width ?? 100,
-    excalidrawElement: thisElm,
-  };
+    const localElements =
+      excalidrawAPI?.getSceneElementsIncludingDeleted() ?? [];
+    let updatedImageElement: ExcalidrawImageElement | undefined;
 
-  store.dispatch(addWhiteboardOtherImageFile(fileToSend));
-  const files =
-    store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
-  conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
+    // Use map for a cleaner, immutable update.
+    const newElms = localElements.map((el) => {
+      if (el.id === elm.id && el.type === 'image') {
+        updatedImageElement = {
+          ...el,
+          status: 'saved',
+          version: el.version + 1,
+          versionNonce: el.versionNonce + 1,
+        };
+        return updatedImageElement;
+      }
+      return el;
+    });
 
-  // finally update screen
-  excalidrawAPI?.updateScene({
-    elements: newElms,
-  });
+    const fileToSend: IWhiteboardFile = {
+      id: file.id,
+      currentPage,
+      filePath: res.filePath,
+      fileName: res.fileName,
+      isOfficeFile: false,
+      uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height ?? 100,
+      uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width ?? 100,
+      excalidrawElement: updatedImageElement,
+    };
 
-  uploadingCanvasBinaryFile.delete(file.id);
+    store.dispatch(addWhiteboardOtherImageFile(fileToSend));
+    const files =
+      store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
+    conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
+
+    // Finally, update the scene with the element marked as 'saved'.
+    excalidrawAPI?.updateScene({
+      elements: newElms,
+    });
+  } catch (error) {
+    console.error('Error during canvas file upload:', error);
+  } finally {
+    // Always remove from the queue, whether it succeeded or failed.
+    uploadingCanvasBinaryFile.delete(file.id);
+  }
 };
 
 export const broadcastScreenDataBySocket = async (

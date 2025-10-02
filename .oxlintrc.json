@@ -24,7 +24,10 @@
         "iframe-missing-sandbox": "off",
         "consistent-function-scoping": "off",
         "prefer-add-event-listener": "off",
-        "no-await-in-loop": "off"
+        "no-await-in-loop": "off",
+        "no-unused-expressions": "off",
+        "no-array-sort": "off",
+        "no-array-reverse": "off"
       }
     }
   ]

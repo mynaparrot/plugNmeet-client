@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
@@ -7,8 +8,11 @@ import {
   IWhiteboardOfficeFile,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import { randomString } from '../../../helpers/utils';
+import { randomString, sleep } from '../../../helpers/utils';
 import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
+
+// A simple in-memory cache for preloaded library items.
+const libraryCache = new Map<string, Blob>();
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -31,10 +35,18 @@ export const addPreloadedLibraryItems = (
 
   libraryItems.forEach(async (item) => {
     try {
-      const request = await fetch(item);
-      const blob = await request.blob();
+      let blob: Blob;
+      if (libraryCache.has(item)) {
+        // Cache hit: Use the cached blob.
+        blob = libraryCache.get(item)!;
+      } else {
+        // Cache miss: Fetch the library, convert to blob, and cache it.
+        const request = await fetch(item);
+        blob = await request.blob();
+        libraryCache.set(item, blob);
+      }
       await excalidrawAPI.updateLibrary({
-        libraryItems: blob,
+        libraryItems: blob, // Use the blob (from cache or network)
         merge: true,
         defaultStatus: 'published',
       });
@@ -44,37 +56,52 @@ export const addPreloadedLibraryItems = (
   });
 };
 
-export const formatStorageKey = (pageNumber) => {
-  const currentFileId =
-    store.getState().whiteboard.currentWhiteboardOfficeFileId;
-  return `${currentFileId}_${pageNumber}`;
+export const formatStorageKey = (pageNumber: number, fileId?: string) => {
+  const key =
+    fileId ?? store.getState().whiteboard.currentWhiteboardOfficeFileId;
+  return `${key}_${pageNumber}`;
 };
 
 export const savePageData = (
   excalidrawAPI: ExcalidrawImperativeAPI,
   page: number,
+  fileId?: string,
 ) => {
   const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elms.length) {
-    sessionStorage.setItem(formatStorageKey(page), JSON.stringify(elms));
+    sessionStorage.setItem(
+      formatStorageKey(page, fileId),
+      JSON.stringify(elms),
+    );
   }
 };
 
 export const displaySavedPageData = (
-  excalidrawAPI: ExcalidrawImperativeAPI,
+  getExcalidrawAPI: () => ExcalidrawImperativeAPI | null,
   isPresenter: boolean,
   page: number,
+  isSwitching?: RefObject<boolean>,
 ) => {
   const data = sessionStorage.getItem(formatStorageKey(page));
+  const excalidrawAPI = getExcalidrawAPI();
   if (data && excalidrawAPI) {
     const elements = JSON.parse(data);
     if (Array.isArray(elements) && elements.length) {
       excalidrawAPI.updateScene({ elements });
       if (isPresenter) {
         // better to broadcast full screen
-        broadcastSceneOnChange(elements, true).then();
+        sleep(1000).then(() => {
+          const latestElms =
+            getExcalidrawAPI()?.getSceneElementsIncludingDeleted();
+          broadcastSceneOnChange(latestElms ?? elements, true).then();
+          if (isSwitching) {
+            isSwitching.current = false;
+          }
+        });
       }
     }
+  } else if (isSwitching) {
+    isSwitching.current = false;
   }
 };
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   createLocalTracks,
-  LocalTrackPublication,
+  LocalTrack,
   ParticipantEvent,
   Track,
 } from 'livekit-client';
@@ -37,18 +37,18 @@ import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
-  const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
+  const currentRoom = getMediaServerConnRoom();
   const conn = getNatsConn();
 
-  const { showTooltip, muteOnStart, isAdmin } = useMemo(() => {
+  const { showTooltip, muteOnStart, isAdmin, defaultLock } = useMemo(() => {
     const session = store.getState().session;
     return {
       showTooltip: session.userDeviceType === 'desktop',
-      muteOnStart:
-        session.currentRoom.metadata?.roomFeatures?.muteOnStart ?? false,
+      muteOnStart: !!session.currentRoom.metadata?.roomFeatures?.muteOnStart,
       isAdmin: !!session.currentUser?.metadata?.isAdmin,
-      isRecorder: !!session.currentUser?.isRecorder,
+      defaultLock:
+        !!session.currentRoom?.metadata?.defaultLockSettings?.lockMicrophone,
     };
   }, []);
 
@@ -69,47 +69,31 @@ const MicrophoneIcon = () => {
     (state) => state.roomSettings.selectedAudioDevice,
   );
 
-  const isLocked = useMemo(() => !isAdmin && isMicLock, [isAdmin, isMicLock]);
+  // Lock if not an admin & user-specific lock is set, or fall back to room default.
+  const isLocked = useMemo(
+    () => !isAdmin && (isMicLock ?? defaultLock),
+    [isAdmin, isMicLock, defaultLock],
+  );
 
   // for change in mic lock setting
   useEffect(() => {
-    const closeMicOnLock = async (publication: LocalTrackPublication) => {
-      if (publication.track && publication.source === Track.Source.Microphone) {
-        await currentRoom.localParticipant.unpublishTrack(
-          publication.track,
-          true,
-        );
-      }
+    if (!currentRoom) return;
 
+    const closeMicOnLock = async (micTrack: LocalTrack) => {
+      await currentRoom.localParticipant.unpublishTrack(micTrack, true);
       dispatch(updateIsActiveMicrophone(false));
       dispatch(updateIsMicMuted(false));
     };
 
     if (isLocked) {
-      if (!currentRoom) {
-        return;
-      }
       const mic = currentRoom.localParticipant.getTrackPublication(
         Track.Source.Microphone,
       );
-      if (mic) {
-        closeMicOnLock(mic).then();
+      if (mic && mic.track) {
+        closeMicOnLock(mic.track).then();
       }
     }
   }, [isLocked, currentRoom, dispatch]);
-
-  // default room lock settings
-  useEffect(() => {
-    const isLock =
-      store.getState().session.currentRoom.metadata?.defaultLockSettings
-        ?.lockMicrophone;
-    const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
-
-    if (isLock && !isAdmin && isMicLock !== false) {
-      // we don't need to do anything as `isLocked` will be true
-    }
-    // eslint-disable-next-line
-  }, []);
 
   const speakingHandler = useCallback(
     (speaking: boolean) => {
@@ -199,6 +183,10 @@ const MicrophoneIcon = () => {
 
   const manageMic = useCallback(async () => {
     if (!isActiveMicrophone && !isLocked) {
+      // get devices before showing the modal
+      const devices = await getInputMediaDevices('audio');
+      dispatch(addAudioDevices(devices.audio));
+
       dispatch(updateShowMicrophoneModal(true));
     }
 
@@ -235,36 +223,24 @@ const MicrophoneIcon = () => {
         },
         video: false,
       });
-      for (let i = 0; i < localTracks.length; i++) {
-        const track = localTracks[i];
-        if (track.kind === Track.Kind.Audio) {
-          await currentRoom.localParticipant.publishTrack(track, {
-            audioPreset: getAudioPreset(),
-          });
-          dispatch(updateIsActiveMicrophone(true));
-        }
-      }
-      if (muteOnStart) {
-        setTimeout(async () => {
-          const audioTracks =
-            currentRoom.localParticipant.audioTrackPublications;
 
-          if (audioTracks) {
-            for (const [, publication] of audioTracks.entries()) {
-              if (
-                publication.track &&
-                publication.track.source === Track.Source.Microphone
-              ) {
-                if (!publication.isMuted) {
-                  await publication.track.mute();
-                  dispatch(updateIsMicMuted(true));
-                  // we'll disable it as it was first time only.
-                  dispatch(updateMuteOnStart(false));
-                }
-              }
-            }
-          }
-        }, 500);
+      const audioTrack = localTracks.find(
+        (track) => track.kind === Track.Kind.Audio,
+      );
+
+      if (audioTrack) {
+        if (muteOnStart) {
+          // Mute the track before publishing to prevent any audio leak.
+          await audioTrack.mute();
+          dispatch(updateIsMicMuted(true));
+          // We'll disable it as it was for the first time only.
+          dispatch(updateMuteOnStart(false));
+        }
+
+        await currentRoom.localParticipant.publishTrack(audioTrack, {
+          audioPreset: getAudioPreset(),
+        });
+        dispatch(updateIsActiveMicrophone(true));
       }
 
       if (deviceId != null) {
@@ -274,16 +250,11 @@ const MicrophoneIcon = () => {
     [dispatch, currentRoom, muteOnStart],
   );
 
-  // initially only
+  // only for initial if device was selected in landing page
   useEffect(() => {
-    const getDevices = async () => {
-      const devices = await getInputMediaDevices('audio');
-      dispatch(addAudioDevices(devices.audio));
-      if (selectedAudioDevice) {
-        onCloseMicrophoneModal(selectedAudioDevice).then();
-      }
-    };
-    getDevices().then();
+    if (selectedAudioDevice) {
+      onCloseMicrophoneModal(selectedAudioDevice).then();
+    }
     //eslint-disable-next-line
   }, [onCloseMicrophoneModal]);
 

@@ -2,7 +2,7 @@ name: Build and release client
 on:
   push:
     branches:
-      - main
+      - Design-2.0
 
 permissions:
   contents: write

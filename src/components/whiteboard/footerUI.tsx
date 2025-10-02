@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import {
@@ -6,16 +6,16 @@ import {
   SwitchPresenterReqSchema,
   SwitchPresenterTask,
 } from 'plugnmeet-protocol-js';
+import { debounce } from 'es-toolkit';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import { useTranslation } from 'react-i18next';
 
-import usePreviousPage from './helpers/hooks/usePreviousPage';
+import usePrevious from './helpers/hooks/usePrevious';
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
-import { useTranslation } from 'react-i18next';
 import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import usePreviousFileId from './helpers/hooks/usePreviousFileId';
-import { displaySavedPageData, savePageData } from './helpers/utils';
+import { savePageData } from './helpers/utils';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -32,98 +32,42 @@ const FooterUI = ({
 }: IFooterUIProps) => {
   const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
-  const currentWhiteboardOfficeFileId = useAppSelector(
-    (state) => state.whiteboard.currentWhiteboardOfficeFileId,
-  );
-  const previousFileId = usePreviousFileId(currentWhiteboardOfficeFileId);
-  const [options, setOptions] = useState<Array<ReactElement>>();
-  const [disablePre, setDisablePre] = useState(true);
-  const [disableNext, setDisableNext] = useState(false);
-  const previousPage = usePreviousPage(currentPage);
+
+  const previousPage = usePrevious(currentPage);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const currentUser = store.getState().session.currentUser;
-  const isAdmin = currentUser?.metadata?.isAdmin;
-  const isRecorder = currentUser?.isRecorder;
+  const { currentUser, isAdmin, isRecorder } = useMemo(() => {
+    const currentUser = store.getState().session.currentUser;
+    return {
+      currentUser,
+      isAdmin: currentUser?.metadata?.isAdmin,
+      isRecorder: currentUser?.isRecorder,
+    };
+  }, []);
 
   useEffect(() => {
-    if (previousPage && currentPage !== previousPage && excalidrawAPI) {
-      savePreviousPageData();
+    if (
+      isPresenter &&
+      previousPage &&
+      currentPage !== previousPage &&
+      excalidrawAPI
+    ) {
+      savePageData(excalidrawAPI, previousPage);
     }
-    //eslint-disable-next-line
-  }, [currentPage, previousPage, excalidrawAPI]);
+  }, [isPresenter, currentPage, previousPage, excalidrawAPI]);
 
-  useEffect(() => {
-    if (currentPage > 1) {
-      setDisablePre(false);
-    }
-    if (currentPage === 1) {
-      setDisablePre(true);
-    }
-
-    if (disableNext) {
-      if (currentPage !== totalPages) {
-        setDisableNext(false);
-      }
-    } else {
-      if (currentPage === totalPages) {
-        setDisableNext(true);
-      }
-    }
-  }, [currentPage, disableNext, totalPages]);
-
-  useEffect(() => {
-    const element: Array<ReactElement> = [];
-    for (let i = 0; i < totalPages; i++) {
-      element.push(
-        <option key={i} value={i + 1}>
-          {t('whiteboard.page', { count: i + 1 })}
-        </option>,
-      );
-    }
-    setOptions(element);
-    //eslint-disable-next-line
-  }, [totalPages]);
-
-  useEffect(() => {
-    if (currentWhiteboardOfficeFileId !== previousFileId && isPresenter) {
-      setTimeout(() => {
-        if (excalidrawAPI) {
-          displaySavedPageData(excalidrawAPI, isPresenter, currentPage);
-        }
-      }, 500);
-    }
-    //eslint-disable-next-line
-  }, [currentWhiteboardOfficeFileId, previousFileId, currentPage]);
-
-  const savePreviousPageData = () => {
-    if (!excalidrawAPI) {
-      return;
-    }
-    // for other user we'll clean from parent component
-    // because from mobile or small screen pagination part remain collapse
-    // no event will be run if this part don't show
-    if (isPresenter) {
-      if (previousPage) {
-        savePageData(excalidrawAPI, previousPage);
-      }
-      cleanExcalidraw();
-      displaySavedPageData(excalidrawAPI, isPresenter, currentPage);
-    }
-  };
-
-  const cleanExcalidraw = () => {
-    excalidrawAPI?.updateScene({
-      elements: [],
-    });
-  };
+  const debouncedSetCurrentPage = useMemo(
+    () =>
+      debounce(async (page: number) => {
+        await broadcastCurrentPageNumber(page);
+        dispatch(setWhiteboardCurrentPage(page));
+      }, 300),
+    [dispatch],
+  );
 
   const setCurrentPage = (page: number) => {
-    broadcastCurrentPageNumber(page);
-    setTimeout(() => {
-      dispatch(setWhiteboardCurrentPage(page));
-    }, 500);
+    debouncedSetCurrentPage(page);
   };
 
   const handlePre = () => {
@@ -143,7 +87,7 @@ const FooterUI = ({
   const renderForAdmin = () => {
     return (
       <div className="flex wb-page-navigation ml-2">
-        <button className="pre" onClick={handlePre} disabled={disablePre}>
+        <button className="pre" onClick={handlePre} disabled={currentPage <= 1}>
           <i className="pnm-arrow-left-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
         <select
@@ -153,9 +97,17 @@ const FooterUI = ({
           onChange={(e) => setCurrentPage(Number(e.currentTarget.value))}
           value={currentPage}
         >
-          {options}
+          {Array.from({ length: totalPages }, (_, i) => (
+            <option key={i} value={i + 1}>
+              {t('whiteboard.page', { count: i + 1 })}
+            </option>
+          ))}
         </select>
-        <button className="next" onClick={handleNext} disabled={disableNext}>
+        <button
+          className="next"
+          onClick={handleNext}
+          disabled={currentPage >= totalPages}
+        >
           <i className="pnm-arrow-right-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
       </div>
@@ -232,7 +184,7 @@ const FooterUI = ({
     );
   };
 
-  return <>{isPresenter ? renderForAdmin() : renderForParticipant()}</>;
+  return isPresenter ? renderForAdmin() : renderForParticipant();
 };
 
 export default React.memo(FooterUI);
