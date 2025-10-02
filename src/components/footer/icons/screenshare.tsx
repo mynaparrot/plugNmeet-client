@@ -20,6 +20,16 @@ const ScrenshareIcon = () => {
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
 
+  const { isAdmin, isScreenShareAllowed, showTooltip } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isScreenShareAllowed:
+        !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
+      showTooltip: session.userDeviceType === 'desktop',
+    };
+  }, []);
+
   const isActiveScreenshare = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveScreenshare,
   );
@@ -30,15 +40,6 @@ const ScrenshareIcon = () => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
   );
-  const { isAdmin, isScreenShareAllowed, showTooltip } = useMemo(() => {
-    const session = store.getState().session;
-    return {
-      isAdmin: !!session.currentUser?.metadata?.isAdmin,
-      isScreenShareAllowed:
-        !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
-      showTooltip: session.userDeviceType === 'desktop',
-    };
-  }, []);
 
   const isLocked = useMemo(
     () => !isAdmin && isScreenshareLock,

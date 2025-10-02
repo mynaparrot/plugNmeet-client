@@ -27,13 +27,24 @@ const WebcamIcon = () => {
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
 
-  const { showTooltip, isAdmin, defaultLock } = useMemo(() => {
+  const { showTooltip, isAdmin, defaultLock, isWebcamAllowed } = useMemo(() => {
     const session = store.getState().session;
+    const roomFeatures = session.currentRoom.metadata?.roomFeatures;
+    const isAdmin = !!session.currentUser?.metadata?.isAdmin;
+
+    let show = true;
+    if (!roomFeatures?.allowWebcams) {
+      show = false;
+    } else if (roomFeatures?.adminOnlyWebcams && !isAdmin) {
+      show = false;
+    }
+
     return {
       showTooltip: session.userDeviceType === 'desktop',
-      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isAdmin,
       defaultLock:
         !!session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam,
+      isWebcamAllowed: show,
     };
   }, []);
   const showVideoShareModal = useAppSelector(
@@ -192,23 +203,6 @@ const WebcamIcon = () => {
     [replaceTrack, currentRoom, dispatch],
   );
 
-  const shouldShow = () => {
-    const session = store.getState().session;
-    const room_features = session.currentRoom.metadata?.roomFeatures;
-    const currentUser = session.currentUser;
-
-    if (!room_features?.allowWebcams) {
-      return false;
-    } else if (
-      room_features?.adminOnlyWebcams &&
-      !currentUser?.metadata?.isAdmin
-    ) {
-      return false;
-    }
-
-    return true;
-  };
-
   const getTooltipText = () => {
     if (!isActiveWebcam && !isWebcamLock) {
       return t('footer.icons.start-webcam');
@@ -219,7 +213,7 @@ const WebcamIcon = () => {
     }
   };
 
-  if (!shouldShow()) {
+  if (!isWebcamAllowed) {
     return null;
   }
 

@@ -52,6 +52,7 @@
     "e2ee-unsupported-browser-msg": "This meeting uses security features that your browser does not support. Please try a different browser like Chrome or Firefox.",
     "e2ee-invalid-key-title": "Invalid Security Key",
     "e2ee-invalid-key-msg": "The security key you entered is incorrect.",
+    "e2ee-empty-key-msg": "The security key cannot be empty.",
     "nats-error-title": "Connection Error",
     "nats-error-no-response": "Could not connect to the server. Please try again later. (Error: {{error}})",
     "nats-error-timeout": "The server is not responding. Please try again later. (Error: {{error}})",
@@ -160,7 +161,7 @@
     "require-ssl-title": "Secure Connection Required",
     "require-ssl-des": "A secure (SSL) connection is required to use this service.",
     "insert-secret-key": "Enter Security Key",
-    "insert-secret-help": "To connect securely, everyone must use the exact same secret key. If the keys don't match, you won't be able to see or hear each other. Please coordinate with other participants to get the correct key.",
+    "insert-secret-help": "For this secure meeting, everyone must use the same Security Key. If it doesn't match, you won't be able to connect. Please get the correct Security Key from the meeting organizer.",
     "save": "Save"
   },
   "left-panel": {
