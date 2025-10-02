@@ -70,7 +70,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                 {volume ? (
                   <Microphone classes="h-3 3xl:h-4 w-auto" />
                 ) : (
-                  <MicrophoneOff classes="h-4 w-auto" />
+                  <MicrophoneOff classes="h-3 3xl:h-4 w-auto" />
                 )}
               </MenuButton>
 
@@ -107,7 +107,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                       {volume ? (
                         <Microphone classes="h-3 3xl:h-4 w-auto" />
                       ) : (
-                        <MicrophoneOff classes="h-4 w-auto" />
+                        <MicrophoneOff classes="h-3 3xl:h-4 w-auto" />
                       )}
                     </button>
                   </section>
