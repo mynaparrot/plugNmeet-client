@@ -56,13 +56,14 @@ const Modal = ({
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950"
+                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950 mb-2"
               >
                 <span>{title}</span>
                 <Button className="cursor-pointer" onClick={onClose}>
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
+              <hr />
               <div className="mt-5">{children}</div>
               {renderButtons && (
                 <div className="mt-8 flex justify-end">{renderButtons()}</div>
