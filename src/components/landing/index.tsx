@@ -182,14 +182,14 @@ const Landing = ({
                     ) : (
                       <button
                         type="button"
-                        className={`w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold  hover:bg-white border  rounded-[15px] transition-all duration-300 shadow-button-shadow relative ${lockMicrophone ? 'border-Red-600 bg-transparent pointer-events-none text-Red-600' : 'border-[#0088CC] bg-Blue text-white hover:text-Gray-950'}`}
+                        className={`w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold  hover:bg-white border  rounded-[15px] transition-all duration-300 shadow-button-shadow relative ${lockMicrophone ? 'border-Red-600 bg-Red-600 pointer-events-none text-white' : 'border-[#0088CC] bg-Blue text-white hover:text-Gray-950'}`}
                         disabled={lockMicrophone}
                         onClick={() => enableMediaDevices('both')}
                       >
                         <span className="relative">
                           {t('landing.enable-mic-cam-btn')}
                           {lockMicrophone ? (
-                            <i className="pnm-lock absolute -top-2 -right-2 z-10"></i>
+                            <i className="pnm-lock absolute -top-2 -right-4 z-10"></i>
                           ) : (
                             ''
                           )}

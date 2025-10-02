@@ -143,27 +143,19 @@ const FooterUI = ({
   const renderForAdmin = () => {
     return (
       <div className="flex wb-page-navigation ml-2">
-        <button
-          className="pre w-8 h-8 flex items-center justify-center"
-          onClick={handlePre}
-          disabled={disablePre}
-        >
+        <button className="pre" onClick={handlePre} disabled={disablePre}>
           <i className="pnm-arrow-left-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
         <select
           id="pages"
           name="pages"
-          className="pagesOpts block h-8 py-1 px-3 border border-gray-300 bg-white dark:bg-dark-secondary rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="pagesOpts appearance-none cursor-pointer block h-8 py-1 px-3 border border-gray-300 dark:border-gray-100 border-t-0 border-b-0 bg-transparent shadow-xs focus:outline-hidden sm:text-sm"
           onChange={(e) => setCurrentPage(Number(e.currentTarget.value))}
           value={currentPage}
         >
           {options}
         </select>
-        <button
-          className="next w-8 h-8 flex items-center justify-center"
-          onClick={handleNext}
-          disabled={disableNext}
-        >
+        <button className="next" onClick={handleNext} disabled={disableNext}>
           <i className="pnm-arrow-right-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
       </div>

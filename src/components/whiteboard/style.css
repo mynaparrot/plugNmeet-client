@@ -60,19 +60,66 @@
         padding: 0 0.5rem;
         align-items: center;
       }
+      button.wb-manage-upload-file {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.625rem;
+        width: var(--button-width, var(--default-button-size));
+        height: var(--button-height, var(--default-button-size));
+        box-sizing: border-box;
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--button-border, var(--default-border-color));
+        border-radius: var(--border-radius-lg);
+        cursor: pointer;
+        background-color: var(--button-bg, var(--island-bg-color));
+        color: var(--button-color, var(--color-on-surface));
+        font-family: var(--ui-font);
+        border: none;
+        box-shadow: 0 0 0 1px var(--color-surface-lowest);
+        background-color: var(--color-surface-low);
+        width: auto;
+        height: var(--lg-button-size);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        line-height: 0;
+        font-size: 0.75rem;
+        letter-spacing: 0.4px;
+        &:hover {
+          background-color: var(--button-hover-bg, var(--island-bg-color));
+          border-color: var(
+            --button-hover-border,
+            var(--button-border, var(--default-border-color))
+          );
+          color: #b8b8b8;
+        }
+      }
       .wb-page-navigation {
+        background-color: var(--color-surface-low);
+        border-radius: var(--border-radius-lg);
+        box-shadow: 0 0 0 1px var(--color-surface-lowest);
+        overflow: hidden;
+        width: max-content;
         button {
-          border: 1px solid var(--default-border-color) !important;
+          /* border: 1px solid var(--default-border-color) !important; */
           width: var(--lg-button-size);
           height: var(--lg-button-size);
-          background-color: var(--island-bg-color);
+          /* background-color: var(--island-bg-color);
           border-radius: var(--border-radius-lg);
-          margin: 0 0.4rem;
+          margin: 0 0.4rem; */
+
           &:disabled {
             cursor: not-allowed;
           }
           &:hover {
-            background: var(--button-hover-bg);
+            background-color: var(--button-hover-bg, var(--island-bg-color));
+            border-color: var(
+              --button-hover-border,
+              var(--button-border, var(--default-border-color))
+            );
+            color: #b8b8b8;
             i {
               color: #fff;
             }
