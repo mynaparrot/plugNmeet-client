@@ -211,7 +211,7 @@ const WebcamIcon = () => {
 
   const getTooltipText = () => {
     if (!isActiveWebcam && !isWebcamLock) {
-      return t('footer.icons.start-webcam-sharing');
+      return t('footer.icons.start-webcam');
     } else if (!isActiveWebcam && isWebcamLock) {
       return t('footer.icons.webcam-locked');
     } else if (isActiveWebcam) {
