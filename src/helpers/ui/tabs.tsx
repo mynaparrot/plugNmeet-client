@@ -40,10 +40,7 @@ const Tabs = ({
       </TabList>
       <TabPanels className={clsx('relative', tabPanelsCss)}>
         {items.map((item) => (
-          <TabPanel
-            key={item.id}
-            className="pt-2 xl:pt-5 h-full overflow-auto scrollBar outline-hidden"
-          >
+          <TabPanel key={item.id} className="pt-2 xl:pt-5 outline-hidden">
             {item.content}
           </TabPanel>
         ))}

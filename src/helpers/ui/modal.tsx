@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -19,6 +19,7 @@ interface IModalProps {
   maxWidth?: string;
   customClass?: string;
   renderButtons?: () => React.ReactNode;
+  unmount?: boolean;
 }
 
 const Modal = ({
@@ -29,44 +30,70 @@ const Modal = ({
   maxWidth = 'max-w-lg',
   customClass,
   renderButtons,
+  unmount,
 }: IModalProps) => {
+  const [isOpen, setIsOpen] = useState(show);
+
+  useEffect(() => {
+    setIsOpen(show);
+  }, [show]);
+
   return (
-    <Transition appear show={show} as={Fragment}>
+    <Transition appear show={isOpen} as={Fragment} afterLeave={onClose}>
       <Dialog
         as="div"
-        className="Modal fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
-        onClose={onClose}
+        className="relative z-50 focus:outline-hidden"
+        onClose={() => false}
+        unmount={unmount}
       >
-        <div className="flex min-h-full items-center justify-center p-4">
+        <TransitionChild
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in-out duration-300"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-Gray-950/70" />
+        </TransitionChild>
+
+        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
+            leave="ease-in-out duration-300"
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
             <DialogPanel
               className={clsx(
-                'w-full bg-white border border-Gray-200 shadow-virtualPOP p-6 rounded-xl overflow-hidden duration-300 ease-out',
+                'w-full bg-white border border-Gray-200 shadow-virtualPOP rounded-xl',
                 maxWidth,
-                customClass, // Keep for other customizations
+                customClass,
               )}
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-lg font-semibold leading-7 text-Gray-950 mb-2"
+                className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100"
               >
                 <span>{title}</span>
-                <Button className="cursor-pointer" onClick={onClose}>
+                <Button
+                  className="cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <hr />
-              <div className="mt-5">{children}</div>
+              <div className="p-4 bg-Gray-25 max-h-[75vh] overflow-y-auto scrollBar">
+                {children}
+              </div>
               {renderButtons && (
-                <div className="mt-8 flex justify-end">{renderButtons()}</div>
+                <div className="px-4 py-4 border-t border-Gray-100 flex justify-end">
+                  {renderButtons()}
+                </div>
               )}
             </DialogPanel>
           </TransitionChild>

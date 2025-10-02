@@ -1,11 +1,13 @@
 import React from 'react';
 import { Field, Label, Switch } from '@headlessui/react';
+import clsx from 'clsx';
 
 interface ISettingsSwitchProps {
   label: string;
   enabled: boolean;
   onChange: (enabled: boolean) => void;
   disabled?: boolean;
+  customCss?: string;
 }
 
 const SettingsSwitch = ({
@@ -13,9 +15,13 @@ const SettingsSwitch = ({
   enabled,
   onChange,
   disabled,
+  customCss,
 }: ISettingsSwitchProps) => {
   return (
-    <Field as="div" className="flex items-center justify-between my-4">
+    <Field
+      as="div"
+      className={clsx('flex items-center justify-between', customCss)}
+    >
       <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text">
         {label}
       </Label>

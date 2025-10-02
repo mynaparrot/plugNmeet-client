@@ -1,18 +1,5 @@
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react';
 import { isEmpty } from 'es-toolkit/compat';
 import {
   SpeechRecognizer,
@@ -21,9 +8,9 @@ import {
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { updateDisplaySpeechSettingOptionsModal } from '../../../store/slices/bottomIconsActivitySlice';
 
+import Modal from '../../../helpers/ui/modal';
 import SpeechInputSettings from './speechInputSettings';
 import SubtitleFontSizeSlider from './subtitleFontSizeSlider';
 import SubtitleLangSelector from './subtitleLangSelector';
@@ -112,82 +99,41 @@ const SpeechSettingsModal = ({
   };
 
   return (
-    <div className="show-speech-setting absolute bottom-14 left-2">
-      <Transition appear show={isActiveDisplayOptionsModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="showSpeechSettingPopup fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
-          onClose={() => false}
+    <Modal
+      show={isActiveDisplayOptionsModal}
+      onClose={() => dispatch(updateDisplaySpeechSettingOptionsModal(false))}
+      title={t('speech-services.start-modal-title')}
+      customClass="showSpeechSettingPopup"
+    >
+      <div className="grid gap-4">
+        {canShowSpeechSetting && (
+          <SpeechInputSettings
+            recognizer={recognizer}
+            speechService={speechService}
+            selectedSpeechLang={selectedSpeechLang}
+            setSelectedSpeechLang={setSelectedSpeechLang}
+            selectedMicDevice={selectedMicDevice}
+            setSelectedMicDevice={setSelectedMicDevice}
+          />
+        )}
+        <SubtitleLangSelector
+          speechService={speechService}
+          selectedSubtitleLang={selectedSubtitleLang}
+          setSelectedSubtitleLang={setSelectedSubtitleLang}
+        />
+        <SubtitleFontSizeSlider />
+      </div>
+      <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5">
+        <button
+          className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+          onClick={() => startOrStopService()}
         >
-          <div className="flex min-h-full items-center justify-center p-4">
-            <TransitionChild
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtualPOP rounded-xl duration-300 ease-out">
-                <DialogTitle
-                  as="h3"
-                  className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 py-5 px-5 text-Gray-950 border-b border-Gray-100"
-                >
-                  <span>{t('speech-services.start-modal-title')}</span>
-                  <Button
-                    onClick={() => toggleDisplayOptionsModal()}
-                    className="cursor-pointer"
-                  >
-                    <PopupCloseSVGIcon classes="text-Gray-600" />
-                  </Button>
-                </DialogTitle>
-                <div className="grid gap-4">
-                  {canShowSpeechSetting ? (
-                    <SpeechInputSettings
-                      recognizer={recognizer}
-                      speechService={speechService}
-                      selectedSpeechLang={selectedSpeechLang}
-                      setSelectedSpeechLang={setSelectedSpeechLang}
-                      selectedMicDevice={selectedMicDevice}
-                      setSelectedMicDevice={setSelectedMicDevice}
-                    />
-                  ) : null}
-                  <SubtitleLangSelector
-                    speechService={speechService}
-                    selectedSubtitleLang={selectedSubtitleLang}
-                    setSelectedSubtitleLang={setSelectedSubtitleLang}
-                  />
-                  <SubtitleFontSizeSlider />
-                </div>
-                <div className="bottom-area py-5 px-5 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5">
-                  <>
-                    {canShowSpeechSetting ? (
-                      <button
-                        className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                        onClick={() => startOrStopService()}
-                      >
-                        {recognizer
-                          ? t('speech-services.stop-service')
-                          : t('speech-services.start-service')}
-                      </button>
-                    ) : null}
-                  </>
-                  {!canShowSpeechSetting ? (
-                    <button
-                      className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                      onClick={() => startOrStopService()}
-                    >
-                      {t('speech-services.start-service')}
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </TransitionChild>
-          </div>
-        </Dialog>
-      </Transition>
-    </div>
+          {canShowSpeechSetting && recognizer
+            ? t('speech-services.stop-service')
+            : t('speech-services.start-service')}
+        </button>
+      </div>
+    </Modal>
   );
 };
 

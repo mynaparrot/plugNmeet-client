@@ -1,14 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import {
-  Field,
-  Label,
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Switch,
-  Transition,
-} from '@headlessui/react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Field, Label, Switch } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import {
   SpeechRecognizer,
@@ -17,9 +8,8 @@ import {
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
 import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
-import { DropdownIconSVG } from '../../../assets/Icons/DropdownIconSVG';
-import { CheckMarkIcon } from '../../../assets/Icons/CheckMarkIcon';
 import MicSelector from './micSelector';
+import Dropdown from '../../../helpers/ui/dropdown';
 
 interface ISpeechInputSettingsProps {
   speechService: SpeechToTextTranslationFeatures;
@@ -49,77 +39,30 @@ const SpeechInputSettings = ({
     //eslint-disable-next-line
   }, [enableSpeechToText]);
 
+  const speechLangOptions = useMemo(() => {
+    return (
+      speechService.allowedSpeechLangs?.map((l) => {
+        return {
+          value: l,
+          text:
+            supportedSpeechToTextLangs.find((lang) => lang.code === l)?.name ??
+            l,
+        };
+      }) ?? []
+    );
+  }, [speechService.allowedSpeechLangs]);
+
   const speechLangElms = () => {
     return (
       <>
-        <div className="">
-          <label
-            htmlFor="speech-lang"
-            className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right mb-2 block"
-          >
-            {t('speech-services.speech-lang-label')}
-          </label>
-          <Listbox
-            value={selectedSpeechLang}
-            onChange={setSelectedSpeechLang}
-            disabled={recognizer !== undefined}
-          >
-            <div className="relative w-full">
-              <ListboxButton
-                className={`min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 ${
-                  recognizer !== undefined ? 'opacity-70' : ''
-                }`}
-              >
-                <span className="block truncate">
-                  {supportedSpeechToTextLangs
-                    .map((l) => (l.code === selectedSpeechLang ? l.name : null))
-                    .join('')}
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-                  <DropdownIconSVG />
-                </span>
-              </ListboxButton>
-
-              <Transition
-                as={Fragment}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5">
-                  {speechService.allowedSpeechLangs?.map((l) => (
-                    <ListboxOption
-                      key={l}
-                      className={({ focus, selected }) =>
-                        `relative cursor-default select-none py-2 px-3 rounded-[8px] truncate ${
-                          focus ? 'bg-Blue2-50' : ''
-                        } ${selected ? 'bg-Blue2-50' : ''}`
-                      }
-                      value={l}
-                    >
-                      {({ selected }) => (
-                        <>
-                          <span className={`block`}>
-                            {
-                              supportedSpeechToTextLangs.find(
-                                (lang) => lang.code === l,
-                              )?.name
-                            }
-                          </span>
-                          {selected ? (
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
-                              <CheckMarkIcon />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Transition>
-            </div>
-          </Listbox>
-        </div>
+        <Dropdown
+          id="speech-lang"
+          value={selectedSpeechLang}
+          onChange={setSelectedSpeechLang}
+          options={speechLangOptions}
+          label={t('speech-services.speech-lang-label')}
+          direction="vertical"
+        />
 
         <MicSelector
           disabled={recognizer !== undefined}

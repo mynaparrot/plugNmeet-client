@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PollDataWithOption, publishPollResultByChat } from '../../utils';
+import ActionButton from '../../../../helpers/ui/actionButton';
 
 interface PublishResultBtnProps {
   pollDataWithOption: PollDataWithOption;
@@ -13,20 +14,24 @@ const PublishResultBtn = ({
   onCloseViewDetails,
 }: PublishResultBtnProps) => {
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const publishByChat = () => {
+    setIsLoading(true);
     publishPollResultByChat(pollDataWithOption).finally(() =>
       onCloseViewDetails(),
     );
   };
 
   return (
-    <button
-      className="h-10 3xl:h-11 cursor-pointer px-5 flex items-center justify-center w-full rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-Dark-blue transition-all duration-300 hover:bg-Dark-blue shadow-button-shadow"
-      onClick={() => publishByChat()}
+    <ActionButton
+      onClick={publishByChat}
+      isLoading={isLoading}
+      buttonType="button"
+      custom="w-44"
     >
       {t('polls.publish-result')}
-    </button>
+    </ActionButton>
   );
 };
 export default PublishResultBtn;

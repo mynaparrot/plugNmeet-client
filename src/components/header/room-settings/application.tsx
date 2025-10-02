@@ -35,11 +35,13 @@ const ApplicationSettings = () => {
             text: l.text,
           };
         })}
+        direction="horizontal"
       />
       <SettingsSwitch
         label={t('header.room-settings.enable-dark-theme')}
         enabled={theme === 'dark'}
         onChange={toggleTheme}
+        customCss="my-4"
       />
       <SettingsSwitch
         label={t('header.room-settings.focus-active-speaker-webcam')}

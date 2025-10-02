@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { useTranslation } from 'react-i18next';
 import {
@@ -17,11 +17,17 @@ const LockSettingsModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [isBusy, setIsBusy] = useState<boolean>(false);
+  const { roomSid, roomId } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      roomSid: session.currentRoom.sid,
+      roomId: session.currentRoom.roomId,
+    };
+  }, []);
 
   const roomLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
-  const session = store.getState().session;
 
   const updateLockSettings = useCallback(
     async (status: boolean, service: string) => {
@@ -32,8 +38,8 @@ const LockSettingsModal = () => {
 
       const direction = status ? 'lock' : 'unlock';
       const body = create(UpdateUserLockSettingsReqSchema, {
-        roomSid: session.currentRoom.sid,
-        roomId: session.currentRoom.roomId,
+        roomSid,
+        roomId,
         userId: 'all',
         service,
         direction,
@@ -66,7 +72,8 @@ const LockSettingsModal = () => {
 
       setIsBusy(false);
     },
-    [isBusy, session, t, dispatch],
+    // oxlint-disable-next-line exhaustive-deps
+    [isBusy, t, dispatch],
   );
 
   const closeModal = () => {
@@ -127,13 +134,14 @@ const LockSettingsModal = () => {
       onClose={closeModal}
       title={t('footer.modal.lock-settings-title')}
     >
-      {lockOptions.map((option) => (
+      {lockOptions.map((option, i) => (
         <SettingsSwitch
           key={option.service}
           label={option.label}
           enabled={option.checked}
           onChange={(e) => updateLockSettings(e, option.service)}
           disabled={isBusy}
+          customCss={`${i > 0 ? 'mt-4' : ''}`}
         />
       ))}
     </Modal>

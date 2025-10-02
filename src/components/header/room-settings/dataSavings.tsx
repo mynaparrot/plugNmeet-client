@@ -60,12 +60,14 @@ const DataSavings = () => {
               text: getVideoQualityText(q as VideoQuality),
             };
           })}
+        direction="horizontal"
       />
 
       <SettingsSwitch
         label={t('header.room-settings.show-webcams')}
         enabled={activateWebcamsView}
         onChange={toggleWebcamView}
+        customCss="my-4"
       />
       <SettingsSwitch
         label={t('header.room-settings.show-screen-share')}

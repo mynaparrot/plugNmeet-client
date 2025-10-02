@@ -10,18 +10,20 @@ const Translation = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const { speechService, showTooltip } = useMemo(() => {
+  const { showTooltip } = useMemo(() => {
     const session = store.getState().session;
     return {
-      speechService:
-        session.currentRoom.metadata?.roomFeatures
-          ?.speechToTextTranslationFeatures,
       showTooltip: session.userDeviceType === 'desktop',
     };
   }, []);
 
   const isActiveDisplaySpeechSettingOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
+  );
+  const isEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures
+        ?.speechToTextTranslationFeatures?.isEnabled,
   );
 
   const toggleModal = useCallback(() => {
@@ -32,7 +34,7 @@ const Translation = () => {
     );
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
-  if (!speechService?.isEnabled) {
+  if (!isEnabled) {
     return null;
   }
 

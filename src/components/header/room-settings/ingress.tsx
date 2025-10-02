@@ -84,6 +84,7 @@ const Ingress = () => {
                 text: getIngressTypeText(v as number),
               } as ISelectOption;
             })}
+          direction="horizontal"
         />
         <FormattedInputField
           label={t('ingress-features.join-as-name')}

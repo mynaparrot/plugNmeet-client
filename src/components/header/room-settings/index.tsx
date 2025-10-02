@@ -5,7 +5,7 @@ import sanitizeHtml from 'sanitize-html';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateShowRoomSettingsModal } from '../../../store/slices/roomSettingsSlice';
 import Modal from '../../../helpers/ui/modal';
-import Tabs from '../../../helpers/ui/Tabs';
+import Tabs from '../../../helpers/ui/tabs';
 import ApplicationSettings from './application';
 import DataSavings from './dataSavings';
 import Ingress from './ingress';
@@ -88,7 +88,7 @@ const RoomSettings = () => {
       title={t('header.room-settings.title')}
       maxWidth="max-w-2xl"
     >
-      <div className="wrap relative mt-4">
+      <div className="wrap relative">
         <Tabs items={tabItems} tabPanelsCss="min-h-[316px]" />
         {renderModalFooter()}
       </div>

@@ -123,34 +123,33 @@ const RtmpModal = () => {
           </ActionButton>
         )}
       >
-        <div className="s">
-          <div className="grid gap-3">
-            <Dropdown
-              label={t('footer.modal.rtmp-select-provider')}
-              id="provider"
-              value={provider}
-              onChange={setProvider}
-              options={[
-                { value: 'youtube', text: 'YouTube' },
-                { value: 'facebook', text: 'Facebook' },
-                { value: 'other', text: 'Other' },
-              ]}
-            />
-            {showServerUrl && (
-              <FormattedInputField
-                label={t('footer.modal.rtmp-server-url')}
-                id="stream-url"
-                value={serverUrl}
-                onChange={(e) => setServerUrl(e.currentTarget.value)}
-              />
-            )}
+        <div className="flex flex-col gap-1 min-h-[150px]">
+          <Dropdown
+            label={t('footer.modal.rtmp-select-provider')}
+            id="provider"
+            value={provider}
+            onChange={setProvider}
+            options={[
+              { value: 'youtube', text: 'YouTube' },
+              { value: 'facebook', text: 'Facebook' },
+              { value: 'other', text: 'Other' },
+            ]}
+            direction="horizontal"
+          />
+          {showServerUrl && (
             <FormattedInputField
-              label={t('footer.modal.rtmp-stream-key')}
-              id="stream-key"
-              value={serverKey}
-              onChange={(e) => setServerKey(e.currentTarget.value)}
+              label={t('footer.modal.rtmp-server-url')}
+              id="stream-url"
+              value={serverUrl}
+              onChange={(e) => setServerUrl(e.currentTarget.value)}
             />
-          </div>
+          )}
+          <FormattedInputField
+            label={t('footer.modal.rtmp-stream-key')}
+            id="stream-key"
+            value={serverKey}
+            onChange={(e) => setServerKey(e.currentTarget.value)}
+          />
         </div>
       </Modal>
     );

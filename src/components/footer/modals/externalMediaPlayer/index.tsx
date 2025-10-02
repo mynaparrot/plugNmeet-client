@@ -6,7 +6,7 @@ import Upload from './upload';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { updateShowExternalMediaPlayerModal } from '../../../../store/slices/bottomIconsActivitySlice';
 import Modal from '../../../../helpers/ui/modal';
-import Tabs from '../../../../helpers/ui/Tabs';
+import Tabs from '../../../../helpers/ui/tabs';
 
 const ExternalMediaPlayerModal = () => {
   const dispatch = useAppDispatch();
