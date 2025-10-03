@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { IncreaseBreakoutRoomDurationReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
@@ -8,8 +7,9 @@ import { useIncreaseDurationMutation } from '../../../../store/services/breakout
 
 interface IExtendTimeProps {
   breakoutRoomId: string;
+  setErrorMsg: (msg: string) => void;
 }
-const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
+const ExtendDuration = ({ breakoutRoomId, setErrorMsg }: IExtendTimeProps) => {
   const { t } = useTranslation();
   const [duration, setDuration] = useState<number>(5);
   const [increaseDuration, { isLoading, isSuccess, isError, data, error }] =
@@ -17,16 +17,21 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
 
   useEffect(() => {
     if (isSuccess && data) {
-      toast(data.status ? t('breakout-room.duration-extended') : t(data.msg), {
-        type: data.status ? 'info' : 'error',
-      });
+      if (!data.status) {
+        setErrorMsg(t(data.msg));
+      }
+      // Success is implicitly handled by the UI updating (duration change),
+      // so no toast is needed.
     } else if (isError) {
-      toast(t((error as any).data.msg), { type: 'error' });
+      const msg = (error as any)?.data?.msg ?? 'Unknown error';
+      setErrorMsg(t(msg));
     }
-  }, [isSuccess, isError, data, error, t]);
+  }, [isSuccess, isError, data, error, t, setErrorMsg]);
 
   const handleExtendDuration = useCallback(() => {
     if (duration > 0) {
+      // clear previous error
+      setErrorMsg('');
       increaseDuration(
         create(IncreaseBreakoutRoomDurationReqSchema, {
           breakoutRoomId: breakoutRoomId,
@@ -34,7 +39,7 @@ const ExtendDuration = ({ breakoutRoomId }: IExtendTimeProps) => {
         }),
       );
     }
-  }, [duration, increaseDuration, breakoutRoomId]);
+  }, [duration, increaseDuration, breakoutRoomId, setErrorMsg]);
 
   return (
     <div className="extend-time-wrapper flex items-center gap-1">

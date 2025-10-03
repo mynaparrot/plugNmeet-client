@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { EndBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
@@ -8,23 +7,28 @@ import { useEndSingleRoomMutation } from '../../../../store/services/breakoutRoo
 
 interface IEndBtnProps {
   breakoutRoomId: string;
+  setErrorMsg: (msg: string) => void;
 }
-const EndBtn = ({ breakoutRoomId }: IEndBtnProps) => {
+const EndBtn = ({ breakoutRoomId, setErrorMsg }: IEndBtnProps) => {
   const { t } = useTranslation();
   const [endSingleRoom, { isLoading, isSuccess, isError, data, error }] =
     useEndSingleRoomMutation();
 
   useEffect(() => {
     if (isSuccess && data) {
-      toast(data.status ? t('breakout-room.room-ended') : t(data.msg), {
-        type: data.status ? 'info' : 'error',
-      });
+      if (!data.status) {
+        setErrorMsg(t(data.msg));
+      }
+      // success is handled by query cache invalidation, no toast needed.
     } else if (isError) {
-      toast(t((error as any).data.msg), { type: 'error' });
+      const msg = (error as any)?.data?.msg ?? 'Unknown error';
+      setErrorMsg(t(msg));
     }
-  }, [isSuccess, isError, data, error, t]);
+  }, [isSuccess, isError, data, error, t, setErrorMsg]);
 
   const handleEndRoom = () => {
+    // clear previous error
+    setErrorMsg('');
     endSingleRoom(create(EndBreakoutRoomReqSchema, { breakoutRoomId }));
   };
 

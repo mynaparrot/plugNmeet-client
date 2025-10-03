@@ -1,25 +1,32 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import {
   BreakoutRoom,
   BreakoutRoomSchema,
+  CreateBreakoutRoomsReq,
   CreateBreakoutRoomsReqSchema,
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import RoomNumberSelector from './roomNumberSelector';
 import RoomBox from './roomBox';
-
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { RoomType, UserType } from './types';
 import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
-import { useCreateBreakoutRoomsMutation } from '../../../store/services/breakoutRoomApi';
-import { updateShowManageBreakoutRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 
-const FromElems = () => {
+interface IFromElemsProps {
+  createBreakoutRooms: (req: CreateBreakoutRoomsReq) => void;
+  isLoading: boolean;
+  setErrorMsg: (msg: string) => void;
+}
+
+const FromElems = ({
+  createBreakoutRooms,
+  isLoading,
+  setErrorMsg,
+}: IFromElemsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const participants = useAppSelector(selectBasicParticipants);
@@ -32,8 +39,6 @@ const FromElems = () => {
     () => store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
   );
   const [users, setUsers] = useState<Array<UserType>>([]);
-  const [createBreakoutRoom, { isLoading, data }] =
-    useCreateBreakoutRoomsMutation();
 
   // we'll clean during unmount
   useEffect(() => {
@@ -105,22 +110,6 @@ const FromElems = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [droppedUser]); // users is intentionally omitted
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      if (data.status) {
-        toast(t('breakout-room.rooms-created'), {
-          type: 'info',
-        });
-        dispatch(updateShowManageBreakoutRoomModal(false));
-      } else {
-        toast(t(data.msg), {
-          type: 'error',
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, dispatch, t]); // isLoading is not needed
-
   const randomSelection = () => {
     if (!users.length || !roomList.length) {
       return;
@@ -157,9 +146,7 @@ const FromElems = () => {
     });
 
     if (!tmp.length) {
-      toast(t('breakout-room.need-one-user'), {
-        type: 'error',
-      });
+      setErrorMsg(t('breakout-room.need-one-user'));
       return;
     }
 
@@ -168,8 +155,16 @@ const FromElems = () => {
       welcomeMsg: welcomeMsg,
       rooms: tmp,
     });
-    createBreakoutRoom(req);
-  }, [roomList, users, roomDuration, welcomeMsg, createBreakoutRoom, t]);
+    createBreakoutRooms(req);
+  }, [
+    roomList,
+    users,
+    roomDuration,
+    welcomeMsg,
+    createBreakoutRooms,
+    t,
+    setErrorMsg,
+  ]);
 
   return (
     <div className="break-out-room-main-area">
@@ -180,7 +175,7 @@ const FromElems = () => {
         />
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
-            className="block text-sm font-medium text-Gray-800 mb-1"
+            className="block text-sm font-medium text-Gray-800 mb-2"
             htmlFor="breakout-room-duration"
           >
             {t('breakout-room.duration')}
@@ -238,6 +233,7 @@ const FromElems = () => {
         <button
           className="h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={handleStartBreakoutRooms}
+          disabled={isLoading}
         >
           {t('breakout-room.start')}
         </button>

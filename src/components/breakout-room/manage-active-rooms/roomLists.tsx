@@ -4,7 +4,11 @@ import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomAp
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import RoomItem from './room';
 
-const RoomLists = () => {
+interface IRoomListsProps {
+  setErrorMsg: (msg: string) => void;
+}
+
+const RoomLists = ({ setErrorMsg }: IRoomListsProps) => {
   const { data, isLoading } = useGetBreakoutRoomsQuery(undefined, {
     pollingInterval: 10000,
   });
@@ -29,7 +33,7 @@ const RoomLists = () => {
         </div>
       )}
       {sortedRooms.map((room) => (
-        <RoomItem key={room.id} room={room} />
+        <RoomItem key={room.id} room={room} setErrorMsg={setErrorMsg} />
       ))}
     </div>
   );

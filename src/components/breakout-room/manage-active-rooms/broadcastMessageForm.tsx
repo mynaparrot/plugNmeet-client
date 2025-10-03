@@ -6,31 +6,38 @@ import { create } from '@bufbuild/protobuf';
 
 import { useBroadcastBreakoutRoomMsgMutation } from '../../../store/services/breakoutRoomApi';
 
-const BroadcastMessageForm = () => {
+interface IBroadcastMessageFormProps {
+  setErrorMsg: (msg: string) => void;
+}
+
+const BroadcastMessageForm = ({ setErrorMsg }: IBroadcastMessageFormProps) => {
   const { t } = useTranslation();
   const [msg, setMsg] = useState<string>('');
-  const [broadcastMsg, { isLoading, data }] =
+  const [broadcastMsg, { isLoading, data, isSuccess, error }] =
     useBroadcastBreakoutRoomMsgMutation();
 
   useEffect(() => {
-    if (data) {
+    if (isSuccess && data) {
       if (data.status) {
         toast(t('breakout-room.broadcast-msg-success'), {
           type: 'info',
         });
         setMsg('');
       } else {
-        toast(t(data.msg), {
-          type: 'error',
-        });
+        setErrorMsg(t(data.msg));
       }
+    } else if (error) {
+      const errorMsg = (error as any)?.data?.msg ?? 'Unknown error';
+      setErrorMsg(t(errorMsg));
     }
-  }, [data, t]);
+  }, [isSuccess, data, error, t, setErrorMsg]);
 
   const send = () => {
     if (msg.trim() === '') {
       return;
     }
+    // clear previous error message
+    setErrorMsg('');
     broadcastMsg(
       create(BroadcastBreakoutRoomMsgReqSchema, {
         msg,

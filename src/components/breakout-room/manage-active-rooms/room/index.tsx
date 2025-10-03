@@ -16,9 +16,10 @@ import ExtendDuration from './extendDuration';
 
 interface RoomItemProps {
   room: BreakoutRoom;
+  setErrorMsg: (msg: string) => void;
 }
 
-const RoomItem = ({ room }: RoomItemProps) => {
+const RoomItem = ({ room, setErrorMsg }: RoomItemProps) => {
   const { t } = useTranslation();
 
   return (
@@ -72,7 +73,7 @@ const RoomItem = ({ room }: RoomItemProps) => {
               <DisclosurePanel
                 static
                 as={motion.div}
-                initial={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className=""
@@ -80,10 +81,19 @@ const RoomItem = ({ room }: RoomItemProps) => {
                 <div className="wrap relative rounded-xl overflow-auto">
                   <div className="inner p-5">
                     <div className="row flex flex-wrap items-center justify-between mb-4">
-                      <ExtendDuration breakoutRoomId={room.id} />
+                      <ExtendDuration
+                        breakoutRoomId={room.id}
+                        setErrorMsg={setErrorMsg}
+                      />
                       <div className="row flex mb-2">
-                        <JoinBtn breakoutRoomId={room.id} />
-                        <EndBtn breakoutRoomId={room.id} />
+                        <JoinBtn
+                          breakoutRoomId={room.id}
+                          setErrorMsg={setErrorMsg}
+                        />
+                        <EndBtn
+                          breakoutRoomId={room.id}
+                          setErrorMsg={setErrorMsg}
+                        />
                       </div>
                     </div>
                     <BreakoutRoomUsers users={room.users} />

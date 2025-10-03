@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { create } from '@bufbuild/protobuf';
 import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 
@@ -9,9 +8,10 @@ import { store } from '../../../../store';
 
 interface IJoinBtnProps {
   breakoutRoomId: string;
+  setErrorMsg: (msg: string) => void;
 }
 
-const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
+const JoinBtn = ({ breakoutRoomId, setErrorMsg }: IJoinBtnProps) => {
   const { t } = useTranslation();
   const [joinRoom, { isLoading, isSuccess, isError, data, error }] =
     useJoinRoomMutation();
@@ -29,26 +29,24 @@ const JoinBtn = ({ breakoutRoomId }: IJoinBtnProps) => {
         searchParams.toString();
 
       if (!window.open(url, '_blank')) {
-        toast(t('breakout-room.open-tab-error'), {
-          type: 'error',
-        });
+        setErrorMsg(t('breakout-room.open-tab-error'));
       }
     } else if ((isSuccess && !data?.status) || isError) {
       const msg = data?.msg ?? (error as any)?.data?.msg ?? 'Error';
-      toast(t(msg), {
-        type: 'error',
-      });
+      setErrorMsg(t(msg));
     }
-  }, [isSuccess, isError, data, error, t]);
+  }, [isSuccess, isError, data, error, t, setErrorMsg]);
 
   const handleJoin = useCallback(() => {
+    // clear previous error
+    setErrorMsg('');
     joinRoom(
       create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: breakoutRoomId,
         userId: store.getState().session.currentUser?.userId ?? '',
       }),
     );
-  }, [joinRoom, breakoutRoomId]);
+  }, [joinRoom, breakoutRoomId, setErrorMsg]);
 
   return (
     <div className="join-btn mr-1">
