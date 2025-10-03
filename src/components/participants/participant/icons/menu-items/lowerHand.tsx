@@ -37,7 +37,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
         <MenuItem>
           {() => (
             <button
-              className="text-Gray-900 cursor-pointer group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs font-medium transition ease-in hover:bg-Blue2-500 hover:text-white"
+              className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-left leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
               onClick={lowerHand}
             >
               {t('footer.icons.lower-hand')}

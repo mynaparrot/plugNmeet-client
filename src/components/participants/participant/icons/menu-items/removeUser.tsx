@@ -17,7 +17,7 @@ const RemoveUserMenuItem = ({
     <MenuItem>
       {() => (
         <button
-          className="text-Red-400 cursor-pointer group flex rounded-md items-center text-left w-full px-2 py-[0.4rem] text-xs font-medium transition ease-in hover:bg-Red-600 hover:text-white"
+          className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-left leading-none font-medium text-Red-600 px-3 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"
           onClick={() => onOpenAlert(userId, 'remove')}
         >
           {t('left-panel.menus.items.remove-participant')}
