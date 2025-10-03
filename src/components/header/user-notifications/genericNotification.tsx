@@ -29,7 +29,7 @@ const GenericNotification = ({ notification }: IGenericNotificationProps) => {
 
   return (
     <div
-      className="notification notif-new-poll flex gap-4 py-2 px-4 border-b border-Gray-200"
+      className="notification notif-new-poll w-full flex gap-4 py-2 px-4 border-b border-Gray-200"
       key={notification.created}
     >
       <div className={iconClasses}>
