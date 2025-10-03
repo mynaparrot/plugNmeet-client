@@ -22,7 +22,7 @@ const MainArea = () => {
   const { isRecorder, roomFeatures } = useMemo(() => {
     const session = store.getState().session;
     return {
-      isRecorder: session.currentUser?.isRecorder,
+      isRecorder: !!session.currentUser?.isRecorder,
       roomFeatures: session.currentRoom.metadata?.roomFeatures,
     };
   }, []);
@@ -69,8 +69,7 @@ const MainArea = () => {
     ) {
       Notification.requestPermission().then();
     }
-    //eslint-disable-next-line
-  }, [dispatch]);
+  }, [dispatch, isRecorder, roomFeatures]);
 
   const customCSS = useMainAreaCustomCSS({
     isActiveChatPanel,
@@ -87,6 +86,7 @@ const MainArea = () => {
   const renderMainComponentElms = useMemo(() => {
     return (
       <MainView
+        isRecorder={isRecorder}
         isActiveWhiteboard={isActiveWhiteboard}
         isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
         isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
@@ -97,6 +97,7 @@ const MainArea = () => {
       />
     );
   }, [
+    isRecorder,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWebcamsView,

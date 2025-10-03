@@ -1,6 +1,4 @@
 import { useMemo } from 'react';
-
-import { store } from '../../../store';
 import ExternalMediaPlayer from '../../external-media-player';
 import { useCloseSidePanelsOnShow } from './useCloseSidePanelsOnShow';
 
@@ -8,9 +6,8 @@ export const useExternalMediaPlayer = (
   isActiveExternalMediaPlayer: boolean,
   isActiveScreenShare: boolean,
   isActiveWhiteboard: boolean,
+  isRecorder: boolean,
 ) => {
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
-
   const shouldShow = useMemo(
     () =>
       isActiveExternalMediaPlayer &&
@@ -22,13 +19,12 @@ export const useExternalMediaPlayer = (
   useCloseSidePanelsOnShow(shouldShow, isRecorder);
 
   return useMemo(() => {
-    if (shouldShow) {
-      return (
-        <div className="Div-external-media-player w-full flex items-center justify-center">
-          <ExternalMediaPlayer />
-        </div>
-      );
-    }
-    return null;
+    return (
+      <div
+        className={`${shouldShow ? 'Div-external-media-player w-full flex items-center justify-center' : 'hidden'}`}
+      >
+        <ExternalMediaPlayer />
+      </div>
+    );
   }, [shouldShow]);
 };

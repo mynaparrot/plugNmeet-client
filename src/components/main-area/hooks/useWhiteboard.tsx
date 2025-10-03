@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch } from '../../../store';
 import { doRefreshWhiteboard } from '../../../store/slices/whiteboard';
@@ -15,17 +16,20 @@ export const useWhiteboard = (
   const [excalidrawAPI, excalidrawRefCallback] =
     useState<ExcalidrawImperativeAPI>();
 
+  const debouncedRefresh = useMemo(
+    () =>
+      debounce(() => {
+        dispatch(doRefreshWhiteboard());
+      }, 1000),
+    [dispatch],
+  );
+
   // effect to refresh whiteboard when video elements are shown
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (isActiveWhiteboard) {
-        dispatch(doRefreshWhiteboard());
-      }
-    }, 1000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [showVideoElms, isActiveWhiteboard, dispatch]);
+    if (isActiveWhiteboard) {
+      debouncedRefresh();
+    }
+  }, [showVideoElms, isActiveWhiteboard, debouncedRefresh]);
 
   return useMemo(() => {
     const whiteboardWillBeVisible = !isActiveScreenShare && isActiveWhiteboard;

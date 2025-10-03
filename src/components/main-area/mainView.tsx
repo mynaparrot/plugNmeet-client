@@ -1,18 +1,19 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { useAppSelector } from '../../store';
 import { useSharedNotepad } from './hooks/useSharedNotepad';
 import { useWhiteboard } from './hooks/useWhiteboard';
 import { useExternalMediaPlayer } from './hooks/useExternalMediaPlayer';
 import { useDisplayExternalLink } from './hooks/useDisplayExternalLink';
+import { useVideosComponent } from './hooks/useVideosComponent';
+import { useScreenShareElements } from './hooks/useScreenShareElements';
+import { useSpeechToTextService } from './hooks/useSpeechToTextService';
+import { useVideoLayout } from './hooks/useVideoLayout';
 
-import ScreenShareElements from '../media-elements/screenshare';
 import AudioElements from '../media-elements/audios';
-import VideosComponent from '../media-elements/videos';
-import SpeechToTextService from '../speech-to-text-service';
 import LayoutWrapper from './layoutWrapper';
 
 interface IMainViewProps {
+  isRecorder: boolean;
   isActiveWhiteboard: boolean;
   isActiveExternalMediaPlayer: boolean;
   isActiveDisplayExternalLink: boolean;
@@ -23,6 +24,7 @@ interface IMainViewProps {
 }
 
 const MainView = ({
+  isRecorder,
   isActiveWhiteboard,
   isActiveExternalMediaPlayer,
   isActiveDisplayExternalLink,
@@ -31,30 +33,14 @@ const MainView = ({
   isActiveWebcamsView,
   hasVideoSubscribers,
 }: IMainViewProps) => {
-  const activateSpeechService = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.speechToTextTranslationFeatures?.isEnabled,
-  );
-
-  const showVerticalVideoView = useMemo(
-    () =>
-      hasScreenShareSubscribers ||
-      isActiveWhiteboard ||
-      isActiveExternalMediaPlayer ||
-      isActiveDisplayExternalLink,
-    [
-      hasScreenShareSubscribers,
-      isActiveWhiteboard,
-      isActiveExternalMediaPlayer,
-      isActiveDisplayExternalLink,
-    ],
-  );
-
-  const showVideoElms = useMemo(
-    () => isActiveWebcamsView && hasVideoSubscribers,
-    [isActiveWebcamsView, hasVideoSubscribers],
-  );
+  const { showVerticalVideoView, showVideoElms } = useVideoLayout({
+    hasScreenShareSubscribers,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+    isActiveWebcamsView,
+    hasVideoSubscribers,
+  });
 
   const sharedNotepadElm = useSharedNotepad();
   const whiteboardElm = useWhiteboard(
@@ -66,13 +52,24 @@ const MainView = ({
     isActiveExternalMediaPlayer,
     hasScreenShareSubscribers,
     isActiveWhiteboard,
+    isRecorder,
   );
   const displayExternalLinkElm = useDisplayExternalLink(
     isActiveDisplayExternalLink,
     hasScreenShareSubscribers,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
+    isRecorder,
   );
+
+  const videosComponentElm = useVideosComponent(
+    isActiveWebcamsView,
+    showVerticalVideoView,
+  );
+  const screenShareElementsElm = useScreenShareElements(
+    isActiveScreenSharingView,
+  );
+  const speechToTextServiceElm = useSpeechToTextService();
 
   return (
     <>
@@ -83,15 +80,13 @@ const MainView = ({
         showVideoElms={showVideoElms}
         showVerticalVideoView={showVerticalVideoView}
       >
+        {videosComponentElm}
+        {screenShareElementsElm}
         {sharedNotepadElm}
-        {isActiveWebcamsView ? (
-          <VideosComponent isVertical={showVerticalVideoView} />
-        ) : null}
-        {isActiveScreenSharingView ? <ScreenShareElements /> : null}
         {whiteboardElm}
+        {speechToTextServiceElm}
         {externalMediaPlayerElm}
         {displayExternalLinkElm}
-        {activateSpeechService ? <SpeechToTextService /> : null}
       </LayoutWrapper>
       <AudioElements />
     </>

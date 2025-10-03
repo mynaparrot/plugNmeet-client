@@ -1,6 +1,4 @@
 import { useMemo } from 'react';
-
-import { store } from '../../../store';
 import DisplayExternalLink from '../../display-external-link';
 import { useCloseSidePanelsOnShow } from './useCloseSidePanelsOnShow';
 
@@ -9,9 +7,8 @@ export const useDisplayExternalLink = (
   isActiveScreenShare: boolean,
   isActiveWhiteboard: boolean,
   isActiveExternalMediaPlayer: boolean,
+  isRecorder: boolean,
 ) => {
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
-
   const shouldShow = useMemo(
     () =>
       isActiveDisplayExternalLink &&
@@ -29,13 +26,10 @@ export const useDisplayExternalLink = (
   useCloseSidePanelsOnShow(shouldShow, isRecorder);
 
   return useMemo(() => {
-    if (shouldShow) {
-      return (
-        <div className="w-full">
-          <DisplayExternalLink />
-        </div>
-      );
-    }
-    return null;
+    return (
+      <div className={`${shouldShow ? 'w-full block' : 'hidden'}`}>
+        <DisplayExternalLink />
+      </div>
+    );
   }, [shouldShow]);
 };
