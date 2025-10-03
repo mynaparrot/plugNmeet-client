@@ -95,7 +95,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         })}
       />
       {self && (
-        <div className="text absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
+        <div className="text-sm 3xl:text-base absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
           {t('notifications.you-are-sharing-screen')}
         </div>
       )}
