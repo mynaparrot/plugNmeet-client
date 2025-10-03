@@ -186,48 +186,34 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-xs 3xl:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden">
+            <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] left-1 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2">
+              <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
+                Select Message Type
+              </div>
               {chatOptions.map((option) => (
                 <ListboxOption
                   key={option.id}
-                  className={({ focus }) =>
-                    `relative cursor-pointer select-none py-1 3xl:py-2 pl-8 3xl:pl-10 pr-4 text-gray-900 ${
-                      focus ? 'bg-Gray-200' : ''
-                    }`
+                  className={({ focus, selected }) =>
+                    `h-8 3xl:h-10 w-full cursor-pointer flex items-center text-sm 3xl:text-base gap-2 leading-none 3xl:font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 relative ${
+                      focus ? 'bg-Gray-50' : ''
+                    } ${selected ? 'bg-Gray-50' : ''}`
                   }
                   value={option.id}
                 >
                   {({ selected }) => (
                     <>
-                      <span
-                        className={`flex truncate items-center justify-between ${
-                          selected ? 'font-medium' : 'font-normal'
-                        }`}
-                      >
+                      <span>
                         {option.title}
                         {unreadMsgFrom.filter((id) => id === option.id)
                           .length ? (
-                          <span className="shake pr-1">
+                          <span className="shake pl-2">
                             <i className="pnm-chat shake" />
                           </span>
                         ) : null}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-3 flex items-center text-secondary-color">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-auto w-4 3xl:w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
+                        <span className="right absolute right-3">
+                          <CheckMarkIcon />
                         </span>
                       ) : null}
                     </>
