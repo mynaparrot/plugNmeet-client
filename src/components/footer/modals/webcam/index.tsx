@@ -97,7 +97,7 @@ const ShareWebcamModal = ({
             />
           </div>
         )}
-        <div className="w-full p-2">
+        <div className="w-full">
           <PreviewWebcam deviceId={selectedWebcam} />
         </div>
       </Modal>
