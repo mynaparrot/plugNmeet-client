@@ -356,7 +356,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         <div className="menu relative z-10">
           <button
             onClick={() => setIsOpenManageFilesUI(true)}
-            className="wb-manage-upload-file"
+            className="wb-manage-upload-file ml-1"
           >
             <i className="pnm-attachment text-[13px]" />
             {t('whiteboard.manage-files')}

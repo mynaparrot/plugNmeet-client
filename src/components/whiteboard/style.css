@@ -122,6 +122,33 @@
           }
         }
       }
+      .renderForParticipant {
+        button {
+          height: var(--lg-button-size);
+          background-color: var(--color-surface-low);
+          border-radius: var(--border-radius-lg);
+          box-shadow: 0 0 0 1px var(--color-surface-lowest);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          &:not(:disabled):hover {
+            background: var(--button-hover-bg);
+            color: #b8b8b8;
+            i {
+              color: #fff;
+            }
+          }
+        }
+        button.presenter {
+          width: var(--lg-button-size);
+        }
+      }
+      button.main-menu-trigger {
+        &:not(:disabled):hover {
+          background: var(--button-hover-bg);
+          color: #b8b8b8;
+        }
+      }
       .ToolIcon__icon {
         &:hover {
           svg {

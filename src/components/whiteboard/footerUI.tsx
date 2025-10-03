@@ -145,26 +145,19 @@ const FooterUI = ({
   const renderForParticipant = () => {
     return (
       <div
-        className={`flex text-sm items-center justify-start md:justify-center relative ${
+        className={`renderForParticipant flex gap-2 text-sm items-center justify-start md:justify-center relative ${
           isAdmin && !isRecorder
             ? 'ltr:pl-3 rtl:pr-3 md:pl-12  md:rtl:pr-4'
             : 'ltr:pl-3 rtl:pr-3'
         } `}
       >
         {isAdmin && !isRecorder ? (
-          <button
-            className="w-8 h-8 rounded-lg border border-solid border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8] flex items-center justify-center ltr:mr-2 rtl:ml-2"
-            onClick={takeOverPresenter}
-          >
+          <button className="presenter" onClick={takeOverPresenter}>
             <i className="pnm-presenter text-[14px]" />
           </button>
         ) : null}
         <button
-          className={`w-auto h-8 px-2 rounded-lg border border-solid flex items-center justify-center ltr:mr-2 rtl:ml-2 transition-colors ${
-            isFollowing
-              ? 'border-primary-color text-primary-color dark:text-primary-color'
-              : 'border-[#3d3d3d] text-[#3d3d3d] dark:text-[#b8b8b8] dark:bg-[#262627] dark:hover:bg-[#3d3d3d] hover:bg-[#3d3d3d] hover:text-[#b8b8b8]'
-          }`}
+          className={`px-2 ${isFollowing ? 'following' : ''}`}
           onClick={handleFollowPresenter}
           title={
             isFollowing
