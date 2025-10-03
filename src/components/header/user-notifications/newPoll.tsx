@@ -42,7 +42,7 @@ const NewPoll = ({ createdAt, onClosePopover }: INewPollProps) => {
           <span className="">{formatDate(createdAt)}</span>{' '}
           <ActionButton
             onClick={openPollsPanel}
-            custom="h-5 w-auto px-2 !text-[10px] !rounded-md bg-Blue2-500 hover:bg-Blue2-600 border-Blue2-600"
+            custom="!h-5 w-auto px-2 !text-[10px] !rounded-md bg-Blue2-500 hover:bg-Blue2-600 border-Blue2-600"
           >
             {t('open')}
           </ActionButton>

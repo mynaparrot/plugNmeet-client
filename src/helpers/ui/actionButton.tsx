@@ -25,7 +25,7 @@ const ActionButton = ({
       onClick={onClick}
       disabled={isLoading || disabled}
       className={clsx(
-        'h-6 w-36 flex items-center justify-center cursor-pointer text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50',
+        'h-9 w-36 flex items-center justify-center cursor-pointer text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50',
         custom,
       )}
     >
