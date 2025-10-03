@@ -14,13 +14,18 @@ import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
 const useSharedNotepad = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { roomFeatures, roomId } = useMemo(() => {
+  const { roomId } = useMemo(() => {
     const session = store.getState().session;
     return {
-      roomFeatures: session.currentRoom.metadata?.roomFeatures,
       roomId: session.currentRoom.roomId,
     };
   }, []);
+
+  const host = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.host,
+  );
   const sharedNotepadStatus = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
@@ -28,50 +33,44 @@ const useSharedNotepad = () => {
   );
 
   const toggleSharedNotepad = useCallback(async () => {
-    const makeApiRequest = async (
-      endpoint: string,
-      body: any,
-      onSuccess: () => void,
-    ) => {
-      const r = await sendAPIRequest(
-        endpoint,
-        body,
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
+    // If there's no host, we need to create the notepad.
+    if (!host) {
+      const r = await sendAPIRequest('etherpad/create', new Uint8Array());
       const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
       if (res.status) {
-        onSuccess();
+        dispatch(updateIsActiveSharedNotePad(true));
       } else if (res.msg) {
         dispatch(
-          addUserNotification({
-            message: t(res.msg),
-            typeOption: 'error',
-          }),
+          addUserNotification({ message: t(res.msg), typeOption: 'error' }),
         );
       }
-    };
+      return;
+    }
 
-    const host = roomFeatures?.sharedNotePadFeatures?.host;
+    // If a host exists, we just toggle the status.
+    const newStatus = !sharedNotepadStatus;
+    const body = create(ChangeEtherpadStatusReqSchema, {
+      roomId,
+      isActive: newStatus,
+    });
 
-    if (!host && !sharedNotepadStatus) {
-      await makeApiRequest('etherpad/create', {}, () =>
-        dispatch(updateIsActiveSharedNotePad(true)),
-      );
-    } else if (host) {
-      const newStatus = !sharedNotepadStatus;
-      const body = create(ChangeEtherpadStatusReqSchema, {
-        roomId,
-        isActive: newStatus,
-      });
-      await makeApiRequest(
-        'etherpad/changeStatus',
-        toBinary(ChangeEtherpadStatusReqSchema, body),
-        () => dispatch(updateIsActiveSharedNotePad(newStatus)),
+    const r = await sendAPIRequest(
+      'etherpad/changeStatus',
+      toBinary(ChangeEtherpadStatusReqSchema, body),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
+
+    if (res.status) {
+      dispatch(updateIsActiveSharedNotePad(newStatus));
+    } else if (res.msg) {
+      dispatch(
+        addUserNotification({ message: t(res.msg), typeOption: 'error' }),
       );
     }
-  }, [roomFeatures, sharedNotepadStatus, roomId, dispatch, t]);
+  }, [host, sharedNotepadStatus, roomId, dispatch, t]);
 
   return { toggleSharedNotepad, sharedNotepadStatus };
 };

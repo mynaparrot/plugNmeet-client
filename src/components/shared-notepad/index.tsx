@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 import { useNotepadUrl } from './useNotepadUrl';
+import { LoadingIcon } from '../../assets/Icons/Loading';
 
 const SharedNotepad = () => {
   const { t } = useTranslation();
@@ -52,15 +53,15 @@ const SharedNotepad = () => {
                 className="hide-icon absolute pl-2 w-16 h-7 cursor-pointer flex items-center"
                 onClick={minimizePad}
               >
-                <div className="line h-0.5 w-6 bg-white"></div>
+                <div className="h-0.5 w-6 bg-white line"></div>
               </div>
               <div className="inner w-full h-full border-t-28 border-solid border-primary-color">
                 {!loaded && (
-                  <div className="loading absolute left-[50%] top-[40%] flex justify-center">
-                    <div className="lds-ripple">
-                      <div className="border-secondary-color"></div>
-                      <div className="border-secondary-color"></div>
-                    </div>
+                  <div className="loading-status absolute inset-0 z-10 flex h-full w-full items-center justify-center bg-white/50 dark:bg-black/50">
+                    <LoadingIcon
+                      className="inline h-10 w-10 animate-spin text-gray-200"
+                      fillColor="#004D90"
+                    />
                   </div>
                 )}
                 <iframe
