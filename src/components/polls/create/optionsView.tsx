@@ -52,7 +52,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
   const canRemove = useMemo(() => options.length > 2, [options.length]);
 
   return (
-    <div className="option-field-wrapper px-6 pt-5 pb-6">
+    <div className="option-field-wrapper pt-5 pb-6">
       <p className="text-sm text-Gray-800 font-medium mb-2 inline-block">
         {t('polls.options')}
       </p>

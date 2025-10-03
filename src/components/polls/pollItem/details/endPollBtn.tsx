@@ -17,7 +17,7 @@ const EndPollBtn = ({ pollId }: EndPollBtnProps) => {
       onClick={() => endPoll(pollId)}
       isLoading={isEndingPoll}
       buttonType="button"
-      custom="w-44 bg-Red-400 border-Red-600 hover:bg-Red-600"
+      custom="w-44 !text-white bg-Red-400 !border-Red-600 hover:!bg-Red-600"
     >
       {t('polls.end-poll')}
     </ActionButton>

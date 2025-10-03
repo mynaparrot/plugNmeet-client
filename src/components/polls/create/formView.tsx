@@ -86,7 +86,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <div className="question-area border-b border-Gray-100 px-6 pt-5 pb-6 bg-Gray-25">
+      <div className="question-area border-b border-Gray-100 pb-6 bg-Gray-25">
         <label className="text-sm text-Gray-800 font-medium mb-2 inline-block">
           {t('polls.enter-question')}
         </label>
@@ -110,7 +110,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           />
         </div>
       )}
-      <div className="button-section flex items-center gap-5 py-6 px-6 border-t border-Gray-100">
+      <div className="button-section flex items-center gap-5 pt-4 border-t border-Gray-100">
         <button
           className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
           type="button"
