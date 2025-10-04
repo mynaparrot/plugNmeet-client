@@ -42,8 +42,8 @@ importers:
         specifier: 3.2.2
         version: 3.2.2
       emoji-picker-react:
-        specifier: 4.13.3
-        version: 4.13.3(react@19.2.0)
+        specifier: 4.14.0
+        version: 4.14.0(react@19.2.0)
       es-toolkit:
         specifier: 1.39.10
         version: 1.39.10
@@ -1936,8 +1936,8 @@ packages:
   elkjs@0.9.3:
     resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
 
-  emoji-picker-react@4.13.3:
-    resolution: {integrity: sha512-aZaxCI72oUQfvZtYuQ9RaYLEwmH3GVgAr5SEeB97Y7gWL06zJ4VTuSl8rAMVY7GNmd0tf/EQ1W2SDuXTl0q9AA==}
+  emoji-picker-react@4.14.0:
+    resolution: {integrity: sha512-HYqNhvbhYWonp/ArIDcbElTlwPHC3g59CVPDVPt5DgfOOKIyabKIucVODBslul3+5r+rnmH22LrTk0SlWiqRfg==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
@@ -5238,7 +5238,7 @@ snapshots:
 
   elkjs@0.9.3: {}
 
-  emoji-picker-react@4.13.3(react@19.2.0):
+  emoji-picker-react@4.14.0(react@19.2.0):
     dependencies:
       flairup: 1.0.0
       react: 19.2.0
