@@ -99,8 +99,8 @@ importers:
         specifier: 16.0.0
         version: 16.0.0(i18next@25.5.3(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       react-player:
-        specifier: 2.16.0
-        version: 2.16.0(react@19.2.0)
+        specifier: 2.16.1
+        version: 2.16.1(react@19.2.0)
       react-redux:
         specifier: 9.2.0
         version: 9.2.0(@types/react@19.2.0)(react@19.2.0)(redux@5.0.1)
@@ -2952,8 +2952,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-player@2.16.0:
-    resolution: {integrity: sha512-mAIPHfioD7yxO0GNYVFD1303QFtI3lyyQZLY229UEAp/a10cSW+hPcakg0Keq8uWJxT2OiT/4Gt+Lc9bD6bJmQ==}
+  react-player@2.16.1:
+    resolution: {integrity: sha512-mxP6CqjSWjidtyDoMOSHVPdhX0pY16aSvw5fVr44EMaT7X5Xz46uQ4b/YBm1v2x+3hHkB9PmjEEkmbHb9PXQ4w==}
     peerDependencies:
       react: '>=16.6.0'
 
@@ -6318,7 +6318,7 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-player@2.16.0(react@19.2.0):
+  react-player@2.16.1(react@19.2.0):
     dependencies:
       deepmerge: 4.3.1
       load-script: 1.0.0
