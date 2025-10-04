@@ -27,11 +27,9 @@ import {
 import { encryptMessage } from '../../../helpers/libs/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
-import {
-  getWhiteboardDonors,
-  uploadBase64EncodedFile,
-} from '../../../helpers/utils';
+import { getWhiteboardDonors } from '../../../helpers/utils';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { uploadBase64EncodedFile } from '../../../helpers/fileUpload';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000,

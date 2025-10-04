@@ -1,79 +1,47 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
-import { toast } from 'react-toastify';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import {
-  UploadBase64EncodedDataReqSchema,
-  UploadBase64EncodedDataResSchema,
-} from 'plugnmeet-protocol-js';
-import Resumable from 'resumablejs';
 
 import i18n from './i18n';
 import { store } from '../store';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
-import sendAPIRequest from './api/plugNmeetAPI';
-import { IUseResumableFilesUploadResult } from './hooks/useResumableFilesUpload';
-import { addUserNotification } from '../store/slices/roomSettingsSlice';
-import ResumableFile = Resumable.ResumableFile;
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
 export const getInputMediaDevices = async (kind: inputMediaDeviceKind) => {
-  const constraints: MediaStreamConstraints = {
-    audio: false,
-    video: false,
-  };
-  if (kind === 'audio') {
-    constraints.audio = true;
-  } else if (kind === 'video') {
-    constraints.video = true;
-  } else {
-    constraints.audio = true;
-    constraints.video = true;
-  }
+  // 1. Request permissions to get device labels.
+  // This is necessary because browsers won't provide labels without permission.
+  let stream: MediaStream | undefined;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: kind === 'audio' || kind === 'both',
+      video: kind === 'video' || kind === 'both',
+    });
 
-  const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  const devices = await navigator.mediaDevices.enumerateDevices();
+    // 2. Enumerate devices now that we have permission.
+    const devices = await navigator.mediaDevices.enumerateDevices();
 
-  const audioDevices: IMediaDevice[] = [];
-  const videoDevices: IMediaDevice[] = [];
+    // 3. Filter and map devices into separate arrays.
+    const audioDevices: IMediaDevice[] = [];
+    const videoDevices: IMediaDevice[] = [];
 
-  for (let i = 0; i < devices.length; i++) {
-    const device = devices[i];
-    if (device.deviceId === '') {
-      continue;
-    }
-    if (device.kind === 'audioinput') {
-      const exist = audioDevices.find((d) => d.id === device.deviceId);
-      if (!exist) {
-        audioDevices.push({
-          id: device.deviceId,
-          label: device.label,
-        });
-      }
-    } else if (device.kind === 'videoinput') {
-      const exist = videoDevices.find((d) => d.id === device.deviceId);
-      if (!exist) {
-        videoDevices.push({
-          id: device.deviceId,
-          label: device.label,
-        });
+    for (const device of devices) {
+      // We only want devices with a deviceId.
+      if (device.deviceId) {
+        if (device.kind === 'audioinput') {
+          audioDevices.push({ id: device.deviceId, label: device.label });
+        } else if (device.kind === 'videoinput') {
+          videoDevices.push({ id: device.deviceId, label: device.label });
+        }
       }
     }
-  }
 
-  const tracks = stream.getTracks();
-  for (let i = 0; i < tracks.length; i++) {
-    const track = tracks[i];
-    track.stop();
+    return { audio: audioDevices, video: videoDevices };
+  } finally {
+    // 4. Clean up: stop all tracks to release the camera/mic.
+    stream?.getTracks().forEach((track) => track.stop());
   }
-
-  return {
-    audio: audioDevices,
-    video: videoDevices,
-  };
 };
 
 const dec2hex = (dec) => {
@@ -187,6 +155,21 @@ export const getAudioPreset = () => {
   return preset;
 };
 
+const getCookie = (name: string): string | null => {
+  const nameEQ = name + '=';
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1, c.length);
+    }
+    if (c.indexOf(nameEQ) === 0) {
+      return c.substring(nameEQ.length, c.length);
+    }
+  }
+  return null;
+};
+
 /**
  * getAccessToken will try to get token by the following:
  * from `access_token` GET/Search parameter from URL OR
@@ -194,23 +177,14 @@ export const getAudioPreset = () => {
  * */
 export const getAccessToken = () => {
   const urlSearchParams = new URLSearchParams(window.location.search);
-  let accessToken = urlSearchParams.get('access_token');
+  const accessToken = urlSearchParams.get('access_token');
   if (accessToken) {
     return accessToken;
   }
 
   // now let's check from cookies
   const tokenCookieName = 'pnm_access_token';
-  accessToken =
-    document.cookie
-      .match('(^|;)\\s*' + tokenCookieName + '\\s*=\\s*([^;]+)')
-      ?.pop() || '';
-
-  if (accessToken) {
-    return accessToken;
-  }
-
-  return null;
+  return getCookie(tokenCookieName);
 };
 
 export const formatNatsError = (err: any) => {
@@ -296,237 +270,6 @@ export function createEmptyVideoStreamTrack(name: string) {
   return emptyStreamTrack;
 }
 
-export const isUserRecorder = (userId: string) => {
-  return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
-};
-
-export const uploadBase64EncodedFile = async (
-  fileName: string,
-  base64EncodedData: string,
-) => {
-  const id = toast.loading(i18n.t('notifications.uploading-file'), {
-    type: 'info',
-  });
-  const parts = base64EncodedData.split('base64,');
-  const body = create(UploadBase64EncodedDataReqSchema, {
-    data: parts[1],
-    fileName,
-  });
-  const r = await sendAPIRequest(
-    'uploadBase64EncodedData',
-    toBinary(UploadBase64EncodedDataReqSchema, body),
-    false,
-    'application/protobuf',
-    'arraybuffer',
-  );
-
-  const res = fromBinary(UploadBase64EncodedDataResSchema, new Uint8Array(r));
-  if (!res.status) {
-    toast.update(id, {
-      render: res.msg,
-      type: 'error',
-      isLoading: false,
-      autoClose: 3000,
-    });
-    return undefined;
-  }
-
-  toast.update(id, {
-    render: i18n.t('right-panel.file-upload-success'),
-    type: 'success',
-    isLoading: false,
-    autoClose: 1000,
-  });
-
-  return res;
-};
-
-let isUploadingFile = false,
-  toastId = '';
-export const uploadResumableFile = (
-  allowedFileTypes: Array<string>,
-  maxFileSize: string | undefined,
-  files: Array<File>,
-  onSuccess: (result: IUseResumableFilesUploadResult) => void,
-  isUploading?: (uploading: boolean) => void,
-  uploadingProgress?: (progress: number) => void,
-  onError?: (msg: string) => void,
-) => {
-  if (isUploadingFile) {
-    if (onError) {
-      onError(i18n.t('notifications.please-wait-other-task-to-finish'));
-    }
-    store.dispatch(
-      addUserNotification({
-        message: i18n.t('notifications.please-wait-other-task-to-finish'),
-        typeOption: 'warning',
-      }),
-    );
-    return;
-  }
-
-  isUploadingFile = true;
-  const session = store.getState().session;
-  let fileName = '';
-
-  const r = new Resumable({
-    target: (window as any).PLUG_N_MEET_SERVER_URL + '/api/fileUpload',
-    uploadMethod: 'POST',
-    query: {
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.roomId,
-      userId: session.currentUser?.userId,
-      resumable: true,
-    },
-    headers: {
-      Authorization: session.token,
-    },
-    prioritizeFirstAndLastChunk: true,
-
-    fileType: allowedFileTypes,
-    fileTypeErrorCallback(file) {
-      if (onError) {
-        onError(
-          i18n.t('notifications.file-type-not-allow', {
-            filetype: file.type,
-          }),
-        );
-      }
-      store.dispatch(
-        addUserNotification({
-          message: i18n.t('notifications.file-type-not-allow', {
-            filetype: file.type,
-          }),
-          typeOption: 'error',
-        }),
-      );
-      isUploadingFile = false;
-    },
-
-    // @ts-expect-error actually value exist
-    maxFileSize: maxFileSize ? Number(maxFileSize) * 1000000 : undefined,
-    maxFileSizeErrorCallback() {
-      if (onError) {
-        onError(i18n.t('notifications.max-file-size-exceeds'));
-      }
-      store.dispatch(
-        addUserNotification({
-          message: i18n.t('notifications.max-file-size-exceeds'),
-          typeOption: 'error',
-        }),
-      );
-      isUploadingFile = false;
-    },
-  });
-
-  r.on('fileAdded', function (file) {
-    fileName = file.fileName;
-    if (!r.isUploading()) {
-      if (isUploading) {
-        isUploading(true);
-      }
-      r.upload();
-    }
-  });
-
-  r.on('fileSuccess', async (file: ResumableFile) => {
-    // file was uploaded successfully
-    // now we'll send merge request
-    const mergeReq = {
-      roomSid: session.currentRoom.sid,
-      roomId: session.currentRoom.roomId,
-      resumableIdentifier: file.uniqueIdentifier,
-      resumableFilename: file.fileName,
-      resumableTotalChunks: file.chunks.length,
-    };
-    const res = await sendAPIRequest('/uploadedFileMerge', mergeReq, true);
-
-    if (isUploading) {
-      isUploading(false);
-    }
-    isUploadingFile = false;
-
-    setTimeout(() => {
-      toast.dismiss(toastId);
-    }, 300);
-
-    if (res.status && res.filePath && res.fileName) {
-      onSuccess({
-        filePath: res.filePath,
-        fileName: res.fileName,
-        fileExtension: res.fileExtension,
-      });
-    } else {
-      if (onError) {
-        onError(i18n.t(res.msg));
-      }
-      toast(i18n.t(res.msg), {
-        type: 'error',
-      });
-    }
-  });
-
-  r.on('fileError', function (_file, message) {
-    isUploadingFile = false;
-    if (isUploading) {
-      isUploading(false);
-    }
-
-    setTimeout(() => {
-      toast.dismiss(toastId);
-    }, 300);
-
-    try {
-      const res = JSON.parse(message);
-      store.dispatch(
-        addUserNotification({
-          message: i18n.t(res.msg),
-          typeOption: 'error',
-        }),
-      );
-      if (onError) {
-        onError(i18n.t(res.msg));
-      }
-    } catch (e) {
-      console.error(e);
-      store.dispatch(
-        addUserNotification({
-          message: i18n.t('right-panel.file-upload-default-error'),
-          typeOption: 'error',
-        }),
-      );
-      if (onError) {
-        onError(i18n.t('right-panel.file-upload-default-error'));
-      }
-    }
-  });
-
-  r.on('uploadStart', function () {
-    // @ts-expect-error this value exists
-    toastId = toast(
-      i18n.t('right-panel.uploading-file', {
-        fileName,
-      }),
-      {
-        closeButton: false,
-        progress: 0,
-      },
-    );
-  });
-
-  r.on('fileProgress', function (file) {
-    const progress = file.progress(false);
-    if (uploadingProgress !== undefined) {
-      uploadingProgress(Number(progress));
-    }
-    toast.update(toastId, {
-      progress: Number(progress),
-    });
-  });
-
-  r.addFiles(files);
-};
-
 export const generateAvatarInitial = (name: string) => {
   const nameParts = name.trim().split(/\s+/);
   const firstNameInitial = nameParts[0]?.[0] || '';
@@ -538,4 +281,8 @@ export const generateAvatarInitial = (name: string) => {
     lastNameInitial = nameParts[0].slice(-1);
   }
   return `${firstNameInitial}${lastNameInitial}`.toLocaleUpperCase();
+};
+
+export const isUserRecorder = (userId: string) => {
+  return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
 };

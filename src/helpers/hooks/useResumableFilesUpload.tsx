@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { uploadResumableFile } from '../utils';
+import { uploadResumableFile } from '../fileUpload';
 
 export interface IUseResumableFilesUpload {
   allowedFileTypes: Array<string>;

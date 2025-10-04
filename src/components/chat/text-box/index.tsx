@@ -15,7 +15,7 @@ import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 import { useAutosizeTextArea } from './useAutosizeTextArea';
 import { publishFileAttachmentToChat } from '../utils';
-import { uploadResumableFile } from '../../../helpers/utils';
+import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
 const TextBoxArea = () => {

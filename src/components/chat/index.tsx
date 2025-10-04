@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
-import { uploadResumableFile } from '../../helpers/utils';
 import { publishFileAttachmentToChat } from './utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { uploadResumableFile } from '../../helpers/fileUpload';
 
 const ChatComponent = () => {
   const { t } = useTranslation();

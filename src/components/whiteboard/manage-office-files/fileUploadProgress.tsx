@@ -14,7 +14,7 @@ import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 import { TrashSVG } from '../../../assets/Icons/TrashSVG';
-import { sleep, uploadResumableFile } from '../../../helpers/utils';
+import { sleep } from '../../../helpers/utils';
 import { store } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
@@ -24,6 +24,7 @@ import {
 } from '../../../store/slices/interfaces/whiteboard';
 import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/utils';
 import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
+import { uploadResumableFile } from '../../../helpers/fileUpload';
 
 interface FileUploadProgressProps {
   excalidrawAPI: ExcalidrawImperativeAPI;

@@ -25,7 +25,7 @@
     "rtmp-ended": "Live streaming has ended.",
     "rtmp-ended-with-error": "The live stream ended with an error.",
     "file-type-not-allow": "The file type '{{filetype}}' is not allowed.",
-    "max-file-size-exceeds": "The file is larger than the maximum allowed size.",
+    "max-file-size-exceeds": "The file is larger than the maximum allowed size of {{size}}MB.",
     "you-have-removed": "You have been removed from the meeting.",
     "you-are-blocked": "You are not allowed to join this meeting.",
     "you-have-reject": "Your request to join the meeting was denied.",
