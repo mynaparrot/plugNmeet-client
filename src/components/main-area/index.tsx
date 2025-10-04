@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { store, useAppDispatch } from '../../store';
 import {
@@ -16,6 +16,8 @@ import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import SidePanel from './sidePanel';
+import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
+import { debounce } from 'es-toolkit';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
@@ -122,6 +124,21 @@ const MainArea = () => {
     return screenHeight;
   }, [screenHeight, screenWidth, isRecorder, headerVisible, footerVisible]);
 
+  const debouncedRefresh = useMemo(
+    () =>
+      debounce(() => {
+        dispatch(doRefreshWhiteboard());
+      }, 500),
+    [dispatch],
+  );
+
+  const handleSidePanelToggled = useCallback(() => {
+    if (isActiveWhiteboard) {
+      // otherwise whiteboard will lose its screen position
+      debouncedRefresh();
+    }
+  }, [debouncedRefresh, isActiveWhiteboard]);
+
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
     isActiveParticipantsPanel || isActiveChatPanel || isActivePollsPanel
@@ -149,16 +166,25 @@ const MainArea = () => {
         <SidePanel
           isActive={isActiveParticipantsPanel}
           panelClass="participants-panel"
+          onToggle={handleSidePanelToggled}
         >
           <ParticipantsComponent />
         </SidePanel>
         {roomFeatures?.chatFeatures?.allowChat && (
-          <SidePanel isActive={isActiveChatPanel} panelClass="chat-panel">
+          <SidePanel
+            isActive={isActiveChatPanel}
+            panelClass="chat-panel"
+            onToggle={handleSidePanelToggled}
+          >
             <ChatComponent />
           </SidePanel>
         )}
         {roomFeatures?.pollsFeatures?.isAllow && (
-          <SidePanel isActive={isActivePollsPanel} panelClass="polls-panel">
+          <SidePanel
+            isActive={isActivePollsPanel}
+            panelClass="polls-panel"
+            onToggle={handleSidePanelToggled}
+          >
             <PollsComponent />
           </SidePanel>
         )}

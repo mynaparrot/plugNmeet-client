@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, Transition } from '@headlessui/react';
+import React, { Fragment, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,6 +9,8 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store } from '../../store';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
+import Modal from '../../helpers/ui/modal';
+import RadioOptions from '../../helpers/ui/radioOptions';
 
 export interface IRemoveParticipantAlertModalData {
   name: string;
@@ -73,102 +74,58 @@ const RemoveParticipantAlertModal = ({
     closeAlertModal();
   };
 
+  const renderButtons = () => {
+    return (
+      <Fragment>
+        <button
+          className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
+          onClick={() => onCloseRemoveParticipantAlert(true)}
+        >
+          {t('left-panel.menus.notice.remove')}
+        </button>
+        <button
+          type="button"
+          className="h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer ml-4"
+          onClick={() => onCloseRemoveParticipantAlert(false)}
+        >
+          {t('cancel')}
+        </button>
+      </Fragment>
+    );
+  };
+
   return (
-    <Transition
+    <Modal
       show={true}
-      enter="transition duration-100 ease-out"
-      enterFrom="transform scale-95 opacity-0"
-      enterTo="transform scale-100 opacity-100"
-      leave="transition duration-75 ease-out"
-      leaveFrom="transform scale-100 opacity-100"
-      leaveTo="transform scale-95 opacity-0"
+      onClose={() => onCloseRemoveParticipantAlert(false)}
+      title={t('left-panel.menus.notice.confirm', {
+        name,
+      })}
+      renderButtons={renderButtons}
     >
-      <Dialog
-        open={true}
-        onClose={() => onCloseRemoveParticipantAlert()}
-        className="remove-participants-popup fixed z-99999 inset-0 overflow-y-auto"
-      >
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="fixed inset-0 bg-black opacity-30" />
-
-          <div className="popup-inner bg-white dark:bg-dark-primary w-full max-w-sm rounded-3xl shadow-header relative px-4 lg:px-6 py-12 lg:py-14">
-            <button
-              className="close-btn absolute top-8 right-6 w-[25px] h-[25px] outline-hidden"
-              type="button"
-              onClick={() => onCloseRemoveParticipantAlert()}
-            >
-              <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 rotate-45" />
-              <span className="inline-block h-px w-[20px] bg-primary-color dark:bg-dark-text absolute top-0 left-0 -rotate-45" />
-            </button>
-            <DialogTitle className="mb-4 md:mb-6 text-sm">
-              <legend className="text-base font-medium text-gray-900 dark:text-white">
-                {t('left-panel.menus.notice.confirm', {
-                  name,
-                })}
-              </legend>
-            </DialogTitle>
-
-            <div className="mb-10 pl-3">
-              <p className="text-sm text-gray-500 dark:text-dark-text">
-                {t('left-panel.menus.notice.want-to-block')}
-              </p>
-              <div className="mt-4 pl-2 space-y-4">
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    value="1"
-                    name="block"
-                    id="yes"
-                    checked={blockUser === 1}
-                    onChange={(e) =>
-                      setBlockUser(Number(e.currentTarget.value))
-                    }
-                  />
-                  <label
-                    htmlFor="yes"
-                    className="ml-3 block text-sm font-medium text-gray-700 dark:text-dark-text"
-                  >
-                    {t('yes')}
-                  </label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    value="0"
-                    name="block"
-                    id="no"
-                    checked={blockUser === 0}
-                    onChange={(e) =>
-                      setBlockUser(Number(e.currentTarget.value))
-                    }
-                  />
-                  <label
-                    htmlFor="no"
-                    className="ml-3 block text-sm font-medium text-gray-700 dark:text-dark-text"
-                  >
-                    {t('no')}
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <button
-              className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium text-white bg-red-600 mr-4 border border-transparent rounded-md hover:bg-red-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-              onClick={() => onCloseRemoveParticipantAlert(true)}
-            >
-              {t('left-panel.menus.notice.remove')}
-            </button>
-
-            <button
-              className="inline-flex justify-center px-4 py-2 text-xs md:text-sm font-medium bg-primary-color hover:bg-secondary-color text-white border border-transparent rounded-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-              onClick={() => onCloseRemoveParticipantAlert(false)}
-            >
-              {t('cancel')}
-            </button>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+      <div className="mb-2 pl-3">
+        <p className="text-sm text-gray-500 dark:text-dark-text">
+          {t('left-panel.menus.notice.want-to-block')}
+        </p>
+        <RadioOptions
+          name="block"
+          checked={blockUser}
+          onChange={setBlockUser}
+          options={[
+            {
+              id: 'yes',
+              value: 1,
+              label: t('yes'),
+            },
+            {
+              id: 'no',
+              value: 0,
+              label: t('no'),
+            },
+          ]}
+        />
+      </div>
+    </Modal>
   );
 };
 

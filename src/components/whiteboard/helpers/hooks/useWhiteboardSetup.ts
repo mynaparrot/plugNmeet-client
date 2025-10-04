@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+//
+import { useEffect, useState } from 'react';
 import {
   Collaborator,
   ExcalidrawImperativeAPI,
   SocketId,
 } from '@excalidraw/excalidraw/types';
-import { debounce } from 'es-toolkit/compat';
 
 import { useAppSelector } from '../../../../store';
 import { addPreloadedLibraryItems } from '../utils';
@@ -36,15 +36,15 @@ const useWhiteboardSetup = ({
   const mousePointerLocation = useAppSelector(
     (state) => state.whiteboard.mousePointerLocation,
   );
-  const isActiveParticipantsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+
+  const refreshWhiteboard = useAppSelector(
+    (state) => state.whiteboard.refreshWhiteboard,
   );
-  const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
-  );
-  const isEnabledExtendedVerticalCamView = useAppSelector(
-    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
-  );
+  useEffect(() => {
+    if (excalidrawAPI && refreshWhiteboard) {
+      excalidrawAPI.refresh();
+    }
+  }, [refreshWhiteboard, excalidrawAPI]);
 
   // from useWhiteboardPermissions
   useEffect(() => {
@@ -62,24 +62,6 @@ const useWhiteboardSetup = ({
       setViewModeEnabled(lockWhiteboard ?? true);
     }
   }, [excalidrawAPI, isPresenter, lockWhiteboard, isRecorder, defaultLock]);
-
-  // from useWhiteboardResizeHandler
-  const debouncedRefresh = useMemo(
-    () =>
-      debounce(() => {
-        excalidrawAPI?.refresh();
-      }, 500),
-    [excalidrawAPI],
-  );
-
-  useEffect(() => {
-    debouncedRefresh();
-  }, [
-    isActiveParticipantsPanel,
-    isActiveChatPanel,
-    isEnabledExtendedVerticalCamView,
-    debouncedRefresh,
-  ]);
 
   // from useCollaborators
   useEffect(() => {
