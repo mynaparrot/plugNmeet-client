@@ -14,12 +14,14 @@ import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhitebo
 import { savePageData } from '../helpers/utils';
 
 interface ManageOfficeFilesModalProps {
+  roomId: string;
   excalidrawAPI: ExcalidrawImperativeAPI;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const ManageOfficeFilesModal = ({
+  roomId,
   excalidrawAPI,
   isOpen,
   onClose,
@@ -139,6 +141,8 @@ const ManageOfficeFilesModal = ({
                   />
                 )}
                 <UploadedFilesList
+                  roomId={roomId}
+                  excalidrawAPI={excalidrawAPI}
                   onSelectOfficeFile={setSelectedOfficeFile}
                   selectedOfficeFile={selectedOfficeFile}
                 />

@@ -13,6 +13,7 @@ import {
   AnalyticsEvents,
   AnalyticsEventType,
   DataMsgBodyType,
+  RoomUploadedFileType,
 } from 'plugnmeet-protocol-js';
 
 import { store } from '../../../store';
@@ -183,7 +184,11 @@ const uploadCanvasBinaryFile = async (
     // Add to the queue to prevent duplicate uploads.
     uploadingCanvasBinaryFile.set(file.id, elm.id);
 
-    const res = await uploadBase64EncodedFile(`${file.id}.png`, file.dataURL);
+    const res = await uploadBase64EncodedFile(
+      `${file.id}.png`,
+      file.dataURL,
+      RoomUploadedFileType.WHITEBOARD_IMAGE_FILE,
+    );
     if (!res || !res.status) {
       // If upload fails, we stop here. The `finally` block will clean up the queue.
       console.error('Failed to upload canvas binary file.');

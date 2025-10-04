@@ -1,27 +1,94 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  GetRoomUploadedFilesReqSchema,
+  GetRoomUploadedFilesResSchema,
+  RoomUploadedFileType,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { useAppSelector } from '../../../store';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
-import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
+import {
+  IWhiteboardOfficeFile,
+  WhiteboardFileConversionRes,
+} from '../../../store/slices/interfaces/whiteboard';
 import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/utils';
 
 interface UploadedFilesListProps {
+  roomId: string;
+  excalidrawAPI: ExcalidrawImperativeAPI;
   onSelectOfficeFile: (fileId: IWhiteboardOfficeFile) => void;
   selectedOfficeFile?: IWhiteboardOfficeFile;
 }
 
 const UploadedFilesList = ({
+  roomId,
+  excalidrawAPI,
   onSelectOfficeFile,
   selectedOfficeFile,
 }: UploadedFilesListProps) => {
   const { t } = useTranslation();
+  const isFetched = useRef(false);
+
   const whiteboardUploadedOfficeFiles = useAppSelector(
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
   );
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
+
+  useEffect(() => {
+    const fetchAndUpdateFiles = async () => {
+      const body = create(GetRoomUploadedFilesReqSchema, {
+        roomId: roomId,
+        fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
+      });
+      const r = await sendAPIRequest(
+        'getRoomFilesByType',
+        toBinary(GetRoomUploadedFilesReqSchema, body),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
+      if (!res.status || !res.files) {
+        return;
+      }
+
+      // let's compare with local store
+      res.files.forEach((file) => {
+        const exist = whiteboardUploadedOfficeFiles.find(
+          (f) => f.fileId === file.fileId,
+        );
+        if (!exist) {
+          const newFile: WhiteboardFileConversionRes = {
+            msg: '',
+            status: true,
+            fileId: file.fileId,
+            fileName: file.fileName,
+            filePath: file.filePath,
+            totalPages: file.totalPages ?? 0,
+          };
+          handleToAddWhiteboardUploadedOfficeNewFile(
+            newFile,
+            excalidrawAPI.getAppState().height,
+            excalidrawAPI.getAppState().width,
+            true, // just broadcasting, not select as current file
+          );
+        }
+      });
+    };
+
+    if (!isFetched.current) {
+      isFetched.current = true;
+      fetchAndUpdateFiles().then();
+    }
+    // oxlint-disable-next-line exhaustive-deps
+  }, []);
 
   return (
     <div className="max-h-40 overflow-y-auto scrollBar grid gap-2">

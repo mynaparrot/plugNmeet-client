@@ -1,5 +1,6 @@
 import React, { DragEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
@@ -80,6 +81,7 @@ const ChatComponent = () => {
         uploadResumableFile(
           chatFeatures?.allowedFileTypes ?? [],
           chatFeatures?.maxFileSize,
+          RoomUploadedFileType.CHAT_FILE,
           files,
           (result) => {
             publishFileAttachmentToChat(result.filePath, result.fileName).then(

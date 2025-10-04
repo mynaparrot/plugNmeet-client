@@ -10,7 +10,11 @@ import React, {
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
-import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  RoomUploadedFileType,
+} from 'plugnmeet-protocol-js';
 
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 import { TrashSVG } from '../../../assets/Icons/TrashSVG';
@@ -77,6 +81,7 @@ const FileUploadProgress = ({
     uploadResumableFile(
       allowedFileTypes,
       maxAllowedFileSize,
+      RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
       files,
       (result) => convertFile(result.filePath),
       (isUploading) => setIsWorking(isUploading),
@@ -120,7 +125,7 @@ const FileUploadProgress = ({
       res,
       excalidrawAPI.getAppState().height,
       excalidrawAPI.getAppState().width,
-      true, // just broadcasting, not select as current file
+      true, // just appending
     );
 
     await sleep(500);

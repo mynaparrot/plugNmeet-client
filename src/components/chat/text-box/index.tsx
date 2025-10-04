@@ -9,6 +9,7 @@ import React, {
 import sanitizeHtml from 'sanitize-html';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
+import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import FileSend from './fileSend';
@@ -142,6 +143,7 @@ const TextBoxArea = () => {
           uploadResumableFile(
             chatFeatures?.allowedFileTypes ?? [],
             chatFeatures?.maxFileSize,
+            RoomUploadedFileType.CHAT_FILE,
             files,
             (result) => {
               publishFileAttachmentToChat(

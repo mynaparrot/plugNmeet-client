@@ -41,6 +41,7 @@ const ExternalMediaPlayerModal = () => {
         show={!externalMediaPlayerIsActive}
         onClose={closeStartModal}
         title={t('footer.modal.external-media-player-title')}
+        customClass="min-h-[20rem]"
       >
         <Tabs items={items} vertical />
       </Modal>

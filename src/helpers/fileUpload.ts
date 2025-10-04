@@ -1,15 +1,18 @@
 import { toast } from 'react-toastify';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
+  RoomUploadedFileType,
   UploadBase64EncodedDataReqSchema,
   UploadBase64EncodedDataResSchema,
+  UploadedFileMergeReqSchema,
+  UploadedFileRes,
+  UploadedFileResSchema,
 } from 'plugnmeet-protocol-js';
 import Resumable from 'resumablejs';
 
 import i18n from './i18n';
 import { store } from '../store';
 import sendAPIRequest from './api/plugNmeetAPI';
-import { IUseResumableFilesUploadResult } from './hooks/useResumableFilesUpload';
 import { addUserNotification } from '../store/slices/roomSettingsSlice';
 import { ISession } from '../store/slices/interfaces/session';
 import { sleep } from './utils';
@@ -18,6 +21,7 @@ import ResumableFile = Resumable.ResumableFile;
 export const uploadBase64EncodedFile = async (
   fileName: string,
   base64EncodedData: string,
+  fileType: RoomUploadedFileType,
 ) => {
   const id = toast.loading(i18n.t('notifications.uploading-file'), {
     type: 'info',
@@ -26,6 +30,7 @@ export const uploadBase64EncodedFile = async (
   const body = create(UploadBase64EncodedDataReqSchema, {
     data: parts[1],
     fileName,
+    fileType,
   });
   const r = await sendAPIRequest(
     'uploadBase64EncodedData',
@@ -59,8 +64,9 @@ export const uploadBase64EncodedFile = async (
 interface IResumableUploaderArgs {
   allowedFileTypes: Array<string>;
   maxFileSize: string | undefined;
+  fileType: RoomUploadedFileType;
   files: Array<File>;
-  onSuccess: (result: IUseResumableFilesUploadResult) => void;
+  onSuccess: (result: UploadedFileRes) => void;
   isUploading?: (uploading: boolean) => void;
   uploadingProgress?: (progress: number) => void;
   onError?: (msg: string) => void;
@@ -123,23 +129,29 @@ class ResumableUploader {
   private onFileSuccess = async (file: ResumableFile) => {
     await sleep(1000);
 
-    const mergeReq = {
+    const mergeReq = create(UploadedFileMergeReqSchema, {
       roomSid: this.session.currentRoom.sid,
       roomId: this.session.currentRoom.roomId,
       resumableIdentifier: file.uniqueIdentifier,
       resumableFilename: file.fileName,
       resumableTotalChunks: file.chunks.length,
-    };
-    const res = await sendAPIRequest('/uploadedFileMerge', mergeReq, true);
+      fileType: this.args.fileType,
+    });
+
+    const body = toBinary(UploadedFileMergeReqSchema, mergeReq);
+    const r = await sendAPIRequest(
+      '/uploadedFileMerge',
+      body,
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = fromBinary(UploadedFileResSchema, new Uint8Array(r));
 
     this.cleanUp();
 
     if (res.status && res.filePath && res.fileName) {
-      this.args.onSuccess({
-        filePath: res.filePath,
-        fileName: res.fileName,
-        fileExtension: res.fileExtension,
-      });
+      this.args.onSuccess(res);
     } else {
       this.args.onError?.(i18n.t(res.msg));
       toast(i18n.t(res.msg), { type: 'error' });
@@ -224,8 +236,9 @@ class ResumableUploader {
 export const uploadResumableFile = (
   allowedFileTypes: Array<string>,
   maxFileSize: string | undefined,
+  fileType: RoomUploadedFileType,
   files: Array<File>,
-  onSuccess: (result: IUseResumableFilesUploadResult) => void,
+  onSuccess: (result: UploadedFileRes) => void,
   isUploading?: (uploading: boolean) => void,
   uploadingProgress?: (progress: number) => void,
   onError?: (msg: string) => void,
@@ -233,6 +246,7 @@ export const uploadResumableFile = (
   const uploader = new ResumableUploader({
     allowedFileTypes,
     maxFileSize,
+    fileType,
     files,
     onSuccess,
     isUploading,

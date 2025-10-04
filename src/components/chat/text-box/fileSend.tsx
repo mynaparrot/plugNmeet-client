@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch } from '../../../store';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
@@ -33,6 +34,7 @@ const FileSend = ({ lockSendFile }: IFileSendProps) => {
     allowedFileTypes: chatFeatures?.allowedFileTypes ?? [],
     maxFileSize,
     files,
+    fileType: RoomUploadedFileType.CHAT_FILE,
   });
 
   useEffect(() => {

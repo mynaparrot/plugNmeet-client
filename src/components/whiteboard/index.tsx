@@ -59,10 +59,15 @@ const CURSOR_SYNC_TIMEOUT = 33;
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
   const { i18n, t } = useTranslation();
-  const { currentUser, isRecorder } = useMemo(() => {
+  //
+  const { currentUser, isRecorder, roomId } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
-    return { currentUser, isRecorder: !!currentUser?.isRecorder };
+    return {
+      currentUser,
+      isRecorder: !!currentUser?.isRecorder,
+      roomId: session.currentRoom.roomId,
+    };
   }, []);
 
   // Selectors
@@ -379,6 +384,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
       {isPresenter && excalidrawAPI && (
         <ManageOfficeFilesModal
+          roomId={roomId}
           excalidrawAPI={excalidrawAPI}
           onClose={() => setIsOpenManageFilesUI(false)}
           isOpen={isOpenManageFilesUI}

@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
 import {
   BackgroundConfig,
@@ -25,6 +26,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
     allowedFileTypes,
     maxFileSize: '30',
     files,
+    fileType: RoomUploadedFileType.VIRTUAL_BACKGROUND,
   });
 
   useEffect(() => {

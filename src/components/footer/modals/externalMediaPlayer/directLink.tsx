@@ -16,6 +16,11 @@ import { useAppDispatch } from '../../../../store';
 import FormattedInputField from '../../../../helpers/ui/formattedInputField';
 import ActionButton from '../../../../helpers/ui/actionButton';
 
+// oxlint-disable-next-line no-unused-vars
+interface DirectLinkProps {
+  setPlayBackUrl: React.Dispatch<React.SetStateAction<string>>;
+}
+
 const DirectLink = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();

@@ -325,8 +325,9 @@
       "external-media-player-direct-link": "From a Link",
       "external-media-player-upload-file": "Upload a File",
       "external-media-player-upload-file-play": "Upload and Play",
+      "external-media-player-uploading": "Uploading...",
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
-      "external-media-player-select-file": "Select a media file",
+      "external-media-player-select-file": "Select a media file to upload",
       "upload-background-image": "Upload background image",
       "shared-notepad": "Shared Notepad"
     }
