@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveSharedNotePad } from '../../../store/slices/bottomIconsActivitySlice';
-
+import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
 const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -28,11 +27,6 @@ const SharedNotePadIcon = () => {
     dispatch(updateIsActiveSharedNotePad(!!sharedNotepadStatus));
   }, [sharedNotepadStatus, dispatch]);
 
-  const iconClasses = clsx('pnm-notepad text-[14px] lg:text-[16px]', {
-    secondaryColor: isActiveSharedNotePad,
-    'primaryColor dark:text-dark-text': !isActiveSharedNotePad,
-  });
-
   return (
     sharedNotepadStatus && (
       <div
@@ -51,7 +45,7 @@ const SharedNotePadIcon = () => {
               ? t('footer.icons.hide-shared-notepad')
               : t('footer.icons.show-shared-notepad')}
           </span>
-          <i className={iconClasses} />
+          <SharedNotepadIconSVG />
         </div>
       </div>
     )

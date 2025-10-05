@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 import { useNotepadUrl } from './useNotepadUrl';
 import { LoadingIcon } from '../../assets/Icons/Loading';
+import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 
 const SharedNotepad = () => {
   const { t } = useTranslation();
@@ -42,20 +43,22 @@ const SharedNotepad = () => {
             bounds="#main-area"
           >
             <div
-              className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto"
+              className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto rounded-xl"
               ref={nodeRef}
             >
               <div
                 id="draggable-h1"
-                className="absolute top-2 md:top-0 left-0 h-7 w-full text-white flex items-center justify-center text-sm"
-              ></div>
-              <div
-                className="hide-icon absolute pl-2 w-16 h-7 cursor-pointer flex items-center"
-                onClick={minimizePad}
+                className="flex items-center justify-between text-base font-medium leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100 bg-white rounded-t-xl"
               >
-                <div className="h-0.5 w-6 bg-white line"></div>
+                <span>Notepad</span>
+                <button
+                  className="cursor-pointer relative z-30"
+                  onClick={minimizePad}
+                >
+                  <PopupCloseSVGIcon classes="text-Gray-600" />
+                </button>
               </div>
-              <div className="inner w-full h-full border-t-28 border-solid border-primary-color">
+              <div className="inner w-full h-full">
                 {!loaded && (
                   <div className="loading-status absolute inset-0 z-10 flex h-full w-full items-center justify-center bg-white/50 dark:bg-black/50">
                     <LoadingIcon
