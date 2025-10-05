@@ -66,7 +66,6 @@ const useOfficePageSyncer = ({ excalidrawAPI }: IUseOfficePageSyncer) => {
           file.isOfficeFile,
           file.uploaderWhiteboardHeight,
           file.uploaderWhiteboardWidth,
-          file.excalidrawElement,
         );
 
         if (result) {

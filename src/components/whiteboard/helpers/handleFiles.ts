@@ -73,7 +73,6 @@ export const fetchFileWithElm = async (
   is_office_file: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
-  excalidrawElement?: ExcalidrawElement,
 ): Promise<FileReaderResult | null> => {
   try {
     let imgData: string;
@@ -133,7 +132,6 @@ export const fetchFileWithElm = async (
         excalidrawHeight,
         excalidrawWidth,
         is_office_file,
-        excalidrawElement,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
       );
@@ -150,7 +148,6 @@ export const fetchFileWithElm = async (
         excalidrawHeight,
         excalidrawWidth,
         is_office_file,
-        excalidrawElement,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
       );
@@ -174,7 +171,6 @@ const prepareForExcalidraw = (
   excalidrawHeight: number,
   excalidrawWidth: number,
   isOfficeFile: boolean,
-  excalidrawElement?: ExcalidrawElement,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
 ): FileReaderResult => {
@@ -231,13 +227,6 @@ const prepareForExcalidraw = (
     index: null,
     customData,
   };
-
-  if (
-    typeof excalidrawElement !== 'undefined' &&
-    excalidrawElement.type === 'image'
-  ) {
-    elm = excalidrawElement;
-  }
 
   return {
     image,
@@ -360,7 +349,6 @@ export const ensureImageDataIsLoaded = async (
     customData.isOfficeFile,
     customData.uploaderWhiteboardHeight,
     customData.uploaderWhiteboardWidth,
-    elm,
   );
 
   if (!result) {

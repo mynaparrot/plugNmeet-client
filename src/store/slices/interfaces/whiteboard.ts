@@ -1,5 +1,4 @@
 import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
-import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 export interface IWhiteboardSlice {
   totalPages: number;
@@ -23,7 +22,6 @@ export interface IWhiteboardFile {
   uploaderWhiteboardHeight: number;
   uploaderWhiteboardWidth: number;
   isOfficeFile: boolean;
-  excalidrawElement?: ExcalidrawElement;
 }
 
 export interface IRequestWhiteboardData {
