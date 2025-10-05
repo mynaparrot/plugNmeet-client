@@ -10,8 +10,8 @@ import { store, useAppDispatch } from '../../../store';
 import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
-import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
 import { savePageData } from '../helpers/utils';
+import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
 
 interface ManageOfficeFilesModalProps {
   roomId: string;

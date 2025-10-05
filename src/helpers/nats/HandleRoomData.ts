@@ -1,8 +1,8 @@
 import { toast } from 'react-toastify';
 import {
-  RoomMetadataSchema,
-  NatsKvRoomInfo,
   ChatMessageSchema,
+  NatsKvRoomInfo,
+  RoomMetadataSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromJsonString } from '@bufbuild/protobuf';
 
@@ -14,7 +14,7 @@ import {
 } from '../../store/slices/sessionSlice';
 import i18n from '../i18n';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/utils';
+import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/handleFiles';
 import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/whiteboard';
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';

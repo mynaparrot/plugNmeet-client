@@ -3,13 +3,8 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
-import {
-  IWhiteboardFile,
-  IWhiteboardOfficeFile,
-  WhiteboardFileConversionRes,
-} from '../../../store/slices/interfaces/whiteboard';
-import { randomString, sleep } from '../../../helpers/utils';
-import { addWhiteboardUploadedOfficeFiles } from '../../../store/slices/whiteboard';
+import { sleep } from '../../../helpers/utils';
+import { updateExcalidrawElements } from '../../../store/slices/whiteboard';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
@@ -84,57 +79,27 @@ export const displaySavedPageData = (
 ) => {
   const data = sessionStorage.getItem(formatStorageKey(page));
   const excalidrawAPI = getExcalidrawAPI();
+  let hasData = false;
+
   if (data && excalidrawAPI) {
     const elements = JSON.parse(data);
     if (Array.isArray(elements) && elements.length) {
-      excalidrawAPI.updateScene({ elements });
+      hasData = true;
+      store.dispatch(updateExcalidrawElements(data));
+
       if (isPresenter) {
         // better to broadcast full screen
         sleep(1000).then(() => {
           const latestElms =
             getExcalidrawAPI()?.getSceneElementsIncludingDeleted();
           broadcastSceneOnChange(latestElms ?? elements, true).then();
-          if (isSwitching) {
-            isSwitching.current = false;
-          }
         });
       }
     }
-  } else if (isSwitching) {
+  }
+
+  if (isSwitching) {
     isSwitching.current = false;
   }
-};
-
-export const handleToAddWhiteboardUploadedOfficeNewFile = (
-  whiteboardFileConversionRes: WhiteboardFileConversionRes,
-  uploaderWhiteboardHeight = 260,
-  uploaderWhiteboardWidth = 1160,
-  appendOnly?: boolean,
-) => {
-  const files: Array<IWhiteboardFile> = [];
-  for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
-    const fileName = 'page_' + (i + 1) + '.png';
-    const file: IWhiteboardFile = {
-      id: randomString(),
-      currentPage: i + 1,
-      filePath: whiteboardFileConversionRes.filePath + '/' + fileName,
-      fileName,
-      uploaderWhiteboardHeight,
-      uploaderWhiteboardWidth,
-      isOfficeFile: true,
-    };
-    files.push(file);
-  }
-
-  const newFile: IWhiteboardOfficeFile = {
-    fileId: whiteboardFileConversionRes.fileId,
-    fileName: whiteboardFileConversionRes.fileName,
-    filePath: whiteboardFileConversionRes.filePath,
-    totalPages: whiteboardFileConversionRes.totalPages,
-    pageFiles: JSON.stringify(files),
-    appendOnly: appendOnly,
-  };
-
-  store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
-  return newFile;
+  return hasData;
 };

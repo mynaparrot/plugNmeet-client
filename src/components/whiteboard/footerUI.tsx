@@ -32,8 +32,12 @@ const FooterUI = ({
 }: IFooterUIProps) => {
   const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
+  const currentWhiteboardOfficeFileId = useAppSelector(
+    (state) => state.whiteboard.currentWhiteboardOfficeFileId,
+  );
 
   const previousPage = usePrevious(currentPage);
+  const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -47,15 +51,24 @@ const FooterUI = ({
   }, []);
 
   useEffect(() => {
-    if (
-      isPresenter &&
-      previousPage &&
-      currentPage !== previousPage &&
-      excalidrawAPI
-    ) {
+    if (!isPresenter || !excalidrawAPI) {
+      return;
+    }
+    if (currentWhiteboardOfficeFileId !== previousFileId) {
+      // this was already handled, so we won't repeat
+      return;
+    }
+    if (previousPage && currentPage !== previousPage) {
       savePageData(excalidrawAPI, previousPage);
     }
-  }, [isPresenter, currentPage, previousPage, excalidrawAPI]);
+  }, [
+    isPresenter,
+    currentWhiteboardOfficeFileId,
+    previousFileId,
+    currentPage,
+    previousPage,
+    excalidrawAPI,
+  ]);
 
   const debouncedSetCurrentPage = useMemo(
     () =>

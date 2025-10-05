@@ -20,12 +20,16 @@ const useWhiteboardFileElementsSync = ({
     (state) => state.whiteboard.whiteboardOfficeFilePagesAndOtherImages,
   );
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
+  const isPresenter = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.isPresenter,
+  );
 
-  const handleExcalidrawAddFiles = useCallback(
+  const handleExcalidrawAddOfficeFiles = useCallback(
     async (files: Array<IWhiteboardFile>) => {
       if (!excalidrawAPI) {
         return;
       }
+
       const fileReadImages: Array<BinaryFileData> = [];
       const fileReadElms: Array<ExcalidrawElement> = [];
 
@@ -89,26 +93,35 @@ const useWhiteboardFileElementsSync = ({
   );
 
   useEffect(() => {
-    if (whiteboardOfficeFilePagesAndOtherImages && excalidrawAPI) {
-      try {
-        const files: Array<IWhiteboardFile> = JSON.parse(
-          whiteboardOfficeFilePagesAndOtherImages,
+    if (
+      !excalidrawAPI ||
+      !isPresenter ||
+      whiteboardOfficeFilePagesAndOtherImages === ''
+    ) {
+      return;
+    }
+
+    try {
+      const files: Array<IWhiteboardFile> = JSON.parse(
+        whiteboardOfficeFilePagesAndOtherImages,
+      );
+      if (files.length) {
+        const currentPageFiles = files.filter(
+          (file) => file.currentPage === currentPage && file.isOfficeFile,
         );
-        if (files.length) {
-          const currentPageFiles = files.filter(
-            (file) => file.currentPage === currentPage,
-          );
-          handleExcalidrawAddFiles(currentPageFiles).then();
+        if (currentPageFiles.length) {
+          handleExcalidrawAddOfficeFiles(currentPageFiles).then();
         }
-      } catch (e) {
-        console.error('Failed to parse whiteboard files', e);
       }
+    } catch (e) {
+      console.error('Failed to parse whiteboard files', e);
     }
   }, [
     excalidrawAPI,
+    isPresenter,
     whiteboardOfficeFilePagesAndOtherImages,
     currentPage,
-    handleExcalidrawAddFiles,
+    handleExcalidrawAddOfficeFiles,
   ]);
 };
 

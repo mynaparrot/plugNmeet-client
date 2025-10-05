@@ -7,12 +7,19 @@ import {
   ExcalidrawElement,
   ExcalidrawImageElement,
 } from '@excalidraw/excalidraw/element/types';
-import { randomInteger } from '../../../helpers/utils';
+import { randomInteger, randomString } from '../../../helpers/utils';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { store } from '../../../store';
 import { uploadBase64EncodedFile } from '../../../helpers/fileUpload';
-import { IWhiteboardFile } from '../../../store/slices/interfaces/whiteboard';
-import { addWhiteboardOtherImageFile } from '../../../store/slices/whiteboard';
+import {
+  IWhiteboardFile,
+  IWhiteboardOfficeFile,
+  WhiteboardFileConversionRes,
+} from '../../../store/slices/interfaces/whiteboard';
+import {
+  addWhiteboardOtherImageFile,
+  addWhiteboardUploadedOfficeFiles,
+} from '../../../store/slices/whiteboard';
 import { broadcastCurrentWhiteboardOfficeFilePagesAndOtherImages } from './handleRequestedWhiteboardData';
 
 export interface FileReaderResult {
@@ -29,7 +36,42 @@ export interface ImageCustomData {
 
 // A simple in-memory cache to store fetched image data (base64) by URL.
 const imageCache = new Map<string, string>(),
-  uploadingCanvasBinaryFile: Map<string, string> = new Map();
+  uploadingCanvasBinaryFile: Map<string, string> = new Map(),
+  processedImageElements: Map<string, string> = new Map();
+
+export const handleToAddWhiteboardUploadedOfficeNewFile = (
+  whiteboardFileConversionRes: WhiteboardFileConversionRes,
+  uploaderWhiteboardHeight = 260,
+  uploaderWhiteboardWidth = 1160,
+  appendOnly?: boolean,
+) => {
+  const files: Array<IWhiteboardFile> = [];
+  for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
+    const fileName = 'page_' + (i + 1) + '.png';
+    const file: IWhiteboardFile = {
+      id: randomString(),
+      currentPage: i + 1,
+      filePath: whiteboardFileConversionRes.filePath + '/' + fileName,
+      fileName,
+      uploaderWhiteboardHeight,
+      uploaderWhiteboardWidth,
+      isOfficeFile: true,
+    };
+    files.push(file);
+  }
+
+  const newFile: IWhiteboardOfficeFile = {
+    fileId: whiteboardFileConversionRes.fileId,
+    fileName: whiteboardFileConversionRes.fileName,
+    filePath: whiteboardFileConversionRes.filePath,
+    totalPages: whiteboardFileConversionRes.totalPages,
+    pageFiles: JSON.stringify(files),
+    appendOnly: appendOnly,
+  };
+
+  store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
+  return newFile;
+};
 
 export const fetchFileWithElm = async (
   url: string,
@@ -309,11 +351,17 @@ export const uploadCanvasBinaryFile = async (
   }
 };
 
-export const handleExcalidrawAddFiles = async (
+export const ensureImageDataIsLoaded = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   elm: ExcalidrawImageElement,
   customData: ImageCustomData,
 ) => {
+  if (!elm.fileId || processedImageElements.has(elm.id)) {
+    return;
+  }
+
+  processedImageElements.set(elm.id, elm.fileId);
+
   let fileExist = false;
   const canvasFiles = excalidrawAPI.getFiles();
   for (const canvasFile in canvasFiles) {
@@ -330,7 +378,7 @@ export const handleExcalidrawAddFiles = async (
 
   const result = await fetchFileWithElm(
     customData.fileUrl,
-    elm.fileId as string,
+    elm.fileId,
     customData.isOfficeFile,
     customData.uploaderWhiteboardHeight,
     customData.uploaderWhiteboardWidth,
@@ -339,9 +387,14 @@ export const handleExcalidrawAddFiles = async (
 
   if (!result) {
     console.error('fetching image file failed', customData.fileUrl);
+    processedImageElements.delete(elm.id);
     return;
   }
 
   const fileReadImages: Array<BinaryFileData> = [result.image];
   excalidrawAPI.addFiles(fileReadImages);
 };
+
+export function cleanProcessedImageElementsMap() {
+  processedImageElements.clear();
+}

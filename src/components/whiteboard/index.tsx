@@ -50,7 +50,8 @@ import FooterUI from './footerUI';
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
 import {
-  handleExcalidrawAddFiles,
+  cleanProcessedImageElementsMap,
+  ensureImageDataIsLoaded,
   ImageCustomData,
 } from './helpers/handleFiles';
 
@@ -63,7 +64,6 @@ const CURSOR_SYNC_TIMEOUT = 33;
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
   const { i18n, t } = useTranslation();
-  //
   const { currentUser, isRecorder, roomId } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
@@ -118,7 +118,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     lockWhiteboard,
     isRecorder,
   });
-  const { fetchedData } = useWhiteboardDataSharer({ excalidrawAPI });
+  const { fetchedData, setFetchedData, fetchDataFromDonner } =
+    useWhiteboardDataSharer({
+      excalidrawAPI,
+    });
   const {
     lastBroadcastOrReceivedSceneVersion,
     setLastBroadcastOrReceivedSceneVersion,
@@ -161,11 +164,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           appState,
         );
 
+        // 6. Ensure that any image elements have their binary data loaded.
+        // This is crucial when receiving scenes from remote peers.
         for (let i = 0; i < reconciledElements.length; i++) {
           const elm = reconciledElements[i];
           if (elm.type === 'image' && elm.customData !== null) {
-            console.log(elm);
-            handleExcalidrawAddFiles(
+            ensureImageDataIsLoaded(
               excalidrawAPI,
               elm,
               elm.customData as ImageCustomData,
@@ -173,7 +177,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           }
         }
 
-        // 6. Update the Excalidraw scene with the reconciled elements.
+        // 7. Update the Excalidraw scene with the reconciled elements.
         // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,
         // as it's a sync operation, not a user action.
         excalidrawAPI.updateScene({
@@ -182,12 +186,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             ? CaptureUpdateAction.IMMEDIATELY
             : CaptureUpdateAction.NEVER,
         });
-        // 7. Update the scene version to the latest received version.
+        // 8. Update the scene version to the latest received version.
         // This prevents re-broadcasting of the same data.
         setLastBroadcastOrReceivedSceneVersion(
           getSceneVersion(reconciledElements),
         );
-        // 8. Clear the history to ensure a clean state after the remote update.
+        // 9. Clear the history to ensure a clean state after the remote update.
         excalidrawAPI.history.clear();
       } catch (e) {
         console.error(e);
@@ -214,6 +218,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
     // 4. Reset scene version tracking and re-enable the following mode.
     setLastBroadcastOrReceivedSceneVersion(-1);
+    cleanProcessedImageElementsMap();
     setIsFollowing(true);
 
     // 5. If the user is the presenter, load the switched page/document data if previously saved.
@@ -236,6 +241,47 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     setLastBroadcastOrReceivedSceneVersion,
   ]);
 
+  // clean up store during exit
+  useEffect(() => {
+    return () => {
+      dispatch(updateExcalidrawElements(''));
+      dispatch(updateMousePointerLocation(''));
+      dispatch(addAllExcalidrawElements(''));
+      cleanProcessedImageElementsMap();
+    };
+  }, [dispatch]);
+
+  // on mount: if presenter, display saved data
+  useEffect(() => {
+    if (!excalidrawAPI) {
+      return;
+    }
+
+    const isPresenter =
+      store.getState().session.currentUser?.metadata?.isPresenter;
+    if (isPresenter) {
+      // if presenter then we'll fetch storage to display after initialize excalidraw
+      isSwitching.current = true;
+      const timeout = setTimeout(() => {
+        const hasData = displaySavedPageData(
+          () => excalidrawAPI,
+          true,
+          store.getState().whiteboard.currentPage,
+          isSwitching,
+        );
+        if (!hasData) {
+          fetchDataFromDonner();
+        } else {
+          setFetchedData(true);
+        }
+      }, 100);
+      return () => clearTimeout(timeout);
+    } else {
+      fetchDataFromDonner();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [excalidrawAPI]);
+
   // when receive full whiteboard data
   useEffect(() => {
     if (allExcalidrawElements !== '' && excalidrawAPI) {
@@ -248,37 +294,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     if (excalidrawElements && excalidrawAPI && fetchedData) {
       reconcileAndUpdateScene(excalidrawElements);
     }
-  }, [excalidrawAPI, excalidrawElements, fetchedData, reconcileAndUpdateScene]);
-
-  // clean up store during exit
-  useEffect(() => {
-    return () => {
-      dispatch(updateExcalidrawElements(''));
-      dispatch(updateMousePointerLocation(''));
-      dispatch(addAllExcalidrawElements(''));
-    };
-  }, [dispatch]);
-
-  // on mount: if presenter, display saved data
-  useEffect(() => {
-    if (excalidrawAPI) {
-      // if presenter then we'll fetch storage to display after initialize excalidraw
-      const isPresenter =
-        store.getState().session.currentUser?.metadata?.isPresenter;
-      if (isPresenter) {
-        isSwitching.current = true;
-        const timeout = setTimeout(() => {
-          displaySavedPageData(
-            () => excalidrawAPI,
-            true,
-            store.getState().whiteboard.currentPage,
-            isSwitching,
-          );
-        }, 100);
-        return () => clearTimeout(timeout);
-      }
-    }
-  }, [excalidrawAPI]);
+  }, [excalidrawAPI, excalidrawElements, reconcileAndUpdateScene, fetchedData]);
 
   // Effect for file changes
   useEffect(() => {

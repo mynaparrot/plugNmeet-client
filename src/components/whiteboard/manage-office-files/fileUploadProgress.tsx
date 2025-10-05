@@ -26,8 +26,7 @@ import {
   WhiteboardFileConversionReq,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/utils';
-import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
+import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/handleFiles';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 
 interface FileUploadProgressProps {
@@ -127,9 +126,6 @@ const FileUploadProgress = ({
       excalidrawAPI.getAppState().width,
       true, // just appending
     );
-
-    await sleep(500);
-    await broadcastWhiteboardOfficeFile(newFile);
 
     // send analytics
     conn.sendAnalyticsData(
