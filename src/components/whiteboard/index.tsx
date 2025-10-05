@@ -49,6 +49,10 @@ import FooterUI from './footerUI';
 
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
+import {
+  handleExcalidrawAddFiles,
+  ImageCustomData,
+} from './helpers/handleFiles';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -156,6 +160,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           parsedElements,
           appState,
         );
+
+        for (let i = 0; i < reconciledElements.length; i++) {
+          const elm = reconciledElements[i];
+          if (elm.type === 'image' && elm.customData !== null) {
+            console.log(elm);
+            handleExcalidrawAddFiles(
+              excalidrawAPI,
+              elm,
+              elm.customData as ImageCustomData,
+            ).then();
+          }
+        }
 
         // 6. Update the Excalidraw scene with the reconciled elements.
         // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,

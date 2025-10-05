@@ -7,7 +7,7 @@ import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
-import { fetchFileWithElm } from '../fileReader';
+import { fetchFileWithElm } from '../handleFiles';
 
 interface IUseWhiteboardFileElementsSync {
   excalidrawAPI: ExcalidrawImperativeAPI | null;

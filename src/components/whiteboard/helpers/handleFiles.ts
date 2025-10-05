@@ -1,17 +1,35 @@
-import { BinaryFileData, DataURL } from '@excalidraw/excalidraw/types';
+import {
+  BinaryFileData,
+  DataURL,
+  ExcalidrawImperativeAPI,
+} from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawElement,
   ExcalidrawImageElement,
 } from '@excalidraw/excalidraw/element/types';
 import { randomInteger } from '../../../helpers/utils';
+import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
+import { store } from '../../../store';
+import { uploadBase64EncodedFile } from '../../../helpers/fileUpload';
+import { IWhiteboardFile } from '../../../store/slices/interfaces/whiteboard';
+import { addWhiteboardOtherImageFile } from '../../../store/slices/whiteboard';
+import { broadcastCurrentWhiteboardOfficeFilePagesAndOtherImages } from './handleRequestedWhiteboardData';
 
 export interface FileReaderResult {
   image: BinaryFileData;
   elm: ExcalidrawElement;
 }
 
+export interface ImageCustomData {
+  fileUrl: string;
+  isOfficeFile: boolean;
+  uploaderWhiteboardHeight?: number;
+  uploaderWhiteboardWidth?: number;
+}
+
 // A simple in-memory cache to store fetched image data (base64) by URL.
-const imageCache = new Map<string, string>();
+const imageCache = new Map<string, string>(),
+  uploadingCanvasBinaryFile: Map<string, string> = new Map();
 
 export const fetchFileWithElm = async (
   url: string,
@@ -71,6 +89,7 @@ export const fetchFileWithElm = async (
       );
       return prepareForExcalidraw(
         file_id,
+        url,
         imgData,
         fileMimeType,
         fileHeight,
@@ -79,12 +98,15 @@ export const fetchFileWithElm = async (
         excalidrawWidth,
         is_office_file,
         excalidrawElement,
+        uploaderWhiteboardHeight,
+        uploaderWhiteboardWidth,
       );
     } else if (fileMimeType === 'image/svg+xml') {
       const fileHeight = excalidrawHeight * 0.8;
       const fileWidth = excalidrawWidth * 0.7;
       return prepareForExcalidraw(
         file_id,
+        url,
         imgData,
         fileMimeType,
         fileHeight,
@@ -93,6 +115,8 @@ export const fetchFileWithElm = async (
         excalidrawWidth,
         is_office_file,
         excalidrawElement,
+        uploaderWhiteboardHeight,
+        uploaderWhiteboardWidth,
       );
     } else {
       console.error('unsupported file type:', fileMimeType);
@@ -106,6 +130,7 @@ export const fetchFileWithElm = async (
 
 const prepareForExcalidraw = (
   fileId: string,
+  fileUrl: string,
   imgData: string,
   fileMimeType: string,
   fileHeight: number,
@@ -114,6 +139,8 @@ const prepareForExcalidraw = (
   excalidrawWidth: number,
   isOfficeFile: boolean,
   excalidrawElement?: ExcalidrawElement,
+  uploaderWhiteboardHeight?: number,
+  uploaderWhiteboardWidth?: number,
 ): FileReaderResult => {
   const image: BinaryFileData = {
     id: fileId as any,
@@ -127,6 +154,13 @@ const prepareForExcalidraw = (
   if (percent < 50) {
     reducedBy = 0.7;
   }
+
+  const customData: ImageCustomData = {
+    fileUrl,
+    isOfficeFile,
+    uploaderWhiteboardHeight,
+    uploaderWhiteboardWidth,
+  };
 
   let elm: ExcalidrawImageElement = {
     id: fileId,
@@ -159,6 +193,7 @@ const prepareForExcalidraw = (
     frameId: null,
     crop: null,
     index: null,
+    customData,
   };
 
   if (
@@ -190,4 +225,123 @@ const getFileDimension = (
     fileWidth *= 1 - reducedBy;
   }
   return { fileHeight, fileWidth };
+};
+
+export const uploadCanvasBinaryFile = async (
+  currentPage: number,
+  elm: ExcalidrawImageElement,
+  file: BinaryFileData,
+  excalidrawAPI?: ExcalidrawImperativeAPI,
+) => {
+  if (uploadingCanvasBinaryFile.has(file.id)) {
+    return;
+  }
+
+  try {
+    // Add to the queue to prevent duplicate uploads.
+    uploadingCanvasBinaryFile.set(file.id, elm.id);
+
+    const res = await uploadBase64EncodedFile(
+      `${file.id}.png`,
+      file.dataURL,
+      RoomUploadedFileType.WHITEBOARD_IMAGE_FILE,
+    );
+    if (!res || !res.status) {
+      // If upload fails, we stop here. The `finally` block will clean up the queue.
+      console.error('Failed to upload canvas binary file.');
+      return;
+    }
+    const fileUrl =
+      (window as any).PLUG_N_MEET_SERVER_URL +
+      '/download/uploadedFile/' +
+      res.filePath;
+
+    const customData: ImageCustomData = {
+      fileUrl,
+      isOfficeFile: false,
+      uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height,
+      uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width,
+    };
+
+    const localElements =
+      excalidrawAPI?.getSceneElementsIncludingDeleted() ?? [];
+    let updatedImageElement: ExcalidrawImageElement | undefined;
+
+    // Use map for a cleaner, immutable update.
+    const newElms = localElements.map((el) => {
+      if (el.id === elm.id && el.type === 'image') {
+        updatedImageElement = {
+          ...el,
+          status: 'saved',
+          version: el.version + 1,
+          versionNonce: el.versionNonce + 1,
+          customData,
+        };
+        return updatedImageElement;
+      }
+      return el;
+    });
+
+    const fileToSend: IWhiteboardFile = {
+      id: file.id,
+      currentPage,
+      filePath: res.filePath,
+      fileName: res.fileName,
+      isOfficeFile: false,
+      uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height ?? 100,
+      uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width ?? 100,
+      excalidrawElement: updatedImageElement,
+    };
+
+    store.dispatch(addWhiteboardOtherImageFile(fileToSend));
+    // broadcast everything
+    broadcastCurrentWhiteboardOfficeFilePagesAndOtherImages();
+
+    // Finally, update the scene with the element marked as 'saved'.
+    excalidrawAPI?.updateScene({
+      elements: newElms,
+    });
+  } catch (error) {
+    console.error('Error during canvas file upload:', error);
+  } finally {
+    // Always remove from the queue, whether it succeeded or failed.
+    uploadingCanvasBinaryFile.delete(file.id);
+  }
+};
+
+export const handleExcalidrawAddFiles = async (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+  elm: ExcalidrawImageElement,
+  customData: ImageCustomData,
+) => {
+  let fileExist = false;
+  const canvasFiles = excalidrawAPI.getFiles();
+  for (const canvasFile in canvasFiles) {
+    if (canvasFiles[canvasFile].id === elm.fileId) {
+      fileExist = true;
+      break;
+    }
+  }
+
+  if (fileExist) {
+    // do nothing
+    return;
+  }
+
+  const result = await fetchFileWithElm(
+    customData.fileUrl,
+    elm.fileId as string,
+    customData.isOfficeFile,
+    customData.uploaderWhiteboardHeight,
+    customData.uploaderWhiteboardWidth,
+    elm,
+  );
+
+  if (!result) {
+    console.error('fetching image file failed', customData.fileUrl);
+    return;
+  }
+
+  const fileReadImages: Array<BinaryFileData> = [result.image];
+  excalidrawAPI.addFiles(fileReadImages);
 };
