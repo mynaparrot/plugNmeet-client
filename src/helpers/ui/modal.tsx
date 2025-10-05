@@ -90,10 +90,7 @@ const Modal = ({
                 </Button>
               </DialogTitle>
               <div
-                className={clsx(
-                  'p-4 bg-Gray-25 max-h-[75vh] overflow-y-auto scrollBar',
-                  customBodyClass,
-                )}
+                className={clsx('p-4 bg-Gray-25 max-h-[75vh]', customBodyClass)}
               >
                 {children}
               </div>
