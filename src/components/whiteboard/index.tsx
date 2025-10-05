@@ -35,13 +35,16 @@ import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardDataSharer from './helpers/hooks/useWhiteboardDataSharer';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
-import useWhiteboardFileElementsSync from './helpers/hooks/useWhiteboardFileElementsSync';
+import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
 import {
   addAllExcalidrawElements,
   updateExcalidrawElements,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
-import { displaySavedPageData } from './helpers/utils';
+import {
+  displaySavedPageData,
+  ensureAllImagesDataIsLoaded,
+} from './helpers/utils';
 import { sleep } from '../../helpers/utils';
 
 import ManageOfficeFilesModal from './manage-office-files';
@@ -49,11 +52,7 @@ import FooterUI from './footerUI';
 
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
-import {
-  cleanProcessedImageElementsMap,
-  ensureImageDataIsLoaded,
-  ImageCustomData,
-} from './helpers/handleFiles';
+import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -130,7 +129,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     isFollowing,
     isProgrammaticScroll,
   });
-  useWhiteboardFileElementsSync({ excalidrawAPI });
+  const { syncOfficeFilePage } = useOfficePageSyncer({
+    excalidrawAPI,
+  });
 
   /**
    * Reconciles remote scene elements with local ones and updates the canvas.
@@ -166,16 +167,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
         // 6. Ensure that any image elements have their binary data loaded.
         // This is crucial when receiving scenes from remote peers.
-        for (let i = 0; i < reconciledElements.length; i++) {
-          const elm = reconciledElements[i];
-          if (elm.type === 'image' && elm.customData !== null) {
-            ensureImageDataIsLoaded(
-              excalidrawAPI,
-              elm,
-              elm.customData as ImageCustomData,
-            ).then();
-          }
-        }
+        ensureAllImagesDataIsLoaded(excalidrawAPI, reconciledElements);
 
         // 7. Update the Excalidraw scene with the reconciled elements.
         // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,
@@ -223,12 +215,17 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
     // 5. If the user is the presenter, load the switched page/document data if previously saved.
     if (isPresenter) {
-      displaySavedPageData(
+      const loadedFromStorage = displaySavedPageData(
         () => excalidrawAPI,
         isPresenter,
         currentPage,
-        isSwitching,
       );
+      if (loadedFromStorage) {
+        isSwitching.current = false;
+      } else {
+        // If no data in storage, sync the office file page.
+        syncOfficeFilePage().finally(() => (isSwitching.current = false));
+      }
     } else {
       // 6. If not the presenter, simply end the switching state.
       // They will receive the new data from the presenter.
@@ -239,6 +236,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     isPresenter,
     currentPage,
     setLastBroadcastOrReceivedSceneVersion,
+    syncOfficeFilePage,
   ]);
 
   // clean up store during exit
@@ -298,7 +296,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // Effect for file changes
   useEffect(() => {
-    if (currentWhiteboardOfficeFileId !== previousFileId) {
+    if (
+      currentWhiteboardOfficeFileId !== previousFileId &&
+      !isSwitching.current
+    ) {
       handleSwitchPageOrDocument();
     }
   }, [
@@ -309,7 +310,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // Effect for page changes
   useEffect(() => {
-    if (previousPage && currentPage !== previousPage) {
+    if (previousPage && currentPage !== previousPage && !isSwitching.current) {
       handleSwitchPageOrDocument();
     }
   }, [currentPage, previousPage, handleSwitchPageOrDocument]);

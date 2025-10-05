@@ -1,10 +1,15 @@
 import { RefObject } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import {
+  ExcalidrawElement,
+  ExcalidrawImageElement,
+} from '@excalidraw/excalidraw/element/types';
 
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
 import { updateExcalidrawElements } from '../../../store/slices/whiteboard';
+import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
@@ -102,4 +107,26 @@ export const displaySavedPageData = (
     isSwitching.current = false;
   }
   return hasData;
+};
+
+/**
+ * Iterates through a list of Excalidraw elements and ensures that the
+ * binary data for any image elements is loaded into the scene.
+ * This is crucial for correctly rendering images received from remote peers.
+ * @param excalidrawAPI The Excalidraw API instance.
+ * @param elements An array of Excalidraw elements to process.
+ */
+export const ensureAllImagesDataIsLoaded = (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+  elements: readonly ExcalidrawElement[],
+) => {
+  for (const elm of elements) {
+    if (elm.type === 'image' && elm.customData) {
+      ensureImageDataIsLoaded(
+        excalidrawAPI,
+        elm as ExcalidrawImageElement,
+        elm.customData as ImageCustomData,
+      ).then();
+    }
+  }
 };

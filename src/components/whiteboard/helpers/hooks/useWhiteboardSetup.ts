@@ -58,7 +58,13 @@ const useWhiteboardSetup = ({
       addPreloadedLibraryItems(excalidrawAPI);
     } else if (!isRecorder) {
       // Non-presenters/recorders are controlled by the lockWhiteboard prop.
-      setViewModeEnabled(lockWhiteboard ?? true);
+      if (typeof lockWhiteboard === 'boolean') {
+        // A user-specific lock is set, so we use it.
+        setViewModeEnabled(lockWhiteboard);
+      } else {
+        // No user-specific lock, so we fall back to the room's default lock setting.
+        setViewModeEnabled(defaultLock ?? true);
+      }
     }
   }, [excalidrawAPI, isPresenter, lockWhiteboard, isRecorder, defaultLock]);
 
