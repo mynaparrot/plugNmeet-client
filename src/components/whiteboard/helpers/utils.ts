@@ -120,13 +120,21 @@ export const ensureAllImagesDataIsLoaded = (
   excalidrawAPI: ExcalidrawImperativeAPI,
   elements: readonly ExcalidrawElement[],
 ) => {
-  for (const elm of elements) {
-    if (elm.type === 'image' && elm.customData) {
+  const imagePromises = elements
+    .filter(
+      (elm): elm is ExcalidrawImageElement =>
+        elm.type === 'image' && !!elm.customData,
+    )
+    .map((elm) =>
       ensureImageDataIsLoaded(
         excalidrawAPI,
-        elm as ExcalidrawImageElement,
+        elm,
         elm.customData as ImageCustomData,
-      ).then();
-    }
-  }
+      ),
+    );
+  // We fire off all the promises but don't wait for them to complete.
+  // This allows the UI to update while images load in the background.
+  Promise.all(imagePromises).catch((e) =>
+    console.error('Error loading image data:', e),
+  );
 };
