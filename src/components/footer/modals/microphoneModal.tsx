@@ -52,6 +52,7 @@ const MicrophoneModal = ({
           {t('join')}
         </ActionButton>
       )}
+      customBodyClass="microphone-modal !overflow-[initial]"
     >
       <Dropdown
         id="microphone"

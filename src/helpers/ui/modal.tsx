@@ -18,6 +18,7 @@ interface IModalProps {
   children: React.ReactNode;
   maxWidth?: string;
   customClass?: string;
+  customBodyClass?: string;
   renderButtons?: () => React.ReactNode;
   unmount?: boolean;
 }
@@ -29,6 +30,7 @@ const Modal = ({
   children,
   maxWidth = 'max-w-lg',
   customClass,
+  customBodyClass,
   renderButtons,
   unmount,
 }: IModalProps) => {
@@ -87,7 +89,12 @@ const Modal = ({
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <div className="p-4 bg-Gray-25 max-h-[75vh] overflow-y-auto scrollBar">
+              <div
+                className={clsx(
+                  'p-4 bg-Gray-25 max-h-[75vh] overflow-y-auto scrollBar',
+                  customBodyClass,
+                )}
+              >
                 {children}
               </div>
               {renderButtons && (
