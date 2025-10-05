@@ -337,7 +337,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           false,
           undefined,
           excalidrawAPI,
-          currentPage,
           files,
         ).then();
       }

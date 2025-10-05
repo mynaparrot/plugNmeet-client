@@ -9,7 +9,7 @@ export interface IWhiteboardSlice {
   whiteboardAppState: IWhiteboardAppState | null;
   requestedWhiteboardData: IRequestWhiteboardData;
   currentWhiteboardOfficeFileId: string;
-  whiteboardOfficeFilePagesAndOtherImages: string;
+  currentOfficeFilePages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
   refreshWhiteboard: number;
   allExcalidrawElements: string;
@@ -38,7 +38,6 @@ export interface IWhiteboardOfficeFile {
   totalPages: number;
   currentPage?: number;
   pageFiles: string;
-  appendOnly?: boolean; // only broadcasting, not select as current
 }
 
 export interface IWhiteboardAppState {

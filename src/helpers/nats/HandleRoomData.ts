@@ -14,10 +14,10 @@ import {
 } from '../../store/slices/sessionSlice';
 import i18n from '../i18n';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import { handleToAddWhiteboardUploadedOfficeNewFile } from '../../components/whiteboard/helpers/handleFiles';
 import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/whiteboard';
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { createAndRegisterOfficeFile } from '../../components/whiteboard/helpers/handleFiles';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
@@ -225,7 +225,7 @@ export default class HandleRoomData {
         filePath: whiteboard.filePath,
         totalPages: whiteboard.totalPages,
       };
-      handleToAddWhiteboardUploadedOfficeNewFile(f);
+      createAndRegisterOfficeFile(f);
     }
     this.checkedPreloadedWhiteboardFile = true;
 

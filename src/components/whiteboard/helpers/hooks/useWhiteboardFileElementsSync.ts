@@ -16,46 +16,36 @@ interface IUseWhiteboardFileElementsSync {
 const useWhiteboardFileElementsSync = ({
   excalidrawAPI,
 }: IUseWhiteboardFileElementsSync) => {
-  const whiteboardOfficeFilePagesAndOtherImages = useAppSelector(
-    (state) => state.whiteboard.whiteboardOfficeFilePagesAndOtherImages,
+  const currentOfficeFilePages = useAppSelector(
+    (state) => state.whiteboard.currentOfficeFilePages,
   );
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
   const isPresenter = useAppSelector(
     (state) => state.session.currentUser?.metadata?.isPresenter,
   );
 
-  const handleExcalidrawAddOfficeFiles = useCallback(
+  const syncOfficeFilePage = useCallback(
     async (files: Array<IWhiteboardFile>) => {
       if (!excalidrawAPI) {
         return;
       }
 
-      const fileReadImages: Array<BinaryFileData> = [];
-      const fileReadElms: Array<ExcalidrawElement> = [];
+      const newImages: Array<BinaryFileData> = [];
+      const newElements: Array<ExcalidrawElement> = [];
+      const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
 
-      for (const file of files) {
-        const url =
-          (window as any).PLUG_N_MEET_SERVER_URL +
-          '/download/uploadedFile/' +
-          file.filePath;
-
-        const canvasFiles = excalidrawAPI.getFiles();
-        const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-        let hasFile = false;
-
-        for (const canvasFile in canvasFiles) {
-          if (canvasFiles[canvasFile].id === file.id) {
-            const hasElm = elms.some(
-              (el) => el.type === 'image' && el.fileId === file.id,
-            );
-            if (hasElm) {
-              hasFile = true;
-              break;
-            }
+      // Use Promise.all to fetch missing files concurrently.
+      await Promise.all(
+        files.map(async (file) => {
+          // Simplified check: if an element with this ID already exists, skip it.
+          const elementExists = localElements.some((el) => el.id === file.id);
+          if (elementExists) {
+            return;
           }
-        }
-
-        if (!hasFile) {
+          const url =
+            (window as any).PLUG_N_MEET_SERVER_URL +
+            '/download/uploadedFile/' +
+            file.filePath;
           const result = await fetchFileWithElm(
             url,
             file.id,
@@ -64,64 +54,55 @@ const useWhiteboardFileElementsSync = ({
             file.uploaderWhiteboardWidth,
             file.excalidrawElement,
           );
-          if (result) {
-            fileReadImages.push(result.image);
-            fileReadElms.push(result.elm);
-          }
-        }
-      }
 
-      if (!fileReadImages.length) {
+          if (result) {
+            newImages.push(result.image);
+            newElements.push(result.elm);
+          }
+        }),
+      );
+
+      if (!newImages.length) {
         return;
       }
-      excalidrawAPI.addFiles(fileReadImages);
 
-      fileReadElms.forEach((element) => {
-        const elements = excalidrawAPI
-          .getSceneElementsIncludingDeleted()
-          .slice();
-        const hasElm = elements.some((elm) => elm.id === element.id);
+      // Add all binary file data at once.
+      excalidrawAPI.addFiles(newImages);
 
-        if (!hasElm) {
-          elements.push(element as any);
-        }
-
-        excalidrawAPI.updateScene({ elements });
+      // Add all new elements to the scene in a single update.
+      excalidrawAPI.updateScene({
+        elements: [...localElements, ...newElements],
       });
     },
     [excalidrawAPI],
   );
 
   useEffect(() => {
-    if (
-      !excalidrawAPI ||
-      !isPresenter ||
-      whiteboardOfficeFilePagesAndOtherImages === ''
-    ) {
+    if (!excalidrawAPI || !isPresenter || currentOfficeFilePages === '') {
       return;
     }
 
     try {
-      const files: Array<IWhiteboardFile> = JSON.parse(
-        whiteboardOfficeFilePagesAndOtherImages,
+      const documentPages: Array<IWhiteboardFile> = JSON.parse(
+        currentOfficeFilePages,
       );
-      if (files.length) {
-        const currentPageFiles = files.filter(
+      if (documentPages.length) {
+        const currentPageFiles = documentPages.filter(
           (file) => file.currentPage === currentPage && file.isOfficeFile,
         );
         if (currentPageFiles.length) {
-          handleExcalidrawAddOfficeFiles(currentPageFiles).then();
+          syncOfficeFilePage(currentPageFiles).then();
         }
       }
     } catch (e) {
-      console.error('Failed to parse whiteboard files', e);
+      console.error('Failed to parse office file page data.', e);
     }
   }, [
     excalidrawAPI,
     isPresenter,
-    whiteboardOfficeFilePagesAndOtherImages,
+    currentOfficeFilePages,
     currentPage,
-    handleExcalidrawAddOfficeFiles,
+    syncOfficeFilePage,
   ]);
 };
 

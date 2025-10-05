@@ -13,7 +13,6 @@ import {
 
 import { store } from '../../../store';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
-import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { encryptMessage } from '../../../helpers/libs/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
@@ -45,26 +44,6 @@ export const sendWhiteboardDataAsDonor = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   sendTo: string,
 ) => {
-  // broadcast page info first
-  const whiteboard = store.getState().whiteboard;
-  const currentFile = whiteboard.whiteboardUploadedOfficeFiles.filter(
-    (f) => f.fileId === whiteboard.currentWhiteboardOfficeFileId,
-  );
-  if (!currentFile.length) {
-    return;
-  }
-
-  const newFile: IWhiteboardOfficeFile = {
-    fileId: currentFile[0].fileId,
-    fileName: currentFile[0].fileName,
-    filePath: currentFile[0].filePath,
-    totalPages: currentFile[0].totalPages,
-    currentPage: whiteboard.currentPage,
-    pageFiles: whiteboard.whiteboardOfficeFilePagesAndOtherImages,
-  };
-
-  await broadcastWhiteboardOfficeFile(newFile, sendTo);
-
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
     const data = JSON.stringify(elements);
@@ -96,7 +75,6 @@ export const broadcastSceneOnChange = async (
   syncAll: boolean,
   sendTo?: string,
   excalidrawAPI?: ExcalidrawImperativeAPI,
-  currentPage?: number,
   files?: BinaryFiles,
 ) => {
   if (syncAll) {
@@ -131,12 +109,7 @@ export const broadcastSceneOnChange = async (
         // We found the data. Let's upload it.
         // The `uploadCanvasBinaryFile` function will handle broadcasting
         // the 'saved' status of the element once the upload is complete.
-        uploadCanvasBinaryFile(
-          currentPage ?? 1,
-          elm,
-          fileData,
-          excalidrawAPI,
-        ).then();
+        uploadCanvasBinaryFile(elm, fileData, excalidrawAPI).then();
       }
       // We must record the version of the pending element so that when it
       // becomes "saved", the version bump is detected.
@@ -155,14 +128,13 @@ export const broadcastSceneOnChange = async (
     return;
   }
 
-  await broadcastScreenDataBySocket(elementsToBroadcast, sendTo);
+  await broadcastScreenDataByNats(elementsToBroadcast, sendTo);
 };
 
-export const broadcastScreenDataBySocket = async (
+export const broadcastScreenDataByNats = async (
   elements: readonly ExcalidrawElement[],
   sendTo?: string,
 ) => {
-  //const session = store.getState().session;
   const finalMsg = await handleEncryption(JSON.stringify(elements));
   if (typeof finalMsg === 'undefined') {
     return;
@@ -190,28 +162,14 @@ export const broadcastCurrentPageNumber = async (
   conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
 };
 
-export const broadcastWhiteboardOfficeFile = async (
-  newFile: IWhiteboardOfficeFile,
+export const broadcastCurrentFileId = async (
+  fileId: string,
   sendTo?: string,
 ) => {
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(
-    DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE,
-    JSON.stringify(newFile),
-    sendTo,
-  );
-};
-
-export const broadcastCurrentWhiteboardOfficeFilePagesAndOtherImages = () => {
-  if (!conn) {
-    conn = getNatsConn();
-  }
-
-  const files =
-    store.getState().whiteboard.whiteboardOfficeFilePagesAndOtherImages;
-  conn.sendWhiteboardData(DataMsgBodyType.ADD_WHITEBOARD_FILE, files);
+  conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, fileId, sendTo);
 };
 
 export const broadcastMousePointerUpdate = async (element: any) => {

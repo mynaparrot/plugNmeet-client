@@ -2,14 +2,12 @@ import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import {
-  addWhiteboardFileAsJSON,
-  addWhiteboardUploadedOfficeFiles,
   setWhiteboardCurrentPage,
+  updateCurrentWhiteboardOfficeFileId,
   updateExcalidrawElements,
   updateMouseAppStateChanges,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
-import { IWhiteboardOfficeFile } from '../../store/slices/interfaces/whiteboard';
 import { decryptMessage } from '../libs/cryptoMessages';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
@@ -32,16 +30,15 @@ export default class HandleWhiteboard {
           store.dispatch(updateMousePointerLocation(finalMsg));
         }
         break;
-      case DataMsgBodyType.ADD_WHITEBOARD_FILE:
-        store.dispatch(addWhiteboardFileAsJSON(payload.message));
-        break;
       case DataMsgBodyType.PAGE_CHANGE:
         if (!this.isCurrentUserPresenter()) {
           store.dispatch(setWhiteboardCurrentPage(Number(payload.message)));
         }
         break;
-      case DataMsgBodyType.ADD_WHITEBOARD_OFFICE_FILE:
-        this.handleAddWhiteboardOfficeFile(payload.message);
+      case DataMsgBodyType.FILE_CHANGE:
+        if (!this.isCurrentUserPresenter()) {
+          store.dispatch(updateCurrentWhiteboardOfficeFileId(payload.message));
+        }
         break;
       case DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE:
         if (!this.isCurrentUserPresenter()) {
@@ -52,11 +49,6 @@ export default class HandleWhiteboard {
         break;
     }
   };
-
-  private handleAddWhiteboardOfficeFile(msg: string) {
-    const newFile: IWhiteboardOfficeFile = JSON.parse(msg);
-    store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
-  }
 
   private async handleDecryption(msg: string) {
     if (typeof this._isEnabledE2EE === 'undefined') {

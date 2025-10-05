@@ -16,7 +16,7 @@ import {
 } from '../../../store/slices/interfaces/whiteboard';
 import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/handleFiles';
+import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
 
 interface UploadedFilesListProps {
   roomId: string;
@@ -73,11 +73,10 @@ const UploadedFilesList = ({
             filePath: file.filePath,
             totalPages: file.totalPages ?? 0,
           };
-          handleToAddWhiteboardUploadedOfficeNewFile(
+          createAndRegisterOfficeFile(
             newFile,
             excalidrawAPI.getAppState().height,
             excalidrawAPI.getAppState().width,
-            true,
           );
         }
       });

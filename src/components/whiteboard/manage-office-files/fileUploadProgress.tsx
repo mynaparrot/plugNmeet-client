@@ -26,7 +26,7 @@ import {
   WhiteboardFileConversionReq,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import { handleToAddWhiteboardUploadedOfficeNewFile } from '../helpers/handleFiles';
+import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 
 interface FileUploadProgressProps {
@@ -120,11 +120,10 @@ const FileUploadProgress = ({
       return;
     }
 
-    const newFile = handleToAddWhiteboardUploadedOfficeNewFile(
+    const newFile = createAndRegisterOfficeFile(
       res,
       excalidrawAPI.getAppState().height,
       excalidrawAPI.getAppState().width,
-      true, // just appending
     );
 
     // send analytics

@@ -16,11 +16,7 @@ import {
   IWhiteboardOfficeFile,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import {
-  addWhiteboardOtherImageFile,
-  addWhiteboardUploadedOfficeFiles,
-} from '../../../store/slices/whiteboard';
-import { broadcastCurrentWhiteboardOfficeFilePagesAndOtherImages } from './handleRequestedWhiteboardData';
+import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -39,11 +35,10 @@ const imageCache = new Map<string, string>(),
   uploadingCanvasBinaryFile: Map<string, string> = new Map(),
   processedImageElements: Map<string, string> = new Map();
 
-export const handleToAddWhiteboardUploadedOfficeNewFile = (
+export const createAndRegisterOfficeFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
   uploaderWhiteboardHeight = 260,
   uploaderWhiteboardWidth = 1160,
-  appendOnly?: boolean,
 ) => {
   const files: Array<IWhiteboardFile> = [];
   for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
@@ -66,10 +61,9 @@ export const handleToAddWhiteboardUploadedOfficeNewFile = (
     filePath: whiteboardFileConversionRes.filePath,
     totalPages: whiteboardFileConversionRes.totalPages,
     pageFiles: JSON.stringify(files),
-    appendOnly: appendOnly,
   };
 
-  store.dispatch(addWhiteboardUploadedOfficeFiles(newFile));
+  store.dispatch(addWhiteboardUploadedOfficeFile(newFile));
   return newFile;
 };
 
@@ -270,7 +264,6 @@ const getFileDimension = (
 };
 
 export const uploadCanvasBinaryFile = async (
-  currentPage: number,
   elm: ExcalidrawImageElement,
   file: BinaryFileData,
   excalidrawAPI?: ExcalidrawImperativeAPI,
@@ -323,21 +316,6 @@ export const uploadCanvasBinaryFile = async (
       }
       return el;
     });
-
-    const fileToSend: IWhiteboardFile = {
-      id: file.id,
-      currentPage,
-      filePath: res.filePath,
-      fileName: res.fileName,
-      isOfficeFile: false,
-      uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height ?? 100,
-      uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width ?? 100,
-      excalidrawElement: updatedImageElement,
-    };
-
-    store.dispatch(addWhiteboardOtherImageFile(fileToSend));
-    // broadcast everything
-    broadcastCurrentWhiteboardOfficeFilePagesAndOtherImages();
 
     // Finally, update the scene with the element marked as 'saved'.
     excalidrawAPI?.updateScene({

@@ -11,7 +11,7 @@ import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { savePageData } from '../helpers/utils';
-import { broadcastWhiteboardOfficeFile } from '../helpers/handleRequestedWhiteboardData';
+import { broadcastCurrentFileId } from '../helpers/handleRequestedWhiteboardData';
 
 interface ManageOfficeFilesModalProps {
   roomId: string;
@@ -69,7 +69,7 @@ const ManageOfficeFilesModal = ({
           );
         }
         dispatch(updateCurrentWhiteboardOfficeFileId(officeFile.fileId));
-        await broadcastWhiteboardOfficeFile(officeFile);
+        await broadcastCurrentFileId(officeFile.fileId);
         onClose();
       }, 300),
     [excalidrawAPI, dispatch, onClose],
