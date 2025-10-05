@@ -46,19 +46,19 @@ const SharedNotepad = () => {
               className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto rounded-xl"
               ref={nodeRef}
             >
-              <div
-                id="draggable-h1"
-                className="flex items-center justify-between text-base font-medium leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100 bg-white rounded-t-xl"
-              >
-                <span>Notepad</span>
-                <button
-                  className="cursor-pointer relative z-30"
-                  onClick={minimizePad}
+              <div className="inner w-full h-full pt-[45px] relative">
+                <div
+                  id="draggable-h1"
+                  className="absolute top-0 w-full flex items-center justify-between text-base font-medium leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100 bg-white rounded-t-xl"
                 >
-                  <PopupCloseSVGIcon classes="text-Gray-600" />
-                </button>
-              </div>
-              <div className="inner w-full h-full">
+                  <span>Notepad</span>
+                  <button
+                    className="cursor-pointer relative z-30"
+                    onClick={minimizePad}
+                  >
+                    <PopupCloseSVGIcon classes="text-Gray-600" />
+                  </button>
+                </div>
                 {!loaded && (
                   <div className="loading-status absolute inset-0 z-10 flex h-full w-full items-center justify-center bg-white/50 dark:bg-black/50">
                     <LoadingIcon
