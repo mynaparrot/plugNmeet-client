@@ -216,7 +216,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     // 5. If the user is the presenter, load the switched page/document data if previously saved.
     if (isPresenter) {
       const loadedFromStorage = displaySavedPageData(
-        () => excalidrawAPI,
+        excalidrawAPI,
         isPresenter,
         currentPage,
       );
@@ -261,10 +261,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // if presenter then we'll fetch storage to display after initialize excalidraw
       isSwitching.current = true;
       const timeout = setTimeout(() => {
+        const { currentWhiteboardOfficeFileId, currentPage } =
+          store.getState().whiteboard;
         const hasData = displaySavedPageData(
-          () => excalidrawAPI,
+          excalidrawAPI,
           true,
-          store.getState().whiteboard.currentPage,
+          currentPage,
+          currentWhiteboardOfficeFileId,
           isSwitching,
         );
         if (!hasData) {

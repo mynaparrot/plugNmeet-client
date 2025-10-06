@@ -8,7 +8,6 @@ import {
 import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
-import { updateExcalidrawElements } from '../../../store/slices/whiteboard';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 
 // A simple in-memory cache for preloaded library items.
@@ -77,35 +76,50 @@ export const savePageData = (
 };
 
 export const displaySavedPageData = (
-  getExcalidrawAPI: () => ExcalidrawImperativeAPI | null,
+  excalidrawAPI: ExcalidrawImperativeAPI,
   isPresenter: boolean,
   page: number,
+  currentFileId?: string,
   isSwitching?: RefObject<boolean>,
 ) => {
-  const data = sessionStorage.getItem(formatStorageKey(page));
-  const excalidrawAPI = getExcalidrawAPI();
+  // 1. Attempt to retrieve the page data from sessionStorage.
+  const data = sessionStorage.getItem(formatStorageKey(page, currentFileId));
   let hasData = false;
 
+  // 2. Proceed only if data exists and the Excalidraw API is ready.
   if (data && excalidrawAPI) {
-    const elements = JSON.parse(data);
-    if (Array.isArray(elements) && elements.length) {
-      hasData = true;
-      store.dispatch(updateExcalidrawElements(data));
+    try {
+      const elements = JSON.parse(data);
 
-      if (isPresenter) {
-        // better to broadcast full screen
-        sleep(1000).then(() => {
-          const latestElms =
-            getExcalidrawAPI()?.getSceneElementsIncludingDeleted();
-          broadcastSceneOnChange(latestElms ?? elements, true).then();
-        });
+      // 3. Validate that the retrieved data is a non-empty array of elements.
+      if (Array.isArray(elements) && elements.length) {
+        hasData = true;
+
+        // 4. It's important to do this now because other syncs are locked by `isSwitching.current = true`.
+        // Ensure any image files referenced in the elements are loaded.
+        //and update the Excalidraw scene with the loaded elements.
+        ensureAllImagesDataIsLoaded(excalidrawAPI, elements);
+        excalidrawAPI.updateScene({ elements });
+
+        // 5. If the user is the presenter, broadcast the complete scene to all other participants.
+        if (isPresenter) {
+          // A short delay ensures all elements are rendered before broadcasting.
+          sleep(1000).then(() => {
+            const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
+            broadcastSceneOnChange(latestElms ?? elements, true).then();
+          });
+        }
       }
+    } catch (e) {
+      console.error('Failed to parse or display saved page data.', e);
     }
   }
 
+  // 6. Reset the switching flag to re-enable normal synchronization.
   if (isSwitching) {
     isSwitching.current = false;
   }
+  // 7. Return whether data was successfully loaded.
   return hasData;
 };
 

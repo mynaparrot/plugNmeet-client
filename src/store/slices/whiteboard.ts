@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+
 import {
   IRequestWhiteboardData,
   IWhiteboardAppState,
@@ -64,30 +66,34 @@ const whiteboardSlice = createSlice({
       state,
       action: PayloadAction<string>,
     ) => {
+      const file = state.whiteboardUploadedOfficeFiles.find(
+        (f) => f.fileId === action.payload,
+      );
+      if (file) {
+        state.totalPages = file.totalPages;
+        if (!isEmpty(file.pageFiles)) {
+          state.currentOfficeFilePages = file.pageFiles;
+        } else {
+          state.currentOfficeFilePages = '';
+        }
+      }
       // this is very important otherwise non-presenter won't refresh whiteboard
       state.currentWhiteboardOfficeFileId = action.payload;
       state.currentPage = 1;
-
-      const file = state.whiteboardUploadedOfficeFiles.filter(
-        (f) => f.fileId === action.payload,
-      );
-      if (file.length) {
-        state.totalPages = file[0].totalPages;
-        state.currentOfficeFilePages = file[0].pageFiles;
-      }
+    },
+    updateCurrentOfficeFilePages: (state, action: PayloadAction<string>) => {
+      state.currentOfficeFilePages = action.payload;
     },
     addWhiteboardUploadedOfficeFile: (
       state,
       action: PayloadAction<IWhiteboardOfficeFile>,
     ) => {
-      const exist = state.whiteboardUploadedOfficeFiles.filter(
+      const exists = state.whiteboardUploadedOfficeFiles.some(
         (f) => f.fileId === action.payload.fileId,
       );
-      if (!exist.length) {
-        state.whiteboardUploadedOfficeFiles = [
-          ...state.whiteboardUploadedOfficeFiles,
-          action.payload,
-        ];
+      if (!exists) {
+        // Redux Toolkit with Immer allows us to "mutate" the state directly.
+        state.whiteboardUploadedOfficeFiles.push(action.payload);
       }
     },
     doRefreshWhiteboard: (state) => {
@@ -103,6 +109,7 @@ export const {
   updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,
+  updateCurrentOfficeFilePages,
   addWhiteboardUploadedOfficeFile,
   doRefreshWhiteboard,
   addAllExcalidrawElements,

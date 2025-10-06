@@ -53,6 +53,11 @@ export const sendWhiteboardDataAsDonor = async (
       sendTo,
     );
   }
+  const currentOfficeFilePages =
+    store.getState().whiteboard.currentOfficeFilePages;
+  if (currentOfficeFilePages !== '') {
+    broadcastCurrentOfficeFilePages(currentOfficeFilePages);
+  }
 
   // finally, change the status of request
   store.dispatch(
@@ -170,6 +175,25 @@ export const broadcastCurrentFileId = async (
     conn = getNatsConn();
   }
   conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, fileId, sendTo);
+};
+
+/*
+ * broadcastCurrentOfficeFilePages will send current office file pages
+ * this will help other participants to download preloaded file
+ * there is no other reason as reconcileAndUpdateScene will track images anyway
+ */
+export const broadcastCurrentOfficeFilePages = (
+  pages: string,
+  sendTo?: string,
+) => {
+  if (!conn) {
+    conn = getNatsConn();
+  }
+  conn.sendWhiteboardData(
+    DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES,
+    pages,
+    sendTo,
+  );
 };
 
 export const broadcastMousePointerUpdate = async (element: any) => {

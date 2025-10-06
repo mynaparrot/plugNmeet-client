@@ -8,6 +8,7 @@ import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm, preloadOfficeFilePages } from '../handleFiles';
+import { broadcastCurrentOfficeFilePages } from '../handleRequestedWhiteboardData';
 
 interface IUseOfficePageSyncer {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -90,19 +91,22 @@ const useOfficePageSyncer = ({ excalidrawAPI }: IUseOfficePageSyncer) => {
    * Pre-loading helps to make page navigation feel faster and more responsive.
    */
   useEffect(() => {
-    // Only the presenter should preload pages.
-    if (!isPresenter || currentOfficeFilePages === '') {
-      return;
+    if (isPresenter) {
+      // broadcast to everyone else
+      broadcastCurrentOfficeFilePages(currentOfficeFilePages);
     }
-    try {
-      const documentPages: Array<IWhiteboardFile> = JSON.parse(
-        currentOfficeFilePages,
-      );
-      if (documentPages.length) {
-        preloadOfficeFilePages(documentPages, currentPage);
+
+    if (currentOfficeFilePages !== '') {
+      try {
+        const documentPages: Array<IWhiteboardFile> = JSON.parse(
+          currentOfficeFilePages,
+        );
+        if (documentPages.length) {
+          preloadOfficeFilePages(documentPages, currentPage);
+        }
+      } catch (e) {
+        console.error('Failed to parse office file pages for preloading.', e);
       }
-    } catch (e) {
-      console.error('Failed to parse office file pages for preloading.', e);
     }
   }, [isPresenter, currentOfficeFilePages, currentPage]);
 
