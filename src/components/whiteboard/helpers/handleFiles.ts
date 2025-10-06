@@ -30,10 +30,9 @@ export interface ImageCustomData {
   uploaderWhiteboardWidth?: number;
 }
 
-// A simple in-memory cache to store fetched image data (base64) by URL.
-const imageCache = new Map<string, string>(),
-  uploadingCanvasBinaryFile: Map<string, string> = new Map(),
-  processedImageElements: Map<string, string> = new Map();
+const imageCache = new Map<string, string>();
+const uploadingCanvasBinaryFile: Map<string, string> = new Map();
+const processedImageElements: Map<string, string> = new Map();
 
 export const createAndRegisterOfficeFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
@@ -88,13 +87,12 @@ export const fetchFileWithElm = async (
         return null;
       }
       const imageData = await res.blob();
-      imgData = (await new Promise((resolve) => {
+      imgData = (await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
         reader.readAsDataURL(imageData);
       })) as string;
-      // Store the result in the cache for future use.
-      imageCache.set(url, imgData);
     }
 
     const fileMimeType = imgData.substring(
@@ -122,6 +120,10 @@ export const fetchFileWithElm = async (
         image.width,
         excalidrawWidth,
       );
+
+      // Cache the data only after it has been successfully loaded as an image.
+      imageCache.set(url, imgData);
+
       return prepareForExcalidraw(
         file_id,
         url,
@@ -138,6 +140,10 @@ export const fetchFileWithElm = async (
     } else if (fileMimeType === 'image/svg+xml') {
       const fileHeight = excalidrawHeight * 0.8;
       const fileWidth = excalidrawWidth * 0.7;
+
+      // Cache the data for SVG as well.
+      imageCache.set(url, imgData);
+
       return prepareForExcalidraw(
         file_id,
         url,
@@ -181,24 +187,11 @@ const prepareForExcalidraw = (
     created: Date.now(),
   };
 
-  const percent = Math.round((fileWidth * 100) / excalidrawWidth);
-  let reducedBy = 0.4;
-  if (percent < 50) {
-    reducedBy = 0.7;
-  }
-
-  const customData: ImageCustomData = {
-    fileUrl,
-    isOfficeFile,
-    uploaderWhiteboardHeight,
-    uploaderWhiteboardWidth,
-  };
-
   let elm: ExcalidrawImageElement = {
     id: fileId,
     type: 'image',
-    x: excalidrawHeight * reducedBy,
-    y: excalidrawWidth * 0.06,
+    x: (excalidrawWidth - fileWidth) / 2,
+    y: (excalidrawHeight - fileHeight) / 2,
     width: fileWidth,
     height: fileHeight,
     angle: 0,
@@ -225,7 +218,12 @@ const prepareForExcalidraw = (
     frameId: null,
     crop: null,
     index: null,
-    customData,
+    customData: {
+      fileUrl,
+      isOfficeFile,
+      uploaderWhiteboardHeight,
+      uploaderWhiteboardWidth,
+    },
   };
 
   return {
