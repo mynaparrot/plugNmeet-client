@@ -1,5 +1,4 @@
 import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
-import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 export interface IWhiteboardSlice {
   totalPages: number;
@@ -9,7 +8,7 @@ export interface IWhiteboardSlice {
   whiteboardAppState: IWhiteboardAppState | null;
   requestedWhiteboardData: IRequestWhiteboardData;
   currentWhiteboardOfficeFileId: string;
-  whiteboardOfficeFilePagesAndOtherImages: string;
+  currentOfficeFilePages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
   refreshWhiteboard: number;
   allExcalidrawElements: string;
@@ -23,7 +22,6 @@ export interface IWhiteboardFile {
   uploaderWhiteboardHeight: number;
   uploaderWhiteboardWidth: number;
   isOfficeFile: boolean;
-  excalidrawElement?: ExcalidrawElement;
 }
 
 export interface IRequestWhiteboardData {
@@ -38,7 +36,6 @@ export interface IWhiteboardOfficeFile {
   totalPages: number;
   currentPage?: number;
   pageFiles: string;
-  appendOnly?: boolean; // only broadcasting, not select as current
 }
 
 export interface IWhiteboardAppState {

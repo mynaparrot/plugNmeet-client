@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   IRequestWhiteboardData,
   IWhiteboardAppState,
-  IWhiteboardFile,
   IWhiteboardOfficeFile,
   IWhiteboardSlice,
 } from './interfaces/whiteboard';
@@ -18,7 +17,7 @@ const initialState: IWhiteboardSlice = {
     sendTo: '',
   },
   currentWhiteboardOfficeFileId: 'default',
-  whiteboardOfficeFilePagesAndOtherImages: '',
+  currentOfficeFilePages: '',
   whiteboardUploadedOfficeFiles: [
     {
       fileId: 'default',
@@ -52,20 +51,6 @@ const whiteboardSlice = createSlice({
     addAllExcalidrawElements: (state, action: PayloadAction<string>) => {
       state.allExcalidrawElements = action.payload;
     },
-    addWhiteboardOtherImageFile: (
-      state,
-      action: PayloadAction<IWhiteboardFile>,
-    ) => {
-      let files: Array<IWhiteboardFile> = [];
-      if (state.whiteboardOfficeFilePagesAndOtherImages) {
-        files = JSON.parse(state.whiteboardOfficeFilePagesAndOtherImages);
-      }
-      files.push(action.payload);
-      state.whiteboardOfficeFilePagesAndOtherImages = JSON.stringify(files);
-    },
-    addWhiteboardFileAsJSON: (state, action: PayloadAction<string>) => {
-      state.whiteboardOfficeFilePagesAndOtherImages = action.payload;
-    },
     updateRequestedWhiteboardData: (
       state,
       action: PayloadAction<IRequestWhiteboardData>,
@@ -79,52 +64,31 @@ const whiteboardSlice = createSlice({
       state,
       action: PayloadAction<string>,
     ) => {
+      // this is very important otherwise non-presenter won't refresh whiteboard
+      state.currentWhiteboardOfficeFileId = action.payload;
+      state.currentPage = 1;
+
       const file = state.whiteboardUploadedOfficeFiles.filter(
         (f) => f.fileId === action.payload,
       );
       if (file.length) {
-        state.currentPage = 1;
         state.totalPages = file[0].totalPages;
-        state.whiteboardOfficeFilePagesAndOtherImages = file[0].pageFiles;
-        state.currentWhiteboardOfficeFileId = file[0].fileId;
+        state.currentOfficeFilePages = file[0].pageFiles;
       }
     },
-    addWhiteboardUploadedOfficeFiles: (
+    addWhiteboardUploadedOfficeFile: (
       state,
       action: PayloadAction<IWhiteboardOfficeFile>,
     ) => {
-      const payload = structuredClone(action.payload);
-      const appendOnly = !!payload.appendOnly;
-
       const exist = state.whiteboardUploadedOfficeFiles.filter(
-        (f) => f.fileId === payload.fileId,
+        (f) => f.fileId === action.payload.fileId,
       );
       if (!exist.length) {
-        const tmp = [...state.whiteboardUploadedOfficeFiles];
-        // this value only helpful during broadcasting
-        // storing will make things confusing
-        delete payload.appendOnly;
-        tmp.push(payload);
-        state.whiteboardUploadedOfficeFiles = tmp;
+        state.whiteboardUploadedOfficeFiles = [
+          ...state.whiteboardUploadedOfficeFiles,
+          action.payload,
+        ];
       }
-      if (appendOnly) {
-        // we won't select this as current file
-        return;
-      }
-
-      // set the new file as current selected
-      state.currentWhiteboardOfficeFileId = payload.fileId;
-      // update current file pages
-      state.whiteboardOfficeFilePagesAndOtherImages = payload.pageFiles;
-
-      // update current page
-      if (payload.currentPage) {
-        state.currentPage = payload.currentPage;
-      } else {
-        state.currentPage = 1;
-      }
-      // update total page
-      state.totalPages = payload.totalPages;
     },
     doRefreshWhiteboard: (state) => {
       state.refreshWhiteboard = Date.now();
@@ -136,12 +100,10 @@ export const {
   updateExcalidrawElements,
   updateMousePointerLocation,
   updateMouseAppStateChanges,
-  addWhiteboardOtherImageFile,
   updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,
-  addWhiteboardFileAsJSON,
   updateCurrentWhiteboardOfficeFileId,
-  addWhiteboardUploadedOfficeFiles,
+  addWhiteboardUploadedOfficeFile,
   doRefreshWhiteboard,
   addAllExcalidrawElements,
 } = whiteboardSlice.actions;
