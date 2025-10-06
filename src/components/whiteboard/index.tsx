@@ -22,6 +22,7 @@ import {
   ExcalidrawProps,
   Gesture,
 } from '@excalidraw/excalidraw/types';
+import { toast } from 'react-toastify';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
@@ -285,38 +286,39 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // when receive full whiteboard data
   useEffect(() => {
-    if (allExcalidrawElements !== '' && excalidrawAPI) {
+    if (!isSwitching.current && excalidrawAPI && allExcalidrawElements !== '') {
       sleep(300).then(() => reconcileAndUpdateScene(allExcalidrawElements));
     }
   }, [excalidrawAPI, allExcalidrawElements, reconcileAndUpdateScene]);
 
   // for handling draw elements
   useEffect(() => {
-    if (excalidrawElements && excalidrawAPI && fetchedData) {
+    if (
+      !isSwitching.current &&
+      excalidrawAPI &&
+      excalidrawElements !== '' &&
+      fetchedData
+    ) {
       reconcileAndUpdateScene(excalidrawElements);
     }
   }, [excalidrawAPI, excalidrawElements, reconcileAndUpdateScene, fetchedData]);
 
-  // Effect for file changes
+  // Effect for page or file changes
   useEffect(() => {
-    if (
-      currentWhiteboardOfficeFileId !== previousFileId &&
-      !isSwitching.current
-    ) {
+    const hasFileChanged =
+      previousFileId && currentWhiteboardOfficeFileId !== previousFileId;
+    const hasPageChanged = previousPage && currentPage !== previousPage;
+
+    if (!isSwitching.current && (hasFileChanged || hasPageChanged)) {
       handleSwitchPageOrDocument();
     }
   }, [
     currentWhiteboardOfficeFileId,
     previousFileId,
+    currentPage,
+    previousPage,
     handleSwitchPageOrDocument,
   ]);
-
-  // Effect for page changes
-  useEffect(() => {
-    if (previousPage && currentPage !== previousPage && !isSwitching.current) {
-      handleSwitchPageOrDocument();
-    }
-  }, [currentPage, previousPage, handleSwitchPageOrDocument]);
 
   const handleCanvasChange = (
     elements: readonly ExcalidrawElement[],
@@ -384,6 +386,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     CURSOR_SYNC_TIMEOUT,
   );
 
+  const showSwitchingWarning = () => {
+    if (isSwitching.current) {
+      toast(t('notifications.whiteboard-other-task-to-finish'), {
+        type: 'warning',
+      });
+      return true;
+    }
+    return false;
+  };
+
   const onScrollChange: ExcalidrawProps['onScrollChange'] = () => {
     if (!isPresenter && !isProgrammaticScroll.current) {
       setIsFollowing(false);
@@ -412,6 +424,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       isPresenter={isPresenter ?? false}
       isFollowing={isFollowing}
       setIsFollowing={setIsFollowing}
+      showSwitchingWarning={showSwitchingWarning}
     />
   );
 
@@ -423,6 +436,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           excalidrawAPI={excalidrawAPI}
           onClose={() => setIsOpenManageFilesUI(false)}
           isOpen={isOpenManageFilesUI}
+          showSwitchingWarning={showSwitchingWarning}
         />
       )}
       <Excalidraw

@@ -22,6 +22,7 @@ interface IFooterUIProps {
   isPresenter: boolean;
   isFollowing?: boolean;
   setIsFollowing?: (value: boolean) => void;
+  showSwitchingWarning: () => boolean;
 }
 
 const FooterUI = ({
@@ -29,6 +30,7 @@ const FooterUI = ({
   isPresenter,
   isFollowing,
   setIsFollowing,
+  showSwitchingWarning,
 }: IFooterUIProps) => {
   const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
@@ -80,14 +82,17 @@ const FooterUI = ({
   );
 
   const setCurrentPage = (page: number) => {
+    if (showSwitchingWarning()) return;
     debouncedSetCurrentPage(page);
   };
 
   const handlePre = () => {
+    if (showSwitchingWarning()) return;
     setCurrentPage(currentPage - 1);
   };
 
   const handleNext = () => {
+    if (showSwitchingWarning()) return;
     setCurrentPage(currentPage + 1);
   };
 

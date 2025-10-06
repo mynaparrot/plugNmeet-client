@@ -18,6 +18,7 @@ interface ManageOfficeFilesModalProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   isOpen: boolean;
   onClose: () => void;
+  showSwitchingWarning: () => boolean;
 }
 
 const ManageOfficeFilesModal = ({
@@ -25,6 +26,7 @@ const ManageOfficeFilesModal = ({
   excalidrawAPI,
   isOpen,
   onClose,
+  showSwitchingWarning,
 }: ManageOfficeFilesModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -71,7 +73,7 @@ const ManageOfficeFilesModal = ({
         dispatch(updateCurrentWhiteboardOfficeFileId(officeFile.fileId));
         await broadcastCurrentFileId(officeFile.fileId);
         onClose();
-      }, 300),
+      }, 500),
     [excalidrawAPI, dispatch, onClose],
   );
 
@@ -158,7 +160,7 @@ const ManageOfficeFilesModal = ({
               <button
                 className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Blue2-500 border border-Blue2-600 transition-all duration-300 hover:bg-Blue2-600  shadow-button-shadow cursor-pointer"
                 onClick={() => {
-                  if (selectedOfficeFile)
+                  if (!showSwitchingWarning() && selectedOfficeFile)
                     debouncedAddToWhiteboard(selectedOfficeFile);
                 }}
                 disabled={selectedOfficeFile === undefined || disableUploading}

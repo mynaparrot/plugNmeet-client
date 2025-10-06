@@ -69,7 +69,7 @@
     "max-num-participates-exceeded": "The meeting is full. You cannot join at this time.",
     "uploading-file": "Uploading file...",
     "ending-session": "The meeting is ending, please wait...",
-    "please-wait-other-task-to-finish": "Please wait for the current action to finish.",
+    "whiteboard-other-task-to-finish": "The whiteboard is preparing new content. Please wait.",
     "cloud-recording-not-supported-self-key": "Cloud recording is not available when using a custom security key.",
     "media-only-recording-not-support-e2ee": "Recording only audio and video is not available when end-to-end encryption is enabled.",
     "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view.",
