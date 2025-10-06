@@ -243,7 +243,8 @@ export const getWhiteboardDonors = (): IParticipant[] => {
 
 let emptyStreamTrack: MediaStreamTrack | undefined = undefined;
 export function createEmptyVideoStreamTrack(name: string) {
-  if (typeof emptyStreamTrack !== 'undefined') {
+  // Reuse the track only if it exists and is still live.
+  if (emptyStreamTrack && emptyStreamTrack.readyState === 'live') {
     return emptyStreamTrack;
   }
 
@@ -253,9 +254,15 @@ export function createEmptyVideoStreamTrack(name: string) {
 
   const ctx = canvas.getContext('2d');
   if (ctx) {
-    const textString = name.toUpperCase().slice(0, 2);
+    // Set a black background for high contrast.
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const textString = generateAvatarInitial(name);
+
+    // Style the text for clarity.
     ctx.fillStyle = '#fff';
-    ctx.font = '120px san-serif';
+    ctx.font = 'bold 120px sans-serif';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText(textString, canvas.width / 2, canvas.height / 2);

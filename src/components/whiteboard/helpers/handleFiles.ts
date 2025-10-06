@@ -327,15 +327,10 @@ export const ensureImageDataIsLoaded = async (
 
   processedImageElements.set(elm.id, elm.fileId);
 
-  let fileExist = false;
   const canvasFiles = excalidrawAPI.getFiles();
-  for (const canvasFile in canvasFiles) {
-    if (canvasFiles[canvasFile].id === elm.fileId) {
-      fileExist = true;
-      break;
-    }
-  }
-
+  const fileExist = Object.values(canvasFiles).some(
+    (file) => file.id === elm.fileId,
+  );
   if (fileExist) {
     // do nothing
     return;
