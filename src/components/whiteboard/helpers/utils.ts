@@ -104,7 +104,7 @@ export const displaySavedPageData = (
         // 5. If the user is the presenter, broadcast the complete scene to all other participants.
         if (isPresenter) {
           // A short delay ensures all elements are rendered before broadcasting.
-          sleep(1000).then(() => {
+          sleep(500).then(() => {
             const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
             broadcastSceneOnChange(latestElms ?? elements, true).then();
           });

@@ -32,48 +32,45 @@ const useOfficePageSyncer = ({ excalidrawAPI }: IUseOfficePageSyncer) => {
     const newElements: Array<ExcalidrawElement> = [];
     const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
 
-    let files: IWhiteboardFile[] = [];
+    let file: IWhiteboardFile | undefined;
     try {
       const documentPages: Array<IWhiteboardFile> = JSON.parse(
         currentOfficeFilePages,
       );
-      files = documentPages.filter(
-        (file) => file.currentPage === currentPage && file.isOfficeFile,
+      file = documentPages.find(
+        (f) => f.currentPage === currentPage && f.isOfficeFile,
       );
     } catch (e) {
       console.error('Failed to parse office file page data.', e);
       return;
     }
 
-    // Use Promise.all to fetch missing files concurrently.
-    await Promise.all(
-      files.map(async (file) => {
-        // Simplified check: if an element with this ID already exists, skip it.
-        const elementExists = localElements.some((el) => el.id === file.id);
-        if (elementExists) {
-          return;
-        }
-        const url =
-          (window as any).PLUG_N_MEET_SERVER_URL +
-          '/download/uploadedFile/' +
-          file.filePath;
-        const result = await fetchFileWithElm(
-          url,
-          file.id,
-          file.isOfficeFile,
-          file.uploaderWhiteboardHeight,
-          file.uploaderWhiteboardWidth,
-        );
+    if (!file) {
+      return;
+    }
 
-        if (result) {
-          newImages.push(result.image);
-          newElements.push(result.elm);
-        }
-      }),
+    // Simplified check: if an element with this ID already exists, skip it.
+    const elementExists = localElements.some((el) => el.id === file?.id);
+    if (elementExists) {
+      return;
+    }
+    const url =
+      (window as any).PLUG_N_MEET_SERVER_URL +
+      '/download/uploadedFile/' +
+      file.filePath;
+    const result = await fetchFileWithElm(
+      url,
+      file.id,
+      file.isOfficeFile,
+      file.uploaderWhiteboardHeight,
+      file.uploaderWhiteboardWidth,
     );
 
-    if (!newImages.length) {
-      return;
+    if (result) {
+      newImages.push(result.image);
+      newElements.push(result.elm);
+    } else {
+      return; // No result, no need to proceed
     }
 
     // Add all binary file data at once.

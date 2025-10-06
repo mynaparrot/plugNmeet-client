@@ -70,8 +70,10 @@ const ManageOfficeFilesModal = ({
             currentWhiteboardOfficeFileId,
           );
         }
-        dispatch(updateCurrentWhiteboardOfficeFileId(officeFile.fileId));
+        // broadcast first so that user can prepare for file
         await broadcastCurrentFileId(officeFile.fileId);
+        // now update our store
+        dispatch(updateCurrentWhiteboardOfficeFileId(officeFile.fileId));
         onClose();
       }, 500),
     [excalidrawAPI, dispatch, onClose],
