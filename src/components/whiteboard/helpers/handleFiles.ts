@@ -357,3 +357,85 @@ export const ensureImageDataIsLoaded = async (
 export function cleanProcessedImageElementsMap() {
   processedImageElements.clear();
 }
+
+/**
+ * Preloads office file pages to improve navigation performance by fetching
+ * image data and storing it in an in-memory cache.
+ *
+ * The strategy is as follows:
+ * - If on page 1, it preloads the next 5 pages.
+ * - Otherwise, it preloads the previous 2 and next 4 pages.
+ * @param allPages An array of all IWhiteboardFile objects for the document.
+ * @param currentPage The current page number (1-based).
+ */
+export const preloadOfficeFilePages = (
+  allPages: IWhiteboardFile[],
+  currentPage: number,
+) => {
+  const pagesToPreload: number[] = [];
+  const totalPages = allPages.length;
+
+  if (currentPage === 1) {
+    // If on the first page, preload the next 5 pages.
+    for (let i = 1; i <= 5; i++) {
+      const pageToLoad = currentPage + i;
+      if (pageToLoad > totalPages) break;
+      pagesToPreload.push(pageToLoad);
+    }
+  } else {
+    // Preload the previous 2 pages.
+    for (let i = 1; i <= 2; i++) {
+      const pageToLoad = currentPage - i;
+      if (pageToLoad < 1) break;
+      pagesToPreload.push(pageToLoad);
+    }
+
+    // Preload the next 4 pages.
+    for (let i = 1; i <= 4; i++) {
+      const pageToLoad = currentPage + i;
+      if (pageToLoad > totalPages) break;
+      pagesToPreload.push(pageToLoad);
+    }
+  }
+
+  // Filter out the current page and any pages that don't exist.
+  const uniquePagesToPreload = [...new Set(pagesToPreload)].filter(
+    (p) => p !== currentPage && p > 0 && p <= totalPages,
+  );
+
+  const preloadPromises = uniquePagesToPreload.map(async (pageNumber) => {
+    const fileToPreload = allPages.find((p) => p.currentPage === pageNumber);
+    if (!fileToPreload) {
+      return;
+    }
+
+    const url =
+      (window as any).PLUG_N_MEET_SERVER_URL +
+      '/download/uploadedFile/' +
+      fileToPreload.filePath;
+
+    // If the image is already in our cache, we don't need to do anything.
+    if (imageCache.has(url)) {
+      return;
+    }
+
+    // Fetch the file, convert to base64, and store in our application cache.
+    const res = await fetch(url);
+    if (!res.ok) return;
+
+    const imageData = await res.blob();
+    const base64 = (await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(imageData);
+    })) as string;
+
+    imageCache.set(url, base64);
+  });
+
+  // We run all promises concurrently but don't block the main thread.
+  // This is a "fire and forget" for the batch with centralized error handling.
+  Promise.all(preloadPromises).catch((e) => {
+    console.error('An error occurred during page preloading:', e);
+  });
+};

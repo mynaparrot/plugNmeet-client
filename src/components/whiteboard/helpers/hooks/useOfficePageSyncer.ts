@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   BinaryFileData,
   ExcalidrawImperativeAPI,
@@ -7,7 +7,7 @@ import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
-import { fetchFileWithElm } from '../handleFiles';
+import { fetchFileWithElm, preloadOfficeFilePages } from '../handleFiles';
 
 interface IUseOfficePageSyncer {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -23,17 +23,13 @@ const useOfficePageSyncer = ({ excalidrawAPI }: IUseOfficePageSyncer) => {
   );
 
   const syncOfficeFilePage = useCallback(async () => {
-    if (!excalidrawAPI) {
+    if (!excalidrawAPI || !isPresenter || currentOfficeFilePages === '') {
       return;
     }
 
     const newImages: Array<BinaryFileData> = [];
     const newElements: Array<ExcalidrawElement> = [];
     const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
-
-    if (!isPresenter || currentOfficeFilePages === '') {
-      return;
-    }
 
     let files: IWhiteboardFile[] = [];
     try {
@@ -87,6 +83,28 @@ const useOfficePageSyncer = ({ excalidrawAPI }: IUseOfficePageSyncer) => {
       elements: [...localElements, ...newElements],
     });
   }, [excalidrawAPI, isPresenter, currentOfficeFilePages, currentPage]);
+
+  /**
+   * Effect to proactively preload adjacent office file pages.
+   * This is triggered whenever the current office document or the current page changes.
+   * Pre-loading helps to make page navigation feel faster and more responsive.
+   */
+  useEffect(() => {
+    // Only the presenter should preload pages.
+    if (!isPresenter || currentOfficeFilePages === '') {
+      return;
+    }
+    try {
+      const documentPages: Array<IWhiteboardFile> = JSON.parse(
+        currentOfficeFilePages,
+      );
+      if (documentPages.length) {
+        preloadOfficeFilePages(documentPages, currentPage);
+      }
+    } catch (e) {
+      console.error('Failed to parse office file pages for preloading.', e);
+    }
+  }, [isPresenter, currentOfficeFilePages, currentPage]);
 
   return {
     syncOfficeFilePage,
