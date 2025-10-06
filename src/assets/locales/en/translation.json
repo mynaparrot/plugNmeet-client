@@ -173,6 +173,8 @@
     "breakout-room-tab": "Breakout Rooms",
     "me": "(me)",
     "public-chat": "Public Chat",
+    "private-chat": "Private Chat",
+    "select-chat-conversation-title": "Select a conversation",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Ask to Turn On Microphone",

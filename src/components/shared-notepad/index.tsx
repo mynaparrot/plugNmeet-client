@@ -51,7 +51,7 @@ const SharedNotepad = () => {
                   id="draggable-h1"
                   className="absolute top-0 w-full flex items-center justify-between text-base font-medium leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100 bg-white rounded-t-xl"
                 >
-                  <span>Notepad</span>
+                  <span>{t('footer.modal.shared-notepad')}</span>
                   <button
                     className="cursor-pointer relative z-30"
                     onClick={minimizePad}

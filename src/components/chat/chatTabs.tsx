@@ -118,7 +118,7 @@ const ChatTabs = () => {
           <p className="text-sm 3xl:text-base text-Gray-950 3xl:font-medium leading-tight">
             {selectedChatOption === 'public'
               ? t('left-panel.public-chat')
-              : t('left-panel.menus.items.private-chat')}
+              : t('left-panel.private-chat')}
           </p>
           <Listbox value={language} onChange={setLanguage}>
             <ListboxButton className="lang h-6 3xl:h-8 w-9 3xl:w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-md 3xl:rounded-[11px] text-xs 3xl:text-sm font-medium 3xl:font-semibold text-Gray-950">
@@ -188,7 +188,7 @@ const ChatTabs = () => {
           >
             <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] left-1 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2">
               <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
-                Select Message Type
+                {t('left-panel.select-chat-conversation-title')}
               </div>
               {chatOptions.map((option) => (
                 <ListboxOption
