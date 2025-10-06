@@ -66,6 +66,47 @@ export const createAndRegisterOfficeFile = (
   return newFile;
 };
 
+/**
+ * Fetches an image from a URL, converts it to a base64 Data URL,
+ * and caches it in memory. If the image is already in the cache,
+ * it returns the cached data directly.
+ * @param url The URL of the image to fetch and cache.
+ * @returns A promise that resolves to the base64 Data URL of the image, or null if fetching fails.
+ */
+const fetchAndCacheImage = async (url: string): Promise<string | null> => {
+  // 1. Check if the image is already in the cache.
+  if (imageCache.has(url)) {
+    return imageCache.get(url)!;
+  }
+
+  let base64: string | null = null;
+  try {
+    // 2. If not cached, fetch the image from the network.
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
+    } else {
+      // 3. Convert the response to a blob, then to a base64 Data URL.
+      const imageData = await res.blob();
+      base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(imageData);
+      });
+    }
+  } catch (error) {
+    console.error(`Error fetching or processing file from ${url}:`, error);
+  } finally {
+    // 4. If the fetch was successful, store the base64 data in the cache.
+    if (base64) {
+      imageCache.set(url, base64);
+    }
+  }
+  // 5. Return the result (either the base64 string or null if it failed).
+  return base64;
+};
+
 export const fetchFileWithElm = async (
   url: string,
   file_id: string,
@@ -74,25 +115,12 @@ export const fetchFileWithElm = async (
   uploaderWhiteboardWidth?: number,
 ): Promise<FileReaderResult | null> => {
   try {
-    let imgData: string;
+    // Use the shared helper to get the image data from cache or network.
+    const imgData = await fetchAndCacheImage(url);
 
-    if (imageCache.has(url)) {
-      // Cache hit: Use the cached base64 data.
-      imgData = imageCache.get(url)!;
-    } else {
-      // Cache miss: Fetch the file and convert it to base64.
-      const res = await fetch(url);
-      if (!res.ok) {
-        console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
-        return null;
-      }
-      const imageData = await res.blob();
-      imgData = (await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(imageData);
-      })) as string;
+    if (!imgData) {
+      // If fetching/caching failed, stop here.
+      return null;
     }
 
     const fileMimeType = imgData.substring(
@@ -121,9 +149,6 @@ export const fetchFileWithElm = async (
         excalidrawWidth,
       );
 
-      // Cache the data only after it has been successfully loaded as an image.
-      imageCache.set(url, imgData);
-
       return prepareForExcalidraw(
         file_id,
         url,
@@ -140,9 +165,6 @@ export const fetchFileWithElm = async (
     } else if (fileMimeType === 'image/svg+xml') {
       const fileHeight = excalidrawHeight * 0.8;
       const fileWidth = excalidrawWidth * 0.7;
-
-      // Cache the data for SVG as well.
-      imageCache.set(url, imgData);
 
       return prepareForExcalidraw(
         file_id,
@@ -419,18 +441,8 @@ export const preloadOfficeFilePages = (
       return;
     }
 
-    // Fetch the file, convert to base64, and store in our application cache.
-    const res = await fetch(url);
-    if (!res.ok) return;
-
-    const imageData = await res.blob();
-    const base64 = (await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.readAsDataURL(imageData);
-    })) as string;
-
-    imageCache.set(url, base64);
+    // Use the shared helper to fetch and cache the image. We don't need the result here.
+    await fetchAndCacheImage(url);
   });
 
   // We run all promises concurrently but don't block the main thread.
