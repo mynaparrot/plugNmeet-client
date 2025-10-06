@@ -76,10 +76,7 @@ const useOfficePageSyncer = ({ excalidrawAPI }: IUseOfficePageSyncer) => {
     // Add all binary file data at once.
     excalidrawAPI.addFiles(newImages);
 
-    // Add all new elements to the scene in a single update.
-    excalidrawAPI.updateScene({
-      elements: [...localElements, ...newElements],
-    });
+    return [...localElements, ...newElements];
   }, [excalidrawAPI, isPresenter, currentOfficeFilePages, currentPage]);
 
   /**

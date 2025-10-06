@@ -197,24 +197,27 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
    * Handles the logic for switching between whiteboard pages or office documents.
    * It cleans the canvas and prepares it for new data.
    */
-  const handleSwitchPageOrDocument = useCallback(() => {
+  const handleSwitchPageOrDocument = useCallback(async () => {
     // 1. Do nothing if Excalidraw API is not ready.
     if (!excalidrawAPI) return;
 
     // 2. Set a flag to prevent other actions during the transition.
     isSwitching.current = true;
 
-    // 3. Clean up the whiteboard for all users.
+    // 3. Clean up the whiteboard canvas and Redux state for all users.
     excalidrawAPI.updateScene({ elements: [] });
     excalidrawAPI.addFiles([]);
     excalidrawAPI.history.clear();
+    dispatch(updateExcalidrawElements(''));
+    dispatch(addAllExcalidrawElements(''));
 
-    // 4. Reset scene version tracking and re-enable the following mode.
+    // 4. Reset the internal state for a clean slate.
     setLastBroadcastOrReceivedSceneVersion(-1);
     cleanProcessedImageElementsMap();
     setIsFollowing(true);
 
-    // 5. If the user is the presenter, load the switched page/document data if previously saved.
+    // 5. Handle data loading based on user role.
+    // If the user is the presenter, load the switched page/document data if previously saved.
     if (isPresenter) {
       const loadedFromStorage = displaySavedPageData(
         excalidrawAPI,
@@ -224,8 +227,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       if (loadedFromStorage) {
         isSwitching.current = false;
       } else {
-        // If no data in storage, sync the office file page.
-        syncOfficeFilePage().finally(() => (isSwitching.current = false));
+        // This mean new file so sync the office file page.
+        // We get the data first, then unlock, then update the scene.
+        // This allows the broadcast to happen immediately via onChange.
+        const elements = await syncOfficeFilePage();
+        isSwitching.current = false;
+        if (elements) {
+          excalidrawAPI.updateScene({ elements });
+        }
       }
     } else {
       // 6. If not the presenter, simply end the switching state.
@@ -233,6 +242,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       isSwitching.current = false; // No data to load, so we can stop switching.
     }
   }, [
+    dispatch,
     excalidrawAPI,
     isPresenter,
     currentPage,
@@ -286,7 +296,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // when receive full whiteboard data
   useEffect(() => {
-    if (!isSwitching.current && excalidrawAPI && allExcalidrawElements !== '') {
+    if (excalidrawAPI && allExcalidrawElements) {
       sleep(300).then(() => reconcileAndUpdateScene(allExcalidrawElements));
     }
   }, [excalidrawAPI, allExcalidrawElements, reconcileAndUpdateScene]);
@@ -296,7 +306,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     if (
       !isSwitching.current &&
       excalidrawAPI &&
-      excalidrawElements !== '' &&
+      excalidrawElements &&
       fetchedData
     ) {
       reconcileAndUpdateScene(excalidrawElements);
