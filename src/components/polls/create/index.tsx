@@ -20,6 +20,7 @@ const Create = () => {
         onClose={() => setIsOpen(false)}
         title={t('polls.create')}
         maxWidth="max-w-xl"
+        customBodyClass="rounded-b-xl"
       >
         <FormView setIsOpen={setIsOpen} />
       </Modal>

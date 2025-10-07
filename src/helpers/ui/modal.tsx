@@ -60,7 +60,7 @@ const Modal = ({
           <div className="fixed inset-0 bg-Gray-950/70" />
         </TransitionChild>
 
-        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+        <div className="fixed inset-0 flex w-screen justify-center p-4 scrollBar">
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
@@ -72,7 +72,7 @@ const Modal = ({
           >
             <DialogPanel
               className={clsx(
-                'w-full bg-white border border-Gray-200 shadow-virtualPOP rounded-xl',
+                'w-full bg-white border border-Gray-200 shadow-virtualPOP rounded-xl m-auto',
                 maxWidth,
                 customClass,
               )}
@@ -89,13 +89,11 @@ const Modal = ({
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <div
-                className={clsx('p-4 bg-Gray-25 max-h-[75vh]', customBodyClass)}
-              >
+              <div className={clsx('p-4 bg-Gray-25', customBodyClass)}>
                 {children}
               </div>
               {renderButtons && (
-                <div className="px-4 py-4 border-t border-Gray-100 flex justify-end">
+                <div className="px-4 py-4 border-t border-Gray-100 flex justify-end rounded-b-xl">
                   {renderButtons()}
                 </div>
               )}
