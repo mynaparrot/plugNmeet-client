@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { isEmpty } from 'es-toolkit/compat';
 
 import {
   IRequestWhiteboardData,
@@ -61,6 +60,9 @@ const whiteboardSlice = createSlice({
     },
     setWhiteboardCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
+      // When the page changes, clear any existing elements to make way for the new content.
+      state.excalidrawElements = '';
+      state.allExcalidrawElements = '';
     },
     updateCurrentWhiteboardOfficeFileId: (
       state,
@@ -71,15 +73,19 @@ const whiteboardSlice = createSlice({
       );
       if (file) {
         state.totalPages = file.totalPages;
-        if (!isEmpty(file.pageFiles)) {
-          state.currentOfficeFilePages = file.pageFiles;
-        } else {
-          state.currentOfficeFilePages = '';
-        }
+        state.currentOfficeFilePages = file.pageFiles;
+      } else {
+        // This typically occurs for non-presenters who don't have the file in their local list.
+        // The page data will be synced from the presenter.
+        state.currentOfficeFilePages = '';
       }
-      // this is very important otherwise non-presenter won't refresh whiteboard
+      // This state update is crucial for triggering a refresh for all clients.
       state.currentWhiteboardOfficeFileId = action.payload;
+      // Reset to the first page whenever a new file is selected.
       state.currentPage = 1;
+      // When the file changes, clear any existing elements to make way for the new content.
+      state.excalidrawElements = '';
+      state.allExcalidrawElements = '';
     },
     updateCurrentOfficeFilePages: (state, action: PayloadAction<string>) => {
       state.currentOfficeFilePages = action.payload;
@@ -92,7 +98,6 @@ const whiteboardSlice = createSlice({
         (f) => f.fileId === action.payload.fileId,
       );
       if (!exists) {
-        // Redux Toolkit with Immer allows us to "mutate" the state directly.
         state.whiteboardUploadedOfficeFiles.push(action.payload);
       }
     },

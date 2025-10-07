@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import {
@@ -10,7 +10,6 @@ import { debounce } from 'es-toolkit';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { useTranslation } from 'react-i18next';
 
-import usePrevious from './helpers/hooks/usePrevious';
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
@@ -34,12 +33,7 @@ const FooterUI = ({
 }: IFooterUIProps) => {
   const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
-  const currentWhiteboardOfficeFileId = useAppSelector(
-    (state) => state.whiteboard.currentWhiteboardOfficeFileId,
-  );
 
-  const previousPage = usePrevious(currentPage);
-  const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -52,38 +46,24 @@ const FooterUI = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (!isPresenter || !excalidrawAPI) {
-      return;
-    }
-    if (currentWhiteboardOfficeFileId !== previousFileId) {
-      // this was already handled, so we won't repeat
-      return;
-    }
-    if (previousPage && currentPage !== previousPage) {
-      savePageData(excalidrawAPI, previousPage);
-    }
-  }, [
-    isPresenter,
-    currentWhiteboardOfficeFileId,
-    previousFileId,
-    currentPage,
-    previousPage,
-    excalidrawAPI,
-  ]);
-
   const debouncedSetCurrentPage = useMemo(
     () =>
-      debounce(async (page: number) => {
-        await broadcastCurrentPageNumber(page);
-        dispatch(setWhiteboardCurrentPage(page));
+      debounce(async (newPage: number, pageToSave: number) => {
+        // First, save the state of the page we are leaving.
+        if (isPresenter && excalidrawAPI) {
+          savePageData(excalidrawAPI, pageToSave);
+        }
+
+        // Then, proceed with changing the page.
+        await broadcastCurrentPageNumber(newPage);
+        dispatch(setWhiteboardCurrentPage(newPage));
       }, 300),
-    [dispatch],
+    [dispatch, isPresenter, excalidrawAPI],
   );
 
   const setCurrentPage = (page: number) => {
     if (showSwitchingWarning()) return;
-    debouncedSetCurrentPage(page);
+    debouncedSetCurrentPage(page, currentPage);
   };
 
   const handlePre = () => {
@@ -169,11 +149,11 @@ const FooterUI = ({
             : 'ltr:pl-3 rtl:pr-3'
         } `}
       >
-        {isAdmin && !isRecorder ? (
+        {isAdmin && !isRecorder && (
           <button className="presenter" onClick={takeOverPresenter}>
             <i className="pnm-presenter text-[14px]" />
           </button>
-        ) : null}
+        )}
         <button
           className={`px-2 ${isFollowing ? 'following' : ''}`}
           onClick={handleFollowPresenter}

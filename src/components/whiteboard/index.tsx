@@ -320,7 +320,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     const hasPageChanged = previousPage && currentPage !== previousPage;
 
     if (!isSwitching.current && (hasFileChanged || hasPageChanged)) {
-      handleSwitchPageOrDocument();
+      handleSwitchPageOrDocument().then();
     }
   }, [
     currentWhiteboardOfficeFileId,

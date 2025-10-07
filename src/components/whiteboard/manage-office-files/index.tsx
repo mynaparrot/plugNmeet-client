@@ -177,4 +177,4 @@ const ManageOfficeFilesModal = ({
   );
 };
 
-export default ManageOfficeFilesModal;
+export default React.memo(ManageOfficeFilesModal);
