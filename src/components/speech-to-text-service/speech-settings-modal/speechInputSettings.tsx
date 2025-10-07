@@ -75,7 +75,7 @@ const SpeechInputSettings = ({
 
   return (
     <>
-      <Field className="py-4 px-5 bg-Gray-25 border-y border-dotted border-Gray-100">
+      <Field className="-mt-4 px-4 py-4 bg-Gray-25 border-y border-dotted border-Gray-100">
         <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
           <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
             {t('speech-services.enable-speech-to-text')}
@@ -99,7 +99,7 @@ const SpeechInputSettings = ({
         </div>
       </Field>
       {enableSpeechToText && (
-        <div className="px-5 grid gap-4">{speechLangElms()}</div>
+        <div className="grid gap-4 bg-white py-4 px-4">{speechLangElms()}</div>
       )}
     </>
   );

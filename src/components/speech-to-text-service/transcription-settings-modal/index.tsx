@@ -121,14 +121,14 @@ const TranscriptionSettingsModal = () => {
   ]);
 
   const renderContent = () => (
-    <div className="main-wrap max-h-[70vh] overflow-y-auto scrollBar px-5">
+    <div className="main-wrap -my-4">
       {validationError && (
         <div className="error-message mx-1 mb-2 px-3 py-2 border border-Red-400 bg-Red-25 rounded-lg text-sm text-center">
           {validationError}
         </div>
       )}
-      <div className="grid gap-4 py-4">
-        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-5 px-5 py-4">
+      <div className="grid">
+        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
           <SettingsSwitch
             label={t('speech-services.enable-transcription')}
             enabled={enabledTranscription}
@@ -137,7 +137,7 @@ const TranscriptionSettingsModal = () => {
           />
         </div>
         {enabledTranscription && (
-          <div className="grid gap-4">
+          <div className="grid gap-4 py-4 bg-white">
             <SpeechLangsSelector
               selectedSpeechLangs={selectedSpeechLangs}
               setSelectedSpeechLangs={setSelectedSpeechLangs}
@@ -154,7 +154,7 @@ const TranscriptionSettingsModal = () => {
             />
           </div>
         )}
-        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-5 px-5 py-4">
+        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
           <SettingsSwitch
             label={t('speech-services.enable-translation')}
             enabled={enableTranslation}
@@ -163,7 +163,7 @@ const TranscriptionSettingsModal = () => {
           />
         </div>
         {enableTranslation && (
-          <div className="grid gap-4">
+          <div className="grid gap-4 py-4 bg-white">
             <TransLangsSelector
               selectedTransLangs={selectedTransLangs}
               setSelectedTransLangs={setSelectedTransLangs}

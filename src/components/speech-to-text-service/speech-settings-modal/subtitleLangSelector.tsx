@@ -30,7 +30,7 @@ const SubtitleLangSelector = ({
   }, [speechService.allowedSpeechLangs, speechService.allowedTransLangs]);
 
   return (
-    <div className="px-5">
+    <div className="px-5 pt-4 pb-4">
       <Dropdown
         id="language"
         label={t('speech-services.subtitle-lang-label')}
