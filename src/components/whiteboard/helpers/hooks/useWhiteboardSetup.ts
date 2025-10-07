@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Collaborator,
   ExcalidrawImperativeAPI,
@@ -8,8 +8,6 @@ import {
 import { useAppSelector } from '../../../../store';
 import { addPreloadedLibraryItems } from '../utils';
 import { selectBasicParticipants } from '../../../../store/slices/participantSlice';
-
-const collaborators = new Map<SocketId, Collaborator>();
 
 interface IUseWhiteboardSetup {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -25,6 +23,7 @@ const useWhiteboardSetup = ({
   isRecorder,
 }: IUseWhiteboardSetup) => {
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
+  const collaborators = useRef(new Map<SocketId, Collaborator>());
 
   const participants = useAppSelector(selectBasicParticipants);
   const defaultLock = useAppSelector(
@@ -78,14 +77,16 @@ const useWhiteboardSetup = ({
           return;
         }
 
-        collaborators.set(userId, {
+        collaborators.current.set(userId, {
           pointer,
           button,
           selectedElementIds,
           id: userId,
           username: name,
         });
-        excalidrawAPI.updateScene({ collaborators: new Map(collaborators) });
+        excalidrawAPI.updateScene({
+          collaborators: new Map(collaborators.current),
+        });
       } catch (e) {
         console.error(e);
       }
@@ -98,17 +99,19 @@ const useWhiteboardSetup = ({
       return;
     }
 
-    const currentSize = collaborators.size;
+    const currentSize = collaborators.current.size;
     // now check if any user still exists after disconnected
-    collaborators.forEach((_, i) => {
+    collaborators.current.forEach((_, i) => {
       const found = participants.find((p) => p.userId === i);
       if (!found) {
-        collaborators.delete(i);
+        collaborators.current.delete(i);
       }
     });
 
-    if (currentSize !== collaborators.size) {
-      excalidrawAPI.updateScene({ collaborators: new Map(collaborators) });
+    if (currentSize !== collaborators.current.size) {
+      excalidrawAPI.updateScene({
+        collaborators: new Map(collaborators.current),
+      });
     }
   }, [excalidrawAPI, participants]);
 
