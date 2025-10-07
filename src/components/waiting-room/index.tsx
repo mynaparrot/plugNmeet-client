@@ -29,7 +29,7 @@ const ManageWaitingRoom = () => {
       show={true}
       onClose={closeModal}
       title={t('waiting-room.modal-title')}
-      customClass="showManageWaitingRoomModal"
+      customClass="showManageWaitingRoomModal overflow-hidden"
       maxWidth="max-w-xl"
     >
       {waitingParticipants.length ? (
