@@ -103,7 +103,7 @@ const SpeechSettingsModal = ({
       show={isActiveDisplayOptionsModal}
       onClose={() => dispatch(updateDisplaySpeechSettingOptionsModal(false))}
       title={t('speech-services.start-modal-title')}
-      customClass="showSpeechSettingPopup"
+      customClass="showSpeechSettingPopup overflow-hidden"
     >
       <div className="-mx-4">
         {canShowSpeechSetting && (
