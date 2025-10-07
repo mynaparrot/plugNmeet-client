@@ -110,6 +110,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   const isProgrammaticScroll = useRef(false);
   const isSwitching = useRef(false);
+  const lastBroadcastOrReceivedSceneVersion = useRef<number>(-1);
 
   // Custom Hooks for modularity
   const { viewModeEnabled } = useWhiteboardSetup({
@@ -122,16 +123,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     useWhiteboardDataSharer({
       excalidrawAPI,
     });
-  const {
-    lastBroadcastOrReceivedSceneVersion,
-    setLastBroadcastOrReceivedSceneVersion,
-  } = useWhiteboardAppStateSync({
+  useWhiteboardAppStateSync({
     excalidrawAPI,
     isFollowing,
     isProgrammaticScroll,
   });
   const { syncOfficeFilePage } = useOfficePageSyncer({
     excalidrawAPI,
+    isPresenter,
   });
 
   /**
@@ -181,16 +180,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         });
         // 8. Update the scene version to the latest received version.
         // This prevents re-broadcasting of the same data.
-        setLastBroadcastOrReceivedSceneVersion(
-          getSceneVersion(reconciledElements),
-        );
+        lastBroadcastOrReceivedSceneVersion.current =
+          getSceneVersion(reconciledElements);
         // 9. Clear the history to ensure a clean state after the remote update.
         excalidrawAPI.history.clear();
       } catch (e) {
         console.error(e);
       }
     },
-    [excalidrawAPI, setLastBroadcastOrReceivedSceneVersion],
+    [excalidrawAPI],
   );
 
   /**
@@ -212,7 +210,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     dispatch(addAllExcalidrawElements(''));
 
     // 4. Reset the internal state for a clean slate.
-    setLastBroadcastOrReceivedSceneVersion(-1);
+    lastBroadcastOrReceivedSceneVersion.current = -1;
     cleanProcessedImageElementsMap();
     setIsFollowing(true);
 
@@ -230,7 +228,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         // This mean new file so sync the office file page.
         // We get the data first, then unlock, then update the scene.
         // This allows the broadcast to happen immediately via onChange.
-        const elements = await syncOfficeFilePage();
+        const elements = await syncOfficeFilePage(currentPage);
         isSwitching.current = false;
         if (elements) {
           excalidrawAPI.updateScene({ elements });
@@ -241,14 +239,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // They will receive the new data from the presenter.
       isSwitching.current = false; // No data to load, so we can stop switching.
     }
-  }, [
-    dispatch,
-    excalidrawAPI,
-    isPresenter,
-    currentPage,
-    setLastBroadcastOrReceivedSceneVersion,
-    syncOfficeFilePage,
-  ]);
+  }, [dispatch, excalidrawAPI, isPresenter, currentPage, syncOfficeFilePage]);
 
   // clean up store during exit
   useEffect(() => {
@@ -345,17 +336,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     }
 
     // Presenters or unlocked users can broadcast scene changes.
-    if (isPresenter || lockWhiteboard === false) {
-      if (getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion) {
-        setLastBroadcastOrReceivedSceneVersion(getSceneVersion(elements));
-        broadcastSceneOnChange(
-          elements,
-          false,
-          undefined,
-          excalidrawAPI,
-          files,
-        ).then();
-      }
+    if (
+      (isPresenter || lockWhiteboard === false) &&
+      getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion.current
+    ) {
+      lastBroadcastOrReceivedSceneVersion.current = getSceneVersion(elements);
+      broadcastSceneOnChange(
+        elements,
+        false,
+        undefined,
+        excalidrawAPI,
+        files,
+      ).then();
     }
 
     // Only the presenter can broadcast app state changes (zoom, scroll, etc.).

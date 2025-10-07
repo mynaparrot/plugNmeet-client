@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect } from 'react';
 import {
   AppState,
   ExcalidrawImperativeAPI,
@@ -21,10 +21,6 @@ const useWhiteboardAppStateSync = ({
   const whiteboardAppState = useAppSelector(
     (state) => state.whiteboard.whiteboardAppState,
   );
-  const [
-    lastBroadcastOrReceivedSceneVersion,
-    setLastBroadcastOrReceivedSceneVersion,
-  ] = useState<number>(-1);
 
   // for handling AppState changes
   useEffect(() => {
@@ -65,11 +61,6 @@ const useWhiteboardAppStateSync = ({
       }, 100);
     }
   }, [excalidrawAPI, whiteboardAppState, isFollowing, isProgrammaticScroll]);
-
-  return {
-    lastBroadcastOrReceivedSceneVersion,
-    setLastBroadcastOrReceivedSceneVersion,
-  };
 };
 
 export default useWhiteboardAppStateSync;
