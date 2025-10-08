@@ -1,5 +1,5 @@
 {
-  "ok": "Ok",
+  "ok": "OK",
   "close": "Sluiten",
   "cancel": "Annuleren",
   "yes": "Ja",
@@ -50,6 +50,9 @@
     "room-will-end-in": "Deze kamer wordt beëindigd in {{minutes}} notulen",
     "e2ee-unsupported-browser-title": "Niet-ondersteunde browser",
     "e2ee-unsupported-browser-msg": "Deze sessie heeft end-to-end-versleuteling ingeschakeld die uw huidige browser niet ondersteunt.",
+    "e2ee-invalid-key-title": "Ongeldige beveiligingssleutel",
+    "e2ee-invalid-key-msg": "De ingevoerde beveiligingssleutel is onjuist.",
+    "e2ee-empty-key-msg": "De beveiligingssleutel kan niet leeg zijn.",
     "nats-error-title": "Verbindingsfout van de Nats-server",
     "nats-error-no-response": "Er is geen backend-server gevonden om het verzoek af te handelen. Fout: {{error}}",
     "nats-error-timeout": "Geen antwoord gevonden van de backend-server. Fout: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "De verbinding met de mediaserver is verbroken.",
     "preloaded-whiteboard-file-processing": "Vooraf geladen whiteboardbestand in uitvoering",
     "preloaded-whiteboard-file-processing-error": "De verwerking van vooraf geladen whiteboardbestanden is beëindigd met een fout",
-    "max-num-participates-exceeded": "Het maximum aantal deelnemers dat voor de sessie is toegestaan, is overschreden."
+    "max-num-participates-exceeded": "Het maximum aantal deelnemers dat voor de sessie is toegestaan, is overschreden.",
+    "uploading-file": "Bestand uploaden...",
+    "ending-session": "De vergadering is afgelopen, een ogenblik geduld...",
+    "whiteboard-other-task-to-finish": "Het whiteboard bereidt nieuwe inhoud voor. Een ogenblik geduld.",
+    "cloud-recording-not-supported-self-key": "Cloud opname is niet beschikbaar bij het gebruik van een aangepaste beveiligingssleutel.",
+    "media-only-recording-not-support-e2ee": "Het opnemen van alleen audio en video is niet beschikbaar als end-to-end versleuteling is ingeschakeld.",
+    "you-are-sharing-screen": "U deelt nu uw scherm. Anderen zullen een groter beeld zien.",
+    "new-system-message-in-chat": "In de openbare chat is een nieuw systeembericht geplaatst."
   },
   "room-metadata": {
     "session-recording": "Deze sessie wordt opgenomen",
@@ -149,7 +159,10 @@
     "ready": "klaar",
     "webcams-per-page": "Per pagina.",
     "require-ssl-title": "Domein moet SSL ingeschakeld zijn",
-    "require-ssl-des": "Het is vereist om een ander SSL-domein dan localhost te gebruiken."
+    "require-ssl-des": "Het is vereist om een ander SSL-domein dan localhost te gebruiken.",
+    "insert-secret-key": "Voer beveiligingssleutel in",
+    "insert-secret-help": "Voor deze veilige vergadering moet iedereen dezelfde beveiligingssleutel gebruiken. Als deze niet overeenkomt, kan je geen verbinding maken. Verkrijg de juiste beveiligingssleutel van de vergaderorganisator.",
+    "save": "Opslaan"
   },
   "left-panel": {
     "participants": "Deelnemers ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Deelnemers",
     "polls-tab": "Opiniepeilingen",
     "breakout-room-tab": "Breakout-ruimtes",
+    "me": "(ik)",
     "public-chat": "> Openbare chat",
+    "private-chat": "Privé chat",
+    "select-chat-conversation-title": "Selecteer een gesprek",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Vraag om microfoon te delen",
@@ -236,12 +252,17 @@
       "recording-types-des": "U kunt een van de volgende opnametypen selecteren. Gebruik Google Chrome om het beste resultaat te krijgen voor lokale opname",
       "local-recording": "Lokale opname",
       "cloud-recording": "Opname in de cloud",
+      "cloud-media-only-recording": "Cloud Record: Alleen media",
       "stop-rtmp-broadcasting": "RTMP-uitzendingen stoppen",
       "start-rtmp-broadcasting": "RTMP-uitzending starten",
       "show-shared-notepad": "Gedeeld notitieblok weergeven",
       "hide-shared-notepad": "Gedeeld kladblok verbergen",
       "show-whiteboard": "Whiteboard weergeven",
       "hide-whiteboard": "Whiteboard verbergen",
+      "show-polls-panel": "Toon peilingen",
+      "hide-polls-panel": "Verberg Polls",
+      "show-translation-settings": "Toon Transcriptie Instellingen",
+      "hide-translation-settings": "Transcriptie Instellingen verbergen",
       "promote-presenter": "Promoten als presentator",
       "demote-presenter": "Degraderen van presentator"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Aparte vergaderruimte beheren",
       "start-display-external-link": "Externe link weergeven",
       "stop-display-external-link": "Externe link niet meer weergeven",
-      "speech-to-text-settings": "Spraak-naar-tekst/vertaalinstellingen"
+      "speech-to-text-settings": "Spraak-naar-tekst/vertaalinstellingen",
+      "enable-polls": "Polls inschakelen",
+      "disable-polls": "Polls uitschakelen"
     },
     "notice": {
       "already-active-screen-sharing": "Sessie heeft al een actieve schermdeling",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Directe link",
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Uploaden en afspelen",
+      "external-media-player-uploading": "Uploaden...",
       "external-media-player-upload-supported-files": "Ondersteunde bestanden: {{files}}",
+      "external-media-player-select-file": "Selecteer een mediabestand om te uploaden",
       "upload-background-image": "Achtergrondafbeelding uploaden",
       "shared-notepad": "Gedeeld kladblok"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Bestand is gereed",
     "upload-file": "Bestand uploaden",
     "manage-files": "Bestanden",
-    "upload-image": "Afbeelding"
+    "upload-image": "Afbeelding",
+    "follow-presenter-tooltip": "Volg de Presenter",
+    "unfollow-presenter-tooltip": "Stop met het volgen van de Presenter",
+    "follow": "Volgen",
+    "unfollow": "Ontvolgen",
+    "upload-files-title": "Bestanden uploaden",
+    "drag-drop-file": "Sleep uw bestand om te uploaden",
+    "max-file-size": "Max bestandsgrootte: {{size}} MB",
+    "or": "of",
+    "select-file": "Selecteer een bestand",
+    "add-to-whiteboard": "Toevoegen aan Whiteboard",
+    "total-pages": "Totale pagina's: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Wachtkamer beheren",
@@ -326,9 +362,12 @@
     "reject-all": "Iedereen afwijzen",
     "list-waiting-participants": "Wachtende deelnemerslijst ({{count}})",
     "reject-and-block-user": "Afwijzen & Blokkeren",
-    "user-waiting": "{{name}} wacht op goedkeuring"
+    "user-waiting": "{{name}} wacht op goedkeuring",
+    "no-pending-user": "Er is niemand die op toetreding wacht."
   },
   "polls": {
+    "title": "Enquêtes",
+    "poll-num": "Poll {{index}}",
     "create": "Nieuwe peiling maken",
     "enter-question": "Voer een vraag in",
     "question": "Vraag",
@@ -355,7 +394,8 @@
     "end-poll": "Einde poll",
     "end-poll-success": "Poll is beëindigd",
     "publish-result": "Resultaat publiceren",
-    "total": "Totaal"
+    "total": "Totaal",
+    "not-respondents-total": "Heeft niet gereageerd: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Aparte vergaderruimten beheren",
@@ -387,6 +427,19 @@
     "user-joined": "Aangemeld",
     "not-joined": "Niet aangemeld"
   },
+  "landing": {
+    "connecting-media-server": "Verbinden met mediaserver ...",
+    "modal-title": "Microfoon en Camera voorkeuren",
+    "ready-to-join": "Klaar om toe te treden?",
+    "join-prompt": "Schakel uw microfoon en camera in om volledig deel te nemen of deel te nemen als luisteraar.",
+    "enable-mic-cam-btn": "Microfoon en Camera inschakelen",
+    "join-as-listener-btn": "Word lid als luisteraar",
+    "webcam-menu-title": "Selecteer Camera",
+    "mic-menu-title": "Selecteer microfoon",
+    "background-filter-title": "Achtergrond & filters",
+    "config-background-btn": "Camera achtergrond configureren",
+    "waiting-for-approval-title": "Wachten op goedkeuring"
+  },
   "external-display-link-display": {
     "modal-title": "Toon externe link (iframe)",
     "url": "URL",
@@ -401,7 +454,8 @@
     "meeting-id": "Vergadering-ID",
     "meeting-id-des": "Oorsprongs-ID van vergadering",
     "user-role": "Gebruikersrol",
-    "user-role-des": "Huidige rol van de gebruiker. Ofwel admin of deelnemer"
+    "user-role-des": "Huidige rol van de gebruiker. Ofwel admin of deelnemer",
+    "iframe-title": "Ingesloten externe inhoud"
   },
   "ingress-features": {
     "ingress-type": "Type binnendringing",
@@ -430,7 +484,7 @@
     "service-ready": "Spraakservice is klaar",
     "start-service": "Beginnen",
     "stop-service": "Stoppen",
-    "update-service": "Update",
+    "update-service": "Vernieuwen",
     "service-stopped": "De service is gestopt",
     "start-modal-title": "Spraak-naar-tekst/vertaalservice",
     "speech-lang-label": "Spraak taal",
@@ -449,6 +503,7 @@
     "select-one-lang": "Selecteer een taal",
     "subtitle-history-modal-title": "Ondertiteling teksten geschiedenis",
     "azure-error": "Microsoft Azure-fout: {{error}}",
-    "speech-to-text-stopped": "Spraak-naar-tekstservice is gestopt"
+    "speech-to-text-stopped": "Spraak-naar-tekstservice is gestopt",
+    "enable-transcription": "Transcriptie inschakelen"
   }
 }
