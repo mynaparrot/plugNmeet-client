@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch } from '../../store';
 import {
@@ -9,6 +10,7 @@ import {
 
 import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
+import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 import ActiveSpeakers from '../active-speakers';
 import MainView from './mainView';
@@ -16,8 +18,6 @@ import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import SidePanel from './sidePanel';
-import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
-import { debounce } from 'es-toolkit';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();

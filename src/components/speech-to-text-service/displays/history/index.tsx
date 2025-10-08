@@ -42,12 +42,12 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
           <ChatHistoryIconSVG />
         </div>
       </button>
-      {showPopover ? (
+      {showPopover && (
         <SubtitleHistoryPanel
           setShowPopover={setShowPopover}
           showPopover={showPopover}
         />
-      ) : null}
+      )}
     </Popover>
   );
 };

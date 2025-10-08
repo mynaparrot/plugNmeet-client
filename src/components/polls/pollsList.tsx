@@ -9,7 +9,6 @@ const PollsList = () => {
 
   const polls = useMemo(() => {
     if (data && data.polls) {
-      // slice() will create a shallow copy to avoid mutating the cached data from RTK Query
       const sortedPolls = data.polls.slice();
       sortedPolls.sort((a, b) => Number(b.created) - Number(a.created));
       return sortedPolls;
