@@ -50,6 +50,9 @@
     "room-will-end-in": "Šī istaba tiks pabeigta {{minutes}} Minūtes",
     "e2ee-unsupported-browser-title": "Neatbalstīts pārlūks",
     "e2ee-unsupported-browser-msg": "Šajā sesijā ir iespējota pilnīga šifrēšana, ko jūsu pašreizējā pārlūkprogramma neatbalsta.",
+    "e2ee-invalid-key-title": "Nederīga drošības atslēga",
+    "e2ee-invalid-key-msg": "Ievadītā drošības atslēga ir nepareiza.",
+    "e2ee-empty-key-msg": "Drošības atslēga nevar būt tukša.",
     "nats-error-title": "Nats servera savienojuma kļūda",
     "nats-error-no-response": "Nav atrasts aizmugursistēmas serveris, kas apstrādātu pieprasījumu. Kļūda: {{error}}",
     "nats-error-timeout": "No aizmugursistēmas servera nav atrasta atbilde. Kļūda: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Multivides serveris atvienots.",
     "preloaded-whiteboard-file-processing": "Notiek iepriekš ielādēts baltās tāfeles fails",
     "preloaded-whiteboard-file-processing-error": "Iepriekš ielādētās baltās tāfeles failu apstrāde beidzās ar kļūdu",
-    "max-num-participates-exceeded": "Ir pārsniegts maksimālais sesijā atļautais dalībnieku skaits."
+    "max-num-participates-exceeded": "Ir pārsniegts maksimālais sesijā atļautais dalībnieku skaits.",
+    "uploading-file": "Tiek augšupielādēts fails...",
+    "ending-session": "Sanāksme beidzas, lūdzu, pagaidiet...",
+    "whiteboard-other-task-to-finish": "Baltā tāfele sagatavo jaunu saturu. Lūdzu, gaidi.",
+    "cloud-recording-not-supported-self-key": "Mākoņa ierakstīšana nav pieejama, izmantojot pielāgotu drošības atslēgu.",
+    "media-only-recording-not-support-e2ee": "Tikai audio un video ierakstīšana nav pieejama, ja ir iespējota pilnīga šifrēšana.",
+    "you-are-sharing-screen": "Tagad jūs kopīgojat savu ekrānu. Citi redzēs plašāku skatu.",
+    "new-system-message-in-chat": "Publiskajā tērzēšanā ir ievietots jauns sistēmas ziņojums."
   },
   "room-metadata": {
     "session-recording": "Šī sesija tiek ierakstīta",
@@ -149,7 +159,10 @@
     "ready": "gatavs",
     "webcams-per-page": "Vienā lapā.",
     "require-ssl-title": "Domēnam jābūt iespējotam SSL",
-    "require-ssl-des": "Ir nepieciešams izmantot SSL iespējotu domēnu, kas nav localhost."
+    "require-ssl-des": "Ir nepieciešams izmantot SSL iespējotu domēnu, kas nav localhost.",
+    "insert-secret-key": "Ievadiet drošības atslēgu",
+    "insert-secret-help": "Šai drošajai sapulcei visiem ir jāizmanto viena un tā pati drošības atslēga. Ja tas nesakrīt, nevarēsit izveidot savienojumu. Lūdzu, iegūstiet pareizo drošības atslēgu no sapulces organizatora.",
+    "save": "Glābt"
   },
   "left-panel": {
     "participants": "Dalībnieki ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Dalībniekiem",
     "polls-tab": "Aptaujas",
     "breakout-room-tab": "Izlaušanās istabas",
+    "me": "(es)",
     "public-chat": "Publiska tērzēšana",
+    "private-chat": "Privāta tērzēšana",
+    "select-chat-conversation-title": "Sarunas atlasīšana",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Lūgt koplietot mikrofonu",
@@ -236,12 +252,17 @@
       "recording-types-des": "Varat atlasīt jebkuru no šiem ierakstīšanas veidiem. Izmantojiet pārlūku Google Chrome, lai iegūtu vislabāko rezultātu vietējai ierakstīšanai",
       "local-recording": "Vietējais ieraksts",
       "cloud-recording": "Mākoņa ierakstīšana",
+      "cloud-media-only-recording": "Mākoņa ieraksts: tikai multivide",
       "stop-rtmp-broadcasting": "Pārtraukt RTMP apraidi",
       "start-rtmp-broadcasting": "Sāciet RTMP apraidi",
       "show-shared-notepad": "Koplietojama piezīmju bloka rādīšana",
       "hide-shared-notepad": "Koplietojama piezīmju bloka paslēpšana",
       "show-whiteboard": "Rādīt balto tāfeli",
       "hide-whiteboard": "Baltās tāfeles paslēpšana",
+      "show-polls-panel": "Rādīt aptaujas",
+      "hide-polls-panel": "Paslēpt aptaujas",
+      "show-translation-settings": "Transkripcijas iestatījumu rādīšana",
+      "hide-translation-settings": "Transkripcijas iestatījumu paslēpšana",
       "promote-presenter": "Paaugstināt par prezentētāju",
       "demote-presenter": "Pazemināšana no prezentētāja"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Pārvaldiet izlaušanās istabu",
       "start-display-external-link": "Ārējās saites parādīšana",
       "stop-display-external-link": "Pārtraukt rādīt ārējo saiti",
-      "speech-to-text-settings": "Runas pārvēršanas tekstā/tulkošanas iestatījumi"
+      "speech-to-text-settings": "Runas pārvēršanas tekstā/tulkošanas iestatījumi",
+      "enable-polls": "Aptauju iespējošana",
+      "disable-polls": "Aptauju atspējošana"
     },
     "notice": {
       "already-active-screen-sharing": "Sesijai jau ir aktīva ekrāna koplietošana",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Tieša saikne",
       "external-media-player-upload-file": "Augšupielādēt",
       "external-media-player-upload-file-play": "Augšupielāde un atskaņošana",
+      "external-media-player-uploading": "Augšupielādējot...",
       "external-media-player-upload-supported-files": "Atbalstītie faili: {{files}}",
+      "external-media-player-select-file": "Augšupielādējamā multivides faila atlasīšana",
       "upload-background-image": "Fona attēla augšupielāde",
       "shared-notepad": "Koplietojams piezīmju bloks"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Fails ir gatavs",
     "upload-file": "Augšupielādēt failu",
     "manage-files": "Failus",
-    "upload-image": "Attēlu"
+    "upload-image": "Attēlu",
+    "follow-presenter-tooltip": "Sekojiet vadītājam",
+    "unfollow-presenter-tooltip": "Pārtrauciet sekot prezentētājam",
+    "follow": "Sekot",
+    "unfollow": "Atteikties no sekošanas",
+    "upload-files-title": "Augšupielādēt failus",
+    "drag-drop-file": "Velciet un nometiet failu, lai to augšupielādētu",
+    "max-file-size": "Maksimālais faila lielums: {{size}} MB",
+    "or": "VAI",
+    "select-file": "Atlasīt failu",
+    "add-to-whiteboard": "Pievienot tāfelei",
+    "total-pages": "Kopējais lappušu skaits: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Pārvaldiet uzgaidāmo telpu",
@@ -326,9 +362,12 @@
     "reject-all": "Noraidīt visus",
     "list-waiting-participants": "Gaidīšanas dalībnieku saraksts ({{count}})",
     "reject-and-block-user": "Noraidīt un bloķēt",
-    "user-waiting": "{{name}} gaida apstiprinājumu"
+    "user-waiting": "{{name}} gaida apstiprinājumu",
+    "no-pending-user": "Neviens negaida, lai pievienotos."
   },
   "polls": {
+    "title": "Aptaujas",
+    "poll-num": "Aptauja {{index}}",
     "create": "Jaunas aptaujas izveide",
     "enter-question": "Ievadīt jautājumu",
     "question": "Jautājums",
@@ -355,7 +394,8 @@
     "end-poll": "Beigt aptauju",
     "end-poll-success": "Aptauja tika veiksmīgi pabeigta",
     "publish-result": "Rezultātu publicēšana",
-    "total": "Kopējā"
+    "total": "Kopējā",
+    "not-respondents-total": "Neatbildēja: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Pārvaldiet izlaušanās istabas",
@@ -387,9 +427,22 @@
     "user-joined": "Pievienojās",
     "not-joined": "Nav pievienojies"
   },
+  "landing": {
+    "connecting-media-server": "Tiek izveidots savienojums ar multivides serveri...",
+    "modal-title": "Mikrofona un kameras preferences",
+    "ready-to-join": "Vai esat gatavs pievienoties?",
+    "join-prompt": "Iespējojiet mikrofonu un kameru pilnvērtīgi piedalīties vai pievienojieties kā klausītājs.",
+    "enable-mic-cam-btn": "Iespējot mikrofonu un kameru",
+    "join-as-listener-btn": "Pievienojieties kā klausītājs",
+    "webcam-menu-title": "Atlasiet Kamera",
+    "mic-menu-title": "Atlasiet Mikrofons",
+    "background-filter-title": "Fons un filtri",
+    "config-background-btn": "Kameras fona konfigurēšana",
+    "waiting-for-approval-title": "Gaida apstiprinājumu"
+  },
   "external-display-link-display": {
     "modal-title": "Ārējās saites (iframe) rādīšana",
-    "url": "URL",
+    "url": "Vietne URL",
     "display": "Parādīt",
     "link-invalid": "Saite nav derīga",
     "note": "Piezīme: pārliecinieties, vai URL ir atļauja atvērt iframe. Piemērs: https://www.gameflare.com/embed/mini-survival",
@@ -401,7 +454,8 @@
     "meeting-id": "Sapulces ID",
     "meeting-id-des": "Sapulces izcelsmes ID",
     "user-role": "Lietotāja loma",
-    "user-role-des": "Lietotāja pašreizējā loma. Administrators vai dalībnieks"
+    "user-role-des": "Lietotāja pašreizējā loma. Administrators vai dalībnieks",
+    "iframe-title": "Iegults ārējais saturs"
   },
   "ingress-features": {
     "ingress-type": "Iekļūšanas veids",
@@ -449,6 +503,7 @@
     "select-one-lang": "Izvēlieties vienu valodu",
     "subtitle-history-modal-title": "Subtitru tekstu vēsture",
     "azure-error": "Microsoft Azure kļūda: {{error}}",
-    "speech-to-text-stopped": "Runas pārvēršanas tekstā pakalpojums ir pārtraukts"
+    "speech-to-text-stopped": "Runas pārvēršanas tekstā pakalpojums ir pārtraukts",
+    "enable-transcription": "Iespējot transkripciju"
   }
 }
