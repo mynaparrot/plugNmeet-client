@@ -50,6 +50,9 @@
     "room-will-end-in": "Cette pièce se terminera en {{minutes}} compte-rendu",
     "e2ee-unsupported-browser-title": "Navigateur non pris en charge",
     "e2ee-unsupported-browser-msg": "Cette session a activé le chiffrement de bout en bout que votre navigateur actuel ne prend pas en charge.",
+    "e2ee-invalid-key-title": "Clé de sécurité invalide",
+    "e2ee-invalid-key-msg": "La clé de sécurité que vous avez saisie est incorrecte.",
+    "e2ee-empty-key-msg": "La clé de sécurité ne peut pas être vide.",
     "nats-error-title": "Erreur de connexion au serveur Nats",
     "nats-error-no-response": "Aucun serveur backend n’a été trouvé pour traiter la demande. Erreur: {{error}}",
     "nats-error-timeout": "Aucune réponse n’a été trouvée de la part du serveur principal. Erreur: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Le serveur multimédia est déconnecté.",
     "preloaded-whiteboard-file-processing": "Fichier de tableau blanc préchargé en cours de réalisation",
     "preloaded-whiteboard-file-processing-error": "Le traitement des fichiers de tableau blanc préchargé s’est terminé par une erreur",
-    "max-num-participates-exceeded": "Le nombre maximum de participants autorisés pour la session a été dépassé."
+    "max-num-participates-exceeded": "Le nombre maximum de participants autorisés pour la session a été dépassé.",
+    "uploading-file": "Téléchargement du fichier...",
+    "ending-session": "La réunion se termine, veuillez patienter...",
+    "whiteboard-other-task-to-finish": "Le tableau blanc prépare un nouveau contenu. Veuillez patienter.",
+    "cloud-recording-not-supported-self-key": "L'enregistrement dans le cloud n'est pas disponible lorsque vous utilisez une clé de sécurité personnalisée.",
+    "media-only-recording-not-support-e2ee": "L'enregistrement uniquement audio et vidéo n'est pas disponible lorsque le chiffrement de bout en bout est activé.",
+    "you-are-sharing-screen": "Vous partagez votre écran maintenant. D'autres verront une vue plus grande.",
+    "new-system-message-in-chat": "Un nouveau message du système a été posté dans le chat public."
   },
   "room-metadata": {
     "session-recording": "Cette séance est enregistrée",
@@ -149,7 +159,10 @@
     "ready": "prêt",
     "webcams-per-page": "Par page.",
     "require-ssl-title": "Le domaine doit être activé pour SSL",
-    "require-ssl-des": "Il est nécessaire d’utiliser un domaine SSL autre que localhost."
+    "require-ssl-des": "Il est nécessaire d’utiliser un domaine SSL autre que localhost.",
+    "insert-secret-key": "Entrez la clé de sécurité",
+    "insert-secret-help": "Pour cette réunion sécurisée, tout le monde doit utiliser la même clé de sécurité. Si elle ne correspond pas, vous ne pourrez pas vous connecter. Veuillez obtenir la bonne clé de sécurité auprès de l'organisateur de la réunion.",
+    "save": "Enregistrer"
   },
   "left-panel": {
     "participants": "Intervenants ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Participants",
     "polls-tab": "Sondages",
     "breakout-room-tab": "Salles de réunion",
+    "me": "(moi)",
     "public-chat": "Chat public",
+    "private-chat": "Chat privé",
+    "select-chat-conversation-title": "Sélectionnez une conversation",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Demander à partager Microphone",
@@ -236,12 +252,17 @@
       "recording-types-des": "Vous pouvez sélectionner l’un des types d’enregistrement suivants. Utilisez Google Chrome pour obtenir le meilleur résultat pour l’enregistrement local",
       "local-recording": "Enregistrement local",
       "cloud-recording": "Enregistrement dans le cloud",
+      "cloud-media-only-recording": "Enregistrement Cloud : Média uniquement",
       "stop-rtmp-broadcasting": "Arrêter la diffusion RTMP",
       "start-rtmp-broadcasting": "Démarrer la diffusion RTMP",
       "show-shared-notepad": "Afficher le bloc-notes partagé",
       "hide-shared-notepad": "Masquer le bloc-notes partagé",
       "show-whiteboard": "Afficher le tableau blanc",
       "hide-whiteboard": "Masquer le tableau blanc",
+      "show-polls-panel": "Afficher les sondages",
+      "hide-polls-panel": "Masquer les sondages",
+      "show-translation-settings": "Afficher les paramètres de transcription",
+      "hide-translation-settings": "Masquer les paramètres de transcription",
       "promote-presenter": "Promouvoir en tant que présentateur",
       "demote-presenter": "Rétrograder du présentateur"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Gérer la salle de répartition",
       "start-display-external-link": "Afficher le lien externe",
       "stop-display-external-link": "Arrêter l’affichage lien externe",
-      "speech-to-text-settings": "Paramètres de reconnaissance vocale/traduction"
+      "speech-to-text-settings": "Paramètres de reconnaissance vocale/traduction",
+      "enable-polls": "Activer les sondages",
+      "disable-polls": "Désactiver les sondages"
     },
     "notice": {
       "already-active-screen-sharing": "La session a déjà un partage d'écran actif",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Lien direct",
       "external-media-player-upload-file": "Télécharger",
       "external-media-player-upload-file-play": "Télécharger et jouer",
+      "external-media-player-uploading": "Téléversement...",
       "external-media-player-upload-supported-files": "Fichiers pris en charge : {{files}}",
+      "external-media-player-select-file": "Sélectionnez un fichier média à télécharger",
       "upload-background-image": "Télécharger l’image d’arrière-plan",
       "shared-notepad": "Bloc-notes partagé"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Le fichier est prêt",
     "upload-file": "Télécharger le fichier",
     "manage-files": "Fichiers",
-    "upload-image": "Image"
+    "upload-image": "Image",
+    "follow-presenter-tooltip": "Suivez le présentateur",
+    "unfollow-presenter-tooltip": "Arrêter de suivre le présentateur",
+    "follow": "Suivre",
+    "unfollow": "Ne plus suivre",
+    "upload-files-title": "Télécharger des fichiers",
+    "drag-drop-file": "Glissez et déposez votre fichier pour le télécharger",
+    "max-file-size": "Taille maximale du fichier : {{size}} Mo",
+    "or": "OU",
+    "select-file": "Sélectionnez un fichier",
+    "add-to-whiteboard": "Ajouter au tableau blanc",
+    "total-pages": "Total des pages : {{count}}"
   },
   "waiting-room": {
     "modal-title": "Gérer la salle d’attente",
@@ -326,9 +362,12 @@
     "reject-all": "Rejeter tout le monde",
     "list-waiting-participants": "Liste des participants en attente ({{count}})",
     "reject-and-block-user": "Rejeter et bloquer",
-    "user-waiting": "{{name}} est en attente d’approbation"
+    "user-waiting": "{{name}} est en attente d’approbation",
+    "no-pending-user": "Il n'y a personne en attente de rejoindre."
   },
   "polls": {
+    "title": "Sondages",
+    "poll-num": "Sondage {{index}}",
     "create": "Créer un nouveau sondage",
     "enter-question": "Saisir la question",
     "question": "Question",
@@ -355,7 +394,8 @@
     "end-poll": "Fin du sondage",
     "end-poll-success": "Le sondage s’est terminé avec succès",
     "publish-result": "Publier le résultat",
-    "total": "Total"
+    "total": "Total",
+    "not-respondents-total": "N'a pas répondu : {{count}}"
   },
   "breakout-room": {
     "modal-title": "Gérer les salles de réunion",
@@ -387,6 +427,19 @@
     "user-joined": "Joint",
     "not-joined": "Non inscrit"
   },
+  "landing": {
+    "connecting-media-server": "Connexion au serveur multimédia...",
+    "modal-title": "Préférences du microphone et de la caméra",
+    "ready-to-join": "Prêt à rejoindre ?",
+    "join-prompt": "Activez votre microphone et votre caméra pour participer pleinement ou rejoindre en tant qu'auditeur.",
+    "enable-mic-cam-btn": "Activer le microphone et la caméra",
+    "join-as-listener-btn": "Rejoindre en tant qu'auditeur",
+    "webcam-menu-title": "Sélectionner la caméra",
+    "mic-menu-title": "Sélectionnez le microphone",
+    "background-filter-title": "Arrière-plan & Filtres",
+    "config-background-btn": "Configurer l'arrière-plan de la caméra",
+    "waiting-for-approval-title": "En attente d'approbation"
+  },
   "external-display-link-display": {
     "modal-title": "Afficher le lien externe (iframe)",
     "url": "URL",
@@ -401,7 +454,8 @@
     "meeting-id": "ID de la réunion",
     "meeting-id-des": "ID d’origine de la réunion",
     "user-role": "Rôle de l’utilisateur",
-    "user-role-des": "Rôle actuel de l’utilisateur. Administrateur ou participant"
+    "user-role-des": "Rôle actuel de l’utilisateur. Administrateur ou participant",
+    "iframe-title": "Contenu externe intégré"
   },
   "ingress-features": {
     "ingress-type": "Type d’entrée",
@@ -449,6 +503,7 @@
     "select-one-lang": "Sélectionnez une langue",
     "subtitle-history-modal-title": "Historique des textes de sous-titres",
     "azure-error": "Erreur Microsoft Azure : {{error}}",
-    "speech-to-text-stopped": "Le service de reconnaissance vocale a été arrêté"
+    "speech-to-text-stopped": "Le service de reconnaissance vocale a été arrêté",
+    "enable-transcription": "Activer la transcription"
   }
 }
