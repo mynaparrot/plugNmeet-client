@@ -1,5 +1,5 @@
 {
-  "ok": "Ok",
+  "ok": "Εντάξει",
   "close": "Κλείνω",
   "cancel": "Ακυρώνω",
   "yes": "Ναι",
@@ -50,6 +50,9 @@
     "room-will-end-in": "Αυτό το δωμάτιο θα τελειώσει σε {{minutes}} πρακτικά",
     "e2ee-unsupported-browser-title": "Μη υποστηριζόμενο πρόγραμμα περιήγησης",
     "e2ee-unsupported-browser-msg": "Αυτή η περίοδος λειτουργίας έχει ενεργοποιήσει την κρυπτογράφηση από άκρο σε άκρο, την οποία δεν υποστηρίζει το τρέχον πρόγραμμα περιήγησής σας.",
+    "e2ee-invalid-key-title": "Μη Έγκυρο Κλειδί Ασφαλείας",
+    "e2ee-invalid-key-msg": "Το κλειδί ασφαλείας που εισάγατε είναι λανθασμένο.",
+    "e2ee-empty-key-msg": "Το κλειδί ασφαλείας δεν μπορεί να είναι κενό.",
     "nats-error-title": "Σφάλμα σύνδεσης διακομιστή Nats",
     "nats-error-no-response": "Δεν βρέθηκε διακομιστής υποστήριξης για να χειριστεί το αίτημα. Λάθος: {{error}}",
     "nats-error-timeout": "Δεν βρέθηκε απάντηση από διακομιστή υποστήριξης. Λάθος: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Ο διακομιστής πολυμέσων αποσυνδέθηκε.",
     "preloaded-whiteboard-file-processing": "Προφορτωμένο αρχείο πίνακα σε εξέλιξη",
     "preloaded-whiteboard-file-processing-error": "Η επεξεργασία αρχείων προφορτωμένου πίνακα έληξε με σφάλμα",
-    "max-num-participates-exceeded": "Έχει ξεπεραστεί ο μέγιστος επιτρεπόμενος αριθμός συμμετοχών για τη συνεδρία."
+    "max-num-participates-exceeded": "Έχει ξεπεραστεί ο μέγιστος επιτρεπόμενος αριθμός συμμετοχών για τη συνεδρία.",
+    "uploading-file": "Μεταφόρτωση αρχείου...",
+    "ending-session": "Η συνάντηση τελειώνει, παρακαλώ περιμένετε...",
+    "whiteboard-other-task-to-finish": "Ο πίνακας whiteboard ετοιμάζει νέο περιεχόμενο. Παρακαλώ περιμένετε.",
+    "cloud-recording-not-supported-self-key": "Η εγγραφή στο Cloud δεν είναι διαθέσιμη όταν χρησιμοποιείτε προσαρμοσμένο κλειδί ασφαλείας.",
+    "media-only-recording-not-support-e2ee": "Η εγγραφή μόνο ήχου και βίντεο δεν είναι διαθέσιμη όταν η κρυπτογράφηση από άκρο σε άκρο είναι ενεργοποιημένη.",
+    "you-are-sharing-screen": "Μοιράζεστε την οθόνη σας τώρα. Άλλοι θα δουν μια μεγαλύτερη προβολή.",
+    "new-system-message-in-chat": "Ένα νέο μήνυμα συστήματος έχει αναρτηθεί στη δημόσια συνομιλία."
   },
   "room-metadata": {
     "session-recording": "Αυτή η συνεδρία καταγράφεται",
@@ -149,7 +159,10 @@
     "ready": "έτοιμος",
     "webcams-per-page": "Ανά σελίδα.",
     "require-ssl-title": "Ο τομέας πρέπει να είναι ενεργοποιημένος με SSL",
-    "require-ssl-des": "Απαιτείται να χρησιμοποιήσετε έναν τομέα με δυνατότητα SSL διαφορετικό από το localhost."
+    "require-ssl-des": "Απαιτείται να χρησιμοποιήσετε έναν τομέα με δυνατότητα SSL διαφορετικό από το localhost.",
+    "insert-secret-key": "Εισάγετε Κλειδί Ασφαλείας",
+    "insert-secret-help": "Για αυτήν την ασφαλή συνάντηση, όλοι πρέπει να χρησιμοποιούν το ίδιο κλειδί ασφαλείας. Αν δεν ταιριάζει, δεν θα μπορείτε να συνδεθείτε. Παρακαλώ λάβετε το σωστό κλειδί ασφαλείας από τον διοργανωτή της συνάντησης.",
+    "save": "Αποθήκευση"
   },
   "left-panel": {
     "participants": "Συμμετέχοντες ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Συμμετέχοντες",
     "polls-tab": "Δημοσκοπήσεις",
     "breakout-room-tab": "Δωμάτια επιμέρους συσκέψεων",
+    "me": "(εγώ)",
     "public-chat": "Δημόσια συνομιλία",
+    "private-chat": "Ιδιωτική Συνομιλία",
+    "select-chat-conversation-title": "Επιλέξτε μια συνομιλία",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Ζητήστε να μοιραστείτε το μικρόφωνο",
@@ -236,12 +252,17 @@
       "recording-types-des": "Μπορείτε να επιλέξετε οποιονδήποτε από τους παρακάτω τύπους εγγραφής. Χρησιμοποιήστε το Google Chrome για να έχετε το καλύτερο αποτέλεσμα για την τοπική εγγραφή",
       "local-recording": "Τοπική ηχογράφηση",
       "cloud-recording": "Εγγραφή στο cloud",
+      "cloud-media-only-recording": "Εγγραφή Στο Cloud: Μόνο Πολυμέσα",
       "stop-rtmp-broadcasting": "Διακοπή μετάδοσης RTMP",
       "start-rtmp-broadcasting": "Ξεκινήστε τη μετάδοση RTMP",
       "show-shared-notepad": "Εμφάνιση κοινόχρηστου σημειωματάριου",
       "hide-shared-notepad": "Απόκρυψη κοινόχρηστου σημειωματάριου",
       "show-whiteboard": "Εμφάνιση πίνακα",
       "hide-whiteboard": "Απόκρυψη πίνακα",
+      "show-polls-panel": "Εμφάνιση Δημοσκοπήσεων",
+      "hide-polls-panel": "Απόκρυψη Δημοσκοπήσεων",
+      "show-translation-settings": "Εμφάνιση Ρυθμίσεων Μεταγραφής",
+      "hide-translation-settings": "Απόκρυψη Ρυθμίσεων Μεταγραφής",
       "promote-presenter": "Προώθηση ως παρουσιαστής",
       "demote-presenter": "Υποβιβασμός από παρουσιαστή"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Διαχείριση αίθουσας επιμέρους συσκέψεων",
       "start-display-external-link": "Εμφάνιση εξωτερικού συνδέσμου",
       "stop-display-external-link": "Διακοπή εμφάνισης εξωτερικού συνδέσμου",
-      "speech-to-text-settings": "Ρυθμίσεις μετατροπής ομιλίας σε κείμενο/μετάφρασης"
+      "speech-to-text-settings": "Ρυθμίσεις μετατροπής ομιλίας σε κείμενο/μετάφρασης",
+      "enable-polls": "Ενεργοποίηση δημοσκοπήσεων",
+      "disable-polls": "Απενεργοποίηση δημοσκοπήσεων"
     },
     "notice": {
       "already-active-screen-sharing": "Η περίοδος λειτουργίας έχει ήδη ενεργή κοινή χρήση οθόνης",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Άμεσος σύνδεσμος",
       "external-media-player-upload-file": "Ανέβασμα",
       "external-media-player-upload-file-play": "Μεταφόρτωση και αναπαραγωγή",
+      "external-media-player-uploading": "Μεταφόρτωση...",
       "external-media-player-upload-supported-files": "Υποστηριζόμενα αρχεία: {{files}}",
+      "external-media-player-select-file": "Επιλέξτε ένα αρχείο πολυμέσων για μεταφόρτωση",
       "upload-background-image": "Μεταφόρτωση εικόνας φόντου",
       "shared-notepad": "Κοινόχρηστο σημειωματάριο"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Το αρχείο είναι έτοιμο",
     "upload-file": "Ανέβασμα αρχείου",
     "manage-files": "Αρχεία",
-    "upload-image": "Εικόνα"
+    "upload-image": "Εικόνα",
+    "follow-presenter-tooltip": "Ακολουθήστε τον παρουσιαστή",
+    "unfollow-presenter-tooltip": "Διακοπή μετά τον παρουσιαστή",
+    "follow": "Ακολουθήστε",
+    "unfollow": "Ακολούθηση",
+    "upload-files-title": "Μεταφόρτωση Αρχείων",
+    "drag-drop-file": "Σύρετε και αποθέστε το αρχείο σας για να ανεβάσετε",
+    "max-file-size": "Μέγιστο μέγεθος αρχείου: {{size}} ΜΒ",
+    "or": "Ή",
+    "select-file": "Επιλέξτε ένα αρχείο",
+    "add-to-whiteboard": "Προσθήκη στον Πίνακα",
+    "total-pages": "Σύνολο σελίδων: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Διαχείριση αίθουσας αναμονής",
@@ -326,9 +362,12 @@
     "reject-all": "Απόρριψη όλων",
     "list-waiting-participants": "Λίστα συμμετεχόντων σε αναμονή ({{count}})",
     "reject-and-block-user": "Απόρριψη & Αποκλεισμός",
-    "user-waiting": "{{name}} βρίσκεται σε αναμονή για έγκριση"
+    "user-waiting": "{{name}} βρίσκεται σε αναμονή για έγκριση",
+    "no-pending-user": "Δεν υπάρχει κανείς που να περιμένει να ενταχθεί."
   },
   "polls": {
+    "title": "Δημοσκοπήσεις",
+    "poll-num": "Δημοσκόπηση {{index}}",
     "create": "Δημιουργία νέας δημοσκόπησης",
     "enter-question": "Εισαγωγή ερώτησης",
     "question": "Ερώτηση",
@@ -355,7 +394,8 @@
     "end-poll": "Τερματισμός δημοσκόπησης",
     "end-poll-success": "Η δημοσκόπηση τερματίστηκε με επιτυχία",
     "publish-result": "Δημοσίευση αποτελέσματος",
-    "total": "Σύνολο"
+    "total": "Σύνολο",
+    "not-respondents-total": "Δεν απάντησε: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Διαχείριση δωματίων επιμέρους συσκέψεων",
@@ -387,6 +427,19 @@
     "user-joined": "Εντάχθηκαν",
     "not-joined": "Δεν συμμετείχα"
   },
+  "landing": {
+    "connecting-media-server": "Σύνδεση στον εξυπηρετητή πολυμέσων...",
+    "modal-title": "Προτιμήσεις μικροφώνου και κάμερας",
+    "ready-to-join": "Έτοιμο για ένταξη?",
+    "join-prompt": "Ενεργοποιήστε το μικρόφωνο και την κάμερα σας για να συμμετάσχετε πλήρως ή να συμμετάσχετε ως ακροατής.",
+    "enable-mic-cam-btn": "Ενεργοποίηση μικροφώνου και κάμερας",
+    "join-as-listener-btn": "Συμμετοχή ως ακροατής",
+    "webcam-menu-title": "Επιλογή Κάμερας",
+    "mic-menu-title": "Επιλέξτε Μικρόφωνο",
+    "background-filter-title": "& Φίλτρα Φόντου",
+    "config-background-btn": "Ρύθμιση Φόντου Κάμερας",
+    "waiting-for-approval-title": "Αναμονή για έγκριση"
+  },
   "external-display-link-display": {
     "modal-title": "Εμφάνιση εξωτερικού συνδέσμου (iframe)",
     "url": "Διεύθυνση URL",
@@ -401,7 +454,8 @@
     "meeting-id": "Αναγνωριστικό σύσκεψης",
     "meeting-id-des": "Αναγνωριστικό προέλευσης σύσκεψης",
     "user-role": "Ρόλος χρήστη",
-    "user-role-des": "Ο τρέχων ρόλος του χρήστη. Είτε διαχειριστής είτε συμμετέχων"
+    "user-role-des": "Ο τρέχων ρόλος του χρήστη. Είτε διαχειριστής είτε συμμετέχων",
+    "iframe-title": "Ενσωματωμένο εξωτερικό περιεχόμενο"
   },
   "ingress-features": {
     "ingress-type": "Τύπος εισόδου",
@@ -449,6 +503,7 @@
     "select-one-lang": "Επιλέξτε μία γλώσσα",
     "subtitle-history-modal-title": "Ιστορικό κειμένων υποτίτλων",
     "azure-error": "Σφάλμα Microsoft azure: {{error}}",
-    "speech-to-text-stopped": "Η υπηρεσία μετατροπής ομιλίας σε κείμενο έχει διακοπεί"
+    "speech-to-text-stopped": "Η υπηρεσία μετατροπής ομιλίας σε κείμενο έχει διακοπεί",
+    "enable-transcription": "Ενεργοποίηση Μεταγραφής"
   }
 }

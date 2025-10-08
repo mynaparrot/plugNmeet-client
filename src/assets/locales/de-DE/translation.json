@@ -50,6 +50,9 @@
     "room-will-end-in": "Dieses Zimmer wird in {{minutes}} Protokoll",
     "e2ee-unsupported-browser-title": "Browser wird nicht unterstützt",
     "e2ee-unsupported-browser-msg": "In dieser Sitzung wurde eine Ende-zu-Ende-Verschlüsselung aktiviert, die Ihr aktueller Browser nicht unterstützt.",
+    "e2ee-invalid-key-title": "Ungültiger Sicherheitsschlüssel",
+    "e2ee-invalid-key-msg": "Der eingegebene Sicherheitsschlüssel ist falsch.",
+    "e2ee-empty-key-msg": "Der Sicherheitsschlüssel darf nicht leer sein.",
     "nats-error-title": "Verbindungsfehler beim Nats-Server",
     "nats-error-no-response": "Es wurde kein Backend-Server gefunden, der die Anforderung verarbeitet. Fehler: {{error}}",
     "nats-error-timeout": "Keine Antwort vom Backend-Server gefunden. Fehler: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Medienserver getrennt.",
     "preloaded-whiteboard-file-processing": "Vorinstallierte Whiteboard-Datei wird bearbeitet",
     "preloaded-whiteboard-file-processing-error": "Die Verarbeitung der vorinstallierten Whiteboard-Datei wurde mit einem Fehler beendet",
-    "max-num-participates-exceeded": "Die maximal zulässige Teilnehmerzahl für die Sitzung wurde überschritten."
+    "max-num-participates-exceeded": "Die maximal zulässige Teilnehmerzahl für die Sitzung wurde überschritten.",
+    "uploading-file": "Datei wird hochgeladen...",
+    "ending-session": "Das Meeting ist beendet, bitte warten...",
+    "whiteboard-other-task-to-finish": "Das Whiteboard bereitet neue Inhalte vor. Bitte warten.",
+    "cloud-recording-not-supported-self-key": "Cloud-Aufzeichnung ist nicht verfügbar, wenn Sie einen benutzerdefinierten Sicherheitsschlüssel verwenden.",
+    "media-only-recording-not-support-e2ee": "Nur Audio- und Videoaufnahmen sind nicht verfügbar, wenn Ende-zu-Ende-Verschlüsselung aktiviert ist.",
+    "you-are-sharing-screen": "Sie teilen jetzt Ihren Bildschirm. Andere sehen eine größere Ansicht.",
+    "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat veröffentlicht."
   },
   "room-metadata": {
     "session-recording": "Diese Sitzung wird aufgezeichnet",
@@ -149,7 +159,10 @@
     "ready": "bereit",
     "webcams-per-page": "Pro Seite.",
     "require-ssl-title": "Die Domain muss SSL-fähig sein",
-    "require-ssl-des": "Es ist erforderlich, eine andere SSL-aktivierte Domäne als localhost zu verwenden."
+    "require-ssl-des": "Es ist erforderlich, eine andere SSL-aktivierte Domäne als localhost zu verwenden.",
+    "insert-secret-key": "Sicherheitsschlüssel eingeben",
+    "insert-secret-help": "Für dieses sichere Meeting muss jeder den gleichen Sicherheitsschlüssel verwenden. Wenn er nicht übereinstimmt, können Sie sich nicht verbinden. Bitte holen Sie sich den korrekten Sicherheitsschlüssel vom Veranstalter.",
+    "save": "Speichern"
   },
   "left-panel": {
     "participants": "Teilnehmer ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Teilnehmer",
     "polls-tab": "Umfragen",
     "breakout-room-tab": "Breakout rooms",
+    "me": "(ich)",
     "public-chat": "Öffentlicher Chat",
+    "private-chat": "Privater Chat",
+    "select-chat-conversation-title": "Konversation auswählen",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Bitten, Mikrofon zu teilen",
@@ -236,12 +252,17 @@
       "recording-types-des": "Sie können einen der folgenden Aufnahmetypen auswählen. Verwenden Sie Google Chrome, um das beste Ergebnis für die lokale Aufzeichnung zu erzielen",
       "local-recording": "Lokale Aufnahme",
       "cloud-recording": "Cloud-Aufzeichnung",
+      "cloud-media-only-recording": "Cloud-Datensatz: Nur Medien",
       "stop-rtmp-broadcasting": "RTMP-Übertragung beenden",
       "start-rtmp-broadcasting": "RTMP-Broadcasting beginnen",
       "show-shared-notepad": "Gemeinsames Notepad anzeigen",
       "hide-shared-notepad": "Gemeinsames Notepad ausblenden",
       "show-whiteboard": "Whiteboard anzeigen",
       "hide-whiteboard": "Whiteboard ausblenden",
+      "show-polls-panel": "Umfragen anzeigen",
+      "hide-polls-panel": "Umfragen ausblenden",
+      "show-translation-settings": "Transkriptionseinstellungen anzeigen",
+      "hide-translation-settings": "Transkriptionseinstellungen ausblenden",
       "promote-presenter": "Zum Moderator machen",
       "demote-presenter": "Moderatorenrechte entfernen"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Breakout Room verwalten",
       "start-display-external-link": "Externen Link anzeigen",
       "stop-display-external-link": "Externen Link nicht mehr anzeigen",
-      "speech-to-text-settings": "Sprach-zu-Text-/Übersetzungseinstellungen"
+      "speech-to-text-settings": "Sprach-zu-Text-/Übersetzungseinstellungen",
+      "enable-polls": "Umfragen aktivieren",
+      "disable-polls": "Umfragen deaktivieren"
     },
     "notice": {
       "already-active-screen-sharing": "Sitzung hat bereits eine aktive Bildschirmfreigabe",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Direkter Link",
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Hochladen und abspielen",
+      "external-media-player-uploading": "Hochladen...",
       "external-media-player-upload-supported-files": "Unterstützte Dateien: {{files}}",
+      "external-media-player-select-file": "Mediendatei zum Hochladen auswählen",
       "upload-background-image": "Hintergrundbild hochladen",
       "shared-notepad": "Gemeinsamer Notizblock"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Datei ist bereit",
     "upload-file": "Datei hochladen",
     "manage-files": "Dateien",
-    "upload-image": "Bild"
+    "upload-image": "Bild",
+    "follow-presenter-tooltip": "Dem Moderator folgen",
+    "unfollow-presenter-tooltip": "Dem Moderator nicht mehr folgen",
+    "follow": "Folgen",
+    "unfollow": "Entfolgen",
+    "upload-files-title": "Dateien hochladen",
+    "drag-drop-file": "Ziehen und Ablegen Ihrer Datei zum Hochladen",
+    "max-file-size": "Maximale Dateigröße: {{size}} MB",
+    "or": "ODER",
+    "select-file": "Datei auswählen",
+    "add-to-whiteboard": "Zu Whiteboard hinzufügen",
+    "total-pages": "Gesamte Seiten: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Warteraum verwalten",
@@ -326,9 +362,12 @@
     "reject-all": "Alle ablehnen",
     "list-waiting-participants": "Warteliste ({{count}})",
     "reject-and-block-user": "Ablehnen & blockieren",
-    "user-waiting": "{{name}} wartet auf Genehmigung"
+    "user-waiting": "{{name}} wartet auf Genehmigung",
+    "no-pending-user": "Niemand wartet auf den Beitritt."
   },
   "polls": {
+    "title": "Umfragen",
+    "poll-num": "Umfrage {{index}}",
     "create": "Neue Umfrage erstellen",
     "enter-question": "Frage eingeben",
     "question": "Frage",
@@ -355,7 +394,8 @@
     "end-poll": "Umfrage beenden",
     "end-poll-success": "Umfrage wurde erfolgreich beendet",
     "publish-result": "Ergebnis veröffentlichen",
-    "total": "Gesamt"
+    "total": "Gesamt",
+    "not-respondents-total": "Nicht geantwortet: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Breakout Rooms verwalten",
@@ -387,6 +427,19 @@
     "user-joined": "Beigetreten",
     "not-joined": "Nicht beigetreten"
   },
+  "landing": {
+    "connecting-media-server": "Mit dem Medienserver verbinden...",
+    "modal-title": "Mikrofon und Kamera Einstellungen",
+    "ready-to-join": "Bereit zum Beitreten?",
+    "join-prompt": "Aktivieren Sie Ihr Mikrofon und Ihre Kamera zur vollen Teilnahme oder als Zuhörer.",
+    "enable-mic-cam-btn": "Mikrofon und Kamera aktivieren",
+    "join-as-listener-btn": "Als Zuhörer beitreten",
+    "webcam-menu-title": "Kamera auswählen",
+    "mic-menu-title": "Mikrofon auswählen",
+    "background-filter-title": "Hintergrund & Filter",
+    "config-background-btn": "Kamera-Hintergrund konfigurieren",
+    "waiting-for-approval-title": "Warten auf Genehmigung"
+  },
   "external-display-link-display": {
     "modal-title": "Externen Link anzeigen (iframe)",
     "url": "Url",
@@ -401,7 +454,8 @@
     "meeting-id": "Meeting-ID",
     "meeting-id-des": "Ursprungs-ID der Besprechung",
     "user-role": "Benuterrolle",
-    "user-role-des": "Aktuelle Rolle des Benutzers. Entweder Administrator oder Teilnehmer"
+    "user-role-des": "Aktuelle Rolle des Benutzers. Entweder Administrator oder Teilnehmer",
+    "iframe-title": "Eingebetteter externer Inhalt"
   },
   "ingress-features": {
     "ingress-type": "Ingress-Typ",
@@ -449,6 +503,7 @@
     "select-one-lang": "Wählen Sie eine Sprache aus",
     "subtitle-history-modal-title": "Geschichte der Untertiteltexte",
     "azure-error": "Microsoft Azure-Fehler: {{error}}",
-    "speech-to-text-stopped": "Der Sprache-zu-Text-Dienst wurde gestoppt"
+    "speech-to-text-stopped": "Der Sprache-zu-Text-Dienst wurde gestoppt",
+    "enable-transcription": "Transkription aktivieren"
   }
 }

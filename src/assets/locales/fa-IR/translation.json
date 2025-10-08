@@ -50,6 +50,9 @@
     "room-will-end-in": "این اتاق {{minutes}} دقیقه دیگر به پایان می رسد",
     "e2ee-unsupported-browser-title": "مرورگر پشتیبانی نشده",
     "e2ee-unsupported-browser-msg": "این جلسه رمزگذاری سرتاسری را فعال کرده است که مرورگر فعلی شما از آن پشتیبانی نمی کند.",
+    "e2ee-invalid-key-title": "کلید امنیتی نامعتبر",
+    "e2ee-invalid-key-msg": "کلید امنیتی که وارد کرده اید نادرست است.",
+    "e2ee-empty-key-msg": "کلید امنیتی نمی تواند خالی باشد.",
     "nats-error-title": "خطای اتصال سرور Nats",
     "nats-error-no-response": "هیچ سرور پشتگاهی برای رسیدگی به درخواست یافت نشد. خطا: {{error}}",
     "nats-error-timeout": "هیچ پاسخی از سرور پشتگاه یافت نشد. خطا: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "سرور رسانه قطع شد.",
     "preloaded-whiteboard-file-processing": "فایل تخته سفید از پیش بارگذاری شده در حال انجام است",
     "preloaded-whiteboard-file-processing-error": "پردازش فایل تخته سفید از پیش بارگذاری شده با خطا به پایان رسید",
-    "max-num-participates-exceeded": "از حداکثر تعداد شرکت کنندگان مجاز برای جلسه فراتر رفته است."
+    "max-num-participates-exceeded": "از حداکثر تعداد شرکت کنندگان مجاز برای جلسه فراتر رفته است.",
+    "uploading-file": "در حال آپلود فایل...",
+    "ending-session": "جلسه در حال پایان است، لطفا صبر کنید...",
+    "whiteboard-other-task-to-finish": "تخته سفید در حال آماده سازی محتوای جدید است. لطفاً منتظر بمانید.",
+    "cloud-recording-not-supported-self-key": "ضبط ابری هنگام استفاده از کلید امنیتی سفارشی در دسترس نیست.",
+    "media-only-recording-not-support-e2ee": "وقتی رمزگذاری سرتاسری فعال باشد، ضبط فقط صدا و ویدیو در دسترس نیست.",
+    "you-are-sharing-screen": "اکنون صفحه نمایش خود را هم رسانی می کنید. دیگران نمای بزرگتری خواهند دید.",
+    "new-system-message-in-chat": "یک پیام سیستم جدید در چت عمومی ارسال شده است."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است",
@@ -149,7 +159,10 @@
     "ready": "آماده",
     "webcams-per-page": "در هر صفحه.",
     "require-ssl-title": "دامنه باید SSL فعال باشد",
-    "require-ssl-des": "استفاده از یک دامنه دارای SSL به غیر از لوکال هاست ضروری است."
+    "require-ssl-des": "استفاده از یک دامنه دارای SSL به غیر از لوکال هاست ضروری است.",
+    "insert-secret-key": "کلید امنیتی را وارد کنید",
+    "insert-secret-help": "برای این جلسه امن، همه باید از کلید امنیتی یکسانی استفاده کنند. اگر مطابقت نداشته باشد، نمی توانید متصل شوید. لطفا کلید امنیتی صحیح را از سازمان دهنده جلسه دریافت کنید.",
+    "save": "ذخیره"
   },
   "left-panel": {
     "participants": "شرکت کنندگان ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "شرکت کنندگان",
     "polls-tab": "نظرسنجی",
     "breakout-room-tab": "اتاق های برک آوت",
+    "me": "(من)",
     "public-chat": "چت عمومی",
+    "private-chat": "گفتگوی خصوصی",
+    "select-chat-conversation-title": "مکالمه ای را انتخاب کنید",
     "menus": {
       "items": {
         "ask-to-share-microphone": "درخواست اشتراک‌گذاری میکروفون",
@@ -236,12 +252,17 @@
       "recording-types-des": "می توانید یکی از انواع ضبط زیر را انتخاب کنید. از Google Chrome برای دریافت بهترین نتیجه برای ضبط محلی استفاده کنید",
       "local-recording": "ضبط محلی",
       "cloud-recording": "ضبط ابری",
+      "cloud-media-only-recording": "Cloud Record: فقط رسانه",
       "stop-rtmp-broadcasting": "پخش RTMP را متوقف کنید",
       "start-rtmp-broadcasting": "پخش RTMP را شروع کنید",
       "show-shared-notepad": "نمایش دفترچه یادداشت مشترک",
       "hide-shared-notepad": "پنهان کردن دفترچه یادداشت مشترک",
       "show-whiteboard": "ذخیره تخته سفید",
       "hide-whiteboard": "ذخیره تخته سفید",
+      "show-polls-panel": "نمایش نظرسنجی ها",
+      "hide-polls-panel": "پنهان کردن نظرسنجی ها",
+      "show-translation-settings": "نمایش تنظیمات رونویسی",
+      "hide-translation-settings": "مخفی کردن تنظیمات رونویسی",
       "promote-presenter": "به عنوان مجری تبلیغ کنید",
       "demote-presenter": "تنزل دادن از مجری"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "اتاق جدایی را مدیریت کنید",
       "start-display-external-link": "نمایش لینک خارجی",
       "stop-display-external-link": "توقف نمایش لینک خارجی",
-      "speech-to-text-settings": "تنظیمات گفتار به متن/ترجمه"
+      "speech-to-text-settings": "تنظیمات گفتار به متن/ترجمه",
+      "enable-polls": "فعال کردن نظرسنجی ها",
+      "disable-polls": "غیرفعال کردن نظرسنجی ها"
     },
     "notice": {
       "already-active-screen-sharing": "Session از قبل یک اشتراک‌گذاری صفحه فعال دارد",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "لینک مستقیم",
       "external-media-player-upload-file": "بارگذاری",
       "external-media-player-upload-file-play": "آپلود و پخش",
+      "external-media-player-uploading": "آپلود...",
       "external-media-player-upload-supported-files": "فایل های پشتیبانی شده: {{files}}",
+      "external-media-player-select-file": "یک فایل رسانه ای را برای آپلود انتخاب کنید",
       "upload-background-image": "آپلود تصویر پس زمینه",
       "shared-notepad": "دفترچه یادداشت مشترک"
     }
@@ -315,7 +340,18 @@
     "file-ready": "فایل آماده است",
     "upload-file": "آپلود فایل",
     "manage-files": "پرونده‌ها",
-    "upload-image": "تصویر"
+    "upload-image": "تصویر",
+    "follow-presenter-tooltip": "ارائه دهنده را دنبال کنید",
+    "unfollow-presenter-tooltip": "دنبال کردن ارائه دهنده را متوقف کنید",
+    "follow": "دنبال",
+    "unfollow": "لغو فالو",
+    "upload-files-title": "آپلود فایل ها",
+    "drag-drop-file": "فایل خود را برای آپلود بکشید و رها کنید",
+    "max-file-size": "حداکثر حجم فایل: {{size}} مگابایت",
+    "or": "یا",
+    "select-file": "یک فایل را انتخاب کنید",
+    "add-to-whiteboard": "افزودن به تخته سفید",
+    "total-pages": "تعداد صفحات: {{count}}"
   },
   "waiting-room": {
     "modal-title": "اتاق انتظار را مدیریت کنید",
@@ -326,9 +362,12 @@
     "reject-all": "همه رو رد کن",
     "list-waiting-participants": "لیست شرکت کنندگان در انتظار ({{count}})",
     "reject-and-block-user": "رد و مسدود کردن",
-    "user-waiting": "{{name}} منتظر تایید است"
+    "user-waiting": "{{name}} منتظر تایید است",
+    "no-pending-user": "هیچ منتظر پیوستن نیست."
   },
   "polls": {
+    "title": "نظرسنجی",
+    "poll-num": "نظرسنجی {{index}}",
     "create": "ایجاد نظرسنجی جدید",
     "enter-question": "سوال را وارد کنید",
     "question": "سوال",
@@ -355,7 +394,8 @@
     "end-poll": "پایان نظرسنجی",
     "end-poll-success": "نظرسنجی با موفقیت به پایان رسید",
     "publish-result": "نتیجه را منتشر کنید",
-    "total": "مجموع"
+    "total": "مجموع",
+    "not-respondents-total": "پاسخ نداد: {{count}}"
   },
   "breakout-room": {
     "modal-title": "اتاق‌های پراکنده را مدیریت کنید",
@@ -387,6 +427,19 @@
     "user-joined": "پیوست",
     "not-joined": "نپیوسته است"
   },
+  "landing": {
+    "connecting-media-server": "اتصال به سرور رسانه...",
+    "modal-title": "تنظیمات برگزیده میکروفون و دوربین",
+    "ready-to-join": "آماده عضویت هستید؟",
+    "join-prompt": "میکروفون و دوربین خود را فعال کنید تا به طور کامل شرکت کنند یا به عنوان شنونده بپیوندند.",
+    "enable-mic-cam-btn": "میکروفون و دوربین را فعال کنید",
+    "join-as-listener-btn": "به عنوان شنونده بپیوندید",
+    "webcam-menu-title": "دوربین را انتخاب کنید",
+    "mic-menu-title": "میکروفون را انتخاب کنید",
+    "background-filter-title": "پس زمینه و فیلترها",
+    "config-background-btn": "پیکربندی پس زمینه دوربین",
+    "waiting-for-approval-title": "در انتظار تایید"
+  },
   "external-display-link-display": {
     "modal-title": "نمایش لینک خارجی (iframe)",
     "url": "آدرس وب",
@@ -401,7 +454,8 @@
     "meeting-id": "شناسه جلسه",
     "meeting-id-des": "شناسه مبدا جلسه",
     "user-role": "نقش کاربر",
-    "user-role-des": "نقش فعلی کاربر یا مدیر یا شرکت کننده"
+    "user-role-des": "نقش فعلی کاربر یا مدیر یا شرکت کننده",
+    "iframe-title": "محتوای خارجی تعبیه شده"
   },
   "ingress-features": {
     "ingress-type": "نوع ورودی",
@@ -449,6 +503,7 @@
     "select-one-lang": "یک زبان را انتخاب کنید",
     "subtitle-history-modal-title": "تاریخچه متون زیرنویس",
     "azure-error": "خطای Microsoft Azure: {{error}}",
-    "speech-to-text-stopped": "سرویس گفتار به متن متوقف شده است"
+    "speech-to-text-stopped": "سرویس گفتار به متن متوقف شده است",
+    "enable-transcription": "فعال کردن رونویسی"
   }
 }

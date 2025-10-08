@@ -50,6 +50,9 @@
     "room-will-end-in": "Эта комната будет завершена в {{minutes}} протокол",
     "e2ee-unsupported-browser-title": "Неподдерживаемый браузер",
     "e2ee-unsupported-browser-msg": "В этом сеансе включено сквозное шифрование, которое ваш текущий браузер не поддерживает.",
+    "e2ee-invalid-key-title": "Неверный ключ безопасности",
+    "e2ee-invalid-key-msg": "Введенный вами ключ безопасности неверен.",
+    "e2ee-empty-key-msg": "Ключ безопасности не может быть пустым.",
     "nats-error-title": "Ошибка подключения к серверу Nats",
     "nats-error-no-response": "Внутренний сервер не найден для обработки запроса. Ошибка: {{error}}",
     "nats-error-timeout": "Не найден ответ от внутреннего сервера. Ошибка: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Медиасервер отключен.",
     "preloaded-whiteboard-file-processing": "Предварительно загруженный файл доски в процессе работы",
     "preloaded-whiteboard-file-processing-error": "Обработка предварительно загруженного файла доски завершилась с ошибкой",
-    "max-num-participates-exceeded": "Превышено максимальное количество участников, разрешенное для участия в сессии."
+    "max-num-participates-exceeded": "Превышено максимальное количество участников, разрешенное для участия в сессии.",
+    "uploading-file": "Загрузка файла...",
+    "ending-session": "Заседание заканчивается, пожалуйста, подождите...",
+    "whiteboard-other-task-to-finish": "Доска готовит новый контент. Пожалуйста, подождите.",
+    "cloud-recording-not-supported-self-key": "Облачная запись недоступна при использовании пользовательского ключа безопасности.",
+    "media-only-recording-not-support-e2ee": "Запись только аудио и видео недоступна при включенном сквозном шифровании.",
+    "you-are-sharing-screen": "Вы сейчас поделились своим экраном. Другие видят больший вид.",
+    "new-system-message-in-chat": "Новое системное сообщение было опубликовано в публичном чате."
   },
   "room-metadata": {
     "session-recording": "Сессия записывается",
@@ -149,7 +159,10 @@
     "ready": "готово",
     "webcams-per-page": "За страницу.",
     "require-ssl-title": "В домене должен быть включен SSL",
-    "require-ssl-des": "Необходимо использовать домен с поддержкой SSL, отличный от localhost."
+    "require-ssl-des": "Необходимо использовать домен с поддержкой SSL, отличный от localhost.",
+    "insert-secret-key": "Введите ключ безопасности",
+    "insert-secret-help": "Для этой встречи каждый должен использовать один и тот же ключ безопасности. Если он не совпадает, вы не сможете подключиться. Пожалуйста, получите правильный ключ безопасности от организатора встречи.",
+    "save": "Сохранить"
   },
   "left-panel": {
     "participants": "Участники ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Участники",
     "polls-tab": "Опросы",
     "breakout-room-tab": "Сессионные залы",
+    "me": "(я)",
     "public-chat": "Общий чат",
+    "private-chat": "Личный чат",
+    "select-chat-conversation-title": "Выберите разговор",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Запросить доступ к микрофону",
@@ -236,12 +252,17 @@
       "recording-types-des": "Вы можете выбрать любой из следующих типов записей. Используйте Google Chrome для получения наилучшего результата при локальной записи",
       "local-recording": "Локальная запись",
       "cloud-recording": "Запись в облако",
+      "cloud-media-only-recording": "Облачная запись: только медиа",
       "stop-rtmp-broadcasting": "Остановить RTMP трансляцию",
       "start-rtmp-broadcasting": "Начать трансляцию RTMP",
       "show-shared-notepad": "Показать общий блокнот",
       "hide-shared-notepad": "Скрыть общий блокнот",
       "show-whiteboard": "Показать доску",
       "hide-whiteboard": "Скрыть доску",
+      "show-polls-panel": "Показать опросы",
+      "hide-polls-panel": "Скрыть опросы",
+      "show-translation-settings": "Показать настройки транскрипции",
+      "hide-translation-settings": "Скрыть настройки транскрипции",
       "promote-presenter": "Повысить как ведущего",
       "demote-presenter": "Понизить с ведущего"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Управление комнатой обсуждения",
       "start-display-external-link": "Показать внешнюю ссылку",
       "stop-display-external-link": "Не показывать внешнюю ссылку",
-      "speech-to-text-settings": "Преобразование речи в текст/настройки перевода"
+      "speech-to-text-settings": "Преобразование речи в текст/настройки перевода",
+      "enable-polls": "Включить опросы",
+      "disable-polls": "Отключить опросы"
     },
     "notice": {
       "already-active-screen-sharing": "Сеанс уже имеет активное совместное использование экрана",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Прямая ссылка",
       "external-media-player-upload-file": "Загрузить",
       "external-media-player-upload-file-play": "Загрузить и воспроизвести",
+      "external-media-player-uploading": "Загрузка...",
       "external-media-player-upload-supported-files": "Поддерживаемые файлы: {{files}}",
+      "external-media-player-select-file": "Выберите медиа-файл для загрузки",
       "upload-background-image": "Загрузить фоновое изображение",
       "shared-notepad": "Общий блокнот"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Файл готов",
     "upload-file": "Загрузить файл",
     "manage-files": "Файлы",
-    "upload-image": "Изображение"
+    "upload-image": "Изображение",
+    "follow-presenter-tooltip": "Следить за ведущим",
+    "unfollow-presenter-tooltip": "Остановить следование за ведущим",
+    "follow": "Подписаться",
+    "unfollow": "Отписаться",
+    "upload-files-title": "Загрузить файлы",
+    "drag-drop-file": "Перетащите файл для загрузки",
+    "max-file-size": "Максимальный размер файла: {{size}} МБ",
+    "or": "ИЛИ",
+    "select-file": "Выберите файл",
+    "add-to-whiteboard": "Добавить в белую доску",
+    "total-pages": "Всего страниц: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Управление комнатой ожидания",
@@ -326,9 +362,12 @@
     "reject-all": "Отклонить всех",
     "list-waiting-participants": "Список ожидающих участников ({{count}})",
     "reject-and-block-user": "Отклонить и заблокировать",
-    "user-waiting": "{{name}} ожидает одобрения"
+    "user-waiting": "{{name}} ожидает одобрения",
+    "no-pending-user": "Никто не ждет присоединения."
   },
   "polls": {
+    "title": "Опросы",
+    "poll-num": "Опрос {{index}}",
     "create": "Создать новый опрос",
     "enter-question": "Ввести вопрос",
     "question": "Вопрос",
@@ -355,7 +394,8 @@
     "end-poll": "Завершить опрос",
     "end-poll-success": "Опрос успешно завершен",
     "publish-result": "Опубликовать результат",
-    "total": "Всего"
+    "total": "Всего",
+    "not-respondents-total": "Не ответил: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Управление комнатами обсуждения",
@@ -387,6 +427,19 @@
     "user-joined": "Присоединился",
     "not-joined": "Не присоединился"
   },
+  "landing": {
+    "connecting-media-server": "Подключение к медиа серверу...",
+    "modal-title": "Настройки микрофона и камеры",
+    "ready-to-join": "Готовы присоединиться?",
+    "join-prompt": "Включите микрофон и камеру для полноценного участия или присоединяйтесь в качестве слушателя.",
+    "enable-mic-cam-btn": "Включение микрофона и камеры",
+    "join-as-listener-btn": "Присоединиться как слушатель",
+    "webcam-menu-title": "Выберите камеру",
+    "mic-menu-title": "Выбрать микрофон",
+    "background-filter-title": "Фон и Фильтры",
+    "config-background-btn": "Настройка фона камеры",
+    "waiting-for-approval-title": "Ожидает утверждения"
+  },
   "external-display-link-display": {
     "modal-title": "Отображать внешнюю ссылку (iframe)",
     "url": "Url-адрес",
@@ -401,7 +454,8 @@
     "meeting-id": "Id встречи",
     "meeting-id-des": "ID источника встречи",
     "user-role": "Роль пользователя",
-    "user-role-des": "Текущая роль пользователя. Администратор или участник"
+    "user-role-des": "Текущая роль пользователя. Администратор или участник",
+    "iframe-title": "Встроенный внешний контент"
   },
   "ingress-features": {
     "ingress-type": "Тип входящего трафика",
@@ -449,6 +503,7 @@
     "select-one-lang": "Выберите один язык",
     "subtitle-history-modal-title": "История текстов субтитров",
     "azure-error": "Ошибка Microsoft azure: {{error}}",
-    "speech-to-text-stopped": "Услуга преобразования речи в текст была остановлена"
+    "speech-to-text-stopped": "Услуга преобразования речи в текст была остановлена",
+    "enable-transcription": "Включить транскрипцию"
   }
 }

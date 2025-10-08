@@ -1,5 +1,5 @@
 {
-  "ok": "Ok",
+  "ok": "OK",
   "close": "Lukke",
   "cancel": "Aflyse",
   "yes": "Ja",
@@ -50,6 +50,9 @@
     "room-will-end-in": "Dette værelse afsluttes om {{minutes}} minutter",
     "e2ee-unsupported-browser-title": "Ikke-understøttet browser",
     "e2ee-unsupported-browser-msg": "Denne session har aktiveret end-to-end-kryptering, som din nuværende browser ikke understøtter.",
+    "e2ee-invalid-key-title": "Ugyldig Sikkerhedsnøgle",
+    "e2ee-invalid-key-msg": "Den sikkerhedsnøgle, du indtastede, er forkert.",
+    "e2ee-empty-key-msg": "Sikkerhedsnøglen må ikke være tom.",
     "nats-error-title": "Fejl i forbindelse med nats-serverforbindelse",
     "nats-error-no-response": "Der blev ikke fundet nogen backend-server til at håndtere anmodningen. Fejl: {{error}}",
     "nats-error-timeout": "Der blev ikke fundet noget svar fra backend-serveren. Fejl: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Medieserveren er afbrudt.",
     "preloaded-whiteboard-file-processing": "Forudindlæst whiteboard-fil i gang",
     "preloaded-whiteboard-file-processing-error": "Behandling af forudindlæste whiteboard-filer sluttede med fejl",
-    "max-num-participates-exceeded": "Det maksimale antal deltagere, der er tilladt til sessionen, er overskredet."
+    "max-num-participates-exceeded": "Det maksimale antal deltagere, der er tilladt til sessionen, er overskredet.",
+    "uploading-file": "Uploader fil...",
+    "ending-session": "Mødet slutter, vent venligst...",
+    "whiteboard-other-task-to-finish": "Tavlen forbereder nyt indhold. Vent venligst.",
+    "cloud-recording-not-supported-self-key": "Cloud optagelse er ikke tilgængelig, når du bruger en brugerdefineret sikkerhedsnøgle.",
+    "media-only-recording-not-support-e2ee": "Optagelse kun lyd og video er ikke tilgængelig, når end-to-end kryptering er aktiveret.",
+    "you-are-sharing-screen": "Du deler din skærm nu. Andre vil se en større visning.",
+    "new-system-message-in-chat": "En ny systembesked er blevet offentliggjort i den offentlige chat."
   },
   "room-metadata": {
     "session-recording": "Denne session optages",
@@ -99,7 +109,7 @@
       "language": "Sprog",
       "video-quality": "Videokvalitet",
       "high": "Høj",
-      "medium": "Medium",
+      "medium": "Mellem",
       "low": "Lav",
       "enable-dark-theme": "Aktiver mørkt tema",
       "video-object-fit": "Tilpasning af videoobjekt",
@@ -107,11 +117,11 @@
       "video-object-fit-contain": "Indeholde",
       "column-camera-width": "Kolonne kamera bredde",
       "column-camera-width-default": "Standard",
-      "column-camera-width-medium": "Medium",
+      "column-camera-width-medium": "Mellem",
       "column-camera-width-small": "Lille",
       "column-camera-position": "Kolonne kamera position",
       "column-camera-position-left": "Venstre",
-      "column-camera-position-top": "Top",
+      "column-camera-position-top": "Øverst",
       "column-camera-position-bottom": "Bund",
       "focus-active-speaker-webcam": "Fokusér aktiv højttaler webcam"
     },
@@ -149,7 +159,10 @@
     "ready": "færdig",
     "webcams-per-page": "Pr. side.",
     "require-ssl-title": "Domænet skal være SSL-aktiveret",
-    "require-ssl-des": "Det er nødvendigt at bruge et andet SSL-aktiveret domæne end localhost."
+    "require-ssl-des": "Det er nødvendigt at bruge et andet SSL-aktiveret domæne end localhost.",
+    "insert-secret-key": "Indtast Sikkerhedsnøgle",
+    "insert-secret-help": "For dette sikre møde skal alle bruge den samme sikkerhedsnøgle. Hvis den ikke stemmer overens, vil du ikke være i stand til at oprette forbindelse. Få den korrekte sikkerhedsnøgle fra mødearrangøren.",
+    "save": "Gem"
   },
   "left-panel": {
     "participants": "Deltagere ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Deltagere",
     "polls-tab": "Meningsmålinger",
     "breakout-room-tab": "Gruppere værelser",
+    "me": "(mig)",
     "public-chat": "Offentlig chat",
+    "private-chat": "Privat Chat",
+    "select-chat-conversation-title": "Vælg en samtale",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Bed om at dele mikrofon",
@@ -236,12 +252,17 @@
       "recording-types-des": "Du kan vælge en af følgende optagelsestyper. Brug Google Chrome til at få det bedste resultat for lokal optagelse",
       "local-recording": "Lokal optagelse",
       "cloud-recording": "Optagelse i skyen",
+      "cloud-media-only-recording": "Cloud Record: Kun Medier",
       "stop-rtmp-broadcasting": "Stop RTMP-udsendelse",
       "start-rtmp-broadcasting": "Start RTMP-udsendelse",
       "show-shared-notepad": "Vis delt notesblok",
       "hide-shared-notepad": "Skjul delt notesblok",
       "show-whiteboard": "Vis whiteboard",
       "hide-whiteboard": "Skjul whiteboard",
+      "show-polls-panel": "Vis Afstemninger",
+      "hide-polls-panel": "Skjul Afstemninger",
+      "show-translation-settings": "Vis Transskriptionsindstillinger",
+      "hide-translation-settings": "Skjul Transskriptionsindstillinger",
       "promote-presenter": "Fremhæv som præsentationsvært",
       "demote-presenter": "Degradering fra præsentationsvært"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Administrer grupperum",
       "start-display-external-link": "Vis eksternt link",
       "stop-display-external-link": "Stop visning eksternt link",
-      "speech-to-text-settings": "Indstillinger for tale til tekst/oversættelse"
+      "speech-to-text-settings": "Indstillinger for tale til tekst/oversættelse",
+      "enable-polls": "Aktiver afstemninger",
+      "disable-polls": "Deaktivér afstemninger"
     },
     "notice": {
       "already-active-screen-sharing": "Sessionen har allerede en aktiv skærmdeling",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Direkte link",
       "external-media-player-upload-file": "Uploade",
       "external-media-player-upload-file-play": "Upload og spil",
+      "external-media-player-uploading": "Uploader...",
       "external-media-player-upload-supported-files": "Understøttede filer: {{files}}",
+      "external-media-player-select-file": "Vælg en mediefil, der skal uploades",
       "upload-background-image": "Upload baggrundsbillede",
       "shared-notepad": "Delt notesblok"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Filen er klar",
     "upload-file": "Upload fil",
     "manage-files": "ﬁler",
-    "upload-image": "Billede"
+    "upload-image": "Billede",
+    "follow-presenter-tooltip": "Følg præsenteren",
+    "unfollow-presenter-tooltip": "Stop efter præsenteren",
+    "follow": "Følg",
+    "unfollow": "Affølg",
+    "upload-files-title": "Upload Filer",
+    "drag-drop-file": "Træk og slip din fil for at uploade",
+    "max-file-size": "Maks. filstørrelse: {{size}} MB",
+    "or": "ELLER",
+    "select-file": "Vælg en fil",
+    "add-to-whiteboard": "Tilføj til Whiteboard",
+    "total-pages": "Sider i alt: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Administrer venteværelse",
@@ -326,9 +362,12 @@
     "reject-all": "Afvis alle",
     "list-waiting-participants": "Ventedeltagerliste ({{count}})",
     "reject-and-block-user": "Afvis og bloker",
-    "user-waiting": "{{name}} venter på godkendelse"
+    "user-waiting": "{{name}} venter på godkendelse",
+    "no-pending-user": "Der er ingen, der venter på at blive medlem."
   },
   "polls": {
+    "title": "Afstemninger",
+    "poll-num": "Afstemning {{index}}",
     "create": "Opret ny afstemning",
     "enter-question": "Indtast spørgsmål",
     "question": "Spørgsmål",
@@ -355,7 +394,8 @@
     "end-poll": "Afslut afstemning",
     "end-poll-success": "Afstemningen blev afsluttet med succes",
     "publish-result": "Offentliggør resultat",
-    "total": "Total"
+    "total": "Total",
+    "not-respondents-total": "svarede ikke: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Administrer grupperum",
@@ -387,6 +427,19 @@
     "user-joined": "Sluttede",
     "not-joined": "Ikke tilmeldt"
   },
+  "landing": {
+    "connecting-media-server": "Forbinder til medieserveren...",
+    "modal-title": "Indstillinger for mikrofon og kamera",
+    "ready-to-join": "Klar til at deltage?",
+    "join-prompt": "Aktiver din mikrofon og kamera for at deltage fuldt ud, eller deltage som en lytter.",
+    "enable-mic-cam-btn": "Aktiver mikrofon og kamera",
+    "join-as-listener-btn": "Deltag som lytter",
+    "webcam-menu-title": "Vælg Kamera",
+    "mic-menu-title": "Vælg Mikrofon",
+    "background-filter-title": "Baggrund & Filtre",
+    "config-background-btn": "Indstil Baggrund For Kamera",
+    "waiting-for-approval-title": "Venter på godkendelse"
+  },
   "external-display-link-display": {
     "modal-title": "Vis eksternt link (iframe)",
     "url": "URL-adresse",
@@ -401,7 +454,8 @@
     "meeting-id": "Møde-id",
     "meeting-id-des": "Mødets oprindelses-id",
     "user-role": "Brugerens rolle",
-    "user-role-des": "Brugerens nuværende rolle. Enten administrator eller deltager"
+    "user-role-des": "Brugerens nuværende rolle. Enten administrator eller deltager",
+    "iframe-title": "Indlejret eksternt indhold"
   },
   "ingress-features": {
     "ingress-type": "Indgående type",
@@ -449,6 +503,7 @@
     "select-one-lang": "Vælg et sprog",
     "subtitle-history-modal-title": "Undertekster historie",
     "azure-error": "Microsoft Azure-fejl: {{error}}",
-    "speech-to-text-stopped": "Tale til tekst-tjenesten er blevet stoppet"
+    "speech-to-text-stopped": "Tale til tekst-tjenesten er blevet stoppet",
+    "enable-transcription": "Aktiver Transskription"
   }
 }

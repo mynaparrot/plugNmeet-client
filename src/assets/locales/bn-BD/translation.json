@@ -50,6 +50,9 @@
     "room-will-end-in": "এই রুমটি {{minutes}} মিনিটের মধ্যে বন্ধ হয়ে যাবে",
     "e2ee-unsupported-browser-title": "অসমর্থিত ব্রাউজার",
     "e2ee-unsupported-browser-msg": "এই সেশনটি এন্ড-টু-এন্ড এনক্রিপশন (E2EE) সক্ষম করেছে যা আপনার বর্তমান ব্রাউজার সমর্থন করে না।",
+    "e2ee-invalid-key-title": "অবৈধ নিরাপত্তা কী",
+    "e2ee-invalid-key-msg": "আপনার লেখা নিরাপত্তা কীটি ভুল।",
+    "e2ee-empty-key-msg": "নিরাপত্তা কীটি খালি রাখা যাবে না।",
     "nats-error-title": "Nats সার্ভারের সাথে সংযোগে ত্রুটি হয়েছে",
     "nats-error-no-response": "অনুরোধটি পরিচালনা করতে কোনো ব্যাকএন্ড সার্ভার খুঁজে পাওয়া যায়নি। ত্রুটি: {{error}}",
     "nats-error-timeout": "ব্যাকএন্ড সার্ভার থেকে কোনও রেসপন্স পাওয়া যায়নি। ত্রুটি: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "মিডিয়া সার্ভারের সংযোগ বিচ্ছিন্ন হয়েছে।",
     "preloaded-whiteboard-file-processing": "প্রিলোড হওয়া হোয়াইট বোর্ড এর ফাইল প্রসেসিং হচ্ছে",
     "preloaded-whiteboard-file-processing-error": "প্রিলোড হওয়া হোয়াইটবোর্ড ফাইল প্রসেসিং ত্রুটির সাথে শেষ হয়েছে",
-    "max-num-participates-exceeded": "অধিবেশনের জন্য অনুমোদিত অংশগ্রহণকারীদের সর্বাধিক সংখ্যা অতিক্রম করেছে।"
+    "max-num-participates-exceeded": "অধিবেশনের জন্য অনুমোদিত অংশগ্রহণকারীদের সর্বাধিক সংখ্যা অতিক্রম করেছে।",
+    "uploading-file": "ফাইল আপলোড করা হচ্ছে...",
+    "ending-session": "মিটিং শেষ হচ্ছে, দয়া করে অপেক্ষা করুন...",
+    "whiteboard-other-task-to-finish": "হোয়াইটবোর্ড নতুন কনটেন্ট প্রস্তুত করছে। দয়া করে অপেক্ষা করো।",
+    "cloud-recording-not-supported-self-key": "কোনও কাস্টম নিরাপত্তা কী ব্যবহার করার সময় ক্লাউড রেকর্ডিং সুলভ নয়।",
+    "media-only-recording-not-support-e2ee": "এন্ড-টু-এন্ড এনক্রিপশন সক্ষম থাকাকালীন কেবল অডিও এবং ভিডিও রেকর্ডিং উপলভ্য নয়।",
+    "you-are-sharing-screen": "আপনি এখন আপনার স্ক্রিন শেয়ার করছেন। অন্যরা বৃহত্তর দৃশ্য দেখতে পাবেন।",
+    "new-system-message-in-chat": "সর্বজনীন চ্যাটে একটি নতুন সিস্টেম বার্তা পোস্ট করা হয়েছে।"
   },
   "room-metadata": {
     "session-recording": "এই অধিবেশন রেকর্ডিং হচ্ছে",
@@ -149,7 +159,10 @@
     "ready": "প্রস্তুত",
     "webcams-per-page": "প্রতি পৃষ্ঠায়",
     "require-ssl-title": "ডোমেন অবশ্যই SSL সক্রিয় হতে হবে",
-    "require-ssl-des": "localhost ছাড়া অন্য যেকোন domain এর ক্ষেত্রে SSL ব্যবহার করতে হবে।"
+    "require-ssl-des": "localhost ছাড়া অন্য যেকোন domain এর ক্ষেত্রে SSL ব্যবহার করতে হবে।",
+    "insert-secret-key": "নিরাপত্তা কী লিখুন",
+    "insert-secret-help": "এই নিরাপদ মিটিংয়ের জন্য, প্রত্যেককে অবশ্যই একই নিরাপত্তা কী ব্যবহার করতে হবে। এটি না মিললে, আপনি সংযোগ করতে সক্ষম হবেন না। দয়া করে মিটিং আয়োজকের কাছ থেকে সঠিক সুরক্ষা কীটি পান।",
+    "save": "সংরক্ষণ"
   },
   "left-panel": {
     "participants": "অংশগ্রহণকারীরা ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "অংশগ্রহণকারীগণ",
     "polls-tab": "পোল",
     "breakout-room-tab": "ব্রেকআউট রুম",
+    "me": "(আমি)",
     "public-chat": "পাবলিক চ্যাট",
+    "private-chat": "ব্যক্তিগত চ্যাট",
+    "select-chat-conversation-title": "একটি কথোপকথন নির্বাচন করুন",
     "menus": {
       "items": {
         "ask-to-share-microphone": "মাইক্রোফোন চালু করতে বলুন",
@@ -236,12 +252,17 @@
       "recording-types-des": "আপনি নিচের যেকোন একটি রেকর্ডিং টাইপ নির্বাচন করতে পারেন। সব থেকে ভালো ফলাফল পেতে লোকাল রেকর্ডিং এর সময় গুগল ক্রম ব্যবহার করুন।",
       "local-recording": "লোকাল রেকর্ডিং",
       "cloud-recording": "ক্লাউড রেকর্ডিং",
+      "cloud-media-only-recording": "ক্লাউড রেকর্ড: শুধুমাত্র মিডিয়া",
       "stop-rtmp-broadcasting": "RTMP সম্প্রচার বন্ধ করুন",
       "start-rtmp-broadcasting": "RTMP সম্প্রচার চালু করুন",
       "show-shared-notepad": "শেয়ার্ড নোটপ্যাড দেখান",
       "hide-shared-notepad": "শেয়ার্ড নোটপ্যাড বন্ধ করুন",
       "show-whiteboard": "হোয়াইটবোর্ড প্রদর্শন করুন",
       "hide-whiteboard": "হোয়াইটবোর্ড আড়াল করুন",
+      "show-polls-panel": "পোল দেখান",
+      "hide-polls-panel": "পোল লুকান",
+      "show-translation-settings": "প্রতিলিপি সেটিংস দেখান",
+      "hide-translation-settings": "প্রতিলিপি সেটিংস লুকান",
       "promote-presenter": "উপস্থাপক হিসাবে নির্বাচন করুন",
       "demote-presenter": "উপস্থাপক থেকে সরান"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "ব্রেকআউট রুম পরিচালনা করুন",
       "start-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন করুন",
       "stop-display-external-link": "বাহ্যিক লিঙ্ক প্রদর্শন বন্ধ করুন",
-      "speech-to-text-settings": "Speech to text/translation সেটিং"
+      "speech-to-text-settings": "Speech to text/translation সেটিং",
+      "enable-polls": "পোল সক্ষম করুন",
+      "disable-polls": "পোল নিষ্ক্রিয় করুন"
     },
     "notice": {
       "already-active-screen-sharing": "ইতিমধ্যে একটি সক্রিয় স্ক্রিন শেয়ার চালু আছে",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "সরাসরি লিঙ্ক",
       "external-media-player-upload-file": "আপলোড করুন",
       "external-media-player-upload-file-play": "আপলোড করে চালু করুন",
+      "external-media-player-uploading": "আপলোড করা হচ্ছে...",
       "external-media-player-upload-supported-files": "সমর্থিত ফাইলগুলিঃ {{files}}",
+      "external-media-player-select-file": "আপলোড করার জন্য একটি মিডিয়া ফাইল নির্বাচন করুন",
       "upload-background-image": "ব্যাকগ্রাউন্ড চিত্র আপলোড করুন",
       "shared-notepad": "শেয়ার্ড নোটপ্যাড"
     }
@@ -315,7 +340,18 @@
     "file-ready": "ফাইল প্রস্তুত",
     "upload-file": "ফাইল আপলোড",
     "manage-files": "ফাইলসমূহ",
-    "upload-image": "ছবি"
+    "upload-image": "ছবি",
+    "follow-presenter-tooltip": "উপস্থাপককে অনুসরণ করুন",
+    "unfollow-presenter-tooltip": "উপস্থাপককে অনুসরণ করা বন্ধ করুন",
+    "follow": "অনুসরণ",
+    "unfollow": "আনফলো করুন",
+    "upload-files-title": "ফাইল আপলোড করুন",
+    "drag-drop-file": "আপলোড করতে আপনার ফাইলটি টেনে এনে ছেড়ে দিন",
+    "max-file-size": "সর্বাধিক ফাইলের আকার: {{size}} মেবা",
+    "or": "বা",
+    "select-file": "একটি ফাইল নির্বাচন করুন",
+    "add-to-whiteboard": "হোয়াইটবোর্ডে যোগ করুন",
+    "total-pages": "মোট পৃষ্ঠা: {{count}}"
   },
   "waiting-room": {
     "modal-title": "ওয়েটিং রুম পরিচালনা করুন",
@@ -326,9 +362,12 @@
     "reject-all": "সবাইকে প্রত্যাখ্যান করুন",
     "list-waiting-participants": "অপেক্ষারতদের তালিকা ({{count}})",
     "reject-and-block-user": "প্রত্যাখ্যান এবং ব্লক",
-    "user-waiting": "{{name}} অনুমোদনের জন্য অপেক্ষা করছে"
+    "user-waiting": "{{name}} অনুমোদনের জন্য অপেক্ষা করছে",
+    "no-pending-user": "যোগ দেওয়ার জন্য কেউ অপেক্ষা করছে না।"
   },
   "polls": {
+    "title": "ভোট",
+    "poll-num": "পোল {{index}}",
     "create": "নতুন পুল তৈরি করুন",
     "enter-question": "প্রশ্ন প্রবেশ করান",
     "question": "প্রশ্ন",
@@ -355,7 +394,8 @@
     "end-poll": "জরিপ শেষ করুন",
     "end-poll-success": "জরিপ সফলভাবে শেষ হয়েছিল",
     "publish-result": "রেজাল্ট প্রকাশ করুন",
-    "total": "মোট"
+    "total": "মোট",
+    "not-respondents-total": "উত্তর দেয়নি: {{count}}"
   },
   "breakout-room": {
     "modal-title": "ব্রেকআউট রুম পরিচালনা করুন",
@@ -387,6 +427,19 @@
     "user-joined": "যুক্ত হয়েছে",
     "not-joined": "যোগদান করা হয়নি"
   },
+  "landing": {
+    "connecting-media-server": "মিডিয়া সার্ভারের সাথে সংযোগ করা হচ্ছে...",
+    "modal-title": "মাইক্রোফোন এবং ক্যামেরার পছন্দগুলি",
+    "ready-to-join": "যোগদানের জন্য প্রস্তুত?",
+    "join-prompt": "সম্পূর্ণরূপে অংশগ্রহণ করতে আপনার মাইক্রোফোন এবং ক্যামেরা সক্ষম করুন বা শ্রোতা হিসাবে যোগ দিন।",
+    "enable-mic-cam-btn": "মাইক্রোফোন এবং ক্যামেরা সক্ষম করুন",
+    "join-as-listener-btn": "শ্রোতা হিসাবে যোগ দিন",
+    "webcam-menu-title": "ক্যামেরা নির্বাচন করুন",
+    "mic-menu-title": "মাইক্রোফোন নির্বাচন করুন",
+    "background-filter-title": "পটভূমি এবং ফিল্টার",
+    "config-background-btn": "ক্যামেরার ব্যাকগ্রাউন্ড কনফিগার করুন",
+    "waiting-for-approval-title": "অনুমোদনের অপেক্ষায়"
+  },
   "external-display-link-display": {
     "modal-title": "বাহ্যিক লিঙ্ক প্রদর্শন করুন (iframe)",
     "url": "Url",
@@ -401,7 +454,8 @@
     "meeting-id": "মিটিং আইডি",
     "meeting-id-des": "মিটিং এর আসল আইডি",
     "user-role": "ব্যবহারকারীর ভূমিকা",
-    "user-role-des": "ব্যবহারকারীর বর্তমান ভূমিকা, হয় অ্যাডমিন বা অংশগ্রহণকারী"
+    "user-role-des": "ব্যবহারকারীর বর্তমান ভূমিকা, হয় অ্যাডমিন বা অংশগ্রহণকারী",
+    "iframe-title": "এম্বেড করা বাহ্যিক সামগ্রী"
   },
   "ingress-features": {
     "ingress-type": "Ingress এর ধরন",
@@ -449,6 +503,7 @@
     "select-one-lang": "একটি ভাষা নির্বাচন করুন",
     "subtitle-history-modal-title": "সাবটাইটেল টেক্সট ইতিহাস",
     "azure-error": "মাইক্রোসফট Azure ত্রুটিঃ {{error}}",
-    "speech-to-text-stopped": "Speech to text পরিষেবা বন্ধ করা হয়েছে"
+    "speech-to-text-stopped": "Speech to text পরিষেবা বন্ধ করা হয়েছে",
+    "enable-transcription": "প্রতিলিপি সক্ষম করুন"
   }
 }

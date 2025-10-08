@@ -50,6 +50,9 @@
     "room-will-end-in": "이 방은 다음과 같이 종료됩니다. {{minutes}} 분",
     "e2ee-unsupported-browser-title": "지원되지 않는 브라우저",
     "e2ee-unsupported-browser-msg": "이 세션은 현재 브라우저가 지원하지 않는 종단 간 암호화를 활성화했습니다.",
+    "e2ee-invalid-key-title": "잘못된 보안 키",
+    "e2ee-invalid-key-msg": "입력한 보안 키가 잘못되었습니다.",
+    "e2ee-empty-key-msg": "보안 키는 비워 둘 수 없습니다.",
     "nats-error-title": "Nats 서버 연결 오류",
     "nats-error-no-response": "요청을 처리할 백엔드 서버를 찾을 수 없습니다. 오류: {{error}}",
     "nats-error-timeout": "백엔드 서버에서 응답을 찾을 수 없습니다. 오류: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "미디어 서버 연결이 끊어졌습니다.",
     "preloaded-whiteboard-file-processing": "미리 로드된 화이트보드 파일 진행 중",
     "preloaded-whiteboard-file-processing-error": "미리 로드된 화이트보드 파일 처리가 오류와 함께 종료됨",
-    "max-num-participates-exceeded": "세션에 허용된 최대 참가 수를 초과했습니다."
+    "max-num-participates-exceeded": "세션에 허용된 최대 참가 수를 초과했습니다.",
+    "uploading-file": "파일 업로드 중...",
+    "ending-session": "회의가 종료됩니다, 잠시만 기다려주세요...",
+    "whiteboard-other-task-to-finish": "화이트보드가 새로운 콘텐츠를 준비하고 있습니다. 기다리세요.",
+    "cloud-recording-not-supported-self-key": "사용자 지정 보안 키를 사용하는 경우 클라우드 녹화를 사용할 수 없습니다.",
+    "media-only-recording-not-support-e2ee": "종단 간 암호화가 활성화된 경우 오디오 및 비디오만 녹음할 수 없습니다.",
+    "you-are-sharing-screen": "지금 화면을 공유하고 있습니다. 다른 사람들은 더 큰 시야를 볼 것입니다.",
+    "new-system-message-in-chat": "공개 채팅에 새로운 시스템 메시지가 게시되었습니다."
   },
   "room-metadata": {
     "session-recording": "이 세션은 녹화 중입니다.",
@@ -149,7 +159,10 @@
     "ready": "준비된",
     "webcams-per-page": "페이지당.",
     "require-ssl-title": "도메인에서 SSL을 사용할 수 있어야 합니다.",
-    "require-ssl-des": "localhost 이외의 SSL 사용 도메인을 사용해야 합니다."
+    "require-ssl-des": "localhost 이외의 SSL 사용 도메인을 사용해야 합니다.",
+    "insert-secret-key": "보안 키 입력",
+    "insert-secret-help": "이 보안 회의의 경우 모든 사람이 동일한 보안 키를 사용해야 합니다. 일치하지 않으면 연결할 수 없습니다. 회의 주최자로부터 올바른 보안 키를 받으십시오.",
+    "save": "구해내다"
   },
   "left-panel": {
     "participants": "참가자 ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "참가자",
     "polls-tab": "설문 조사",
     "breakout-room-tab": "소회의실",
+    "me": "(나)",
     "public-chat": "공개 채팅",
+    "private-chat": "비공개 채팅",
+    "select-chat-conversation-title": "대화 선택",
     "menus": {
       "items": {
         "ask-to-share-microphone": "마이크 공유 요청",
@@ -236,12 +252,17 @@
       "recording-types-des": "다음 녹음 유형 중 하나를 선택할 수 있습니다. Google 크롬을 사용하여 로컬 녹화에 대한 최상의 결과를 얻으십시오.",
       "local-recording": "로컬 녹화",
       "cloud-recording": "클라우드 녹화",
+      "cloud-media-only-recording": "클라우드 레코드: 미디어 전용",
       "stop-rtmp-broadcasting": "RTMP 브로드캐스트 중지",
       "start-rtmp-broadcasting": "RTMP 브로드캐스트 시작",
       "show-shared-notepad": "공유 메모장 표시",
       "hide-shared-notepad": "공유 메모장 숨기기",
       "show-whiteboard": "화이트보드 표시",
       "hide-whiteboard": "화이트보드 숨기기",
+      "show-polls-panel": "투표 표시",
+      "hide-polls-panel": "설문조사 숨기기",
+      "show-translation-settings": "전사 설정 표시",
+      "hide-translation-settings": "문자 발생 설정 숨기기",
       "promote-presenter": "발표자로 승격",
       "demote-presenter": "발표자에서 강등"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "소회의실 관리",
       "start-display-external-link": "외부 링크 표시",
       "stop-display-external-link": "외부 링크 표시 중지",
-      "speech-to-text-settings": "음성을 텍스트로 변환/번역 설정"
+      "speech-to-text-settings": "음성을 텍스트로 변환/번역 설정",
+      "enable-polls": "설문 조사 사용 설정",
+      "disable-polls": "설문조사 비활성화"
     },
     "notice": {
       "already-active-screen-sharing": "세션에 이미 활성 화면 공유가 있습니다.",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "직접 링크",
       "external-media-player-upload-file": "업로드",
       "external-media-player-upload-file-play": "업로드 및 재생",
+      "external-media-player-uploading": "업로드...",
       "external-media-player-upload-supported-files": "지원되는 파일: {{files}}",
+      "external-media-player-select-file": "업로드할 미디어 파일 선택",
       "upload-background-image": "배경 이미지 업로드",
       "shared-notepad": "공유 메모장"
     }
@@ -315,7 +340,18 @@
     "file-ready": "파일이 준비되었습니다.",
     "upload-file": "파일 업로드",
     "manage-files": "파일",
-    "upload-image": "이미지"
+    "upload-image": "이미지",
+    "follow-presenter-tooltip": "발표자 팔로우",
+    "unfollow-presenter-tooltip": "발표자 팔로우 중지",
+    "follow": "뒤따르다",
+    "unfollow": "언팔로우",
+    "upload-files-title": "파일 업로드",
+    "drag-drop-file": "파일을 끌어다 놓아 업로드합니다.",
+    "max-file-size": "최대 파일 크기: {{size}} 메가바이트",
+    "or": "또는",
+    "select-file": "파일 선택",
+    "add-to-whiteboard": "화이트보드에 추가",
+    "total-pages": "총 페이지: {{count}}"
   },
   "waiting-room": {
     "modal-title": "대기실 관리",
@@ -326,9 +362,12 @@
     "reject-all": "모든 사람 거부",
     "list-waiting-participants": "대기 참가자 목록({{count}})",
     "reject-and-block-user": "거부 & 차단",
-    "user-waiting": "{{name}} 승인을 기다리고 있습니다."
+    "user-waiting": "{{name}} 승인을 기다리고 있습니다.",
+    "no-pending-user": "가입을 기다리는 사람은 없습니다."
   },
   "polls": {
+    "title": "설문 조사",
+    "poll-num": "투표 {{index}}",
     "create": "새 투표 만들기",
     "enter-question": "질문 입력",
     "question": "질문",
@@ -355,7 +394,8 @@
     "end-poll": "설문 조사 종료",
     "end-poll-success": "폴링이 성공적으로 종료되었습니다.",
     "publish-result": "결과 게시",
-    "total": "합계"
+    "total": "합계",
+    "not-respondents-total": "응답하지 않았습니다. {{count}}"
   },
   "breakout-room": {
     "modal-title": "소그룹 채팅방 관리",
@@ -387,6 +427,19 @@
     "user-joined": "합류",
     "not-joined": "가입하지 않음"
   },
+  "landing": {
+    "connecting-media-server": "미디어 서버에 연결 중...",
+    "modal-title": "마이크 및 카메라 환경설정",
+    "ready-to-join": "가입할 준비가 되셨나요?",
+    "join-prompt": "마이크와 카메라를 활성화하여 완전히 참여하거나 청취자로 참여하십시오.",
+    "enable-mic-cam-btn": "마이크 및 카메라 활성화",
+    "join-as-listener-btn": "수신기로 참여",
+    "webcam-menu-title": "카메라 선택",
+    "mic-menu-title": "마이크 선택",
+    "background-filter-title": "배경 및 필터",
+    "config-background-btn": "카메라 배경 구성",
+    "waiting-for-approval-title": "승인 대기 중"
+  },
   "external-display-link-display": {
     "modal-title": "외부 링크 표시(iframe)",
     "url": "URL (영어)",
@@ -401,7 +454,8 @@
     "meeting-id": "미팅 ID",
     "meeting-id-des": "회의의 원본 ID",
     "user-role": "사용자 역할",
-    "user-role-des": "사용자의 현재 역할입니다. 관리자 또는 참가자"
+    "user-role-des": "사용자의 현재 역할입니다. 관리자 또는 참가자",
+    "iframe-title": "포함된 외부 콘텐츠"
   },
   "ingress-features": {
     "ingress-type": "수신 유형",
@@ -449,6 +503,7 @@
     "select-one-lang": "하나의 언어 선택",
     "subtitle-history-modal-title": "자막 텍스트 기록",
     "azure-error": "Microsoft Azure 오류 : {{error}}",
-    "speech-to-text-stopped": "음성을 텍스트로 변환하는 서비스가 중지되었습니다."
+    "speech-to-text-stopped": "음성을 텍스트로 변환하는 서비스가 중지되었습니다.",
+    "enable-transcription": "전사 활성화"
   }
 }

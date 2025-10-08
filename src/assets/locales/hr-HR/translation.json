@@ -50,6 +50,9 @@
     "room-will-end-in": "Ova soba će biti završena u {{minutes}} minuta",
     "e2ee-unsupported-browser-title": "Nepodržani preglednik",
     "e2ee-unsupported-browser-msg": "Ova je sesija omogućila end-to-end enkripciju koju vaš trenutni preglednik ne podržava.",
+    "e2ee-invalid-key-title": "Nevažeći sigurnosni ključ",
+    "e2ee-invalid-key-msg": "Sigurnosni ključ koji ste unijeli nije točan.",
+    "e2ee-empty-key-msg": "Sigurnosni ključ ne može biti prazan.",
     "nats-error-title": "Pogreška veze s Nats poslužiteljem",
     "nats-error-no-response": "Nije pronađen pozadinski poslužitelj koji bi obradio zahtjev. Greška: {{error}}",
     "nats-error-timeout": "Nije pronađen odgovor s pozadinskog poslužitelja. Greška: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Medijski poslužitelj je isključen.",
     "preloaded-whiteboard-file-processing": "Unaprijed učitana datoteka zaslonske ploče u tijeku",
     "preloaded-whiteboard-file-processing-error": "Unaprijed učitana obrada datoteke zaslonske ploče završila je pogreškom",
-    "max-num-participates-exceeded": "Prekoračen je maksimalni dopušteni broj sudionika za sesiju."
+    "max-num-participates-exceeded": "Prekoračen je maksimalni dopušteni broj sudionika za sesiju.",
+    "uploading-file": "Učitavanje datoteke...",
+    "ending-session": "Sastanak se završava, molimo pričekajte...",
+    "whiteboard-other-task-to-finish": "Bijela ploča priprema novi sadržaj. Molim te čekaj.",
+    "cloud-recording-not-supported-self-key": "Snimanje u oblaku nije dostupno kada koristite prilagođeni sigurnosni ključ.",
+    "media-only-recording-not-support-e2ee": "Snimanje samo zvuka i videozapisa nije dostupno kada je omogućeno end-to-end šifriranje.",
+    "you-are-sharing-screen": "Sada dijelite svoj zaslon. Drugi će vidjeti veći pogled.",
+    "new-system-message-in-chat": "U javnom chatu objavljena je nova poruka sustava."
   },
   "room-metadata": {
     "session-recording": "Ova sesija se snima",
@@ -149,7 +159,10 @@
     "ready": "spreman",
     "webcams-per-page": "Po stranici.",
     "require-ssl-title": "Domena mora biti omogućena SSL-om",
-    "require-ssl-des": "Potrebno je koristiti domenu s omogućenim SSL-om koja nije localhost."
+    "require-ssl-des": "Potrebno je koristiti domenu s omogućenim SSL-om koja nije localhost.",
+    "insert-secret-key": "Unesite sigurnosni ključ",
+    "insert-secret-help": "Za ovaj sigurni sastanak svi moraju koristiti isti sigurnosni ključ. Ako se ne podudara, nećete se moći povezati. Nabavite ispravan sigurnosni ključ od organizatora sastanka.",
+    "save": "Spasiti"
   },
   "left-panel": {
     "participants": "Sudionici ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Sudionici",
     "polls-tab": "Ankete",
     "breakout-room-tab": "Odvojene sobe",
+    "me": "(ja)",
     "public-chat": "Javni chat",
+    "private-chat": "Privatni chat",
+    "select-chat-conversation-title": "Odaberite razgovor",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Zatražite dijeljenje mikrofona",
@@ -236,12 +252,17 @@
       "recording-types-des": "Možete odabrati bilo koju od sljedećih vrsta snimanja. Koristite Google Chrome za postizanje najboljih rezultata za lokalno snimanje",
       "local-recording": "Lokalno snimanje",
       "cloud-recording": "Snimanje u oblaku",
+      "cloud-media-only-recording": "Snimanje u oblaku: samo mediji",
       "stop-rtmp-broadcasting": "Zaustavite RTMP emitiranje",
       "start-rtmp-broadcasting": "Pokrenite RTMP emitiranje",
       "show-shared-notepad": "Prikaz dijeljene bilježnice",
       "hide-shared-notepad": "Skrivanje dijeljene bilježnice",
       "show-whiteboard": "Prikaži zaslonsku ploču",
       "hide-whiteboard": "Sakrij zaslonsku ploču",
+      "show-polls-panel": "Prikaži ankete",
+      "hide-polls-panel": "Sakrij ankete",
+      "show-translation-settings": "Prikaz postavki transkripcije",
+      "hide-translation-settings": "Sakrij postavke transkripcije",
       "promote-presenter": "Promoviranje kao izlagač",
       "demote-presenter": "Degradacija s izlagača"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Upravljanje izdvojenom sobom",
       "start-display-external-link": "Prikaz vanjske veze",
       "stop-display-external-link": "Zaustavi vanjsku vezu prikaza",
-      "speech-to-text-settings": "Postavke govora u tekst/prijevod"
+      "speech-to-text-settings": "Postavke govora u tekst/prijevod",
+      "enable-polls": "Omogućivanje anketa",
+      "disable-polls": "Onemogući ankete"
     },
     "notice": {
       "already-active-screen-sharing": "Sesija već ima aktivno dijeljenje zaslona",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Izravna poveznica",
       "external-media-player-upload-file": "Otpremanje",
       "external-media-player-upload-file-play": "Prijenos i reprodukcija",
+      "external-media-player-uploading": "Upload...",
       "external-media-player-upload-supported-files": "Podržane datoteke: {{files}}",
+      "external-media-player-select-file": "Odaberite medijsku datoteku za prijenos",
       "upload-background-image": "Prenesite pozadinsku sliku",
       "shared-notepad": "Zajednička bilježnica"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Datoteka je spremna",
     "upload-file": "Prenesite datoteku",
     "manage-files": "Datotekama",
-    "upload-image": "Slika"
+    "upload-image": "Slika",
+    "follow-presenter-tooltip": "Pratite izlagača",
+    "unfollow-presenter-tooltip": "Prestanite pratiti izlagača",
+    "follow": "Pratiti",
+    "unfollow": "Prestati pratiti",
+    "upload-files-title": "Prenesite datoteke",
+    "drag-drop-file": "Povucite i ispustite datoteku za prijenos",
+    "max-file-size": "Maksimalna veličina datoteke: {{size}} MB",
+    "or": "ILI",
+    "select-file": "Odaberite datoteku",
+    "add-to-whiteboard": "Dodaj na zaslonsku ploču",
+    "total-pages": "Ukupno stranica: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Upravljanje čekaonicom",
@@ -326,9 +362,12 @@
     "reject-all": "Odbacite sve",
     "list-waiting-participants": "Lista sudionika čekanja ({{count}})",
     "reject-and-block-user": "Odbaci i blokiraj",
-    "user-waiting": "{{name}} čeka odobrenje"
+    "user-waiting": "{{name}} čeka odobrenje",
+    "no-pending-user": "Nitko ne čeka da se pridruži."
   },
   "polls": {
+    "title": "Ankete",
+    "poll-num": "Anketa {{index}}",
     "create": "Stvaranje nove ankete",
     "enter-question": "Unesite pitanje",
     "question": "Pitanje",
@@ -355,7 +394,8 @@
     "end-poll": "Završi anketu",
     "end-poll-success": "Anketa je uspješno završena",
     "publish-result": "Objavi rezultat",
-    "total": "Ukupan"
+    "total": "Ukupan",
+    "not-respondents-total": "Nije odgovorio: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Upravljanje izdvojenim sobama",
@@ -387,6 +427,19 @@
     "user-joined": "Pripojena",
     "not-joined": "Nije spojeno"
   },
+  "landing": {
+    "connecting-media-server": "Povezivanje s medijskim poslužiteljem...",
+    "modal-title": "Postavke mikrofona i kamere",
+    "ready-to-join": "Jeste li spremni pridružiti se?",
+    "join-prompt": "Omogućite svom mikrofonu i kameri da u potpunosti sudjeluju ili se pridružite kao slušatelj.",
+    "enable-mic-cam-btn": "Omogućite mikrofon i kameru",
+    "join-as-listener-btn": "Pridružite se kao slušatelj",
+    "webcam-menu-title": "Odaberite kameru",
+    "mic-menu-title": "Odaberite mikrofon",
+    "background-filter-title": "Pozadina i filtri",
+    "config-background-btn": "Konfiguriranje pozadine kamere",
+    "waiting-for-approval-title": "Čekanje odobrenja"
+  },
   "external-display-link-display": {
     "modal-title": "Prikaz vanjske veze (iframe)",
     "url": "URL",
@@ -401,7 +454,8 @@
     "meeting-id": "ID sastanka",
     "meeting-id-des": "ID podrijetla sastanka",
     "user-role": "Korisnička uloga",
-    "user-role-des": "Trenutna uloga korisnika. Administrator ili sudionik"
+    "user-role-des": "Trenutna uloga korisnika. Administrator ili sudionik",
+    "iframe-title": "Ugrađeni vanjski sadržaj"
   },
   "ingress-features": {
     "ingress-type": "Vrsta ulaska",
@@ -411,7 +465,7 @@
     "feature-not-allow": "Značajka nije dopuštena",
     "join-as-name-required": "Pridružite se kao obavezno ime",
     "gen-link": "Generiraj vezu",
-    "stream-url": "Stream Host/URL",
+    "stream-url": "Host streama/URL",
     "stream-key": "Ključ/tajna streama"
   },
   "speech-services": {
@@ -449,6 +503,7 @@
     "select-one-lang": "Odaberite jedan jezik",
     "subtitle-history-modal-title": "Povijest tekstova titlova",
     "azure-error": "Pogreška Microsoft Azure: {{error}}",
-    "speech-to-text-stopped": "Usluga pretvaranja govora u tekst je zaustavljena"
+    "speech-to-text-stopped": "Usluga pretvaranja govora u tekst je zaustavljena",
+    "enable-transcription": "Omogući transkripciju"
   }
 }

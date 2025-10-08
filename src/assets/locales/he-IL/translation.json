@@ -50,6 +50,9 @@
     "room-will-end-in": "חדר זה יסתיים ב {{minutes}} דקות",
     "e2ee-unsupported-browser-title": "דפדפן שאינו נתמך",
     "e2ee-unsupported-browser-msg": "הפעלה זו אפשרה הצפנה מקצה לקצה שהדפדפן הנוכחי שלך אינו תומך בה.",
+    "e2ee-invalid-key-title": "מפתח אבטחה לא חוקי",
+    "e2ee-invalid-key-msg": "מפתח האבטחה שהזנת שגוי.",
+    "e2ee-empty-key-msg": "מפתח האבטחה אינו יכול להיות ריק.",
     "nats-error-title": "שגיאת חיבור שרת Nats",
     "nats-error-no-response": "לא נמצא שרת עורפי שיטפל בבקשה. שגיאה: {{error}}",
     "nats-error-timeout": "לא נמצאה תגובה משרת backend. שגיאה: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "שרת מדיה מנותק.",
     "preloaded-whiteboard-file-processing": "קובץ לוח ציור טעון מראש מתבצע",
     "preloaded-whiteboard-file-processing-error": "עיבוד קובץ לוח ציור שנטען מראש הסתיים בשגיאה",
-    "max-num-participates-exceeded": "חרג ממספר המשתתפים המרבי המותר למפגש."
+    "max-num-participates-exceeded": "חרג ממספר המשתתפים המרבי המותר למפגש.",
+    "uploading-file": "מעלה קובץ...",
+    "ending-session": "הפגישה מסתיימת, אנא המתן...",
+    "whiteboard-other-task-to-finish": "לוח הציור מכין תוכן חדש. חכה בבקשה.",
+    "cloud-recording-not-supported-self-key": "הקלטה בענן אינה זמינה בעת שימוש במפתח אבטחה מותאם אישית.",
+    "media-only-recording-not-support-e2ee": "הקלטת שמע ווידאו בלבד אינה זמינה כאשר הצפנה מקצה לקצה מופעלת.",
+    "you-are-sharing-screen": "אתה משתף את המסך שלך כעת. אחרים יראו נוף גדול יותר.",
+    "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי."
   },
   "room-metadata": {
     "session-recording": "הפעלה זו מוקלטת",
@@ -149,7 +159,10 @@
     "ready": "מוכן",
     "webcams-per-page": "בכל עמוד.",
     "require-ssl-title": "הדומיין חייב להיות מופעל באמצעות SSL",
-    "require-ssl-des": "נדרש להשתמש בתחום התומך ב- SSL שאינו localhost."
+    "require-ssl-des": "נדרש להשתמש בתחום התומך ב- SSL שאינו localhost.",
+    "insert-secret-key": "הזן מפתח אבטחה",
+    "insert-secret-help": "עבור פגישה מאובטחת זו, כולם חייבים להשתמש באותו מפתח אבטחה. אם הוא לא תואם, לא תוכל להתחבר. קבל את מפתח האבטחה הנכון ממארגן הפגישה.",
+    "save": "שמר"
   },
   "left-panel": {
     "participants": "משתתפים ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "המשתתפים",
     "polls-tab": "סקרים",
     "breakout-room-tab": "חדרי הפסקה",
+    "me": "(אני)",
     "public-chat": "צ'אט ציבורי",
+    "private-chat": "צ'אט פרטי",
+    "select-chat-conversation-title": "בחר שיחה",
     "menus": {
       "items": {
         "ask-to-share-microphone": "בקש לשתף מיקרופון",
@@ -236,12 +252,17 @@
       "recording-types-des": "באפשרותך לבחור כל אחד מסוגי ההקלטות הבאים. השתמש ב- Google Chrome כדי לקבל את התוצאה הטובה ביותר להקלטה מקומית",
       "local-recording": "הקלטה מקומית",
       "cloud-recording": "הקלטה בענן",
+      "cloud-media-only-recording": "רשומת ענן: מדיה בלבד",
       "stop-rtmp-broadcasting": "הפסקת שידורי RTMP",
       "start-rtmp-broadcasting": "התחל שידור RTMP",
       "show-shared-notepad": "הצגת פנקס רשימות משותף",
       "hide-shared-notepad": "הסתרת פנקס רשימות משותף",
       "show-whiteboard": "הצג לוח ציור",
       "hide-whiteboard": "הסתרת לוח ציור",
+      "show-polls-panel": "הצג סקרים",
+      "hide-polls-panel": "הסתר סקרים",
+      "show-translation-settings": "הצג הגדרות תמלול",
+      "hide-translation-settings": "הסתר הגדרות תמלול",
       "promote-presenter": "קדם כפרזנטור",
       "demote-presenter": "הורדה בדרגה מהמציג"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "ניהול חדר חלוקה",
       "start-display-external-link": "הצגת קישור חיצוני",
       "stop-display-external-link": "עצור קישור חיצוני לתצוגה",
-      "speech-to-text-settings": "הגדרות דיבור לטקסט/תרגום"
+      "speech-to-text-settings": "הגדרות דיבור לטקסט/תרגום",
+      "enable-polls": "הפיכת סקרים לזמינים",
+      "disable-polls": "השבתת תשאולים"
     },
     "notice": {
       "already-active-screen-sharing": "הפעלה כבר כוללת שיתוף מסך פעיל",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "קישור ישיר",
       "external-media-player-upload-file": "העלאה",
       "external-media-player-upload-file-play": "העלאה והפעלה",
+      "external-media-player-uploading": "העלאת...",
       "external-media-player-upload-supported-files": "קבצים נתמכים: {{files}}",
+      "external-media-player-select-file": "בחר קובץ מדיה להעלאה",
       "upload-background-image": "העלה תמונת רקע",
       "shared-notepad": "פנקס רשימות משותף"
     }
@@ -315,7 +340,18 @@
     "file-ready": "הקובץ מוכן",
     "upload-file": "העלה קובץ",
     "manage-files": "קבצים",
-    "upload-image": "תמונה"
+    "upload-image": "תמונה",
+    "follow-presenter-tooltip": "מעקב אחר המציג",
+    "unfollow-presenter-tooltip": "הפסקת מעקב אחר המציג",
+    "follow": "בצע",
+    "unfollow": "בטל מעקב",
+    "upload-files-title": "העלאת קבצים",
+    "drag-drop-file": "גרור ושחרר את הקובץ להעלאה",
+    "max-file-size": "גודל קובץ מרבי: {{size}} מגה בייט",
+    "or": "או",
+    "select-file": "בחר קובץ",
+    "add-to-whiteboard": "הוספה ללוח הציור",
+    "total-pages": "סה\"כ עמודים: {{count}}"
   },
   "waiting-room": {
     "modal-title": "ניהול חדר המתנה",
@@ -326,9 +362,12 @@
     "reject-all": "לדחות את כולם",
     "list-waiting-participants": "רשימת משתתפים ממתינים ({{count}})",
     "reject-and-block-user": "דחה וחסום",
-    "user-waiting": "{{name}} ממתין לאישור"
+    "user-waiting": "{{name}} ממתין לאישור",
+    "no-pending-user": "אין אף אחד שמחכה להצטרף."
   },
   "polls": {
+    "title": "סקרים",
+    "poll-num": "סקר {{index}}",
     "create": "צור סקר חדש",
     "enter-question": "הזן שאלה",
     "question": "שאלה",
@@ -355,7 +394,8 @@
     "end-poll": "סיום הסקר",
     "end-poll-success": "הסקר הסתיים בהצלחה",
     "publish-result": "פרסום תוצאה",
-    "total": "סך"
+    "total": "סך",
+    "not-respondents-total": "לא הגיב: {{count}}"
   },
   "breakout-room": {
     "modal-title": "ניהול חדרים נפרדים",
@@ -387,6 +427,19 @@
     "user-joined": "הצטרף",
     "not-joined": "לא הצטרף"
   },
+  "landing": {
+    "connecting-media-server": "מתחבר לשרת המדיה...",
+    "modal-title": "העדפות מיקרופון ומצלמה",
+    "ready-to-join": "מוכנים להצטרף?",
+    "join-prompt": "אפשר למיקרופון ולמצלמה שלך להשתתף באופן מלא, או להצטרף כמאזין.",
+    "enable-mic-cam-btn": "אפשר מיקרופון ומצלמה",
+    "join-as-listener-btn": "הצטרפו כמאזינים",
+    "webcam-menu-title": "בחר מצלמה",
+    "mic-menu-title": "בחר מיקרופון",
+    "background-filter-title": "רקע ומסננים",
+    "config-background-btn": "קביעת תצורה של רקע מצלמה",
+    "waiting-for-approval-title": "ממתין לאישור"
+  },
   "external-display-link-display": {
     "modal-title": "הצג קישור חיצוני (iframe)",
     "url": "כתובת URL",
@@ -401,7 +454,8 @@
     "meeting-id": "מזהה פגישה",
     "meeting-id-des": "מזהה המקור של פגישה",
     "user-role": "תפקיד משתמש",
-    "user-role-des": "התפקיד הנוכחי של המשתמש. מנהל או משתתף"
+    "user-role-des": "התפקיד הנוכחי של המשתמש. מנהל או משתתף",
+    "iframe-title": "תוכן חיצוני מוטבע"
   },
   "ingress-features": {
     "ingress-type": "סוג חדירה",
@@ -449,6 +503,7 @@
     "select-one-lang": "בחר שפה אחת",
     "subtitle-history-modal-title": "היסטוריית טקסטים של כתוביות",
     "azure-error": "שגיאת תכלת של Microsoft: {{error}}",
-    "speech-to-text-stopped": "שירות דיבור לטקסט הופסק"
+    "speech-to-text-stopped": "שירות דיבור לטקסט הופסק",
+    "enable-transcription": "אפשר תמלול"
   }
 }

@@ -50,6 +50,9 @@
     "room-will-end-in": "Această cameră se va încheia în {{minutes}} Minute",
     "e2ee-unsupported-browser-title": "Browser neacceptat",
     "e2ee-unsupported-browser-msg": "Această sesiune a activat criptarea end-to-end pe care browserul curent nu o acceptă.",
+    "e2ee-invalid-key-title": "Cheie de securitate nevalidă",
+    "e2ee-invalid-key-msg": "Cheia de securitate introdusă este incorectă.",
+    "e2ee-empty-key-msg": "Cheia de securitate nu poate fi goală.",
     "nats-error-title": "Eroare de conectare la serverul Nats",
     "nats-error-no-response": "Nu s-a găsit niciun server backend care să gestioneze cererea. Eroare: {{error}}",
     "nats-error-timeout": "Nu s-a găsit niciun răspuns de la serverul backend. Eroare: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Server media deconectat.",
     "preloaded-whiteboard-file-processing": "Fișier de tablă preîncărcată în curs de desfășurare",
     "preloaded-whiteboard-file-processing-error": "Procesarea fișierelor preîncărcate pentru tablă albă s-a încheiat cu eroare",
-    "max-num-participates-exceeded": "Numărul maxim de participanți permis pentru sesiune a fost depășit."
+    "max-num-participates-exceeded": "Numărul maxim de participanți permis pentru sesiune a fost depășit.",
+    "uploading-file": "Se încarcă fișierul...",
+    "ending-session": "Întâlnirea se termină, vă rugăm așteptați...",
+    "whiteboard-other-task-to-finish": "Tabloul alb pregătește conținut nou. Vă rugăm să așteptați.",
+    "cloud-recording-not-supported-self-key": "Înregistrarea în cloud nu este disponibilă atunci când se utilizează o cheie de securitate personalizată.",
+    "media-only-recording-not-support-e2ee": "Înregistrarea doar audio și video nu este disponibilă atunci când este activată criptarea de la un capăt la altul.",
+    "you-are-sharing-screen": "Împărtășiți ecranul acum. Alții vor vedea o vizualizare mai mare.",
+    "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public."
   },
   "room-metadata": {
     "session-recording": "Această sesiune este în curs de înregistrare",
@@ -149,7 +159,10 @@
     "ready": "gata",
     "webcams-per-page": "Pe pagină.",
     "require-ssl-title": "Domeniul trebuie să fie activat SSL",
-    "require-ssl-des": "Este necesar să utilizați un domeniu activat SSL, altul decât localhost."
+    "require-ssl-des": "Este necesar să utilizați un domeniu activat SSL, altul decât localhost.",
+    "insert-secret-key": "Introduceți cheia de securitate",
+    "insert-secret-help": "Pentru această ședință sigură, toată lumea trebuie să folosească aceeași Cheie de Securitate. Dacă nu se potrivește, nu veți putea să vă conectați. Vă rugăm să obțineți cheia de securitate corectă de la organizatorul ședinței.",
+    "save": "Salvează"
   },
   "left-panel": {
     "participants": "Participanții ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Participanţii",
     "polls-tab": "Sondaje",
     "breakout-room-tab": "Săli de lucru",
+    "me": "(me)",
     "public-chat": "Chat public",
+    "private-chat": "Chat Privat",
+    "select-chat-conversation-title": "Selectează o conversație",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Solicitați partajarea microfonului",
@@ -236,12 +252,17 @@
       "recording-types-des": "Puteți selecta oricare dintre următoarele tipuri de înregistrare. Folosește Google Chrome pentru a obține cel mai bun rezultat pentru înregistrarea locală",
       "local-recording": "Înregistrare locală",
       "cloud-recording": "Înregistrare în cloud",
+      "cloud-media-only-recording": "Înregistrare Cloud: Doar Media",
       "stop-rtmp-broadcasting": "Opriți difuzarea RTMP",
       "start-rtmp-broadcasting": "Porniți difuzarea RTMP",
       "show-shared-notepad": "Afișați notepad partajat",
       "hide-shared-notepad": "Ascundeți notepadul partajat",
       "show-whiteboard": "Afișează tabla albă",
       "hide-whiteboard": "Ascundeți tabla albă",
+      "show-polls-panel": "Arată sondajele",
+      "hide-polls-panel": "Ascunde sondaje",
+      "show-translation-settings": "Afișare Setări de Transcriere",
+      "hide-translation-settings": "Ascunde Setările de Transcriere",
       "promote-presenter": "Promovați ca prezentator",
       "demote-presenter": "Retrogradare de la prezentator"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Gestionarea sălii sesiunii de lucru",
       "start-display-external-link": "Afișează link extern",
       "stop-display-external-link": "Opriți afișajul link extern",
-      "speech-to-text-settings": "Setări de vorbire în text/traducere"
+      "speech-to-text-settings": "Setări de vorbire în text/traducere",
+      "enable-polls": "Activare sondaje",
+      "disable-polls": "Dezactivează sondajele"
     },
     "notice": {
       "already-active-screen-sharing": "Sesiunea are deja o partajare activă a ecranului",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Link direct",
       "external-media-player-upload-file": "Încărca",
       "external-media-player-upload-file-play": "Încărcați și redați",
+      "external-media-player-uploading": "Încărcare...",
       "external-media-player-upload-supported-files": "Fișiere acceptate: {{files}}",
+      "external-media-player-select-file": "Selectează un fișier media pentru a fi încărcat",
       "upload-background-image": "Încărcați imaginea de fundal",
       "shared-notepad": "Blocnotes partajat"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Fișierul este gata",
     "upload-file": "Încărcați fișierul",
     "manage-files": "Fişierele",
-    "upload-image": "Imagine"
+    "upload-image": "Imagine",
+    "follow-presenter-tooltip": "Urmărește Present-ul",
+    "unfollow-presenter-tooltip": "Oprește după Presenter",
+    "follow": "Urmărește",
+    "unfollow": "Anulează",
+    "upload-files-title": "Încarcă fişiere",
+    "drag-drop-file": "Trage și plasează fișierul pentru a fi încărcat",
+    "max-file-size": "Mărimea maximă a fișierului: {{size}} MB",
+    "or": "SAU",
+    "select-file": "Selectați un fișier",
+    "add-to-whiteboard": "Adaugă la tablă",
+    "total-pages": "Total pagini: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Gestionați sala de așteptare",
@@ -326,9 +362,12 @@
     "reject-all": "Respinge pe toată lumea",
     "list-waiting-participants": "Lista participanților în așteptare ({{count}})",
     "reject-and-block-user": "Respingere și blocare",
-    "user-waiting": "{{name}} așteaptă aprobarea"
+    "user-waiting": "{{name}} așteaptă aprobarea",
+    "no-pending-user": "Nimeni nu aşteaptă să se alăture."
   },
   "polls": {
+    "title": "Sondaje",
+    "poll-num": "Sondaj {{index}}",
     "create": "Creați un sondaj nou",
     "enter-question": "Introduceți întrebarea",
     "question": "Întrebare",
@@ -355,7 +394,8 @@
     "end-poll": "Încheiați sondajul",
     "end-poll-success": "Sondajul s-a încheiat cu succes",
     "publish-result": "Publicați rezultatul",
-    "total": "Total"
+    "total": "Total",
+    "not-respondents-total": "Nu a răspuns: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Gestionarea sălilor sesiunii de lucru",
@@ -387,6 +427,19 @@
     "user-joined": "Alăturat",
     "not-joined": "Neînscris"
   },
+  "landing": {
+    "connecting-media-server": "Se conectează la serverul media...",
+    "modal-title": "Preferințe microfon și cameră foto",
+    "ready-to-join": "Ești gata să te înscrii?",
+    "join-prompt": "Activează microfonul și camera pentru a participa pe deplin sau alătură-te ca ascultător.",
+    "enable-mic-cam-btn": "Activează microfonul și camera foto",
+    "join-as-listener-btn": "Alătură-te ca ascultător",
+    "webcam-menu-title": "Selectează camera foto",
+    "mic-menu-title": "Selectează microfonul",
+    "background-filter-title": "Fundal & Filtre",
+    "config-background-btn": "Configurare fundal cameră foto",
+    "waiting-for-approval-title": "Așteptare pentru aprobare"
+  },
   "external-display-link-display": {
     "modal-title": "Afișați legătura externă (iframe)",
     "url": "Adresă URL",
@@ -401,7 +454,8 @@
     "meeting-id": "ID-ul întâlnirii",
     "meeting-id-des": "ID-ul de origine al întâlnirii",
     "user-role": "Rol de utilizator",
-    "user-role-des": "Rolul curent al utilizatorului. Fie administrator, fie participant"
+    "user-role-des": "Rolul curent al utilizatorului. Fie administrator, fie participant",
+    "iframe-title": "Conținut extern încorporat"
   },
   "ingress-features": {
     "ingress-type": "Tip de intrare",
@@ -449,6 +503,7 @@
     "select-one-lang": "Selectați o limbă",
     "subtitle-history-modal-title": "Istoria textelor de subtitrare",
     "azure-error": "Eroare Microsoft azure: {{error}}",
-    "speech-to-text-stopped": "Serviciul de vorbire în text a fost oprit"
+    "speech-to-text-stopped": "Serviciul de vorbire în text a fost oprit",
+    "enable-transcription": "Activează Transcrierea"
   }
 }
