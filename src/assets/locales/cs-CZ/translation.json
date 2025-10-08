@@ -50,6 +50,9 @@
     "room-will-end-in": "Tato místnost bude ukončena v {{minutes}} minuty",
     "e2ee-unsupported-browser-title": "Nepodporovaný prohlížeč",
     "e2ee-unsupported-browser-msg": "Tato relace povolila end-to-end šifrování, které váš aktuální prohlížeč nepodporuje.",
+    "e2ee-invalid-key-title": "Neplatný bezpečnostní klíč",
+    "e2ee-invalid-key-msg": "Zadaný bezpečnostní klíč není správný.",
+    "e2ee-empty-key-msg": "Bezpečnostní klíč nemůže být prázdný.",
     "nats-error-title": "Chyba připojení k serveru Nats",
     "nats-error-no-response": "Nebyl nalezen žádný backendový server, který by požadavek zpracoval. Chyba: {{error}}",
     "nats-error-timeout": "Z backend serveru nebyla nalezena žádná odpověď. Chyba: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Mediální server odpojen.",
     "preloaded-whiteboard-file-processing": "Probíhá předem načtený soubor tabule",
     "preloaded-whiteboard-file-processing-error": "Zpracování předem načteného souboru tabule skončilo s chybou",
-    "max-num-participates-exceeded": "Byl překročen maximální povolený počet účastníků pro relaci."
+    "max-num-participates-exceeded": "Byl překročen maximální povolený počet účastníků pro relaci.",
+    "uploading-file": "Nahrávám soubor...",
+    "ending-session": "Schůzka končí, čekejte prosím...",
+    "whiteboard-other-task-to-finish": "Bílá tabule připravuje nový obsah. Počkejte prosím.",
+    "cloud-recording-not-supported-self-key": "Záznam v cloudu není k dispozici při použití vlastního bezpečnostního klíče.",
+    "media-only-recording-not-support-e2ee": "Záznam pouze zvuku a videa není k dispozici, pokud je povoleno end-to-end šifrování.",
+    "you-are-sharing-screen": "Nyní sdílíte obrazovku. Jiní uvidí větší zobrazení.",
+    "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová zpráva."
   },
   "room-metadata": {
     "session-recording": "Tato relace se nahrává",
@@ -149,7 +159,10 @@
     "ready": "připravený",
     "webcams-per-page": "Na stránku.",
     "require-ssl-title": "Doména musí mít povoleno SSL",
-    "require-ssl-des": "Je nutné použít jinou doménu s povoleným protokolem SSL než localhost."
+    "require-ssl-des": "Je nutné použít jinou doménu s povoleným protokolem SSL než localhost.",
+    "insert-secret-key": "Zadejte bezpečnostní klíč",
+    "insert-secret-help": "Pro tuto bezpečnou schůzku musí každý použít stejný bezpečnostní klíč. Pokud se neshoduje, nebudete se moci připojit. Prosím získejte správný bezpečnostní klíč od organizátora schůzky.",
+    "save": "Uložit"
   },
   "left-panel": {
     "participants": "Účastníci ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Účastníci",
     "polls-tab": "Hlasuje",
     "breakout-room-tab": "Skupinové místnosti",
+    "me": "(mě)",
     "public-chat": "Veřejný chat",
+    "private-chat": "Soukromý chat",
+    "select-chat-conversation-title": "Vybrat konverzaci",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Požádat o sdílení mikrofonu",
@@ -236,12 +252,17 @@
       "recording-types-des": "Můžete vybrat libovolný z následujících typů záznamu. Použijte Google Chrome k dosažení nejlepších výsledků pro místní nahrávání",
       "local-recording": "Místní nahrávání",
       "cloud-recording": "Nahrávání v cloudu",
+      "cloud-media-only-recording": "Cloudový záznam: Pouze média",
       "stop-rtmp-broadcasting": "Zastavení vysílání RTMP",
       "start-rtmp-broadcasting": "Spuštění vysílání RTMP",
       "show-shared-notepad": "Zobrazit sdílený poznámkový blok",
       "hide-shared-notepad": "Skrýt sdílený poznámkový blok",
       "show-whiteboard": "Zobrazit tabuli",
       "hide-whiteboard": "Skrýt tabuli",
+      "show-polls-panel": "Zobrazit ankety",
+      "hide-polls-panel": "Skrýt ankety",
+      "show-translation-settings": "Zobrazit nastavení přepisu",
+      "hide-translation-settings": "Skrýt nastavení transkripce",
       "promote-presenter": "Povýšení na pozici prezentujícího",
       "demote-presenter": "Snížit úroveň z prezentujícího"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Správa dílčí místnosti",
       "start-display-external-link": "Zobrazit externí odkaz",
       "stop-display-external-link": "Zastavit zobrazení externí odkaz",
-      "speech-to-text-settings": "Nastavení převodu řeči na text/překlad"
+      "speech-to-text-settings": "Nastavení převodu řeči na text/překlad",
+      "enable-polls": "Povolit ankety",
+      "disable-polls": "Zakázat ankety"
     },
     "notice": {
       "already-active-screen-sharing": "Relace již má aktivní sdílení obrazovky",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Přímý odkaz",
       "external-media-player-upload-file": "Upload",
       "external-media-player-upload-file-play": "Nahrát a přehrát",
+      "external-media-player-uploading": "Nahrávám...",
       "external-media-player-upload-supported-files": "Podporované soubory: {{files}}",
+      "external-media-player-select-file": "Vyberte mediální soubor k nahrání",
       "upload-background-image": "Nahrát obrázek na pozadí",
       "shared-notepad": "Sdílený poznámkový blok"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Soubor je připraven",
     "upload-file": "Nahrát soubor",
     "manage-files": "Soubory",
-    "upload-image": "Obraz"
+    "upload-image": "Obraz",
+    "follow-presenter-tooltip": "Sledujte Presentera",
+    "unfollow-presenter-tooltip": "Zastavit následování Presenter",
+    "follow": "Sledovat",
+    "unfollow": "Přestat sledovat",
+    "upload-files-title": "Nahrát soubory",
+    "drag-drop-file": "Přetažením nahrajete soubor",
+    "max-file-size": "Maximální velikost souboru: {{size}} MB",
+    "or": "NEBO",
+    "select-file": "Vyberte soubor",
+    "add-to-whiteboard": "Přidat do tabule",
+    "total-pages": "Celkem stránek: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Správa čekárny",
@@ -326,9 +362,12 @@
     "reject-all": "Odmítnout všechny",
     "list-waiting-participants": "Seznam čekajících účastníků ({{count}})",
     "reject-and-block-user": "Odmítnout & zablokovat",
-    "user-waiting": "{{name}} čeká na schválení"
+    "user-waiting": "{{name}} čeká na schválení",
+    "no-pending-user": "Na připojení se nikdo nečeká."
   },
   "polls": {
+    "title": "Ankety",
+    "poll-num": "Anketa {{index}}",
     "create": "Vytvořit novou anketu",
     "enter-question": "Zadat dotaz",
     "question": "Otázka",
@@ -355,7 +394,8 @@
     "end-poll": "Ukončit anketu",
     "end-poll-success": "Anketa byla úspěšně ukončena",
     "publish-result": "Publikovat výsledek",
-    "total": "Totální"
+    "total": "Totální",
+    "not-respondents-total": "Nebylo odpovězeno: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Správa dílčích místností",
@@ -387,6 +427,19 @@
     "user-joined": "Spojený",
     "not-joined": "Nepřipojil se"
   },
+  "landing": {
+    "connecting-media-server": "Připojování k mediálnímu serveru...",
+    "modal-title": "Nastavení mikrofonu a kamery",
+    "ready-to-join": "Jste připraveni se připojit?",
+    "join-prompt": "Povolte svůj mikrofon a kameru k plné účasti, nebo se připojte jako posluchač.",
+    "enable-mic-cam-btn": "Povolit mikrofon a fotoaparát",
+    "join-as-listener-btn": "Připojte se jako posluchač",
+    "webcam-menu-title": "Vybrat fotoaparát",
+    "mic-menu-title": "Vybrat mikrofon",
+    "background-filter-title": "Pozadí a filtry",
+    "config-background-btn": "Konfigurovat pozadí kamery",
+    "waiting-for-approval-title": "Čekání na schválení"
+  },
   "external-display-link-display": {
     "modal-title": "Zobrazit externí odkaz (iframe)",
     "url": "Adresa URL",
@@ -401,7 +454,8 @@
     "meeting-id": "ID schůzky",
     "meeting-id-des": "ID původu schůzky",
     "user-role": "Role uživatele",
-    "user-role-des": "Aktuální role uživatele. Správce nebo účastník"
+    "user-role-des": "Aktuální role uživatele. Správce nebo účastník",
+    "iframe-title": "Vložený externí obsah"
   },
   "ingress-features": {
     "ingress-type": "Typ vstupu",
@@ -429,7 +483,7 @@
     "translation-lang-required": "Je vyžadován alespoň jeden jazyk překladu nebo 2 jazyky řeči",
     "service-ready": "Služba Speech je připravená",
     "start-service": "Začínat",
-    "stop-service": "Stop",
+    "stop-service": "Zastavit",
     "update-service": "Aktualizace",
     "service-stopped": "Služba byla zastavena",
     "start-modal-title": "Služba převodu řeči na text/překlad",
@@ -449,6 +503,7 @@
     "select-one-lang": "Vyberte jeden jazyk",
     "subtitle-history-modal-title": "Historie textů titulků",
     "azure-error": "Chyba Microsoft Azure: {{error}}",
-    "speech-to-text-stopped": "Služba převodu řeči na text byla zastavena"
+    "speech-to-text-stopped": "Služba převodu řeči na text byla zastavena",
+    "enable-transcription": "Povolit přepsání"
   }
 }
