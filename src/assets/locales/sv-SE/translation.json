@@ -50,6 +50,9 @@
     "room-will-end-in": "Detta rum kommer att avslutas i {{minutes}} protokoll",
     "e2ee-unsupported-browser-title": "Webbläsare som inte stöds",
     "e2ee-unsupported-browser-msg": "Den här sessionen har aktiverat end-to-end-kryptering som din nuvarande webbläsare inte stöder.",
+    "e2ee-invalid-key-title": "Ogiltig säkerhetsnyckel",
+    "e2ee-invalid-key-msg": "Säkerhetsnyckeln du angav är felaktig.",
+    "e2ee-empty-key-msg": "Säkerhetsnyckeln kan inte vara tom.",
     "nats-error-title": "Fel vid anslutning till Nats-servern",
     "nats-error-no-response": "Ingen backend-server hittades för att hantera begäran. Fel: {{error}}",
     "nats-error-timeout": "Inget svar hittades från backend-servern. Fel: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Medieservern är frånkopplad.",
     "preloaded-whiteboard-file-processing": "Förinstallerad whiteboardfil pågår",
     "preloaded-whiteboard-file-processing-error": "Bearbetningen av förinstallerade whiteboard-filer slutade med ett fel",
-    "max-num-participates-exceeded": "Det maximala antalet deltagare som tillåts för sessionen har överskridits."
+    "max-num-participates-exceeded": "Det maximala antalet deltagare som tillåts för sessionen har överskridits.",
+    "uploading-file": "Laddar upp fil...",
+    "ending-session": "Mötet avslutas, vänligen vänta...",
+    "whiteboard-other-task-to-finish": "whiteboardtavlan förbereder nytt innehåll. Vänligen vänta.",
+    "cloud-recording-not-supported-self-key": "Molninspelning är inte tillgänglig när du använder en anpassad säkerhetsnyckel.",
+    "media-only-recording-not-support-e2ee": "Inspelning endast ljud och video är inte tillgänglig när end-to-end-kryptering är aktiverad.",
+    "you-are-sharing-screen": "Du delar din skärm nu. Andra ser en större vy.",
+    "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten."
   },
   "room-metadata": {
     "session-recording": "Den här sessionen spelas in",
@@ -99,7 +109,7 @@
       "language": "Språk",
       "video-quality": "Videokvalitet",
       "high": "Hög",
-      "medium": "Medium",
+      "medium": "Medel",
       "low": "Låg",
       "enable-dark-theme": "Aktivera mörkt tema",
       "video-object-fit": "Anpassning av videoobjekt",
@@ -107,7 +117,7 @@
       "video-object-fit-contain": "Innehålla",
       "column-camera-width": "Kamerabredd för kolumn",
       "column-camera-width-default": "Standard",
-      "column-camera-width-medium": "Medium",
+      "column-camera-width-medium": "Medel",
       "column-camera-width-small": "Liten",
       "column-camera-position": "Kameraposition för kolumn",
       "column-camera-position-left": "Vänster",
@@ -149,7 +159,10 @@
     "ready": "redo",
     "webcams-per-page": "Per sida.",
     "require-ssl-title": "Domänen måste vara SSL-aktiverad",
-    "require-ssl-des": "Det krävs att du använder en annan SSL-aktiverad domän än localhost."
+    "require-ssl-des": "Det krävs att du använder en annan SSL-aktiverad domän än localhost.",
+    "insert-secret-key": "Ange säkerhetsnyckel",
+    "insert-secret-help": "För detta säkra möte måste alla använda samma säkerhetsnyckel. Om det inte stämmer kommer du inte att kunna ansluta. Vänligen hämta rätt säkerhetsnyckel från mötesarrangören.",
+    "save": "Spara"
   },
   "left-panel": {
     "participants": "Deltagare ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Deltagare",
     "polls-tab": "Omröstningar",
     "breakout-room-tab": "Grupprum",
+    "me": "(jag)",
     "public-chat": "Offentlig chatt",
+    "private-chat": "Privat chatt",
+    "select-chat-conversation-title": "Välj en konversation",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Be om att få dela mikrofon",
@@ -236,12 +252,17 @@
       "recording-types-des": "Du kan välja någon av följande inspelningstyper. Använd Google Chrome för att få bästa resultat för lokal inspelning",
       "local-recording": "Lokal inspelning",
       "cloud-recording": "Inspelning i molnet",
+      "cloud-media-only-recording": "Cloud Record: Endast media",
       "stop-rtmp-broadcasting": "Stoppa RTMP-sändning",
       "start-rtmp-broadcasting": "Starta RTMP-sändning",
       "show-shared-notepad": "Visa delat anteckningsblock",
       "hide-shared-notepad": "Dölj delat anteckningsblock",
       "show-whiteboard": "Visa whiteboard",
       "hide-whiteboard": "Dölj whiteboard",
+      "show-polls-panel": "Visa omröstningar",
+      "hide-polls-panel": "Dölj omröstningar",
+      "show-translation-settings": "Visa transkriptionsinställningar",
+      "hide-translation-settings": "Dölj transkriptionsinställningar",
       "promote-presenter": "Höj upp som presentatör",
       "demote-presenter": "Nedgradera från presentatör"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Hantera smågrupp",
       "start-display-external-link": "Visa extern länk",
       "stop-display-external-link": "Sluta visa extern länk",
-      "speech-to-text-settings": "Inställningar för tal till text/översättning"
+      "speech-to-text-settings": "Inställningar för tal till text/översättning",
+      "enable-polls": "Aktivera omröstningar",
+      "disable-polls": "Inaktivera omröstningar"
     },
     "notice": {
       "already-active-screen-sharing": "Sessionen har redan en aktiv skärmdelning",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Direktlänk",
       "external-media-player-upload-file": "Ladda upp",
       "external-media-player-upload-file-play": "Ladda upp och spela",
+      "external-media-player-uploading": "Uppladdar...",
       "external-media-player-upload-supported-files": "Filer som stöds: {{files}}",
+      "external-media-player-select-file": "Välj en mediafil att ladda upp",
       "upload-background-image": "Ladda upp bakgrundsbild",
       "shared-notepad": "Delat anteckningsblock"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Filen är klar",
     "upload-file": "Ladda upp fil",
     "manage-files": "ﬁler",
-    "upload-image": "Bild"
+    "upload-image": "Bild",
+    "follow-presenter-tooltip": "Följ presentanten",
+    "unfollow-presenter-tooltip": "Sluta följa Presenter",
+    "follow": "Följ",
+    "unfollow": "Sluta följa",
+    "upload-files-title": "Ladda upp filer",
+    "drag-drop-file": "Dra och släpp din fil för att ladda upp",
+    "max-file-size": "Max filstorlek: {{size}} MB",
+    "or": "ELLER",
+    "select-file": "Välj en fil",
+    "add-to-whiteboard": "Lägg till i whiteboard",
+    "total-pages": "Totala sidor: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Hantera väntrum",
@@ -326,9 +362,12 @@
     "reject-all": "Avvisa alla",
     "list-waiting-participants": "Väntande deltagarlista ({{count}})",
     "reject-and-block-user": "Avvisa och blockera",
-    "user-waiting": "{{name}} väntar på godkännande"
+    "user-waiting": "{{name}} väntar på godkännande",
+    "no-pending-user": "Det finns ingen som väntar på att gå med."
   },
   "polls": {
+    "title": "Undersökningar",
+    "poll-num": "Enkät {{index}}",
     "create": "Skapa ny omröstning",
     "enter-question": "Ange fråga",
     "question": "Fråga",
@@ -355,7 +394,8 @@
     "end-poll": "Avsluta omröstning",
     "end-poll-success": "Omröstningen avslutades framgångsrikt",
     "publish-result": "Publicera resultat",
-    "total": "Total"
+    "total": "Total",
+    "not-respondents-total": "Svarade inte: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Hantera smågrupper",
@@ -387,6 +427,19 @@
     "user-joined": "Förenad",
     "not-joined": "Inte ansluten"
   },
+  "landing": {
+    "connecting-media-server": "Ansluter till mediaservern...",
+    "modal-title": "Inställningar för mikrofon och kamera",
+    "ready-to-join": "Redo att gå med?",
+    "join-prompt": "Aktivera din mikrofon och kamera för att delta fullt ut, eller gå med som en lyssnare.",
+    "enable-mic-cam-btn": "Aktivera mikrofon och kamera",
+    "join-as-listener-btn": "Gå med som en lyssnare",
+    "webcam-menu-title": "Välj kamera",
+    "mic-menu-title": "Välj mikrofon",
+    "background-filter-title": "Bakgrund och filter",
+    "config-background-btn": "Konfigurera kamerans bakgrund",
+    "waiting-for-approval-title": "Väntar på godkännande"
+  },
   "external-display-link-display": {
     "modal-title": "Visa extern länk (iframe)",
     "url": "URL",
@@ -401,7 +454,8 @@
     "meeting-id": "Mötes-ID",
     "meeting-id-des": "Mötets ursprungs-ID",
     "user-role": "Användarens roll",
-    "user-role-des": "Användarens nuvarande roll. Antingen administratör eller deltagare"
+    "user-role-des": "Användarens nuvarande roll. Antingen administratör eller deltagare",
+    "iframe-title": "Inbäddat externt innehåll"
   },
   "ingress-features": {
     "ingress-type": "Typ av ingress",
@@ -449,6 +503,7 @@
     "select-one-lang": "Välj ett språk",
     "subtitle-history-modal-title": "Undertexter texter historia",
     "azure-error": "Microsoft Azure-fel: {{error}}",
-    "speech-to-text-stopped": "Tal-till-text-tjänsten har stoppats"
+    "speech-to-text-stopped": "Tal-till-text-tjänsten har stoppats",
+    "enable-transcription": "Aktivera transkription"
   }
 }
