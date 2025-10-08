@@ -50,6 +50,9 @@
     "room-will-end-in": "Ruangan ini akan berakhir di {{minutes}} Menit",
     "e2ee-unsupported-browser-title": "Browser yang tidak didukung",
     "e2ee-unsupported-browser-msg": "Sesi ini telah mengaktifkan enkripsi end-to-end yang tidak didukung oleh browser Anda saat ini.",
+    "e2ee-invalid-key-title": "Kunci Keamanan Tidak Valid",
+    "e2ee-invalid-key-msg": "Kunci keamanan yang Anda masukkan salah.",
+    "e2ee-empty-key-msg": "Kunci keamanan tidak boleh kosong.",
     "nats-error-title": "Kesalahan koneksi server Nats",
     "nats-error-no-response": "Tidak ada server backend yang ditemukan untuk menangani permintaan. Kesalahan: {{error}}",
     "nats-error-timeout": "Tidak ada respons yang ditemukan dari server backend. Kesalahan: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Server media terputus.",
     "preloaded-whiteboard-file-processing": "File papan tulis yang dimuat sebelumnya sedang berlangsung",
     "preloaded-whiteboard-file-processing-error": "Pemrosesan file papan tulis yang dimuat sebelumnya berakhir dengan kesalahan",
-    "max-num-participates-exceeded": "Jumlah maksimum peserta yang diizinkan untuk sesi telah terlampaui."
+    "max-num-participates-exceeded": "Jumlah maksimum peserta yang diizinkan untuk sesi telah terlampaui.",
+    "uploading-file": "Mengunggah file...",
+    "ending-session": "Pertemuan berakhir, silakan tunggu ...",
+    "whiteboard-other-task-to-finish": "Papan tulis sedang menyiapkan konten baru. Harap tunggu.",
+    "cloud-recording-not-supported-self-key": "Perekaman cloud tidak tersedia saat menggunakan kunci keamanan kustom.",
+    "media-only-recording-not-support-e2ee": "Hanya merekam audio dan video tidak tersedia saat enkripsi ujung ke ujung diaktifkan.",
+    "you-are-sharing-screen": "Anda berbagi layar sekarang. Yang lain akan melihat tampilan yang lebih besar.",
+    "new-system-message-in-chat": "Pesan sistem baru telah diposting di obrolan publik."
   },
   "room-metadata": {
     "session-recording": "Sesi ini sedang direkam",
@@ -149,7 +159,10 @@
     "ready": "siap",
     "webcams-per-page": "Per halaman.",
     "require-ssl-title": "Domain harus diaktifkan SSL",
-    "require-ssl-des": "Diperlukan untuk menggunakan domain yang diaktifkan SSL selain localhost."
+    "require-ssl-des": "Diperlukan untuk menggunakan domain yang diaktifkan SSL selain localhost.",
+    "insert-secret-key": "Masukkan Kunci Keamanan",
+    "insert-secret-help": "Untuk rapat aman ini, semua orang harus menggunakan Kunci Keamanan yang sama. Jika tidak cocok, Anda tidak akan dapat terhubung. Dapatkan Kunci Keamanan yang benar dari penyelenggara rapat.",
+    "save": "Simpan"
   },
   "left-panel": {
     "participants": "Peserta ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Peserta",
     "polls-tab": "Jajak pendapat",
     "breakout-room-tab": "Ruang kerja kelompok",
+    "me": "(saya)",
     "public-chat": "Obrolan publik",
+    "private-chat": "Obrolan Pribadi",
+    "select-chat-conversation-title": "Memilih percakapan",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Minta untuk berbagi Mikrofon",
@@ -236,12 +252,17 @@
       "recording-types-des": "Anda dapat memilih salah satu jenis perekaman berikut. Gunakan Google Chrome untuk mendapatkan hasil terbaik untuk perekaman Lokal",
       "local-recording": "Rekaman lokal",
       "cloud-recording": "Perekaman awan",
+      "cloud-media-only-recording": "Catatan Cloud: Hanya Media",
       "stop-rtmp-broadcasting": "Hentikan siaran RTMP",
       "start-rtmp-broadcasting": "Mulai siaran RTMP",
       "show-shared-notepad": "Tampilkan notepad bersama",
       "hide-shared-notepad": "Sembunyikan notepad bersama",
       "show-whiteboard": "Tampilkan papan tulis",
       "hide-whiteboard": "Sembunyikan papan tulis",
+      "show-polls-panel": "Tampilkan Jajak Pendapat",
+      "hide-polls-panel": "Sembunyikan Jajak Pendapat",
+      "show-translation-settings": "Tampilkan Pengaturan Transkripsi",
+      "hide-translation-settings": "Sembunyikan Pengaturan Transkripsi",
       "promote-presenter": "Promosikan sebagai presenter",
       "demote-presenter": "Turunkan dari presenter"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Mengelola ruang kerja kelompok",
       "start-display-external-link": "Tampilkan tautan eksternal",
       "stop-display-external-link": "Berhenti menampilkan tautan eksternal",
-      "speech-to-text-settings": "Pengaturan ucapan ke teks/terjemahan"
+      "speech-to-text-settings": "Pengaturan ucapan ke teks/terjemahan",
+      "enable-polls": "Mengaktifkan jajak pendapat",
+      "disable-polls": "Menonaktifkan jajak pendapat"
     },
     "notice": {
       "already-active-screen-sharing": "Sesi sudah memiliki berbagi layar aktif",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Tautan langsung",
       "external-media-player-upload-file": "Unggah",
       "external-media-player-upload-file-play": "Unggah dan putar",
+      "external-media-player-uploading": "Meng...",
       "external-media-player-upload-supported-files": "File yang didukung: {{files}}",
+      "external-media-player-select-file": "Memilih file media untuk diunggah",
       "upload-background-image": "Unggah gambar latar belakang",
       "shared-notepad": "Notepad bersama"
     }
@@ -315,7 +340,18 @@
     "file-ready": "File siap",
     "upload-file": "Unggah file",
     "manage-files": "File",
-    "upload-image": "Citra"
+    "upload-image": "Citra",
+    "follow-presenter-tooltip": "Ikuti Penyaji",
+    "unfollow-presenter-tooltip": "Berhenti Mengikuti Penyaji",
+    "follow": "Mengikuti",
+    "unfollow": "Berhenti mengikuti",
+    "upload-files-title": "Unggah File",
+    "drag-drop-file": "Seret dan lepas file Anda untuk diunggah",
+    "max-file-size": "Ukuran file maks: {{size}} MB",
+    "or": "ATAU",
+    "select-file": "Pilih File",
+    "add-to-whiteboard": "Tambahkan ke Papan Tulis",
+    "total-pages": "Jumlah halaman: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Kelola ruang tunggu",
@@ -326,9 +362,12 @@
     "reject-all": "Tolak semua orang",
     "list-waiting-participants": "Daftar peserta menunggu ({{count}})",
     "reject-and-block-user": "Tolak & Blokir",
-    "user-waiting": "{{name}} sedang menunggu persetujuan"
+    "user-waiting": "{{name}} sedang menunggu persetujuan",
+    "no-pending-user": "Tidak ada yang menunggu untuk bergabung."
   },
   "polls": {
+    "title": "Jajak pendapat",
+    "poll-num": "Jajak pendapat {{index}}",
     "create": "Buat jajak pendapat baru",
     "enter-question": "Masukkan pertanyaan",
     "question": "Pertanyaan",
@@ -355,7 +394,8 @@
     "end-poll": "Akhiri jajak pendapat",
     "end-poll-success": "Jajak pendapat berhasil berakhir",
     "publish-result": "Publikasikan hasil",
-    "total": "Seluruh"
+    "total": "Seluruh",
+    "not-respondents-total": "Tidak menanggapi: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Mengelola ruang kerja kelompok",
@@ -387,6 +427,19 @@
     "user-joined": "Bergabung",
     "not-joined": "Tidak bergabung"
   },
+  "landing": {
+    "connecting-media-server": "Menghubungkan ke server media...",
+    "modal-title": "Preferensi Mikrofon dan Kamera",
+    "ready-to-join": "Siap untuk bergabung?",
+    "join-prompt": "Aktifkan mikrofon dan kamera Anda untuk berpartisipasi sepenuhnya, atau bergabunglah sebagai pendengar.",
+    "enable-mic-cam-btn": "Aktifkan Mikrofon dan Kamera",
+    "join-as-listener-btn": "Bergabunglah sebagai pendengar",
+    "webcam-menu-title": "Pilih Kamera",
+    "mic-menu-title": "Pilih Mikrofon",
+    "background-filter-title": "Latar Belakang & Filter",
+    "config-background-btn": "Konfigurasikan Latar Belakang Kamera",
+    "waiting-for-approval-title": "Menunggu Persetujuan"
+  },
   "external-display-link-display": {
     "modal-title": "Tampilkan tautan eksternal (iframe)",
     "url": "Url",
@@ -401,7 +454,8 @@
     "meeting-id": "Id Rapat",
     "meeting-id-des": "ID asal rapat",
     "user-role": "Peran pengguna",
-    "user-role-des": "Peran pengguna saat ini. Baik admin atau peserta"
+    "user-role-des": "Peran pengguna saat ini. Baik admin atau peserta",
+    "iframe-title": "Konten eksternal yang disematkan"
   },
   "ingress-features": {
     "ingress-type": "Jenis ingress",
@@ -449,6 +503,7 @@
     "select-one-lang": "Pilih satu bahasa",
     "subtitle-history-modal-title": "Sejarah teks subtitle",
     "azure-error": "Kesalahan Microsoft Azure: {{error}}",
-    "speech-to-text-stopped": "Layanan ucapan ke teks telah dihentikan"
+    "speech-to-text-stopped": "Layanan ucapan ke teks telah dihentikan",
+    "enable-transcription": "Aktifkan Transkripsi"
   }
 }
