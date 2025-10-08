@@ -2,25 +2,17 @@ import React, { memo, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChatMessage } from 'plugnmeet-protocol-js';
 
+import Avatar from './avatar';
+
 import { ICurrentUser } from '../../../../store/slices/interfaces/session';
 import { useAppSelector } from '../../../../store';
-
-import Avatar from './avatar';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
+import { formatDate } from '../../utils';
 
 interface IMessageProps {
   body: ChatMessage;
   currentUser?: ICurrentUser;
 }
-
-const formatDate = (timeStamp: string) => {
-  const date = new Date(Number(timeStamp));
-  return date.toLocaleString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-};
 
 const SystemMessage = memo(({ message }: { message: string }) => {
   return (

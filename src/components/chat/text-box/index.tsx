@@ -24,9 +24,15 @@ const TextBoxArea = () => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { t } = useTranslation();
   const conn = getNatsConn();
-  const session = store.getState().session;
-  const isAdmin = !!session.currentUser?.metadata?.isAdmin;
-  const chatFeatures = session.currentRoom.metadata?.roomFeatures?.chatFeatures;
+  // Values that are static for the session
+  const { isAdmin, chatFeatures } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return {
+      isAdmin: !!currentUser?.metadata?.isAdmin,
+      chatFeatures: session.currentRoom.metadata?.roomFeatures?.chatFeatures,
+    };
+  }, []);
 
   const isLockChatSendMsg = useAppSelector(
     (state) =>
@@ -167,7 +173,12 @@ const TextBoxArea = () => {
 
   return (
     <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
-      {showSendFile ? <FileSend lockSendFile={isFileSendingLocked} /> : null}
+      {showSendFile && (
+        <FileSend
+          lockSendFile={isFileSendingLocked}
+          chatFeatures={chatFeatures}
+        />
+      )}
       <textarea
         name="message-textarea"
         id="message-textarea"

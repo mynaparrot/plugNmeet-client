@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
+import { ChatFeatures, RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
-import { store, useAppDispatch } from '../../../store';
+import { useAppDispatch } from '../../../store';
 import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
 import { publishFileAttachmentToChat } from '../utils';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
@@ -10,16 +10,14 @@ import { LoadingIcon } from '../../../assets/Icons/Loading';
 
 interface IFileSendProps {
   lockSendFile: boolean;
+  chatFeatures: ChatFeatures | undefined;
 }
 
-const FileSend = ({ lockSendFile }: IFileSendProps) => {
+const FileSend = ({ lockSendFile, chatFeatures }: IFileSendProps) => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [files, setFiles] = useState<Array<File>>();
-
-  const chatFeatures =
-    store.getState().session.currentRoom.metadata?.roomFeatures?.chatFeatures;
 
   const { accept, maxFileSize, canUpload } = useMemo(() => {
     const allowedTypes = chatFeatures?.allowedFileTypes;

@@ -53,7 +53,7 @@ window.addEventListener('load', async () => {
 });
 
 const joinSession = async () => {
-  const res = await sendAPIRequest('/room/join', {});
+  const res = await callLtiApi('/room/join', {});
   if (res.status) {
     let url = window.PLUG_N_MEET_SERVER_URL + '/?access_token=' + res.token;
     if (typeof window.DESIGN_CUSTOMIZATION !== 'undefined') {
@@ -71,7 +71,7 @@ const joinSession = async () => {
 };
 
 const endSession = async () => {
-  const res = await sendAPIRequest('/room/end', {});
+  const res = await callLtiApi('/room/end', {});
   if (res.status) {
     document.querySelector('.end').style.display = 'none';
   } else {
@@ -81,7 +81,7 @@ const endSession = async () => {
 
 const isSessionActive = async () => {
   const btn = document.querySelector('.end');
-  const res = await sendAPIRequest('/room/isActive', {});
+  const res = await callLtiApi('/room/isActive', {});
 
   if (res.is_active) {
     btn.style.display = '';
@@ -91,7 +91,7 @@ const isSessionActive = async () => {
 };
 
 const fetchRecordings = async (from = 0, limit = 10, order_by = 'DESC') => {
-  const res = await sendAPIRequest('/recording/fetch', {
+  const res = await callLtiApi('/recording/fetch', {
     from,
     limit,
     order_by,
@@ -121,7 +121,7 @@ const downloadRecording = async (e) => {
   e.preventDefault();
   const recordId = e.target.attributes.getNamedItem('data-recording').value;
 
-  const res = await sendAPIRequest('/recording/download', {
+  const res = await callLtiApi('/recording/download', {
     record_id: recordId,
   });
 
@@ -142,7 +142,7 @@ const deleteRecording = async (e) => {
   }
 
   const recordId = e.target.attributes.getNamedItem('data-recording').value;
-  const res = await sendAPIRequest('/recording/delete', {
+  const res = await callLtiApi('/recording/delete', {
     record_id: recordId,
   });
 
@@ -153,7 +153,7 @@ const deleteRecording = async (e) => {
   }
 };
 
-const sendAPIRequest = async (path, body) => {
+const callLtiApi = async (path, body) => {
   const url = window.PLUG_N_MEET_SERVER_URL + '/lti/v1/api' + path;
   const output = {
     status: false,

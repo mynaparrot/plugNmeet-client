@@ -52,7 +52,7 @@ class AudioActivityManager {
   private startLoop = () => {
     this.tracks.forEach((processor) => {
       const { analyser, dataArray, throttledUpdateCallback } = processor;
-      analyser.getByteTimeDomainData(dataArray);
+      analyser.getByteTimeDomainData(dataArray as any);
 
       let sumSquares = 0.0;
       for (const amplitude of dataArray) {

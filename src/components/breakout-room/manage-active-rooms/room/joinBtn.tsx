@@ -4,14 +4,15 @@ import { create } from '@bufbuild/protobuf';
 import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 
 import { useJoinRoomMutation } from '../../../../store/services/breakoutRoomApi';
+import { BreakoutRoomMessage } from '../..';
 import { store } from '../../../../store';
 
 interface IJoinBtnProps {
   breakoutRoomId: string;
-  setErrorMsg: (msg: string) => void;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 
-const JoinBtn = ({ breakoutRoomId, setErrorMsg }: IJoinBtnProps) => {
+const JoinBtn = ({ breakoutRoomId, setMessage }: IJoinBtnProps) => {
   const { t } = useTranslation();
   const [joinRoom, { isLoading, isSuccess, isError, data, error }] =
     useJoinRoomMutation();
@@ -29,29 +30,29 @@ const JoinBtn = ({ breakoutRoomId, setErrorMsg }: IJoinBtnProps) => {
         searchParams.toString();
 
       if (!window.open(url, '_blank')) {
-        setErrorMsg(t('breakout-room.open-tab-error'));
+        setMessage({ text: t('breakout-room.open-tab-error'), type: 'error' });
       }
     } else if ((isSuccess && !data?.status) || isError) {
       const msg = data?.msg ?? (error as any)?.data?.msg ?? 'Error';
-      setErrorMsg(t(msg));
+      setMessage({ text: t(msg), type: 'error' });
     }
-  }, [isSuccess, isError, data, error, t, setErrorMsg]);
+  }, [isSuccess, isError, data, error, t, setMessage]);
 
   const handleJoin = useCallback(() => {
     // clear previous error
-    setErrorMsg('');
+    setMessage(null);
     joinRoom(
       create(JoinBreakoutRoomReqSchema, {
         breakoutRoomId: breakoutRoomId,
         userId: store.getState().session.currentUser?.userId ?? '',
       }),
     );
-  }, [joinRoom, breakoutRoomId, setErrorMsg]);
+  }, [joinRoom, breakoutRoomId, setMessage]);
 
   return (
     <div className="join-btn mr-1">
       <button
-        className="h-7 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+        className="h-7 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         onClick={handleJoin}
         disabled={isLoading}
       >

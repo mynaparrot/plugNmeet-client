@@ -5,12 +5,13 @@ import { BroadcastBreakoutRoomMsgReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { useBroadcastBreakoutRoomMsgMutation } from '../../../store/services/breakoutRoomApi';
+import { BreakoutRoomMessage } from '..';
 
 interface IBroadcastMessageFormProps {
-  setErrorMsg: (msg: string) => void;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 
-const BroadcastMessageForm = ({ setErrorMsg }: IBroadcastMessageFormProps) => {
+const BroadcastMessageForm = ({ setMessage }: IBroadcastMessageFormProps) => {
   const { t } = useTranslation();
   const [msg, setMsg] = useState<string>('');
   const [broadcastMsg, { isLoading, data, isSuccess, error }] =
@@ -24,20 +25,20 @@ const BroadcastMessageForm = ({ setErrorMsg }: IBroadcastMessageFormProps) => {
         });
         setMsg('');
       } else {
-        setErrorMsg(t(data.msg));
+        setMessage({ text: t(data.msg), type: 'error' });
       }
     } else if (error) {
       const errorMsg = (error as any)?.data?.msg ?? 'Unknown error';
-      setErrorMsg(t(errorMsg));
+      setMessage({ text: t(errorMsg), type: 'error' });
     }
-  }, [isSuccess, data, error, t, setErrorMsg]);
+  }, [isSuccess, data, error, t, setMessage]);
 
   const send = () => {
     if (msg.trim() === '') {
       return;
     }
     // clear previous error message
-    setErrorMsg('');
+    setMessage(null);
     broadcastMsg(
       create(BroadcastBreakoutRoomMsgReqSchema, {
         msg,

@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { participantsSelector } from '../../../../store/slices/participantSlice';
-import { useAppSelector } from '../../../../store';
 import { generateAvatarInitial } from '../../../../helpers/utils';
+import { store } from '../../../../store';
 
 interface IAvatarProps {
   userId: string;
@@ -10,9 +10,7 @@ interface IAvatarProps {
 }
 
 const Avatar = ({ userId, name }: IAvatarProps) => {
-  const participant = useAppSelector((state) =>
-    participantsSelector.selectById(state, userId),
-  );
+  const participant = participantsSelector.selectById(store.getState(), userId);
   const initials = generateAvatarInitial(name);
 
   return (

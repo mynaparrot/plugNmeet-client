@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 
 import { useGetBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
+import { BreakoutRoomMessage } from '..';
 import RoomItem from './room';
 
 interface IRoomListsProps {
-  setErrorMsg: (msg: string) => void;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 
-const RoomLists = ({ setErrorMsg }: IRoomListsProps) => {
+const RoomLists = ({ setMessage }: IRoomListsProps) => {
   const { data, isLoading } = useGetBreakoutRoomsQuery(undefined, {
     pollingInterval: 10000,
   });
@@ -33,7 +34,7 @@ const RoomLists = ({ setErrorMsg }: IRoomListsProps) => {
         </div>
       )}
       {sortedRooms.map((room) => (
-        <RoomItem key={room.id} room={room} setErrorMsg={setErrorMsg} />
+        <RoomItem key={room.id} room={room} setMessage={setMessage} />
       ))}
     </div>
   );

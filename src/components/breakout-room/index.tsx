@@ -11,10 +11,15 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { updateShowManageBreakoutRoomModal } from '../../store/slices/bottomIconsActivitySlice';
 import { useCreateBreakoutRoomsMutation } from '../../store/services/breakoutRoomApi';
 
+export interface BreakoutRoomMessage {
+  text: string;
+  type: 'info' | 'error';
+}
+
 const BreakoutRoom = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [errorMsg, setErrorMsg] = useState<string>('');
+  const [message, setMessage] = useState<BreakoutRoomMessage | null>(null);
 
   const breakoutRoomIsActive = useAppSelector(
     (state) =>
@@ -33,17 +38,17 @@ const BreakoutRoom = () => {
         });
         dispatch(updateShowManageBreakoutRoomModal(false));
       } else {
-        setErrorMsg(t(data.msg ?? ''));
+        setMessage({ text: t(data.msg ?? ''), type: 'error' });
       }
     } else if (error) {
       const msg = (error as any)?.data?.msg ?? 'Unknown error';
-      setErrorMsg(t(msg));
+      setMessage({ text: t(msg), type: 'error' });
     }
   }, [isSuccess, data, error, dispatch, t]);
 
   const handleCreateBreakoutRooms = (req: CreateBreakoutRoomsReq) => {
     // clean previous error
-    setErrorMsg('');
+    setMessage(null);
     createBreakoutRoom(req);
   };
 
@@ -56,18 +61,24 @@ const BreakoutRoom = () => {
       maxWidth="max-w-4xl"
     >
       <div className="mt-0">
-        {errorMsg && (
-          <div className="text-red-600 bg-red-50 dark:bg-red-100 dark:text-red-700 py-2 px-4 rounded-lg mb-4 text-sm">
-            {errorMsg}
+        {message && (
+          <div
+            className={`py-2 px-4 rounded-lg mb-4 text-sm ${
+              message.type === 'error'
+                ? 'text-red-600 bg-red-50 dark:bg-red-100 dark:text-red-700'
+                : 'text-blue-600 bg-blue-50 dark:bg-blue-100 dark:text-blue-700'
+            }`}
+          >
+            {message.text}
           </div>
         )}
         {breakoutRoomIsActive ? (
-          <ManageActiveRooms setErrorMsg={setErrorMsg} />
+          <ManageActiveRooms setMessage={setMessage} />
         ) : (
           <FormElems
             createBreakoutRooms={handleCreateBreakoutRooms}
             isLoading={isLoading}
-            setErrorMsg={setErrorMsg}
+            setMessage={setMessage}
           />
         )}
       </div>

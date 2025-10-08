@@ -4,12 +4,13 @@ import { IncreaseBreakoutRoomDurationReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { useIncreaseDurationMutation } from '../../../../store/services/breakoutRoomApi';
+import { BreakoutRoomMessage } from '../..';
 
 interface IExtendTimeProps {
   breakoutRoomId: string;
-  setErrorMsg: (msg: string) => void;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
-const ExtendDuration = ({ breakoutRoomId, setErrorMsg }: IExtendTimeProps) => {
+const ExtendDuration = ({ breakoutRoomId, setMessage }: IExtendTimeProps) => {
   const { t } = useTranslation();
   const [duration, setDuration] = useState<number>(5);
   const [increaseDuration, { isLoading, isSuccess, isError, data, error }] =
@@ -17,21 +18,24 @@ const ExtendDuration = ({ breakoutRoomId, setErrorMsg }: IExtendTimeProps) => {
 
   useEffect(() => {
     if (isSuccess && data) {
-      if (!data.status) {
-        setErrorMsg(t(data.msg));
+      if (data.status) {
+        setMessage({
+          text: t('breakout-room.duration-extended'),
+          type: 'info',
+        });
+      } else {
+        setMessage({ text: t(data.msg), type: 'error' });
       }
-      // Success is implicitly handled by the UI updating (duration change),
-      // so no toast is needed.
     } else if (isError) {
       const msg = (error as any)?.data?.msg ?? 'Unknown error';
-      setErrorMsg(t(msg));
+      setMessage({ text: t(msg), type: 'error' });
     }
-  }, [isSuccess, isError, data, error, t, setErrorMsg]);
+  }, [isSuccess, isError, data, error, t, setMessage]);
 
   const handleExtendDuration = useCallback(() => {
     if (duration > 0) {
       // clear previous error
-      setErrorMsg('');
+      setMessage(null);
       increaseDuration(
         create(IncreaseBreakoutRoomDurationReqSchema, {
           breakoutRoomId: breakoutRoomId,
@@ -39,7 +43,7 @@ const ExtendDuration = ({ breakoutRoomId, setErrorMsg }: IExtendTimeProps) => {
         }),
       );
     }
-  }, [duration, increaseDuration, breakoutRoomId, setErrorMsg]);
+  }, [duration, increaseDuration, breakoutRoomId, setMessage]);
 
   return (
     <div className="extend-time-wrapper flex items-center gap-1">
@@ -54,7 +58,7 @@ const ExtendDuration = ({ breakoutRoomId, setErrorMsg }: IExtendTimeProps) => {
       <button
         onClick={handleExtendDuration}
         disabled={isLoading || duration <= 0}
-        className="h-8 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+        className="h-8 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {t('breakout-room.extend-duration')}
       </button>

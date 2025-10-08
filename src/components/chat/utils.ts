@@ -29,3 +29,12 @@ export const publishFileAttachmentToChat = async (
     );
   }
 };
+
+export const formatDate = (timeStamp: string) => {
+  const date = new Date(Number(timeStamp));
+  return date.toLocaleString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};

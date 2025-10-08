@@ -12,6 +12,7 @@ import RoomNumberSelector from './roomNumberSelector';
 import RoomBox from './roomBox';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { RoomType, UserType } from './types';
+import { BreakoutRoomMessage } from '..';
 import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
@@ -19,13 +20,13 @@ import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoo
 interface IFromElemsProps {
   createBreakoutRooms: (req: CreateBreakoutRoomsReq) => void;
   isLoading: boolean;
-  setErrorMsg: (msg: string) => void;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 
 const FromElems = ({
   createBreakoutRooms,
   isLoading,
-  setErrorMsg,
+  setMessage,
 }: IFromElemsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -146,7 +147,7 @@ const FromElems = ({
     });
 
     if (!tmp.length) {
-      setErrorMsg(t('breakout-room.need-one-user'));
+      setMessage({ text: t('breakout-room.need-one-user'), type: 'error' });
       return;
     }
 
@@ -162,8 +163,8 @@ const FromElems = ({
     roomDuration,
     welcomeMsg,
     createBreakoutRooms,
+    setMessage,
     t,
-    setErrorMsg,
   ]);
 
   return (

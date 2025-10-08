@@ -13,13 +13,14 @@ import BreakoutRoomUsers from './users';
 import BreakoutRoomDuration from './duration';
 import JoinBtn from './joinBtn';
 import ExtendDuration from './extendDuration';
+import { BreakoutRoomMessage } from '../..';
 
 interface RoomItemProps {
   room: BreakoutRoom;
-  setErrorMsg: (msg: string) => void;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 
-const RoomItem = ({ room, setErrorMsg }: RoomItemProps) => {
+const RoomItem = ({ room, setMessage }: RoomItemProps) => {
   const { t } = useTranslation();
 
   return (
@@ -83,16 +84,16 @@ const RoomItem = ({ room, setErrorMsg }: RoomItemProps) => {
                     <div className="row flex flex-wrap items-center justify-between mb-4">
                       <ExtendDuration
                         breakoutRoomId={room.id}
-                        setErrorMsg={setErrorMsg}
+                        setMessage={setMessage}
                       />
                       <div className="row flex mb-2">
                         <JoinBtn
                           breakoutRoomId={room.id}
-                          setErrorMsg={setErrorMsg}
+                          setMessage={setMessage}
                         />
                         <EndBtn
                           breakoutRoomId={room.id}
-                          setErrorMsg={setErrorMsg}
+                          setMessage={setMessage}
                         />
                       </div>
                     </div>

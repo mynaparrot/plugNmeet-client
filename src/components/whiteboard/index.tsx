@@ -26,6 +26,12 @@ import { toast } from 'react-toastify';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
+import '@excalidraw/excalidraw/index.css';
+import './style.css';
+
+import ManageOfficeFilesModal from './manage-office-files';
+import FooterUI from './footerUI';
+
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
   broadcastAppStateChanges,
@@ -47,12 +53,6 @@ import {
   ensureAllImagesDataIsLoaded,
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
-
-import ManageOfficeFilesModal from './manage-office-files';
-import FooterUI from './footerUI';
-
-import '@excalidraw/excalidraw/index.css';
-import './style.css';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 
 interface WhiteboardProps {

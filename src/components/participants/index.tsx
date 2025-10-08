@@ -14,23 +14,32 @@ import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const selectFilteredParticipants = createSelector(
-  [
-    participantsSelector.selectAll,
-    (
-      state: RootState,
-      options: {
-        isAdmin: boolean;
-        search: string;
-        allowViewOtherUsers: boolean;
-        currentUserId: string | undefined;
-      },
-    ) => options,
-  ],
-  (participants, { isAdmin, search, allowViewOtherUsers, currentUserId }) => {
-    let list = participants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
-    );
+  participantsSelector.selectAll,
+  (state: RootState, isAdmin: boolean) => isAdmin,
+  (state: RootState, isAdmin: boolean, search: string) => search,
+  (
+    state: RootState,
+    isAdmin: boolean,
+    search: string,
+    allowViewOtherUsers: boolean,
+  ) => allowViewOtherUsers,
+  (
+    state: RootState,
+    isAdmin: boolean,
+    search: string,
+    allowViewOtherUsers: boolean,
+    currentUserId: string | undefined,
+  ) => currentUserId,
+  (participants, isAdmin, search, allowViewOtherUsers, currentUserId) => {
+    // Use slice() to create a shallow copy to avoid mutating the original state
+    let list = participants
+      .slice()
+      .filter(
+        (p) =>
+          p.name !== '' &&
+          p.userId !== 'RECORDER_BOT' &&
+          p.userId !== 'RTMP_BOT',
+      );
 
     if (!isAdmin && !allowViewOtherUsers) {
       list = list.filter(
@@ -45,7 +54,8 @@ const selectFilteredParticipants = createSelector(
     }
 
     if (isAdmin) {
-      list.sort((a, b) =>
+      // .sort() mutates the array, so we work on a copy.
+      return list.sort((a, b) =>
         a.metadata.waitForApproval === b.metadata.waitForApproval
           ? 0
           : a.metadata.waitForApproval
@@ -82,12 +92,13 @@ const ParticipantsComponent = () => {
   }, []);
 
   const participants = useAppSelector((state) =>
-    selectFilteredParticipants(state, {
-      isAdmin: currentIsAdmin,
-      search: searchParticipant,
+    selectFilteredParticipants(
+      state,
+      currentIsAdmin,
+      searchParticipant,
       allowViewOtherUsers,
-      currentUserId: currentUserUserId,
-    }),
+      currentUserUserId,
+    ),
   );
 
   const { outerRef, innerRef, items } = useVirtual({

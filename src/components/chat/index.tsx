@@ -2,9 +2,10 @@ import React, { DragEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
-import { store, useAppDispatch, useAppSelector } from '../../store';
 import TextBoxArea from './text-box';
 import ChatTabs from './chatTabs';
+
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { publishFileAttachmentToChat } from './utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { uploadResumableFile } from '../../helpers/fileUpload';
@@ -12,6 +13,16 @@ import { uploadResumableFile } from '../../helpers/fileUpload';
 const ChatComponent = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  // Values that are static for the session
+  const { isRecorder, isAdmin, chatFeatures } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return {
+      isRecorder: !!currentUser?.isRecorder,
+      isAdmin: !!currentUser?.metadata?.isAdmin,
+      chatFeatures: session.currentRoom.metadata?.roomFeatures?.chatFeatures,
+    };
+  }, []);
 
   // Values that can change during the session (e.g., admin changes lock settings)
   const isChatLocked = useAppSelector(
@@ -28,12 +39,6 @@ const ChatComponent = () => {
   const defaultLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
-
-  // Values that are static for the session
-  const session = store.getState().session;
-  const isRecorder = session.currentUser?.isRecorder;
-  const isAdmin = session.currentUser?.metadata?.isAdmin;
-  const chatFeatures = session.currentRoom.metadata?.roomFeatures?.chatFeatures;
 
   const canShowChatInput = useMemo(() => {
     // Recorders can never chat.
@@ -110,9 +115,6 @@ const ChatComponent = () => {
           <ChatTabs />
         </div>
       </div>
-      {isRecorder && (
-        <div className="w-full h-px hiddenAnimation absolute z-50 bottom-0 bg-linear-to-r from-primary-color to-secondary-color" />
-      )}
       {canShowChatInput && (
         <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 bg-white w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
           <TextBoxArea />
