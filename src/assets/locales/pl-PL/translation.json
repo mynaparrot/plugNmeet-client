@@ -50,6 +50,9 @@
     "room-will-end-in": "Ten pokój zostanie zakończony za {{minutes}} protokół",
     "e2ee-unsupported-browser-title": "Nieobsługiwana przeglądarka",
     "e2ee-unsupported-browser-msg": "Ta sesja włączyła szyfrowanie typu end-to-end, którego Twoja obecna przeglądarka nie obsługuje.",
+    "e2ee-invalid-key-title": "Nieprawidłowy klucz bezpieczeństwa",
+    "e2ee-invalid-key-msg": "Wprowadzony klucz bezpieczeństwa jest nieprawidłowy.",
+    "e2ee-empty-key-msg": "Klucz bezpieczeństwa nie może być pusty.",
     "nats-error-title": "Błąd połączenia z serwerem Nats",
     "nats-error-no-response": "Nie znaleziono serwera zaplecza do obsługi żądania. Błąd: {{error}}",
     "nats-error-timeout": "Nie znaleziono odpowiedzi z serwera zaplecza. Błąd: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Serwer multimediów odłączony.",
     "preloaded-whiteboard-file-processing": "Wstępnie załadowany plik tablicy w toku",
     "preloaded-whiteboard-file-processing-error": "Przetwarzanie wstępnie załadowanego pliku tablicy zakończyło się błędem",
-    "max-num-participates-exceeded": "Przekroczona została maksymalna liczba uczestników dozwolona dla sesji."
+    "max-num-participates-exceeded": "Przekroczona została maksymalna liczba uczestników dozwolona dla sesji.",
+    "uploading-file": "Przesyłanie pliku...",
+    "ending-session": "Spotkanie się kończy, proszę czekać...",
+    "whiteboard-other-task-to-finish": "Biała tablica przygotowuje nową zawartość. Proszę czekać.",
+    "cloud-recording-not-supported-self-key": "Nagrywanie w chmurze nie jest dostępne podczas używania niestandardowego klucza bezpieczeństwa.",
+    "media-only-recording-not-support-e2ee": "Nagrywanie tylko audio i wideo nie jest dostępne po włączeniu szyfrowania end-to-end.",
+    "you-are-sharing-screen": "Udostępniasz ekran. Inni zobaczą większy widok.",
+    "new-system-message-in-chat": "Nowa wiadomość systemowa została opublikowana na czacie publicznym."
   },
   "room-metadata": {
     "session-recording": "Ta sesja jest nagrywana",
@@ -149,7 +159,10 @@
     "ready": "gotowy",
     "webcams-per-page": "Na stronę.",
     "require-ssl-title": "Domena musi być włączona przy użyciu protokołu SSL",
-    "require-ssl-des": "Wymagane jest użycie domeny z obsługą protokołu SSL innej niż localhost."
+    "require-ssl-des": "Wymagane jest użycie domeny z obsługą protokołu SSL innej niż localhost.",
+    "insert-secret-key": "Wprowadź klucz bezpieczeństwa",
+    "insert-secret-help": "W tym bezpiecznym spotkaniu każdy musi użyć tego samego klucza bezpieczeństwa. Jeśli nie pasuje, nie będziesz mógł się połączyć. Uzyskaj prawidłowy klucz bezpieczeństwa od organizatora spotkań.",
+    "save": "Zapisz"
   },
   "left-panel": {
     "participants": "Uczestnicy ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Uczestników",
     "polls-tab": "Ankiety",
     "breakout-room-tab": "Oddzielne pokoje",
+    "me": "me)",
     "public-chat": "Czat publiczny",
+    "private-chat": "Czat prywatny",
+    "select-chat-conversation-title": "Wybierz rozmowę",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Poproś o udostępnienie mikrofonu",
@@ -236,12 +252,17 @@
       "recording-types-des": "Możesz wybrać dowolny z następujących typów nagrywania. Użyj Google Chrome, aby uzyskać najlepszy wynik dla nagrywania lokalnego",
       "local-recording": "Nagrywanie lokalne",
       "cloud-recording": "Nagrywanie w chmurze",
+      "cloud-media-only-recording": "Rekord w chmurze: Tylko media",
       "stop-rtmp-broadcasting": "Zatrzymywanie emisji RTMP",
       "start-rtmp-broadcasting": "Rozpocznij emisję RTMP",
       "show-shared-notepad": "Pokaż udostępniony notatnik",
       "hide-shared-notepad": "Ukryj udostępniony notatnik",
       "show-whiteboard": "Pokaż tablicę",
       "hide-whiteboard": "Ukryj tablicę",
+      "show-polls-panel": "Pokaż ankiety",
+      "hide-polls-panel": "Ukryj ankiety",
+      "show-translation-settings": "Pokaż ustawienia transkrypcji",
+      "hide-translation-settings": "Ukryj ustawienia transkrypcji",
       "promote-presenter": "Promuj jako prezentera",
       "demote-presenter": "Obniżanie poziomu z osoby prowadzącej"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Zarządzanie oddzielnym pokojem",
       "start-display-external-link": "Wyświetl link zewnętrzny",
       "stop-display-external-link": "Zatrzymaj wyświetlanie linku zewnętrznego",
-      "speech-to-text-settings": "Ustawienia zamiany mowy na tekst/tłumaczenia"
+      "speech-to-text-settings": "Ustawienia zamiany mowy na tekst/tłumaczenia",
+      "enable-polls": "Włącz ankiety",
+      "disable-polls": "Wyłącz ankiety"
     },
     "notice": {
       "already-active-screen-sharing": "Sesja ma już aktywne udostępnianie ekranu",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Bezpośredni odnośnik",
       "external-media-player-upload-file": "Przesyłać",
       "external-media-player-upload-file-play": "Prześlij i graj",
+      "external-media-player-uploading": "Wgrywanie...",
       "external-media-player-upload-supported-files": "Obsługiwane pliki: {{files}}",
+      "external-media-player-select-file": "Wybierz plik multimedialny do przesłania",
       "upload-background-image": "Prześlij obraz tła",
       "shared-notepad": "Udostępniony notatnik"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Plik jest gotowy",
     "upload-file": "Prześlij plik",
     "manage-files": "Pliki",
-    "upload-image": "Obraz"
+    "upload-image": "Obraz",
+    "follow-presenter-tooltip": "Śledź prezentera",
+    "unfollow-presenter-tooltip": "Przestań obserwować prezentera",
+    "follow": "Śledź",
+    "unfollow": "Przestań obserwować",
+    "upload-files-title": "Prześlij pliki",
+    "drag-drop-file": "Przeciągnij i upuść swój plik, aby przesłać",
+    "max-file-size": "Maksymalny rozmiar pliku: {{size}} MB",
+    "or": "LUB",
+    "select-file": "Wybierz plik",
+    "add-to-whiteboard": "Dodaj do tablicy",
+    "total-pages": "Wszystkie strony: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Zarządzanie poczekalnią",
@@ -326,9 +362,12 @@
     "reject-all": "Odrzuć wszystkich",
     "list-waiting-participants": "Lista uczestników oczekujących ({{count}})",
     "reject-and-block-user": "Odrzuć i zablokuj",
-    "user-waiting": "{{name}} oczekuje na zatwierdzenie"
+    "user-waiting": "{{name}} oczekuje na zatwierdzenie",
+    "no-pending-user": "Nikt nie czeka na dołączenie."
   },
   "polls": {
+    "title": "Ankiety",
+    "poll-num": "Ankieta {{index}}",
     "create": "Utwórz nową ankietę",
     "enter-question": "Wpisz pytanie",
     "question": "Pytanie",
@@ -355,7 +394,8 @@
     "end-poll": "Zakończ ankietę",
     "end-poll-success": "Ankieta została zakończona pomyślnie",
     "publish-result": "Opublikuj wynik",
-    "total": "Łączny"
+    "total": "Łączny",
+    "not-respondents-total": "Nie odpowiedziało: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Zarządzanie oddzielnymi pokojami",
@@ -387,6 +427,19 @@
     "user-joined": "Połączone",
     "not-joined": "Nie dołączono"
   },
+  "landing": {
+    "connecting-media-server": "Łączenie z serwerem mediów...",
+    "modal-title": "Preferencje mikrofonu i kamery",
+    "ready-to-join": "Gotowy do dołączenia?",
+    "join-prompt": "Włącz mikrofon i aparat, aby w pełni uczestniczyć lub dołączyć jako słuchacz.",
+    "enable-mic-cam-btn": "Włącz mikrofon i aparat",
+    "join-as-listener-btn": "Dołącz jako słuchacz",
+    "webcam-menu-title": "Wybierz kamerę",
+    "mic-menu-title": "Wybierz mikrofon",
+    "background-filter-title": "Tło i filtry",
+    "config-background-btn": "Skonfiguruj tło kamery",
+    "waiting-for-approval-title": "Oczekiwanie na zatwierdzenie"
+  },
   "external-display-link-display": {
     "modal-title": "Wyświetlanie linku zewnętrznego (iframe)",
     "url": "Adres URL",
@@ -401,7 +454,8 @@
     "meeting-id": "Identyfikator spotkania",
     "meeting-id-des": "Identyfikator miejsca pochodzenia spotkania",
     "user-role": "Rola użytkownika",
-    "user-role-des": "Bieżąca rola użytkownika. Administrator lub uczestnik"
+    "user-role-des": "Bieżąca rola użytkownika. Administrator lub uczestnik",
+    "iframe-title": "Osadzona zewnętrzna zawartość"
   },
   "ingress-features": {
     "ingress-type": "Typ ruchu przychodzącego",
@@ -449,6 +503,7 @@
     "select-one-lang": "Wybierz jeden język",
     "subtitle-history-modal-title": "Historia tekstów napisów",
     "azure-error": "Błąd platformy Microsoft Azure: {{error}}",
-    "speech-to-text-stopped": "Usługa zamiany mowy na tekst została zatrzymana"
+    "speech-to-text-stopped": "Usługa zamiany mowy na tekst została zatrzymana",
+    "enable-transcription": "Włącz transkrypcję"
   }
 }
