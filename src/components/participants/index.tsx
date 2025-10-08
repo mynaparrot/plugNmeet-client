@@ -14,22 +14,24 @@ import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const selectFilteredParticipants = createSelector(
-  participantsSelector.selectAll,
-  (state: RootState, isAdmin: boolean) => isAdmin,
-  (state: RootState, isAdmin: boolean, search: string) => search,
-  (
-    state: RootState,
-    isAdmin: boolean,
-    search: string,
-    allowViewOtherUsers: boolean,
-  ) => allowViewOtherUsers,
-  (
-    state: RootState,
-    isAdmin: boolean,
-    search: string,
-    allowViewOtherUsers: boolean,
-    currentUserId: string | undefined,
-  ) => currentUserId,
+  [
+    participantsSelector.selectAll,
+    (state: RootState, isAdmin: boolean) => isAdmin,
+    (state: RootState, isAdmin: boolean, search: string) => search,
+    (
+      state: RootState,
+      isAdmin: boolean,
+      search: string,
+      allowViewOtherUsers: boolean,
+    ) => allowViewOtherUsers,
+    (
+      state: RootState,
+      isAdmin: boolean,
+      search: string,
+      allowViewOtherUsers: boolean,
+      currentUserId: string | undefined,
+    ) => currentUserId,
+  ],
   (participants, isAdmin, search, allowViewOtherUsers, currentUserId) => {
     // Use slice() to create a shallow copy to avoid mutating the original state
     let list = participants

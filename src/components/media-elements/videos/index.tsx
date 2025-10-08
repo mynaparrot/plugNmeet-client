@@ -8,7 +8,7 @@ import VideoParticipant, { VideoParticipantProps } from './videoParticipant';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
 import { updatePinCamUserId } from '../../../store/slices/roomSettingsSlice';
-import { getParticipantByUserId } from '../../../store/slices/participantSlice';
+import { participantsSelector } from '../../../store/slices/participantSlice';
 
 interface IVideosComponentProps {
   isVertical?: boolean;
@@ -64,7 +64,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           displayPinIcon = true,
           displaySwitchCamIcon = true;
 
-        const pp = getParticipantByUserId(
+        const pp = participantsSelector.selectById(
           store.getState(),
           participant.identity,
         );

@@ -16,10 +16,6 @@ export const participantsSelector = participantAdapter.getSelectors(
   (state: RootState) => state.participants,
 );
 
-export const getParticipantByUserId = (state: RootState, userId: string) => {
-  return participantsSelector.selectById(state, userId);
-};
-
 export const selectBasicParticipants = createSelector(
   [participantsSelector.selectAll],
   (participants) =>
