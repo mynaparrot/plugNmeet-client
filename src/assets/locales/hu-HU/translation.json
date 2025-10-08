@@ -50,6 +50,9 @@
     "room-will-end-in": "Ez a szoba véget ér {{minutes}} jegyzőkönyv",
     "e2ee-unsupported-browser-title": "Nem támogatott böngésző",
     "e2ee-unsupported-browser-msg": "Ez a munkamenet engedélyezte a végpontok közötti titkosítást, amelyet a jelenlegi böngésző nem támogat.",
+    "e2ee-invalid-key-title": "Érvénytelen biztonsági kulcs",
+    "e2ee-invalid-key-msg": "A megadott biztonsági kulcs helytelen.",
+    "e2ee-empty-key-msg": "A biztonsági kulcs nem lehet üres.",
     "nats-error-title": "Nats-kiszolgáló csatlakozási hibája",
     "nats-error-no-response": "Nem található háttérkiszolgáló a kérés kezelésére. Hiba: {{error}}",
     "nats-error-timeout": "Nem található válasz a háttérkiszolgálótól. Hiba: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "A médiakiszolgáló leválasztva.",
     "preloaded-whiteboard-file-processing": "Előre betöltött rajztáblafájl folyamatban",
     "preloaded-whiteboard-file-processing-error": "Az előre betöltött rajztáblafájl feldolgozása hibával fejeződött be",
-    "max-num-participates-exceeded": "Túllépték az ülésen engedélyezett résztvevők maximális számát."
+    "max-num-participates-exceeded": "Túllépték az ülésen engedélyezett résztvevők maximális számát.",
+    "uploading-file": "Fájl feltöltése...",
+    "ending-session": "A találkozó véget ér, kérlek, várj...",
+    "whiteboard-other-task-to-finish": "A tábla új tartalmat készít elő. Várj, kérlek.",
+    "cloud-recording-not-supported-self-key": "Felhőalapú rögzítés nem érhető el egyéni biztonsági kulcs használata esetén.",
+    "media-only-recording-not-support-e2ee": "Csak hang és videó rögzítése nem érhető el, ha a végpontok közötti titkosítás engedélyezve van.",
+    "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
+    "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben."
   },
   "room-metadata": {
     "session-recording": "Ez a munkamenet rögzítés alatt áll",
@@ -149,7 +159,10 @@
     "ready": "kész",
     "webcams-per-page": "Oldalanként.",
     "require-ssl-title": "A tartománynak SSL-kompatibilisnek kell lennie",
-    "require-ssl-des": "A localhosttól eltérő SSL-kompatibilis tartományt kell használnia."
+    "require-ssl-des": "A localhosttól eltérő SSL-kompatibilis tartományt kell használnia.",
+    "insert-secret-key": "Adja meg a biztonsági kulcsot",
+    "insert-secret-help": "Ehhez a biztonságos értekezlethez mindenkinek ugyanazt a biztonsági kulcsot kell használnia. Ha nem egyezik, akkor nem fog tudni csatlakozni. Kérjük, szerezze be a megfelelő biztonsági kulcsot az értekezlet szervezőjétől.",
+    "save": "Megment"
   },
   "left-panel": {
     "participants": "Résztvevők ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Résztvevők",
     "polls-tab": "Szavazások",
     "breakout-room-tab": "Szekció szobák",
+    "me": "(én)",
     "public-chat": "Nyilvános csevegés",
+    "private-chat": "Privát csevegés",
+    "select-chat-conversation-title": "Beszélgetés kiválasztása",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Megosztás kérése Mikrofon",
@@ -236,12 +252,17 @@
       "recording-types-des": "A következő felvételi típusok bármelyikét kiválaszthatja. Használja a Google Chrome-ot a legjobb eredmény eléréséhez Helyi felvétel",
       "local-recording": "Helyi felvétel",
       "cloud-recording": "Felhőalapú felvétel",
+      "cloud-media-only-recording": "Felhőrekord: Csak média",
       "stop-rtmp-broadcasting": "RTMP-műsorszórás leállítása",
       "start-rtmp-broadcasting": "Indítsa el az RTMP műsorszórást",
       "show-shared-notepad": "Megosztott jegyzettömb megjelenítése",
       "hide-shared-notepad": "Megosztott jegyzettömb elrejtése",
       "show-whiteboard": "Rajztábla megjelenítése",
       "hide-whiteboard": "Rajztábla elrejtése",
+      "show-polls-panel": "Szavazások megjelenítése",
+      "hide-polls-panel": "Szavazások elrejtése",
+      "show-translation-settings": "Átírási beállítások megjelenítése",
+      "hide-translation-settings": "Átírási beállítások elrejtése",
       "promote-presenter": "Előléptetés előadóként",
       "demote-presenter": "Lefokozás előadóból"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Szekciószoba kezelése",
       "start-display-external-link": "Külső hivatkozás megjelenítése",
       "stop-display-external-link": "Külső hivatkozás megjelenítésének leállítása",
-      "speech-to-text-settings": "Beszédfelismerési/fordítási beállítások"
+      "speech-to-text-settings": "Beszédfelismerési/fordítási beállítások",
+      "enable-polls": "Szavazások engedélyezése",
+      "disable-polls": "Szavazások letiltása"
     },
     "notice": {
       "already-active-screen-sharing": "A munkamenet már rendelkezik aktív képernyőmegosztással",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Közvetlen link",
       "external-media-player-upload-file": "Feltölt",
       "external-media-player-upload-file-play": "Feltöltés és lejátszás",
+      "external-media-player-uploading": "Feltöltő...",
       "external-media-player-upload-supported-files": "Támogatott fájlok: {{files}}",
+      "external-media-player-select-file": "Válaszd ki a feltölteni kívánt médiafájlt",
       "upload-background-image": "Háttérkép feltöltése",
       "shared-notepad": "Megosztott jegyzettömb"
     }
@@ -315,7 +340,18 @@
     "file-ready": "A fájl készen áll",
     "upload-file": "Fájl feltöltése",
     "manage-files": "Fájlokat",
-    "upload-image": "Kép"
+    "upload-image": "Kép",
+    "follow-presenter-tooltip": "Kövesse az előadót",
+    "unfollow-presenter-tooltip": "Az előadó követésének leállítása",
+    "follow": "Követ",
+    "unfollow": "Követés leállítása",
+    "upload-files-title": "Fájlok feltöltése",
+    "drag-drop-file": "Húzza át a fájlt a feltöltéshez",
+    "max-file-size": "Maximális fájlméret: {{size}} MB",
+    "or": "VAGY",
+    "select-file": "Fájl kiválasztása",
+    "add-to-whiteboard": "Hozzáadás a táblához",
+    "total-pages": "Összes oldal: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Váróterem kezelése",
@@ -326,9 +362,12 @@
     "reject-all": "Mindenki elutasítása",
     "list-waiting-participants": "Várakozó résztvevők listája ({{count}})",
     "reject-and-block-user": "Elutasítás és blokkolás",
-    "user-waiting": "{{name}} jóváhagyásra vár"
+    "user-waiting": "{{name}} jóváhagyásra vár",
+    "no-pending-user": "Senki sem várja a csatlakozást."
   },
   "polls": {
+    "title": "Szavazások",
+    "poll-num": "Szavazás {{index}}",
     "create": "Új szavazás létrehozása",
     "enter-question": "Írja be a kérdést",
     "question": "Kérdés",
@@ -355,7 +394,8 @@
     "end-poll": "Szavazás vége",
     "end-poll-success": "A szavazás sikeresen befejeződött",
     "publish-result": "Eredmény közzététele",
-    "total": "Teljes"
+    "total": "Teljes",
+    "not-respondents-total": "Nem válaszolt: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Szekciószobák kezelése",
@@ -387,6 +427,19 @@
     "user-joined": "Csatlakozott",
     "not-joined": "Nem csatlakozott"
   },
+  "landing": {
+    "connecting-media-server": "Csatlakozás a médiaszerverhez...",
+    "modal-title": "Mikrofon és kamera beállításai",
+    "ready-to-join": "Készen áll a csatlakozásra?",
+    "join-prompt": "Engedélyezze mikrofonját és kameráját a teljes részvételhez, vagy csatlakozzon hallgatóként.",
+    "enable-mic-cam-btn": "Mikrofon és kamera engedélyezése",
+    "join-as-listener-btn": "Csatlakozzon hallgatóként",
+    "webcam-menu-title": "Válassza a Kamera lehetőséget",
+    "mic-menu-title": "Válassza a Mikrofon lehetőséget",
+    "background-filter-title": "Háttér és szűrők",
+    "config-background-btn": "Kamera háttér konfigurálása",
+    "waiting-for-approval-title": "Jóváhagyásra vár"
+  },
   "external-display-link-display": {
     "modal-title": "Külső hivatkozás megjelenítése (iframe)",
     "url": "URL-cím",
@@ -401,7 +454,8 @@
     "meeting-id": "Értekezlet azonosítója",
     "meeting-id-des": "Az értekezlet eredetazonosítója",
     "user-role": "Felhasználói szerepkör",
-    "user-role-des": "A felhasználó aktuális szerepköre. Adminisztrátor vagy résztvevő"
+    "user-role-des": "A felhasználó aktuális szerepköre. Adminisztrátor vagy résztvevő",
+    "iframe-title": "Beágyazott külső tartalom"
   },
   "ingress-features": {
     "ingress-type": "Bejövő forgalom típusa",
@@ -449,6 +503,7 @@
     "select-one-lang": "Válasszon egy nyelvet",
     "subtitle-history-modal-title": "Feliratszövegek története",
     "azure-error": "Microsoft Azure-hiba: {{error}}",
-    "speech-to-text-stopped": "A beszédfelismerési szolgáltatás leállt"
+    "speech-to-text-stopped": "A beszédfelismerési szolgáltatás leállt",
+    "enable-transcription": "Átírás engedélyezése"
   }
 }
