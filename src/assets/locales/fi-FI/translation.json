@@ -50,6 +50,9 @@
     "room-will-end-in": "Tämä huone päättyy {{minutes}} pöytäkirja",
     "e2ee-unsupported-browser-title": "Selainta, jota ei tueta",
     "e2ee-unsupported-browser-msg": "Tämä istunto on ottanut käyttöön päästä päähän -salauksen, jota nykyinen selaimesi ei tue.",
+    "e2ee-invalid-key-title": "Virheellinen Turvaavain",
+    "e2ee-invalid-key-msg": "Antamasi turvaavain on virheellinen.",
+    "e2ee-empty-key-msg": "Turvallisuusavain ei voi olla tyhjä.",
     "nats-error-title": "Nats-palvelimen yhteysvirhe",
     "nats-error-no-response": "Taustapalvelinta ei löytynyt käsittelemään pyyntöä. Virhe: {{error}}",
     "nats-error-timeout": "Taustapalvelimelta ei löytynyt vastausta. Virhe: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Mediapalvelimen yhteys katkaistu.",
     "preloaded-whiteboard-file-processing": "Esiladattu luonnoslehtiötiedosto käynnissä",
     "preloaded-whiteboard-file-processing-error": "Esiladattu luonnoslehtiötiedoston käsittely päättyi virheeseen",
-    "max-num-participates-exceeded": "Istunnon sallittu enimmäisosallistujamäärä on ylitetty."
+    "max-num-participates-exceeded": "Istunnon sallittu enimmäisosallistujamäärä on ylitetty.",
+    "uploading-file": "Ladataan tiedostoa...",
+    "ending-session": "Kokous on päättymässä, odota...",
+    "whiteboard-other-task-to-finish": "Valkotaulu valmistelee uutta sisältöä. Odota hetki.",
+    "cloud-recording-not-supported-self-key": "Pilven tallennus ei ole käytettävissä, kun käytät mukautettua suojausavainta.",
+    "media-only-recording-not-support-e2ee": "Vain äänen ja videon tallennus ei ole käytettävissä, kun end-to-end salaus on käytössä.",
+    "you-are-sharing-screen": "Jaat näyttösi nyt. Toiset näkevät laajemman näkymän.",
+    "new-system-message-in-chat": "Uusi järjestelmäviesti on lähetetty julkiseen chattiin."
   },
   "room-metadata": {
     "session-recording": "Tätä istuntoa tallennetaan",
@@ -149,7 +159,10 @@
     "ready": "valmis",
     "webcams-per-page": "Per sivu.",
     "require-ssl-title": "Verkkotunnuksen on oltava SSL-yhteensopiva",
-    "require-ssl-des": "Sen on käytettävä muuta SSL-yhteensopivaa verkkotunnusta kuin localhost."
+    "require-ssl-des": "Sen on käytettävä muuta SSL-yhteensopivaa verkkotunnusta kuin localhost.",
+    "insert-secret-key": "Syötä Turvaavain",
+    "insert-secret-help": "Tähän turvalliseen tapaamiseen kaikkien on käytettävä samaa suojausavainta. Jos se ei täsmää, et voi muodostaa yhteyttä. Ole hyvä ja hanki oikea suojausavain kokouksen järjestäjältä.",
+    "save": "Tallenna"
   },
   "left-panel": {
     "participants": "Osallistujat ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Osallistujat",
     "polls-tab": "Gallupit",
     "breakout-room-tab": "Pienryhmähuoneet",
+    "me": "(minä)",
     "public-chat": "Julkinen chat",
+    "private-chat": "Yksityinen Keskustelu",
+    "select-chat-conversation-title": "Valitse keskustelu",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Pyydä jakamaan mikrofoni",
@@ -236,12 +252,17 @@
       "recording-types-des": "Voit valita minkä tahansa seuraavista tallennustyypeistä. Käytä Google Chromea saadaksesi parhaan tuloksen paikalliselle tallennukselle",
       "local-recording": "Paikallinen tallennus",
       "cloud-recording": "Pilvitallennus",
+      "cloud-media-only-recording": "Pilvitietue: Vain Media",
       "stop-rtmp-broadcasting": "RTMP-lähetyksen lopettaminen",
       "start-rtmp-broadcasting": "Aloita RTMP-lähetys",
       "show-shared-notepad": "Näytä jaettu muistio",
       "hide-shared-notepad": "Piilota jaettu muistio",
       "show-whiteboard": "Näytä valkotaulu",
       "hide-whiteboard": "Piilota luonnoslehtiö",
+      "show-polls-panel": "Näytä Kyselyt",
+      "hide-polls-panel": "Piilota Kyselyt",
+      "show-translation-settings": "Näytä Transcription Asetukset",
+      "hide-translation-settings": "Piilota Transkriptiasetukset",
       "promote-presenter": "Mainostaminen esittäjänä",
       "demote-presenter": "Alenna esittäjästä"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Pienryhmähuoneen hallinta",
       "start-display-external-link": "Näytä ulkoinen linkki",
       "stop-display-external-link": "Pysäytä ulkoisen linkin näyttäminen",
-      "speech-to-text-settings": "Puheesta tekstiksi -/käännösasetukset"
+      "speech-to-text-settings": "Puheesta tekstiksi -/käännösasetukset",
+      "enable-polls": "Ota pollit käyttöön",
+      "disable-polls": "Poista kyselyt käytöstä"
     },
     "notice": {
       "already-active-screen-sharing": "Istunnossa on jo aktiivinen näytön jakaminen",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Suora linkki",
       "external-media-player-upload-file": "Lähettää tiedosto",
       "external-media-player-upload-file-play": "Lataa ja pelaa",
+      "external-media-player-uploading": "Lähetetään...",
       "external-media-player-upload-supported-files": "Tuetut tiedostot: {{files}}",
+      "external-media-player-select-file": "Valitse ladattava mediatiedosto",
       "upload-background-image": "Lataa taustakuva",
       "shared-notepad": "Jaettu muistio"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Tiedosto on valmis",
     "upload-file": "Lataa tiedosto",
     "manage-files": "Tiedostot",
-    "upload-image": "Kuva"
+    "upload-image": "Kuva",
+    "follow-presenter-tooltip": "Seuraa esittelyä",
+    "unfollow-presenter-tooltip": "Pysäytä Presenterin seuraaminen",
+    "follow": "Seuraa",
+    "unfollow": "Lopeta",
+    "upload-files-title": "Lataa Tiedostoja",
+    "drag-drop-file": "Vedä ja pudota tiedosto ladataksesi",
+    "max-file-size": "Tiedoston enimmäiskoko: {{size}} MB",
+    "or": "TAI",
+    "select-file": "Valitse tiedosto",
+    "add-to-whiteboard": "Lisää valkotaululle",
+    "total-pages": "Sivuja yhteensä: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Odotushuoneen hallinta",
@@ -326,9 +362,12 @@
     "reject-all": "Hylkää kaikki",
     "list-waiting-participants": "Odottavien osallistujien luettelo ({{count}})",
     "reject-and-block-user": "Hylkää & Estä",
-    "user-waiting": "{{name}} odottaa hyväksyntää"
+    "user-waiting": "{{name}} odottaa hyväksyntää",
+    "no-pending-user": "Kukaan ei odota liittymistä."
   },
   "polls": {
+    "title": "Kyselyt",
+    "poll-num": "Kysely {{index}}",
     "create": "Luo uusi kysely",
     "enter-question": "Kirjoita kysymys",
     "question": "Kysymys",
@@ -355,7 +394,8 @@
     "end-poll": "Lopeta kysely",
     "end-poll-success": "Kysely lopetettiin onnistuneesti",
     "publish-result": "Julkaise tulos",
-    "total": "Koko"
+    "total": "Koko",
+    "not-respondents-total": "Ei vastattu: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Pienryhmähuoneiden hallinta",
@@ -387,9 +427,22 @@
     "user-joined": "Yhdistetty",
     "not-joined": "Ei liittynyt"
   },
+  "landing": {
+    "connecting-media-server": "Yhdistetään mediapalvelimeen...",
+    "modal-title": "Mikrofonin ja kameran asetukset",
+    "ready-to-join": "Oletko valmis liittymään?",
+    "join-prompt": "Salli mikrofonin ja kameran osallistua täysipainoisesti tai liittyä kuuntelijaksi.",
+    "enable-mic-cam-btn": "Ota mikrofoni ja kamera käyttöön",
+    "join-as-listener-btn": "Liity kuuntelijaksi",
+    "webcam-menu-title": "Valitse Kamera",
+    "mic-menu-title": "Valitse Mikrofoni",
+    "background-filter-title": "Tausta Ja Suodattimet",
+    "config-background-btn": "Määritä Kameran Tausta",
+    "waiting-for-approval-title": "Odottaa hyväksyntää"
+  },
   "external-display-link-display": {
     "modal-title": "Näytä ulkoinen linkki (iframe)",
-    "url": "URL",
+    "url": "URL-osoite",
     "display": "Näyttö",
     "link-invalid": "Linkki ei kelpaa",
     "note": "Huomautus: Varmista, että URL-osoitteella on oikeus avata iframe-kehyksessä. Esimerkki: https://www.gameflare.com/embed/mini-survival",
@@ -401,7 +454,8 @@
     "meeting-id": "Kokouksen tunnus",
     "meeting-id-des": "Kokouksen alkuperätunnus",
     "user-role": "Käyttäjän rooli",
-    "user-role-des": "Käyttäjän nykyinen rooli. Joko järjestelmänvalvoja tai osallistuja"
+    "user-role-des": "Käyttäjän nykyinen rooli. Joko järjestelmänvalvoja tai osallistuja",
+    "iframe-title": "Upotettu ulkoinen sisältö"
   },
   "ingress-features": {
     "ingress-type": "Ingressin tyyppi",
@@ -449,6 +503,7 @@
     "select-one-lang": "Valitse yksi kieli",
     "subtitle-history-modal-title": "Tekstitystekstien historia",
     "azure-error": "Microsoft Azure -virhe: {{error}}",
-    "speech-to-text-stopped": "Puheesta tekstiksi -palvelu on pysäytetty"
+    "speech-to-text-stopped": "Puheesta tekstiksi -palvelu on pysäytetty",
+    "enable-transcription": "Ota Transkriptio Käyttöön"
   }
 }
