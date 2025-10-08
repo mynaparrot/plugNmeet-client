@@ -50,6 +50,9 @@
     "room-will-end-in": "この部屋は終了します {{minutes}} 議事録",
     "e2ee-unsupported-browser-title": "サポートされていないブラウザ",
     "e2ee-unsupported-browser-msg": "このセッションでは、現在のブラウザでサポートされていないエンドツーエンドの暗号化が有効になっています。",
+    "e2ee-invalid-key-title": "無効なセキュリティキー",
+    "e2ee-invalid-key-msg": "入力したセキュリティキーが正しくありません。",
+    "e2ee-empty-key-msg": "The security key cannot be empty.",
     "nats-error-title": "Nats サーバー接続エラー",
     "nats-error-no-response": "要求を処理するバックエンド サーバーが見つかりませんでした。エラー： {{error}}",
     "nats-error-timeout": "バックエンド サーバーからの応答が見つかりませんでした。エラー： {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "メディアサーバーが切断されました。",
     "preloaded-whiteboard-file-processing": "プリロードされたホワイトボードファイルが進行中です",
     "preloaded-whiteboard-file-processing-error": "プリロードされたホワイトボードファイルの処理がエラーで終了しました",
-    "max-num-participates-exceeded": "セッションで許可される最大参加者数を超えました。"
+    "max-num-participates-exceeded": "セッションで許可される最大参加者数を超えました。",
+    "uploading-file": "ファイルをアップロードしています...",
+    "ending-session": "ミーティングが終了しました．しばらくお待ちください...",
+    "whiteboard-other-task-to-finish": "ホワイトボードは新しいコンテンツを準備しています。しばらくお待ちください。",
+    "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウドの記録は使用できません。",
+    "media-only-recording-not-support-e2ee": "エンドツーエンド暗号化が有効になっている場合、音声とビデオのみの記録は使用できません。",
+    "you-are-sharing-screen": "画面を共有しています。他の人は大きな画面を見ることができます。",
+    "new-system-message-in-chat": "新しいシステムメッセージが公開チャットに投稿されました。"
   },
   "room-metadata": {
     "session-recording": "このセッションは録画されています",
@@ -149,7 +159,10 @@
     "ready": "用意",
     "webcams-per-page": "ページごと。",
     "require-ssl-title": "ドメインはSSLが有効になっている必要があります",
-    "require-ssl-des": "localhost 以外の SSL 対応ドメインを使用する必要があります。"
+    "require-ssl-des": "localhost 以外の SSL 対応ドメインを使用する必要があります。",
+    "insert-secret-key": "セキュリティキーを入力",
+    "insert-secret-help": "この安全な会議では、誰もが同じセキュリティキーを使用する必要があります。それが一致しない場合は、接続することができません。 ミーティング主催者から正しいセキュリティキーを取得してください。",
+    "save": "保存"
   },
   "left-panel": {
     "participants": "参加者({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "参加者",
     "polls-tab": "世論 調査",
     "breakout-room-tab": "ブレイクアウトルーム",
+    "me": "(me)",
     "public-chat": "公開チャット",
+    "private-chat": "プライベートチャット",
+    "select-chat-conversation-title": "会話を選択",
     "menus": {
       "items": {
         "ask-to-share-microphone": "マイクの共有を依頼する",
@@ -236,12 +252,17 @@
       "recording-types-des": "次のいずれかの録画タイプを選択できます。Google Chromeを使用して、ローカル録音で最良の結果を得る",
       "local-recording": "ローカル録音",
       "cloud-recording": "クラウド録画",
+      "cloud-media-only-recording": "クラウドレコード：メディアのみ",
       "stop-rtmp-broadcasting": "RTMP放送の停止",
       "start-rtmp-broadcasting": "RTMP放送開始",
       "show-shared-notepad": "共有メモ帳を表示する",
       "hide-shared-notepad": "共有メモ帳を隠す",
       "show-whiteboard": "ホワイトボードを表示",
       "hide-whiteboard": "ホワイトボードを隠す",
+      "show-polls-panel": "投票を表示",
+      "hide-polls-panel": "アンケートを隠す",
+      "show-translation-settings": "書き換え設定を表示",
+      "hide-translation-settings": "書き換え設定を隠す",
       "promote-presenter": "プレゼンターとして昇進する",
       "demote-presenter": "プレゼンターから降格"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "ブレイクアウトルームの管理",
       "start-display-external-link": "外部リンクの表示",
       "stop-display-external-link": "表示外部リンクの停止",
-      "speech-to-text-settings": "音声テキスト変換/翻訳設定"
+      "speech-to-text-settings": "音声テキスト変換/翻訳設定",
+      "enable-polls": "投票を有効にする",
+      "disable-polls": "投票を無効にする"
     },
     "notice": {
       "already-active-screen-sharing": "セッションには既にアクティブな画面共有があります",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "直接リンク",
       "external-media-player-upload-file": "アップロード",
       "external-media-player-upload-file-play": "アップロードして再生",
+      "external-media-player-uploading": "アップロード中...",
       "external-media-player-upload-supported-files": "サポートされているファイル: {{files}}",
+      "external-media-player-select-file": "アップロードするメディアファイルを選択",
       "upload-background-image": "背景画像のアップロード",
       "shared-notepad": "共有メモ帳"
     }
@@ -315,7 +340,18 @@
     "file-ready": "ファイルの準備ができました",
     "upload-file": "ファイルのアップロード",
     "manage-files": "ファイル",
-    "upload-image": "画像"
+    "upload-image": "画像",
+    "follow-presenter-tooltip": "プレゼンターをフォローする",
+    "unfollow-presenter-tooltip": "プレゼンターのフォローを停止",
+    "follow": "フォロー",
+    "unfollow": "フォローを解除",
+    "upload-files-title": "ファイルをアップロード",
+    "drag-drop-file": "ファイルをドラッグ＆ドロップしてアップロードします",
+    "max-file-size": "最大ファイルサイズ: {{size}} MB",
+    "or": "OR",
+    "select-file": "ファイルを選択",
+    "add-to-whiteboard": "ホワイトボードに追加",
+    "total-pages": "合計ページ数: {{count}}"
   },
   "waiting-room": {
     "modal-title": "待合室の管理",
@@ -326,9 +362,12 @@
     "reject-all": "全員を拒否する",
     "list-waiting-participants": "待機中の参加者リスト({{count}})",
     "reject-and-block-user": "拒否とブロック",
-    "user-waiting": "{{name}} 承認を待っています"
+    "user-waiting": "{{name}} 承認を待っています",
+    "no-pending-user": "参加を待っている人はいません。"
   },
   "polls": {
+    "title": "意識調査",
+    "poll-num": "アンケート {{index}}",
     "create": "新しい投票を作成する",
     "enter-question": "質問を入力",
     "question": "質問",
@@ -355,7 +394,8 @@
     "end-poll": "投票の終了",
     "end-poll-success": "投票は正常に終了しました",
     "publish-result": "結果の公開",
-    "total": "トータル"
+    "total": "トータル",
+    "not-respondents-total": "応答しませんでした: {{count}}"
   },
   "breakout-room": {
     "modal-title": "ブレイクアウト ルームを管理する",
@@ -387,6 +427,19 @@
     "user-joined": "しんにゅう",
     "not-joined": "結合されていません"
   },
+  "landing": {
+    "connecting-media-server": "メディアサーバーに接続中...",
+    "modal-title": "マイクとカメラの設定",
+    "ready-to-join": "参加する準備はできましたか？",
+    "join-prompt": "マイクとカメラを有効にして、完全に参加するか、リスナーとして参加してください。",
+    "enable-mic-cam-btn": "マイクとカメラを有効にする",
+    "join-as-listener-btn": "リスナーとして参加",
+    "webcam-menu-title": "カメラを選択",
+    "mic-menu-title": "マイクを選択",
+    "background-filter-title": "背景とフィルタ",
+    "config-background-btn": "カメラの背景を設定",
+    "waiting-for-approval-title": "承認待ち"
+  },
   "external-display-link-display": {
     "modal-title": "外部リンクの表示(iframe)",
     "url": "関連URL",
@@ -401,7 +454,8 @@
     "meeting-id": "ミーティング ID",
     "meeting-id-des": "ミーティングの発信元 ID",
     "user-role": "ユーザーロール",
-    "user-role-des": "ユーザーの現在のロール。管理者または参加者"
+    "user-role-des": "ユーザーの現在のロール。管理者または参加者",
+    "iframe-title": "埋め込まれた外部コンテンツ"
   },
   "ingress-features": {
     "ingress-type": "イングレスタイプ",
@@ -449,6 +503,7 @@
     "select-one-lang": "1つの言語を選択",
     "subtitle-history-modal-title": "字幕テキスト履歴",
     "azure-error": "Microsoft Azureエラー: {{error}}",
-    "speech-to-text-stopped": "音声テキスト変換サービスが停止しました"
+    "speech-to-text-stopped": "音声テキスト変換サービスが停止しました",
+    "enable-transcription": "表記を有効にする"
   }
 }
