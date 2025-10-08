@@ -50,6 +50,9 @@
     "room-will-end-in": "See tuba lõpeb {{minutes}} Minutit",
     "e2ee-unsupported-browser-title": "Toetuseta brauser",
     "e2ee-unsupported-browser-msg": "See seanss on lubanud otspunktkrüpteerimise, mida teie praegune brauser ei toeta.",
+    "e2ee-invalid-key-title": "Kehtetu turvavõti",
+    "e2ee-invalid-key-msg": "Sisestatud turvavõti on vale.",
+    "e2ee-empty-key-msg": "Turvavõti ei saa olla tühi.",
     "nats-error-title": "Natsi serveriühenduse viga",
     "nats-error-no-response": "Päringu käsitlemiseks ei leitud taustaprogrammi serverit. Viga: {{error}}",
     "nats-error-timeout": "Taustaprogrammi serverist vastust ei leitud. Viga: {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "Meediumiserver on lahti ühendatud.",
     "preloaded-whiteboard-file-processing": "Eellaaditud tahvlifail on pooleli",
     "preloaded-whiteboard-file-processing-error": "Eellaaditud tahvlifailide töötlemine lõppes tõrkega",
-    "max-num-participates-exceeded": "Seansile lubatud maksimaalne osalejate arv on ületatud."
+    "max-num-participates-exceeded": "Seansile lubatud maksimaalne osalejate arv on ületatud.",
+    "uploading-file": "Faili üleslaadimine...",
+    "ending-session": "Koosolek on lõppemas, palun oodake...",
+    "whiteboard-other-task-to-finish": "Tahvel valmistab ette uut sisu. Oota.",
+    "cloud-recording-not-supported-self-key": "Pilvesalvestus pole kohandatud turbevõtme kasutamisel saadaval.",
+    "media-only-recording-not-support-e2ee": "Ainult heli ja video salvestamine pole saadaval, kui täielik krüptimine on lubatud.",
+    "you-are-sharing-screen": "Jagate nüüd oma ekraani. Teised näevad suuremat vaadet.",
+    "new-system-message-in-chat": "Avalikku vestlusse on postitatud uus süsteemiteade."
   },
   "room-metadata": {
     "session-recording": "Seda seanssi salvestatakse",
@@ -149,7 +159,10 @@
     "ready": "valmis",
     "webcams-per-page": "Lehekülje kohta.",
     "require-ssl-title": "Domeen peab olema lubatud SSL",
-    "require-ssl-des": "On vaja kasutada SSL-toega domeeni, mis ei ole localhost."
+    "require-ssl-des": "On vaja kasutada SSL-toega domeeni, mis ei ole localhost.",
+    "insert-secret-key": "Sisestage turvavõti",
+    "insert-secret-help": "Selle turvalise koosoleku jaoks peavad kõik kasutama sama turbevõtit. Kui see ei ühti, ei saa te ühendust luua. Hankige koosoleku korraldajalt õige turvavõti.",
+    "save": "Salvestama"
   },
   "left-panel": {
     "participants": "Osalejad ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "Osalejad",
     "polls-tab": "Küsitlused",
     "breakout-room-tab": "Puhkeruumid",
+    "me": "(mina)",
     "public-chat": "Avalik vestlus",
+    "private-chat": "Privaatne vestlus",
+    "select-chat-conversation-title": "Vestluse valimine",
     "menus": {
       "items": {
         "ask-to-share-microphone": "Palu mikrofoni jagada",
@@ -236,12 +252,17 @@
       "recording-types-des": "Saate valida mõne järgmistest salvestustüüpidest. Google Chrome'i kasutamine kohaliku salvestamise jaoks parima tulemuse saamiseks",
       "local-recording": "Kohalik salvestus",
       "cloud-recording": "Pilvede salvestamine",
+      "cloud-media-only-recording": "Pilvekirje: ainult meedia",
       "stop-rtmp-broadcasting": "RTMP ringhäälingu peatamine",
       "start-rtmp-broadcasting": "Alusta RTMP ringhäälingut",
       "show-shared-notepad": "Ühismärkmiku kuvamine",
       "hide-shared-notepad": "Ühismärkmiku peitmine",
       "show-whiteboard": "Näita tahvlit",
       "hide-whiteboard": "Peida tahvel",
+      "show-polls-panel": "Näita küsitlusi",
+      "hide-polls-panel": "Peida küsitlused",
+      "show-translation-settings": "Transkriptsiooniseadete kuvamine",
+      "hide-translation-settings": "Transkriptsiooniseadete peitmine",
       "promote-presenter": "Esinejana reklaamimine",
       "demote-presenter": "Esinejast taandamine"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "Puhkeruumi haldamine",
       "start-display-external-link": "Välise lingi kuvamine",
       "stop-display-external-link": "Välise lingi kuvamise peatamine",
-      "speech-to-text-settings": "Kõne tekstiks / tõlkimise seaded"
+      "speech-to-text-settings": "Kõne tekstiks / tõlkimise seaded",
+      "enable-polls": "Küsitluste lubamine",
+      "disable-polls": "Küsitluste keelamine"
     },
     "notice": {
       "already-active-screen-sharing": "Seansil on juba aktiivne ekraani jagamine",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "Otselink",
       "external-media-player-upload-file": "Laadida",
       "external-media-player-upload-file-play": "Laadige üles ja mängige",
+      "external-media-player-uploading": "Uploading...",
       "external-media-player-upload-supported-files": "Toetatud failid: {{files}}",
+      "external-media-player-select-file": "Valige üleslaaditav meediumifail",
       "upload-background-image": "Taustpildi üleslaadimine",
       "shared-notepad": "Ühiskasutuses märkmik"
     }
@@ -315,7 +340,18 @@
     "file-ready": "Fail on valmis",
     "upload-file": "Laadi fail üles",
     "manage-files": "Faile",
-    "upload-image": "Piltide"
+    "upload-image": "Piltide",
+    "follow-presenter-tooltip": "Saatejuhi jälgimine",
+    "unfollow-presenter-tooltip": "Lõpetage esineja jälgimine",
+    "follow": "Järgnema",
+    "unfollow": "Lõpeta jälgimine",
+    "upload-files-title": "Failide üleslaadimine",
+    "drag-drop-file": "Pukseerige fail üleslaadimiseks",
+    "max-file-size": "Maksimaalne faili suurus: {{size}} MB",
+    "or": "VÕI",
+    "select-file": "Valige fail",
+    "add-to-whiteboard": "Lisa tahvlile",
+    "total-pages": "Lehekülgi kokku: {{count}}"
   },
   "waiting-room": {
     "modal-title": "Ooteruumi haldamine",
@@ -326,9 +362,12 @@
     "reject-all": "Kõigi tagasilükkamine",
     "list-waiting-participants": "Ootel osalejate nimekiri ({{count}})",
     "reject-and-block-user": "Hülgamine ja blokeerimine",
-    "user-waiting": "{{name}} ootab heakskiitu"
+    "user-waiting": "{{name}} ootab heakskiitu",
+    "no-pending-user": "Keegi ei oota liitumist."
   },
   "polls": {
+    "title": "Küsitlused",
+    "poll-num": "Küsitlus {{index}}",
     "create": "Uue küsitluse loomine",
     "enter-question": "Sisestage küsimus",
     "question": "Küsimus",
@@ -355,7 +394,8 @@
     "end-poll": "Lõpeta küsitlus",
     "end-poll-success": "Küsitlus lõpetati edukalt",
     "publish-result": "Tulemuste avaldamine",
-    "total": "Kokku"
+    "total": "Kokku",
+    "not-respondents-total": "Ei vastanud: {{count}}"
   },
   "breakout-room": {
     "modal-title": "Puhkeruumide haldamine",
@@ -387,9 +427,22 @@
     "user-joined": "Liidetud kohtuasjad",
     "not-joined": "Ei ole liitunud"
   },
+  "landing": {
+    "connecting-media-server": "Meediumiserveriga ühenduse loomine...",
+    "modal-title": "Mikrofoni ja kaamera eelistused",
+    "ready-to-join": "Kas olete valmis liituma?",
+    "join-prompt": "Lubage oma mikrofonil ja kaameral täielikult osaleda või liituge kuulajana.",
+    "enable-mic-cam-btn": "Luba mikrofon ja kaamera",
+    "join-as-listener-btn": "Liituge kuulajana",
+    "webcam-menu-title": "Valige Kaamera",
+    "mic-menu-title": "Valige mikrofon",
+    "background-filter-title": "Taust ja filtrid",
+    "config-background-btn": "Kaamera tausta konfigureerimine",
+    "waiting-for-approval-title": "Kinnitamise ootel"
+  },
   "external-display-link-display": {
     "modal-title": "Välise lingi kuvamine (iframe)",
-    "url": "URL",
+    "url": "URL-i aadress",
     "display": "Kuvada",
     "link-invalid": "Link ei kehti",
     "note": "Märge: Veenduge, et URL-il oleks õigus avada iframe'is. Näide: https://www.gameflare.com/embed/mini-survival",
@@ -401,7 +454,8 @@
     "meeting-id": "Koosoleku ID",
     "meeting-id-des": "Koosoleku päritolu ID",
     "user-role": "Kasutaja roll",
-    "user-role-des": "Kasutaja praegune roll. Kas administraator või osaleja"
+    "user-role-des": "Kasutaja praegune roll. Kas administraator või osaleja",
+    "iframe-title": "Manustatud väline sisu"
   },
   "ingress-features": {
     "ingress-type": "Sissetungi tüüp",
@@ -411,7 +465,7 @@
     "feature-not-allow": "Funktsioon pole lubatud",
     "join-as-name-required": "Liitu vastavalt nimele",
     "gen-link": "Loo link",
-    "stream-url": "Stream Host/URL",
+    "stream-url": "Voo host/URL",
     "stream-key": "Voo võti / saladus"
   },
   "speech-services": {
@@ -449,6 +503,7 @@
     "select-one-lang": "Valige üks keel",
     "subtitle-history-modal-title": "Subtiitrite tekstide ajalugu",
     "azure-error": "Microsoft Azure'i viga: {{error}}",
-    "speech-to-text-stopped": "Kõne tekstiedastusteenus on peatatud"
+    "speech-to-text-stopped": "Kõne tekstiedastusteenus on peatatud",
+    "enable-transcription": "Transkriptsiooni lubamine"
   }
 }
