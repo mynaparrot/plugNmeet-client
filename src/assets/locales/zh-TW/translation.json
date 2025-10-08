@@ -50,6 +50,9 @@
     "room-will-end-in": "這個房間將結束於 {{minutes}} 紀要",
     "e2ee-unsupported-browser-title": "不支援的瀏覽器",
     "e2ee-unsupported-browser-msg": "此工作階段已啟用目前瀏覽器不支援的端到端加密。",
+    "e2ee-invalid-key-title": "無效的安全金鑰",
+    "e2ee-invalid-key-msg": "您輸入的安全金鑰不正確。",
+    "e2ee-empty-key-msg": "安全金鑰不能是空的。",
     "nats-error-title": "Nats 伺服器連接錯誤",
     "nats-error-no-response": "找不到處理請求的後端伺服器。錯誤： {{error}}",
     "nats-error-timeout": "未找到來自後端伺服器的回應。錯誤： {{error}}",
@@ -63,7 +66,14 @@
     "media-server-disconnected": "媒體伺服器已斷開連接。",
     "preloaded-whiteboard-file-processing": "預載入的白板檔正在進行中",
     "preloaded-whiteboard-file-processing-error": "預載入的白板文件處理結束，但出現錯誤",
-    "max-num-participates-exceeded": "已超過會話允許的最大參與人數。"
+    "max-num-participates-exceeded": "已超過會話允許的最大參與人數。",
+    "uploading-file": "上傳檔案...",
+    "ending-session": "會議即將結束，請稍候...",
+    "whiteboard-other-task-to-finish": "白板正在準備新內容。請稍候。",
+    "cloud-recording-not-supported-self-key": "使用自訂安全金鑰時，無法使用雲端錄製。",
+    "media-only-recording-not-support-e2ee": "啟用端對端加密時，僅錄製音訊和視訊不可用。",
+    "you-are-sharing-screen": "您現在正在共享您的屏幕。其他人將看到更大的視野。",
+    "new-system-message-in-chat": "公共聊天室中發布了一條新的系統消息。"
   },
   "room-metadata": {
     "session-recording": "此會議正在被錄制",
@@ -149,7 +159,10 @@
     "ready": "就緒",
     "webcams-per-page": "Per page",
     "require-ssl-title": "域必須啟用 SSL",
-    "require-ssl-des": "需要使用除 localhost 之外的啟用 SSL 的域。"
+    "require-ssl-des": "需要使用除 localhost 之外的啟用 SSL 的域。",
+    "insert-secret-key": "輸入安全金鑰",
+    "insert-secret-help": "對於此安全會議，每個人都必須使用相同的安全金鑰。如果不匹配，您將無法連接。請向會議組織者取得正確的安全金鑰。",
+    "save": "救"
   },
   "left-panel": {
     "participants": "參會人員 ({{total}})",
@@ -158,7 +171,10 @@
     "participants-tab": "參與者",
     "polls-tab": "民意調查",
     "breakout-room-tab": "分組討論室",
+    "me": "（我）",
     "public-chat": "公共聊天",
+    "private-chat": "私人聊天",
+    "select-chat-conversation-title": "選取交談",
     "menus": {
       "items": {
         "ask-to-share-microphone": "請求分享麥克",
@@ -236,12 +252,17 @@
       "recording-types-des": "您可以選擇以下任何錄製類型。使用Google Chrome獲得本地錄製的最佳結果",
       "local-recording": "本地錄製",
       "cloud-recording": "雲錄製",
+      "cloud-media-only-recording": "雲端記錄：僅限媒體",
       "stop-rtmp-broadcasting": "結束 RTMP 直播",
       "start-rtmp-broadcasting": "開始 RTMP 直播",
       "show-shared-notepad": "顯示共享記事本",
       "hide-shared-notepad": "隱藏共享記事本",
       "show-whiteboard": "顯示白板",
       "hide-whiteboard": "隱藏白板",
+      "show-polls-panel": "顯示民意調查",
+      "hide-polls-panel": "隱藏民意調查",
+      "show-translation-settings": "顯示轉錄設定",
+      "hide-translation-settings": "隱藏轉錄設定",
       "promote-presenter": "以演示者身份提升",
       "demote-presenter": "從 Presenter 降級"
     },
@@ -260,7 +281,9 @@
       "manage-breakout-room": "管理分組會議室",
       "start-display-external-link": "顯示外部連結",
       "stop-display-external-link": "停止顯示 external link",
-      "speech-to-text-settings": "語音到文本/翻譯設置"
+      "speech-to-text-settings": "語音到文本/翻譯設置",
+      "enable-polls": "啟用投票",
+      "disable-polls": "停用投票"
     },
     "notice": {
       "already-active-screen-sharing": "已經有一個屏幕在分享",
@@ -304,7 +327,9 @@
       "external-media-player-direct-link": "直接連結",
       "external-media-player-upload-file": "上傳",
       "external-media-player-upload-file-play": "上傳並播放",
+      "external-media-player-uploading": "上傳中...",
       "external-media-player-upload-supported-files": "支援的檔案： {{files}}",
+      "external-media-player-select-file": "選取要上傳的媒體檔案",
       "upload-background-image": "上傳背景圖片",
       "shared-notepad": "共用記事本"
     }
@@ -315,7 +340,18 @@
     "file-ready": "檔已準備就緒",
     "upload-file": "上傳檔",
     "manage-files": "檔",
-    "upload-image": "圖像"
+    "upload-image": "圖像",
+    "follow-presenter-tooltip": "關注演講者",
+    "unfollow-presenter-tooltip": "停止關注演示者",
+    "follow": "跟",
+    "unfollow": "取消追蹤",
+    "upload-files-title": "上傳檔案",
+    "drag-drop-file": "拖放檔案進行上傳",
+    "max-file-size": "檔案大小上限： {{size}} MB",
+    "or": "或",
+    "select-file": "選取檔案",
+    "add-to-whiteboard": "新增至白板",
+    "total-pages": "總頁數： {{count}}"
   },
   "waiting-room": {
     "modal-title": "管理等候室",
@@ -326,9 +362,12 @@
     "reject-all": "拒絕所有人",
     "list-waiting-participants": "等待參與者清單 （{{count}})",
     "reject-and-block-user": "拒絕 & 阻止",
-    "user-waiting": "{{name}} 正在等待批准"
+    "user-waiting": "{{name}} 正在等待批准",
+    "no-pending-user": "沒有人等待加入。"
   },
   "polls": {
+    "title": "民意調查",
+    "poll-num": "選舉投票 {{index}}",
     "create": "創建新投票",
     "enter-question": "輸入問題",
     "question": "問題",
@@ -355,7 +394,8 @@
     "end-poll": "結束輪詢",
     "end-poll-success": "輪詢已成功結束",
     "publish-result": "發佈結果",
-    "total": "總"
+    "total": "總",
+    "not-respondents-total": "沒有回應： {{count}}"
   },
   "breakout-room": {
     "modal-title": "管理分組會議",
@@ -387,6 +427,19 @@
     "user-joined": "加入",
     "not-joined": "未加入"
   },
+  "landing": {
+    "connecting-media-server": "正在連線到媒體伺服器...",
+    "modal-title": "麥克風和攝影機偏好設定",
+    "ready-to-join": "準備好加入了嗎？",
+    "join-prompt": "讓您的麥克風和攝像頭完全參與，或以聽眾身份加入。",
+    "enable-mic-cam-btn": "啟用麥克風和攝影機",
+    "join-as-listener-btn": "以聽眾身分加入",
+    "webcam-menu-title": "選擇相機",
+    "mic-menu-title": "選擇麥克風",
+    "background-filter-title": "背景和濾鏡",
+    "config-background-btn": "設定相機背景",
+    "waiting-for-approval-title": "等待批准"
+  },
   "external-display-link-display": {
     "modal-title": "顯示外部連結 （iframe）",
     "url": "網址",
@@ -401,7 +454,8 @@
     "meeting-id": "會議ID",
     "meeting-id-des": "會議的源ID",
     "user-role": "使用者角色",
-    "user-role-des": "使用者的當前角色。管理員或參與者"
+    "user-role-des": "使用者的當前角色。管理員或參與者",
+    "iframe-title": "內嵌的外部內容"
   },
   "ingress-features": {
     "ingress-type": "入口類型",
@@ -449,6 +503,7 @@
     "select-one-lang": "選擇一種語言",
     "subtitle-history-modal-title": "字幕文本歷史",
     "azure-error": "Microsoft Azure 錯誤： {{error}}",
-    "speech-to-text-stopped": "語音到文本服務已停止"
+    "speech-to-text-stopped": "語音到文本服務已停止",
+    "enable-transcription": "啟用轉錄"
   }
 }
