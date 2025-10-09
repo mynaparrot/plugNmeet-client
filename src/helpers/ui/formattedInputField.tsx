@@ -5,10 +5,11 @@ import { Field, Label } from '@headlessui/react';
 interface IFormattedInputFieldProps {
   label?: string;
   id: string;
-  value?: string;
+  value?: string | number;
   readOnly?: boolean;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
 }
 
 const FormattedInputField = ({
@@ -18,6 +19,7 @@ const FormattedInputField = ({
   readOnly = false,
   placeholder,
   onChange,
+  type = 'text',
 }: IFormattedInputFieldProps) => {
   const inputClasses = clsx(
     'default-input rounded-[8px] h-10 w-full',
@@ -39,7 +41,7 @@ const FormattedInputField = ({
         </Label>
       ) : null}
       <input
-        type="text"
+        type={type}
         name={id}
         id={id}
         value={value ?? ''}

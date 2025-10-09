@@ -23,6 +23,7 @@ const ExtendDuration = ({ breakoutRoomId, setMessage }: IExtendTimeProps) => {
           text: t('breakout-room.duration-extended'),
           type: 'info',
         });
+        setTimeout(() => setMessage(null), 5000);
       } else {
         setMessage({ text: t(data.msg), type: 'error' });
       }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { BroadcastBreakoutRoomMsgReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
@@ -20,10 +19,12 @@ const BroadcastMessageForm = ({ setMessage }: IBroadcastMessageFormProps) => {
   useEffect(() => {
     if (isSuccess && data) {
       if (data.status) {
-        toast(t('breakout-room.broadcast-msg-success'), {
+        setMessage({
+          text: t('breakout-room.broadcast-msg-success'),
           type: 'info',
         });
         setMsg('');
+        setTimeout(() => setMessage(null), 5000);
       } else {
         setMessage({ text: t(data.msg), type: 'error' });
       }

@@ -1,14 +1,22 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BreakoutRoomUser } from 'plugnmeet-protocol-js';
+import { BreakoutRoomUser, DataMsgBodyType } from 'plugnmeet-protocol-js';
 import { chunk } from 'es-toolkit';
 
 import { generateAvatarInitial } from '../../../../helpers/utils';
+import { getNatsConn } from '../../../../helpers/nats';
+import { BreakoutRoomMessage } from '../../index';
 
 interface IBreakoutRoomUsersProps {
   users: Array<BreakoutRoomUser>;
+  breakoutRoomId: string;
+  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
-const BreakoutRoomUsers = ({ users }: IBreakoutRoomUsersProps) => {
+const BreakoutRoomUsers = ({
+  users,
+  breakoutRoomId,
+  setMessage,
+}: IBreakoutRoomUsersProps) => {
   const { t } = useTranslation();
 
   const userChunks = useMemo(() => {
@@ -18,8 +26,24 @@ const BreakoutRoomUsers = ({ users }: IBreakoutRoomUsersProps) => {
     return chunk(sortedUsers, 5);
   }, [users]);
 
+  const pushUser = (name: string, userId: string) => {
+    const conn = getNatsConn();
+    conn.sendDataMessage(
+      DataMsgBodyType.PUSH_JOIN_BREAKOUT_ROOM,
+      breakoutRoomId,
+      userId,
+    );
+    setMessage({
+      text: t('breakout-room.you-pushed-user', {
+        name,
+      }),
+      type: 'info',
+    });
+    setTimeout(() => setMessage(null), 5000);
+  };
+
   return (
-    <div className="flex flex-nowrap items-start -mx-2">
+    <div className="flex flex-nowrap items-start -mx-2 mt-5">
       {userChunks.map((chunk, i) => (
         <ul
           key={`chunk-${i}`}
@@ -40,6 +64,14 @@ const BreakoutRoomUsers = ({ users }: IBreakoutRoomUsersProps) => {
                 {generateAvatarInitial(user.name)}
               </div>
               <span className="text-Gray-950 break-all">{user.name}</span>
+              {!user.joined && (
+                <button
+                  onClick={() => pushUser(user.name, user.id)}
+                  className="ml-auto h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                >
+                  {t('breakout-room.push')}
+                </button>
+              )}
             </li>
           ))}
         </ul>

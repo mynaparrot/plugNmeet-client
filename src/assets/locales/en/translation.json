@@ -425,7 +425,9 @@
     "copied": "Copied",
     "not-started": "Not Started",
     "user-joined": "Joined",
-    "not-joined": "Not Joined"
+    "not-joined": "Not Joined",
+    "push": "Push",
+    "you-pushed-user": "A join notification has been sent to {{name}}."
   },
   "landing": {
     "connecting-media-server": "Connecting to the media server...",

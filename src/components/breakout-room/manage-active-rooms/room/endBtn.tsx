@@ -23,6 +23,7 @@ const EndBtn = ({ breakoutRoomId, setMessage }: IEndBtnProps) => {
           type: 'info',
         });
         setMessage({ text: t('breakout-room.room-ended'), type: 'info' });
+        setTimeout(() => setMessage(null), 5000);
       } else {
         setMessage({ text: t(data.msg), type: 'error' });
       }

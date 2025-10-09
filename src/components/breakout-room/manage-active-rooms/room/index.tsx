@@ -97,7 +97,11 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
                         />
                       </div>
                     </div>
-                    <BreakoutRoomUsers users={room.users} />
+                    <BreakoutRoomUsers
+                      users={room.users}
+                      breakoutRoomId={room.id}
+                      setMessage={setMessage}
+                    />
                   </div>
                 </div>
               </DisclosurePanel>

@@ -17,6 +17,7 @@ import {
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { ConnectionQuality } from 'livekit-client';
+import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 
 export default class HandleDataMessage {
   private _that: ConnectNats;
@@ -106,6 +107,11 @@ export default class HandleDataMessage {
             },
           }),
         );
+        break;
+      case DataMsgBodyType.PUSH_JOIN_BREAKOUT_ROOM:
+        if (payload.fromUserId === this._that.userId) {
+          store.dispatch(updateReceivedInvitationFor(payload.message));
+        }
         break;
     }
   };
