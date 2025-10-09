@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import Create from './create/index';
 import PollsList from './pollsList';
+
 import { store, useAppDispatch } from '../../store';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActivePollsPanel } from '../../store/slices/bottomIconsActivitySlice';

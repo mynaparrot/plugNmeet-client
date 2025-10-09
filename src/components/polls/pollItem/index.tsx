@@ -160,7 +160,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
               index: serialNum,
             })}
           </span>
-          {item.isRunning ? null : (
+          {!item.isRunning && (
             <div className="border border-Red-200 bg-Red-100 shadow-button-shadow rounded-full h-[22px] px-1.5 text-xs text-Red-700 font-medium flex items-center">
               {t('polls.poll-closed')}
             </div>
@@ -177,7 +177,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
         </div>
       </div>
       <div className="bg-white px-4 py-4 border border-Gray-200 shadow-button-shadow rounded-xl">
-        <Disclosure defaultOpen={true} as="div">
+        <Disclosure defaultOpen={item.isRunning} as="div">
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
@@ -216,8 +216,6 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    // transition={{ duration: 0.2 }}
-                    className=""
                   >
                     {pollDataWithOption && (
                       <PollForm
