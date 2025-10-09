@@ -12,8 +12,10 @@ import {
 import { Volume } from '../../assets/Icons/Volume';
 import { roomConnectionStatus } from '../app/helper';
 import { getNatsConn } from '../../helpers/nats';
-import { LoadingIcon } from '../../assets/Icons/Loading';
 import { useMediaDevices } from './hooks/useMediaDevices';
+import { MicrophoneOff } from '../../assets/Icons/MicrophoneOff';
+import { CameraOff } from '../../assets/Icons/CameraOff';
+import { LoadingIcon } from '../../assets/Icons/Loading';
 
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
@@ -119,7 +121,12 @@ const Landing = ({
             <div className="left bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
               <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
-                {!lockMicrophone && (
+                {lockMicrophone ? (
+                  <div className="microphone-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
+                    <MicrophoneOff classes="h-6 w-6 text-red-200" />
+                    <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500"></i>
+                  </div>
+                ) : (
                   <MicrophoneIcon
                     audioDevices={audioDevices}
                     enableMediaDevices={enableMediaDevices}
@@ -128,7 +135,12 @@ const Landing = ({
                     selectedAudioDevice={selectedAudioDevice}
                   />
                 )}
-                {!lockWebcam && (
+                {lockWebcam ? (
+                  <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
+                    <CameraOff classes="h-6 w-6 text-red-200" />
+                    <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500" />
+                  </div>
+                ) : (
                   <WebcamIcon
                     videoDevices={videoDevices}
                     enableMediaDevices={enableMediaDevices}
@@ -182,32 +194,28 @@ const Landing = ({
                     ) : (
                       <button
                         type="button"
-                        className={`w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold  hover:bg-white border  rounded-[15px] transition-all duration-300 shadow-button-shadow relative ${lockMicrophone ? 'border-Red-600 bg-Red-600 pointer-events-none text-white' : 'border-[#0088CC] bg-Blue text-white hover:text-Gray-950'}`}
+                        className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-red-50 disabled:border-red-200 disabled:text-red-500 disabled:cursor-not-allowed"
                         disabled={lockMicrophone}
                         onClick={() => enableMediaDevices('both')}
                       >
-                        <span className="relative">
+                        <span className="relative flex items-center justify-center gap-2">
                           {t('landing.enable-mic-cam-btn')}
-                          {lockMicrophone ? (
-                            <i className="pnm-lock absolute -top-2 -right-4 z-10"></i>
-                          ) : (
-                            ''
-                          )}
+                          {lockMicrophone && <i className="pnm-lock" />}
                         </span>
                       </button>
                     )}
                     {selectedAudioDevice === '' &&
-                    selectedVideoDevice === '' ? (
-                      <button
-                        id="listenOnlyJoin"
-                        type="button"
-                        className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
-                        onClick={() => onClose()}
-                      >
-                        {t('landing.join-as-listener-btn')}
-                        <Volume />
-                      </button>
-                    ) : null}
+                      selectedVideoDevice === '' && (
+                        <button
+                          id="listenOnlyJoin"
+                          type="button"
+                          className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+                          onClick={() => onClose()}
+                        >
+                          {t('landing.join-as-listener-btn')}
+                          <Volume />
+                        </button>
+                      )}
                   </div>
                 </div>
               )}
