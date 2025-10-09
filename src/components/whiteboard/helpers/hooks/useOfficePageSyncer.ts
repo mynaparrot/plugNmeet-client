@@ -5,7 +5,7 @@ import {
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
-import { store, useAppSelector } from '../../../../store';
+import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm, preloadOfficeFilePages } from '../handleFiles';
 import { broadcastCurrentOfficeFilePages } from '../handleRequestedWhiteboardData';
@@ -13,11 +13,13 @@ import { broadcastCurrentOfficeFilePages } from '../handleRequestedWhiteboardDat
 interface IUseOfficePageSyncer {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   isPresenter?: boolean;
+  currentPage: number;
 }
 
 const useOfficePageSyncer = ({
   excalidrawAPI,
   isPresenter,
+  currentPage,
 }: IUseOfficePageSyncer) => {
   const currentOfficeFilePages = useAppSelector(
     (state) => state.whiteboard.currentOfficeFilePages,
@@ -99,14 +101,13 @@ const useOfficePageSyncer = ({
           currentOfficeFilePages,
         );
         if (documentPages.length) {
-          const currentPage = store.getState().whiteboard.currentPage;
           preloadOfficeFilePages(documentPages, currentPage);
         }
       } catch (e) {
         console.error('Failed to parse office file pages for preloading.', e);
       }
     }
-  }, [isPresenter, currentOfficeFilePages]);
+  }, [isPresenter, currentOfficeFilePages, currentPage]);
 
   return {
     syncOfficeFilePage,

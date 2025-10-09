@@ -75,7 +75,7 @@ export const savePageData = (
   }
 };
 
-export const displaySavedPageData = (
+export const displaySavedPageData = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   isPresenter: boolean,
   page: number,
@@ -104,10 +104,9 @@ export const displaySavedPageData = (
         // 5. If the user is the presenter, broadcast the complete scene to all other participants.
         if (isPresenter) {
           // A short delay ensures all elements are rendered before broadcasting.
-          sleep(500).then(() => {
-            const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
-            broadcastSceneOnChange(latestElms ?? elements, true).then();
-          });
+          await sleep(300);
+          const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
+          broadcastSceneOnChange(latestElms ?? elements, true).then();
         }
       }
     } catch (e) {

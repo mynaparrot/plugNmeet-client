@@ -131,6 +131,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const { syncOfficeFilePage } = useOfficePageSyncer({
     excalidrawAPI,
     isPresenter,
+    currentPage,
   });
 
   /**
@@ -202,12 +203,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     // 2. Set a flag to prevent other actions during the transition.
     isSwitching.current = true;
 
-    // 3. Clean up the whiteboard canvas and Redux state for all users.
+    // 3. Clean up the whiteboard canvas for all users.
     excalidrawAPI.updateScene({ elements: [] });
     excalidrawAPI.addFiles([]);
     excalidrawAPI.history.clear();
-    dispatch(updateExcalidrawElements(''));
-    dispatch(addAllExcalidrawElements(''));
 
     // 4. Reset the internal state for a clean slate.
     lastBroadcastOrReceivedSceneVersion.current = -1;
@@ -217,7 +216,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     // 5. Handle data loading based on user role.
     // If the user is the presenter, load the switched page/document data if previously saved.
     if (isPresenter) {
-      const loadedFromStorage = displaySavedPageData(
+      const loadedFromStorage = await displaySavedPageData(
         excalidrawAPI,
         isPresenter,
         currentPage,
@@ -239,7 +238,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // They will receive the new data from the presenter.
       isSwitching.current = false; // No data to load, so we can stop switching.
     }
-  }, [dispatch, excalidrawAPI, isPresenter, currentPage, syncOfficeFilePage]);
+  }, [excalidrawAPI, isPresenter, currentPage, syncOfficeFilePage]);
 
   // clean up store during exit
   useEffect(() => {
@@ -257,15 +256,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       return;
     }
 
-    const isPresenter =
-      store.getState().session.currentUser?.metadata?.isPresenter;
-    if (isPresenter) {
-      // if presenter then we'll fetch storage to display after initialize excalidraw
-      isSwitching.current = true;
-      const timeout = setTimeout(() => {
+    const initialize = async () => {
+      const isPresenter =
+        store.getState().session.currentUser?.metadata?.isPresenter;
+      if (isPresenter) {
+        // if presenter then we'll fetch storage to display after initialize excalidraw
+        isSwitching.current = true;
         const { currentWhiteboardOfficeFileId, currentPage } =
           store.getState().whiteboard;
-        const hasData = displaySavedPageData(
+        const hasData = await displaySavedPageData(
           excalidrawAPI,
           true,
           currentPage,
@@ -277,11 +276,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         } else {
           setFetchedData(true);
         }
-      }, 100);
-      return () => clearTimeout(timeout);
-    } else {
-      fetchDataFromDonner();
-    }
+      } else {
+        fetchDataFromDonner();
+      }
+    };
+
+    setTimeout(() => initialize().then(), 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [excalidrawAPI]);
 
