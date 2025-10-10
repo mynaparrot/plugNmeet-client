@@ -3,7 +3,7 @@ import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import {
-  addAllExcalidrawElements,
+  addWhiteboardDataSentFromDonor,
   updateRequestedWhiteboardData,
 } from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
@@ -18,6 +18,7 @@ import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { ConnectionQuality } from 'livekit-client';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
+import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whiteboard';
 
 export default class HandleDataMessage {
   private _that: ConnectNats;
@@ -37,7 +38,7 @@ export default class HandleDataMessage {
       case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
         if (payload.toUserId === this._that.userId) {
           // only if was sent for me
-          store.dispatch(addAllExcalidrawElements(payload.message));
+          this.handleWhiteboardDataSentFromDonor(payload.message);
         }
         break;
       case DataMsgBodyType.USER_VISIBILITY_CHANGE:
@@ -176,6 +177,15 @@ export default class HandleDataMessage {
           },
         }),
       );
+    }
+  }
+
+  private handleWhiteboardDataSentFromDonor(msg: string) {
+    try {
+      const data: WhiteboardDataAsDonorData = JSON.parse(msg);
+      store.dispatch(addWhiteboardDataSentFromDonor(data));
+    } catch (e) {
+      console.error(e);
     }
   }
 }

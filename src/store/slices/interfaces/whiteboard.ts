@@ -1,4 +1,5 @@
 import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
+import { OrderedExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 export interface IWhiteboardSlice {
   totalPages: number;
@@ -64,4 +65,11 @@ export interface WhiteboardFileConversionRes {
   fileId: string;
   filePath: string;
   totalPages: number;
+}
+
+export interface WhiteboardDataAsDonorData {
+  elements: readonly OrderedExcalidrawElement[];
+  currentOfficeFilePages: string;
+  currentWhiteboardOfficeFileId: string;
+  currentPageNumber: number;
 }

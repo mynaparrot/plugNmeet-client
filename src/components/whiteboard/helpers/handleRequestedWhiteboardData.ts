@@ -19,6 +19,7 @@ import ConnectNats from '../../../helpers/nats/ConnectNats';
 import { getWhiteboardDonors } from '../../../helpers/utils';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { uploadCanvasBinaryFile } from './handleFiles';
+import { WhiteboardDataAsDonorData } from '../../../store/slices/interfaces/whiteboard';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
@@ -44,19 +45,30 @@ export const sendWhiteboardDataAsDonor = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   sendTo: string,
 ) => {
+  if (!conn) {
+    conn = getNatsConn();
+  }
+
   const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elements.length) {
-    const data = JSON.stringify(elements);
+    const {
+      currentOfficeFilePages,
+      currentWhiteboardOfficeFileId,
+      currentPage,
+    } = store.getState().whiteboard;
+
+    const data: WhiteboardDataAsDonorData = {
+      currentOfficeFilePages: currentOfficeFilePages,
+      currentPageNumber: currentPage,
+      currentWhiteboardOfficeFileId: currentWhiteboardOfficeFileId,
+      elements,
+    };
+
     conn.sendDataMessage(
       DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
-      data,
+      JSON.stringify(data),
       sendTo,
     );
-  }
-  const currentOfficeFilePages =
-    store.getState().whiteboard.currentOfficeFilePages;
-  if (currentOfficeFilePages !== '') {
-    broadcastCurrentOfficeFilePages(currentOfficeFilePages);
   }
 
   // finally, change the status of request
@@ -87,17 +99,13 @@ export const broadcastSceneOnChange = async (
   }
 
   // sync out only the elements we think we need to save bandwidth.
-  const syncableElements = allElements.reduce((acc, element) => {
-    if (
+  const syncableElements = allElements.filter(
+    (element) =>
       (syncAll ||
         !broadcastedElementVersions.has(element.id) ||
         element.version > broadcastedElementVersions.get(element.id)!) &&
-      isSyncableElement(element)
-    ) {
-      acc.push(element);
-    }
-    return acc;
-  }, [] as ExcalidrawElement[]);
+      isSyncableElement(element),
+  );
 
   if (!syncableElements.length) {
     return;

@@ -106,7 +106,9 @@ export const displaySavedPageData = async (
           // A short delay ensures all elements are rendered before broadcasting.
           await sleep(300);
           const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
-          broadcastSceneOnChange(latestElms ?? elements, true).then();
+          await broadcastSceneOnChange(latestElms ?? elements, true);
+          // wait until last data send complete
+          await sleep(300);
         }
       }
     } catch (e) {

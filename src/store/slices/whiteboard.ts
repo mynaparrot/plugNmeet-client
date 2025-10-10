@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { isArray } from 'es-toolkit/compat';
 
 import {
   IRequestWhiteboardData,
   IWhiteboardAppState,
   IWhiteboardOfficeFile,
   IWhiteboardSlice,
+  WhiteboardDataAsDonorData,
 } from './interfaces/whiteboard';
 
 const initialState: IWhiteboardSlice = {
@@ -104,6 +106,23 @@ const whiteboardSlice = createSlice({
     doRefreshWhiteboard: (state) => {
       state.refreshWhiteboard = Date.now();
     },
+    addWhiteboardDataSentFromDonor: (
+      state,
+      action: PayloadAction<WhiteboardDataAsDonorData>,
+    ) => {
+      state.currentWhiteboardOfficeFileId =
+        action.payload.currentWhiteboardOfficeFileId;
+      state.currentPage = action.payload.currentPageNumber;
+      state.currentOfficeFilePages = action.payload.currentOfficeFilePages;
+
+      if (action.payload.currentOfficeFilePages !== '') {
+        const pages = JSON.parse(action.payload.currentOfficeFilePages);
+        if (pages && isArray(pages) && pages.length > 0) {
+          state.totalPages = pages.length;
+        }
+      }
+      state.allExcalidrawElements = JSON.stringify(action.payload.elements);
+    },
   },
 });
 
@@ -118,6 +137,7 @@ export const {
   addWhiteboardUploadedOfficeFile,
   doRefreshWhiteboard,
   addAllExcalidrawElements,
+  addWhiteboardDataSentFromDonor,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

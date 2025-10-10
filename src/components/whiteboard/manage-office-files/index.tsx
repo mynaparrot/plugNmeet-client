@@ -61,16 +61,19 @@ const ManageOfficeFilesModal = ({
   const debouncedAddToWhiteboard = useMemo(
     () =>
       debounce(async (officeFile: IWhiteboardOfficeFile) => {
-        if (excalidrawAPI) {
-          // save current file information
-          const { currentPage, currentWhiteboardOfficeFileId } =
-            store.getState().whiteboard;
-          savePageData(
-            excalidrawAPI,
-            currentPage,
-            currentWhiteboardOfficeFileId,
-          );
+        if (!excalidrawAPI) {
+          return;
         }
+        // save current file information
+        const { currentPage, currentWhiteboardOfficeFileId } =
+          store.getState().whiteboard;
+        if (currentWhiteboardOfficeFileId === officeFile.fileId) {
+          // same file selected, nothing to do
+          onClose();
+          return;
+        }
+
+        savePageData(excalidrawAPI, currentPage, currentWhiteboardOfficeFileId);
         // broadcast first so that user can prepare for file
         await broadcastCurrentFileId(officeFile.fileId);
         await sleep(300);
