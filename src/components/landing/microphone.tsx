@@ -65,8 +65,8 @@ const MicrophoneIcon = ({
                   leaveFrom="transform scale-100 opacity-100"
                   leaveTo="transform scale-95 opacity-0"
                 >
-                  <div className="menu origin-top-right z-10 absolute ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max">
-                    <div className="title h-10 w-full flex items-center text-sm leading-none text-Gray-700 px-3 uppercase">
+                  <div className="menu origin-top-right z-10 absolute ltr:-left-32 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max">
+                    <div className="title h-9 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-1 3xl:px-3 uppercase">
                       {t('landing.mic-menu-title')}
                     </div>
                     {audioDevices.map((device, i) => (
@@ -78,7 +78,7 @@ const MicrophoneIcon = ({
                       >
                         <MenuItem>
                           {() => (
-                            <p className="h-10 w-full flex items-center text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
+                            <p className="min-h-9 3xl:min-h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-1 3xl:px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50">
                               {device.label}
                               {selectedAudioDevice === device.id ? (
                                 <CheckMarkIcon />
