@@ -11,61 +11,43 @@ import { selectBasicParticipants } from '../../../../store/slices/participantSli
 
 interface IUseWhiteboardSetup {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
-  isPresenter: boolean | undefined;
-  lockWhiteboard: boolean | undefined;
-  isRecorder: boolean;
+  canEdit: boolean;
 }
 
 const useWhiteboardSetup = ({
   excalidrawAPI,
-  isPresenter,
-  lockWhiteboard,
-  isRecorder,
+  canEdit,
 }: IUseWhiteboardSetup) => {
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
   const collaborators = useRef(new Map<SocketId, Collaborator>());
 
   const participants = useAppSelector(selectBasicParticipants);
-  const defaultLock = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard,
-  );
-
   const mousePointerLocation = useAppSelector(
     (state) => state.whiteboard.mousePointerLocation,
   );
-
   const refreshWhiteboard = useAppSelector(
     (state) => state.whiteboard.refreshWhiteboard,
   );
+
   useEffect(() => {
     if (excalidrawAPI && refreshWhiteboard) {
       excalidrawAPI.refresh();
     }
   }, [refreshWhiteboard, excalidrawAPI]);
 
-  // from useWhiteboardPermissions
   useEffect(() => {
     if (!excalidrawAPI) {
       // Before the API is ready, set view mode based on default lock for non-recorders.
       return;
     }
 
-    // Once API is ready, presenter always has edit access.
-    if (isPresenter) {
-      setViewModeEnabled(false);
+    // The view mode is simply the inverse of canEdit.
+    setViewModeEnabled(!canEdit);
+
+    if (canEdit) {
       addPreloadedLibraryItems(excalidrawAPI);
-    } else if (!isRecorder) {
-      // Non-presenters/recorders are controlled by the lockWhiteboard prop.
-      if (typeof lockWhiteboard === 'boolean') {
-        // A user-specific lock is set, so we use it.
-        setViewModeEnabled(lockWhiteboard);
-      } else {
-        // No user-specific lock, so we fall back to the room's default lock setting.
-        setViewModeEnabled(defaultLock ?? true);
-      }
     }
-  }, [excalidrawAPI, isPresenter, lockWhiteboard, isRecorder, defaultLock]);
+  }, [excalidrawAPI, canEdit]);
 
   // from useCollaborators
   useEffect(() => {

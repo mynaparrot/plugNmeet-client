@@ -11,7 +11,7 @@ import {
   CaptureUpdateAction,
   Excalidraw,
   Footer,
-  getSceneVersion,
+  hashElementsVersion,
   MainMenu,
   reconcileElements,
 } from '@excalidraw/excalidraw';
@@ -64,6 +64,7 @@ const CURSOR_SYNC_TIMEOUT = 33;
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
   const { i18n, t } = useTranslation();
+  // static variables
   const { currentUser, isRecorder, roomId } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
@@ -78,7 +79,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const isPresenter = useAppSelector(
     (state) => state.session.currentUser?.metadata?.isPresenter,
   );
-  const lockWhiteboard = useAppSelector(
+  const defaultRoomLock = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard,
+  );
+  const currentUserLock = useAppSelector(
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockWhiteboard,
   );
@@ -112,12 +117,19 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const isSwitching = useRef(false);
   const lastBroadcastOrReceivedSceneVersion = useRef<number>(-1);
 
+  // Determines if the current user has editing privileges.
+  const canEdit = useMemo(() => {
+    if (isPresenter) return true;
+    // Recorders should not be able to edit.
+    if (isRecorder) return false;
+    if (typeof currentUserLock === 'boolean') return !currentUserLock;
+    return !(defaultRoomLock ?? true);
+  }, [isPresenter, currentUserLock, defaultRoomLock, isRecorder]);
+
   // Custom Hooks for modularity
   const { viewModeEnabled } = useWhiteboardSetup({
     excalidrawAPI,
-    isPresenter,
-    lockWhiteboard,
-    isRecorder,
+    canEdit,
   });
   const { fetchedData, setFetchedData, fetchDataFromDonner } =
     useWhiteboardDataSharer({
@@ -180,9 +192,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             : CaptureUpdateAction.NEVER,
         });
         // 8. Update the scene version to the latest received version.
-        // This prevents re-broadcasting of the same data.
+        // This prevents the client from re-broadcasting the same data it just received,
+        // which is essential in multi-user scenarios to avoid update loops.
         lastBroadcastOrReceivedSceneVersion.current =
-          getSceneVersion(reconciledElements);
+          hashElementsVersion(reconciledElements);
         // 9. Clear the history to ensure a clean state after the remote update.
         excalidrawAPI.history.clear();
       } catch (e) {
@@ -334,13 +347,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     ) {
       return;
     }
-
     // Presenters or unlocked users can broadcast scene changes.
+    // This check is crucial for multi-user synchronization. We create a hash (signature)
+    // of the current scene and compare it to the last version we either sent or received.
+    // If they are the same, we don't broadcast, preventing an infinite loop where a
+    // client re-broadcasts the same data it just received from another user.
     if (
-      (isPresenter || lockWhiteboard === false) &&
-      getSceneVersion(elements) > lastBroadcastOrReceivedSceneVersion.current
+      canEdit &&
+      hashElementsVersion(elements) !==
+        lastBroadcastOrReceivedSceneVersion.current
     ) {
-      lastBroadcastOrReceivedSceneVersion.current = getSceneVersion(elements);
+      lastBroadcastOrReceivedSceneVersion.current =
+        hashElementsVersion(elements);
       broadcastSceneOnChange(
         elements,
         false,
@@ -369,11 +387,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const onPointerUpdate = throttle(
     (payload: { pointer; button; pointersMap: Gesture['pointers'] }) => {
       // Only broadcast pointer if user is presenter or is unlocked, and not using multi-touch.
-      if (
-        (!isPresenter && lockWhiteboard !== false) ||
-        !currentUser ||
-        payload.pointersMap.size >= 2
-      ) {
+      if (!canEdit || !currentUser || payload.pointersMap.size >= 2) {
         return;
       }
       const msg = {

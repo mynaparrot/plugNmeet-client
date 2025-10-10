@@ -98,7 +98,15 @@ export const broadcastSceneOnChange = async (
     broadcastedElementVersions.clear();
   }
 
-  // sync out only the elements we think we need to save bandwidth.
+  // To save bandwidth, we only broadcast elements that have changed.
+  // We maintain a map (`broadcastedElementVersions`) that acts as this client's "memory",
+  // storing the `version` of each element the last time we sent it.
+  //
+  // This filter then selects an element only if:
+  // 1. A full sync is forced via `syncAll` (which clears the memory map for a fresh start).
+  // 2. It's NEW (not in our memory map).
+  // 3. It's UPDATED (its version is higher than the one in our memory map).
+  // This ensures we only broadcast a small "diff" of changes, not the entire scene.
   const syncableElements = allElements.filter(
     (element) =>
       (syncAll ||
@@ -124,9 +132,6 @@ export const broadcastSceneOnChange = async (
         // the 'saved' status of the element once the upload is complete.
         uploadCanvasBinaryFile(elm, fileData, excalidrawAPI).then();
       }
-      // We must record the version of the pending element so that when it
-      // becomes "saved", the version bump is detected.
-      broadcastedElementVersions.set(elm.id, elm.version);
       // We don't broadcast the 'pending' element itself. We wait for the
       // upload to finish and broadcast the 'saved' element then.
       continue;
