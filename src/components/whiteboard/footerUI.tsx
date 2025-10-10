@@ -15,6 +15,7 @@ import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { savePageData } from './helpers/utils';
+import { sleep } from '../../helpers/utils';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -53,9 +54,10 @@ const FooterUI = ({
         if (isPresenter && excalidrawAPI) {
           savePageData(excalidrawAPI, pageToSave);
         }
-
-        // Then, proceed with changing the page.
+        // broadcast first so that user can prepare for page change
         await broadcastCurrentPageNumber(newPage);
+        await sleep(300);
+        // Then, proceed with changing the page.
         dispatch(setWhiteboardCurrentPage(newPage));
       }, 300),
     [dispatch, isPresenter, excalidrawAPI],

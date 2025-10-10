@@ -388,7 +388,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     CURSOR_SYNC_TIMEOUT,
   );
 
-  const showSwitchingWarning = () => {
+  const showSwitchingWarning = useCallback(() => {
     if (isSwitching.current) {
       toast(t('notifications.whiteboard-other-task-to-finish'), {
         type: 'warning',
@@ -396,7 +396,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       return true;
     }
     return false;
-  };
+  }, [t]);
 
   const onScrollChange: ExcalidrawProps['onScrollChange'] = () => {
     if (!isPresenter && !isProgrammaticScroll.current) {

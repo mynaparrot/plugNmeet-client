@@ -6,6 +6,7 @@ export type SupportedLangs = {
   code: string;
 };
 
+// prettier-ignore
 const supportedSpeechToTextLangs = [
   { name: 'Afrikaans', code: 'af-ZA', locale: 'af' },
   { name: 'Amharic', code: 'am-ET', locale: 'am' },
@@ -39,28 +40,12 @@ const supportedSpeechToTextLangs = [
   { name: 'Czech', code: 'cs-CZ', locale: 'cs' },
   { name: 'Croatian', code: 'hr-HR', locale: 'hr' },
   { name: 'Chinese (Mandarin, Simplified)', code: 'zh-CN', locale: 'zh-Hans' },
-  { name: 'Chinese (Taiwanese Mandarin)', code: 'zh-TW', locale: 'zh-Hant' },
   { name: 'Chinese (Wu, Simplified)', code: 'wuu-CN', locale: 'zh-Hans' },
-  {
-    name: 'Chinese (Cantonese, Simplified)',
-    code: 'yue-CN',
-    locale: 'zh-Hant',
-  },
-  {
-    name: 'Chinese (Jilu Mandarin, Simplified)',
-    code: 'zh-CN-shandong',
-    locale: 'zh-Hans',
-  },
-  {
-    name: 'Chinese (Southwestern Mandarin, Simplified)',
-    code: 'zh-CN-sichuan',
-    locale: 'zh-Hans',
-  },
-  {
-    name: 'Chinese (Cantonese, Traditional)',
-    code: 'zh-HK',
-    locale: 'zh-Hant',
-  },
+  { name: 'Chinese (Jilu Mandarin, Simplified)', code: 'zh-CN-shandong', locale: 'zh-Hans' },
+  { name: 'Chinese (Southwestern Mandarin, Simplified)', code: 'zh-CN-sichuan', locale: 'zh-Hans' },
+  { name: 'Chinese (Taiwanese Mandarin)', code: 'zh-TW', locale: 'zh-Hant' },
+  { name: 'Chinese (Cantonese, Simplified)', code: 'yue-CN', locale: 'zh-Hant' },
+  { name: 'Chinese (Cantonese, Traditional)', code: 'zh-HK', locale: 'zh-Hant' },
   { name: 'Danish', code: 'da-DK', locale: 'da' },
   { name: 'Dutch (Belgium)', code: 'nl-BE', locale: 'nl' },
   { name: 'Dutch (Netherlands)', code: 'nl-NL', locale: 'nl' },
@@ -165,6 +150,7 @@ const supportedSpeechToTextLangs = [
   { name: 'Zulu', code: 'zu-ZA', locale: 'zu' },
 ];
 
+// prettier-ignore
 const supportedTranslationLangs = [
   { name: 'Afrikaans', code: 'af' },
   { name: 'Albanian', code: 'sq' },
