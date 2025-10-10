@@ -79,7 +79,7 @@ const Modal = ({
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100"
+                className="flex items-center justify-between text-sm md:text-base font-semibold leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100"
               >
                 <span>{title}</span>
                 <Button

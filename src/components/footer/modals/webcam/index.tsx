@@ -71,6 +71,7 @@ const ShareWebcamModal = ({
         show={showVideoShareModal}
         onClose={onClose}
         title={t('footer.modal.select-webcam')}
+        customClass="ChooseBackgroud"
         renderButtons={() => (
           <div className="grid grid-cols-2 gap-5">
             <button

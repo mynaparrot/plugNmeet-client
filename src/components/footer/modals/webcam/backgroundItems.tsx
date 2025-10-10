@@ -68,7 +68,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   };
 
   return (
-    <div className="grid grid-cols-6 gap-1 h-[175px] overflow-auto scrollBar mb-0 3xl:mb-5">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 md:h-[175px] overflow-auto scrollBar mb-0 3xl:mb-5">
       <div
         className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('none', '')}
