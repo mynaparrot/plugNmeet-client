@@ -14,6 +14,12 @@ const RaisedHand = ({ userId }: RaisedHandProps) => {
       participantsSelector.selectById(state, userId)?.metadata.raisedHand,
   );
 
-  return raisedHand && <HandsIconSVG classes="h-4 w-auto" />;
+  return (
+    raisedHand && (
+      <div className="raised-hand absolute bottom-0 right-4 cursor-pointer w-7 h-7 rounded-full bg-Blue2-500 flex items-center justify-center">
+        <HandsIconSVG classes="h-4 w-auto" />
+      </div>
+    )
+  );
 };
 export default RaisedHand;
