@@ -29,8 +29,8 @@ import {
 import { toast } from 'react-toastify';
 import {
   NatsConnection,
-  wsconnect,
   tokenAuthenticator,
+  wsconnect,
 } from '@nats-io/nats-core';
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
 import { isURL } from 'validator';
@@ -55,7 +55,12 @@ import {
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
+import {
+  clearAllRoomStorage,
+  formatNatsError,
+  getWhiteboardDonors,
+  isUserRecorder,
+} from '../utils';
 import {
   addUserNotification,
   updateIsNatsServerConnected,
@@ -220,6 +225,8 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState('disconnected');
     // clean audioActivityManager
     audioActivityManager.destroy();
+    // clean room storage that used localStorage
+    clearAllRoomStorage();
 
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;

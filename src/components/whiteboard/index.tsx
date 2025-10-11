@@ -18,6 +18,8 @@ import {
 import {
   AppState,
   BinaryFiles,
+  Collaborator,
+  CollaboratorPointer,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
   Gesture,
@@ -249,7 +251,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     } else {
       // 6. If not the presenter, simply end the switching state.
       // They will receive the new data from the presenter.
-      isSwitching.current = false; // No data to load, so we can stop switching.
+      isSwitching.current = false;
     }
   }, [excalidrawAPI, isPresenter, currentPage, syncOfficeFilePage]);
 
@@ -284,10 +286,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           currentWhiteboardOfficeFileId,
           isSwitching,
         );
-        if (!hasData) {
-          fetchDataFromDonner();
-        } else {
+        if (hasData) {
           setFetchedData(true);
+        } else {
+          fetchDataFromDonner();
         }
       } else {
         fetchDataFromDonner();
@@ -334,72 +336,93 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     handleSwitchPageOrDocument,
   ]);
 
-  const handleCanvasChange = (
-    elements: readonly ExcalidrawElement[],
-    appState: AppState,
-    files: BinaryFiles,
-  ) => {
-    if (
-      !excalidrawAPI || // API not ready
-      !currentUser || // User not available
-      !elements.length || // No elements to sync
-      isSwitching.current // A page/file switch is in progress
-    ) {
-      return;
-    }
-    // Presenters or unlocked users can broadcast scene changes.
-    // This check is crucial for multi-user synchronization. We create a hash (signature)
-    // of the current scene and compare it to the last version we either sent or received.
-    // If they are the same, we don't broadcast, preventing an infinite loop where a
-    // client re-broadcasts the same data it just received from another user.
-    if (
-      canEdit &&
-      hashElementsVersion(elements) !==
-        lastBroadcastOrReceivedSceneVersion.current
-    ) {
-      lastBroadcastOrReceivedSceneVersion.current =
-        hashElementsVersion(elements);
-      broadcastSceneOnChange(
-        elements,
-        false,
-        undefined,
-        excalidrawAPI,
-        files,
-      ).then();
-    }
-
-    // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
-    if (isPresenter) {
-      broadcastAppStateChanges(
-        appState.height,
-        appState.width,
-        appState.scrollX,
-        appState.scrollY,
-        appState.zoom.value,
-        appState.theme,
-        appState.viewBackgroundColor,
-        appState.zenModeEnabled,
-        appState.gridSize,
-      ).then();
-    }
-  };
-
-  const onPointerUpdate = throttle(
-    (payload: { pointer; button; pointersMap: Gesture['pointers'] }) => {
-      // Only broadcast pointer if user is presenter or is unlocked, and not using multi-touch.
-      if (!canEdit || !currentUser || payload.pointersMap.size >= 2) {
+  /**
+   * This is the primary callback for any change on the Excalidraw canvas.
+   *
+   * It's important to note that on every change (e.g., drawing, moving, resizing),
+   * this function receives the *entire* scene's elements, not just the modified ones.
+   *
+   * It then triggers the broadcasting logic, which intelligently filters and sends
+   * only the necessary updates to other participants.
+   */
+  const handleCanvasChange = useCallback(
+    (
+      elements: readonly ExcalidrawElement[],
+      appState: AppState,
+      files: BinaryFiles,
+    ) => {
+      if (
+        !excalidrawAPI || // API not ready
+        !currentUser || // User not available
+        !elements.length || // No elements to sync
+        isSwitching.current // A page/file switch is in progress
+      ) {
         return;
       }
-      const msg = {
-        pointer: payload.pointer,
-        button: payload.button || 'up',
-        selectedElementIds: excalidrawAPI?.getAppState().selectedElementIds,
-        userId: currentUser.userId,
-        name: currentUser.name,
-      };
-      broadcastMousePointerUpdate(msg).then();
+      if (
+        // Presenters or unlocked users can broadcast scene changes.
+        canEdit &&
+        // This check is crucial for multi-user synchronization. We create a hash (signature)
+        // of the current scene and compare it to the last version we either sent or received.
+        // If they are the same, we don't broadcast, preventing an infinite loop where a
+        // client re-broadcasts the same data it just received from another user.
+        hashElementsVersion(elements) !==
+          lastBroadcastOrReceivedSceneVersion.current
+      ) {
+        // add new hash of the current scene
+        lastBroadcastOrReceivedSceneVersion.current =
+          hashElementsVersion(elements);
+        broadcastSceneOnChange(
+          elements,
+          false,
+          undefined,
+          excalidrawAPI,
+          files,
+        ).then();
+      }
+
+      // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
+      if (isPresenter) {
+        broadcastAppStateChanges(
+          appState.height,
+          appState.width,
+          appState.scrollX,
+          appState.scrollY,
+          appState.zoom.value,
+          appState.theme,
+          appState.viewBackgroundColor,
+          appState.zenModeEnabled,
+          appState.gridSize,
+        ).then();
+      }
     },
-    CURSOR_SYNC_TIMEOUT,
+    [excalidrawAPI, currentUser, canEdit, isPresenter],
+  );
+
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
+  const onPointerUpdate = useCallback(
+    throttle(
+      (payload: {
+        pointer: CollaboratorPointer;
+        button: 'down' | 'up';
+        pointersMap: Gesture['pointers'];
+      }) => {
+        if (!canEdit || !currentUser || payload.pointersMap.size >= 2) {
+          return;
+        }
+        const msg: Partial<Collaborator> = {
+          pointer: payload.pointer,
+          button: payload.button || 'up',
+          selectedElementIds: excalidrawAPI?.getAppState().selectedElementIds,
+          id: currentUser.userId,
+          username: currentUser.name,
+          avatarUrl: currentUser.metadata?.profilePic,
+        };
+        broadcastMousePointerUpdate(msg).then();
+      },
+      CURSOR_SYNC_TIMEOUT,
+    ),
+    [canEdit, currentUser, excalidrawAPI],
   );
 
   const showSwitchingWarning = useCallback(() => {
@@ -412,36 +435,43 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     return false;
   }, [t]);
 
-  const onScrollChange: ExcalidrawProps['onScrollChange'] = () => {
+  const onScrollChange: ExcalidrawProps['onScrollChange'] = useCallback(() => {
+    // When a non-presenter scrolls manually, disable "follow mode".
     if (!isPresenter && !isProgrammaticScroll.current) {
       setIsFollowing(false);
     }
-  };
+  }, [isPresenter]);
 
-  const renderTopRightUI = () => (
-    <>
-      {isPresenter && excalidrawAPI && (
-        <div className="menu relative z-10">
-          <button
-            onClick={() => setIsOpenManageFilesUI(true)}
-            className="wb-manage-upload-file ml-1"
-          >
-            <i className="pnm-attachment text-[13px]" />
-            {t('whiteboard.manage-files')}
-          </button>
-        </div>
-      )}
-    </>
+  const renderTopRightUI = useCallback(
+    () => (
+      <>
+        {isPresenter && excalidrawAPI && (
+          <div className="menu relative z-10">
+            <button
+              onClick={() => setIsOpenManageFilesUI(true)}
+              className="wb-manage-upload-file ml-1"
+            >
+              <i className="pnm-attachment text-[13px]" />
+              {t('whiteboard.manage-files')}
+            </button>
+          </div>
+        )}
+      </>
+    ),
+    [isPresenter, excalidrawAPI, t],
   );
 
-  const renderFooter = () => (
-    <FooterUI
-      excalidrawAPI={excalidrawAPI}
-      isPresenter={isPresenter ?? false}
-      isFollowing={isFollowing}
-      setIsFollowing={setIsFollowing}
-      showSwitchingWarning={showSwitchingWarning}
-    />
+  const renderFooter = useMemo(
+    () => (
+      <FooterUI
+        excalidrawAPI={excalidrawAPI}
+        isPresenter={!!isPresenter}
+        isFollowing={isFollowing}
+        setIsFollowing={setIsFollowing}
+        showSwitchingWarning={showSwitchingWarning}
+      />
+    ),
+    [excalidrawAPI, isPresenter, isFollowing, showSwitchingWarning],
   );
 
   return (
@@ -488,9 +518,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
           <MainMenu.DefaultItems.Help />
-          {screenWidth <= 767 && renderFooter()}
+          {screenWidth <= 767 && renderFooter}
         </MainMenu>
-        {screenWidth > 767 && <Footer>{renderFooter()}</Footer>}
+        {screenWidth > 767 && <Footer>{renderFooter}</Footer>}
       </Excalidraw>
     </div>
   );

@@ -51,21 +51,14 @@ const useWhiteboardSetup = ({
 
   // from useCollaborators
   useEffect(() => {
-    if (mousePointerLocation && excalidrawAPI) {
+    if (excalidrawAPI && mousePointerLocation) {
       try {
-        const { pointer, button, name, userId, selectedElementIds } =
-          JSON.parse(mousePointerLocation);
-        if (typeof userId === 'undefined' || userId === '') {
+        const data: Collaborator = JSON.parse(mousePointerLocation);
+        if (!data.id) {
           return;
         }
 
-        collaborators.current.set(userId, {
-          pointer,
-          button,
-          selectedElementIds,
-          id: userId,
-          username: name,
-        });
+        collaborators.current.set(data.id as SocketId, data);
         excalidrawAPI.updateScene({
           collaborators: new Map(collaborators.current),
         });

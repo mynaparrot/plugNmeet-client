@@ -99,7 +99,7 @@ const WhiteboardIcon = () => {
       await sendRequest(body);
       // After sending, we can listen for remote changes again.
       isLocalAction.current = false;
-    }, 500),
+    }, 200),
     [],
   );
 

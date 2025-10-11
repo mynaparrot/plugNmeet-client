@@ -100,8 +100,6 @@ export default class ConnectLivekit
 
     this.handleMediaTracks = new HandleMediaTracks(this);
 
-    // clean session data
-    sessionStorage.clear();
     // configure room
     this._room = this.configureRoom();
   }

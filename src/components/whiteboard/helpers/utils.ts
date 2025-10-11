@@ -56,9 +56,10 @@ export const addPreloadedLibraryItems = (
 };
 
 export const formatStorageKey = (pageNumber: number, fileId?: string) => {
+  const roomSid = store.getState().session.currentRoom.sid;
   const key =
     fileId ?? store.getState().whiteboard.currentWhiteboardOfficeFileId;
-  return `${key}_${pageNumber}`;
+  return `${roomSid}_${key}_${pageNumber}`;
 };
 
 export const savePageData = (
@@ -68,10 +69,7 @@ export const savePageData = (
 ) => {
   const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elms.length) {
-    sessionStorage.setItem(
-      formatStorageKey(page, fileId),
-      JSON.stringify(elms),
-    );
+    localStorage.setItem(formatStorageKey(page, fileId), JSON.stringify(elms));
   }
 };
 
@@ -82,8 +80,8 @@ export const displaySavedPageData = async (
   currentFileId?: string,
   isSwitching?: RefObject<boolean>,
 ) => {
-  // 1. Attempt to retrieve the page data from sessionStorage.
-  const data = sessionStorage.getItem(formatStorageKey(page, currentFileId));
+  // 1. Attempt to retrieve the page data from localStorage.
+  const data = localStorage.getItem(formatStorageKey(page, currentFileId));
   let hasData = false;
 
   // 2. Proceed only if data exists and the Excalidraw API is ready.

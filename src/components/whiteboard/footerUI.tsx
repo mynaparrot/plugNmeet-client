@@ -180,4 +180,4 @@ const FooterUI = ({
   return isPresenter ? renderForAdmin() : renderForParticipant();
 };
 
-export default React.memo(FooterUI);
+export default FooterUI;

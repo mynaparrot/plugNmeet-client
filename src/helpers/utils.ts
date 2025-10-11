@@ -293,3 +293,30 @@ export const generateAvatarInitial = (name: string) => {
 export const isUserRecorder = (userId: string) => {
   return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
 };
+
+/**
+ * Clears all whiteboard-related data for the current room from localStorage.
+ * It identifies items to remove by looking for keys that start with the
+ * current room's SID, which is the pattern used by `formatStorageKey`.
+ */
+export const clearAllRoomStorage = () => {
+  const roomSid = store.getState().session.currentRoom.sid;
+  if (!roomSid) {
+    console.warn('Could not clear room storage: room SID not found.');
+    return;
+  }
+
+  const prefix = `${roomSid}_`;
+  const keysToRemove: string[] = [];
+
+  // Collect all keys that match the room's prefix.
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith(prefix)) {
+      keysToRemove.push(key);
+    }
+  }
+
+  // Remove all collected keys.
+  keysToRemove.forEach((key) => localStorage.removeItem(key));
+};
