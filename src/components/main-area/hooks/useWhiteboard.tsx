@@ -5,7 +5,7 @@ import { debounce } from 'es-toolkit';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { savePageData } from '../../whiteboard/helpers/utils';
 import Whiteboard from '../../whiteboard';
-import { doRefreshWhiteboard } from '../../../store/slices/whiteboard';
+import { triggerRefreshWhiteboard } from '../../../store/slices/whiteboard';
 
 export const useWhiteboard = (
   isActiveWhiteboard: boolean,
@@ -23,7 +23,7 @@ export const useWhiteboard = (
   const debouncedRefresh = useMemo(
     () =>
       debounce(() => {
-        dispatch(doRefreshWhiteboard());
+        dispatch(triggerRefreshWhiteboard());
       }, 500),
     [dispatch],
   );

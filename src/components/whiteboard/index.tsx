@@ -37,6 +37,7 @@ import FooterUI from './footerUI';
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
   broadcastAppStateChanges,
+  broadcastCurrentFileId,
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
 } from './helpers/handleRequestedWhiteboardData';
@@ -103,6 +104,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
   const excalidrawElements = useAppSelector(
     (state) => state.whiteboard.excalidrawElements,
+  );
+  const whiteboardResetSignal = useAppSelector(
+    (state) => state.whiteboard.whiteboardResetSignal,
   );
 
   // State and Refs
@@ -207,6 +211,21 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [excalidrawAPI],
   );
 
+  const resetWhiteboardState = useCallback(
+    (excalidrawAPI: ExcalidrawImperativeAPI) => {
+      // 1. Clean up the whiteboard canvas
+      excalidrawAPI.updateScene({ elements: [] });
+      excalidrawAPI.addFiles([]);
+      excalidrawAPI.history.clear();
+
+      // 2. Reset the internal state for a clean slate.
+      lastBroadcastOrReceivedSceneVersion.current = -1;
+      cleanProcessedImageElementsMap();
+      setIsFollowing(true);
+    },
+    [],
+  );
+
   /**
    * Handles the logic for switching between whiteboard pages or office documents.
    * It cleans the canvas and prepares it for new data.
@@ -219,16 +238,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     isSwitching.current = true;
 
     // 3. Clean up the whiteboard canvas for all users.
-    excalidrawAPI.updateScene({ elements: [] });
-    excalidrawAPI.addFiles([]);
-    excalidrawAPI.history.clear();
+    resetWhiteboardState(excalidrawAPI);
 
-    // 4. Reset the internal state for a clean slate.
-    lastBroadcastOrReceivedSceneVersion.current = -1;
-    cleanProcessedImageElementsMap();
-    setIsFollowing(true);
-
-    // 5. Handle data loading based on user role.
+    // 4. Handle data loading based on user role.
     // If the user is the presenter, load the switched page/document data if previously saved.
     if (isPresenter) {
       const loadedFromStorage = await displaySavedPageData(
@@ -249,11 +261,17 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         }
       }
     } else {
-      // 6. If not the presenter, simply end the switching state.
+      // 5. If not the presenter, simply end the switching state.
       // They will receive the new data from the presenter.
       isSwitching.current = false;
     }
-  }, [excalidrawAPI, isPresenter, currentPage, syncOfficeFilePage]);
+  }, [
+    excalidrawAPI,
+    isPresenter,
+    currentPage,
+    resetWhiteboardState,
+    syncOfficeFilePage,
+  ]);
 
   // clean up store during exit
   useEffect(() => {
@@ -279,19 +297,24 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         isSwitching.current = true;
         const { currentWhiteboardOfficeFileId, currentPage } =
           store.getState().whiteboard;
-        const hasData = await displaySavedPageData(
+
+        // broadcast current fileId to make sure everyone has the same state
+        // it also clean current page number and other values
+        await broadcastCurrentFileId(currentWhiteboardOfficeFileId);
+        // retrieve data from storage
+        await displaySavedPageData(
           excalidrawAPI,
           true,
           currentPage,
           currentWhiteboardOfficeFileId,
           isSwitching,
         );
-        if (hasData) {
-          setFetchedData(true);
-        } else {
-          fetchDataFromDonner();
-        }
+        // now set that we're ready
+        // presenter should not fetch data from anyone else
+        // to make sure single point of truth
+        setFetchedData(true);
       } else {
+        // for any other user get data from peer presenter
         fetchDataFromDonner();
       }
     };
@@ -335,6 +358,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     previousPage,
     handleSwitchPageOrDocument,
   ]);
+
+  // when receive signal to clear the whiteboard
+  useEffect(() => {
+    if (excalidrawAPI && whiteboardResetSignal > 0) {
+      resetWhiteboardState(excalidrawAPI);
+    }
+  }, [excalidrawAPI, whiteboardResetSignal, resetWhiteboardState]);
 
   /**
    * This is the primary callback for any change on the Excalidraw canvas.

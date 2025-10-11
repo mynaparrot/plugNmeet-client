@@ -210,35 +210,13 @@ export const formatNatsError = (err: any) => {
 
 export const getWhiteboardDonors = (): IParticipant[] => {
   const s = store.getState();
-  const participants = participantsSelector
+  return participantsSelector
     .selectAll(s)
     .filter(
-      (participant) => participant.userId !== s.session.currentUser?.userId,
+      (participant) =>
+        participant.userId !== s.session.currentUser?.userId &&
+        participant.metadata.isPresenter,
     );
-
-  if (!participants.length) return [];
-  let donors: IParticipant[] = [];
-
-  if (participants.length > 1) {
-    // we can select one presenter
-    const p = participants.filter((p) => p.metadata.isPresenter);
-    if (p.length > 0) {
-      donors.push(p[0]);
-    }
-    // now select one from other users
-    const others = participants.filter((p) => !p.metadata.isPresenter);
-    if (others.length > 0) {
-      others.sort((a, b) => {
-        return a.joinedAt - b.joinedAt;
-      });
-      // select another 1 user
-      donors.push(others[0]);
-    }
-  } else {
-    donors = participants;
-  }
-
-  return donors;
 };
 
 let emptyStreamTrack: MediaStreamTrack | undefined = undefined;

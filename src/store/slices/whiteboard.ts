@@ -31,7 +31,8 @@ const initialState: IWhiteboardSlice = {
       pageFiles: '',
     },
   ],
-  refreshWhiteboard: 0,
+  refreshWhiteboardSignal: 0,
+  whiteboardResetSignal: 0,
   allExcalidrawElements: '',
 };
 
@@ -103,8 +104,14 @@ const whiteboardSlice = createSlice({
         state.whiteboardUploadedOfficeFiles.push(action.payload);
       }
     },
-    doRefreshWhiteboard: (state) => {
-      state.refreshWhiteboard = Date.now();
+    triggerRefreshWhiteboard: (state) => {
+      state.refreshWhiteboardSignal = Date.now();
+    },
+    triggerWhiteboardReset: (state) => {
+      // clean up whiteboard state
+      state.excalidrawElements = '';
+      state.allExcalidrawElements = '';
+      state.whiteboardResetSignal = Date.now();
     },
     addWhiteboardDataSentFromDonor: (
       state,
@@ -135,7 +142,8 @@ export const {
   updateCurrentWhiteboardOfficeFileId,
   updateCurrentOfficeFilePages,
   addWhiteboardUploadedOfficeFile,
-  doRefreshWhiteboard,
+  triggerRefreshWhiteboard,
+  triggerWhiteboardReset,
   addAllExcalidrawElements,
   addWhiteboardDataSentFromDonor,
 } = whiteboardSlice.actions;

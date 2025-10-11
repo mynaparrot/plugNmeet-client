@@ -5,7 +5,10 @@ import {
   ExcalidrawImageElement,
 } from '@excalidraw/excalidraw/element/types';
 
-import { broadcastSceneOnChange } from './handleRequestedWhiteboardData';
+import {
+  broadcastSceneOnChange,
+  sendClearWhiteboardSignal,
+} from './handleRequestedWhiteboardData';
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
@@ -80,11 +83,15 @@ export const displaySavedPageData = async (
   currentFileId?: string,
   isSwitching?: RefObject<boolean>,
 ) => {
-  // 1. Attempt to retrieve the page data from localStorage.
+  // 1. Send everyone to clean their whiteboard
+  // as we're changing page/file or starting up
+  sendClearWhiteboardSignal();
+
+  // 2. Attempt to retrieve the page data from localStorage.
   const data = localStorage.getItem(formatStorageKey(page, currentFileId));
   let hasData = false;
 
-  // 2. Proceed only if data exists and the Excalidraw API is ready.
+  // 3. Proceed only if data exists and the Excalidraw API is ready.
   if (data && excalidrawAPI) {
     try {
       const elements = JSON.parse(data);
@@ -114,11 +121,11 @@ export const displaySavedPageData = async (
     }
   }
 
-  // 6. Reset the switching flag to re-enable normal synchronization.
+  // 4. Reset the switching flag to re-enable normal synchronization.
   if (isSwitching) {
     isSwitching.current = false;
   }
-  // 7. Return whether data was successfully loaded.
+  // 5. Return whether data was successfully loaded.
   return hasData;
 };
 

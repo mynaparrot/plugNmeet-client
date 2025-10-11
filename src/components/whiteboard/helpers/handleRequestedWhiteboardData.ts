@@ -261,6 +261,13 @@ export const broadcastAppStateChanges = async (
   );
 };
 
+export const sendClearWhiteboardSignal = () => {
+  if (!conn) {
+    conn = getNatsConn();
+  }
+  conn.sendWhiteboardData(DataMsgBodyType.WHITEBOARD_RESET, '');
+};
+
 let isEnabledE2EE: boolean | undefined = undefined;
 const handleEncryption = async (msg: string) => {
   if (typeof isEnabledE2EE === 'undefined') {

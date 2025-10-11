@@ -11,7 +11,8 @@ export interface IWhiteboardSlice {
   currentWhiteboardOfficeFileId: string;
   currentOfficeFilePages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
-  refreshWhiteboard: number;
+  refreshWhiteboardSignal: number;
+  whiteboardResetSignal: number;
   allExcalidrawElements: string;
 }
 

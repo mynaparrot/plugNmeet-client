@@ -3,6 +3,7 @@ import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 import { store } from '../../store';
 import {
   setWhiteboardCurrentPage,
+  triggerWhiteboardReset,
   updateCurrentOfficeFilePages,
   updateCurrentWhiteboardOfficeFileId,
   updateExcalidrawElements,
@@ -51,6 +52,11 @@ export default class HandleWhiteboard {
           store.dispatch(
             updateMouseAppStateChanges(JSON.parse(payload.message)),
           );
+        }
+        break;
+      case DataMsgBodyType.WHITEBOARD_RESET:
+        if (!this.isCurrentUserPresenter()) {
+          store.dispatch(triggerWhiteboardReset());
         }
         break;
     }

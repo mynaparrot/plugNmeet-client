@@ -10,7 +10,7 @@ import {
 
 import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
-import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
+import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 import ActiveSpeakers from '../active-speakers';
 import MainView from './mainView';
@@ -127,7 +127,7 @@ const MainArea = () => {
   const debouncedRefresh = useMemo(
     () =>
       debounce(() => {
-        dispatch(doRefreshWhiteboard());
+        dispatch(triggerRefreshWhiteboard());
       }, 500),
     [dispatch],
   );

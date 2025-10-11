@@ -25,15 +25,15 @@ const useWhiteboardSetup = ({
   const mousePointerLocation = useAppSelector(
     (state) => state.whiteboard.mousePointerLocation,
   );
-  const refreshWhiteboard = useAppSelector(
-    (state) => state.whiteboard.refreshWhiteboard,
+  const refreshWhiteboardSignal = useAppSelector(
+    (state) => state.whiteboard.refreshWhiteboardSignal,
   );
 
   useEffect(() => {
-    if (excalidrawAPI && refreshWhiteboard) {
+    if (excalidrawAPI && refreshWhiteboardSignal) {
       excalidrawAPI.refresh();
     }
-  }, [refreshWhiteboard, excalidrawAPI]);
+  }, [refreshWhiteboardSignal, excalidrawAPI]);
 
   useEffect(() => {
     if (!excalidrawAPI) {

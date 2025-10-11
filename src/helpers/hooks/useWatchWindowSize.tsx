@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MobileDetect from 'mobile-detect';
 import type { Room } from 'livekit-client';
 import NoSleep from 'nosleep.js';
@@ -14,7 +14,7 @@ import { store, useAppDispatch } from '../../store';
 import { updateUserDeviceType } from '../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../store/slices/interfaces/session';
 import useStorePreviousInt from './useStorePreviousInt';
-import { doRefreshWhiteboard } from '../../store/slices/whiteboard';
+import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 
 const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
@@ -47,7 +47,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     if (preScreenWidth && preScreenWidth !== screenWidth) {
       dispatch(updateScreenWidth(window.innerWidth));
       if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
-        dispatch(doRefreshWhiteboard());
+        dispatch(triggerRefreshWhiteboard());
       }
     }
     //eslint-disable-next-line
