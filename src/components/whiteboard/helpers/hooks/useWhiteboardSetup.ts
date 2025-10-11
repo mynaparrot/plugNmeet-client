@@ -30,7 +30,7 @@ const useWhiteboardSetup = ({
   );
 
   useEffect(() => {
-    if (excalidrawAPI && refreshWhiteboardSignal) {
+    if (excalidrawAPI && refreshWhiteboardSignal > 0) {
       excalidrawAPI.refresh();
     }
   }, [refreshWhiteboardSignal, excalidrawAPI]);
