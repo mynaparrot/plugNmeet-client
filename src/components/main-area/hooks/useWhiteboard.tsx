@@ -53,7 +53,10 @@ export const useWhiteboard = (
       const isPresenter = s.session.currentUser?.metadata?.isPresenter;
       if (isPresenter) {
         const lastPage = s.whiteboard.currentPage;
-        savePageData(excalidrawAPI, lastPage);
+        savePageData(
+          excalidrawAPI.getSceneElementsIncludingDeleted(),
+          lastPage,
+        );
       }
     }
     return null;

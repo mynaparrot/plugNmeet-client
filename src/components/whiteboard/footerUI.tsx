@@ -52,7 +52,10 @@ const FooterUI = ({
       debounce(async (newPage: number, pageToSave: number) => {
         // First, save the state of the page we are leaving.
         if (isPresenter && excalidrawAPI) {
-          savePageData(excalidrawAPI, pageToSave);
+          savePageData(
+            excalidrawAPI.getSceneElementsIncludingDeleted(),
+            pageToSave,
+          );
         }
         // broadcast first so that user can prepare for page change
         await broadcastCurrentPageNumber(newPage);

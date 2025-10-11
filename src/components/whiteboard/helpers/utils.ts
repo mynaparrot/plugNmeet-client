@@ -3,6 +3,7 @@ import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawElement,
   ExcalidrawImageElement,
+  OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
 
 import {
@@ -15,6 +16,7 @@ import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
+let roomSid: undefined | string = undefined;
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -59,18 +61,19 @@ export const addPreloadedLibraryItems = (
 };
 
 export const formatStorageKey = (pageNumber: number, fileId?: string) => {
-  const roomSid = store.getState().session.currentRoom.sid;
+  if (!roomSid) {
+    roomSid = store.getState().session.currentRoom.sid;
+  }
   const key =
     fileId ?? store.getState().whiteboard.currentWhiteboardOfficeFileId;
   return `${roomSid}_${key}_${pageNumber}`;
 };
 
 export const savePageData = (
-  excalidrawAPI: ExcalidrawImperativeAPI,
+  elms: readonly OrderedExcalidrawElement[],
   page: number,
   fileId?: string,
 ) => {
-  const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
   if (elms.length) {
     localStorage.setItem(formatStorageKey(page, fileId), JSON.stringify(elms));
   }

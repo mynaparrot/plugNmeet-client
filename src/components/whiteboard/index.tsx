@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { throttle } from 'es-toolkit';
+import { debounce, throttle } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 import {
   CaptureUpdateAction,
@@ -54,6 +54,7 @@ import {
 import {
   displaySavedPageData,
   ensureAllImagesDataIsLoaded,
+  savePageData,
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
@@ -62,7 +63,8 @@ interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
 }
 
-const CURSOR_SYNC_TIMEOUT = 33;
+const CURSOR_SYNC_TIMEOUT = 33,
+  SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT = 1000;
 
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const dispatch = useAppDispatch();
@@ -366,6 +368,21 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     }
   }, [excalidrawAPI, whiteboardResetSignal, resetWhiteboardState]);
 
+  // a debounced function to save the scene to localStorage.
+  // oxlint-disable-next-line exhaustive-deps
+  const debouncedSaveToStorage = useCallback(
+    debounce((excalidrawAPI: ExcalidrawImperativeAPI) => {
+      if (isPresenter) {
+        savePageData(
+          excalidrawAPI.getSceneElementsIncludingDeleted(),
+          currentPage,
+          currentWhiteboardOfficeFileId,
+        );
+      }
+    }, SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT),
+    [currentPage, currentWhiteboardOfficeFileId, isPresenter],
+  );
+
   /**
    * This is the primary callback for any change on the Excalidraw canvas.
    *
@@ -408,7 +425,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           undefined,
           excalidrawAPI,
           files,
-        ).then();
+        ).then(() => debouncedSaveToStorage(excalidrawAPI));
       }
 
       // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
@@ -426,7 +443,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         ).then();
       }
     },
-    [excalidrawAPI, currentUser, canEdit, isPresenter],
+    [excalidrawAPI, currentUser, canEdit, isPresenter, debouncedSaveToStorage],
   );
 
   // oxlint-disable-next-line react-hooks/exhaustive-deps

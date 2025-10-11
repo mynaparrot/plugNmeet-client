@@ -73,7 +73,11 @@ const ManageOfficeFilesModal = ({
           return;
         }
 
-        savePageData(excalidrawAPI, currentPage, currentWhiteboardOfficeFileId);
+        savePageData(
+          excalidrawAPI.getSceneElementsIncludingDeleted(),
+          currentPage,
+          currentWhiteboardOfficeFileId,
+        );
         // broadcast first so that user can prepare for file
         await broadcastCurrentFileId(officeFile.fileId);
         await sleep(300);
