@@ -707,18 +707,22 @@ export default class ConnectNats {
       );
     }
 
-    // load chat messages from DB
-    idbGetAll<ChatMessage>('chatMessages').then((msgs) => {
+    // Load chat messages and notifications from IndexedDB in parallel.
+    try {
+      const [msgs, notifications] = await Promise.all([
+        idbGetAll<ChatMessage>('chatMessages'),
+        idbGetAll<UserNotification>('userNotifications'),
+      ]);
+
       if (msgs.length) {
         store.dispatch(addAllChatMessages(msgs));
       }
-    });
-    // load user notifications from DB
-    idbGetAll<UserNotification>('userNotifications').then((notifications) => {
       if (notifications.length) {
         store.dispatch(setAllUserNotifications(notifications));
       }
-    });
+    } catch (e) {
+      console.error('Failed to load data from IndexedDB on startup:', e);
+    }
   }
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
