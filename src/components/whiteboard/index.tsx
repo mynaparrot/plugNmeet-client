@@ -25,7 +25,10 @@ import {
   Gesture,
 } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
-import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import {
+  ExcalidrawElement,
+  OrderedExcalidrawElement,
+} from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 import '@excalidraw/excalidraw/index.css';
@@ -369,18 +372,19 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, [excalidrawAPI, whiteboardResetSignal, resetWhiteboardState]);
 
   // a debounced function to save the scene to localStorage.
-  // oxlint-disable-next-line exhaustive-deps
-  const debouncedSaveToStorage = useCallback(
-    debounce((excalidrawAPI: ExcalidrawImperativeAPI) => {
-      if (isPresenter) {
-        savePageData(
-          excalidrawAPI.getSceneElementsIncludingDeleted(),
-          currentPage,
-          currentWhiteboardOfficeFileId,
-        );
-      }
-    }, SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT),
-    [currentPage, currentWhiteboardOfficeFileId, isPresenter],
+  const debouncedSaveToStorage = useMemo(
+    () =>
+      debounce(
+        (
+          elms: readonly OrderedExcalidrawElement[],
+          currentPage: number,
+          currentWhiteboardOfficeFileId: string,
+        ) => {
+          savePageData(elms, currentPage, currentWhiteboardOfficeFileId);
+        },
+        SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT,
+      ),
+    [],
   );
 
   /**
@@ -425,7 +429,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           undefined,
           excalidrawAPI,
           files,
-        ).then(() => debouncedSaveToStorage(excalidrawAPI));
+        ).then(
+          () =>
+            isPresenter &&
+            debouncedSaveToStorage(
+              excalidrawAPI.getSceneElementsIncludingDeleted(),
+              currentPage,
+              currentWhiteboardOfficeFileId,
+            ),
+        );
       }
 
       // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
@@ -443,7 +455,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         ).then();
       }
     },
-    [excalidrawAPI, currentUser, canEdit, isPresenter, debouncedSaveToStorage],
+    [
+      excalidrawAPI,
+      currentUser,
+      canEdit,
+      isPresenter,
+      debouncedSaveToStorage,
+      currentPage,
+      currentWhiteboardOfficeFileId,
+    ],
   );
 
   // oxlint-disable-next-line react-hooks/exhaustive-deps
