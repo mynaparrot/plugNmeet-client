@@ -56,7 +56,7 @@ export const useWhiteboard = (
         savePageData(
           excalidrawAPI.getSceneElementsIncludingDeleted(),
           lastPage,
-        );
+        ).then();
       }
     }
     return null;

@@ -16,6 +16,11 @@ import {
   IWhiteboardOfficeFile,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
+import {
+  DB_STORE_IMAGE_CACHE,
+  idbGet,
+  idbStore,
+} from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
 
 export interface FileReaderResult {
@@ -30,7 +35,6 @@ export interface ImageCustomData {
   uploaderWhiteboardWidth?: number;
 }
 
-const imageCache = new Map<string, string>();
 const uploadingCanvasBinaryFile: Map<string, string> = new Map();
 const processedImageElements: Map<string, string> = new Map();
 
@@ -75,8 +79,9 @@ export const createAndRegisterOfficeFile = (
  */
 const fetchAndCacheImage = async (url: string): Promise<string | null> => {
   // 1. Check if the image is already in the cache.
-  if (imageCache.has(url)) {
-    return imageCache.get(url)!;
+  const cachedImage = await idbGet<string>(DB_STORE_IMAGE_CACHE, url);
+  if (cachedImage) {
+    return cachedImage;
   }
 
   let base64: string | null = null;
@@ -100,7 +105,7 @@ const fetchAndCacheImage = async (url: string): Promise<string | null> => {
   } finally {
     // 4. If the fetch was successful, store the base64 data in the cache.
     if (base64) {
-      imageCache.set(url, base64);
+      await idbStore('imageCache', url, base64);
     }
   }
   // 5. Return the result (either the base64 string or null if it failed).
@@ -436,12 +441,7 @@ export const preloadOfficeFilePages = (
       '/download/uploadedFile/' +
       fileToPreload.filePath;
 
-    // If the image is already in our cache, we don't need to do anything.
-    if (imageCache.has(url)) {
-      return;
-    }
-
-    // Use the shared helper to fetch and cache the image. We don't need the result here.
+    // Use the shared helper to fetch and cache the image. It will automatically handle existing entries.
     await fetchAndCacheImage(url);
   });
 

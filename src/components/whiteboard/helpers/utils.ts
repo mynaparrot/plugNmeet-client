@@ -13,10 +13,14 @@ import {
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
+import {
+  DB_STORE_WHITEBOARD,
+  idbGet,
+  idbStore,
+} from '../../../helpers/libs/idb';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
-let roomSid: undefined | string = undefined;
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -61,21 +65,18 @@ export const addPreloadedLibraryItems = (
 };
 
 export const formatStorageKey = (pageNumber: number, fileId?: string) => {
-  if (!roomSid) {
-    roomSid = store.getState().session.currentRoom.sid;
-  }
   const key =
     fileId ?? store.getState().whiteboard.currentWhiteboardOfficeFileId;
-  return `${roomSid}_${key}_${pageNumber}`;
+  return `${key}_${pageNumber}`;
 };
 
-export const savePageData = (
+export const savePageData = async (
   elms: readonly OrderedExcalidrawElement[],
   page: number,
   fileId?: string,
 ) => {
   if (elms.length) {
-    localStorage.setItem(formatStorageKey(page, fileId), JSON.stringify(elms));
+    await idbStore(DB_STORE_WHITEBOARD, formatStorageKey(page, fileId), elms);
   }
 };
 
@@ -90,45 +91,43 @@ export const displaySavedPageData = async (
   // as we're changing page/file or starting up
   sendClearWhiteboardSignal();
 
-  // 2. Attempt to retrieve the page data from localStorage.
-  const data = localStorage.getItem(formatStorageKey(page, currentFileId));
+  // 2. Attempt to retrieve the page data from IndexedDB.
+  const elements = await idbGet<readonly OrderedExcalidrawElement[]>(
+    DB_STORE_WHITEBOARD,
+    formatStorageKey(page, currentFileId),
+  );
   let hasData = false;
 
   // 3. Proceed only if data exists and the Excalidraw API is ready.
-  if (data && excalidrawAPI) {
+  if (elements && elements.length) {
     try {
-      const elements = JSON.parse(data);
+      hasData = true;
 
-      // 3. Validate that the retrieved data is a non-empty array of elements.
-      if (Array.isArray(elements) && elements.length) {
-        hasData = true;
+      // 4. It's important to do this now because other syncs are locked by `isSwitching.current = true`.
+      // Ensure any image files referenced in the elements are loaded.
+      //and update the Excalidraw scene with the loaded elements.
+      ensureAllImagesDataIsLoaded(excalidrawAPI, elements);
+      excalidrawAPI.updateScene({ elements });
 
-        // 4. It's important to do this now because other syncs are locked by `isSwitching.current = true`.
-        // Ensure any image files referenced in the elements are loaded.
-        //and update the Excalidraw scene with the loaded elements.
-        ensureAllImagesDataIsLoaded(excalidrawAPI, elements);
-        excalidrawAPI.updateScene({ elements });
-
-        // 5. If the user is the presenter, broadcast the complete scene to all other participants.
-        if (isPresenter) {
-          // A short delay ensures all elements are rendered before broadcasting.
-          await sleep(300);
-          const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
-          await broadcastSceneOnChange(latestElms ?? elements, true);
-          // wait until last data send complete
-          await sleep(300);
-        }
+      // 5. If the user is the presenter, broadcast the complete scene to all other participants.
+      if (isPresenter) {
+        // A short delay ensures all elements are rendered before broadcasting.
+        await sleep(300);
+        const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
+        await broadcastSceneOnChange(latestElms ?? elements, true);
+        // wait until last data send complete
+        await sleep(300);
       }
     } catch (e) {
       console.error('Failed to parse or display saved page data.', e);
     }
   }
 
-  // 4. Reset the switching flag to re-enable normal synchronization.
+  // 6. Reset the switching flag to re-enable normal synchronization.
   if (isSwitching) {
     isSwitching.current = false;
   }
-  // 5. Return whether data was successfully loaded.
+  // 7. Return whether data was successfully loaded.
   return hasData;
 };
 

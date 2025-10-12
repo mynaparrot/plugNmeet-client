@@ -380,7 +380,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           currentPage: number,
           currentWhiteboardOfficeFileId: string,
         ) => {
-          savePageData(elms, currentPage, currentWhiteboardOfficeFileId);
+          savePageData(elms, currentPage, currentWhiteboardOfficeFileId).then();
         },
         SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT,
       ),

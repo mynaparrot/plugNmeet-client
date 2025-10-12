@@ -13,6 +13,7 @@ import {
   VideoObjectFit,
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
+import { DB_STORE_USER_NOTIFICATIONS, idbStore } from '../../helpers/libs/idb';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
@@ -181,6 +182,17 @@ const roomSettingsSlice = createSlice({
         action.payload.created = Date.now();
       }
       state.userNotifications.push(action.payload);
+      idbStore(
+        DB_STORE_USER_NOTIFICATIONS,
+        action.payload.created.toString(),
+        action.payload,
+      ).then();
+    },
+    setAllUserNotifications: (
+      state,
+      action: PayloadAction<UserNotification[]>,
+    ) => {
+      state.userNotifications = action.payload;
     },
   },
 });
@@ -217,6 +229,7 @@ export const {
   updateFocusActiveSpeakerWebcam,
   addSelfInsertedE2EESecretKey,
   addUserNotification,
+  setAllUserNotifications,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

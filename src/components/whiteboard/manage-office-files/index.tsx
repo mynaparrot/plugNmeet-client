@@ -73,7 +73,7 @@ const ManageOfficeFilesModal = ({
           return;
         }
 
-        savePageData(
+        await savePageData(
           excalidrawAPI.getSceneElementsIncludingDeleted(),
           currentPage,
           currentWhiteboardOfficeFileId,

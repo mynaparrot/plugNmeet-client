@@ -3,6 +3,7 @@ import {
   AnalyticsDataMsgSchema,
   AnalyticsEvents,
   AnalyticsEventType,
+  ChatMessage,
   ChatMessageSchema,
   DataChannelMessageSchema,
   DataMsgBodyType,
@@ -55,18 +56,17 @@ import {
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import {
-  clearAllRoomStorage,
-  formatNatsError,
-  getWhiteboardDonors,
-  isUserRecorder,
-} from '../utils';
+import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
 import {
   addUserNotification,
+  setAllUserNotifications,
   updateIsNatsServerConnected,
 } from '../../store/slices/roomSettingsSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { audioActivityManager } from '../libs/AudioActivityManager';
+import { deleteRoomDB, idbGetAll } from '../libs/idb';
+import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
+import { UserNotification } from '../../store/slices/interfaces/roomSettings';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -225,8 +225,8 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState('disconnected');
     // clean audioActivityManager
     audioActivityManager.destroy();
-    // clean room storage that used localStorage
-    clearAllRoomStorage();
+    // clean room-specific IndexedDB storage
+    await deleteRoomDB();
 
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;
@@ -706,6 +706,19 @@ export default class ConnectNats {
         donors[i].userId,
       );
     }
+
+    // load chat messages from DB
+    idbGetAll<ChatMessage>('chatMessages').then((msgs) => {
+      if (msgs.length) {
+        store.dispatch(addAllChatMessages(msgs));
+      }
+    });
+    // load user notifications from DB
+    idbGetAll<UserNotification>('userNotifications').then((notifications) => {
+      if (notifications.length) {
+        store.dispatch(setAllUserNotifications(notifications));
+      }
+    });
   }
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {

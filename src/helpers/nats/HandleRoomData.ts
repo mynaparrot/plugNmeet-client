@@ -18,6 +18,7 @@ import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/white
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { createAndRegisterOfficeFile } from '../../components/whiteboard/helpers/handleFiles';
+import { initIDB } from '../libs/idb';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
@@ -40,6 +41,7 @@ export default class HandleRoomData {
     };
     store.dispatch(addCurrentRoom(this._room));
     await this.updateRoomMetadata(info.metadata);
+    initIDB(this._room.sid);
     return this._room;
   };
 
