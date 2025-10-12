@@ -25,10 +25,7 @@ import {
   Gesture,
 } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
-import {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from '@excalidraw/excalidraw/element/types';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 import '@excalidraw/excalidraw/index.css';
@@ -376,11 +373,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     () =>
       debounce(
         (
-          elms: readonly OrderedExcalidrawElement[],
+          excalidrawAPI: ExcalidrawImperativeAPI,
           currentPage: number,
           currentWhiteboardOfficeFileId: string,
         ) => {
-          savePageData(elms, currentPage, currentWhiteboardOfficeFileId).then();
+          savePageData(
+            excalidrawAPI.getSceneElementsIncludingDeleted(),
+            currentPage,
+            currentWhiteboardOfficeFileId,
+          ).then();
         },
         SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT,
       ),
@@ -433,7 +434,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           () =>
             isPresenter &&
             debouncedSaveToStorage(
-              excalidrawAPI.getSceneElementsIncludingDeleted(),
+              excalidrawAPI,
               currentPage,
               currentWhiteboardOfficeFileId,
             ),
