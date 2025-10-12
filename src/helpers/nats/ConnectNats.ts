@@ -180,7 +180,8 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState('receiving-data');
     this._isRecorder = isUserRecorder(this.userId);
     this._js = jetstream(this._nc);
-    this.messageQueue.js(this._js);
+    this.messageQueue.setJs(this._js);
+    this.messageQueue.setIsConnected(true);
 
     // now change status to connected
     store.dispatch(updateIsNatsServerConnected(true));
@@ -216,7 +217,7 @@ export default class ConnectNats {
       await this._nc.drain();
       await this._nc.close();
     }
-    this.messageQueue.isConnected(false);
+    this.messageQueue.setIsConnected(false);
 
     this._setErrorState({
       title: i18n.t('notifications.room-disconnected-title'),
@@ -387,7 +388,7 @@ export default class ConnectNats {
       if (typeof this.statusCheckerInterval === 'undefined') {
         this.statusCheckerInterval = setInterval(() => {
           if (this._nc?.isClosed()) {
-            this.messageQueue.isConnected(false);
+            this.messageQueue.setIsConnected(false);
             this.endSession('notifications.room-disconnected-network-error');
 
             clearInterval(this.statusCheckerInterval);
@@ -404,6 +405,7 @@ export default class ConnectNats {
           // when nats connection drops during that time, it disconnects first
           // then start reconnecting, so we can set false here only
           store.dispatch(updateIsNatsServerConnected(false));
+          this.messageQueue.setIsConnected(false);
           break;
         case 'reconnecting':
           if (!this.isRoomReconnecting) {
@@ -425,6 +427,7 @@ export default class ConnectNats {
             this.toastIdConnecting = undefined;
           }
           store.dispatch(updateIsNatsServerConnected(true));
+          this.messageQueue.setIsConnected(true);
 
           clearInterval(this.statusCheckerInterval);
           this.statusCheckerInterval = undefined;
