@@ -18,7 +18,7 @@ const AdminMenuItem = ({
     <MenuItem>
       <button
         onClick={onClick}
-        className="h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
+        className="h-10 3xl:h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 relative"
       >
         <span className="icon flex w-6 h-auto justify-center text-Blue2-700">
           {icon}

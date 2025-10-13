@@ -211,7 +211,7 @@ const RecordingIcon = () => {
   }
 
   const buttonClasses = clsx(
-    'recorder-icon relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
+    'recorder-icon hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
       'record border-Red-400/20': isRecording,
       'border-transparent': !isRecording,

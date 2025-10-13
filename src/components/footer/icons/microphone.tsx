@@ -259,7 +259,7 @@ const MicrophoneIcon = () => {
   }, [onCloseMicrophoneModal]);
 
   const wrapperClasses = clsx(
-    'relative footer-icon cursor-pointer min-w-11 3xl:min-w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
+    'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
       'border-Red-100!': isMicMuted && isActiveMicrophone,
       'border-[rgba(124,206,247,0.25)]': isActiveMicrophone,
@@ -277,7 +277,7 @@ const MicrophoneIcon = () => {
   );
 
   const iconDivClasses = clsx(
-    'w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center',
+    'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center',
     {
       'has-tooltip': showTooltip,
     },
@@ -294,7 +294,7 @@ const MicrophoneIcon = () => {
             {!isActiveMicrophone ? (
               <>
                 <Microphone classes={'h-4 3xl:h-5 w-auto'} />
-                <span className="add absolute -top-2 -right-2 z-10">
+                <span className="add absolute -top-1.5 md:-top-2 -right-1.5 md:-right-2 z-10">
                   {isLocked ? (
                     <i className="pnm-lock primaryColor" />
                   ) : (

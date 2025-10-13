@@ -34,7 +34,7 @@ const Footer = () => {
       }`}
     >
       <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
-        <div className="footer-left w-72 flex items-center gap-1 3xl:gap-2 relative z-50 rtl:justify-end">
+        <div className="footer-left w-[155px] lg:w-72 flex items-center gap-1 3xl:gap-2 relative z-50 rtl:justify-end">
           <MicrophoneIcon />
           <WebcamIcon />
         </div>
@@ -48,10 +48,20 @@ const Footer = () => {
           <Translation />
           <RecordingIcon />
           {isAdmin && <MenusIcon />}
+          <div className="icon block md:hidden">
+            <ParticipantIcon />
+          </div>
+          {allowChat && (
+            <div className="icon block md:hidden">
+              <ChatIcon />
+            </div>
+          )}
+          <div className="icon block md:hidden">
+            <EndMeetingButton />
+          </div>
         </div>
 
-        <div className="footer-right w-72 flex items-center justify-end gap-2">
-          <ParticipantIcon />
+        <div className="footer-right w-[155px] lg:w-72 hidden md:flex items-center justify-end gap-2">
           {allowChat && <ChatIcon />}
           <div className="line h-6 w-px bg-Gray-200"></div>
           <EndMeetingButton />
