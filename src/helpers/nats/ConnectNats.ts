@@ -56,7 +56,12 @@ import {
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import { formatNatsError, getWhiteboardDonors, isUserRecorder } from '../utils';
+import {
+  formatNatsError,
+  getWhiteboardDonors,
+  isUserRecorder,
+  randomString,
+} from '../utils';
 import {
   addUserNotification,
   setAllUserNotifications,
@@ -64,7 +69,7 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { audioActivityManager } from '../libs/AudioActivityManager';
-import { deleteRoomDB, idbGetAll } from '../libs/idb';
+import { deleteRoomDB, idbGetAll, initIDB } from '../libs/idb';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { UserNotification } from '../../store/slices/interfaces/roomSettings';
 
@@ -128,8 +133,8 @@ export default class ConnectNats {
     this._setCurrentMediaServerConn = setCurrentMediaServerConn;
 
     this.messageQueue = new MessageQueue();
-    this.handleRoomData = new HandleRoomData();
-    this.handleSystemData = new HandleSystemData();
+    this.handleRoomData = new HandleRoomData(roomId, userId);
+    this.handleSystemData = new HandleSystemData(userId);
     this.handleParticipants = new HandleParticipants(this);
     this.handleChat = new HandleChat(this);
     this.handleDataMsg = new HandleDataMessage(this);
@@ -270,12 +275,11 @@ export default class ConnectNats {
     }
 
     const isPrivate = to !== 'public';
-    const now = Date.now().toString();
     const data = create(ChatMessageSchema, {
-      id: now,
+      id: randomString(),
       fromName: this._userName,
       fromUserId: this._userId,
-      sentAt: now,
+      sentAt: Date.now().toString(),
       toUserId: to !== 'public' ? to : undefined,
       isPrivate: isPrivate,
       message: msg,
@@ -638,32 +642,36 @@ export default class ConnectNats {
       console.error(e);
       this.setErrorStatus(
         i18n.t('notifications.decode-error-title'),
-        i18n.t('decode-error-body'),
+        i18n.t('notifications.decode-error-body'),
+      );
+      return;
+    }
+    if (!data.room || !data.localUser || !data.mediaServerInfo) {
+      this.setErrorStatus(
+        i18n.t('notifications.decode-error-title'),
+        i18n.t('notifications.invalid-missing-data'),
       );
       return;
     }
 
     // add room info first
-    if (data.room) {
-      this._currentRoomInfo = await this.handleRoomData.setRoomInfo(data.room);
-    }
+    this._currentRoomInfo = await this.handleRoomData.setRoomInfo(data.room);
+
+    // init indexedDB for this session
+    initIDB(this._currentRoomInfo.sid, this._userId);
 
     // now local user
-    if (data.localUser) {
-      this._isAdmin = data.localUser.isAdmin;
-      const localUser = await this.handleParticipants.addLocalParticipantInfo(
-        data.localUser,
-      );
-      this._userName = localUser.name;
-    }
+    this._isAdmin = data.localUser.isAdmin;
+    const localUser = await this.handleParticipants.addLocalParticipantInfo(
+      data.localUser,
+    );
+    this._userName = localUser.name;
 
     // media info
-    if (data.mediaServerInfo) {
-      const success = await this.createMediaServerConn(data.mediaServerInfo);
-      if (!success) {
-        // if not success, then we won't do anything else
-        return;
-      }
+    const success = await this.createMediaServerConn(data.mediaServerInfo);
+    if (!success) {
+      // if not success, then we won't do anything else
+      return;
     }
 
     // now request for users' list
@@ -718,7 +726,9 @@ export default class ConnectNats {
       ]);
 
       if (msgs.length) {
-        store.dispatch(addAllChatMessages(msgs));
+        store.dispatch(
+          addAllChatMessages({ messages: msgs, currentUserId: this._userId }),
+        );
       }
       if (notifications.length) {
         store.dispatch(setAllUserNotifications(notifications));

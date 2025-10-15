@@ -59,6 +59,7 @@
     "nats-error-request-failed": "Your request could not be sent.",
     "decode-error-title": "Data Error",
     "decode-error-body": "There was a problem receiving data from the server.",
+    "invalid-missing-data": "Invalid or missing data received",
     "nats-error-auth-title": "Login Error",
     "nats-error-auth-body": "We were not able to verify your information. Your session may have expired.",
     "user-logged-out": "You have been logged out.",

@@ -18,20 +18,21 @@ import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/white
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { createAndRegisterOfficeFile } from '../../components/whiteboard/helpers/handleFiles';
-import { initIDB } from '../libs/idb';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
   private welcomeMessage: string | undefined = undefined;
   private checkedPreloadedWhiteboardFile = false;
   private toastId: any = undefined;
+  private readonly userId: string;
 
-  constructor() {
+  constructor(roomId: string, userId: string) {
     this._room = {
-      roomId: '',
+      roomId: roomId,
       sid: '',
       metadata: undefined,
     };
+    this.userId = userId;
   }
 
   public setRoomInfo = async (info: NatsKvRoomInfo): Promise<ICurrentRoom> => {
@@ -41,7 +42,6 @@ export default class HandleRoomData {
     };
     store.dispatch(addCurrentRoom(this._room));
     await this.updateRoomMetadata(info.metadata);
-    initIDB(this._room.sid);
     return this._room;
   };
 
@@ -145,8 +145,8 @@ export default class HandleRoomData {
 
     this.welcomeMessage = this._room.metadata?.welcomeMessage;
     const body = create(ChatMessageSchema, {
-      id: '1', // to make sure it's always on top
-      sentAt: Date.now().toString(),
+      id: '1',
+      sentAt: '1', // to make sure it's always on top
       isPrivate: false,
       fromName: 'system',
       fromUserId: 'system',
@@ -154,7 +154,9 @@ export default class HandleRoomData {
       fromAdmin: true, // system message always from admin
     });
 
-    store.dispatch(addChatMessage(body));
+    store.dispatch(
+      addChatMessage({ message: body, currentUserId: this.userId }),
+    );
   };
 
   private addPreloadWhiteboardFile = async () => {

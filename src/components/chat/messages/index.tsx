@@ -1,35 +1,22 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from 'es-toolkit';
 
 import { store, useAppSelector } from '../../../store';
-import { chatMessagesSelector } from '../../../store/slices/chatMessagesSlice';
+import { selectMessagesByKeyValue } from '../../../store/slices/chatMessagesSlice';
 import Message from './message';
 
 interface IMessagesProps {
-  userId: string;
+  messageKey: string;
 }
 
-const Messages = ({ userId }: IMessagesProps) => {
-  const allMessages = useAppSelector(chatMessagesSelector.selectAll);
+const Messages = ({ messageKey }: IMessagesProps) => {
+  const chatMessages = useAppSelector((state) =>
+    selectMessagesByKeyValue(state, messageKey),
+  );
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;
   const [autoScrollToBottom, setAutoScrollToBottom] = useState<boolean>(true);
-
-  const chatMessages = useMemo(() => {
-    if (userId === 'public') {
-      return allMessages.filter((m) => !m.isPrivate);
-    }
-    return allMessages.filter(
-      (m) => m.isPrivate && (m.fromUserId === userId || m.toUserId === userId),
-    );
-  }, [allMessages, userId]);
 
   const scrollToBottom = useCallback(() => {
     if (autoScrollToBottom && messagesContainerRef.current) {

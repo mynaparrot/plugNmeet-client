@@ -33,15 +33,10 @@ const selectFilteredParticipants = createSelector(
     ) => currentUserId,
   ],
   (participants, isAdmin, search, allowViewOtherUsers, currentUserId) => {
-    // Use slice() to create a shallow copy to avoid mutating the original state
-    let list = participants
-      .slice()
-      .filter(
-        (p) =>
-          p.name !== '' &&
-          p.userId !== 'RECORDER_BOT' &&
-          p.userId !== 'RTMP_BOT',
-      );
+    let list = participants.filter(
+      (p) =>
+        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
+    );
 
     if (!isAdmin && !allowViewOtherUsers) {
       list = list.filter(

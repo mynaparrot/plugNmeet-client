@@ -24,12 +24,16 @@ export default class HandleChat {
   }
 
   public handleMsg = async (payload: ChatMessage) => {
-    if (payload.isPrivate && payload.toUserId !== this._that.userId) {
-      if (payload.fromUserId !== this._that.userId) {
-        // private message not for this user
-        return;
-      }
+    // If this is a private message, we should only process it if we are the sender or the receiver.
+    if (
+      payload.isPrivate &&
+      payload.fromUserId !== this._that.userId &&
+      payload.toUserId !== this._that.userId
+    ) {
+      // This is a private message between two other users, so we can ignore it.
+      return;
     }
+
     if (typeof this.allowViewOtherUsersList === 'undefined') {
       this.allowViewOtherUsersList =
         store.getState().session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList;
@@ -51,7 +55,9 @@ export default class HandleChat {
       return;
     }
     payload.message = finalMsg;
-    store.dispatch(addChatMessage(payload));
+    store.dispatch(
+      addChatMessage({ message: payload, currentUserId: this._that.userId }),
+    );
     await idbStore(DB_STORE_CHAT_MESSAGES, payload.id, payload);
 
     const isActiveChatPanel =

@@ -30,7 +30,7 @@ class IDBManager {
    * The database name is based on the provided room SID.
    * @param roomSid The session ID of the current room.
    */
-  public init(roomSid: string) {
+  public init(roomSid: string, userId: string) {
     // If the database has already been initialized, do nothing.
     if (this.dbPromise) {
       return;
@@ -41,7 +41,7 @@ class IDBManager {
     this.cleanupStaleDBs().then();
 
     // Use a stable name for persistence across reloads.
-    this.dbName = `pnm-${roomSid}`;
+    this.dbName = `pnm-${roomSid}-${userId}`;
     this.dbPromise = openDB(this.dbName, 3, {
       upgrade: (db) => {
         // Create all necessary object stores if they don't already exist.

@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
@@ -7,9 +7,10 @@ import {
   ListboxOptions,
   Transition,
 } from '@headlessui/react';
+import { createSelector } from '@reduxjs/toolkit';
 
-import { store, useAppDispatch, useAppSelector } from '../../store';
-import { chatMessagesSelector } from '../../store/slices/chatMessagesSlice';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { selectChatKeys } from '../../store/slices/chatMessagesSlice';
 import Messages from './messages';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import {
@@ -19,10 +20,12 @@ import {
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
+import i18n from '../../helpers/i18n';
 
-interface IChatOptions {
+interface IChatOption {
   id: string;
   title: string;
+  hasUnread: boolean;
 }
 
 const languages = [
@@ -32,70 +35,74 @@ const languages = [
   { id: 4, value: 'GR', name: 'Germany' },
 ];
 
+const selectChatTabsData = createSelector(
+  [
+    selectChatKeys,
+    participantsSelector.selectEntities,
+    (state: RootState) => state.roomSettings.initiatePrivateChat,
+    (state: RootState) => state.roomSettings.unreadMsgFrom,
+    (state: RootState) => state.roomSettings.selectedChatOption,
+  ],
+  (
+    chatKeys,
+    participantEntities,
+    initiatePrivateChat,
+    unreadMsgFrom,
+    selectedChatOption,
+  ) => {
+    const allKeys = [...chatKeys];
+    // let's add user from initiatePrivateChat
+    if (
+      initiatePrivateChat.userId &&
+      !allKeys.includes(initiatePrivateChat.userId)
+    ) {
+      allKeys.push(initiatePrivateChat.userId);
+    }
+
+    const options: IChatOption[] = [];
+    allKeys.forEach((k) => {
+      if (k === 'public') {
+        options.push({
+          id: 'public',
+          title: i18n.t('left-panel.public-chat'),
+          hasUnread: unreadMsgFrom.includes('public'),
+        });
+      } else {
+        const participant = participantEntities[k];
+        let title = k; // Use key as fallback
+        if (participant) {
+          title = participant.name;
+        } else if (initiatePrivateChat.userId === k) {
+          title = initiatePrivateChat.name;
+        }
+
+        options.push({
+          id: k,
+          title: title,
+          hasUnread: unreadMsgFrom.includes(k),
+        });
+      }
+    });
+
+    const selected = options.find((o) => o.id === selectedChatOption);
+    const selectedTitle = selected?.title ?? i18n.t('left-panel.public-chat');
+
+    return {
+      chatOptions: options,
+      selectedChatOption,
+      selectedTitle,
+      hasUnreadMessages: unreadMsgFrom.length > 0,
+    };
+  },
+);
+
 const ChatTabs = () => {
   const [language, setLanguage] = useState(languages[1]);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const initiatePrivateChat = useAppSelector(
-    (state) => state.roomSettings.initiatePrivateChat,
-  );
-  const unreadMsgFrom = useAppSelector(
-    (state) => state.roomSettings.unreadMsgFrom,
-  );
-  const selectedChatOption = useAppSelector(
-    (state) => state.roomSettings.selectedChatOption,
-  );
-  const chatMessages = useAppSelector(chatMessagesSelector.selectAll);
-  const currentUser = store.getState().session.currentUser;
-
-  const privateChatUsers = useMemo(() => {
-    const users = new Map<string, string>();
-    if (initiatePrivateChat.userId !== '') {
-      users.set(initiatePrivateChat.userId, initiatePrivateChat.name);
-    }
-    chatMessages.forEach((m) => {
-      if (m.isPrivate) {
-        if (m.fromUserId !== currentUser?.userId) {
-          users.set(m.fromUserId, m.fromName ?? '');
-        } else if (
-          m.fromUserId === currentUser?.userId &&
-          m.toUserId &&
-          m.toUserId !== currentUser?.userId
-        ) {
-          const user = participantsSelector.selectById(
-            store.getState(),
-            m.toUserId,
-          );
-          if (user) {
-            users.set(user.userId, user.name);
-          }
-        }
-      }
-    });
-    return users;
-  }, [initiatePrivateChat, chatMessages, currentUser?.userId]);
-
-  const chatOptions = useMemo(() => {
-    const options: IChatOptions[] = [
-      {
-        id: 'public',
-        title: t('left-panel.public-chat'),
-      },
-    ];
-    privateChatUsers.forEach((name, id) => {
-      options.push({
-        id,
-        title: name,
-      });
-    });
-    return options;
-  }, [privateChatUsers, t]);
-
-  const selectedTitle = useMemo(() => {
-    const selected = chatOptions.find((o) => o.id === selectedChatOption);
-    return selected?.title ?? t('left-panel.public-chat');
-  }, [selectedChatOption, chatOptions, t]);
+  const { chatOptions, selectedChatOption, selectedTitle, hasUnreadMessages } =
+    useAppSelector(selectChatTabsData);
 
   const onChange = (id: string) => {
     dispatch(updateSelectedChatOption(id));
@@ -127,18 +134,18 @@ const ChatTabs = () => {
             <ListboxOptions
               anchor="bottom"
               transition
-              className="border border-gray-200 rounded-xl shadow-dropdown-menu bg-white overflow-hidden w-40 py-1.5"
+              className="border border-gray-200 rounded-xl shadow-dropdown-menu bg-white overflow-hidden w-40 py-1.5 z-20"
             >
               {languages.map((lang) => (
                 <ListboxOption key={lang.value} value={lang}>
                   {({ selected }) => (
                     <div className="text-sm cursor-pointer text-Gray-950 hover:bg-Gray-50 flex items-center justify-between px-3 3xl:px-4 py-2">
                       <span>{lang.name}</span>{' '}
-                      {selected ? (
+                      {selected && (
                         <span>
                           <CheckMarkIcon />
                         </span>
-                      ) : null}
+                      )}
                     </div>
                   )}
                 </ListboxOption>
@@ -158,11 +165,11 @@ const ChatTabs = () => {
               <span className="font-medium text-Gray-950">{selectedTitle}</span>
             </p>
             <span className="pointer-events-none absolute inset-y-0 right-3 3xl:right-5 flex items-center">
-              {unreadMsgFrom.length ? (
+              {hasUnreadMessages && (
                 <span className="shake pr-1 -mb-1">
                   <i className="pnm-chat shake" />
                 </span>
-              ) : null}
+              )}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -204,18 +211,17 @@ const ChatTabs = () => {
                     <>
                       <span>
                         {option.title}
-                        {unreadMsgFrom.filter((id) => id === option.id)
-                          .length ? (
+                        {option.hasUnread && (
                           <span className="shake pl-2">
                             <i className="pnm-chat shake" />
                           </span>
-                        ) : null}
+                        )}
                       </span>
-                      {selected ? (
+                      {selected && (
                         <span className="right absolute right-3">
                           <CheckMarkIcon />
                         </span>
-                      ) : null}
+                      )}
                     </>
                   )}
                 </ListboxOption>
@@ -225,7 +231,7 @@ const ChatTabs = () => {
         </div>
       </Listbox>
       <div className="h-[calc(100%-135px)] 3xl:h-[calc(100%-176px)] chat-messages-container">
-        <Messages userId={selectedChatOption} />
+        <Messages messageKey={selectedChatOption} />
       </div>
     </div>
   );

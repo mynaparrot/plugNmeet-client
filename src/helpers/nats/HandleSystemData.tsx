@@ -19,8 +19,14 @@ import { pollsApi } from '../../store/services/pollsApi';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
+import { randomString } from '../utils';
 
 export default class HandleSystemData {
+  private readonly userId: string;
+
+  constructor(userId: string) {
+    this.userId = userId;
+  }
   /**
    * To handle various notifications
    * @param data
@@ -157,10 +163,9 @@ export default class HandleSystemData {
   };
 
   public handleSysChatMsg = (msg: string) => {
-    const now = Date.now();
     const body = create(ChatMessageSchema, {
-      id: `${now}`,
-      sentAt: `${now}`,
+      id: randomString(),
+      sentAt: Date.now().toString(),
       isPrivate: false,
       fromName: 'system',
       fromUserId: 'system',
@@ -168,7 +173,9 @@ export default class HandleSystemData {
       fromAdmin: true, // system message always from admin
     });
 
-    store.dispatch(addChatMessage(body));
+    store.dispatch(
+      addChatMessage({ message: body, currentUserId: this.userId }),
+    );
     store.dispatch(
       addUserNotification({
         message: i18n.t('notifications.new-system-message-in-chat'),
