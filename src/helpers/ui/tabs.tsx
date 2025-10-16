@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import clsx from 'clsx';
 
 export interface ITabItem {
@@ -39,11 +40,21 @@ const Tabs = ({
         ))}
       </TabList>
       <TabPanels className={clsx('relative', tabPanelsCss)}>
-        {items.map((item) => (
-          <TabPanel key={item.id} className="pt-2 xl:pt-5 outline-hidden">
-            {item.content}
-          </TabPanel>
-        ))}
+        <AnimatePresence mode="wait">
+          {items.map((item) => (
+            <TabPanel
+              key={item.id}
+              as={motion.div}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="pt-2 xl:pt-5 outline-hidden"
+            >
+              {item.content}
+            </TabPanel>
+          ))}
+        </AnimatePresence>
       </TabPanels>
     </TabGroup>
   );
