@@ -1,9 +1,11 @@
 import { deleteDB, IDBPDatabase, openDB } from 'idb';
 
-export const DB_STORE_WHITEBOARD = 'whiteboard',
+export const DB_STORE_USER_SETTINGS = 'userSettings',
+  DB_STORE_WHITEBOARD = 'whiteboard',
   DB_STORE_IMAGE_CACHE = 'imageCache',
   DB_STORE_CHAT_MESSAGES = 'chatMessages',
-  DB_STORE_USER_NOTIFICATIONS = 'userNotifications';
+  DB_STORE_USER_NOTIFICATIONS = 'userNotifications',
+  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT = 'speechToTextFinalText';
 
 const DB_STORE_METADATA = 'metadata';
 // Databases older than this will be cleaned up on startup (6 hours).
@@ -15,10 +17,12 @@ class IDBManager {
    * This centralized list ensures that all stores are created when the database is initialized.
    */
   private readonly ALL_STORES: string[] = [
+    DB_STORE_USER_SETTINGS,
     DB_STORE_WHITEBOARD,
     DB_STORE_IMAGE_CACHE,
     DB_STORE_CHAT_MESSAGES,
     DB_STORE_USER_NOTIFICATIONS,
+    DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT,
     DB_STORE_METADATA,
   ];
   private dbPromise: Promise<IDBPDatabase> | null = null;

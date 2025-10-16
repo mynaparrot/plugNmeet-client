@@ -69,9 +69,23 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { audioActivityManager } from '../libs/AudioActivityManager';
-import { deleteRoomDB, idbGetAll, initIDB } from '../libs/idb';
+import {
+  DB_STORE_CHAT_MESSAGES,
+  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT,
+  DB_STORE_USER_NOTIFICATIONS,
+  DB_STORE_USER_SETTINGS,
+  deleteRoomDB,
+  idbGet,
+  idbGetAll,
+  initIDB,
+} from '../libs/idb';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { UserNotification } from '../../store/slices/interfaces/roomSettings';
+import {
+  SELECTED_SUBTITLE_LANG_KEY,
+  TextWithInfo,
+} from '../../store/slices/interfaces/speechServices';
+import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -718,20 +732,50 @@ export default class ConnectNats {
       );
     }
 
-    // Load chat messages and notifications from IndexedDB in parallel.
+    // Load data from IndexedDB in parallel.
     try {
-      const [msgs, notifications] = await Promise.all([
-        idbGetAll<ChatMessage>('chatMessages'),
-        idbGetAll<UserNotification>('userNotifications'),
+      const [
+        chatMsgs,
+        notifications,
+        lastSubtitleLang,
+        speechToTextFinalTexts,
+      ] = await Promise.all([
+        idbGetAll<ChatMessage>(DB_STORE_CHAT_MESSAGES),
+        idbGetAll<UserNotification>(DB_STORE_USER_NOTIFICATIONS),
+        idbGet<string>(DB_STORE_USER_SETTINGS, SELECTED_SUBTITLE_LANG_KEY),
+        idbGetAll<TextWithInfo>(DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT),
       ]);
 
-      if (msgs.length) {
+      if (chatMsgs.length) {
         store.dispatch(
-          addAllChatMessages({ messages: msgs, currentUserId: this._userId }),
+          addAllChatMessages({
+            messages: chatMsgs,
+            currentUserId: this._userId,
+          }),
         );
       }
       if (notifications.length) {
         store.dispatch(setAllUserNotifications(notifications));
+      }
+      // for speech to text data
+      const speechToTextTranslationFeatures =
+        this._currentRoomInfo?.metadata?.roomFeatures
+          ?.speechToTextTranslationFeatures;
+      if (
+        speechToTextTranslationFeatures?.isEnabled &&
+        speechToTextFinalTexts &&
+        speechToTextFinalTexts.length
+      ) {
+        let subtitleLang = lastSubtitleLang;
+        if (!lastSubtitleLang) {
+          subtitleLang = speechToTextTranslationFeatures.defaultSubtitleLang;
+        }
+        store.dispatch(
+          setSpeechToTextLastFinalTexts({
+            selectedSubtitleLang: subtitleLang as string,
+            lastFinalTexts: speechToTextFinalTexts,
+          }),
+        );
       }
     } catch (e) {
       console.error('Failed to load data from IndexedDB on startup:', e);

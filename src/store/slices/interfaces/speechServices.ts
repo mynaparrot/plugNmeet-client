@@ -1,3 +1,6 @@
+export type SpeechSubtitleTypes = 'interim' | 'final';
+export const SELECTED_SUBTITLE_LANG_KEY = 'selectedSubtitleLang';
+
 export interface TextWithInfo {
   id: string;
   time: string;
@@ -12,8 +15,6 @@ export interface ISpeechServices {
   finalText?: TextWithInfo;
   lastFinalTexts: TextWithInfo[];
 }
-
-export type SpeechSubtitleTypes = 'interim' | 'final';
 
 export interface ISpeechSubtitleText {
   type: SpeechSubtitleTypes;
