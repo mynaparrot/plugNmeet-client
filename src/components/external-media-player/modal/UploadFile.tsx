@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
-import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
+import useResumableFilesUpload from '../../../helpers/hooks/useResumableFilesUpload';
 
 interface IUploadFileProps {
   isPlayBtnLoading: boolean;
-  onFileUploaded(fileId: string, fileName: string, filePath: string): void;
+  onAfterFileUploaded(fileId: string, fileName: string, filePath: string): void;
   onFileSelectedForUpload(file: File): void;
 }
 
 const UploadFile = ({
   isPlayBtnLoading,
-  onFileUploaded,
+  onAfterFileUploaded,
   onFileSelectedForUpload,
 }: IUploadFileProps) => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const UploadFile = ({
 
   useEffect(() => {
     if (result && result.filePath) {
-      onFileUploaded(result.fileId, result.fileName, result.filePath);
+      onAfterFileUploaded(result.fileId, result.fileName, result.filePath);
       // and clear the file input
       setFiles(undefined);
     }

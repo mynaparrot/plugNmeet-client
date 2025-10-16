@@ -7,7 +7,7 @@ import {
   TextWithInfo,
 } from './interfaces/speechServices';
 import {
-  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT,
+  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXTS,
   DB_STORE_USER_SETTINGS,
   idbStore,
 } from '../../helpers/libs/idb';
@@ -50,7 +50,7 @@ const speechServicesSlice = createSlice({
           state.lastFinalTexts.push(action.payload.result);
           // only store the valid final data
           idbStore(
-            DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT,
+            DB_STORE_SPEECH_TO_TEXT_FINAL_TEXTS,
             action.payload.result.id,
             action.payload.result,
           ).then();

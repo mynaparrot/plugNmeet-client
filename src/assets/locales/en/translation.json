@@ -449,6 +449,7 @@
     "modal-title": "Share External Link",
     "url": "URL",
     "display": "Display",
+    "url-required": "A valid URL is required.",
     "link-invalid": "The link is not valid.",
     "note": "Note: Make sure the website allows being embedded. Not all websites will work.",
     "send-extra-values": "Send User Information",

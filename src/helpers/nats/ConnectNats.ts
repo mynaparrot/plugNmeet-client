@@ -71,7 +71,7 @@ import { roomConnectionStatus } from '../../components/app/helper';
 import { audioActivityManager } from '../libs/AudioActivityManager';
 import {
   DB_STORE_CHAT_MESSAGES,
-  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT,
+  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXTS,
   DB_STORE_USER_NOTIFICATIONS,
   DB_STORE_USER_SETTINGS,
   deleteRoomDB,
@@ -743,7 +743,7 @@ export default class ConnectNats {
         idbGetAll<ChatMessage>(DB_STORE_CHAT_MESSAGES),
         idbGetAll<UserNotification>(DB_STORE_USER_NOTIFICATIONS),
         idbGet<string>(DB_STORE_USER_SETTINGS, SELECTED_SUBTITLE_LANG_KEY),
-        idbGetAll<TextWithInfo>(DB_STORE_SPEECH_TO_TEXT_FINAL_TEXT),
+        idbGetAll<TextWithInfo>(DB_STORE_SPEECH_TO_TEXT_FINAL_TEXTS),
       ]);
 
       if (chatMsgs.length) {

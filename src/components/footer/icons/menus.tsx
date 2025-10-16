@@ -12,10 +12,8 @@ import {
   updateShowRtmpModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import RtmpModal from '../modals/rtmpModal';
-import ExternalMediaPlayerModal from '../modals/externalMediaPlayer';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
-import DisplayExternalLinkModal from '../modals/displayExternalLinkModal';
 import TranscriptionSettingsModal from '../../speech-to-text-service/transcription-settings-modal';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
@@ -32,6 +30,8 @@ import usePolls from './menus/hooks/usePolls';
 import useMuteAll from './menus/hooks/useMuteAll';
 import useExternalMediaPlayer from './menus/hooks/useExternalMediaPlayer';
 import useDisplayExternalLink from './menus/hooks/useDisplayExternalLink';
+import ExternalMediaPlayerModal from '../../external-media-player/modal';
+import DisplayExternalLinkModal from '../../display-external-link/modal';
 
 const MenusIcon = () => {
   const dispatch = useAppDispatch();

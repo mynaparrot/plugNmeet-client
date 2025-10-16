@@ -12,9 +12,9 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateDisplayExternalLinkRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import Modal from '../../../helpers/ui/modal';
-import FormattedInputField from '../../../helpers/ui/formattedInputField';
 import ActionButton from '../../../helpers/ui/actionButton';
 import Checkbox from '../../../helpers/ui/checkbox';
+import SavedLinks from './savedLinks';
 
 const DisplayExternalLinkModal = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,6 @@ const DisplayExternalLinkModal = () => {
     role: false,
     meetingId: false,
   });
-
   const [isLoading, setIsLoading] = useState(false);
 
   const closeStartModal = () => {
@@ -114,15 +113,7 @@ const DisplayExternalLinkModal = () => {
         title={t('external-display-link-display.modal-title')}
       >
         <form method="POST" onSubmit={onSubmit}>
-          <FormattedInputField
-            id="link"
-            placeholder={t('external-display-link-display.url')}
-            value={link}
-            onChange={(e) => setLink(e.currentTarget.value)}
-          />
-          <div className="text-xs py-2 text-Gray-800">
-            {t('external-display-link-display.note')}
-          </div>
+          <SavedLinks link={link} setLink={setLink} />
 
           <div className="mt-4">
             <fieldset>
@@ -166,8 +157,9 @@ const DisplayExternalLinkModal = () => {
               </div>
             </fieldset>
           </div>
+
           <div className="mt-8 flex justify-end">
-            <ActionButton isLoading={isLoading}>
+            <ActionButton isLoading={isLoading} disabled={!link}>
               {t('external-display-link-display.display')}
             </ActionButton>
           </div>

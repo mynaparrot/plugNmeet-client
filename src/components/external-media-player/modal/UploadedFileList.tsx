@@ -7,10 +7,10 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
-import { useAppSelector } from '../../../../store';
-import { LoadingIcon } from '../../../../assets/Icons/Loading';
-import { FileIconSVG } from '../../../../assets/Icons/FileIconSVG';
+import { useAppSelector } from '../../../store';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { LoadingIcon } from '../../../assets/Icons/Loading';
+import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 
 interface IUploadedFileListProps {
   newlyUploadedFile?: RoomUploadedFileMetadata;
@@ -49,7 +49,7 @@ const UploadedFileList = ({
       }
       setIsFetching(false);
     };
-    fetchFiles();
+    fetchFiles().then();
     //eslint-disable-next-line
   }, []);
 
@@ -62,7 +62,7 @@ const UploadedFileList = ({
 
   if (isFetching) {
     return (
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-12">
         <LoadingIcon
           className="h-10 w-10 animate-spin text-gray-200"
           fillColor="#004D90"
