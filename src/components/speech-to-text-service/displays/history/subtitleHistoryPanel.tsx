@@ -1,8 +1,14 @@
-import React, { Dispatch, useCallback, useEffect, useRef } from 'react';
+import React, {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '../../../../store';
+import { store, useAppSelector } from '../../../../store';
 import { DownloadIconSVG } from '../../../../assets/Icons/DownloadIconSVG';
 import { CloseIconSVG } from '../../../../assets/Icons/CloseIconSVG';
 import InterimTextDisplay from './interimTextDisplay';
@@ -18,6 +24,9 @@ const SubtitleHistoryPanel = ({
   setShowPopover,
 }: SubtitleHistoryPanelProps) => {
   const { t } = useTranslation();
+  const scrollableContainerRef = useRef<HTMLDivElement>(null);
+  const [showScrollDownBtn, setShowScrollDownBtn] = useState(false);
+
   const lastFinalTexts = useAppSelector(
     (state) => state.speechServices.lastFinalTexts,
   );
@@ -25,30 +34,45 @@ const SubtitleHistoryPanel = ({
     (state) => state.speechServices.selectedSubtitleLang,
   );
 
-  const scrollableContainerRef = useRef<HTMLDivElement>(null);
-  const nodeRef = useRef(null);
-
   const downloadTexts = useCallback(() => {
     if (!lastFinalTexts.length) {
       return;
     }
 
-    const texts = lastFinalTexts.map((t) => {
-      return `${t.time} ${t.from}:\n${t.text}`;
-    });
+    const roomTitle = store.getState().session.currentRoom.metadata?.roomTitle;
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString();
+    const formattedTime = now.toLocaleTimeString();
+    const fileTimestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
 
-    const formBlob = new Blob([texts.join('\n\n')], {
+    const header = `${t('speech-services.download-header', {
+      name: roomTitle,
+      lang: selectedSubtitleLang,
+      date: formattedDate,
+      time: formattedTime,
+    })}\n\n--------------------------------------------------\n\n`;
+
+    const body = lastFinalTexts
+      .map((t) => `[${t.time}] ${t.from}:\n${t.text}`)
+      .join('\n\n');
+
+    const fileContent = header + body;
+
+    const formBlob = new Blob([fileContent], {
       type: 'text/plain;charset=UTF-8',
     });
 
     const link = document.createElement('a');
     link.setAttribute('href', window.URL.createObjectURL(formBlob));
-    link.setAttribute('download', `subtitle_texts_${selectedSubtitleLang}.txt`);
+    link.setAttribute(
+      'download',
+      `subtitles-${selectedSubtitleLang}-${fileTimestamp}.txt`,
+    );
     document.body.appendChild(link);
 
     link.click();
     link.remove();
-  }, [lastFinalTexts, selectedSubtitleLang]);
+  }, [lastFinalTexts, selectedSubtitleLang, t]);
 
   const forceScrollToBottom = useCallback(() => {
     const container = scrollableContainerRef.current;
@@ -89,10 +113,24 @@ const SubtitleHistoryPanel = ({
     }
   }, [showPopover, forceScrollToBottom]);
 
+  const handleScroll = useCallback(() => {
+    const container = scrollableContainerRef.current;
+    if (container) {
+      // We'll consider the user has scrolled up if they are more than 200px
+      // from the bottom. This threshold prevents the button from flickering.
+      const isScrolledUp =
+        container.scrollHeight - container.clientHeight >
+        container.scrollTop + 200;
+      // Avoid unnecessary re-renders if the state is already correct.
+      if (isScrolledUp !== showScrollDownBtn) {
+        setShowScrollDownBtn(isScrolledUp);
+      }
+    }
+  }, [showScrollDownBtn]);
+
   return (
     <PopoverPanel
       className="SpeechHistory absolute left-5 z-10 bottom-28 w-full max-w-[330px] bg-Gray-950/85 h-ful rounded-lg"
-      ref={nodeRef}
       static={showPopover}
     >
       <h2 className="relative text-sm font-medium leading-6 text-white px-4 cursor-move flex items-center h-10 justify-between border-b border-white/15">
@@ -100,17 +138,19 @@ const SubtitleHistoryPanel = ({
           {t('speech-services.subtitle-history-modal-title')}
         </div>
         <div className="right flex items-center justify-center gap-3">
+          {showScrollDownBtn && (
+            <button
+              className="w-5 h-5 flex items-center justify-center cursor-pointer"
+              onClick={() => forceScrollToBottom()}
+            >
+              <ScrollToBottomIconSVG />
+            </button>
+          )}
           <button
             className="w-5 h-5 flex items-center justify-center cursor-pointer"
             onClick={() => downloadTexts()}
           >
             <DownloadIconSVG />
-          </button>
-          <button
-            className="w-5 h-5 flex items-center justify-center cursor-pointer"
-            onClick={() => forceScrollToBottom()}
-          >
-            <ScrollToBottomIconSVG />
           </button>
           <button
             className="w-5 h-5 flex items-center justify-center cursor-pointer"
@@ -122,7 +162,8 @@ const SubtitleHistoryPanel = ({
       </h2>
       <div
         ref={scrollableContainerRef}
-        className="px-4 py-6 h-[300px] overflow-hidden overflow-y-auto scrollBar scrollBar4 scrollBarDark  grid gap-3"
+        onScroll={handleScroll}
+        className="px-4 py-6 h-[300px] overflow-hidden overflow-y-auto scrollBar scrollBar4 scrollBarDark grid gap-3"
       >
         {lastFinalTexts.slice(-50).map((t) => {
           return (
