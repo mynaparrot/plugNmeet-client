@@ -55,7 +55,7 @@ const UploadedFileList = ({
 
   useEffect(() => {
     if (newlyUploadedFile) {
-      setUploadedFiles([...uploadedFiles, newlyUploadedFile]);
+      setUploadedFiles([newlyUploadedFile, ...uploadedFiles]);
     }
     //eslint-disable-next-line
   }, [newlyUploadedFile]);

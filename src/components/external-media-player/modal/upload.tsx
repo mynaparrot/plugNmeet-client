@@ -36,6 +36,7 @@ const Upload = ({ setSelectedUrl, isPlayBtnLoading }: UploadProps) => {
     setNewlyUploadedFile(newFile);
     // select the newly uploaded file.
     setSelectedFile(newFile);
+    onFileSelectFromList(newFile);
   };
 
   const onFileSelectedForUpload = () => {
