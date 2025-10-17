@@ -85,7 +85,7 @@ const MainArea = () => {
     isRecorder,
   });
 
-  const renderMainComponentElms = useMemo(() => {
+  const renderMainView = useMemo(() => {
     return (
       <MainView
         isRecorder={isRecorder}
@@ -161,7 +161,7 @@ const MainArea = () => {
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div className={middleAreaClasses}>
           <ActiveSpeakers />
-          {renderMainComponentElms}
+          {renderMainView}
         </div>
         <SidePanel
           isActive={isActiveParticipantsPanel}
