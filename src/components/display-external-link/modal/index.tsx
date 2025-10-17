@@ -9,7 +9,10 @@ import {
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { updateDisplayExternalLinkRoomModal } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateDisplayExternalLinkRoomModal,
+  updateIsActiveWhiteboard,
+} from '../../../store/slices/bottomIconsActivitySlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import Modal from '../../../helpers/ui/modal';
 import ActionButton from '../../../helpers/ui/actionButton';
@@ -24,7 +27,12 @@ const DisplayExternalLinkModal = () => {
       state.session.currentRoom.metadata?.roomFeatures
         ?.displayExternalLinkFeatures?.isActive,
   );
-  const [link, setLink] = useState<string>('');
+  const lastLink = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.displayExternalLinkFeatures?.link,
+  );
+  const [link, setLink] = useState<string>(lastLink ?? '');
   const [extraValues, setExtraValues] = useState({
     name: false,
     userId: false,
@@ -102,6 +110,8 @@ const DisplayExternalLinkModal = () => {
 
     toast.dismiss(id);
     setIsLoading(false);
+    // hide whiteboard to make this visible
+    dispatch(updateIsActiveWhiteboard(false));
     dispatch(updateDisplayExternalLinkRoomModal(false));
   };
 

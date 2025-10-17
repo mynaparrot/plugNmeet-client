@@ -67,6 +67,8 @@ const useExternalMediaPlayer = () => {
       });
     } else {
       toast.dismiss(id);
+      // open modal to let user select new link
+      dispatch(updateShowExternalMediaPlayerModal(true));
     }
   }, [isActiveExternalMediaPlayer, isActiveDisplayExternalLink, dispatch, t]);
 

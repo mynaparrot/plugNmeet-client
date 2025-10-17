@@ -8,7 +8,10 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
-import { updateShowExternalMediaPlayerModal } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsActiveWhiteboard,
+  updateShowExternalMediaPlayerModal,
+} from '../../../store/slices/bottomIconsActivitySlice';
 
 import DirectLink from './directLink';
 import Upload from './upload';
@@ -20,15 +23,21 @@ import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 const ExternalMediaPlayerModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const [selectedUrl, setSelectedUrl] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string | undefined>();
 
-  const externalMediaPlayerIsActive = useAppSelector(
+  const isActive = useAppSelector(
     (state) =>
       !!state.session.currentRoom.metadata?.roomFeatures
         ?.externalMediaPlayerFeatures?.isActive,
   );
+  const lastLink = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.externalMediaPlayerFeatures?.url,
+  );
+
+  const [selectedUrl, setSelectedUrl] = useState<string>(lastLink ?? '');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string | undefined>();
 
   const handleStartPlayingUrl = async () => {
     setIsLoading(true);
@@ -52,6 +61,8 @@ const ExternalMediaPlayerModal = () => {
     }
 
     setIsLoading(false);
+    // hide whiteboard to make this visible
+    dispatch(updateIsActiveWhiteboard(false));
     dispatch(updateShowExternalMediaPlayerModal(false));
   };
 
@@ -77,9 +88,9 @@ const ExternalMediaPlayerModal = () => {
   };
 
   return (
-    !externalMediaPlayerIsActive && (
+    !isActive && (
       <Modal
-        show={!externalMediaPlayerIsActive}
+        show={!isActive}
         onClose={closeStartModal}
         title={t('footer.modal.external-media-player-title')}
         customClass="min-h-[30rem]"
