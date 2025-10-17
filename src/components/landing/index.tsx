@@ -153,9 +153,9 @@ const Landing = ({
             </div>
             <div className="right w-full md:w-1/2 md:pl-8 3xl:pl-16 sm:py-8 flex items-center">
               {showLoadingMsg ? (
-                <div className="inner waiting-room-contents relative -mt-10">
+                <div className="inner waiting-room-contents relative md:-mt-10 w-full">
                   <div className="texts text-center md:text-left">
-                    <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center gap-2">
+                    <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                       <LoadingIcon
                         className={'inline w-7 h-7 text-Gray-200 animate-spin'}
                         fillColor={'#004D90'}
