@@ -12,7 +12,7 @@ import {
   addUserNotification,
   updateUnreadMsgFrom,
 } from '../../store/slices/roomSettingsSlice';
-import { DB_STORE_CHAT_MESSAGES, idbStore } from '../libs/idb';
+import { DB_STORE_NAMES, idbStore } from '../libs/idb';
 
 export default class HandleChat {
   private _that: ConnectNats;
@@ -58,7 +58,7 @@ export default class HandleChat {
     store.dispatch(
       addChatMessage({ message: payload, currentUserId: this._that.userId }),
     );
-    await idbStore(DB_STORE_CHAT_MESSAGES, payload.id, payload);
+    await idbStore(DB_STORE_NAMES.CHAT_MESSAGES, payload.id, payload);
 
     const isActiveChatPanel =
       store.getState().bottomIconsActivity.isActiveChatPanel;
