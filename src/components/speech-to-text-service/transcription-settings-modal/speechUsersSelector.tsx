@@ -1,8 +1,8 @@
 import React, { Dispatch, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { store, useAppSelector } from '../../../store';
-import { participantsSelector } from '../../../store/slices/participantSlice';
+import { useAppSelector } from '../../../store';
+import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 
 interface SpeechUsersSelectorProps {
@@ -15,17 +15,13 @@ const SpeechUsersSelector = ({
   setSelectedSpeechUsers,
 }: SpeechUsersSelectorProps) => {
   const { t } = useTranslation();
-  const totalParticipants = useAppSelector(participantsSelector.selectTotal);
+  const participants = useAppSelector(selectBasicParticipants);
 
   return useMemo(() => {
-    const users = participantsSelector
-      .selectAll(store.getState())
-      .filter(
-        (p) =>
-          p.name !== '' &&
-          p.userId !== 'RECORDER_BOT' &&
-          p.userId !== 'RTMP_BOT',
-      );
+    const users = participants.filter(
+      (p) =>
+        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
+    );
 
     const userOptions: ISelectOption[] = users.map((u) => ({
       value: u.userId,
@@ -44,8 +40,7 @@ const SpeechUsersSelector = ({
         />
       </div>
     );
-    //eslint-disable-next-line
-  }, [totalParticipants, selectedSpeechUsers]);
+  }, [participants, selectedSpeechUsers, t, setSelectedSpeechUsers]);
 };
 
 export default SpeechUsersSelector;

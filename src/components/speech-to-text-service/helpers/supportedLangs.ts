@@ -296,6 +296,7 @@ const getSubtitleLangs = (
 
 export {
   supportedSpeechToTextLangs,
+  speechLangsMap,
   supportedTranslationLangs,
   getSubtitleLangs,
 };

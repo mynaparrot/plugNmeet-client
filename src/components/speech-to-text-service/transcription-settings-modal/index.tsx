@@ -167,6 +167,9 @@ const TranscriptionSettingsModal = () => {
             <TransLangsSelector
               selectedTransLangs={selectedTransLangs}
               setSelectedTransLangs={setSelectedTransLangs}
+              maxLangsAllowSelecting={
+                speechService?.maxNumTranLangsAllowSelecting ?? 2
+              }
             />
           </div>
         )}

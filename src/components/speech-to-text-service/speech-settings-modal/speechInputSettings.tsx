@@ -7,7 +7,7 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
 
-import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
+import { speechLangsMap } from '../helpers/supportedLangs';
 import MicSelector from './micSelector';
 import Dropdown from '../../../helpers/ui/dropdown';
 
@@ -36,18 +36,12 @@ const SpeechInputSettings = ({
       setSelectedMicDevice('');
       setSelectedSpeechLang('');
     }
-    //eslint-disable-next-line
-  }, [enableSpeechToText]);
+  }, [enableSpeechToText, setSelectedSpeechLang, setSelectedMicDevice]);
 
   const speechLangOptions = useMemo(() => {
     return (
       speechService.allowedSpeechLangs?.map((l) => {
-        return {
-          value: l,
-          text:
-            supportedSpeechToTextLangs.find((lang) => lang.code === l)?.name ??
-            l,
-        };
+        return { value: l, text: speechLangsMap.get(l)?.name ?? l };
       }) ?? []
     );
   }, [speechService.allowedSpeechLangs]);
