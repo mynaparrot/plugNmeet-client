@@ -13,11 +13,7 @@ import {
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
-import {
-  DB_STORE_WHITEBOARD,
-  idbGet,
-  idbStore,
-} from '../../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
@@ -76,7 +72,11 @@ export const savePageData = async (
   fileId?: string,
 ) => {
   if (elms.length) {
-    await idbStore(DB_STORE_WHITEBOARD, formatStorageKey(page, fileId), elms);
+    await idbStore(
+      DB_STORE_NAMES.WHITEBOARD,
+      formatStorageKey(page, fileId),
+      elms,
+    );
   }
 };
 
@@ -93,7 +93,7 @@ export const displaySavedPageData = async (
 
   // 2. Attempt to retrieve the page data from IndexedDB.
   const elements = await idbGet<readonly OrderedExcalidrawElement[]>(
-    DB_STORE_WHITEBOARD,
+    DB_STORE_NAMES.WHITEBOARD,
     formatStorageKey(page, currentFileId),
   );
   let hasData = false;

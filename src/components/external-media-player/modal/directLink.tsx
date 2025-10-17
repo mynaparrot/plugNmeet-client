@@ -7,11 +7,7 @@ import FormattedInputField from '../../../helpers/ui/formattedInputField';
 import { PlusCircleIconSVG } from '../../../assets/Icons/PlusCircleIconSVG';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 import { TrashIconSVG } from '../../../assets/Icons/TrashIconSVG';
-import {
-  DB_STORE_USER_SETTINGS,
-  idbGet,
-  idbStore,
-} from '../../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 
 interface DirectLinkProps {
   selectedUrl: string;
@@ -28,7 +24,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
 
   useEffect(() => {
     idbGet<string[]>(
-      DB_STORE_USER_SETTINGS,
+      DB_STORE_NAMES.USER_SETTINGS,
       EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS,
     ).then((urls) => {
       if (urls && isArray(urls)) {
@@ -52,7 +48,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
       const newUrls = new Set([playBackUrl, ...prevUrls]);
       const arr = Array.from(newUrls);
       idbStore(
-        DB_STORE_USER_SETTINGS,
+        DB_STORE_NAMES.USER_SETTINGS,
         EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS,
         arr,
       ).then();
@@ -67,7 +63,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
       const newUrls = playbackUrls.filter((url) => url !== urlToDelete);
       setPlaybackUrls(newUrls);
       await idbStore(
-        DB_STORE_USER_SETTINGS,
+        DB_STORE_NAMES.USER_SETTINGS,
         EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS,
         newUrls,
       );

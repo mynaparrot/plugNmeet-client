@@ -16,11 +16,7 @@ import {
   IWhiteboardOfficeFile,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
-import {
-  DB_STORE_IMAGE_CACHE,
-  idbGet,
-  idbStore,
-} from '../../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
 
 export interface FileReaderResult {
@@ -79,7 +75,7 @@ export const createAndRegisterOfficeFile = (
  */
 const fetchAndCacheImage = async (url: string): Promise<string | null> => {
   // 1. Check if the image is already in the cache.
-  const cachedImage = await idbGet<string>(DB_STORE_IMAGE_CACHE, url);
+  const cachedImage = await idbGet<string>(DB_STORE_NAMES.IMAGE_CACHE, url);
   if (cachedImage) {
     return cachedImage;
   }
@@ -105,7 +101,7 @@ const fetchAndCacheImage = async (url: string): Promise<string | null> => {
   } finally {
     // 4. If the fetch was successful, store the base64 data in the cache.
     if (base64) {
-      await idbStore('imageCache', url, base64);
+      await idbStore(DB_STORE_NAMES.IMAGE_CACHE, url, base64);
     }
   }
   // 5. Return the result (either the base64 string or null if it failed).

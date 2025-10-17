@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { isArray } from 'es-toolkit/compat';
 
 import FormattedInputField from '../../../helpers/ui/formattedInputField';
-import {
-  DB_STORE_USER_SETTINGS,
-  idbGet,
-  idbStore,
-} from '../../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { PlusCircleIconSVG } from '../../../assets/Icons/PlusCircleIconSVG';
 import SavedLinkItem from './savedLinkItem';
 
@@ -25,13 +21,14 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
   const [newUrlLink, setNewUrlLink] = useState<string>('');
 
   useEffect(() => {
-    idbGet<string[]>(DB_STORE_USER_SETTINGS, EXTERNAL_DISPLAY_LINK_URLS).then(
-      (urls) => {
-        if (urls && isArray(urls)) {
-          setSavedLinks(urls);
-        }
-      },
-    );
+    idbGet<string[]>(
+      DB_STORE_NAMES.USER_SETTINGS,
+      EXTERNAL_DISPLAY_LINK_URLS,
+    ).then((urls) => {
+      if (urls && isArray(urls)) {
+        setSavedLinks(urls);
+      }
+    });
   }, []);
 
   const addLink = useCallback(async () => {
@@ -52,7 +49,11 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
     setSavedLinks((prevUrls) => {
       const newUrls = new Set([newUrlLink, ...prevUrls]);
       const arr = Array.from(newUrls);
-      idbStore(DB_STORE_USER_SETTINGS, EXTERNAL_DISPLAY_LINK_URLS, arr).then();
+      idbStore(
+        DB_STORE_NAMES.USER_SETTINGS,
+        EXTERNAL_DISPLAY_LINK_URLS,
+        arr,
+      ).then();
       return arr;
     });
     setLink(newUrlLink);
@@ -64,7 +65,7 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
       const newUrls = savedLinks.filter((url) => url !== urlToDelete);
       setSavedLinks(newUrls);
       await idbStore(
-        DB_STORE_USER_SETTINGS,
+        DB_STORE_NAMES.USER_SETTINGS,
         EXTERNAL_DISPLAY_LINK_URLS,
         newUrls,
       );

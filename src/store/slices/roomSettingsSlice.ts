@@ -13,7 +13,7 @@ import {
   VideoObjectFit,
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
-import { DB_STORE_USER_NOTIFICATIONS, idbStore } from '../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
@@ -183,7 +183,7 @@ const roomSettingsSlice = createSlice({
       }
       state.userNotifications.push(action.payload);
       idbStore(
-        DB_STORE_USER_NOTIFICATIONS,
+        DB_STORE_NAMES.USER_NOTIFICATIONS,
         action.payload.created.toString(),
         action.payload,
       ).then();

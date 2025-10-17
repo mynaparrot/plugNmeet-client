@@ -1,11 +1,18 @@
 import { deleteDB, IDBPDatabase, openDB } from 'idb';
 
-export const DB_STORE_USER_SETTINGS = 'userSettings',
-  DB_STORE_WHITEBOARD = 'whiteboard',
-  DB_STORE_IMAGE_CACHE = 'imageCache',
-  DB_STORE_CHAT_MESSAGES = 'chatMessages',
-  DB_STORE_USER_NOTIFICATIONS = 'userNotifications',
-  DB_STORE_SPEECH_TO_TEXT_FINAL_TEXTS = 'speechToTextFinalText';
+// Define all exportable store names in a single object to act as the source of truth.
+export const DB_STORE_NAMES = {
+  USER_SETTINGS: 'userSettings',
+  WHITEBOARD: 'whiteboard',
+  IMAGE_CACHE: 'imageCache',
+  CHAT_MESSAGES: 'chatMessages',
+  USER_NOTIFICATIONS: 'userNotifications',
+  SPEECH_TO_TEXT_FINAL_TEXTS: 'speechToTextFinalTexts',
+} as const; // 'as const' makes the object readonly and its values literal types.
+
+// Derive the type from the values of the object.
+// This ensures the type is always in sync with the defined stores.
+export type IDBStoreName = (typeof DB_STORE_NAMES)[keyof typeof DB_STORE_NAMES];
 
 const DB_STORE_METADATA = 'metadata';
 // Databases older than this will be cleaned up on startup (6 hours).
@@ -17,13 +24,8 @@ class IDBManager {
    * This centralized list ensures that all stores are created when the database is initialized.
    */
   private readonly ALL_STORES: string[] = [
-    DB_STORE_USER_SETTINGS,
-    DB_STORE_WHITEBOARD,
-    DB_STORE_IMAGE_CACHE,
-    DB_STORE_CHAT_MESSAGES,
-    DB_STORE_USER_NOTIFICATIONS,
-    DB_STORE_SPEECH_TO_TEXT_FINAL_TEXTS,
-    DB_STORE_METADATA,
+    DB_STORE_METADATA, // Internal metadata store
+    ...Object.values(DB_STORE_NAMES), // Dynamically get all other stores
   ];
   private dbPromise: Promise<IDBPDatabase> | null = null;
   private dbName: string | null = null;
@@ -33,6 +35,7 @@ class IDBManager {
    * beginning of a session before any other database operations are performed.
    * The database name is based on the provided room SID.
    * @param roomSid The session ID of the current room.
+   * @param userId The user ID of the current user.
    */
   public init(roomSid: string, userId: string) {
     // If the database has already been initialized, do nothing.
@@ -69,7 +72,7 @@ class IDBManager {
    * @param key The key for the value.
    * @param value The value to save.
    */
-  public async store(storeName: string, key: string, value: any) {
+  public async store(storeName: IDBStoreName, key: string, value: any) {
     const db = await this.getDb();
     // Update the timestamp on every write to keep the DB "alive".
     const tx = db.transaction([storeName, DB_STORE_METADATA], 'readwrite');
@@ -86,7 +89,10 @@ class IDBManager {
    * @param key The key of the value to retrieve.
    * @returns The value, or undefined if not found.
    */
-  public async get<T>(storeName: string, key: string): Promise<T | undefined> {
+  public async get<T>(
+    storeName: IDBStoreName,
+    key: string,
+  ): Promise<T | undefined> {
     const db = await this.getDb();
     if (!db.objectStoreNames.contains(storeName)) {
       return undefined;
@@ -99,7 +105,7 @@ class IDBManager {
    * @param storeName The name of the object store.
    * @returns An array of all values in the store.
    */
-  public async getAll<T>(storeName: string): Promise<T[]> {
+  public async getAll<T>(storeName: IDBStoreName): Promise<T[]> {
     const db = await this.getDb();
     if (!db.objectStoreNames.contains(storeName)) {
       return [];
