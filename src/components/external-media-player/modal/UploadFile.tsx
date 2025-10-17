@@ -28,7 +28,7 @@ const UploadFile = ({
     if (!file) {
       return;
     }
-
+    setError(undefined);
     uploadResumableFile(
       allowedFileTypes,
       undefined,
@@ -55,14 +55,14 @@ const UploadFile = ({
   };
 
   return (
-    <div className="upload-area relative h-20 mt-2.5 mb-4">
-      <div className="absolute -bottom-7 text-sm font-medium text-Gray-800">
-        {t('footer.modal.external-media-player-upload-supported-files', {
-          files: allowedFileTypes.map((type) => '.' + type).join(', '),
-        })}
-      </div>
+    <div className="upload-area relative min-h-20 mt-2.5 mb-4">
       {!file ? (
         <>
+          <div className="absolute -bottom-7 text-sm font-medium text-Gray-800">
+            {t('footer.modal.external-media-player-upload-supported-files', {
+              files: allowedFileTypes.map((type) => '.' + type).join(', '),
+            })}
+          </div>
           <input
             type="file"
             id="media-file"
@@ -92,7 +92,7 @@ const UploadFile = ({
               <div className="left">
                 <p className="break-all">{file.name}</p>
                 <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                  {Math.round(file.size / 1000)}KB
+                  {(file.size / (1024 * 1024)).toFixed(2)}MB
                 </div>
               </div>
               <div

@@ -169,7 +169,7 @@ const FileUploadProgress = ({
             <div className="left">
               <p className="break-all">{file.name}</p>
               <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                {file.size}KB
+                {(file.size / (1024 * 1024)).toFixed(2)}MB
               </div>
             </div>
             <div className="right cursor-pointer" onClick={handleDelete}>
