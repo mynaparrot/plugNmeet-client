@@ -13,11 +13,9 @@ import {
 
 import { store } from '../../../store';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
-import { encryptMessage } from '../../../helpers/libs/cryptoMessages';
 import { getNatsConn } from '../../../helpers/nats';
 import ConnectNats from '../../../helpers/nats/ConnectNats';
 import { getWhiteboardDonors } from '../../../helpers/utils';
-import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { uploadCanvasBinaryFile } from './handleFiles';
 import { WhiteboardDataAsDonorData } from '../../../store/slices/interfaces/whiteboard';
 
@@ -153,14 +151,14 @@ export const broadcastScreenDataByNats = async (
   elements: readonly ExcalidrawElement[],
   sendTo?: string,
 ) => {
-  const finalMsg = await handleEncryption(JSON.stringify(elements));
-  if (typeof finalMsg === 'undefined') {
-    return;
-  }
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(DataMsgBodyType.SCENE_UPDATE, finalMsg, sendTo);
+  await conn.sendWhiteboardData(
+    DataMsgBodyType.SCENE_UPDATE,
+    JSON.stringify(elements),
+    sendTo,
+  );
   conn.sendAnalyticsData(
     AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED,
     AnalyticsEventType.USER,
@@ -177,7 +175,7 @@ export const broadcastCurrentPageNumber = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
+  await conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
 };
 
 export const broadcastCurrentFileId = async (
@@ -187,7 +185,7 @@ export const broadcastCurrentFileId = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, fileId, sendTo);
+  await conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, fileId, sendTo);
 };
 
 /*
@@ -195,14 +193,14 @@ export const broadcastCurrentFileId = async (
  * this will help other participants to download preloaded file
  * there is no other reason as reconcileAndUpdateScene will track images anyway
  */
-export const broadcastCurrentOfficeFilePages = (
+export const broadcastCurrentOfficeFilePages = async (
   pages: string,
   sendTo?: string,
 ) => {
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(
+  await conn.sendWhiteboardData(
     DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES,
     pages,
     sendTo,
@@ -210,15 +208,13 @@ export const broadcastCurrentOfficeFilePages = (
 };
 
 export const broadcastMousePointerUpdate = async (element: any) => {
-  const finalMsg = await handleEncryption(JSON.stringify(element));
-  if (typeof finalMsg === 'undefined') {
-    return;
-  }
-
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, finalMsg);
+  await conn.sendWhiteboardData(
+    DataMsgBodyType.POINTER_UPDATE,
+    JSON.stringify(element),
+  );
 };
 
 export const broadcastAppStateChanges = async (
@@ -255,42 +251,15 @@ export const broadcastAppStateChanges = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(
+  await conn.sendWhiteboardData(
     DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
     finalMsg,
   );
 };
 
-export const sendClearWhiteboardSignal = () => {
+export const sendClearWhiteboardSignal = async () => {
   if (!conn) {
     conn = getNatsConn();
   }
-  conn.sendWhiteboardData(DataMsgBodyType.WHITEBOARD_RESET, '');
-};
-
-let isEnabledE2EE: boolean | undefined = undefined;
-const handleEncryption = async (msg: string) => {
-  if (typeof isEnabledE2EE === 'undefined') {
-    const e2ee =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures;
-    isEnabledE2EE = !!(e2ee && e2ee.isEnabled && e2ee.includedWhiteboard);
-  }
-
-  if (isEnabledE2EE) {
-    try {
-      return await encryptMessage(msg);
-    } catch (e: any) {
-      store.dispatch(
-        addUserNotification({
-          message: 'Encryption error: ' + e.message,
-          typeOption: 'error',
-        }),
-      );
-      console.error('Encryption error:' + e.message);
-      return undefined;
-    }
-  }
-
-  return msg;
+  await conn.sendWhiteboardData(DataMsgBodyType.WHITEBOARD_RESET, '');
 };

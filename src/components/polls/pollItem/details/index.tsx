@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -19,6 +19,7 @@ interface ViewDetailsProps {
   isRunning: boolean;
   onCloseViewDetails: () => void;
   serialNum: number;
+  refetch: () => void;
 }
 
 const DetailsModal = ({
@@ -26,9 +27,14 @@ const DetailsModal = ({
   isRunning,
   onCloseViewDetails,
   serialNum,
+  refetch,
 }: ViewDetailsProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const closeModal = () => {
     setIsOpen(false);

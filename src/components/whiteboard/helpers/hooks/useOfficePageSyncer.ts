@@ -8,7 +8,7 @@ import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm, preloadOfficeFilePages } from '../handleFiles';
-import { broadcastCurrentOfficeFilePages } from '../handleRequestedWhiteboardData';
+import { broadcastCurrentOfficeFilePages } from '../handleRequests';
 
 interface IUseOfficePageSyncer {
   excalidrawAPI: ExcalidrawImperativeAPI | null;

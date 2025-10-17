@@ -11,7 +11,7 @@ import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { savePageData } from '../helpers/utils';
-import { broadcastCurrentFileId } from '../helpers/handleRequestedWhiteboardData';
+import { broadcastCurrentFileId } from '../helpers/handleRequests';
 import { sleep } from '../../../helpers/utils';
 
 interface ManageOfficeFilesModalProps {
