@@ -6,6 +6,7 @@ export const MoonIcon = () => {
       viewBox="0 0 16 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="h-3.5 md:h-4 w-auto"
     >
       <g clipPath="url(#clip0_1144_65868)">
         <path

@@ -48,18 +48,18 @@ const Header = () => {
       <>
         <header
           id="main-header"
-          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 sm:py-0 flex flex-wrap sm:flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800 ac`}
+          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-wrap md:flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800 ac`}
         >
-          <div className="left relative z-20 flex items-center gap-3 sm:gap-5 w-1/2 sm:w-3/3 order-1">
+          <div className="left relative z-20 flex items-center gap-3 md:gap-5 w-auto md:w-3/3 order-1">
             <HeaderLogo />
             <DarkThemeSwitcher />
           </div>
-          <div className="middle w-full sm:w-3/3 relative z-20 order-3 sm:order-2">
+          <div className="middle w-full md:w-3/3 relative z-20 order-3 md:order-2">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center">
               {title}
             </h2>
           </div>
-          <div className="right flex items-center justify-end relative z-20 -right-3 w-1/2 sm:w-3/3 order-2 sm:order-3 gap-0.5">
+          <div className="right flex items-center justify-end relative z-20 -right-3 w-1/2 md:w-3/3 order-2 md:order-3 gap-0.5">
             <DurationView />
             <UserNotifications />
             <VolumeControl />
