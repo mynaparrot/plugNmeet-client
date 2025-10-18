@@ -7,7 +7,7 @@ import {
 
 import { useAppSelector } from '../../../../store';
 import { addPreloadedLibraryItems } from '../utils';
-import { selectBasicParticipants } from '../../../../store/slices/participantSlice';
+import { selectBasicParticipantsForWhiteboard } from '../../../../store/slices/participantSlice';
 
 interface IUseWhiteboardSetup {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -21,7 +21,7 @@ const useWhiteboardSetup = ({
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
   const collaborators = useRef(new Map<SocketId, Collaborator>());
 
-  const participants = useAppSelector(selectBasicParticipants);
+  const participants = useAppSelector(selectBasicParticipantsForWhiteboard);
   const mousePointerLocation = useAppSelector(
     (state) => state.whiteboard.mousePointerLocation,
   );
@@ -75,11 +75,20 @@ const useWhiteboardSetup = ({
     }
 
     const currentSize = collaborators.current.size;
-    // now check if any user still exists after disconnected
-    collaborators.current.forEach((_, i) => {
-      const found = participants.find((p) => p.userId === i);
-      if (!found) {
-        collaborators.current.delete(i);
+    // Clean up collaborators who are no longer active or allowed to draw.
+    collaborators.current.forEach((_, userId) => {
+      const participant = participants.find((p) => p.userId === userId);
+
+      // A user's cursor should be removed if:
+      // 1. They have disconnected (participant not found).
+      // 2. They are no longer a presenter OR their whiteboard is locked.
+      const shouldRemove =
+        !participant ||
+        !participant.isPresent ||
+        participant.isWhiteboardLocked;
+
+      if (shouldRemove) {
+        collaborators.current.delete(userId);
       }
     });
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import {
@@ -87,6 +87,37 @@ const FooterUI = ({
     }
   };
 
+  const takeOverPresenter = useCallback(async () => {
+    if (!currentUser) {
+      return;
+    }
+    const body = create(SwitchPresenterReqSchema, {
+      userId: currentUser.userId,
+      task: SwitchPresenterTask.PROMOTE,
+    });
+
+    const r = await sendAPIRequest(
+      'switchPresenter',
+      toBinary(SwitchPresenterReqSchema, body),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+
+    if (res.status) {
+      toast(t('left-panel.menus.notice.presenter-changed'), {
+        toastId: 'presenter-change-status',
+        type: 'info',
+      });
+    } else {
+      toast(t(res.msg), {
+        toastId: 'presenter-change-status',
+        type: 'error',
+      });
+    }
+  }, [currentUser, t]);
+
   const renderForAdmin = () => {
     return (
       <div className="flex wb-page-navigation ml-2">
@@ -115,34 +146,6 @@ const FooterUI = ({
         </button>
       </div>
     );
-  };
-
-  const takeOverPresenter = async () => {
-    const body = create(SwitchPresenterReqSchema, {
-      userId: currentUser?.userId,
-      task: SwitchPresenterTask.PROMOTE,
-    });
-
-    const r = await sendAPIRequest(
-      'switchPresenter',
-      toBinary(SwitchPresenterReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (res.status) {
-      toast(t('left-panel.menus.notice.presenter-changed'), {
-        toastId: 'lock-setting-status',
-        type: 'info',
-      });
-    } else {
-      toast(t(res.msg), {
-        toastId: 'lock-setting-status',
-        type: 'error',
-      });
-    }
   };
 
   const renderForParticipant = () => {

@@ -27,6 +27,19 @@ export const selectBasicParticipants = createSelector(
     })),
 );
 
+export const selectBasicParticipantsForWhiteboard = createSelector(
+  [participantsSelector.selectAll],
+  (participants) =>
+    participants.map((p) => ({
+      userId: p.userId,
+      sid: p.sid,
+      name: p.name,
+      isAdmin: !!p.metadata?.isAdmin,
+      isPresent: !!p.metadata?.isPresenter,
+      isWhiteboardLocked: !!p.metadata?.lockSettings?.lockWhiteboard,
+    })),
+);
+
 const participantsSlice = createSlice({
   name: 'participants',
   initialState: participantAdapter.getInitialState(),
