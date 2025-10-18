@@ -50,8 +50,8 @@ import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
 import {
-  decryptMessage,
-  encryptMessage,
+  decryptDataFromUint8Array,
+  encryptDataToUint8Array,
   importSecretKeyFromMaterial,
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
@@ -413,29 +413,45 @@ export default class ConnectNats {
    */
   private subscribeToChat = async () => {
     await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
-      const payload = fromBinary(ChatMessageSchema, m.data);
-      if (this._enableE2EEChat) {
-        try {
-          payload.message = await decryptMessage(payload.message);
-        } catch (e: any) {
-          store.dispatch(
-            addUserNotification({
-              message: 'Decryption error: ' + e.message,
-              typeOption: 'error',
-            }),
-          );
-          console.error('Decryption error:' + e.message);
-          return;
+      try {
+        let dataToParse = m.data;
+        if (this._enableE2EEChat) {
+          dataToParse = await decryptDataFromUint8Array(m.data);
         }
+        const payload = fromBinary(ChatMessageSchema, dataToParse);
+        await this.handleChat.handleMsg(payload);
+      } catch (e: any) {
+        store.dispatch(
+          addUserNotification({
+            message: 'Decryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
+        console.error('Decryption error:' + e.message);
+        return;
       }
-      await this.handleChat.handleMsg(payload);
     });
   };
 
   public sendChatMsg = async (to: string, msg: string) => {
+    const isPrivate = to !== 'public';
+    const chatMessage = create(ChatMessageSchema, {
+      id: randomString(),
+      fromName: this._userName,
+      fromUserId: this._userId,
+      sentAt: Date.now().toString(),
+      toUserId: to !== 'public' ? to : undefined,
+      isPrivate: isPrivate,
+      message: msg,
+      fromAdmin: this.isAdmin,
+    });
+
+    let payload: Uint8Array = toBinary(ChatMessageSchema, chatMessage);
+
     if (this._enableE2EEChat) {
       try {
-        msg = await encryptMessage(msg);
+        //  Encrypt the binary data directly to a Uint8Array
+        payload = await encryptDataToUint8Array(payload);
       } catch (e: any) {
         store.dispatch(
           addUserNotification({
@@ -448,23 +464,11 @@ export default class ConnectNats {
       }
     }
 
-    const isPrivate = to !== 'public';
-    const data = create(ChatMessageSchema, {
-      id: randomString(),
-      fromName: this._userName,
-      fromUserId: this._userId,
-      sentAt: Date.now().toString(),
-      toUserId: to !== 'public' ? to : undefined,
-      isPrivate: isPrivate,
-      message: msg,
-      fromAdmin: this.isAdmin,
-    });
-
     const subject =
       this._roomId + ':' + this._subjects.chat + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
-      payload: toBinary(ChatMessageSchema, data),
+      payload,
     });
 
     if (isPrivate) {
@@ -494,23 +498,23 @@ export default class ConnectNats {
       this._roomId,
       this._subjects.whiteboard,
       async (m) => {
-        const payload = fromBinary(DataChannelMessageSchema, m.data);
-        if (payload.fromUserId !== this._userId) {
+        try {
+          let dataToParse = m.data;
           if (this._enableE2EEWhiteboard) {
-            try {
-              payload.message = await decryptMessage(payload.message);
-            } catch (e: any) {
-              store.dispatch(
-                addUserNotification({
-                  message: 'Decryption error: ' + e.message,
-                  typeOption: 'error',
-                }),
-              );
-              console.error('Decryption error:' + e.message);
-              return;
-            }
+            dataToParse = await decryptDataFromUint8Array(m.data);
           }
-          await this.handleWhiteboard.handleWhiteboardMsg(payload);
+          const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+          if (payload.fromUserId !== this._userId) {
+            await this.handleWhiteboard.handleWhiteboardMsg(payload);
+          }
+        } catch (e: any) {
+          store.dispatch(
+            addUserNotification({
+              message: 'Decryption error: ' + e.message,
+              typeOption: 'error',
+            }),
+          );
+          console.error('Decryption error:' + e.message);
         }
       },
     );
@@ -521,9 +525,17 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
+    const data = create(DataChannelMessageSchema, {
+      type,
+      fromUserId: this._userId,
+      toUserId: to,
+      message: msg,
+    });
+
+    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EEWhiteboard) {
       try {
-        msg = await encryptMessage(msg);
+        payload = await encryptDataToUint8Array(payload);
       } catch (e: any) {
         store.dispatch(
           addUserNotification({
@@ -536,18 +548,11 @@ export default class ConnectNats {
       }
     }
 
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
-    });
-
     const subject =
       this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
-      payload: toBinary(DataChannelMessageSchema, data),
+      payload,
     });
   };
 
@@ -560,22 +565,22 @@ export default class ConnectNats {
       this._roomId,
       this._subjects.dataChannel,
       async (m) => {
-        const payload = fromBinary(DataChannelMessageSchema, m.data);
-        if (this._enableE2EE) {
-          try {
-            payload.message = await decryptMessage(payload.message);
-          } catch (e: any) {
-            store.dispatch(
-              addUserNotification({
-                message: 'Decryption error: ' + e.message,
-                typeOption: 'error',
-              }),
-            );
-            console.error('Decryption error:' + e.message);
-            return;
+        try {
+          let dataToParse = m.data;
+          if (this._enableE2EE) {
+            dataToParse = await decryptDataFromUint8Array(m.data);
           }
+          const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+          await this.handleDataMsg.handleMessage(payload);
+        } catch (e: any) {
+          store.dispatch(
+            addUserNotification({
+              message: 'Decryption error: ' + e.message,
+              typeOption: 'error',
+            }),
+          );
+          console.error('Decryption error:' + e.message);
         }
-        await this.handleDataMsg.handleMessage(payload);
       },
     );
   };
@@ -588,9 +593,17 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
+    const data = create(DataChannelMessageSchema, {
+      type,
+      fromUserId: this._userId,
+      toUserId: to,
+      message: msg,
+    });
+
+    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EE) {
       try {
-        msg = await encryptMessage(msg);
+        payload = await encryptDataToUint8Array(payload);
       } catch (e: any) {
         store.dispatch(
           addUserNotification({
@@ -603,18 +616,11 @@ export default class ConnectNats {
       }
     }
 
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
-    });
-
     const subject =
       this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
-      payload: toBinary(DataChannelMessageSchema, data),
+      payload,
     });
   };
 
