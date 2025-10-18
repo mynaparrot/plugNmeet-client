@@ -111,14 +111,14 @@ const UserNotifications = () => {
     if (hasUnreadNotifications > 0) {
       return (
         <div className="relative">
-          <NotifyIconSVG classes="w-5 h-auto" />
+          <NotifyIconSVG classes="w-3.5 md:w-4 h-auto" />
           <span className="unseen-notification-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
             {hasUnreadNotifications}
           </span>
         </div>
       );
     } else {
-      return <NotifyIconSVG classes="w-4 h-auto" />;
+      return <NotifyIconSVG classes="w-3.5 md:w-4 h-auto" />;
     }
   };
 
@@ -127,7 +127,7 @@ const UserNotifications = () => {
       {({ open, close }) => (
         <>
           <PopoverButton
-            className={`w-8 h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
+            className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
           >
             {displayIcon(open)}
           </PopoverButton>

@@ -48,13 +48,13 @@ const Header = () => {
       <>
         <header
           id="main-header"
-          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-wrap md:flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800 ac`}
+          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-wrap md:flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
         >
           <div className="left relative z-20 flex items-center gap-3 md:gap-5 w-auto md:w-3/3 order-1">
             <HeaderLogo />
             <DarkThemeSwitcher />
           </div>
-          <div className="middle w-full md:w-3/3 relative z-20 order-3 md:order-2">
+          <div className="middle w-full md:w-3/3 relative z-20 order-3 md:order-2 pt-1 md:pt-0">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center">
               {title}
             </h2>
@@ -67,7 +67,7 @@ const Header = () => {
               {({ open }) => (
                 <div>
                   <MenuButton
-                    className={`relative shrink-0 w-8 h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
+                    className={`relative shrink-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50' : ''}`}
                   >
                     <div className="text-gray-700 dark:text-white cursor-pointer">
                       <HeaderMenuIcon />
