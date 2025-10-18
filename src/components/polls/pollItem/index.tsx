@@ -34,12 +34,10 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
   // to load data with details, valid for admin
   const [skipGetPollResponsesDetails, setSkipGetPollResponsesDetails] =
     useState<boolean>(true);
-  const { data: pollDetailsResponses } = useGetPollResponsesDetailsQuery(
-    item.id,
-    {
+  const { data: pollDetailsResponses, refetch } =
+    useGetPollResponsesDetailsQuery(item.id, {
       skip: skipGetPollResponsesDetails,
-    },
-  );
+    });
 
   // load only the results for all other users
   const [skipGetPollResult, setSkipGetPollResult] = useState<boolean>(true);
@@ -252,6 +250,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
                   pollDataWithOption={pollDataWithOption}
                   isRunning={item.isRunning}
                   serialNum={serialNum}
+                  refetch={refetch}
                 />
               )}
             </div>

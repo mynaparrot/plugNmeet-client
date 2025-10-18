@@ -40,7 +40,7 @@ import {
   broadcastCurrentFileId,
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
-} from './helpers/handleRequestedWhiteboardData';
+} from './helpers/handleRequests';
 import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardDataSharer from './helpers/hooks/useWhiteboardDataSharer';

@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
-import { broadcastCurrentPageNumber } from './helpers/handleRequestedWhiteboardData';
+import { broadcastCurrentPageNumber } from './helpers/handleRequests';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { savePageData } from './helpers/utils';
 import { sleep } from '../../helpers/utils';

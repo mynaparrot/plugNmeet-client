@@ -9,7 +9,7 @@ import {
 import {
   broadcastSceneOnChange,
   sendClearWhiteboardSignal,
-} from './handleRequestedWhiteboardData';
+} from './handleRequests';
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
@@ -89,7 +89,7 @@ export const displaySavedPageData = async (
 ) => {
   // 1. Send everyone to clean their whiteboard
   // as we're changing page/file or starting up
-  sendClearWhiteboardSignal();
+  await sendClearWhiteboardSignal();
 
   // 2. Attempt to retrieve the page data from IndexedDB.
   const elements = await idbGet<readonly OrderedExcalidrawElement[]>(

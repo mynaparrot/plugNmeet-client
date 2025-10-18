@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../../store';
 import {
   sendRequestedForWhiteboardData,
   sendWhiteboardDataAsDonor,
-} from '../handleRequestedWhiteboardData';
+} from '../handleRequests';
 
 interface IUseWhiteboardDataSharer {
   excalidrawAPI: ExcalidrawImperativeAPI | null;

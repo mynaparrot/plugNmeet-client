@@ -34,7 +34,6 @@ import {
   wsconnect,
 } from '@nats-io/nats-core';
 import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
-import { isURL } from 'validator';
 import { isE2EESupported } from 'livekit-client';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
@@ -51,6 +50,7 @@ import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import MessageQueue from './MessageQueue';
 import {
+  decryptMessage,
   encryptMessage,
   importSecretKeyFromMaterial,
   importSecretKeyFromPlainText,
@@ -93,7 +93,9 @@ export default class ConnectNats {
   private _js: JetStreamClient | undefined;
   private readonly _natsWSUrls: string[];
   private _token: string;
+  private _enableE2EE: boolean = false;
   private _enableE2EEChat: boolean = false;
+  private _enableE2EEWhiteboard: boolean = false;
   private toastIdConnecting: any = undefined;
 
   private readonly _roomId: string;
@@ -252,139 +254,17 @@ export default class ConnectNats {
         window.close();
       }
 
-      const logout_url = meta?.logoutUrl;
-      if (logout_url && logout_url !== '' && isURL(logout_url)) {
-        // redirect to log out url
-        window.location.href = logout_url;
+      if (meta?.logoutUrl) {
+        try {
+          // validate URL
+          const logout_url = new URL(meta.logoutUrl);
+          // redirect to log out url
+          window.location.href = logout_url.href;
+        } catch (e) {
+          console.error(e);
+        }
       }
     }, 3000);
-  };
-
-  public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
-    const subject =
-      this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload: toBinary(NatsMsgClientToServerSchema, data),
-    });
-  };
-
-  public sendChatMsg = async (to: string, msg: string) => {
-    if (this._enableE2EEChat) {
-      try {
-        msg = await encryptMessage(msg);
-      } catch (e: any) {
-        store.dispatch(
-          addUserNotification({
-            message: 'Encryption error: ' + e.message,
-            typeOption: 'error',
-          }),
-        );
-        console.error('Encryption error:' + e.message);
-        return;
-      }
-    }
-
-    const isPrivate = to !== 'public';
-    const data = create(ChatMessageSchema, {
-      id: randomString(),
-      fromName: this._userName,
-      fromUserId: this._userId,
-      sentAt: Date.now().toString(),
-      toUserId: to !== 'public' ? to : undefined,
-      isPrivate: isPrivate,
-      message: msg,
-      fromAdmin: this.isAdmin,
-    });
-
-    const subject =
-      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload: toBinary(ChatMessageSchema, data),
-    });
-
-    if (isPrivate) {
-      this.sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_PRIVATE_CHAT,
-        AnalyticsEventType.USER,
-        '',
-        '',
-        '1',
-      );
-    } else {
-      this.sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
-        AnalyticsEventType.USER,
-        '',
-        '',
-        '1',
-      );
-    }
-  };
-
-  public sendWhiteboardData = (
-    type: DataMsgBodyType,
-    msg: string,
-    to?: string,
-  ) => {
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
-    });
-
-    const subject =
-      this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload: toBinary(DataChannelMessageSchema, data),
-    });
-  };
-
-  public sendDataMessage = (
-    type: DataMsgBodyType,
-    msg: string,
-    to?: string,
-  ) => {
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
-    });
-
-    const subject =
-      this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload: toBinary(DataChannelMessageSchema, data),
-    });
-  };
-
-  public sendAnalyticsData = (
-    event_name: AnalyticsEvents,
-    event_type: AnalyticsEventType = AnalyticsEventType.USER,
-    hset_value?: string,
-    event_value_string?: string,
-    event_value_integer?: string,
-  ) => {
-    const analyticsMsg = create(AnalyticsDataMsgSchema, {
-      eventType: event_type,
-      eventName: event_name,
-      roomId: this._roomId,
-      userId: this._userId,
-      hsetValue: hset_value,
-      eventValueString: event_value_string,
-      eventValueInteger: event_value_integer,
-    });
-
-    const data = create(NatsMsgClientToServerSchema, {
-      event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
-      msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
-    });
-    this.sendMessageToSystemWorker(data);
   };
 
   private setErrorStatus(title: string, reason: string) {
@@ -518,16 +398,92 @@ export default class ConnectNats {
     );
   };
 
+  public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
+    const subject =
+      this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(NatsMsgClientToServerSchema, data),
+    });
+  };
+
   /**
    * All the events related with chat will be handled here,
    * including public and private
-   * Encrypted text will also be handled by HandleChat
    */
   private subscribeToChat = async () => {
     await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
       const payload = fromBinary(ChatMessageSchema, m.data);
+      if (this._enableE2EEChat) {
+        try {
+          payload.message = await decryptMessage(payload.message);
+        } catch (e: any) {
+          store.dispatch(
+            addUserNotification({
+              message: 'Decryption error: ' + e.message,
+              typeOption: 'error',
+            }),
+          );
+          console.error('Decryption error:' + e.message);
+          return;
+        }
+      }
       await this.handleChat.handleMsg(payload);
     });
+  };
+
+  public sendChatMsg = async (to: string, msg: string) => {
+    if (this._enableE2EEChat) {
+      try {
+        msg = await encryptMessage(msg);
+      } catch (e: any) {
+        store.dispatch(
+          addUserNotification({
+            message: 'Encryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
+        console.error('Encryption error:' + e.message);
+        return;
+      }
+    }
+
+    const isPrivate = to !== 'public';
+    const data = create(ChatMessageSchema, {
+      id: randomString(),
+      fromName: this._userName,
+      fromUserId: this._userId,
+      sentAt: Date.now().toString(),
+      toUserId: to !== 'public' ? to : undefined,
+      isPrivate: isPrivate,
+      message: msg,
+      fromAdmin: this.isAdmin,
+    });
+
+    const subject =
+      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(ChatMessageSchema, data),
+    });
+
+    if (isPrivate) {
+      this.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_PRIVATE_CHAT,
+        AnalyticsEventType.USER,
+        '',
+        '',
+        '1',
+      );
+    } else {
+      this.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
+        AnalyticsEventType.USER,
+        '',
+        '',
+        '1',
+      );
+    }
   };
 
   /**
@@ -540,10 +496,59 @@ export default class ConnectNats {
       async (m) => {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
         if (payload.fromUserId !== this._userId) {
+          if (this._enableE2EEWhiteboard) {
+            try {
+              payload.message = await decryptMessage(payload.message);
+            } catch (e: any) {
+              store.dispatch(
+                addUserNotification({
+                  message: 'Decryption error: ' + e.message,
+                  typeOption: 'error',
+                }),
+              );
+              console.error('Decryption error:' + e.message);
+              return;
+            }
+          }
           await this.handleWhiteboard.handleWhiteboardMsg(payload);
         }
       },
     );
+  };
+
+  public sendWhiteboardData = async (
+    type: DataMsgBodyType,
+    msg: string,
+    to?: string,
+  ) => {
+    if (this._enableE2EEWhiteboard) {
+      try {
+        msg = await encryptMessage(msg);
+      } catch (e: any) {
+        store.dispatch(
+          addUserNotification({
+            message: 'Encryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
+        console.error('Encryption error:' + e.message);
+        return;
+      }
+    }
+
+    const data = create(DataChannelMessageSchema, {
+      type,
+      fromUserId: this._userId,
+      toUserId: to,
+      message: msg,
+    });
+
+    const subject =
+      this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(DataChannelMessageSchema, data),
+    });
   };
 
   /**
@@ -556,9 +561,61 @@ export default class ConnectNats {
       this._subjects.dataChannel,
       async (m) => {
         const payload = fromBinary(DataChannelMessageSchema, m.data);
+        if (this._enableE2EE) {
+          try {
+            payload.message = await decryptMessage(payload.message);
+          } catch (e: any) {
+            store.dispatch(
+              addUserNotification({
+                message: 'Decryption error: ' + e.message,
+                typeOption: 'error',
+              }),
+            );
+            console.error('Decryption error:' + e.message);
+            return;
+          }
+        }
         await this.handleDataMsg.handleMessage(payload);
       },
     );
+  };
+
+  /**
+   * sendDataMessage method mostly use to communicate between clients
+   */
+  public sendDataMessage = async (
+    type: DataMsgBodyType,
+    msg: string,
+    to?: string,
+  ) => {
+    if (this._enableE2EE) {
+      try {
+        msg = await encryptMessage(msg);
+      } catch (e: any) {
+        store.dispatch(
+          addUserNotification({
+            message: 'Encryption error: ' + e.message,
+            typeOption: 'error',
+          }),
+        );
+        console.error('Encryption error:' + e.message);
+        return;
+      }
+    }
+
+    const data = create(DataChannelMessageSchema, {
+      type,
+      fromUserId: this._userId,
+      toUserId: to,
+      message: msg,
+    });
+
+    const subject =
+      this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(DataChannelMessageSchema, data),
+    });
   };
 
   /**
@@ -618,6 +675,30 @@ export default class ConnectNats {
       await handler(payload);
     }
   }
+
+  public sendAnalyticsData = (
+    event_name: AnalyticsEvents,
+    event_type: AnalyticsEventType = AnalyticsEventType.USER,
+    hset_value?: string,
+    event_value_string?: string,
+    event_value_integer?: string,
+  ) => {
+    const analyticsMsg = create(AnalyticsDataMsgSchema, {
+      eventType: event_type,
+      eventName: event_name,
+      roomId: this._roomId,
+      userId: this._userId,
+      hsetValue: hset_value,
+      eventValueString: event_value_string,
+      eventValueInteger: event_value_integer,
+    });
+
+    const data = create(NatsMsgClientToServerSchema, {
+      event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
+      msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
+    });
+    this.sendMessageToSystemWorker(data);
+  };
 
   private startTokenRenewInterval() {
     this.tokenRenewInterval = setInterval(() => {
@@ -722,7 +803,7 @@ export default class ConnectNats {
   private async onAfterUserReady() {
     const donors = getWhiteboardDonors();
     for (let i = 0; i < donors.length; i++) {
-      this.sendDataMessage(
+      await this.sendDataMessage(
         DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
         '',
         donors[i].userId,
@@ -809,7 +890,9 @@ export default class ConnectNats {
         }
 
         if (encryptionKey) {
+          this._enableE2EE = true;
           this._enableE2EEChat = e2ee.includedChatMessages;
+          this._enableE2EEWhiteboard = e2ee.includedWhiteboard;
           if (e2ee.enabledSelfInsertEncryptionKey) {
             await importSecretKeyFromMaterial(encryptionKey);
           } else {

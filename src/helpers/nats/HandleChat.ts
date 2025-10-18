@@ -2,16 +2,12 @@ import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
-import { decryptMessage } from '../libs/cryptoMessages';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
   updateIsActiveChatPanel,
   updateTotalUnreadChatMsgs,
 } from '../../store/slices/bottomIconsActivitySlice';
-import {
-  addUserNotification,
-  updateUnreadMsgFrom,
-} from '../../store/slices/roomSettingsSlice';
+import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 import { DB_STORE_NAMES, idbStore } from '../libs/idb';
 
 export default class HandleChat {
@@ -50,11 +46,6 @@ export default class HandleChat {
       return;
     }
 
-    const finalMsg = await this.handleDecryption(payload.message);
-    if (!finalMsg) {
-      return;
-    }
-    payload.message = finalMsg;
     store.dispatch(
       addChatMessage({ message: payload, currentUserId: this._that.userId }),
     );
@@ -97,32 +88,4 @@ export default class HandleChat {
       );
     }
   };
-
-  private async handleDecryption(msg: string) {
-    if (typeof this._isEnabledE2EE === 'undefined') {
-      const e2ee =
-        store.getState().session.currentRoom.metadata?.roomFeatures
-          ?.endToEndEncryptionFeatures;
-      this._isEnabledE2EE = !!(
-        e2ee &&
-        e2ee.isEnabled &&
-        e2ee.includedChatMessages
-      );
-    }
-    if (this._isEnabledE2EE) {
-      try {
-        return await decryptMessage(msg);
-      } catch (e: any) {
-        store.dispatch(
-          addUserNotification({
-            message: 'Decryption error: ' + e.message,
-            typeOption: 'error',
-          }),
-        );
-        console.error('Decryption error:' + e.message);
-        return undefined;
-      }
-    }
-    return msg;
-  }
 }

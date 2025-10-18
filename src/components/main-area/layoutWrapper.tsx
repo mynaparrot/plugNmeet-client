@@ -23,41 +23,51 @@ const LayoutWrapper = ({
   );
 
   const cssClasses = useMemo(() => {
-    const classes: Array<string> = [];
+    const classes = new Set<string>(['relative']);
+
     if (isActiveScreenShare) {
-      classes.push(
-        'middle-fullscreen-wrapper share-screen-wrapper is-share-screen-running relative',
-      );
+      classes
+        .add('middle-fullscreen-wrapper')
+        .add('share-screen-wrapper')
+        .add('is-share-screen-running');
+
       if (showVideoElms) {
         if (showVerticalVideoView) {
-          classes.push('verticalsWebcamsActivated relative');
+          classes.add('verticalsWebcamsActivated');
         }
         if (isEnabledExtendedVerticalCamView) {
-          classes.push('extendedVerticalCamView relative');
+          classes.add('extendedVerticalCamView');
         }
         if (pinCamUserId) {
-          classes.push('pinWebcamActivated verticalsWebcamsActivated relative');
+          classes.add('pinWebcamActivated');
         }
       }
     } else {
       if (showVideoElms && !showVerticalVideoView && !pinCamUserId) {
-        classes.push('h-full relative');
+        classes.add('h-full');
       } else if (showVideoElms) {
-        classes.push('middle-fullscreen-wrapper h-full flex relative');
+        classes.add('middle-fullscreen-wrapper').add('h-full').add('flex');
+
         if (showVerticalVideoView) {
-          classes.push('verticalsWebcamsActivated relative');
+          classes.add('verticalsWebcamsActivated');
         }
         if (isEnabledExtendedVerticalCamView) {
-          classes.push('extendedVerticalCamView relative');
+          classes.add('extendedVerticalCamView');
         }
         if (pinCamUserId) {
-          classes.push('pinWebcamActivated verticalsWebcamsActivated relative');
+          // when we've pin cam then need to manually activate verticalsWebcams layout
+          // showVerticalVideoView will be false as no whiteboard or screen sharing or similar is active
+          classes.add('pinWebcamActivated').add('verticalsWebcamsActivated');
         }
       } else {
-        classes.push('middle-fullscreen-wrapper h-full flex w-full relative');
+        classes
+          .add('middle-fullscreen-wrapper')
+          .add('h-full')
+          .add('flex')
+          .add('w-full');
       }
     }
-    return classes.join(' ');
+    return Array.from(classes).join(' ').trim();
   }, [
     isActiveScreenShare,
     showVideoElms,
