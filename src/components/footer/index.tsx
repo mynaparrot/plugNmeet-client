@@ -47,7 +47,6 @@ const Footer = () => {
           <PollsIcon />
           <Translation />
           <RecordingIcon />
-          {isAdmin && <MenusIcon />}
           <div className="icon block md:hidden">
             <ParticipantIcon />
           </div>
@@ -56,6 +55,7 @@ const Footer = () => {
               <ChatIcon />
             </div>
           )}
+          {isAdmin && <MenusIcon />}
           <div className="icon block md:hidden">
             <EndMeetingButton />
           </div>
