@@ -1,5 +1,11 @@
-/* @media screen and (max-width: 767px) {
-  .transition-right-panel {
+@media screen and (max-width: 767px) {
+  .landscape-device #footer-menu {
+    overflow-y: auto;
+  }
+  .landscape-device #footer-menu .inner {
+    height: 240px;
+  }
+  /* .transition-right-panel {
     @apply w-full;
   }
   .transition-right-panel .messageModule-wrapper {
@@ -16,5 +22,5 @@
   }
   .private-m-tab::before {
     @apply absolute content-[""] h-1 w-full bg-[rgb(0,77,144,0.2)];
-  }
-} */
+  } */
+}

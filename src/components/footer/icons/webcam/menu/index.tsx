@@ -17,7 +17,7 @@ const WebcamMenu = ({ currentRoom, isActiveWebcam }: IWebcamMenuProps) => {
         {({ open }) => (
           <>
             <MenuButton
-              className={`w-[25px] 3xl:w-[30px] h-9 3xl:h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isActiveWebcam ? 'bg-Gray-50 rounded-r-xl 3xl:rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100' : 'border-Gray-300'}`}
+              className={`w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isActiveWebcam ? 'bg-Gray-50 rounded-r-xl 3xl:rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100' : 'border-Gray-300'}`}
             >
               <ArrowUp />
             </MenuButton>

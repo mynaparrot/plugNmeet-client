@@ -125,109 +125,112 @@ const MenusIcon = () => {
               >
                 <MenuItems
                   static
-                  className="origin-bottom-left z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
+                  className="origin-bottom-left -right-11 md:left-0 z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2"
+                  id="footer-menu"
                 >
-                  {roomFeatures?.allowRtmp && (
+                  <div className="inner">
+                    {roomFeatures?.allowRtmp && (
+                      <AdminMenuItem
+                        onClick={openRtmpModal}
+                        isActive={isActiveRtmpBroadcasting}
+                        icon={<RTMPIconSVG />}
+                        text={
+                          isActiveRtmpBroadcasting
+                            ? t('footer.icons.stop-rtmp-broadcasting')
+                            : t('footer.icons.start-rtmp-broadcasting')
+                        }
+                      />
+                    )}
+                    {roomFeatures?.externalMediaPlayerFeatures
+                      ?.allowedExternalMediaPlayer && (
+                      <AdminMenuItem
+                        onClick={toggleExternalMediaPlayer}
+                        isActive={isActiveExternalMediaPlayer}
+                        icon={<PlayerIconSVG />}
+                        text={
+                          isActiveExternalMediaPlayer
+                            ? t('footer.menus.stop-external-media-player')
+                            : t('footer.menus.start-external-media-player')
+                        }
+                      />
+                    )}
+                    {roomFeatures?.displayExternalLinkFeatures?.isAllow && (
+                      <AdminMenuItem
+                        onClick={toggleDisplayExternalLinkModal}
+                        isActive={isActiveDisplayExternalLink}
+                        icon={<ExternalPlayerIconSVG />}
+                        text={
+                          isActiveDisplayExternalLink
+                            ? t('footer.menus.stop-display-external-link')
+                            : t('footer.menus.start-display-external-link')
+                        }
+                      />
+                    )}
+                    <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+                    {roomFeatures?.sharedNotePadFeatures
+                      ?.allowedSharedNotePad && (
+                      <AdminMenuItem
+                        onClick={toggleSharedNotepad}
+                        isActive={sharedNotepadStatus}
+                        icon={<SharedNotepadIconSVG />}
+                        text={
+                          sharedNotepadStatus
+                            ? t('footer.menus.disable-shared-notepad')
+                            : t('footer.menus.enable-shared-notepad')
+                        }
+                      />
+                    )}
+                    {roomFeatures?.speechToTextTranslationFeatures?.isAllow && (
+                      <AdminMenuItem
+                        onClick={openSpeechServiceSettingsModal}
+                        icon={<SpeechIconSVG classes="w-6 text-Blue2-800" />}
+                        text={t('footer.menus.speech-to-text-settings')}
+                      />
+                    )}
+                    {roomFeatures?.pollsFeatures?.isAllow && (
+                      <AdminMenuItem
+                        onClick={togglePolls}
+                        isActive={isActivePoll}
+                        icon={<PollsIconSVG classes="text-Blue2-800" />}
+                        text={
+                          isActivePoll
+                            ? t('footer.menus.disable-polls')
+                            : t('footer.menus.enable-polls')
+                        }
+                      />
+                    )}
+                    <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+                    {roomFeatures?.waitingRoomFeatures?.isActive && (
+                      <AdminMenuItem
+                        onClick={openManageWaitingRoomModal}
+                        icon={
+                          <i className="pnm-waiting-room text-primary-color  transition ease-in group-hover:text-secondary-color" />
+                        }
+                        text={t('footer.menus.manage-waiting-room')}
+                      />
+                    )}
+                    {roomFeatures?.breakoutRoomFeatures?.isAllow && (
+                      <AdminMenuItem
+                        onClick={openManageBreakoutRoomModal}
+                        icon={
+                          <BreakoutRoomIconSVG classes="w-6 h-auto text-Blue2-800" />
+                        }
+                        text={t('footer.menus.manage-breakout-room')}
+                      />
+                    )}
                     <AdminMenuItem
-                      onClick={openRtmpModal}
-                      isActive={isActiveRtmpBroadcasting}
-                      icon={<RTMPIconSVG />}
-                      text={
-                        isActiveRtmpBroadcasting
-                          ? t('footer.icons.stop-rtmp-broadcasting')
-                          : t('footer.icons.start-rtmp-broadcasting')
-                      }
-                    />
-                  )}
-                  {roomFeatures?.externalMediaPlayerFeatures
-                    ?.allowedExternalMediaPlayer && (
-                    <AdminMenuItem
-                      onClick={toggleExternalMediaPlayer}
-                      isActive={isActiveExternalMediaPlayer}
-                      icon={<PlayerIconSVG />}
-                      text={
-                        isActiveExternalMediaPlayer
-                          ? t('footer.menus.stop-external-media-player')
-                          : t('footer.menus.start-external-media-player')
-                      }
-                    />
-                  )}
-                  {roomFeatures?.displayExternalLinkFeatures?.isAllow && (
-                    <AdminMenuItem
-                      onClick={toggleDisplayExternalLinkModal}
-                      isActive={isActiveDisplayExternalLink}
-                      icon={<ExternalPlayerIconSVG />}
-                      text={
-                        isActiveDisplayExternalLink
-                          ? t('footer.menus.stop-display-external-link')
-                          : t('footer.menus.start-display-external-link')
-                      }
-                    />
-                  )}
-                  <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
-                  {roomFeatures?.sharedNotePadFeatures
-                    ?.allowedSharedNotePad && (
-                    <AdminMenuItem
-                      onClick={toggleSharedNotepad}
-                      isActive={sharedNotepadStatus}
-                      icon={<SharedNotepadIconSVG />}
-                      text={
-                        sharedNotepadStatus
-                          ? t('footer.menus.disable-shared-notepad')
-                          : t('footer.menus.enable-shared-notepad')
-                      }
-                    />
-                  )}
-                  {roomFeatures?.speechToTextTranslationFeatures?.isAllow && (
-                    <AdminMenuItem
-                      onClick={openSpeechServiceSettingsModal}
-                      icon={<SpeechIconSVG classes="w-6 text-Blue2-800" />}
-                      text={t('footer.menus.speech-to-text-settings')}
-                    />
-                  )}
-                  {roomFeatures?.pollsFeatures?.isAllow && (
-                    <AdminMenuItem
-                      onClick={togglePolls}
-                      isActive={isActivePoll}
-                      icon={<PollsIconSVG classes="text-Blue2-800" />}
-                      text={
-                        isActivePoll
-                          ? t('footer.menus.disable-polls')
-                          : t('footer.menus.enable-polls')
-                      }
-                    />
-                  )}
-                  <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
-                  {roomFeatures?.waitingRoomFeatures?.isActive && (
-                    <AdminMenuItem
-                      onClick={openManageWaitingRoomModal}
+                      onClick={muteAllUsers}
                       icon={
-                        <i className="pnm-waiting-room text-primary-color  transition ease-in group-hover:text-secondary-color" />
+                        <i className="pnm-mic-mute text-primary-color transition ease-in group-hover:text-secondary-color" />
                       }
-                      text={t('footer.menus.manage-waiting-room')}
+                      text={t('footer.menus.mute-all-users')}
                     />
-                  )}
-                  {roomFeatures?.breakoutRoomFeatures?.isAllow && (
                     <AdminMenuItem
-                      onClick={openManageBreakoutRoomModal}
-                      icon={
-                        <BreakoutRoomIconSVG classes="w-6 h-auto text-Blue2-800" />
-                      }
-                      text={t('footer.menus.manage-breakout-room')}
+                      onClick={openLockSettingsModal}
+                      icon={<RoomLockIconSVG />}
+                      text={t('footer.menus.room-lock-settings')}
                     />
-                  )}
-                  <AdminMenuItem
-                    onClick={muteAllUsers}
-                    icon={
-                      <i className="pnm-mic-mute text-primary-color transition ease-in group-hover:text-secondary-color" />
-                    }
-                    text={t('footer.menus.mute-all-users')}
-                  />
-                  <AdminMenuItem
-                    onClick={openLockSettingsModal}
-                    icon={<RoomLockIconSVG />}
-                    text={t('footer.menus.room-lock-settings')}
-                  />
+                  </div>
                 </MenuItems>
               </Transition>
             </div>
