@@ -69,6 +69,9 @@ const useWhiteboardSetup = ({
   }, [excalidrawAPI, mousePointerLocation]);
 
   const activeParticipantIds = useMemo(() => {
+    // A user's cursor should be removed if:
+    // 1. They have disconnected (and are no longer in the participants list).
+    // 2. They are no longer a presenter OR their whiteboard is locked.
     const activeUsers = participants.filter(
       (p) => p.isPresent && !p.isWhiteboardLocked,
     );
@@ -82,12 +85,9 @@ const useWhiteboardSetup = ({
     }
 
     const currentSize = collaborators.current.size;
-    // A user's cursor should be removed if:
-    // 1. They have disconnected (and are no longer in the participants list).
-    // 2. They are no longer a presenter OR their whiteboard is locked.
-    // The `activeParticipantIds` set contains all users who meet the criteria to remain.
-    // We remove any collaborator whose userId is not in that active set.
     collaborators.current.forEach((_, userId) => {
+      // The `activeParticipantIds` set contains all users who meet the criteria to remain.
+      // We remove any collaborator whose userId is not in that active set.
       if (!activeParticipantIds.has(userId)) {
         collaborators.current.delete(userId);
       }
