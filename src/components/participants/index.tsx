@@ -1,68 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, store, useAppDispatch, useAppSelector } from '../../store';
 import ParticipantComponent from './participant';
-import { participantsSelector } from '../../store/slices/participantSlice';
 import RemoveParticipantAlertModal, {
   IRemoveParticipantAlertModalData,
 } from './removeParticipantAlertModal';
 import { SearchIconSVG } from '../../assets/Icons/SearchIconSVG';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
+
+import { store, useAppDispatch, useAppSelector } from '../../store';
+import { selectFilteredParticipantsList } from '../../store/slices/participantSlice';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
-
-const selectFilteredParticipants = createSelector(
-  [
-    participantsSelector.selectAll,
-    (state: RootState, isAdmin: boolean) => isAdmin,
-    (state: RootState, isAdmin: boolean, search: string) => search,
-    (
-      state: RootState,
-      isAdmin: boolean,
-      search: string,
-      allowViewOtherUsers: boolean,
-    ) => allowViewOtherUsers,
-    (
-      state: RootState,
-      isAdmin: boolean,
-      search: string,
-      allowViewOtherUsers: boolean,
-      currentUserId: string | undefined,
-    ) => currentUserId,
-  ],
-  (participants, isAdmin, search, allowViewOtherUsers, currentUserId) => {
-    let list = participants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
-    );
-
-    if (!isAdmin && !allowViewOtherUsers) {
-      list = list.filter(
-        (p) => p.metadata.isAdmin || p.userId === currentUserId,
-      );
-    }
-
-    if (search) {
-      list = list.filter((p) =>
-        p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
-      );
-    }
-
-    if (isAdmin) {
-      // .sort() mutates the array, so we work on a copy.
-      return list.sort((a, b) =>
-        a.metadata.waitForApproval === b.metadata.waitForApproval
-          ? 0
-          : a.metadata.waitForApproval
-            ? -1
-            : 1,
-      );
-    }
-    return list;
-  },
-);
 
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
@@ -89,7 +38,7 @@ const ParticipantsComponent = () => {
   }, []);
 
   const participants = useAppSelector((state) =>
-    selectFilteredParticipants(
+    selectFilteredParticipantsList(
       state,
       currentIsAdmin,
       searchParticipant,

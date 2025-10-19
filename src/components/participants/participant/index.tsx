@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import Avatar from './avatar';
 import ParticipantName from './name';
@@ -10,11 +10,12 @@ import MenuIcon from './icons/menu';
 import VisibilityIcon from './icons/visibility';
 import PresenterIcon from './icons/presenterIcon';
 import WaitingApproval from './waitingApproval';
-import { IParticipant } from '../../../store/slices/interfaces/participant';
+
 import { ICurrentUser } from '../../../store/slices/interfaces/session';
+import { IParticipantFilteredInfo } from '../../../store/slices/interfaces/participant';
 
 interface IParticipantComponentProps {
-  participant: IParticipant;
+  participant: IParticipantFilteredInfo;
   currentUser: ICurrentUser | undefined;
   isRemoteParticipant: boolean;
   openRemoveParticipantAlert(name: string, userId: string, type: string): void;
@@ -56,7 +57,7 @@ const ParticipantComponent = ({
             <MenuIcon
               userId={participant.userId}
               name={participant.name}
-              isAdmin={participant.metadata.isAdmin}
+              isAdmin={participant.isAdmin}
               openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
             />
           )}
@@ -73,4 +74,4 @@ const ParticipantComponent = ({
   );
 };
 
-export default ParticipantComponent;
+export default memo(ParticipantComponent);

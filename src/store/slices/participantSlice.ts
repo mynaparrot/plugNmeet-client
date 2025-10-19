@@ -3,9 +3,13 @@ import {
   createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
+import { isEqual } from 'es-toolkit';
 
 import { RootState } from '..';
-import { IParticipant } from './interfaces/participant';
+import {
+  IParticipant,
+  IParticipantFilteredInfo,
+} from './interfaces/participant';
 
 const participantAdapter = createEntityAdapter({
   selectId: (participant: IParticipant) => participant.userId,
@@ -13,10 +17,25 @@ const participantAdapter = createEntityAdapter({
     a.name.localeCompare(b.name),
 });
 
+const participantsSlice = createSlice({
+  name: 'participants',
+  initialState: participantAdapter.getInitialState(),
+  reducers: {
+    addParticipant: participantAdapter.addOne,
+    removeParticipant: participantAdapter.removeOne,
+    updateParticipant: participantAdapter.updateOne,
+  },
+});
+
 export const participantsSelector = participantAdapter.getSelectors(
   (state: RootState) => state.participants,
 );
 
+export const { addParticipant, removeParticipant, updateParticipant } =
+  participantsSlice.actions;
+export default participantsSlice.reducer;
+
+// our custom selectors
 export const selectBasicParticipants = createSelector(
   [participantsSelector.selectAll],
   (participants) =>
@@ -27,24 +46,7 @@ export const selectBasicParticipants = createSelector(
       isAdmin: !!p.metadata?.isAdmin,
     })),
   {
-    memoizeOptions: {
-      resultEqualityCheck: (a, b) => {
-        if (a.length !== b.length) return false;
-        for (let i = 0; i < a.length; i++) {
-          const objA = a[i];
-          const objB = b[i];
-          if (
-            objA.userId !== objB.userId ||
-            objA.sid !== objB.sid ||
-            objA.name !== objB.name ||
-            objA.isAdmin !== objB.isAdmin
-          ) {
-            return false;
-          }
-        }
-        return true;
-      },
-    },
+    memoizeOptions: { resultEqualityCheck: isEqual },
   },
 );
 
@@ -60,39 +62,75 @@ export const selectBasicParticipantsForWhiteboard = createSelector(
       isWhiteboardLocked: !!p.metadata?.lockSettings?.lockWhiteboard,
     })),
   {
+    memoizeOptions: { resultEqualityCheck: isEqual },
+  },
+);
+
+const selectParticipantWithWaitForApproval = createSelector(
+  [participantsSelector.selectAll],
+  (participants) =>
+    participants.map(
+      (p) =>
+        ({
+          userId: p.userId,
+          name: p.name,
+          isAdmin: p.metadata.isAdmin,
+          waitForApproval: p.metadata.waitForApproval,
+          profilePic: p.metadata.profilePic,
+        }) as IParticipantFilteredInfo,
+    ),
+  {
     memoizeOptions: {
-      resultEqualityCheck: (a, b) => {
-        if (a.length !== b.length) return false;
-        for (let i = 0; i < a.length; i++) {
-          const objA = a[i];
-          const objB = b[i];
-          if (
-            objA.userId !== objB.userId ||
-            objA.sid !== objB.sid ||
-            objA.name !== objB.name ||
-            objA.isAdmin !== objB.isAdmin ||
-            objA.isPresent !== objB.isPresent ||
-            objA.isWhiteboardLocked !== objB.isWhiteboardLocked
-          ) {
-            return false;
-          }
-        }
-        return true;
-      },
+      resultEqualityCheck: isEqual,
     },
   },
 );
 
-const participantsSlice = createSlice({
-  name: 'participants',
-  initialState: participantAdapter.getInitialState(),
-  reducers: {
-    addParticipant: participantAdapter.addOne,
-    removeParticipant: participantAdapter.removeOne,
-    updateParticipant: participantAdapter.updateOne,
-  },
-});
+export const selectFilteredParticipantsList = createSelector(
+  [
+    selectParticipantWithWaitForApproval,
+    (state: RootState, isAdmin: boolean) => isAdmin,
+    (state: RootState, isAdmin: boolean, search: string) => search,
+    (
+      state: RootState,
+      isAdmin: boolean,
+      search: string,
+      allowViewOtherUsers: boolean,
+    ) => allowViewOtherUsers,
+    (
+      state: RootState,
+      isAdmin: boolean,
+      search: string,
+      allowViewOtherUsers: boolean,
+      currentUserId: string | undefined,
+    ) => currentUserId,
+  ],
+  (participants, isAdmin, search, allowViewOtherUsers, currentUserId) => {
+    let list = participants.filter(
+      (p) =>
+        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
+    );
 
-export const { addParticipant, removeParticipant, updateParticipant } =
-  participantsSlice.actions;
-export default participantsSlice.reducer;
+    if (!isAdmin && !allowViewOtherUsers) {
+      list = list.filter((p) => p.isAdmin || p.userId === currentUserId);
+    }
+
+    if (search) {
+      list = list.filter((p) =>
+        p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+      );
+    }
+
+    if (isAdmin) {
+      // .sort() mutates the array, so we work on a copy.
+      return list.sort((a, b) =>
+        a.waitForApproval === b.waitForApproval
+          ? 0
+          : a.waitForApproval
+            ? -1
+            : 1,
+      );
+    }
+    return list;
+  },
+);

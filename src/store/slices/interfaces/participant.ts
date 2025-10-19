@@ -18,3 +18,11 @@ export interface IParticipant {
   pinWebcam?: boolean;
   isOnline: boolean;
 }
+
+export interface IParticipantFilteredInfo {
+  userId: string;
+  name: string;
+  isAdmin: boolean;
+  waitForApproval: boolean;
+  profilePic?: string;
+}
