@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Collaborator,
   ExcalidrawImperativeAPI,
@@ -68,6 +68,13 @@ const useWhiteboardSetup = ({
     }
   }, [excalidrawAPI, mousePointerLocation]);
 
+  const activeParticipantIds = useMemo(() => {
+    const activeUsers = participants.filter(
+      (p) => p.isPresent && !p.isWhiteboardLocked,
+    );
+    return new Set(activeUsers.map((p) => p.userId));
+  }, [participants]);
+
   // for cleaning up collaborators if disconnected
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -75,19 +82,13 @@ const useWhiteboardSetup = ({
     }
 
     const currentSize = collaborators.current.size;
-    // Clean up collaborators who are no longer active or allowed to draw.
+    // A user's cursor should be removed if:
+    // 1. They have disconnected (and are no longer in the participants list).
+    // 2. They are no longer a presenter OR their whiteboard is locked.
+    // The `activeParticipantIds` set contains all users who meet the criteria to remain.
+    // We remove any collaborator whose userId is not in that active set.
     collaborators.current.forEach((_, userId) => {
-      const participant = participants.find((p) => p.userId === userId);
-
-      // A user's cursor should be removed if:
-      // 1. They have disconnected (participant not found).
-      // 2. They are no longer a presenter OR their whiteboard is locked.
-      const shouldRemove =
-        !participant ||
-        !participant.isPresent ||
-        participant.isWhiteboardLocked;
-
-      if (shouldRemove) {
+      if (!activeParticipantIds.has(userId)) {
         collaborators.current.delete(userId);
       }
     });
@@ -97,7 +98,7 @@ const useWhiteboardSetup = ({
         collaborators: new Map(collaborators.current),
       });
     }
-  }, [excalidrawAPI, participants]);
+  }, [excalidrawAPI, activeParticipantIds]);
 
   return { viewModeEnabled };
 };

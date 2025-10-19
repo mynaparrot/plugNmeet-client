@@ -3,6 +3,7 @@ import {
   createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
+
 import { RootState } from '..';
 import { IParticipant } from './interfaces/participant';
 
@@ -25,6 +26,26 @@ export const selectBasicParticipants = createSelector(
       name: p.name,
       isAdmin: !!p.metadata?.isAdmin,
     })),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: (a, b) => {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+          const objA = a[i];
+          const objB = b[i];
+          if (
+            objA.userId !== objB.userId ||
+            objA.sid !== objB.sid ||
+            objA.name !== objB.name ||
+            objA.isAdmin !== objB.isAdmin
+          ) {
+            return false;
+          }
+        }
+        return true;
+      },
+    },
+  },
 );
 
 export const selectBasicParticipantsForWhiteboard = createSelector(
@@ -38,6 +59,28 @@ export const selectBasicParticipantsForWhiteboard = createSelector(
       isPresent: !!p.metadata?.isPresenter,
       isWhiteboardLocked: !!p.metadata?.lockSettings?.lockWhiteboard,
     })),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: (a, b) => {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+          const objA = a[i];
+          const objB = b[i];
+          if (
+            objA.userId !== objB.userId ||
+            objA.sid !== objB.sid ||
+            objA.name !== objB.name ||
+            objA.isAdmin !== objB.isAdmin ||
+            objA.isPresent !== objB.isPresent ||
+            objA.isWhiteboardLocked !== objB.isWhiteboardLocked
+          ) {
+            return false;
+          }
+        }
+        return true;
+      },
+    },
+  },
 );
 
 const participantsSlice = createSlice({
