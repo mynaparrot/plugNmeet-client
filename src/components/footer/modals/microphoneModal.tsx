@@ -49,7 +49,7 @@ const MicrophoneModal = ({
       title={t('footer.modal.select-microphone')}
       renderButtons={() => (
         <ActionButton onClick={() => selectOrClose(false)}>
-          {t('join')}
+          {t('share')}
         </ActionButton>
       )}
       customBodyClass="microphone-modal !overflow-[initial]"

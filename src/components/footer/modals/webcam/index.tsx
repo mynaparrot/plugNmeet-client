@@ -81,7 +81,7 @@ const ShareWebcamModal = ({
             >
               {t('cancel')}
             </button>
-            <ActionButton onClick={shareWebcam}>{t('save')}</ActionButton>
+            <ActionButton onClick={shareWebcam}>{t('share')}</ActionButton>
           </div>
         )}
       >
