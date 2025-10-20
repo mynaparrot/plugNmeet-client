@@ -7,7 +7,7 @@ import {
 
 import { useAppSelector } from '../../../../store';
 import { addPreloadedLibraryItems } from '../utils';
-import { selectBasicParticipantsForWhiteboard } from '../../../../store/slices/participantSlice';
+import { selectWhiteboardParticipants } from '../../../../store/slices/participantSlice';
 
 interface IUseWhiteboardSetup {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -21,7 +21,7 @@ const useWhiteboardSetup = ({
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
   const collaborators = useRef(new Map<SocketId, Collaborator>());
 
-  const participants = useAppSelector(selectBasicParticipantsForWhiteboard);
+  const participants = useAppSelector(selectWhiteboardParticipants);
   const mousePointerLocation = useAppSelector(
     (state) => state.whiteboard.mousePointerLocation,
   );

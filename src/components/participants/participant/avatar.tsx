@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { generateAvatarInitial } from '../../../helpers/utils';
-import { IParticipantFilteredInfo } from '../../../store/slices/interfaces/participant';
+import { IVisibleParticipantInfo } from '../../../store/slices/interfaces/participant';
 
 interface IAvatarProps {
-  participant: IParticipantFilteredInfo;
+  participant: IVisibleParticipantInfo;
 }
 const Avatar = ({ participant }: IAvatarProps) => {
   const initials = generateAvatarInitial(participant.name);

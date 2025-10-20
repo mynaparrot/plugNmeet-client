@@ -12,10 +12,10 @@ import PresenterIcon from './icons/presenterIcon';
 import WaitingApproval from './waitingApproval';
 
 import { ICurrentUser } from '../../../store/slices/interfaces/session';
-import { IParticipantFilteredInfo } from '../../../store/slices/interfaces/participant';
+import { IVisibleParticipantInfo } from '../../../store/slices/interfaces/participant';
 
 interface IParticipantComponentProps {
-  participant: IParticipantFilteredInfo;
+  participant: IVisibleParticipantInfo;
   currentUser: ICurrentUser | undefined;
   isRemoteParticipant: boolean;
   openRemoveParticipantAlert(name: string, userId: string, type: string): void;

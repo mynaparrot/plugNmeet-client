@@ -8,7 +8,7 @@ import { isEqual } from 'es-toolkit';
 import { RootState } from '..';
 import {
   IParticipant,
-  IParticipantFilteredInfo,
+  IVisibleParticipantInfo,
 } from './interfaces/participant';
 
 const participantAdapter = createEntityAdapter({
@@ -50,7 +50,7 @@ export const selectBasicParticipants = createSelector(
   },
 );
 
-export const selectBasicParticipantsForWhiteboard = createSelector(
+export const selectWhiteboardParticipants = createSelector(
   [participantsSelector.selectAll],
   (participants) =>
     participants.map((p) => ({
@@ -66,7 +66,7 @@ export const selectBasicParticipantsForWhiteboard = createSelector(
   },
 );
 
-const selectParticipantWithWaitForApproval = createSelector(
+const selectParticipantsForListDisplay = createSelector(
   [participantsSelector.selectAll],
   (participants) =>
     participants.map(
@@ -77,7 +77,7 @@ const selectParticipantWithWaitForApproval = createSelector(
           isAdmin: p.metadata.isAdmin,
           waitForApproval: p.metadata.waitForApproval,
           profilePic: p.metadata.profilePic,
-        }) as IParticipantFilteredInfo,
+        }) as IVisibleParticipantInfo,
     ),
   {
     memoizeOptions: {
@@ -86,9 +86,9 @@ const selectParticipantWithWaitForApproval = createSelector(
   },
 );
 
-export const selectFilteredParticipantsList = createSelector(
+export const selectVisibleParticipants = createSelector(
   [
-    selectParticipantWithWaitForApproval,
+    selectParticipantsForListDisplay,
     (state: RootState, isAdmin: boolean) => isAdmin,
     (state: RootState, isAdmin: boolean, search: string) => search,
     (

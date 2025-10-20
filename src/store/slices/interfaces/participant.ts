@@ -19,7 +19,7 @@ export interface IParticipant {
   isOnline: boolean;
 }
 
-export interface IParticipantFilteredInfo {
+export interface IVisibleParticipantInfo {
   userId: string;
   name: string;
   isAdmin: boolean;

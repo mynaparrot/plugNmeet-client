@@ -10,7 +10,7 @@ import { SearchIconSVG } from '../../assets/Icons/SearchIconSVG';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
-import { selectFilteredParticipantsList } from '../../store/slices/participantSlice';
+import { selectVisibleParticipants } from '../../store/slices/participantSlice';
 import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const ParticipantsComponent = () => {
@@ -38,7 +38,7 @@ const ParticipantsComponent = () => {
   }, []);
 
   const participants = useAppSelector((state) =>
-    selectFilteredParticipantsList(
+    selectVisibleParticipants(
       state,
       currentIsAdmin,
       searchParticipant,
