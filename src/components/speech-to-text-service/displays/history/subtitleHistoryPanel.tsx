@@ -133,7 +133,7 @@ const SubtitleHistoryPanel = ({
       className="SpeechHistory absolute left-5 z-10 bottom-28 w-full max-w-[330px] bg-Gray-950/85 h-ful rounded-lg"
       static={showPopover}
     >
-      <h2 className="relative text-sm font-medium leading-6 text-white px-4 cursor-move flex items-center h-10 justify-between border-b border-white/15">
+      <h2 className="relative text-sm font-medium leading-6 text-white px-4 flex items-center h-10 justify-between border-b border-white/15">
         <div className="left">
           {t('speech-services.subtitle-history-modal-title')}
         </div>

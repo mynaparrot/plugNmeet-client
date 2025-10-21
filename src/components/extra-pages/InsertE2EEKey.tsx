@@ -69,7 +69,7 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
               </p>
             </div>
             <div className="flex justify-center w-md">
-              <button className="text-center py-1 px-3 mt-1 transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg">
+              <button className="text-center py-1 px-3 mt-1 transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg cursor-pointer">
                 {t('app.save')}
               </button>
             </div>
