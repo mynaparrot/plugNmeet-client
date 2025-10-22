@@ -5,8 +5,6 @@ import { participantsSelector } from '../../../../store/slices/participantSlice'
 import IconWrapper from './iconWrapper';
 import { Camera } from '../../../../assets/Icons/Camera';
 
-// import { CameraOff } from '../../../../assets/Icons/CameraOff';
-
 interface WebcamIconProps {
   userId: string;
 }

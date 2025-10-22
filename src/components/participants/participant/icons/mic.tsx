@@ -74,15 +74,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                 )}
               </MenuButton>
 
-              <Transition
-                show={open}
-                // enter="transition duration-100 ease-out"
-                // enterFrom="transform scale-95 opacity-0"
-                // enterTo="transform scale-100 opacity-100 relative z-10"
-                // leave="transition duration-75 ease-out"
-                // leaveFrom="transform scale-100 opacity-100"
-                // leaveTo="transform scale-95 opacity-0"
-              >
+              <Transition show={open}>
                 <MenuItems
                   static
                   className="volume-popup-wrapper z-10 absolute ltr:-right-6 rtl:-left-6 top-3 mt-2 w-48 xl:w-60 py-4 px-2 rounded-md shadow-virtual-pOP bg-white ring-1 ring-Gray-100 focus:outline-hidden"
@@ -136,7 +128,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
     return null;
   }, [isRemoteParticipant, renderVolumeControl, audioTracks, isMuted]);
 
-  return render ? <IconWrapper>{render}</IconWrapper> : null;
+  return render && <IconWrapper>{render}</IconWrapper>;
 };
 
 export default MicIcon;

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -32,10 +32,18 @@ const serviceToLockSettingMap: Record<
 };
 
 const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
-  const session = store.getState().session;
-  const roomFeatures = session.currentRoom.metadata?.roomFeatures;
   const { t } = useTranslation();
   const [isBusy, setIsBusy] = useState<boolean>(false);
+
+  // all static values
+  const { roomId, sid, roomFeatures } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      roomId: session.currentRoom.roomId,
+      sid: session.currentRoom.sid,
+      roomFeatures: session.currentRoom.metadata?.roomFeatures,
+    };
+  }, []);
 
   const lockSettings = useAppSelector(
     (state) =>
@@ -54,8 +62,8 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
       const direction = isLocked ? 'unlock' : 'lock';
 
       const body = create(UpdateUserLockSettingsReqSchema, {
-        roomSid: session.currentRoom.sid,
-        roomId: session.currentRoom.roomId,
+        roomSid: sid,
+        roomId: roomId,
         userId: userId,
         service: task,
         direction,
@@ -82,8 +90,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
       }
       setIsBusy(false);
     },
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-    [isBusy, lockSettings],
+    [userId, sid, roomId, t, isBusy, lockSettings],
   );
 
   const lockableFeatures = [
@@ -148,26 +155,22 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
     },
   ];
 
-  return (
-    <>
-      {lockableFeatures.map(
-        (feature) =>
-          feature.isDisplayed && (
-            <div className="" role="none" key={feature.key}>
-              <MenuItem>
-                {() => (
-                  <button
-                    className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-left leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
-                    onClick={() => toggleLockSetting(feature.key)}
-                  >
-                    {feature.isLocked ? feature.unlockText : feature.lockText}
-                  </button>
-                )}
-              </MenuItem>
-            </div>
-          ),
-      )}
-    </>
+  return lockableFeatures.map(
+    (feature) =>
+      feature.isDisplayed && (
+        <div role="none" key={feature.key}>
+          <MenuItem>
+            {() => (
+              <button
+                className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-left leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
+                onClick={() => toggleLockSetting(feature.key)}
+              >
+                {feature.isLocked ? feature.unlockText : feature.lockText}
+              </button>
+            )}
+          </MenuItem>
+        </div>
+      ),
   );
 };
 

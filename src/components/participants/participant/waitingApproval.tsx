@@ -65,23 +65,24 @@ const WaitingApproval = ({
     openRemoveParticipantAlert(userId, 'reject');
   };
 
-  return !waitForApproval ? null : (
-    <div className="approve-btn-wrap absolute right-0 top-0 flex gap-1 items-center justify-end h-full w-auto bg-white">
-      <button
-        className="h-6 cursor-pointer px-1.5 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
-        onClick={approve}
-      >
-        <CheckMarkIcon />
-        {t('left-panel.approve')}
-      </button>
-      <button
-        className="h-6 cursor-pointer w-6 flex items-center justify-center rounded-[8px] text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
-        onClick={reject}
-      >
-        <CloseIconSVG />
-        {/* {t('left-panel.reject')} */}
-      </button>
-    </div>
+  return (
+    waitForApproval && (
+      <div className="approve-btn-wrap absolute right-0 top-0 flex gap-1 items-center justify-end h-full w-auto bg-white">
+        <button
+          className="h-6 cursor-pointer px-1.5 flex items-center gap-1 text-xs font-semibold bg-Blue2-500 hover:bg-Blue2-600 border border-Blue2-600 rounded-[8px] text-white transition-all duration-300 shadow-button-shadow"
+          onClick={approve}
+        >
+          <CheckMarkIcon />
+          {t('left-panel.approve')}
+        </button>
+        <button
+          className="h-6 cursor-pointer w-6 flex items-center justify-center rounded-[8px] text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+          onClick={reject}
+        >
+          <CloseIconSVG />
+        </button>
+      </div>
+    )
   );
 };
 

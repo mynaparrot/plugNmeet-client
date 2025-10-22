@@ -62,14 +62,14 @@ const VideoComponent = ({
             >
               <i className="icon pnm-fullscreen text[14px] text-white" />
             </button>
-            {document.pictureInPictureEnabled ? (
+            {document.pictureInPictureEnabled && (
               <button
                 className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
                 onClick={pictureInPicture}
               >
                 <i className="icon pnm-pip text-[14px] text-white" />
               </button>
-            ) : null}
+            )}
             <ConnectionStatus userId={userId} />
           </div>
         </div>

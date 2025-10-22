@@ -7,9 +7,10 @@ import SwitchPresenterMenuItem from './menu-items/switchPresenter';
 import LowerHandMenuItem from './menu-items/lowerHand';
 import LockSettingMenuItem from './menu-items/lock';
 import RemoveUserMenuItem from './menu-items/removeUser';
-import PrivateChatMenuItem from './menu-items/privateChatMenuItem';
-import { useAppSelector } from '../../../../store';
+import PrivateChatMenuItem from './menu-items/privateChat';
 import IconWrapper from './iconWrapper';
+
+import { useAppSelector } from '../../../../store';
 import { ParticipantsMenuIconSVG } from '../../../../assets/Icons/ParticipantsMenuIconSVG';
 
 interface IMenuIconProps {
@@ -86,7 +87,7 @@ const MenuIcon = ({
       <Menu as="div" className="flex items-center">
         {({ open }) => (
           <>
-            <MenuButton className="relative shrink-0">
+            <MenuButton className="relative shrink-0 cursor-pointer">
               <ParticipantsMenuIconSVG />
             </MenuButton>
             <Transition
