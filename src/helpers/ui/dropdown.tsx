@@ -61,11 +61,11 @@ const Dropdown = ({
   if (direction === 'horizontal') {
     return (
       <Field as="div" className="mb-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between">
           {label && label !== '' && (
             <Label
               htmlFor={id}
-              className="pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
+              className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
             >
               {label}
             </Label>
@@ -76,7 +76,9 @@ const Dropdown = ({
             disabled={disabled}
             multiple={multiple}
           >
-            <div className={`relative w-full ${label ? 'max-w-[250px]' : ''}`}>
+            <div
+              className={`relative w-full ${label ? 'max-w-full sm:max-w-[250px]' : ''}`}
+            >
               <ListboxButton
                 id={id}
                 className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-dark-secondary dark:border-dark-text dark:text-dark-text ${

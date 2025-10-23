@@ -122,6 +122,7 @@ const RtmpModal = () => {
             {t('footer.modal.rtmp-start-broadcast')}
           </ActionButton>
         )}
+        customClass="StartBroadcastModal"
       >
         <div className="flex flex-col gap-1 min-h-[150px]">
           <Dropdown
