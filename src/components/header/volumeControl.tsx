@@ -76,7 +76,7 @@ const VolumeControl = () => {
   }, [localScreenShareVolume, debouncedScreenShareVolumeUpdate]);
 
   return (
-    <Menu>
+    <Menu className="hidden md:inline">
       {({ open }) => (
         <div>
           <MenuButton
