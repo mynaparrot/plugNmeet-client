@@ -121,6 +121,7 @@ const DisplayExternalLinkModal = () => {
         show={!isActive}
         onClose={closeStartModal}
         title={t('external-display-link-display.modal-title')}
+        customClass="externalDisplayLink"
       >
         <form method="POST" onSubmit={onSubmit}>
           <SavedLinks link={link} setLink={setLink} />
@@ -128,12 +129,12 @@ const DisplayExternalLinkModal = () => {
           <div className="mt-4">
             <fieldset>
               <div
-                className="text-base font-medium text-gray-900 "
+                className="text-sm 3xl:text-base font-medium text-gray-900 "
                 aria-hidden="true"
               >
                 {t('external-display-link-display.send-extra-values')}
               </div>
-              <div className="mt-4 grid grid-cols-2 gap-5">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <Checkbox
                   id="name"
                   label={t('external-display-link-display.name')}

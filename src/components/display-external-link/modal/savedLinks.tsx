@@ -99,7 +99,7 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
           </div>
         </div>
         <button
-          className="h-10 w-10 3xl:h-11 3xl:w-11 bg-Gray-50 hover:bg-Gray-100 rounded-full flex justify-center items-center transition-all duration-300 shrink-0 cursor-pointer"
+          className="h-10 w-10 3xl:h-11 3xl:w-11 bg-Gray-50 hover:bg-Gray-100 rounded-2xl flex justify-center items-center transition-all duration-300 shrink-0 cursor-pointer"
           type="button"
           onClick={addLink}
         >
