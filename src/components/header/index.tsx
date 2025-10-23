@@ -52,7 +52,9 @@ const Header = () => {
         >
           <div className="left relative z-20 flex items-center gap-3 md:gap-5 w-auto">
             <HeaderLogo />
-            <DarkThemeSwitcher />
+            <div className="dark-mode hidden md:inline">
+              <DarkThemeSwitcher />
+            </div>
           </div>
           <div className="middle w-full flex-1 relative z-20">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center">

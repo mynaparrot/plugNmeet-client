@@ -14,22 +14,20 @@ const DarkThemeSwitcher = () => {
   };
 
   return (
-    <div className="dark-mode hidden md:inline">
-      <button onClick={toggleDarkMode}>
-        <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden flex items-center cursor-pointer transition-all duration-300">
-          <div
-            className={`item w-7 md:w-8 3xl:w-9 h-7 md:h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white dark:opacity-30 ${theme === 'light' ? 'bg-white dark:bg-Gray-950' : ''}`}
-          >
-            <SunIcon />
-          </div>
-          <div
-            className={`item w-7 md:w-8 3xl:w-9 h-7 md:h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white ${theme === 'dark' ? 'bg-white dark:bg-Gray-950' : ''}`}
-          >
-            <MoonIcon />
-          </div>
+    <button onClick={toggleDarkMode}>
+      <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden flex items-center cursor-pointer transition-all duration-300">
+        <div
+          className={`item w-7 md:w-8 3xl:w-9 h-7 md:h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white dark:opacity-30 ${theme === 'light' ? 'bg-white dark:bg-Gray-950' : ''}`}
+        >
+          <SunIcon />
         </div>
-      </button>
-    </div>
+        <div
+          className={`item w-7 md:w-8 3xl:w-9 h-7 md:h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white ${theme === 'dark' ? 'bg-white dark:bg-Gray-950' : ''}`}
+        >
+          <MoonIcon />
+        </div>
+      </div>
+    </button>
   );
 };
 
