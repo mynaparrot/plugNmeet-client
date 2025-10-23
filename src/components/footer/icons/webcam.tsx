@@ -209,7 +209,7 @@ const WebcamIcon = () => {
     } else if (!isActiveWebcam && isWebcamLock) {
       return t('footer.icons.webcam-locked');
     } else if (isActiveWebcam) {
-      return t('footer.icons.leave-webcam');
+      return t('footer.icons.turn-off-webcam');
     }
   };
 
@@ -272,6 +272,7 @@ const WebcamIcon = () => {
             <WebcamMenu
               currentRoom={currentRoom}
               isActiveWebcam={isActiveWebcam}
+              toggleWebcam={toggleWebcam}
             />
           )}
         </div>

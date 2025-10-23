@@ -8,9 +8,14 @@ import { ArrowUp } from '../../../../../assets/Icons/ArrowUp';
 interface IWebcamMenuProps {
   currentRoom: Room;
   isActiveWebcam: any;
+  toggleWebcam: () => void;
 }
 
-const WebcamMenu = ({ currentRoom, isActiveWebcam }: IWebcamMenuProps) => {
+const WebcamMenu = ({
+  currentRoom,
+  isActiveWebcam,
+  toggleWebcam,
+}: IWebcamMenuProps) => {
   return (
     <div className="menu relative">
       <Menu as="div">
@@ -33,7 +38,10 @@ const WebcamMenu = ({ currentRoom, isActiveWebcam }: IWebcamMenuProps) => {
               leaveFrom="transform scale-100 opacity-100"
               leaveTo="transform scale-95 opacity-0"
             >
-              <WebcamMenuItems currentRoom={currentRoom} />
+              <WebcamMenuItems
+                currentRoom={currentRoom}
+                toggleWebcam={toggleWebcam}
+              />
             </Transition>
           </>
         )}

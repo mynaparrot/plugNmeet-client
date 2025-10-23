@@ -235,9 +235,11 @@
     "hide-footer": "Hide footer",
     "show-footer": "Show footer",
     "icons": {
+      "select-webcam": "Select webcam",
       "start-webcam": "Turn On Camera",
-      "leave-webcam": "Turn Off Camera",
+      "turn-off-webcam": "Turn Off Camera",
       "webcam-locked": "Camera Locked",
+      "select-microphone": "Select microphone",
       "start-microphone-sharing": "Turn On Microphone",
       "microphone-locked": "Microphone Locked",
       "leave-microphone": "Turn Off Microphone",

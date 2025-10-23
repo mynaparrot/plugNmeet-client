@@ -10,12 +10,17 @@ import {
   updateVirtualBackground,
 } from '../../../../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../../../../assets/Icons/CheckMarkIcon';
+import { CameraOff } from '../../../../../assets/Icons/CameraOff';
 
 interface IWebcamMenuItemsProps {
   currentRoom: Room;
+  toggleWebcam: () => void;
 }
 
-const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
+const WebcamMenuItems = ({
+  toggleWebcam,
+  currentRoom,
+}: IWebcamMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -62,7 +67,7 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
       className="menu origin-top-right z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2 w-max"
     >
       <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
-        Select Webcams
+        {t('footer.icons.select-webcam')}
       </div>
       {videoDevices.map((device) => (
         <MenuItem key={device.id}>
@@ -80,6 +85,19 @@ const WebcamMenuItems = ({ currentRoom }: IWebcamMenuItemsProps) => {
         </MenuItem>
       ))}
       <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-1"></div>
+      <div className="" role="none">
+        <MenuItem>
+          {() => (
+            <p
+              className="h-8 3xl:h-10 w-full flex items-center text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
+              onClick={toggleWebcam}
+            >
+              <CameraOff classes={'h-4 3xl:h-5 w-auto'} />
+              {t('footer.icons.turn-off-webcam')}
+            </p>
+          )}
+        </MenuItem>
+      </div>
       <div className="" role="none">
         <MenuItem>
           {() => (
