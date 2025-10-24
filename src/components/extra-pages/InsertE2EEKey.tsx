@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 
 import { addSelfInsertedE2EESecretKey } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
-import { arrayBufferToBase64 } from '../../helpers/libs/cryptoMessages';
 
 export interface IInsertE2EEKeyProps {
   setOpenConn: Dispatch<boolean>;
@@ -26,16 +25,9 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
       return;
     }
 
-    const encoder = new TextEncoder();
-    // Hash the user-provided secret to create a 256-bit (32-byte) key.
-    // this will ensure we're never storing a user's plain password
-    const hashBuffer = await window.crypto.subtle.digest(
-      'SHA-256',
-      encoder.encode(secretKey as string),
-    );
-
-    const base64Key = arrayBufferToBase64(hashBuffer);
-    dispatch(addSelfInsertedE2EESecretKey(base64Key));
+    // Pass the plain text secret. Key derivation will be handled later.
+    // this password will clean up as soon as key generation is completed
+    dispatch(addSelfInsertedE2EESecretKey(secretKey as string));
     setOpenConn(true);
   };
 

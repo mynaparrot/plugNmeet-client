@@ -21,24 +21,38 @@ const base64ToUint8Array = (base64: string) => {
 };
 
 /**
- * Derives a key from a user-provided secret (e.g., a password) by hashing it,
- * then imports it for use in encryption/decryption.
+ * Derives a secure encryption key from a user-provided secret (e.g., a password) using PBKDF2,
+ * then imports it for use with AES-GCM. This is the recommended method for handling user passwords.
  * @param secret The user-provided secret string.
  */
 export const importSecretKeyFromPlainText = async (secret: string) => {
   if (importedKey) {
     return;
   }
-  // Use SHA-256 to derive a 256-bit key from the secret string.
-  // This ensures the key is always the correct length for AES-GCM.
-  const keyMaterial = await window.crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(secret),
-  );
-  importedKey = await window.crypto.subtle.importKey(
+
+  const enc = new TextEncoder();
+  // 1. Import the user's password as a base key material for PBKDF2.
+  // This key is not used for encryption directly.
+  const baseKey = await window.crypto.subtle.importKey(
     'raw',
-    keyMaterial,
-    algorithm,
+    enc.encode(secret),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveKey'],
+  );
+
+  // 2. Derive the actual encryption key using PBKDF2.
+  // A salt should be unique per key, but for this use case, a hardcoded salt is acceptable.
+  const salt = enc.encode('plug-n-meet-e2ee-salt'); // A static salt is better than no salt.
+  importedKey = await window.crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 100000, // A high number of iterations is crucial for security.
+      hash: 'SHA-256',
+    },
+    baseKey,
+    { name: algorithm, length: 256 },
     false, // Make the key non-extractable for better security
     ['encrypt', 'decrypt'],
   );

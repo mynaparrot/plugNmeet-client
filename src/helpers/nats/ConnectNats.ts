@@ -52,7 +52,6 @@ import MessageQueue from './MessageQueue';
 import {
   decryptDataFromUint8Array,
   encryptDataToUint8Array,
-  importSecretKeyFromMaterial,
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
@@ -63,6 +62,7 @@ import {
   randomString,
 } from '../utils';
 import {
+  addSelfInsertedE2EESecretKey,
   addUserNotification,
   setAllUserNotifications,
   updateIsNatsServerConnected,
@@ -893,17 +893,16 @@ export default class ConnectNats {
         if (e2ee.enabledSelfInsertEncryptionKey) {
           encryptionKey =
             store.getState().roomSettings.selfInsertedE2EESecretKey;
+          // clean as soon as we've done with it
+          store.dispatch(addSelfInsertedE2EESecretKey(''));
         }
 
         if (encryptionKey) {
+          await importSecretKeyFromPlainText(encryptionKey);
+
           this._enableE2EE = true;
           this._enableE2EEChat = e2ee.includedChatMessages;
           this._enableE2EEWhiteboard = e2ee.includedWhiteboard;
-          if (e2ee.enabledSelfInsertEncryptionKey) {
-            await importSecretKeyFromMaterial(encryptionKey);
-          } else {
-            await importSecretKeyFromPlainText(encryptionKey);
-          }
 
           info.encryption_key = encryptionKey;
           info.enabledE2EE = true;
