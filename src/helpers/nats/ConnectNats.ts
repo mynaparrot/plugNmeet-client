@@ -407,29 +407,53 @@ export default class ConnectNats {
     });
   };
 
+  private encryptData = async (payload: Uint8Array) => {
+    try {
+      //  Encrypt the binary data directly to a Uint8Array
+      return await encryptDataToUint8Array(payload);
+    } catch (e: any) {
+      store.dispatch(
+        addUserNotification({
+          message: 'Encryption error: ' + e.message,
+          typeOption: 'error',
+        }),
+      );
+      console.error('Encryption error:' + e.message);
+    }
+    return undefined;
+  };
+
+  private decryptData = async (payload: Uint8Array) => {
+    try {
+      return await decryptDataFromUint8Array(payload);
+    } catch (e: any) {
+      store.dispatch(
+        addUserNotification({
+          message: 'Decryption error: ' + e.message,
+          typeOption: 'error',
+        }),
+      );
+      console.error('Decryption error:' + e.message);
+    }
+    return undefined;
+  };
+
   /**
    * All the events related with chat will be handled here,
    * including public and private
    */
   private subscribeToChat = async () => {
     await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
-      try {
-        let dataToParse = m.data;
-        if (this._enableE2EEChat) {
-          dataToParse = await decryptDataFromUint8Array(m.data);
+      let dataToParse = m.data;
+      if (this._enableE2EEChat) {
+        const data = await this.decryptData(dataToParse);
+        if (typeof data === 'undefined') {
+          return;
         }
-        const payload = fromBinary(ChatMessageSchema, dataToParse);
-        await this.handleChat.handleMsg(payload);
-      } catch (e: any) {
-        store.dispatch(
-          addUserNotification({
-            message: 'Decryption error: ' + e.message,
-            typeOption: 'error',
-          }),
-        );
-        console.error('Decryption error:' + e.message);
-        return;
+        dataToParse = data;
       }
+      const payload = fromBinary(ChatMessageSchema, dataToParse);
+      await this.handleChat.handleMsg(payload);
     });
   };
 
@@ -449,19 +473,11 @@ export default class ConnectNats {
     let payload: Uint8Array = toBinary(ChatMessageSchema, chatMessage);
 
     if (this._enableE2EEChat) {
-      try {
-        //  Encrypt the binary data directly to a Uint8Array
-        payload = await encryptDataToUint8Array(payload);
-      } catch (e: any) {
-        store.dispatch(
-          addUserNotification({
-            message: 'Encryption error: ' + e.message,
-            typeOption: 'error',
-          }),
-        );
-        console.error('Encryption error:' + e.message);
+      const data = await this.encryptData(payload);
+      if (typeof data === 'undefined') {
         return;
       }
+      payload = data;
     }
 
     const subject =
@@ -498,23 +514,17 @@ export default class ConnectNats {
       this._roomId,
       this._subjects.whiteboard,
       async (m) => {
-        try {
-          let dataToParse = m.data;
-          if (this._enableE2EEWhiteboard) {
-            dataToParse = await decryptDataFromUint8Array(m.data);
+        let dataToParse = m.data;
+        if (this._enableE2EEWhiteboard) {
+          const data = await this.decryptData(dataToParse);
+          if (typeof data === 'undefined') {
+            return;
           }
-          const payload = fromBinary(DataChannelMessageSchema, dataToParse);
-          if (payload.fromUserId !== this._userId) {
-            await this.handleWhiteboard.handleWhiteboardMsg(payload);
-          }
-        } catch (e: any) {
-          store.dispatch(
-            addUserNotification({
-              message: 'Decryption error: ' + e.message,
-              typeOption: 'error',
-            }),
-          );
-          console.error('Decryption error:' + e.message);
+          dataToParse = data;
+        }
+        const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+        if (payload.fromUserId !== this._userId) {
+          await this.handleWhiteboard.handleWhiteboardMsg(payload);
         }
       },
     );
@@ -534,18 +544,11 @@ export default class ConnectNats {
 
     let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EEWhiteboard) {
-      try {
-        payload = await encryptDataToUint8Array(payload);
-      } catch (e: any) {
-        store.dispatch(
-          addUserNotification({
-            message: 'Encryption error: ' + e.message,
-            typeOption: 'error',
-          }),
-        );
-        console.error('Encryption error:' + e.message);
+      const data = await this.encryptData(payload);
+      if (typeof data === 'undefined') {
         return;
       }
+      payload = data;
     }
 
     const subject =
@@ -565,22 +568,16 @@ export default class ConnectNats {
       this._roomId,
       this._subjects.dataChannel,
       async (m) => {
-        try {
-          let dataToParse = m.data;
-          if (this._enableE2EE) {
-            dataToParse = await decryptDataFromUint8Array(m.data);
+        let dataToParse = m.data;
+        if (this._enableE2EE) {
+          const data = await this.decryptData(dataToParse);
+          if (typeof data === 'undefined') {
+            return;
           }
-          const payload = fromBinary(DataChannelMessageSchema, dataToParse);
-          await this.handleDataMsg.handleMessage(payload);
-        } catch (e: any) {
-          store.dispatch(
-            addUserNotification({
-              message: 'Decryption error: ' + e.message,
-              typeOption: 'error',
-            }),
-          );
-          console.error('Decryption error:' + e.message);
+          dataToParse = data;
         }
+        const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+        await this.handleDataMsg.handleMessage(payload);
       },
     );
   };
@@ -602,18 +599,11 @@ export default class ConnectNats {
 
     let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EE) {
-      try {
-        payload = await encryptDataToUint8Array(payload);
-      } catch (e: any) {
-        store.dispatch(
-          addUserNotification({
-            message: 'Encryption error: ' + e.message,
-            typeOption: 'error',
-          }),
-        );
-        console.error('Encryption error:' + e.message);
+      const data = await this.encryptData(payload);
+      if (typeof data === 'undefined') {
         return;
       }
+      payload = data;
     }
 
     const subject =
