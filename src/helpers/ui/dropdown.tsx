@@ -159,7 +159,7 @@ const Dropdown = ({
         <div className="relative w-full">
           <ListboxButton
             id={id}
-            className={`min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 dark:bg-dark-secondary dark:border-dark-text dark:text-dark-text ${
+            className={`min-h-10 md:min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 dark:bg-dark-secondary dark:border-dark-text dark:text-dark-text ${
               disabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

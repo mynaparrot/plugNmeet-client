@@ -179,17 +179,17 @@ const TranscriptionSettingsModal = () => {
 
   const renderButtons = () => (
     <div
-      className={`w-full grid ${speechService?.isEnabled ? 'grid-cols-3 gap-x-2' : 'grid-cols-2 gap-x-5'}`}
+      className={`w-full grid ${speechService?.isEnabled ? 'grid-cols-3 gap-x-2' : 'grid-cols-2 gap-x-3 md:gap-x-5'}`}
     >
       <button
-        className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+        className="h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
         onClick={() => dispatch(updateDisplaySpeechSettingsModal(false))}
       >
         {t('cancel')}
       </button>
       {!speechService?.isEnabled && (
         <button
-          className="h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+          className="h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={() => enableOrUpdateService()}
         >
           {t('speech-services.enable-service')}
@@ -198,13 +198,13 @@ const TranscriptionSettingsModal = () => {
       {speechService?.isEnabled && (
         <>
           <button
-            className="order-3 h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            className="order-3 h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={() => enableOrUpdateService()}
           >
             {t('speech-services.update-service')}
           </button>
           <button
-            className="order-2 h-10 px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+            className="order-2 h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
             onClick={() => stopService()}
           >
             {t('speech-services.stop-service')}
@@ -221,7 +221,7 @@ const TranscriptionSettingsModal = () => {
       title={t('speech-services.modal-settings-title')}
       renderButtons={renderButtons}
       customClass="SpeechToTextModal"
-      maxWidth="max-w-2xl"
+      maxWidth="max-w-xl"
     >
       {renderContent()}
     </Modal>

@@ -36,7 +36,7 @@ const SettingsSwitch = ({
         <span
           className={`${
             enabled
-              ? 'ltr:translate-x-6 rtl:-translate-x-5'
+              ? 'ltr:translate-x-4.5 rtl:-translate-x-4.5'
               : 'ltr:translate-x-1 rtl:-translate-x-0.5'
           } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
         />

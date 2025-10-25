@@ -32,7 +32,9 @@ const Checkbox = ({
         className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
       >
         {label}
-        <p className="text-sm opacity-70 dark:opacity-80">{description}</p>
+        <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+          {description}
+        </p>
       </label>
     </div>
   </div>
