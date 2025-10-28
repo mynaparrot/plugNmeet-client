@@ -31,6 +31,9 @@ export default defineConfig({
   experimental: {
     enableNativePlugin: true,
   },
+  legacy: {
+    inconsistentCjsInterop: true,
+  },
   build: {
     outDir: '../dist',
     emptyOutDir: true,
