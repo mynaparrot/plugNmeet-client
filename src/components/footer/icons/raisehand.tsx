@@ -48,7 +48,7 @@ const RaiseHandIcon = () => {
   }
 
   const wrapperClasses = clsx(
-    'raise-hand relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
+    'raise-hand relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
       'border-[rgba(124,206,247,0.25)] dark:border-Gray-800': isActiveRaisehand,
       'border-transparent': !isActiveRaisehand,
@@ -72,7 +72,7 @@ const RaiseHandIcon = () => {
             ? t('footer.icons.lower-hand')
             : t('footer.icons.raise-hand')}
         </span>
-        <HandsIconSVG classes={'h-5 w-auto'} />
+        <HandsIconSVG classes={'h-4 md:h-5 w-auto'} />
       </div>
     </div>
   );

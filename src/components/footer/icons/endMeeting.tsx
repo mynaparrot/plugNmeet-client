@@ -82,7 +82,7 @@ const EndMeetingButton = () => {
     <>
       <Button
         onClick={open}
-        className="h-10 3xl:h-11 w-10 lg:w-auto px-2 lg:px-5 flex items-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
+        className="h-[34px] md:h-10 3xl:h-11 w-[34px] md:w-10 lg:w-auto px-2 lg:px-5 flex items-center justify-center rounded-[12px] md:rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
       >
         <span className="hidden lg:block">
           {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
