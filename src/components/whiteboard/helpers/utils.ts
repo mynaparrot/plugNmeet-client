@@ -6,10 +6,7 @@ import {
   OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
 
-import {
-  broadcastSceneOnChange,
-  sendClearWhiteboardSignal,
-} from './handleRequests';
+import { broadcastSceneOnChange } from './handleRequests';
 import { store } from '../../../store';
 import { sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
@@ -87,29 +84,25 @@ export const displaySavedPageData = async (
   currentFileId?: string,
   isSwitching?: RefObject<boolean>,
 ) => {
-  // 1. Send everyone to clean their whiteboard
-  // as we're changing page/file or starting up
-  await sendClearWhiteboardSignal();
-
-  // 2. Attempt to retrieve the page data from IndexedDB.
+  // 1. Attempt to retrieve the page data from IndexedDB.
   const elements = await idbGet<readonly OrderedExcalidrawElement[]>(
     DB_STORE_NAMES.WHITEBOARD,
     formatStorageKey(page, currentFileId),
   );
   let hasData = false;
 
-  // 3. Proceed only if data exists and the Excalidraw API is ready.
+  // 2. Proceed only if data exists and the Excalidraw API is ready.
   if (elements && elements.length) {
     try {
       hasData = true;
 
-      // 4. It's important to do this now because other syncs are locked by `isSwitching.current = true`.
+      // 3. It's important to do this now because other syncs are locked by `isSwitching.current = true`.
       // Ensure any image files referenced in the elements are loaded.
       //and update the Excalidraw scene with the loaded elements.
       ensureAllImagesDataIsLoaded(excalidrawAPI, elements);
       excalidrawAPI.updateScene({ elements });
 
-      // 5. If the user is the presenter, broadcast the complete scene to all other participants.
+      // 4. If the user is the presenter, broadcast the complete scene to all other participants.
       if (isPresenter) {
         // A short delay ensures all elements are rendered before broadcasting.
         await sleep(300);
@@ -123,11 +116,11 @@ export const displaySavedPageData = async (
     }
   }
 
-  // 6. Reset the switching flag to re-enable normal synchronization.
+  // 5. Reset the switching flag to re-enable normal synchronization.
   if (isSwitching) {
     isSwitching.current = false;
   }
-  // 7. Return whether data was successfully loaded.
+  // 6. Return whether data was successfully loaded.
   return hasData;
 };
 

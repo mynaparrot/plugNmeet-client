@@ -40,6 +40,7 @@ import {
   broadcastCurrentFileId,
   broadcastMousePointerUpdate,
   broadcastSceneOnChange,
+  sendClearWhiteboardSignal,
 } from './helpers/handleRequests';
 import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
@@ -245,6 +246,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     // 4. Handle data loading based on user role.
     // If the user is the presenter, load the switched page/document data if previously saved.
     if (isPresenter) {
+      // Send everyone to clean their whiteboard to make sure that cleaning happens
+      // before new contents as presenter will be a single point of truth
+      await sendClearWhiteboardSignal();
+
       const loadedFromStorage = await displaySavedPageData(
         excalidrawAPI,
         isPresenter,
@@ -303,6 +308,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         // broadcast current fileId to make sure everyone has the same state
         // it also clean current page number and other values
         await broadcastCurrentFileId(currentWhiteboardOfficeFileId);
+        // Send everyone to clean their whiteboard to make sure that cleaning happens
+        // before new contents as presenter will be a single point of truth
+        await sendClearWhiteboardSignal();
         // retrieve data from storage
         await displaySavedPageData(
           excalidrawAPI,
