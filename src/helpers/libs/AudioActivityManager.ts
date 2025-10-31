@@ -34,19 +34,29 @@ interface TrackProcessor {
  * It is library-agnostic and operates directly on the standard MediaStream API.
  */
 class AudioActivityManager {
-  private readonly audioContext: AudioContext;
+  private audioContext: AudioContext | null = null;
   private tracks = new Map<string, TrackProcessor>();
   private animationFrameId?: number;
 
-  constructor() {
-    // This class is a singleton and should only be used in the browser.
-    if (typeof window === 'undefined' || !window.AudioContext) {
-      // In a non-browser environment (like SSR), do nothing.
-      this.audioContext = null as any;
+  /**
+   * Initializes the AudioContext. This must be called after a user's gesture.
+   */
+  private async initialize() {
+    if (this.audioContext && this.audioContext.state === 'running') {
       return;
     }
-    this.audioContext = new AudioContext();
-    this.startLoop();
+    if (typeof window === 'undefined' || !window.AudioContext) {
+      return;
+    }
+
+    if (!this.audioContext) {
+      this.audioContext = new AudioContext();
+      this.startLoop(); // Start the loop only once the context is created.
+    }
+
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
   }
 
   private startLoop = () => {
@@ -97,7 +107,9 @@ class AudioActivityManager {
   /**
    * Registers or updates a MediaStream for activity monitoring.
    */
-  public addStream(stream: MediaStream, callback: SubscriberCallback) {
+  public async addStream(stream: MediaStream, callback: SubscriberCallback) {
+    await this.initialize();
+
     if (!stream || !this.audioContext) {
       return;
     }
