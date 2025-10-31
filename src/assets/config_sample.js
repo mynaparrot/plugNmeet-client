@@ -1,4 +1,4 @@
-// 1. We'll define the new, single configuration object.
+// We'll define a single configuration object.
 window.plugNmeetConfig = {
   // The URL of your plugNmeet server.
   serverUrl: 'http://localhost:8080',
@@ -87,7 +87,7 @@ window.plugNmeetConfig = {
 // This prevents accidental modifications during runtime.
 Object.freeze(window.plugNmeetConfig);
 
-// 2. For backward compatibility, we'll populate the old window variables
+// For backward compatibility, we'll populate the old window variables
 // from our new configuration object.
 // This section can be removed in a future major release.
 window.PLUG_N_MEET_SERVER_URL = window.plugNmeetConfig.serverUrl;
