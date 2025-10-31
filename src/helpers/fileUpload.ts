@@ -15,7 +15,7 @@ import { store } from '../store';
 import sendAPIRequest from './api/plugNmeetAPI';
 import { addUserNotification } from '../store/slices/roomSettingsSlice';
 import { ISession } from '../store/slices/interfaces/session';
-import { sleep } from './utils';
+import { getConfigValue, sleep } from './utils';
 import ResumableFile = Resumable.ResumableFile;
 
 export const uploadBase64EncodedFile = async (
@@ -86,7 +86,12 @@ class ResumableUploader {
     this.session = store.getState().session;
 
     this.resumable = new Resumable({
-      target: (window as any).PLUG_N_MEET_SERVER_URL + '/api/fileUpload',
+      target:
+        getConfigValue<string>(
+          'serverUrl',
+          'http://localhost:8080',
+          'PLUG_N_MEET_SERVER_URL',
+        ) + '/api/fileUpload',
       uploadMethod: 'POST',
       query: {
         roomSid: this.session.currentRoom.sid,

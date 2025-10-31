@@ -18,11 +18,11 @@ export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
  * @param legacyKey An optional legacy global variable name (e.g., 'DEFAULT_WEBCAM_RESOLUTION').
  * @returns The configuration value.
  */
-export const getConfigValue = <T>(
+export function getConfigValue<T>(
   key: string,
   defaultValue?: T,
   legacyKey?: string,
-): T => {
+): T {
   const config = (window as any).plugNmeetConfig;
 
   // 1. Prioritize the new config object
@@ -50,7 +50,7 @@ export const getConfigValue = <T>(
 
   // 3. Return the default value
   return defaultValue as T;
-};
+}
 
 export const getInputMediaDevices = async (kind: inputMediaDeviceKind) => {
   // 1. Request permissions to get device labels.

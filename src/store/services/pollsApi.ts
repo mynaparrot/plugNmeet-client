@@ -13,11 +13,17 @@ import {
 
 import { handleProtobufResponse, renewTokenOnError } from './utils';
 import { RootState } from '../index';
+import { getConfigValue } from '../../helpers/utils';
 
 export const pollsApi = createApi({
   reducerPath: 'pollsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: (window as any).PLUG_N_MEET_SERVER_URL + '/api/polls',
+    baseUrl:
+      getConfigValue<string>(
+        'serverUrl',
+        'http://localhost:8080',
+        'PLUG_N_MEET_SERVER_URL',
+      ) + '/api/polls',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).session.token;
       headers.append('Authorization', token);

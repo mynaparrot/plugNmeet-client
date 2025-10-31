@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { once } from 'es-toolkit';
 
 import {
   ColumnCameraPosition,
@@ -40,28 +41,64 @@ const useClientCustomization = () => {
     dispatch(updateFocusActiveSpeakerWebcam(focusActiveSpeakerWebcam));
   }, [dispatch]);
 
+  // oxlint-disable-next-line exhaustive-deps
+  const freezeConfig = useCallback(
+    once(() => {
+      setTimeout(() => {
+        const config = (window as any).plugNmeetConfig;
+        if (config && typeof config === 'object') {
+          // 1. Freeze the configuration object to make its properties read-only.
+          // This prevents accidental modifications to the object's contents.
+          Object.freeze(config);
+
+          // 2. Redefine the property on the window object to be non-writable and non-configurable.
+          // This prevents the entire `plugNmeetConfig` object from being reassigned (e.g., to null) or deleted.
+          Object.defineProperty(window, 'plugNmeetConfig', {
+            value: config,
+            writable: false,
+            configurable: false,
+          });
+        }
+      }, 500);
+    }),
+    [],
+  );
+
   // design customization
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let customDesign = urlParams.get('custom_design');
 
-    if (!customDesign) {
+    if (!customDesign || customDesign === '{}') {
       customDesign = getConfigValue<string>(
         'designCustomization',
         undefined,
         'DESIGN_CUSTOMIZATION',
       );
+    } else {
+      // set customization value from URL
+      (window as any).plugNmeetConfig.designCustomization = customDesign;
     }
 
     if (!customDesign || customDesign === '{}') {
+      freezeConfig();
       return;
     }
 
     let designCustomParams: ICustomDesignParams = {};
     try {
       designCustomParams = JSON.parse(customDesign);
+      // first set the logo
+      if (designCustomParams.custom_logo) {
+        // from design params let's assume logo will be only light to reduce complexity
+        (window as any).plugNmeetConfig.customLogo = {
+          main_logo_light: designCustomParams.custom_logo,
+        };
+      }
+      freezeConfig();
     } catch (e) {
       console.error("can't parse custom design params", e);
+      freezeConfig();
       return;
     }
 
@@ -230,14 +267,6 @@ const useClientCustomization = () => {
       );
     }
 
-    const customLogo = getConfigValue('customLogo', undefined, 'CUSTOM_LOGO');
-    if (!customLogo && designCustomParams.custom_logo) {
-      // from design params let's assume logo will be only light to reduce complexity
-      (window as any).CUSTOM_LOGO = {
-        main_logo_light: designCustomParams.custom_logo,
-      };
-    }
-
     const head = document.head;
     let link: HTMLLinkElement, style: HTMLStyleElement;
 
@@ -266,7 +295,7 @@ const useClientCustomization = () => {
         head.removeChild(link);
       }
     };
-  }, [dispatch]);
+  }, [dispatch, freezeConfig]);
 };
 
 export default useClientCustomization;

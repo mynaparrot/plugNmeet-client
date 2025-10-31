@@ -1,3 +1,5 @@
+import { getConfigValue } from '../../../helpers/utils';
+
 export type BackgroundConfig = {
   type: 'none' | 'blur-sm' | 'image';
   url?: string;
@@ -7,7 +9,11 @@ const defaultBackgroundConfig: BackgroundConfig = {
   type: 'none',
 };
 
-const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
+const assetPath = getConfigValue(
+  'staticAssetsPath',
+  './assets',
+  'STATIC_ASSETS_PATH',
+);
 
 let backgroundImageUrls = [
   'kenny-eliason-Wp7t4cWN-68-unsplash',
@@ -21,17 +27,22 @@ let backgroundImageUrls = [
   'steve-richey-6xqAK6oAeHA-unsplash',
 ].map((imageName) => `${assetPath}/backgrounds/${imageName}.jpg`);
 
+const bgImgUrlsFromCnf = getConfigValue<string[] | undefined>(
+  'virtualBackgroundImages',
+  undefined,
+  'PNM_VIRTUAL_BG_IMGS',
+);
+
 if (
-  typeof (window as any).PNM_VIRTUAL_BG_IMGS !== 'undefined' &&
-  Array.isArray((window as any).PNM_VIRTUAL_BG_IMGS) &&
-  (window as any).PNM_VIRTUAL_BG_IMGS.length > 0
+  bgImgUrlsFromCnf &&
+  Array.isArray(bgImgUrlsFromCnf) &&
+  bgImgUrlsFromCnf.length > 0
 ) {
-  const bgImgUrls: Array<string> = (window as any).PNM_VIRTUAL_BG_IMGS;
   const imgUrls: Array<string> = [];
 
   (async () => {
-    for (let i = 0; i < bgImgUrls.length; i++) {
-      const url = bgImgUrls[i];
+    for (let i = 0; i < bgImgUrlsFromCnf.length; i++) {
+      const url = bgImgUrlsFromCnf[i];
       try {
         const req = await fetch(url, { method: 'HEAD' });
         if (req.ok) {

@@ -2,13 +2,18 @@ import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import { getNatsConn } from '../../helpers/nats';
+import { getConfigValue } from '../../helpers/utils';
 
 export const publishFileAttachmentToChat = async (
   filePath: string,
   fileName: string,
 ) => {
   const message = `<a class="attachment-message flex items-center gap-3 break-all" href="${
-    (window as any).PLUG_N_MEET_SERVER_URL +
+    getConfigValue<string>(
+      'serverUrl',
+      'http://localhost:8080',
+      'PLUG_N_MEET_SERVER_URL',
+    ) +
     '/download/uploadedFile/' +
     filePath
   }" target="_blank">

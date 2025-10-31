@@ -2,9 +2,14 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
+import { getConfigValue } from './utils';
 
 declare const IS_PRODUCTION: boolean;
-const assetPath = (window as any).STATIC_ASSETS_PATH ?? '/assets';
+const assetPath = getConfigValue(
+  'staticAssetsPath',
+  '/assets',
+  'STATIC_ASSETS_PATH',
+);
 
 i18n
   .use(LanguageDetector)

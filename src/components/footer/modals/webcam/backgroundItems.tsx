@@ -7,6 +7,7 @@ import {
 } from '../../../virtual-background/helpers/backgroundHelper';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
 import { useAppSelector } from '../../../../store';
+import { getConfigValue } from '../../../../helpers/utils';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
@@ -32,7 +33,11 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   useEffect(() => {
     if (result && result.filePath) {
       const path =
-        (window as any).PLUG_N_MEET_SERVER_URL +
+        getConfigValue<string>(
+          'serverUrl',
+          'http://localhost:8080',
+          'PLUG_N_MEET_SERVER_URL',
+        ) +
         '/download/uploadedFile/' +
         result.filePath;
 

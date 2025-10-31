@@ -83,10 +83,6 @@ window.plugNmeetConfig = {
   // dbMaxAgeMs: 6 * 60 * 60 * 1000,
 };
 
-// We freeze the configuration object to make it read-only.
-// This prevents accidental modifications during runtime.
-Object.freeze(window.plugNmeetConfig);
-
 // For backward compatibility, we'll populate the old window variables
 // from our new configuration object.
 // This section can be removed in a future major release.

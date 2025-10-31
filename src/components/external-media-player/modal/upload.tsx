@@ -8,6 +8,7 @@ import { create } from '@bufbuild/protobuf';
 
 import UploadFile from './UploadFile';
 import UploadedFileList from './UploadedFileList';
+import { getConfigValue } from '../../../helpers/utils';
 
 interface UploadProps {
   isPlayBtnLoading: boolean;
@@ -50,7 +51,11 @@ const Upload = ({ setSelectedUrl, isPlayBtnLoading }: UploadProps) => {
     setSelectedFile(file);
 
     const playbackUrl =
-      (window as any).PLUG_N_MEET_SERVER_URL +
+      getConfigValue<string>(
+        'serverUrl',
+        'http://localhost:8080',
+        'PLUG_N_MEET_SERVER_URL',
+      ) +
       '/download/uploadedFile/' +
       file.filePath;
     setSelectedUrl(playbackUrl);

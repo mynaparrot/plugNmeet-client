@@ -17,6 +17,7 @@ import FormattedInputField from '../../../helpers/ui/formattedInputField';
 import ConfirmationModal from '../../../helpers/ui/confirmationModal';
 import ActionButton from '../../../helpers/ui/actionButton';
 import Modal from '../../../helpers/ui/modal';
+import { getConfigValue } from '../../../helpers/utils';
 
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
@@ -77,11 +78,13 @@ const RtmpModal = () => {
         rtmpUrl: url + '/' + serverKey,
       });
 
-      if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
-        body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
-          /\s/g,
-          '',
-        );
+      const customDesign = getConfigValue<string | undefined>(
+        'designCustomization',
+        undefined,
+        'DESIGN_CUSTOMIZATION',
+      );
+      if (customDesign) {
+        body.customDesign = customDesign.replace(/\s/g, '');
       }
 
       const r = await sendAPIRequest(

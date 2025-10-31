@@ -12,6 +12,7 @@ import { IUseCloudRecordingReturn, RecordingType } from './IRecording';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { store, useAppDispatch } from '../../../../store';
 import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
+import { getConfigValue } from '../../../../helpers/utils';
 
 const useCloudRecording = (): IUseCloudRecordingReturn => {
   const TYPE_OF_RECORDING = RecordingType.RECORDING_TYPE_CLOUD;
@@ -64,12 +65,13 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
         );
         return;
       }
-
-      if (typeof (window as any).DESIGN_CUSTOMIZATION !== 'undefined') {
-        body.customDesign = `${(window as any).DESIGN_CUSTOMIZATION}`.replace(
-          /\s/g,
-          '',
-        );
+      const customDesign = getConfigValue<string | undefined>(
+        'designCustomization',
+        undefined,
+        'DESIGN_CUSTOMIZATION',
+      );
+      if (customDesign) {
+        body.customDesign = customDesign.replace(/\s/g, '');
       }
       const r = await sendAPIRequest(
         'recording',

@@ -16,6 +16,7 @@ import {
   supportsAV1,
   supportsVP9,
   Track,
+  VideoCodec,
   VideoPresets,
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
@@ -48,6 +49,7 @@ import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
+import { getConfigValue } from '../utils';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -147,7 +149,11 @@ export default class ConnectLivekit
   };
 
   private configureRoom = () => {
-    let videoCodec = (window as any).VIDEO_CODEC ?? 'vp8';
+    let videoCodec = getConfigValue<VideoCodec>(
+      'videoCodec',
+      'vp8',
+      'VIDEO_CODEC',
+    );
     if (
       (videoCodec === 'vp9' && !supportsVP9()) ||
       (videoCodec === 'av1' && !supportsAV1())
@@ -157,19 +163,31 @@ export default class ConnectLivekit
 
     const roomOptions: RoomOptions = {
       adaptiveStream: true,
-      dynacast: (window as any).ENABLE_DYNACAST ?? false,
+      dynacast: getConfigValue<boolean>(
+        'enableDynacast',
+        false,
+        'ENABLE_DYNACAST',
+      ),
       stopLocalTrackOnUnpublish: true,
       videoCaptureDefaults: {
         resolution: VideoPresets.h720.resolution,
       },
       publishDefaults: {
-        simulcast: (window as any).ENABLE_SIMULCAST ?? false,
+        simulcast: getConfigValue<boolean>(
+          'enableSimulcast',
+          false,
+          'ENABLE_SIMULCAST',
+        ),
         videoSimulcastLayers: [
           VideoPresets.h90,
           VideoPresets.h180,
           VideoPresets.h360,
         ],
-        stopMicTrackOnMute: (window as any).STOP_MIC_TRACK_ON_MUTE ?? false,
+        stopMicTrackOnMute: getConfigValue<boolean>(
+          'stopMicTrackOnMute',
+          false,
+          'STOP_MIC_TRACK_ON_MUTE',
+        ),
         videoCodec: videoCodec,
       },
     };

@@ -7,7 +7,11 @@ import {
   ExcalidrawElement,
   ExcalidrawImageElement,
 } from '@excalidraw/excalidraw/element/types';
-import { randomInteger, randomString } from '../../../helpers/utils';
+import {
+  getConfigValue,
+  randomInteger,
+  randomString,
+} from '../../../helpers/utils';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { store } from '../../../store';
 import { uploadBase64EncodedFile } from '../../../helpers/fileUpload';
@@ -297,7 +301,11 @@ export const uploadCanvasBinaryFile = async (
       return;
     }
     const fileUrl =
-      (window as any).PLUG_N_MEET_SERVER_URL +
+      getConfigValue<string>(
+        'serverUrl',
+        'http://localhost:8080',
+        'PLUG_N_MEET_SERVER_URL',
+      ) +
       '/download/uploadedFile/' +
       res.filePath;
 
@@ -433,7 +441,11 @@ export const preloadOfficeFilePages = (
     }
 
     const url =
-      (window as any).PLUG_N_MEET_SERVER_URL +
+      getConfigValue<string>(
+        'serverUrl',
+        'http://localhost:8080',
+        'PLUG_N_MEET_SERVER_URL',
+      ) +
       '/download/uploadedFile/' +
       fileToPreload.filePath;
 

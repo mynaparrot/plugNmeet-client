@@ -6,6 +6,7 @@ import {
   getTFLiteModelFileName,
   SegmentationConfig,
 } from './segmentationHelper';
+import { getConfigValue } from '../../../helpers/utils';
 
 declare const IS_PRODUCTION: boolean;
 declare function createTFLiteModule(): Promise<TFLite>;
@@ -25,7 +26,11 @@ export interface TFLite extends EmscriptenModule {
   _runInference(): number;
 }
 
-const assetPath = (window as any).STATIC_ASSETS_PATH ?? './assets';
+const assetPath = getConfigValue(
+  'staticAssetsPath',
+  './assets',
+  'STATIC_ASSETS_PATH',
+);
 
 const modelCache = new Map<string, ArrayBuffer>();
 
