@@ -76,3 +76,7 @@ window.FOCUS_ACTIVE_SPEAKER_WEBCAM = true;
   'https://www.example.com/vb_bg/image2.png',
   'https://www.example.com/vb_bg/image3.png',
 ];*/
+
+// Databases older than this will be cleaned up on startup in milliseconds
+// default: 6 hours
+// window.DB_MAX_AGE_MS = 6 * 60 * 60 * 1000;
