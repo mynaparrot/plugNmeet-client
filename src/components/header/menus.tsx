@@ -19,7 +19,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
 
   return (
     <MenuItems
-      static
+      unmount={false}
       className="HeaderSettingMenu origin-top-right z-50 bg-white absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 p-2 ring-0 focus:outline-hidden"
     >
       <div className="dark-mode block md:hidden pt-1 pb-2">

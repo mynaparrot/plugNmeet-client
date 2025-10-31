@@ -17,12 +17,12 @@ const SidePanel = ({
   return (
     <Transition
       show={isActive}
-      enter="transition-transform duration-300 ease-in-out"
-      enterFrom="translate-y-full md:translate-x-full"
+      enter="transform transition ease-in-out duration-300"
+      enterFrom="translate-y-full md:translate-y-0 md:translate-x-full"
       enterTo="translate-y-0 md:translate-x-0"
-      leave="transition-transform duration-300 ease-in-out"
+      leave="transform transition ease-in-out duration-300"
       leaveFrom="translate-y-0 md:translate-x-0"
-      leaveTo="translate-y-full md:translate-x-full"
+      leaveTo="translate-y-full md:translate-y-0 md:translate-x-full"
       afterEnter={() => onToggle?.(true)}
       afterLeave={() => onToggle?.(false)}
     >

@@ -78,14 +78,14 @@ const Header = () => {
 
                   {/* Use the Transition component. */}
                   <Transition
-                    as={'div'}
+                    as="div"
                     show={open}
-                    enter="transition duration-100 ease-out"
-                    enterFrom="transform scale-95 opacity-0"
-                    enterTo="transform scale-100 opacity-100"
-                    leave="transition duration-75 ease-out"
-                    leaveFrom="transform scale-100 opacity-100"
-                    leaveTo="transform scale-95 opacity-0"
+                    enter="transition ease-out duration-300"
+                    enterFrom="transform opacity-0 scale-95 -translate-y-2"
+                    enterTo="transform opacity-100 scale-100 translate-y-0"
+                    leave="transition ease-in duration-200"
+                    leaveFrom="transform opacity-100 scale-100 translate-y-0"
+                    leaveTo="transform opacity-0 scale-95 -translate-y-2"
                   >
                     <HeaderMenus onOpenAlert={() => handleLogout()} />
                   </Transition>

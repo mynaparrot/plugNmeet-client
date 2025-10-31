@@ -6,7 +6,7 @@ export const ArrowUp = () => {
       viewBox="0 0 17 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="w-auto h-3 md:h-4"
+      className="w-auto h-3 md:h-4 cursor-pointer"
     >
       <path
         d="M12.5 10L8.5 6L4.5 10"

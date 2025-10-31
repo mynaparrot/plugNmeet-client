@@ -19,6 +19,9 @@ import { publishFileAttachmentToChat } from '../utils';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
+const urlRegex =
+  /(\b(https?):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%?=~_|])/gi;
+
 const TextBoxArea = () => {
   const dispatch = useAppDispatch();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -87,14 +90,23 @@ const TextBoxArea = () => {
 
   const cleanHtml = (rawText: string) => {
     return sanitizeHtml(rawText, {
-      allowedTags: ['b', 'i', 'strong', 'br'],
-      allowedSchemes: ['mailto', 'tel'],
+      allowedTags: ['b', 'i', 'strong', 'br', 'a'],
+      allowedAttributes: {
+        a: ['href', 'target', 'class'],
+      },
+      allowedSchemes: ['http', 'https', 'mailto', 'tel'],
     });
   };
 
   const sendMsg = useCallback(async () => {
     if (conn) {
-      const msg = cleanHtml(message);
+      const formattedMessage = message.replace(
+        urlRegex,
+        (url) =>
+          `<a href="${url}" target="_blank" class="text-[#24aef7] hover:underline">${url}</a>`,
+      );
+      const msg = cleanHtml(formattedMessage);
+
       if (isEmpty(msg)) {
         return;
       }

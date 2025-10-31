@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'es-toolkit';
@@ -76,9 +76,9 @@ const VolumeControl = () => {
   }, [localScreenShareVolume, debouncedScreenShareVolumeUpdate]);
 
   return (
-    <Menu className="hidden md:inline">
+    <Menu as={Fragment}>
       {({ open }) => (
-        <div>
+        <div className="hidden md:inline">
           <MenuButton
             className={`relative shrink-0 p-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] ${
               open ? 'bg-Gray-50' : ''
@@ -89,16 +89,17 @@ const VolumeControl = () => {
             </div>
           </MenuButton>
           <Transition
+            as={Fragment}
             show={open}
-            enter="transition duration-100 ease-out"
-            enterFrom="transform scale-95 opacity-0"
-            enterTo="transform scale-100 opacity-100"
-            leave="transition duration-75 ease-out"
-            leaveFrom="transform scale-100 opacity-100"
-            leaveTo="transform scale-95 opacity-0"
+            enter="transition ease-out duration-300"
+            enterFrom="transform opacity-0 scale-95 -translate-y-2"
+            enterTo="transform opacity-100 scale-100 translate-y-0"
+            leave="transition ease-in duration-200"
+            leaveFrom="transform opacity-100 scale-100 translate-y-0"
+            leaveTo="transform opacity-0 scale-95 -translate-y-2"
           >
             <MenuItems
-              static
+              unmount={false}
               className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 top-6 rtl:left-0 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white border-Gray-100 border"
             >
               <p className="text-sm text-Gray-950">
