@@ -79,4 +79,4 @@ window.FOCUS_ACTIVE_SPEAKER_WEBCAM = true;
 
 // Databases older than this will be cleaned up on startup in milliseconds
 // default: 6 hours
-// window.DB_MAX_AGE_MS = 6 * 60 * 60 * 1000;
+// window.PNM_DB_MAX_AGE_MS = 6 * 60 * 60 * 1000;
