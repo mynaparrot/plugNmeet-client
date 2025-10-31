@@ -9,6 +9,49 @@ import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
+/**
+ * A utility function to safely access values from the configuration.
+ * It prioritizes the new `plugNmeetConfig` object, falls back to a legacy global variable,
+ * and finally uses a provided default value.
+ * @param key The key in the new `plugNmeetConfig` object (e.g., 'defaultWebcamResolution').
+ * @param defaultValue An optional default value to return if no configuration is found.
+ * @param legacyKey An optional legacy global variable name (e.g., 'DEFAULT_WEBCAM_RESOLUTION').
+ * @returns The configuration value.
+ */
+export const getConfigValue = <T>(
+  key: string,
+  defaultValue?: T,
+  legacyKey?: string,
+): T => {
+  const config = (window as any).plugNmeetConfig;
+
+  // 1. Prioritize the new config object
+  if (config && typeof config === 'object' && key in config) {
+    const value = config[key];
+    if (value !== undefined && value !== null) {
+      return value as T;
+    }
+  }
+
+  // 2. Fallback to legacy global variable if provided
+  if (legacyKey) {
+    const legacyConfig = window as any;
+    if (
+      legacyConfig &&
+      typeof legacyConfig === 'object' &&
+      legacyKey in legacyConfig
+    ) {
+      const value = legacyConfig[legacyKey];
+      if (value !== undefined && value !== null) {
+        return value as T;
+      }
+    }
+  }
+
+  // 3. Return the default value
+  return defaultValue as T;
+};
+
 export const getInputMediaDevices = async (kind: inputMediaDeviceKind) => {
   // 1. Request permissions to get device labels.
   // This is necessary because browsers won't provide labels without permission.
@@ -65,7 +108,11 @@ export const sleep = (ms: number) => {
 };
 
 export const getWebcamResolution = () => {
-  const selected = (window as any).DEFAULT_WEBCAM_RESOLUTION ?? 'h720';
+  const selected = getConfigValue<string>(
+    'defaultWebcamResolution',
+    'h720',
+    'DEFAULT_WEBCAM_RESOLUTION',
+  );
   let resolution = VideoPresets.h720.resolution;
 
   switch (selected) {
@@ -102,8 +149,11 @@ export const getWebcamResolution = () => {
 };
 
 export const getScreenShareResolution = () => {
-  const selected =
-    (window as any).DEFAULT_SCREEN_SHARE_RESOLUTION ?? 'h1080fps15';
+  const selected = getConfigValue<string>(
+    'defaultScreenShareResolution',
+    'h1080fps15',
+    'DEFAULT_SCREEN_SHARE_RESOLUTION',
+  );
   let resolution = ScreenSharePresets.h1080fps15.resolution;
 
   switch (selected) {
@@ -128,7 +178,11 @@ export const getScreenShareResolution = () => {
 };
 
 export const getAudioPreset = () => {
-  const selected = (window as any).DEFAULT_AUDIO_PRESET ?? 'music';
+  const selected = getConfigValue<string>(
+    'defaultAudioPreset',
+    'music',
+    'DEFAULT_AUDIO_PRESET',
+  );
   let preset = AudioPresets.music;
 
   switch (selected) {

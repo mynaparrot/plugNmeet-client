@@ -10,6 +10,7 @@ import {
   updateFocusActiveSpeakerWebcam,
 } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
+import { getConfigValue } from '../utils';
 
 export interface ICustomDesignParams {
   primary_color?: string;
@@ -31,30 +32,34 @@ const useClientCustomization = () => {
 
   // different config related customization
   useEffect(() => {
-    const focusActiveSpeakerWebcam =
-      typeof (window as any).FOCUS_ACTIVE_SPEAKER_WEBCAM !== 'undefined'
-        ? (window as any).FOCUS_ACTIVE_SPEAKER_WEBCAM
-        : true;
+    const focusActiveSpeakerWebcam = getConfigValue<boolean>(
+      'focusActiveSpeakerWebcam',
+      true,
+      'FOCUS_ACTIVE_SPEAKER_WEBCAM',
+    );
     dispatch(updateFocusActiveSpeakerWebcam(focusActiveSpeakerWebcam));
   }, [dispatch]);
 
   // design customization
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const custom_design = urlParams.get('custom_design');
+    let customDesign = urlParams.get('custom_design');
 
-    if (custom_design && custom_design !== '' && custom_design !== '{}') {
-      // we'll override if custom design sent by URL
-      (window as any).DESIGN_CUSTOMIZATION = custom_design;
+    if (!customDesign) {
+      customDesign = getConfigValue<string>(
+        'designCustomization',
+        undefined,
+        'DESIGN_CUSTOMIZATION',
+      );
     }
 
-    if (typeof (window as any).DESIGN_CUSTOMIZATION === 'undefined') {
+    if (!customDesign || customDesign === '{}') {
       return;
     }
 
     let designCustomParams: ICustomDesignParams = {};
     try {
-      designCustomParams = JSON.parse((window as any).DESIGN_CUSTOMIZATION);
+      designCustomParams = JSON.parse(customDesign);
     } catch (e) {
       console.error("can't parse custom design params", e);
       return;
@@ -225,13 +230,12 @@ const useClientCustomization = () => {
       );
     }
 
-    if (typeof (window as any).CUSTOM_LOGO === 'undefined') {
-      if (designCustomParams.custom_logo) {
-        // from design params let's assume logo will be only light to reduce complexity
-        (window as any).CUSTOM_LOGO = {
-          main_logo_light: designCustomParams.custom_logo,
-        };
-      }
+    const customLogo = getConfigValue('customLogo', undefined, 'CUSTOM_LOGO');
+    if (!customLogo && designCustomParams.custom_logo) {
+      // from design params let's assume logo will be only light to reduce complexity
+      (window as any).CUSTOM_LOGO = {
+        main_logo_light: designCustomParams.custom_logo,
+      };
     }
 
     const head = document.head;

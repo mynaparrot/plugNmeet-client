@@ -6,12 +6,17 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, toBinary } from '@bufbuild/protobuf';
 
-import { getAccessToken } from '../utils';
+import { getAccessToken, getConfigValue } from '../utils';
 import { store } from '../../store';
 import { getNatsConn } from '../nats';
 
 const API = axios.create({
-  baseURL: (window as any).PLUG_N_MEET_SERVER_URL + '/api',
+  baseURL:
+    getConfigValue<string>(
+      'serverUrl',
+      'http://localhost:8080',
+      'PLUG_N_MEET_SERVER_URL',
+    ) + '/api',
 });
 
 const getToken = () => {
