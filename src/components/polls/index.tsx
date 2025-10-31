@@ -16,7 +16,7 @@ const PollsComponent = () => {
   return (
     <div className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full">
       <div
-        className="hidden md:inline-block absolute z-50 right-3 3xl:right-5 top-[10px] 3xl:top-[18px] text-Gray-600 cursor-pointer"
+        className="inline-block absolute z-50 right-3 3xl:right-5 top-[10px] 3xl:top-[18px] text-Gray-600 cursor-pointer"
         onClick={() => dispatch(updateIsActivePollsPanel(false))}
       >
         <CloseIconSVG />

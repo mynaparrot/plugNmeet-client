@@ -110,7 +110,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           />
         </div>
       )}
-      <div className="button-section flex items-center gap-5 pt-4 border-t border-Gray-100">
+      <div className="button-section flex items-center gap-2 md:gap-5 pt-4 border-t border-Gray-100">
         <button
           className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
           type="button"

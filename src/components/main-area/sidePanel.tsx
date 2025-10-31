@@ -18,16 +18,16 @@ const SidePanel = ({
     <Transition
       show={isActive}
       enter="transition-transform duration-300 ease-in-out"
-      enterFrom="translate-x-full"
-      enterTo="translate-x-0"
+      enterFrom="translate-y-full md:translate-x-full"
+      enterTo="translate-y-0 md:translate-x-0"
       leave="transition-transform duration-300 ease-in-out"
-      leaveFrom="translate-x-0"
-      leaveTo="translate-x-full"
+      leaveFrom="translate-y-0 md:translate-x-0"
+      leaveTo="translate-y-full md:translate-x-full"
       afterEnter={() => onToggle?.(true)}
       afterLeave={() => onToggle?.(false)}
     >
       <div
-        className={`${panelClass} absolute w-[300px] 3xl:w-[340px] right-0 h-full`}
+        className={`${panelClass} bottom-0 absolute w-full md:w-[300px] 3xl:w-[340px] right-0 h-[300px] md:h-full`}
       >
         {children}
       </div>

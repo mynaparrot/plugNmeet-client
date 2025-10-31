@@ -142,7 +142,7 @@ const MainArea = () => {
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
     isActiveParticipantsPanel || isActiveChatPanel || isActivePollsPanel
-      ? 'pr-[300px] 3xl:pr-[340px]'
+      ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]'
       : ''
   }`;
 

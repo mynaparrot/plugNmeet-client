@@ -17,7 +17,7 @@ const PollsList = () => {
   }, [data]);
 
   return (
-    <div className="polls-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 h-[calc(100vh-220px)] 3xl:h-[calc(100vh-277px)]">
+    <div className="polls-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 h-[204px] md:h-[calc(100vh-220px)] 3xl:h-[calc(100vh-277px)]">
       <div className="polls-list-wrap-inner grid gap-4">
         {polls.map((poll, index) => (
           <PollItem
