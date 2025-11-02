@@ -195,7 +195,8 @@ const Landing = ({
                     selectedVideoDevice !== '' ? (
                       <button
                         type="button"
-                        className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                        disabled={isReadyToConn === true}
+                        className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
                         onClick={() => openConn()}
                       >
                         {t('join')}
@@ -204,7 +205,7 @@ const Landing = ({
                       <button
                         type="button"
                         className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-red-50 disabled:border-red-200 disabled:text-red-500 disabled:cursor-not-allowed"
-                        disabled={lockMicrophone}
+                        disabled={lockMicrophone || isReadyToConn === true}
                         onClick={() => enableMediaDevices('both')}
                       >
                         <span className="relative flex items-center justify-center gap-2">
@@ -218,7 +219,8 @@ const Landing = ({
                         <button
                           id="listenOnlyJoin"
                           type="button"
-                          className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+                          disabled={isReadyToConn === true}
+                          className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
                           onClick={() => openConn()}
                         >
                           {t('landing.join-as-listener-btn')}
