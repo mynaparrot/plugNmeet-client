@@ -1,4 +1,4 @@
-import React, { Dispatch, useEffect, useState } from 'react';
+import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -65,8 +65,9 @@ const Landing = ({
   const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(
     undefined,
   );
-  const [isMediaServerConnected, setIsMediaServerConnected] =
-    useState<boolean>(false);
+  const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     switch (roomConnectionStatus) {
@@ -74,24 +75,29 @@ const Landing = ({
         setShowLoadingMsg(t('landing.connecting-media-server'));
         break;
       case 'media-server-conn-established':
-        setIsMediaServerConnected(true);
-        break;
-    }
-  }, [roomConnectionStatus, t]);
-
-  useEffect(() => {
-    if (isMediaServerConnected) {
-      if (waitForApproval) {
-        setShowLoadingMsg(t('landing.waiting-for-approval-title'));
-      } else {
         dispatch(toggleStartup(false));
         setIsAppReady(true);
         setShowLoadingMsg(undefined);
+        break;
+    }
+  }, [roomConnectionStatus, t, dispatch, setIsAppReady]);
+
+  useEffect(() => {
+    if (waitForApproval) {
+      if (typeof isReadyToConn !== 'undefined') {
+        setShowLoadingMsg(t('landing.waiting-for-approval-title'));
+      }
+    } else {
+      if (isReadyToConn) {
+        const conn = getNatsConn();
+        if (conn) {
+          conn.finalizeAppConn();
+        }
       }
     }
-  }, [isMediaServerConnected, waitForApproval, dispatch, setIsAppReady, t]);
+  }, [t, waitForApproval, isReadyToConn]);
 
-  const onClose = () => {
+  const openConn = useCallback(() => {
     if (selectedVideoDevice !== '') {
       dispatch(updateSelectedVideoDevice(selectedVideoDevice));
       dispatch(addVideoDevices(videoDevices));
@@ -101,11 +107,14 @@ const Landing = ({
       dispatch(addAudioDevices(audioDevices));
     }
 
-    const conn = getNatsConn();
-    if (conn && conn.mediaServerConn) {
-      conn.mediaServerConn.connect().catch((e) => console.error(e));
-    }
-  };
+    setIsReadyToConn(true);
+  }, [
+    selectedAudioDevice,
+    selectedVideoDevice,
+    dispatch,
+    videoDevices,
+    audioDevices,
+  ]);
 
   return (
     isStartup && (
@@ -187,7 +196,7 @@ const Landing = ({
                       <button
                         type="button"
                         className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                        onClick={() => onClose()}
+                        onClick={() => openConn()}
                       >
                         {t('join')}
                       </button>
@@ -210,7 +219,7 @@ const Landing = ({
                           id="listenOnlyJoin"
                           type="button"
                           className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
-                          onClick={() => onClose()}
+                          onClick={() => openConn()}
                         >
                           {t('landing.join-as-listener-btn')}
                           <Volume />

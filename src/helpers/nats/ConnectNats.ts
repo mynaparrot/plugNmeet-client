@@ -8,6 +8,7 @@ import {
   DataChannelMessageSchema,
   DataMsgBodyType,
   MediaServerConnInfo,
+  MediaServerConnInfoSchema,
   NatsInitialData,
   NatsInitialDataSchema,
   NatsKvUserInfoSchema,
@@ -626,6 +627,9 @@ export default class ConnectNats {
       await this.handleInitialData(p.msg);
       this._setRoomConnectionStatusState('ready');
     },
+    [NatsMsgServerToClientEvents.RES_MEDIA_SERVER_DATA]: async (p) => {
+      await this.handleMediaServerData(p.msg);
+    },
     [NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST]: (p) =>
       this.handleJoinedUsersList(p.msg),
     [NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE]: (p) =>
@@ -734,7 +738,7 @@ export default class ConnectNats {
       );
       return;
     }
-    if (!data.room || !data.localUser || !data.mediaServerInfo) {
+    if (!data.room || !data.localUser) {
       this.setErrorStatus(
         i18n.t('notifications.decode-error-title'),
         i18n.t('notifications.invalid-missing-data'),
@@ -754,29 +758,49 @@ export default class ConnectNats {
       data.localUser,
     );
     this._userName = localUser.name;
+  }
 
-    // media info
-    const success = await this.createMediaServerConn(data.mediaServerInfo);
-    if (!success) {
-      // if not success, then we won't do anything else
-      return;
-    }
+  /**
+   * Finalizes the application connection.
+   * This method should be called when the application is ready
+   * to establish the full connection, typically after receiving approval to join the room.
+   * Calling this method prematurely may result in the media server token expiring before it is used.
+   */
+  public finalizeAppConn = () => {
+    // 1. Request for media server connection data
+    this.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
+      }),
+    );
 
-    // now request for users' list
+    // 2. Request for users' list
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
       }),
     );
+  };
 
-    // now subscribe to other channels
-    // some of those services need user or room info
-    // without proper data will give unexpected results,
-    // for example, if E2EE is enabled then key will require
-    // for chat or whiteboard
-    this.subscribeToChat().then();
-    this.subscribeToWhiteboard().then();
-    this.subscribeToDataChannel().then();
+  /**
+   * handleMediaServerData will decode data and connect with media server
+   * @param msg
+   */
+  private async handleMediaServerData(msg: string) {
+    try {
+      const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
+      const success = await this.createMediaServerConn(serverInfo);
+      if (success && this.mediaServerConn) {
+        await this.mediaServerConn.connect();
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.setErrorStatus(
+        i18n.t('notifications.decode-error-title'),
+        i18n.t('notifications.decode-error-body'),
+      );
+      return;
+    }
   }
 
   private async handleJoinedUsersList(msg: string) {
@@ -793,20 +817,12 @@ export default class ConnectNats {
   }
 
   /**
-   * This method should call when the current user is ready
-   * with an initial data and users list
+   * This method is called after the current user has received the initial data
+   * and the list of online users. It performs final setup tasks to make the
+   * user fully operational in the room.
    */
   private async onAfterUserReady() {
-    const donors = getWhiteboardDonors();
-    for (let i = 0; i < donors.length; i++) {
-      await this.sendDataMessage(
-        DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-        '',
-        donors[i].userId,
-      );
-    }
-
-    // Load data from IndexedDB in parallel.
+    // 1. Restore user data from IndexedDB to maintain state across sessions.
     try {
       const [
         chatMsgs,
@@ -834,7 +850,7 @@ export default class ConnectNats {
       if (notifications.length) {
         store.dispatch(setAllUserNotifications(notifications));
       }
-      // for speech to text data
+      // Restore speech-to-text data if the feature is enabled.
       const speechToTextTranslationFeatures =
         this._currentRoomInfo?.metadata?.roomFeatures
           ?.speechToTextTranslationFeatures;
@@ -857,6 +873,27 @@ export default class ConnectNats {
     } catch (e) {
       console.error('Failed to load data from IndexedDB on startup:', e);
     }
+
+    // 2. Subscribe to real-time data channels.
+    // These subscriptions are set up after initial data is loaded to ensure
+    // that all necessary user and room information is available.
+    // For example, E2EE requires a key that is part of the initial data.
+    Promise.all([
+      this.subscribeToChat(),
+      this.subscribeToWhiteboard(),
+      this.subscribeToDataChannel(),
+    ]).then(async () => {
+      // 3. Now that we are fully connected and subscribed,
+      // request the complete whiteboard data from other users.
+      const donors = getWhiteboardDonors();
+      for (let i = 0; i < donors.length; i++) {
+        await this.sendDataMessage(
+          DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
+          '',
+          donors[i].userId,
+        );
+      }
+    });
   }
 
   private async createMediaServerConn(connInfo: MediaServerConnInfo) {
