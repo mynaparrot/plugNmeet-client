@@ -7,7 +7,7 @@ import {
   ChatMessageSchema,
   DataChannelMessageSchema,
   DataMsgBodyType,
-  MediaServerConnInfo,
+  EndToEndEncryptionFeatures,
   MediaServerConnInfoSchema,
   NatsInitialData,
   NatsInitialDataSchema,
@@ -38,8 +38,7 @@ import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
 import { isE2EESupported } from 'livekit-client';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import { IConnectLivekit, LivekitInfo } from '../livekit/types';
-import { createLivekitConnection } from '../livekit/utils';
+import { IConnectLivekit } from '../livekit/types';
 import HandleRoomData from './HandleRoomData';
 import HandleParticipants from './HandleParticipants';
 import HandleDataMessage from './HandleDataMessage';
@@ -61,6 +60,7 @@ import {
   getWhiteboardDonors,
   isUserRecorder,
   randomString,
+  sleep,
 } from '../utils';
 import {
   addSelfInsertedE2EESecretKey,
@@ -84,6 +84,7 @@ import {
   TextWithInfo,
 } from '../../store/slices/interfaces/speechServices';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
+import { createLivekitConnection } from '../livekit/utils';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -727,6 +728,7 @@ export default class ConnectNats {
   }
 
   private async handleInitialData(msg: string) {
+    // 1. We'll try to decode the message.
     let data: NatsInitialData;
     try {
       data = fromJsonString(NatsInitialDataSchema, msg);
@@ -738,6 +740,8 @@ export default class ConnectNats {
       );
       return;
     }
+
+    // 2. We'll check if the data is valid.
     if (!data.room || !data.localUser) {
       this.setErrorStatus(
         i18n.t('notifications.decode-error-title'),
@@ -746,18 +750,23 @@ export default class ConnectNats {
       return;
     }
 
-    // add room info first
+    // 3. We'll add the room info.
     this._currentRoomInfo = await this.handleRoomData.setRoomInfo(data.room);
 
-    // init indexedDB for this session
+    // 4. We'll initialize the indexedDB for this session.
     initIDB(this._currentRoomInfo.sid, this._userId);
 
-    // now local user
+    // 5. We'll add the local user.
     this._isAdmin = data.localUser.isAdmin;
     const localUser = await this.handleParticipants.addLocalParticipantInfo(
       data.localUser,
     );
     this._userName = localUser.name;
+
+    // 6. We'll initialize the media server class.
+    await this.initializeMediaServer(
+      this._currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures,
+    );
   }
 
   /**
@@ -766,18 +775,20 @@ export default class ConnectNats {
    * to establish the full connection, typically after receiving approval to join the room.
    * Calling this method prematurely may result in the media server token expiring before it is used.
    */
-  public finalizeAppConn = () => {
-    // 1. Request for media server connection data
-    this.sendMessageToSystemWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
-      }),
-    );
-
-    // 2. Request for users' list
+  public finalizeAppConn = async () => {
+    // 1. Request for users' list to prepare everything
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
+      }),
+    );
+    // wait to let us prepare everything
+    await sleep(200);
+
+    // 2. Request for media server connection data
+    this.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
       }),
     );
   };
@@ -789,9 +800,11 @@ export default class ConnectNats {
   private async handleMediaServerData(msg: string) {
     try {
       const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
-      const success = await this.createMediaServerConn(serverInfo);
-      if (success && this.mediaServerConn) {
-        await this.mediaServerConn.connect();
+      if (this.mediaServerConn) {
+        await this.mediaServerConn.initializeConnection(
+          serverInfo.url,
+          serverInfo.token,
+        );
       }
     } catch (e: any) {
       console.error(e);
@@ -896,17 +909,13 @@ export default class ConnectNats {
     });
   }
 
-  private async createMediaServerConn(connInfo: MediaServerConnInfo) {
+  private async initializeMediaServer(
+    e2ee: EndToEndEncryptionFeatures | undefined,
+  ) {
     if (typeof this._mediaServerConn !== 'undefined') {
       return false;
     }
-    const info: LivekitInfo = {
-      livekit_host: connInfo.url,
-      token: connInfo.token,
-    };
-
-    const e2ee =
-      this._currentRoomInfo?.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+    let encryptionKey: string | undefined = undefined;
 
     if (e2ee && e2ee.isEnabled) {
       if (!isE2EESupported()) {
@@ -915,43 +924,39 @@ export default class ConnectNats {
           i18n.t('notifications.e2ee-unsupported-browser-msg'),
         );
         return false;
+      }
+
+      encryptionKey = e2ee.encryptionKey;
+      if (e2ee.enabledSelfInsertEncryptionKey) {
+        encryptionKey = store.getState().roomSettings.selfInsertedE2EESecretKey;
+        // clean as soon as we've done with it
+        store.dispatch(addSelfInsertedE2EESecretKey(''));
+      }
+
+      if (encryptionKey) {
+        await importSecretKeyFromPlainText(encryptionKey);
+
+        this._enableE2EE = true;
+        this._enableE2EEChat = e2ee.includedChatMessages;
+        this._enableE2EEWhiteboard = e2ee.includedWhiteboard;
       } else {
-        let encryptionKey = e2ee.encryptionKey;
-        if (e2ee.enabledSelfInsertEncryptionKey) {
-          encryptionKey =
-            store.getState().roomSettings.selfInsertedE2EESecretKey;
-          // clean as soon as we've done with it
-          store.dispatch(addSelfInsertedE2EESecretKey(''));
-        }
-
-        if (encryptionKey) {
-          await importSecretKeyFromPlainText(encryptionKey);
-
-          this._enableE2EE = true;
-          this._enableE2EEChat = e2ee.includedChatMessages;
-          this._enableE2EEWhiteboard = e2ee.includedWhiteboard;
-
-          info.encryption_key = encryptionKey;
-          info.enabledE2EE = true;
-        } else {
-          this.setErrorStatus(
-            i18n.t('notifications.e2ee-invalid-key-title'),
-            i18n.t('notifications.e2ee-invalid-key-msg'),
-          );
-          return false;
-        }
+        this.setErrorStatus(
+          i18n.t('notifications.e2ee-invalid-key-title'),
+          i18n.t('notifications.e2ee-invalid-key-msg'),
+        );
+        return false;
       }
     }
 
-    const conn = createLivekitConnection(
-      info,
+    this._mediaServerConn = createLivekitConnection(
       this._setErrorState,
       this._setRoomConnectionStatusState,
       this._userId,
+      this._enableE2EE,
+      encryptionKey,
     );
 
-    this._setCurrentMediaServerConn(conn);
-    this._mediaServerConn = conn;
+    this._setCurrentMediaServerConn(this._mediaServerConn);
     return true;
   }
 }

@@ -1,11 +1,11 @@
 import type {
+  ExternalE2EEKeyProvider,
   LocalParticipant,
   LocalTrackPublication,
   Participant,
   RemoteParticipant,
   RemoteTrackPublication,
   Room,
-  ExternalE2EEKeyProvider,
 } from 'livekit-client';
 import type EventEmitter from 'eventemitter3';
 
@@ -36,7 +36,7 @@ export interface IConnectLivekit extends EventEmitter {
     string,
     Array<LocalTrackPublication | RemoteTrackPublication>
   >;
-  connect(): Promise<void>;
+  initializeConnection(url: string, token: string): Promise<void>;
   disconnectRoom(normalDisconnect: boolean): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
   addAudioSubscriber(

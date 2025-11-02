@@ -42,7 +42,7 @@ import {
 
 import HandleMediaTracks from './HandleMediaTracks';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
-import { CurrentConnectionEvents, IConnectLivekit, LivekitInfo } from './types';
+import { CurrentConnectionEvents, IConnectLivekit } from './types';
 import i18n from '../i18n';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { getNatsConn } from '../nats';
@@ -68,38 +68,34 @@ export default class ConnectLivekit
   private readonly _errorState: Dispatch<IErrorPageProps>;
   private readonly _roomConnectionStatusState: Dispatch<roomConnectionStatus>;
 
-  private readonly token: string;
   private readonly localUserId: string;
   private readonly _room: Room;
-  private readonly url: string;
-  private readonly enabledE2EE: boolean = false;
-  private readonly encryptionKey: string | undefined = '';
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
 
+  private readonly enabledE2EE: boolean = false;
+  private readonly encryptionKey: string | undefined = '';
+
   private handleMediaTracks: HandleMediaTracks;
 
   constructor(
-    livekitInfo: LivekitInfo,
     errorState: Dispatch<IErrorPageProps>,
     roomConnectionStatusState: Dispatch<roomConnectionStatus>,
     localUserId: string,
+    enabledE2EE: boolean,
+    encryptionKey?: string,
   ) {
     super();
-    this.token = livekitInfo.token;
     this.localUserId = localUserId;
-    this.url = livekitInfo.livekit_host;
-
     this._errorState = errorState;
     this._roomConnectionStatusState = roomConnectionStatusState;
 
     this._e2eeKeyProvider = new ExternalE2EEKeyProvider();
-    if (livekitInfo.enabledE2EE) {
-      this.enabledE2EE = livekitInfo.enabledE2EE;
-      this.encryptionKey = livekitInfo.encryption_key;
+    if (enabledE2EE && encryptionKey) {
+      this.enabledE2EE = enabledE2EE;
+      this.encryptionKey = encryptionKey;
     }
-
     this.handleMediaTracks = new HandleMediaTracks(this);
 
     // configure room
@@ -126,15 +122,16 @@ export default class ConnectLivekit
     return this._e2eeKeyProvider;
   }
 
-  public connect = async () => {
+  public initializeConnection = async (url: string, token: string) => {
     this._roomConnectionStatusState('media-server-conn-start');
 
     try {
-      await this._room.connect(this.url, this.token);
       if (this.enabledE2EE && this.encryptionKey) {
         await this._e2eeKeyProvider.setKey(this.encryptionKey);
         await this._room.setE2EEEnabled(true);
       }
+      await this._room.connect(url, token);
+
       // we'll prepare our information
       await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');
