@@ -67,17 +67,15 @@ export default class ConnectLivekit
 
   private readonly _errorState: Dispatch<IErrorPageProps>;
   private readonly _roomConnectionStatusState: Dispatch<roomConnectionStatus>;
+  private readonly handleMediaTracks: HandleMediaTracks;
 
   private readonly localUserId: string;
+  private readonly enabledE2EE: boolean = false;
+  private readonly encryptionKey: string | undefined = '';
   private readonly _room: Room;
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
-
-  private readonly enabledE2EE: boolean = false;
-  private readonly encryptionKey: string | undefined = '';
-
-  private handleMediaTracks: HandleMediaTracks;
 
   constructor(
     errorState: Dispatch<IErrorPageProps>,
