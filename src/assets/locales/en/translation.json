@@ -30,7 +30,7 @@
     "you-have-removed": "You have been removed from the meeting.",
     "you-are-blocked": "You are not allowed to join this meeting.",
     "you-have-reject": "Your request to join the meeting was denied.",
-    "waiting-for-approval": "Please wait for a moderator to let you in.",
+    "waiting-for-approval": "A moderator has been notified and will let you in shortly. Thanks for your patience!",
     "room-disconnected-title": "Disconnected",
     "room-disconnected-unknown": "You have been disconnected for an unknown reason. (Code: {{code}})",
     "room-disconnected-client-initiated": "You have disconnected from the meeting. (Code: {{code}})",
@@ -451,7 +451,7 @@
     "mic-menu-title": "Select Microphone",
     "background-filter-title": "Background & Filters",
     "config-background-btn": "Configure Camera Background",
-    "waiting-for-approval-title": "Waiting for Approval"
+    "waiting-for-approval-title": "You're in the waiting room"
   },
   "external-display-link-display": {
     "modal-title": "Share External Link",

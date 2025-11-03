@@ -215,22 +215,35 @@ const Landing = ({
             <div className="right w-full md:w-1/2 md:pl-8 3xl:pl-16 sm:py-8 flex items-center">
               {showLoadingMsg ? (
                 <div className="inner waiting-room-contents relative md:-mt-10 w-full">
-                  <div className="texts text-center md:text-left">
-                    <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
-                      <LoadingIcon
-                        className={'inline w-7 h-7 text-Gray-200 animate-spin'}
-                        fillColor={'#004D90'}
-                      />
-                      {showLoadingMsg}
-                    </h3>
-                    {roomConnectionStatus === 'media-server-conn-established' &&
-                      waitForApproval && (
-                        <p className="text-sm 3xl:text-base text-Gray-800">
-                          {waitingRoomMessage ||
-                            t('notifications.waiting-for-approval')}
-                        </p>
-                      )}
-                  </div>
+                  {waitForApproval ? (
+                    <div className="texts text-center md:text-left">
+                      <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
+                        <LoadingIcon
+                          className={
+                            'inline h-5 w-5 text-Gray-200 animate-spin'
+                          }
+                          fillColor={'#004D90'}
+                        />
+                        {t('landing.waiting-for-approval-title')}
+                      </h3>
+                      <p className="text-sm 3xl:text-base text-Gray-800 md:pl-7">
+                        {waitingRoomMessage ||
+                          t('notifications.waiting-for-approval')}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="texts text-center md:text-left">
+                      <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
+                        <LoadingIcon
+                          className={
+                            'inline w-7 h-7 text-Gray-200 animate-spin'
+                          }
+                          fillColor={'#004D90'}
+                        />
+                        {showLoadingMsg}
+                      </h3>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="inner relative w-full">
