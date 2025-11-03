@@ -294,7 +294,7 @@ export default class ConnectLivekit
     });
   }
 
-  private onDisconnected(reason?: DisconnectReason) {
+  private onDisconnected = (reason?: DisconnectReason) => {
     if (typeof this.toastIdConnecting !== 'undefined') {
       toast.dismiss(this.toastIdConnecting);
     }
@@ -308,7 +308,7 @@ export default class ConnectLivekit
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-  }
+  };
 
   private getDisconnectErrorReasonText(reason?: DisconnectReason) {
     let msg = i18n.t('notifications.room-disconnected-unknown', {
@@ -349,14 +349,14 @@ export default class ConnectLivekit
     return msg;
   }
 
-  private mediaDevicesError(error: Error) {
+  private mediaDevicesError = (error: Error) => {
     // to do
     console.error(error);
-  }
+  };
 
-  private async localUserConnectionQualityChanged(
+  private localUserConnectionQualityChanged = async (
     connectionQuality: ConnectionQuality,
-  ) {
+  ) => {
     store.dispatch(
       updateParticipant({
         id: this.localUserId,
@@ -389,12 +389,14 @@ export default class ConnectLivekit
         AnalyticsEventType.USER,
         connectionQuality.toString(),
       );
-      conn.sendDataMessage(
-        DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
-        connectionQuality,
-      );
+      conn
+        .sendDataMessage(
+          DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
+          connectionQuality,
+        )
+        .then();
     }
-  }
+  };
 
   public addScreenShareTrack = (
     userId: string,
