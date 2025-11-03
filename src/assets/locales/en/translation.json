@@ -436,11 +436,16 @@
     "you-pushed-user": "A join notification has been sent to {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Connecting to the media server...",
+    "connecting-media-server": "Connecting to the meeting...",
     "modal-title": "Microphone and Camera Preferences",
     "ready-to-join": "Ready to join?",
-    "join-prompt": "Enable your microphone and camera to participate fully, or join as a listener.",
+    "join-prompt": "Set up your devices now, or join as a listener. You can always control your microphone and camera later during the meeting.",
+    "join-prompt-mic-locked": "The microphone is disabled for this meeting. You can enable your camera or join as a listener.",
+    "join-prompt-cam-locked": "The camera is disabled for this meeting. You can enable your microphone or join as a listener.",
+    "join-prompt-both-locked": "The microphone and camera are disabled for this meeting. Please join as a listener.",
     "enable-mic-cam-btn": "Enable Microphone and Camera",
+    "enable-mic-btn": "Enable Microphone",
+    "enable-cam-btn": "Enable Camera",
     "join-as-listener-btn": "Join as a listener",
     "webcam-menu-title": "Select Camera",
     "mic-menu-title": "Select Microphone",

@@ -1,7 +1,13 @@
-import React, { Dispatch, useCallback, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { toggleStartup } from '../../store/slices/sessionSlice';
 import {
   addAudioDevices,
@@ -32,6 +38,23 @@ const Landing = ({
 }: StartupJoinModalProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  // static values
+  const { isWebcamAllowed } = useMemo(() => {
+    const session = store.getState().session;
+    const roomFeatures = session.currentRoom.metadata?.roomFeatures;
+    const isAdmin = !!session.currentUser?.metadata?.isAdmin;
+
+    let show = true;
+    if (!roomFeatures?.allowWebcams) {
+      show = false;
+    } else if (roomFeatures?.adminOnlyWebcams && !isAdmin) {
+      show = false;
+    }
+
+    return {
+      isWebcamAllowed: show,
+    };
+  }, []);
 
   const isStartup = useAppSelector((state) => state.session.isStartup);
   const waitForApproval = useAppSelector(
@@ -116,6 +139,35 @@ const Landing = ({
     audioDevices,
   ]);
 
+  const getJoinPrompt = useCallback(() => {
+    if (lockMicrophone && (lockWebcam || !isWebcamAllowed)) {
+      return t('landing.join-prompt-both-locked');
+    } else if (lockMicrophone) {
+      return t('landing.join-prompt-mic-locked');
+    } else if (lockWebcam || !isWebcamAllowed) {
+      return t('landing.join-prompt-cam-locked');
+    }
+    return t('landing.join-prompt');
+  }, [lockMicrophone, lockWebcam, isWebcamAllowed, t]);
+
+  const getEnableDeviceButton = useCallback(() => {
+    if (lockMicrophone) {
+      return {
+        text: t('landing.enable-cam-btn'),
+        action: () => enableMediaDevices('video'),
+      };
+    } else if (lockWebcam || !isWebcamAllowed) {
+      return {
+        text: t('landing.enable-mic-btn'),
+        action: () => enableMediaDevices('audio'),
+      };
+    }
+    return {
+      text: t('landing.enable-mic-cam-btn'),
+      action: () => enableMediaDevices('both'),
+    };
+  }, [t, lockMicrophone, lockWebcam, isWebcamAllowed, enableMediaDevices]);
+
   return (
     isStartup && (
       <div
@@ -144,7 +196,7 @@ const Landing = ({
                     selectedAudioDevice={selectedAudioDevice}
                   />
                 )}
-                {lockWebcam ? (
+                {lockWebcam || !isWebcamAllowed ? (
                   <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
                     <CameraOff classes="h-6 w-6 text-red-200" />
                     <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500" />
@@ -187,12 +239,25 @@ const Landing = ({
                       {t('landing.ready-to-join')}
                     </h3>
                     <p className="text-sm 3xl:text-base text-Gray-800">
-                      {t('landing.join-prompt')}
+                      {getJoinPrompt()}
                     </p>
                   </div>
                   <div className="buttons grid gap-3 w-full pt-10">
-                    {selectedAudioDevice !== '' ||
-                    selectedVideoDevice !== '' ? (
+                    {lockMicrophone && (lockWebcam || !isWebcamAllowed) ? (
+                      // Case 1: Both devices are locked, only show the listener button.
+                      <button
+                        id="listenOnlyJoin"
+                        type="button"
+                        disabled={isReadyToConn === true}
+                        className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
+                        onClick={() => openConn()}
+                      >
+                        {t('landing.join-as-listener-btn')}
+                        <Volume />
+                      </button>
+                    ) : // Case 2: At least one device is available.
+                    selectedAudioDevice !== '' || selectedVideoDevice !== '' ? (
+                      // Sub-case 2a: A device has been selected, show the "Join" button.
                       <button
                         type="button"
                         disabled={isReadyToConn === true}
@@ -202,20 +267,18 @@ const Landing = ({
                         {t('join')}
                       </button>
                     ) : (
-                      <button
-                        type="button"
-                        className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-red-50 disabled:border-red-200 disabled:text-red-500 disabled:cursor-not-allowed"
-                        disabled={lockMicrophone || isReadyToConn === true}
-                        onClick={() => enableMediaDevices('both')}
-                      >
-                        <span className="relative flex items-center justify-center gap-2">
-                          {t('landing.enable-mic-cam-btn')}
-                          {lockMicrophone && <i className="pnm-lock" />}
-                        </span>
-                      </button>
-                    )}
-                    {selectedAudioDevice === '' &&
-                      selectedVideoDevice === '' && (
+                      // Sub-case 2b: No device selected yet, show the "Enable..." and "Listener" buttons.
+                      <>
+                        <button
+                          type="button"
+                          className="w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
+                          disabled={isReadyToConn === true}
+                          onClick={getEnableDeviceButton().action}
+                        >
+                          <span className="relative flex items-center justify-center gap-2">
+                            {getEnableDeviceButton().text}
+                          </span>
+                        </button>
                         <button
                           id="listenOnlyJoin"
                           type="button"
@@ -226,7 +289,8 @@ const Landing = ({
                           {t('landing.join-as-listener-btn')}
                           <Volume />
                         </button>
-                      )}
+                      </>
+                    )}
                   </div>
                 </div>
               )}
