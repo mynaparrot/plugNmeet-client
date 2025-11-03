@@ -87,6 +87,12 @@ export default class MessageQueue {
           console.error(
             `NATS transient error: ${e.message}. Holding queue until reconnect.`,
           );
+          // Don't show a notification if the error is due to a normal connection drain.
+          // This happens during logout and would confuse the user.
+          if (e.message.includes('connection draining')) {
+            break;
+          }
+
           if (!this._isHoldingNotificationShown) {
             const msg = formatNatsError(e);
             store.dispatch(
