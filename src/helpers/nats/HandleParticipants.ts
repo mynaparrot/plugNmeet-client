@@ -43,7 +43,7 @@ import { getMediaServerConn } from '../livekit/utils';
 import { isUserRecorder } from '../utils';
 
 export default class HandleParticipants {
-  private _that: ConnectNats;
+  private connectNats: ConnectNats;
   private preferredLang = '';
   private participantsCount = 0;
   private participantCounterInterval: any = 0;
@@ -52,8 +52,8 @@ export default class HandleParticipants {
   private _isLocalUserAdmin: boolean = false;
   private _isLocalUserRecorder = false;
 
-  constructor(that: ConnectNats) {
-    this._that = that;
+  constructor(connectNats: ConnectNats) {
+    this.connectNats = connectNats;
   }
 
   public addLocalParticipantInfo = async (
@@ -341,7 +341,7 @@ export default class HandleParticipants {
     this.participantCounterInterval = setInterval(async () => {
       if (this.participantsCount <= 1) {
         console.log('NO_USER_ONLINE');
-        await this._that.endSession('NO_USER_ONLINE');
+        await this.connectNats.endSession('NO_USER_ONLINE');
       }
     }, 3000);
   }

@@ -91,7 +91,7 @@ const Landing = ({
       if (isReadyToConn) {
         const conn = getNatsConn();
         if (conn) {
-          conn.finalizeAppConn().then();
+          conn.finalizeAppConn();
         }
       }
     }

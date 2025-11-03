@@ -11,20 +11,19 @@ import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 import { DB_STORE_NAMES, idbStore } from '../libs/idb';
 
 export default class HandleChat {
-  private _that: ConnectNats;
-  private _isEnabledE2EE: boolean | undefined = undefined;
+  private connectNats: ConnectNats;
   private allowViewOtherUsersList: boolean | undefined = undefined;
 
-  constructor(that: ConnectNats) {
-    this._that = that;
+  constructor(connectNats: ConnectNats) {
+    this.connectNats = connectNats;
   }
 
   public handleMsg = async (payload: ChatMessage) => {
     // If this is a private message, we should only process it if we are the sender or the receiver.
     if (
       payload.isPrivate &&
-      payload.fromUserId !== this._that.userId &&
-      payload.toUserId !== this._that.userId
+      payload.fromUserId !== this.connectNats.userId &&
+      payload.toUserId !== this.connectNats.userId
     ) {
       // This is a private message between two other users, so we can ignore it.
       return;
@@ -38,8 +37,8 @@ export default class HandleChat {
     if (
       !this.allowViewOtherUsersList &&
       !payload.fromAdmin &&
-      !this._that.isAdmin &&
-      payload.fromUserId !== this._that.userId
+      !this.connectNats.isAdmin &&
+      payload.fromUserId !== this.connectNats.userId
     ) {
       // as it'd not allow viewing other users in the list
       // so, any chat message will not be added except from admin
@@ -47,7 +46,10 @@ export default class HandleChat {
     }
 
     store.dispatch(
-      addChatMessage({ message: payload, currentUserId: this._that.userId }),
+      addChatMessage({
+        message: payload,
+        currentUserId: this.connectNats.userId,
+      }),
     );
     await idbStore(DB_STORE_NAMES.CHAT_MESSAGES, payload.id, payload);
 

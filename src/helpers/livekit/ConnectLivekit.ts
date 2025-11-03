@@ -67,11 +67,11 @@ export default class ConnectLivekit
 
   private readonly _errorState: Dispatch<IErrorPageProps>;
   private readonly _roomConnectionStatusState: Dispatch<roomConnectionStatus>;
-  private readonly handleMediaTracks: HandleMediaTracks;
-
   private readonly localUserId: string;
   private readonly enabledE2EE: boolean = false;
   private readonly encryptionKey: string | undefined = '';
+
+  private readonly handleMediaTracks: HandleMediaTracks;
   private readonly _room: Room;
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
@@ -116,10 +116,6 @@ export default class ConnectLivekit
     return this._room;
   }
 
-  public get e2eeKeyProvider() {
-    return this._e2eeKeyProvider;
-  }
-
   public initializeConnection = async (url: string, token: string) => {
     this._roomConnectionStatusState('media-server-conn-start');
 
@@ -143,7 +139,7 @@ export default class ConnectLivekit
     }
   };
 
-  private configureRoom = () => {
+  private configureRoom() {
     let videoCodec = getConfigValue<VideoCodec>(
       'videoCodec',
       'vp8',
@@ -252,9 +248,9 @@ export default class ConnectLivekit
     );
 
     return room;
-  };
+  }
 
-  private initiateParticipants = async () => {
+  private async initiateParticipants() {
     // all other connected Participants
     this._room.remoteParticipants.forEach((participant) => {
       participant.getTrackPublications().forEach((track) => {
@@ -281,7 +277,7 @@ export default class ConnectLivekit
         }
       });
     });
-  };
+  }
 
   public async disconnectRoom(normalDisconnect: boolean) {
     if (this._room.state === ConnectionState.Connected) {
@@ -298,7 +294,7 @@ export default class ConnectLivekit
     });
   }
 
-  private onDisconnected = (reason?: DisconnectReason) => {
+  private onDisconnected(reason?: DisconnectReason) {
     if (typeof this.toastIdConnecting !== 'undefined') {
       toast.dismiss(this.toastIdConnecting);
     }
@@ -312,9 +308,9 @@ export default class ConnectLivekit
       title: i18n.t('notifications.room-disconnected-title'),
       text: this.getDisconnectErrorReasonText(reason),
     });
-  };
+  }
 
-  private getDisconnectErrorReasonText = (reason?: DisconnectReason) => {
+  private getDisconnectErrorReasonText(reason?: DisconnectReason) {
     let msg = i18n.t('notifications.room-disconnected-unknown', {
       code: 'UNKNOWN_REASON',
     });
@@ -351,12 +347,12 @@ export default class ConnectLivekit
     }
 
     return msg;
-  };
+  }
 
-  private mediaDevicesError = (error: Error) => {
+  private mediaDevicesError(error: Error) {
     // to do
     console.error(error);
-  };
+  }
 
   private async localUserConnectionQualityChanged(
     connectionQuality: ConnectionQuality,
@@ -426,7 +422,7 @@ export default class ConnectLivekit
     this.syncScreenShareTracks(userId);
   };
 
-  public syncScreenShareTracks(userId: string) {
+  private syncScreenShareTracks(userId: string) {
     let payload: IScreenSharing = {
       isActive: false,
       sharedBy: '',
@@ -449,9 +445,9 @@ export default class ConnectLivekit
     store.dispatch(updateScreenSharing(payload));
   }
 
-  public addAudioSubscriber(
+  public addAudioSubscriber = (
     participant: Participant | LocalParticipant | RemoteParticipant,
-  ) {
+  ) => {
     if (!participant.audioTrackPublications.size) {
       return;
     }
@@ -472,27 +468,27 @@ export default class ConnectLivekit
       participant as RemoteParticipant,
     );
     this.syncAudioSubscribers();
-  }
+  };
 
-  public removeAudioSubscriber(userId: string) {
+  public removeAudioSubscriber = (userId: string) => {
     if (!this._audioSubscribersMap.has(userId)) {
       return;
     }
 
     this._audioSubscribersMap.delete(userId);
     this.syncAudioSubscribers();
-  }
+  };
 
-  private syncAudioSubscribers = () => {
+  private syncAudioSubscribers() {
     const audioSubscribers = new Map(this._audioSubscribersMap) as any;
     this.emit(CurrentConnectionEvents.AudioSubscribers, audioSubscribers);
     // update session reducer
     store.dispatch(updateTotalAudioSubscribers(audioSubscribers.size));
-  };
+  }
 
-  public addVideoSubscriber(
+  public addVideoSubscriber = (
     participant: Participant | LocalParticipant | RemoteParticipant,
-  ) {
+  ) => {
     if (!participant.videoTrackPublications.size) {
       return;
     }
@@ -506,18 +502,18 @@ export default class ConnectLivekit
 
     this._videoSubscribersMap.set(participant.identity, participant);
     this.syncVideoSubscribers();
-  }
+  };
 
-  public removeVideoSubscriber(userId: string) {
+  public removeVideoSubscriber = (userId: string) => {
     if (!this._videoSubscribersMap.has(userId)) {
       return;
     }
 
     this._videoSubscribersMap.delete(userId);
     this.syncVideoSubscribers();
-  }
+  };
 
-  public syncVideoSubscribers = () => {
+  private syncVideoSubscribers() {
     // update session reducer
     store.dispatch(updateTotalVideoSubscribers(this._videoSubscribersMap.size));
 
@@ -569,5 +565,5 @@ export default class ConnectLivekit
 
     const subscribers = new Map(mediaSubscribersToArray) as any;
     this.emit(CurrentConnectionEvents.VideoSubscribers, subscribers);
-  };
+  }
 }

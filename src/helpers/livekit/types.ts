@@ -1,5 +1,4 @@
 import type {
-  ExternalE2EEKeyProvider,
   LocalParticipant,
   LocalTrackPublication,
   Participant,
@@ -26,7 +25,6 @@ export interface LivekitInfo {
 
 export interface IConnectLivekit extends EventEmitter {
   get room(): Room;
-  get e2eeKeyProvider(): ExternalE2EEKeyProvider;
   get videoSubscribersMap(): Map<
     string,
     Participant | LocalParticipant | RemoteParticipant

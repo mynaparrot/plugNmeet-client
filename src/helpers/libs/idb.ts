@@ -38,15 +38,11 @@ class IDBManager {
    * @param roomSid The session ID of the current room.
    * @param userId The user ID of the current user.
    */
-  public init(roomSid: string, userId: string) {
+  public init = (roomSid: string, userId: string) => {
     // If the database has already been initialized, do nothing.
     if (this.dbPromise) {
       return;
     }
-
-    // Run cleanup for stale databases from previous sessions.
-    // This is a non-blocking "fire and forget" operation.
-    this.cleanupStaleDBs().then();
 
     // Use a stable name for persistence across reloads.
     this.dbName = `pnm-${roomSid}-${userId}`;
@@ -61,11 +57,12 @@ class IDBManager {
       },
     });
 
-    // After connecting, update the 'lastAccessed' timestamp.
+    // After connecting, run cleanup and update the 'lastAccessed' timestamp.
     this.dbPromise
       .then((db) => db.put(DB_STORE_METADATA, Date.now(), 'lastAccessed'))
-      .catch((e) => console.error('Failed to update DB timestamp:', e));
-  }
+      .catch((e) => console.error('Failed to update DB timestamp:', e))
+      .finally(() => this.cleanupStaleDBs());
+  };
 
   /**
    * Saves a value to a specified object store in the current session's database.
@@ -73,7 +70,7 @@ class IDBManager {
    * @param key The key for the value.
    * @param value The value to save.
    */
-  public async store(storeName: IDBStoreName, key: string, value: any) {
+  public store = async (storeName: IDBStoreName, key: string, value: any) => {
     const db = await this.getDb();
     // Update the timestamp on every write to keep the DB "alive".
     const tx = db.transaction([storeName, DB_STORE_METADATA], 'readwrite');
@@ -82,7 +79,7 @@ class IDBManager {
       tx.objectStore(DB_STORE_METADATA).put(Date.now(), 'lastAccessed'),
     ]);
     await tx.done;
-  }
+  };
 
   /**
    * Retrieves a value from a specified object store in the current session's database.
@@ -90,34 +87,34 @@ class IDBManager {
    * @param key The key of the value to retrieve.
    * @returns The value, or undefined if not found.
    */
-  public async get<T>(
+  public get = async <T>(
     storeName: IDBStoreName,
     key: string,
-  ): Promise<T | undefined> {
+  ): Promise<T | undefined> => {
     const db = await this.getDb();
     if (!db.objectStoreNames.contains(storeName)) {
       return undefined;
     }
     return db.get(storeName, key);
-  }
+  };
 
   /**
    * Retrieves all values from a specified object store.
    * @param storeName The name of the object store.
    * @returns An array of all values in the store.
    */
-  public async getAll<T>(storeName: IDBStoreName): Promise<T[]> {
+  public getAll = async <T>(storeName: IDBStoreName): Promise<T[]> => {
     const db = await this.getDb();
     if (!db.objectStoreNames.contains(storeName)) {
       return [];
     }
     return db.getAll(storeName);
-  }
+  };
 
   /**
    * Deletes the entire database for the current session.
    */
-  public async deleteDB() {
+  public deleteDB = async () => {
     if (this.dbName) {
       // Ensure the current connection is closed before deleting.
       if (this.dbPromise) {
@@ -128,7 +125,7 @@ class IDBManager {
       this.dbPromise = null;
       this.dbName = null;
     }
-  }
+  };
 
   /**
    * Returns the active database connection promise.
@@ -187,11 +184,10 @@ class IDBManager {
 // Create a single instance to be used as a singleton.
 const idbManager = new IDBManager();
 
-// Bind the public methods to the singleton instance.
-const initIDB = idbManager.init.bind(idbManager);
-const idbStore = idbManager.store.bind(idbManager);
-const idbGet = idbManager.get.bind(idbManager);
-const idbGetAll = idbManager.getAll.bind(idbManager);
-const deleteRoomDB = idbManager.deleteDB.bind(idbManager);
+const initIDB = idbManager.init;
+const idbStore = idbManager.store;
+const idbGet = idbManager.get;
+const idbGetAll = idbManager.getAll;
+const deleteRoomDB = idbManager.deleteDB;
 
 export { initIDB, idbStore, idbGet, idbGetAll, deleteRoomDB };

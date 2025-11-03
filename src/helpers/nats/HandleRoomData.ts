@@ -77,11 +77,11 @@ export default class HandleRoomData {
     }
   }
 
-  private setWindowTitle = (title: string) => {
+  private setWindowTitle(title: string) {
     window.document.title = title;
-  };
+  }
 
-  private showRecordingNotification = () => {
+  private showRecordingNotification() {
     // we should avoid notification is user is recorder.
     if (store.getState().session.currentUser?.isRecorder) {
       return;
@@ -103,9 +103,9 @@ export default class HandleRoomData {
         }),
       );
     }
-  };
+  }
 
-  private showRTMPNotification = () => {
+  private showRTMPNotification() {
     // we should avoid notification is user being recorder.
     if (store.getState().session.currentUser?.isRecorder) {
       return;
@@ -128,9 +128,9 @@ export default class HandleRoomData {
         }),
       );
     }
-  };
+  }
 
-  private publishWelcomeMessage = () => {
+  private publishWelcomeMessage() {
     if (this.welcomeMessage !== undefined) {
       return;
     }
@@ -157,9 +157,9 @@ export default class HandleRoomData {
     store.dispatch(
       addChatMessage({ message: body, currentUserId: this.userId }),
     );
-  };
+  }
 
-  private addPreloadWhiteboardFile = async () => {
+  private async addPreloadWhiteboardFile() {
     if (this.checkedPreloadedWhiteboardFile) {
       return;
     }
@@ -237,5 +237,5 @@ export default class HandleRoomData {
       toast.dismiss(this.toastId);
       this.toastId = undefined;
     }
-  };
+  }
 }

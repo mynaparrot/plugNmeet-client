@@ -107,7 +107,10 @@ class AudioActivityManager {
   /**
    * Registers or updates a MediaStream for activity monitoring.
    */
-  public async addStream(stream: MediaStream, callback: SubscriberCallback) {
+  public addStream = async (
+    stream: MediaStream,
+    callback: SubscriberCallback,
+  ) => {
     await this.initialize();
 
     if (!stream || !this.audioContext) {
@@ -149,12 +152,12 @@ class AudioActivityManager {
     };
 
     this.tracks.set(stream.id, processor);
-  }
+  };
 
   /**
    * Unregisters a MediaStream from activity monitoring and cleans up resources.
    */
-  public removeStream(streamId: string) {
+  public removeStream = (streamId: string) => {
     const processor = this.tracks.get(streamId);
     if (!processor) return;
 
@@ -166,12 +169,12 @@ class AudioActivityManager {
 
     processor.source.disconnect();
     this.tracks.delete(streamId);
-  }
+  };
 
   /**
    * Stops the animation loop and cleans up all associated audio resources.
    */
-  public destroy() {
+  public destroy = () => {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = undefined;
@@ -190,8 +193,11 @@ class AudioActivityManager {
     if (this.audioContext && this.audioContext.state !== 'closed') {
       this.audioContext.close().then();
     }
-  }
+  };
 }
 
-// Export a single, global instance for the entire application to use.
-export const audioActivityManager = new AudioActivityManager();
+const audioActivityManager = new AudioActivityManager();
+
+export const addAudioStream = audioActivityManager.addStream;
+export const removeAudioStream = audioActivityManager.removeStream;
+export const destroyAudioManager = audioActivityManager.destroy;

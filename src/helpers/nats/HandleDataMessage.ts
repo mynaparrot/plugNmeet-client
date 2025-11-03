@@ -21,34 +21,37 @@ import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlic
 import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whiteboard';
 
 export default class HandleDataMessage {
-  private _that: ConnectNats;
+  private connectNats: ConnectNats;
 
-  constructor(that: ConnectNats) {
-    this._that = that;
+  constructor(connectNats: ConnectNats) {
+    this.connectNats = connectNats;
   }
 
   public handleMessage = async (payload: DataChannelMessage) => {
     switch (payload.type) {
       case DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA:
-        if (payload.toUserId === this._that.userId) {
+        if (payload.toUserId === this.connectNats.userId) {
           // only if was sent for me
           this.handleSendInitWhiteboard(payload);
         }
         break;
       case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
-        if (payload.toUserId === this._that.userId) {
+        if (payload.toUserId === this.connectNats.userId) {
           // only if was sent for me
           this.handleWhiteboardDataSentFromDonor(payload.message);
         }
         break;
       case DataMsgBodyType.USER_VISIBILITY_CHANGE:
-        if (payload.fromUserId === this._that.userId) {
+        if (payload.fromUserId === this.connectNats.userId) {
           return;
         }
         this.handleUserVisibility(payload);
         break;
       case DataMsgBodyType.INFO:
-        if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
+        if (
+          payload.fromUserId === this.connectNats.userId ||
+          this.connectNats.isRecorder
+        ) {
           return;
         }
         store.dispatch(
@@ -59,7 +62,10 @@ export default class HandleDataMessage {
         );
         break;
       case DataMsgBodyType.ALERT:
-        if (payload.fromUserId === this._that.userId || this._that.isRecorder) {
+        if (
+          payload.fromUserId === this.connectNats.userId ||
+          this.connectNats.isRecorder
+        ) {
           return;
         }
         store.dispatch(
@@ -70,13 +76,13 @@ export default class HandleDataMessage {
         );
         break;
       case DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS:
-        if (payload.fromUserId === this._that.userId) {
+        if (payload.fromUserId === this.connectNats.userId) {
           return;
         }
         this.handleExternalMediaPlayerEvents(payload.message);
         break;
       case DataMsgBodyType.NEW_POLL_RESPONSE:
-        if (payload.fromUserId === this._that.userId) {
+        if (payload.fromUserId === this.connectNats.userId) {
           return;
         }
         store.dispatch(
@@ -110,7 +116,7 @@ export default class HandleDataMessage {
         );
         break;
       case DataMsgBodyType.PUSH_JOIN_BREAKOUT_ROOM:
-        if (payload.toUserId === this._that.userId) {
+        if (payload.toUserId === this.connectNats.userId) {
           store.dispatch(updateReceivedInvitationFor(payload.message));
         }
         break;
@@ -133,7 +139,7 @@ export default class HandleDataMessage {
   }
 
   private handleUserVisibility(payload: DataChannelMessage) {
-    if (!this._that.isAdmin) {
+    if (!this.connectNats.isAdmin) {
       return;
     }
     store.dispatch(

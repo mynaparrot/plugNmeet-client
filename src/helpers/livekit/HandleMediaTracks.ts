@@ -25,15 +25,18 @@ import {
   addOrUpdateSpeaker,
   removeOneSpeaker,
 } from '../../store/slices/activeSpeakersSlice';
-import { audioActivityManager } from '../libs/AudioActivityManager';
+import {
+  addAudioStream,
+  removeAudioStream,
+} from '../libs/AudioActivityManager';
 
 export default class HandleMediaTracks {
-  private that: IConnectLivekit;
+  private connectLivekit: IConnectLivekit;
   private roomMetadata: IRoomMetadata | undefined;
   private currentUser: ICurrentUser | undefined;
 
-  constructor(that: IConnectLivekit) {
-    this.that = that;
+  constructor(connectLivekit: IConnectLivekit) {
+    this.connectLivekit = connectLivekit;
     const { currentUser, currentRoom } = store.getState().session;
     this.roomMetadata = currentRoom.metadata;
     this.currentUser = currentUser;
@@ -62,7 +65,7 @@ export default class HandleMediaTracks {
   ) => {
     this.addSubscriber(track, participant);
     this.addSpeaker(track, participant);
-    // we can also update connection quality
+    // we can also update connectLivekit quality
     store.dispatch(
       updateParticipant({
         id: participant.identity,
@@ -202,11 +205,10 @@ export default class HandleMediaTracks {
             changes: { screenShareTrack: 1 },
           }),
         );
-        this.that.addScreenShareTrack(participant.identity, track);
+        this.connectLivekit.addScreenShareTrack(participant.identity, track);
         break;
       }
       case Track.Source.Microphone: {
-        this.that.addAudioSubscriber(participant);
         const count = participant
           .getTrackPublications()
           .filter((t) => t.source === Track.Source.Microphone).length;
@@ -220,6 +222,7 @@ export default class HandleMediaTracks {
             },
           }),
         );
+        this.connectLivekit.addAudioSubscriber(participant);
         break;
       }
       case Track.Source.Camera: {
@@ -227,7 +230,6 @@ export default class HandleMediaTracks {
           // If the current user doesn't have permission, stop here.
           return;
         }
-        this.that.addVideoSubscriber(participant);
         const count = participant
           .getTrackPublications()
           .filter((t) => t.source === Track.Source.Camera).length;
@@ -237,6 +239,7 @@ export default class HandleMediaTracks {
             changes: { videoTracks: count },
           }),
         );
+        this.connectLivekit.addVideoSubscriber(participant);
         break;
       }
     }
@@ -255,11 +258,11 @@ export default class HandleMediaTracks {
             changes: { screenShareTrack: 0 },
           }),
         );
-        this.that.removeScreenShareTrack(participant.identity);
+        this.connectLivekit.removeScreenShareTrack(participant.identity);
         break;
       }
       case Track.Source.Microphone: {
-        this.that.removeAudioSubscriber(participant.identity);
+        this.connectLivekit.removeAudioSubscriber(participant.identity);
         store.dispatch(
           updateParticipant({
             id: participant.identity,
@@ -276,7 +279,7 @@ export default class HandleMediaTracks {
         break;
       }
       case Track.Source.Camera: {
-        this.that.removeVideoSubscriber(participant.identity);
+        this.connectLivekit.removeVideoSubscriber(participant.identity);
         store.dispatch(
           updateParticipant({
             id: participant.identity,
@@ -317,7 +320,7 @@ export default class HandleMediaTracks {
       return;
     }
 
-    audioActivityManager.addStream(track.audioTrack.mediaStream, (activity) => {
+    addAudioStream(track.audioTrack.mediaStream, (activity) => {
       store.dispatch(
         addOrUpdateSpeaker({
           userId: participant.identity,
@@ -327,7 +330,7 @@ export default class HandleMediaTracks {
           lastSpokeAt: activity.lastSpokeAt,
         }),
       );
-    });
+    }).then();
   }
 
   /**
@@ -344,7 +347,7 @@ export default class HandleMediaTracks {
     ) {
       return;
     }
-    audioActivityManager.removeStream(track.audioTrack.mediaStream.id);
+    removeAudioStream(track.audioTrack.mediaStream.id);
     store.dispatch(removeOneSpeaker(participant.identity));
   }
 }

@@ -60,7 +60,6 @@ import {
   getWhiteboardDonors,
   isUserRecorder,
   randomString,
-  sleep,
 } from '../utils';
 import {
   addSelfInsertedE2EESecretKey,
@@ -69,7 +68,7 @@ import {
   updateIsNatsServerConnected,
 } from '../../store/slices/roomSettingsSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
-import { audioActivityManager } from '../libs/AudioActivityManager';
+import { destroyAudioManager } from '../libs/AudioActivityManager';
 import {
   DB_STORE_NAMES,
   deleteRoomDB,
@@ -244,8 +243,8 @@ export default class ConnectNats {
       text: i18n.t(msg),
     });
     this._setRoomConnectionStatusState('disconnected');
-    // clean audioActivityManager
-    audioActivityManager.destroy();
+    // clean AudioManager
+    destroyAudioManager();
     // clean room-specific IndexedDB storage
     await deleteRoomDB();
 
@@ -386,7 +385,7 @@ export default class ConnectNats {
   /**
    * All the system public events will be handled here
    */
-  private subscribeToSystemPublic = async () => {
+  private async subscribeToSystemPublic() {
     await this._subscribe(
       this._roomId,
       this._subjects.systemPublic,
@@ -398,7 +397,7 @@ export default class ConnectNats {
         await this.handleSystemEvents(payload);
       },
     );
-  };
+  }
 
   public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
     const subject =
@@ -409,7 +408,7 @@ export default class ConnectNats {
     });
   };
 
-  private encryptData = async (payload: Uint8Array) => {
+  private async encryptData(payload: Uint8Array) {
     try {
       //  Encrypt the binary data directly to a Uint8Array
       return await encryptDataToUint8Array(payload);
@@ -423,9 +422,9 @@ export default class ConnectNats {
       console.error('Encryption error:' + e.message);
     }
     return undefined;
-  };
+  }
 
-  private decryptData = async (payload: Uint8Array) => {
+  private async decryptData(payload: Uint8Array) {
     try {
       return await decryptDataFromUint8Array(payload);
     } catch (e: any) {
@@ -438,13 +437,13 @@ export default class ConnectNats {
       console.error('Decryption error:' + e.message);
     }
     return undefined;
-  };
+  }
 
   /**
    * All the events related with chat will be handled here,
    * including public and private
    */
-  private subscribeToChat = async () => {
+  private async subscribeToChat() {
     await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
       let dataToParse = m.data;
       if (this._enableE2EEChat) {
@@ -457,7 +456,7 @@ export default class ConnectNats {
       const payload = fromBinary(ChatMessageSchema, dataToParse);
       await this.handleChat.handleMsg(payload);
     });
-  };
+  }
 
   public sendChatMsg = async (to: string, msg: string) => {
     const isPrivate = to !== 'public';
@@ -511,7 +510,7 @@ export default class ConnectNats {
   /**
    * All the events related with whiteboard will be handled here
    */
-  private subscribeToWhiteboard = async () => {
+  private async subscribeToWhiteboard() {
     await this._subscribe(
       this._roomId,
       this._subjects.whiteboard,
@@ -530,7 +529,7 @@ export default class ConnectNats {
         }
       },
     );
-  };
+  }
 
   public sendWhiteboardData = async (
     type: DataMsgBodyType,
@@ -565,7 +564,7 @@ export default class ConnectNats {
    * subscribeToDataChannel to communicate with each other
    * Mostly with client to client
    */
-  private subscribeToDataChannel = async () => {
+  private async subscribeToDataChannel() {
     await this._subscribe(
       this._roomId,
       this._subjects.dataChannel,
@@ -582,7 +581,7 @@ export default class ConnectNats {
         await this.handleDataMsg.handleMessage(payload);
       },
     );
-  };
+  }
 
   /**
    * sendDataMessage method mostly use to communicate between clients
@@ -775,15 +774,13 @@ export default class ConnectNats {
    * to establish the full connection, typically after receiving approval to join the room.
    * Calling this method prematurely may result in the media server token expiring before it is used.
    */
-  public finalizeAppConn = async () => {
+  public finalizeAppConn = () => {
     // 1. Request for users' list to prepare everything
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
       }),
     );
-    // wait to let us prepare everything
-    await sleep(200);
 
     // 2. Request for media server connection data
     this.sendMessageToSystemWorker(
