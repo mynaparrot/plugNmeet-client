@@ -40,10 +40,10 @@ const VerticalLayout = ({
     return getElmsForPCExtendedVerticalView(participantsToRender);
   }, [isEnabledExtendedVerticalCamView, participantsToRender]);
 
-  const wrapperClasses = `vertical-webcams-wrapper absolute right-0 top-0 bg-white h-full p-3 transition-all duration-300 z-20 ${
+  const wrapperClasses = `vertical-webcams-wrapper absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 border-l border-Gray-200 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
     isEnabledExtendedVerticalCamView
-      ? 'w-[416px] flex flex-col justify-center extended-view-wrap'
-      : 'w-[212px] not-extended'
+      ? 'w-full xl:w-[416px] flex xl:flex-col justify-center extended-view-wrap'
+      : 'w-full xl:w-[212px] not-extended'
   }`;
 
   const innerClasses = `inner row-count-${
@@ -52,8 +52,8 @@ const VerticalLayout = ({
     participantsToRender.length
   } page-${currentPage} ${
     isEnabledExtendedVerticalCamView
-      ? 'flex gap-3 h-full flex-col justify-center'
-      : 'h-full flex flex-col justify-center gap-3 bg-white z-20'
+      ? 'flex gap-3 h-full xl:flex-col justify-center w-full'
+      : 'h-full flex xl:flex-col justify-center gap-3 z-20'
   } ${pinParticipant ? 'has-pin-cam' : ''}`;
 
   return (
