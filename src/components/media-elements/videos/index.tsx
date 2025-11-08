@@ -80,29 +80,29 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           displaySwitchCamIcon = false;
         }
 
-        for (let i = 0; i < 3; i++) {
-          totalNumWebcams++;
-          const elm = (
-            <VideoParticipant
-              // key={participant.sid}
-              key={participant.sid + '_' + i}
-              participantType={participantType}
-              participant={participant}
-              displayPinIcon={displayPinIcon}
-              displaySwitchCamIcon={displaySwitchCamIcon}
-            />
-          );
+        // for (let i = 0; i < 6; i++) {
+        totalNumWebcams++;
+        const elm = (
+          <VideoParticipant
+            key={participant.sid}
+            // key={participant.sid + '_' + i}
+            participantType={participantType}
+            participant={participant}
+            displayPinIcon={displayPinIcon}
+            displaySwitchCamIcon={displaySwitchCamIcon}
+          />
+        );
 
-          if (pinCamUserId && participant.identity === pinCamUserId) {
-            pinSubscribers = elm;
-          } else if (isAdmin) {
-            adminSubscribers.push(elm);
-          } else if (participant instanceof LocalParticipant) {
-            localSubscribers.push(elm);
-          } else {
-            otherSubscribers.push(elm);
-          }
+        if (pinCamUserId && participant.identity === pinCamUserId) {
+          pinSubscribers = elm;
+        } else if (isAdmin) {
+          adminSubscribers.push(elm);
+        } else if (participant instanceof LocalParticipant) {
+          localSubscribers.push(elm);
+        } else {
+          otherSubscribers.push(elm);
         }
+        // }
       }
     }
 

@@ -428,7 +428,7 @@ input.polls-checkbox::before {
 }
 
 .middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
-  @apply pr-[416px];
+  @apply xl:pr-[416px];
 }
 
 /* .SpeechHistory::before {
@@ -1019,9 +1019,9 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   @apply rotate-90;
 }
 
-.vertical-webcams-wrapper:hover .extend-button {
+/* .vertical-webcams-wrapper:hover .extend-button {
   @apply -left-4 opacity-100;
-}
+} */
 .vertical-webcams-wrapper .video-camera-item {
   @apply order-3;
 }

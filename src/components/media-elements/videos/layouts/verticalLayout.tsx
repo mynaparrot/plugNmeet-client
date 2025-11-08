@@ -40,9 +40,9 @@ const VerticalLayout = ({
     return getElmsForPCExtendedVerticalView(participantsToRender);
   }, [isEnabledExtendedVerticalCamView, participantsToRender]);
 
-  const wrapperClasses = `vertical-webcams-wrapper absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 border-l border-Gray-200 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
+  const wrapperClasses = `vertical-webcams-wrapper group absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 border-l border-Gray-200 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
     isEnabledExtendedVerticalCamView
-      ? 'w-full xl:w-[416px] flex xl:flex-col justify-center extended-view-wrap'
+      ? 'w-full xl:w-[416px] flex flex-col justify-center extended-view-wrap'
       : 'w-full xl:w-[212px] not-extended'
   }`;
 
@@ -79,7 +79,7 @@ const VerticalLayout = ({
               ),
             )
           }
-          className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue flex items-center justify-center transition-all duration-300 opacity-0"
+          className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-left-4"
         >
           <span
             className={`${
