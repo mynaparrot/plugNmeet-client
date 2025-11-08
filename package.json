@@ -21,7 +21,7 @@
     "@headlessui/react": "2.2.9",
     "@nats-io/jetstream": "3.2.0",
     "@nats-io/nats-core": "3.2.0",
-    "@reduxjs/toolkit": "2.9.2",
+    "@reduxjs/toolkit": "2.10.1",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.22.0",
     "axios": "1.13.1",
