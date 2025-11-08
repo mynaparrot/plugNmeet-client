@@ -67,7 +67,7 @@
     "@vitejs/plugin-react": "5.1.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.6",
-    "oxlint": "1.25.0",
+    "oxlint": "1.26.0",
     "prettier": "3.6.2",
     "tailwindcss": "4.1.16",
     "typescript": "5.9.3",
