@@ -224,45 +224,49 @@ export default class ConnectNats {
   };
 
   public endSession = async (msg: string) => {
-    if (this.mediaServerConn) {
-      await this.mediaServerConn.disconnectRoom(true);
-    }
-
-    clearInterval(this.tokenRenewInterval);
-    clearInterval(this.pingInterval);
-    this.handleParticipants.clearParticipantCounterInterval();
-
-    if (this._nc && !this._nc.isClosed()) {
-      await this._nc.drain();
-      await this._nc.close();
-    }
-    this.messageQueue.setIsConnected(false);
-
+    // 1. Immediately update UI and stop new messages
     this._setErrorState({
       title: i18n.t('notifications.room-disconnected-title'),
       text: i18n.t(msg),
     });
+    this.messageQueue.setIsConnected(false);
     this._setRoomConnectionStatusState('disconnected');
-    // clean AudioManager
-    destroyAudioManager();
-    // clean room-specific IndexedDB storage
-    await deleteRoomDB();
 
+    // 2. Clear all intervals to prevent further actions
+    clearInterval(this.tokenRenewInterval);
+    clearInterval(this.pingInterval);
+    this.handleParticipants.clearParticipantCounterInterval();
+
+    // 3. Concurrently run all cleanup tasks.
+    const cleanupPromises: Promise<void>[] = [];
+    if (this.mediaServerConn) {
+      cleanupPromises.push(this.mediaServerConn.disconnectRoom(true));
+    }
+    if (this._nc && !this._nc.isClosed()) {
+      cleanupPromises.push(this._nc.close());
+    }
+    cleanupPromises.push(deleteRoomDB());
+
+    await Promise.allSettled(cleanupPromises);
+
+    // 4. Final resource cleanup
+    destroyAudioManager();
+
+    // 5. Handle post-session navigation after a delay
+    // This timeout allows the user time to read the disconnection message.
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;
       if (meta?.isBreakoutRoom) {
-        // if this was breakout room then we can simply close
         window.close();
+        return; // Exit to avoid processing logoutUrl
       }
 
       if (meta?.logoutUrl) {
         try {
-          // validate URL
-          const logout_url = new URL(meta.logoutUrl);
-          // redirect to log out url
-          window.location.href = logout_url.href;
+          const logoutUrl = new URL(meta.logoutUrl);
+          window.location.href = logoutUrl.href;
         } catch (e) {
-          console.error(e);
+          console.error('Invalid logout URL:', e);
         }
       }
     }, 3000);
