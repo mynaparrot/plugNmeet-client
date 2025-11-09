@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ReactPlayer from 'react-player/lazy';
 import { isArray } from 'es-toolkit/compat';
+import ReactPlayer from 'react-player';
 
 import FormattedInputField from '../../../helpers/ui/formattedInputField';
 import { PlusCircleIconSVG } from '../../../assets/Icons/PlusCircleIconSVG';
@@ -38,7 +38,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
       setErrorMsg(t('footer.notice.external-media-player-url-required'));
       return;
     }
-    if (!ReactPlayer.canPlay(playBackUrl)) {
+    if (!ReactPlayer.canPlay?.(playBackUrl)) {
       setErrorMsg(t('footer.notice.external-media-player-url-invalid'));
       return;
     }

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import ReactPlayer from 'react-player/lazy';
+import React, { useCallback, useEffect, useRef } from 'react';
+import ReactPlayer from 'react-player';
 
 import { useAppSelector } from '../../store';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
@@ -18,11 +18,7 @@ const ReactPlayerComponent = ({
   seekTo,
   isPresenter,
 }: IReactPlayerComponentProps) => {
-  const [paused, setPaused] = useState<boolean>(true);
-  const [isReady, setIsReady] = useState<boolean>(false);
-  const [playing, setPlaying] = useState<boolean>(false);
-  const player = useRef<ReactPlayer | undefined>(undefined);
-  const conn = getNatsConn();
+  const player = useRef<HTMLVideoElement | null>(null);
 
   const height = useAppSelector(
     (state) => state.bottomIconsActivity.screenHeight,
@@ -32,80 +28,69 @@ const ReactPlayerComponent = ({
   );
 
   useEffect(() => {
-    if (isPresenter) {
+    if (!player.current || isPresenter) {
+      // only for non-presenter to follow presenter
       return;
     }
 
     if (action === 'play') {
-      setPlaying(true);
+      if (seekTo > 1) {
+        player.current.currentTime = seekTo;
+      }
+      player.current.play().then();
     } else if (action === 'pause') {
-      setPlaying(false);
+      player.current.pause();
     }
-  }, [action, isPresenter]);
+  }, [action, seekTo, isPresenter]);
 
-  useEffect(() => {
-    if (!isReady) {
-      return;
-    }
+  const broadcast = useCallback(
+    async (playing: boolean) => {
+      if (!player.current || !isPresenter) {
+        return;
+      }
 
-    if (!isPresenter && seekTo > 1 && player) {
-      player.current?.seekTo(seekTo);
-    }
-  }, [seekTo, player, isReady, isPresenter]);
+      let msg: {};
+      if (!playing) {
+        msg = {
+          action: 'pause',
+        };
+      } else {
+        msg = {
+          action: 'play',
+          seekTo: player.current.currentTime,
+        };
+      }
+      const conn = getNatsConn();
+      await conn.sendDataMessage(
+        DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
+        JSON.stringify(msg),
+      );
+    },
+    [isPresenter],
+  );
 
-  useEffect(() => {
-    if (!isPresenter) {
-      return;
-    }
-    if (!isReady || !player) {
-      return;
-    }
-    const broadcast = (msg: string) => {
-      conn.sendDataMessage(DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS, msg);
-    };
+  const onPause = useCallback(async () => {
+    await broadcast(false);
+  }, [broadcast]);
 
-    if (paused) {
-      const msg = {
-        action: 'pause',
-      };
-      broadcast(JSON.stringify(msg));
-    } else {
-      const msg = {
-        action: 'play',
-        seekTo: player.current?.getCurrentTime(),
-      };
-      broadcast(JSON.stringify(msg));
-    }
-    //eslint-disable-next-line
-  }, [isReady, paused, player, isPresenter]);
+  const onPlay = useCallback(async () => {
+    await broadcast(true);
+  }, [broadcast]);
 
-  const onReady = () => {
-    setIsReady(true);
-  };
-
-  const onPause = () => {
-    setPaused(true);
-  };
-
-  const onPlay = () => {
-    setPaused(false);
-  };
-
-  const ref = (_player) => {
+  const ref = useCallback((_player: HTMLVideoElement) => {
     player.current = _player;
-  };
+  }, []);
 
   return (
     <ReactPlayer
       ref={ref}
-      url={src}
+      src={src}
       width={width * 0.7}
       height={height * 0.7}
-      playing={playing}
       controls={isPresenter}
-      onReady={onReady}
       onPause={onPause}
       onPlay={onPlay}
+      autoPlay={false}
     />
   );
 };
