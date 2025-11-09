@@ -1,5 +1,6 @@
 {
   "ok": "Oke",
+  "save": "Simpan",
   "close": "Tutup",
   "cancel": "Membatalkan",
   "yes": "Ya",
@@ -29,7 +30,7 @@
     "you-have-removed": "Anda telah dihapus dari konferensi ini.",
     "you-are-blocked": "Anda tidak diizinkan untuk mengakses konferensi ini.",
     "you-have-reject": "Anda telah ditolak untuk bergabung dengan konferensi ini",
-    "waiting-for-approval": "Harap tunggu hingga moderator menyetujui Anda.",
+    "waiting-for-approval": "Moderator telah diberi tahu dan akan segera mengizinkan Anda masuk. Terima kasih atas kesabaran Anda!",
     "room-disconnected-title": "Kamar terputus",
     "room-disconnected-unknown": "Ruangan telah terputus. Kode: {{code}}",
     "room-disconnected-client-initiated": "Klien telah dimulai. Kode: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Mengirim permintaan tidak berhasil",
     "decode-error-title": "Kesalahan decoding",
     "decode-error-body": "Kami tidak dapat memahami data yang dikirim dari server",
+    "invalid-missing-data": "Data tidak valid atau hilang diterima",
     "nats-error-auth-title": "Kesalahan autentikasi",
     "nats-error-auth-body": "Kami tidak dapat memverifikasi informasi autentikasi Anda. Mungkinkah Anda menggunakan token yang kedaluwarsa?",
     "user-logged-out": "Anda keluar",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Perekaman cloud tidak tersedia saat menggunakan kunci keamanan kustom.",
     "media-only-recording-not-support-e2ee": "Hanya merekam audio dan video tidak tersedia saat enkripsi ujung ke ujung diaktifkan.",
     "you-are-sharing-screen": "Anda berbagi layar sekarang. Yang lain akan melihat tampilan yang lebih besar.",
-    "new-system-message-in-chat": "Pesan sistem baru telah diposting di obrolan publik."
+    "new-system-message-in-chat": "Pesan sistem baru telah diposting di obrolan publik.",
+    "queue-holding-messages": "Masalah koneksi: pesan ditahan. ({{error}})",
+    "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Sesi ini sedang direkam",
@@ -231,9 +235,11 @@
     "hide-footer": "Sembunyikan footer",
     "show-footer": "Tampilkan footer",
     "icons": {
+      "select-webcam": "Pilih webcam",
       "start-webcam": "Mulai webcam",
-      "leave-webcam": "Tinggalkan webcam",
+      "turn-off-webcam": "Matikan Kamera",
       "webcam-locked": "Webcam terkunci",
+      "select-microphone": "Pilih mikrofon",
       "start-microphone-sharing": "Mulai berbagi mikrofon",
       "microphone-locked": "Mikrofon terkunci",
       "leave-microphone": "Tinggalkan Mikrofon",
@@ -425,25 +431,33 @@
     "copied": "Disalin",
     "not-started": "Belum dimulai",
     "user-joined": "Bergabung",
-    "not-joined": "Tidak bergabung"
+    "not-joined": "Tidak bergabung",
+    "push": "Dorong",
+    "you-pushed-user": "Pemberitahuan bergabung telah dikirim ke {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Menghubungkan ke server media...",
+    "connecting-media-server": "Menghubungkan ke rapat...",
     "modal-title": "Preferensi Mikrofon dan Kamera",
     "ready-to-join": "Siap untuk bergabung?",
-    "join-prompt": "Aktifkan mikrofon dan kamera Anda untuk berpartisipasi sepenuhnya, atau bergabunglah sebagai pendengar.",
+    "join-prompt": "Siapkan perangkat Anda sekarang, atau bergabung sebagai pendengar. Anda selalu dapat mengontrol mikrofon dan kamera nanti selama rapat.",
+    "join-prompt-mic-locked": "Mikrofon dinonaktifkan untuk rapat ini. Anda dapat mengaktifkan kamera atau bergabung sebagai pendengar.",
+    "join-prompt-cam-locked": "Kamera dinonaktifkan untuk rapat ini. Anda dapat mengaktifkan mikrofon atau bergabung sebagai pendengar.",
+    "join-prompt-both-locked": "Mikrofon dan kamera dinonaktifkan untuk rapat ini. Silakan bergabung sebagai pendengar.",
     "enable-mic-cam-btn": "Aktifkan Mikrofon dan Kamera",
+    "enable-mic-btn": "Aktifkan Mikrofon",
+    "enable-cam-btn": "Aktifkan Kamera",
     "join-as-listener-btn": "Bergabunglah sebagai pendengar",
     "webcam-menu-title": "Pilih Kamera",
     "mic-menu-title": "Pilih Mikrofon",
     "background-filter-title": "Latar Belakang & Filter",
     "config-background-btn": "Konfigurasikan Latar Belakang Kamera",
-    "waiting-for-approval-title": "Menunggu Persetujuan"
+    "waiting-for-approval-title": "Anda berada di ruang tunggu"
   },
   "external-display-link-display": {
     "modal-title": "Tampilkan tautan eksternal (iframe)",
     "url": "Url",
     "display": "Menampilkan",
+    "url-required": "URL yang valid diperlukan.",
     "link-invalid": "Tautan tidak valid",
     "note": "Catatan: Pastikan URL memiliki izin untuk membuka di dalam iframe. Contoh: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Kirim nilai Ekstra",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Sejarah teks subtitle",
     "azure-error": "Kesalahan Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Layanan ucapan ke teks telah dihentikan",
-    "enable-transcription": "Aktifkan Transkripsi"
+    "enable-transcription": "Aktifkan Transkripsi",
+    "download-header": "Riwayat Subtitle untuk {{name}}\nBahasa: {{lang}}\nDihasilkan pada: {{date}} di {{time}}"
   }
 }
