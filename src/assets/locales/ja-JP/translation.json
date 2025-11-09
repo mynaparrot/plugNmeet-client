@@ -1,5 +1,6 @@
 {
   "ok": "OK",
+  "save": "保存",
   "close": "閉じる",
   "cancel": "キャンセル",
   "yes": "はい",
@@ -29,7 +30,7 @@
     "you-have-removed": "ミーティングから追放されました。",
     "you-are-blocked": "このミーティングへの参加が許可されていません。",
     "you-have-reject": "このカンファレンスへの参加が拒否されました",
-    "waiting-for-approval": "モデレーターが承認するまでお待ちください。",
+    "waiting-for-approval": "モデレータが通知され、すぐにあなたを聞かせてくれます。ご理解ありがとうございます！",
     "room-disconnected-title": "部屋が切断されました",
     "room-disconnected-unknown": "部屋が切断されました。コード： {{code}}",
     "room-disconnected-client-initiated": "クライアントが開始されました。コード： {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "リクエストの送信に失敗しました",
     "decode-error-title": "デコードエラー",
     "decode-error-body": "サーバーから送信されたデータを理解できませんでした",
+    "invalid-missing-data": "受信したデータが無効または欠落しています",
     "nats-error-auth-title": "認証エラー",
     "nats-error-auth-body": "お客様の認証情報を確認できませんでした。期限切れのトークンを使用している可能性がありますか?",
     "user-logged-out": "ログアウトしました",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウドの記録は使用できません。",
     "media-only-recording-not-support-e2ee": "エンドツーエンド暗号化が有効になっている場合、音声とビデオのみの記録は使用できません。",
     "you-are-sharing-screen": "画面を共有しています。他の人は大きな画面を見ることができます。",
-    "new-system-message-in-chat": "新しいシステムメッセージが公開チャットに投稿されました。"
+    "new-system-message-in-chat": "新しいシステムメッセージが公開チャットに投稿されました。",
+    "queue-holding-messages": "接続の問題: メッセージが保留されています。({{error}})",
+    "queue-discarded-message": "メッセージを送信できませんでした。({{error}})"
   },
   "room-metadata": {
     "session-recording": "このセッションは録画されています",
@@ -231,9 +235,11 @@
     "hide-footer": "フッターを隠す",
     "show-footer": "フッターを表示",
     "icons": {
+      "select-webcam": "ウェブカメラを選択",
       "start-webcam": "ウェブカメラを開始",
-      "leave-webcam": "ウェブカメラから退出する",
+      "turn-off-webcam": "カメラをオフにする",
       "webcam-locked": "ウェブカメラがロックされています",
+      "select-microphone": "マイクを選択",
       "start-microphone-sharing": "マイクの共有を開始する",
       "microphone-locked": "マイクがロックされています",
       "leave-microphone": "マイクを残す",
@@ -425,25 +431,33 @@
     "copied": "コピー",
     "not-started": "未開始",
     "user-joined": "しんにゅう",
-    "not-joined": "結合されていません"
+    "not-joined": "結合されていません",
+    "push": "Push",
+    "you-pushed-user": "参加通知が {{name}}に送信されました。"
   },
   "landing": {
-    "connecting-media-server": "メディアサーバーに接続中...",
+    "connecting-media-server": "会議に接続しています...",
     "modal-title": "マイクとカメラの設定",
     "ready-to-join": "参加する準備はできましたか？",
-    "join-prompt": "マイクとカメラを有効にして、完全に参加するか、リスナーとして参加してください。",
+    "join-prompt": "今すぐデバイスを設定するか、リスナーとして参加します。ミーティング中はいつでもマイクとカメラを制御できます。",
+    "join-prompt-mic-locked": "このミーティングではマイクが無効になっています．カメラを有効にするか，リスナーとして参加することができます．",
+    "join-prompt-cam-locked": "このミーティングではカメラが無効になっています．マイクを有効にするか，リスナーとして参加することができます．",
+    "join-prompt-both-locked": "このミーティングではマイクとカメラは無効になっています．リスナーとして参加してください．",
     "enable-mic-cam-btn": "マイクとカメラを有効にする",
+    "enable-mic-btn": "マイクを有効にする",
+    "enable-cam-btn": "カメラを有効化",
     "join-as-listener-btn": "リスナーとして参加",
     "webcam-menu-title": "カメラを選択",
     "mic-menu-title": "マイクを選択",
     "background-filter-title": "背景とフィルタ",
     "config-background-btn": "カメラの背景を設定",
-    "waiting-for-approval-title": "承認待ち"
+    "waiting-for-approval-title": "待合室にいます"
   },
   "external-display-link-display": {
     "modal-title": "外部リンクの表示(iframe)",
     "url": "関連URL",
     "display": "陳列",
+    "url-required": "有効な URL が必要です。",
     "link-invalid": "リンクが無効です",
     "note": "注: URL に iframe 内で開く権限があることを確認してください。例: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "追加の値を送信する",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "字幕テキスト履歴",
     "azure-error": "Microsoft Azureエラー: {{error}}",
     "speech-to-text-stopped": "音声テキスト変換サービスが停止しました",
-    "enable-transcription": "表記を有効にする"
+    "enable-transcription": "表記を有効にする",
+    "download-header": "{{name}}\n言語: {{lang}}\n生成日時: {{date}} at {{time}}"
   }
 }
