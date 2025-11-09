@@ -1,5 +1,6 @@
 {
   "ok": "是",
+  "save": "保存",
   "close": "关闭",
   "cancel": "取消",
   "yes": "是",
@@ -29,7 +30,7 @@
     "you-have-removed": "你已经从会议中被删除",
     "you-are-blocked": "您不允许访问此会议。",
     "you-have-reject": "您已被拒绝加入此会议",
-    "waiting-for-approval": "请稍候，直到会议主持人接您进入。",
+    "waiting-for-approval": "一个版主已经收到通知，很快就会让您来。谢谢您的耐心！",
     "room-disconnected-title": "会议室连接已断开",
     "room-disconnected-unknown": "该房间已断开连接。原因： {{code}}",
     "room-disconnected-client-initiated": "客户端已启动。代码: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "发送请求未成功",
     "decode-error-title": "解码错误",
     "decode-error-body": "我们无法理解从服务器发送的数据",
+    "invalid-missing-data": "收到无效或缺失的数据",
     "nats-error-auth-title": "身份验证错误",
     "nats-error-auth-body": "我们无法验证您的身份验证信息。您可能正在使用过期的令牌？",
     "user-logged-out": "您已注销",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "当使用自定义安全密钥时，云录制不可用。",
     "media-only-recording-not-support-e2ee": "启用端到端加密时仅录制音频和视频不可用。",
     "you-are-sharing-screen": "您现在正在分享您的屏幕。其他人将看到一个更大的视图。",
-    "new-system-message-in-chat": "在公开聊天中发布了新的系统信息。"
+    "new-system-message-in-chat": "在公开聊天中发布了新的系统信息。",
+    "queue-holding-messages": "连接问题：消息正在被保留。({{error}})",
+    "queue-discarded-message": "无法发送消息并被丢弃。({{error}})"
   },
   "room-metadata": {
     "session-recording": "此会议正在被录制",
@@ -231,9 +235,11 @@
     "hide-footer": "隐藏页脚",
     "show-footer": "显示页脚",
     "icons": {
+      "select-webcam": "选择摄像头",
       "start-webcam": "启用摄像头",
-      "leave-webcam": "关闭摄像头",
+      "turn-off-webcam": "关闭摄像头",
       "webcam-locked": "摄像头被禁用",
+      "select-microphone": "选择麦克风",
       "start-microphone-sharing": "开始分享麦克风",
       "microphone-locked": "麦克风被禁用",
       "leave-microphone": "关闭麦克风",
@@ -425,25 +431,33 @@
     "copied": "已复制",
     "not-started": "未启动",
     "user-joined": "已加入",
-    "not-joined": "未加入"
+    "not-joined": "未加入",
+    "push": "推送",
+    "you-pushed-user": "加入通知已发送至 {{name}}."
   },
   "landing": {
-    "connecting-media-server": "正在连接媒体服务器...",
+    "connecting-media-server": "正在连接会议...",
     "modal-title": "麦克风和摄像机首选项",
     "ready-to-join": "准备好加入吗？",
-    "join-prompt": "启用您的麦克风和摄像头充分参与，或作为侦听器加入。",
+    "join-prompt": "现在就设置您的设备，或作为侦听器加入。您可以随时在会议期间控制您的麦克风和相机。",
+    "join-prompt-mic-locked": "麦克风已禁用此会议。您可以启用相机或作为听众加入。",
+    "join-prompt-cam-locked": "摄像头已禁用此会议。您可以启用麦克风或作为听众加入。",
+    "join-prompt-both-locked": "麦克风和摄像头已禁用此会议。请作为听众加入。",
     "enable-mic-cam-btn": "启用麦克风和相机",
+    "enable-mic-btn": "启用麦克风",
+    "enable-cam-btn": "启用相机",
     "join-as-listener-btn": "作为侦听器加入",
     "webcam-menu-title": "选择相机",
     "mic-menu-title": "选择麦克风",
     "background-filter-title": "背景与过滤器",
     "config-background-btn": "配置相机背景",
-    "waiting-for-approval-title": "等待批准"
+    "waiting-for-approval-title": "您正在等候室"
   },
   "external-display-link-display": {
     "modal-title": "分享外部链接",
     "url": "网址",
     "display": "显示",
+    "url-required": "必须填写有效的 URL。",
     "link-invalid": "链接无效。",
     "note": "注意：请确保网站被嵌入。并非所有网站都能正常工作。",
     "send-extra-values": "发送用户信息",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "字幕文本历史",
     "azure-error": "Microsoft Azure 错误： {{error}}",
     "speech-to-text-stopped": "语音到文本服务已停止",
-    "enable-transcription": "启用翻译"
+    "enable-transcription": "启用翻译",
+    "download-header": "字幕历史记录 {{name}}\n语言： {{lang}}\n生成时间： {{date}} 在 {{time}}"
   }
 }
