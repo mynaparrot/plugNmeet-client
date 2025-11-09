@@ -1,5 +1,6 @@
 {
   "ok": "تایید",
+  "save": "ذخیره",
   "close": "بستن",
   "cancel": "انصراف",
   "yes": "بله",
@@ -29,7 +30,7 @@
     "you-have-removed": "شما از این کنفرانس حذف شده اید.",
     "you-are-blocked": "شما اجازه دسترسی به این کنفرانس را ندارید.",
     "you-have-reject": "شما برای پیوستن به این کنفرانس رد شده اید",
-    "waiting-for-approval": "لطفا صبر کنید تا یک ناظر شما را تایید کند.",
+    "waiting-for-approval": "به یک ناظر اطلاع داده شده است و به زودی به شما اجازه ورود می دهد. با تشکر از صبر شما!",
     "room-disconnected-title": "اتاق قطع شد",
     "room-disconnected-unknown": "اتاق قطع شده است. کد: {{code}}",
     "room-disconnected-client-initiated": "سرویس راه اندازی شده است. کد: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "ارسال درخواست موفقیت آمیز نبود",
     "decode-error-title": "خطای رمزگشایی",
     "decode-error-body": "ما نتوانستیم داده های ارسال شده از سرور را درک کنیم",
+    "invalid-missing-data": "داده های نامعتبر یا گم شده دریافت شده",
     "nats-error-auth-title": "خطای احراز هویت",
     "nats-error-auth-body": "ما نتوانستیم اطلاعات احراز هویت شما را تأیید کنیم. ممکن است از یک توکن منقضی شده استفاده می کنید؟",
     "user-logged-out": "شما از سیستم خارج شده اید",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "ضبط ابری هنگام استفاده از کلید امنیتی سفارشی در دسترس نیست.",
     "media-only-recording-not-support-e2ee": "وقتی رمزگذاری سرتاسری فعال باشد، ضبط فقط صدا و ویدیو در دسترس نیست.",
     "you-are-sharing-screen": "اکنون صفحه نمایش خود را هم رسانی می کنید. دیگران نمای بزرگتری خواهند دید.",
-    "new-system-message-in-chat": "یک پیام سیستم جدید در چت عمومی ارسال شده است."
+    "new-system-message-in-chat": "یک پیام سیستم جدید در چت عمومی ارسال شده است.",
+    "queue-holding-messages": "مشکل اتصال: پیام ها در حال نگهداری هستند. ({{error}})",
+    "queue-discarded-message": "پیامی ارسال نشد و کنار گذاشته شد. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است",
@@ -231,9 +235,11 @@
     "hide-footer": "پنهان کردن پاورقی",
     "show-footer": "نمایش پاورقی",
     "icons": {
+      "select-webcam": "وب کم را انتخاب کنید",
       "start-webcam": "روشن کردن وب کم",
-      "leave-webcam": "خاموش کردن وب کم",
+      "turn-off-webcam": "دوربین را خاموش کنید",
       "webcam-locked": "وب کم قفل شده است",
+      "select-microphone": "میکروفون را انتخاب کنید",
       "start-microphone-sharing": "اشتراک گذاری میکروفون را شروع کنید",
       "microphone-locked": "میکروفون قفل شده",
       "leave-microphone": "خاموش کردن میکروفون",
@@ -425,25 +431,33 @@
     "copied": "کپی شد",
     "not-started": "شروع نشده",
     "user-joined": "پیوست",
-    "not-joined": "نپیوسته است"
+    "not-joined": "نپیوسته است",
+    "push": "فشار",
+    "you-pushed-user": "یک اعلان پیوستن به {{name}}."
   },
   "landing": {
-    "connecting-media-server": "اتصال به سرور رسانه...",
+    "connecting-media-server": "اتصال به جلسه...",
     "modal-title": "تنظیمات برگزیده میکروفون و دوربین",
     "ready-to-join": "آماده عضویت هستید؟",
-    "join-prompt": "میکروفون و دوربین خود را فعال کنید تا به طور کامل شرکت کنند یا به عنوان شنونده بپیوندند.",
+    "join-prompt": "اکنون دستگاه هایتان را راه اندازی کنید یا به عنوان شنونده به آن بپیوندید. همیشه می توانید بعدا درطول جلسه میکروفون و دوربینتان را کنترل کنید.",
+    "join-prompt-mic-locked": "میکروفون برای این جلسه غیرفعال است. می توانید دوربین خود را فعال کنید یا به عنوان شنونده بپیوندید.",
+    "join-prompt-cam-locked": "دوربین برای این جلسه غیرفعال است. می توانید میکروفون خود را فعال کنید یا به عنوان شنونده بپیوندید.",
+    "join-prompt-both-locked": "میکروفون و دوربین برای این جلسه غیرفعال هستند. لطفا به عنوان شنونده بپیوندید.",
     "enable-mic-cam-btn": "میکروفون و دوربین را فعال کنید",
+    "enable-mic-btn": "میکروفون را فعال کنید",
+    "enable-cam-btn": "دوربین را فعال کنید",
     "join-as-listener-btn": "به عنوان شنونده بپیوندید",
     "webcam-menu-title": "دوربین را انتخاب کنید",
     "mic-menu-title": "میکروفون را انتخاب کنید",
     "background-filter-title": "پس زمینه و فیلترها",
     "config-background-btn": "پیکربندی پس زمینه دوربین",
-    "waiting-for-approval-title": "در انتظار تایید"
+    "waiting-for-approval-title": "تو اتاق انتظار هستی"
   },
   "external-display-link-display": {
     "modal-title": "نمایش لینک خارجی (iframe)",
     "url": "آدرس وب",
     "display": "نمایش",
+    "url-required": "یک URL معتبر مورد نیاز است.",
     "link-invalid": "لینک معتبر نیست",
     "note": "توجه: مطمئن شوید که URL مجوز باز شدن در داخل iframe را دارد. مثال: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "ارسال مقادیر اضافی",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "تاریخچه متون زیرنویس",
     "azure-error": "خطای Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "سرویس گفتار به متن متوقف شده است",
-    "enable-transcription": "فعال کردن رونویسی"
+    "enable-transcription": "فعال کردن رونویسی",
+    "download-header": "تاریخچه زیرنویس برای {{name}}\nزبان: {{lang}}\nتولید شده در: {{date}} در {{time}}"
   }
 }

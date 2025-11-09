@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Salvestama",
   "close": "Sulgema",
   "cancel": "Tühistama",
   "yes": "Jah",
@@ -29,7 +30,7 @@
     "you-have-removed": "Teid on sellelt konverentsilt eemaldatud.",
     "you-are-blocked": "Te ei pääse sellele konverentsile juurde.",
     "you-have-reject": "Teid on selle konverentsiga liitumine tagasi lükatud",
-    "waiting-for-approval": "Palun oodake, kuni moderaator teid heaks kiidab.",
+    "waiting-for-approval": "Moderaatorit on teavitatud ja ta laseb teid peagi sisse. Täname kannatlikkuse eest!",
     "room-disconnected-title": "Tuba on lahti ühendatud",
     "room-disconnected-unknown": "Tuba on lahti ühendatud. Kood: {{code}}",
     "room-disconnected-client-initiated": "Klient on algatatud. Kood: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Päringu saatmine ei õnnestunud",
     "decode-error-title": "Dekodeerimise viga",
     "decode-error-body": "Me ei saanud aru serverist saadetud andmetest",
+    "invalid-missing-data": "Saadud kehtetud või puuduvad andmed",
     "nats-error-auth-title": "Autentimise viga",
     "nats-error-auth-body": "Me ei saanud teie auth teavet kontrollida. Võib-olla kasutate aegunud märki?",
     "user-logged-out": "Sa logisid välja",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Pilvesalvestus pole kohandatud turbevõtme kasutamisel saadaval.",
     "media-only-recording-not-support-e2ee": "Ainult heli ja video salvestamine pole saadaval, kui täielik krüptimine on lubatud.",
     "you-are-sharing-screen": "Jagate nüüd oma ekraani. Teised näevad suuremat vaadet.",
-    "new-system-message-in-chat": "Avalikku vestlusse on postitatud uus süsteemiteade."
+    "new-system-message-in-chat": "Avalikku vestlusse on postitatud uus süsteemiteade.",
+    "queue-holding-messages": "Ühenduse probleem: sõnumeid hoitakse. ({{error}})",
+    "queue-discarded-message": "Sõnumit ei saanud saata ja see visati ära. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Seda seanssi salvestatakse",
@@ -231,9 +235,11 @@
     "hide-footer": "Jaluse peitmine",
     "show-footer": "Jaluse kuvamine",
     "icons": {
+      "select-webcam": "Valige veebikaamera",
       "start-webcam": "Käivitage veebikaamera",
-      "leave-webcam": "Veebikaamerast lahkumine",
+      "turn-off-webcam": "Lülitage kaamera välja",
       "webcam-locked": "Veebikaamera on lukus",
+      "select-microphone": "Valige mikrofon",
       "start-microphone-sharing": "Mikrofoni ühiskasutuse alustamine",
       "microphone-locked": "Mikrofon on lukus",
       "leave-microphone": "Mikrofonist lahkumine",
@@ -425,25 +431,33 @@
     "copied": "Kopeeritud",
     "not-started": "Ei ole alustatud",
     "user-joined": "Liidetud kohtuasjad",
-    "not-joined": "Ei ole liitunud"
+    "not-joined": "Ei ole liitunud",
+    "push": "Lükkama",
+    "you-pushed-user": "Liitumisteade on saadetud aadressile {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Meediumiserveriga ühenduse loomine...",
+    "connecting-media-server": "Koosolekuga ühenduse loomine...",
     "modal-title": "Mikrofoni ja kaamera eelistused",
     "ready-to-join": "Kas olete valmis liituma?",
-    "join-prompt": "Lubage oma mikrofonil ja kaameral täielikult osaleda või liituge kuulajana.",
+    "join-prompt": "Seadistage oma seadmed kohe või liituge kuulajana. Mikrofoni ja kaamerat saate alati hiljem koosoleku ajal juhtida.",
+    "join-prompt-mic-locked": "Mikrofon on selle koosoleku jaoks keelatud. Saate oma kaamera lubada või kuulajana liituda.",
+    "join-prompt-cam-locked": "Kaamera on selle koosoleku jaoks keelatud. Saate mikrofoni lubada või kuulajana liituda.",
+    "join-prompt-both-locked": "Mikrofon ja kaamera on selle koosoleku jaoks keelatud. Palun liituge kuulajana.",
     "enable-mic-cam-btn": "Luba mikrofon ja kaamera",
+    "enable-mic-btn": "Luba mikrofon",
+    "enable-cam-btn": "Luba kaamera",
     "join-as-listener-btn": "Liituge kuulajana",
     "webcam-menu-title": "Valige Kaamera",
     "mic-menu-title": "Valige mikrofon",
     "background-filter-title": "Taust ja filtrid",
     "config-background-btn": "Kaamera tausta konfigureerimine",
-    "waiting-for-approval-title": "Kinnitamise ootel"
+    "waiting-for-approval-title": "Sa oled ooteruumis"
   },
   "external-display-link-display": {
     "modal-title": "Välise lingi kuvamine (iframe)",
     "url": "URL-i aadress",
     "display": "Kuvada",
+    "url-required": "Nõutav on kehtiv URL.",
     "link-invalid": "Link ei kehti",
     "note": "Märge: Veenduge, et URL-il oleks õigus avada iframe'is. Näide: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Saada lisaväärtusi",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Subtiitrite tekstide ajalugu",
     "azure-error": "Microsoft Azure'i viga: {{error}}",
     "speech-to-text-stopped": "Kõne tekstiedastusteenus on peatatud",
-    "enable-transcription": "Transkriptsiooni lubamine"
+    "enable-transcription": "Transkriptsiooni lubamine",
+    "download-header": "Subtiitrite ajalugu {{name}}\nKeel: {{lang}}\nGenereeritud: {{date}} juures {{time}}"
   }
 }

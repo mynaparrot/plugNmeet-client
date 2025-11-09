@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Salvează",
   "close": "Închide",
   "cancel": "Anula",
   "yes": "Da",
@@ -29,7 +30,7 @@
     "you-have-removed": "Ai fost eliminat din această conferință.",
     "you-are-blocked": "Nu aveți voie să accesați această conferință.",
     "you-have-reject": "Ați fost respins să vă alăturați acestei conferințe",
-    "waiting-for-approval": "Vă rugăm să așteptați până când un moderator vă va aproba.",
+    "waiting-for-approval": "Un moderator a fost notificat și vă va lăsa în curând. Vă mulțumim pentru răbdare!",
     "room-disconnected-title": "Cameră deconectată",
     "room-disconnected-unknown": "Camera a fost deconectată. Cod: {{code}}",
     "room-disconnected-client-initiated": "Clientul a fost inițiat. Cod: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Trimiterea cererii nu a avut succes",
     "decode-error-title": "Eroare de decodare",
     "decode-error-body": "Nu am putut înțelege datele trimise de pe server",
+    "invalid-missing-data": "Date primite nevalide sau lipsă",
     "nats-error-auth-title": "Eroare de autentificare",
     "nats-error-auth-body": "Nu am putut verifica informațiile de autentificare. Poate că utilizați un token expirat?",
     "user-logged-out": "Te-ai deconectat",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Înregistrarea în cloud nu este disponibilă atunci când se utilizează o cheie de securitate personalizată.",
     "media-only-recording-not-support-e2ee": "Înregistrarea doar audio și video nu este disponibilă atunci când este activată criptarea de la un capăt la altul.",
     "you-are-sharing-screen": "Împărtășiți ecranul acum. Alții vor vedea o vizualizare mai mare.",
-    "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public."
+    "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public.",
+    "queue-holding-messages": "Problemă de conexiune: mesajele sunt deținute. ({{error}})",
+    "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Această sesiune este în curs de înregistrare",
@@ -231,9 +235,11 @@
     "hide-footer": "Ascundeți subsolul",
     "show-footer": "Afișați subsolul",
     "icons": {
+      "select-webcam": "Selectaţi camera web",
       "start-webcam": "Porniți camera web",
-      "leave-webcam": "Părăsește camera web",
+      "turn-off-webcam": "Oprește camera foto",
       "webcam-locked": "Webcam blocată",
+      "select-microphone": "Selectați microfonul",
       "start-microphone-sharing": "Începeți partajarea microfonului",
       "microphone-locked": "Microfon blocat",
       "leave-microphone": "Părăsiți microfonul",
@@ -425,25 +431,33 @@
     "copied": "Copiat",
     "not-started": "Nu a început",
     "user-joined": "Alăturat",
-    "not-joined": "Neînscris"
+    "not-joined": "Neînscris",
+    "push": "Împinge",
+    "you-pushed-user": "O notificare de alăturare a fost trimisă lui {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Se conectează la serverul media...",
+    "connecting-media-server": "Conectare la întâlnire...",
     "modal-title": "Preferințe microfon și cameră foto",
     "ready-to-join": "Ești gata să te înscrii?",
-    "join-prompt": "Activează microfonul și camera pentru a participa pe deplin sau alătură-te ca ascultător.",
+    "join-prompt": "Configurați dispozitivele acum sau alăturați-vă ca ascultător. Puteți controla întotdeauna microfonul și camera mai târziu în timpul ședinței.",
+    "join-prompt-mic-locked": "Microfonul este dezactivat pentru această şedinţă. Vă puteţi activa camera sau vă puteţi alătura ca ascultător.",
+    "join-prompt-cam-locked": "Camera foto este dezactivată pentru această şedinţă. Vă puteţi activa microfonul sau vă puteţi alătura ca ascultător.",
+    "join-prompt-both-locked": "Microfonul și camera sunt dezactivate pentru această ședință. Vă rugăm să vă alăturați ca ascultător.",
     "enable-mic-cam-btn": "Activează microfonul și camera foto",
+    "enable-mic-btn": "Activare microfon",
+    "enable-cam-btn": "Activează camera foto",
     "join-as-listener-btn": "Alătură-te ca ascultător",
     "webcam-menu-title": "Selectează camera foto",
     "mic-menu-title": "Selectează microfonul",
     "background-filter-title": "Fundal & Filtre",
     "config-background-btn": "Configurare fundal cameră foto",
-    "waiting-for-approval-title": "Așteptare pentru aprobare"
+    "waiting-for-approval-title": "Ești în camera de așteptare"
   },
   "external-display-link-display": {
     "modal-title": "Afișați legătura externă (iframe)",
     "url": "Adresă URL",
     "display": "Arăta",
+    "url-required": "Este necesar un URL valid.",
     "link-invalid": "Legătura nu este valabilă",
     "note": "Notă: Asigurați-vă că adresa URL are permisiunea de a se deschide într-un iframe. Exemplu: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Trimite valori suplimentare",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Istoria textelor de subtitrare",
     "azure-error": "Eroare Microsoft azure: {{error}}",
     "speech-to-text-stopped": "Serviciul de vorbire în text a fost oprit",
-    "enable-transcription": "Activează Transcrierea"
+    "enable-transcription": "Activează Transcrierea",
+    "download-header": "Istoric subtitrări pentru {{name}}\nLimbă: {{lang}}\nGenerat : {{date}} la {{time}}"
   }
 }

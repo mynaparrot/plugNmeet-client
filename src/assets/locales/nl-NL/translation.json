@@ -1,5 +1,6 @@
 {
   "ok": "OK",
+  "save": "Opslaan",
   "close": "Sluiten",
   "cancel": "Annuleren",
   "yes": "Ja",
@@ -29,7 +30,7 @@
     "you-have-removed": "U bent verwijderd uit deze vergadering.",
     "you-are-blocked": "U heeft geen toegang tot deze vergadering.",
     "you-have-reject": "Deelname aan deze vergadering is afgewezen",
-    "waiting-for-approval": "Wacht tot een moderator je goedkeurt.",
+    "waiting-for-approval": "Een moderator is op de hoogte gebracht en zal je binnenkort laten komen. Bedankt voor je geduld!",
     "room-disconnected-title": "Verbinding verbroken",
     "room-disconnected-unknown": "De verbinding is verbroken. Code: {{code}}",
     "room-disconnected-client-initiated": "Cliënt is gestart. code: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Het verzenden van de aanvraag is niet gelukt",
     "decode-error-title": "Fout bij het decoderen",
     "decode-error-body": "We konden de gegevens die vanaf de server werden verzonden niet begrijpen",
+    "invalid-missing-data": "Ongeldige of ontbrekende gegevens ontvangen",
     "nats-error-auth-title": "Authenticatie fout",
     "nats-error-auth-body": "We konden uw verificatiegegevens niet verifiëren. Het kan zijn dat u een verlopen token gebruikt?",
     "user-logged-out": "Je bent uitgelogd",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Cloud opname is niet beschikbaar bij het gebruik van een aangepaste beveiligingssleutel.",
     "media-only-recording-not-support-e2ee": "Het opnemen van alleen audio en video is niet beschikbaar als end-to-end versleuteling is ingeschakeld.",
     "you-are-sharing-screen": "U deelt nu uw scherm. Anderen zullen een groter beeld zien.",
-    "new-system-message-in-chat": "In de openbare chat is een nieuw systeembericht geplaatst."
+    "new-system-message-in-chat": "In de openbare chat is een nieuw systeembericht geplaatst.",
+    "queue-holding-messages": "Verbindingsprobleem: berichten worden gehouden. ({{error}})",
+    "queue-discarded-message": "Een bericht kon niet verzonden worden en is verwijderd. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Deze sessie wordt opgenomen",
@@ -231,9 +235,11 @@
     "hide-footer": "Voettekst verbergen",
     "show-footer": "Toon voettekst",
     "icons": {
+      "select-webcam": "Selecteer webcam",
       "start-webcam": "Webcam starten",
-      "leave-webcam": "Webcam verlaten",
+      "turn-off-webcam": "Camera uitschakelen",
       "webcam-locked": "Webcam vergrendeld",
+      "select-microphone": "Selecteer microfoon",
       "start-microphone-sharing": "Begin met het delen van microfoons",
       "microphone-locked": "Microfoon vergrendeld",
       "leave-microphone": "Microfoon verlaten",
@@ -425,25 +431,33 @@
     "copied": "Gekopieerd",
     "not-started": "Niet begonnen",
     "user-joined": "Aangemeld",
-    "not-joined": "Niet aangemeld"
+    "not-joined": "Niet aangemeld",
+    "push": "Push",
+    "you-pushed-user": "Er is een toetredingsmelding verzonden naar {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Verbinden met mediaserver ...",
+    "connecting-media-server": "Verbinden met de vergadering...",
     "modal-title": "Microfoon en Camera voorkeuren",
     "ready-to-join": "Klaar om toe te treden?",
-    "join-prompt": "Schakel uw microfoon en camera in om volledig deel te nemen of deel te nemen als luisteraar.",
+    "join-prompt": "Stel uw apparaten nu in of neem deel aan als luisteraar. U kunt uw microfoon en camera later altijd bedienen tijdens de vergadering.",
+    "join-prompt-mic-locked": "De microfoon is uitgeschakeld voor deze vergadering. Je kunt je camera inschakelen of deelnemen als luisteraar.",
+    "join-prompt-cam-locked": "De camera is uitgeschakeld voor deze vergadering. Je kunt je microfoon inschakelen of deelnemen als luisteraar.",
+    "join-prompt-both-locked": "De microfoon en camera zijn uitgeschakeld voor deze vergadering. Doe mee als luisteraar.",
     "enable-mic-cam-btn": "Microfoon en Camera inschakelen",
+    "enable-mic-btn": "Microfoon inschakelen",
+    "enable-cam-btn": "Camera inschakelen",
     "join-as-listener-btn": "Word lid als luisteraar",
     "webcam-menu-title": "Selecteer Camera",
     "mic-menu-title": "Selecteer microfoon",
     "background-filter-title": "Achtergrond & filters",
     "config-background-btn": "Camera achtergrond configureren",
-    "waiting-for-approval-title": "Wachten op goedkeuring"
+    "waiting-for-approval-title": "Je bent in de wachtkamer"
   },
   "external-display-link-display": {
     "modal-title": "Toon externe link (iframe)",
     "url": "URL",
     "display": "Weergave",
+    "url-required": "Een geldige URL is vereist.",
     "link-invalid": "Link niet geldig",
     "note": "Opmerking: zorg ervoor dat de URL toestemming heeft om in een iframe te openen. Voorbeeld: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Extra waarden verzenden",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Ondertiteling teksten geschiedenis",
     "azure-error": "Microsoft Azure-fout: {{error}}",
     "speech-to-text-stopped": "Spraak-naar-tekstservice is gestopt",
-    "enable-transcription": "Transcriptie inschakelen"
+    "enable-transcription": "Transcriptie inschakelen",
+    "download-header": "Ondertitelingsgeschiedenis voor {{name}}\nTaal: {{lang}}\nGegenereerd op: {{date}} om {{time}}"
   }
 }

@@ -1,5 +1,6 @@
 {
   "ok": "Okej",
+  "save": "Spara",
   "close": "Stänga",
   "cancel": "Annullera",
   "yes": "Ja",
@@ -29,7 +30,7 @@
     "you-have-removed": "Du har tagits bort från den här konferensen.",
     "you-are-blocked": "Du har inte behörighet att komma åt den här konferensen.",
     "you-have-reject": "Du har avvisats från att delta i den här konferensen",
-    "waiting-for-approval": "Vänta tills en moderator godkänner dig.",
+    "waiting-for-approval": "En moderator har meddelats och kommer att låta dig inom kort. Tack för ditt tålamod!",
     "room-disconnected-title": "Rummet är frånkopplat",
     "room-disconnected-unknown": "Rummet har kopplats bort. Kod: {{code}}",
     "room-disconnected-client-initiated": "Klienten har initierats. Kod: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Det gick inte att skicka begäran",
     "decode-error-title": "Fel vid avkodning",
     "decode-error-body": "Vi kunde inte förstå data som skickades från servern",
+    "invalid-missing-data": "Ogiltig eller saknad data mottagen",
     "nats-error-auth-title": "Fel vid autentisering",
     "nats-error-auth-body": "Vi kunde inte verifiera din autentiseringsinformation. Kan det vara så att du använder en token som har upphört att gälla?",
     "user-logged-out": "Du har loggat ut",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Molninspelning är inte tillgänglig när du använder en anpassad säkerhetsnyckel.",
     "media-only-recording-not-support-e2ee": "Inspelning endast ljud och video är inte tillgänglig när end-to-end-kryptering är aktiverad.",
     "you-are-sharing-screen": "Du delar din skärm nu. Andra ser en större vy.",
-    "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten."
+    "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
+    "queue-holding-messages": "Anslutningsproblem: meddelanden hålls. ({{error}})",
+    "queue-discarded-message": "Ett meddelande kunde inte skickas och kasserades. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Den här sessionen spelas in",
@@ -231,9 +235,11 @@
     "hide-footer": "Dölj sidfot",
     "show-footer": "Visa sidfot",
     "icons": {
+      "select-webcam": "Välj webbkamera",
       "start-webcam": "Starta webbkamera",
-      "leave-webcam": "Lämna webbkameran",
+      "turn-off-webcam": "Stäng av kameran",
       "webcam-locked": "Webbkameran är låst",
+      "select-microphone": "Välj mikrofon",
       "start-microphone-sharing": "Starta mikrofondelning",
       "microphone-locked": "Mikrofonen är låst",
       "leave-microphone": "Lämna mikrofonen",
@@ -425,25 +431,33 @@
     "copied": "Kopieras",
     "not-started": "Inte påbörjad",
     "user-joined": "Förenad",
-    "not-joined": "Inte ansluten"
+    "not-joined": "Inte ansluten",
+    "push": "Tryck",
+    "you-pushed-user": "Ett join-meddelande har skickats till {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Ansluter till mediaservern...",
+    "connecting-media-server": "Ansluter till mötet...",
     "modal-title": "Inställningar för mikrofon och kamera",
     "ready-to-join": "Redo att gå med?",
-    "join-prompt": "Aktivera din mikrofon och kamera för att delta fullt ut, eller gå med som en lyssnare.",
+    "join-prompt": "Konfigurera dina enheter nu, eller gå med som en lyssnare. Du kan alltid styra din mikrofon och kamera senare under mötet.",
+    "join-prompt-mic-locked": "Mikrofonen är inaktiverad för detta möte. Du kan aktivera din kamera eller ansluta som en lyssnare.",
+    "join-prompt-cam-locked": "Kameran är inaktiverad för detta möte. Du kan aktivera din mikrofon eller ansluta som en lyssnare.",
+    "join-prompt-both-locked": "Mikrofonen och kameran är inaktiverade för detta möte. Vänligen gå med som en lyssnare.",
     "enable-mic-cam-btn": "Aktivera mikrofon och kamera",
+    "enable-mic-btn": "Aktivera mikrofon",
+    "enable-cam-btn": "Aktivera kamera",
     "join-as-listener-btn": "Gå med som en lyssnare",
     "webcam-menu-title": "Välj kamera",
     "mic-menu-title": "Välj mikrofon",
     "background-filter-title": "Bakgrund och filter",
     "config-background-btn": "Konfigurera kamerans bakgrund",
-    "waiting-for-approval-title": "Väntar på godkännande"
+    "waiting-for-approval-title": "Du är i väntrummet"
   },
   "external-display-link-display": {
     "modal-title": "Visa extern länk (iframe)",
     "url": "URL",
     "display": "Visa",
+    "url-required": "En giltig URL krävs.",
     "link-invalid": "Länken är inte giltig",
     "note": "Se till att URL:en har behörighet att öppnas i en iframe. Exempel: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Skicka extra värden",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Undertexter texter historia",
     "azure-error": "Microsoft Azure-fel: {{error}}",
     "speech-to-text-stopped": "Tal-till-text-tjänsten har stoppats",
-    "enable-transcription": "Aktivera transkription"
+    "enable-transcription": "Aktivera transkription",
+    "download-header": "Undertitelshistorik för {{name}}\nSpråk: {{lang}}\nGenererad på: {{date}} på {{time}}"
   }
 }

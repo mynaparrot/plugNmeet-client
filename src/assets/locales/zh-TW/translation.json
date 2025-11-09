@@ -1,5 +1,6 @@
 {
   "ok": "是",
+  "save": "救",
   "close": "關閉",
   "cancel": "取消",
   "yes": "確定",
@@ -29,7 +30,7 @@
     "you-have-removed": "您已從本次會議中除名。",
     "you-are-blocked": "不允許你訪問此會議。",
     "you-have-reject": "您被拒絕參加此會議",
-    "waiting-for-approval": "請等待版主批准您。",
+    "waiting-for-approval": "版主已收到通知，並會很快讓您進入。感謝您的耐心等待！",
     "room-disconnected-title": "會議室斷開連接",
     "room-disconnected-unknown": "房間已斷開連接。法典： {{code}}",
     "room-disconnected-client-initiated": "用戶端已啟動。法典： {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "發送請求未成功",
     "decode-error-title": "解碼錯誤",
     "decode-error-body": "我們無法理解從伺服器發送的數據",
+    "invalid-missing-data": "收到無效或遺漏的資料",
     "nats-error-auth-title": "身份驗證錯誤",
     "nats-error-auth-body": "我們無法驗證您的身份驗證資訊。您可能正在使用過期的令牌？",
     "user-logged-out": "您已登出",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "使用自訂安全金鑰時，無法使用雲端錄製。",
     "media-only-recording-not-support-e2ee": "啟用端對端加密時，僅錄製音訊和視訊不可用。",
     "you-are-sharing-screen": "您現在正在共享您的屏幕。其他人將看到更大的視野。",
-    "new-system-message-in-chat": "公共聊天室中發布了一條新的系統消息。"
+    "new-system-message-in-chat": "公共聊天室中發布了一條新的系統消息。",
+    "queue-holding-messages": "連線問題：訊息正在保留。({{error}})",
+    "queue-discarded-message": "無法傳送訊息，並已捨棄。({{error}})"
   },
   "room-metadata": {
     "session-recording": "此會議正在被錄制",
@@ -231,9 +235,11 @@
     "hide-footer": "隱藏頁腳",
     "show-footer": "顯示頁腳",
     "icons": {
+      "select-webcam": "選擇網路攝影機",
       "start-webcam": "啓用攝像頭",
-      "leave-webcam": "關閉攝像頭",
+      "turn-off-webcam": "關閉相機",
       "webcam-locked": "攝像頭被禁用",
+      "select-microphone": "選擇麥克風",
       "start-microphone-sharing": "開始分享麥克風",
       "microphone-locked": "麥克風被禁用",
       "leave-microphone": "關閉麥克風",
@@ -425,25 +431,33 @@
     "copied": "複製",
     "not-started": "未啟動",
     "user-joined": "加入",
-    "not-joined": "未加入"
+    "not-joined": "未加入",
+    "push": "推",
+    "you-pushed-user": "加入通知已傳送至 {{name}}."
   },
   "landing": {
-    "connecting-media-server": "正在連線到媒體伺服器...",
+    "connecting-media-server": "連接至會議...",
     "modal-title": "麥克風和攝影機偏好設定",
     "ready-to-join": "準備好加入了嗎？",
-    "join-prompt": "讓您的麥克風和攝像頭完全參與，或以聽眾身份加入。",
+    "join-prompt": "立即設定您的設備，或以監聽器身分加入。您可以在會議期間稍後隨時控制麥克風和攝影機。",
+    "join-prompt-mic-locked": "此會議的麥克風已停用。您可以啟用相機或以監聽者身分加入。",
+    "join-prompt-cam-locked": "此會議的攝影機已停用。您可以啟用麥克風或以監聽者身份加入。",
+    "join-prompt-both-locked": "此會議的麥克風和攝影機已停用。請作為聽眾加入。",
     "enable-mic-cam-btn": "啟用麥克風和攝影機",
+    "enable-mic-btn": "啟用麥克風",
+    "enable-cam-btn": "啟用相機",
     "join-as-listener-btn": "以聽眾身分加入",
     "webcam-menu-title": "選擇相機",
     "mic-menu-title": "選擇麥克風",
     "background-filter-title": "背景和濾鏡",
     "config-background-btn": "設定相機背景",
-    "waiting-for-approval-title": "等待批准"
+    "waiting-for-approval-title": "你在候診室"
   },
   "external-display-link-display": {
     "modal-title": "顯示外部連結 （iframe）",
     "url": "網址",
     "display": "顯示",
+    "url-required": "需要有效的 URL。",
     "link-invalid": "連結無效",
     "note": "注意：確保URL有權在iframe內打開。示例：https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "發送 Extra 值",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "字幕文本歷史",
     "azure-error": "Microsoft Azure 錯誤： {{error}}",
     "speech-to-text-stopped": "語音到文本服務已停止",
-    "enable-transcription": "啟用轉錄"
+    "enable-transcription": "啟用轉錄",
+    "download-header": "字幕歷史記錄 {{name}}\n語言： {{lang}}\n產生於： {{date}} 在 {{time}}"
   }
 }

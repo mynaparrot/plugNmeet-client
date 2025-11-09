@@ -1,5 +1,6 @@
 {
   "ok": "אוקיי",
+  "save": "שמר",
   "close": "קרוב",
   "cancel": "ביטל",
   "yes": "כן",
@@ -29,7 +30,7 @@
     "you-have-removed": "הודחת מהוועידה הזאת.",
     "you-are-blocked": "אינך רשאי לגשת לכנס זה.",
     "you-have-reject": "נדחתה הצטרפת לוועידה זו",
-    "waiting-for-approval": "אנא המתן עד שמנחה יאשר אותך.",
+    "waiting-for-approval": "מנחה דיון קיבל הודעה ויאפשר לך להיכנס בקרוב. תודה על הסבלנות!",
     "room-disconnected-title": "חדר מנותק",
     "room-disconnected-unknown": "החדר נותק. קוד: {{code}}",
     "room-disconnected-client-initiated": "הלקוח כבר יזם. קוד: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "שליחת הבקשה לא הצליחה",
     "decode-error-title": "שגיאת פענוח",
     "decode-error-body": "לא הצלחנו להבין נתונים שנשלחו מהשרת",
+    "invalid-missing-data": "נתונים לא חוקיים או חסרים שהתקבלו",
     "nats-error-auth-title": "שגיאת אימות",
     "nats-error-auth-body": "לא הצלחנו לאמת את פרטי האימות שלך. יכול להיות שאתה משתמש באסימון שפג תוקפו?",
     "user-logged-out": "התנתקת",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "הקלטה בענן אינה זמינה בעת שימוש במפתח אבטחה מותאם אישית.",
     "media-only-recording-not-support-e2ee": "הקלטת שמע ווידאו בלבד אינה זמינה כאשר הצפנה מקצה לקצה מופעלת.",
     "you-are-sharing-screen": "אתה משתף את המסך שלך כעת. אחרים יראו נוף גדול יותר.",
-    "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי."
+    "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי.",
+    "queue-holding-messages": "בעיית חיבור: הודעות מוחזקות. ({{error}})",
+    "queue-discarded-message": "לא היתה אפשרות לשלוח הודעה והיא נמחקה. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "הפעלה זו מוקלטת",
@@ -231,9 +235,11 @@
     "hide-footer": "הסתרת כותרת תחתונה",
     "show-footer": "הצג כותרת תחתונה",
     "icons": {
+      "select-webcam": "בחר מצלמת אינטרנט",
       "start-webcam": "הפעל מצלמת אינטרנט",
-      "leave-webcam": "עזוב את מצלמת האינטרנט",
+      "turn-off-webcam": "כבה את המצלמה",
       "webcam-locked": "מצלמת אינטרנט נעולה",
+      "select-microphone": "בחר מיקרופון",
       "start-microphone-sharing": "התחל שיתוף מיקרופון",
       "microphone-locked": "מיקרופון נעול",
       "leave-microphone": "עזוב מיקרופון",
@@ -425,25 +431,33 @@
     "copied": "שהועתק",
     "not-started": "לא התחיל",
     "user-joined": "הצטרף",
-    "not-joined": "לא הצטרף"
+    "not-joined": "לא הצטרף",
+    "push": "דחף",
+    "you-pushed-user": "הודעת הצטרפות נשלחה אל {{name}}."
   },
   "landing": {
-    "connecting-media-server": "מתחבר לשרת המדיה...",
+    "connecting-media-server": "מתחבר לפגישה...",
     "modal-title": "העדפות מיקרופון ומצלמה",
     "ready-to-join": "מוכנים להצטרף?",
-    "join-prompt": "אפשר למיקרופון ולמצלמה שלך להשתתף באופן מלא, או להצטרף כמאזין.",
+    "join-prompt": "הגדירו את המכשירים שלכם עכשיו, או הצטרפו כמאזין. אתה תמיד יכול לשלוט במיקרופון ובמצלמה שלך מאוחר יותר במהלך הפגישה.",
+    "join-prompt-mic-locked": "המיקרופון אינו זמין עבור פגישה זו. אתה יכול להפעיל את המצלמה שלך או להצטרף כמאזין.",
+    "join-prompt-cam-locked": "המצלמה מושבתת עבור פגישה זו. אתה יכול להפעיל את המיקרופון שלך או להצטרף כמאזין.",
+    "join-prompt-both-locked": "המיקרופון והמצלמה מושבתים עבור פגישה זו. אנא הצטרפו כמאזין.",
     "enable-mic-cam-btn": "אפשר מיקרופון ומצלמה",
+    "enable-mic-btn": "הפעל מיקרופון",
+    "enable-cam-btn": "הפעל מצלמה",
     "join-as-listener-btn": "הצטרפו כמאזינים",
     "webcam-menu-title": "בחר מצלמה",
     "mic-menu-title": "בחר מיקרופון",
     "background-filter-title": "רקע ומסננים",
     "config-background-btn": "קביעת תצורה של רקע מצלמה",
-    "waiting-for-approval-title": "ממתין לאישור"
+    "waiting-for-approval-title": "אתה בחדר ההמתנה"
   },
   "external-display-link-display": {
     "modal-title": "הצג קישור חיצוני (iframe)",
     "url": "כתובת URL",
     "display": "הציג",
+    "url-required": "נדרשת כתובת URL חוקית.",
     "link-invalid": "הקישור אינו חוקי",
     "note": "הערה: ודא/י שלכתובת ה-URL יש הרשאה לפתוח בתוך iframe. דוגמה: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "שלח ערכים נוספים",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "היסטוריית טקסטים של כתוביות",
     "azure-error": "שגיאת תכלת של Microsoft: {{error}}",
     "speech-to-text-stopped": "שירות דיבור לטקסט הופסק",
-    "enable-transcription": "אפשר תמלול"
+    "enable-transcription": "אפשר תמלול",
+    "download-header": "היסטוריית כתוביות עבור {{name}}\nשפה: {{lang}}\nנוצר בתאריך: {{date}} ב {{time}}"
   }
 }

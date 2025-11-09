@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Zapisz",
   "close": "Zamykać",
   "cancel": "Anuluj",
   "yes": "Tak",
@@ -29,7 +30,7 @@
     "you-have-removed": "Zostałeś usunięty z tej konferencji.",
     "you-are-blocked": "Nie masz dostępu do tej konferencji.",
     "you-have-reject": "Nie zostałeś dopuszczony do udziału w tej konferencji",
-    "waiting-for-approval": "Poczekaj, aż moderator Cię zatwierdzi.",
+    "waiting-for-approval": "Moderator został powiadomiony i niebawem pozwoli Ci to zrobić. Dziękujemy za cierpliwość!",
     "room-disconnected-title": "Pokój odłączony",
     "room-disconnected-unknown": "Pokój został odłączony. Kod: {{code}}",
     "room-disconnected-client-initiated": "Klient został zainicjowany. Kod: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Wysłanie żądania nie powiodło się",
     "decode-error-title": "Błąd dekodowania",
     "decode-error-body": "Nie mogliśmy zrozumieć danych wysyłanych z serwera",
+    "invalid-missing-data": "Otrzymano nieprawidłowe lub brakujące dane",
     "nats-error-auth-title": "Błąd uwierzytelniania",
     "nats-error-auth-body": "Nie udało nam się zweryfikować Twoich informacji uwierzytelniających. Być może używasz tokena, który wygasł?",
     "user-logged-out": "Wylogowałeś się",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Nagrywanie w chmurze nie jest dostępne podczas używania niestandardowego klucza bezpieczeństwa.",
     "media-only-recording-not-support-e2ee": "Nagrywanie tylko audio i wideo nie jest dostępne po włączeniu szyfrowania end-to-end.",
     "you-are-sharing-screen": "Udostępniasz ekran. Inni zobaczą większy widok.",
-    "new-system-message-in-chat": "Nowa wiadomość systemowa została opublikowana na czacie publicznym."
+    "new-system-message-in-chat": "Nowa wiadomość systemowa została opublikowana na czacie publicznym.",
+    "queue-holding-messages": "Problem z połączeniem: wiadomości są przechowywane.{{error}})",
+    "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Ta sesja jest nagrywana",
@@ -231,9 +235,11 @@
     "hide-footer": "Ukryj stopkę",
     "show-footer": "Pokaż stopkę",
     "icons": {
+      "select-webcam": "Wybierz kamerę internetową",
       "start-webcam": "Uruchom kamerę internetową",
-      "leave-webcam": "Opuść kamerę internetową",
+      "turn-off-webcam": "Wyłącz kamerę",
       "webcam-locked": "Kamera internetowa zablokowana",
+      "select-microphone": "Wybierz mikrofon",
       "start-microphone-sharing": "Rozpocznij udostępnianie mikrofonu",
       "microphone-locked": "Mikrofon zablokowany",
       "leave-microphone": "Opuść mikrofon",
@@ -425,25 +431,33 @@
     "copied": "Kopiowane",
     "not-started": "Nie rozpoczęto",
     "user-joined": "Połączone",
-    "not-joined": "Nie dołączono"
+    "not-joined": "Nie dołączono",
+    "push": "Pchnij",
+    "you-pushed-user": "Powiadomienie o dołączeniu zostało wysłane do {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Łączenie z serwerem mediów...",
+    "connecting-media-server": "Łączenie z spotkaniem...",
     "modal-title": "Preferencje mikrofonu i kamery",
     "ready-to-join": "Gotowy do dołączenia?",
-    "join-prompt": "Włącz mikrofon i aparat, aby w pełni uczestniczyć lub dołączyć jako słuchacz.",
+    "join-prompt": "Skonfiguruj swoje urządzenia teraz lub dołącz jako słuchacz. Zawsze możesz kontrolować swój mikrofon i aparat później podczas spotkania.",
+    "join-prompt-mic-locked": "Mikrofon jest wyłączony dla tego spotkania. Możesz włączyć kamerę lub dołączyć jako słuchacz.",
+    "join-prompt-cam-locked": "Kamera jest wyłączona dla tego spotkania. Możesz włączyć mikrofon lub dołączyć jako słuchacz.",
+    "join-prompt-both-locked": "Mikrofon i kamera są wyłączone dla tego spotkania. Proszę dołączyć jako słuchacz.",
     "enable-mic-cam-btn": "Włącz mikrofon i aparat",
+    "enable-mic-btn": "Włącz mikrofon",
+    "enable-cam-btn": "Włącz kamerę",
     "join-as-listener-btn": "Dołącz jako słuchacz",
     "webcam-menu-title": "Wybierz kamerę",
     "mic-menu-title": "Wybierz mikrofon",
     "background-filter-title": "Tło i filtry",
     "config-background-btn": "Skonfiguruj tło kamery",
-    "waiting-for-approval-title": "Oczekiwanie na zatwierdzenie"
+    "waiting-for-approval-title": "Jesteś w poczekalni"
   },
   "external-display-link-display": {
     "modal-title": "Wyświetlanie linku zewnętrznego (iframe)",
     "url": "Adres URL",
     "display": "Wyświetlać",
+    "url-required": "Wymagany jest poprawny adres URL.",
     "link-invalid": "Nieprawidłowy link",
     "note": "Uwaga: Upewnij się, że adres URL ma uprawnienia do otwierania w ramce iframe. Przykład: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Wyślij dodatkowe wartości",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Historia tekstów napisów",
     "azure-error": "Błąd platformy Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Usługa zamiany mowy na tekst została zatrzymana",
-    "enable-transcription": "Włącz transkrypcję"
+    "enable-transcription": "Włącz transkrypcję",
+    "download-header": "Historia napisów dla {{name}}\nJęzyk: {{lang}}\nwygenerowano: {{date}} o {{time}}"
   }
 }

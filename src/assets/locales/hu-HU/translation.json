@@ -1,5 +1,6 @@
 {
   "ok": "Oké",
+  "save": "Megment",
   "close": "Bezár",
   "cancel": "Érvénytelenít",
   "yes": "Igen",
@@ -29,7 +30,7 @@
     "you-have-removed": "Eltávolítottuk erről a konferenciáról.",
     "you-are-blocked": "Nem férhet hozzá ehhez a konferenciához.",
     "you-have-reject": "Elutasították, hogy csatlakozz ehhez a konferenciához",
-    "waiting-for-approval": "Kérjük, várjon, amíg egy moderátor jóváhagyja.",
+    "waiting-for-approval": "A moderátor értesítést kapott, és hamarosan beengedi Önt. Köszönjük a türelmet!",
     "room-disconnected-title": "Szoba leválasztva",
     "room-disconnected-unknown": "A szoba le lett választva. Kód: {{code}}",
     "room-disconnected-client-initiated": "Az ügyfél kezdeményezése megtörtént. Kód: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "A kérelem elküldése sikertelen volt",
     "decode-error-title": "Dekódolási hiba",
     "decode-error-body": "Nem tudtuk megérteni a szerverről küldött adatokat",
+    "invalid-missing-data": "Érvénytelen vagy hiányzó adatok érkeztek",
     "nats-error-auth-title": "Hitelesítési hiba",
     "nats-error-auth-body": "Nem tudtuk ellenőrizni a hitelesítési adatait. Lehet, hogy lejárt tokent használ?",
     "user-logged-out": "Kijelentkezett",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Felhőalapú rögzítés nem érhető el egyéni biztonsági kulcs használata esetén.",
     "media-only-recording-not-support-e2ee": "Csak hang és videó rögzítése nem érhető el, ha a végpontok közötti titkosítás engedélyezve van.",
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
-    "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben."
+    "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
+    "queue-holding-messages": "Csatlakozási probléma: az üzenetek visszatartása folyamatban van. ({{error}})",
+    "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Ez a munkamenet rögzítés alatt áll",
@@ -231,9 +235,11 @@
     "hide-footer": "Lábléc elrejtése",
     "show-footer": "Lábléc megjelenítése",
     "icons": {
+      "select-webcam": "Webkamera kiválasztása",
       "start-webcam": "Indítsa el a webkamerát",
-      "leave-webcam": "Hagyja el a webkamerát",
+      "turn-off-webcam": "Kapcsolja ki a kamerát",
       "webcam-locked": "Webkamera zárolva",
+      "select-microphone": "Mikrofon kiválasztása",
       "start-microphone-sharing": "Mikrofonmegosztás indítása",
       "microphone-locked": "Mikrofon zárolva",
       "leave-microphone": "Hagyja el a mikrofont",
@@ -425,25 +431,33 @@
     "copied": "Másolt",
     "not-started": "Nincs elindítva",
     "user-joined": "Csatlakozott",
-    "not-joined": "Nem csatlakozott"
+    "not-joined": "Nem csatlakozott",
+    "push": "Tol",
+    "you-pushed-user": "Csatlakozási értesítést küldtünk a {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Csatlakozás a médiaszerverhez...",
+    "connecting-media-server": "Csatlakozás az értekezlethez...",
     "modal-title": "Mikrofon és kamera beállításai",
     "ready-to-join": "Készen áll a csatlakozásra?",
-    "join-prompt": "Engedélyezze mikrofonját és kameráját a teljes részvételhez, vagy csatlakozzon hallgatóként.",
+    "join-prompt": "Állítsa be eszközeit most, vagy csatlakozzon hallgatóként. A mikrofont és a kamerát később az értekezlet során bármikor vezérelheti.",
+    "join-prompt-mic-locked": "A mikrofon le van tiltva erre az értekezletre. Engedélyezheti a kamerát, vagy csatlakozhat hallgatóként.",
+    "join-prompt-cam-locked": "A kamera le van tiltva erre az értekezletre. Engedélyezheti a mikrofont, vagy csatlakozhat hallgatóként.",
+    "join-prompt-both-locked": "A mikrofon és a kamera le van tiltva erre az értekezletre. Kérjük, csatlakozzon hallgatóként.",
     "enable-mic-cam-btn": "Mikrofon és kamera engedélyezése",
+    "enable-mic-btn": "Mikrofon engedélyezése",
+    "enable-cam-btn": "Kamera engedélyezése",
     "join-as-listener-btn": "Csatlakozzon hallgatóként",
     "webcam-menu-title": "Válassza a Kamera lehetőséget",
     "mic-menu-title": "Válassza a Mikrofon lehetőséget",
     "background-filter-title": "Háttér és szűrők",
     "config-background-btn": "Kamera háttér konfigurálása",
-    "waiting-for-approval-title": "Jóváhagyásra vár"
+    "waiting-for-approval-title": "A váróteremben vagy"
   },
   "external-display-link-display": {
     "modal-title": "Külső hivatkozás megjelenítése (iframe)",
     "url": "URL-cím",
     "display": "Kijelző",
+    "url-required": "Érvényes URL-címre van szükség.",
     "link-invalid": "A hivatkozás érvénytelen",
     "note": "Megjegyzés: Győződjön meg arról, hogy az URL-nek van engedélye az iframe-en belüli megnyitásra. Példa: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Extra értékek küldése",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Feliratszövegek története",
     "azure-error": "Microsoft Azure-hiba: {{error}}",
     "speech-to-text-stopped": "A beszédfelismerési szolgáltatás leállt",
-    "enable-transcription": "Átírás engedélyezése"
+    "enable-transcription": "Átírás engedélyezése",
+    "download-header": "Felirat előzmények {{name}}\nNyelv: {{lang}}\nGenerálva: {{date}} nél {{time}}"
   }
 }

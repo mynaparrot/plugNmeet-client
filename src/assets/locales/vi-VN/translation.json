@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Cứu",
   "close": "Đóng",
   "cancel": "Hủy",
   "yes": "Có",
@@ -29,7 +30,7 @@
     "you-have-removed": "Bạn đã bị loại khỏi hội nghị này.",
     "you-are-blocked": "Bạn không được phép truy cập hội nghị này.",
     "you-have-reject": "Bạn đã bị từ chối tham gia hội nghị này",
-    "waiting-for-approval": "Vui lòng đợi cho đến khi người kiểm duyệt phê duyệt bạn.",
+    "waiting-for-approval": "Người kiểm duyệt đã được thông báo và sẽ cho bạn biết trong thời gian ngắn. Cảm ơn sự kiên nhẫn của bạn!",
     "room-disconnected-title": "Phòng bị ngắt kết nối",
     "room-disconnected-unknown": "Căn phòng đã bị ngắt kết nối. Mã: {{code}}",
     "room-disconnected-client-initiated": "Khách hàng đã được bắt đầu. Mã: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Gửi yêu cầu không thành công",
     "decode-error-title": "Lỗi giải mã",
     "decode-error-body": "Chúng tôi không thể hiểu dữ liệu được gửi từ máy chủ",
+    "invalid-missing-data": "Dữ liệu không hợp lệ hoặc bị thiếu nhận được",
     "nats-error-auth-title": "Lỗi xác thực",
     "nats-error-auth-body": "Chúng tôi không thể xác minh thông tin xác thực của bạn. Có thể bạn đang sử dụng mã thông báo đã hết hạn?",
     "user-logged-out": "Bạn đã đăng xuất",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Tính năng ghi trên đám mây không khả dụng khi sử dụng khóa bảo mật tùy chỉnh.",
     "media-only-recording-not-support-e2ee": "Chỉ ghi âm thanh và video không khả dụng khi mã hóa đầu cuối được bật.",
     "you-are-sharing-screen": "Bạn đang chia sẻ màn hình của mình ngay bây giờ. Những người khác sẽ thấy một cái nhìn lớn hơn.",
-    "new-system-message-in-chat": "Một thông báo hệ thống mới đã được đăng trong cuộc trò chuyện công khai."
+    "new-system-message-in-chat": "Một thông báo hệ thống mới đã được đăng trong cuộc trò chuyện công khai.",
+    "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ. ({{error}})",
+    "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Phiên họp này đang được ghi lại",
@@ -231,9 +235,11 @@
     "hide-footer": "Ẩn chân trang",
     "show-footer": "Hiển thị chân trang",
     "icons": {
+      "select-webcam": "Chọn webcam",
       "start-webcam": "Khởi động webcam",
-      "leave-webcam": "Rời khỏi webcam",
+      "turn-off-webcam": "Tắt máy ảnh",
       "webcam-locked": "Webcam bị khóa",
+      "select-microphone": "Chọn micrô",
       "start-microphone-sharing": "Bắt đầu chia sẻ micrô",
       "microphone-locked": "Micrô bị khóa",
       "leave-microphone": "Để lại cái mic cờ rô",
@@ -425,25 +431,33 @@
     "copied": "Sao chép",
     "not-started": "Chưa bắt đầu",
     "user-joined": "Tham gia",
-    "not-joined": "Không tham gia"
+    "not-joined": "Không tham gia",
+    "push": "Đẩy",
+    "you-pushed-user": "Thông báo tham gia đã được gửi đến {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Đang kết nối với máy chủ phương tiện...",
+    "connecting-media-server": "Kết nối với cuộc họp...",
     "modal-title": "Tùy chọn micrô và máy ảnh",
     "ready-to-join": "Sẵn sàng tham gia?",
-    "join-prompt": "Cho phép micrô và máy ảnh của bạn tham gia đầy đủ hoặc tham gia với tư cách là người nghe.",
+    "join-prompt": "Thiết lập thiết bị của bạn ngay bây giờ hoặc tham gia với tư cách là người nghe. Bạn luôn có thể điều khiển micrô và máy ảnh của mình sau này trong cuộc họp.",
+    "join-prompt-mic-locked": "Micrô bị tắt cho cuộc họp này. Bạn có thể bật máy ảnh của mình hoặc tham gia với tư cách là người nghe.",
+    "join-prompt-cam-locked": "Máy ảnh bị tắt cho cuộc họp này. Bạn có thể bật micrô của mình hoặc tham gia với tư cách là người nghe.",
+    "join-prompt-both-locked": "Micrô và máy ảnh bị tắt cho cuộc họp này. Hãy tham gia với tư cách là người nghe.",
     "enable-mic-cam-btn": "Bật micrô và máy ảnh",
+    "enable-mic-btn": "Bật micrô",
+    "enable-cam-btn": "Bật máy ảnh",
     "join-as-listener-btn": "Tham gia với tư cách là người nghe",
     "webcam-menu-title": "Chọn Máy ảnh",
     "mic-menu-title": "Chọn Micrô",
     "background-filter-title": "Nền và bộ lọc",
     "config-background-btn": "Định cấu hình nền máy ảnh",
-    "waiting-for-approval-title": "Đang chờ phê duyệt"
+    "waiting-for-approval-title": "Bạn đang ở trong phòng chờ"
   },
   "external-display-link-display": {
     "modal-title": "Hiển thị liên kết ngoài (iframe)",
     "url": "Địa chỉ",
     "display": "Trưng bày",
+    "url-required": "URL hợp lệ là bắt buộc.",
     "link-invalid": "Liên kết không hợp lệ",
     "note": "Lưu ý: Đảm bảo URL có quyền mở bên trong iframe. Ví dụ: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Gửi giá trị bổ sung",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Lịch sử văn bản phụ đề",
     "azure-error": "Lỗi Microsoft azure: {{error}}",
     "speech-to-text-stopped": "Dịch vụ chuyển lời nói thành văn bản đã bị dừng",
-    "enable-transcription": "Bật phiên âm"
+    "enable-transcription": "Bật phiên âm",
+    "download-header": "Lịch sử phụ đề cho {{name}}\nNgôn ngữ: {{lang}}\nĐược tạo vào: {{date}} tại {{time}}"
   }
 }

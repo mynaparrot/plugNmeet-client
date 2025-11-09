@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Guardar",
   "close": "Cerrar",
   "cancel": "Cancelar",
   "yes": "Sí",
@@ -29,7 +30,7 @@
     "you-have-removed": "Usted ha sido eliminado de la conferencia.",
     "you-are-blocked": "No estás autorizado para acceder a esta conferencia.",
     "you-have-reject": "Usted ha sido eliminado de la conferencia",
-    "waiting-for-approval": "Por favor, espera hasta que un moderador te apruebe.",
+    "waiting-for-approval": "Un moderador ha sido notificado y te lo permitirá en breve. ¡Gracias por tu paciencia!",
     "room-disconnected-title": "Sala desconectada",
     "room-disconnected-unknown": "La sala ha sido desconectada. Motivo: {{code}}",
     "room-disconnected-client-initiated": "El cliente ha sido iniciado. Código: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "El envío de la solicitud no se ha realizado correctamente",
     "decode-error-title": "Error de decodificación",
     "decode-error-body": "No pudimos entender los datos enviados desde el servidor",
+    "invalid-missing-data": "Datos no válidos o faltantes recibidos",
     "nats-error-auth-title": "Error de autenticación",
     "nats-error-auth-body": "No hemos podido verificar su información de autenticación. ¿Puede ser que estés usando un token caducado?",
     "user-logged-out": "Has cerrado la sesión",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "La grabación en la nube no está disponible cuando se utiliza una clave de seguridad personalizada.",
     "media-only-recording-not-support-e2ee": "Sólo la grabación de audio y vídeo no está disponible cuando el cifrado de extremo a extremo está habilitado.",
     "you-are-sharing-screen": "Estás compartiendo tu pantalla ahora. Otros verán una vista más grande.",
-    "new-system-message-in-chat": "Un nuevo mensaje del sistema ha sido publicado en el chat público."
+    "new-system-message-in-chat": "Un nuevo mensaje del sistema ha sido publicado en el chat público.",
+    "queue-holding-messages": "Problema de conexión: se están manteniendo mensajes. ({{error}})",
+    "queue-discarded-message": "No se pudo enviar un mensaje y fue descartado. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Esta sesión se está grabando",
@@ -231,9 +235,11 @@
     "hide-footer": "Ocultar pie de página",
     "show-footer": "Mostrar pie de página",
     "icons": {
+      "select-webcam": "Seleccionar webcam",
       "start-webcam": "Iniciar cámara web",
-      "leave-webcam": "Dejar cámara web",
+      "turn-off-webcam": "Apagar la cámara",
       "webcam-locked": "Cámara web bloqueada",
+      "select-microphone": "Seleccionar micrófono",
       "start-microphone-sharing": "Empezar a compartir el micrófono",
       "microphone-locked": "Micrófono bloqueado",
       "leave-microphone": "Dejar Micrófono",
@@ -425,25 +431,33 @@
     "copied": "Copiado",
     "not-started": "No ha empezado",
     "user-joined": "Se unió",
-    "not-joined": "No se ha unido"
+    "not-joined": "No se ha unido",
+    "push": "Empujar",
+    "you-pushed-user": "Una notificación de unión ha sido enviada a {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Conectando al servidor de medios...",
+    "connecting-media-server": "Conectando a la reunión...",
     "modal-title": "Preferencias de micrófono y cámara",
     "ready-to-join": "¿Estás listo para unirte?",
-    "join-prompt": "Habilita tu micrófono y cámara para participar plenamente, o unirte como oyente.",
+    "join-prompt": "Configura tus dispositivos ahora, o únete como oyente. Siempre puedes controlar tu micrófono y cámara más tarde durante la reunión.",
+    "join-prompt-mic-locked": "El micrófono está desactivado para esta reunión. Puedes activar tu cámara o unirte como oyente.",
+    "join-prompt-cam-locked": "La cámara está desactivada para este encuentro. Puedes activar el micrófono o unirte como oyente.",
+    "join-prompt-both-locked": "El micrófono y la cámara están desactivados para esta reunión. Por favor, únase como oyente.",
     "enable-mic-cam-btn": "Activar micrófono y cámara",
+    "enable-mic-btn": "Activar micrófono",
+    "enable-cam-btn": "Activar cámara",
     "join-as-listener-btn": "Unirse como oyente",
     "webcam-menu-title": "Seleccionar cámara",
     "mic-menu-title": "Seleccionar micrófono",
     "background-filter-title": "Fondo y filtros",
     "config-background-btn": "Configurar fondo de cámara",
-    "waiting-for-approval-title": "Esperando la aprobación"
+    "waiting-for-approval-title": "Estás en la sala de espera"
   },
   "external-display-link-display": {
     "modal-title": "Mostrar enlace externo (iframe)",
     "url": "Url",
     "display": "Mostrar",
+    "url-required": "Se requiere una URL válida.",
     "link-invalid": "El enlace no es válido",
     "note": "Nota: Asegúrese de que la URL tiene permiso para abrir dentro de un iframe. Ejemplo: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Enviar valores extra",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Historial de textos de subtítulos",
     "azure-error": "Error de Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "El servicio de voz a texto ha sido detenido",
-    "enable-transcription": "Habilitar transcripción"
+    "enable-transcription": "Habilitar transcripción",
+    "download-header": "Historial de subtítulos para {{name}}\nIdioma: {{lang}}\nGenerado el: {{date}} en {{time}}"
   }
 }

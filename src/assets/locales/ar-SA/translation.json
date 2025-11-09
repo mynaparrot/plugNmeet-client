@@ -1,5 +1,6 @@
 {
   "ok": "موافق",
+  "save": "حفظ",
   "close": "إغلاق",
   "cancel": "إلغاء",
   "yes": "نعم",
@@ -29,7 +30,7 @@
     "you-have-removed": "لقد تم إزالتك من الاجتماع.",
     "you-are-blocked": "لا يسمح لك بالانضمام إلى هذه الجلسة.",
     "you-have-reject": "رُفض طلبك للانضمام إلى الاجتماع.",
-    "waiting-for-approval": "الرجاء الانتظار حتى يسمح لك المشرف بالدخول.",
+    "waiting-for-approval": "تم إعلام المشرف وسيسمح لك قريباً. شكراً على صبرك!",
     "room-disconnected-title": "قطع",
     "room-disconnected-unknown": "لقد تم قطع الاتصال لسبب غير معروف. (الرمز: {{code}})",
     "room-disconnected-client-initiated": "لقد قطعت الاتصال عن الاجتماع. (الرمز: {{code}})",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "لا يمكن إرسال طلبك.",
     "decode-error-title": "خطأ في البيانات",
     "decode-error-body": "حدثت مشكلة في تلقي البيانات من الخادم.",
+    "invalid-missing-data": "البيانات المستلمة غير صالحة أو مفقودة",
     "nats-error-auth-title": "خطأ في تسجيل الدخول",
     "nats-error-auth-body": "لم نتمكن من التحقق من معلوماتك. ربما تكون جلستك قد انتهت.",
     "user-logged-out": "لقد قمت بتسجيل الخروج.",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "التسجيل السحابي غير متوفر عند استخدام مفتاح أمان مخصص.",
     "media-only-recording-not-support-e2ee": "تسجيل الصوت والفيديو فقط غير متوفر عند تمكين التشفير من النهاية إلى النهاية.",
     "you-are-sharing-screen": "أنت تشارك شاشتك الآن. سيرى الآخرون طريقة عرض أكبر.",
-    "new-system-message-in-chat": "وقد نشرت رسالة جديدة للنظام في المحادثة العامة."
+    "new-system-message-in-chat": "وقد نشرت رسالة جديدة للنظام في المحادثة العامة.",
+    "queue-holding-messages": "مشكلة الاتصال: يتم الاحتفاظ بالرسائل. ({{error}})",
+    "queue-discarded-message": "لا يمكن إرسال الرسالة وتم تجاهلها. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "ويجري تسجيل هذه الجلسة.",
@@ -231,9 +235,11 @@
     "hide-footer": "إخفاء التذييل",
     "show-footer": "إظهار التذييل",
     "icons": {
+      "select-webcam": "حدد كاميرا الويب",
       "start-webcam": "بدء تشغيل كاميرا الويب",
-      "leave-webcam": "ترك كاميرا الويب",
+      "turn-off-webcam": "إيقاف تشغيل الكاميرا",
       "webcam-locked": "كاميرا ويب مقفلة",
+      "select-microphone": "حدد الميكروفون",
       "start-microphone-sharing": "بدء مشاركة الميكروفون",
       "microphone-locked": "الميكروفون مقفل",
       "leave-microphone": "اترك الميكروفون",
@@ -425,25 +431,33 @@
     "copied": "نسخ",
     "not-started": "لم يبدأ",
     "user-joined": "معقود",
-    "not-joined": "غير منضم"
+    "not-joined": "غير منضم",
+    "push": "دفع",
+    "you-pushed-user": "تم إرسال إشعار الانضمام إلى {{name}}."
   },
   "landing": {
-    "connecting-media-server": "جارٍ الاتصال بخادم الوسائط...",
+    "connecting-media-server": "جاري الاتصال بالاجتماع...",
     "modal-title": "تفضيلات الميكروفون والكاميرا",
     "ready-to-join": "مستعد للإنضمام؟",
-    "join-prompt": "تمكين الميكروفون والكاميرا الخاصة بك للمشاركة الكاملة، أو الانضمام كمستمع.",
+    "join-prompt": "قم بإعداد أجهزتك الآن، أو الانضمام كمستمع. يمكنك دائمًا التحكم في الميكروفون والكاميرا في وقت لاحق أثناء الاجتماع.",
+    "join-prompt-mic-locked": "الميكروفون معطل لهذا الاجتماع. يمكنك تمكين الكاميرا أو الانضمام كمستمع.",
+    "join-prompt-cam-locked": "الكاميرا معطلة لهذا الاجتماع. يمكنك تمكين الميكروفون أو الانضمام كمستمع.",
+    "join-prompt-both-locked": "الميكروفون والكاميرا معطلتان لهذا الاجتماع. يرجى الانضمام كمستمع.",
     "enable-mic-cam-btn": "تمكين الميكروفون والكاميرا",
+    "enable-mic-btn": "تمكين الميكروفون",
+    "enable-cam-btn": "تمكين الكاميرا",
     "join-as-listener-btn": "الانضمام كمستمع",
     "webcam-menu-title": "حدد الكاميرا",
     "mic-menu-title": "حدد الميكروفون",
     "background-filter-title": "الخلفية و الفلاتر",
     "config-background-btn": "تكوين خلفية الكاميرا",
-    "waiting-for-approval-title": "في انتظار الموافقة"
+    "waiting-for-approval-title": "أنت في غرفة الانتظار"
   },
   "external-display-link-display": {
     "modal-title": "عرض رابط خارجي (iframe)",
     "url": "الرابط",
     "display": "عرض",
+    "url-required": "مطلوب عنوان URL صالح.",
     "link-invalid": "الرابط غير صالح",
     "note": "ملاحظة: تأكد من أن عنوان URL لديه إذن للفتح داخل iframe. مثال: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "إرسال قيم إضافية",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "تاريخ نصوص الترجمة",
     "azure-error": "خطأ مايكروسوفت أزور: {{error}}",
     "speech-to-text-stopped": "تم إيقاف خدمة تحويل الكلام إلى نص",
-    "enable-transcription": "تمكين النسخ"
+    "enable-transcription": "تمكين النسخ",
+    "download-header": "تاريخ الترجمة لـ {{name}}\nاللغة: {{lang}}\nتم إنشاؤها على: {{date}} في {{time}}"
   }
 }

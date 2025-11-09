@@ -1,5 +1,6 @@
 {
   "ok": "Tamam",
+  "save": "Kurtarmak",
   "close": "Kapat",
   "cancel": "Vazgeç",
   "yes": "Evet",
@@ -29,7 +30,7 @@
     "you-have-removed": "Bu konferanstan çıkarıldınız.",
     "you-are-blocked": "Bu konferans erişimine izin verilmedi.",
     "you-have-reject": "Bu konferansa katılmanız reddedildi",
-    "waiting-for-approval": "Lütfen moderatör sizi onaylayana kadar bekleyin.",
+    "waiting-for-approval": "Bir moderatör bilgilendirildi ve kısa süre içinde sizi içeri alacak. Sabrınız için teşekkürler!",
     "room-disconnected-title": "Bağlantı kesildi",
     "room-disconnected-unknown": "Odanın bağlantısı kesildi. Kod: {{code}}",
     "room-disconnected-client-initiated": "İstemci başlatıldı. Kod: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "İstek gönderme başarılı olmadı",
     "decode-error-title": "Kod çözme hatası",
     "decode-error-body": "Sunucudan gönderilen verileri anlayamadık",
+    "invalid-missing-data": "Geçersiz veya eksik veri alındı",
     "nats-error-auth-title": "Kimlik doğrulama hatası",
     "nats-error-auth-body": "Kimlik doğrulama bilgilerinizi doğrulayamadık. Süresi dolmuş bir belirteç kullanıyor olabilirsiniz?",
     "user-logged-out": "Oturumu kapattınız",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Özel bir güvenlik anahtarı kullanılırken bulut kaydı kullanılamaz.",
     "media-only-recording-not-support-e2ee": "Uçtan uca şifreleme etkinleştirildiğinde yalnızca ses ve video kaydı yapılamaz.",
     "you-are-sharing-screen": "Şu anda ekranınızı paylaşıyorsunuz. Diğerleri daha büyük bir görünüm görecek.",
-    "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı."
+    "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı.",
+    "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor. ({{error}})",
+    "queue-discarded-message": "Bir mesaj gönderilemedi ve atıldı. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Bu oturum kaydediliyor",
@@ -231,9 +235,11 @@
     "hide-footer": "Altbilgi Gizle",
     "show-footer": "Altbilgiyi Göster",
     "icons": {
+      "select-webcam": "Web kamerasını seçin",
       "start-webcam": "Web kamerasını başlat",
-      "leave-webcam": "Web kamerasından ayrıl",
+      "turn-off-webcam": "Kamerayı Kapat",
       "webcam-locked": "Web kamerası kilitli",
+      "select-microphone": "Mikrofon seç",
       "start-microphone-sharing": "Mikrofon paylaşımını başlat",
       "microphone-locked": "Mikrofon kilitli",
       "leave-microphone": "Mikrofonu bırak",
@@ -425,25 +431,33 @@
     "copied": "Kopyalandı",
     "not-started": "Başlatılmadı",
     "user-joined": "Katıldın",
-    "not-joined": "Katılmadı"
+    "not-joined": "Katılmadı",
+    "push": "İtmek",
+    "you-pushed-user": "Bir katılma bildirimi gönderildi {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Medya sunucusuna bağlanıyor...",
+    "connecting-media-server": "Toplantıya bağlanma...",
     "modal-title": "Mikrofon ve Kamera Tercihleri",
     "ready-to-join": "Katılmaya hazır mısınız?",
-    "join-prompt": "Mikrofonunuzu ve kameranızı tam olarak katılacak şekilde etkinleştirin veya dinleyici olarak katılın.",
+    "join-prompt": "Cihazlarınızı şimdi kurun veya dinleyici olarak katılın. Toplantı sırasında daha sonra mikrofonunuzu ve kameranızı istediğiniz zaman kontrol edebilirsiniz.",
+    "join-prompt-mic-locked": "Bu toplantı için mikrofon devre dışı bırakıldı. Kameranızı etkinleştirebilir veya dinleyici olarak katılabilirsiniz.",
+    "join-prompt-cam-locked": "Bu toplantı için kamera devre dışı bırakıldı. Mikrofonunuzu etkinleştirebilir veya dinleyici olarak katılabilirsiniz.",
+    "join-prompt-both-locked": "Bu toplantı için mikrofon ve kamera devre dışı bırakıldı. Lütfen dinleyici olarak katılın.",
     "enable-mic-cam-btn": "Mikrofon ve Kamerayı Etkinleştir",
+    "enable-mic-btn": "Mikrofonu Etkinleştir",
+    "enable-cam-btn": "Kamerayı Etkinleştir",
     "join-as-listener-btn": "Dinleyici olarak katılma",
     "webcam-menu-title": "Kamera Seç",
     "mic-menu-title": "Mikrofon Seç",
     "background-filter-title": "Arka Plan & Filtreler",
     "config-background-btn": "Kamera Arka Planını Yapılandır",
-    "waiting-for-approval-title": "Onay Bekleniyor"
+    "waiting-for-approval-title": "Bekleme odasındasınız"
   },
   "external-display-link-display": {
     "modal-title": "Harici bağlantıyı görüntüle (iframe)",
     "url": "Url",
     "display": "Göster",
+    "url-required": "Geçerli bir URL gereklidir.",
     "link-invalid": "Bağlantı geçersiz",
     "note": "Not: URL'nin bir iframe içinde açma iznine sahip olduğundan emin olun. Örnek: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Ekstra değerler gönder",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Altyazı metinleri geçmişi",
     "azure-error": "Microsoft azure hatası: {{error}}",
     "speech-to-text-stopped": "Konuşmayı metne dönüştürme hizmeti durduruldu",
-    "enable-transcription": "Transkripsiyonu Etkinleştir"
+    "enable-transcription": "Transkripsiyonu Etkinleştir",
+    "download-header": "Altyazı Geçmişi {{name}}\nDil: {{lang}}\nOluşturulma tarihi: {{date}} da {{time}}"
   }
 }
