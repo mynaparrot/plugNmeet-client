@@ -1,5 +1,6 @@
 {
   "ok": "OK",
+  "save": "Gem",
   "close": "Lukke",
   "cancel": "Aflyse",
   "yes": "Ja",
@@ -29,7 +30,7 @@
     "you-have-removed": "Du er blevet fjernet fra denne konference.",
     "you-are-blocked": "Du har ikke tilladelse til at få adgang til denne konference.",
     "you-have-reject": "Du er blevet afvist til at deltage i denne konference",
-    "waiting-for-approval": "Vent venligst til en moderator vil godkende dig.",
+    "waiting-for-approval": "En moderator er blevet underrettet og vil lade dig om lidt. Tak for din tålmodighed!",
     "room-disconnected-title": "Værelse afbrudt",
     "room-disconnected-unknown": "Rummet er blevet afbrudt. Kodeks: {{code}}",
     "room-disconnected-client-initiated": "Klienten er blevet påbegyndt. Kodeks: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Afsendelsesanmodningen lykkedes ikke",
     "decode-error-title": "Afkodningsfejl",
     "decode-error-body": "Vi kunne ikke forstå data sendt fra server",
+    "invalid-missing-data": "Ugyldige eller manglende data modtaget",
     "nats-error-auth-title": "Fejl ved godkendelse",
     "nats-error-auth-body": "Vi var ikke i stand til at bekræfte dine godkendelsesoplysninger. Måske bruger du et udløbet token?",
     "user-logged-out": "Du loggede ud",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Cloud optagelse er ikke tilgængelig, når du bruger en brugerdefineret sikkerhedsnøgle.",
     "media-only-recording-not-support-e2ee": "Optagelse kun lyd og video er ikke tilgængelig, når end-to-end kryptering er aktiveret.",
     "you-are-sharing-screen": "Du deler din skærm nu. Andre vil se en større visning.",
-    "new-system-message-in-chat": "En ny systembesked er blevet offentliggjort i den offentlige chat."
+    "new-system-message-in-chat": "En ny systembesked er blevet offentliggjort i den offentlige chat.",
+    "queue-holding-messages": "Forbindelsesproblem: Meddelelser afholdes. ({{error}})",
+    "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Denne session optages",
@@ -231,9 +235,11 @@
     "hide-footer": "Skjul sidefod",
     "show-footer": "Vis sidefod",
     "icons": {
+      "select-webcam": "Vælg webcam",
       "start-webcam": "Start webcam",
-      "leave-webcam": "Forlad webcam",
+      "turn-off-webcam": "Slå Kamera Fra",
       "webcam-locked": "Webcam låst",
+      "select-microphone": "Vælg mikrofon",
       "start-microphone-sharing": "Start mikrofondeling",
       "microphone-locked": "Mikrofon låst",
       "leave-microphone": "Forlad mikrofon",
@@ -425,25 +431,33 @@
     "copied": "Kopieres",
     "not-started": "Ikke startet",
     "user-joined": "Sluttede",
-    "not-joined": "Ikke tilmeldt"
+    "not-joined": "Ikke tilmeldt",
+    "push": "Skub",
+    "you-pushed-user": "En tilmeldings-meddelelse er blevet sendt til {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Forbinder til medieserveren...",
+    "connecting-media-server": "Forbinder til mødet...",
     "modal-title": "Indstillinger for mikrofon og kamera",
     "ready-to-join": "Klar til at deltage?",
-    "join-prompt": "Aktiver din mikrofon og kamera for at deltage fuldt ud, eller deltage som en lytter.",
+    "join-prompt": "Konfigurer dine enheder nu, eller tilmeld dig som en lytter. Du kan altid styre din mikrofon og kamera senere under mødet.",
+    "join-prompt-mic-locked": "Mikrofonen er deaktiveret for dette møde. Du kan aktivere dit kamera eller deltage som en lytter.",
+    "join-prompt-cam-locked": "Kameraet er deaktiveret for dette møde. Du kan aktivere din mikrofon eller deltage som en lytter.",
+    "join-prompt-both-locked": "Mikrofonen og kameraet er deaktiveret for dette møde. Tilslut dig venligst som en lytter.",
     "enable-mic-cam-btn": "Aktiver mikrofon og kamera",
+    "enable-mic-btn": "Aktiver Mikrofon",
+    "enable-cam-btn": "Aktiver Kamera",
     "join-as-listener-btn": "Deltag som lytter",
     "webcam-menu-title": "Vælg Kamera",
     "mic-menu-title": "Vælg Mikrofon",
     "background-filter-title": "Baggrund & Filtre",
     "config-background-btn": "Indstil Baggrund For Kamera",
-    "waiting-for-approval-title": "Venter på godkendelse"
+    "waiting-for-approval-title": "Du er i venteværelset"
   },
   "external-display-link-display": {
     "modal-title": "Vis eksternt link (iframe)",
     "url": "URL-adresse",
     "display": "Vise",
+    "url-required": "En gyldig URL er påkrævet.",
     "link-invalid": "Linket er ikke gyldigt",
     "note": "Bemærk: Sørg for, at URL-adressen har tilladelse til at åbne i en iframe. Eksempel: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Send ekstra værdier",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Undertekster historie",
     "azure-error": "Microsoft Azure-fejl: {{error}}",
     "speech-to-text-stopped": "Tale til tekst-tjenesten er blevet stoppet",
-    "enable-transcription": "Aktiver Transskription"
+    "enable-transcription": "Aktiver Transskription",
+    "download-header": "Undertekst Historie for {{name}}\nSprog: {{lang}}\nGenereret den: {{date}} på {{time}}"
   }
 }
