@@ -1,5 +1,6 @@
 {
   "ok": "Labi",
+  "save": "Glābt",
   "close": "Aizvērt",
   "cancel": "Atcelt",
   "yes": "Jā",
@@ -29,7 +30,7 @@
     "you-have-removed": "Jūs esat noņemts no šīs konferences.",
     "you-are-blocked": "Jums nav atļauts piekļūt šai konferencei.",
     "you-have-reject": "Jums tika atteikts pievienoties šai konferencei",
-    "waiting-for-approval": "Lūdzu, pagaidiet, līdz moderators jūs apstiprinās.",
+    "waiting-for-approval": "Moderators ir informēts un drīzumā jūs ielaidīs. Paldies par pacietību!",
     "room-disconnected-title": "Atvienots numurs",
     "room-disconnected-unknown": "Istaba ir atslēgta. Kods: {{code}}",
     "room-disconnected-client-initiated": "Klients ir iniciēts. Kods: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Pieprasījuma nosūtīšana nebija veiksmīga",
     "decode-error-title": "Dekodēšanas kļūda",
     "decode-error-body": "Mēs nevarējām saprast datus, kas nosūtīti no servera",
+    "invalid-missing-data": "Saņemti nederīgi vai trūkstoši dati",
     "nats-error-auth-title": "Autentifikācijas kļūda",
     "nats-error-auth-body": "Mēs nevarējām pārbaudīt jūsu auth informāciju. Varbūt jūs izmantojat marķieri, kuram beidzies derīguma termiņš?",
     "user-logged-out": "Jūs izrakstījāties",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Mākoņa ierakstīšana nav pieejama, izmantojot pielāgotu drošības atslēgu.",
     "media-only-recording-not-support-e2ee": "Tikai audio un video ierakstīšana nav pieejama, ja ir iespējota pilnīga šifrēšana.",
     "you-are-sharing-screen": "Tagad jūs kopīgojat savu ekrānu. Citi redzēs plašāku skatu.",
-    "new-system-message-in-chat": "Publiskajā tērzēšanā ir ievietots jauns sistēmas ziņojums."
+    "new-system-message-in-chat": "Publiskajā tērzēšanā ir ievietots jauns sistēmas ziņojums.",
+    "queue-holding-messages": "Savienojuma problēma: tiek turēti ziņojumi. ({{error}})",
+    "queue-discarded-message": "Ziņojumu nevarēja nosūtīt, un tas tika atmests. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Šī sesija tiek ierakstīta",
@@ -231,9 +235,11 @@
     "hide-footer": "Kājenes paslēpšana",
     "show-footer": "Rādīt kājeni",
     "icons": {
+      "select-webcam": "Izvēlieties tīmekļa kameru",
       "start-webcam": "Tīmekļa kameras startēšana",
-      "leave-webcam": "Tīmekļa kameras atstāšana",
+      "turn-off-webcam": "Kameras izslēgšana",
       "webcam-locked": "Tīmekļa kamera ir bloķēta",
+      "select-microphone": "Izvēlieties mikrofonu",
       "start-microphone-sharing": "Mikrofona koplietošanas sākšana",
       "microphone-locked": "Mikrofons bloķēts",
       "leave-microphone": "Mikrofona atstāšana",
@@ -425,25 +431,33 @@
     "copied": "Kopēts",
     "not-started": "Nav sākts",
     "user-joined": "Pievienojās",
-    "not-joined": "Nav pievienojies"
+    "not-joined": "Nav pievienojies",
+    "push": "Stumt",
+    "you-pushed-user": "Paziņojums par pievienošanos ir nosūtīts uz {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Tiek izveidots savienojums ar multivides serveri...",
+    "connecting-media-server": "Tiek izveidots savienojums ar sapulci...",
     "modal-title": "Mikrofona un kameras preferences",
     "ready-to-join": "Vai esat gatavs pievienoties?",
-    "join-prompt": "Iespējojiet mikrofonu un kameru pilnvērtīgi piedalīties vai pievienojieties kā klausītājs.",
+    "join-prompt": "Iestatiet ierīces tūlīt vai pievienojieties kā klausītājs. Vēlāk sapulces laikā vienmēr varat kontrolēt mikrofonu un kameru.",
+    "join-prompt-mic-locked": "Mikrofons šai sapulcei ir atspējots. Varat iespējot kameru vai pievienoties kā klausītājs.",
+    "join-prompt-cam-locked": "Kamera šai sapulcei ir atspējota. Varat iespējot mikrofonu vai pievienoties kā klausītājam.",
+    "join-prompt-both-locked": "Mikrofons un kamera šai sapulcei ir atspējoti. Lūdzu, pievienojieties kā klausītājs.",
     "enable-mic-cam-btn": "Iespējot mikrofonu un kameru",
+    "enable-mic-btn": "Iespējot mikrofonu",
+    "enable-cam-btn": "Iespējot kameru",
     "join-as-listener-btn": "Pievienojieties kā klausītājs",
     "webcam-menu-title": "Atlasiet Kamera",
     "mic-menu-title": "Atlasiet Mikrofons",
     "background-filter-title": "Fons un filtri",
     "config-background-btn": "Kameras fona konfigurēšana",
-    "waiting-for-approval-title": "Gaida apstiprinājumu"
+    "waiting-for-approval-title": "Jūs atrodaties uzgaidāmajā telpā"
   },
   "external-display-link-display": {
     "modal-title": "Ārējās saites (iframe) rādīšana",
     "url": "Vietne URL",
     "display": "Parādīt",
+    "url-required": "Ir nepieciešams derīgs URL.",
     "link-invalid": "Saite nav derīga",
     "note": "Piezīme: pārliecinieties, vai URL ir atļauja atvērt iframe. Piemērs: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Sūtīt papildu vērtības",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Subtitru tekstu vēsture",
     "azure-error": "Microsoft Azure kļūda: {{error}}",
     "speech-to-text-stopped": "Runas pārvēršanas tekstā pakalpojums ir pārtraukts",
-    "enable-transcription": "Iespējot transkripciju"
+    "enable-transcription": "Iespējot transkripciju",
+    "download-header": "Subtitru vēsture {{name}}\nValoda: {{lang}}\nĢenerēts: {{date}} pie {{time}}"
   }
 }
