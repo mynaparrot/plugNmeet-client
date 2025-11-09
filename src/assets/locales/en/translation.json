@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Save",
   "close": "Close",
   "cancel": "Cancel",
   "yes": "Yes",
@@ -29,7 +30,7 @@
     "you-have-removed": "You have been removed from the meeting.",
     "you-are-blocked": "You are not allowed to join this meeting.",
     "you-have-reject": "Your request to join the meeting was denied.",
-    "waiting-for-approval": "Please wait for a moderator to let you in.",
+    "waiting-for-approval": "A moderator has been notified and will let you in shortly. Thanks for your patience!",
     "room-disconnected-title": "Disconnected",
     "room-disconnected-unknown": "You have been disconnected for an unknown reason. (Code: {{code}})",
     "room-disconnected-client-initiated": "You have disconnected from the meeting. (Code: {{code}})",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Your request could not be sent.",
     "decode-error-title": "Data Error",
     "decode-error-body": "There was a problem receiving data from the server.",
+    "invalid-missing-data": "Invalid or missing data received",
     "nats-error-auth-title": "Login Error",
     "nats-error-auth-body": "We were not able to verify your information. Your session may have expired.",
     "user-logged-out": "You have been logged out.",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Cloud recording is not available when using a custom security key.",
     "media-only-recording-not-support-e2ee": "Recording only audio and video is not available when end-to-end encryption is enabled.",
     "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view.",
-    "new-system-message-in-chat": "A new system message has been posted in the public chat."
+    "new-system-message-in-chat": "A new system message has been posted in the public chat.",
+    "queue-holding-messages": "Connection problem: messages are being held. ({{error}})",
+    "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -231,9 +235,11 @@
     "hide-footer": "Hide footer",
     "show-footer": "Show footer",
     "icons": {
+      "select-webcam": "Select webcam",
       "start-webcam": "Turn On Camera",
-      "leave-webcam": "Turn Off Camera",
+      "turn-off-webcam": "Turn Off Camera",
       "webcam-locked": "Camera Locked",
+      "select-microphone": "Select microphone",
       "start-microphone-sharing": "Turn On Microphone",
       "microphone-locked": "Microphone Locked",
       "leave-microphone": "Turn Off Microphone",
@@ -425,25 +431,33 @@
     "copied": "Copied",
     "not-started": "Not Started",
     "user-joined": "Joined",
-    "not-joined": "Not Joined"
+    "not-joined": "Not Joined",
+    "push": "Push",
+    "you-pushed-user": "A join notification has been sent to {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Connecting to the media server...",
+    "connecting-media-server": "Connecting to the meeting...",
     "modal-title": "Microphone and Camera Preferences",
     "ready-to-join": "Ready to join?",
-    "join-prompt": "Enable your microphone and camera to participate fully, or join as a listener.",
+    "join-prompt": "Set up your devices now, or join as a listener. You can always control your microphone and camera later during the meeting.",
+    "join-prompt-mic-locked": "The microphone is disabled for this meeting. You can enable your camera or join as a listener.",
+    "join-prompt-cam-locked": "The camera is disabled for this meeting. You can enable your microphone or join as a listener.",
+    "join-prompt-both-locked": "The microphone and camera are disabled for this meeting. Please join as a listener.",
     "enable-mic-cam-btn": "Enable Microphone and Camera",
+    "enable-mic-btn": "Enable Microphone",
+    "enable-cam-btn": "Enable Camera",
     "join-as-listener-btn": "Join as a listener",
     "webcam-menu-title": "Select Camera",
     "mic-menu-title": "Select Microphone",
     "background-filter-title": "Background & Filters",
     "config-background-btn": "Configure Camera Background",
-    "waiting-for-approval-title": "Waiting for Approval"
+    "waiting-for-approval-title": "You're in the waiting room"
   },
   "external-display-link-display": {
     "modal-title": "Share External Link",
     "url": "URL",
     "display": "Display",
+    "url-required": "A valid URL is required.",
     "link-invalid": "The link is not valid.",
     "note": "Note: Make sure the website allows being embedded. Not all websites will work.",
     "send-extra-values": "Send User Information",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Caption History",
     "azure-error": "Microsoft Azure service error: {{error}}",
     "speech-to-text-stopped": "Transcription service has stopped.",
-    "enable-transcription": "Enable Transcription"
+    "enable-transcription": "Enable Transcription",
+    "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}"
   }
 }
