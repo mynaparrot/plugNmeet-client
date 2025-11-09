@@ -1,5 +1,6 @@
 {
   "ok": "Okei",
+  "save": "Tallenna",
   "close": "Sulkea",
   "cancel": "Perua",
   "yes": "Kyllä",
@@ -29,7 +30,7 @@
     "you-have-removed": "Sinut on poistettu tästä konferenssista.",
     "you-are-blocked": "Et voi osallistua tähän konferenssiin.",
     "you-have-reject": "Sinua ei ole pyydetty liittymästä tähän konferenssiin",
-    "waiting-for-approval": "Odota, kunnes valvoja hyväksyy sinut.",
+    "waiting-for-approval": "Moderaattori on ilmoitettu ja antaa sinun pian näkyä. Kiitos kärsivällisyydestäsi!",
     "room-disconnected-title": "Huone irrotettu",
     "room-disconnected-unknown": "Huoneen yhteys on katkaistu. Koodi: {{code}}",
     "room-disconnected-client-initiated": "Asiakas on aloitettu. Koodi: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Pyynnön lähettäminen ei onnistunut",
     "decode-error-title": "Dekoodauksen virhe",
     "decode-error-body": "Emme ymmärtäneet palvelimelta lähetettyjä tietoja",
+    "invalid-missing-data": "Vastaanotetut tiedot ovat virheellisiä tai puuttuvat",
     "nats-error-auth-title": "Todennusvirhe",
     "nats-error-auth-body": "Emme pystyneet vahvistamaan todennustietojasi. Saatat käyttää vanhentunutta tunnusta?",
     "user-logged-out": "Olet kirjautunut ulos",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Pilven tallennus ei ole käytettävissä, kun käytät mukautettua suojausavainta.",
     "media-only-recording-not-support-e2ee": "Vain äänen ja videon tallennus ei ole käytettävissä, kun end-to-end salaus on käytössä.",
     "you-are-sharing-screen": "Jaat näyttösi nyt. Toiset näkevät laajemman näkymän.",
-    "new-system-message-in-chat": "Uusi järjestelmäviesti on lähetetty julkiseen chattiin."
+    "new-system-message-in-chat": "Uusi järjestelmäviesti on lähetetty julkiseen chattiin.",
+    "queue-holding-messages": "Yhteysongelma: viestejä pidetään. ({{error}})",
+    "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Tätä istuntoa tallennetaan",
@@ -231,9 +235,11 @@
     "hide-footer": "Piilota alatunniste",
     "show-footer": "Näytä alatunniste",
     "icons": {
+      "select-webcam": "Valitse webcam",
       "start-webcam": "Käynnistä verkkokamera",
-      "leave-webcam": "Poistu verkkokamerasta",
+      "turn-off-webcam": "Poista Kamera Käytöstä",
       "webcam-locked": "Verkkokamera lukittu",
+      "select-microphone": "Valitse mikrofoni",
       "start-microphone-sharing": "Aloita mikrofonin jakaminen",
       "microphone-locked": "Mikrofoni lukittu",
       "leave-microphone": "Poistu mikrofonista",
@@ -425,25 +431,33 @@
     "copied": "Kopioida",
     "not-started": "Ei aloitettu",
     "user-joined": "Yhdistetty",
-    "not-joined": "Ei liittynyt"
+    "not-joined": "Ei liittynyt",
+    "push": "Työnnä",
+    "you-pushed-user": "Liittymisilmoitus on lähetetty osoitteeseen {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Yhdistetään mediapalvelimeen...",
+    "connecting-media-server": "Yhdistetään kokoukseen...",
     "modal-title": "Mikrofonin ja kameran asetukset",
     "ready-to-join": "Oletko valmis liittymään?",
-    "join-prompt": "Salli mikrofonin ja kameran osallistua täysipainoisesti tai liittyä kuuntelijaksi.",
+    "join-prompt": "Määritä laitteesi nyt tai liity kuuntelijaksi. Voit aina hallita mikrofonia ja kameraa myöhemmin kokouksen aikana.",
+    "join-prompt-mic-locked": "Mikrofoni on poistettu käytöstä tässä kokouksessa. Voit ottaa kameran käyttöön tai liittyä kuuntelijaksi.",
+    "join-prompt-cam-locked": "Kamera on poistettu käytöstä tässä kokouksessa. Voit ottaa mikrofonin käyttöön kuuntelijana.",
+    "join-prompt-both-locked": "Mikrofoni ja kamera eivät ole käytössä tässä kokouksessa. Liity kuuntelijaksi.",
     "enable-mic-cam-btn": "Ota mikrofoni ja kamera käyttöön",
+    "enable-mic-btn": "Ota Mikrofoni Käyttöön",
+    "enable-cam-btn": "Ota Kamera Käyttöön",
     "join-as-listener-btn": "Liity kuuntelijaksi",
     "webcam-menu-title": "Valitse Kamera",
     "mic-menu-title": "Valitse Mikrofoni",
     "background-filter-title": "Tausta Ja Suodattimet",
     "config-background-btn": "Määritä Kameran Tausta",
-    "waiting-for-approval-title": "Odottaa hyväksyntää"
+    "waiting-for-approval-title": "Olet odottamassa huoneessa"
   },
   "external-display-link-display": {
     "modal-title": "Näytä ulkoinen linkki (iframe)",
     "url": "URL-osoite",
     "display": "Näyttö",
+    "url-required": "Virheellinen URL-osoite on pakollinen.",
     "link-invalid": "Linkki ei kelpaa",
     "note": "Huomautus: Varmista, että URL-osoitteella on oikeus avata iframe-kehyksessä. Esimerkki: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Lähetä ylimääräisiä arvoja",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Tekstitystekstien historia",
     "azure-error": "Microsoft Azure -virhe: {{error}}",
     "speech-to-text-stopped": "Puheesta tekstiksi -palvelu on pysäytetty",
-    "enable-transcription": "Ota Transkriptio Käyttöön"
+    "enable-transcription": "Ota Transkriptio Käyttöön",
+    "download-header": "Tekstityshistoria {{name}}\nKieli: {{lang}}\nLuotu: {{date}} At {{time}}"
   }
 }
