@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Spasiti",
   "close": "Blizak",
   "cancel": "Otkazati",
   "yes": "Da",
@@ -29,7 +30,7 @@
     "you-have-removed": "Uklonjeni ste s ove konferencije.",
     "you-are-blocked": "Nije vam dopušten pristup ovoj konferenciji.",
     "you-have-reject": "Odbijeno vam je pridružiti se ovoj konferenciji",
-    "waiting-for-approval": "Molimo pričekajte dok vas moderator ne odobri.",
+    "waiting-for-approval": "Moderator je obaviješten i uskoro će vas pustiti unutra. Hvala na strpljenju!",
     "room-disconnected-title": "Soba isključena",
     "room-disconnected-unknown": "Soba je isključena. Zakonik: {{code}}",
     "room-disconnected-client-initiated": "Klijent je pokrenut. Zakonik: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Slanje zahtjeva nije bilo uspješno",
     "decode-error-title": "Pogreška dekodiranja",
     "decode-error-body": "Nismo mogli razumjeti podatke poslane s poslužitelja",
+    "invalid-missing-data": "Primljeni nevažeći podaci ili podaci koji nedostaju",
     "nats-error-auth-title": "Pogreška provjere autentičnosti",
     "nats-error-auth-body": "Nismo uspjeli potvrditi vaše podatke o autorizaciji. Možda koristite token koji je istekao?",
     "user-logged-out": "Odjavili ste se",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Snimanje u oblaku nije dostupno kada koristite prilagođeni sigurnosni ključ.",
     "media-only-recording-not-support-e2ee": "Snimanje samo zvuka i videozapisa nije dostupno kada je omogućeno end-to-end šifriranje.",
     "you-are-sharing-screen": "Sada dijelite svoj zaslon. Drugi će vidjeti veći pogled.",
-    "new-system-message-in-chat": "U javnom chatu objavljena je nova poruka sustava."
+    "new-system-message-in-chat": "U javnom chatu objavljena je nova poruka sustava.",
+    "queue-holding-messages": "Problem s vezom: poruke se održavaju. ({{error}})",
+    "queue-discarded-message": "Poruka se nije mogla poslati i odbačena je. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Ova sesija se snima",
@@ -231,9 +235,11 @@
     "hide-footer": "Sakrij podnožje",
     "show-footer": "Pokaži podnožje",
     "icons": {
+      "select-webcam": "Odaberite web kameru",
       "start-webcam": "Pokreni web kameru",
-      "leave-webcam": "Napusti web kameru",
+      "turn-off-webcam": "Isključite kameru",
       "webcam-locked": "Zaključana web kamera",
+      "select-microphone": "Odaberite mikrofon",
       "start-microphone-sharing": "Započnite dijeljenje mikrofona",
       "microphone-locked": "Mikrofon zaključan",
       "leave-microphone": "Ostavite mikrofon",
@@ -425,25 +431,33 @@
     "copied": "Kopiran",
     "not-started": "Nije pokrenut",
     "user-joined": "Pripojena",
-    "not-joined": "Nije spojeno"
+    "not-joined": "Nije spojeno",
+    "push": "Gurati",
+    "you-pushed-user": "Obavijest o pridruživanju poslana je na {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Povezivanje s medijskim poslužiteljem...",
+    "connecting-media-server": "Povezivanje sa sastankom...",
     "modal-title": "Postavke mikrofona i kamere",
     "ready-to-join": "Jeste li spremni pridružiti se?",
-    "join-prompt": "Omogućite svom mikrofonu i kameri da u potpunosti sudjeluju ili se pridružite kao slušatelj.",
+    "join-prompt": "Postavite svoje uređaje sada ili se pridružite kao slušatelj. Mikrofonom i kamerom uvijek možete upravljati kasnije tijekom sastanka.",
+    "join-prompt-mic-locked": "Mikrofon je onemogućen za ovaj sastanak. Možete omogućiti kameru ili se pridružiti kao slušatelj.",
+    "join-prompt-cam-locked": "Kamera je onemogućena za ovaj sastanak. Možete omogućiti mikrofon ili se pridružiti kao slušatelj.",
+    "join-prompt-both-locked": "Mikrofon i kamera su onemogućeni za ovaj sastanak. Pridružite se kao slušatelj.",
     "enable-mic-cam-btn": "Omogućite mikrofon i kameru",
+    "enable-mic-btn": "Omogući mikrofon",
+    "enable-cam-btn": "Omogući kameru",
     "join-as-listener-btn": "Pridružite se kao slušatelj",
     "webcam-menu-title": "Odaberite kameru",
     "mic-menu-title": "Odaberite mikrofon",
     "background-filter-title": "Pozadina i filtri",
     "config-background-btn": "Konfiguriranje pozadine kamere",
-    "waiting-for-approval-title": "Čekanje odobrenja"
+    "waiting-for-approval-title": "U čekaonici si"
   },
   "external-display-link-display": {
     "modal-title": "Prikaz vanjske veze (iframe)",
     "url": "URL",
     "display": "Prikaz",
+    "url-required": "Potreban je valjani URL.",
     "link-invalid": "Veza nije valjana",
     "note": "Napomena: Provjerite ima li URL dopuštenje za otvaranje unutar iframea. Primjer: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Pošalji dodatne vrijednosti",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Povijest tekstova titlova",
     "azure-error": "Pogreška Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Usluga pretvaranja govora u tekst je zaustavljena",
-    "enable-transcription": "Omogući transkripciju"
+    "enable-transcription": "Omogući transkripciju",
+    "download-header": "Povijest titlova za {{name}}\nJezik: {{lang}}\nGenerirano na: {{date}} u {{time}}"
   }
 }
