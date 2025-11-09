@@ -1,5 +1,6 @@
 {
   "ok": "Ok",
+  "save": "Uložit",
   "close": "Zavřít",
   "cancel": "Zrušit",
   "yes": "Ano",
@@ -29,7 +30,7 @@
     "you-have-removed": "Byli jste odstraněni z této konference.",
     "you-are-blocked": "Nemáte povolen přístup na tuto konferenci.",
     "you-have-reject": "Odmítli jste se připojit k této konferenci",
-    "waiting-for-approval": "Počkejte prosím, dokud vás moderátor neschválí.",
+    "waiting-for-approval": "Moderátor byl upozorněn a brzy vám umožní. Děkujeme za trpělivost!",
     "room-disconnected-title": "Místnost odpojena",
     "room-disconnected-unknown": "Místnost byla odpojena. Kód: {{code}}",
     "room-disconnected-client-initiated": "Klient byl zahájen. Kód: {{code}}",
@@ -59,6 +60,7 @@
     "nats-error-request-failed": "Odeslání požadavku nebylo úspěšné",
     "decode-error-title": "Chyba dekódování",
     "decode-error-body": "Nerozuměli jsme datům odeslaným ze serveru",
+    "invalid-missing-data": "Obdržena neplatná nebo chybějící data",
     "nats-error-auth-title": "Chyba ověření",
     "nats-error-auth-body": "Nepodařilo se nám ověřit vaše přihlašovací údaje. Možná používáte token, jehož platnost vypršela?",
     "user-logged-out": "Odhlásili jste se",
@@ -73,7 +75,9 @@
     "cloud-recording-not-supported-self-key": "Záznam v cloudu není k dispozici při použití vlastního bezpečnostního klíče.",
     "media-only-recording-not-support-e2ee": "Záznam pouze zvuku a videa není k dispozici, pokud je povoleno end-to-end šifrování.",
     "you-are-sharing-screen": "Nyní sdílíte obrazovku. Jiní uvidí větší zobrazení.",
-    "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová zpráva."
+    "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová zpráva.",
+    "queue-holding-messages": "Problém s připojením: zprávy jsou vedeny. ({{error}})",
+    "queue-discarded-message": "Zprávu nelze odeslat a byla zahozena. ({{error}})"
   },
   "room-metadata": {
     "session-recording": "Tato relace se nahrává",
@@ -231,9 +235,11 @@
     "hide-footer": "Skrýt zápatí",
     "show-footer": "Zobrazit zápatí",
     "icons": {
+      "select-webcam": "Vybrat webovou kameru",
       "start-webcam": "Spustit webkameru",
-      "leave-webcam": "Opustit webkameru",
+      "turn-off-webcam": "Vypnout fotoaparát",
       "webcam-locked": "Webová kamera uzamčena",
+      "select-microphone": "Vybrat mikrofon",
       "start-microphone-sharing": "Spuštění sdílení mikrofonu",
       "microphone-locked": "Mikrofon zablokován",
       "leave-microphone": "Opusťte mikrofon",
@@ -425,25 +431,33 @@
     "copied": "Zkopírovaný",
     "not-started": "Není zahájeno",
     "user-joined": "Spojený",
-    "not-joined": "Nepřipojil se"
+    "not-joined": "Nepřipojil se",
+    "push": "Vyjmout",
+    "you-pushed-user": "Oznámení o připojení bylo odesláno na {{name}}."
   },
   "landing": {
-    "connecting-media-server": "Připojování k mediálnímu serveru...",
+    "connecting-media-server": "Připojování ke schůzce...",
     "modal-title": "Nastavení mikrofonu a kamery",
     "ready-to-join": "Jste připraveni se připojit?",
-    "join-prompt": "Povolte svůj mikrofon a kameru k plné účasti, nebo se připojte jako posluchač.",
+    "join-prompt": "Nastavte si zařízení nyní, nebo se připojte jako posluchač. Během schůzky můžete vždy ovládat mikrofon a kameru.",
+    "join-prompt-mic-locked": "Mikrofon je pro tuto schůzku zakázán. Kameru můžete povolit nebo se připojit jako posluchač.",
+    "join-prompt-cam-locked": "Kamera je pro tuto schůzku zakázána. Můžete povolit mikrofon nebo se připojit jako posluchač.",
+    "join-prompt-both-locked": "Mikrofon a kamera jsou pro tuto schůzku zakázány. Připojte se jako posluchač.",
     "enable-mic-cam-btn": "Povolit mikrofon a fotoaparát",
+    "enable-mic-btn": "Povolit mikrofon",
+    "enable-cam-btn": "Povolit fotoaparát",
     "join-as-listener-btn": "Připojte se jako posluchač",
     "webcam-menu-title": "Vybrat fotoaparát",
     "mic-menu-title": "Vybrat mikrofon",
     "background-filter-title": "Pozadí a filtry",
     "config-background-btn": "Konfigurovat pozadí kamery",
-    "waiting-for-approval-title": "Čekání na schválení"
+    "waiting-for-approval-title": "Jste v čekací místnosti"
   },
   "external-display-link-display": {
     "modal-title": "Zobrazit externí odkaz (iframe)",
     "url": "Adresa URL",
     "display": "Ukázat",
+    "url-required": "Je vyžadována platná URL adresa.",
     "link-invalid": "Odkaz není platný",
     "note": "Poznámka: Ujistěte se, že adresa URL má oprávnění k otevření uvnitř prvku iframe. Příklad: https://www.gameflare.com/embed/mini-survival",
     "send-extra-values": "Odeslat další hodnoty",
@@ -504,6 +518,7 @@
     "subtitle-history-modal-title": "Historie textů titulků",
     "azure-error": "Chyba Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Služba převodu řeči na text byla zastavena",
-    "enable-transcription": "Povolit přepsání"
+    "enable-transcription": "Povolit přepsání",
+    "download-header": "Historie titulků pro {{name}}\nJazyk: {{lang}}\nVygenerována dne: {{date}} v {{time}}"
   }
 }
