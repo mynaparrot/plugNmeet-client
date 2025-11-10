@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface IExternalMediaPlayerSlice {
-  action: string;
-  seekTo: number;
+export type playerActionEvent = 'play' | 'pause' | 'seeked' | '';
+
+export interface IExternalMediaPlayerEvent {
+  action: playerActionEvent;
+  seekTo?: number;
 }
 
-const initialState: IExternalMediaPlayerSlice = {
+const initialState: IExternalMediaPlayerEvent = {
   action: '',
   seekTo: -1,
 };
@@ -14,11 +16,12 @@ const externalMediaPlayerSlice = createSlice({
   name: 'externalMediaPlayer',
   initialState,
   reducers: {
-    addExternalMediaPlayerAction: (state, action: PayloadAction<string>) => {
-      state.action = action.payload;
-    },
-    externalMediaPlayerSeekTo: (state, action: PayloadAction<number>) => {
-      state.seekTo = action.payload;
+    addExternalMediaPlayerEvent: (
+      state,
+      action: PayloadAction<IExternalMediaPlayerEvent>,
+    ) => {
+      state.action = action.payload.action;
+      state.seekTo = action.payload.seekTo;
     },
     resetExternalMediaPlayer: (state) => {
       state.action = '';
@@ -27,10 +30,7 @@ const externalMediaPlayerSlice = createSlice({
   },
 });
 
-export const {
-  addExternalMediaPlayerAction,
-  externalMediaPlayerSeekTo,
-  resetExternalMediaPlayer,
-} = externalMediaPlayerSlice.actions;
+export const { addExternalMediaPlayerEvent, resetExternalMediaPlayer } =
+  externalMediaPlayerSlice.actions;
 
 export default externalMediaPlayerSlice.reducer;

@@ -1,4 +1,5 @@
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
+import { ConnectionQuality } from 'livekit-client';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
@@ -10,13 +11,9 @@ import { pollsApi } from '../../store/services/pollsApi';
 import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 import { updateParticipant } from '../../store/slices/participantSlice';
-import {
-  addExternalMediaPlayerAction,
-  externalMediaPlayerSeekTo,
-} from '../../store/slices/externalMediaPlayer';
+import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
-import { ConnectionQuality } from 'livekit-client';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whiteboard';
 
@@ -157,10 +154,7 @@ export default class HandleDataMessage {
       return;
     }
     const data = JSON.parse(msg);
-    store.dispatch(addExternalMediaPlayerAction(data.action));
-    if (typeof data.seekTo !== 'undefined') {
-      store.dispatch(externalMediaPlayerSeekTo(data.seekTo));
-    }
+    store.dispatch(addExternalMediaPlayerEvent(data));
   }
 
   private handleSpeechSubtitleText(message: string) {

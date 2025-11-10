@@ -15,8 +15,6 @@ const ExternalMediaPlayer = () => {
       state.session.currentRoom.metadata?.roomFeatures
         ?.externalMediaPlayerFeatures?.isActive,
   );
-  const action = useAppSelector((state) => state.externalMediaPlayer.action);
-  const seekTo = useAppSelector((state) => state.externalMediaPlayer.seekTo);
 
   const isPresenter = useAppSelector(
     (state) => state.session.currentUser?.metadata?.isPresenter,
@@ -35,9 +33,7 @@ const ExternalMediaPlayer = () => {
       <div className="externalMediaPlayerWrapper m-auto w-full flex items-center justify-center max-w-[1000px] flex-1 p-4">
         <ReactPlayerComponent
           src={playBackUrl ?? ''}
-          action={action}
           isPresenter={!!isPresenter}
-          seekTo={seekTo}
         />
       </div>
     )
