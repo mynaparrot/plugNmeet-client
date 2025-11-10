@@ -64,7 +64,7 @@ const ReactPlayerComponent = ({
         action,
       };
 
-      if (action === 'play' || action == 'seeked') {
+      if (action === 'play' || action === 'seeked') {
         msg.seekTo = player.current.currentTime;
       }
 
