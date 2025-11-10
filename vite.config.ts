@@ -92,7 +92,6 @@ const vendorChunkMap: Record<string, string[]> = {
   mermaid: ['mermaid'],
   excalidraw: ['@excalidraw'],
   'microsoft-speech-sdk': ['microsoft-cognitiveservices-speech-sdk'],
-  utils: ['lodash', 'validator'],
   'react-libs': [
     'react-dnd',
     'dnd-core',
