@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { isEmpty, isURL } from 'validator';
 import { useTranslation } from 'react-i18next';
 import {
   CommonResponseSchema,
@@ -29,6 +28,7 @@ const RtmpModal = () => {
   const [showServerUrl, setShowServerUrl] = useState<boolean>(false);
   const [serverUrl, setServerUrl] = useState<string>('');
   const [serverKey, setServerKey] = useState<string>('');
+  const [displayError, setDisplayError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const providers = {
     youtube: 'rtmp://a.rtmp.youtube.com/live2',
@@ -50,10 +50,14 @@ const RtmpModal = () => {
   const startBroadcasting = useCallback(
     async (e: React.FormEvent | React.MouseEvent) => {
       e.preventDefault();
-      if (provider === 'other' && isEmpty(serverUrl)) {
+      setDisplayError('');
+
+      if (provider === 'other' && serverUrl.trim() === '') {
+        setDisplayError(t('footer.notice.external-media-player-url-required'));
         return;
       }
-      if (isEmpty(serverKey)) {
+      if (serverKey.trim() === '') {
+        setDisplayError(t('footer.notice.rtmp-stream-key-required'));
         return;
       }
       let url: string;
@@ -63,11 +67,9 @@ const RtmpModal = () => {
         url = providers[provider];
       }
 
-      const isvalid = isURL(url, {
-        protocols: ['rtmp', 'rtmps'],
-      });
-
-      if (!isvalid) {
+      const rtmpUrlRegex = /^rtmps?:\/\/[^\s/$.?#].\S*$/i;
+      if (!rtmpUrlRegex.test(url)) {
+        setDisplayError(t('footer.notice.rtmp-url-invalid'));
         return;
       }
 
@@ -75,7 +77,7 @@ const RtmpModal = () => {
       const body = create(RecordingReqSchema, {
         task: RecordingTasks.START_RTMP,
         sid: store.getState().session.currentRoom.sid,
-        rtmpUrl: url + '/' + serverKey,
+        rtmpUrl: [url.replace(/\/$/, ''), serverKey].join('/'),
       });
 
       const customDesign = getConfigValue<string | undefined>(
@@ -128,6 +130,11 @@ const RtmpModal = () => {
         customClass="StartBroadcastModal"
       >
         <div className="flex flex-col gap-1 min-h-[150px]">
+          {displayError && (
+            <div className="mb-2 rounded-lg bg-red-100 p-2 text-sm text-red-700 dark:bg-gray-800 dark:text-red-400">
+              {displayError}
+            </div>
+          )}
           <Dropdown
             label={t('footer.modal.rtmp-select-provider')}
             id="provider"
@@ -145,14 +152,20 @@ const RtmpModal = () => {
               label={t('footer.modal.rtmp-server-url')}
               id="stream-url"
               value={serverUrl}
-              onChange={(e) => setServerUrl(e.currentTarget.value)}
+              onChange={(e) => {
+                setServerUrl(e.currentTarget.value);
+                setDisplayError('');
+              }}
             />
           )}
           <FormattedInputField
             label={t('footer.modal.rtmp-stream-key')}
             id="stream-key"
             value={serverKey}
-            onChange={(e) => setServerKey(e.currentTarget.value)}
+            onChange={(e) => {
+              setServerKey(e.currentTarget.value);
+              setDisplayError('');
+            }}
           />
         </div>
       </Modal>

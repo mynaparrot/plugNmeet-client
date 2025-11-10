@@ -59,6 +59,7 @@ import {
   formatNatsError,
   getWhiteboardDonors,
   isUserRecorder,
+  isValidHttpUrl,
   randomString,
 } from '../utils';
 import {
@@ -261,13 +262,8 @@ export default class ConnectNats {
         return; // Exit to avoid processing logoutUrl
       }
 
-      if (meta?.logoutUrl) {
-        try {
-          const logoutUrl = new URL(meta.logoutUrl);
-          window.location.href = logoutUrl.href;
-        } catch (e) {
-          console.error('Invalid logout URL:', e);
-        }
+      if (meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
+        window.location.href = meta.logoutUrl;
       }
     }, 3000);
   };

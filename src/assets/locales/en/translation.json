@@ -304,6 +304,8 @@
       "rtmp-starting": "Live stream is starting. Please wait.",
       "rtmp-ending": "Live stream is ending. Please wait.",
       "external-media-player-url-required": "A valid URL is required.",
+      "rtmp-url-invalid": "The RTMP URL is not valid or supported.",
+      "rtmp-stream-key-required": "A stream key is required.",
       "external-media-player-url-invalid": "The URL is not valid or supported.",
       "external-media-player-starting": "Preparing video for playback, please wait."
     },

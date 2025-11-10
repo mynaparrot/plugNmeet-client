@@ -116,9 +116,6 @@ importers:
       sanitize-html:
         specifier: 2.17.0
         version: 2.17.0
-      validator:
-        specifier: 13.15.22
-        version: 13.15.22
     devDependencies:
       '@prettier/plugin-oxc':
         specifier: 0.0.4
@@ -3303,10 +3300,6 @@ packages:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
     engines: {node: '>=8'}
     hasBin: true
-
-  validator@13.15.22:
-    resolution: {integrity: sha512-uT/YQjiyLJP7HSrv/dPZqK9L28xf8hsNca01HSz1dfmI0DgMfjopp1rO/z13NeGF1tVystF0Ejx3y4rUKPw+bQ==}
-    engines: {node: '>= 0.10'}
 
   vimeo-video-element@1.6.0:
     resolution: {integrity: sha512-Vs+WWvd6ph6FtY+DqrVO5OHUUS02An87QydUcCUtAsIiXnYhZl0yiDC0XxWiFluo+S6keG38i4xCaQfS1LgeSg==}
@@ -6640,8 +6633,6 @@ snapshots:
       diff: 5.2.0
       kleur: 4.1.5
       sade: 1.8.1
-
-  validator@13.15.22: {}
 
   vimeo-video-element@1.6.0:
     dependencies:

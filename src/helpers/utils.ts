@@ -325,3 +325,14 @@ export const generateAvatarInitial = (name: string) => {
 export const isUserRecorder = (userId: string) => {
   return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
 };
+
+export const isValidHttpUrl = (url: string) => {
+  try {
+    const newUrl = new URL(url);
+    return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
+  } catch (e) {
+    console.info('Invalid logout URL:', e);
+  }
+
+  return false;
+};

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { isURL } from 'validator';
 
 import { useAppSelector } from '../../store';
-import { getConfigValue } from '../utils';
+import { getConfigValue, isValidHttpUrl } from '../utils';
 
 interface CustomLogo {
   main_logo_light?: string;
@@ -31,12 +30,7 @@ const useLogo = () => {
       return;
     }
 
-    const validUrlOptions = {
-      protocols: ['http', 'https'],
-      require_protocol: true,
-    };
-
-    if (typeof logo === 'string' && isURL(logo, validUrlOptions)) {
+    if (typeof logo === 'string' && isValidHttpUrl(logo)) {
       setLogo(logo);
       return;
     }
@@ -48,13 +42,10 @@ const useLogo = () => {
     if (
       theme === 'dark' &&
       logo.main_logo_dark &&
-      isURL(logo.main_logo_dark, validUrlOptions)
+      isValidHttpUrl(logo.main_logo_dark)
     ) {
       setLogo(logo.main_logo_dark);
-    } else if (
-      logo.main_logo_light &&
-      isURL(logo.main_logo_light, validUrlOptions)
-    ) {
+    } else if (logo.main_logo_light && isValidHttpUrl(logo.main_logo_light)) {
       setLogo(logo.main_logo_light);
     }
   }, [theme]);
