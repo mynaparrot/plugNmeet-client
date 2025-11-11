@@ -304,6 +304,8 @@
       "rtmp-starting": "שידורי RTMP מתחילים. חכה בבקשה",
       "rtmp-ending": "שידורי RTMP מתחילים. חכה בבקשה",
       "external-media-player-url-required": "כתובת URL חוקית נדרשת",
+      "rtmp-url-invalid": "כתובת ה-URL של RTMP אינה חוקית ואינה נתמכת.",
+      "rtmp-stream-key-required": "נדרש מפתח זרם.",
       "external-media-player-url-invalid": "כתובת URL אינה חוקית או נתמכת",
       "external-media-player-starting": "אנא המתינו להכנת השמעה"
     },
