@@ -304,6 +304,8 @@
       "rtmp-starting": "Spouští se RTMP vysílání. Počkejte prosím",
       "rtmp-ending": "Spouští se RTMP vysílání. Počkejte prosím",
       "external-media-player-url-required": "Je vyžadována platná adresa URL",
+      "rtmp-url-invalid": "RTMP URL není platná nebo podporována.",
+      "rtmp-stream-key-required": "Je vyžadován stream klíč.",
       "external-media-player-url-invalid": "Adresa URL není platná nebo podporovaná",
       "external-media-player-starting": "Počkejte prosím příprava přehrávání"
     },
