@@ -304,6 +304,8 @@
       "rtmp-starting": "Починається трансляція RTMP. Будь ласка, зачекайте",
       "rtmp-ending": "Починається трансляція RTMP. Зачекайте",
       "external-media-player-url-required": "Потрібна дійсна URL-адреса",
+      "rtmp-url-invalid": "RTMP URL не є припустимим або підтримується.",
+      "rtmp-stream-key-required": "Потребує ключ для трансляцій.",
       "external-media-player-url-invalid": "URL-адреса недійсна або не підтримується",
       "external-media-player-starting": "Зачекайте, підготовка відтворення"
     },
