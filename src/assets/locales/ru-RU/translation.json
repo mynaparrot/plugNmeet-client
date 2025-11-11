@@ -304,6 +304,8 @@
       "rtmp-starting": "Начинается RTMP-вещание. Пожалуйста, подождите",
       "rtmp-ending": "Начинается RTMP-вещание. Пожалуйста, подождите",
       "external-media-player-url-required": "Требуется действительный URL адрес",
+      "rtmp-url-invalid": "RTMP URL недействителен или поддерживается.",
+      "rtmp-stream-key-required": "Требуется ключ потока.",
       "external-media-player-url-invalid": "URL-адрес недействителен или не поддерживается",
       "external-media-player-starting": "Подождите пока готовится воспроизведение"
     },
