@@ -304,6 +304,8 @@
       "rtmp-starting": "Phát sóng RTMP đang bắt đầu. Hãy chờ",
       "rtmp-ending": "Phát sóng RTMP đang bắt đầu. Hãy chờ",
       "external-media-player-url-required": "Yêu cầu URL hợp lệ",
+      "rtmp-url-invalid": "URL RTMP không hợp lệ hoặc không được hỗ trợ.",
+      "rtmp-stream-key-required": "Cần có khóa luồng.",
       "external-media-player-url-invalid": "URL không hợp lệ hoặc không được hỗ trợ",
       "external-media-player-starting": "Vui lòng chờ chuẩn bị phát lại"
     },
