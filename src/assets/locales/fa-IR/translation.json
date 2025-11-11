@@ -304,6 +304,8 @@
       "rtmp-starting": "پخش RTMP شروع می شود. لطفا صبر کنید",
       "rtmp-ending": "پخش RTMP شروع می شود. لطفا صبر کنید",
       "external-media-player-url-required": "URL معتبر مورد نیاز است",
+      "rtmp-url-invalid": "URL RTMP معتبر یا پشتیبانی نمی شود.",
+      "rtmp-stream-key-required": "یک کلید جریان مورد نیاز است.",
       "external-media-player-url-invalid": "URL معتبر یا پشتیبانی نمی شود",
       "external-media-player-starting": "لطفاً منتظر آماده سازی پخش باشید"
     },
