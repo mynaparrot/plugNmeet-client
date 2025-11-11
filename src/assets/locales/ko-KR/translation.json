@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP 방송이 시작됩니다. 기다리세요",
       "rtmp-ending": "RTMP 방송이 시작됩니다. 기다리세요",
       "external-media-player-url-required": "유효한 URL이 필요합니다.",
+      "rtmp-url-invalid": "RTMP URL이 유효하지 않거나 지원되지 않습니다.",
+      "rtmp-stream-key-required": "스트림 키가 필요합니다.",
       "external-media-player-url-invalid": "URL이 잘못되었거나 지원되지 않음",
       "external-media-player-starting": "재생을 준비하면서 잠시 기다려 주십시오."
     },
