@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP-lähetys on alkamassa. Ole hyvä ja odota",
       "rtmp-ending": "RTMP-lähetys on alkamassa. Ole hyvä ja odota",
       "external-media-player-url-required": "Kelvollinen URL-osoite vaaditaan",
+      "rtmp-url-invalid": "RTMP-osoite ei ole kelvollinen tai tuettu.",
+      "rtmp-stream-key-required": "Virtausavain on pakollinen.",
       "external-media-player-url-invalid": "URL-osoite ei kelpaa tai sitä ei tueta",
       "external-media-player-starting": "Odota toiston valmistelua"
     },
