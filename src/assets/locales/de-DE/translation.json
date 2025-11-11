@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP-Übertragung startet. Bitte warten",
       "rtmp-ending": "RTMP-Übertragung startet. Bitte warten",
       "external-media-player-url-required": "Gültige URL erforderlich",
+      "rtmp-url-invalid": "Die RTMP-URL ist nicht gültig oder wird unterstützt.",
+      "rtmp-stream-key-required": "Ein Stream-Schlüssel ist erforderlich.",
       "external-media-player-url-invalid": "URL nicht gültig oder unterstützt",
       "external-media-player-starting": "Playback wird vorbereitet, bitte warten"
     },
