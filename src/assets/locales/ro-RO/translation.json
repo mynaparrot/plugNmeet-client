@@ -304,6 +304,8 @@
       "rtmp-starting": "Difuzarea RTMP începe. Te rog să aştepţi",
       "rtmp-ending": "Difuzarea RTMP începe. Te rog să aştepţi",
       "external-media-player-url-required": "Este necesară o adresă URL validă",
+      "rtmp-url-invalid": "URL-ul RTMP nu este valid sau suportat.",
+      "rtmp-stream-key-required": "Este necesară o cheie de flux.",
       "external-media-player-url-invalid": "URL-ul nu este valid sau acceptat",
       "external-media-player-starting": "Vă rugăm să așteptați pregătirea redării"
     },
