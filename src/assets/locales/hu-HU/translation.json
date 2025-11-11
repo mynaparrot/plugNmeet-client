@@ -304,6 +304,8 @@
       "rtmp-starting": "Megkezdődik az RTMP műsorszórás. Várj, kérlek",
       "rtmp-ending": "Megkezdődik az RTMP műsorszórás. Várj, kérlek",
       "external-media-player-url-required": "Érvényes URL megadása kötelező",
+      "rtmp-url-invalid": "Az RTMP URL nem érvényes vagy támogatott.",
+      "rtmp-stream-key-required": "Adatfolyam-kulcs szükséges.",
       "external-media-player-url-invalid": "Az URL érvénytelen vagy támogatott",
       "external-media-player-starting": "Kérjük, várjon a lejátszás előkészítésével"
     },
