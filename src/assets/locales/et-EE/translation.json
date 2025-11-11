@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP ringhääling on algamas. Oota",
       "rtmp-ending": "RTMP ringhääling on algamas. Oota",
       "external-media-player-url-required": "Vajalik URL",
+      "rtmp-url-invalid": "RTMP URL ei ole kehtiv ega toetatud.",
+      "rtmp-stream-key-required": "Voo võti on vajalik.",
       "external-media-player-url-invalid": "URL ei kehti ega toeta",
       "external-media-player-starting": "Palun oodake taasesituse ettevalmistamist"
     },
