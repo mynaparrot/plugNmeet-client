@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP 直播啓動中，請等待",
       "rtmp-ending": "RTMP 直播關閉中. 請等待",
       "external-media-player-url-required": "需要有效的URL",
+      "rtmp-url-invalid": "RTMP URL 無效或不受支援。",
+      "rtmp-stream-key-required": "需要串流金鑰。",
       "external-media-player-url-invalid": "URL 無效或不受支援",
       "external-media-player-starting": "請稍候，準備播放"
     },
