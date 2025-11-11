@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP放送が始まっています。お待ちください",
       "rtmp-ending": "RTMP放送が始まっています。お待ちください",
       "external-media-player-url-required": "有効なURLが必要です",
+      "rtmp-url-invalid": "RTMP URLは有効またはサポートされていません。",
+      "rtmp-stream-key-required": "ストリームキーが必要です。",
       "external-media-player-url-invalid": "URL が無効またはサポートされていない",
       "external-media-player-starting": "再生準備をお待ちください"
     },
