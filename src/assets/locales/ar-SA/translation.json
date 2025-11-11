@@ -304,6 +304,8 @@
       "rtmp-starting": "بدأ بث RTMP. الرجاء الانتظار",
       "rtmp-ending": "بدأ بث RTMP. الرجاء الانتظار",
       "external-media-player-url-required": "مطلوب عنوان URL صالح",
+      "rtmp-url-invalid": "رابط RTMP غير صالح أو مدعوم.",
+      "rtmp-stream-key-required": "مفتاح التدفق مطلوب.",
       "external-media-player-url-invalid": "عنوان URL غير صالح أو مدعوم",
       "external-media-player-starting": "يرجى الانتظار لإعداد التشغيل"
     },
