@@ -304,6 +304,8 @@
       "rtmp-starting": "Tiek sākta RTMP apraide. Lūdzu, gaidi",
       "rtmp-ending": "Tiek sākta RTMP apraide. Lūdzu, gaidi",
       "external-media-player-url-required": "Nepieciešams derīgs URL",
+      "rtmp-url-invalid": "RTMP URL nav derīgs vai atbalstīts.",
+      "rtmp-stream-key-required": "Ir nepieciešama straumes atslēga.",
       "external-media-player-url-invalid": "URL nav derīgs vai tiek atbalstīts",
       "external-media-player-starting": "Lūdzu, uzgaidiet, gatavojoties atskaņošanai"
     },
