@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP সম্প্রচার শুরু হচ্ছে। অনুগ্রহপূর্বক অপেক্ষা করুন",
       "rtmp-ending": "RTMP সম্প্রচার শুরু হচ্ছে। অনুগ্রহপূর্বক অপেক্ষা করুন",
       "external-media-player-url-required": "সঠিক URL প্রয়োজন",
+      "rtmp-url-invalid": "RTMP URL বৈধ বা সমর্থিত নয়।",
+      "rtmp-stream-key-required": "একটি স্ট্রিম কী আবশ্যক।",
       "external-media-player-url-invalid": "URL সঠিক বা সমর্থিত নয়",
       "external-media-player-starting": "প্লেব্যাক প্রস্তুত করার জন্য দয়া করে অপেক্ষা করুন"
     },
