@@ -304,6 +304,8 @@
       "rtmp-starting": "Penyiaran RTMP dimulai. Harap tunggu",
       "rtmp-ending": "Penyiaran RTMP dimulai. Harap tunggu",
       "external-media-player-url-required": "Diperlukan URL yang valid",
+      "rtmp-url-invalid": "URL RTMP tidak valid atau didukung.",
+      "rtmp-stream-key-required": "Kunci streaming diperlukan.",
       "external-media-player-url-invalid": "URL tidak valid atau didukung",
       "external-media-player-starting": "Harap tunggu untuk mempersiapkan pemutaran"
     },
