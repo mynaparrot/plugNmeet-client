@@ -304,6 +304,8 @@
       "rtmp-starting": "O fluxo RTMP está começando. Espere, por favor",
       "rtmp-ending": "O fluxo RTMP está terminando. Espere, por favor",
       "external-media-player-url-required": "URL válida requerida",
+      "rtmp-url-invalid": "O URL do RTMP não é válido ou suportado.",
+      "rtmp-stream-key-required": "Uma chave de transmissão é necessária.",
       "external-media-player-url-invalid": "URL não é válida ou suportada",
       "external-media-player-starting": "Por favor, aguarde, preparando a reprodução"
     },
