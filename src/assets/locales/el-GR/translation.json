@@ -304,6 +304,8 @@
       "rtmp-starting": "Η εκπομπή RTMP ξεκινά. Παρακαλώ περίμενε",
       "rtmp-ending": "Η εκπομπή RTMP ξεκινά. Παρακαλώ περίμενε",
       "external-media-player-url-required": "Απαιτείται έγκυρη διεύθυνση URL",
+      "rtmp-url-invalid": "Η διεύθυνση URL RTMP δεν είναι έγκυρη ή υποστηρίζεται.",
+      "rtmp-stream-key-required": "Απαιτείται ένα κλειδί ροής.",
       "external-media-player-url-invalid": "Η διεύθυνση URL δεν είναι έγκυρη ή δεν υποστηρίζεται",
       "external-media-player-starting": "Περιμένετε την προετοιμασία της αναπαραγωγής"
     },
