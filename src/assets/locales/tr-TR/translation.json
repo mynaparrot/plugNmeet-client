@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP yayını başlıyor. Lütfen bekle",
       "rtmp-ending": "RTMP yayını başlıyor. Lütfen bekle",
       "external-media-player-url-required": "Geçerli URL gerekli",
+      "rtmp-url-invalid": "RTMP URL'si geçerli değil veya desteklenmiyor.",
+      "rtmp-stream-key-required": "Bir akış anahtarı gereklidir.",
       "external-media-player-url-invalid": "URL geçerli değil veya desteklenmiyor",
       "external-media-player-starting": "Lütfen oynatmanın hazırlanmasını bekleyin"
     },
