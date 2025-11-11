@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP uitzending wordt gestart. Even geduld a. u. b",
       "rtmp-ending": "RTMP uitzending wordt gestart. Even geduld a. u. b",
       "external-media-player-url-required": "Geldige URL verplicht",
+      "rtmp-url-invalid": "De RTMP URL is niet geldig of ondersteund.",
+      "rtmp-stream-key-required": "Een stream sleutel is vereist.",
       "external-media-player-url-invalid": "De URL is niet geldig of ondersteund",
       "external-media-player-starting": "Wacht met het voorbereiden van het afspelen"
     },
