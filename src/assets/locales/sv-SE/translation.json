@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP-sändningar startar. Snälla vänta",
       "rtmp-ending": "RTMP-sändningar startar. Snälla vänta",
       "external-media-player-url-required": "Giltig URL krävs",
+      "rtmp-url-invalid": "RTMP-URL:en är inte giltig eller stödd.",
+      "rtmp-stream-key-required": "En strömnyckel krävs.",
       "external-media-player-url-invalid": "Webbadressen är inte giltig eller stöds inte",
       "external-media-player-starting": "Vänta och förbered uppspelning"
     },
