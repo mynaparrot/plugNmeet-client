@@ -304,6 +304,8 @@
       "rtmp-starting": "RTMP-udsendelser starter. Vent venligst",
       "rtmp-ending": "RTMP-udsendelser starter. Vent venligst",
       "external-media-player-url-required": "Gyldig URL påkrævet",
+      "rtmp-url-invalid": "RTMP- URL' en er ikke gyldig eller understøttet.",
+      "rtmp-stream-key-required": "En stream nøgle er påkrævet.",
       "external-media-player-url-invalid": "Webadressen er ikke gyldig eller understøttes ikke",
       "external-media-player-starting": "Vent venligst med at forberede afspilning"
     },
