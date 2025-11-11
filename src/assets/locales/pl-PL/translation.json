@@ -304,6 +304,8 @@
       "rtmp-starting": "Rozpoczyna się emisja RTMP. Czekaj",
       "rtmp-ending": "Rozpoczyna się emisja RTMP. Czekaj",
       "external-media-player-url-required": "Wymagany prawidłowy adres URL",
+      "rtmp-url-invalid": "Adres URL RTMP nie jest poprawny lub obsługiwany.",
+      "rtmp-stream-key-required": "Klucz strumieniowy jest wymagany.",
       "external-media-player-url-invalid": "Nieprawidłowy lub obsługiwany adres URL",
       "external-media-player-starting": "Poczekaj na przygotowanie do odtwarzania"
     },
