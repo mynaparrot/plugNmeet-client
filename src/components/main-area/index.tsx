@@ -18,6 +18,7 @@ import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import SidePanel from './sidePanel';
+import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
@@ -132,12 +133,16 @@ const MainArea = () => {
     [dispatch],
   );
 
-  const handleSidePanelToggled = useCallback(() => {
-    if (isActiveWhiteboard) {
-      // otherwise whiteboard will lose its screen position
-      debouncedRefresh();
-    }
-  }, [debouncedRefresh, isActiveWhiteboard]);
+  const handleSidePanelToggled = useCallback(
+    (isOpen: boolean) => {
+      if (isActiveWhiteboard) {
+        // otherwise whiteboard will lose its screen position
+        debouncedRefresh();
+      }
+      dispatch(updateIsSidePanelOpened(isOpen));
+    },
+    [dispatch, debouncedRefresh, isActiveWhiteboard],
+  );
 
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${

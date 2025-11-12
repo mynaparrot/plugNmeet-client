@@ -1,9 +1,8 @@
-import React, { ReactElement, useMemo } from 'react';
+import React, { ReactElement } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../../store/slices/bottomIconsActivitySlice';
-import { getElmsForPCExtendedVerticalView } from '../helpers/utils';
 import { ArrowRight } from '../../../../assets/Icons/ArrowRight';
 
 interface IVerticalLayoutProps {
@@ -33,13 +32,6 @@ const VerticalLayout = ({
   );
   const canShowExtendButton = useAppSelector(canShowExtendButtonSelector);
 
-  const videoParticipantsElms = useMemo(() => {
-    if (!isEnabledExtendedVerticalCamView) {
-      return participantsToRender;
-    }
-    return getElmsForPCExtendedVerticalView(participantsToRender);
-  }, [isEnabledExtendedVerticalCamView, participantsToRender]);
-
   const wrapperClasses = `vertical-webcams-wrapper group absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 border-l border-Gray-200 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
     isEnabledExtendedVerticalCamView
       ? 'w-full xl:w-[416px] flex flex-col justify-center extended-view-wrap'
@@ -47,7 +39,7 @@ const VerticalLayout = ({
   }`;
 
   const innerClasses = `inner row-count-${
-    videoParticipantsElms.length
+    participantsToRender.length
   } total-cam-${totalNumWebcams} group-total-cam-${
     participantsToRender.length
   } page-${currentPage} ${
@@ -68,7 +60,7 @@ const VerticalLayout = ({
             {pinParticipant}
           </div>
         )}
-        {videoParticipantsElms}
+        {participantsToRender}
       </div>
       {canShowExtendButton && (
         <button

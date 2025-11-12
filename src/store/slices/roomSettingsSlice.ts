@@ -49,6 +49,7 @@ const initialState: IRoomSettings = {
   isPNMWindowTabVisible: true,
   focusActiveSpeakerWebcam: true,
   userNotifications: [],
+  isSidePanelOpened: false,
 };
 
 const roomSettingsSlice = createSlice({
@@ -194,6 +195,9 @@ const roomSettingsSlice = createSlice({
     ) => {
       state.userNotifications = action.payload;
     },
+    updateIsSidePanelOpened: (state, action: PayloadAction<boolean>) => {
+      state.isSidePanelOpened = action.payload;
+    },
   },
 });
 
@@ -230,6 +234,7 @@ export const {
   addSelfInsertedE2EESecretKey,
   addUserNotification,
   setAllUserNotifications,
+  updateIsSidePanelOpened,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

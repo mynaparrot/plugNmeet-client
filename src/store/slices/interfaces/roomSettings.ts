@@ -43,6 +43,7 @@ export interface IRoomSettings {
   focusActiveSpeakerWebcam: boolean;
   selfInsertedE2EESecretKey?: string;
   userNotifications: UserNotification[];
+  isSidePanelOpened: boolean;
 }
 
 export interface IMediaDevice {

@@ -1,89 +1,150 @@
 import React, { ReactElement } from 'react';
-import { chunk, memoize } from 'es-toolkit';
+import { chunk } from 'es-toolkit';
+import { VideoParticipantProps } from '../videoParticipant';
 
 /*
- * For Mobile landscape mode,
- * 2 rows for any number
+ * For Tablet devices, for both normal & vertical view.
  */
-export const setForMobileLandscape = (participantsToRender: ReactElement[]) => {
-  const length = participantsToRender.length;
-  const elms: Array<ReactElement> = [];
+export const getElmsForTablet = (
+  participants: ReactElement[],
+  isVerticalView: boolean,
+  isSidebarOpen: boolean,
+) => {
+  const n = participants.length;
+  if (n === 0) {
+    return [];
+  }
 
-  if (length <= 3) {
-    elms.push(
-      <div key={0} className={`camera-row-0 total-items-${length}`}>
-        {participantsToRender}
-      </div>,
-    );
+  let chunkParts: ReactElement[][] = [];
+
+  if (isVerticalView) {
+    // Vertical Mode: always a single vertical column.
+    chunkParts = chunk(participants, 1);
   } else {
-    const c = chunk(participantsToRender, Math.ceil(length / 2));
-    c.forEach((el, i) => {
+    // Default Mode (Grid View)
+    if (isSidebarOpen) {
+      // With sidebar, max 6 participants.
+      if (n <= 4) {
+        // 1-4 participants: 2 rows
+        chunkParts = chunk(participants, Math.ceil(n / 2));
+      } else {
+        // 5-6 participants: 3 rows
+        chunkParts = chunk(participants, Math.ceil(n / 3));
+      }
+    } else {
+      // No sidebar, up to 9 participants.
+      if (n <= 2) {
+        chunkParts = [participants];
+      } else if (n <= 6) {
+        chunkParts = chunk(participants, Math.ceil(n / 2));
+      } else {
+        // 7-9
+        chunkParts = chunk(participants, Math.ceil(n / 3));
+      }
+    }
+  }
+
+  // Create elements from chunks
+  const elms: Array<ReactElement> = [];
+  for (let i = 0; i < chunkParts.length; i++) {
+    const el = chunkParts[i];
+    if (el.length) {
       elms.push(
         <div
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
+          key={`camera-row-${i}`}
+          className={`camera-row-${i} total-items-${n} inner-items-${el.length}`}
         >
           {el}
         </div>,
       );
-    });
+    }
   }
+
   return elms;
 };
 
 /*
- * For Mobile & Tablet in normal mode,
- * Upto 3 webcam, 1 row
- * From 4 webcam,  2 rows
- * More than 4, 3 rows
+ * For Mobile devices, for both normal & vertical view.
  */
-export const setForMobileAndTablet = (participantsToRender: ReactElement[]) => {
-  const length = participantsToRender.length;
-  const elms: Array<ReactElement> = [];
-
-  if (length <= 3) {
-    elms.push(
-      <div key={0} className={`camera-row-0 total-items-${length}`}>
-        {participantsToRender}
-      </div>,
-    );
-  } else if (length > 3 && length <= 4) {
-    const c = chunk(participantsToRender, Math.ceil(length / 2));
-    c.forEach((el, i) => {
-      elms.push(
-        <div
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
-        >
-          {el}
-        </div>,
-      );
-    });
-  } else {
-    const c = chunk(participantsToRender, Math.ceil(length / 3));
-    c.forEach((el, i) => {
-      elms.push(
-        <div
-          className={`camera-row-${i} total-items-${length} inner-items-${el.length}`}
-        >
-          {el}
-        </div>,
-      );
-    });
+export const getElmsForMobile = (
+  participants: ReactElement[],
+  isPortrait: boolean,
+  isVerticalView: boolean,
+  isSidebarOpen: boolean,
+) => {
+  const n = participants.length;
+  if (n === 0) {
+    return [];
   }
+
+  let chunkParts: ReactElement[][] = [];
+
+  if (isVerticalView) {
+    // Vertical Mode (Sidebar View)
+    if (isPortrait) {
+      // Portrait: single vertical column
+      chunkParts = chunk(participants, 1);
+    } else {
+      // Landscape
+      if (isSidebarOpen) {
+        // Special Condition: single vertical column
+        chunkParts = chunk(participants, 1);
+      } else {
+        // 2-row by 2-column grid
+        chunkParts = chunk(participants, 2);
+      }
+    }
+  } else {
+    // Default Mode (Grid View)
+    if (isSidebarOpen) {
+      // With sidebar, max 4 participants, always in a single row.
+      chunkParts = [participants];
+    } else {
+      // No sidebar, up to 6 participants.
+      if (isPortrait) {
+        // Portrait
+        if (n <= 4) {
+          chunkParts = [participants];
+        } else {
+          // 5-6 Participants: 3-row by 2-column grid
+          chunkParts = chunk(participants, 2);
+        }
+      } else {
+        // Landscape
+        if (n <= 4) {
+          chunkParts = [participants];
+        } else {
+          // 5-6 Participants: 2-row by 3-column grid
+          chunkParts = chunk(participants, 3);
+        }
+      }
+    }
+  }
+
+  // Create elements from chunks
+  const elms: Array<ReactElement> = [];
+  for (let i = 0; i < chunkParts.length; i++) {
+    const el = chunkParts[i];
+    if (el.length) {
+      elms.push(
+        <div
+          key={`camera-row-${i}`}
+          className={`camera-row-${i} total-items-${n} inner-items-${el.length}`}
+        >
+          {el}
+        </div>,
+      );
+    }
+  }
+
   return elms;
 };
 
 /*
  * For PC,
  * This function dynamically calculates a balanced grid layout for webcams.
- * General rules:
- * - 1-2 webcams: 1 row
- * - 3-6 webcams: 2 rows
- * - 7-15 webcams: 3 rows
- * - 16+ webcams: 4 rows
- * Webcams will fillup from top to bottom
- * for example numbers like 7 (3-2-2 layout); 10 (4-3-3 layout); 17 (5-4-4-4 layout)
  */
-const setForPC = (participants: ReactElement[]) => {
+export const getElmsForPc = (participants: ReactElement[]) => {
   const n = participants.length;
   if (n === 0) {
     return [];
@@ -128,10 +189,12 @@ const setForPC = (participants: ReactElement[]) => {
 };
 
 /**
- * We'll have two webcams in each row
+ * We'll have two webcams in each row for PC extended vertical view
  * @param participantsToRender
  */
-const setForPCExtendedVerticalView = (participantsToRender: ReactElement[]) => {
+export const getElmsForPCExtendedVerticalView = (
+  participantsToRender: ReactElement[],
+) => {
   const chunkParts = chunk(participantsToRender, 2);
   const elms: Array<ReactElement> = [];
   // each of the chunks will be a row
@@ -140,7 +203,7 @@ const setForPCExtendedVerticalView = (participantsToRender: ReactElement[]) => {
     elms.push(
       <div
         key={`camera-row-${i}`}
-        className={`camera-row-wrap camera-row-${i} order-2 total-items-${length} inner-items-${el.length} grid grid-cols-2 gap-3 h-full`}
+        className={`camera-row-wrap camera-row-${i} order-2 total-items-${participantsToRender.length} inner-items-${el.length} grid grid-cols-2 gap-3 h-full`}
       >
         {el}
       </div>,
@@ -149,13 +212,62 @@ const setForPCExtendedVerticalView = (participantsToRender: ReactElement[]) => {
   return elms;
 };
 
-export const sliceFirstLetterOfText = (name: any) =>
+const sliceFirstLetterOfText = (name: any) =>
   name
     .split(/\s+/)
     .map((word: string[]) => word[0].toUpperCase())
     .join('');
 
-export const getElmsForPc = memoize(setForPC);
-export const getElmsForPCExtendedVerticalView = memoize(
-  setForPCExtendedVerticalView,
-);
+export const formatNextPreButton = (
+  remaining: ReactElement<VideoParticipantProps>[],
+) => {
+  const MAX_AVATARS_TO_SHOW = 2;
+  const participantsToShow = remaining.slice(0, MAX_AVATARS_TO_SHOW);
+  const remainingCount = remaining.length - participantsToShow.length;
+
+  const shortNameElms = participantsToShow.map((p) => (
+    <span
+      key={`${p.key}-short`}
+      className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2 overflow-hidden"
+    >
+      {sliceFirstLetterOfText(p.props.participant.name)}
+    </span>
+  ));
+
+  const fullNameElms = participantsToShow.map((p, index) => (
+    <span
+      key={`${p.key}-full`}
+      className="inline-block order-1 pr-1 capitalize"
+    >
+      {p.props.participant.name}
+      {index < participantsToShow.length - 1 ? ', ' : ''}
+    </span>
+  ));
+
+  if (remainingCount > 0) {
+    shortNameElms.push(
+      <span
+        key="more-users-short"
+        className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2 overflow-hidden"
+      >
+        {remainingCount}+
+      </span>,
+    );
+    fullNameElms.push(
+      <span key="more-users-full" className="inline-block order-2">
+        and {remainingCount}+ others
+      </span>,
+    );
+  }
+
+  return (
+    <>
+      <div className="middle-area absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex text-base font-medium">
+        {shortNameElms}
+      </div>
+      <div className="bottom-area flex flex-wrap text-sm font-medium">
+        {fullNameElms}
+      </div>
+    </>
+  );
+};
