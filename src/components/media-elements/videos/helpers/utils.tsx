@@ -149,6 +149,12 @@ const setForPCExtendedVerticalView = (participantsToRender: ReactElement[]) => {
   return elms;
 };
 
+export const sliceFirstLetterOfText = (name: any) =>
+  name
+    .split(/\s+/)
+    .map((word: string[]) => word[0].toUpperCase())
+    .join('');
+
 export const getElmsForPc = memoize(setForPC);
 export const getElmsForPCExtendedVerticalView = memoize(
   setForPCExtendedVerticalView,

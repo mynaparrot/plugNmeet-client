@@ -6,6 +6,7 @@ import { VideoParticipantProps } from './videoParticipant';
 import PinnedLayout from './layouts/pinnedLayout';
 import VerticalLayout from './layouts/verticalLayout';
 import DefaultLayout from './layouts/defaultLayout';
+import { sliceFirstLetterOfText } from './helpers/utils';
 
 interface IVideoLayoutProps {
   allParticipants: ReactElement<VideoParticipantProps>[];
@@ -17,12 +18,6 @@ interface IVideoLayoutProps {
 const DESKTOP_PER_PAGE = 24,
   VERTICAL_PER_PAGE = 5,
   EXTENDED_VERTICAL_PER_PAGE = 10;
-
-const sliceFirstLetterOfText = (name: any) =>
-  name
-    .split(/\s+/)
-    .map((word: string[]) => word[0].toUpperCase())
-    .join('');
 
 const VideoLayout = ({
   allParticipants,
@@ -77,12 +72,13 @@ const VideoLayout = ({
       </span>
     ));
 
-    const fullNameElms = participantsToShow.map((p) => (
+    const fullNameElms = participantsToShow.map((p, index) => (
       <span
         key={`${p.key}-full`}
         className="inline-block order-1 pr-1 capitalize"
       >
-        {p.props.participant.name},{' '}
+        {p.props.participant.name}
+        {index < participantsToShow.length - 1 ? ', ' : ''}
       </span>
     ));
 
