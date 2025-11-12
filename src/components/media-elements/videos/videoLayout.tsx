@@ -34,9 +34,6 @@ const VideoLayout = ({
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
-  const isWebcamPaginating = useAppSelector(
-    (state) => state.session.isWebcamPaginating,
-  );
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const [participantsToRender, setParticipantsToRender] = useState<
@@ -197,16 +194,18 @@ const VideoLayout = ({
   );
 
   useEffect(() => {
-    // This effect manages the current page number.
-    // It resets to page 1 if the layout changes (and we're not paginating),
-    // or initializes the page to 1 if it's currently 0, and we have participants.
+    // This effect manages page number resets.
+    // It resets to page 1 if the current page becomes invalid due to changes
+    // in participant count or layout (which affects webcamPerPage).
+    const totalPages = Math.ceil(allParticipantsCount / webcamPerPage);
     if (
-      (!isWebcamPaginating && currentPage !== 1) ||
+      currentPage > totalPages ||
       (allParticipantsCount > 0 && currentPage === 0)
     ) {
       setCurrentPage(1);
     }
-  }, [allParticipantsCount, webcamPerPage, isWebcamPaginating, currentPage]);
+    //eslint-disable-next-line
+  }, [allParticipantsCount, webcamPerPage]);
 
   useEffect(() => {
     // This effect handles the side-effects of pagination
