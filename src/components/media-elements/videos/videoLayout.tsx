@@ -46,7 +46,8 @@ const VideoLayout = ({
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
   const isRecorder = store.getState().session.currentUser?.isRecorder;
-  const { isMobile, isTablet, isSidebarOpen, isPortrait } = useDeviceInfo();
+  const { isMobile, isTablet, isDesktop, isSidebarOpen, isPortrait } =
+    useDeviceInfo();
 
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -267,6 +268,9 @@ const VideoLayout = ({
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
         currentPage={currentPage}
+        isSidebarOpen={isSidebarOpen}
+        isEnabledExtendedVerticalCamView={isEnabledExtendedVerticalCamView}
+        isDesktop={isDesktop}
       />
     );
   }

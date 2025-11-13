@@ -1,22 +1,18 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import {
-  updateIsActiveChatPanel,
-  updateIsEnabledExtendedVerticalCamView,
-} from '../../../store/slices/bottomIconsActivitySlice';
+import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { ChatIconSVG } from '../../../assets/Icons/ChatIconSVG';
 
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { showTooltip, isRecorder } = useMemo(() => {
+  const { showTooltip } = useMemo(() => {
     const session = store.getState().session;
     return {
       showTooltip: session.userDeviceType === 'desktop',
-      isRecorder: !!session.currentUser?.isRecorder,
     };
   }, []);
 
@@ -26,12 +22,6 @@ const ChatIcon = () => {
   const totalUnreadChatMsgs = useAppSelector(
     (state) => state.bottomIconsActivity.totalUnreadChatMsgs,
   );
-
-  useEffect(() => {
-    if (isActiveChatPanel && !isRecorder) {
-      dispatch(updateIsEnabledExtendedVerticalCamView(false));
-    }
-  }, [isActiveChatPanel, isRecorder, dispatch]);
 
   const toggleChatPanel = useCallback(() => {
     dispatch(updateIsActiveChatPanel(!isActiveChatPanel));

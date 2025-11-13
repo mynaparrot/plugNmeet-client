@@ -140,8 +140,11 @@ const MainArea = () => {
         debouncedRefresh();
       }
       dispatch(updateIsSidePanelOpened(isOpen));
+      if (isOpen && !isRecorder) {
+        dispatch(updateIsEnabledExtendedVerticalCamView(false));
+      }
     },
-    [dispatch, debouncedRefresh, isActiveWhiteboard],
+    [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder],
   );
 
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;

@@ -55,7 +55,7 @@ const Footer = () => {
               <ChatIcon />
             </div>
           )}
-          {isAdmin && <MenusIcon />}
+          <MenusIcon isAdmin={isAdmin} />
           <div className="icon block md:hidden">
             <EndMeetingButton />
           </div>

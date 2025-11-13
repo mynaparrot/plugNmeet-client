@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
+import { useAppDispatch } from '../../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../../store/slices/bottomIconsActivitySlice';
 import { ArrowRight } from '../../../../assets/Icons/ArrowRight';
 
@@ -10,27 +9,21 @@ interface IVerticalLayoutProps {
   pinParticipant?: ReactElement;
   totalNumWebcams: number;
   currentPage: number;
+  isSidebarOpen: boolean;
+  isEnabledExtendedVerticalCamView: boolean;
+  isDesktop: boolean;
 }
-
-const canShowExtendButtonSelector = createSelector(
-  (state: RootState) => state.bottomIconsActivity.isActiveParticipantsPanel,
-  (state: RootState) => state.bottomIconsActivity.isActiveChatPanel,
-  (state: RootState) => state.bottomIconsActivity.isActivePollsPanel,
-  (isActiveParticipantsPanel, isActiveChatPanel, isActivePollsPanel) =>
-    !isActiveParticipantsPanel && !isActiveChatPanel && !isActivePollsPanel,
-);
 
 const VerticalLayout = ({
   participantsToRender,
   pinParticipant,
   totalNumWebcams,
   currentPage,
+  isSidebarOpen,
+  isEnabledExtendedVerticalCamView,
+  isDesktop,
 }: IVerticalLayoutProps) => {
   const dispatch = useAppDispatch();
-  const isEnabledExtendedVerticalCamView = useAppSelector(
-    (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
-  );
-  const canShowExtendButton = useAppSelector(canShowExtendButtonSelector);
 
   const wrapperClasses = `vertical-webcams-wrapper group absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 border-l border-Gray-200 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
     isEnabledExtendedVerticalCamView
@@ -62,7 +55,7 @@ const VerticalLayout = ({
         )}
         {participantsToRender}
       </div>
-      {canShowExtendButton && (
+      {isDesktop && !isSidebarOpen && (
         <button
           onClick={() =>
             dispatch(

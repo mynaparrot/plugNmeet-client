@@ -3,10 +3,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import {
-  updateIsActivePollsPanel,
-  updateIsEnabledExtendedVerticalCamView,
-} from '../../../store/slices/bottomIconsActivitySlice';
+import { updateIsActivePollsPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
 
 const PollsIcon = () => {
@@ -34,9 +31,6 @@ const PollsIcon = () => {
 
   const togglePollsPanel = useCallback(() => {
     dispatch(updateIsActivePollsPanel(!isActivePollsPanel));
-    if (!isActivePollsPanel) {
-      dispatch(updateIsEnabledExtendedVerticalCamView(false));
-    }
   }, [dispatch, isActivePollsPanel]);
 
   const wrapperClasses = clsx(

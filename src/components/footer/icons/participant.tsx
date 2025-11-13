@@ -1,23 +1,19 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import {
-  updateIsActiveParticipantsPanel,
-  updateIsEnabledExtendedVerticalCamView,
-} from '../../../store/slices/bottomIconsActivitySlice';
+import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { ParticipantsIconSVG } from '../../../assets/Icons/ParticipantsIconSVG';
 
 const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { showTooltip, isRecorder } = useMemo(() => {
+  const { showTooltip } = useMemo(() => {
     const session = store.getState().session;
     return {
       showTooltip: session.userDeviceType === 'desktop',
-      isRecorder: !!session.currentUser?.isRecorder,
     };
   }, []);
 
@@ -25,12 +21,6 @@ const ParticipantIcon = () => {
     (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
   );
   const participantsTotal = useAppSelector(participantsSelector.selectTotal);
-
-  useEffect(() => {
-    if (isActiveParticipantsPanel && !isRecorder) {
-      dispatch(updateIsEnabledExtendedVerticalCamView(false));
-    }
-  }, [isActiveParticipantsPanel, isRecorder, dispatch]);
 
   const toggleParticipantsPanel = useCallback(() => {
     dispatch(updateIsActiveParticipantsPanel(!isActiveParticipantsPanel));

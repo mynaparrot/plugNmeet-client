@@ -8,7 +8,7 @@ interface IAdminMenuItemProps {
   isActive?: boolean;
 }
 
-const AdminMenuItem = ({
+const FooterMenuItem = ({
   onClick,
   icon,
   text,
@@ -32,4 +32,4 @@ const AdminMenuItem = ({
   );
 };
 
-export default AdminMenuItem;
+export default FooterMenuItem;

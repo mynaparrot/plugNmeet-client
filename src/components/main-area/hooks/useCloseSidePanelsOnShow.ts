@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import {
   updateIsActiveChatPanel,
   updateIsActiveParticipantsPanel,
+  updateIsActivePollsPanel,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch } from '../../../store';
 
@@ -17,6 +18,7 @@ export const useCloseSidePanelsOnShow = (
       const timeout = setTimeout(() => {
         dispatch(updateIsActiveChatPanel(false));
         dispatch(updateIsActiveParticipantsPanel(false));
+        dispatch(updateIsActivePollsPanel(false));
       }, 200);
       return () => clearTimeout(timeout);
     }
