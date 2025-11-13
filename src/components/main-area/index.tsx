@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch } from '../../store';
@@ -133,14 +133,28 @@ const MainArea = () => {
     [dispatch],
   );
 
+  // to track the number of open panels to avoid race conditions
+  // and prevent re-creating the toggle handler on every state change.
+  const openPanelsCount = useRef(0);
+
   const handleSidePanelToggled = useCallback(
     (isOpen: boolean) => {
+      // Adjust the count based on whether a panel is opening or closing.
+      openPanelsCount.current += isOpen ? 1 : -1;
+      // Ensure the count never goes below zero.
+      if (openPanelsCount.current < 0) {
+        openPanelsCount.current = 0;
+      }
+
       if (isActiveWhiteboard) {
         // otherwise whiteboard will lose its screen position
         debouncedRefresh();
       }
-      dispatch(updateIsSidePanelOpened(isOpen));
-      if (isOpen && !isRecorder) {
+
+      const anyPanelIsOpen = openPanelsCount.current > 0;
+      dispatch(updateIsSidePanelOpened(anyPanelIsOpen));
+
+      if (anyPanelIsOpen && !isRecorder) {
         dispatch(updateIsEnabledExtendedVerticalCamView(false));
       }
     },
