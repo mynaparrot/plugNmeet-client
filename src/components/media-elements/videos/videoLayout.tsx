@@ -1,4 +1,10 @@
-import React, { ReactElement, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
@@ -111,6 +117,16 @@ const VideoLayout = ({
     isSidebarOpen,
   ]);
 
+  const prePage = useCallback((currPage: number) => {
+    const newCurrentPage = currPage - 1;
+    setCurrentPage(newCurrentPage);
+  }, []);
+
+  const nextPage = useCallback((currPage: number) => {
+    const newCurrentPage = currPage + 1;
+    setCurrentPage(newCurrentPage);
+  }, []);
+
   const paginatedParticipants = useMemo(() => {
     // If we don't have enough participants to require pagination, just return them all.
     if (allParticipants.length <= webcamPerPage) {
@@ -183,7 +199,14 @@ const VideoLayout = ({
 
     // Return the final array of components to be rendered.
     return display;
-  }, [allParticipants, webcamPerPage, currentPage, isRecorder]);
+  }, [
+    isRecorder,
+    nextPage,
+    prePage,
+    allParticipants,
+    webcamPerPage,
+    currentPage,
+  ]);
 
   const structuredLayout = useMemo(() => {
     // This memoized value takes the paginated items (including buttons)
@@ -246,16 +269,6 @@ const VideoLayout = ({
     }
     //eslint-disable-next-line
   }, [allParticipantsCount, webcamPerPage]);
-
-  const prePage = (currPage: number) => {
-    const newCurrentPage = currPage - 1;
-    setCurrentPage(newCurrentPage);
-  };
-
-  const nextPage = (currPage: number) => {
-    const newCurrentPage = currPage + 1;
-    setCurrentPage(newCurrentPage);
-  };
 
   if (!totalNumWebcams) {
     return null;
