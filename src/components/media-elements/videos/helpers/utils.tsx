@@ -97,16 +97,22 @@ export const getElmsForMobile = (
   } else {
     // Default Mode (Grid View)
     if (isSidebarOpen) {
-      // With sidebar, max 4 participants, always in a single row.
-      chunkParts = [participants];
+      // With sidebar, max 4 participants.
+      if (n <= 3) {
+        // 1-3 participants: 1 row
+        chunkParts = [participants];
+      } else {
+        // 4 participants: 2x2 grid
+        chunkParts = chunk(participants, 2);
+      }
     } else {
       // No sidebar, up to 6 participants.
       if (isPortrait) {
         // Portrait
-        if (n <= 4) {
+        if (n <= 3) {
           chunkParts = [participants];
         } else {
-          // 5-6 Participants: 3-row by 2-column grid
+          // 4-6 Participants: 3-row by 2-column grid
           chunkParts = chunk(participants, 2);
         }
       } else {
