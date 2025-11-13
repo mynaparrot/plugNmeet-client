@@ -1,9 +1,12 @@
 import { useAppSelector } from '../../../../store';
-import { UserDeviceType } from '../../../../store/slices/interfaces/session';
+
+// breakpoints for responsive design
+const TABLET_BREAKPOINT = 768;
+const DESKTOP_BREAKPOINT = 1024;
 
 export const useDeviceInfo = () => {
-  const userDeviceType = useAppSelector(
-    (state) => state.session.userDeviceType,
+  const screenWidth = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
   );
   const isSidebarOpen = useAppSelector(
     (state) => state.roomSettings.isSidePanelOpened,
@@ -14,9 +17,10 @@ export const useDeviceInfo = () => {
 
   return {
     isSidebarOpen,
-    isMobile: userDeviceType === UserDeviceType.MOBILE,
-    isTablet: userDeviceType === UserDeviceType.TABLET,
-    isDesktop: userDeviceType === UserDeviceType.DESKTOP,
+    isMobile: screenWidth < TABLET_BREAKPOINT,
+    isTablet:
+      screenWidth >= TABLET_BREAKPOINT && screenWidth < DESKTOP_BREAKPOINT,
+    isDesktop: screenWidth >= DESKTOP_BREAKPOINT,
     isPortrait: deviceOrientation === 'portrait',
   };
 };
