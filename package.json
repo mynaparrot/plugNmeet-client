@@ -35,7 +35,7 @@
     "i18next-http-backend": "3.0.2",
     "idb": "8.0.3",
     "livekit-client": "2.15.14",
-    "microsoft-cognitiveservices-speech-sdk": "1.46.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.47.0",
     "mobile-detect": "1.4.5",
     "nosleep.js": "0.12.0",
     "plugnmeet-protocol-js": "1.0.16-29",
