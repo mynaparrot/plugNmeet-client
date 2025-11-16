@@ -295,6 +295,9 @@ const VideoLayout = ({
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
         currentPage={currentPage}
+        isSidebarOpen={isSidebarOpen}
+        isEnabledExtendedVerticalCamView={isEnabledExtendedVerticalCamView}
+        isDesktop={isDesktop}
       />
     );
   }

@@ -7,6 +7,9 @@ interface IPinnedLayoutProps {
   pinParticipant: ReactElement;
   totalNumWebcams: number;
   currentPage: number;
+  isSidebarOpen: boolean;
+  isEnabledExtendedVerticalCamView: boolean;
+  isDesktop: boolean;
 }
 
 const PinnedLayout = ({
@@ -14,6 +17,9 @@ const PinnedLayout = ({
   pinParticipant,
   totalNumWebcams,
   currentPage,
+  isSidebarOpen,
+  isEnabledExtendedVerticalCamView,
+  isDesktop,
 }: IPinnedLayoutProps) => {
   return (
     <>
@@ -24,6 +30,9 @@ const PinnedLayout = ({
         participantsToRender={participantsToRender}
         totalNumWebcams={totalNumWebcams}
         currentPage={currentPage}
+        isSidebarOpen={isSidebarOpen}
+        isEnabledExtendedVerticalCamView={isEnabledExtendedVerticalCamView}
+        isDesktop={isDesktop}
       />
     </>
   );
