@@ -231,7 +231,7 @@ const VideoLayout = ({
       if (isVertical && isEnabledExtendedVerticalCamView) {
         layout = getElmsForPCExtendedVerticalView(paginatedParticipants);
       } else {
-        layout = getElmsForPc(paginatedParticipants);
+        layout = getElmsForPc(paginatedParticipants, !!isVertical);
       }
     }
     return layout;

@@ -19,7 +19,7 @@ export const getElmsForTablet = (
 
   if (isVerticalView) {
     // Vertical Mode: always a single vertical column.
-    chunkParts = chunk(participants, 1);
+    chunkParts = [participants];
   } else {
     // Default Mode (Grid View)
     if (isSidebarOpen) {
@@ -80,7 +80,7 @@ export const getElmsForMobile = (
   let chunkParts: ReactElement[][] = [];
 
   if (isVerticalView) {
-    // Vertical Mode (Sidebar View)
+    /*// Vertical Mode (Sidebar View)
     if (isPortrait) {
       // Portrait: single vertical column
       chunkParts = chunk(participants, 1);
@@ -93,7 +93,8 @@ export const getElmsForMobile = (
         // 2-row by 2-column grid
         chunkParts = chunk(participants, 2);
       }
-    }
+    }*/
+    chunkParts = [participants];
   } else {
     // Default Mode (Grid View)
     if (isSidebarOpen) {
@@ -150,32 +151,40 @@ export const getElmsForMobile = (
  * For PC,
  * This function dynamically calculates a balanced grid layout for webcams.
  */
-export const getElmsForPc = (participants: ReactElement[]) => {
+export const getElmsForPc = (
+  participants: ReactElement[],
+  isVertical: boolean,
+) => {
   const n = participants.length;
   if (n === 0) {
     return [];
   }
 
-  // Determine the number of rows.
-  let numRows: number;
-  if (n <= 2) numRows = 1;
-  else if (n <= 6) numRows = 2;
-  else if (n <= 15) numRows = 3;
-  else numRows = 4;
+  let chunkParts: ReactElement[][] = [];
 
-  // Calculate items per row and the remainder.
-  const itemsPerRow = Math.floor(n / numRows);
-  const remainder = n % numRows;
+  if (isVertical) {
+    chunkParts = [participants];
+  } else {
+    // Determine the number of rows.
+    let numRows: number;
+    if (n <= 2) numRows = 1;
+    else if (n <= 6) numRows = 2;
+    else if (n <= 15) numRows = 3;
+    else numRows = 4;
 
-  const chunkParts: ReactElement[][] = [];
-  let currentIndex = 0;
+    // Calculate items per row and the remainder.
+    const itemsPerRow = Math.floor(n / numRows);
+    const remainder = n % numRows;
 
-  for (let i = 0; i < numRows; i++) {
-    // Distribute the remainder among the first rows.
-    const rowSize = itemsPerRow + (i < remainder ? 1 : 0);
-    const end = currentIndex + rowSize;
-    chunkParts.push(participants.slice(currentIndex, end));
-    currentIndex = end;
+    let currentIndex = 0;
+
+    for (let i = 0; i < numRows; i++) {
+      // Distribute the remainder among the first rows.
+      const rowSize = itemsPerRow + (i < remainder ? 1 : 0);
+      const end = currentIndex + rowSize;
+      chunkParts.push(participants.slice(currentIndex, end));
+      currentIndex = end;
+    }
   }
 
   const elms: Array<ReactElement> = [];
