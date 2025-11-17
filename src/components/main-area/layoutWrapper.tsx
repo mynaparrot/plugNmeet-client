@@ -7,6 +7,7 @@ interface ILayoutWrapperProps {
   showVideoElms: boolean;
   showVerticalVideoView: boolean;
   children: ReactNode;
+  pinCamUserId?: string;
 }
 
 const LayoutWrapper = ({
@@ -14,12 +15,10 @@ const LayoutWrapper = ({
   showVideoElms,
   showVerticalVideoView,
   children,
+  pinCamUserId,
 }: ILayoutWrapperProps) => {
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
-  );
-  const pinCamUserId = useAppSelector(
-    (state) => state.roomSettings.pinCamUserId,
   );
 
   const cssClasses = useMemo(() => {
@@ -55,9 +54,7 @@ const LayoutWrapper = ({
           classes.add('extendedVerticalCamView');
         }
         if (pinCamUserId) {
-          // when we've pin cam then need to manually activate verticalsWebcams layout
-          // showVerticalVideoView will be false as no whiteboard or screen sharing or similar is active
-          classes.add('pinWebcamActivated').add('verticalsWebcamsActivated');
+          classes.add('pinWebcamActivated');
         }
       } else {
         classes

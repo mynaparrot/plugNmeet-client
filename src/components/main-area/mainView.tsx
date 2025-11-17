@@ -33,14 +33,16 @@ const MainView = ({
   isActiveWebcamsView,
   hasVideoSubscribers,
 }: IMainViewProps) => {
-  const { showVerticalVideoView, showVideoElms } = useVideoLayout({
-    hasScreenShareSubscribers,
-    isActiveWhiteboard,
-    isActiveExternalMediaPlayer,
-    isActiveDisplayExternalLink,
-    isActiveWebcamsView,
-    hasVideoSubscribers,
-  });
+  const { showVerticalVideoView, showVideoElms, pinCamUserId } = useVideoLayout(
+    {
+      hasScreenShareSubscribers,
+      isActiveWhiteboard,
+      isActiveExternalMediaPlayer,
+      isActiveDisplayExternalLink,
+      isActiveWebcamsView,
+      hasVideoSubscribers,
+    },
+  );
 
   const sharedNotepadElm = useSharedNotepad();
   const whiteboardElm = useWhiteboard(
@@ -79,6 +81,7 @@ const MainView = ({
         }
         showVideoElms={showVideoElms}
         showVerticalVideoView={showVerticalVideoView}
+        pinCamUserId={pinCamUserId}
       >
         {videosComponentElm}
         {screenShareElementsElm}

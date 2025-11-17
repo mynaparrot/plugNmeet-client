@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useAppSelector } from '../../../store';
 
 interface IUseVideoLayoutParams {
   hasScreenShareSubscribers: boolean;
@@ -17,17 +18,23 @@ export const useVideoLayout = ({
   isActiveWebcamsView,
   hasVideoSubscribers,
 }: IUseVideoLayoutParams) => {
+  const pinCamUserId = useAppSelector(
+    (state) => state.roomSettings.pinCamUserId,
+  );
+
   const showVerticalVideoView = useMemo(
     () =>
       hasScreenShareSubscribers ||
       isActiveWhiteboard ||
       isActiveExternalMediaPlayer ||
-      isActiveDisplayExternalLink,
+      isActiveDisplayExternalLink ||
+      pinCamUserId !== undefined,
     [
       hasScreenShareSubscribers,
       isActiveWhiteboard,
       isActiveExternalMediaPlayer,
       isActiveDisplayExternalLink,
+      pinCamUserId,
     ],
   );
 
@@ -36,5 +43,5 @@ export const useVideoLayout = ({
     [isActiveWebcamsView, hasVideoSubscribers],
   );
 
-  return { showVerticalVideoView, showVideoElms };
+  return { showVerticalVideoView, showVideoElms, pinCamUserId };
 };
