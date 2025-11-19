@@ -27,14 +27,12 @@ export const useVideoLayout = ({
       hasScreenShareSubscribers ||
       isActiveWhiteboard ||
       isActiveExternalMediaPlayer ||
-      isActiveDisplayExternalLink ||
-      pinCamUserId !== undefined,
+      isActiveDisplayExternalLink,
     [
       hasScreenShareSubscribers,
       isActiveWhiteboard,
       isActiveExternalMediaPlayer,
       isActiveDisplayExternalLink,
-      pinCamUserId,
     ],
   );
 

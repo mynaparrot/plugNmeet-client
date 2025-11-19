@@ -274,7 +274,7 @@ const VideoLayout = ({
     return null;
   }
 
-  if (isVertical && !pinParticipant) {
+  if (isVertical) {
     return (
       <VerticalLayout
         participantsToRender={structuredLayout}

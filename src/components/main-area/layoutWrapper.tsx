@@ -54,7 +54,9 @@ const LayoutWrapper = ({
           classes.add('extendedVerticalCamView');
         }
         if (pinCamUserId) {
-          classes.add('pinWebcamActivated');
+          // when we've pin cam then need to manually activate verticalsWebcams layout
+          // showVerticalVideoView will be false as no whiteboard or screen sharing or similar is active
+          classes.add('pinWebcamActivated').add('verticalsWebcamsActivated');
         }
       } else {
         classes
