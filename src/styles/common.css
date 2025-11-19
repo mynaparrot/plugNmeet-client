@@ -1173,7 +1173,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     #0088cc 100%
   );
 }
-.vertical-webcams-wrapper.not-extended .inner > div {
+.vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
   display: flex;
   flex-flow: column;
   height: 100%;
