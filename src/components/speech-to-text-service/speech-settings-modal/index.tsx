@@ -19,13 +19,18 @@ import {
 } from '../helpers/apiConnections';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { updateSelectedSubtitleLang } from '../../../store/slices/speechServicesSlice';
+import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
 interface SpeechSettingsModalProps {
   transcriptionFeatures: InsightsTranscriptionFeatures;
+  enabledSpeechSynthesis: boolean;
+  setEnabledSpeechSynthesis: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SpeechSettingsModal = ({
   transcriptionFeatures,
+  enabledSpeechSynthesis,
+  setEnabledSpeechSynthesis,
 }: SpeechSettingsModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -118,6 +123,14 @@ const SpeechSettingsModal = ({
           setSelectedSubtitleLang={setSelectedSubtitleLang}
         />
         <SubtitleFontSizeSlider />
+        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+          <SettingsSwitch
+            label={t('speech-services.enable-speech-synthesis')}
+            enabled={enabledSpeechSynthesis}
+            onChange={setEnabledSpeechSynthesis}
+            customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+          />
+        </div>
       </div>
 
       {!readyToStart && canShowSpeechSetting ? (
