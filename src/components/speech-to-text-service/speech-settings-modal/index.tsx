@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import {
   InsightsTranscriptionFeatures,
   InsightsUserSessionAction,
 } from 'plugnmeet-protocol-js';
+import { toast } from 'react-toastify';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateDisplaySpeechSettingOptionsModal } from '../../../store/slices/bottomIconsActivitySlice';
@@ -13,8 +14,11 @@ import Modal from '../../../helpers/ui/modal';
 import SpeechInputSettings from './speechInputSettings';
 import SubtitleFontSizeSlider from './subtitleFontSizeSlider';
 import SubtitleLangSelector from './subtitleLangSelector';
-import { startOrStopUserSession } from '../helpers/apiConnections';
-import { toast } from 'react-toastify';
+import {
+  getUserTaskStatus,
+  startOrStopUserSession,
+} from '../helpers/apiConnections';
+import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 
 interface SpeechSettingsModalProps {
   transcriptionFeatures: InsightsTranscriptionFeatures;
@@ -26,10 +30,13 @@ const SpeechSettingsModal = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const currentUser = store.getState().session.currentUser;
+  const mediaServerConn = getMediaServerConnRoom();
+
   const isActiveDisplayOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
   const [enabled, setEnabled] = useState<boolean>(false);
+  const [readyToStart, setReadyToStart] = useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
   const [selectedSubtitleLang, setSelectedSubtitleLang] = useState<string>(
     () => {
@@ -40,6 +47,23 @@ const SpeechSettingsModal = ({
       return transcriptionFeatures.defaultSubtitleLang ?? '';
     },
   );
+
+  useEffect(() => {
+    if (isActiveDisplayOptionsModal) {
+      if (mediaServerConn) {
+        setReadyToStart(mediaServerConn.localParticipant.isMicrophoneEnabled);
+      }
+      getUserTaskStatus().then((res) => {
+        if (res.isActive) {
+          setEnabled(true);
+        }
+        if (res.spokenLang) {
+          setSelectedSpeechLang(res.spokenLang);
+        }
+      });
+    }
+    // oxlint-disable-next-line exhaustive-deps
+  }, [isActiveDisplayOptionsModal]);
 
   const canShowSpeechSetting = useMemo(() => {
     return !!transcriptionFeatures.allowedSpeechUsers?.find(
@@ -97,9 +121,17 @@ const SpeechSettingsModal = ({
         />
         <SubtitleFontSizeSlider />
       </div>
+
+      {!readyToStart && canShowSpeechSetting ? (
+        <div className="text-xs text-red-500 dark:text-red-400 pt-4 -mx-4 px-4">
+          {t('speech-services.mic-not-ready-warning')}
+        </div>
+      ) : null}
+
       <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5 -mx-4 px-4">
         <button
-          className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+          className="h-10 w-1/2 cursor-pointer rounded-[15px] border border-[#0088CC] bg-Blue px-8 text-sm font-semibold text-white shadow-button-shadow transition-all duration-300 hover:bg-white hover:text-Gray-950 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none 3xl:text-base"
+          disabled={!readyToStart}
           onClick={() => startOrStopService()}
         >
           {canShowSpeechSetting && enabled

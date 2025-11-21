@@ -3,6 +3,7 @@ import {
   CommonResponseSchema,
   DataMsgBodyType,
   GenerateAzureTokenReqSchema,
+  InsightsGetUserStatusResSchema,
   InsightsTranscriptionConfigReq,
   InsightsTranscriptionConfigReqSchema,
   InsightsTranscriptionUserSessionReqSchema,
@@ -138,4 +139,15 @@ export const startOrStopUserSession = async (
     'arraybuffer',
   );
   return fromBinary(CommonResponseSchema, new Uint8Array(r));
+};
+
+export const getUserTaskStatus = async () => {
+  const r = await sendAPIRequest(
+    'insights/transcription/userStatus',
+    {},
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(InsightsGetUserStatusResSchema, new Uint8Array(r));
 };

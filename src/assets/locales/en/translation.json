@@ -521,6 +521,7 @@
     "azure-error": "Microsoft Azure service error: {{error}}",
     "speech-to-text-stopped": "Transcription service has stopped.",
     "enable-transcription": "Enable Transcription",
-    "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}"
+    "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone."
   }
 }
