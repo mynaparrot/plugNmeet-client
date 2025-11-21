@@ -662,6 +662,8 @@ export default class ConnectNats {
       this.handleSystemData.handleBreakoutRoom(p),
     [NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG]: (p) =>
       this.handleSystemData.handleSysChatMsg(p.msg),
+    [NatsMsgServerToClientEvents.TRANSCRIPTION_OUTPUT_TEXT]: (p) =>
+      this.handleDataMsg.handleSpeechSubtitleText(p.msg),
   };
 
   /**

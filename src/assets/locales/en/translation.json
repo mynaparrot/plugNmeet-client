@@ -501,7 +501,7 @@
     "start-service": "Start",
     "stop-service": "Stop",
     "update-service": "Update",
-    "service-stopped": "The service has been stopped.",
+    "service-stopped": "The transcription service has been stopped.",
     "start-modal-title": "Transcription and Translation",
     "speech-lang-label": "Spoken Language",
     "subtitle-lang-label": "Caption Language",

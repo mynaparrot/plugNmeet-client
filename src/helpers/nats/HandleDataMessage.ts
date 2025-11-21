@@ -1,4 +1,8 @@
-import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
+import {
+  DataChannelMessage,
+  DataMsgBodyType,
+  InsightsTranscriptionResultSchema,
+} from 'plugnmeet-protocol-js';
 import { ConnectionQuality } from 'livekit-client';
 
 import ConnectNats from './ConnectNats';
@@ -8,14 +12,18 @@ import {
   updateRequestedWhiteboardData,
 } from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
-import { SpeechTextBroadcastFormat } from '../../store/slices/interfaces/speechServices';
-import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
-import { updateParticipant } from '../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  updateParticipant,
+} from '../../store/slices/participantSlice';
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whiteboard';
+import { fromJsonString } from '@bufbuild/protobuf';
+import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
+import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
@@ -100,6 +108,7 @@ export default class HandleDataMessage {
         );
         break;
       case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
+        // TODO: remove
         this.handleSpeechSubtitleText(payload.message);
         break;
       case DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE:
@@ -157,24 +166,39 @@ export default class HandleDataMessage {
     store.dispatch(addExternalMediaPlayerEvent(data));
   }
 
-  private handleSpeechSubtitleText(message: string) {
+  public handleSpeechSubtitleText(message: string) {
     if (message === '') {
       return;
     }
-    const data: SpeechTextBroadcastFormat = JSON.parse(message);
     const lang = store.getState().speechServices.selectedSubtitleLang;
+    const data = fromJsonString(InsightsTranscriptionResultSchema, message);
 
-    if (lang !== '' && typeof data.result[lang] !== 'undefined') {
+    if (lang !== '') {
+      const participant = participantsSelector.selectById(
+        store.getState(),
+        data.fromUserId,
+      );
+
       const d = new Date();
+      const type = data.isPartial ? 'interim' : 'final';
+      const result: TextWithInfo = {
+        text: '',
+        from: participant.name,
+        time: d.toLocaleTimeString(),
+        id: d.getUTCMilliseconds().toString(),
+      };
+      if (data.lang === lang) {
+        result.text = data.text;
+      } else if (typeof data.translations[lang] !== 'undefined') {
+        result.text = data.translations[lang];
+      } else {
+        return;
+      }
+
       store.dispatch(
         addSpeechSubtitleText({
-          type: data.type,
-          result: {
-            text: data.result[lang],
-            from: data.from,
-            time: d.toLocaleTimeString(),
-            id: d.getUTCMilliseconds().toString(),
-          },
+          type,
+          result,
         }),
       );
     }
