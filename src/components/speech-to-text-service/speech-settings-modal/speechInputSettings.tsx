@@ -1,50 +1,38 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Field, Label, Switch } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import {
-  SpeechRecognizer,
-  TranslationRecognizer,
-} from 'microsoft-cognitiveservices-speech-sdk';
-import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
+import { InsightsTranscriptionFeatures } from 'plugnmeet-protocol-js';
 
 import { speechLangsMap } from '../helpers/supportedLangs';
-import MicSelector from './micSelector';
 import Dropdown from '../../../helpers/ui/dropdown';
 
 interface ISpeechInputSettingsProps {
-  speechService: SpeechToTextTranslationFeatures;
-  recognizer: SpeechRecognizer | TranslationRecognizer | undefined;
+  transcriptionFeatures: InsightsTranscriptionFeatures;
   selectedSpeechLang: string;
   setSelectedSpeechLang: React.Dispatch<string>;
-  selectedMicDevice: string;
-  setSelectedMicDevice: React.Dispatch<string>;
 }
 
 const SpeechInputSettings = ({
-  speechService,
-  recognizer,
+  transcriptionFeatures,
   selectedSpeechLang,
   setSelectedSpeechLang,
-  selectedMicDevice,
-  setSelectedMicDevice,
 }: ISpeechInputSettingsProps) => {
   const { t } = useTranslation();
   const [enableSpeechToText, setEnableSpeechToText] = useState<boolean>(true);
 
   useEffect(() => {
     if (!enableSpeechToText) {
-      setSelectedMicDevice('');
       setSelectedSpeechLang('');
     }
-  }, [enableSpeechToText, setSelectedSpeechLang, setSelectedMicDevice]);
+  }, [enableSpeechToText, setSelectedSpeechLang]);
 
   const speechLangOptions = useMemo(() => {
     return (
-      speechService.allowedSpeechLangs?.map((l) => {
+      transcriptionFeatures.allowedSpokenLangs?.map((l) => {
         return { value: l, text: speechLangsMap.get(l)?.name ?? l };
       }) ?? []
     );
-  }, [speechService.allowedSpeechLangs]);
+  }, [transcriptionFeatures.allowedSpokenLangs]);
 
   const speechLangElms = () => {
     return (
@@ -56,12 +44,6 @@ const SpeechInputSettings = ({
           options={speechLangOptions}
           label={t('speech-services.speech-lang-label')}
           direction="vertical"
-        />
-
-        <MicSelector
-          disabled={recognizer !== undefined}
-          selectedMicDevice={selectedMicDevice}
-          setSelectedMicDevice={setSelectedMicDevice}
         />
       </>
     );
@@ -77,7 +59,7 @@ const SpeechInputSettings = ({
           <Switch
             checked={enableSpeechToText}
             onChange={setEnableSpeechToText}
-            disabled={recognizer !== undefined}
+            //disabled={recognizer !== undefined}
             className={`${
               enableSpeechToText ? 'bg-Blue2-500' : 'bg-Gray-200'
             } relative outline-none inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden cursor-pointer`}

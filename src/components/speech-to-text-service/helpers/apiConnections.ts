@@ -5,10 +5,10 @@ import {
   GenerateAzureTokenReqSchema,
   InsightsTranscriptionConfigReq,
   InsightsTranscriptionConfigReqSchema,
+  InsightsTranscriptionUserSessionReqSchema,
+  InsightsUserSessionAction,
   SpeechServiceUserStatusReqSchema,
   SpeechServiceUserStatusTasks,
-  SpeechToTextTranslationReq,
-  SpeechToTextTranslationReqSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
@@ -98,20 +98,7 @@ export const sendUserSessionStatus = async (
   return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
-export const enableOrDisableSpeechService = async (
-  body: SpeechToTextTranslationReq,
-) => {
-  const r = await sendAPIRequest(
-    'speechServices/serviceStatus',
-    toBinary(SpeechToTextTranslationReqSchema, body),
-    false,
-    'application/protobuf',
-    'arraybuffer',
-  );
-  return fromBinary(CommonResponseSchema, new Uint8Array(r));
-};
-
-export const enableUpdateTranscription = async (
+export const enableOrUpdateTranscription = async (
   body: InsightsTranscriptionConfigReq,
 ) => {
   const r = await sendAPIRequest(
@@ -128,6 +115,24 @@ export const endTranscription = async () => {
   const r = await sendAPIRequest(
     'insights/transcription/end',
     [],
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
+};
+
+export const startOrStopUserSession = async (
+  action: InsightsUserSessionAction,
+  spokenLang?: string,
+) => {
+  const body = create(InsightsTranscriptionUserSessionReqSchema, {
+    action,
+    spokenLang,
+  });
+  const r = await sendAPIRequest(
+    'insights/transcription/userSession',
+    toBinary(InsightsTranscriptionUserSessionReqSchema, body),
     false,
     'application/protobuf',
     'arraybuffer',

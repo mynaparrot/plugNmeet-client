@@ -7,7 +7,7 @@ import { create } from '@bufbuild/protobuf';
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import {
-  enableUpdateTranscription,
+  enableOrUpdateTranscription,
   endTranscription,
 } from '../helpers/apiConnections';
 import { validateSettings } from '../helpers/modalUtils';
@@ -69,7 +69,7 @@ const TranscriptionSettingsModal = () => {
       defaultSubtitleLang: selectedDefaultSubtitleLang,
     });
 
-    const res = await enableUpdateTranscription(body);
+    const res = await enableOrUpdateTranscription(body);
 
     if (res.status) {
       toast(t('speech-services.service-ready'), {

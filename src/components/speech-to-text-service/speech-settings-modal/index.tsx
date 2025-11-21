@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import {
-  SpeechRecognizer,
-  TranslationRecognizer,
-} from 'microsoft-cognitiveservices-speech-sdk';
-import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
+  InsightsTranscriptionFeatures,
+  InsightsUserSessionAction,
+} from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateDisplaySpeechSettingOptionsModal } from '../../../store/slices/bottomIconsActivitySlice';
@@ -14,28 +13,15 @@ import Modal from '../../../helpers/ui/modal';
 import SpeechInputSettings from './speechInputSettings';
 import SubtitleFontSizeSlider from './subtitleFontSizeSlider';
 import SubtitleLangSelector from './subtitleLangSelector';
+import { startOrStopUserSession } from '../helpers/apiConnections';
+import { toast } from 'react-toastify';
 
 interface SpeechSettingsModalProps {
-  optionSelectionDisabled: boolean;
-  speechService: SpeechToTextTranslationFeatures;
-  recognizer: SpeechRecognizer | TranslationRecognizer | undefined;
-  onCloseSelectedOptions: (selected: OnCloseSelectedOptions) => void;
-  onOpenSelectedOptionsModal: () => void;
-}
-
-export interface OnCloseSelectedOptions {
-  speechLang: string;
-  subtitleLang: string;
-  micDevice: string;
-  stopService: boolean;
+  transcriptionFeatures: InsightsTranscriptionFeatures;
 }
 
 const SpeechSettingsModal = ({
-  optionSelectionDisabled,
-  speechService,
-  recognizer,
-  onCloseSelectedOptions,
-  onOpenSelectedOptionsModal,
+  transcriptionFeatures,
 }: SpeechSettingsModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -43,7 +29,7 @@ const SpeechSettingsModal = ({
   const isActiveDisplayOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
-
+  const [enabled, setEnabled] = useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
   const [selectedSubtitleLang, setSelectedSubtitleLang] = useState<string>(
     () => {
@@ -51,73 +37,61 @@ const SpeechSettingsModal = ({
       if (!isEmpty(current)) {
         return current;
       }
-      return speechService.defaultSubtitleLang ?? '';
+      return transcriptionFeatures.defaultSubtitleLang ?? '';
     },
   );
-  const [selectedMicDevice, setSelectedMicDevice] = useState<string>('');
 
   const canShowSpeechSetting = useMemo(() => {
-    return !!speechService.allowedSpeechUsers?.find(
+    return !!transcriptionFeatures.allowedSpeechUsers?.find(
       (u) => u === currentUser?.userId,
     );
-  }, [currentUser?.userId, speechService.allowedSpeechUsers]);
+  }, [currentUser?.userId, transcriptionFeatures.allowedSpeechUsers]);
 
-  useEffect(() => {
-    if (isActiveDisplayOptionsModal) {
-      onOpenSelectedOptionsModal();
-    }
-    //eslint-disable-next-line
-  }, [isActiveDisplayOptionsModal]);
+  const onCloseModal = useCallback(() => {
+    dispatch(updateDisplaySpeechSettingOptionsModal(false));
+  }, [dispatch]);
 
-  const toggleDisplayOptionsModal = useCallback(() => {
-    dispatch(
-      updateDisplaySpeechSettingOptionsModal(!isActiveDisplayOptionsModal),
-    );
-  }, [dispatch, isActiveDisplayOptionsModal]);
+  const startOrStopService = useCallback(async () => {
+    const action = enabled
+      ? InsightsUserSessionAction.USER_SESSION_ACTION_STOP
+      : InsightsUserSessionAction.USER_SESSION_ACTION_START;
+    const msg = enabled
+      ? t('speech-services.service-stopped')
+      : t('speech-services.service-ready');
 
-  const startOrStopService = () => {
-    if (optionSelectionDisabled) {
-      return;
-    }
-    if (canShowSpeechSetting) {
-      onCloseSelectedOptions({
-        speechLang: selectedSpeechLang,
-        subtitleLang: selectedSubtitleLang,
-        micDevice: selectedMicDevice,
-        stopService: !!recognizer,
+    const res = await startOrStopUserSession(action, selectedSpeechLang);
+    if (res.status) {
+      toast(msg, {
+        type: 'info',
       });
     } else {
-      onCloseSelectedOptions({
-        speechLang: '',
-        subtitleLang: selectedSubtitleLang,
-        micDevice: '',
-        stopService: false,
+      toast(t(res.msg), {
+        type: 'error',
       });
+      return;
     }
 
-    toggleDisplayOptionsModal();
-  };
+    setEnabled(!enabled);
+    onCloseModal();
+  }, [onCloseModal, t, enabled, selectedSpeechLang]);
 
   return (
     <Modal
       show={isActiveDisplayOptionsModal}
-      onClose={() => dispatch(updateDisplaySpeechSettingOptionsModal(false))}
+      onClose={onCloseModal}
       title={t('speech-services.start-modal-title')}
       customClass="showSpeechSettingPopup overflow-hidden"
     >
       <div className="-mx-4">
         {canShowSpeechSetting && (
           <SpeechInputSettings
-            recognizer={recognizer}
-            speechService={speechService}
+            transcriptionFeatures={transcriptionFeatures}
             selectedSpeechLang={selectedSpeechLang}
             setSelectedSpeechLang={setSelectedSpeechLang}
-            selectedMicDevice={selectedMicDevice}
-            setSelectedMicDevice={setSelectedMicDevice}
           />
         )}
         <SubtitleLangSelector
-          speechService={speechService}
+          transcriptionFeatures={transcriptionFeatures}
           selectedSubtitleLang={selectedSubtitleLang}
           setSelectedSubtitleLang={setSelectedSubtitleLang}
         />
@@ -128,7 +102,7 @@ const SpeechSettingsModal = ({
           className="h-10 px-8 w-1/2 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={() => startOrStopService()}
         >
-          {canShowSpeechSetting && recognizer
+          {canShowSpeechSetting && enabled
             ? t('speech-services.stop-service')
             : t('speech-services.start-service')}
         </button>

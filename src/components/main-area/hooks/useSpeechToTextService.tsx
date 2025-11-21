@@ -4,16 +4,16 @@ import { useAppSelector } from '../../../store';
 import SpeechToTextService from '../../speech-to-text-service';
 
 export const useSpeechToTextService = () => {
-  const activateSpeechService = useAppSelector(
+  const isEnabled = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.speechToTextTranslationFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.transcriptionFeatures?.isEnabled,
   );
 
   return useMemo(() => {
-    if (activateSpeechService) {
+    if (isEnabled) {
       return <SpeechToTextService />;
     }
     return null;
-  }, [activateSpeechService]);
+  }, [isEnabled]);
 };

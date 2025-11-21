@@ -22,8 +22,8 @@ const Translation = () => {
   );
   const isEnabled = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures
-        ?.speechToTextTranslationFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.transcriptionFeatures?.isEnabled,
   );
 
   const toggleModal = useCallback(() => {
