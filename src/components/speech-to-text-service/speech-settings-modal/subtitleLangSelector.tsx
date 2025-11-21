@@ -8,7 +8,7 @@ import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 interface ISubtitleLangSelectorProps {
   transcriptionFeatures: InsightsTranscriptionFeatures;
   selectedSubtitleLang: string;
-  setSelectedSubtitleLang: React.Dispatch<string>;
+  setSelectedSubtitleLang: (lang: string) => void;
 }
 
 const SubtitleLangSelector = ({

@@ -119,13 +119,14 @@ const AdminMenus = () => {
           }
         />
       )}
-      {roomFeatures?.speechToTextTranslationFeatures?.isAllow && (
-        <FooterMenuItem
-          onClick={openSpeechServiceSettingsModal}
-          icon={<SpeechIconSVG classes="w-6 text-Blue2-800" />}
-          text={t('footer.menus.speech-to-text-settings')}
-        />
-      )}
+      {roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
+          <FooterMenuItem
+            onClick={openSpeechServiceSettingsModal}
+            icon={<SpeechIconSVG classes="w-6 text-Blue2-800" />}
+            text={t('footer.menus.speech-to-text-settings')}
+          />
+        )}
       {roomFeatures?.pollsFeatures?.isAllow && (
         <FooterMenuItem
           onClick={togglePolls}

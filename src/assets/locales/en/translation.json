@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view.",
     "new-system-message-in-chat": "A new system message has been posted in the public chat.",
     "queue-holding-messages": "Connection problem: messages are being held. ({{error}})",
-    "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})"
+    "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -522,6 +523,7 @@
     "speech-to-text-stopped": "Transcription service has stopped.",
     "enable-transcription": "Enable Transcription",
     "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}",
-    "mic-not-ready-warning": "To start the service, you must enable your microphone."
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation"
   }
 }

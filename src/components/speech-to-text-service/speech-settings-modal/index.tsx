@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'es-toolkit/compat';
 import {
   InsightsTranscriptionFeatures,
   InsightsUserSessionAction,
@@ -19,6 +18,7 @@ import {
   startOrStopUserSession,
 } from '../helpers/apiConnections';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
+import { updateSelectedSubtitleLang } from '../../../store/slices/speechServicesSlice';
 
 interface SpeechSettingsModalProps {
   transcriptionFeatures: InsightsTranscriptionFeatures;
@@ -35,18 +35,12 @@ const SpeechSettingsModal = ({
   const isActiveDisplayOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
+  const selectedSubtitleLang = useAppSelector(
+    (state) => state.speechServices.selectedSubtitleLang,
+  );
   const [enabled, setEnabled] = useState<boolean>(false);
   const [readyToStart, setReadyToStart] = useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
-  const [selectedSubtitleLang, setSelectedSubtitleLang] = useState<string>(
-    () => {
-      const current = store.getState().speechServices.selectedSubtitleLang;
-      if (!isEmpty(current)) {
-        return current;
-      }
-      return transcriptionFeatures.defaultSubtitleLang ?? '';
-    },
-  );
 
   useEffect(() => {
     if (isActiveDisplayOptionsModal) {
@@ -65,6 +59,13 @@ const SpeechSettingsModal = ({
     // oxlint-disable-next-line exhaustive-deps
   }, [isActiveDisplayOptionsModal]);
 
+  const setSelectedSubtitleLang = useCallback(
+    (lang: string) => {
+      dispatch(updateSelectedSubtitleLang(lang));
+    },
+    [dispatch],
+  );
+
   const canShowSpeechSetting = useMemo(() => {
     return !!transcriptionFeatures.allowedSpeechUsers?.find(
       (u) => u === currentUser?.userId,
@@ -79,13 +80,10 @@ const SpeechSettingsModal = ({
     const action = enabled
       ? InsightsUserSessionAction.USER_SESSION_ACTION_STOP
       : InsightsUserSessionAction.USER_SESSION_ACTION_START;
-    const msg = enabled
-      ? t('speech-services.service-stopped')
-      : t('speech-services.service-ready');
 
     const res = await startOrStopUserSession(action, selectedSpeechLang);
     if (res.status) {
-      toast(msg, {
+      toast(t('notifications.request-submitted-wait'), {
         type: 'info',
       });
     } else {
