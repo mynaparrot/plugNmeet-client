@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { SpeechToTextTranslationReqSchema } from 'plugnmeet-protocol-js';
+import { InsightsTranscriptionConfigReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch, useAppSelector } from '../../../store';
-import { enableOrDisableSpeechService } from '../helpers/apiConnections';
+import {
+  enableUpdateTranscription,
+  endTranscription,
+} from '../helpers/apiConnections';
 import { validateSettings } from '../helpers/modalUtils';
 
 import Modal from '../../../helpers/ui/modal';
@@ -19,30 +22,30 @@ import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 const TranscriptionSettingsModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const speechService = useAppSelector(
+  const transcriptionFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.speechToTextTranslationFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.transcriptionFeatures,
   );
   const [enabledTranscription, setEnabledTranscription] = useState<boolean>(
-    !!speechService?.isEnabled,
+    !!transcriptionFeatures?.isEnabled,
   );
 
   const [selectedSpeechLangs, setSelectedSpeechLangs] = useState<string[]>(
-    speechService?.allowedSpeechLangs ?? [],
+    transcriptionFeatures?.allowedSpokenLangs ?? [],
   );
   const [selectedSpeechUsers, setSelectedSpeechUsers] = useState<string[]>(
-    speechService?.allowedSpeechUsers ?? [],
+    transcriptionFeatures?.allowedSpeechUsers ?? [],
   );
 
   const [enableTranslation, setEnableTranslation] = useState<boolean>(
-    !!speechService?.isEnabledTranslation,
+    !!transcriptionFeatures?.isEnabledTranslation,
   );
   const [selectedTransLangs, setSelectedTransLangs] = useState<string[]>(
-    speechService?.allowedTransLangs ?? [],
+    transcriptionFeatures?.allowedTransLangs ?? [],
   );
   const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] =
-    useState<string>(speechService?.defaultSubtitleLang ?? '');
+    useState<string>(transcriptionFeatures?.defaultSubtitleLang ?? '');
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const enableOrUpdateService = async () => {
@@ -57,16 +60,16 @@ const TranscriptionSettingsModal = () => {
       return;
     }
 
-    const body = create(SpeechToTextTranslationReqSchema, {
+    const body = create(InsightsTranscriptionConfigReqSchema, {
       isEnabled: true,
-      allowedSpeechLangs: selectedSpeechLangs,
+      allowedSpokenLangs: selectedSpeechLangs,
       allowedSpeechUsers: selectedSpeechUsers,
       isEnabledTranslation: enableTranslation,
       allowedTransLangs: selectedTransLangs,
       defaultSubtitleLang: selectedDefaultSubtitleLang,
     });
 
-    const res = await enableOrDisableSpeechService(body);
+    const res = await enableUpdateTranscription(body);
 
     if (res.status) {
       toast(t('speech-services.service-ready'), {
@@ -83,14 +86,7 @@ const TranscriptionSettingsModal = () => {
   };
 
   const stopService = async () => {
-    const body = create(SpeechToTextTranslationReqSchema, {
-      isEnabled: false,
-      allowedSpeechLangs: [],
-      allowedSpeechUsers: [],
-      isEnabledTranslation: false,
-      allowedTransLangs: [],
-    });
-    const res = await enableOrDisableSpeechService(body);
+    const res = await endTranscription();
 
     if (res.status) {
       toast(t('speech-services.service-stopped'), {
@@ -168,7 +164,7 @@ const TranscriptionSettingsModal = () => {
               selectedTransLangs={selectedTransLangs}
               setSelectedTransLangs={setSelectedTransLangs}
               maxLangsAllowSelecting={
-                speechService?.maxNumTranLangsAllowSelecting ?? 2
+                transcriptionFeatures?.maxSelectedTransLangs ?? 2
               }
             />
           </div>
@@ -179,7 +175,7 @@ const TranscriptionSettingsModal = () => {
 
   const renderButtons = () => (
     <div
-      className={`w-full grid ${speechService?.isEnabled ? 'grid-cols-3 gap-x-2' : 'grid-cols-2 gap-x-3 md:gap-x-5'}`}
+      className={`w-full grid ${transcriptionFeatures?.isEnabled ? 'grid-cols-3 gap-x-2' : 'grid-cols-2 gap-x-3 md:gap-x-5'}`}
     >
       <button
         className="h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
@@ -187,7 +183,7 @@ const TranscriptionSettingsModal = () => {
       >
         {t('cancel')}
       </button>
-      {!speechService?.isEnabled && (
+      {!transcriptionFeatures?.isEnabled && (
         <button
           className="h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={() => enableOrUpdateService()}
@@ -195,7 +191,7 @@ const TranscriptionSettingsModal = () => {
           {t('speech-services.enable-service')}
         </button>
       )}
-      {speechService?.isEnabled && (
+      {transcriptionFeatures?.isEnabled && (
         <>
           <button
             className="order-3 h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"

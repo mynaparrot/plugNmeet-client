@@ -3,6 +3,8 @@ import {
   CommonResponseSchema,
   DataMsgBodyType,
   GenerateAzureTokenReqSchema,
+  InsightsTranscriptionConfigReq,
+  InsightsTranscriptionConfigReqSchema,
   SpeechServiceUserStatusReqSchema,
   SpeechServiceUserStatusTasks,
   SpeechToTextTranslationReq,
@@ -102,6 +104,30 @@ export const enableOrDisableSpeechService = async (
   const r = await sendAPIRequest(
     'speechServices/serviceStatus',
     toBinary(SpeechToTextTranslationReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
+};
+
+export const enableUpdateTranscription = async (
+  body: InsightsTranscriptionConfigReq,
+) => {
+  const r = await sendAPIRequest(
+    'insights/transcription/configure',
+    toBinary(InsightsTranscriptionConfigReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
+};
+
+export const endTranscription = async () => {
+  const r = await sendAPIRequest(
+    'insights/transcription/end',
+    [],
     false,
     'application/protobuf',
     'arraybuffer',

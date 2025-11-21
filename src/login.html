@@ -315,9 +315,12 @@
               ingress_features: {
                 is_allow: true,
               },
-              speech_to_text_translation_features: {
-                is_allow: true,
-                is_allow_translation: true,
+              insights_features: {
+                  is_allow: true,
+                  transcription_features: {
+                      is_allow: true,
+                      is_allow_translation: true,
+                  }
               },
               end_to_end_encryption_features: {
                 is_enabled: false,
