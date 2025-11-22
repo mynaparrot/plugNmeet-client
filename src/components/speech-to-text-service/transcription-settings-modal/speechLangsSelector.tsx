@@ -1,8 +1,7 @@
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { supportedSpeechToTextLangs } from '../helpers/supportedLangs';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
+import { supportedTranscriptionLangs } from '../helpers/supportedLangs';
 
 interface SpeechLangsSelectorProps {
   selectedSpeechLangs: Array<string>;
@@ -14,12 +13,10 @@ const SpeechLangsSelector = ({
   setSelectedSpeechLangs,
 }: SpeechLangsSelectorProps) => {
   const { t } = useTranslation();
+  const [selectOptions, setSelectOptions] = useState<ISelectOption[]>([]);
 
-  const speechLangOptions: ISelectOption[] = useMemo(() => {
-    return supportedSpeechToTextLangs.map((l) => ({
-      value: l.code,
-      text: l.name,
-    }));
+  useEffect(() => {
+    supportedTranscriptionLangs().then((langs) => setSelectOptions(langs));
   }, []);
 
   return (
@@ -29,7 +26,7 @@ const SpeechLangsSelector = ({
       value={selectedSpeechLangs}
       onChange={setSelectedSpeechLangs}
       multiple={true}
-      options={speechLangOptions}
+      options={selectOptions}
     />
   );
 };

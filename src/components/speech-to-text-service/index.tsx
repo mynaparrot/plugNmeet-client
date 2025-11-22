@@ -8,6 +8,10 @@ import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSli
 import SubtitleTextsHistory from './displays/history';
 import LiveSubtitle from './displays/liveSubtitle';
 import { useSubtitleSpeechSynthesis } from './helpers/useSubtitleSpeechSynthesis';
+import {
+  supportedTranscriptionLangs,
+  supportedTranslationLangs,
+} from './helpers/supportedLangs';
 
 const SpeechToTextService = () => {
   const dispatch = useAppDispatch();
@@ -32,6 +36,12 @@ const SpeechToTextService = () => {
     if (isEmpty(selectedLang) && defaultSubtitleLang) {
       dispatch(updateSelectedSubtitleLang(defaultSubtitleLang));
     }
+
+    // prepare languages
+    Promise.allSettled([
+      supportedTranscriptionLangs(),
+      supportedTranslationLangs(),
+    ]).then();
     //oxlint-disable-next-line
   }, []);
 

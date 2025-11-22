@@ -1,9 +1,8 @@
-import React, { Dispatch, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { supportedTranslationLangs } from '../helpers/supportedLangs';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
+import { supportedTranslationLangs } from '../helpers/supportedLangs';
 
 interface TransLangsSelectorProps {
   selectedTransLangs: Array<string>;
@@ -19,6 +18,7 @@ const TransLangsSelector = ({
   const { t } = useTranslation();
   const [selectedItems, setSelectedItems] =
     useState<string[]>(selectedTransLangs);
+  const [selectOptions, setSelectOptions] = useState<ISelectOption[]>([]);
 
   useEffect(() => {
     if (selectedItems.length > maxLangsAllowSelecting) {
@@ -35,11 +35,8 @@ const TransLangsSelector = ({
     setSelectedTransLangs(selectedItems);
   }, [selectedItems, maxLangsAllowSelecting, setSelectedTransLangs, t]);
 
-  const transLangOptions: ISelectOption[] = useMemo(() => {
-    return supportedTranslationLangs.map((l) => ({
-      value: l.code,
-      text: l.name,
-    }));
+  useEffect(() => {
+    supportedTranslationLangs().then((langs) => setSelectOptions(langs));
   }, []);
 
   return (
@@ -51,7 +48,7 @@ const TransLangsSelector = ({
       value={selectedTransLangs}
       onChange={setSelectedItems}
       multiple={true}
-      options={transLangOptions}
+      options={selectOptions}
     />
   );
 };

@@ -1,3 +1,10 @@
+import { once } from 'es-toolkit';
+import {
+  InsightsServiceType,
+  InsightsSupportedLangInfo,
+} from 'plugnmeet-protocol-js';
+
+import { getSupportedLanguages } from './apiConnections';
 import { store } from '../../../store';
 import i18n from '../../../helpers/i18n';
 
@@ -151,7 +158,7 @@ const supportedSpeechToTextLangs = [
 ];
 
 // prettier-ignore
-const supportedTranslationLangs = [
+/*const supportedTranslationLangs = [
   { name: 'Afrikaans', code: 'af' },
   { name: 'Albanian', code: 'sq' },
   { name: 'Amharic', code: 'am' },
@@ -237,15 +244,14 @@ const supportedTranslationLangs = [
   { name: 'Vietnamese', code: 'vi' },
   { name: 'Welsh', code: 'cy' },
   { name: 'Yucatec Maya	', code: 'yua' },
-];
+];*/
 
 // Create Maps for efficient lookups (O(1) complexity)
-const speechLangsMap = new Map(
-  supportedSpeechToTextLangs.map((lang) => [lang.code, lang]),
+const speechLangsMap = new Map<string,InsightsSupportedLangInfo>(
+  //supportedSpeechToTextLangs.map((lang) => [lang.code, lang]),
 );
-const translationLangsMap = new Map(
-  supportedTranslationLangs.map((lang) => [lang.code, lang]),
-);
+const translationLangsMap = new Map<string, InsightsSupportedLangInfo>();
+// supportedTranslationLangs.map((lang) => [lang.code, lang]),
 
 const getSubtitleLangs = (
   speechLangs?: string[],
@@ -282,7 +288,7 @@ const getSubtitleLangs = (
   // 3. Build the final list of language objects
   const availableLangs = Array.from(uniqueLangCodes)
     .map((code) => translationLangsMap.get(code))
-    .filter((lang): lang is SupportedLangs => !!lang);
+    .filter((lang): lang is InsightsSupportedLangInfo => !!lang);
 
   // 4. Prepend the "Select" option and return
   return [
@@ -294,9 +300,37 @@ const getSubtitleLangs = (
   ];
 };
 
+export const supportedTranscriptionLangs = once(async () => {
+  const res = await getSupportedLanguages(InsightsServiceType.TRANSCRIPTION);
+  if (res.status) {
+    return res.languages.map((l) => {
+      speechLangsMap.set(l.code, l);
+      return {
+        value: l.code,
+        text: l.name,
+      };
+    });
+  }
+  return [];
+});
+
+export const supportedTranslationLangs = once(async () => {
+  const res = await getSupportedLanguages(InsightsServiceType.TRANSLATION);
+  if (res.status) {
+    return res.languages.map((l) => {
+      translationLangsMap.set(l.code, l);
+      return {
+        value: l.code,
+        text: l.name,
+      };
+    });
+  }
+  return [];
+});
+
 export {
   supportedSpeechToTextLangs,
   speechLangsMap,
-  supportedTranslationLangs,
+  //supportedTranslationLangs,
   getSubtitleLangs,
 };

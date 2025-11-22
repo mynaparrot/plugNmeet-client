@@ -3,7 +3,10 @@ import {
   CommonResponseSchema,
   DataMsgBodyType,
   GenerateAzureTokenReqSchema,
+  InsightsGetSupportedLanguagesReqSchema,
+  InsightsGetSupportedLanguagesResSchema,
   InsightsGetUserStatusResSchema,
+  InsightsServiceType,
   InsightsTranscriptionConfigReq,
   InsightsTranscriptionConfigReqSchema,
   InsightsTranscriptionUserSessionReqSchema,
@@ -150,4 +153,20 @@ export const getUserTaskStatus = async () => {
     'arraybuffer',
   );
   return fromBinary(InsightsGetUserStatusResSchema, new Uint8Array(r));
+};
+
+export const getSupportedLanguages = async (
+  serviceType: InsightsServiceType,
+) => {
+  const body = create(InsightsGetSupportedLanguagesReqSchema, {
+    serviceType,
+  });
+  const r = await sendAPIRequest(
+    'insights/supportedLangs',
+    toBinary(InsightsGetSupportedLanguagesReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(InsightsGetSupportedLanguagesResSchema, new Uint8Array(r));
 };
