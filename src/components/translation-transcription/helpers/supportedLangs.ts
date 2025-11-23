@@ -331,6 +331,6 @@ export const supportedTranslationLangs = once(async () => {
 export {
   supportedSpeechToTextLangs,
   speechLangsMap,
-  //supportedTranslationLangs,
+  translationLangsMap,
   getSubtitleLangs,
 };

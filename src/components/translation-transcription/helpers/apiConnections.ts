@@ -3,6 +3,8 @@ import {
   CommonResponseSchema,
   DataMsgBodyType,
   GenerateAzureTokenReqSchema,
+  InsightsChatTranslationConfigReq,
+  InsightsChatTranslationConfigReqSchema,
   InsightsGetSupportedLanguagesReqSchema,
   InsightsGetSupportedLanguagesResSchema,
   InsightsGetUserStatusResSchema,
@@ -10,6 +12,9 @@ import {
   InsightsTranscriptionConfigReq,
   InsightsTranscriptionConfigReqSchema,
   InsightsTranscriptionUserSessionReqSchema,
+  InsightsTranslateTextReq,
+  InsightsTranslateTextReqSchema,
+  InsightsTranslateTextResSchema,
   InsightsUserSessionAction,
   SpeechServiceUserStatusReqSchema,
   SpeechServiceUserStatusTasks,
@@ -169,4 +174,41 @@ export const getSupportedLanguages = async (
     'arraybuffer',
   );
   return fromBinary(InsightsGetSupportedLanguagesResSchema, new Uint8Array(r));
+};
+
+export const enableOrUpdateChatTranslation = async (
+  body: InsightsChatTranslationConfigReq,
+) => {
+  const r = await sendAPIRequest(
+    'insights/translation/chat/configure',
+    toBinary(InsightsChatTranslationConfigReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
+};
+
+export const executeChatTranslation = async (
+  body: InsightsTranslateTextReq,
+) => {
+  const r = await sendAPIRequest(
+    'insights/translation/chat/execute',
+    toBinary(InsightsTranslateTextReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(InsightsTranslateTextResSchema, new Uint8Array(r));
+};
+
+export const endChatTranslation = async () => {
+  const r = await sendAPIRequest(
+    'insights/translation/chat/end',
+    [],
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };

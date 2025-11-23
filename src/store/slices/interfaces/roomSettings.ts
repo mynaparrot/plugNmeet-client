@@ -32,6 +32,7 @@ export interface IRoomSettings {
   selectedChatOption: string;
   initiatePrivateChat: InitiatePrivateChat;
   unreadMsgFrom: Array<string>;
+  selectedChatTransLang: string;
 
   columnCameraWidth: ColumnCameraWidth;
   columnCameraPosition: ColumnCameraPosition;

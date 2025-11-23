@@ -41,6 +41,7 @@ const initialState: IRoomSettings = {
     userId: '',
   },
   unreadMsgFrom: [],
+  selectedChatTransLang: '',
 
   columnCameraWidth: ColumnCameraWidth.FULL_WIDTH,
   columnCameraPosition: ColumnCameraPosition.LEFT,
@@ -198,6 +199,9 @@ const roomSettingsSlice = createSlice({
     updateIsSidePanelOpened: (state, action: PayloadAction<boolean>) => {
       state.isSidePanelOpened = action.payload;
     },
+    updateSelectedChatTransLang: (state, action: PayloadAction<string>) => {
+      state.selectedChatTransLang = action.payload;
+    },
   },
 });
 
@@ -235,6 +239,7 @@ export const {
   addUserNotification,
   setAllUserNotifications,
   updateIsSidePanelOpened,
+  updateSelectedChatTransLang,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

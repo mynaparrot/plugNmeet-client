@@ -1,9 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { InsightsChatTranslationConfigReqSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import TransLangsSelector from '../transcription-settings/transLangsSelector';
-import { useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import DefaultSubtitleLangSelector from '../transcription-settings/defaultSubtitleLangSelector';
+import {
+  enableOrUpdateChatTranslation,
+  endChatTranslation,
+} from '../helpers/apiConnections';
+import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 
 interface ChatTranslationSettingsProps {
   setErrorMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -13,6 +21,8 @@ const ChatTranslationSettings = ({
   setErrorMsg,
 }: ChatTranslationSettingsProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
   const chatTranslationFeatures = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
@@ -26,11 +36,46 @@ const ChatTranslationSettings = ({
     chatTranslationFeatures?.defaultLang ?? '',
   );
 
-  const enableOrUpdateService = useCallback(() => {
-    console.log(selectedTransLangs);
-  }, [selectedTransLangs]);
+  const enableOrUpdateService = useCallback(async () => {
+    setErrorMsg(undefined);
 
-  const stopService = useCallback(() => {}, []);
+    const body = create(InsightsChatTranslationConfigReqSchema, {
+      allowedTransLangs: selectedTransLangs,
+      defaultLang: selectedDefaultLang,
+    });
+
+    const res = await enableOrUpdateChatTranslation(body);
+    if (res.status) {
+      toast(t('speech-services.service-ready'), {
+        type: 'info',
+      });
+    } else {
+      toast(t(res.msg), {
+        type: 'error',
+      });
+      setErrorMsg(t(res.msg));
+      return;
+    }
+    dispatch(updateDisplaySpeechSettingsModal(false));
+    // oxlint-disable-next-line exhaustive-deps
+  }, [setErrorMsg, selectedTransLangs, selectedDefaultLang]);
+
+  const stopService = useCallback(async () => {
+    const res = await endChatTranslation();
+    if (res.status) {
+      toast(t('speech-services.service-stopped'), {
+        type: 'info',
+      });
+    } else {
+      toast(t(res.msg), {
+        type: 'error',
+      });
+      setErrorMsg(t(res.msg));
+      return;
+    }
+    dispatch(updateDisplaySpeechSettingsModal(false));
+    // oxlint-disable-next-line exhaustive-deps
+  }, []);
 
   return (
     <>

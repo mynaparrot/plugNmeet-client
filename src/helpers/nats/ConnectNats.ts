@@ -8,6 +8,7 @@ import {
   DataChannelMessageSchema,
   DataMsgBodyType,
   EndToEndEncryptionFeatures,
+  InsightsTranslateTextReqSchema,
   MediaServerConnInfoSchema,
   NatsInitialData,
   NatsInitialDataSchema,
@@ -85,6 +86,7 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
 import { createLivekitConnection } from '../livekit/utils';
+import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -470,6 +472,31 @@ export default class ConnectNats {
       message: msg,
       fromAdmin: this.isAdmin,
     });
+
+    // check translation settings
+    const state = store.getState();
+    const chatTranslationFeatures =
+      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures
+        ?.chatTranslationFeatures;
+    if (chatTranslationFeatures && chatTranslationFeatures.isEnabled) {
+      // we'll get our selected lang
+      const selectedChatTransLang = state.roomSettings.selectedChatTransLang;
+      if (selectedChatTransLang !== '') {
+        // we'll need to send request to get translation of selected lang
+        const body = create(InsightsTranslateTextReqSchema, {
+          text: chatMessage.message,
+          sourceLang: selectedChatTransLang,
+          targetLangs: chatTranslationFeatures.allowedTransLangs,
+        });
+        const res = await executeChatTranslation(body);
+        if (res.status && res.result) {
+          chatMessage.sourceLang = selectedChatTransLang;
+          chatMessage.translations = res.result.translations;
+        } else {
+          console.error(res.msg);
+        }
+      }
+    }
 
     let payload: Uint8Array = toBinary(ChatMessageSchema, chatMessage);
 

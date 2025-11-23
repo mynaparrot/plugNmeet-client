@@ -45,6 +45,20 @@ export default class HandleChat {
       return;
     }
 
+    // check translation
+    const selectedChatTransLang =
+      store.getState().roomSettings.selectedChatTransLang;
+    if (selectedChatTransLang !== '') {
+      if (payload.sourceLang && payload.sourceLang !== selectedChatTransLang) {
+        // so, we'll need to pickup from translation
+        if (
+          typeof payload.translations[selectedChatTransLang] !== 'undefined'
+        ) {
+          payload.message = payload.translations[selectedChatTransLang];
+        }
+      }
+    }
+
     store.dispatch(
       addChatMessage({
         message: payload,

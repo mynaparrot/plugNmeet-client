@@ -6,6 +6,10 @@ import Modal from '../../helpers/ui/modal';
 import { updateDisplaySpeechSettingsModal } from '../../store/slices/bottomIconsActivitySlice';
 import TranscriptionSettings from './transcription-settings';
 import ChatTranslationSettings from './chat-translation-settings';
+import {
+  supportedTranscriptionLangs,
+  supportedTranslationLangs,
+} from './helpers/supportedLangs';
 
 const TranslationTranscriptionSettingModal = () => {
   const dispatch = useAppDispatch();
@@ -25,23 +29,29 @@ const TranslationTranscriptionSettingModal = () => {
     if (!insightsFeatures || !insightsFeatures.isAllow) {
       return;
     }
-
-    const tabItems: ITabItem[] = [];
-    if (insightsFeatures.transcriptionFeatures?.isAllow) {
-      tabItems.push({
-        id: 1,
-        title: t('speech-services.speech-transcription'),
-        content: <TranscriptionSettings setErrorMsg={setErrorMsg} />,
-      });
-    }
-    if (insightsFeatures.chatTranslationFeatures?.isAllow) {
-      tabItems.push({
-        id: 2,
-        title: t('speech-services.chat-translation'),
-        content: <ChatTranslationSettings setErrorMsg={setErrorMsg} />,
-      });
-    }
-    setTabItems(tabItems);
+    // prepare languages
+    Promise.allSettled([
+      supportedTranscriptionLangs(),
+      supportedTranslationLangs(),
+    ]).then(() => {
+      // now display tabs
+      const tabItems: ITabItem[] = [];
+      if (insightsFeatures.transcriptionFeatures?.isAllow) {
+        tabItems.push({
+          id: 1,
+          title: t('speech-services.speech-transcription'),
+          content: <TranscriptionSettings setErrorMsg={setErrorMsg} />,
+        });
+      }
+      if (insightsFeatures.chatTranslationFeatures?.isAllow) {
+        tabItems.push({
+          id: 2,
+          title: t('speech-services.chat-translation'),
+          content: <ChatTranslationSettings setErrorMsg={setErrorMsg} />,
+        });
+      }
+      setTabItems(tabItems);
+    });
     //oxlint-disable-next-line
   }, []);
 
