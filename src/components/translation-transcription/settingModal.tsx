@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import Tabs, { ITabItem } from '../../helpers/ui/tabs';
 import Modal from '../../helpers/ui/modal';
 import { updateDisplaySpeechSettingsModal } from '../../store/slices/bottomIconsActivitySlice';
-import TranscriptionSettingsModal from './transcription-settings-modal';
+import TranscriptionSettings from './transcription-settings';
+import ChatTranslationSettings from './chat-translation-settings';
 
 const TranslationTranscriptionSettingModal = () => {
   const dispatch = useAppDispatch();
@@ -30,14 +31,14 @@ const TranslationTranscriptionSettingModal = () => {
       tabItems.push({
         id: 1,
         title: t('speech-services.speech-transcription'),
-        content: <TranscriptionSettingsModal setErrorMsg={setErrorMsg} />,
+        content: <TranscriptionSettings setErrorMsg={setErrorMsg} />,
       });
     }
     if (insightsFeatures.chatTranslationFeatures?.isAllow) {
       tabItems.push({
-        id: 1,
+        id: 2,
         title: t('speech-services.chat-translation'),
-        content: <div></div>,
+        content: <ChatTranslationSettings setErrorMsg={setErrorMsg} />,
       });
     }
     setTabItems(tabItems);
@@ -54,7 +55,7 @@ const TranslationTranscriptionSettingModal = () => {
       onClose={onCloseModal}
       title={t('speech-services.start-modal-title')}
       customClass="overflow-hidden"
-      maxWidth="max-w-xl"
+      maxWidth="max-w-2xl"
     >
       <div className="-mx-4">
         {errorMsg && (
@@ -62,7 +63,7 @@ const TranslationTranscriptionSettingModal = () => {
             {errorMsg}
           </div>
         )}
-        <Tabs items={tabItems} vertical />
+        {tabItems.length && <Tabs items={tabItems} vertical />}
       </div>
     </Modal>
   );

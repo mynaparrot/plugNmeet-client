@@ -17,13 +17,11 @@ import TransLangsSelector from './transLangsSelector';
 import DefaultSubtitleLangSelector from './defaultSubtitleLangSelector';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
-interface TranscriptionSettingsModalProps {
+interface TranscriptionSettingsProps {
   setErrorMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const TranscriptionSettingsModal = ({
-  setErrorMsg,
-}: TranscriptionSettingsModalProps) => {
+const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const transcriptionFeatures = useAppSelector(
@@ -142,6 +140,7 @@ const TranscriptionSettingsModal = ({
               setSelectedSpeechUsers={setSelectedSpeechUsers}
             />
             <DefaultSubtitleLangSelector
+              label={t('speech-services.default-subtitle-lang-label')}
               selectedSpeechLangs={selectedSpeechLangs}
               selectedTransLangs={selectedTransLangs}
               selectedDefaultSubtitleLang={selectedDefaultSubtitleLang}
@@ -177,51 +176,37 @@ const TranscriptionSettingsModal = ({
     </div>
   );
 
-  const renderButtons = () => (
-    <div
-      className={`w-full grid ${transcriptionFeatures?.isEnabled ? 'grid-cols-3 gap-x-2' : 'grid-cols-2 gap-x-3 md:gap-x-5'}`}
-    >
-      <button
-        className="h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
-        onClick={() => dispatch(updateDisplaySpeechSettingsModal(false))}
-      >
-        {t('cancel')}
-      </button>
-      {!transcriptionFeatures?.isEnabled && (
-        <button
-          className="h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-          onClick={() => enableOrUpdateService()}
-        >
-          {t('speech-services.enable-service')}
-        </button>
-      )}
-      {transcriptionFeatures?.isEnabled && (
-        <>
-          <button
-            className="order-3 h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-            onClick={() => enableOrUpdateService()}
-          >
-            {t('speech-services.update-service')}
-          </button>
-          <button
-            className="order-2 h-10 px-2 md:px-8 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
-            onClick={() => stopService()}
-          >
-            {t('speech-services.stop-service')}
-          </button>
-        </>
-      )}
-    </div>
-  );
-
   return (
     <>
       <div className="p-4 bg-Gray-2">{renderContent()}</div>
-      <div className="px-4 py-4 border-t border-Gray-100 flex justify-end rounded-b-xl">
-        {renderButtons()}
+      <div className="px-4 py-4 border-t border-Gray-100 flex justify-end items-center gap-4 rounded-b-xl">
+        {!transcriptionFeatures?.isEnabled && (
+          <button
+            className="h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            onClick={() => enableOrUpdateService()}
+          >
+            {t('speech-services.enable-service')}
+          </button>
+        )}
+        {transcriptionFeatures?.isEnabled && (
+          <>
+            <button
+              className="h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+              onClick={() => stopService()}
+            >
+              {t('speech-services.stop-service')}
+            </button>
+            <button
+              className="h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+              onClick={() => enableOrUpdateService()}
+            >
+              {t('speech-services.update-service')}
+            </button>
+          </>
+        )}
       </div>
     </>
   );
 };
 
-export default TranscriptionSettingsModal;
+export default TranscriptionSettings;

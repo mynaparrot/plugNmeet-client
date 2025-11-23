@@ -497,6 +497,7 @@
     "enable-speech-synthesis": "Enable Speech Synthesis",
     "translation-langs-label": "Translate to (max: {{num}})",
     "default-subtitle-lang-label": "Default Caption Language",
+    "default-lang-label": "Default Language",
     "enable-service": "Enable Service",
     "speech-user-required": "At least one user must be selected to transcribe.",
     "speech-lang-required": "At least one spoken language must be selected.",
