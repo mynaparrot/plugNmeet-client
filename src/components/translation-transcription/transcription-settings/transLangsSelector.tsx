@@ -5,6 +5,7 @@ import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import { supportedTranslationLangs } from '../helpers/supportedLangs';
 
 interface TransLangsSelectorProps {
+  label: string;
   selectedTransLangs: Array<string>;
   setSelectedTransLangs: Dispatch<Array<string>>;
   setErrorMsg: Dispatch<string | undefined>;
@@ -12,6 +13,7 @@ interface TransLangsSelectorProps {
 }
 
 const TransLangsSelector = ({
+  label,
   selectedTransLangs,
   setSelectedTransLangs,
   setErrorMsg,
@@ -50,9 +52,7 @@ const TransLangsSelector = ({
   return (
     <Dropdown
       id="trans-lang"
-      label={t('speech-services.translation-langs-label', {
-        num: maxLangsAllowSelecting,
-      })}
+      label={label}
       value={selectedTransLangs}
       onChange={setSelectedItems}
       multiple={true}

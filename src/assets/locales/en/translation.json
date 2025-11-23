@@ -503,6 +503,8 @@
     "speech-lang-required": "At least one spoken language must be selected.",
     "translation-lang-required": "At least one language must be selected for translation.",
     "service-ready": "Transcription service is ready.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Start",
     "stop-service": "Stop",
     "update-service": "Update",
@@ -528,6 +530,7 @@
     "enable-transcription": "Enable Transcription",
     "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}",
     "mic-not-ready-warning": "To start the service, you must enable your microphone.",
-    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation"
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):"
   }
 }

@@ -46,7 +46,7 @@ const ChatTranslationSettings = ({
 
     const res = await enableOrUpdateChatTranslation(body);
     if (res.status) {
-      toast(t('speech-services.service-ready'), {
+      toast(t('speech-services.service-started'), {
         type: 'info',
       });
     } else {
@@ -63,7 +63,7 @@ const ChatTranslationSettings = ({
   const stopService = useCallback(async () => {
     const res = await endChatTranslation();
     if (res.status) {
-      toast(t('speech-services.service-stopped'), {
+      toast(t('speech-services.service-ended'), {
         type: 'info',
       });
     } else {
@@ -84,6 +84,9 @@ const ChatTranslationSettings = ({
           <div className="grid">
             <div className="grid gap-4 py-4 bg-white">
               <TransLangsSelector
+                label={t('speech-services.read-and-write-in-label', {
+                  num: chatTranslationFeatures?.maxSelectedTransLangs ?? 2,
+                })}
                 selectedTransLangs={selectedTransLangs}
                 setSelectedTransLangs={setSelectedTransLangs}
                 setErrorMsg={setErrorMsg}

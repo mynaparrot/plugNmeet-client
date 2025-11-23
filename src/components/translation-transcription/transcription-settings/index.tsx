@@ -161,6 +161,9 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
             {enableTranslation && (
               <div className="grid gap-4 py-4 bg-white">
                 <TransLangsSelector
+                  label={t('speech-services.translation-langs-label', {
+                    num: transcriptionFeatures?.maxSelectedTransLangs ?? 2,
+                  })}
                   selectedTransLangs={selectedTransLangs}
                   setSelectedTransLangs={setSelectedTransLangs}
                   setErrorMsg={setErrorMsg}
