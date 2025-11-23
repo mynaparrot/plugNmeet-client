@@ -29,19 +29,24 @@ const SpeechToTextService = () => {
   // we'll set it to the default language configured for the room.
   useEffect(() => {
     const state = store.getState();
+    const insightsFeatures =
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
+
     const selectedLang = state.speechServices.selectedSubtitleLang;
     const defaultSubtitleLang =
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.transcriptionFeatures?.defaultSubtitleLang;
+      insightsFeatures?.transcriptionFeatures?.defaultSubtitleLang;
     if (isEmpty(selectedLang) && defaultSubtitleLang) {
       dispatch(updateSelectedSubtitleLang(defaultSubtitleLang));
     }
 
-    // prepare languages
-    Promise.allSettled([
-      supportedTranscriptionLangs(),
-      supportedTranslationLangs(),
-    ]).then();
+    if (insightsFeatures && insightsFeatures.transcriptionFeatures?.isAllow) {
+      // prepare languages
+      Promise.allSettled([
+        supportedTranscriptionLangs(),
+        supportedTranslationLangs(),
+      ]).then();
+    }
+
     //oxlint-disable-next-line
   }, []);
 
