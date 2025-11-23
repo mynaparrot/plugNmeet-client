@@ -11,15 +11,19 @@ import {
   endTranscription,
 } from '../helpers/apiConnections';
 import { validateSettings } from '../helpers/modalUtils';
-
-import Modal from '../../../helpers/ui/modal';
 import SpeechLangsSelector from './speechLangsSelector';
 import SpeechUsersSelector from './speechUsersSelector';
 import TransLangsSelector from './transLangsSelector';
 import DefaultSubtitleLangSelector from './defaultSubtitleLangSelector';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
-const TranscriptionSettingsModal = () => {
+interface TranscriptionSettingsModalProps {
+  setErrorMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
+}
+
+const TranscriptionSettingsModal = ({
+  setErrorMsg,
+}: TranscriptionSettingsModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const transcriptionFeatures = useAppSelector(
@@ -46,7 +50,6 @@ const TranscriptionSettingsModal = () => {
   );
   const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] =
     useState<string>(transcriptionFeatures?.defaultSubtitleLang ?? '');
-  const [validationError, setValidationError] = useState<string | null>(null);
 
   const enableOrUpdateService = async () => {
     const validation = validateSettings({
@@ -56,9 +59,10 @@ const TranscriptionSettingsModal = () => {
       selectedTransLangs,
     });
     if (!validation.isValid) {
-      setValidationError(t(validation.message!));
+      setErrorMsg(t(validation.message!));
       return;
     }
+    setErrorMsg(undefined);
 
     const body = create(InsightsTranscriptionConfigReqSchema, {
       isEnabled: true,
@@ -79,6 +83,7 @@ const TranscriptionSettingsModal = () => {
       toast(t(res.msg), {
         type: 'error',
       });
+      setErrorMsg(t(res.msg));
       return;
     }
 
@@ -96,6 +101,7 @@ const TranscriptionSettingsModal = () => {
       toast(t(res.msg), {
         type: 'error',
       });
+      setErrorMsg(t(res.msg));
       return;
     }
 
@@ -105,9 +111,7 @@ const TranscriptionSettingsModal = () => {
   // This effect will clear the validation error as soon as the user
   // starts changing the settings, providing a better user experience.
   useEffect(() => {
-    if (validationError) {
-      setValidationError(null);
-    }
+    setErrorMsg(undefined);
     //eslint-disable-next-line
   }, [
     selectedSpeechLangs,
@@ -118,11 +122,6 @@ const TranscriptionSettingsModal = () => {
 
   const renderContent = () => (
     <div className="main-wrap -my-4">
-      {validationError && (
-        <div className="error-message mx-1 mb-2 px-3 py-2 border border-Red-400 bg-Red-25 rounded-lg text-sm text-center">
-          {validationError}
-        </div>
-      )}
       <div className="grid">
         <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
           <SettingsSwitch
@@ -150,24 +149,29 @@ const TranscriptionSettingsModal = () => {
             />
           </div>
         )}
-        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
-          <SettingsSwitch
-            label={t('speech-services.enable-translation')}
-            enabled={enableTranslation}
-            onChange={setEnableTranslation}
-            customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
-          />
-        </div>
-        {enableTranslation && (
-          <div className="grid gap-4 py-4 bg-white">
-            <TransLangsSelector
-              selectedTransLangs={selectedTransLangs}
-              setSelectedTransLangs={setSelectedTransLangs}
-              maxLangsAllowSelecting={
-                transcriptionFeatures?.maxSelectedTransLangs ?? 2
-              }
-            />
-          </div>
+        {enabledTranscription && (
+          <>
+            <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+              <SettingsSwitch
+                label={t('speech-services.enable-translation')}
+                enabled={enableTranslation}
+                onChange={setEnableTranslation}
+                customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+              />
+            </div>
+            {enableTranslation && (
+              <div className="grid gap-4 py-4 bg-white">
+                <TransLangsSelector
+                  selectedTransLangs={selectedTransLangs}
+                  setSelectedTransLangs={setSelectedTransLangs}
+                  setErrorMsg={setErrorMsg}
+                  maxLangsAllowSelecting={
+                    transcriptionFeatures?.maxSelectedTransLangs ?? 2
+                  }
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -211,16 +215,12 @@ const TranscriptionSettingsModal = () => {
   );
 
   return (
-    <Modal
-      show={true}
-      onClose={() => dispatch(updateDisplaySpeechSettingsModal(false))}
-      title={t('speech-services.modal-settings-title')}
-      renderButtons={renderButtons}
-      customClass="SpeechToTextModal"
-      maxWidth="max-w-xl"
-    >
-      {renderContent()}
-    </Modal>
+    <>
+      <div className="p-4 bg-Gray-2">{renderContent()}</div>
+      <div className="px-4 py-4 border-t border-Gray-100 flex justify-end rounded-b-xl">
+        {renderButtons()}
+      </div>
+    </>
   );
 };
 

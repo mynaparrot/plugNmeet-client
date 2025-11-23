@@ -12,7 +12,7 @@ import {
   UserNotification,
   VideoObjectFit,
 } from './interfaces/roomSettings';
-import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
+import { AzureTokenInfo } from '../../components/translation-transcription/helpers/apiConnections';
 import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 
 const initialState: IRoomSettings = {

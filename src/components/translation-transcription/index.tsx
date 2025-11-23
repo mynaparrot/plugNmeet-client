@@ -13,7 +13,7 @@ import {
   supportedTranslationLangs,
 } from './helpers/supportedLangs';
 
-const SpeechToTextService = () => {
+const TranslationTranscription = () => {
   const dispatch = useAppDispatch();
   const transcriptionFeatures = useAppSelector(
     (state) =>
@@ -77,4 +77,4 @@ const SpeechToTextService = () => {
   );
 };
 
-export default SpeechToTextService;
+export default TranslationTranscription;

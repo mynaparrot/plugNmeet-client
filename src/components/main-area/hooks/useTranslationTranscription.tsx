@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
 import { useAppSelector } from '../../../store';
-import SpeechToTextService from '../../speech-to-text-service';
+import TranslationTranscription from '../../translation-transcription';
 
-export const useSpeechToTextService = () => {
+export const useTranslationTranscription = () => {
   const isEnabled = useAppSelector(
     (state) =>
       !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
@@ -12,7 +12,7 @@ export const useSpeechToTextService = () => {
 
   return useMemo(() => {
     if (isEnabled) {
-      return <SpeechToTextService />;
+      return <TranslationTranscription />;
     }
     return null;
   }, [isEnabled]);

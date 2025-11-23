@@ -6,12 +6,12 @@ import LockSettingsModal from '../modals/lockSettingsModal';
 import RtmpModal from '../modals/rtmpModal';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
-import TranscriptionSettingsModal from '../../speech-to-text-service/transcription-settings-modal';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import ExternalMediaPlayerModal from '../../external-media-player/modal';
 import DisplayExternalLinkModal from '../../display-external-link/modal';
 import AdminMenus from './menus/adminMenus';
 import IconsInMenu from './menus/iconsInMenu';
+import TranslationTranscriptionSettingModal from '../../translation-transcription/settingModal';
 
 interface MenusIconProps {
   isAdmin: boolean;
@@ -94,7 +94,7 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
       {showManageWaitingRoomModal && <ManageWaitingRoom />}
       {showManageBreakoutRoomModal && <BreakoutRoom />}
       {showDisplayExternalLinkModal && <DisplayExternalLinkModal />}
-      {showSpeechSettingsModal && <TranscriptionSettingsModal />}
+      {showSpeechSettingsModal && <TranslationTranscriptionSettingModal />}
     </>
   );
 };

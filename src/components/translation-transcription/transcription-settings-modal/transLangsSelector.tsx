@@ -7,12 +7,14 @@ import { supportedTranslationLangs } from '../helpers/supportedLangs';
 interface TransLangsSelectorProps {
   selectedTransLangs: Array<string>;
   setSelectedTransLangs: Dispatch<Array<string>>;
+  setErrorMsg: Dispatch<string | undefined>;
   maxLangsAllowSelecting: number;
 }
 
 const TransLangsSelector = ({
   selectedTransLangs,
   setSelectedTransLangs,
+  setErrorMsg,
   maxLangsAllowSelecting,
 }: TransLangsSelectorProps) => {
   const { t } = useTranslation();
@@ -22,18 +24,24 @@ const TransLangsSelector = ({
 
   useEffect(() => {
     if (selectedItems.length > maxLangsAllowSelecting) {
-      toast.warn(
-        t('speech-services.max-lang-selection-warning', {
-          num: maxLangsAllowSelecting,
-        }),
-        {
-          toastId: 'max-lang-selection-warning',
-        },
-      );
+      const msg = t('speech-services.max-lang-selection-warning', {
+        num: maxLangsAllowSelecting,
+      });
+
+      toast.warn(msg, {
+        toastId: 'max-lang-selection-warning',
+      });
+      setErrorMsg(msg);
       return;
     }
     setSelectedTransLangs(selectedItems);
-  }, [selectedItems, maxLangsAllowSelecting, setSelectedTransLangs, t]);
+  }, [
+    setErrorMsg,
+    selectedItems,
+    maxLangsAllowSelecting,
+    setSelectedTransLangs,
+    t,
+  ]);
 
   useEffect(() => {
     supportedTranslationLangs().then((langs) => setSelectOptions(langs));

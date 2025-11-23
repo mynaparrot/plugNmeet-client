@@ -487,6 +487,8 @@
   },
   "speech-services": {
     "modal-settings-title": "Transcription & Translation Settings",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Enable Transcription",
     "speech-langs-label": "Spoken Languages",
     "speech-users-label": "Users to Transcribe",
