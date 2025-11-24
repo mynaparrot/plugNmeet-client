@@ -44,6 +44,10 @@ const ChatTranslationSettings = ({
       defaultLang: selectedDefaultLang,
     });
 
+    if (selectedDefaultLang === '') {
+      body.defaultLang = body.allowedTransLangs[0];
+    }
+
     const res = await enableOrUpdateChatTranslation(body);
     if (res.status) {
       toast(t('speech-services.service-started'), {

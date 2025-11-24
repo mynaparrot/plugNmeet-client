@@ -195,7 +195,6 @@ export default class HandleMediaTracks {
     if (!this.currentUser) {
       this.currentUser = store.getState().session.currentUser;
     }
-    console.log(participant.identity, track.trackName);
 
     switch (track.source) {
       case Track.Source.ScreenShare:

@@ -133,7 +133,7 @@ const SpeechSettingsModal = ({
         </div>
       </div>
 
-      {!readyToStart && canShowSpeechSetting ? (
+      {!readyToStart && !enabled && canShowSpeechSetting ? (
         <div className="text-xs text-red-500 dark:text-red-400 pt-4 -mx-4 px-4">
           {t('speech-services.mic-not-ready-warning')}
         </div>
@@ -142,8 +142,8 @@ const SpeechSettingsModal = ({
       <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5 -mx-4 px-4">
         <button
           className="h-10 w-1/2 cursor-pointer rounded-[15px] border border-[#0088CC] bg-Blue px-8 text-sm font-semibold text-white shadow-button-shadow transition-all duration-300 hover:bg-white hover:text-Gray-950 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none 3xl:text-base"
-          disabled={!readyToStart}
-          onClick={() => startOrStopService()}
+          disabled={!readyToStart && !enabled}
+          onClick={startOrStopService}
         >
           {canShowSpeechSetting && enabled
             ? t('speech-services.stop-service')

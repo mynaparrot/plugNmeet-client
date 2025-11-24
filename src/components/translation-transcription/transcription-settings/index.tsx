@@ -16,6 +16,7 @@ import SpeechUsersSelector from './speechUsersSelector';
 import TransLangsSelector from './transLangsSelector';
 import DefaultSubtitleLangSelector from './defaultSubtitleLangSelector';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
+import { speechLangsMap } from '../helpers/supportedLangs';
 
 interface TranscriptionSettingsProps {
   setErrorMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -76,8 +77,12 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
       isEnabledSpeechSynthesis: enabledTransSynthesis,
     });
 
-    const res = await enableOrUpdateTranscription(body);
+    if (selectedDefaultSubtitleLang === '') {
+      const lang = body.allowedSpokenLangs[0];
+      body.defaultSubtitleLang = speechLangsMap.get(lang)?.locale ?? '';
+    }
 
+    const res = await enableOrUpdateTranscription(body);
     if (res.status) {
       toast(t('speech-services.service-ready'), {
         type: 'info',
