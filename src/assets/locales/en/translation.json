@@ -494,7 +494,7 @@
     "speech-users-label": "Users to Transcribe",
     "subtitle-font-size": "Caption Font Size",
     "enable-translation": "Enable Translation",
-    "enable-speech-synthesis": "Enable Speech Synthesis",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Translate to (max: {{num}})",
     "default-subtitle-lang-label": "Default Caption Language",
     "default-lang-label": "Default Language",
@@ -531,6 +531,7 @@
     "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}",
     "mic-not-ready-warning": "To start the service, you must enable your microphone.",
     "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
-    "read-and-write-in-label": "Read & Write In (max: {{num}}):"
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
   }
 }

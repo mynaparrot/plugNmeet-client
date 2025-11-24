@@ -8,6 +8,7 @@ export interface IValidationParams {
   selectedSpeechLangs: string[];
   enableTranslation: boolean;
   selectedTransLangs: string[];
+  enabledTransSynthesis: boolean;
 }
 
 export const validateSettings = ({
@@ -15,6 +16,7 @@ export const validateSettings = ({
   selectedSpeechLangs,
   enableTranslation,
   selectedTransLangs,
+  enabledTransSynthesis,
 }: IValidationParams): IValidationResult => {
   if (selectedSpeechUsers.length === 0) {
     return { isValid: false, message: 'speech-services.speech-user-required' };
@@ -33,6 +35,12 @@ export const validateSettings = ({
     selectedSpeechLangs.length === 1 &&
     selectedTransLangs.length === 0
   ) {
+    return {
+      isValid: false,
+      message: 'speech-services.translation-lang-required',
+    };
+  }
+  if (enabledTransSynthesis && selectedTransLangs.length === 0) {
     return {
       isValid: false,
       message: 'speech-services.translation-lang-required',

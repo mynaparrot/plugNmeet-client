@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { InsightsTranscriptionConfigReqSchema } from 'plugnmeet-protocol-js';
@@ -32,6 +32,9 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   const [enabledTranscription, setEnabledTranscription] = useState<boolean>(
     !!transcriptionFeatures?.isEnabled,
   );
+  const [enabledTransSynthesis, setEnabledTransSynthesis] = useState<boolean>(
+    !!transcriptionFeatures?.isEnabledSpeechSynthesis,
+  );
 
   const [selectedSpeechLangs, setSelectedSpeechLangs] = useState<string[]>(
     transcriptionFeatures?.allowedSpokenLangs ?? [],
@@ -49,12 +52,13 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] =
     useState<string>(transcriptionFeatures?.defaultSubtitleLang ?? '');
 
-  const enableOrUpdateService = async () => {
+  const enableOrUpdateService = useCallback(async () => {
     const validation = validateSettings({
       selectedSpeechUsers,
       selectedSpeechLangs,
       enableTranslation,
       selectedTransLangs,
+      enabledTransSynthesis,
     });
     if (!validation.isValid) {
       setErrorMsg(t(validation.message!));
@@ -69,6 +73,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
       isEnabledTranslation: enableTranslation,
       allowedTransLangs: selectedTransLangs,
       defaultSubtitleLang: selectedDefaultSubtitleLang,
+      isEnabledSpeechSynthesis: enabledTransSynthesis,
     });
 
     const res = await enableOrUpdateTranscription(body);
@@ -86,7 +91,15 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
     }
 
     dispatch(updateDisplaySpeechSettingsModal(false));
-  };
+    // oxlint-disable-next-line exhaustive-deps
+  }, [
+    selectedSpeechUsers,
+    selectedSpeechLangs,
+    enableTranslation,
+    enabledTransSynthesis,
+    selectedTransLangs,
+    selectedDefaultSubtitleLang,
+  ]);
 
   const stopService = async () => {
     const res = await endTranscription();
@@ -159,19 +172,32 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
               />
             </div>
             {enableTranslation && (
-              <div className="grid gap-4 py-4 bg-white">
-                <TransLangsSelector
-                  label={t('speech-services.translation-langs-label', {
-                    num: transcriptionFeatures?.maxSelectedTransLangs ?? 2,
-                  })}
-                  selectedTransLangs={selectedTransLangs}
-                  setSelectedTransLangs={setSelectedTransLangs}
-                  setErrorMsg={setErrorMsg}
-                  maxLangsAllowSelecting={
-                    transcriptionFeatures?.maxSelectedTransLangs ?? 2
-                  }
-                />
-              </div>
+              <>
+                <div className="grid gap-4 py-4 bg-white">
+                  <TransLangsSelector
+                    label={t('speech-services.translation-langs-label', {
+                      num: transcriptionFeatures?.maxSelectedTransLangs ?? 2,
+                    })}
+                    selectedTransLangs={selectedTransLangs}
+                    setSelectedTransLangs={setSelectedTransLangs}
+                    setErrorMsg={setErrorMsg}
+                    maxLangsAllowSelecting={
+                      transcriptionFeatures?.maxSelectedTransLangs ?? 2
+                    }
+                  />
+                </div>
+                {transcriptionFeatures?.isAllowSpeechSynthesis &&
+                  selectedTransLangs.length > 0 && (
+                    <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+                      <SettingsSwitch
+                        label={t('speech-services.enable-trans-synthesis')}
+                        enabled={enabledTransSynthesis}
+                        onChange={setEnabledTransSynthesis}
+                        customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+                      />
+                    </div>
+                  )}
+              </>
             )}
           </>
         )}
