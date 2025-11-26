@@ -243,7 +243,7 @@ export const formatNextPreButton = (
   const shortNameElms = participantsToShow.map((p) => (
     <span
       key={`${p.key}-short`}
-      className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2 overflow-hidden"
+      className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ml-2 overflow-hidden"
     >
       {sliceFirstLetterOfText(p.props.participant.name)}
     </span>
@@ -263,7 +263,7 @@ export const formatNextPreButton = (
     shortNameElms.push(
       <span
         key="more-users-short"
-        className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-10 h-10 -ml-2 overflow-hidden"
+        className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ml-2 overflow-hidden"
       >
         {remainingCount}+
       </span>,
@@ -277,10 +277,10 @@ export const formatNextPreButton = (
 
   return (
     <>
-      <div className="middle-area absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex text-base font-medium">
+      <div className="middle-area flex text-xs md:text-base font-medium">
         {shortNameElms}
       </div>
-      <div className="bottom-area flex flex-wrap text-sm font-medium">
+      <div className="bottom-area flex flex-wrap text-sm font-medium absolute bottom-4 left-4">
         {fullNameElms}
       </div>
     </>

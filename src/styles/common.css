@@ -181,12 +181,12 @@ input.polls-checkbox::before {
   .video-camera-item {
   @apply w-1/4;
 }
-.all-webcam-wrapper
+/* .all-webcam-wrapper
   .all-webcam-wrapper-inner
   .camera-row-1.total-items-7.inner-items-3
   .video-camera-item {
   @apply w-1/4;
-}
+} */
 .all-webcam-wrapper
   .all-webcam-wrapper-inner
   .camera-row-1.total-items-8.inner-items-4
@@ -992,7 +992,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   @apply hidden;
 }
 .vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area {
-  @apply w-full px-5;
+  @apply pl-5;
 }
 .vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area span {
   @apply h-9 w-9 text-sm;
@@ -1007,7 +1007,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   @apply hidden;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area {
-  @apply w-full px-5;
+  @apply pl-5;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area span {
   @apply h-9 w-9 text-sm;
@@ -1176,7 +1176,17 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 .vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
   display: flex;
   flex-flow: column;
+  width: 100%;
   height: 100%;
   gap: 8px;
   justify-content: center;
+}
+@media screen and (max-width: 1279px) {
+  .vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
+    flex-flow: row;
+  }
+  .vertical-webcams-wrapper.not-extended .webcam-next-page,
+  .vertical-webcams-wrapper.not-extended .webcam-prev-page {
+    height: 100%;
+  }
 }

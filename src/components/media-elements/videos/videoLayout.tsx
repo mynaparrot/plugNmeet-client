@@ -20,6 +20,7 @@ import {
   getElmsForTablet,
 } from './helpers/utils';
 import { useDeviceInfo } from './helpers/useDeviceInfo';
+import { AngleDown } from '../../../assets/Icons/AngleDown';
 
 interface IVideoLayoutProps {
   allParticipants: ReactElement<VideoParticipantProps>[];
@@ -172,10 +173,15 @@ const VideoLayout = ({
         <button
           key="next-page"
           role="button"
-          className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
+          className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between pb-4 pl-4"
           onClick={() => nextPage(currentPage)}
         >
-          {formatNextPreButton(potentialNextItems)}
+          <div className="left flex-1 flex justify-center">
+            {formatNextPreButton(potentialNextItems)}
+          </div>
+          <div className="right pb-4 -rotate-90">
+            <AngleDown />
+          </div>
         </button>,
       );
     }
@@ -189,10 +195,15 @@ const VideoLayout = ({
         <button
           key="prev-page"
           role="button"
-          className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-end pb-4 pl-4"
+          className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between pb-4 pl-4"
           onClick={() => prePage(currentPage)}
         >
-          {formatNextPreButton(prevItems)}
+          <div className="right rotate-90">
+            <AngleDown />
+          </div>
+          <div className="left flex-1 flex justify-center">
+            {formatNextPreButton(prevItems)}
+          </div>
         </button>,
       );
     }

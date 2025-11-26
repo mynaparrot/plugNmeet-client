@@ -34,7 +34,7 @@ const VerticalLayout = ({
   const innerClasses = `inner row-count-${
     participantsToRender.length
   } total-cam-${totalNumWebcams} group-total-cam-${
-    participantsToRender.length
+    totalNumWebcams
   } page-${currentPage} ${
     isEnabledExtendedVerticalCamView
       ? 'flex gap-3 h-full xl:flex-col justify-center w-full'
