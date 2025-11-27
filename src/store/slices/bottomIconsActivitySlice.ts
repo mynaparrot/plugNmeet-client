@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DeviceOrientation, IBottomIconsSlice } from './interfaces/bottomIcons';
+
+import {
+  DeviceOrientation,
+  IBottomIconsSlice,
+  SidePanelType,
+} from './interfaces/bottomIcons';
 import {
   BackgroundConfig,
   defaultBackgroundConfig,
@@ -14,10 +19,7 @@ const initialState: IBottomIconsSlice = {
   isActiveSharedNotePad: false,
   isActiveWhiteboard: false,
 
-  isActiveChatPanel: false,
-  isActiveParticipantsPanel: false,
-  isActivePollsPanel: false,
-  isActiveInsightsAiTextChatPanel: false,
+  activeSidePanel: 'PARTICIPANTS',
 
   isMicMuted: false,
   screenWidth: 1024,
@@ -45,6 +47,19 @@ const bottomIconsSlice = createSlice({
   name: 'bottomIconsActivity',
   initialState,
   reducers: {
+    setActiveSidePanel: (state, action: PayloadAction<SidePanelType>) => {
+      // If the payload is the same as the current active panel, it means we're toggling it off.
+      if (state.activeSidePanel === action.payload) {
+        state.activeSidePanel = null;
+      } else {
+        state.activeSidePanel = action.payload;
+      }
+
+      // Handle side effects, like clearing unread messages, in one place.
+      if (state.activeSidePanel === 'CHAT') {
+        state.totalUnreadChatMsgs = 0;
+      }
+    },
     updateIsActiveMicrophone: (state, action: PayloadAction<boolean>) => {
       state.isActiveMicrophone = action.payload;
     },
@@ -53,74 +68,6 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveWebcam: (state, action: PayloadAction<boolean>) => {
       state.isActiveWebcam = action.payload;
-    },
-    updateIsActiveChatPanel: (state, action: PayloadAction<boolean>) => {
-      // we'll close ParticipantsPanel if screen size is small
-      if (action.payload) {
-        if (state.isActiveParticipantsPanel) {
-          state.isActiveParticipantsPanel = false;
-        }
-        if (state.isActivePollsPanel) {
-          state.isActivePollsPanel = false;
-        }
-        if (state.isActiveInsightsAiTextChatPanel) {
-          state.isActiveInsightsAiTextChatPanel = false;
-        }
-      }
-      state.isActiveChatPanel = action.payload;
-
-      if (state.isActiveChatPanel) {
-        // if open then we'll make it 0
-        state.totalUnreadChatMsgs = 0;
-      }
-    },
-    updateIsActiveParticipantsPanel: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
-      if (action.payload) {
-        if (state.isActiveChatPanel) {
-          state.isActiveChatPanel = false;
-        }
-        if (state.isActivePollsPanel) {
-          state.isActivePollsPanel = false;
-        }
-        if (state.isActiveInsightsAiTextChatPanel) {
-          state.isActiveInsightsAiTextChatPanel = false;
-        }
-      }
-      state.isActiveParticipantsPanel = action.payload;
-    },
-    updateIsActivePollsPanel: (state, action: PayloadAction<boolean>) => {
-      if (action.payload) {
-        if (state.isActiveChatPanel) {
-          state.isActiveChatPanel = false;
-        }
-        if (state.isActiveParticipantsPanel) {
-          state.isActiveParticipantsPanel = false;
-        }
-        if (state.isActiveInsightsAiTextChatPanel) {
-          state.isActiveInsightsAiTextChatPanel = false;
-        }
-      }
-      state.isActivePollsPanel = action.payload;
-    },
-    updateIsActiveInsightsAiTextChatPanel: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
-      if (action.payload) {
-        if (state.isActiveChatPanel) {
-          state.isActiveChatPanel = false;
-        }
-        if (state.isActiveParticipantsPanel) {
-          state.isActiveParticipantsPanel = false;
-        }
-        if (state.isActivePollsPanel) {
-          state.isActivePollsPanel = false;
-        }
-      }
-      state.isActiveInsightsAiTextChatPanel = action.payload;
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
       state.isActiveRaisehand = action.payload;
@@ -132,9 +79,9 @@ const bottomIconsSlice = createSlice({
       state.isActiveScreenshare = action.payload;
 
       if (state.isActiveScreenshare) {
-        // in this case disable both
+        // If screen sharing starts, we should close any open side panel.
+        state.activeSidePanel = null;
         state.isActiveWhiteboard = false;
-        state.isActiveParticipantsPanel = false;
       }
     },
     updateIsActiveSharedNotePad: (state, action: PayloadAction<boolean>) => {
@@ -212,7 +159,7 @@ const bottomIconsSlice = createSlice({
       state.showInsightsAISettingsModal = action.payload;
     },
     updateTotalUnreadChatMsgs: (state) => {
-      if (!state.isActiveChatPanel) {
+      if (state.activeSidePanel !== 'CHAT') {
         state.totalUnreadChatMsgs += 1;
       }
     },
@@ -232,12 +179,10 @@ const bottomIconsSlice = createSlice({
 });
 
 export const {
+  setActiveSidePanel,
   updateIsActiveMicrophone,
   updateIsMicMuted,
   updateIsActiveWebcam,
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
-  updateIsActivePollsPanel,
   updateIsActiveRaisehand,
   updateIsActiveRecording,
   updateIsActiveScreenshare,
@@ -260,7 +205,6 @@ export const {
   updateDisplaySpeechSettingOptionsModal,
   updateIsEnabledExtendedVerticalCamView,
   updateDisplayInsightsAISettingsModal,
-  updateIsActiveInsightsAiTextChatPanel,
 } = bottomIconsSlice.actions;
 
 export default bottomIconsSlice.reducer;

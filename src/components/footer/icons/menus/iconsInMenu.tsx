@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import FooterMenuItem from './menuItem';
 import {
+  setActiveSidePanel,
   updateDisplaySpeechSettingOptionsModal,
-  updateIsActivePollsPanel,
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
 } from '../../../../store/slices/bottomIconsActivitySlice';
@@ -48,11 +48,11 @@ const IconsInMenu = () => {
       state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
   );
   const isActivePollsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActivePollsPanel,
+    (state) => state.bottomIconsActivity.activeSidePanel === 'PARTICIPANTS',
   );
   const togglePollsPanel = useCallback(() => {
-    dispatch(updateIsActivePollsPanel(!isActivePollsPanel));
-  }, [dispatch, isActivePollsPanel]);
+    dispatch(setActiveSidePanel('POLLS'));
+  }, [dispatch]);
 
   const isActiveDisplaySpeechSettingOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,

@@ -18,7 +18,7 @@ import {
   updateUnreadMsgFrom,
 } from '../../store/slices/roomSettingsSlice';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
-import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
+import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 import i18n from '../../helpers/i18n';
 import ChatTranslation from './chatTranslation';
@@ -108,7 +108,7 @@ const ChatTabs = () => {
   };
 
   const closePanel = () => {
-    dispatch(updateIsActiveChatPanel(false));
+    dispatch(setActiveSidePanel(null));
   };
 
   return (

@@ -9,7 +9,7 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppDispatch, useAppSelector } from '../../../../../store';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
-import { updateIsActivePollsPanel } from '../../../../../store/slices/bottomIconsActivitySlice';
+import { setActiveSidePanel } from '../../../../../store/slices/bottomIconsActivitySlice';
 
 const usePolls = () => {
   const dispatch = useAppDispatch();
@@ -45,7 +45,7 @@ const usePolls = () => {
       });
     } else {
       toast.dismiss(id);
-      dispatch(updateIsActivePollsPanel(true));
+      dispatch(setActiveSidePanel('POLLS'));
     }
   }, [isActivePoll, dispatch, t]);
 

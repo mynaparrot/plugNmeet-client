@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { updateIsActiveParticipantsPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import { ParticipantsIconSVG } from '../../../assets/Icons/ParticipantsIconSVG';
+import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
 
 const ParticipantIcon = () => {
   const dispatch = useAppDispatch();
@@ -18,13 +18,13 @@ const ParticipantIcon = () => {
   }, []);
 
   const isActiveParticipantsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+    (state) => state.bottomIconsActivity.activeSidePanel === 'PARTICIPANTS',
   );
   const participantsTotal = useAppSelector(participantsSelector.selectTotal);
 
   const toggleParticipantsPanel = useCallback(() => {
-    dispatch(updateIsActiveParticipantsPanel(!isActiveParticipantsPanel));
-  }, [dispatch, isActiveParticipantsPanel]);
+    dispatch(setActiveSidePanel('PARTICIPANTS'));
+  }, [dispatch]);
 
   const wrapperClasses = clsx(
     'participants relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',

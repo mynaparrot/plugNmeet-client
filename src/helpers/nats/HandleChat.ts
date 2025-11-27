@@ -4,7 +4,7 @@ import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
-  updateIsActiveChatPanel,
+  setActiveSidePanel,
   updateTotalUnreadChatMsgs,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
@@ -68,7 +68,7 @@ export default class HandleChat {
     await idbStore(DB_STORE_NAMES.CHAT_MESSAGES, payload.id, payload);
 
     const isActiveChatPanel =
-      store.getState().bottomIconsActivity.isActiveChatPanel;
+      store.getState().bottomIconsActivity.activeSidePanel === 'CHAT';
     const selectedChatOption = store.getState().roomSettings.selectedChatOption;
     const currentUser = store.getState().session.currentUser;
     const isRecorder =
@@ -80,7 +80,7 @@ export default class HandleChat {
       if (!isRecorder) {
         store.dispatch(updateTotalUnreadChatMsgs());
       } else {
-        store.dispatch(updateIsActiveChatPanel(true));
+        store.dispatch(setActiveSidePanel('CHAT'));
       }
     }
 

@@ -11,7 +11,7 @@ import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { selectVisibleParticipants } from '../../store/slices/participantSlice';
-import { updateIsActiveParticipantsPanel } from '../../store/slices/bottomIconsActivitySlice';
+import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const ParticipantsComponent = () => {
   const { t } = useTranslation();
@@ -67,7 +67,7 @@ const ParticipantsComponent = () => {
   };
 
   const closePanel = () => {
-    dispatch(updateIsActiveParticipantsPanel(false));
+    dispatch(setActiveSidePanel(null));
   };
 
   const renderParticipant = useCallback(

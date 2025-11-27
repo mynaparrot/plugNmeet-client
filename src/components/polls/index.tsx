@@ -6,7 +6,7 @@ import PollsList from './pollsList';
 
 import { store, useAppDispatch } from '../../store';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
-import { updateIsActivePollsPanel } from '../../store/slices/bottomIconsActivitySlice';
+import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const PollsComponent = () => {
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ const PollsComponent = () => {
     <div className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full">
       <div
         className="inline-block absolute z-50 right-3 3xl:right-5 top-[10px] 3xl:top-[18px] text-Gray-600 cursor-pointer"
-        onClick={() => dispatch(updateIsActivePollsPanel(false))}
+        onClick={() => dispatch(setActiveSidePanel(null))}
       >
         <CloseIconSVG />
       </div>

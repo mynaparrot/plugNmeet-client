@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch } from '../../store';
 import {
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
+  setActiveSidePanel,
   updateIsEnabledExtendedVerticalCamView,
 } from '../../store/slices/bottomIconsActivitySlice';
 
@@ -19,21 +18,26 @@ import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import SidePanel from './sidePanel';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
+import InsightsAiTextChat from '../insights-ai/ai-text-chat/display';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
-  const { isRecorder, roomFeatures } = useMemo(() => {
+  const { isRecorder, roomFeatures, insightsAiFeatures } = useMemo(() => {
     const session = store.getState().session;
+    const roomFeatures = session.currentRoom.metadata?.roomFeatures;
     return {
       isRecorder: !!session.currentUser?.isRecorder,
-      roomFeatures: session.currentRoom.metadata?.roomFeatures,
+      roomFeatures,
+      insightsAiFeatures:
+        !!roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.aiFeatures,
     };
   }, []);
 
   const {
     columnCameraWidth,
     columnCameraPosition,
-    isActiveParticipantsPanel,
+    activeSidePanel,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWebcamsView,
@@ -41,8 +45,6 @@ const MainArea = () => {
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
-    isActiveChatPanel,
-    isActivePollsPanel,
     screenHeight,
     screenWidth,
     headerVisible,
@@ -51,12 +53,15 @@ const MainArea = () => {
 
   useEffect(() => {
     if (!roomFeatures?.chatFeatures?.allowChat) {
-      dispatch(updateIsActiveChatPanel(false));
+      // If chat is not allowed and it's the active panel, close it.
+      if (store.getState().bottomIconsActivity.activeSidePanel === 'CHAT') {
+        dispatch(setActiveSidePanel(null));
+      }
     }
 
     // if not recorder then by default participants panel will open
     if (!isRecorder) {
-      dispatch(updateIsActiveParticipantsPanel(true));
+      dispatch(setActiveSidePanel('PARTICIPANTS'));
     }
     // if recorder then webcam always has extended view
     if (isRecorder) {
@@ -75,9 +80,7 @@ const MainArea = () => {
   }, [dispatch, isRecorder, roomFeatures]);
 
   const customCSS = useMainAreaCustomCSS({
-    isActiveChatPanel,
-    isActiveParticipantsPanel,
-    isActivePollsPanel,
+    activeSidePanel: activeSidePanel !== null,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWhiteboard,
@@ -133,39 +136,25 @@ const MainArea = () => {
     [dispatch],
   );
 
-  // to track the number of open panels to avoid race conditions
-  // and prevent re-creating the toggle handler on every state change.
-  const openPanelsCount = useRef(0);
+  const handleSidePanelToggled = useCallback(() => {
+    // This logic can be simplified now.
+    // We just need to know if *any* panel is open.
+    const anyPanelIsOpen =
+      store.getState().bottomIconsActivity.activeSidePanel !== null;
+    dispatch(updateIsSidePanelOpened(anyPanelIsOpen));
 
-  const handleSidePanelToggled = useCallback(
-    (isOpen: boolean) => {
-      // Adjust the count based on whether a panel is opening or closing.
-      openPanelsCount.current += isOpen ? 1 : -1;
-      // Ensure the count never goes below zero.
-      if (openPanelsCount.current < 0) {
-        openPanelsCount.current = 0;
-      }
+    if (isActiveWhiteboard) {
+      debouncedRefresh();
+    }
 
-      if (isActiveWhiteboard) {
-        // otherwise whiteboard will lose its screen position
-        debouncedRefresh();
-      }
-
-      const anyPanelIsOpen = openPanelsCount.current > 0;
-      dispatch(updateIsSidePanelOpened(anyPanelIsOpen));
-
-      if (anyPanelIsOpen && !isRecorder) {
-        dispatch(updateIsEnabledExtendedVerticalCamView(false));
-      }
-    },
-    [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder],
-  );
+    if (anyPanelIsOpen && !isRecorder) {
+      dispatch(updateIsEnabledExtendedVerticalCamView(false));
+    }
+  }, [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder]);
 
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
-    isActiveParticipantsPanel || isActiveChatPanel || isActivePollsPanel
-      ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]'
-      : ''
+    activeSidePanel ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]' : ''
   }`;
 
   return (
@@ -174,19 +163,13 @@ const MainArea = () => {
       className={mainAreaClasses}
       style={{ height: `${height}px` }}
     >
-      {/* <div
-        className={`main-app-bg absolute w-full h-full left-0 top-0 object-cover pointer-events-none bg-cover bg-center bg-no-repeat`}
-        style={{
-          backgroundImage: `url("${assetPath}/imgs/app-banner.jpg")`,
-        }}
-      /> */}
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div className={middleAreaClasses}>
           <ActiveSpeakers />
           {renderMainView}
         </div>
         <SidePanel
-          isActive={isActiveParticipantsPanel}
+          isActive={activeSidePanel === 'PARTICIPANTS'}
           panelClass="participants-panel"
           onToggle={handleSidePanelToggled}
         >
@@ -194,7 +177,7 @@ const MainArea = () => {
         </SidePanel>
         {roomFeatures?.chatFeatures?.allowChat && (
           <SidePanel
-            isActive={isActiveChatPanel}
+            isActive={activeSidePanel === 'CHAT'}
             panelClass="chat-panel"
             onToggle={handleSidePanelToggled}
           >
@@ -203,13 +186,24 @@ const MainArea = () => {
         )}
         {roomFeatures?.pollsFeatures?.isAllow && (
           <SidePanel
-            isActive={isActivePollsPanel}
+            isActive={activeSidePanel === 'POLLS'}
             panelClass="polls-panel"
             onToggle={handleSidePanelToggled}
           >
             <PollsComponent />
           </SidePanel>
         )}
+        {insightsAiFeatures &&
+          insightsAiFeatures.isAllow &&
+          insightsAiFeatures.aiTextChatFeatures?.isEnabled && (
+            <SidePanel
+              isActive={activeSidePanel === 'INSIGHTS_AI_TEXT_CHAT'}
+              panelClass="insights-ai-panel"
+              onToggle={handleSidePanelToggled}
+            >
+              <InsightsAiTextChat />
+            </SidePanel>
+          )}
       </div>
     </div>
   );
