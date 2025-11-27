@@ -691,6 +691,8 @@ export default class ConnectNats {
       this.handleSystemData.handleSysChatMsg(p.msg),
     [NatsMsgServerToClientEvents.TRANSCRIPTION_OUTPUT_TEXT]: (p) =>
       this.handleDataMsg.handleSpeechSubtitleText(p.msg),
+    [NatsMsgServerToClientEvents.RESP_INSIGHTS_AI_TEXT_CHAT]: (p) =>
+      this.handleSystemData.handleInsightsAITextData(p.msg),
   };
 
   /**

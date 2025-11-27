@@ -248,6 +248,8 @@
       "show-users-list": "Show Participant List",
       "hide-chat-panel": "Hide Chat",
       "show-chat-panel": "Show Chat",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Stop Sharing Screen",
       "start-screen-sharing": "Share Screen",
       "screen-sharing-locked": "Screen Sharing Locked",
@@ -543,10 +545,13 @@
     "service-started-successfully": "Service has been started successfully",
     "service-stopped-successfully": "Service has been stopped successfully",
     "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
       "enable": "Enable AI Assistant",
       "allow-everyone": "Available to All Participants",
       "allowed-users": "Allowed Participants",
-      "users-required": "At least one participant must be selected."
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question..."
     }
   }
 }

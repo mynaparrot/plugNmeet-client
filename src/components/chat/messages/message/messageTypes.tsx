@@ -6,6 +6,7 @@ import { formatDate } from '../../utils';
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 import Avatar from './avatar';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 
 export const SystemMessage = memo(({ message }: { message: string }) => {
   return (
@@ -70,3 +71,43 @@ export const OtherUserMessage = memo(({ body }: { body: ChatMessage }) => {
   );
 });
 OtherUserMessage.displayName = 'OtherUserMessage';
+
+export const AIMessage = memo(
+  ({
+    name,
+    message,
+    sentAt,
+    isStreaming,
+  }: {
+    name: string;
+    message: string;
+    sentAt: string;
+    isStreaming: boolean;
+  }) => {
+    return (
+      <>
+        <div className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-[#069] text-white flex items-center justify-center overflow-hidden shrink-0">
+          <span className="h-4 w-4 3xl:h-5 3xl:w-5">
+            <AiIconSVG classes="w-full h-full" />
+          </span>
+        </div>
+        <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1">
+          <div className="name min-h-5 flex items-center text-sm text-Gray-800 font-medium pb-1.5 capitalize justify-between">
+            <p>{name}</p>
+            <p className="time text-xs text-Gray-600">{formatDate(sentAt)}</p>
+          </div>
+          <div className="message-content py-1.5 3xl:py-2.5 px-2.5 3xl:px-3.5 border border-Gray-200 rounded-lg 3xl:rounded-2xl overflow-hidden text-sm 3xl:text-base text-Gray-950 break-words rounded-tl-none bg-Gray-50">
+            <div
+              className="break-words"
+              dangerouslySetInnerHTML={{ __html: message }}
+            />
+            {isStreaming && (
+              <span className="blinking-cursor inline-block h-4 w-0.5 ml-1 bg-gray-900" />
+            )}
+          </div>
+        </div>
+      </>
+    );
+  },
+);
+AIMessage.displayName = 'AIMessage';

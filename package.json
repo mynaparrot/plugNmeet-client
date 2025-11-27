@@ -35,6 +35,7 @@
     "i18next-http-backend": "3.0.2",
     "idb": "8.0.3",
     "livekit-client": "2.15.16",
+    "marked": "17.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.47.0",
     "mobile-detect": "1.4.5",
     "nosleep.js": "0.12.0",

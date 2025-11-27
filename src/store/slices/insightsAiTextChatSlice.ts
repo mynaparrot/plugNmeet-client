@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { InsightsAITextChatStreamResult } from 'plugnmeet-protocol-js';
 
 export interface IInsightsAITextChatMessage {
   id: string;
   role: 'user' | 'model';
+  createdAt: string;
   parts: string[];
 }
 
 interface IInsightsAiTextChatState {
-  // Holds the permanent, completed messages
   finalMessages: IInsightsAITextChatMessage[];
-  // Holds only the message that is currently being streamed
   interimMessage: IInsightsAITextChatMessage | null;
 }
 
@@ -22,49 +22,47 @@ const insightsAiTextChatSlice = createSlice({
   name: 'insightsAiTextChat',
   initialState,
   reducers: {
-    // Add the user's own prompt directly to the final list
-    addInsightsUserMessage: (state, action: PayloadAction<string>) => {
+    addAiTextChatUserMessage: (state, action: PayloadAction<string>) => {
+      const id = Date.now().toString();
       state.finalMessages.push({
-        id: Date.now().toString(),
+        id: id,
         role: 'user',
+        createdAt: id,
         parts: [action.payload],
       });
     },
-    // When the first chunk of an AI response arrives, create the interim message
-    startStreamingInsightsAIResponse: (
+    // This single action handles all streaming logic.
+    updateAiTextChat: (
       state,
-      action: PayloadAction<{ id: string; firstChunk: string }>,
+      action: PayloadAction<InsightsAITextChatStreamResult>,
     ) => {
-      state.interimMessage = {
-        id: action.payload.id,
-        role: 'model',
-        parts: [action.payload.firstChunk],
-      };
-    },
-    // For all subsequent chunks, ONLY update the interim message
-    appendChunkToInsightsAIResponse: (
-      state,
-      action: PayloadAction<{ chunk: string }>,
-    ) => {
-      if (state.interimMessage) {
-        state.interimMessage.parts.push(action.payload.chunk);
+      const { id, text, isLastChunk, createdAt } = action.payload;
+
+      if (text) {
+        if (!state.interimMessage || state.interimMessage.id !== id) {
+          state.interimMessage = {
+            id: id,
+            role: 'model',
+            parts: [text],
+            createdAt: createdAt,
+          };
+        } else {
+          state.interimMessage.parts.push(text);
+        }
       }
-    },
-    // When the stream is finished, move the interim message to the final list
-    endStreamingInsightsAIResponse: (state) => {
-      if (state.interimMessage) {
-        state.finalMessages.push(state.interimMessage);
-        state.interimMessage = null;
+
+      // If this is the last chunk, finalize the message.
+      if (isLastChunk) {
+        if (state.interimMessage && state.interimMessage.id === id) {
+          state.finalMessages.push(state.interimMessage);
+          state.interimMessage = null;
+        }
       }
     },
   },
 });
 
-export const {
-  addInsightsUserMessage,
-  startStreamingInsightsAIResponse,
-  appendChunkToInsightsAIResponse,
-  endStreamingInsightsAIResponse,
-} = insightsAiTextChatSlice.actions;
+export const { addAiTextChatUserMessage, updateAiTextChat } =
+  insightsAiTextChatSlice.actions;
 
 export default insightsAiTextChatSlice.reducer;

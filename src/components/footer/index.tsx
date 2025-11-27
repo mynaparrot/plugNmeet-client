@@ -15,6 +15,7 @@ import EndMeetingButton from './icons/endMeeting';
 import RecordingIcon from './icons/recording';
 import PollsIcon from './icons/polls';
 import Translation from './icons/translation';
+import InsightsAiTextChatIcon from './icons/insightAiTextChat';
 
 const Footer = () => {
   const { isAdmin, isRecorder, allowChat } = useMemo(() => {
@@ -46,6 +47,7 @@ const Footer = () => {
           <SharedNotePadIcon />
           <PollsIcon />
           <Translation />
+          <InsightsAiTextChatIcon />
           <RecordingIcon />
           <div className="icon block md:hidden">
             <ParticipantIcon />

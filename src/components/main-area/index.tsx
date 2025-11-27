@@ -22,15 +22,14 @@ import InsightsAiTextChat from '../insights-ai/ai-text-chat/display';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
-  const { isRecorder, roomFeatures, insightsAiFeatures } = useMemo(() => {
+  const { isRecorder, roomFeatures, aiTextChatFeatures } = useMemo(() => {
     const session = store.getState().session;
     const roomFeatures = session.currentRoom.metadata?.roomFeatures;
     return {
       isRecorder: !!session.currentUser?.isRecorder,
       roomFeatures,
-      insightsAiFeatures:
-        !!roomFeatures?.insightsFeatures?.isAllow &&
-        roomFeatures?.insightsFeatures?.aiFeatures,
+      aiTextChatFeatures:
+        roomFeatures?.insightsFeatures?.aiFeatures?.aiTextChatFeatures,
     };
   }, []);
 
@@ -192,17 +191,15 @@ const MainArea = () => {
             <PollsComponent />
           </SidePanel>
         )}
-        {insightsAiFeatures &&
-          insightsAiFeatures.isAllow &&
-          insightsAiFeatures.aiTextChatFeatures?.isEnabled && (
-            <SidePanel
-              isActive={activeSidePanel === 'INSIGHTS_AI_TEXT_CHAT'}
-              panelClass="insights-ai-panel"
-              onToggle={handleSidePanelToggled}
-            >
-              <InsightsAiTextChat />
-            </SidePanel>
-          )}
+        {aiTextChatFeatures?.isAllow && (
+          <SidePanel
+            isActive={activeSidePanel === 'INSIGHTS_AI_TEXT_CHAT'}
+            panelClass="insights-ai-text-chat-panel"
+            onToggle={handleSidePanelToggled}
+          >
+            <InsightsAiTextChat />
+          </SidePanel>
+        )}
       </div>
     </div>
   );

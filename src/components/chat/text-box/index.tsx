@@ -18,6 +18,7 @@ import { useAutosizeTextArea } from './useAutosizeTextArea';
 import { publishFileAttachmentToChat } from '../utils';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import SendIconSVG from '../../../assets/Icons/SendIconSVG';
 
 const urlRegex =
   /(\b(https?):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%?=~_|])/gi;
@@ -209,21 +210,7 @@ const TextBoxArea = () => {
         onClick={sendMsg}
         className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'} ${!isMsgSendingLocked && !isEmpty(message) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-        >
-          <path
-            d="M9 15V3M9 3L4.5 7.5M9 3L13.5 7.5"
-            stroke="white"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <SendIconSVG />
       </button>
     </div>
   );
