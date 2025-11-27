@@ -5,14 +5,16 @@ export type DeviceOrientation = 'landscape' | 'portrait';
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;
   isActiveWebcam: boolean;
-  isActiveChatPanel: boolean;
-  isActiveParticipantsPanel: boolean;
-  isActivePollsPanel: boolean;
   isActiveRaisehand: boolean;
   isActiveRecording: boolean;
   isActiveScreenshare: boolean;
   isActiveSharedNotePad: boolean;
   isActiveWhiteboard: boolean;
+
+  isActiveChatPanel: boolean;
+  isActiveParticipantsPanel: boolean;
+  isActiveInsightsAiTextChatPanel: boolean;
+  isActivePollsPanel: boolean;
 
   isMicMuted: boolean;
   screenWidth: number;
@@ -30,7 +32,7 @@ export interface IBottomIconsSlice {
   showDisplayExternalLinkModal: boolean;
   showSpeechSettingsModal: boolean;
   showSpeechSettingOptionsModal: boolean;
-  showAISettingsModal: boolean;
+  showInsightsAISettingsModal: boolean;
 
   totalUnreadChatMsgs: number;
   virtualBackground: BackgroundConfig;

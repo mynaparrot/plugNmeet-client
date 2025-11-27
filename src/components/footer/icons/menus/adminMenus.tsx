@@ -9,7 +9,7 @@ import useMuteAll from './hooks/useMuteAll';
 import useExternalMediaPlayer from './hooks/useExternalMediaPlayer';
 import useDisplayExternalLink from './hooks/useDisplayExternalLink';
 import {
-  updateDisplayAISettingsModal,
+  updateDisplayInsightsAISettingsModal,
   updateDisplaySpeechSettingsModal,
   updateShowLockSettingsModal,
   updateShowManageBreakoutRoomModal,
@@ -69,8 +69,8 @@ const AdminMenus = () => {
     dispatch(updateShowManageBreakoutRoomModal(true));
   }, [dispatch]);
 
-  const openAISettingsModal = useCallback(() => {
-    dispatch(updateDisplayAISettingsModal(true));
+  const openInsightsAISettingsModal = useCallback(() => {
+    dispatch(updateDisplayInsightsAISettingsModal(true));
   }, [dispatch]);
 
   return (
@@ -128,7 +128,7 @@ const AdminMenus = () => {
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
           <FooterMenuItem
-            onClick={openAISettingsModal}
+            onClick={openInsightsAISettingsModal}
             icon={<AiIconSVG classes="w-6 text-Blue2-800" />}
             text={t('footer.menus.ai-settings')}
           />

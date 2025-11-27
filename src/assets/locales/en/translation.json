@@ -534,5 +534,19 @@
     "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
     "read-and-write-in-label": "Read & Write In (max: {{num}}):",
     "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "ai-text-chat": {
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected."
+    }
   }
 }

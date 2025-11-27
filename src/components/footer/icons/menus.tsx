@@ -12,6 +12,7 @@ import DisplayExternalLinkModal from '../../display-external-link/modal';
 import AdminMenus from './menus/adminMenus';
 import IconsInMenu from './menus/iconsInMenu';
 import TranslationTranscriptionSettingModal from '../../translation-transcription/settingModal';
+import InsightsAiSettingsModal from '../../insights-ai';
 
 interface MenusIconProps {
   isAdmin: boolean;
@@ -39,6 +40,9 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
   );
   const showSpeechSettingsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingsModal,
+  );
+  const showInsightsAISettingsModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showInsightsAISettingsModal,
   );
 
   return (
@@ -95,6 +99,7 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
       {showManageBreakoutRoomModal && <BreakoutRoom />}
       {showDisplayExternalLinkModal && <DisplayExternalLinkModal />}
       {showSpeechSettingsModal && <TranslationTranscriptionSettingModal />}
+      {showInsightsAISettingsModal && <InsightsAiSettingsModal />}
     </>
   );
 };

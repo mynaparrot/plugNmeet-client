@@ -8,14 +8,16 @@ import {
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
   isActiveWebcam: false,
-  isActiveChatPanel: false,
-  isActiveParticipantsPanel: false,
-  isActivePollsPanel: false,
   isActiveRaisehand: false,
   isActiveRecording: false,
   isActiveScreenshare: false,
   isActiveSharedNotePad: false,
   isActiveWhiteboard: false,
+
+  isActiveChatPanel: false,
+  isActiveParticipantsPanel: false,
+  isActivePollsPanel: false,
+  isActiveInsightsAiTextChatPanel: false,
 
   isMicMuted: false,
   screenWidth: 1024,
@@ -32,7 +34,7 @@ const initialState: IBottomIconsSlice = {
   showDisplayExternalLinkModal: false,
   showSpeechSettingsModal: false,
   showSpeechSettingOptionsModal: false,
-  showAISettingsModal: false,
+  showInsightsAISettingsModal: false,
 
   totalUnreadChatMsgs: 0,
   virtualBackground: defaultBackgroundConfig,
@@ -61,6 +63,9 @@ const bottomIconsSlice = createSlice({
         if (state.isActivePollsPanel) {
           state.isActivePollsPanel = false;
         }
+        if (state.isActiveInsightsAiTextChatPanel) {
+          state.isActiveInsightsAiTextChatPanel = false;
+        }
       }
       state.isActiveChatPanel = action.payload;
 
@@ -80,6 +85,9 @@ const bottomIconsSlice = createSlice({
         if (state.isActivePollsPanel) {
           state.isActivePollsPanel = false;
         }
+        if (state.isActiveInsightsAiTextChatPanel) {
+          state.isActiveInsightsAiTextChatPanel = false;
+        }
       }
       state.isActiveParticipantsPanel = action.payload;
     },
@@ -91,8 +99,28 @@ const bottomIconsSlice = createSlice({
         if (state.isActiveParticipantsPanel) {
           state.isActiveParticipantsPanel = false;
         }
+        if (state.isActiveInsightsAiTextChatPanel) {
+          state.isActiveInsightsAiTextChatPanel = false;
+        }
       }
       state.isActivePollsPanel = action.payload;
+    },
+    updateIsActiveInsightsAiTextChatPanel: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      if (action.payload) {
+        if (state.isActiveChatPanel) {
+          state.isActiveChatPanel = false;
+        }
+        if (state.isActiveParticipantsPanel) {
+          state.isActiveParticipantsPanel = false;
+        }
+        if (state.isActivePollsPanel) {
+          state.isActivePollsPanel = false;
+        }
+      }
+      state.isActiveInsightsAiTextChatPanel = action.payload;
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
       state.isActiveRaisehand = action.payload;
@@ -177,8 +205,11 @@ const bottomIconsSlice = createSlice({
     ) => {
       state.showSpeechSettingOptionsModal = action.payload;
     },
-    updateDisplayAISettingsModal: (state, action: PayloadAction<boolean>) => {
-      state.showAISettingsModal = action.payload;
+    updateDisplayInsightsAISettingsModal: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.showInsightsAISettingsModal = action.payload;
     },
     updateTotalUnreadChatMsgs: (state) => {
       if (!state.isActiveChatPanel) {
@@ -228,7 +259,8 @@ export const {
   updateDisplaySpeechSettingsModal,
   updateDisplaySpeechSettingOptionsModal,
   updateIsEnabledExtendedVerticalCamView,
-  updateDisplayAISettingsModal,
+  updateDisplayInsightsAISettingsModal,
+  updateIsActiveInsightsAiTextChatPanel,
 } = bottomIconsSlice.actions;
 
 export default bottomIconsSlice.reducer;
