@@ -23,4 +23,10 @@
   .private-m-tab::before {
     @apply absolute content-[""] h-1 w-full bg-[rgb(0,77,144,0.2)];
   } */
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-0.total-items-3
+    .video-camera-item {
+    width: 100%;
+  }
 }
