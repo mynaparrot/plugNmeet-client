@@ -30,6 +30,7 @@ export interface IBottomIconsSlice {
   showDisplayExternalLinkModal: boolean;
   showSpeechSettingsModal: boolean;
   showSpeechSettingOptionsModal: boolean;
+  showAISettingsModal: boolean;
 
   totalUnreadChatMsgs: number;
   virtualBackground: BackgroundConfig;

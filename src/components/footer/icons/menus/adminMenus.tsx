@@ -9,6 +9,7 @@ import useMuteAll from './hooks/useMuteAll';
 import useExternalMediaPlayer from './hooks/useExternalMediaPlayer';
 import useDisplayExternalLink from './hooks/useDisplayExternalLink';
 import {
+  updateDisplayAISettingsModal,
   updateDisplaySpeechSettingsModal,
   updateShowLockSettingsModal,
   updateShowManageBreakoutRoomModal,
@@ -23,6 +24,7 @@ import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSVG';
 import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 
 const AdminMenus = () => {
   const dispatch = useAppDispatch();
@@ -65,6 +67,10 @@ const AdminMenus = () => {
 
   const openManageBreakoutRoomModal = useCallback(() => {
     dispatch(updateShowManageBreakoutRoomModal(true));
+  }, [dispatch]);
+
+  const openAISettingsModal = useCallback(() => {
+    dispatch(updateDisplayAISettingsModal(true));
   }, [dispatch]);
 
   return (
@@ -119,6 +125,14 @@ const AdminMenus = () => {
           }
         />
       )}
+      {roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
+          <FooterMenuItem
+            onClick={openAISettingsModal}
+            icon={<AiIconSVG classes="w-6 text-Blue2-800" />}
+            text={t('footer.menus.ai-settings')}
+          />
+        )}
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
           <FooterMenuItem
