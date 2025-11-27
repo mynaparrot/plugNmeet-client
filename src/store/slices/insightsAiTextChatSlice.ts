@@ -11,11 +11,13 @@ export interface IInsightsAITextChatMessage {
 interface IInsightsAiTextChatState {
   finalMessages: IInsightsAITextChatMessage[];
   interimMessage: IInsightsAITextChatMessage | null;
+  isAwaitingResponse: boolean;
 }
 
 const initialState: IInsightsAiTextChatState = {
   finalMessages: [],
   interimMessage: null,
+  isAwaitingResponse: false,
 };
 
 const insightsAiTextChatSlice = createSlice({
@@ -30,8 +32,9 @@ const insightsAiTextChatSlice = createSlice({
         createdAt: id,
         parts: [action.payload],
       });
+      // Immediately set the awaiting flag to true.
+      state.isAwaitingResponse = true;
     },
-    // This single action handles all streaming logic.
     updateAiTextChat: (
       state,
       action: PayloadAction<InsightsAITextChatStreamResult>,
@@ -57,12 +60,20 @@ const insightsAiTextChatSlice = createSlice({
           state.finalMessages.push(state.interimMessage);
           state.interimMessage = null;
         }
+        // The response is finished, so set the flag to false.
+        state.isAwaitingResponse = false;
       }
+    },
+    clearIsAwaitingResponse: (state) => {
+      state.isAwaitingResponse = false;
     },
   },
 });
 
-export const { addAiTextChatUserMessage, updateAiTextChat } =
-  insightsAiTextChatSlice.actions;
+export const {
+  addAiTextChatUserMessage,
+  updateAiTextChat,
+  clearIsAwaitingResponse,
+} = insightsAiTextChatSlice.actions;
 
 export default insightsAiTextChatSlice.reducer;

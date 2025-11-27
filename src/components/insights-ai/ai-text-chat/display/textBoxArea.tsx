@@ -1,6 +1,7 @@
 import React, { KeyboardEvent, useCallback, useRef, useState } from 'react';
 import { isEmpty } from 'es-toolkit/compat';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   CommonResponseSchema,
@@ -10,8 +11,11 @@ import {
 
 import SendIconSVG from '../../../../assets/Icons/SendIconSVG';
 import { useAutosizeTextArea } from '../../../chat/text-box/useAutosizeTextArea';
-import { useAppDispatch } from '../../../../store';
-import { addAiTextChatUserMessage } from '../../../../store/slices/insightsAiTextChatSlice';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import {
+  addAiTextChatUserMessage,
+  clearIsAwaitingResponse,
+} from '../../../../store/slices/insightsAiTextChatSlice';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 
 const TextBoxArea = () => {
@@ -19,17 +23,24 @@ const TextBoxArea = () => {
   const dispatch = useAppDispatch();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const isAwaitingResponse = useAppSelector(
+    (state) => state.insightsAiTextChat.isAwaitingResponse,
+  );
+
   const [message, setMessage] = useState<string>('');
   useAutosizeTextArea(textAreaRef.current, message);
-  const [isLocked, setIsLocked] = useState(false);
 
   const sendMsg = useCallback(async () => {
-    setIsLocked(true);
+    if (isAwaitingResponse || isEmpty(message)) return;
 
     const body = create(InsightsAITextChatContentSchema, {
       role: InsightsAITextChatRole.INSIGHTS_AI_TEXT_CHAT_ROLE_USER,
       text: message,
     });
+    // Dispatch the user message immediately, this will set isAwaitingResponse to true
+    // and instantly lock the UI.
+    dispatch(addAiTextChatUserMessage(message));
+    setMessage('');
 
     const r = await sendAPIRequest(
       'insights/ai/textChat/execute',
@@ -41,14 +52,12 @@ const TextBoxArea = () => {
 
     const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
     if (!res.status) {
-      setIsLocked(false);
-      return;
+      toast(t(res.msg), {
+        type: 'error',
+      });
+      dispatch(clearIsAwaitingResponse());
     }
-
-    dispatch(addAiTextChatUserMessage(message));
-    setMessage('');
-    setIsLocked(false);
-  }, [dispatch, message]);
+  }, [t, dispatch, message, isAwaitingResponse]);
 
   const handleChange = useCallback(
     (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -67,6 +76,12 @@ const TextBoxArea = () => {
     [sendMsg],
   );
 
+  const placeholderText = isAwaitingResponse
+    ? t('insights.ai-text-chat.responding-placeholder')
+    : t('insights.ai-text-chat.chat-box-placeholder');
+
+  const isSendButtonDisabled = isAwaitingResponse || isEmpty(message);
+
   return (
     <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
       <textarea
@@ -75,16 +90,20 @@ const TextBoxArea = () => {
         className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 font-normal h-10 mr-2 overflow-hidden"
         value={message}
         onChange={handleChange}
-        disabled={isLocked}
-        placeholder={t('insights.ai-text-chat.chat-box-placeholder')}
+        disabled={isAwaitingResponse}
+        placeholder={placeholderText}
         onKeyDown={onEnterPress}
         ref={textAreaRef}
         rows={1}
       />
       <button
-        disabled={isLocked}
+        disabled={isSendButtonDisabled}
         onClick={sendMsg}
-        className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'} ${!isLocked && !isEmpty(message) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+        className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${
+          isSendButtonDisabled
+            ? 'bg-[#00A1F2]/30 border border-[#08C]/30 cursor-not-allowed'
+            : 'bg-[#00A1F2] border border-[#08C] cursor-pointer'
+        }`}
       >
         <SendIconSVG />
       </button>
