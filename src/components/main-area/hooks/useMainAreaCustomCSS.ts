@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 
 interface IUseMainAreaCustomCSS {
-  activeSidePanel: boolean;
   isActiveScreenSharingView: boolean;
   hasScreenShareSubscribers: boolean;
   isActiveWhiteboard: boolean;
@@ -11,7 +10,6 @@ interface IUseMainAreaCustomCSS {
 }
 
 export const useMainAreaCustomCSS = ({
-  activeSidePanel,
   isActiveScreenSharingView,
   hasScreenShareSubscribers,
   isActiveWhiteboard,
@@ -21,8 +19,6 @@ export const useMainAreaCustomCSS = ({
 }: IUseMainAreaCustomCSS) => {
   return useMemo(() => {
     const css: Array<string> = [];
-
-    activeSidePanel ? css.push('showChatPanel') : css.push('hideChatPanel');
 
     isActiveScreenSharingView && hasScreenShareSubscribers
       ? css.push('showScreenShare fullWidthMainArea')
@@ -46,7 +42,6 @@ export const useMainAreaCustomCSS = ({
 
     return css.join(' ');
   }, [
-    activeSidePanel,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWhiteboard,

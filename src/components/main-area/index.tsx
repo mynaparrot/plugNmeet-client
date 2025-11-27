@@ -80,7 +80,6 @@ const MainArea = () => {
   }, [dispatch, isRecorder, roomFeatures]);
 
   const customCSS = useMainAreaCustomCSS({
-    activeSidePanel: activeSidePanel !== null,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWhiteboard,
