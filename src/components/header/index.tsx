@@ -50,18 +50,18 @@ const Header = () => {
           id="main-header"
           className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-wrap md:flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
         >
-          <div className="left relative z-20 flex items-center gap-3 md:gap-5 w-auto">
+          <div className="left relative z-20 flex items-center gap-2 md:gap-5 w-1/2 md:w-auto">
             <HeaderLogo />
-            <div className="dark-mode hidden md:inline">
+            <div className="dark-mode">
               <DarkThemeSwitcher />
             </div>
           </div>
-          <div className="middle w-full flex-1 relative z-20">
+          <div className="middle w-full flex-1 relative z-20 order-3 md:order-2 py-0.5">
             <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center">
               {title}
             </h2>
           </div>
-          <div className="right flex items-center justify-end relative -right-3 w-auto gap-0.5 z-30">
+          <div className="right flex items-center justify-end relative -right-3 w-1/2 md:w-auto gap-0.5 z-30 order-2 md:order-3">
             <DurationView />
             <UserNotifications />
             <VolumeControl />
