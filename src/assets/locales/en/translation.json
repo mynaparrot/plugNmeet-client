@@ -544,6 +544,8 @@
     "update-service": "Update Settings",
     "service-started-successfully": "Service has been started successfully",
     "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
     "ai-text-chat": {
       "name": "AI Assistant",
       "panel-title": "AI Assistant Chat",
@@ -553,6 +555,10 @@
       "users-required": "At least one participant must be selected.",
       "chat-box-placeholder": "Ask the AI Assistant a question...",
       "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt": "Summarization prompt"
     }
   }
 }
