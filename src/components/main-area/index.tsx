@@ -115,7 +115,7 @@ const MainArea = () => {
       return screenHeight;
     }
     if (headerVisible && footerVisible) {
-      return screenWidth < 1640 ? screenHeight - 108 : screenHeight - 144;
+      return screenWidth < 1640 ? screenHeight - 119.5 : screenHeight - 144;
     } else if (headerVisible && !footerVisible) {
       return screenHeight - 68;
     } else if (!headerVisible && footerVisible) {

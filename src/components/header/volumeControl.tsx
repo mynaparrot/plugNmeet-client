@@ -78,7 +78,7 @@ const VolumeControl = () => {
   return (
     <Menu as={Fragment}>
       {({ open }) => (
-        <div className="hidden md:inline">
+        <div className="">
           <MenuButton
             className={`relative shrink-0 p-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] ${
               open ? 'bg-Gray-50' : ''

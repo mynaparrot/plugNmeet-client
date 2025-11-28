@@ -7,7 +7,7 @@ import {
   updateShowKeyboardShortcutsModal,
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
-import DarkThemeSwitcher from './darkThemeSwitcher';
+// import DarkThemeSwitcher from './darkThemeSwitcher';
 
 interface IHeaderMenusProps {
   onOpenAlert(task: string): void;
@@ -22,10 +22,10 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
       unmount={false}
       className="HeaderSettingMenu origin-top-right z-50 bg-white absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 p-2 ring-0 focus:outline-hidden"
     >
-      <div className="dark-mode block md:hidden pt-1 pb-2">
+      {/* <div className="dark-mode block md:hidden pt-1 pb-2">
         <DarkThemeSwitcher />
       </div>
-      <div className="divider block md:hidden h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+      <div className="divider block md:hidden h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div> */}
       <MenuItem>
         <button
           className="h-9 md:h-10 3xl:h-11 w-full cursor-pointer flex items-center bg-white hover:bg-Gray-50 text-sm 3xl:text-base gap-2 leading-none font-medium text-Gray-950 px-2 md:px-3 rounded-lg transition-all duration-300 relative"
