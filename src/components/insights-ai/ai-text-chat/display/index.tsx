@@ -87,7 +87,9 @@ const InsightsAiTextChat = () => {
               const msg = allMessages[index];
               if (!msg) return null;
 
-              const parsedMessage = marked.parse(msg.parts.join(''));
+              const parsedMessage = marked.parse(msg.parts.join(''), {
+                async: false,
+              });
               const isStreaming =
                 interimMessage !== null && interimMessage.id === msg.id;
 
@@ -100,15 +102,12 @@ const InsightsAiTextChat = () => {
                   {msg.role === 'model' ? (
                     <AIMessage
                       name={t('insights.ai-text-chat.name')}
-                      message={parsedMessage as string}
+                      message={parsedMessage}
                       isStreaming={isStreaming}
                       sentAt={msg.createdAt}
                     />
                   ) : (
-                    <MyMessage
-                      message={parsedMessage as string}
-                      sentAt={msg.createdAt}
-                    />
+                    <MyMessage message={parsedMessage} sentAt={msg.createdAt} />
                   )}
                 </div>
               );
