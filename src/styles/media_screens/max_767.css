@@ -1,10 +1,10 @@
 @media screen and (max-width: 767px) {
-  .landscape-device #footer-menu {
+  /* .landscape-device #footer-menu {
     overflow-y: auto;
   }
   .landscape-device #footer-menu .inner {
     height: 240px;
-  }
+  } */
   /* .transition-right-panel {
     @apply w-full;
   }

@@ -1190,3 +1190,10 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     height: 100%;
   }
 }
+@media screen and (max-height: 600px) {
+  #footer-menu {
+    height: 260px;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+}
