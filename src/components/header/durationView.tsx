@@ -57,7 +57,7 @@ const DurationView = () => {
 
   return (
     showClock && (
-      <div className="timer text-xs md:text-sm text-Gray-950 border border-solid border-Gray-950 py-[2px] px-3 rounded-lg mr-[6px]">
+      <div className="timer text-xs md:text-sm text-Gray-950 dark:text-white border border-solid border-Gray-950 dark:border-white py-[2px] px-3 rounded-lg mr-[6px]">
         {remaining}
       </div>
     )

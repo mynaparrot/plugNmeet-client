@@ -441,11 +441,17 @@ input.polls-checkbox::before {
 }
 .tooltip::before {
   content: '';
-  @apply absolute h-[12px] w-[12px] bg-Gray-50 dark:bg-dark-secondary2 bottom-[-6px] left-0 right-0 m-auto rotate-45 border border-solid border-dark-primary/40;
+  @apply absolute h-[12px] w-[12px] bg-Gray-50  bottom-[-6px] left-0 right-0 m-auto rotate-45 border border-solid border-dark-primary/40;
+}
+body.dark .tooltip::before {
+  @apply bg-dark-secondary2;
 }
 .tooltip::after {
   content: '';
-  @apply absolute h-2 w-full bg-Gray-50 dark:bg-dark-secondary2 left-0 bottom-0 rounded-sm;
+  @apply absolute h-2 w-full bg-Gray-50 left-0 bottom-0 rounded-sm;
+}
+body.dark .tooltip::after {
+  @apply bg-dark-secondary2;
 }
 
 .tooltip-left::before {

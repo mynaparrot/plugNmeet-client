@@ -150,19 +150,20 @@ const ScrenshareIcon = () => {
   const wrapperClasses = clsx(
     'share-screen hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
-      'border-[rgba(124,206,247,0.25)]': isActiveScreenshare,
+      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
+        isActiveScreenshare,
       'border-transparent': !isActiveScreenshare,
-      'border-Red-100! pointer-events-none': isLocked,
+      '!border-Red-100 dark:!border-Red-600 pointer-events-none': isLocked,
     },
   );
 
   const innerDivClasses = clsx(
-    'h-full relative w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950',
+    'h-full relative w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 dark:text-white',
     {
       'has-tooltip': showTooltip,
-      'bg-gray-100': isActiveScreenshare,
-      'bg-white': !isActiveScreenshare,
-      'border-Red-200! text-Red-400': isLocked,
+      'bg-gray-100 dark:bg-Gray-700': isActiveScreenshare,
+      'bg-white dark:bg-Gray-800': !isActiveScreenshare,
+      '!border-Red-200 dark:!border-Red-400 text-Red-400': isLocked,
     },
   );
 
