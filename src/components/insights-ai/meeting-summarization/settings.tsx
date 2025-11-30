@@ -37,7 +37,7 @@ const MeetingSummarization = ({
   useEffect(() => {
     if (!meetingSummarizationFeatures?.summarizationPrompt) {
       setSummarizationPrompt(
-        'Summarize this meeting conversation. Identify all key decisions and create a list of action items with assigned owners.',
+        'Summarize this meeting conversation. Identify all key decisions and create a list of action items.',
       );
     }
   }, [meetingSummarizationFeatures?.summarizationPrompt]);
