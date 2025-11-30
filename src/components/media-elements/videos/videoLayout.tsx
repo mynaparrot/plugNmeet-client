@@ -58,12 +58,22 @@ const VideoLayout = ({
 
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [enabledVerticalViewMode, setEnabledVerticalViewMode] =
+    useState(isVertical);
+
+  useEffect(() => {
+    if (typeof pinParticipant !== 'undefined') {
+      setEnabledVerticalViewMode(true);
+    } else {
+      setEnabledVerticalViewMode(isVertical);
+    }
+  }, [isVertical, pinParticipant]);
 
   useEffect(() => {
     let perPage: number;
 
     if (isMobile) {
-      if (isVertical) {
+      if (enabledVerticalViewMode) {
         if (isPortrait) {
           perPage = MOBILE_VERTICAL_PORTRAIT_PER_PAGE;
         } else {
@@ -79,7 +89,7 @@ const VideoLayout = ({
           : MOBILE_PER_PAGE;
       }
     } else if (isTablet) {
-      if (isVertical) {
+      if (enabledVerticalViewMode) {
         perPage = isSidebarOpen
           ? TABLET_VERTICAL_WITH_SIDEBAR_PER_PAGE
           : TABLET_VERTICAL_PER_PAGE;
@@ -92,7 +102,7 @@ const VideoLayout = ({
     } else {
       // PC
       perPage = DESKTOP_PER_PAGE;
-      if (isVertical) {
+      if (enabledVerticalViewMode) {
         perPage = isEnabledExtendedVerticalCamView
           ? PC_EXTENDED_VERTICAL_PER_PAGE
           : PC_VERTICAL_PER_PAGE;
@@ -110,7 +120,7 @@ const VideoLayout = ({
     setWebcamPerPage(perPage);
   }, [
     isEnabledExtendedVerticalCamView,
-    isVertical,
+    enabledVerticalViewMode,
     pinParticipant,
     isMobile,
     isTablet,
@@ -228,21 +238,21 @@ const VideoLayout = ({
       layout = getElmsForMobile(
         paginatedParticipants,
         isPortrait,
-        !!isVertical,
+        !!enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else if (isTablet) {
       layout = getElmsForTablet(
         paginatedParticipants,
-        !!isVertical,
+        !!enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else {
       // PC
-      if (isVertical && isEnabledExtendedVerticalCamView) {
+      if (enabledVerticalViewMode && isEnabledExtendedVerticalCamView) {
         layout = getElmsForPCExtendedVerticalView(paginatedParticipants);
       } else {
-        layout = getElmsForPc(paginatedParticipants, !!isVertical);
+        layout = getElmsForPc(paginatedParticipants, !!enabledVerticalViewMode);
       }
     }
     return layout;
@@ -251,7 +261,7 @@ const VideoLayout = ({
     isMobile,
     isTablet,
     isPortrait,
-    isVertical,
+    enabledVerticalViewMode,
     isSidebarOpen,
     isEnabledExtendedVerticalCamView,
   ]);
@@ -285,9 +295,9 @@ const VideoLayout = ({
     return null;
   }
 
-  if (isVertical) {
+  if (pinParticipant) {
     return (
-      <VerticalLayout
+      <PinnedLayout
         participantsToRender={structuredLayout}
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
@@ -299,9 +309,9 @@ const VideoLayout = ({
     );
   }
 
-  if (pinParticipant) {
+  if (enabledVerticalViewMode) {
     return (
-      <PinnedLayout
+      <VerticalLayout
         participantsToRender={structuredLayout}
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}

@@ -95,6 +95,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
 
         if (pinCamUserId && participant.identity === pinCamUserId) {
           pinSubscribers = elm;
+          totalNumWebcams--;
         } else if (isAdmin) {
           adminSubscribers.push(elm);
         } else if (participant instanceof LocalParticipant) {
