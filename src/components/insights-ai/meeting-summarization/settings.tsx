@@ -1,13 +1,15 @@
-import React, { useCallback, useState } from 'react';
-import { fromBinary } from '@bufbuild/protobuf';
+import React, { useCallback, useEffect, useState } from 'react';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { CommonResponseSchema } from 'plugnmeet-protocol-js';
+import {
+  CommonResponseSchema,
+  InsightsAIMeetingSummarizationConfigReqSchema,
+} from 'plugnmeet-protocol-js';
 
 import { useAppSelector } from '../../../store';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import FormattedInputField from '../../../helpers/ui/formattedInputField';
 
 interface MeetingSummarizationProps {
   setErrorMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -29,27 +31,34 @@ const MeetingSummarization = ({
     !!meetingSummarizationFeatures?.isEnabled,
   );
   const [summarizationPrompt, setSummarizationPrompt] = useState<string>(
-    meetingSummarizationFeatures?.summarizationPrompt ??
-      'Summarize this meeting conversation. Identify all key decisions and create a list of action items with assigned owners.',
+    meetingSummarizationFeatures?.summarizationPrompt ?? '',
   );
 
+  useEffect(() => {
+    if (!meetingSummarizationFeatures?.summarizationPrompt) {
+      setSummarizationPrompt(
+        'Summarize this meeting conversation. Identify all key decisions and create a list of action items with assigned owners.',
+      );
+    }
+  }, [meetingSummarizationFeatures?.summarizationPrompt]);
+
   const enableOrUpdateService = useCallback(async () => {
-    console.log(summarizationPrompt);
-    /*if (!isAllowedEveryone && allowedUsers.length == 0) {
-      setErrorMsg(t('insights.ai-text-chat.users-required'));
+    if (!summarizationPrompt) {
+      setErrorMsg(
+        t('insights.meeting-summarization.summarization-prompt-required'),
+      );
       return;
     }
     setErrorMsg(undefined);
 
-    const body = create(InsightsAITextChatConfigReqSchema, {
-      isEnabled: isEnabled,
-      isAllowedEveryone,
-      allowedUserIds: allowedUsers,
+    const body = create(InsightsAIMeetingSummarizationConfigReqSchema, {
+      isEnabled,
+      summarizationPrompt,
     });
 
     const r = await sendAPIRequest(
-      'insights/ai/textChat/configure',
-      toBinary(InsightsAITextChatConfigReqSchema, body),
+      'insights/ai/meetingSummarization/configure',
+      toBinary(InsightsAIMeetingSummarizationConfigReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
@@ -64,12 +73,12 @@ const MeetingSummarization = ({
     toast(t('insights.service-started-successfully'), {
       type: 'info',
     });
-    closeModal();*/
-  }, [summarizationPrompt]);
+    closeModal();
+  }, [t, closeModal, setErrorMsg, isEnabled, summarizationPrompt]);
 
   const stopService = useCallback(async () => {
     const r = await sendAPIRequest(
-      'insights/ai/textChat/end',
+      'insights/ai/meetingSummarization/end',
       [],
       false,
       'application/protobuf',
@@ -89,7 +98,7 @@ const MeetingSummarization = ({
   }, [t, setErrorMsg, closeModal]);
 
   const handleChange = useCallback(
-    (evt: React.ChangeEvent<HTMLInputElement>) => {
+    (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
       setSummarizationPrompt(evt.target?.value);
     },
     [],
@@ -109,17 +118,24 @@ const MeetingSummarization = ({
               />
             </div>
             {isEnabled && (
-              <>
-                <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
-                  <FormattedInputField
-                    id="summarizationPrompt"
-                    label={t(
-                      'insights.meeting-summarization.summarization-prompt',
-                    )}
-                    onChange={handleChange}
-                  />
-                </div>
-              </>
+              <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-5 py-4">
+                <label
+                  htmlFor="summarizationPrompt"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  {t(
+                    'insights.meeting-summarization.summarization-prompt-label',
+                  )}
+                </label>
+                <textarea
+                  name="summarizationPrompt"
+                  id="summarizationPrompt"
+                  className="w-full outline-none text-xs 3xl:text-sm text-Gray-900 p-2 border border-Gray-200 rounded-lg resize-y"
+                  value={summarizationPrompt}
+                  onChange={handleChange}
+                  rows={3}
+                />
+              </div>
             )}
           </div>
         </div>

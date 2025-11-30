@@ -558,7 +558,9 @@
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",
-      "summarization-prompt": "Summarization prompt"
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
     }
   }
 }

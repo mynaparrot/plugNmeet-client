@@ -85,7 +85,7 @@ const InsightsAiSettingsModal = () => {
       >
         <div className="-mx-4">
           {errorMsg && (
-            <div className="error-msg text-xs text-red-600 py-1 px-2">
+            <div className="error-msg text-xs text-red-600 py-1 px-2 mb-3">
               {errorMsg}
             </div>
           )}
