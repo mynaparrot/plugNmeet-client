@@ -213,17 +213,17 @@ const RecordingIcon = () => {
   const buttonClasses = clsx(
     'recorder-icon hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
-      'record border-Red-400/20': isRecording,
+      'record border-Red-400/20 dark:border-Gray-800': isRecording,
       'border-transparent': !isRecording,
     },
   );
 
   const innerDivClasses = clsx(
-    'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950',
+    'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 dark:text-white',
     {
       'has-tooltip': showTooltip,
-      'bg-gray-100': isRecording,
-      'bg-white': !isRecording,
+      'bg-gray-100 dark:bg-Gray-700': isRecording,
+      'bg-white dark:bg-Gray-800': !isRecording,
     },
   );
 
@@ -247,7 +247,7 @@ const RecordingIcon = () => {
               ? t('footer.icons.stop-recording')
               : t('footer.icons.start-recording')}
           </span>
-          <i className="pnm-rec text-black text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
+          <i className="pnm-rec text-black dark:text-white text-[11px] lg:text-[12px] font-['Nunito Sans'] font-bold" />
         </div>
       </button>
     </>

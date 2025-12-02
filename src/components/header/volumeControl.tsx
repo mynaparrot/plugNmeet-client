@@ -81,7 +81,7 @@ const VolumeControl = () => {
         <div className="">
           <MenuButton
             className={`relative shrink-0 p-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] ${
-              open ? 'bg-Gray-50' : ''
+              open ? 'bg-Gray-50  dark:bg-Gray-800' : ''
             }`}
           >
             <div className="text-gray-700 dark:text-white cursor-pointer">
