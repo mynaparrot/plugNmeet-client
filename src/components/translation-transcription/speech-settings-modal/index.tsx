@@ -43,9 +43,13 @@ const SpeechSettingsModal = ({
   const selectedSubtitleLang = useAppSelector(
     (state) => state.speechServices.selectedSubtitleLang,
   );
-  const [enabled, setEnabled] = useState<boolean>(false);
+  const [isServiceActive, setIsServiceActive] = useState<boolean>(false);
   const [readyToStart, setReadyToStart] = useState<boolean>(false);
+
+  const [enableSpeech, setEnableSpeech] = useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
+  const [allowTranscriptionStorage, setAllowTranscriptionStorage] =
+    useState<boolean>(true);
 
   useEffect(() => {
     if (isActiveDisplayOptionsModal) {
@@ -54,10 +58,13 @@ const SpeechSettingsModal = ({
       }
       getUserTaskStatus().then((res) => {
         if (res.isActive) {
-          setEnabled(true);
+          setIsServiceActive(true);
         }
         if (res.spokenLang) {
           setSelectedSpeechLang(res.spokenLang);
+        }
+        if (typeof res.allowedTranscriptionStorage !== 'undefined') {
+          setAllowTranscriptionStorage(res.allowedTranscriptionStorage);
         }
       });
     }
@@ -82,11 +89,15 @@ const SpeechSettingsModal = ({
   }, [dispatch]);
 
   const startOrStopService = useCallback(async () => {
-    const action = enabled
+    const action = isServiceActive
       ? InsightsUserSessionAction.USER_SESSION_ACTION_STOP
       : InsightsUserSessionAction.USER_SESSION_ACTION_START;
 
-    const res = await startOrStopUserSession(action, selectedSpeechLang);
+    const res = await startOrStopUserSession(
+      action,
+      allowTranscriptionStorage,
+      selectedSpeechLang,
+    );
     if (res.status) {
       toast(t('notifications.request-submitted-wait'), {
         type: 'info',
@@ -98,9 +109,15 @@ const SpeechSettingsModal = ({
       return;
     }
 
-    setEnabled(!enabled);
+    setIsServiceActive(!isServiceActive);
     onCloseModal();
-  }, [onCloseModal, t, enabled, selectedSpeechLang]);
+  }, [
+    onCloseModal,
+    t,
+    isServiceActive,
+    allowTranscriptionStorage,
+    selectedSpeechLang,
+  ]);
 
   return (
     <Modal
@@ -112,7 +129,12 @@ const SpeechSettingsModal = ({
       <div className="-mx-4">
         {canShowSpeechSetting && (
           <SpeechInputSettings
+            isServiceActive={isServiceActive}
             transcriptionFeatures={transcriptionFeatures}
+            enableSpeech={enableSpeech}
+            setEnableSpeech={setEnableSpeech}
+            allowTranscriptionStorage={allowTranscriptionStorage}
+            setAllowTranscriptionStorage={setAllowTranscriptionStorage}
             selectedSpeechLang={selectedSpeechLang}
             setSelectedSpeechLang={setSelectedSpeechLang}
           />
@@ -133,23 +155,28 @@ const SpeechSettingsModal = ({
         </div>
       </div>
 
-      {!readyToStart && !enabled && canShowSpeechSetting ? (
+      {canShowSpeechSetting &&
+      enableSpeech &&
+      !readyToStart &&
+      !isServiceActive ? (
         <div className="text-xs text-red-500 dark:text-red-400 pt-4 -mx-4 px-4">
           {t('speech-services.mic-not-ready-warning')}
         </div>
       ) : null}
 
-      <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5 -mx-4 px-4">
-        <button
-          className="h-10 w-1/2 cursor-pointer rounded-[15px] border border-[#0088CC] bg-Blue px-8 text-sm font-semibold text-white shadow-button-shadow transition-all duration-300 hover:bg-white hover:text-Gray-950 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none 3xl:text-base"
-          disabled={!readyToStart && !enabled}
-          onClick={startOrStopService}
-        >
-          {canShowSpeechSetting && enabled
-            ? t('speech-services.stop-service')
-            : t('speech-services.start-service')}
-        </button>
-      </div>
+      {canShowSpeechSetting && enableSpeech && (
+        <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5 -mx-4 px-4">
+          <button
+            className="h-10 w-1/2 cursor-pointer rounded-[15px] border border-[#0088CC] bg-Blue px-8 text-sm font-semibold text-white shadow-button-shadow transition-all duration-300 hover:bg-white hover:text-Gray-950 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none 3xl:text-base"
+            disabled={!readyToStart && !isServiceActive}
+            onClick={startOrStopService}
+          >
+            {canShowSpeechSetting && isServiceActive
+              ? t('speech-services.stop-service')
+              : t('speech-services.start-service')}
+          </button>
+        </div>
+      )}
     </Modal>
   );
 };

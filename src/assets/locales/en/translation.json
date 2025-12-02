@@ -494,6 +494,7 @@
     "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Enable Transcription",
     "speech-langs-label": "Spoken Languages",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Users to Transcribe",
     "subtitle-font-size": "Caption Font Size",
     "enable-translation": "Enable Translation",

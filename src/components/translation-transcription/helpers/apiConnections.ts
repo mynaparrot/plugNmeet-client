@@ -133,10 +133,12 @@ export const endTranscription = async () => {
 
 export const startOrStopUserSession = async (
   action: InsightsUserSessionAction,
+  allowedTranscriptionStorage: boolean,
   spokenLang?: string,
 ) => {
   const body = create(InsightsTranscriptionUserSessionReqSchema, {
     action,
+    allowedTranscriptionStorage,
     spokenLang,
   });
   const r = await sendAPIRequest(
