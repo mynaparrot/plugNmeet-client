@@ -41,6 +41,9 @@ const InsightsAiSettingsModal = () => {
     }
 
     const aiFeatures = insightsFeatures?.aiFeatures;
+    const enabledSelfInsertEncryptionKey =
+      !!store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey;
 
     // now display tabs
     const tabItems: ITabItem[] = [];
@@ -56,7 +59,10 @@ const InsightsAiSettingsModal = () => {
         ),
       });
     }
-    if (aiFeatures?.meetingSummarizationFeatures?.isAllow) {
+    if (
+      !enabledSelfInsertEncryptionKey &&
+      aiFeatures?.meetingSummarizationFeatures?.isAllow
+    ) {
       tabItems.push({
         id: 2,
         title: t('insights.tab-meeting-summarization-title'),

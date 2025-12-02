@@ -29,6 +29,9 @@ const TranslationTranscriptionSettingModal = () => {
     if (!insightsFeatures || !insightsFeatures.isAllow) {
       return;
     }
+    const enabledSelfInsertEncryptionKey =
+      !!state.session.currentRoom.metadata?.roomFeatures
+        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey;
     // prepare languages
     Promise.allSettled([
       supportedTranscriptionLangs(),
@@ -36,7 +39,10 @@ const TranslationTranscriptionSettingModal = () => {
     ]).then(() => {
       // now display tabs
       const tabItems: ITabItem[] = [];
-      if (insightsFeatures.transcriptionFeatures?.isAllow) {
+      if (
+        !enabledSelfInsertEncryptionKey &&
+        insightsFeatures.transcriptionFeatures?.isAllow
+      ) {
         tabItems.push({
           id: 1,
           title: t('speech-services.speech-transcription'),
