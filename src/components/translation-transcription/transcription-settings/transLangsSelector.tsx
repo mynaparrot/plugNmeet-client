@@ -5,6 +5,7 @@ import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import { supportedTranslationLangs } from '../helpers/supportedLangs';
 
 interface TransLangsSelectorProps {
+  isServiceRunning: boolean;
   label: string;
   selectedTransLangs: Array<string>;
   setSelectedTransLangs: Dispatch<Array<string>>;
@@ -13,6 +14,7 @@ interface TransLangsSelectorProps {
 }
 
 const TransLangsSelector = ({
+  isServiceRunning,
   label,
   selectedTransLangs,
   setSelectedTransLangs,
@@ -57,6 +59,7 @@ const TransLangsSelector = ({
       onChange={setSelectedItems}
       multiple={true}
       options={selectOptions}
+      disabled={isServiceRunning}
     />
   );
 };

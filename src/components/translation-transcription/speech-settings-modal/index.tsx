@@ -145,14 +145,16 @@ const SpeechSettingsModal = ({
           setSelectedSubtitleLang={setSelectedSubtitleLang}
         />
         <SubtitleFontSizeSlider />
-        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
-          <SettingsSwitch
-            label={t('speech-services.enable-speech-synthesis')}
-            enabled={enabledSpeechSynthesis}
-            onChange={setEnabledSpeechSynthesis}
-            customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
-          />
-        </div>
+        {!transcriptionFeatures.isEnabledSpeechSynthesis && (
+          <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+            <SettingsSwitch
+              label={t('speech-services.enable-speech-synthesis')}
+              enabled={enabledSpeechSynthesis}
+              onChange={setEnabledSpeechSynthesis}
+              customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+            />
+          </div>
+        )}
       </div>
 
       {canShowSpeechSetting &&

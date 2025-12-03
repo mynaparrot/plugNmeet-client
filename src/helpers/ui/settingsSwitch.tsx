@@ -22,7 +22,9 @@ const SettingsSwitch = ({
       as="div"
       className={clsx('flex items-center justify-between', customCss)}
     >
-      <Label className="pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text">
+      <Label
+        className={`pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      >
         {label}
       </Label>
       <Switch
@@ -38,7 +40,7 @@ const SettingsSwitch = ({
             enabled
               ? 'ltr:translate-x-4.5 rtl:-translate-x-4.5'
               : 'ltr:translate-x-1 rtl:-translate-x-0.5'
-          } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+          } ${disabled ? 'cursor-not-allowed' : ''} inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
         />
       </Switch>
     </Field>

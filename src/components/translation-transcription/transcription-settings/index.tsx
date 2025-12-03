@@ -159,6 +159,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
         {enabledTranscription && (
           <div className="grid gap-4 py-4 bg-white">
             <SpeechLangsSelector
+              isServiceRunning={!!transcriptionFeatures?.isEnabled}
               selectedSpeechLangs={selectedSpeechLangs}
               setSelectedSpeechLangs={setSelectedSpeechLangs}
             />
@@ -167,6 +168,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
               setSelectedSpeechUsers={setSelectedSpeechUsers}
             />
             <DefaultSubtitleLangSelector
+              isServiceRunning={!!transcriptionFeatures?.isEnabled}
               label={t('speech-services.default-subtitle-lang-label')}
               selectedSpeechLangs={selectedSpeechLangs}
               selectedTransLangs={selectedTransLangs}
@@ -183,12 +185,14 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
                 enabled={enableTranslation}
                 onChange={setEnableTranslation}
                 customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+                disabled={transcriptionFeatures?.isEnabled}
               />
             </div>
             {enableTranslation && (
               <>
                 <div className="grid gap-4 py-4 bg-white">
                   <TransLangsSelector
+                    isServiceRunning={!!transcriptionFeatures?.isEnabled}
                     label={t('speech-services.translation-langs-label', {
                       num: transcriptionFeatures?.maxSelectedTransLangs ?? 2,
                     })}
@@ -207,6 +211,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
                         label={t('speech-services.enable-trans-synthesis')}
                         enabled={enabledTransSynthesis}
                         onChange={setEnabledTransSynthesis}
+                        disabled={transcriptionFeatures?.isEnabled}
                         customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
                       />
                     </div>

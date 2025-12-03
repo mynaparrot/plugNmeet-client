@@ -4,11 +4,13 @@ import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import { supportedTranscriptionLangs } from '../helpers/supportedLangs';
 
 interface SpeechLangsSelectorProps {
+  isServiceRunning: boolean;
   selectedSpeechLangs: Array<string>;
   setSelectedSpeechLangs: Dispatch<Array<string>>;
 }
 
 const SpeechLangsSelector = ({
+  isServiceRunning,
   selectedSpeechLangs,
   setSelectedSpeechLangs,
 }: SpeechLangsSelectorProps) => {
@@ -27,6 +29,7 @@ const SpeechLangsSelector = ({
       onChange={setSelectedSpeechLangs}
       multiple={true}
       options={selectOptions}
+      disabled={isServiceRunning}
     />
   );
 };

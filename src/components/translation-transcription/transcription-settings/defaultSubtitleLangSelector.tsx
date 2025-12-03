@@ -4,6 +4,7 @@ import { getSubtitleLangs } from '../helpers/supportedLangs';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 
 interface DefaultSubtitleLangSelectorProps {
+  isServiceRunning: boolean;
   label: string;
   selectedSpeechLangs: string[];
   selectedTransLangs: string[];
@@ -11,6 +12,7 @@ interface DefaultSubtitleLangSelectorProps {
   setSelectedDefaultSubtitleLang: Dispatch<string>;
 }
 const DefaultSubtitleLangSelector = ({
+  isServiceRunning,
   label,
   selectedSpeechLangs,
   selectedTransLangs,
@@ -33,6 +35,7 @@ const DefaultSubtitleLangSelector = ({
         value={selectedDefaultSubtitleLang}
         onChange={setSelectedDefaultSubtitleLang}
         options={dropdownOptions}
+        disabled={isServiceRunning}
       />
     </div>
   );
