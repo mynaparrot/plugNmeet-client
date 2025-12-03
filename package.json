@@ -27,7 +27,7 @@
     "axios": "1.13.2",
     "clsx": "2.1.1",
     "copy-text-to-clipboard": "3.2.2",
-    "es-toolkit": "1.41.0",
+    "es-toolkit": "1.42.0",
     "eventemitter3": "5.0.1",
     "framer-motion": "12.23.24",
     "i18next": "25.6.2",
