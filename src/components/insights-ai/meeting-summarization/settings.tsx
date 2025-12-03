@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import {
   InsightsAIMeetingSummarizationConfigReqSchema,
 } from 'plugnmeet-protocol-js';
 
-import { useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 
@@ -21,6 +21,14 @@ const MeetingSummarization = ({
   closeModal,
 }: MeetingSummarizationProps) => {
   const { t } = useTranslation();
+  // all static values
+  const { enabledSelfInsertEncryptionKey } = useMemo(() => {
+    const enabledSelfInsertEncryptionKey =
+      !!store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey;
+    return { enabledSelfInsertEncryptionKey };
+  }, []);
+
   const meetingSummarizationFeatures = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
@@ -103,6 +111,16 @@ const MeetingSummarization = ({
     },
     [],
   );
+
+  if (enabledSelfInsertEncryptionKey) {
+    return (
+      <div className="p-4 bg-Gray-2">
+        <div className="main-wrap -my-4 text-red-600">
+          {t('insights.feature-disable-while-e2ee-self-key-enabled')}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

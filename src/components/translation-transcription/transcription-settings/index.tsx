@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { InsightsTranscriptionConfigReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
-import { useAppDispatch, useAppSelector } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   enableOrUpdateTranscription,
   endTranscription,
@@ -25,6 +25,15 @@ interface TranscriptionSettingsProps {
 const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
+  // all static values
+  const { enabledSelfInsertEncryptionKey } = useMemo(() => {
+    const enabledSelfInsertEncryptionKey =
+      !!store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey;
+    return { enabledSelfInsertEncryptionKey };
+  }, []);
+
   const transcriptionFeatures = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
@@ -209,6 +218,16 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
       </div>
     </div>
   );
+
+  if (enabledSelfInsertEncryptionKey) {
+    return (
+      <div className="p-4 bg-Gray-2">
+        <div className="main-wrap -my-4 text-red-600">
+          {t('insights.feature-disable-while-e2ee-self-key-enabled')}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

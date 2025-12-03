@@ -291,7 +291,7 @@
       "start-display-external-link": "Share External Link",
       "stop-display-external-link": "Stop Sharing Link",
       "speech-to-text-settings": "Transcription & Translation",
-      "ai-settings": "AI Settings",
+      "ai-settings": "AI Tools",
       "enable-polls": "Enable polls",
       "disable-polls": "Disable polls"
     },
@@ -547,6 +547,7 @@
     "service-stopped-successfully": "Service has been stopped successfully",
     "tab-ai-text-chat-title": "AI Assistant Chat",
     "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
     "ai-text-chat": {
       "name": "AI Assistant",
       "panel-title": "AI Assistant Chat",
