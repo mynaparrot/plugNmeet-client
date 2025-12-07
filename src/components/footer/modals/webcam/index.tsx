@@ -75,7 +75,7 @@ const ShareWebcamModal = ({
         renderButtons={() => (
           <div className="grid grid-cols-2 gap-5">
             <button
-              className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-medium 3xl:font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+              className="h-9 w-36 flex items-center justify-center cursor-pointer text-sm font-semibold bg-white hover:bg-Blue border border-[#0088CC] rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
               type="button"
               onClick={onClose}
             >

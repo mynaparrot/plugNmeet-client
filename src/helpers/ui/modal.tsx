@@ -57,7 +57,7 @@ const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-Gray-950/70" />
+          <div className="fixed inset-0 bg-Gray-950/70 dark:bg-Gray-950/30" />
         </TransitionChild>
 
         <div className="fixed inset-0 flex w-screen justify-center p-4 scrollBar">
@@ -72,14 +72,14 @@ const Modal = ({
           >
             <DialogPanel
               className={clsx(
-                'w-full bg-white border border-Gray-200 shadow-virtualPOP rounded-xl m-auto',
+                'w-full bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 shadow-virtualPOP rounded-xl m-auto',
                 maxWidth,
                 customClass,
               )}
             >
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-sm md:text-base font-semibold leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100"
+                className="flex items-center justify-between text-sm md:text-base font-semibold leading-7 text-Gray-950 dark:text-white px-4 py-2 border-b border-Gray-100 dark:border-Gray-800"
               >
                 <span>{title}</span>
                 <Button
@@ -89,11 +89,16 @@ const Modal = ({
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <div className={clsx('p-4 bg-Gray-25', customBodyClass)}>
+              <div
+                className={clsx(
+                  'p-4 bg-Gray-25 dark:bg-dark-primary',
+                  customBodyClass,
+                )}
+              >
                 {children}
               </div>
               {renderButtons && (
-                <div className="px-4 py-4 border-t border-Gray-100 flex justify-end rounded-b-xl">
+                <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end rounded-b-xl">
                   {renderButtons()}
                 </div>
               )}
