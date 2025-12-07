@@ -87,8 +87,7 @@ const AdminMenus = () => {
           }
         />
       )}
-      {roomFeatures?.externalMediaPlayerFeatures
-        ?.allowedExternalMediaPlayer && (
+      {roomFeatures?.externalMediaPlayerFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleExternalMediaPlayer}
           isActive={isActiveExternalMediaPlayer}
@@ -113,7 +112,7 @@ const AdminMenus = () => {
         />
       )}
       <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
-      {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad && (
+      {roomFeatures?.sharedNotePadFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleSharedNotepad}
           isActive={sharedNotepadStatus}

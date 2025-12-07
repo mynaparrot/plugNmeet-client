@@ -3,12 +3,12 @@ import { RoomMetadataSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import {
-  ISession,
-  ICurrentUser,
   ICurrentRoom,
+  ICurrentUser,
   ICurrentUserMetadata,
   IRoomMetadata,
   IScreenSharing,
+  ISession,
   UserDeviceType,
 } from './interfaces/session';
 
@@ -57,15 +57,15 @@ const initialState: ISession = {
           onlyRecordAdminWebcams: false,
         },
         chatFeatures: {
-          allowChat: true,
-          allowFileUpload: true,
+          isAllow: true,
+          isAllowFileUpload: true,
           allowedFileTypes: ['jpg', 'png', 'zip'],
         },
         sharedNotePadFeatures: {
-          allowedSharedNotePad: true,
+          isAllow: true,
         },
         whiteboardFeatures: {
-          allowedWhiteboard: true,
+          isAllow: true,
           visible: false,
           whiteboardFileId: '',
           fileName: '',
@@ -73,7 +73,7 @@ const initialState: ISession = {
           totalPages: 0,
         },
         externalMediaPlayerFeatures: {
-          allowedExternalMediaPlayer: true,
+          isAllow: true,
           isActive: false,
         },
         waitingRoomFeatures: {
@@ -89,15 +89,18 @@ const initialState: ISession = {
         ingressFeatures: {
           isAllow: true,
         },
-        speechToTextTranslationFeatures: {
+        insightsFeatures: {
           isAllow: true,
-          isAllowTranslation: true,
-          isEnabled: false,
-          isEnabledTranslation: false,
-          allowedSpeechLangs: [],
-          allowedSpeechUsers: [],
-          allowedTransLangs: [],
-          maxNumTranLangsAllowSelecting: 10,
+          transcriptionFeatures: {
+            isAllow: true,
+            isAllowTranslation: true,
+          },
+          aiFeatures: {
+            isAllow: true,
+            aiTextChatFeatures: {
+              isAllow: true,
+            },
+          },
         },
         endToEndEncryptionFeatures: {
           isEnabled: false,

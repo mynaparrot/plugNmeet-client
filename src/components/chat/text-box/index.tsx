@@ -64,7 +64,7 @@ const TextBoxArea = () => {
   };
 
   const showSendFile = useMemo(
-    () => !!chatFeatures?.allowFileUpload,
+    () => !!chatFeatures?.isAllowFileUpload,
     [chatFeatures],
   );
 

@@ -118,28 +118,28 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
     },
     {
       key: 'whiteboard',
-      isDisplayed: roomFeatures?.whiteboardFeatures?.allowedWhiteboard,
+      isDisplayed: roomFeatures?.whiteboardFeatures?.isAllow,
       isLocked: lockSettings?.lockWhiteboard,
       lockText: t('left-panel.menus.items.lock-whiteboard'),
       unlockText: t('left-panel.menus.items.unlock-whiteboard'),
     },
     {
       key: 'sharedNotepad',
-      isDisplayed: roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad,
+      isDisplayed: roomFeatures?.sharedNotePadFeatures?.isAllow,
       isLocked: lockSettings?.lockSharedNotepad,
       lockText: t('left-panel.menus.items.lock-shared-notepad'),
       unlockText: t('left-panel.menus.items.unlock-shared-notepad'),
     },
     {
       key: 'chat',
-      isDisplayed: roomFeatures?.chatFeatures?.allowChat,
+      isDisplayed: roomFeatures?.chatFeatures?.isAllow,
       isLocked: lockSettings?.lockChat,
       lockText: t('left-panel.menus.items.lock-chat'),
       unlockText: t('left-panel.menus.items.unlock-chat'),
     },
     {
       key: 'sendChatMsg',
-      isDisplayed: roomFeatures?.chatFeatures?.allowChat,
+      isDisplayed: roomFeatures?.chatFeatures?.isAllow,
       isLocked: lockSettings?.lockChatSendMessage,
       lockText: t('left-panel.menus.items.lock-send-chat-message'),
       unlockText: t('left-panel.menus.items.unlock-send-chat-message'),
@@ -147,8 +147,8 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
     {
       key: 'chatFile',
       isDisplayed:
-        roomFeatures?.chatFeatures?.allowChat &&
-        roomFeatures?.chatFeatures?.allowFileUpload,
+        roomFeatures?.chatFeatures?.isAllow &&
+        roomFeatures?.chatFeatures?.isAllowFileUpload,
       isLocked: lockSettings?.lockChatFileShare,
       lockText: t('left-panel.menus.items.lock-send-file'),
       unlockText: t('left-panel.menus.items.unlock-send-file'),

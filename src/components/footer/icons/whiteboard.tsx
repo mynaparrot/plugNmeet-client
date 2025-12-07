@@ -27,7 +27,7 @@ const WhiteboardIcon = () => {
         showTooltip: session.userDeviceType === 'desktop',
         allowedWhiteboard:
           session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
-            ?.allowedWhiteboard,
+            ?.isAllow,
         currentUserId: currentUser?.userId,
         isAdmin: currentUser?.metadata?.isAdmin,
         isRecorder: currentUser?.isRecorder,

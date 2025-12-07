@@ -177,7 +177,7 @@ const MainArea = () => {
         >
           <ParticipantsComponent />
         </SidePanel>
-        {roomFeatures?.chatFeatures?.allowChat && (
+        {roomFeatures?.chatFeatures?.isAllow && (
           <SidePanel
             isActive={activeSidePanel === 'CHAT'}
             panelClass="chat-panel"

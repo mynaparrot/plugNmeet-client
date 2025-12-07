@@ -57,10 +57,10 @@ const IconsInMenu = () => {
   const isActiveDisplaySpeechSettingOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
-  const isEnabledSpeechToTextTranslation = useAppSelector(
+  const isEnabledTranscription = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures
-        ?.speechToTextTranslationFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.transcriptionFeatures?.isEnabled,
   );
   const toggleSpeechSettingOptionsModal = useCallback(() => {
     dispatch(
@@ -72,7 +72,7 @@ const IconsInMenu = () => {
 
   return (
     <>
-      {roomFeatures?.whiteboardFeatures?.allowedWhiteboard && (
+      {roomFeatures?.whiteboardFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleWhiteboard}
           isActive={isActiveWhiteboard}
@@ -108,7 +108,7 @@ const IconsInMenu = () => {
           }
         />
       )}
-      {isEnabledSpeechToTextTranslation && (
+      {isEnabledTranscription && (
         <FooterMenuItem
           onClick={toggleSpeechSettingOptionsModal}
           isActive={isActiveDisplaySpeechSettingOptionsModal}

@@ -23,7 +23,7 @@ const Footer = () => {
     return {
       isAdmin: !!currentUser?.metadata?.isAdmin,
       isRecorder: !!currentUser?.isRecorder,
-      allowChat: !!currentRoom.metadata?.roomFeatures?.chatFeatures?.allowChat,
+      allowChat: !!currentRoom.metadata?.roomFeatures?.chatFeatures?.isAllow,
     };
   }, []);
 

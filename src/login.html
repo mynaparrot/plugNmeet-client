@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login</title>
     <!-- <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
@@ -12,445 +12,467 @@
       crossorigin="anonymous"
     /> -->
     <script src="./assets/config.js"></script>
-    <link rel="icon" type="image/x-icon" href="./assets/imgs/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./assets/imgs/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+            rel="stylesheet"
     />
     <style>
-      input:-webkit-autofill,
-      input:-webkit-autofill:hover,
-      input:-webkit-autofill:focus,
-      input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 1000px white inset !important;
-        -webkit-text-fill-color: #000 !important;
-      }
-      * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-      }
-      body {
-        height: 100%;
-        display: flex;
-        background-color: #f0f6fc;
-      }
-      html {
-        height: 100%;
-      }
-      .container {
-        margin: auto;
-        width: 100%;
-        max-width: 1000px;
-        padding: 40px 20px;
-      }
-
-      input,
-      select {
-        border-radius: 15px;
-        border: 1px solid var(--Gray-300, #c2daf2);
-        background: var(--White, #fff);
-        box-shadow: 0px 1px 2px 0px rgba(0, 43, 64, 0.05);
-        padding: 10px 14px;
-        width: 100%;
-        outline: none;
-        font-size: 16px;
-      }
-      label {
-        display: block;
-        font-size: 16px;
-        font-weight: 500;
-        color: #233240;
-        margin-bottom: 8px;
-      }
-      input:focus,
-      select:focus {
-        box-shadow: 0px 0px 0px 4px rgba(124, 206, 247, 0.25);
-        border-color: rgba(0, 161, 242, 1);
-      }
-      form#loginForm {
-        background-color: #fff;
-        padding: 40px 30px 30px;
-        border-radius: 24px;
-      }
-      .inputs-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 25px 20px;
-      }
-      .btn {
-        height: 40px;
-        border-radius: 15px;
-        box-shadow:
-          0px 2px 2px 0px rgba(255, 255, 255, 0.3) inset,
-          0px 1px 2px 0px rgba(0, 43, 64, 0.05);
-        min-width: 140px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.3s ease-in;
-      }
-      .btn-danger {
-        border: 1px solid var(--Red-600, #c00);
-        background: var(--Red-400, #fa3232);
-      }
-      .btn-primary {
-        border: 1px solid var(--Blue-600, #08c);
-        background: var(--Blue-500, #00a1f2);
-      }
-      .btn-danger:hover {
-        background-color: #cc0000;
-      }
-      .btn-primary:hover {
-        background-color: #08c;
-      }
-      form#loginForm .buttons {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 22px;
-      }
-      h5.card-title {
-        font-size: 22px;
-        text-align: center;
-        margin-bottom: 20px;
-        font-weight: 500;
-      }
-      select {
-        background-color: rgb(255, 255, 255);
-        background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PgoKCjwhLS0gTGljZW5zZTogUEQuIE1hZGUgYnkgaWNvbnM4OiBodHRwczovL2dpdGh1Yi5jb20vaWNvbnM4L3dpbmRvd3MtMTAtaWNvbnMgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgCgkgdmlld0JveD0iMCAwIDMyIDMyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBvbHlsaW5lIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBwb2ludHM9IjI4LjUsMTEuNSAxNiwyNCAzLjUsMTEuNSAiLz4KPC9zdmc+);
-        background-repeat: no-repeat;
-        background-size: 16px 12px;
-        appearance: none;
-        background-position: right 0.75rem center;
-      }
-      .logo {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-      }
-      .logo img {
-        height: 55px;
-      }
-      @media screen and (max-width: 767px) {
-        .inputs-wrapper {
-          grid-template-columns: 1fr;
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px white inset !important;
+            -webkit-text-fill-color: #000 !important;
         }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100%;
+            display: flex;
+            background-color: #f0f6fc;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .container {
+            margin: auto;
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px 20px;
+        }
+
         input,
         select {
-          padding: 7px 14px;
+            border-radius: 15px;
+            border: 1px solid var(--Gray-300, #c2daf2);
+            background: var(--White, #fff);
+            box-shadow: 0px 1px 2px 0px rgba(0, 43, 64, 0.05);
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
+            font-size: 16px;
         }
+
         label {
-          font-size: 14px;
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            color: #233240;
+            margin-bottom: 8px;
         }
-        .btn {
-          min-width: 130px;
-          height: 38px;
-          font-size: 15px;
+
+        input:focus,
+        select:focus {
+            box-shadow: 0px 0px 0px 4px rgba(124, 206, 247, 0.25);
+            border-color: rgba(0, 161, 242, 1);
         }
+
         form#loginForm {
-          padding: 40px 15px 30px;
+            background-color: #fff;
+            padding: 40px 30px 30px;
+            border-radius: 24px;
         }
-      }
+
+        .inputs-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px 20px;
+        }
+
+        .btn {
+            height: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 2px 2px 0px rgba(255, 255, 255, 0.3) inset,
+            0px 1px 2px 0px rgba(0, 43, 64, 0.05);
+            min-width: 140px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease-in;
+        }
+
+        .btn-danger {
+            border: 1px solid var(--Red-600, #c00);
+            background: var(--Red-400, #fa3232);
+        }
+
+        .btn-primary {
+            border: 1px solid var(--Blue-600, #08c);
+            background: var(--Blue-500, #00a1f2);
+        }
+
+        .btn-danger:hover {
+            background-color: #cc0000;
+        }
+
+        .btn-primary:hover {
+            background-color: #08c;
+        }
+
+        form#loginForm .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        h5.card-title {
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        select {
+            background-color: rgb(255, 255, 255);
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PgoKCjwhLS0gTGljZW5zZTogUEQuIE1hZGUgYnkgaWNvbnM4OiBodHRwczovL2dpdGh1Yi5jb20vaWNvbnM4L3dpbmRvd3MtMTAtaWNvbnMgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgCgkgdmlld0JveD0iMCAwIDMyIDMyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBvbHlsaW5lIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBwb2ludHM9IjI4LjUsMTEuNSAxNiwyNCAzLjUsMTEuNSAiLz4KPC9zdmc+);
+            background-repeat: no-repeat;
+            background-size: 16px 12px;
+            appearance: none;
+            background-position: right 0.75rem center;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo img {
+            height: 55px;
+        }
+
+        @media screen and (max-width: 767px) {
+            .inputs-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            input,
+            select {
+                padding: 7px 14px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            .btn {
+                min-width: 130px;
+                height: 38px;
+                font-size: 15px;
+            }
+
+            form#loginForm {
+                padding: 40px 15px 30px;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="logo">
-        <img src="./assets/imgs/main-logo.png" alt="main-logo" />
-      </div>
-      <div class="form">
-        <form action="#" method="POST" id="loginForm">
-          <div class="inputs-wrapper">
-            <div class="item">
-              <label for="api_key" class="form-label">plugNmeet API Key</label>
-              <input
-                type="text"
-                name="api_key"
-                id="api_key"
-                value=""
-                required
-                class="form-control"
-              />
-            </div>
-            <div class="item">
-              <label for="api_secret" class="form-label"
-                >plugNmeet API Secret</label
-              >
-              <input
-                type="password"
-                name="api_secret"
-                id="api_secret"
-                value=""
-                required
-                class="form-control"
-              />
-            </div>
-            <div class="item select-wrap">
-              <label for="room_id" class="form-label">Select Room</label>
-              <select class="form-select" id="room_id" name="room_id">
-                <option value="room01">Room 1</option>
-                <option value="room02">Room 2</option>
-                <option value="room03">Room 3</option>
-                <option value="room04">Room 4</option>
-                <option value="room05">Room 5</option>
-                <option value="room06">Room 6</option>
-                <option value="room07">Room 7</option>
-                <option value="room08">Room 8</option>
-                <option value="room09">Room 9</option>
-                <option value="room10">Room 10</option>
-                <option value="room11">Room 11</option>
-                <option value="room12">Room 12</option>
-                <option value="room13">Room 13</option>
-                <option value="room14">Room 14</option>
-                <option value="room15">Room 15</option>
-              </select>
-            </div>
-            <div class="item select-wrap">
-              <label for="user_type" class="form-label">User type</label>
-              <select class="form-select" id="user_type" name="user_type">
-                <option value="admin">Admin</option>
-                <option value="participant">Participant</option>
-              </select>
-            </div>
-            <div class="item">
-              <label for="name" class="form-label">Name</label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                required
-                class="form-control"
-              />
-            </div>
-            <div class="item">
-              <label for="user_id" class="form-label">User Id</label>
-              <input
-                type="text"
-                name="user_id"
-                id="user_id"
-                required
-                class="form-control"
-              />
-            </div>
-          </div>
-          <div class="buttons">
-            <button class="btn btn-primary" type="submit">Submit</button>
-            <button class="btn btn-danger" type="reset">Reset</button>
-          </div>
-        </form>
-      </div>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <img src="./assets/imgs/main-logo.png" alt="main-logo"/>
     </div>
+    <div class="form">
+        <form action="#" method="POST" id="loginForm">
+            <div class="inputs-wrapper">
+                <div class="item">
+                    <label for="api_key" class="form-label">plugNmeet API Key</label>
+                    <input
+                            type="text"
+                            name="api_key"
+                            id="api_key"
+                            value=""
+                            required
+                            class="form-control"
+                    />
+                </div>
+                <div class="item">
+                    <label for="api_secret" class="form-label"
+                    >plugNmeet API Secret</label
+                    >
+                    <input
+                            type="password"
+                            name="api_secret"
+                            id="api_secret"
+                            value=""
+                            required
+                            class="form-control"
+                    />
+                </div>
+                <div class="item select-wrap">
+                    <label for="room_id" class="form-label">Select Room</label>
+                    <select class="form-select" id="room_id" name="room_id">
+                        <option value="room01">Room 1</option>
+                        <option value="room02">Room 2</option>
+                        <option value="room03">Room 3</option>
+                        <option value="room04">Room 4</option>
+                        <option value="room05">Room 5</option>
+                        <option value="room06">Room 6</option>
+                        <option value="room07">Room 7</option>
+                        <option value="room08">Room 8</option>
+                        <option value="room09">Room 9</option>
+                        <option value="room10">Room 10</option>
+                        <option value="room11">Room 11</option>
+                        <option value="room12">Room 12</option>
+                        <option value="room13">Room 13</option>
+                        <option value="room14">Room 14</option>
+                        <option value="room15">Room 15</option>
+                    </select>
+                </div>
+                <div class="item select-wrap">
+                    <label for="user_type" class="form-label">User type</label>
+                    <select class="form-select" id="user_type" name="user_type">
+                        <option value="admin">Admin</option>
+                        <option value="participant">Participant</option>
+                    </select>
+                </div>
+                <div class="item">
+                    <label for="name" class="form-label">Name</label>
+                    <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            required
+                            class="form-control"
+                    />
+                </div>
+                <div class="item">
+                    <label for="user_id" class="form-label">User Id</label>
+                    <input
+                            type="text"
+                            name="user_id"
+                            id="user_id"
+                            required
+                            class="form-control"
+                    />
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-primary" type="submit">Submit</button>
+                <button class="btn btn-danger" type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <script type="text/javascript">
-      const loginForm = document.getElementById('loginForm');
-      let API_KEY, API_SECRET;
-      document.getElementById('user_id').value = Date.now();
-      document.getElementById('name').value =
+<script type="text/javascript">
+    const loginForm = document.getElementById('loginForm');
+    let API_KEY, API_SECRET;
+    document.getElementById('user_id').value = Date.now();
+    document.getElementById('name').value =
         'user-' + Math.floor(Math.random() * 100);
-      const toUrl = window.location.href.replace(/\/login.*$/i, '');
+    const toUrl = window.location.href.replace(/\/login.*$/i, '');
 
-      loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const data = new FormData(e.target);
 
         const roomInfo = {
-          room_id: data.get('room_id'),
-          empty_timeout: 60 * 60 * 2,
-          metadata: {
-            room_title: 'Demo room',
-            welcome_message:
-              'Welcome to plugNmeet!<br /> To share microphone click mic icon from bottom left side.',
-            //webhook_url: "http://example.com",
-            //logout_url: "http://example.com",
-            room_features: {
-              allow_webcams: true,
-              mute_on_start: false,
-              allow_screen_share: true,
-              allow_rtmp: true,
-              admin_only_webcams: false,
-              allow_view_other_webcams: true,
-              allow_view_other_users_list: true,
-              room_duration: 0,
-              enable_analytics: true,
-              allow_virtual_bg: true,
-              allow_raise_hand: true,
-              recording_features: {
-                is_allow: true,
-                is_allow_cloud: true,
-                is_allow_local: true,
-                enable_auto_cloud_recording: false,
-                only_record_admin_webcams: false,
-              },
-              chat_features: {
-                allow_chat: true,
-                allow_file_upload: true,
-                max_file_size: 50,
-                allowed_file_types: ['jpg', 'png', 'zip', 'pdf'],
-              },
-              shared_note_pad_features: {
-                allowed_shared_note_pad: true,
-              },
-              whiteboard_features: {
-                allowed_whiteboard: true,
-              },
-              external_media_player_features: {
-                allowed_external_media_player: true,
-              },
-              waiting_room_features: {
-                is_active: true,
-              },
-              breakout_room_features: {
-                is_allow: true,
-                allowed_number_rooms: 6,
-              },
-              display_external_link_features: {
-                is_allow: true,
-              },
-              ingress_features: {
-                is_allow: true,
-              },
-              polls_features:{
-                is_allow: true,
-              },
-              insights_features: {
-                  is_allow: true,
-                  transcription_features: {
-                      is_allow: true,
-                      is_allow_translation: true,
-                      is_allow_speech_synthesis: true,
-                  },
-                  chat_translation_features: {
-                      is_allow: true,
-                  },
-                  ai_features: {
-                      is_allow: true,
-                      ai_text_chat_features: {
-                          is_allow: true,
-                      },
-                      meeting_summarization_features:{
-                          is_allow: true,
-                      }
-                  },
-              },
-              end_to_end_encryption_features: {
-                is_enabled: false,
-                included_chat_messages: false,
-                // this may use more CPU for the user end.
-                // do not enable it unless really necessary
-                included_whiteboard: false,
-                // if true then user will have to insert
-                // shared key manually
-                enabled_self_insert_encryption_key: false,
-              },
+            room_id: data.get('room_id'),
+            empty_timeout: 60 * 60 * 2,
+            metadata: {
+                room_title: 'Demo room',
+                welcome_message:
+                    'Welcome to plugNmeet!<br /> To share microphone click mic icon from bottom left side.',
+                //webhook_url: "http://example.com",
+                //logout_url: "http://example.com",
+                room_features: {
+                    allow_webcams: true,
+                    mute_on_start: false,
+                    allow_screen_share: true,
+                    allow_rtmp: true,
+                    admin_only_webcams: false,
+                    allow_view_other_webcams: true,
+                    allow_view_other_users_list: true,
+                    room_duration: 0,
+                    enable_analytics: true,
+                    allow_virtual_bg: true,
+                    allow_raise_hand: true,
+                    recording_features: {
+                        is_allow: true,
+                        is_allow_cloud: true,
+                        is_allow_local: true,
+                        enable_auto_cloud_recording: false,
+                        only_record_admin_webcams: false,
+                    },
+                    chat_features: {
+                        is_allow: true,
+                        is_allow_file_upload: true,
+                        max_file_size: 50,
+                        allowed_file_types: ['jpg', 'png', 'zip', 'pdf'],
+                    },
+                    shared_note_pad_features: {
+                        is_allow: true,
+                    },
+                    whiteboard_features: {
+                        is_allow: true,
+                    },
+                    external_media_player_features: {
+                        is_allow: true,
+                    },
+                    waiting_room_features: {
+                        is_active: true,
+                    },
+                    breakout_room_features: {
+                        is_allow: true,
+                        allowed_number_rooms: 6,
+                    },
+                    display_external_link_features: {
+                        is_allow: true,
+                    },
+                    ingress_features: {
+                        is_allow: true,
+                    },
+                    polls_features: {
+                        is_allow: true,
+                    },
+                    insights_features: {
+                        is_allow: true,
+                        transcription_features: {
+                            is_allow: true,
+                            is_allow_translation: true,
+                            is_allow_speech_synthesis: true,
+                        },
+                        chat_translation_features: {
+                            is_allow: true,
+                        },
+                        ai_features: {
+                            is_allow: true,
+                            ai_text_chat_features: {
+                                is_allow: true,
+                            },
+                            meeting_summarization_features: {
+                                is_allow: true,
+                            }
+                        },
+                    },
+                    end_to_end_encryption_features: {
+                        is_enabled: false,
+                        included_chat_messages: false,
+                        // this may use more CPU for the user end.
+                        // do not enable it unless really necessary
+                        included_whiteboard: false,
+                        // if true then user will have to insert
+                        // shared key manually
+                        enabled_self_insert_encryption_key: false,
+                    },
+                },
+                // default_lock_settings: {
+                //     lock_microphone: true,
+                //     lock_screen_sharing: true,
+                //     lock_webcam: true,
+                //     lock_chat_file_share: true,
+                //     lock_chat_send_message: true
+                // }
             },
-            // default_lock_settings: {
-            //     lock_microphone: true,
-            //     lock_screen_sharing: true,
-            //     lock_webcam: true,
-            //     lock_chat_file_share: true,
-            //     lock_chat_send_message: true
-            // }
-          },
         };
 
         const userInfo = {
-          is_admin: data.get('user_type') === 'admin',
-          name: data.get('name'),
-          user_id: data.get('user_id'),
-          /*user_metadata: {
-                record_webcam: false,
-                preferred_lang: "bn-BD",
-            }*/
+            is_admin: data.get('user_type') === 'admin',
+            name: data.get('name'),
+            user_id: data.get('user_id'),
+            /*user_metadata: {
+                  record_webcam: false,
+                  preferred_lang: "bn-BD",
+              }*/
         };
 
         API_KEY = data.get('api_key');
         API_SECRET = data.get('api_secret');
 
         processRequest(roomInfo, userInfo);
-      });
+    });
 
-      processRequest = async (roomInfo, userInfo) => {
+    processRequest = async (roomInfo, userInfo) => {
         // let's check if room is active or not
         const isRoomActiveReq = {
-          room_id: roomInfo.room_id,
+            room_id: roomInfo.room_id,
         };
 
         const res = await sendRequest(isRoomActiveReq, 'room/isRoomActive');
         if (!res.status) {
-          alert(res.msg);
+            alert(res.msg);
         }
         let isRoomActive = res.is_active;
 
         // if not active then we'll create
         if (!isRoomActive) {
-          const roomCreateRes = await sendRequest(roomInfo, 'room/create');
-          if (!roomCreateRes.status) {
-            alert(roomCreateRes.msg);
-            return;
-          }
-          isRoomActive = roomCreateRes.status;
+            const roomCreateRes = await sendRequest(roomInfo, 'room/create');
+            if (!roomCreateRes.status) {
+                alert(roomCreateRes.msg);
+                return;
+            }
+            isRoomActive = roomCreateRes.status;
         }
 
         // if room active then we'll join
         if (isRoomActive) {
-          const getJoinTokenReq = {
-            room_id: roomInfo.room_id,
-            user_info: userInfo,
-          };
+            const getJoinTokenReq = {
+                room_id: roomInfo.room_id,
+                user_info: userInfo,
+            };
 
-          const roomJoinRes = await sendRequest(
-            getJoinTokenReq,
-            'room/getJoinToken',
-          );
+            const roomJoinRes = await sendRequest(
+                getJoinTokenReq,
+                'room/getJoinToken',
+            );
 
-          if (roomJoinRes.status) {
-            window.location.href =
-              toUrl + '/?access_token=' + roomJoinRes.token;
-          } else {
-            alert(roomJoinRes.msg);
-          }
+            if (roomJoinRes.status) {
+                window.location.href =
+                    toUrl + '/?access_token=' + roomJoinRes.token;
+            } else {
+                alert(roomJoinRes.msg);
+            }
         }
-      };
+    };
 
-      sendRequest = async (body, method) => {
+    sendRequest = async (body, method) => {
         const b = JSON.stringify(body);
         const signature = await getHashSignature(API_SECRET, b);
 
         let headers = {
-          'Content-Type': 'application/json',
-          'API-KEY': API_KEY,
-          'HASH-SIGNATURE': signature,
+            'Content-Type': 'application/json',
+            'API-KEY': API_KEY,
+            'HASH-SIGNATURE': signature,
         };
 
         const response = await fetch(
-          window.PLUG_N_MEET_SERVER_URL + '/auth/' + method,
-          {
-            method: 'POST',
-            headers: headers,
-            body: b,
-          },
+            window.PLUG_N_MEET_SERVER_URL + '/auth/' + method,
+            {
+                method: 'POST',
+                headers: headers,
+                body: b,
+            },
         );
 
         if (response.status !== 200) {
-          alert(response.statusText);
-          console.log(response.json());
-          return;
+            alert(response.statusText);
+            console.log(response.json());
+            return;
         }
 
         return await response.json();
-      };
+    };
 
-      // copied from https://stackoverflow.com/a/76117805/1281864
-      const getHashSignature = async (
+    // copied from https://stackoverflow.com/a/76117805/1281864
+    const getHashSignature = async (
         secretKey,
         message,
         algorithm = 'SHA-256',
-      ) => {
+    ) => {
         // Convert the message and secretKey to Uint8Array
         const encoder = new TextEncoder();
         const messageUint8Array = encoder.encode(message);
@@ -458,24 +480,24 @@
 
         // Import the secretKey as a CryptoKey
         const cryptoKey = await window.crypto.subtle.importKey(
-          'raw',
-          keyUint8Array,
-          { name: 'HMAC', hash: algorithm },
-          false,
-          ['sign'],
+            'raw',
+            keyUint8Array,
+            {name: 'HMAC', hash: algorithm},
+            false,
+            ['sign'],
         );
 
         // Sign the message with HMAC and the CryptoKey
         const signature = await window.crypto.subtle.sign(
-          'HMAC',
-          cryptoKey,
-          messageUint8Array,
+            'HMAC',
+            cryptoKey,
+            messageUint8Array,
         );
 
         // Convert the signature ArrayBuffer to a hex string
         const hashArray = Array.from(new Uint8Array(signature));
         return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-      };
-    </script>
-  </body>
+    };
+</script>
+</body>
 </html>

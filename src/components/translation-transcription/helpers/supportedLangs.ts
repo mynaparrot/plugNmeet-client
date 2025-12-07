@@ -25,14 +25,14 @@ const getSubtitleLangs = (
 ): Array<SupportedLangs> => {
   // If the language lists are not provided, fall back to the Redux store.
   if (!speechLangs || !transLangs) {
-    const speechService =
+    const transcriptionFeatures =
       store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.speechToTextTranslationFeatures;
+        ?.insightsFeatures?.transcriptionFeatures;
     if (!speechLangs) {
-      speechLangs = speechService?.allowedSpeechLangs;
+      speechLangs = transcriptionFeatures?.allowedSpokenLangs;
     }
     if (!transLangs) {
-      transLangs = speechService?.allowedTransLangs;
+      transLangs = transcriptionFeatures?.allowedTransLangs;
     }
   }
 
