@@ -100,7 +100,7 @@ const IconsInMenu = () => {
         <FooterMenuItem
           onClick={togglePollsPanel}
           isActive={isActivePollsPanel}
-          icon={<PollsIconSVG classes="text-Blue2-800" />}
+          icon={<PollsIconSVG classes="" />}
           text={
             isActivePollsPanel
               ? t('footer.icons.hide-polls-panel')
@@ -112,7 +112,7 @@ const IconsInMenu = () => {
         <FooterMenuItem
           onClick={toggleSpeechSettingOptionsModal}
           isActive={isActiveDisplaySpeechSettingOptionsModal}
-          icon={<SpeechIconSVG classes="text-Blue2-950 h-6 w-auto" />}
+          icon={<SpeechIconSVG classes="w-auto" />}
           text={
             isActiveDisplaySpeechSettingOptionsModal
               ? t('footer.icons.hide-translation-settings')
