@@ -230,7 +230,8 @@
     "uploading-file": "Uploading {{fileName}}",
     "file-upload-success": "File uploaded successfully",
     "file-upload-default-error": "There was an error uploading the file.",
-    "chat-box-placeholder": "Send a message, paste an image, or drop a file here (New line: Shift + Enter)"
+    "chat-box-placeholder": "Send a message, paste an image, or drop a file here (New line: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Hide footer",

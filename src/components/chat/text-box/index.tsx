@@ -55,6 +55,7 @@ const TextBoxArea = () => {
 
   const [message, setMessage] = useState<string>('');
   useAutosizeTextArea(textAreaRef.current, message);
+  const [isSendingMsg, setIsSendingMsg] = useState(false);
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
@@ -100,6 +101,9 @@ const TextBoxArea = () => {
   };
 
   const sendMsg = useCallback(async () => {
+    if (isSendingMsg || isMsgSendingLocked) {
+      return;
+    }
     if (conn) {
       const formattedMessage = message.replace(
         urlRegex,
@@ -111,14 +115,16 @@ const TextBoxArea = () => {
       if (isEmpty(msg)) {
         return;
       }
+      setIsSendingMsg(true);
+      setMessage('');
 
       await conn.sendChatMsg(
         selectedChatOption,
         msg.replace(/\r?\n/g, '<br />'),
       );
-      setMessage('');
+      setIsSendingMsg(false);
     }
-  }, [conn, message, selectedChatOption]);
+  }, [conn, message, selectedChatOption, isSendingMsg, isMsgSendingLocked]);
 
   const onEnterPress = useCallback(
     async (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -184,6 +190,10 @@ const TextBoxArea = () => {
     [isFileSendingLocked, isMsgSendingLocked, chatFeatures, dispatch, t],
   );
 
+  const placeholderText = isSendingMsg
+    ? t('right-panel.sending-message')
+    : t('right-panel.chat-box-placeholder');
+
   return (
     <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
       {showSendFile && (
@@ -199,14 +209,14 @@ const TextBoxArea = () => {
         value={message}
         onChange={handleChange}
         disabled={isMsgSendingLocked}
-        placeholder={t('right-panel.chat-box-placeholder').toString()}
+        placeholder={placeholderText}
         onKeyDown={onEnterPress}
         ref={textAreaRef}
         rows={1}
         onPaste={handleOnPaste}
       />
       <button
-        disabled={isMsgSendingLocked}
+        disabled={isMsgSendingLocked || isSendingMsg}
         onClick={sendMsg}
         className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'} ${!isMsgSendingLocked && !isEmpty(message) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
       >
