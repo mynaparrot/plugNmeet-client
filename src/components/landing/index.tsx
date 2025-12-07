@@ -226,7 +226,7 @@ const Landing = ({
                         />
                         {t('landing.waiting-for-approval-title')}
                       </h3>
-                      <p className="text-sm 3xl:text-base text-Gray-800 md:pl-7">
+                      <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:pl-7">
                         {waitingRoomMessage ||
                           t('notifications.waiting-for-approval')}
                       </p>
