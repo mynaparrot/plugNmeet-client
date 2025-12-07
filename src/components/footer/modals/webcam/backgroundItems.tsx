@@ -73,15 +73,15 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   };
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 md:h-[175px] overflow-auto scrollBar mb-0 3xl:mb-5">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 md:h-[175px] overflow-auto scrollBar">
       <div
         className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('none', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue shadow-virtual-item rounded-xl' : 'rounded-2xl'}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
         >
-          <i className="pnm-ban-solid dark:text-dark-secondary2" />
+          <i className="pnm-ban-solid dark:text-white" />
         </div>
       </div>
       <div
@@ -89,9 +89,9 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         onClick={() => handleOnClick('blur-sm', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.type === 'blur-sm' ? 'border border-Blue shadow-virtual-item rounded-xl' : 'rounded-2xl'}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'blur-sm' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
         >
-          <i className="pnm-blur dark:text-dark-secondary2" />
+          <i className="pnm-blur dark:text-white" />
         </div>
       </div>
       {bgImgs.map((imageUrl, i) => {
@@ -114,7 +114,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         );
       })}
       <div className="upload-btn-wrap relative border-4 border-transparent">
-        <button className="cursor-pointer h-18 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 overflow-hidden">
+        <button className="cursor-pointer h-18 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden">
           <svg
             width="16"
             height="16"

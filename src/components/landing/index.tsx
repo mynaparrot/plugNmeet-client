@@ -172,14 +172,14 @@ const Landing = ({
     isStartup && (
       <div
         id="startupJoinModal"
-        className={`absolute w-full join-the-audio-popup bg-Gray-100 min-h-full flex items-center justify-center p-5 scrollBar`}
+        className={`absolute w-full join-the-audio-popup bg-Gray-100 dark:bg-dark-primary min-h-full flex items-center justify-center p-5 scrollBar`}
       >
-        <div className="inner m-auto bg-Gray-50 border border-Gray-300 overflow-hidden rounded-2xl w-full max-w-4xl 3xl:max-w-5xl">
-          <div className="head bg-white h-[50px] 3xl:h-[60px] px-3 sm:px-5 flex justify-center sm:justify-start text-center sm:text-left items-center text-Gray-950 text-sm sm:text-base 3xl:text-lg font-medium border-b border-Gray-200">
+        <div className="inner m-auto bg-Gray-50 dark:bg-dark-primary border border-Gray-300 dark:border-Gray-700 overflow-hidden rounded-2xl w-full max-w-4xl 3xl:max-w-5xl">
+          <div className="head bg-white dark:bg-dark-secondary  h-[50px] 3xl:h-[60px] px-3 sm:px-5 flex justify-center sm:justify-start text-center sm:text-left items-center text-Gray-950 dark:text-white text-sm sm:text-base 3xl:text-lg font-medium border-b border-Gray-200 dark:border-Gray-700">
             {t('landing.modal-title')}
           </div>
-          <div className="wrapper bg-Gray-50 pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
-            <div className="left relative z-20 bg-Gray-25 shadow-box1 border border-Gray-200 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
+          <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
+            <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
               <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
                 {lockMicrophone ? (
@@ -217,7 +217,7 @@ const Landing = ({
                 <div className="inner waiting-room-contents relative md:-mt-10 w-full">
                   {waitForApproval ? (
                     <div className="texts text-center md:text-left">
-                      <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
+                      <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                         <LoadingIcon
                           className={
                             'inline h-5 w-5 text-Gray-200 animate-spin'
@@ -226,14 +226,14 @@ const Landing = ({
                         />
                         {t('landing.waiting-for-approval-title')}
                       </h3>
-                      <p className="text-sm 3xl:text-base text-Gray-800 md:pl-7">
+                      <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:pl-7">
                         {waitingRoomMessage ||
                           t('notifications.waiting-for-approval')}
                       </p>
                     </div>
                   ) : (
                     <div className="texts text-center md:text-left">
-                      <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
+                      <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                         <LoadingIcon
                           className={
                             'inline w-7 h-7 text-Gray-200 animate-spin'
@@ -248,10 +248,10 @@ const Landing = ({
               ) : (
                 <div className="inner relative w-full">
                   <div className="texts text-center md:text-left">
-                    <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 leading-snug pb-2">
+                    <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2">
                       {t('landing.ready-to-join')}
                     </h3>
-                    <p className="text-sm 3xl:text-base text-Gray-800">
+                    <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90">
                       {getJoinPrompt()}
                     </p>
                   </div>

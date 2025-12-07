@@ -66,7 +66,7 @@ const Footer = () => {
         <div className="footer-right w-[155px] lg:w-72 hidden md:flex items-center justify-end gap-2">
           <ParticipantIcon />
           {allowChat && <ChatIcon />}
-          <div className="line h-6 w-px bg-Gray-200"></div>
+          <div className="line h-6 w-px bg-Gray-200 dark:bg-Gray-700"></div>
           <EndMeetingButton />
         </div>
         <BreakoutRoomInvitation />

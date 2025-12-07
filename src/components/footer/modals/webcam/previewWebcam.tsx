@@ -110,7 +110,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
       </div>
       {displayVB() ? (
         <>
-          <div className="title text-xs md:text-sm leading-none text-Gray-700 px-1 md:px-3 uppercase pt-5 3x:pt-8 pb-5">
+          <div className="title text-xs md:text-sm leading-none text-Gray-700 dark:text-dark-text px-1 md:px-3 uppercase pt-5 3x:pt-8 pb-5">
             Choose Background
           </div>
           <BackgroundItems onSelect={onSelectBg} />{' '}

@@ -122,7 +122,7 @@ const Dropdown = ({
                             {option.text}
                           </span>
                           {selected && (
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500 dark:text-white">
                               <CheckMarkIcon />
                             </span>
                           )}
@@ -189,7 +189,7 @@ const Dropdown = ({
                   className={({ focus, selected }) =>
                     `relative select-none py-2 px-3 rounded-[8px] cursor-pointer ${
                       focus || selected
-                        ? 'bg-Blue2-50 dark:bg-dark-primary'
+                        ? 'bg-Blue2-50 dark:bg-dark-primary dark:text-white'
                         : 'dark:text-dark-text'
                     }`
                   }
@@ -198,7 +198,7 @@ const Dropdown = ({
                     <>
                       <span className={`block truncate`}>{option.text}</span>
                       {selected && (
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500">
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500 dark:text-white">
                           <CheckMarkIcon />
                         </span>
                       )}
