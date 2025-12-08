@@ -20,7 +20,7 @@ interface LanguageInfo {
   code: string;
 }
 
-const chatTranslation = () => {
+const ChatTranslation = () => {
   const dispatch = useAppDispatch();
   const chatTranslationFeatures = useAppSelector(
     (state) =>
@@ -95,4 +95,4 @@ const chatTranslation = () => {
   );
 };
 
-export default chatTranslation;
+export default ChatTranslation;
