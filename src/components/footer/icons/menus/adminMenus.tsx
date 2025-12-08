@@ -111,7 +111,7 @@ const AdminMenus = () => {
           }
         />
       )}
-      <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
       {roomFeatures?.sharedNotePadFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleSharedNotepad}
@@ -128,7 +128,7 @@ const AdminMenus = () => {
         roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
           <FooterMenuItem
             onClick={openInsightsAISettingsModal}
-            icon={<AiIconSVG classes="w-6 text-Blue2-800" />}
+            icon={<AiIconSVG classes="w-6" />}
             text={t('footer.menus.ai-settings')}
           />
         )}
@@ -136,7 +136,7 @@ const AdminMenus = () => {
         roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
           <FooterMenuItem
             onClick={openSpeechServiceSettingsModal}
-            icon={<SpeechIconSVG classes="w-6 text-Blue2-800" />}
+            icon={<SpeechIconSVG classes="w-6" />}
             text={t('footer.menus.speech-to-text-settings')}
           />
         )}
@@ -144,7 +144,7 @@ const AdminMenus = () => {
         <FooterMenuItem
           onClick={togglePolls}
           isActive={isActivePoll}
-          icon={<PollsIconSVG classes="text-Blue2-800" />}
+          icon={<PollsIconSVG classes="" />}
           text={
             isActivePoll
               ? t('footer.menus.disable-polls')
@@ -152,28 +152,24 @@ const AdminMenus = () => {
           }
         />
       )}
-      <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
       {roomFeatures?.waitingRoomFeatures?.isActive && (
         <FooterMenuItem
           onClick={openManageWaitingRoomModal}
-          icon={
-            <i className="pnm-waiting-room text-primary-color  transition ease-in group-hover:text-secondary-color" />
-          }
+          icon={<i className="pnm-waiting-room" />}
           text={t('footer.menus.manage-waiting-room')}
         />
       )}
       {roomFeatures?.breakoutRoomFeatures?.isAllow && (
         <FooterMenuItem
           onClick={openManageBreakoutRoomModal}
-          icon={<BreakoutRoomIconSVG classes="w-6 h-auto text-Blue2-800" />}
+          icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}
           text={t('footer.menus.manage-breakout-room')}
         />
       )}
       <FooterMenuItem
         onClick={muteAllUsers}
-        icon={
-          <i className="pnm-mic-mute text-primary-color transition ease-in group-hover:text-secondary-color" />
-        }
+        icon={<i className="pnm-mic-mute" />}
         text={t('footer.menus.mute-all-users')}
       />
       <FooterMenuItem

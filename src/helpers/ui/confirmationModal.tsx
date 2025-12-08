@@ -44,7 +44,7 @@ const ConfirmationModal = ({
       title={title}
       renderButtons={renderButtons}
     >
-      <p className="text-sm text-Gray-900">{text}</p>
+      <p className="text-sm text-Gray-900 dark:text-white">{text}</p>
     </Modal>
   );
 };
