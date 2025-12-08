@@ -2,7 +2,7 @@ name: Build and release client
 on:
   push:
     branches:
-      - main
+      - Design-2.0
 
 permissions:
   contents: write
@@ -16,7 +16,8 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: node
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
       - name: Checkout
         uses: actions/checkout@v5
       - name: setup node
