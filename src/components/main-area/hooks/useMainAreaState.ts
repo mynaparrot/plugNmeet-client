@@ -13,8 +13,8 @@ export const useMainAreaState = () => {
   const columnCameraPosition = useAppSelector(
     (state) => state.roomSettings.columnCameraPosition,
   );
-  const isActiveParticipantsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveParticipantsPanel,
+  const activeSidePanel = useAppSelector(
+    (state) => state.bottomIconsActivity.activeSidePanel,
   );
   const isActiveScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
@@ -34,12 +34,6 @@ export const useMainAreaState = () => {
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures
         ?.displayExternalLinkFeatures?.isActive,
-  );
-  const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
-  );
-  const isActivePollsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActivePollsPanel,
   );
   const screenHeight = useAppSelector(
     (state) => state.bottomIconsActivity.screenHeight,
@@ -91,7 +85,7 @@ export const useMainAreaState = () => {
   return {
     columnCameraWidth,
     columnCameraPosition,
-    isActiveParticipantsPanel,
+    activeSidePanel,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWebcamsView,
@@ -99,8 +93,6 @@ export const useMainAreaState = () => {
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
-    isActiveChatPanel,
-    isActivePollsPanel,
     screenHeight,
     screenWidth,
     headerVisible,

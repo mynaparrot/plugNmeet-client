@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 
 interface IUseMainAreaCustomCSS {
-  isActiveChatPanel: boolean;
-  isActiveParticipantsPanel: boolean;
-  isActivePollsPanel: boolean;
   isActiveScreenSharingView: boolean;
   hasScreenShareSubscribers: boolean;
   isActiveWhiteboard: boolean;
@@ -13,9 +10,6 @@ interface IUseMainAreaCustomCSS {
 }
 
 export const useMainAreaCustomCSS = ({
-  isActiveChatPanel,
-  isActiveParticipantsPanel,
-  isActivePollsPanel,
   isActiveScreenSharingView,
   hasScreenShareSubscribers,
   isActiveWhiteboard,
@@ -25,16 +19,6 @@ export const useMainAreaCustomCSS = ({
 }: IUseMainAreaCustomCSS) => {
   return useMemo(() => {
     const css: Array<string> = [];
-
-    isActiveChatPanel ? css.push('showChatPanel') : css.push('hideChatPanel');
-
-    isActiveParticipantsPanel
-      ? css.push('showParticipantsPanel')
-      : css.push('hideParticipantsPanel');
-
-    isActivePollsPanel
-      ? css.push('showPollsPanel')
-      : css.push('hidePollsPanel');
 
     isActiveScreenSharingView && hasScreenShareSubscribers
       ? css.push('showScreenShare fullWidthMainArea')
@@ -60,9 +44,6 @@ export const useMainAreaCustomCSS = ({
   }, [
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
-    isActiveChatPanel,
-    isActiveParticipantsPanel,
-    isActivePollsPanel,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,

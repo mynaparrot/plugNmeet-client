@@ -6,12 +6,13 @@ import LockSettingsModal from '../modals/lockSettingsModal';
 import RtmpModal from '../modals/rtmpModal';
 import ManageWaitingRoom from '../../waiting-room';
 import BreakoutRoom from '../../breakout-room';
-import TranscriptionSettingsModal from '../../speech-to-text-service/transcription-settings-modal';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import ExternalMediaPlayerModal from '../../external-media-player/modal';
 import DisplayExternalLinkModal from '../../display-external-link/modal';
 import AdminMenus from './menus/adminMenus';
 import IconsInMenu from './menus/iconsInMenu';
+import TranslationTranscriptionSettingModal from '../../translation-transcription/settingModal';
+import InsightsAiSettingsModal from '../../insights-ai';
 
 interface MenusIconProps {
   isAdmin: boolean;
@@ -39,6 +40,9 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
   );
   const showSpeechSettingsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingsModal,
+  );
+  const showInsightsAISettingsModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showInsightsAISettingsModal,
   );
 
   return (
@@ -94,7 +98,8 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
       {showManageWaitingRoomModal && <ManageWaitingRoom />}
       {showManageBreakoutRoomModal && <BreakoutRoom />}
       {showDisplayExternalLinkModal && <DisplayExternalLinkModal />}
-      {showSpeechSettingsModal && <TranscriptionSettingsModal />}
+      {showSpeechSettingsModal && <TranslationTranscriptionSettingModal />}
+      {showInsightsAISettingsModal && <InsightsAiSettingsModal />}
     </>
   );
 };

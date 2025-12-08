@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { updateIsActiveChatPanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { ChatIconSVG } from '../../../assets/Icons/ChatIconSVG';
+import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
 
 const ChatIcon = () => {
   const dispatch = useAppDispatch();
@@ -17,15 +17,15 @@ const ChatIcon = () => {
   }, []);
 
   const isActiveChatPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveChatPanel,
+    (state) => state.bottomIconsActivity.activeSidePanel === 'CHAT',
   );
   const totalUnreadChatMsgs = useAppSelector(
     (state) => state.bottomIconsActivity.totalUnreadChatMsgs,
   );
 
   const toggleChatPanel = useCallback(() => {
-    dispatch(updateIsActiveChatPanel(!isActiveChatPanel));
-  }, [dispatch, isActiveChatPanel]);
+    dispatch(setActiveSidePanel('CHAT'));
+  }, [dispatch]);
 
   const wrapperClasses = clsx(
     'message relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',

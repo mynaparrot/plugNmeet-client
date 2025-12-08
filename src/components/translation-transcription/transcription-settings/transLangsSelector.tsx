@@ -1,57 +1,65 @@
-import React, { Dispatch, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { supportedTranslationLangs } from '../helpers/supportedLangs';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
+import { supportedTranslationLangs } from '../helpers/supportedLangs';
 
 interface TransLangsSelectorProps {
+  isServiceRunning: boolean;
+  label: string;
   selectedTransLangs: Array<string>;
   setSelectedTransLangs: Dispatch<Array<string>>;
+  setErrorMsg: Dispatch<string | undefined>;
   maxLangsAllowSelecting: number;
 }
 
 const TransLangsSelector = ({
+  isServiceRunning,
+  label,
   selectedTransLangs,
   setSelectedTransLangs,
+  setErrorMsg,
   maxLangsAllowSelecting,
 }: TransLangsSelectorProps) => {
   const { t } = useTranslation();
   const [selectedItems, setSelectedItems] =
     useState<string[]>(selectedTransLangs);
+  const [selectOptions, setSelectOptions] = useState<ISelectOption[]>([]);
 
   useEffect(() => {
     if (selectedItems.length > maxLangsAllowSelecting) {
-      toast.warn(
-        t('speech-services.max-lang-selection-warning', {
-          num: maxLangsAllowSelecting,
-        }),
-        {
-          toastId: 'max-lang-selection-warning',
-        },
-      );
+      const msg = t('speech-services.max-lang-selection-warning', {
+        num: maxLangsAllowSelecting,
+      });
+
+      toast.warn(msg, {
+        toastId: 'max-lang-selection-warning',
+      });
+      setErrorMsg(msg);
       return;
     }
     setSelectedTransLangs(selectedItems);
-  }, [selectedItems, maxLangsAllowSelecting, setSelectedTransLangs, t]);
+  }, [
+    setErrorMsg,
+    selectedItems,
+    maxLangsAllowSelecting,
+    setSelectedTransLangs,
+    t,
+  ]);
 
-  const transLangOptions: ISelectOption[] = useMemo(() => {
-    return supportedTranslationLangs.map((l) => ({
-      value: l.code,
-      text: l.name,
-    }));
+  useEffect(() => {
+    supportedTranslationLangs().then((langs) => setSelectOptions(langs));
   }, []);
 
   return (
     <Dropdown
       id="trans-lang"
-      label={t('speech-services.translation-langs-label', {
-        num: maxLangsAllowSelecting,
-      })}
+      label={label}
       value={selectedTransLangs}
       onChange={setSelectedItems}
       multiple={true}
-      options={transLangOptions}
+      options={selectOptions}
+      disabled={isServiceRunning}
     />
   );
 };

@@ -2,6 +2,8 @@ import { create, fromJsonString } from '@bufbuild/protobuf';
 import {
   ChatMessageSchema,
   GenerateAzureTokenResSchema,
+  InsightsAITextChatStreamResult,
+  InsightsAITextChatStreamResultSchema,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
   NatsSystemNotificationSchema,
@@ -20,6 +22,7 @@ import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlic
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
 import { randomString } from '../utils';
+import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 
 export default class HandleSystemData {
   private readonly userId: string;
@@ -183,6 +186,11 @@ export default class HandleSystemData {
         newInstance: true,
       }),
     );
+  };
+
+  public handleInsightsAITextData = (msg: string) => {
+    const data = fromJsonString(InsightsAITextChatStreamResultSchema, msg);
+    store.dispatch(updateAiTextChat(data as InsightsAITextChatStreamResult));
   };
 
   private playNotification() {

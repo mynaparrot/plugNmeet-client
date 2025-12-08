@@ -17,13 +17,13 @@ import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useClientCustomization from '../../helpers/hooks/useClientCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
 import useWatchVisibilityChange from '../../helpers/hooks/useWatchVisibilityChange';
-import { updateIsActiveChatPanel } from '../../store/slices/bottomIconsActivitySlice';
 import useThemeSettings from '../../helpers/hooks/useThemeSettings';
 import { IConnectLivekit } from '../../helpers/livekit/types';
 import { isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import { InfoToOpenConn, roomConnectionStatus, verifyToken } from './helper';
 import { loadBodyPix } from '../virtual-background/helpers/utils';
+import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -102,7 +102,7 @@ const App = () => {
         setLoading(false);
         const session = store.getState().session;
         if (session.currentUser && isUserRecorder(session.currentUser.userId)) {
-          dispatch(updateIsActiveChatPanel(false));
+          dispatch(setActiveSidePanel(null));
         }
         if (session.currentUser?.metadata?.isAdmin) {
           setUserTypeClass('admin');

@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpeechToTextTranslationFeatures } from 'plugnmeet-protocol-js';
+import { InsightsTranscriptionFeatures } from 'plugnmeet-protocol-js';
 
 import { getSubtitleLangs } from '../helpers/supportedLangs';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 
 interface ISubtitleLangSelectorProps {
-  speechService: SpeechToTextTranslationFeatures;
+  transcriptionFeatures: InsightsTranscriptionFeatures;
   selectedSubtitleLang: string;
-  setSelectedSubtitleLang: React.Dispatch<string>;
+  setSelectedSubtitleLang: (lang: string) => void;
 }
 
 const SubtitleLangSelector = ({
-  speechService,
+  transcriptionFeatures,
   selectedSubtitleLang,
   setSelectedSubtitleLang,
 }: ISubtitleLangSelectorProps) => {
@@ -20,14 +20,17 @@ const SubtitleLangSelector = ({
 
   const dropdownOptions: ISelectOption[] = useMemo(() => {
     const langs = getSubtitleLangs(
-      speechService.allowedSpeechLangs,
-      speechService.allowedTransLangs,
+      transcriptionFeatures.allowedSpokenLangs,
+      transcriptionFeatures.allowedTransLangs,
     );
     return langs.map((l) => ({
       value: l.code,
       text: l.name,
     }));
-  }, [speechService.allowedSpeechLangs, speechService.allowedTransLangs]);
+  }, [
+    transcriptionFeatures.allowedSpokenLangs,
+    transcriptionFeatures.allowedTransLangs,
+  ]);
 
   return (
     <div className="px-5 pt-4 pb-4">

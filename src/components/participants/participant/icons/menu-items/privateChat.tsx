@@ -7,7 +7,7 @@ import {
   updateInitiatePrivateChat,
   updateSelectedChatOption,
 } from '../../../../../store/slices/roomSettingsSlice';
-import { updateIsActiveChatPanel } from '../../../../../store/slices/bottomIconsActivitySlice';
+import { setActiveSidePanel } from '../../../../../store/slices/bottomIconsActivitySlice';
 
 interface IChatMenuItemProps {
   userId: string;
@@ -18,7 +18,7 @@ const PrivateChatMenuItem = ({ name, userId }: IChatMenuItemProps) => {
   const { t } = useTranslation();
 
   const initiatePrivateChat = () => {
-    dispatch(updateIsActiveChatPanel(true));
+    dispatch(setActiveSidePanel('CHAT'));
     dispatch(
       updateInitiatePrivateChat({
         name,

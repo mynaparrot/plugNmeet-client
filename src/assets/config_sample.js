@@ -46,19 +46,19 @@ window.plugNmeetConfig = {
   // Default: true.
   focusActiveSpeakerWebcam: true,
 
-  // Design customization in JSON format.
-  /*designCustomization: `{
-     "primary_color": "#004D90",
-     "secondary_color": "#24AEF7",
-     "background_color": "#0b7db4",
-     "background_image": "https:\/\/mydomain.com\/custom_bg.png",
-     "header_bg_color": "#45b3ec",
-     "footer_bg_color": "#45b3ec",
-     "left_side_bg_color": "#04a2f3",
-     "right_side_bg_color": "#04a2f3",
-     "custom_css_url": "https:\/\/mydomain.com\/plugNmeet_desing.css",
-     "custom_logo": "https:\/\/mydomain.com\/logo.png"
-   }`,*/
+  // Design customization in JS Object or JSON format.
+  /*designCustomization: {
+    primary_color: '#004D90',
+    secondary_color: '#24AEF7',
+    background_color: '#0b7db4',
+    background_image: 'https://mydomain.com/custom_bg.png',
+    header_bg_color: '#45b3ec',
+    footer_bg_color: '#45b3ec',
+    left_side_bg_color: '#04a2f3',
+    right_side_bg_color: '#04a2f3',
+    custom_css_url: 'https://mydomain.com/plugNmeet_desing.css',
+    custom_logo: 'https://mydomain.com/logo.png',
+  },*/
 
   // Whiteboard PreloadedLibraryItems, which should be an array of full library direct URLs.
   // You can get items from here: https://libraries.excalidraw.com

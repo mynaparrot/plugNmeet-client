@@ -86,21 +86,26 @@ const useClientCustomization = () => {
     }
 
     let designCustomParams: ICustomDesignParams = {};
-    try {
-      designCustomParams = JSON.parse(customDesign);
-      // first set the logo
-      if (designCustomParams.custom_logo) {
-        // from design params let's assume logo will be only light to reduce complexity
-        (window as any).plugNmeetConfig.customLogo = {
-          main_logo_light: designCustomParams.custom_logo,
-        };
+    if (typeof customDesign === 'object') {
+      designCustomParams = customDesign;
+    } else {
+      try {
+        designCustomParams = JSON.parse(customDesign);
+      } catch (e) {
+        console.error("can't parse custom design params", e);
+        freezeConfig();
+        return;
       }
-      freezeConfig();
-    } catch (e) {
-      console.error("can't parse custom design params", e);
-      freezeConfig();
-      return;
     }
+
+    // first set the logo
+    if (designCustomParams.custom_logo) {
+      // from design params let's assume logo will be only light to reduce complexity
+      (window as any).plugNmeetConfig.customLogo = {
+        main_logo_light: designCustomParams.custom_logo,
+      };
+    }
+    freezeConfig();
 
     let css = '';
 

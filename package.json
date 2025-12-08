@@ -16,7 +16,7 @@
     "size-limit": "pnpm run build && size-limit --json"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "2.10.1",
+    "@bufbuild/protobuf": "2.10.0",
     "@excalidraw/excalidraw": "0.18.0",
     "@headlessui/react": "2.2.9",
     "@nats-io/jetstream": "3.2.0",
@@ -35,10 +35,11 @@
     "i18next-http-backend": "3.0.2",
     "idb": "8.0.3",
     "livekit-client": "2.15.16",
+    "marked": "17.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.47.0",
     "mobile-detect": "1.4.5",
     "nosleep.js": "0.12.0",
-    "plugnmeet-protocol-js": "1.0.16-29",
+    "plugnmeet-protocol-js": "1.0.16-31",
     "react": "19.2.0",
     "react-cool-virtual": "0.7.0",
     "react-dnd": "16.0.1",

@@ -6,7 +6,7 @@ import { useExternalMediaPlayer } from './hooks/useExternalMediaPlayer';
 import { useDisplayExternalLink } from './hooks/useDisplayExternalLink';
 import { useVideosComponent } from './hooks/useVideosComponent';
 import { useScreenShareElements } from './hooks/useScreenShareElements';
-import { useSpeechToTextService } from './hooks/useSpeechToTextService';
+import { useTranslationTranscription } from './hooks/useTranslationTranscription';
 import { useVideoLayout } from './hooks/useVideoLayout';
 
 import AudioElements from '../media-elements/audios';
@@ -71,7 +71,7 @@ const MainView = ({
   const screenShareElementsElm = useScreenShareElements(
     isActiveScreenSharingView,
   );
-  const speechToTextServiceElm = useSpeechToTextService();
+  const translationTranscriptionElm = useTranslationTranscription();
 
   return (
     <>
@@ -87,7 +87,7 @@ const MainView = ({
         {screenShareElementsElm}
         {sharedNotepadElm}
         {whiteboardElm}
-        {speechToTextServiceElm}
+        {translationTranscriptionElm}
         {externalMediaPlayerElm}
         {displayExternalLinkElm}
       </LayoutWrapper>

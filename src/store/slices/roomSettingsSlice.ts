@@ -12,7 +12,7 @@ import {
   UserNotification,
   VideoObjectFit,
 } from './interfaces/roomSettings';
-import { AzureTokenInfo } from '../../components/speech-to-text-service/helpers/apiConnections';
+import { AzureTokenInfo } from '../../components/translation-transcription/helpers/apiConnections';
 import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 
 const initialState: IRoomSettings = {
@@ -41,6 +41,7 @@ const initialState: IRoomSettings = {
     userId: '',
   },
   unreadMsgFrom: [],
+  selectedChatTransLang: '',
 
   columnCameraWidth: ColumnCameraWidth.FULL_WIDTH,
   columnCameraPosition: ColumnCameraPosition.LEFT,
@@ -198,6 +199,9 @@ const roomSettingsSlice = createSlice({
     updateIsSidePanelOpened: (state, action: PayloadAction<boolean>) => {
       state.isSidePanelOpened = action.payload;
     },
+    updateSelectedChatTransLang: (state, action: PayloadAction<string>) => {
+      state.selectedChatTransLang = action.payload;
+    },
   },
 });
 
@@ -235,6 +239,7 @@ export const {
   addUserNotification,
   setAllUserNotifications,
   updateIsSidePanelOpened,
+  updateSelectedChatTransLang,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

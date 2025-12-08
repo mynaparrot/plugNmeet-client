@@ -9,6 +9,7 @@ import useMuteAll from './hooks/useMuteAll';
 import useExternalMediaPlayer from './hooks/useExternalMediaPlayer';
 import useDisplayExternalLink from './hooks/useDisplayExternalLink';
 import {
+  updateDisplayInsightsAISettingsModal,
   updateDisplaySpeechSettingsModal,
   updateShowLockSettingsModal,
   updateShowManageBreakoutRoomModal,
@@ -23,6 +24,7 @@ import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSVG';
 import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 
 const AdminMenus = () => {
   const dispatch = useAppDispatch();
@@ -67,6 +69,10 @@ const AdminMenus = () => {
     dispatch(updateShowManageBreakoutRoomModal(true));
   }, [dispatch]);
 
+  const openInsightsAISettingsModal = useCallback(() => {
+    dispatch(updateDisplayInsightsAISettingsModal(true));
+  }, [dispatch]);
+
   return (
     <>
       {roomFeatures?.allowRtmp && (
@@ -81,8 +87,7 @@ const AdminMenus = () => {
           }
         />
       )}
-      {roomFeatures?.externalMediaPlayerFeatures
-        ?.allowedExternalMediaPlayer && (
+      {roomFeatures?.externalMediaPlayerFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleExternalMediaPlayer}
           isActive={isActiveExternalMediaPlayer}
@@ -107,7 +112,7 @@ const AdminMenus = () => {
         />
       )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
-      {roomFeatures?.sharedNotePadFeatures?.allowedSharedNotePad && (
+      {roomFeatures?.sharedNotePadFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleSharedNotepad}
           isActive={sharedNotepadStatus}
@@ -119,13 +124,22 @@ const AdminMenus = () => {
           }
         />
       )}
-      {roomFeatures?.speechToTextTranslationFeatures?.isAllow && (
-        <FooterMenuItem
-          onClick={openSpeechServiceSettingsModal}
-          icon={<SpeechIconSVG classes="w-6" />}
-          text={t('footer.menus.speech-to-text-settings')}
-        />
-      )}
+      {roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
+          <FooterMenuItem
+            onClick={openInsightsAISettingsModal}
+            icon={<AiIconSVG classes="w-6" />}
+            text={t('footer.menus.ai-settings')}
+          />
+        )}
+      {roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
+          <FooterMenuItem
+            onClick={openSpeechServiceSettingsModal}
+            icon={<SpeechIconSVG classes="w-6" />}
+            text={t('footer.menus.speech-to-text-settings')}
+          />
+        )}
       {roomFeatures?.pollsFeatures?.isAllow && (
         <FooterMenuItem
           onClick={togglePolls}

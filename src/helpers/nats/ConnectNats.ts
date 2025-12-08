@@ -8,6 +8,7 @@ import {
   DataChannelMessageSchema,
   DataMsgBodyType,
   EndToEndEncryptionFeatures,
+  InsightsTranslateTextReqSchema,
   MediaServerConnInfoSchema,
   NatsInitialData,
   NatsInitialDataSchema,
@@ -85,6 +86,7 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
 import { createLivekitConnection } from '../livekit/utils';
+import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 60 * 1000;
@@ -471,6 +473,31 @@ export default class ConnectNats {
       fromAdmin: this.isAdmin,
     });
 
+    // check translation settings
+    const state = store.getState();
+    const chatTranslationFeatures =
+      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures
+        ?.chatTranslationFeatures;
+    if (chatTranslationFeatures && chatTranslationFeatures.isEnabled) {
+      // we'll get our selected lang
+      const selectedChatTransLang = state.roomSettings.selectedChatTransLang;
+      if (selectedChatTransLang !== '') {
+        // we'll need to send request to get translation of selected lang
+        const body = create(InsightsTranslateTextReqSchema, {
+          text: chatMessage.message,
+          sourceLang: selectedChatTransLang,
+          targetLangs: chatTranslationFeatures.allowedTransLangs,
+        });
+        const res = await executeChatTranslation(body);
+        if (res.status && res.result) {
+          chatMessage.sourceLang = selectedChatTransLang;
+          chatMessage.translations = res.result.translations;
+        } else {
+          console.error(res.msg);
+        }
+      }
+    }
+
     let payload: Uint8Array = toBinary(ChatMessageSchema, chatMessage);
 
     if (this._enableE2EEChat) {
@@ -662,6 +689,10 @@ export default class ConnectNats {
       this.handleSystemData.handleBreakoutRoom(p),
     [NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG]: (p) =>
       this.handleSystemData.handleSysChatMsg(p.msg),
+    [NatsMsgServerToClientEvents.TRANSCRIPTION_OUTPUT_TEXT]: (p) =>
+      this.handleDataMsg.handleSpeechSubtitleText(p.msg),
+    [NatsMsgServerToClientEvents.RESP_INSIGHTS_AI_TEXT_CHAT]: (p) =>
+      this.handleSystemData.handleInsightsAITextData(p.msg),
   };
 
   /**

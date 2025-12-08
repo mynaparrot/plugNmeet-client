@@ -31,7 +31,7 @@ import {
 import { languagesMap } from '../languages';
 import i18n from '../i18n';
 import {
-  updateIsActiveParticipantsPanel,
+  setActiveSidePanel,
   updateIsActiveRaisehand,
 } from '../../store/slices/bottomIconsActivitySlice';
 import {
@@ -312,8 +312,10 @@ export default class HandleParticipants {
 
     if (metadata.waitForApproval && this._isLocalUserAdmin) {
       // we can open the participants panel if close
-      if (!store.getState().bottomIconsActivity.isActiveParticipantsPanel) {
-        store.dispatch(updateIsActiveParticipantsPanel(true));
+      if (
+        store.getState().bottomIconsActivity.activeSidePanel !== 'PARTICIPANTS'
+      ) {
+        store.dispatch(setActiveSidePanel('PARTICIPANTS'));
       }
       // also play notification
       store.dispatch(updatePlayAudioNotification(true));
@@ -330,8 +332,7 @@ export default class HandleParticipants {
 
   private recorderJoined() {
     this.startParticipantCounter();
-    //store.dispatch(updateIsActiveChatPanel(false));
-    store.dispatch(updateIsActiveParticipantsPanel(false));
+    store.dispatch(setActiveSidePanel(null));
   }
 
   /*

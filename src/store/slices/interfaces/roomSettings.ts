@@ -2,7 +2,7 @@ import { VideoQuality } from 'livekit-client';
 import { Theme } from '@excalidraw/excalidraw/element/types';
 import type { TypeOptions } from 'react-toastify';
 
-import { AzureTokenInfo } from '../../../components/speech-to-text-service/helpers/apiConnections';
+import { AzureTokenInfo } from '../../../components/translation-transcription/helpers/apiConnections';
 
 export enum VideoObjectFit {
   COVER = 'cover',
@@ -32,6 +32,7 @@ export interface IRoomSettings {
   selectedChatOption: string;
   initiatePrivateChat: InitiatePrivateChat;
   unreadMsgFrom: Array<string>;
+  selectedChatTransLang: string;
 
   columnCameraWidth: ColumnCameraWidth;
   columnCameraPosition: ColumnCameraPosition;

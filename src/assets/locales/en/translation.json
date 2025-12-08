@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view.",
     "new-system-message-in-chat": "A new system message has been posted in the public chat.",
     "queue-holding-messages": "Connection problem: messages are being held. ({{error}})",
-    "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})"
+    "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -229,7 +230,8 @@
     "uploading-file": "Uploading {{fileName}}",
     "file-upload-success": "File uploaded successfully",
     "file-upload-default-error": "There was an error uploading the file.",
-    "chat-box-placeholder": "Send a message, paste an image, or drop a file here (New line: Shift + Enter)"
+    "chat-box-placeholder": "Send a message, paste an image, or drop a file here (New line: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Hide footer",
@@ -247,6 +249,8 @@
       "show-users-list": "Show Participant List",
       "hide-chat-panel": "Hide Chat",
       "show-chat-panel": "Show Chat",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Stop Sharing Screen",
       "start-screen-sharing": "Share Screen",
       "screen-sharing-locked": "Screen Sharing Locked",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Share External Link",
       "stop-display-external-link": "Stop Sharing Link",
       "speech-to-text-settings": "Transcription & Translation",
+      "ai-settings": "AI Tools",
       "enable-polls": "Enable polls",
       "disable-polls": "Disable polls"
     },
@@ -486,22 +491,29 @@
   },
   "speech-services": {
     "modal-settings-title": "Transcription & Translation Settings",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Enable Transcription",
     "speech-langs-label": "Spoken Languages",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Users to Transcribe",
     "subtitle-font-size": "Caption Font Size",
     "enable-translation": "Enable Translation",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Translate to (max: {{num}})",
     "default-subtitle-lang-label": "Default Caption Language",
+    "default-lang-label": "Default Language",
     "enable-service": "Enable Service",
     "speech-user-required": "At least one user must be selected to transcribe.",
     "speech-lang-required": "At least one spoken language must be selected.",
     "translation-lang-required": "At least one language must be selected for translation.",
     "service-ready": "Transcription service is ready.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Start",
     "stop-service": "Stop",
     "update-service": "Update",
-    "service-stopped": "The service has been stopped.",
+    "service-stopped": "The transcription service has been stopped.",
     "start-modal-title": "Transcription and Translation",
     "speech-lang-label": "Spoken Language",
     "subtitle-lang-label": "Caption Language",
@@ -521,6 +533,37 @@
     "azure-error": "Microsoft Azure service error: {{error}}",
     "speech-to-text-stopped": "Transcription service has stopped.",
     "enable-transcription": "Enable Transcription",
-    "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}"
+    "download-header": "Subtitle History for {{name}}\nLanguage: {{lang}}\nGenerated on: {{date}} at {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }

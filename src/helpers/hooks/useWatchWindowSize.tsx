@@ -4,9 +4,8 @@ import type { Room } from 'livekit-client';
 import NoSleep from 'nosleep.js';
 
 import {
+  setActiveSidePanel,
   updateDeviceOrientation,
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
   updateScreenHeight,
   updateScreenWidth,
 } from '../../store/slices/bottomIconsActivitySlice';
@@ -64,17 +63,11 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       dispatch(updateScreenHeight(window.innerHeight));
       adjustScreenSize();
 
-      const isActiveChatPanel =
-        store.getState().bottomIconsActivity.isActiveChatPanel;
-      const isActiveParticipantsPanel =
-        store.getState().bottomIconsActivity.isActiveParticipantsPanel;
-      if (
-        window.innerWidth < 1024 &&
-        isActiveChatPanel &&
-        isActiveParticipantsPanel
-      ) {
+      const activeSidePanel =
+        store.getState().bottomIconsActivity.activeSidePanel;
+      if (window.innerWidth < 1024 && activeSidePanel) {
         // if both open better to close one
-        dispatch(updateIsActiveParticipantsPanel(false));
+        dispatch(setActiveSidePanel(null));
       }
     });
 
@@ -83,8 +76,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     dispatch(updateScreenHeight(window.innerHeight));
 
     if (window.innerWidth < 1024) {
-      dispatch(updateIsActiveParticipantsPanel(false));
-      dispatch(updateIsActiveChatPanel(false));
+      dispatch(setActiveSidePanel(null));
     }
 
     let deviceClass = 'is-pc',

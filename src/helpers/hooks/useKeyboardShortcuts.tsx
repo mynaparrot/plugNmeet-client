@@ -9,9 +9,8 @@ import { create } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch } from '../../store';
 import {
-  updateIsActiveChatPanel,
+  setActiveSidePanel,
   updateIsActiveMicrophone,
-  updateIsActiveParticipantsPanel,
   updateIsActiveWebcam,
   updateIsActiveWhiteboard,
   updateIsMicMuted,
@@ -155,16 +154,12 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
 
   // toggle users' list (ctrl+alt+u)
   useHotkeys('ctrl+alt+u', () => {
-    const isActiveParticipantsPanel =
-      store.getState().bottomIconsActivity.isActiveParticipantsPanel;
-    dispatch(updateIsActiveParticipantsPanel(!isActiveParticipantsPanel));
+    dispatch(setActiveSidePanel('PARTICIPANTS'));
   });
 
   // toggle chat (ctrl+alt+c)
   useHotkeys('ctrl+alt+c', () => {
-    const isActiveChatPanel =
-      store.getState().bottomIconsActivity.isActiveChatPanel;
-    dispatch(updateIsActiveChatPanel(!isActiveChatPanel));
+    dispatch(setActiveSidePanel('CHAT'));
   });
 
   // toggle locks options (ctrl+alt+l)

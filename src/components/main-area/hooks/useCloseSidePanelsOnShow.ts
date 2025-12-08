@@ -1,11 +1,7 @@
 import { useEffect } from 'react';
 
-import {
-  updateIsActiveChatPanel,
-  updateIsActiveParticipantsPanel,
-  updateIsActivePollsPanel,
-} from '../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch } from '../../../store';
+import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
 
 export const useCloseSidePanelsOnShow = (
   shouldShow: boolean,
@@ -16,9 +12,7 @@ export const useCloseSidePanelsOnShow = (
   useEffect(() => {
     if (shouldShow && !isRecorder) {
       const timeout = setTimeout(() => {
-        dispatch(updateIsActiveChatPanel(false));
-        dispatch(updateIsActiveParticipantsPanel(false));
-        dispatch(updateIsActivePollsPanel(false));
+        dispatch(setActiveSidePanel(null));
       }, 200);
       return () => clearTimeout(timeout);
     }
