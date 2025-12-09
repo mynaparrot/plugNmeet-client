@@ -8,7 +8,7 @@ interface IParticipantNameProps {
 const ParticipantName = ({ name, isCurrentUser }: IParticipantNameProps) => {
   const { t } = useTranslation();
   return (
-    <p className="text-xs 3xl:text-sm font-medium text-Gray-800">
+    <p className="text-xs 3xl:text-sm font-medium text-Gray-800 dark:text-white">
       {name} {isCurrentUser ? t('left-panel.me') : null}
     </p>
   );

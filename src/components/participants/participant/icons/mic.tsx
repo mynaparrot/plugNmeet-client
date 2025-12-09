@@ -68,7 +68,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
             <>
               <MenuButton>
                 {volume ? (
-                  <Microphone classes="h-3 3xl:h-4 w-auto cursor-pointer" />
+                  <Microphone classes="h-3 3xl:h-4 w-auto cursor-pointer dark:text-white" />
                 ) : (
                   <MicrophoneOff classes="h-3 3xl:h-4 w-auto cursor-pointer" />
                 )}
@@ -77,7 +77,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
               <Transition show={open}>
                 <MenuItems
                   static
-                  className="volume-popup-wrapper z-10 absolute ltr:-right-6 rtl:-left-6 top-3 mt-2 w-48 xl:w-60 py-4 px-2 rounded-md shadow-virtual-pOP bg-white ring-1 ring-Gray-100 focus:outline-hidden"
+                  className="volume-popup-wrapper z-10 absolute ltr:-right-6 rtl:-left-6 top-3 mt-2 w-48 xl:w-60 py-4 px-2 rounded-md shadow-virtual-pOP bg-white dark:bg-dark-secondary3 ring-1 ring-Gray-100 dark:ring-Gray-700 focus:outline-hidden"
                 >
                   <section className="flex items-center">
                     <div className="flex-1 px-1">
@@ -92,12 +92,12 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                         trackHeight={4}
                       />
                     </div>
-                    <p className="w-10 text-center text-sm">
+                    <p className="w-10 text-center text-sm dark:text-white">
                       {Math.round(volume * 100)}
                     </p>
                     <button className="w-5 h-5">
                       {volume ? (
-                        <Microphone classes="h-3 3xl:h-4 w-auto" />
+                        <Microphone classes="h-3 3xl:h-4 w-auto dark:text-white" />
                       ) : (
                         <MicrophoneOff classes="h-3 3xl:h-4 w-auto" />
                       )}

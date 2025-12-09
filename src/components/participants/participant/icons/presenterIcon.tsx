@@ -17,7 +17,7 @@ const PresenterIcon = ({ userId }: IPresenterIconProps) => {
   return (
     isPresenter && (
       <IconWrapper>
-        <i className="pnm-presenter text-Gray-950 text-sm 3xl:text-base" />
+        <i className="pnm-presenter text-Gray-950 dark:text-white text-sm 3xl:text-base" />
       </IconWrapper>
     )
   );

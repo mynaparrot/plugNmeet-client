@@ -16,7 +16,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
   return (
     raisedHand && (
       <IconWrapper>
-        <HandsIconSVG classes={'h-3 3xl:h-4 w-auto'} />
+        <HandsIconSVG classes={'h-3 3xl:h-4 w-auto dark:text-white'} />
       </IconWrapper>
     )
   );

@@ -33,9 +33,9 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
         className="absolute left-5 bottom-14"
         onClick={() => setShowPopover(!showPopover)}
       >
-        <div className="chat-history-icon relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 shadow-virtual-item flex items-center justify-center">
+        <div className="chat-history-icon relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 dark:border-Gray-700 shadow-virtual-item flex items-center justify-center">
           {!showPopover && (
-            <span className="tooltip">
+            <span className="tooltip tooltip-left -left-4!">
               {t('speech-services.subtitle-history-modal-title')}
             </span>
           )}

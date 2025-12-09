@@ -17,7 +17,7 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
   return (
     videoTracks > 0 && (
       <IconWrapper>
-        <Camera classes={'h-3 3xl:h-4 w-auto'} />
+        <Camera classes={'h-3 3xl:h-4 w-auto dark:text-white'} />
       </IconWrapper>
     )
   );

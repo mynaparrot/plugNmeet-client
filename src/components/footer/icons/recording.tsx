@@ -219,7 +219,7 @@ const RecordingIcon = () => {
   );
 
   const innerDivClasses = clsx(
-    'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 text-Gray-950 dark:text-white',
+    'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white',
     {
       'has-tooltip': showTooltip,
       'bg-gray-100 dark:bg-Gray-700': isRecording,

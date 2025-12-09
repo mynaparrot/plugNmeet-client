@@ -15,7 +15,7 @@ const VisibilityIcon = ({ userId }: VisibilityIconProps) => {
   return (
     visibility === 'hidden' && (
       <IconWrapper>
-        <i className="pnm-eye-slash text-Gray-950 text-sm 3xl:text-base" />
+        <i className="pnm-eye-slash text-Gray-950 dark:text-white text-sm 3xl:text-base" />
       </IconWrapper>
     )
   );
