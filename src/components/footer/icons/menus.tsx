@@ -74,17 +74,19 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
               >
                 <MenuItems
                   static={false}
-                  className="origin-bottom-left -right-11 md:left-0 z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2"
+                  className="origin-bottom-left -right-11 lg:left-0 z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2"
                   id="footer-menu"
                 >
                   <div className="inner">
                     {isAdmin && (
                       <>
                         <AdminMenus />
-                        <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
                       </>
                     )}
-                    <IconsInMenu />
+                    <div className="mobile-menu-icons block md:hidden">
+                      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5 last-one"></div>
+                      <IconsInMenu />
+                    </div>
                   </div>
                 </MenuItems>
               </Transition>

@@ -91,14 +91,14 @@ const Modal = ({
               </DialogTitle>
               <div
                 className={clsx(
-                  'p-4 bg-Gray-25 dark:bg-dark-primary',
+                  'p-4 bg-Gray-25 dark:bg-dark-primary rounded-b-xl',
                   customBodyClass,
                 )}
               >
                 {children}
               </div>
               {renderButtons && (
-                <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end rounded-b-xl">
+                <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end">
                   {renderButtons()}
                 </div>
               )}

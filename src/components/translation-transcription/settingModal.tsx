@@ -65,7 +65,7 @@ const TranslationTranscriptionSettingModal = () => {
       show={showSpeechSettingsModal}
       onClose={onCloseModal}
       title={t('speech-services.start-modal-title')}
-      customClass="overflow-hidden"
+      customClass="speechServicesModal"
       maxWidth="max-w-2xl"
     >
       <div className="-mx-4">
