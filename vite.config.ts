@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import { viteStaticCopy, ViteStaticCopyOptions } from 'vite-plugin-static-copy';
 import tailwindcss from '@tailwindcss/vite';
 import oxlintPlugin from 'vite-plugin-oxlint';
+import cleanPlugin from 'vite-plugin-clean';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const BUILD_INTERVAL = 1500;
@@ -33,7 +34,7 @@ export default defineConfig({
   },
   build: {
     outDir: '../dist',
-    emptyOutDir: true,
+    emptyOutDir: false,
     sourcemap: !isProduction,
     rolldownOptions: {
       output: {
@@ -59,6 +60,9 @@ export default defineConfig({
     tailwindcss(),
     viteStaticCopy(getStaticFilesToCopy()),
     oxlintPlugin(),
+    cleanPlugin({
+      targetFiles: ['dist/assets/js', 'dist/assets/css', 'dist/assets/chunks'],
+    }),
   ],
   define: {
     IS_PRODUCTION: isProduction,

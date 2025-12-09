@@ -51,17 +51,13 @@ const MainArea = () => {
   } = useMainAreaState();
 
   useEffect(() => {
-    if (!roomFeatures?.chatFeatures?.allowChat) {
+    if (!roomFeatures?.chatFeatures?.isAllow) {
       // If chat is not allowed and it's the active panel, close it.
       if (store.getState().bottomIconsActivity.activeSidePanel === 'CHAT') {
         dispatch(setActiveSidePanel(null));
       }
     }
 
-    // if not recorder then by default participants panel will open
-    if (!isRecorder) {
-      dispatch(setActiveSidePanel('PARTICIPANTS'));
-    }
     // if recorder then webcam always has extended view
     if (isRecorder) {
       dispatch(updateIsEnabledExtendedVerticalCamView(true));
@@ -115,19 +111,26 @@ const MainArea = () => {
     if (isRecorder) {
       return screenHeight;
     }
+
+    const isSmallScreen = screenWidth < 768;
+    const isMediumScreen = screenWidth < 1760;
+
     if (headerVisible && footerVisible) {
-      return screenWidth < 768
-        ? screenHeight - 119.5
-        : screenWidth < 1760
-          ? screenHeight - 108
-          : screenHeight - 144;
-    } else if (headerVisible && !footerVisible) {
+      if (isSmallScreen) {
+        return screenHeight - 119.5;
+      }
+      if (isMediumScreen) {
+        return screenHeight - 108;
+      }
+      return screenHeight - 144;
+    } else if (headerVisible) {
       return screenHeight - 68;
-    } else if (!headerVisible && footerVisible) {
+    } else if (footerVisible) {
       return screenHeight - 76;
+    } else {
+      // If both are hidden
+      return screenHeight;
     }
-    // if both are hidden
-    return screenHeight;
   }, [screenHeight, screenWidth, isRecorder, headerVisible, footerVisible]);
 
   const debouncedRefresh = useMemo(

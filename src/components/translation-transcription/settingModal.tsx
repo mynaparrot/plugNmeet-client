@@ -11,6 +11,7 @@ import {
   supportedTranscriptionLangs,
   supportedTranslationLangs,
 } from './helpers/supportedLangs';
+import { LoadingIcon } from '../../assets/Icons/Loading';
 
 const TranslationTranscriptionSettingModal = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ const TranslationTranscriptionSettingModal = () => {
 
   const [tabItems, setTabItems] = useState<ITabItem[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const state = store.getState();
@@ -30,6 +32,7 @@ const TranslationTranscriptionSettingModal = () => {
     if (!insightsFeatures || !insightsFeatures.isAllow) {
       return;
     }
+    setIsLoading(true);
     // prepare languages
     Promise.allSettled([
       supportedTranscriptionLangs(),
@@ -52,6 +55,7 @@ const TranslationTranscriptionSettingModal = () => {
         });
       }
       setTabItems(tabItems);
+      setIsLoading(false);
     });
     //oxlint-disable-next-line
   }, []);
@@ -74,7 +78,16 @@ const TranslationTranscriptionSettingModal = () => {
             {errorMsg}
           </div>
         )}
-        {tabItems.length && <Tabs items={tabItems} vertical />}
+        {isLoading ? (
+          <div className="flex justify-center mt-12">
+            <LoadingIcon
+              className="h-10 w-10 animate-spin text-gray-200"
+              fillColor="#004D90"
+            />
+          </div>
+        ) : (
+          <>{tabItems.length ? <Tabs items={tabItems} vertical /> : null}</>
+        )}
       </div>
     </Modal>
   );
