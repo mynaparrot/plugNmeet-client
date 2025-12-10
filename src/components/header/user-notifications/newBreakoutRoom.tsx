@@ -106,15 +106,15 @@ const NewBreakoutRoom = ({
   };
 
   return (
-    <div className="notification notif-breakoutRoom flex gap-4 py-2 px-4 border-b border-Gray-200">
+    <div className="notification notif-breakoutRoom flex gap-4 py-2 px-4 border-b border-Gray-200 dark:border-Gray-800">
       <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
         <BreakoutRoomIconSVG classes="w-[15px]" />
       </div>
-      <div className="text flex-1 text-Gray-800 text-sm">
+      <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
         <p>{t('breakout-room.invitation-msg')}</p>
         {joinLink !== '' && (
           <div className="invite-link">
-            <label className="text-black dark:text-dark-text text-sm">
+            <label className="text-black dark:text-white text-sm">
               {t('breakout-room.join-text-label')}
             </label>
             <input

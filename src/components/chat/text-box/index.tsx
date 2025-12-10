@@ -195,7 +195,7 @@ const TextBoxArea = () => {
     : t('right-panel.chat-box-placeholder');
 
   return (
-    <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
+    <div className="flex items-center justify-between border border-Gray-200 dark:border-Gray-700 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
       {showSendFile && (
         <FileSend
           lockSendFile={isFileSendingLocked}
@@ -205,7 +205,7 @@ const TextBoxArea = () => {
       <textarea
         name="message-textarea"
         id="message-textarea"
-        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 font-normal h-10 mr-2 overflow-hidden"
+        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 dark:text-white font-normal h-10 mr-2 overflow-hidden"
         value={message}
         onChange={handleChange}
         disabled={isMsgSendingLocked}

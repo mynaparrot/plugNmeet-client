@@ -118,7 +118,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
   return (
     <MenuItem>
       <button
-        className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-left leading-none font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50"
+        className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-left leading-none font-medium text-Gray-950 dark:text-white px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2"
         onClick={handleMicAction}
       >
         {text}

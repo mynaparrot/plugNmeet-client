@@ -106,7 +106,7 @@ const ChatComponent = () => {
 
   return (
     <div
-      className="relative z-10 w-full bg-Gray-25 border-l border-Gray-200 h-full"
+      className="relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800 h-full"
       onDrop={handleOnDrop}
       onDragOver={(e) => e.preventDefault()}
     >
@@ -116,7 +116,7 @@ const ChatComponent = () => {
         </div>
       </div>
       {canShowChatInput && (
-        <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 bg-white w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
+        <div className="message-form absolute bottom-0 z-30 border-t border-Gray-200 dark:border-Gray-800 bg-white dark:bg-dark-secondary w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
           <TextBoxArea />
         </div>
       )}

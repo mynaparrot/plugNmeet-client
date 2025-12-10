@@ -113,9 +113,9 @@ const ChatTabs = () => {
 
   return (
     <div className="h-full">
-      <div className="top-chat-header flex items-center gap-2 h-10 3xl:h-14 px-3 3xl:px-5 justify-between">
+      <div className="top-chat-header flex items-center gap-2 h-10 px-3 3xl:px-5 justify-between">
         <div className="left flex items-center gap-3">
-          <p className="text-sm 3xl:text-base text-Gray-950 3xl:font-medium leading-tight">
+          <p className="text-sm text-Gray-950 dark:text-white 3xl:font-medium leading-tight">
             {selectedChatOption === 'public'
               ? t('left-panel.public-chat')
               : t('left-panel.private-chat')}
@@ -128,10 +128,12 @@ const ChatTabs = () => {
       </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative z-10 chat-tabs">
-          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 h-8 3xl:h-10 w-full outline-hidden px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700 cursor-pointer">
+          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 dark:border-Gray-800 h-8 3xl:h-10 w-full outline-hidden px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700 dark:text-dark-text cursor-pointer">
             <p className="block truncate">
               To:{' '}
-              <span className="font-medium text-Gray-950">{selectedTitle}</span>
+              <span className="font-medium text-Gray-950 dark:text-white">
+                {selectedTitle}
+              </span>
             </p>
             <span className="pointer-events-none absolute inset-y-0 right-3 3xl:right-5 flex items-center">
               {hasUnreadMessages && (
@@ -162,17 +164,17 @@ const ChatTabs = () => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] left-1 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2">
-              <div className="title h-8 3xl:h-10 w-full flex items-center text-xs 3xl:text-sm leading-none text-Gray-700 px-3 uppercase">
+            <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] left-1 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2">
+              <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
                 {t('left-panel.select-chat-conversation-title')}
               </div>
               {chatOptions.map((option) => (
                 <ListboxOption
                   key={option.id}
                   className={({ focus, selected }) =>
-                    `h-8 3xl:h-10 w-full cursor-pointer flex items-center text-sm 3xl:text-base gap-2 leading-none 3xl:font-medium text-Gray-950 px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 relative ${
-                      focus ? 'bg-Gray-50' : ''
-                    } ${selected ? 'bg-Gray-50' : ''}`
+                    `h-8 w-full cursor-pointer flex items-center text-sm gap-2 leading-none 3xl:font-medium text-Gray-950 dark:text-dark-text px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 relative ${
+                      focus ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''
+                    } ${selected ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''}`
                   }
                   value={option.id}
                 >

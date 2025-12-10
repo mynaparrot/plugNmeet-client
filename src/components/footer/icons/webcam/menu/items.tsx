@@ -91,7 +91,7 @@ const WebcamMenuItems = ({
         <MenuItem>
           {() => (
             <p
-              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2"
+              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"
               onClick={toggleWebcam}
             >
               <CameraOff classes={'h-4 w-auto'} />
@@ -104,10 +104,10 @@ const WebcamMenuItems = ({
         <MenuItem>
           {() => (
             <p
-              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2"
+              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"
               onClick={leaveWebcam}
             >
-              <i className="pnm-logout text-red-700 text-base transition ease-in" />
+              <i className="pnm-logout text-base transition ease-in" />
               {t('footer.menus.leave-webcam')}
             </p>
           )}

@@ -87,7 +87,7 @@ const MenuIcon = ({
       <Menu as="div" className="flex items-center">
         {({ open }) => (
           <>
-            <MenuButton className="relative shrink-0 cursor-pointer">
+            <MenuButton className="relative shrink-0 cursor-pointer dark:text-white">
               <ParticipantsMenuIconSVG />
             </MenuButton>
             <Transition
@@ -101,7 +101,7 @@ const MenuIcon = ({
             >
               <MenuItems
                 static
-                className="origin-top-right z-10 absolute top-8 ltr:right-0 rtl:left-0 w-60 border border-Gray-100 bg-white shadow-lg rounded-2xl overflow-hidden p-2"
+                className="origin-top-right z-10 absolute top-8 ltr:right-0 rtl:left-0 w-60 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-secondary3 shadow-lg rounded-2xl overflow-hidden p-2"
               >
                 {menuItems}
               </MenuItems>

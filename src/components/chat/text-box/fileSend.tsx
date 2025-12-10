@@ -87,11 +87,11 @@ const FileSend = ({ lockSendFile, chatFeatures }: IFileSendProps) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 18 18"
             fill="none"
-            className="h-auto w-4 3xl:w-[18px] cursor-pointer"
+            className="h-auto w-4 3xl:w-[18px] cursor-pointer text-Gray-950 dark:text-white"
           >
             <path
               d="M13.125 3.94186V12.375C13.125 14.6532 11.2782 16.5 9 16.5C6.72183 16.5 4.875 14.6532 4.875 12.375V4.25C4.875 2.73122 6.10622 1.5 7.625 1.5C9.14378 1.5 10.375 2.73122 10.375 4.25V12.3343C10.375 13.0937 9.75939 13.7093 9 13.7093C8.24061 13.7093 7.625 13.0937 7.625 12.3343V4.98837"
-              stroke="#0C131A"
+              stroke="CurrentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"

@@ -32,13 +32,13 @@ const NewPoll = ({ createdAt, onClosePopover }: INewPollProps) => {
   };
 
   return (
-    <div className="notification notif-new-poll w-full flex gap-4 py-2 px-4 border-b border-Gray-200">
+    <div className="notification notif-new-poll w-full flex gap-4 py-2 px-4 border-b border-Gray-200 dark:border-Gray-800">
       <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
         <PollsIconSVG classes="w-[15px]" />
       </div>
-      <div className="text flex-1 text-Gray-800 text-sm">
+      <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
         <p>{t('polls.new-poll')}</p>
-        <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
+        <div className="bottom flex justify-between text-Gray-800 dark:text-white text-xs items-center">
           <span className="">{formatDate(createdAt)}</span>{' '}
           <ActionButton
             onClick={openPollsPanel}

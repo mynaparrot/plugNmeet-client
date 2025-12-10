@@ -29,15 +29,15 @@ const GenericNotification = ({ notification }: IGenericNotificationProps) => {
 
   return (
     <div
-      className="notification notif-new-poll w-full flex gap-4 py-2 px-4 border-b border-Gray-200"
+      className="notification notif-new-poll w-full flex gap-4 py-2 px-4 border-b border-Gray-200 dark:border-Gray-800"
       key={notification.created}
     >
       <div className={iconClasses}>
         <NotifyIconSVG classes="w-[15px] h-auto" />
       </div>
-      <div className="text flex-1 text-Gray-800 text-sm">
+      <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
         <p>{notification.message}</p>
-        <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
+        <div className="bottom flex justify-between text-Gray-800 dark:text-white text-xs items-center pt-1">
           <span className="">{formatDate(notification.created)}</span>
         </div>
       </div>
