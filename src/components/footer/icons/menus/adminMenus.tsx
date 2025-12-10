@@ -75,6 +75,14 @@ const AdminMenus = () => {
 
   return (
     <>
+      {roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
+          <FooterMenuItem
+            onClick={openInsightsAISettingsModal}
+            icon={<AiIconSVG classes="w-6" />}
+            text={t('footer.menus.ai-settings')}
+          />
+        )}
       {roomFeatures?.allowRtmp && (
         <FooterMenuItem
           onClick={openRtmpModal}
@@ -84,6 +92,27 @@ const AdminMenus = () => {
             isActiveRtmpBroadcasting
               ? t('footer.icons.stop-rtmp-broadcasting')
               : t('footer.icons.start-rtmp-broadcasting')
+          }
+        />
+      )}
+      {roomFeatures?.insightsFeatures?.isAllow &&
+        roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
+          <FooterMenuItem
+            onClick={openSpeechServiceSettingsModal}
+            icon={<SpeechIconSVG classes="w-6" />}
+            text={t('footer.menus.speech-to-text-settings')}
+          />
+        )}
+      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
+      {roomFeatures?.pollsFeatures?.isAllow && (
+        <FooterMenuItem
+          onClick={togglePolls}
+          isActive={isActivePoll}
+          icon={<PollsIconSVG classes="" />}
+          text={
+            isActivePoll
+              ? t('footer.menus.disable-polls')
+              : t('footer.menus.enable-polls')
           }
         />
       )}
@@ -111,7 +140,6 @@ const AdminMenus = () => {
           }
         />
       )}
-      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
       {roomFeatures?.sharedNotePadFeatures?.isAllow && (
         <FooterMenuItem
           onClick={toggleSharedNotepad}
@@ -124,35 +152,17 @@ const AdminMenus = () => {
           }
         />
       )}
-      {roomFeatures?.insightsFeatures?.isAllow &&
-        roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
-          <FooterMenuItem
-            onClick={openInsightsAISettingsModal}
-            icon={<AiIconSVG classes="w-6" />}
-            text={t('footer.menus.ai-settings')}
-          />
-        )}
-      {roomFeatures?.insightsFeatures?.isAllow &&
-        roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
-          <FooterMenuItem
-            onClick={openSpeechServiceSettingsModal}
-            icon={<SpeechIconSVG classes="w-6" />}
-            text={t('footer.menus.speech-to-text-settings')}
-          />
-        )}
-      {roomFeatures?.pollsFeatures?.isAllow && (
-        <FooterMenuItem
-          onClick={togglePolls}
-          isActive={isActivePoll}
-          icon={<PollsIconSVG classes="" />}
-          text={
-            isActivePoll
-              ? t('footer.menus.disable-polls')
-              : t('footer.menus.enable-polls')
-          }
-        />
-      )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
+      <FooterMenuItem
+        onClick={muteAllUsers}
+        icon={<i className="pnm-mic-mute" />}
+        text={t('footer.menus.mute-all-users')}
+      />
+      <FooterMenuItem
+        onClick={openLockSettingsModal}
+        icon={<RoomLockIconSVG />}
+        text={t('footer.menus.room-lock-settings')}
+      />
       {roomFeatures?.waitingRoomFeatures?.isActive && (
         <FooterMenuItem
           onClick={openManageWaitingRoomModal}
@@ -167,16 +177,6 @@ const AdminMenus = () => {
           text={t('footer.menus.manage-breakout-room')}
         />
       )}
-      <FooterMenuItem
-        onClick={muteAllUsers}
-        icon={<i className="pnm-mic-mute" />}
-        text={t('footer.menus.mute-all-users')}
-      />
-      <FooterMenuItem
-        onClick={openLockSettingsModal}
-        icon={<RoomLockIconSVG />}
-        text={t('footer.menus.room-lock-settings')}
-      />
     </>
   );
 };
