@@ -21,14 +21,14 @@ const KeyboardShortcuts = () => {
       show={isShowKeyboardShortcuts}
       onClose={closeModal}
       title={
-        <h3 className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 mb-2">
+        <h3 className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 dark:text-white mb-2">
           <span>{t('header.keyboard-shortcuts.title')}</span>
         </h3>
       }
       maxWidth="max-w-2xl"
       customClass="KeyboardShortcuts"
     >
-      <table className="border-collapse border border-slate-500 w-full">
+      <table className="border-collapse border border-slate-500 w-full text-Gray-950 dark:text-dark-text">
         <thead>
           <tr>
             <th className="pl-2 border-b border-r border-slate-700 text-xs sm:text-sm md:text-base">

@@ -43,7 +43,7 @@ section.Toastify {
 }
 
 input.default-input {
-  @apply h-10 3xl:h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-sm 3xl:text-base;
+  @apply h-10 3xl:h-11 rounded-[15px] border border-Gray-300 bg-white dark:bg-transparent shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white;
 }
 
 input.polls-checkbox::before {

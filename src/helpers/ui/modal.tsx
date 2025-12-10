@@ -86,7 +86,7 @@ const Modal = ({
                   className="cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
-                  <PopupCloseSVGIcon classes="text-Gray-600" />
+                  <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
                 </Button>
               </DialogTitle>
               <div

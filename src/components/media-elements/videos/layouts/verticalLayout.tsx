@@ -31,7 +31,7 @@ const VerticalLayout = ({
     );
   }, [dispatch, isEnabledExtendedVerticalCamView]);
 
-  const wrapperClasses = `vertical-webcams-wrapper group absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 border-l border-Gray-200 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
+  const wrapperClasses = `vertical-webcams-wrapper group absolute right-0 bottom-0 xl:bottom-auto xl:top-0 bg-Gray-25 dark:bg-dark-primary border-t xl:border-t-0 xl:border-l border-Gray-200 dark:border-Gray-800 h-[126px] lg:h-[200px] xl:h-full p-3 transition-all duration-300 z-20 ${
     isEnabledExtendedVerticalCamView
       ? 'w-full xl:w-[416px] flex flex-col justify-center extended-view-wrap'
       : 'w-full xl:w-[212px] not-extended'
