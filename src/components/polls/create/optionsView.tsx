@@ -53,7 +53,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
 
   return (
     <div className="option-field-wrapper pt-5 pb-6">
-      <p className="text-sm text-Gray-800 font-medium mb-2 inline-block">
+      <p className="text-sm text-Gray-800 dark:text-white font-medium mb-2 inline-block">
         {t('polls.options')}
       </p>
       <div className="overflow-auto h-full max-h-[345px] scrollBar scrollBar2 mb-5">
@@ -76,7 +76,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
                 {canRemove && (
                   <button
                     type="button"
-                    className="h-10 md:h-11 w-10 md:w-11 border border-Red-200 bg-Red-50 text-Red-600 shadow-button-shadow rounded-[12px] md:rounded-[15px] flex items-center justify-center cursor-pointer"
+                    className="h-10 md:h-11 w-10 md:w-11 border border-Red-200 bg-Red-50 dark:bg-dark-secondary text-Red-600 shadow-button-shadow dark:shadow-none rounded-[12px] md:rounded-[15px] flex items-center justify-center cursor-pointer"
                     onClick={() => removeOption(elm.id)}
                   >
                     <TrashIconSVG />

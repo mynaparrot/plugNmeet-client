@@ -150,8 +150,8 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
   };
 
   return (
-    <div className="polls-item-inner bg-Gray-50 rounded-xl">
-      <div className="head min-h-10 flex items-center justify-between w-full px-4 text-sm text-Gray-700 gap-3">
+    <div className="polls-item-inner bg-Gray-50 dark:bg-dark-secondary2 rounded-xl">
+      <div className="head min-h-10 flex items-center justify-between w-full px-4 text-sm text-Gray-700 dark:text-white gap-3">
         <div className="left flex items-center gap-3">
           <span className="uppercase">
             {t('polls.poll-num', {
@@ -174,18 +174,18 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           )}
         </div>
       </div>
-      <div className="bg-white px-4 py-4 border border-Gray-200 shadow-button-shadow rounded-xl">
+      <div className="bg-white dark:bg-dark-primary px-4 py-4 border border-Gray-200 dark:border-Gray-700 shadow-button-shadow dark:shadow-none rounded-xl">
         <Disclosure defaultOpen={item.isRunning} as="div">
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
-                <span className="text-sm text-Gray-800 font-medium block">
+                <span className="text-sm text-Gray-800 dark:text-white font-medium block">
                   {item.question}
                 </span>
                 <motion.div
                   animate={{ rotate: open ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
-                  className="group-hover:opacity-100 transition-opacity duration-200"
+                  className="group-hover:opacity-100 transition-opacity duration-200 text-Gray-800 dark:text-white"
                 >
                   <svg
                     width="16"
@@ -197,7 +197,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
                   >
                     <path
                       d="M11.9999 10L7.99988 6L3.99988 10"
-                      stroke="#7493B3"
+                      stroke="CurrentColor"
                       strokeWidth="1.67"
                       strokeLinecap="round"
                       strokeLinejoin="round"

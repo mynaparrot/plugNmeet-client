@@ -126,7 +126,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       elms.push(
         <div
           key={`option-${pollDataWithOption.pollId}-${o.id}`}
-          className="relative flex items-center border border-Gray-300 min-h-[38px] bg-white shadow-button-shadow rounded-xl px-2 overflow-hidden my-2 cursor-pointer"
+          className="relative flex items-center border border-Gray-300 dark:border-Gray-600 min-h-[38px] bg-white dark:bg-dark-secondary shadow-button-shadow dark:shadow-none rounded-xl px-2 overflow-hidden my-2 cursor-pointer"
           onClick={() => onClickSelectOption(o.id)}
         >
           <input
@@ -137,7 +137,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
           />
           <label
-            className="text-sm text-Gray-900 w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+            className="text-sm text-Gray-900 dark:text-white w-full h-full pl-7 z-10 flex items-center cursor-pointer"
             htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
           >
             {o.text}
@@ -151,7 +151,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
                   backgroundColor: barColor,
                 }}
               ></div>
-              <div className="per absolute top-1/2 -translate-y-1/2 right-4 text-xs text-Gray-700">
+              <div className="per absolute top-1/2 -translate-y-1/2 right-4 text-xs text-Gray-700 dark:text-white">
                 {o.responsesPercentage + '%'}
               </div>
             </>
