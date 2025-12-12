@@ -549,6 +549,7 @@
     "tab-ai-text-chat-title": "AI Assistant Chat",
     "tab-meeting-summarization-title": "Meeting summarization",
     "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
     "ai-text-chat": {
       "name": "AI Assistant",
       "panel-title": "AI Assistant Chat",
