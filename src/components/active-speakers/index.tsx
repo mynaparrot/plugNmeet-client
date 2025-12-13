@@ -33,7 +33,7 @@ const reOrderWebcams = throttle(
   { edges: ['leading'] },
 );
 
-const ActiveSpeakers = () => {
+const ActiveSpeakers = ({ activeSidePanel }) => {
   const activeSpeakers = useAppSelector(selectSpeakingParticipants);
   const participantIds = useAppSelector(participantsSelector.selectIds);
   const room = getMediaServerConn();
@@ -79,7 +79,9 @@ const ActiveSpeakers = () => {
 
   return (
     activeSpeakersElms && (
-      <div className="active-speakers-wrap flex w-full items-center justify-center absolute top-0 left-0 z-9999">
+      <div
+        className={`active-speakers-wrap flex items-center justify-center absolute top-0 left-0 z-9999] ${activeSidePanel ? 'md:w-[calc(100%-300px)] 3xl:w-[calc(100%-340px)]' : 'w-full'}`}
+      >
         {activeSpeakersElms}
       </div>
     )

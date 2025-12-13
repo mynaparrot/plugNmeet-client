@@ -170,7 +170,7 @@ const MainArea = () => {
     >
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div className={middleAreaClasses}>
-          <ActiveSpeakers />
+          <ActiveSpeakers activeSidePanel={activeSidePanel} />
           {renderMainView}
         </div>
         <SidePanel
