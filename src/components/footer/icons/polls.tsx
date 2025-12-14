@@ -47,7 +47,7 @@ const PollsIcon = () => {
     {
       'has-tooltip': showTooltip,
       'bg-gray-100 dark:bg-Gray-700': isActivePollsPanel,
-      'bg-white dark:bg-Gray-700': !isActivePollsPanel,
+      'bg-white dark:bg-Gray-800': !isActivePollsPanel,
     },
   );
 

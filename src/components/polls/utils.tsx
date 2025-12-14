@@ -33,10 +33,10 @@ const RespondentItem = ({ user }: { user: Respondents }) => {
 
   return (
     <p
-      className="text-xs w-[156.5px] font-medium text-Gray-800 flex items-center gap-1 px-[14px]"
+      className="text-xs w-[156.5px] font-medium text-Gray-800 dark:text-white flex items-center gap-1 px-[14px]"
       key={user.userId}
     >
-      <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 flex items-center justify-center text-white text-[8px] font-medium">
+      <span className="w-[18px] h-[18px] rounded-md bg-Blue2-700 dark:bg-dark-secondary2 flex items-center justify-center text-white text-[8px] font-medium">
         {initials}
       </span>
       {user.name}
@@ -57,7 +57,7 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
   respondentChunks.forEach((users, i) => {
     elms.push(
       <div
-        className="grid gap-2 content-start border-r border-Gray-300 py-2 w-max last:border-none"
+        className="grid gap-2 content-start border-r border-Gray-300 dark:border-Gray-800 py-2 w-max last:border-none"
         key={`chunk-${i}`}
       >
         {users.map((user) => (

@@ -23,15 +23,15 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
       const elm = (
         <Disclosure as="div" key={o.id}>
           {({ open }) => (
-            <div className="bg-Gray-50 rounded-xl border border-gray-300 overflow-hidden w-[632px]">
+            <div className="bg-Gray-50 dark:bg-dark-secondary rounded-xl border border-gray-300 dark:border-Gray-800 overflow-hidden w-[632px]">
               <DisclosureButton
-                className={`flex items-center cursor-pointer justify-between gap-3 w-full pl-[14px] pr-2 bg-white h-9 rounded-xl  shadow-button-shadow transition-all duration-300 ${open ? 'border-b border-gray-300' : ''}`}
+                className={`flex items-center cursor-pointer justify-between gap-3 w-full pl-[14px] pr-2 bg-white dark:bg-dark-secondary3 h-9 rounded-xl  shadow-button-shadow dark:shadow-none transition-all duration-300 ${open ? 'border-b border-Gray-300 dark:border-Gray-800' : ''}`}
               >
-                <span className="text-sm text-Gray-800">
+                <span className="text-sm text-Gray-800 dark:text-white">
                   {o.text} ({o.respondents.length})
                 </span>
                 <div className="right flex items-center gap-2">
-                  <span className="text-xs text-Gray-700">
+                  <span className="text-xs text-Gray-700 dark:text-dark-text">
                     ({o.responsesPercentage + '%'})
                   </span>
                   <motion.div
@@ -87,7 +87,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
 
   return (
     <div className="px-5 py-5">
-      <p className="text-sm font-medium text-Gray-800 mb-4">
+      <p className="text-sm font-medium text-Gray-800 dark:text-dark-text mb-4">
         {t('polls.total-responses', {
           count: pollDataWithOption.totalRespondents,
         })}

@@ -55,23 +55,23 @@ const PollActionsMenu = ({
           >
             <MenuItems
               static
-              className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 bg-white p-2 ring-0 focus:outline-hidden"
+              className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 ring-0 focus:outline-hidden"
             >
               <MenuItem>
                 <button
-                  className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Gray-50 text-sm gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                   onClick={() => setViewDetails(true)}
                 >
                   {t('polls.view-details')}
                 </button>
               </MenuItem>
-              <div className="divider h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div>
+              <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
               {isRunning ? (
                 <MenuItem>
                   <button
                     onClick={() => endPoll(pollDataWithOption.pollId)}
                     disabled={isEndingPoll}
-                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Red-50 text-sm gap-2 leading-none font-medium text-Red-700 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
+                    className="h-7 cursor-pointer w-full flex items-center hover:bg-Red-600 text-sm gap-2 leading-none font-medium text-Red-700 hover:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
                   >
                     {t('polls.end-poll')}
                   </button>
@@ -79,7 +79,7 @@ const PollActionsMenu = ({
               ) : (
                 <MenuItem>
                   <button
-                    className="h-7 cursor-pointer w-full flex items-center bg-white hover:bg-Gray-50 text-sm gap-2 leading-none font-medium text-Gray-950 px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
+                    className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
                     onClick={handlePublish}
                     disabled={isPublishing}
                   >

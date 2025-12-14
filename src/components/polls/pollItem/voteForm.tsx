@@ -173,7 +173,9 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       {isLoading && (
         <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
           <LoadingIcon
-            className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
+            className={
+              'inline w-10 h-10 me-3 text-Gray-200 dark:text-Gray-800 animate-spin'
+            }
             fillColor={'#004D90'}
           />
         </div>
@@ -181,7 +183,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button
-            className="h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue border border-DarkBlue transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow"
+            className="h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue dark:bg-dark-secondary2 border border-DarkBlue dark:border-dark-secondary2 transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow dark:shadow-none"
             type="submit"
           >
             {t('polls.submit')}

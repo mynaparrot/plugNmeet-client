@@ -47,9 +47,12 @@ input.default-input {
 }
 
 input.polls-checkbox::before {
-  @apply absolute top-0 left-0 h-full w-full bg-center bg-no-repeat bg-contain;
+  @apply absolute top-0 left-0 h-full w-full bg-center bg-no-repeat bg-contain opacity-0;
   content: '';
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABLSURBVHgBzY3RCQAgCEStCRuhjRqhNmsUU1CIEK6/OjgU7p0SfSFm7uKme76BZVRxQqxfVo0zaP4SwhYOCzuEg9KEcFDC8FYq9FQL/ZxgpQrzp40AAAAASUVORK5CYII=);
+}
+input.polls-checkbox:checked:before {
+  @apply opacity-100!;
 }
 
 .scrollBar {

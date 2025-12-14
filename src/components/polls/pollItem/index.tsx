@@ -179,7 +179,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
-                <span className="text-sm text-Gray-800 dark:text-white font-medium block">
+                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-left">
                   {item.question}
                 </span>
                 <motion.div
@@ -229,7 +229,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
         </Disclosure>
         <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
           {canViewTotal() && (
-            <div className="total-vote text-sm text-Gray-700">
+            <div className="total-vote text-sm text-Gray-700 dark:text-dark-text">
               {t('polls.total-responses', {
                 count: pollDataWithOption?.totalRespondents ?? 0,
               })}
@@ -240,7 +240,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
               <button
                 type="button"
                 onClick={() => setViewDetails(true)}
-                className="view-details h-8 px-3 bg-Gray-50 rounded-[11px] text-sm text-Gray-800 font-semibold flex items-center hover:bg-Gray-100 transition-all duration-300 cursor-pointer"
+                className="view-details h-8 px-3 bg-Gray-50 dark:bg-Gray-800 rounded-[11px] text-sm text-Gray-800 dark:text-white font-semibold flex items-center hover:bg-Gray-100 transition-all duration-300 cursor-pointer"
               >
                 {t('polls.view-details')}
               </button>
