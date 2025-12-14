@@ -36,11 +36,11 @@ const SubtitleFontSizeSlider = () => {
       <div className="top flex justify-between items-center mb-3">
         <label
           htmlFor="transcription-size"
-          className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right block"
+          className="w-full text-sm font-medium text-Gray-800 dark:text-white ltr:text-left rtl:text-right block"
         >
           {t('speech-services.subtitle-font-size')}
         </label>
-        <div className="count text-xs text-Gray-800 font-medium bg-Gray-25 border border-Gray-300 shadow-Icon-box rounded-[7px] py-0.5 px-2">
+        <div className="count text-xs text-Gray-800 dark:text-white font-medium bg-Gray-25 dark:bg-dark-secondary2 border border-Gray-300 dark:border-Gray-800 shadow-Icon-box rounded-[7px] py-0.5 px-2">
           {localFontSize}
         </div>
       </div>

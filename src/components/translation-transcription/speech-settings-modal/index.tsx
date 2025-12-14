@@ -146,12 +146,12 @@ const SpeechSettingsModal = ({
         />
         <SubtitleFontSizeSlider />
         {!transcriptionFeatures.isEnabledSpeechSynthesis && (
-          <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+          <div className="bg-Gray-25 border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
             <SettingsSwitch
               label={t('speech-services.enable-speech-synthesis')}
               enabled={enabledSpeechSynthesis}
               onChange={setEnabledSpeechSynthesis}
-              customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+              customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white"
             />
           </div>
         )}
@@ -167,7 +167,7 @@ const SpeechSettingsModal = ({
       ) : null}
 
       {canShowSpeechSetting && enableSpeech && (
-        <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 flex justify-end gap-5 -mx-4 px-4">
+        <div className="bottom-area pt-4 mt-4 text-Gray-950 border-t border-Gray-100 dark:border-Gray-800 flex justify-end gap-5 -mx-4 px-4">
           <button
             className="h-10 w-1/2 cursor-pointer rounded-[15px] border border-[#0088CC] bg-Blue px-8 text-sm font-semibold text-white shadow-button-shadow transition-all duration-300 hover:bg-white hover:text-Gray-950 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none 3xl:text-base"
             disabled={!readyToStart && !isServiceActive}

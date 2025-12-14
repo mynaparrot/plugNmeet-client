@@ -115,8 +115,13 @@ const RecordingModal = ({
         </ActionButton>
       )}
     >
-      <form action="#" method="POST" onSubmit={(e) => startRecording(e)}>
-        <p className="text-sm text-Gray-950">
+      <form
+        className="RecorderPop"
+        action="#"
+        method="POST"
+        onSubmit={(e) => startRecording(e)}
+      >
+        <p className="text-sm text-Gray-950 dark:text-white">
           {t('footer.icons.recording-types-des')}
         </p>
         <RadioOptions

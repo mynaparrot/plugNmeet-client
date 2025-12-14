@@ -71,10 +71,10 @@
     box-shadow: 0 0 5px 0 rgba(242, 0, 0, 0.3);
   }
   65% {
-    box-shadow: 0 0 5px 10px rgb(242, 242, 242);
+    box-shadow: 0 0 5px 10px rgb(242, 242, 242, 0.1);
   }
   90% {
-    box-shadow: 0 0 5px 10px rgb(242, 242, 242);
+    box-shadow: 0 0 5px 10px rgb(242, 242, 242, 0);
   }
 }
 @keyframes lds-ripple2 {

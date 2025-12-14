@@ -86,7 +86,7 @@ const ChatTranslationSettings = ({
       <div className="p-4 bg-Gray-2">
         <div className="main-wrap -my-4">
           <div className="grid">
-            <div className="grid gap-4 py-4 bg-white">
+            <div className="grid gap-4 py-4 bg-white dark:bg-dark-primary">
               <TransLangsSelector
                 label={t('speech-services.read-and-write-in-label', {
                   num: chatTranslationFeatures?.maxSelectedTransLangs ?? 2,
@@ -109,7 +109,7 @@ const ChatTranslationSettings = ({
           </div>
         </div>
       </div>
-      <div className="px-4 py-4 border-t border-Gray-100 flex justify-end items-center gap-4 rounded-b-xl">
+      <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end items-center gap-4 rounded-b-xl">
         {!chatTranslationFeatures?.isEnabled && (
           <button
             className="h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"

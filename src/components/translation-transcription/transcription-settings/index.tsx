@@ -148,16 +148,16 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   const renderContent = () => (
     <div className="main-wrap -my-4">
       <div className="grid">
-        <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+        <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
           <SettingsSwitch
             label={t('speech-services.enable-transcription')}
             enabled={enabledTranscription}
             onChange={setEnabledTranscription}
-            customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+            customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
           />
         </div>
         {enabledTranscription && (
-          <div className="grid gap-4 py-4 bg-white">
+          <div className="grid gap-4 py-4 bg-white dark:bg-dark-primary">
             <SpeechLangsSelector
               isServiceRunning={!!transcriptionFeatures?.isEnabled}
               selectedSpeechLangs={selectedSpeechLangs}
@@ -179,18 +179,18 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
         )}
         {enabledTranscription && (
           <>
-            <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+            <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
               <SettingsSwitch
                 label={t('speech-services.enable-translation')}
                 enabled={enableTranslation}
                 onChange={setEnableTranslation}
-                customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+                customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                 disabled={transcriptionFeatures?.isEnabled}
               />
             </div>
             {enableTranslation && (
               <>
-                <div className="grid gap-4 py-4 bg-white">
+                <div className="grid gap-4 py-4 bg-white dark:bg-dark-primary">
                   <TransLangsSelector
                     isServiceRunning={!!transcriptionFeatures?.isEnabled}
                     label={t('speech-services.translation-langs-label', {
@@ -206,13 +206,13 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
                 </div>
                 {transcriptionFeatures?.isAllowSpeechSynthesis &&
                   selectedTransLangs.length > 0 && (
-                    <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+                    <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
                       <SettingsSwitch
                         label={t('speech-services.enable-trans-synthesis')}
                         enabled={enabledTransSynthesis}
                         onChange={setEnabledTransSynthesis}
                         disabled={transcriptionFeatures?.isEnabled}
-                        customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+                        customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                       />
                     </div>
                   )}
@@ -237,7 +237,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   return (
     <>
       <div className="p-4 bg-Gray-2">{renderContent()}</div>
-      <div className="px-4 py-4 border-t border-Gray-100 flex justify-end items-center gap-4 rounded-b-xl">
+      <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end items-center gap-4 rounded-b-xl">
         {!transcriptionFeatures?.isEnabled && (
           <button
             className="h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"

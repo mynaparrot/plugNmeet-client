@@ -45,9 +45,9 @@ const SpeechInputSettings = ({
 
   return (
     <>
-      <Field className="-mt-4 px-4 py-4 bg-Gray-25 border-y border-dotted border-Gray-100">
-        <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
-          <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
+      <Field className="-mt-4 px-4 py-4 bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800">
+        <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary">
+          <Label className="pr-4 w-full text-sm text-Gray-800 dark:text-white font-medium cursor-pointer">
             {t('speech-services.enable-speech-to-text')}
           </Label>
           <Switch
@@ -70,9 +70,9 @@ const SpeechInputSettings = ({
       </Field>
       {enableSpeech && (
         <>
-          <Field className="grid gap-4 bg-white py-4 px-4">
-            <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white">
-              <Label className="pr-4 w-full text-sm text-Gray-800 font-medium cursor-pointer">
+          <Field className="grid gap-4 bg-white dark:bg-dark-primary py-4 px-4">
+            <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary">
+              <Label className="pr-4 w-full text-sm text-Gray-800 dark:text-white font-medium cursor-pointer">
                 {t('speech-services.allow-transcription-storage')}
               </Label>
               <Switch
@@ -93,7 +93,7 @@ const SpeechInputSettings = ({
               </Switch>
             </div>
           </Field>
-          <div className="grid gap-4 bg-white py-4 px-6">
+          <div className="grid gap-4 bg-white dark:bg-dark-primary py-4 px-6">
             <Dropdown
               id="speech-lang"
               value={selectedSpeechLang}

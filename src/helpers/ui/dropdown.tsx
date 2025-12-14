@@ -47,7 +47,7 @@ const Dropdown = ({
           .map((text) => (
             <span
               key={text}
-              className="inline-block bg-Gray-100 text-Gray-800 text-xs font-medium mr-2 mb-1 px-2.5 py-1 rounded-full"
+              className="inline-block bg-Gray-100 dark:bg-dark-secondary2 text-Gray-800 dark:text-white text-xs font-medium mr-2 mb-1 px-2.5 py-1 rounded-full"
             >
               {text}
             </span>
@@ -81,7 +81,7 @@ const Dropdown = ({
             >
               <ListboxButton
                 id={id}
-                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-dark-secondary dark:text-white ${
+                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-transparent dark:text-white ${
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -102,17 +102,17 @@ const Dropdown = ({
               >
                 <ListboxOptions
                   static
-                  className="absolute z-20 mt-1 max-h-60 w-72 ltr:right-0 rtl:left-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary dark:border-dark-text"
+                  className="absolute z-20 mt-1 max-h-60 w-72 ltr:right-0 rtl:left-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
                 >
                   {options.map((option) => (
                     <ListboxOption
                       key={option.value.toString() + option.text}
                       value={option.value}
                       className={({ focus, selected }) =>
-                        `relative select-none py-2 px-3 rounded-[8px] cursor-pointer ${
+                        `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
                           focus || selected
-                            ? 'bg-Blue2-50 dark:bg-dark-primary'
-                            : 'dark:text-dark-text'
+                            ? 'bg-Blue2-50 dark:bg-dark-secondary2'
+                            : 'dark:text-white'
                         }`
                       }
                     >
@@ -159,7 +159,7 @@ const Dropdown = ({
         <div className="relative w-full">
           <ListboxButton
             id={id}
-            className={`min-h-10 md:min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 dark:bg-transparent dark:border-Gray-800 dark:text-white ${
+            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-transparent dark:text-white ${
               disabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -180,17 +180,17 @@ const Dropdown = ({
           >
             <ListboxOptions
               static
-              className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary dark:border-dark-text"
+              className="absolute z-20 mt-1 max-h-60 w-full ltr:right-0 rtl:left-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
             >
               {options.map((option) => (
                 <ListboxOption
                   key={option.value.toString() + option.text}
                   value={option.value}
                   className={({ focus, selected }) =>
-                    `relative select-none py-2 px-3 rounded-[8px] cursor-pointer ${
+                    `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
                       focus || selected
-                        ? 'bg-Blue2-50 dark:bg-dark-primary dark:text-white'
-                        : 'dark:text-dark-text'
+                        ? 'bg-Blue2-50 dark:bg-dark-secondary2'
+                        : 'dark:text-white'
                     }`
                   }
                 >
