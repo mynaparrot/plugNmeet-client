@@ -65,7 +65,7 @@ const Dropdown = ({
           {label && label !== '' && (
             <Label
               htmlFor={id}
-              className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
+              className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-white"
             >
               {label}
             </Label>
@@ -81,7 +81,7 @@ const Dropdown = ({
             >
               <ListboxButton
                 id={id}
-                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-dark-secondary dark:border-dark-text dark:text-dark-text ${
+                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-dark-secondary dark:text-white ${
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -145,7 +145,7 @@ const Dropdown = ({
       {label && label !== '' && (
         <Label
           htmlFor={id}
-          className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right mb-2 block dark:text-dark-text"
+          className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right mb-2 block dark:text-white"
         >
           {label}
         </Label>
@@ -159,7 +159,7 @@ const Dropdown = ({
         <div className="relative w-full">
           <ListboxButton
             id={id}
-            className={`min-h-10 md:min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 dark:bg-dark-secondary dark:border-dark-text dark:text-dark-text ${
+            className={`min-h-10 md:min-h-11 full rounded-2xl border border-Gray-300 bg-white shadow-input w-full px-3 pr-5 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm text-Gray-950 dark:bg-transparent dark:border-Gray-800 dark:text-white ${
               disabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

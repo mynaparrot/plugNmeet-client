@@ -83,11 +83,11 @@ const TextBoxArea = () => {
   const isSendButtonDisabled = isAwaitingResponse || isEmpty(message);
 
   return (
-    <div className="flex items-center justify-between border border-Gray-200 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
+    <div className="flex items-center justify-between border border-Gray-200 dark:border-Gray-800 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
       <textarea
         name="message-textarea"
         id="message-textarea"
-        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 font-normal h-10 mr-2 overflow-hidden"
+        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 dark:text-dark-text placeholder:dark:text-dark-text  font-normal h-10 mr-2 overflow-hidden px-2"
         value={message}
         onChange={handleChange}
         disabled={isAwaitingResponse}

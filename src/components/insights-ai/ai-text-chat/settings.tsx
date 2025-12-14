@@ -95,26 +95,26 @@ const AiTextChatSettings = ({
       <div className="p-4 bg-Gray-2">
         <div className="main-wrap -my-4">
           <div className="grid">
-            <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+            <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
               <SettingsSwitch
                 label={t('insights.ai-text-chat.enable')}
                 enabled={isEnabled}
                 onChange={setIsEnabled}
-                customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+                customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
               />
             </div>
             {isEnabled && (
               <>
-                <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+                <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
                   <SettingsSwitch
                     label={t('insights.ai-text-chat.allow-everyone')}
                     enabled={isAllowedEveryone}
                     onChange={setIsAllowedEveryone}
-                    customCss="shadow-Icon-box h-11 border border-Gray-100 rounded-2xl px-4 bg-white"
+                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                   />
                 </div>
                 {!isAllowedEveryone && (
-                  <div className="bg-Gray-25 border-y border-dotted border-Gray-100 -mx-4 px-4 py-4">
+                  <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
                     <UsersSelector
                       selectedUsers={allowedUsers}
                       setSelectedUsers={setAllowedUsers}
@@ -127,7 +127,7 @@ const AiTextChatSettings = ({
         </div>
       </div>
 
-      <div className="px-4 py-4 border-t border-Gray-100 flex justify-end items-center gap-4 rounded-b-xl">
+      <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end items-center gap-4 rounded-b-xl">
         {!aiTextChatFeatures?.isEnabled && (
           <button
             className="h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"

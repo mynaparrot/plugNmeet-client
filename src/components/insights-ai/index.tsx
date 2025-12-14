@@ -81,7 +81,7 @@ const InsightsAiSettingsModal = () => {
         show={showAISettingsModal}
         onClose={closeModal}
         title={t('insights.setting-modal-title')}
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-2xl showAISettingsModal"
       >
         <div className="-mx-4">
           {errorMsg && (

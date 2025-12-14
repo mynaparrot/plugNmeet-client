@@ -23,7 +23,7 @@ const SettingsSwitch = ({
       className={clsx('flex items-center justify-between', customCss)}
     >
       <Label
-        className={`pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`pr-4 w-full text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-white ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {label}
       </Label>
