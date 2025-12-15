@@ -32,7 +32,7 @@
     "you-have-reject": "Az értekezlethez való csatlakozásra vonatkozó kérését elutasították.",
     "waiting-for-approval": "A moderátor értesítést kapott, és hamarosan beengedi Önt. Köszönjük a türelmet!",
     "room-disconnected-title": "Elválasztott",
-    "room-disconnected-unknown": "Ismeretlen okból megszakadt a kapcsolat. (Kód: {{code}})",
+    "room-disconnected-default": "Egy váratlan hiba miatt szakítottál meg: {{reason}}. Kérlek, próbálj meg újra csatlakozni.",
     "room-disconnected-client-initiated": "Megszakadt a kapcsolat az értekezlettel. (Kód: {{code}})",
     "room-disconnected-duplicate-entry": "Valaki más is csatlakozott ugyanazzal a felhasználói azonosítóval.",
     "room-disconnected-server-shutdown": "Az értekezlet-kiszolgáló leállt. (Kód: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
     "queue-holding-messages": "Csatlakozási probléma: az üzenetek visszatartása folyamatban van. ({{error}})",
-    "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})"
+    "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})",
+    "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést"
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -229,7 +230,8 @@
     "uploading-file": "Feltöltő {{fileName}}",
     "file-upload-success": "A fájl feltöltése sikeresen",
     "file-upload-default-error": "Hiba történt a fájl feltöltésekor.",
-    "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)"
+    "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)",
+    "sending-message": "Kérlek, várj, küldöm..."
   },
   "footer": {
     "hide-footer": "Lábléc elrejtése",
@@ -247,6 +249,8 @@
       "show-users-list": "Résztvevők listájának megjelenítése",
       "hide-chat-panel": "Csevegés elrejtése",
       "show-chat-panel": "Csevegés megjelenítése",
+      "hide-ai-chat-panel": "Rejtegetes AI asszisztens",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Képernyőmegosztás leállítása",
       "start-screen-sharing": "Képernyő megosztása",
       "screen-sharing-locked": "Képernyőmegosztás zárolva",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Megosztás Külső hivatkozás",
       "stop-display-external-link": "Link megosztásának leállítása",
       "speech-to-text-settings": "Átírás és fordítás",
+      "ai-settings": "MI eszközök",
       "enable-polls": "Szavazások engedélyezése",
       "disable-polls": "Szavazások letiltása"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Átírási és fordítási beállítások",
+    "speech-transcription": "Beszédátirat",
+    "chat-translation": "Chat fordítás",
     "enable-speech-to-text": "Átírás engedélyezése",
     "speech-langs-label": "Beszélt nyelvek",
+    "allow-transcription-storage": "Tartsd meg a beszédemet a végső átiratra",
     "speech-users-label": "Átírandó felhasználók",
     "subtitle-font-size": "Felirat betűmérete",
     "enable-translation": "Fordítás engedélyezése",
+    "enable-speech-synthesis": "Engedélyezze a beszédszintézis (böngésző alapú)",
     "translation-langs-label": "Fordítás (max.): {{num}})",
     "default-subtitle-lang-label": "Alapértelmezett feliratnyelv",
+    "default-lang-label": "Alapértelmezett nyelv",
     "enable-service": "Szolgáltatás engedélyezése",
     "speech-user-required": "Legalább egy felhasználót ki kell választani az átíráshoz.",
     "speech-lang-required": "Legalább egy beszélt nyelvet ki kell választani.",
     "translation-lang-required": "Legalább egy nyelvet ki kell választani a fordításhoz.",
     "service-ready": "Az átírási szolgáltatás készen áll.",
+    "service-started": "A szolgáltatás megkezdődött.",
+    "service-ended": "A szolgálat véget ért.",
     "start-service": "Elkezd",
     "stop-service": "Állj",
     "update-service": "Frissít",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure szolgáltatás hiba: {{error}}",
     "speech-to-text-stopped": "Az átírási szolgáltatás leállt.",
     "enable-transcription": "Átírás engedélyezése",
-    "download-header": "Felirat előzmények {{name}}\nNyelv: {{lang}}\nGenerálva: {{date}} nél {{time}}"
+    "download-header": "Felirat előzmények {{name}}\nNyelv: {{lang}}\nGenerálva: {{date}} nél {{time}}",
+    "mic-not-ready-warning": "A szolgáltatás elindításához be kell kapcsolnod a mikrofonodat.",
+    "max-lang-selection-warning": "Kiválaszthatsz maximum {{num}} Fordítási nyelvek",
+    "read-and-write-in-label": "Olvasás és írás (maximum: {{num}}):",
+    "enable-trans-synthesis": "A transzlációs szintézis engedélyezése"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI beállítások",
+    "start-service": "Indulás",
+    "stop-service": "Megállás a járat",
+    "update-service": "Frissítések beállításai",
+    "service-started-successfully": "A szolgáltatás sikeresen megindult",
+    "service-stopped-successfully": "A szolgáltatást sikeresen leállították",
+    "tab-ai-text-chat-title": "AI asszisztens chat",
+    "tab-meeting-summarization-title": "Találkozó összefoglaló",
+    "feature-disable-while-e2ee-self-key-enabled": "Ez a funkció akkor van letiltva, ha az önálló End-to-End titkosítás aktív.",
+    "not-enough-credit-to-start-service": "Nem volt elég hitel a szolgáltatás elindításához. Kérjük, vegye fel a kapcsolatot egy adminisztrátorral, hogy további kreditet adjon.",
+    "ai-text-chat": {
+      "name": "AI asszisztens",
+      "panel-title": "AI asszisztens chat",
+      "enable": "Kapcsold be az AI Assistant",
+      "allow-everyone": "Minden résztvevő számára elérhető",
+      "allowed-users": "Engedélyezett résztvevők",
+      "users-required": "Legalább egy résztvevőt ki kell választani.",
+      "chat-box-placeholder": "Kérdezz egy kérdést az MI asszisztensnek...",
+      "responding-placeholder": "Az MI asszisztens válaszol..."
+    },
+    "meeting-summarization": {
+      "enable": "Engedélyezze a találkozók összefoglalását",
+      "summarization-prompt-label": "Összefoglaló utasítások",
+      "summarization-prompt-required": "Kérjük, add meg az összefoglaló utasításait.",
+      "enabled-notification-all": "A találkozó hanganyagát most rögzítik, hogy összefoglalót készítsenek."
+    }
   }
 }

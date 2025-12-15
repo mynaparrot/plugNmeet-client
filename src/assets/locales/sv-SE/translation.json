@@ -32,7 +32,7 @@
     "you-have-reject": "Din begäran om att delta i mötet avslogs.",
     "waiting-for-approval": "En moderator har meddelats och kommer att meddela dig inom kort. Tack för ditt tålamod!",
     "room-disconnected-title": "Bortkopplad",
-    "room-disconnected-unknown": "Du har kopplats bort av okänd anledning. (Kod: {{code}})",
+    "room-disconnected-default": "Du blev frånkopplad på grund av ett oväntat fel: {{reason}}. Försök gärna återansluta.",
     "room-disconnected-client-initiated": "Du har kopplat bort dig från mötet. (Kod: {{code}})",
     "room-disconnected-duplicate-entry": "Någon annan har gått med med samma användar-ID.",
     "room-disconnected-server-shutdown": "Mötesservern har stängts av. (Kod: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Du delar din skärm nu. Andra kommer att se en större vy.",
     "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
     "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar. ({{error}})",
-    "queue-discarded-message": "Det gick inte att skicka ett meddelande och det ignorerades. ({{error}})"
+    "queue-discarded-message": "Det gick inte att skicka ett meddelande och det ignorerades. ({{error}})",
+    "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse"
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",
@@ -229,7 +230,8 @@
     "uploading-file": "Uppladdning {{fileName}}",
     "file-upload-success": "Filen har laddats upp",
     "file-upload-default-error": "Det gick inte att ladda upp filen.",
-    "chat-box-placeholder": "Skicka ett meddelande, klistra in en bild eller släpp en fil här (Ny rad: Skift + Retur)"
+    "chat-box-placeholder": "Skicka ett meddelande, klistra in en bild eller släpp en fil här (Ny rad: Skift + Retur)",
+    "sending-message": "Vänligen vänta, skickar..."
   },
   "footer": {
     "hide-footer": "Dölj sidfot",
@@ -247,6 +249,8 @@
       "show-users-list": "Visa deltagarlista",
       "hide-chat-panel": "Dölj chatt",
       "show-chat-panel": "Visa chatt",
+      "hide-ai-chat-panel": "Dölj AI-assistent",
+      "show-ai-chat-panel": "Show AI-assistent",
       "stop-screen-sharing": "Sluta dela skärm",
       "start-screen-sharing": "Dela skärm",
       "screen-sharing-locked": "Skärmdelning låst",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Dela Extern länk",
       "stop-display-external-link": "Sluta dela länk",
       "speech-to-text-settings": "Transkribering och översättning",
+      "ai-settings": "AI-verktyg",
       "enable-polls": "Aktivera omröstningar",
       "disable-polls": "Inaktivera omröstningar"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Inställningar för transkribering och översättning",
+    "speech-transcription": "Taltranskribering",
+    "chat-translation": "Chattöversättning",
     "enable-speech-to-text": "Aktivera transkription",
     "speech-langs-label": "Talade språk",
+    "allow-transcription-storage": "Spara mitt tal till slututskriften",
     "speech-users-label": "Användare som ska transkriberas",
     "subtitle-font-size": "Teckenstorlek för bildtext",
     "enable-translation": "Aktivera översättning",
+    "enable-speech-synthesis": "Aktivera talsyntes (webbläsarbaserat)",
     "translation-langs-label": "Översätt till (max: {{num}})",
     "default-subtitle-lang-label": "Standardspråk för bildtext",
+    "default-lang-label": "Standardspråk",
     "enable-service": "Aktivera tjänst",
     "speech-user-required": "Minst en användare måste väljas ut för att transkribera.",
     "speech-lang-required": "Minst ett talat språk måste väljas.",
     "translation-lang-required": "Minst ett språk måste väljas för översättning.",
     "service-ready": "Transkriberingstjänsten är klar.",
+    "service-started": "Tjänsten har startat.",
+    "service-ended": "Gudstjänsten är avslutad.",
     "start-service": "Starta",
     "stop-service": "Stanna",
     "update-service": "Uppdatera",
@@ -521,6 +533,38 @@
     "azure-error": "Fel i Microsoft Azure-tjänsten: {{error}}",
     "speech-to-text-stopped": "Transkriptionstjänsten har stoppats.",
     "enable-transcription": "Aktivera transkription",
-    "download-header": "Undertexthistorik för {{name}}\nSpråk: {{lang}}\nGenererad den: {{date}} vid {{time}}"
+    "download-header": "Undertexthistorik för {{name}}\nSpråk: {{lang}}\nGenererad den: {{date}} vid {{time}}",
+    "mic-not-ready-warning": "För att starta tjänsten måste du aktivera din mikrofon.",
+    "max-lang-selection-warning": "Du kan välja maximalt {{num}} Språk för översättning",
+    "read-and-write-in-label": "Läs och skriv in (max: {{num}}):",
+    "enable-trans-synthesis": "Möjliggör översättningssyntes"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI-inställningar",
+    "start-service": "Start av trafiken",
+    "stop-service": "Stopptrafik",
+    "update-service": "Uppdatera inställningar",
+    "service-started-successfully": "Tjänsten har startats framgångsrikt",
+    "service-stopped-successfully": "Trafiken har stoppats framgångsrikt",
+    "tab-ai-text-chat-title": "AI-assistentchatt",
+    "tab-meeting-summarization-title": "Sammanfattning av mötet",
+    "feature-disable-while-e2ee-self-key-enabled": "Denna funktion inaktiveras när självstyrd End-to-End-kryptering är aktiv.",
+    "not-enough-credit-to-start-service": "Otillräcklig kredit för att starta denna tjänst. Vänligen kontakta en administratör för att få mer poäng.",
+    "ai-text-chat": {
+      "name": "AI-assistent",
+      "panel-title": "AI-assistentchatt",
+      "enable": "Aktivera AI-assistent",
+      "allow-everyone": "Tillgänglig för alla deltagare",
+      "allowed-users": "Tillåtna deltagare",
+      "users-required": "Minst en deltagare måste väljas.",
+      "chat-box-placeholder": "Ställ AI-assistenten en fråga...",
+      "responding-placeholder": "AI-assistenten svarar..."
+    },
+    "meeting-summarization": {
+      "enable": "Aktivera mötessammanfattning",
+      "summarization-prompt-label": "Sammanfattningsinstruktioner",
+      "summarization-prompt-required": "Vänligen ange instruktioner för hur man sammanfattar.",
+      "enabled-notification-all": "Ljudet från detta möte spelas nu in för att skapa en sammanfattning."
+    }
   }
 }

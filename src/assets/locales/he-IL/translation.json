@@ -32,7 +32,7 @@
     "you-have-reject": "בקשתך להצטרף לפגישה נדחתה.",
     "waiting-for-approval": "מנחה דיון קיבל הודעה ויאפשר לך להיכנס בקרוב. תודה על הסבלנות!",
     "room-disconnected-title": "מנותק",
-    "room-disconnected-unknown": "נותקת מסיבה לא ידועה. (קוד: {{code}})",
+    "room-disconnected-default": "ניתקת בגלל שגיאה בלתי צפויה: {{reason}}. בבקשה תנסה להצטרף שוב.",
     "room-disconnected-client-initiated": "התנתקת מהפגישה. (קוד: {{code}})",
     "room-disconnected-duplicate-entry": "מישהו אחר הצטרף עם אותו מזהה משתמש.",
     "room-disconnected-server-shutdown": "שרת הפגישות נסגר. (קוד: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "אתה משתף את המסך שלך כעת. אחרים יראו נוף גדול יותר.",
     "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי.",
     "queue-holding-messages": "בעיית חיבור: הודעות מוחזקות. ({{error}})",
-    "queue-discarded-message": "לא היתה אפשרות לשלוח הודעה והיא נמחקה. ({{error}})"
+    "queue-discarded-message": "לא היתה אפשרות לשלוח הודעה והיא נמחקה. ({{error}})",
+    "request-submitted-wait": "הבקשה שלך הוגשה. אנא המתינו לאישור"
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
@@ -229,7 +230,8 @@
     "uploading-file": "העלאת {{fileName}}",
     "file-upload-success": "הקובץ הועלה בהצלחה",
     "file-upload-default-error": "אירעה שגיאה בהעלאת הקובץ.",
-    "chat-box-placeholder": "שליחת הודעה, הדבקת תמונה או שחרור קובץ כאן (שורה חדשה: Shift + Enter)"
+    "chat-box-placeholder": "שליחת הודעה, הדבקת תמונה או שחרור קובץ כאן (שורה חדשה: Shift + Enter)",
+    "sending-message": "בבקשה חכה, שולח..."
   },
   "footer": {
     "hide-footer": "הסתר כותרת תחתונה",
@@ -247,6 +249,8 @@
       "show-users-list": "הצג רשימת משתתפים",
       "hide-chat-panel": "הסתר צ'אט",
       "show-chat-panel": "הצג צ'אט",
+      "hide-ai-chat-panel": "הסתר עוזר בינה מלאכותית",
+      "show-ai-chat-panel": "עוזר בינה מלאכותית לתצוגה",
       "stop-screen-sharing": "הפסקת שיתוף מסך",
       "start-screen-sharing": "שתף מסך",
       "screen-sharing-locked": "שיתוף מסך נעול",
@@ -288,6 +292,7 @@
       "start-display-external-link": "שתפו את External Link",
       "stop-display-external-link": "הפסק לשתף קישור",
       "speech-to-text-settings": "תמלול ותרגום",
+      "ai-settings": "כלי בינה מלאכותית",
       "enable-polls": "הפיכת סקרים לזמינים",
       "disable-polls": "השבתת תשאולים"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "הגדרות תמלול ותרגום",
+    "speech-transcription": "תמלול דיבור",
+    "chat-translation": "תרגום צ'אט",
     "enable-speech-to-text": "אפשר תמלול",
     "speech-langs-label": "שפות מדוברות",
+    "allow-transcription-storage": "שמור את הנאום שלי לתמלול הסופי",
     "speech-users-label": "משתמשים לתמלל",
     "subtitle-font-size": "גודל גופן כיתוב",
     "enable-translation": "אפשר תרגום",
+    "enable-speech-synthesis": "הפעלת סינתזת דיבור (מבוססת דפדפן)",
     "translation-langs-label": "לתרגם ל (מקסימום: {{num}})",
     "default-subtitle-lang-label": "שפת כתוביות המוגדרת כברירת מחדל",
+    "default-lang-label": "שפת ברירת המחדל",
     "enable-service": "אפשר שירות",
     "speech-user-required": "יש לבחור לפחות משתמש אחד לתמלול.",
     "speech-lang-required": "יש לבחור לפחות שפה מדוברת אחת.",
     "translation-lang-required": "יש לבחור לפחות שפה אחת לתרגום.",
     "service-ready": "שירות התמלול מוכן.",
+    "service-started": "השירות החל.",
+    "service-ended": "השירות הסתיים.",
     "start-service": "התחלה",
     "stop-service": "עצר",
     "update-service": "עדכון",
@@ -521,6 +533,38 @@
     "azure-error": "שגיאת שירות Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "שירות התמלול הופסק.",
     "enable-transcription": "אפשר תמלול",
-    "download-header": "היסטוריית כתוביות עבור {{name}}\nשפה: {{lang}}\nנוצר בתאריך: {{date}} ב {{time}}"
+    "download-header": "היסטוריית כתוביות עבור {{name}}\nשפה: {{lang}}\nנוצר בתאריך: {{date}} ב {{time}}",
+    "mic-not-ready-warning": "כדי להפעיל את השירות, עליך להפעיל את המיקרופון שלך.",
+    "max-lang-selection-warning": "אתה יכול לבחור את המקסימום של {{num}} שפות לתרגום",
+    "read-and-write-in-label": "קראו וכתבו (מקסימום: {{num}}):",
+    "enable-trans-synthesis": "הפעלת סינתזת תרגום"
+  },
+  "insights": {
+    "setting-modal-title": "הגדרות בינה מלאכותית של תובנות",
+    "start-service": "שירות התחלתי",
+    "stop-service": "שירות הפסקת שירות",
+    "update-service": "הגדרות עדכון",
+    "service-started-successfully": "השירות החל בהצלחה",
+    "service-stopped-successfully": "השירות הופסק בהצלחה",
+    "tab-ai-text-chat-title": "צ'אט עוזר בינה מלאכותית",
+    "tab-meeting-summarization-title": "סיכום הפגישה",
+    "feature-disable-while-e2ee-self-key-enabled": "תכונה זו מושבתת כאשר הצפנה מקצה לקצה המנוהלת באופן עצמי פעילה.",
+    "not-enough-credit-to-start-service": "אשראי לא מספיק כדי להתחיל את השירות הזה. אנא פנה למנהל כדי להוסיף קרדיט נוסף.",
+    "ai-text-chat": {
+      "name": "עוזר בינה מלאכותית",
+      "panel-title": "צ'אט עוזר בינה מלאכותית",
+      "enable": "הפעל עוזר בינה מלאכותית",
+      "allow-everyone": "זמין לכל המשתתפים",
+      "allowed-users": "משתתפים מורשים",
+      "users-required": "לפחות משתתף אחד חייב להיבחר.",
+      "chat-box-placeholder": "שאל את עוזר הבינה המלאכותית שאלה...",
+      "responding-placeholder": "עוזר בינה מלאכותית מגיב..."
+    },
+    "meeting-summarization": {
+      "enable": "הפעלת סיכום פגישות",
+      "summarization-prompt-label": "הוראות סיכום",
+      "summarization-prompt-required": "אנא הזן הוראות לסיכום.",
+      "enabled-notification-all": "ההקלטה של הפגישה הזו מוקלטת כעת כדי להפיק סיכום."
+    }
   }
 }

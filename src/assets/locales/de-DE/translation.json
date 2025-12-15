@@ -32,7 +32,7 @@
     "you-have-reject": "Ihre Anfrage zur Teilnahme an der Besprechung wurde abgelehnt.",
     "waiting-for-approval": "Ein Moderator wurde benachrichtigt und wird Sie in Kürze hereinlassen. Vielen Dank für Ihre Geduld!",
     "room-disconnected-title": "Entfernt",
-    "room-disconnected-unknown": "Ihre Verbindung wurde aus einem unbekannten Grund getrennt. (Artikel-Nr.: {{code}})",
+    "room-disconnected-default": "Du wurdest wegen eines unerwarteten Fehlers getrennt: {{reason}}. Bitte versuchen Sie, wieder beizutreten.",
     "room-disconnected-client-initiated": "Sie haben die Verbindung zur Besprechung getrennt. (Artikel-Nr.: {{code}})",
     "room-disconnected-duplicate-entry": "Eine andere Person hat sich mit derselben Benutzer-ID angemeldet.",
     "room-disconnected-server-shutdown": "Der Meeting-Server wurde heruntergefahren. (Artikel-Nr.: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Sie geben jetzt Ihren Bildschirm frei. Andere sehen eine größere Ansicht.",
     "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat gepostet.",
     "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten. ({{error}})",
-    "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})"
+    "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})",
+    "request-submitted-wait": "Ihr Antrag wurde eingereicht. Bitte warten Sie auf eine Bestätigung"
   },
   "room-metadata": {
     "session-recording": "Dieses Treffen wird aufgezeichnet.",
@@ -229,7 +230,8 @@
     "uploading-file": "Hochladen {{fileName}}",
     "file-upload-success": "Datei erfolgreich hochgeladen",
     "file-upload-default-error": "Beim Hochladen der Datei ist ein Fehler aufgetreten.",
-    "chat-box-placeholder": "Senden Sie hier eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei ab (Neue Zeile: Umschalt + Eingabetaste)"
+    "chat-box-placeholder": "Senden Sie hier eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei ab (Neue Zeile: Umschalt + Eingabetaste)",
+    "sending-message": "Bitte warte, ich schicke..."
   },
   "footer": {
     "hide-footer": "Fußzeile ausblenden",
@@ -247,6 +249,8 @@
       "show-users-list": "Teilnehmerliste anzeigen",
       "hide-chat-panel": "Chat ausblenden",
       "show-chat-panel": "Chat anzeigen",
+      "hide-ai-chat-panel": "KI-Assistent ausblenden",
+      "show-ai-chat-panel": "Show-AI-Assistent",
       "stop-screen-sharing": "Bildschirmfreigabe beenden",
       "start-screen-sharing": "Bildschirm freigeben",
       "screen-sharing-locked": "Bildschirmfreigabe gesperrt",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Externen Link teilen",
       "stop-display-external-link": "Freigabe des Links beenden",
       "speech-to-text-settings": "Transkription & Übersetzung",
+      "ai-settings": "KI-Werkzeuge",
       "enable-polls": "Aktivieren von Umfragen",
       "disable-polls": "Deaktivieren von Umfragen"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Einstellungen für Transkription und Übersetzung",
+    "speech-transcription": "Sprachtranskription",
+    "chat-translation": "Chat-Übersetzung",
     "enable-speech-to-text": "Aktivieren der Transkription",
     "speech-langs-label": "Gesprochene Sprachen",
+    "allow-transcription-storage": "Heben Sie meine Rede für das endgültige Transkript auf",
     "speech-users-label": "Benutzer zum Transkribieren",
     "subtitle-font-size": "Schriftgröße der Beschriftung",
     "enable-translation": "Übersetzung aktivieren",
+    "enable-speech-synthesis": "Sprachsynthese aktivieren (browserbasiert)",
     "translation-langs-label": "Übersetzen in (max: {{num}})",
     "default-subtitle-lang-label": "Standardsprache für Untertitel",
+    "default-lang-label": "Standardsprache",
     "enable-service": "Dienst aktivieren",
     "speech-user-required": "Mindestens ein Benutzer muss für die Transkription ausgewählt sein.",
     "speech-lang-required": "Es muss mindestens eine gesprochene Sprache ausgewählt werden.",
     "translation-lang-required": "Für die Übersetzung muss mindestens eine Sprache ausgewählt werden.",
     "service-ready": "Der Transkriptionsservice ist bereit.",
+    "service-started": "Der Gottesdienst wurde aufgenommen.",
+    "service-ended": "Der Gottesdienst ist beendet.",
     "start-service": "Anfangen",
     "stop-service": "Aufhören",
     "update-service": "Aktualisieren",
@@ -521,6 +533,38 @@
     "azure-error": "Fehler beim Microsoft Azure-Dienst: {{error}}",
     "speech-to-text-stopped": "Der Transkriptionsdienst wurde gestoppt.",
     "enable-transcription": "Aktivieren der Transkription",
-    "download-header": "Untertitelverlauf für {{name}}\nSprache: {{lang}}\nGeneriert am: {{date}} bei {{time}}"
+    "download-header": "Untertitelverlauf für {{name}}\nSprache: {{lang}}\nGeneriert am: {{date}} bei {{time}}",
+    "mic-not-ready-warning": "Um den Dienst zu starten, müssen Sie Ihr Mikrofon aktivieren.",
+    "max-lang-selection-warning": "Sie können maximal {{num}} Sprachen zur Übersetzung",
+    "read-and-write-in-label": "Read & Write In (maximal: {{num}}):",
+    "enable-trans-synthesis": "Translation Synthese ermöglichen"
+  },
+  "insights": {
+    "setting-modal-title": "Insights KI-Einstellungen",
+    "start-service": "Start des Betriebs",
+    "stop-service": "Stopp-Betrieb",
+    "update-service": "Update-Einstellungen",
+    "service-started-successfully": "Der Betrieb wurde erfolgreich aufgenommen",
+    "service-stopped-successfully": "Der Betrieb wurde erfolgreich eingestellt",
+    "tab-ai-text-chat-title": "KI-Assistenten-Chat",
+    "tab-meeting-summarization-title": "Zusammenfassung der Sitzung",
+    "feature-disable-while-e2ee-self-key-enabled": "Diese Funktion ist deaktiviert, wenn die selbstverwaltete End-to-End-Verschlüsselung aktiv ist.",
+    "not-enough-credit-to-start-service": "Unzureichende Kreditwürdigkeit, um diesen Service zu starten. Bitte wenden Sie sich an einen Administrator, um weitere Punkte hinzuzufügen.",
+    "ai-text-chat": {
+      "name": "KI-Assistent",
+      "panel-title": "KI-Assistenten-Chat",
+      "enable": "KI-Assistent aktivieren",
+      "allow-everyone": "Für alle Teilnehmer verfügbar",
+      "allowed-users": "Erlaubte Teilnehmer",
+      "users-required": "Mindestens ein Teilnehmer muss ausgewählt werden.",
+      "chat-box-placeholder": "Stelle dem KI-Assistenten eine Frage...",
+      "responding-placeholder": "KI-Assistent antwortet..."
+    },
+    "meeting-summarization": {
+      "enable": "Zusammenfassung von Sitzungen aktivieren",
+      "summarization-prompt-label": "Zusammenfassungsanweisungen",
+      "summarization-prompt-required": "Bitte geben Sie Anweisungen zur Zusammenfassung ein.",
+      "enabled-notification-all": "Die Audioaufnahme dieses Treffens wird nun aufgezeichnet, um eine Zusammenfassung zu erstellen."
+    }
   }
 }

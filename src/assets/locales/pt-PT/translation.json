@@ -32,7 +32,7 @@
     "you-have-reject": "O seu pedido para participar na reunião foi negado.",
     "waiting-for-approval": "Um moderador foi notificado e irá deixá-lo entrar em breve. Obrigado pela sua paciência!",
     "room-disconnected-title": "Desconectado",
-    "room-disconnected-unknown": "Você foi desconectado por um motivo desconhecido. (Código: {{code}})",
+    "room-disconnected-default": "Foi desligado devido a um erro inesperado: {{reason}}. Por favor, tenta voltar a juntar-te.",
     "room-disconnected-client-initiated": "Você se desconectou da reunião. (Código: {{code}})",
     "room-disconnected-duplicate-entry": "Outra pessoa aderiu com o mesmo ID de utilizador.",
     "room-disconnected-server-shutdown": "O servidor de reunião foi encerrado. (Código: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Está a partilhar o seu ecrã agora. Outros verão uma visão mais ampla.",
     "new-system-message-in-chat": "Uma nova mensagem do sistema foi postada no chat público.",
     "queue-holding-messages": "Problema de conexão: as mensagens estão sendo mantidas. ({{error}})",
-    "queue-discarded-message": "Não foi possível enviar uma mensagem e foi descartada. ({{error}})"
+    "queue-discarded-message": "Não foi possível enviar uma mensagem e foi descartada. ({{error}})",
+    "request-submitted-wait": "O seu pedido foi submetido. Por favor, aguarde por confirmação"
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",
@@ -229,7 +230,8 @@
     "uploading-file": "Carregando {{fileName}}",
     "file-upload-success": "Arquivo carregado com sucesso",
     "file-upload-default-error": "Ocorreu um erro ao carregar o ficheiro.",
-    "chat-box-placeholder": "Envie uma mensagem, cole uma imagem ou solte um arquivo aqui (Nova linha: Shift + Enter)"
+    "chat-box-placeholder": "Envie uma mensagem, cole uma imagem ou solte um arquivo aqui (Nova linha: Shift + Enter)",
+    "sending-message": "Por favor, espere, a enviar..."
   },
   "footer": {
     "hide-footer": "Ocultar rodapé",
@@ -247,6 +249,8 @@
       "show-users-list": "Mostrar Lista de Participantes",
       "hide-chat-panel": "Ocultar bate-papo",
       "show-chat-panel": "Mostrar bate-papo",
+      "hide-ai-chat-panel": "Ocultar Assistente de IA",
+      "show-ai-chat-panel": "Mostrar Assistente de IA",
       "stop-screen-sharing": "Parar de compartilhar tela",
       "start-screen-sharing": "Partilhar Ecrã",
       "screen-sharing-locked": "Compartilhamento de tela bloqueado",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Partilhar Link Externo",
       "stop-display-external-link": "Parar link de compartilhamento",
       "speech-to-text-settings": "Transcrição e Tradução",
+      "ai-settings": "Ferramentas de IA",
       "enable-polls": "Ativar sondagens",
       "disable-polls": "Desativar sondagens"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Transcrição & Configurações de tradução",
+    "speech-transcription": "Transcrição de Fala",
+    "chat-translation": "Tradução de Chat",
     "enable-speech-to-text": "Ativar transcrição",
     "speech-langs-label": "Línguas faladas",
+    "allow-transcription-storage": "Guarde o meu discurso para a transcrição final",
     "speech-users-label": "Usuários para transcrever",
     "subtitle-font-size": "Tamanho da fonte da legenda",
     "enable-translation": "Ativar tradução",
+    "enable-speech-synthesis": "Ativar Síntese de Voz (Baseado em Navegador)",
     "translation-langs-label": "Traduzir para (max: {{num}})",
     "default-subtitle-lang-label": "Idioma padrão da legenda",
+    "default-lang-label": "Linguagem Padrão",
     "enable-service": "Ativar serviço",
     "speech-user-required": "Pelo menos um usuário deve ser selecionado para transcrever.",
     "speech-lang-required": "Deve ser selecionada pelo menos uma língua falada.",
     "translation-lang-required": "Pelo menos uma língua deve ser selecionada para tradução.",
     "service-ready": "O serviço de transcrição está pronto.",
+    "service-started": "O serviço foi iniciado.",
+    "service-ended": "O serviço terminou.",
     "start-service": "Início",
     "stop-service": "Parar",
     "update-service": "Atualizar",
@@ -521,6 +533,38 @@
     "azure-error": "Erro de serviço do Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "O serviço de transcrição parou.",
     "enable-transcription": "Ativar transcrição",
-    "download-header": "Histórico de legendas para {{name}}\nIdioma: {{lang}}\nCriado em: {{date}} em {{time}}"
+    "download-header": "Histórico de legendas para {{name}}\nIdioma: {{lang}}\nCriado em: {{date}} em {{time}}",
+    "mic-not-ready-warning": "Para iniciar o serviço, deve ativar o microfone.",
+    "max-lang-selection-warning": "Pode selecionar um máximo de {{num}} Línguas para tradução",
+    "read-and-write-in-label": "Ler e Escrever (máximo: {{num}}):",
+    "enable-trans-synthesis": "Permitir a síntese de tradução"
+  },
+  "insights": {
+    "setting-modal-title": "Definições de IA Insights",
+    "start-service": "Início do serviço",
+    "stop-service": "Serviço de paragem",
+    "update-service": "Atualizar Definições",
+    "service-started-successfully": "O serviço foi iniciado com sucesso",
+    "service-stopped-successfully": "O serviço foi interrompido com sucesso",
+    "tab-ai-text-chat-title": "Chat do Assistente de IA",
+    "tab-meeting-summarization-title": "Resumo da reunião",
+    "feature-disable-while-e2ee-self-key-enabled": "Esta funcionalidade é desativada quando a encriptação de ponta a ponta autogerida está ativa.",
+    "not-enough-credit-to-start-service": "Crédito insuficiente para iniciar este serviço. Por favor, contacte um administrador para acrescentar mais crédito.",
+    "ai-text-chat": {
+      "name": "Assistente de IA",
+      "panel-title": "Chat do Assistente de IA",
+      "enable": "Ativar o Assistente de IA",
+      "allow-everyone": "Disponível para Todos os Participantes",
+      "allowed-users": "Participantes Permitidos",
+      "users-required": "Pelo menos um participante deve ser selecionado.",
+      "chat-box-placeholder": "Faz uma pergunta ao Assistente de IA...",
+      "responding-placeholder": "O Assistente de IA está a responder..."
+    },
+    "meeting-summarization": {
+      "enable": "Permitir o resumo das reuniões",
+      "summarization-prompt-label": "Instruções de Sumarização",
+      "summarization-prompt-required": "Por favor, introduza instruções sobre como resumir.",
+      "enabled-notification-all": "O áudio desta reunião está agora a ser gravado para gerar um resumo."
+    }
   }
 }

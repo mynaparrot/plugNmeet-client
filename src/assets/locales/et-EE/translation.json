@@ -32,7 +32,7 @@
     "you-have-reject": "Teie taotlus koosolekuga liituda lükati tagasi.",
     "waiting-for-approval": "Moderaatorit on teavitatud ja ta laseb teid peagi sisse. Täname kannatlikkuse eest!",
     "room-disconnected-title": "Lahti",
-    "room-disconnected-unknown": "Teid on teadmata põhjusel ühendus katkestatud. (Kood: {{code}})",
+    "room-disconnected-default": "Sind katkestati ootamatu vea tõttu: {{reason}}. Palun proovi uuesti liituda.",
     "room-disconnected-client-initiated": "Olete koosolekuga ühenduse katkestanud. (Kood: {{code}})",
     "room-disconnected-duplicate-entry": "Keegi teine on liitunud sama kasutajatunnusega.",
     "room-disconnected-server-shutdown": "Koosolekuserver on suletud. (Kood: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Jagate nüüd oma ekraani. Teised näevad suuremat vaadet.",
     "new-system-message-in-chat": "Avalikku vestlusse on postitatud uus süsteemiteade.",
     "queue-holding-messages": "Ühenduse probleem: sõnumeid hoitakse. ({{error}})",
-    "queue-discarded-message": "Sõnumit ei saanud saata ja see visati ära. ({{error}})"
+    "queue-discarded-message": "Sõnumit ei saanud saata ja see visati ära. ({{error}})",
+    "request-submitted-wait": "Teie taotlus on esitatud. Palun oodake kinnitust"
   },
   "room-metadata": {
     "session-recording": "See kohtumine salvestatakse.",
@@ -229,7 +230,8 @@
     "uploading-file": "Uploading {{fileName}}",
     "file-upload-success": "Faili üleslaadimine õnnestus",
     "file-upload-default-error": "Faili üleslaadimisel ilmnes tõrge.",
-    "chat-box-placeholder": "Saatke sõnum, kleepige pilt või kukutage fail siia (Uus rida: tõstuklahv + sisestusklahv)"
+    "chat-box-placeholder": "Saatke sõnum, kleepige pilt või kukutage fail siia (Uus rida: tõstuklahv + sisestusklahv)",
+    "sending-message": "Palun oodake, saates..."
   },
   "footer": {
     "hide-footer": "Peida jalus",
@@ -247,6 +249,8 @@
       "show-users-list": "Näita osalejate nimekirja",
       "hide-chat-panel": "Peida vestlus",
       "show-chat-panel": "Näita vestlust",
+      "hide-ai-chat-panel": "Peita tehisintellekti assistent",
+      "show-ai-chat-panel": "Show AI assistent",
       "stop-screen-sharing": "Ekraani jagamise lõpetamine",
       "start-screen-sharing": "Jaga ekraani",
       "screen-sharing-locked": "Ekraani jagamine lukustatud",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Jaga välislinki",
       "stop-display-external-link": "Lingi jagamise lõpetamine",
       "speech-to-text-settings": "Transkriptsioon ja tõlkimine",
+      "ai-settings": "AI tööriistad",
       "enable-polls": "Küsitluste lubamine",
       "disable-polls": "Küsitluste keelamine"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Transkriptsiooni ja tõlke seaded",
+    "speech-transcription": "Kõne transkriptsioon",
+    "chat-translation": "Vestluse tõlge",
     "enable-speech-to-text": "Transkriptsiooni lubamine",
     "speech-langs-label": "Kõneldavad keeled",
+    "allow-transcription-storage": "Hoia mu kõne lõplikku transkriptsiooni",
     "speech-users-label": "Kasutajad transkribeerimiseks",
     "subtitle-font-size": "Pealdise fondi suurus",
     "enable-translation": "Luba tõlge",
+    "enable-speech-synthesis": "Luba kõnesüntees (brauseripõhine)",
     "translation-langs-label": "Tõlgi (max: {{num}})",
     "default-subtitle-lang-label": "Subtiitrite vaikekeel",
+    "default-lang-label": "Vaikimisi keel",
     "enable-service": "Luba teenus",
     "speech-user-required": "Transkribeerimiseks peab olema valitud vähemalt üks kasutaja.",
     "speech-lang-required": "Valitud peab olema vähemalt üks kõnekeel.",
     "translation-lang-required": "Tõlkimiseks tuleb valida vähemalt üks keel.",
     "service-ready": "Transkriptsiooniteenus on valmis.",
+    "service-started": "Teenindus on alanud.",
+    "service-ended": "Teenistus on lõppenud.",
     "start-service": "Alustama",
     "stop-service": "Stopp",
     "update-service": "Uuendama",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure'i teenuse tõrge: {{error}}",
     "speech-to-text-stopped": "Transkriptsiooniteenus on peatunud.",
     "enable-transcription": "Transkriptsiooni lubamine",
-    "download-header": "Subtiitrite ajalugu {{name}}\nKeel: {{lang}}\nGenereeritud: {{date}} juures {{time}}"
+    "download-header": "Subtiitrite ajalugu {{name}}\nKeel: {{lang}}\nGenereeritud: {{date}} juures {{time}}",
+    "mic-not-ready-warning": "Teenuse käivitamiseks pead mikrofoni sisse lülitama.",
+    "max-lang-selection-warning": "Saad valida maksimaalselt {{num}} Tõlkekeeled",
+    "read-and-write-in-label": "Lugemine ja kirjutamine (maksimaalne: {{num}}):",
+    "enable-trans-synthesis": "Luba translatsioonisüntees"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI seaded",
+    "start-service": "Alusta teenindust",
+    "stop-service": "Peatusteenus",
+    "update-service": "Uuenda seadeid",
+    "service-started-successfully": "Teenindus on edukalt alustatud",
+    "service-stopped-successfully": "Teenindus on edukalt peatatud",
+    "tab-ai-text-chat-title": "Tehisintellekti assistendi vestlus",
+    "tab-meeting-summarization-title": "Koosoleku kokkuvõte",
+    "feature-disable-while-e2ee-self-key-enabled": "See funktsioon on keelatud, kui isehallatav otsast lõpuni krüpteerimine on aktiivne.",
+    "not-enough-credit-to-start-service": "Teenuse alustamiseks puudub piisav krediit. Palun võtke ühendust administraatoriga, et lisada rohkem krediite.",
+    "ai-text-chat": {
+      "name": "Tehisintellekti assistent",
+      "panel-title": "Tehisintellekti assistendi vestlus",
+      "enable": "Luba AI Assistant",
+      "allow-everyone": "Kõigile osalejatele kättesaadav",
+      "allowed-users": "Lubatud osalejad",
+      "users-required": "Vähemalt üks osaleja peab olema valitud.",
+      "chat-box-placeholder": "Küsi tehisintellekti assistendilt küsimus...",
+      "responding-placeholder": "AI assistent reageerib..."
+    },
+    "meeting-summarization": {
+      "enable": "Luba koosolekute kokkuvõte",
+      "summarization-prompt-label": "Kokkuvõtejuhised",
+      "summarization-prompt-required": "Palun sisesta juhised, kuidas kokku võtta.",
+      "enabled-notification-all": "Selle koosoleku heli salvestatakse nüüd, et koostada kokkuvõte."
+    }
   }
 }

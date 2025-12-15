@@ -32,7 +32,7 @@
     "you-have-reject": "Toplantıya katılma isteğiniz reddedildi.",
     "waiting-for-approval": "Bir moderatör bilgilendirildi ve kısa süre içinde sizi içeri alacak. Sabrınız için teşekkürler!",
     "room-disconnected-title": "Bağlantısı kesilmiş",
-    "room-disconnected-unknown": "Bilinmeyen bir nedenden dolayı bağlantınız kesildi. (Kod: {{code}})",
+    "room-disconnected-default": "Beklenmedik bir hata nedeniyle bağlantınız kesildi: {{reason}}. Lütfen tekrar katılmayı deneyin.",
     "room-disconnected-client-initiated": "Toplantıyla bağlantınız kesildi. (Kod: {{code}})",
     "room-disconnected-duplicate-entry": "Aynı kullanıcı kimliğiyle başka biri katıldı.",
     "room-disconnected-server-shutdown": "Toplantı sunucusu kapatıldı. (Kod: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Şu anda ekranınızı paylaşıyorsunuz. Diğerleri daha büyük bir görünüm görecek.",
     "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı.",
     "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor. ({{error}})",
-    "queue-discarded-message": "Bir mesaj gönderilemedi ve atıldı. ({{error}})"
+    "queue-discarded-message": "Bir mesaj gönderilemedi ve atıldı. ({{error}})",
+    "request-submitted-wait": "Talebiniz gönderildi. Lütfen onay için bekleyin"
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kayıt altına alınıyor.",
@@ -229,7 +230,8 @@
     "uploading-file": "Yükleme {{fileName}}",
     "file-upload-success": "Dosya başarıyla yüklendi",
     "file-upload-default-error": "Dosya yüklenirken bir hata oluştu.",
-    "chat-box-placeholder": "Buraya bir mesaj gönderin, bir resim yapıştırın veya bir dosya bırakın (Yeni satır: Shift + Enter)"
+    "chat-box-placeholder": "Buraya bir mesaj gönderin, bir resim yapıştırın veya bir dosya bırakın (Yeni satır: Shift + Enter)",
+    "sending-message": "Lütfen bekleyin, gönderiyorum..."
   },
   "footer": {
     "hide-footer": "Altbilgiyi gizle",
@@ -247,6 +249,8 @@
       "show-users-list": "Katılımcı Listesini Göster",
       "hide-chat-panel": "Sohbeti Gizle",
       "show-chat-panel": "Sohbeti Göster",
+      "hide-ai-chat-panel": "Yapay Zeka Asistanını Gizle",
+      "show-ai-chat-panel": "Gösteri Yapay Zeka Asistanı",
       "stop-screen-sharing": "Ekran Paylaşımını Durdur",
       "start-screen-sharing": "Ekranı Paylaş",
       "screen-sharing-locked": "Ekran Paylaşımı Kilitli",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Dış Bağlantıyı Paylaş",
       "stop-display-external-link": "Bağlantıyı Paylaşmayı Durdur",
       "speech-to-text-settings": "Transkripsiyon & Çeviri",
+      "ai-settings": "YZ Araçları",
       "enable-polls": "Anketleri etkinleştirme",
       "disable-polls": "Anketleri devre dışı bırakma"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Transkripsiyon & Çeviri Ayarları",
+    "speech-transcription": "Konuşma Transkripsiyonu",
+    "chat-translation": "Sohbet Çevirisi",
     "enable-speech-to-text": "Transkripsiyonu Etkinleştir",
     "speech-langs-label": "Konuşulan diller",
+    "allow-transcription-storage": "Konuşmamı nihai metnete sakla",
     "speech-users-label": "Metne Dönüştürülecek Kullanıcılar",
     "subtitle-font-size": "Altyazı Yazı Tipi Boyutu",
     "enable-translation": "Çeviriyi Etkinleştir",
+    "enable-speech-synthesis": "Konuşma Sentezini Etkinleştirin (Tarayıcı Bazlı)",
     "translation-langs-label": "Çevir (maks: {{num}})",
     "default-subtitle-lang-label": "Varsayılan Altyazı Dili",
+    "default-lang-label": "Varsayılan Dil",
     "enable-service": "Hizmeti Etkinleştir",
     "speech-user-required": "Yazıya dökmek için en az bir kullanıcı seçilmelidir.",
     "speech-lang-required": "En az bir konuşma dili seçilmelidir.",
     "translation-lang-required": "Çeviri için en az bir dil seçilmelidir.",
     "service-ready": "Transkripsiyon hizmeti hazır.",
+    "service-started": "Hizmet başlatıldı.",
+    "service-ended": "Hizmet sona erdi.",
     "start-service": "Başlamak",
     "stop-service": "Durmak",
     "update-service": "Güncelleştirmek",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure hizmet hatası: {{error}}",
     "speech-to-text-stopped": "Transkripsiyon hizmeti durduruldu.",
     "enable-transcription": "Transkripsiyonu Etkinleştir",
-    "download-header": "Altyazı Geçmişi {{name}}\nDil: {{lang}}\nOluşturulma tarihi: {{date}} da {{time}}"
+    "download-header": "Altyazı Geçmişi {{name}}\nDil: {{lang}}\nOluşturulma tarihi: {{date}} da {{time}}",
+    "mic-not-ready-warning": "Hizmeti başlatmak için mikrofonunuzu etkinleştirmeniz gerekir.",
+    "max-lang-selection-warning": "Maksimum bir seçebilirsiniz {{num}} çeviri dilleri",
+    "read-and-write-in-label": "Oku ve Yazma (maksimum: {{num}}):",
+    "enable-trans-synthesis": "Çeviri sentezini etkinleştirin"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI ayarları",
+    "start-service": "Hizmete başla",
+    "stop-service": "Durak hizmet",
+    "update-service": "Ayarları Güncelleme",
+    "service-started-successfully": "Hizmet başarıyla başlatıldı",
+    "service-stopped-successfully": "Hizmet başarıyla durduruldu",
+    "tab-ai-text-chat-title": "Yapay Zeka Asistanı Sohbeti",
+    "tab-meeting-summarization-title": "Toplantı özeti",
+    "feature-disable-while-e2ee-self-key-enabled": "Bu özellik, kendi kendini yöneten Uçtan Uca Şifreleme aktifse olduğunda devre dışı bırakılır.",
+    "not-enough-credit-to-start-service": "Bu hizmeti başlatmak için yeterli kredi yok. Daha fazla kredi eklemek için lütfen bir yöneticiyle iletişime geçin.",
+    "ai-text-chat": {
+      "name": "Yapay Zeka Asistanı",
+      "panel-title": "Yapay Zeka Asistanı Sohbeti",
+      "enable": "AI Asistanını etkinleştir",
+      "allow-everyone": "Tüm katılımcılar için mevcut",
+      "allowed-users": "İzin Verilen Katılımcılar",
+      "users-required": "En az bir katılımcı seçilmelidir.",
+      "chat-box-placeholder": "Yapay Zeka Asistanına bir soru sor...",
+      "responding-placeholder": "Yapay Zeka Asistanı yanıt veriyor..."
+    },
+    "meeting-summarization": {
+      "enable": "Toplantı özetini etkinleştirin",
+      "summarization-prompt-label": "Özetleme Talimatları",
+      "summarization-prompt-required": "Lütfen nasıl özetleyeceğiniz için talimatları girin.",
+      "enabled-notification-all": "Bu toplantının sesi şu anda bir özet oluşturmak için kaydediliyor."
+    }
   }
 }

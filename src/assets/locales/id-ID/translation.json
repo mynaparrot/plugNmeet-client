@@ -32,7 +32,7 @@
     "you-have-reject": "Permintaan Anda untuk bergabung dalam rapat ditolak.",
     "waiting-for-approval": "Moderator telah diberi tahu dan akan segera mengizinkan Anda masuk. Terima kasih atas kesabaran Anda!",
     "room-disconnected-title": "Terputus",
-    "room-disconnected-unknown": "Anda telah terputus karena alasan yang tidak diketahui. (Kode: {{code}})",
+    "room-disconnected-default": "Anda terputus karena kesalahan yang tidak terduga: {{reason}}. Silakan coba bergabung kembali.",
     "room-disconnected-client-initiated": "Anda telah memutuskan sambungan dari rapat. (Kode: {{code}})",
     "room-disconnected-duplicate-entry": "Orang lain telah bergabung dengan ID pengguna yang sama.",
     "room-disconnected-server-shutdown": "Server rapat telah dimatikan. (Kode: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Anda berbagi layar sekarang. Yang lain akan melihat tampilan yang lebih besar.",
     "new-system-message-in-chat": "Pesan sistem baru telah diposting di obrolan publik.",
     "queue-holding-messages": "Masalah koneksi: pesan ditahan. ({{error}})",
-    "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})"
+    "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})",
+    "request-submitted-wait": "Permintaan Anda telah diajukan. Harap tunggu konfirmasi"
   },
   "room-metadata": {
     "session-recording": "Pertemuan ini sedang direkam.",
@@ -229,7 +230,8 @@
     "uploading-file": "Meng {{fileName}}",
     "file-upload-success": "File berhasil diunggah",
     "file-upload-default-error": "Ada kesalahan saat mengunggah file.",
-    "chat-box-placeholder": "Kirim pesan, tempel gambar, atau jatuhkan file di sini (Baris baru: Shift + Enter)"
+    "chat-box-placeholder": "Kirim pesan, tempel gambar, atau jatuhkan file di sini (Baris baru: Shift + Enter)",
+    "sending-message": "Silakan tunggu, kirim..."
   },
   "footer": {
     "hide-footer": "Sembunyikan footer",
@@ -247,6 +249,8 @@
       "show-users-list": "Tampilkan Daftar Peserta",
       "hide-chat-panel": "Sembunyikan Obrolan",
       "show-chat-panel": "Tampilkan Obrolan",
+      "hide-ai-chat-panel": "Sembunyikan Asisten AI",
+      "show-ai-chat-panel": "Tampilkan Asisten AI",
       "stop-screen-sharing": "Berhenti Berbagi Layar",
       "start-screen-sharing": "Bagikan Layar",
       "screen-sharing-locked": "Berbagi Layar Terkunci",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Bagikan Tautan Eksternal",
       "stop-display-external-link": "Berhenti Berbagi Tautan",
       "speech-to-text-settings": "Transkripsi & Terjemahan",
+      "ai-settings": "Alat AI",
       "enable-polls": "Mengaktifkan jajak pendapat",
       "disable-polls": "Menonaktifkan jajak pendapat"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Pengaturan Transkripsi & Terjemahan",
+    "speech-transcription": "Transkripsi Pidato",
+    "chat-translation": "Terjemahan Obrolan",
     "enable-speech-to-text": "Aktifkan Transkripsi",
     "speech-langs-label": "Bahasa Lisan",
+    "allow-transcription-storage": "Simpan pidato saya ke transkrip akhir",
     "speech-users-label": "Pengguna untuk Transkripsi",
     "subtitle-font-size": "Ukuran Font Keterangan",
     "enable-translation": "Aktifkan Terjemahan",
+    "enable-speech-synthesis": "Aktifkan Sintesis Ucapan (Berbasis browser)",
     "translation-langs-label": "Terjemahkan ke (maks: {{num}})",
     "default-subtitle-lang-label": "Bahasa Teks Default",
+    "default-lang-label": "Bahasa Default",
     "enable-service": "Aktifkan Layanan",
     "speech-user-required": "Setidaknya satu pengguna harus dipilih untuk menyalin.",
     "speech-lang-required": "Setidaknya satu bahasa lisan harus dipilih.",
     "translation-lang-required": "Setidaknya satu bahasa harus dipilih untuk diterjemahkan.",
     "service-ready": "Layanan transkripsi sudah siap.",
+    "service-started": "Layanan telah dimulai.",
+    "service-ended": "Layanan telah berakhir.",
     "start-service": "Mulai",
     "stop-service": "Stop",
     "update-service": "Pemutakhiran",
@@ -521,6 +533,38 @@
     "azure-error": "Kesalahan layanan Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Layanan transkripsi telah dihentikan.",
     "enable-transcription": "Aktifkan Transkripsi",
-    "download-header": "Riwayat Subtitle untuk {{name}}\nBahasa: {{lang}}\nDihasilkan pada: {{date}} di {{time}}"
+    "download-header": "Riwayat Subtitle untuk {{name}}\nBahasa: {{lang}}\nDihasilkan pada: {{date}} di {{time}}",
+    "mic-not-ready-warning": "Untuk memulai layanan, Anda harus mengaktifkan mikrofon Anda.",
+    "max-lang-selection-warning": "Anda dapat memilih maksimal {{num}} Bahasa untuk Terjemahan",
+    "read-and-write-in-label": "Baca & Tulis (maks: {{num}}):",
+    "enable-trans-synthesis": "Mengaktifkan sintesis terjemahan"
+  },
+  "insights": {
+    "setting-modal-title": "Pengaturan AI Insights",
+    "start-service": "Mulai layanan",
+    "stop-service": "Menghentikan layanan",
+    "update-service": "Perbarui Pengaturan",
+    "service-started-successfully": "Layanan telah berhasil dimulai",
+    "service-stopped-successfully": "Layanan telah berhasil dihentikan",
+    "tab-ai-text-chat-title": "Obrolan Asisten AI",
+    "tab-meeting-summarization-title": "Ringkasan rapat",
+    "feature-disable-while-e2ee-self-key-enabled": "Fitur ini dinonaktifkan saat Enkripsi End-to-End yang dikelola sendiri aktif.",
+    "not-enough-credit-to-start-service": "Kredit tidak mencukupi untuk memulai layanan ini. Silakan hubungi administrator untuk menambahkan lebih banyak kredit.",
+    "ai-text-chat": {
+      "name": "Asisten AI",
+      "panel-title": "Obrolan Asisten AI",
+      "enable": "Aktifkan Asisten AI",
+      "allow-everyone": "Tersedia untuk Semua Peserta",
+      "allowed-users": "Peserta yang Diizinkan",
+      "users-required": "Setidaknya satu peserta harus dipilih.",
+      "chat-box-placeholder": "Ajukan pertanyaan kepada Asisten AI...",
+      "responding-placeholder": "Asisten AI merespons..."
+    },
+    "meeting-summarization": {
+      "enable": "Mengaktifkan ringkasan rapat",
+      "summarization-prompt-label": "Instruksi Ringkasan",
+      "summarization-prompt-required": "Silakan masukkan petunjuk tentang cara meringkas.",
+      "enabled-notification-all": "Audio rapat ini sekarang sedang direkam untuk menghasilkan ringkasan."
+    }
   }
 }

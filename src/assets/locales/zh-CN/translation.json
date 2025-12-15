@@ -32,7 +32,7 @@
     "you-have-reject": "您加入会议的请求被拒绝。",
     "waiting-for-approval": "版主已收到通知，并会很快让您进入。感谢您的耐心等待！",
     "room-disconnected-title": "断开",
-    "room-disconnected-unknown": "由于未知原因，您已断开连接。（代码： {{code}})",
+    "room-disconnected-default": "您因意外错误被断线： {{reason}}.请尝试重新加入。",
     "room-disconnected-client-initiated": "您已断开与会议的连接。（代码： {{code}})",
     "room-disconnected-duplicate-entry": "其他人使用相同的用户 ID 加入。",
     "room-disconnected-server-shutdown": "会议服务器已关闭。（代码： {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "您现在正在共享屏幕。其他人将看到更大的视野。",
     "new-system-message-in-chat": "公共聊天中发布了一条新的系统消息。",
     "queue-holding-messages": "连接问题：消息正在被保留。({{error}})",
-    "queue-discarded-message": "无法发送消息并被丢弃。({{error}})"
+    "queue-discarded-message": "无法发送消息并被丢弃。({{error}})",
+    "request-submitted-wait": "您的请求已提交。请稍候确认"
   },
   "room-metadata": {
     "session-recording": "这次会议正在录制中。",
@@ -229,7 +230,8 @@
     "uploading-file": "上传 {{fileName}}",
     "file-upload-success": "文件上传成功",
     "file-upload-default-error": "上传文件时出错。",
-    "chat-box-placeholder": "在此处发送消息、粘贴图像或将文件拖放到此处（换行符：Shift + Enter）"
+    "chat-box-placeholder": "在此处发送消息、粘贴图像或将文件拖放到此处（换行符：Shift + Enter）",
+    "sending-message": "请稍等，正在发送......"
   },
   "footer": {
     "hide-footer": "隐藏页脚",
@@ -247,6 +249,8 @@
       "show-users-list": "显示参与者列表",
       "hide-chat-panel": "隐藏聊天",
       "show-chat-panel": "显示聊天",
+      "hide-ai-chat-panel": "隐藏AI助手",
+      "show-ai-chat-panel": "展示AI助手",
       "stop-screen-sharing": "停止共享屏幕",
       "start-screen-sharing": "共享屏幕",
       "screen-sharing-locked": "屏幕共享锁定",
@@ -288,6 +292,7 @@
       "start-display-external-link": "分享外部链接",
       "stop-display-external-link": "停止共享链接",
       "speech-to-text-settings": "转录和翻译",
+      "ai-settings": "人工智能工具",
       "enable-polls": "启用投票",
       "disable-polls": "禁用投票"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "转录和翻译设置",
+    "speech-transcription": "语音转录",
+    "chat-translation": "聊天翻译",
     "enable-speech-to-text": "启用听录",
     "speech-langs-label": "口语",
+    "allow-transcription-storage": "把我的演讲保存到最终文字稿",
     "speech-users-label": "要转录的用户",
     "subtitle-font-size": "标题字体大小",
     "enable-translation": "启用翻译",
+    "enable-speech-synthesis": "启用语音合成（基于浏览器）",
     "translation-langs-label": "转换为 （max： {{num}})",
     "default-subtitle-lang-label": "默认字幕语言",
+    "default-lang-label": "默认语言",
     "enable-service": "启用服务",
     "speech-user-required": "必须至少选择一个用户进行转录。",
     "speech-lang-required": "必须至少选择一种口语。",
     "translation-lang-required": "必须至少选择一种语言进行翻译。",
     "service-ready": "转录服务已准备就绪。",
+    "service-started": "服务已经开始。",
+    "service-ended": "服务结束。",
     "start-service": "开始",
     "stop-service": "停",
     "update-service": "更新",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure 服务错误： {{error}}",
     "speech-to-text-stopped": "转录服务已停止。",
     "enable-transcription": "启用听录",
-    "download-header": "字幕历史记录 {{name}}\n语言： {{lang}}\n生成时间： {{date}} 在 {{time}}"
+    "download-header": "字幕历史记录 {{name}}\n语言： {{lang}}\n生成时间： {{date}} 在 {{time}}",
+    "mic-not-ready-warning": "要开始服务，您必须启用麦克风。",
+    "max-lang-selection-warning": "你可以选择最大值 {{num}} 翻译语言",
+    "read-and-write-in-label": "读写输入（最大： {{num}}):",
+    "enable-trans-synthesis": "启用翻译综合"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI 设置",
+    "start-service": "开始服役",
+    "stop-service": "停靠服务",
+    "update-service": "更新设置",
+    "service-started-successfully": "服务已成功启动",
+    "service-stopped-successfully": "服务已成功停止",
+    "tab-ai-text-chat-title": "AI助理聊天",
+    "tab-meeting-summarization-title": "会议总结",
+    "feature-disable-while-e2ee-self-key-enabled": "当自管理端到端加密激活时，此功能将被禁用。",
+    "not-enough-credit-to-start-service": "信用额度不足以开始这项服务。请联系管理员以添加更多学分。",
+    "ai-text-chat": {
+      "name": "AI助手",
+      "panel-title": "AI助理聊天",
+      "enable": "启用AI助手",
+      "allow-everyone": "所有参与者均可参与",
+      "allowed-users": "允许参赛人数",
+      "users-required": "至少必须选出一名参与者。",
+      "chat-box-placeholder": "问AI助手一个问题......",
+      "responding-placeholder": "AI助手正在回应......"
+    },
+    "meeting-summarization": {
+      "enable": "启用会议摘要",
+      "summarization-prompt-label": "摘要说明",
+      "summarization-prompt-required": "请输入总结说明。",
+      "enabled-notification-all": "本次会议的音频正在录制，以生成摘要。"
+    }
   }
 }

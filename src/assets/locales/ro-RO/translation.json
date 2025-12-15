@@ -32,7 +32,7 @@
     "you-have-reject": "Cererea dumneavoastră de a vă alătura întâlnirii a fost respinsă.",
     "waiting-for-approval": "Un moderator a fost notificat și vă va anunța în scurt timp. Mulțumesc pentru răbdare!",
     "room-disconnected-title": "Deconectat",
-    "room-disconnected-unknown": "Ați fost deconectat dintr-un motiv necunoscut. (Codul: {{code}})",
+    "room-disconnected-default": "Ai fost deconectat din cauza unei erori neașteptate: {{reason}}. Vă rog să încercați să reveniți.",
     "room-disconnected-client-initiated": "V-ați deconectat de la întâlnire. (Codul: {{code}})",
     "room-disconnected-duplicate-entry": "Altcineva s-a alăturat cu același ID de utilizator.",
     "room-disconnected-server-shutdown": "Serverul de întâlnire s-a închis. (Codul: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Partajați ecranul acum. Alții vor vedea o vedere mai mare.",
     "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public.",
     "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute. ({{error}})",
-    "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})"
+    "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})",
+    "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea"
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
@@ -229,7 +230,8 @@
     "uploading-file": "Încărcarea {{fileName}}",
     "file-upload-success": "Fișierul încărcat cu succes",
     "file-upload-default-error": "A apărut o eroare la încărcarea fișierului.",
-    "chat-box-placeholder": "Trimiteți un mesaj, lipiți o imagine sau plasați un fișier aici (Linie nouă: Shift + Enter)"
+    "chat-box-placeholder": "Trimiteți un mesaj, lipiți o imagine sau plasați un fișier aici (Linie nouă: Shift + Enter)",
+    "sending-message": "Te rog, așteaptă, trimiți..."
   },
   "footer": {
     "hide-footer": "Ascundeți subsolul",
@@ -247,6 +249,8 @@
       "show-users-list": "Afișați lista de participanți",
       "hide-chat-panel": "Ascunde chatul",
       "show-chat-panel": "Afișați chatul",
+      "hide-ai-chat-panel": "Ascunde asistentul AI",
+      "show-ai-chat-panel": "Asistentul AI de a-ți arăta",
       "stop-screen-sharing": "Opriți partajarea ecranului",
       "start-screen-sharing": "Partajare ecran",
       "screen-sharing-locked": "Partajarea ecranului blocată",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Distribuie Link extern",
       "stop-display-external-link": "Opriți partajarea linkului",
       "speech-to-text-settings": "Transcriere și traducere",
+      "ai-settings": "Instrumente AI",
       "enable-polls": "Activați sondajele",
       "disable-polls": "Dezactivați sondajele"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Setări de transcriere și traducere",
+    "speech-transcription": "Transcrierea vorbirii",
+    "chat-translation": "Traducere Chat",
     "enable-speech-to-text": "Activați transcrierea",
     "speech-langs-label": "Limbi vorbite",
+    "allow-transcription-storage": "Salvează-mi discursul la transcrierea finală",
     "speech-users-label": "Utilizatori de transcris",
     "subtitle-font-size": "Dimensiunea fontului legendei",
     "enable-translation": "Activați traducerea",
+    "enable-speech-synthesis": "Activează sinteza vocală (bazat pe browser)",
     "translation-langs-label": "Traduceți în (max: {{num}})",
     "default-subtitle-lang-label": "Limba implicită a subtitrării",
+    "default-lang-label": "Limbajul implicit",
     "enable-service": "Activați serviciul",
     "speech-user-required": "Cel puțin un utilizator trebuie selectat pentru a transcrie.",
     "speech-lang-required": "Trebuie selectată cel puțin o limbă vorbită.",
     "translation-lang-required": "Cel puțin o limbă trebuie selectată pentru traducere.",
     "service-ready": "Serviciul de transcriere este gata.",
+    "service-started": "Serviciul a fost început.",
+    "service-ended": "Serviciul s-a încheiat.",
     "start-service": "Porni",
     "stop-service": "Opreşte-te",
     "update-service": "Actualiza",
@@ -521,6 +533,38 @@
     "azure-error": "Eroare de serviciu Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Serviciul de transcriere s-a oprit.",
     "enable-transcription": "Activați transcrierea",
-    "download-header": "Istoricul subtitrărilor pentru {{name}}\nLimbă: {{lang}}\nGenerat pe: {{date}} la {{time}}"
+    "download-header": "Istoricul subtitrărilor pentru {{name}}\nLimbă: {{lang}}\nGenerat pe: {{date}} la {{time}}",
+    "mic-not-ready-warning": "Pentru a începe serviciul, trebuie să activezi microfonul.",
+    "max-lang-selection-warning": "Poți selecta maximum {{num}} Limbi pentru traducere",
+    "read-and-write-in-label": "Citește și scrie (maxim: {{num}}):",
+    "enable-trans-synthesis": "Permiterea sintezei traducerii"
+  },
+  "insights": {
+    "setting-modal-title": "Setări AI Insights",
+    "start-service": "Începerea serviciului",
+    "stop-service": "Oprire a serviciului",
+    "update-service": "Actualizare setări",
+    "service-started-successfully": "Serviciul a fost început cu succes",
+    "service-stopped-successfully": "Serviciul a fost oprit cu succes",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Rezumatul ședinței",
+    "feature-disable-while-e2ee-self-key-enabled": "Această funcție este dezactivată atunci când criptarea End-to-End autogestionată este activă.",
+    "not-enough-credit-to-start-service": "Credit insuficient pentru a începe acest serviciu. Vă rugăm să contactați un administrator pentru a adăuga mai mult credit.",
+    "ai-text-chat": {
+      "name": "Asistent AI",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Activează AI Assistant",
+      "allow-everyone": "Disponibil pentru toți participanții",
+      "allowed-users": "Participanți autorizați",
+      "users-required": "Cel puțin un participant trebuie selectat.",
+      "chat-box-placeholder": "Pune o întrebare Asistentului AI...",
+      "responding-placeholder": "AI Assistant răspunde..."
+    },
+    "meeting-summarization": {
+      "enable": "Permiterea rezumatizării ședințelor",
+      "summarization-prompt-label": "Instrucțiuni de rezumare",
+      "summarization-prompt-required": "Vă rugăm să introduceți instrucțiuni despre cum să rezumați.",
+      "enabled-notification-all": "Înregistrarea audio a acestei întâlniri este acum pentru a genera un rezumat."
+    }
   }
 }

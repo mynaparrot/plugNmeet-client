@@ -32,7 +32,7 @@
     "you-have-reject": "Το αίτημά σας να συμμετάσχετε στη σύσκεψη απορρίφθηκε.",
     "waiting-for-approval": "Ένας συντονιστής έχει ειδοποιηθεί και θα σας επιτρέψει να εισέλθετε σύντομα. Ευχαριστώ για την υπομονή σας!",
     "room-disconnected-title": "Αποσυνδεθεί",
-    "room-disconnected-unknown": "Έχετε αποσυνδεθεί για άγνωστο λόγο. (Κωδικός: {{code}})",
+    "room-disconnected-default": "Αποσυνδεθήκατε λόγω μη αναμενόμενου σφάλματος: {{reason}}. Προσπαθήστε να ξαναμπείτε.",
     "room-disconnected-client-initiated": "Έχετε αποσυνδεθεί από τη σύσκεψη. (Κωδικός: {{code}})",
     "room-disconnected-duplicate-entry": "Κάποιος άλλος έχει εγγραφεί με το ίδιο αναγνωριστικό χρήστη.",
     "room-disconnected-server-shutdown": "Ο διακομιστής συσκέψεων έχει τερματιστεί. (Κωδικός: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Μοιράζεστε την οθόνη σας τώρα. Άλλοι θα δουν μια μεγαλύτερη θέα.",
     "new-system-message-in-chat": "Ένα νέο μήνυμα συστήματος έχει αναρτηθεί στη δημόσια συνομιλία.",
     "queue-holding-messages": "Πρόβλημα σύνδεσης: τα μηνύματα κρατούνται. ({{error}})",
-    "queue-discarded-message": "Δεν ήταν δυνατή η αποστολή μηνύματος και απορρίφθηκε. ({{error}})"
+    "queue-discarded-message": "Δεν ήταν δυνατή η αποστολή μηνύματος και απορρίφθηκε. ({{error}})",
+    "request-submitted-wait": "Το αίτημά σας έχει υποβληθεί. Περιμένετε για επιβεβαίωση"
   },
   "room-metadata": {
     "session-recording": "Αυτή η συνάντηση καταγράφεται.",
@@ -229,7 +230,8 @@
     "uploading-file": "Φόρτωμα {{fileName}}",
     "file-upload-success": "Το αρχείο μεταφορτώθηκε με επιτυχία",
     "file-upload-default-error": "Παρουσιάστηκε σφάλμα κατά τη μεταφόρτωση του αρχείου.",
-    "chat-box-placeholder": "Στείλτε ένα μήνυμα, επικολλήστε μια εικόνα ή αποθέστε ένα αρχείο εδώ (Νέα γραμμή: Shift + Enter)"
+    "chat-box-placeholder": "Στείλτε ένα μήνυμα, επικολλήστε μια εικόνα ή αποθέστε ένα αρχείο εδώ (Νέα γραμμή: Shift + Enter)",
+    "sending-message": "Παρακαλώ περιμένετε, στέλνοντας..."
   },
   "footer": {
     "hide-footer": "Απόκρυψη υποσέλιδου",
@@ -247,6 +249,8 @@
       "show-users-list": "Εμφάνιση λίστας συμμετεχόντων",
       "hide-chat-panel": "Απόκρυψη συνομιλίας",
       "show-chat-panel": "Εμφάνιση συνομιλίας",
+      "hide-ai-chat-panel": "Απόκρυψη AI Assistant",
+      "show-ai-chat-panel": "Εμφάνιση Βοηθού AI",
       "stop-screen-sharing": "Διακοπή κοινής χρήσης οθόνης",
       "start-screen-sharing": "Κοινή χρήση οθόνης",
       "screen-sharing-locked": "Κλειδωμένη κοινή χρήση οθόνης",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Κοινή χρήση εξωτερικού συνδέσμου",
       "stop-display-external-link": "Διακοπή κοινής χρήσης συνδέσμου",
       "speech-to-text-settings": "Απομαγνητοφώνηση & Μετάφραση",
+      "ai-settings": "Εργαλεία AI",
       "enable-polls": "Ενεργοποίηση δημοσκοπήσεων",
       "disable-polls": "Απενεργοποίηση δημοσκοπήσεων"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Ρυθμίσεις μεταγραφής & μετάφρασης",
+    "speech-transcription": "Απομαγνητοφώνηση ομιλίας",
+    "chat-translation": "Μετάφραση συνομιλίας",
     "enable-speech-to-text": "Ενεργοποίηση μεταγραφής",
     "speech-langs-label": "Ομιλούμενες γλώσσες",
+    "allow-transcription-storage": "Αποθηκεύστε την ομιλία μου στην τελική απομαγνητοφώνηση",
     "speech-users-label": "Χρήστες για μεταγραφή",
     "subtitle-font-size": "Μέγεθος γραμματοσειράς λεζάντας",
     "enable-translation": "Ενεργοποίηση μετάφρασης",
+    "enable-speech-synthesis": "Ενεργοποίηση σύνθεσης ομιλίας (βάσει προγράμματος περιήγησης)",
     "translation-langs-label": "Μετάφραση σε (μέγιστο: {{num}})",
     "default-subtitle-lang-label": "Προεπιλεγμένη γλώσσα υπότιτλων",
+    "default-lang-label": "Προεπιλεγμένη γλώσσα",
     "enable-service": "Ενεργοποίηση υπηρεσίας",
     "speech-user-required": "Πρέπει να επιλεγεί τουλάχιστον ένας χρήστης για μεταγραφή.",
     "speech-lang-required": "Πρέπει να επιλεγεί τουλάχιστον μία ομιλούμενη γλώσσα.",
     "translation-lang-required": "Πρέπει να επιλεγεί τουλάχιστον μία γλώσσα για μετάφραση.",
     "service-ready": "Η υπηρεσία μεταγραφής είναι έτοιμη.",
+    "service-started": "Η υπηρεσία ξεκίνησε.",
+    "service-ended": "Η υπηρεσία έληξε.",
     "start-service": "Εκκίνηση",
     "stop-service": "Σταμάτα",
     "update-service": "Ενημερώνω",
@@ -521,6 +533,38 @@
     "azure-error": "Σφάλμα υπηρεσίας Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Η υπηρεσία μεταγραφής έχει σταματήσει.",
     "enable-transcription": "Ενεργοποίηση μεταγραφής",
-    "download-header": "Ιστορικό υποτίτλων για {{name}}\nΓλώσσα: {{lang}}\nΔημιουργήθηκε στις: {{date}} σε {{time}}"
+    "download-header": "Ιστορικό υποτίτλων για {{name}}\nΓλώσσα: {{lang}}\nΔημιουργήθηκε στις: {{date}} σε {{time}}",
+    "mic-not-ready-warning": "Για να ξεκινήσετε την υπηρεσία, πρέπει να ενεργοποιήσετε το μικρόφωνό σας.",
+    "max-lang-selection-warning": "Μπορείτε να επιλέξετε το πολύ {{num}} Γλώσσες για μετάφραση",
+    "read-and-write-in-label": "Ανάγνωση & Εγγραφή (μέγιστο: {{num}}):",
+    "enable-trans-synthesis": "Ενεργοποίηση σύνθεσης μετάφρασης"
+  },
+  "insights": {
+    "setting-modal-title": "Ρυθμίσεις AI Insights",
+    "start-service": "Ξεκινήστε την υπηρεσία",
+    "stop-service": "Διακοπή υπηρεσίας",
+    "update-service": "Ενημέρωση ρυθμίσεων",
+    "service-started-successfully": "Η υπηρεσία ξεκίνησε με επιτυχία",
+    "service-stopped-successfully": "Η υπηρεσία διακόπηκε με επιτυχία",
+    "tab-ai-text-chat-title": "Συνομιλία βοηθού AI",
+    "tab-meeting-summarization-title": "Σύνοψη σύσκεψης",
+    "feature-disable-while-e2ee-self-key-enabled": "Αυτή η δυνατότητα απενεργοποιείται όταν είναι ενεργή η αυτοδιαχειριζόμενη κρυπτογράφηση από άκρο σε άκρο.",
+    "not-enough-credit-to-start-service": "Ανεπαρκής πίστωση για την έναρξη αυτής της υπηρεσίας. Επικοινωνήστε με έναν διαχειριστή για να προσθέσετε περισσότερη πίστωση.",
+    "ai-text-chat": {
+      "name": "Βοηθός AI",
+      "panel-title": "Συνομιλία βοηθού AI",
+      "enable": "Ενεργοποιήστε το AI Assistant",
+      "allow-everyone": "Διαθέσιμο σε όλους τους συμμετέχοντες",
+      "allowed-users": "Επιτρεπόμενοι συμμετέχοντες",
+      "users-required": "Πρέπει να επιλεγεί τουλάχιστον ένας συμμετέχων.",
+      "chat-box-placeholder": "Κάντε μια ερώτηση στον Βοηθό AI...",
+      "responding-placeholder": "Το AI Assistant ανταποκρίνεται..."
+    },
+    "meeting-summarization": {
+      "enable": "Ενεργοποίηση σύνοψης σύσκεψης",
+      "summarization-prompt-label": "Οδηγίες σύνοψης",
+      "summarization-prompt-required": "Εισαγάγετε οδηγίες για τον τρόπο σύνοψης.",
+      "enabled-notification-all": "Ο ήχος αυτής της συνάντησης ηχογραφείται τώρα για να δημιουργηθεί μια περίληψη."
+    }
   }
 }

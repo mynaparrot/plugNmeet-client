@@ -32,7 +32,7 @@
     "you-have-reject": "Ваша заявка на участие в собрании была отклонена.",
     "waiting-for-approval": "Модератор был уведомлен и в ближайшее время пропустит вас. Спасибо за ваше терпение!",
     "room-disconnected-title": "Бессвязный",
-    "room-disconnected-unknown": "Вы были отключены по неизвестной причине. (Код: {{code}})",
+    "room-disconnected-default": "Вас отключили из-за неожиданной ошибки: {{reason}}. Пожалуйста, попробуйте вернуться.",
     "room-disconnected-client-initiated": "Вы отключились от собрания. (Код: {{code}})",
     "room-disconnected-duplicate-entry": "Кто-то другой присоединился с тем же идентификатором пользователя.",
     "room-disconnected-server-shutdown": "Сервер совещаний выключился. (Код: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Теперь вы предоставляете общий доступ к своему экрану. Другие увидят более крупный вид.",
     "new-system-message-in-chat": "В публичном чате опубликовано новое системное сообщение.",
     "queue-holding-messages": "Проблема с подключением: задерживаются сообщения. ({{error}})",
-    "queue-discarded-message": "Сообщение не могло быть отправлено и было отброшено. ({{error}})"
+    "queue-discarded-message": "Сообщение не могло быть отправлено и было отброшено. ({{error}})",
+    "request-submitted-wait": "Ваш запрос подан. Пожалуйста, дождитесь подтверждения"
   },
   "room-metadata": {
     "session-recording": "Эта встреча записывается.",
@@ -229,7 +230,8 @@
     "uploading-file": "Загрузки {{fileName}}",
     "file-upload-success": "Файл успешно загружен",
     "file-upload-default-error": "Произошла ошибка при загрузке файла.",
-    "chat-box-placeholder": "Отправьте сообщение, вставьте изображение или перетащите файл сюда (Новая строка: Shift + Enter)"
+    "chat-box-placeholder": "Отправьте сообщение, вставьте изображение или перетащите файл сюда (Новая строка: Shift + Enter)",
+    "sending-message": "Пожалуйста, подождите, отправляю..."
   },
   "footer": {
     "hide-footer": "Скрыть нижний колонтитул",
@@ -247,6 +249,8 @@
       "show-users-list": "Показать список участников",
       "hide-chat-panel": "Скрыть чат",
       "show-chat-panel": "Показать чат",
+      "hide-ai-chat-panel": "Скрыть AI Assistant",
+      "show-ai-chat-panel": "Покажи ИИ-ассистента",
       "stop-screen-sharing": "Остановка демонстрации экрана",
       "start-screen-sharing": "Демонстрация экрана",
       "screen-sharing-locked": "Демонстрация экрана заблокирована",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Поделиться внешней ссылкой",
       "stop-display-external-link": "Перестать делиться ссылкой",
       "speech-to-text-settings": "Транскрипция и перевод",
+      "ai-settings": "Инструменты ИИ",
       "enable-polls": "Включение опросов",
       "disable-polls": "Отключение опросов"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Настройки транскрипции и перевода",
+    "speech-transcription": "Транскрипция речи",
+    "chat-translation": "Чат Перевод",
     "enable-speech-to-text": "Включить транскрипцию",
     "speech-langs-label": "Разговорные языки",
+    "allow-transcription-storage": "Оставьте мою речь в финальной стенограмме",
     "speech-users-label": "Пользователи для расшифровки",
     "subtitle-font-size": "Размер шрифта подписи",
     "enable-translation": "Включить перевод",
+    "enable-speech-synthesis": "Включить синтез речи (браузер)",
     "translation-langs-label": "Перевести в (макс.: {{num}})",
     "default-subtitle-lang-label": "Язык субтитров по умолчанию",
+    "default-lang-label": "Стандартный язык",
     "enable-service": "Включить сервис",
     "speech-user-required": "Для расшифровки должен быть выбран хотя бы один пользователь.",
     "speech-lang-required": "Должен быть выбран хотя бы один разговорный язык.",
     "translation-lang-required": "Для перевода должен быть выбран хотя бы один язык.",
     "service-ready": "Сервис расшифровки готов.",
+    "service-started": "Обслуживание начато.",
+    "service-ended": "Обслуживание закончилось.",
     "start-service": "Начало",
     "stop-service": "Остановка",
     "update-service": "Обновлять",
@@ -521,6 +533,38 @@
     "azure-error": "Ошибка службы Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Служба расшифровки остановлена.",
     "enable-transcription": "Включить транскрипцию",
-    "download-header": "История субтитров для {{name}}\nЯзык: {{lang}}\nСгенерировано: {{date}} у {{time}}"
+    "download-header": "История субтитров для {{name}}\nЯзык: {{lang}}\nСгенерировано: {{date}} у {{time}}",
+    "mic-not-ready-warning": "Чтобы запустить сервис, необходимо включить микрофон.",
+    "max-lang-selection-warning": "Вы можете выбрать максимум {{num}} Языки для перевода",
+    "read-and-write-in-label": "Чтение и запись (максимум: {{num}}):",
+    "enable-trans-synthesis": "Включите синтез перевода"
+  },
+  "insights": {
+    "setting-modal-title": "Настройки искусственного интеллекта Insights",
+    "start-service": "Начало службы",
+    "stop-service": "Стоп-сервис",
+    "update-service": "Настройки обновления",
+    "service-started-successfully": "Обслуживание успешно запущено",
+    "service-stopped-successfully": "Обслуживание успешно остановлено",
+    "tab-ai-text-chat-title": "Чат с AI Assistant",
+    "tab-meeting-summarization-title": "Краткое содержание собрания",
+    "feature-disable-while-e2ee-self-key-enabled": "Эта функция отключается, когда активировано самоуправляемое сквозное шифрование.",
+    "not-enough-credit-to-start-service": "Недостаточно кредита для запуска этой услуги. Пожалуйста, свяжитесь с администратором, чтобы добавить больше кредита.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "Чат с AI Assistant",
+      "enable": "Включить AI Assistant",
+      "allow-everyone": "Доступно для всех участников",
+      "allowed-users": "Разрешённые участники",
+      "users-required": "Должен быть выбран как минимум один участник.",
+      "chat-box-placeholder": "Задайте вопрос ассистенту ИИ...",
+      "responding-placeholder": "Ассистент ИИ отвечает..."
+    },
+    "meeting-summarization": {
+      "enable": "Включите резюме собраний",
+      "summarization-prompt-label": "Инструкции по суммированию",
+      "summarization-prompt-required": "Пожалуйста, введите инструкции по краткому изложению.",
+      "enabled-notification-all": "Аудиозапись этой встречи сейчас записывается для создания краткого содержания."
+    }
   }
 }

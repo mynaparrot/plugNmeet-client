@@ -32,7 +32,7 @@
     "you-have-reject": "Forespørselen din om å bli med i møtet ble avslått.",
     "waiting-for-approval": "En moderator har blitt varslet og vil slippe deg inn snart. Takk for tålmodigheten!",
     "room-disconnected-title": "Frakoplet",
-    "room-disconnected-unknown": "Du har blitt koblet fra av en ukjent årsak. (Kode: {{code}})",
+    "room-disconnected-default": "Du ble koblet fra på grunn av en uventet feil: {{reason}}. Vennligst prøv å bli med igjen.",
     "room-disconnected-client-initiated": "Du har koblet fra møtet. (Kode: {{code}})",
     "room-disconnected-duplicate-entry": "Noen andre har blitt med med samme bruker-ID.",
     "room-disconnected-server-shutdown": "Møteserveren er slått av. (Kode: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Du deler skjermen din nå. Andre vil se en større visning.",
     "new-system-message-in-chat": "En ny systemmelding er lagt ut i den offentlige chatten.",
     "queue-holding-messages": "Tilkoblingsproblem: meldinger blir holdt. ({{error}})",
-    "queue-discarded-message": "En melding kunne ikke sendes og ble forkastet. ({{error}})"
+    "queue-discarded-message": "En melding kunne ikke sendes og ble forkastet. ({{error}})",
+    "request-submitted-wait": "Forespørselen din er sendt inn. Vennligst vent på bekreftelse"
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
@@ -229,7 +230,8 @@
     "uploading-file": "Opplasting {{fileName}}",
     "file-upload-success": "Filen ble lastet opp",
     "file-upload-default-error": "Det oppsto en feil under opplasting av filen.",
-    "chat-box-placeholder": "Send en melding, lim inn et bilde eller slipp en fil her (Ny linje: Shift + Enter)"
+    "chat-box-placeholder": "Send en melding, lim inn et bilde eller slipp en fil her (Ny linje: Shift + Enter)",
+    "sending-message": "Vennligst vent, sender..."
   },
   "footer": {
     "hide-footer": "Skjul bunntekst",
@@ -247,6 +249,8 @@
       "show-users-list": "Vis deltakerliste",
       "hide-chat-panel": "Skjul chat",
       "show-chat-panel": "Vis chat",
+      "hide-ai-chat-panel": "Skjul AI-assistent",
+      "show-ai-chat-panel": "Show AI-assistent",
       "stop-screen-sharing": "Slutt å dele skjerm",
       "start-screen-sharing": "Del skjerm",
       "screen-sharing-locked": "Skjermdeling låst",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Del ekstern lenke",
       "stop-display-external-link": "Slutt å dele lenke",
       "speech-to-text-settings": "Transkripsjon og oversettelse",
+      "ai-settings": "AI-verktøy",
       "enable-polls": "Aktivere avstemninger",
       "disable-polls": "Deaktiver avstemninger"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Innstillinger for transkripsjon og oversettelse",
+    "speech-transcription": "Taletranskripsjon",
+    "chat-translation": "Chat-oversettelse",
     "enable-speech-to-text": "Aktiver transkripsjon",
     "speech-langs-label": "Talte språk",
+    "allow-transcription-storage": "Spar talen min til den endelige transkripsjonen",
     "speech-users-label": "Brukere som kan transkribere",
     "subtitle-font-size": "Skriftstørrelse for bildetekst",
     "enable-translation": "Aktiver oversettelse",
+    "enable-speech-synthesis": "Aktiver talesyntese (nettleserbasert)",
     "translation-langs-label": "Oversett til (maks: {{num}})",
     "default-subtitle-lang-label": "Standard tekstspråk",
+    "default-lang-label": "Standardspråk",
     "enable-service": "Aktiver tjeneste",
     "speech-user-required": "Minst én bruker må velges for å transkribere.",
     "speech-lang-required": "Minst ett talespråk må velges.",
     "translation-lang-required": "Minst ett språk må velges for oversettelse.",
     "service-ready": "Transkripsjonstjenesten er klar.",
+    "service-started": "Tjenesten er startet.",
+    "service-ended": "Gudstjenesten er over.",
     "start-service": "Start",
     "stop-service": "Stopp",
     "update-service": "Oppdatering",
@@ -521,6 +533,38 @@
     "azure-error": "Feil i Microsoft Azure-tjenesten: {{error}}",
     "speech-to-text-stopped": "Transkripsjonstjenesten har stoppet.",
     "enable-transcription": "Aktiver transkripsjon",
-    "download-header": "Underteksthistorikk for {{name}}\nSpråk: {{lang}}\nGenerert på: {{date}} på {{time}}"
+    "download-header": "Underteksthistorikk for {{name}}\nSpråk: {{lang}}\nGenerert på: {{date}} på {{time}}",
+    "mic-not-ready-warning": "For å starte tjenesten må du aktivere mikrofonen din.",
+    "max-lang-selection-warning": "Du kan velge maksimalt {{num}} Språk for oversettelse",
+    "read-and-write-in-label": "Les og skriv inn (maks: {{num}}):",
+    "enable-trans-synthesis": "Muliggjør oversettelsessyntese"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI-innstillinger",
+    "start-service": "Start tjenesten",
+    "stop-service": "Stopp tjenesten",
+    "update-service": "Oppdateringsinnstillinger",
+    "service-started-successfully": "Tjenesten er startet med suksess",
+    "service-stopped-successfully": "Tjenesten har blitt stoppet med suksess",
+    "tab-ai-text-chat-title": "AI-assistent chat",
+    "tab-meeting-summarization-title": "Møteoppsummering",
+    "feature-disable-while-e2ee-self-key-enabled": "Denne funksjonen deaktiveres når selvstyrt ende-til-ende-kryptering er aktiv.",
+    "not-enough-credit-to-start-service": "Utilstrekkelig kreditt til å starte denne tjenesten. Vennligst kontakt en administrator for å få mer kreditt.",
+    "ai-text-chat": {
+      "name": "AI-assistent",
+      "panel-title": "AI-assistent chat",
+      "enable": "Aktiver AI-assistent",
+      "allow-everyone": "Tilgjengelig for alle deltakere",
+      "allowed-users": "Tillatte deltakere",
+      "users-required": "Minst én deltaker må velges.",
+      "chat-box-placeholder": "Still AI-assistenten et spørsmål...",
+      "responding-placeholder": "AI-assistenten svarer..."
+    },
+    "meeting-summarization": {
+      "enable": "Aktiver møteoppsummering",
+      "summarization-prompt-label": "Oppsummeringsinstruksjoner",
+      "summarization-prompt-required": "Vennligst skriv inn instruksjoner for hvordan du skal oppsummere.",
+      "enabled-notification-all": "Lydopptaket fra dette møtet blir nå tatt opp for å lage et sammendrag."
+    }
   }
 }
