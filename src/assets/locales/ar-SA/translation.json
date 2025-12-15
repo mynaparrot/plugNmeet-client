@@ -32,7 +32,7 @@
     "you-have-reject": "تم رفض طلبك للانضمام إلى الاجتماع.",
     "waiting-for-approval": "تم إخطار المشرف وسيسمح لك بالدخول قريبا. شكرا على صبرك!",
     "room-disconnected-title": "قطع اتصال",
-    "room-disconnected-unknown": "تم قطع اتصالك لسبب غير معروف. (الرمز: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "لقد انقطعت الاتصال بالاجتماع. (الرمز: {{code}})",
     "room-disconnected-duplicate-entry": "انضم شخص آخر باستخدام معرف المستخدم نفسه.",
     "room-disconnected-server-shutdown": "تم إيقاف تشغيل خادم الاجتماع. (الرمز: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "أنت تشارك شاشتك الآن. سيرى الآخرون عرضا أكبر.",
     "new-system-message-in-chat": "تم نشر رسالة نظام جديدة في الدردشة العامة.",
     "queue-holding-messages": "مشكلة الاتصال: يتم تعليق الرسائل. ({{error}})",
-    "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها. ({{error}})"
+    "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "ويجري تسجيل هذه الجلسة.",
@@ -229,7 +230,8 @@
     "uploading-file": "تحميل {{fileName}}",
     "file-upload-success": "تم تحميل الملف بنجاح",
     "file-upload-default-error": "حدث خطأ في تحميل الملف.",
-    "chat-box-placeholder": "إرسال رسالة أو لصق صورة أو إسقاط ملف هنا (سطر جديد: Shift + Enter)"
+    "chat-box-placeholder": "إرسال رسالة أو لصق صورة أو إسقاط ملف هنا (سطر جديد: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "إخفاء التذييل",
@@ -247,6 +249,8 @@
       "show-users-list": "إظهار قائمة المشاركين",
       "hide-chat-panel": "إخفاء الدردشة",
       "show-chat-panel": "إظهار الدردشة",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "إيقاف مشاركة الشاشة",
       "start-screen-sharing": "مشاركة الشاشة",
       "screen-sharing-locked": "مشاركة الشاشة مقفلة",
@@ -288,6 +292,7 @@
       "start-display-external-link": "مشاركة رابط خارجي",
       "stop-display-external-link": "رابط إيقاف المشاركة",
       "speech-to-text-settings": "النسخ والترجمة",
+      "ai-settings": "AI Tools",
       "enable-polls": "تمكين استطلاعات الرأي",
       "disable-polls": "تعطيل استطلاعات الرأي"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "إعدادات النسخ والترجمة",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "تمكين النسخ",
     "speech-langs-label": "اللغات المنطوقة",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "المستخدمون المراد نسخهم",
     "subtitle-font-size": "حجم خط التسمية التوضيحية",
     "enable-translation": "تمكين الترجمة",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "ترجمة إلى (كحد أقصى: {{num}})",
     "default-subtitle-lang-label": "لغة التسمية التوضيحية الافتراضية",
+    "default-lang-label": "Default Language",
     "enable-service": "تمكين الخدمة",
     "speech-user-required": "يجب تحديد مستخدم واحد على الأقل للنسخ.",
     "speech-lang-required": "يجب اختيار لغة منطوقة واحدة على الأقل.",
     "translation-lang-required": "يجب اختيار لغة واحدة على الأقل للترجمة.",
     "service-ready": "خدمة النسخ جاهزة.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "بدء",
     "stop-service": "وقف",
     "update-service": "تحديث",
@@ -521,6 +533,38 @@
     "azure-error": "خطأ في خدمة Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "توقفت خدمة النسخ.",
     "enable-transcription": "تمكين النسخ",
-    "download-header": "تاريخ الترجمة ل {{name}}\nاللغة: {{lang}}\nتم إنشاؤه في: {{date}} في {{time}}"
+    "download-header": "تاريخ الترجمة ل {{name}}\nاللغة: {{lang}}\nتم إنشاؤه في: {{date}} في {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
