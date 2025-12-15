@@ -128,7 +128,7 @@ const BreakoutRoomInvitation = () => {
     <Transition appear show={true} as={Fragment}>
       <Dialog
         as="div"
-        className="breakoutRoomModalInvite fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70"
+        className="breakoutRoomModalInvite fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70 dark:bg-Gray-950/80"
         onClose={closeModal}
       >
         <div className="min-h-full flex p-4 items-end justify-end">
@@ -141,25 +141,24 @@ const BreakoutRoomInvitation = () => {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block w-max h-full bg-white border border-Gray-200 shadow-virtualPOP p-4 rounded-xl overflow-hidden duration-300 ease-out">
+            <div className="inline-block w-max h-full bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 shadow-virtualPOP p-4 rounded-xl overflow-hidden duration-300 ease-out">
               <DialogTitle
                 as="h3"
-                className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 mb-2"
+                className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 dark:text-white mb-2 border-b border-Gray-300 dark:border-Gray-800 pb-2"
               >
                 <span>{t('breakout-room.invitation-title')}</span>
                 <Button className="cursor-pointer" onClick={closeModal}>
                   <PopupCloseSVGIcon classes="text-Gray-600" />
                 </Button>
               </DialogTitle>
-              <hr />
               <div className="mt-2">
-                <span className="text-black text-sm">
+                <span className="text-black dark:text-white text-sm">
                   {t('breakout-room.invitation-msg')}
                 </span>
 
                 {joinLink !== '' && (
                   <div className="invite-link mt-2">
-                    <label className="text-black text-sm block mb-1">
+                    <label className="text-black dark:text-white text-sm block mb-1">
                       {t('breakout-room.join-text-label')}
                     </label>
                     <div className="wrap flex items-center gap-1">
@@ -167,7 +166,7 @@ const BreakoutRoomInvitation = () => {
                         type="text"
                         readOnly={true}
                         value={joinLink}
-                        className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-7 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+                        className="border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-7 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-white hover:text-Gray-950"
                       />
                       <button
                         onClick={copyUrl}

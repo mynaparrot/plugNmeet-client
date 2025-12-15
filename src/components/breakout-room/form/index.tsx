@@ -176,13 +176,13 @@ const FromElems = ({
         />
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
-            className="block text-sm font-medium text-Gray-800 mb-2"
+            className="block text-sm font-medium text-Gray-800 dark:text-white mb-2"
             htmlFor="breakout-room-duration"
           >
             {t('breakout-room.duration')}
           </label>
           <input
-            className="h-11 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            className="h-10 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             id="breakout-room-duration"
             type="number"
             value={roomDuration}
@@ -193,13 +193,13 @@ const FromElems = ({
       <div className="row flex flex-wrap justify-between items-end">
         <div className="room-welcome-messages w-full sm:max-w-122 mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
           <label
-            className="block text-sm font-medium text-Gray-800 mb-1"
+            className="block text-sm font-medium text-Gray-800 dark:text-white mb-1"
             htmlFor="breakout-room-welcome"
           >
             {t('breakout-room.welcome-msg')}
           </label>
           <textarea
-            className="h-20 rounded-[15px] border border-Gray-300 bg-white shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             id="breakout-room-welcome"
             onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
             value={welcomeMsg}

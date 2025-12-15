@@ -39,7 +39,9 @@ const ManageWaitingRoom = () => {
           <BulkAction waitingParticipants={waitingParticipants} />
         </>
       ) : (
-        <p>{t('waiting-room.no-pending-user')}</p>
+        <p className="text-Gray-950 dark:text-white">
+          {t('waiting-room.no-pending-user')}
+        </p>
       )}
     </Modal>
   );

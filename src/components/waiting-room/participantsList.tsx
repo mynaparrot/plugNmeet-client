@@ -13,7 +13,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
 
   return (
     <div className="waiting-list-wrap">
-      <p className="text-lg my-4 text-Gray-950 font-medium ltr:text-left rtl:text-right">
+      <p className="text-lg my-4 text-Gray-950 dark:text-white font-medium ltr:text-left rtl:text-right">
         {t('waiting-room.list-waiting-participants', {
           count: waitingParticipants.length,
         })}
@@ -25,7 +25,7 @@ const ParticipantsList = ({ waitingParticipants }: IParticipantsListProps) => {
               <WaitingParticipantItem key={p.userId} participant={p} />
             ))
           ) : (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-dark-text">
               {t('waiting-room.no-pending-user')}
             </p>
           )}

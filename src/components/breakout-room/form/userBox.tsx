@@ -26,7 +26,7 @@ const UserBox = React.memo(({ name, id }: IUserBoxProps) => {
     <div
       ref={ref}
       className={clsx(
-        'userBox text-sm sm:text-base text-Gray-950 bg-white border-b border-solid border-Gray-300 w-full px-2 py-1 cursor-move',
+        'userBox text-sm sm:text-base text-Gray-950 dark:text-white bg-white dark:bg-dark-primary border-b border-solid border-Gray-300 dark:border-Gray-800 w-full px-2 py-1 cursor-move',
         { 'opacity-40': isDragging },
       )}
     >

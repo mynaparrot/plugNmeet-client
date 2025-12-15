@@ -11,46 +11,59 @@ interface CustomLogo {
 }
 
 const useLogo = () => {
+  const theme = useAppSelector((state) => state.roomSettings.theme);
+
   const assetPath = getConfigValue(
     'staticAssetsPath',
     './assets',
     'STATIC_ASSETS_PATH',
   );
-  const theme = useAppSelector((state) => state.roomSettings.theme);
+
   const [logo, setLogo] = useState<string>(`${assetPath}/imgs/main-logo.png`);
+  const [darkLogo, setDarkLogo] = useState<string>(
+    `${assetPath}/imgs/PlugNmeet-Dark.png`,
+  );
 
   useEffect(() => {
-    const logo = getConfigValue<string | CustomLogo>(
+    const customLogo = getConfigValue<string | CustomLogo>(
       'customLogo',
       '',
       'CUSTOM_LOGO',
     );
 
-    if (!logo) {
+    if (!customLogo) {
       return;
     }
 
-    if (typeof logo === 'string' && isValidHttpUrl(logo)) {
-      setLogo(logo);
+    if (typeof customLogo === 'string' && isValidHttpUrl(customLogo)) {
+      setLogo(customLogo);
+      setDarkLogo(customLogo);
       return;
     }
 
-    if (typeof logo !== 'object') {
+    if (typeof customLogo !== 'object') {
       return;
     }
 
+    // Set light logo
     if (
-      theme === 'dark' &&
-      logo.main_logo_dark &&
-      isValidHttpUrl(logo.main_logo_dark)
+      customLogo.main_logo_light &&
+      isValidHttpUrl(customLogo.main_logo_light)
     ) {
-      setLogo(logo.main_logo_dark);
-    } else if (logo.main_logo_light && isValidHttpUrl(logo.main_logo_light)) {
-      setLogo(logo.main_logo_light);
+      setLogo(customLogo.main_logo_light);
     }
-  }, [theme]);
 
-  return logo;
+    // Set dark logo
+    if (
+      customLogo.main_logo_dark &&
+      isValidHttpUrl(customLogo.main_logo_dark)
+    ) {
+      setDarkLogo(customLogo.main_logo_dark);
+    }
+  }, []);
+
+  // Return the appropriate logo based on theme
+  return theme === 'dark' ? darkLogo : logo;
 };
 
 export default useLogo;

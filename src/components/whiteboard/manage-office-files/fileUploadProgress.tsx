@@ -159,16 +159,16 @@ const FileUploadProgress = ({
   return (
     !removeView && (
       <div
-        className={`flex gap-4 py-2 px-3 bg-Gray-50 w-full rounded-xl ${message && message.isError ? 'border border-Red-400' : ''}`}
+        className={`flex gap-4 py-2 px-3 bg-Gray-50 dark:bg-dark-primary w-full rounded-xl ${message && message.isError ? 'border border-Red-400' : ''}`}
       >
-        <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center">
+        <div className="icon w-9 h-9 rounded-full  dark:bg-Gray-700 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center">
           <FileIconSVG />
         </div>
-        <div className="text flex-1 text-Gray-800 text-sm">
+        <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
           <div className="top flex gap-3 justify-between">
             <div className="left">
               <p className="break-all">{file.name}</p>
-              <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
+              <div className="bottom flex justify-between text-Gray-800 dark:text-white text-xs items-center pt-1">
                 {(file.size / (1024 * 1024)).toFixed(2)}MB
               </div>
             </div>
@@ -191,7 +191,7 @@ const FileUploadProgress = ({
                     style={{ width: `${uploadingProgress}%` }}
                   ></div>
                 </div>
-                <div className="count bg-Gray-25 border border-Gray-300 rounded-[7px] w-auto py-0.5 px-2">
+                <div className="count bg-Gray-25 dark:bg-dark-primary border border-Gray-300 dark:border-Gray-800 rounded-[7px] w-auto py-0.5 px-2">
                   {uploadingProgress}%
                 </div>
               </>

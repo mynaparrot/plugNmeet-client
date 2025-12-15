@@ -48,11 +48,11 @@ const BroadcastMessageForm = ({ setMessage }: IBroadcastMessageFormProps) => {
   };
 
   return (
-    <div className="broadcasting-message pb-4 mb-4 border-b border-solid border-Gray-200 grid gap-2">
+    <div className="broadcasting-message pb-4 mb-4 border-b border-solid border-Gray-200 dark:border-Gray-800 grid gap-2">
       <textarea
         value={msg}
         onChange={(e) => setMsg(e.currentTarget.value)}
-        className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+        className="border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-gray-950 dark:text-white"
       ></textarea>
       <button
         onClick={send}

@@ -47,7 +47,7 @@ const BreakoutRoomUsers = ({
       {userChunks.map((chunk, i) => (
         <ul
           key={`chunk-${i}`}
-          className="flex flex-col gap-y-2 px-2 border-r border-solid border-Gray-200 last:border-r-0"
+          className="flex flex-col gap-y-2 px-2 border-r border-solid border-Gray-200 dark:border-Gray-800 last:border-r-0"
         >
           {chunk.map((user) => (
             <li key={user.id} className="flex items-center gap-2 text-sm">
@@ -63,7 +63,9 @@ const BreakoutRoomUsers = ({
               >
                 {generateAvatarInitial(user.name)}
               </div>
-              <span className="text-Gray-950 break-all">{user.name}</span>
+              <span className="text-Gray-950 dark:text-white break-all">
+                {user.name}
+              </span>
               {!user.joined && (
                 <button
                   onClick={() => pushUser(user.name, user.id)}

@@ -96,23 +96,23 @@ const ManageOfficeFilesModal = ({
       unmount={false}
       onClose={() => false}
     >
-      <div className="excalidrawUploadFiles fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70">
+      <div className="excalidrawUploadFiles fixed inset-0 w-screen overflow-y-auto z-10 bg-Gray-950/70 dark:bg-Gray-950/80">
         <div className="flex min-h-full items-center justify-center py-4">
           <DialogPanel
             transition
-            className="w-full max-w-lg bg-white border border-Gray-200 shadow-virtual-pOP rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
+            className="w-full max-w-lg bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 shadow-virtual-pOP rounded-xl overflow-hidden duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
           >
             <DialogTitle
               as="h3"
-              className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 px-4 py-2 border-b border-Gray-100"
+              className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 dark:text-white px-4 py-2 border-b border-Gray-100 dark:border-Gray-800"
             >
               <span>{t('whiteboard.upload-files-title')}</span>
               <Button className="cursor-pointer" onClick={() => onClose()}>
-                <PopupCloseSVGIcon classes="text-Gray-600" />
+                <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
               </Button>
             </DialogTitle>
-            <div className="wrap p-4 bg-Gray-25">
-              <div className="input-wrap relative rounded-xl border border-dashed border-Gray-200 py-8 px-6 cursor-pointer">
+            <div className="wrap p-4 bg-Gray-25 dark:bg-dark-primary">
+              <div className="input-wrap relative rounded-xl border border-dashed border-Gray-200 dark:border-Gray-800 py-8 px-6 cursor-pointer">
                 <input
                   type="file"
                   multiple={false}
@@ -123,20 +123,22 @@ const ManageOfficeFilesModal = ({
                   className="w-full h-full absolute top-0 left-0 opacity-0 cursor-pointer"
                 />
                 <div className="text-wrap text-sm font-medium text-center cursor-pointer">
-                  <p className="text-Gray-950 font-semibold pb-1">
+                  <p className="text-Gray-950 dark:text-white font-semibold pb-1">
                     {t('whiteboard.drag-drop-file')}
                   </p>
-                  <p className="text-Gray-700">
+                  <p className="text-Gray-700 dark:text-dark-text">
                     {t('whiteboard.max-file-size', {
                       size: maxAllowedFileSize,
                     })}
                   </p>
                   <div className="divider flex justify-center items-center gap-3 py-3">
-                    <span className="line inline-block h-[1px] w-20 bg-Gray-200"></span>
-                    <span className="text-Gray-600">{t('whiteboard.or')}</span>
-                    <span className="line inline-block h-[1px] w-20 bg-Gray-200"></span>
+                    <span className="line inline-block h-[1px] w-20 bg-Gray-200 dark:bg-Gray-700"></span>
+                    <span className="text-Gray-600 dark:text-dark-text">
+                      {t('whiteboard.or')}
+                    </span>
+                    <span className="line inline-block h-[1px] w-20 bg-Gray-200 dark:bg-Gray-700"></span>
                   </div>
-                  <button className="h-9 w-auto m-auto px-4 flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer">
+                  <button className="h-9 w-auto m-auto px-4 flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 dark:text-white bg-Gray-25 dark:bg-dark-secondary2 border border-Gray-300 dark:border-Gray-700 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow dark:shadow-none cursor-pointer">
                     <i className="pnm-attachment text-[14px] ltr:mr-1 rtl:ml-1" />
                     {t('whiteboard.select-file')}
                   </button>
@@ -161,7 +163,7 @@ const ManageOfficeFilesModal = ({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 px-4 py-4 border-t border-Gray-100">
+            <div className="grid grid-cols-2 gap-3 px-4 py-4 border-t border-Gray-100 dark:border-Gray-800">
               <button
                 className="h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer"
                 onClick={() => onClose()}

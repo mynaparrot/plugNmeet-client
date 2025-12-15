@@ -103,7 +103,7 @@ const WaitingParticipantItem = ({
   const initials = generateAvatarInitial(participant.name);
 
   return (
-    <div className="waiting-list-item mb-2 last:mb-0 pb-2 last:pb-0 border-b last:border-b-0 border-solid border-Gray-300 w-full flex flex-wrap items-center justify-between gap-x-5 gap-y-2">
+    <div className="waiting-list-item mb-2 last:mb-0 pb-2 last:pb-0 border-b last:border-b-0 border-solid border-Gray-300 dark:border-Gray-800 w-full flex flex-wrap items-center justify-between gap-x-5 gap-y-2">
       <div className="flex items-center gap-2 w-auto">
         <div className="thumb h-7 w-7 rounded-full bg-primary-color text-xs font-medium text-white flex items-center justify-center overflow-hidden shrink-0">
           {participant.metadata.profilePic ? (
@@ -116,7 +116,7 @@ const WaitingParticipantItem = ({
             initials
           )}
         </div>
-        <p className="text-base text-Gray-950 capitalize font-medium">
+        <p className="text-base text-Gray-950 dark:text-white capitalize font-medium">
           {participant.name}
         </p>
       </div>

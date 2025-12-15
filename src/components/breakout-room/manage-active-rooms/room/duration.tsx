@@ -17,7 +17,7 @@ const BreakoutRoomDuration = ({ duration, created }: IDurationProps) => {
   const remainingTime = useRoomDurationCountdown(endTime);
 
   return (
-    <div className="h-7 px-4 flex items-center justify-center rounded-xl bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow">
+    <div className="h-7 px-4 flex items-center justify-center rounded-xl bg-Gray-25 dark:bg-dark-secondary3 border border-Gray-300 dark:border-Gray-800 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow dark:shadow-none">
       {remainingTime}
     </div>
   );

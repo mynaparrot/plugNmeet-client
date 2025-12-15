@@ -56,13 +56,13 @@ const UpdateRoomMessage = () => {
 
   return (
     <div className="text-right">
-      <p className="block text-sm font-medium text-Gray-800 text-left mb-2">
+      <p className="block text-sm font-medium text-Gray-800 dark:text-white text-left mb-2">
         {t('waiting-room.update-waiting-message')}
       </p>
       <textarea
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
-        className="border border-Gray-300 bg-white shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+        className="border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-gray-950 dark:text-white"
       ></textarea>
       <button
         onClick={updateRoomMsg}
