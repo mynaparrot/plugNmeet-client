@@ -578,9 +578,14 @@
             'API-KEY': API_KEY,
             'HASH-SIGNATURE': signature,
         };
+        
+        let serverUrl = window.PLUG_N_MEET_SERVER_URL;
+        if (typeof window.plugNmeetConfig !== "undefined"){
+            serverUrl = window.plugNmeetConfig.serverUrl
+        }
 
         const response = await fetch(
-            window.PLUG_N_MEET_SERVER_URL + '/auth/' + method,
+            serverUrl + '/auth/' + method,
             {
                 method: 'POST',
                 headers: headers,
