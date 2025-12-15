@@ -32,7 +32,7 @@
     "you-have-reject": "Az értekezlethez való csatlakozásra vonatkozó kérését elutasították.",
     "waiting-for-approval": "A moderátor értesítést kapott, és hamarosan beengedi Önt. Köszönjük a türelmet!",
     "room-disconnected-title": "Elválasztott",
-    "room-disconnected-unknown": "Ismeretlen okból megszakadt a kapcsolat. (Kód: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Megszakadt a kapcsolat az értekezlettel. (Kód: {{code}})",
     "room-disconnected-duplicate-entry": "Valaki más is csatlakozott ugyanazzal a felhasználói azonosítóval.",
     "room-disconnected-server-shutdown": "Az értekezlet-kiszolgáló leállt. (Kód: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
     "queue-holding-messages": "Csatlakozási probléma: az üzenetek visszatartása folyamatban van. ({{error}})",
-    "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})"
+    "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -229,7 +230,8 @@
     "uploading-file": "Feltöltő {{fileName}}",
     "file-upload-success": "A fájl feltöltése sikeresen",
     "file-upload-default-error": "Hiba történt a fájl feltöltésekor.",
-    "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)"
+    "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Lábléc elrejtése",
@@ -247,6 +249,8 @@
       "show-users-list": "Résztvevők listájának megjelenítése",
       "hide-chat-panel": "Csevegés elrejtése",
       "show-chat-panel": "Csevegés megjelenítése",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Képernyőmegosztás leállítása",
       "start-screen-sharing": "Képernyő megosztása",
       "screen-sharing-locked": "Képernyőmegosztás zárolva",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Megosztás Külső hivatkozás",
       "stop-display-external-link": "Link megosztásának leállítása",
       "speech-to-text-settings": "Átírás és fordítás",
+      "ai-settings": "AI Tools",
       "enable-polls": "Szavazások engedélyezése",
       "disable-polls": "Szavazások letiltása"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Átírási és fordítási beállítások",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Átírás engedélyezése",
     "speech-langs-label": "Beszélt nyelvek",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Átírandó felhasználók",
     "subtitle-font-size": "Felirat betűmérete",
     "enable-translation": "Fordítás engedélyezése",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Fordítás (max.): {{num}})",
     "default-subtitle-lang-label": "Alapértelmezett feliratnyelv",
+    "default-lang-label": "Default Language",
     "enable-service": "Szolgáltatás engedélyezése",
     "speech-user-required": "Legalább egy felhasználót ki kell választani az átíráshoz.",
     "speech-lang-required": "Legalább egy beszélt nyelvet ki kell választani.",
     "translation-lang-required": "Legalább egy nyelvet ki kell választani a fordításhoz.",
     "service-ready": "Az átírási szolgáltatás készen áll.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Elkezd",
     "stop-service": "Állj",
     "update-service": "Frissít",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure szolgáltatás hiba: {{error}}",
     "speech-to-text-stopped": "Az átírási szolgáltatás leállt.",
     "enable-transcription": "Átírás engedélyezése",
-    "download-header": "Felirat előzmények {{name}}\nNyelv: {{lang}}\nGenerálva: {{date}} nél {{time}}"
+    "download-header": "Felirat előzmények {{name}}\nNyelv: {{lang}}\nGenerálva: {{date}} nél {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
