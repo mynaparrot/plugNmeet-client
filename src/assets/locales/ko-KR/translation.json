@@ -32,7 +32,7 @@
     "you-have-reject": "회의 참여 요청이 거부되었습니다.",
     "waiting-for-approval": "중재자에게 통보를 받았으며 곧 입장할 수 있도록 하겠습니다. 기다려 주셔서 감사합니다!",
     "room-disconnected-title": "연결이 끊어진",
-    "room-disconnected-unknown": "알 수 없는 이유로 연결이 끊어졌습니다. (코드: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "회의에서 연결이 끊겼습니다. (코드: {{code}})",
     "room-disconnected-duplicate-entry": "다른 사용자가 동일한 사용자 ID로 참여했습니다.",
     "room-disconnected-server-shutdown": "미팅 서버가 종료되었습니다. (코드: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "지금 화면을 공유하고 있습니다. 다른 사람들은 더 큰 시야를 볼 것입니다.",
     "new-system-message-in-chat": "공개 채팅에 새로운 시스템 메시지가 게시되었습니다.",
     "queue-holding-messages": "연결 문제: 메시지가 보류 중입니다. ({{error}})",
-    "queue-discarded-message": "메시지를 보낼 수 없어 삭제되었습니다. ({{error}})"
+    "queue-discarded-message": "메시지를 보낼 수 없어 삭제되었습니다. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화 중입니다.",
@@ -229,7 +230,8 @@
     "uploading-file": "업로드 {{fileName}}",
     "file-upload-success": "파일이 성공적으로 업로드되었습니다.",
     "file-upload-default-error": "파일을 업로드하는 동안 오류가 발생했습니다.",
-    "chat-box-placeholder": "여기에 메시지 보내기, 이미지 붙여넣기 또는 파일 드롭(새 줄: Shift + Enter)"
+    "chat-box-placeholder": "여기에 메시지 보내기, 이미지 붙여넣기 또는 파일 드롭(새 줄: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "바닥글 숨기기",
@@ -247,6 +249,8 @@
       "show-users-list": "참가자 목록 표시",
       "hide-chat-panel": "채팅 숨기기",
       "show-chat-panel": "채팅 표시",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "화면 공유 중지",
       "start-screen-sharing": "화면 공유",
       "screen-sharing-locked": "화면 공유 잠김",
@@ -288,6 +292,7 @@
       "start-display-external-link": "외부 링크 공유",
       "stop-display-external-link": "링크 공유 중지",
       "speech-to-text-settings": "전사 및 번역",
+      "ai-settings": "AI Tools",
       "enable-polls": "설문 조사 사용 설정",
       "disable-polls": "설문조사 비활성화"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "전사 및 번역 설정",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "전사 활성화",
     "speech-langs-label": "음성 언어",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "트랜스크립션할 사용자",
     "subtitle-font-size": "캡션 글꼴 크기",
     "enable-translation": "번역 활성화",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "다음으로 변환(최대: {{num}})",
     "default-subtitle-lang-label": "기본 캡션 언어",
+    "default-lang-label": "Default Language",
     "enable-service": "서비스 활성화",
     "speech-user-required": "트랜스크립션하려면 최소 한 명의 사용자를 선택해야 합니다.",
     "speech-lang-required": "하나 이상의 음성 언어를 선택해야 합니다.",
     "translation-lang-required": "번역을 위해 하나 이상의 언어를 선택해야 합니다.",
     "service-ready": "문자 발생 서비스가 준비되었습니다.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "시작하다",
     "stop-service": "멈추다",
     "update-service": "업데이트",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure 서비스 오류: {{error}}",
     "speech-to-text-stopped": "문자 발생 서비스가 중지되었습니다.",
     "enable-transcription": "전사 활성화",
-    "download-header": "자막 기록 {{name}}\n언어: {{lang}}\n생성 날짜: {{date}} 에 {{time}}"
+    "download-header": "자막 기록 {{name}}\n언어: {{lang}}\n생성 날짜: {{date}} 에 {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
