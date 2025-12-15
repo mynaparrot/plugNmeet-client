@@ -32,7 +32,7 @@
     "you-have-reject": "Pyyntösi liittyä kokoukseen hylättiin.",
     "waiting-for-approval": "Moderaattorille on ilmoitettu asiasta ja hän päästää sinut pian sisään. Kiitos kärsivällisyydestäsi!",
     "room-disconnected-title": "Hajanainen",
-    "room-disconnected-unknown": "Yhteys on katkennut tuntemattomasta syystä. (Koodi: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Olet katkaissut yhteyden kokoukseen. (Koodi: {{code}})",
     "room-disconnected-duplicate-entry": "Joku muu on liittynyt samalla käyttäjätunnuksella.",
     "room-disconnected-server-shutdown": "Kokouspalvelin on sulkeutunut. (Koodi: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Jaat nyt näyttösi. Toiset näkevät suuremman näkymän.",
     "new-system-message-in-chat": "Uusi järjestelmäviesti on julkaistu julkisessa chatissa.",
     "queue-holding-messages": "Yhteysongelma: viestejä pidetään. ({{error}})",
-    "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})"
+    "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -229,7 +230,8 @@
     "uploading-file": "Lataaminen {{fileName}}",
     "file-upload-success": "Tiedoston lataus onnistui",
     "file-upload-default-error": "Tiedoston lataamisessa tapahtui virhe.",
-    "chat-box-placeholder": "Lähetä viesti, liitä kuva tai pudota tiedosto tähän (Uusi rivi: Vaihto + Enter)"
+    "chat-box-placeholder": "Lähetä viesti, liitä kuva tai pudota tiedosto tähän (Uusi rivi: Vaihto + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Piilota alatunniste",
@@ -247,6 +249,8 @@
       "show-users-list": "Näytä osallistujaluettelo",
       "hide-chat-panel": "Piilota chat",
       "show-chat-panel": "Näytä chat",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Lopeta näytön jakaminen",
       "start-screen-sharing": "Jaa näyttö",
       "screen-sharing-locked": "Näytön jakaminen lukittu",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Jaa ulkoinen linkki",
       "stop-display-external-link": "Lopeta linkin jakaminen",
       "speech-to-text-settings": "Litterointi ja kääntäminen",
+      "ai-settings": "AI Tools",
       "enable-polls": "Ota kyselyt käyttöön",
       "disable-polls": "Poista kyselyt käytöstä"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Transkriptio- ja käännösasetukset",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Ota transkriptio käyttöön",
     "speech-langs-label": "Puhutut kielet",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Käyttäjät litteroitavaksi",
     "subtitle-font-size": "Kuvatekstin fonttikoko",
     "enable-translation": "Ota käännös käyttöön",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Käännä (enintään: {{num}})",
     "default-subtitle-lang-label": "Tekstityksen oletuskieli",
+    "default-lang-label": "Default Language",
     "enable-service": "Ota palvelu käyttöön",
     "speech-user-required": "Vähintään yksi käyttäjä on valittava litteroitavaksi.",
     "speech-lang-required": "Vähintään yksi puhuttu kieli on valittava.",
     "translation-lang-required": "Käännettäväksi on valittava vähintään yksi kieli.",
     "service-ready": "Transkriptiopalvelu on valmis.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Aloittaa",
     "stop-service": "Seis",
     "update-service": "Päivittää",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure -palvelun virhe: {{error}}",
     "speech-to-text-stopped": "Transkriptiopalvelu on lopetettu.",
     "enable-transcription": "Ota transkriptio käyttöön",
-    "download-header": "Tekstityshistoria {{name}}\nKieli: {{lang}}\nLuotu: {{date}} At {{time}}"
+    "download-header": "Tekstityshistoria {{name}}\nKieli: {{lang}}\nLuotu: {{date}} At {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
