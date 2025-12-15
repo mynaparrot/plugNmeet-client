@@ -18,9 +18,11 @@ const SavedLinkItem = ({
   let classNames =
     'flex items-center gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
   if (selectedUrl === url) {
-    classNames += ' border-2 border-Blue2-500 bg-Blue2-50';
+    classNames +=
+      ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-secondary3';
   } else {
-    classNames += ' border border-Gray-100 bg-white hover:bg-Gray-50';
+    classNames +=
+      ' border-2 border-Gray-100 dark:border-Gray-800 bg-white dark:bg-dark-primary hover:bg-Gray-50';
   }
 
   return (
@@ -29,10 +31,10 @@ const SavedLinkItem = ({
         className="flex flex-1 items-center gap-4 overflow-hidden"
         onClick={() => onSelect(url)}
       >
-        <div className="icon w-9 h-9 rounded-full bg-Gray-100 text-Blue2-800 relative inline-flex items-center justify-center shrink-0">
+        <div className="icon w-9 h-9 rounded-full bg-Gray-100  dark:bg-Gray-800 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center shrink-0">
           <FileIconSVG />
         </div>
-        <div className="text flex-1 text-Gray-800 text-sm overflow-hidden">
+        <div className="text flex-1 text-Gray-800 dark:text-white text-sm overflow-hidden">
           <p className="break-all truncate">{url}</p>
         </div>
       </div>

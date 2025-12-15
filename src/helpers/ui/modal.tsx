@@ -57,7 +57,7 @@ const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-Gray-950/70 dark:bg-Gray-950/30" />
+          <div className="fixed inset-0 bg-Gray-950/70 dark:bg-Gray-950/80" />
         </TransitionChild>
 
         <div className="fixed inset-0 flex w-screen justify-center p-4 scrollBar">

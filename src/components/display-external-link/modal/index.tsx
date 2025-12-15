@@ -129,7 +129,7 @@ const DisplayExternalLinkModal = () => {
           <div className="mt-4">
             <fieldset>
               <div
-                className="text-sm 3xl:text-base font-medium text-gray-900 "
+                className="text-sm 3xl:text-base font-medium text-gray-900 dark:text-white"
                 aria-hidden="true"
               >
                 {t('external-display-link-display.send-extra-values')}

@@ -34,23 +34,23 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
   return (
     <div
       id="errorPage"
-      className="error-page h-screen w-full flex items-center justify-center bg-Gray-100"
+      className="error-page h-screen w-full flex items-center justify-center bg-Gray-100 dark:bg-Gray-800"
       style={{
         backgroundImage: `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%25" height="100%25"%3E%3Cpattern id="bg" patternUnits="userSpaceOnUse" width="20" height="20"%3E%3Cg opacity="0.7"%3E%3Crect x="10" y="10" width="4" height="4" rx="2" fill="%23C2DAF2" /%3E%3C/g%3E%3C/pattern%3E%3Crect width="100%25" height="100%25" fill="url(%23bg)" /%3E%3C/svg%3E')`,
       }}
     >
-      <div className="content relative z-20 w-full max-w-xl flex items-center min-h-64 3xl:min-h-80 text-center rounded-2xl border border-Gray-300 overflow-hidden bg-Gray-50 px-10 py-10">
+      <div className="content relative z-20 w-full max-w-xl flex items-center min-h-64 3xl:min-h-80 text-center rounded-2xl border border-Gray-300 dark:border-Gray-800 overflow-hidden bg-Gray-50 dark:bg-dark-primary px-10 py-10">
         <div className="inner w-full">
           <form className="px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
             <div className="mb-6">
               <label
-                className="block text-gray-700 text-base font-bold mb-2"
+                className="block text-gray-700 dark:text-white text-base font-bold mb-2"
                 htmlFor="secretKey"
               >
                 {t('app.insert-secret-key')}
               </label>
               <input
-                className="shadow appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-hidden focus:shadow-outline"
+                className="shadow appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 dark:text-white mb-3 leading-tight focus:outline-hidden focus:shadow-outline"
                 id="secretKey"
                 type="password"
                 placeholder="******************"

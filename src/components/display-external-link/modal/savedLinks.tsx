@@ -94,12 +94,12 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
             value={newUrlLink}
             onChange={onLinkChange}
           />
-          <div className="text-xs py-2 text-Gray-800">
+          <div className="text-xs py-2 text-Gray-800 dark:text-white">
             {t('external-display-link-display.note')}
           </div>
         </div>
         <button
-          className="h-10 w-10 3xl:h-11 3xl:w-11 bg-Gray-50 hover:bg-Gray-100 rounded-2xl flex justify-center items-center transition-all duration-300 shrink-0 cursor-pointer"
+          className="h-10 w-10 3xl:h-11 3xl:w-11 text-Gray-950 dark:text-white bg-Gray-50 hover:bg-Gray-100 dark:bg-transparent border border-Gray-300 dark:border-Gray-800 rounded-2xl flex justify-center items-center transition-all duration-300 shrink-0 cursor-pointer"
           type="button"
           onClick={addLink}
         >
