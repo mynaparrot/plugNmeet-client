@@ -10,6 +10,7 @@ import {
 import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
+import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
 
 import ActiveSpeakers from '../active-speakers';
 import MainView from './mainView';
@@ -17,19 +18,15 @@ import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import SidePanel from './sidePanel';
-import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
-import InsightsAiTextChat from '../insights-ai/ai-text-chat/display';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
-  const { isRecorder, roomFeatures, aiTextChatFeatures } = useMemo(() => {
+  const { isRecorder, roomFeatures } = useMemo(() => {
     const session = store.getState().session;
     const roomFeatures = session.currentRoom.metadata?.roomFeatures;
     return {
       isRecorder: !!session.currentUser?.isRecorder,
       roomFeatures,
-      aiTextChatFeatures:
-        roomFeatures?.insightsFeatures?.aiFeatures?.aiTextChatFeatures,
     };
   }, []);
 
@@ -196,15 +193,6 @@ const MainArea = () => {
             onToggle={handleSidePanelToggled}
           >
             <PollsComponent />
-          </SidePanel>
-        )}
-        {aiTextChatFeatures?.isAllow && (
-          <SidePanel
-            isActive={activeSidePanel === 'INSIGHTS_AI_TEXT_CHAT'}
-            panelClass="insights-ai-text-chat-panel"
-            onToggle={handleSidePanelToggled}
-          >
-            <InsightsAiTextChat />
           </SidePanel>
         )}
       </div>

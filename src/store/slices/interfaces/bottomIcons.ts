@@ -2,12 +2,7 @@ import { BackgroundConfig } from '../../../components/virtual-background/helpers
 
 export type DeviceOrientation = 'landscape' | 'portrait';
 
-export type SidePanelType =
-  | 'CHAT'
-  | 'PARTICIPANTS'
-  | 'POLLS'
-  | 'INSIGHTS_AI_TEXT_CHAT'
-  | null;
+export type SidePanelType = 'CHAT' | 'PARTICIPANTS' | 'POLLS' | null;
 
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;
@@ -17,6 +12,7 @@ export interface IBottomIconsSlice {
   isActiveScreenshare: boolean;
   isActiveSharedNotePad: boolean;
   isActiveWhiteboard: boolean;
+  isActiveInsightsAiTextChat: boolean;
 
   activeSidePanel: SidePanelType;
 

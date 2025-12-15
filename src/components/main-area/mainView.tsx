@@ -11,6 +11,7 @@ import { useVideoLayout } from './hooks/useVideoLayout';
 
 import AudioElements from '../media-elements/audios';
 import LayoutWrapper from './layoutWrapper';
+import { useInsightsAiTextChat } from './hooks/useInsightsAiTextChat';
 
 interface IMainViewProps {
   isRecorder: boolean;
@@ -45,6 +46,7 @@ const MainView = ({
   );
 
   const sharedNotepadElm = useSharedNotepad();
+  const insightsAiTextChatElm = useInsightsAiTextChat();
   const whiteboardElm = useWhiteboard(
     isActiveWhiteboard,
     hasScreenShareSubscribers,
@@ -86,6 +88,7 @@ const MainView = ({
         {videosComponentElm}
         {screenShareElementsElm}
         {sharedNotepadElm}
+        {insightsAiTextChatElm}
         {whiteboardElm}
         {translationTranscriptionElm}
         {externalMediaPlayerElm}

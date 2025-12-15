@@ -18,6 +18,7 @@ const initialState: IBottomIconsSlice = {
   isActiveScreenshare: false,
   isActiveSharedNotePad: false,
   isActiveWhiteboard: false,
+  isActiveInsightsAiTextChat: false,
 
   activeSidePanel: 'PARTICIPANTS',
 
@@ -89,6 +90,12 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
       state.isActiveWhiteboard = action.payload;
+    },
+    updateIsActiveInsightsAiTextChat: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isActiveInsightsAiTextChat = action.payload;
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {
       state.screenWidth = action.payload;
@@ -188,6 +195,7 @@ export const {
   updateIsActiveScreenshare,
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
+  updateIsActiveInsightsAiTextChat,
   updateShowMicrophoneModal,
   updateShowVideoShareModal,
   updateShowLockSettingsModal,
