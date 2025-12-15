@@ -32,7 +32,7 @@
     "you-have-reject": "Ваше прохання приєднатися до зустрічі було відхилено.",
     "waiting-for-approval": "Модератор отримав сповіщення і незабаром впустить вас. Дякую за терпіння!",
     "room-disconnected-title": "Відключено",
-    "room-disconnected-unknown": "Ви були відключені з невідомої причини. (Код ЄДРПОУ: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Ви відключилися від зустрічі. (Код ЄДРПОУ: {{code}})",
     "room-disconnected-duplicate-entry": "Хтось інший приєднався з тим самим ідентифікатором користувача.",
     "room-disconnected-server-shutdown": "Сервер зустрічей вимкнено. (Код ЄДРПОУ: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Тепер ви демонструєте свій екран. Інші побачать більший вигляд.",
     "new-system-message-in-chat": "У загальнодоступному чаті опубліковано нове системне повідомлення.",
     "queue-holding-messages": "Проблема з підключенням: повідомлення утримуються. ({{error}})",
-    "queue-discarded-message": "Повідомлення не вдалося надіслати, і його було відкинуто. ({{error}})"
+    "queue-discarded-message": "Повідомлення не вдалося надіслати, і його було відкинуто. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Ця зустріч ведеться в протоколі.",
@@ -229,7 +230,8 @@
     "uploading-file": "Завантаження {{fileName}}",
     "file-upload-success": "Файл успішно завантажено",
     "file-upload-default-error": "Під час завантаження файлу сталася помилка.",
-    "chat-box-placeholder": "Надішліть повідомлення, вставте зображення або перетягніть файл сюди (Новий рядок: Shift + Enter)"
+    "chat-box-placeholder": "Надішліть повідомлення, вставте зображення або перетягніть файл сюди (Новий рядок: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Сховати нижній колонтитул",
@@ -247,6 +249,8 @@
       "show-users-list": "Показати список учасників",
       "hide-chat-panel": "Сховати чат",
       "show-chat-panel": "Показати чат",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Як зупинити спільний доступ до екрана",
       "start-screen-sharing": "Спільний доступ до екрана",
       "screen-sharing-locked": "Спільний доступ до екрана заблоковано",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Поділитися зовнішнім посиланням",
       "stop-display-external-link": "Як припинити ділитися посиланням",
       "speech-to-text-settings": "Транскрипція та переклад",
+      "ai-settings": "AI Tools",
       "enable-polls": "Увімкніть опитування",
       "disable-polls": "Вимкніть опитування"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Налаштування транскрипції та перекладу",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Увімкнути транскрипцію",
     "speech-langs-label": "Розмовні мови",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Користувачі для транскрибування",
     "subtitle-font-size": "Розмір шрифту підпису",
     "enable-translation": "Увімкнути переклад",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Перекласти на (макс.: {{num}})",
     "default-subtitle-lang-label": "Мова субтитрів за замовчуванням",
+    "default-lang-label": "Default Language",
     "enable-service": "Увімкнути сервіс",
     "speech-user-required": "Для транскрибування повинен бути обраний принаймні один користувач.",
     "speech-lang-required": "Необхідно вибрати хоча б одну розмовну мову.",
     "translation-lang-required": "Для перекладу має бути обрано принаймні одну мову.",
     "service-ready": "Сервіс транскрипції готовий.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Почати",
     "stop-service": "Зупинити",
     "update-service": "Оновлювати",
@@ -521,6 +533,38 @@
     "azure-error": "Помилка служби Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Послуга транскрипції припинена.",
     "enable-transcription": "Увімкнути транскрипцію",
-    "download-header": "Історія субтитрів для {{name}}\nМова: {{lang}}\nСтворено на: {{date}} при {{time}}"
+    "download-header": "Історія субтитрів для {{name}}\nМова: {{lang}}\nСтворено на: {{date}} при {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
