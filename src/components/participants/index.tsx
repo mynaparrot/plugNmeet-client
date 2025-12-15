@@ -125,7 +125,7 @@ const ParticipantsComponent = () => {
 
         <div
           ref={outerRef as any}
-          className="scrollBar overflow-auto h-[calc(100vh-240px)] 3xl:h-[calc(100vh-275px)]"
+          className="scrollBar overflow-auto h-[calc(100vh-240px)]"
         >
           <div
             className="all-participants-wrap px-2 xl:px-3 3xl:px-5"
