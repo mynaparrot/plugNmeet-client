@@ -32,7 +32,7 @@
     "you-have-reject": "Ihre Anfrage zur Teilnahme an der Besprechung wurde abgelehnt.",
     "waiting-for-approval": "Ein Moderator wurde benachrichtigt und wird Sie in Kürze hereinlassen. Vielen Dank für Ihre Geduld!",
     "room-disconnected-title": "Entfernt",
-    "room-disconnected-unknown": "Ihre Verbindung wurde aus einem unbekannten Grund getrennt. (Artikel-Nr.: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Sie haben die Verbindung zur Besprechung getrennt. (Artikel-Nr.: {{code}})",
     "room-disconnected-duplicate-entry": "Eine andere Person hat sich mit derselben Benutzer-ID angemeldet.",
     "room-disconnected-server-shutdown": "Der Meeting-Server wurde heruntergefahren. (Artikel-Nr.: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Sie geben jetzt Ihren Bildschirm frei. Andere sehen eine größere Ansicht.",
     "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat gepostet.",
     "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten. ({{error}})",
-    "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})"
+    "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Dieses Treffen wird aufgezeichnet.",
@@ -229,7 +230,8 @@
     "uploading-file": "Hochladen {{fileName}}",
     "file-upload-success": "Datei erfolgreich hochgeladen",
     "file-upload-default-error": "Beim Hochladen der Datei ist ein Fehler aufgetreten.",
-    "chat-box-placeholder": "Senden Sie hier eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei ab (Neue Zeile: Umschalt + Eingabetaste)"
+    "chat-box-placeholder": "Senden Sie hier eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei ab (Neue Zeile: Umschalt + Eingabetaste)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Fußzeile ausblenden",
@@ -247,6 +249,8 @@
       "show-users-list": "Teilnehmerliste anzeigen",
       "hide-chat-panel": "Chat ausblenden",
       "show-chat-panel": "Chat anzeigen",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Bildschirmfreigabe beenden",
       "start-screen-sharing": "Bildschirm freigeben",
       "screen-sharing-locked": "Bildschirmfreigabe gesperrt",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Externen Link teilen",
       "stop-display-external-link": "Freigabe des Links beenden",
       "speech-to-text-settings": "Transkription & Übersetzung",
+      "ai-settings": "AI Tools",
       "enable-polls": "Aktivieren von Umfragen",
       "disable-polls": "Deaktivieren von Umfragen"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Einstellungen für Transkription und Übersetzung",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Aktivieren der Transkription",
     "speech-langs-label": "Gesprochene Sprachen",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Benutzer zum Transkribieren",
     "subtitle-font-size": "Schriftgröße der Beschriftung",
     "enable-translation": "Übersetzung aktivieren",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Übersetzen in (max: {{num}})",
     "default-subtitle-lang-label": "Standardsprache für Untertitel",
+    "default-lang-label": "Default Language",
     "enable-service": "Dienst aktivieren",
     "speech-user-required": "Mindestens ein Benutzer muss für die Transkription ausgewählt sein.",
     "speech-lang-required": "Es muss mindestens eine gesprochene Sprache ausgewählt werden.",
     "translation-lang-required": "Für die Übersetzung muss mindestens eine Sprache ausgewählt werden.",
     "service-ready": "Der Transkriptionsservice ist bereit.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Anfangen",
     "stop-service": "Aufhören",
     "update-service": "Aktualisieren",
@@ -521,6 +533,38 @@
     "azure-error": "Fehler beim Microsoft Azure-Dienst: {{error}}",
     "speech-to-text-stopped": "Der Transkriptionsdienst wurde gestoppt.",
     "enable-transcription": "Aktivieren der Transkription",
-    "download-header": "Untertitelverlauf für {{name}}\nSprache: {{lang}}\nGeneriert am: {{date}} bei {{time}}"
+    "download-header": "Untertitelverlauf für {{name}}\nSprache: {{lang}}\nGeneriert am: {{date}} bei {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
