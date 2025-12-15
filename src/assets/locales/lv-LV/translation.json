@@ -32,7 +32,7 @@
     "you-have-reject": "Jūsu pieprasījums pievienoties sapulcei tika noraidīts.",
     "waiting-for-approval": "Moderators ir informēts un drīzumā jūs ielaidīs. Paldies par pacietību!",
     "room-disconnected-title": "Atvienots",
-    "room-disconnected-unknown": "Jūs esat atslēgts nezināma iemesla dēļ. (Kods: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Jūs esat pārtraucis savienojumu no sapulces. (Kods: {{code}})",
     "room-disconnected-duplicate-entry": "Kāds cits ir pievienojies ar to pašu lietotāja ID.",
     "room-disconnected-server-shutdown": "Sapulces serveris ir izslēgts. (Kods: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Tagad jūs kopīgojat savu ekrānu. Citi redzēs plašāku skatu.",
     "new-system-message-in-chat": "Publiskajā tērzēšanā ir ievietots jauns sistēmas ziņojums.",
     "queue-holding-messages": "Savienojuma problēma: tiek turēti ziņojumi. ({{error}})",
-    "queue-discarded-message": "Ziņojumu nevarēja nosūtīt, un tas tika atmests. ({{error}})"
+    "queue-discarded-message": "Ziņojumu nevarēja nosūtīt, un tas tika atmests. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Šī sanāksme tiek ierakstīta.",
@@ -229,7 +230,8 @@
     "uploading-file": "Augšupielādējot {{fileName}}",
     "file-upload-success": "Fails veiksmīgi augšupielādēts",
     "file-upload-default-error": "Augšupielādējot failu, radās kļūda.",
-    "chat-box-placeholder": "Nosūtiet ziņojumu, ielīmējiet attēlu vai nometiet failu šeit (Jauna rindiņa: Shift + Enter)"
+    "chat-box-placeholder": "Nosūtiet ziņojumu, ielīmējiet attēlu vai nometiet failu šeit (Jauna rindiņa: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Kājenes paslēpšana",
@@ -247,6 +249,8 @@
       "show-users-list": "Rādīt dalībnieku sarakstu",
       "hide-chat-panel": "Paslēpt tērzēšanu",
       "show-chat-panel": "Rādīt tērzēšanu",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Ekrāna koplietošanas apturēšana",
       "start-screen-sharing": "Ekrāna koplietošana",
       "screen-sharing-locked": "Ekrāna koplietošana bloķēta",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Kopīgot ārējo saiti",
       "stop-display-external-link": "Pārtraukt koplietošanas saiti",
       "speech-to-text-settings": "Transkripcija un tulkošana",
+      "ai-settings": "AI Tools",
       "enable-polls": "Aptauju iespējošana",
       "disable-polls": "Aptauju atspējošana"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Transkripcijas un tulkošanas iestatījumi",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Iespējot transkripciju",
     "speech-langs-label": "Runātās valodas",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Lietotāji transkribēšanai",
     "subtitle-font-size": "Paraksta fonta lielums",
     "enable-translation": "Iespējot tulkošanu",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Tulkot uz (maks.: {{num}})",
     "default-subtitle-lang-label": "Noklusējuma subtitru valoda",
+    "default-lang-label": "Default Language",
     "enable-service": "Iespējot pakalpojumu",
     "speech-user-required": "Transkripcijai ir jāizvēlas vismaz viens lietotājs.",
     "speech-lang-required": "Jāizvēlas vismaz viena runātā valoda.",
     "translation-lang-required": "Tulkošanai jāizvēlas vismaz viena valoda.",
     "service-ready": "Transkripcijas pakalpojums ir gatavs.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Sākt",
     "stop-service": "Apstājieties",
     "update-service": "Aktualizēt",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure pakalpojuma kļūda: {{error}}",
     "speech-to-text-stopped": "Transkripcijas pakalpojums ir apstājies.",
     "enable-transcription": "Iespējot transkripciju",
-    "download-header": "Subtitru vēsture {{name}}\nValoda: {{lang}}\nĢenerēts: {{date}} pie {{time}}"
+    "download-header": "Subtitru vēsture {{name}}\nValoda: {{lang}}\nĢenerēts: {{date}} pie {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
