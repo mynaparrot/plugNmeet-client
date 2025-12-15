@@ -32,7 +32,7 @@
     "you-have-reject": "Vaš zahtjev za pridruživanje sastanku je odbijen.",
     "waiting-for-approval": "Moderator je obaviješten i uskoro će vas pustiti unutra. Hvala na strpljenju!",
     "room-disconnected-title": "Isključen",
-    "room-disconnected-unknown": "Prekinuli ste vezu iz nepoznatog razloga. (Šifra: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Prekinuli ste vezu sa sastankom. (Šifra: {{code}})",
     "room-disconnected-duplicate-entry": "Netko drugi pridružio se s istim korisničkim ID-jem.",
     "room-disconnected-server-shutdown": "Poslužitelj za sastanke se isključio. (Šifra: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Sada dijelite svoj zaslon. Drugi će vidjeti veći pogled.",
     "new-system-message-in-chat": "U javnom chatu objavljena je nova poruka sustava.",
     "queue-holding-messages": "Problem s vezom: poruke se održavaju. ({{error}})",
-    "queue-discarded-message": "Poruka se nije mogla poslati i odbačena je. ({{error}})"
+    "queue-discarded-message": "Poruka se nije mogla poslati i odbačena je. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Ovaj sastanak se snima.",
@@ -229,7 +230,8 @@
     "uploading-file": "Upload {{fileName}}",
     "file-upload-success": "Datoteka je uspješno prenesena",
     "file-upload-default-error": "Došlo je do pogreške pri učitavanju datoteke.",
-    "chat-box-placeholder": "Pošaljite poruku, zalijepite sliku ili ispustite datoteku ovdje (Novi redak: Shift + Enter)"
+    "chat-box-placeholder": "Pošaljite poruku, zalijepite sliku ili ispustite datoteku ovdje (Novi redak: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Sakrij podnožje",
@@ -247,6 +249,8 @@
       "show-users-list": "Prikaži popis sudionika",
       "hide-chat-panel": "Sakrij Chat",
       "show-chat-panel": "Prikaži chat",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Zaustavite dijeljenje zaslona",
       "start-screen-sharing": "Podijeli zaslon",
       "screen-sharing-locked": "Zaključano dijeljenje zaslona",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Podijeli vanjsku poveznicu",
       "stop-display-external-link": "Zaustavite dijeljenje veze",
       "speech-to-text-settings": "Transkripcija i prijevod",
+      "ai-settings": "AI Tools",
       "enable-polls": "Omogućivanje anketa",
       "disable-polls": "Onemogući ankete"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Postavke transkripcije i prijevoda",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Omogući transkripciju",
     "speech-langs-label": "Govorni jezici",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Korisnici za transkripciju",
     "subtitle-font-size": "Veličina fonta titlova",
     "enable-translation": "Omogući prijevod",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Prevedi na (maks.: {{num}})",
     "default-subtitle-lang-label": "Zadani jezik titlova",
+    "default-lang-label": "Default Language",
     "enable-service": "Omogući uslugu",
     "speech-user-required": "Za transkripciju mora biti odabran barem jedan korisnik.",
     "speech-lang-required": "Mora se odabrati barem jedan govorni jezik.",
     "translation-lang-required": "Za prijevod mora biti odabran barem jedan jezik.",
     "service-ready": "Usluga transkripcije je spremna.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Početak",
     "stop-service": "Prestati",
     "update-service": "Ažurirati",
@@ -521,6 +533,38 @@
     "azure-error": "Pogreška servisa Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Usluga transkripcije je zaustavljena.",
     "enable-transcription": "Omogući transkripciju",
-    "download-header": "Povijest titlova za {{name}}\nJezik: {{lang}}\nGenerirano na: {{date}} u {{time}}"
+    "download-header": "Povijest titlova za {{name}}\nJezik: {{lang}}\nGenerirano na: {{date}} u {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
