@@ -80,7 +80,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   return (
     activeSpeakersElms && (
       <div
-        className={`active-speakers-wrap flex items-center justify-center absolute top-0 left-0 z-9999] ${activeSidePanel ? 'md:w-[calc(100%-300px)] 3xl:w-[calc(100%-340px)]' : 'w-full'}`}
+        className={`active-speakers-wrap flex items-center justify-center absolute top-0 left-0 z-9999 ${activeSidePanel ? 'md:w-[calc(100%-300px)] 3xl:w-[calc(100%-340px)]' : 'w-full'}`}
       >
         {activeSpeakersElms}
       </div>
