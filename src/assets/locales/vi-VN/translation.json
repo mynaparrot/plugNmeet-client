@@ -32,7 +32,7 @@
     "you-have-reject": "Yêu cầu tham gia cuộc họp của bạn đã bị từ chối.",
     "waiting-for-approval": "Người kiểm duyệt đã được thông báo và sẽ cho bạn biết trong thời gian ngắn. Cảm ơn sự kiên nhẫn của bạn!",
     "room-disconnected-title": "Rời rạc",
-    "room-disconnected-unknown": "Bạn đã bị ngắt kết nối mà không rõ lý do. (Mã số: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Bạn đã ngắt kết nối khỏi cuộc họp. (Mã số: {{code}})",
     "room-disconnected-duplicate-entry": "Người khác đã tham gia bằng cùng một ID người dùng.",
     "room-disconnected-server-shutdown": "Máy chủ cuộc họp đã tắt. (Mã số: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Bạn đang chia sẻ màn hình của mình ngay bây giờ. Những người khác sẽ thấy một cái nhìn lớn hơn.",
     "new-system-message-in-chat": "Một thông báo hệ thống mới đã được đăng trong cuộc trò chuyện công khai.",
     "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ. ({{error}})",
-    "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})"
+    "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
@@ -229,7 +230,8 @@
     "uploading-file": "Tải lên {{fileName}}",
     "file-upload-success": "Tệp được tải lên thành công",
     "file-upload-default-error": "Đã xảy ra lỗi khi tải tệp lên.",
-    "chat-box-placeholder": "Gửi tin nhắn, dán hình ảnh hoặc thả file tại đây (Dòng mới: Shift + Enter)"
+    "chat-box-placeholder": "Gửi tin nhắn, dán hình ảnh hoặc thả file tại đây (Dòng mới: Shift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Ẩn chân trang",
@@ -247,6 +249,8 @@
       "show-users-list": "Hiển thị danh sách người tham gia",
       "hide-chat-panel": "Ẩn trò chuyện",
       "show-chat-panel": "Hiển thị trò chuyện",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Dừng chia sẻ màn hình",
       "start-screen-sharing": "Chia sẻ màn hình",
       "screen-sharing-locked": "Chia sẻ màn hình bị khóa",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Chia sẻ liên kết ngoài",
       "stop-display-external-link": "Dừng chia sẻ liên kết",
       "speech-to-text-settings": "Phiên âm và dịch thuật",
+      "ai-settings": "AI Tools",
       "enable-polls": "Bật cuộc thăm dò ý kiến",
       "disable-polls": "Tắt cuộc thăm dò ý kiến"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Cài đặt phiên âm và dịch thuật",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Bật phiên âm",
     "speech-langs-label": "Ngôn ngữ nói",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Người dùng để phiên âm",
     "subtitle-font-size": "Kích thước phông chữ chú thích",
     "enable-translation": "Bật dịch",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Dịch thành (tối đa: {{num}})",
     "default-subtitle-lang-label": "Ngôn ngữ phụ đề mặc định",
+    "default-lang-label": "Default Language",
     "enable-service": "Bật dịch vụ",
     "speech-user-required": "Phải chọn ít nhất một người dùng để phiên âm.",
     "speech-lang-required": "Ít nhất một ngôn ngữ nói phải được chọn.",
     "translation-lang-required": "Phải chọn ít nhất một ngôn ngữ để dịch.",
     "service-ready": "Dịch vụ phiên âm đã sẵn sàng.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Bắt đầu",
     "stop-service": "Dừng",
     "update-service": "Cập nhật",
@@ -521,6 +533,38 @@
     "azure-error": "Lỗi dịch vụ Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Dịch vụ phiên âm đã dừng lại.",
     "enable-transcription": "Bật phiên âm",
-    "download-header": "Lịch sử phụ đề cho {{name}}\nNgôn ngữ: {{lang}}\nĐược tạo vào: {{date}} tại {{time}}"
+    "download-header": "Lịch sử phụ đề cho {{name}}\nNgôn ngữ: {{lang}}\nĐược tạo vào: {{date}} tại {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
