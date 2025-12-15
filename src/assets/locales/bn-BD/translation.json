@@ -32,7 +32,7 @@
     "you-have-reject": "মিটিংয়ে যোগ দেওয়ার জন্য আপনার অনুরোধ প্রত্যাখ্যান করা হয়েছে।",
     "waiting-for-approval": "একজন মডারেটরকে অবহিত করা হয়েছে এবং শীঘ্রই আপনাকে প্রবেশ করতে দেবে। আপনার ধৈর্য্যের জন্য ধন্যবাদ!",
     "room-disconnected-title": "বিচ্ছিন্ন",
-    "room-disconnected-unknown": "আপনাকে একটি অজানা কারণে সংযোগ বিচ্ছিন্ন করা হয়েছে। (কোড: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "আপনি মিটিং থেকে সংযোগ বিচ্ছিন্ন করেছেন। (কোড: {{code}})",
     "room-disconnected-duplicate-entry": "অন্য কেউ একই ইউজার আইডি নিয়ে যোগ দিয়েছে।",
     "room-disconnected-server-shutdown": "মিটিং সার্ভার বন্ধ হয়ে গেছে। (কোড: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "আপনি এখন আপনার স্ক্রিন শেয়ার করছেন। অন্যরা বৃহত্তর দৃশ্য দেখতে পাবেন।",
     "new-system-message-in-chat": "সর্বজনীন চ্যাটে একটি নতুন সিস্টেম বার্তা পোস্ট করা হয়েছে।",
     "queue-holding-messages": "সংযোগের সমস্যা: বার্তাগুলি ধরে রাখা হচ্ছে। ({{error}})",
-    "queue-discarded-message": "একটি বার্তা প্রেরণ করা যায়নি এবং পরিত্যাগ করা হয়েছে। ({{error}})"
+    "queue-discarded-message": "একটি বার্তা প্রেরণ করা যায়নি এবং পরিত্যাগ করা হয়েছে। ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "এই মিটিং রেকর্ড করা হচ্ছে।",
@@ -229,7 +230,8 @@
     "uploading-file": "আপলোড করা হচ্ছে {{fileName}}",
     "file-upload-success": "ফাইল সফলভাবে আপলোড করা হয়েছে",
     "file-upload-default-error": "ফাইলটি আপলোড করার সময় একটি ত্রুটি হয়েছিল।",
-    "chat-box-placeholder": "একটি বার্তা প্রেরণ করুন, একটি চিত্র পেস্ট করুন বা এখানে একটি ফাইল ড্রপ করুন (নতুন লাইন: শিফট + এন্টার)"
+    "chat-box-placeholder": "একটি বার্তা প্রেরণ করুন, একটি চিত্র পেস্ট করুন বা এখানে একটি ফাইল ড্রপ করুন (নতুন লাইন: শিফট + এন্টার)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "পাদচরণ লুকান",
@@ -247,6 +249,8 @@
       "show-users-list": "অংশগ্রহণকারীদের তালিকা দেখান",
       "hide-chat-panel": "চ্যাট লুকান",
       "show-chat-panel": "চ্যাট দেখান",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "স্ক্রিন শেয়ার করা বন্ধ করুন",
       "start-screen-sharing": "স্ক্রিন শেয়ার করুন",
       "screen-sharing-locked": "স্ক্রিন শেয়ারিং লক করা হয়েছে",
@@ -288,6 +292,7 @@
       "start-display-external-link": "বহিরাগত লিঙ্ক শেয়ার করুন",
       "stop-display-external-link": "লিঙ্ক শেয়ার করা বন্ধ করুন",
       "speech-to-text-settings": "প্রতিলিপি ও অনুবাদ",
+      "ai-settings": "AI Tools",
       "enable-polls": "পোল সক্ষম করুন",
       "disable-polls": "পোল নিষ্ক্রিয় করুন"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "প্রতিলিপি এবং অনুবাদ সেটিংস",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "প্রতিলিপি সক্ষম করুন",
     "speech-langs-label": "কথ্য ভাষা",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "ব্যবহারকারীদের প্রতিলিপি করতে হবে",
     "subtitle-font-size": "ক্যাপশন ফন্টের আকার",
     "enable-translation": "অনুবাদ সক্রিয় করুন",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "অনুবাদ করুন (সর্বোচ্চ: {{num}})",
     "default-subtitle-lang-label": "ডিফল্ট ক্যাপশন ভাষা",
+    "default-lang-label": "Default Language",
     "enable-service": "সেবা সক্রিয় করুন",
     "speech-user-required": "প্রতিলিপি করার জন্য কমপক্ষে একজন ব্যবহারকারীকে অবশ্যই নির্বাচন করতে হবে।",
     "speech-lang-required": "কমপক্ষে একটি কথ্য ভাষা নির্বাচন করা আবশ্যক।",
     "translation-lang-required": "অনুবাদের জন্য কমপক্ষে একটি ভাষা নির্বাচন করা আবশ্যক।",
     "service-ready": "প্রতিলিপি পরিষেবা প্রস্তুত।",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "সূচনা",
     "stop-service": "থামান",
     "update-service": "আধুনিকীকরণ",
@@ -521,6 +533,38 @@
     "azure-error": "Microsoft Azure পরিষেবা ত্রুটি: {{error}}",
     "speech-to-text-stopped": "প্রতিলিপি পরিষেবা বন্ধ হয়ে গেছে।",
     "enable-transcription": "প্রতিলিপি সক্ষম করুন",
-    "download-header": "এর জন্য সাবটাইটেল ইতিহাস {{name}}\nভাষা: {{lang}}\nউত্পন্ন: {{date}} এ {{time}}"
+    "download-header": "এর জন্য সাবটাইটেল ইতিহাস {{name}}\nভাষা: {{lang}}\nউত্পন্ন: {{date}} এ {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
