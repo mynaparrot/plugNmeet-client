@@ -32,7 +32,7 @@
     "you-have-reject": "Din anmodning om at deltage i mødet blev afvist.",
     "waiting-for-approval": "En moderator er blevet underrettet og vil lukke dig ind snarest. Tak for din tålmodighed!",
     "room-disconnected-title": "Afbrudt",
-    "room-disconnected-unknown": "Du er blevet afbrudt af en ukendt årsag. (Kode: {{code}})",
+    "room-disconnected-default": "You were disconnected due to an unexpected error: {{reason}}. Please try to rejoin.",
     "room-disconnected-client-initiated": "Du har afbrudt forbindelsen til mødet. (Kode: {{code}})",
     "room-disconnected-duplicate-entry": "En anden har tilmeldt sig med det samme bruger-id.",
     "room-disconnected-server-shutdown": "Mødeserveren er lukket ned. (Kode: {{code}})",
@@ -77,7 +77,8 @@
     "you-are-sharing-screen": "Du deler din skærm nu. Andre vil se en større visning.",
     "new-system-message-in-chat": "En ny systemmeddelelse er blevet offentliggjort i den offentlige chat.",
     "queue-holding-messages": "Forbindelsesproblem: meddelelser tilbageholdes. ({{error}})",
-    "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})"
+    "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})",
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
@@ -229,7 +230,8 @@
     "uploading-file": "Uploade {{fileName}}",
     "file-upload-success": "Filen blev uploadet",
     "file-upload-default-error": "Der opstod en fejl under upload af filen.",
-    "chat-box-placeholder": "Send en meddelelse, indsæt et billede, eller slip en fil her (Ny linje: Skift + Enter)"
+    "chat-box-placeholder": "Send en meddelelse, indsæt et billede, eller slip en fil her (Ny linje: Skift + Enter)",
+    "sending-message": "Please wait, sending..."
   },
   "footer": {
     "hide-footer": "Skjul sidefod",
@@ -247,6 +249,8 @@
       "show-users-list": "Vis deltagerliste",
       "hide-chat-panel": "Skjul chat",
       "show-chat-panel": "Vis chat",
+      "hide-ai-chat-panel": "Hide AI Assistant",
+      "show-ai-chat-panel": "Show AI Assistant",
       "stop-screen-sharing": "Stop deling af skærm",
       "start-screen-sharing": "Del skærm",
       "screen-sharing-locked": "Skærmdeling låst",
@@ -288,6 +292,7 @@
       "start-display-external-link": "Del Eksternt link",
       "stop-display-external-link": "Stop deling af link",
       "speech-to-text-settings": "Transskription og oversættelse",
+      "ai-settings": "AI Tools",
       "enable-polls": "Aktivere afstemninger",
       "disable-polls": "Deaktiver afstemninger"
     },
@@ -486,18 +491,25 @@
   },
   "speech-services": {
     "modal-settings-title": "Transskription og oversættelse Indstillinger",
+    "speech-transcription": "Speech Transcription",
+    "chat-translation": "Chat Translation",
     "enable-speech-to-text": "Aktiver transskription",
     "speech-langs-label": "Talte sprog",
+    "allow-transcription-storage": "Save my speech to the final transcript",
     "speech-users-label": "Brugere til at transskribere",
     "subtitle-font-size": "Billedtekst skriftstørrelse",
     "enable-translation": "Aktiver oversættelse",
+    "enable-speech-synthesis": "Enable Speech Synthesis (Browser based)",
     "translation-langs-label": "Oversæt til (maks.: {{num}})",
     "default-subtitle-lang-label": "Standardsprog for billedtekster",
+    "default-lang-label": "Default Language",
     "enable-service": "Aktiver service",
     "speech-user-required": "Der skal vælges mindst én bruger for at transskribere.",
     "speech-lang-required": "Der skal vælges mindst ét talesprog.",
     "translation-lang-required": "Der skal vælges mindst ét sprog til oversættelse.",
     "service-ready": "Transskriptionstjenesten er klar.",
+    "service-started": "Service has been started.",
+    "service-ended": "Service has ended.",
     "start-service": "Begynde",
     "stop-service": "Stop",
     "update-service": "Opdatering",
@@ -521,6 +533,38 @@
     "azure-error": "Fejl i Microsoft Azure-tjenesten: {{error}}",
     "speech-to-text-stopped": "Transskriptionstjenesten er stoppet.",
     "enable-transcription": "Aktiver transskription",
-    "download-header": "Underteksthistorik for {{name}}\nSprog: {{lang}}\nGenereret den: {{date}} ved {{time}}"
+    "download-header": "Underteksthistorik for {{name}}\nSprog: {{lang}}\nGenereret den: {{date}} ved {{time}}",
+    "mic-not-ready-warning": "To start the service, you must enable your microphone.",
+    "max-lang-selection-warning": "You can select a maximum of {{num}} languages for translation",
+    "read-and-write-in-label": "Read & Write In (max: {{num}}):",
+    "enable-trans-synthesis": "Enable translation synthesis"
+  },
+  "insights": {
+    "setting-modal-title": "Insights AI settings",
+    "start-service": "Start service",
+    "stop-service": "Stop service",
+    "update-service": "Update Settings",
+    "service-started-successfully": "Service has been started successfully",
+    "service-stopped-successfully": "Service has been stopped successfully",
+    "tab-ai-text-chat-title": "AI Assistant Chat",
+    "tab-meeting-summarization-title": "Meeting summarization",
+    "feature-disable-while-e2ee-self-key-enabled": "This feature is disabled when self-managed End-to-End Encryption is active.",
+    "not-enough-credit-to-start-service": "Insufficient credit to start this service. Please contact an administrator to add more credit.",
+    "ai-text-chat": {
+      "name": "AI Assistant",
+      "panel-title": "AI Assistant Chat",
+      "enable": "Enable AI Assistant",
+      "allow-everyone": "Available to All Participants",
+      "allowed-users": "Allowed Participants",
+      "users-required": "At least one participant must be selected.",
+      "chat-box-placeholder": "Ask the AI Assistant a question...",
+      "responding-placeholder": "AI Assistant is responding..."
+    },
+    "meeting-summarization": {
+      "enable": "Enable meeting summarization",
+      "summarization-prompt-label": "Summarization Instructions",
+      "summarization-prompt-required": "Please enter instructions for how to summarize.",
+      "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    }
   }
 }
