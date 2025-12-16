@@ -300,10 +300,19 @@ export default class ConnectNats {
     for await (const s of this._nc.status()) {
       switch (s.type) {
         case 'disconnect':
+        case 'staleConnection':
+        case 'close':
           // when nats connection drops during that time, it disconnects first
           // then start reconnecting, so we can set false here only
           store.dispatch(updateIsNatsServerConnected(false));
           this.messageQueue.setIsConnected(false);
+          if (s.type === 'staleConnection') {
+            await this._nc.close();
+          } else if (s.type === 'close') {
+            if (!this._nc.isClosed()) {
+              await this._nc.close();
+            }
+          }
           break;
         case 'reconnecting':
           if (!this.isRoomReconnecting) {
@@ -320,6 +329,7 @@ export default class ConnectNats {
           }
           break;
         case 'reconnect':
+        case 'forceReconnect':
           if (this.toastIdConnecting) {
             toast.dismiss(this.toastIdConnecting);
             this.toastIdConnecting = undefined;
@@ -330,6 +340,11 @@ export default class ConnectNats {
           clearInterval(this.statusCheckerInterval);
           this.statusCheckerInterval = undefined;
           this.isRoomReconnecting = false;
+          break;
+        case 'slowConsumer':
+          toast(i18n.t('notifications.your-connection-quality-not-good'), {
+            type: 'warning',
+          });
           break;
       }
     }
@@ -892,17 +907,17 @@ export default class ConnectNats {
         store.dispatch(setAllUserNotifications(notifications));
       }
       // Restore speech-to-text data if the feature is enabled.
-      const speechToTextTranslationFeatures =
-        this._currentRoomInfo?.metadata?.roomFeatures
-          ?.speechToTextTranslationFeatures;
+      const transcriptionFeatures =
+        this._currentRoomInfo?.metadata?.roomFeatures?.insightsFeatures
+          ?.transcriptionFeatures;
       if (
-        speechToTextTranslationFeatures?.isEnabled &&
+        transcriptionFeatures?.isEnabled &&
         speechToTextFinalTexts &&
         speechToTextFinalTexts.length
       ) {
         let subtitleLang = lastSubtitleLang;
         if (!lastSubtitleLang) {
-          subtitleLang = speechToTextTranslationFeatures.defaultSubtitleLang;
+          subtitleLang = transcriptionFeatures.defaultSubtitleLang;
         }
         store.dispatch(
           setSpeechToTextLastFinalTexts({

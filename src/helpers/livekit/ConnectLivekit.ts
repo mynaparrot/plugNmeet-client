@@ -184,7 +184,7 @@ export default class ConnectLivekit
     };
 
     if (this.enabledE2EE && isE2EESupported()) {
-      roomOptions.e2ee = {
+      roomOptions.encryption = {
         keyProvider: this._e2eeKeyProvider,
         worker: new LkWorker(),
       };
