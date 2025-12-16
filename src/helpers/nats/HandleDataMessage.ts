@@ -12,10 +12,7 @@ import {
   updateRequestedWhiteboardData,
 } from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
-import {
-  participantsSelector,
-  updateParticipant,
-} from '../../store/slices/participantSlice';
+import { updateParticipant } from '../../store/slices/participantSlice';
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
@@ -174,16 +171,11 @@ export default class HandleDataMessage {
     const data = fromJsonString(InsightsTranscriptionResultSchema, message);
 
     if (lang !== '') {
-      const participant = participantsSelector.selectById(
-        store.getState(),
-        data.fromUserId,
-      );
-
       const d = new Date();
       const type = data.isPartial ? 'interim' : 'final';
       const result: TextWithInfo = {
         text: '',
-        from: participant.name,
+        from: data.fromUserName,
         time: d.toLocaleTimeString(),
         id: d.getUTCMilliseconds().toString(),
       };
