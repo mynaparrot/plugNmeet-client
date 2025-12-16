@@ -18,6 +18,8 @@ const WebcamPreview = ({ selectedVideoDevice }: WebcamPreviewProps) => {
 
   useEffect(() => {
     const el = ref.current;
+    let stream: MediaStream;
+
     if (selectedVideoDevice !== '') {
       const constraints: MediaStreamConstraints = {
         video: {
@@ -27,6 +29,7 @@ const WebcamPreview = ({ selectedVideoDevice }: WebcamPreviewProps) => {
       navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
         if (el) {
           el.srcObject = mediaStream;
+          stream = mediaStream;
           setSourcePlayback({
             htmlElement: el,
             width: 640,
@@ -35,9 +38,14 @@ const WebcamPreview = ({ selectedVideoDevice }: WebcamPreviewProps) => {
         }
       });
     }
+
     return () => {
       if (el) {
+        el.pause();
         el.srcObject = null;
+        if (stream) {
+          stream.getTracks().forEach((t) => t.stop());
+        }
       }
     };
   }, [selectedVideoDevice]);

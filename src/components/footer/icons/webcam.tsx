@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
-// oxlint-disable-next-line no-unused-vars
 import { LocalTrack, Track } from 'livekit-client';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -109,7 +108,6 @@ const WebcamIcon = () => {
     } else {
       // virtual background stream will be handled by its own hook
     }
-    // eslint-disable-next-line
   }, [
     selectedVideoDevice,
     isActiveWebcam,
