@@ -20,8 +20,9 @@ export interface ICustomDesignParams {
   background_image?: string;
   header_bg_color?: string;
   footer_bg_color?: string;
-  left_side_bg_color?: string;
+  // @deprecated  Use `right_panel_bg_color` instead.
   right_side_bg_color?: string;
+  right_panel_bg_color?: string;
   custom_css_url?: string;
   custom_logo?: string;
   column_camera_width?: ColumnCameraWidth;
@@ -103,6 +104,7 @@ const useClientCustomization = () => {
       // from design params let's assume logo will be only light to reduce complexity
       (window as any).plugNmeetConfig.customLogo = {
         main_logo_light: designCustomParams.custom_logo,
+        main_logo_dark: designCustomParams.custom_logo,
       };
     }
     freezeConfig();
@@ -231,22 +233,16 @@ const useClientCustomization = () => {
         '; }';
     }
 
-    if (designCustomParams.left_side_bg_color) {
-      css +=
-        '.participants-wrapper { background: ' +
-        designCustomParams.left_side_bg_color +
-        '; }';
-      css +=
-        '.vertical-webcams { background: ' +
-        designCustomParams.left_side_bg_color +
-        ' !important; }';
-    }
-
-    if (designCustomParams.right_side_bg_color) {
-      css +=
-        '.messageModule-wrapper { background: ' +
-        designCustomParams.right_side_bg_color +
-        '; }';
+    if (
+      designCustomParams.right_side_bg_color ||
+      designCustomParams.right_panel_bg_color
+    ) {
+      // with backward compatibility
+      let color = designCustomParams.right_panel_bg_color;
+      if (designCustomParams.right_side_bg_color) {
+        color = designCustomParams.right_side_bg_color;
+      }
+      css += '.messageModule-wrapper { background: ' + color + '; }';
     }
 
     if (

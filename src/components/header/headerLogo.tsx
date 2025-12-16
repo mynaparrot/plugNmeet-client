@@ -1,5 +1,6 @@
 import React from 'react';
 import useLogo from '../../helpers/hooks/useLogo';
+
 const HeaderLogo = () => {
   const logo = useLogo();
   return (

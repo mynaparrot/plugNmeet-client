@@ -6,8 +6,6 @@ import { getConfigValue, isValidHttpUrl } from '../utils';
 interface CustomLogo {
   main_logo_light?: string;
   main_logo_dark?: string;
-  waiting_room_logo_light?: string;
-  waiting_room_logo_dark?: string;
 }
 
 const useLogo = () => {
@@ -19,9 +17,11 @@ const useLogo = () => {
     'STATIC_ASSETS_PATH',
   );
 
-  const [logo, setLogo] = useState<string>(`${assetPath}/imgs/main-logo.png`);
+  const [logo, setLogo] = useState<string>(
+    `${assetPath}/imgs/main-logo-light.png`,
+  );
   const [darkLogo, setDarkLogo] = useState<string>(
-    `${assetPath}/imgs/PlugNmeet-Dark.png`,
+    `${assetPath}/imgs/main-logo-dark.png`,
   );
 
   useEffect(() => {

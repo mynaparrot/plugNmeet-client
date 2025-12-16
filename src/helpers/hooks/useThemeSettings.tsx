@@ -2,12 +2,23 @@ import { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateTheme } from '../../store/slices/roomSettingsSlice';
+import { getConfigValue } from '../utils';
 
 const useThemeSettings = () => {
   const theme = useAppSelector((state) => state.roomSettings.theme);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const disableDarkMode = getConfigValue<boolean>(
+      'disableDarkMode',
+      false,
+      '',
+    );
+    if (disableDarkMode) {
+      updateTheme('light');
+      return;
+    }
+
     const changeTheme = (event) => {
       dispatch(updateTheme(event.matches ? 'dark' : 'light'));
     };

@@ -46,6 +46,9 @@ window.plugNmeetConfig = {
   // Default: true.
   focusActiveSpeakerWebcam: true,
 
+  // Disables the dark mode theme and the user's ability to toggle it.
+  disableDarkMode: false,
+
   // Design customization in JS Object or JSON format.
   /*designCustomization: {
     primary_color: '#004D90',
@@ -54,8 +57,7 @@ window.plugNmeetConfig = {
     background_image: 'https://mydomain.com/custom_bg.png',
     header_bg_color: '#45b3ec',
     footer_bg_color: '#45b3ec',
-    left_side_bg_color: '#04a2f3',
-    right_side_bg_color: '#04a2f3',
+    right_panel_bg_color: '#04a2f3',
     custom_css_url: 'https://mydomain.com/plugNmeet_desing.css',
     custom_logo: 'https://mydomain.com/logo.png',
   },*/

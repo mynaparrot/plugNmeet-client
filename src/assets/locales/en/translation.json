@@ -344,7 +344,8 @@
       "external-media-player-upload-supported-files": "Supported files: {{files}}",
       "external-media-player-select-file": "Select a media file to upload",
       "upload-background-image": "Upload background image",
-      "shared-notepad": "Shared Notepad"
+      "shared-notepad": "Shared Notepad",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {

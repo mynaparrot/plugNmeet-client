@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { RemoteAudioTrack } from 'livekit-client';
+import { throttle } from 'es-toolkit';
+
 import { useAppSelector } from '../../../store';
 
 interface IAudioElmProps {
@@ -14,6 +16,16 @@ const AudioElm = ({ audioTrack }: IAudioElmProps) => {
     (state) => state.roomSettings.isNatsServerConnected,
   );
   const ref = useRef<HTMLAudioElement>(null);
+
+  const throttledSetVolume = useMemo(
+    () =>
+      throttle((volume: number) => {
+        if (audioTrack) {
+          audioTrack.setVolume(volume);
+        }
+      }, 200), // Throttle to run at most every 200ms
+    [audioTrack],
+  );
 
   useEffect(() => {
     const el = ref.current;
@@ -31,8 +43,8 @@ const AudioElm = ({ audioTrack }: IAudioElmProps) => {
   }, [audioTrack]);
 
   useEffect(() => {
-    audioTrack.setVolume(roomScreenShareAudioVolume);
-  }, [audioTrack, roomScreenShareAudioVolume]);
+    throttledSetVolume(roomScreenShareAudioVolume);
+  }, [roomScreenShareAudioVolume, throttledSetVolume]);
 
   useEffect(() => {
     const el = ref.current;

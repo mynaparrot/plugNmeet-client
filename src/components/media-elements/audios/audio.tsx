@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { RemoteAudioTrack } from 'livekit-client';
+import { throttle } from 'es-toolkit';
 
 import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
@@ -16,6 +17,16 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
   );
   const audioVolume = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.audioVolume,
+  );
+
+  const throttledSetVolume = useMemo(
+    () =>
+      throttle((volume: number) => {
+        if (audioTrack) {
+          audioTrack.setVolume(volume);
+        }
+      }, 200), // Throttle to run at most every 200ms
+    [audioTrack],
   );
 
   useEffect(() => {
@@ -36,10 +47,10 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
   }, [audioTrack]);
 
   useEffect(() => {
-    if (audioTrack && typeof audioVolume !== 'undefined') {
-      audioTrack.setVolume(audioVolume);
+    if (typeof audioVolume !== 'undefined') {
+      throttledSetVolume(audioVolume);
     }
-  }, [audioTrack, audioVolume]);
+  }, [audioVolume, throttledSetVolume]);
 
   useEffect(() => {
     const el = ref.current;

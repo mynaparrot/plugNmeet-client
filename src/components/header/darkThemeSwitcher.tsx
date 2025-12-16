@@ -4,10 +4,17 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { updateTheme } from '../../store/slices/roomSettingsSlice';
 import { SunIcon } from '../../assets/Icons/SunIcon';
 import { MoonIcon } from '../../assets/Icons/MoonIcon';
+import { getConfigValue } from '../../helpers/utils';
 
 const DarkThemeSwitcher = () => {
   const theme = useAppSelector((state) => state.roomSettings.theme);
   const dispatch = useAppDispatch();
+
+  const disableDarkMode = getConfigValue<boolean>('disableDarkMode', false, '');
+  if (disableDarkMode) {
+    updateTheme('light');
+    return null;
+  }
 
   const toggleDarkMode = () => {
     dispatch(updateTheme(theme === 'light' ? 'dark' : 'light'));

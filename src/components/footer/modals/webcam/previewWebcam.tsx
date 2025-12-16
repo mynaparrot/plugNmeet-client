@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { SourcePlayback } from '../../../virtual-background/helpers/sourceHelper';
 import { BackgroundConfig } from '../../../virtual-background/helpers/backgroundHelper';
@@ -13,6 +14,7 @@ interface IPreviewWebcamProps {
 }
 
 const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
+  const { t } = useTranslation();
   const [sourcePlayback, setSourcePlayback] = useState<SourcePlayback>();
   const [show, setShow] = useState<boolean>(false);
   const [previousDeviceId, setPreviousDeviceId] = useState<string>();
@@ -111,7 +113,7 @@ const PreviewWebcam = ({ deviceId }: IPreviewWebcamProps) => {
       {displayVB() ? (
         <>
           <div className="title text-xs md:text-sm leading-none text-Gray-700 dark:text-dark-text px-1 md:px-3 uppercase pt-5 3x:pt-8 pb-5">
-            Choose Background
+            {t('footer.modal.chose-virtual-bg')}
           </div>
           <BackgroundItems onSelect={onSelectBg} />{' '}
         </>

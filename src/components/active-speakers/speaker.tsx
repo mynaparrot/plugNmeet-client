@@ -6,7 +6,7 @@ interface ISpeakerProps {
 }
 const SpeakerComponent = ({ speaker }: ISpeakerProps) => {
   return (
-    <div className="m-1 px-3 py-1 primaryColor text-[12px] rounded-2xl inline-flex items-center bg-white border border-solid border-white">
+    <div className="m-1 px-3 py-1 primaryColor text-[12px] rounded-2xl inline-flex items-center bg-white border border-solid border-white dark:border-Gray-800 dark:bg-Gray-800 dark:text-white">
       <i className="pnm-mic-unmute text-[10px] secondaryColor ltr:mr-2 rtl:ml-2" />
       {speaker.name}
     </div>
