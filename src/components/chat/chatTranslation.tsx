@@ -67,18 +67,18 @@ const ChatTranslation = () => {
     chatTranslationFeatures?.isEnabled &&
     transLangs.length && (
       <Listbox value={selectedLanguage} onChange={setSelectedLanguage}>
-        <ListboxButton className="lang h-6 3xl:h-8 w-9 3xl:w-[43px] flex items-center justify-center cursor-pointer border border-Gray-300 rounded-md 3xl:rounded-[11px] text-xs 3xl:text-sm font-medium 3xl:font-semibold text-Gray-950">
+        <ListboxButton className="lang h-6 w-9 flex items-center justify-center cursor-pointer border border-Gray-300 dark:border-Gray-800 rounded-md 3xl:rounded-[11px] text-xs font-medium text-Gray-950 dark:text-white">
           {selectedLanguage?.code.toLocaleUpperCase()}
         </ListboxButton>
         <ListboxOptions
           anchor="bottom"
           transition
-          className="border border-gray-200 rounded-xl shadow-dropdown-menu bg-white overflow-hidden w-40 py-1.5 z-20"
+          className="border border-gray-200 dark:border-gray-800 rounded-xl shadow-dropdown-menu bg-white dark:bg-dark-primary overflow-hidden w-40 py-1.5 z-20 px-1"
         >
           {transLangs.map((lang) => (
             <ListboxOption key={lang.code} value={lang}>
               {({ selected }) => (
-                <div className="text-sm cursor-pointer text-Gray-950 hover:bg-Gray-50 flex items-center justify-between px-3 3xl:px-4 py-2">
+                <div className="text-sm cursor-pointer text-Gray-950 dark:text-white hover:bg-Gray-50 hover:dark:bg-dark-secondary2 flex items-center justify-between px-3 py-1.5 rounded-lg">
                   <span>{lang.title}</span>{' '}
                   {selected && (
                     <span>

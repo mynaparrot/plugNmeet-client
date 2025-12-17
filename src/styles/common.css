@@ -1172,10 +1172,12 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 .Toastify__toast.notification-toast .Toastify__toast-icon {
   display: none !important;
 }
-.dark .Toastify__toast.notification-toast {
-  @apply bg-dark-primary! border border-Gray-700;
+.dark .Toastify__toast.notification-toast,
+.dark .Toastify__toast-theme--light {
+  @apply bg-dark-primary! border border-Gray-700 text-dark-text!;
 }
-.dark .Toastify__toast.notification-toast button.Toastify__close-button {
+.dark .Toastify__toast.notification-toast button.Toastify__close-button,
+.dark .Toastify__toast-theme--light button.Toastify__close-button {
   @apply text-white! opacity-100!;
 }
 .gradient {

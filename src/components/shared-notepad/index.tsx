@@ -49,7 +49,7 @@ const SharedNotepad = () => {
               <div className="inner w-full h-full pt-[45px] relative">
                 <div
                   id="draggable-h1"
-                  className="absolute top-0 w-full flex items-center justify-between text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border-b border-Gray-100 dark:border-Gray-800 bg-white dark:bg-dark-secondary2 rounded-t-xl"
+                  className="absolute top-0 w-full flex items-center justify-between text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border border-Gray-100 dark:border-Gray-800! bg-white dark:bg-dark-primary rounded-t-xl"
                 >
                   <span>{t('footer.modal.shared-notepad')}</span>
                   <button
