@@ -811,6 +811,7 @@ export default class ConnectNats {
     // 6. We'll initialize the media server class.
     await this.initializeMediaServer(
       this._currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures,
+      data.room.roomSid,
     );
   }
 
@@ -954,6 +955,7 @@ export default class ConnectNats {
 
   private async initializeMediaServer(
     e2ee: EndToEndEncryptionFeatures | undefined,
+    roomSid: string,
   ) {
     if (typeof this._mediaServerConn !== 'undefined') {
       return false;
@@ -977,7 +979,7 @@ export default class ConnectNats {
       }
 
       if (encryptionKey) {
-        await importSecretKeyFromPlainText(encryptionKey);
+        await importSecretKeyFromPlainText(encryptionKey, roomSid);
 
         this._enableE2EE = true;
         this._enableE2EEChat = e2ee.includedChatMessages;

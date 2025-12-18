@@ -24,8 +24,12 @@ const base64ToUint8Array = (base64: string) => {
  * Derives a secure encryption key from a user-provided secret (e.g., a password) using PBKDF2,
  * then imports it for use with AES-GCM. This is the recommended method for handling user passwords.
  * @param secret The user-provided secret string.
+ * @param roomSid as salt
  */
-export const importSecretKeyFromPlainText = async (secret: string) => {
+export const importSecretKeyFromPlainText = async (
+  secret: string,
+  roomSid: string,
+) => {
   if (importedKey) {
     return;
   }
@@ -43,7 +47,9 @@ export const importSecretKeyFromPlainText = async (secret: string) => {
 
   // 2. Derive the actual encryption key using PBKDF2.
   // A salt should be unique per key, but for this use case, a hardcoded salt is acceptable.
-  const salt = enc.encode('plug-n-meet-e2ee-salt'); // A static salt is better than no salt.
+  // In our case, room sid will be always unique for each session.
+  // So instead of using a static salt, we can use room sid
+  const salt = enc.encode(roomSid);
   importedKey = await window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
