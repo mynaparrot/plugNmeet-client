@@ -137,7 +137,7 @@ const UserNotifications = () => {
             <div
               className={clsx([
                 // Base styles
-                'right_panel_bg_color notifications-panel fixed transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-[calc(100%-110px)] 3xl:h-[calc(100%-144px)] top-[54px] 3xl:top-[68px] bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800',
+                'side-panel-bg-color notifications-panel fixed transition ease-in-out w-[300px] 3xl:w-[340px] right-0 h-[calc(100%-110px)] 3xl:h-[calc(100%-144px)] top-[54px] 3xl:top-[68px] bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800',
                 // Shared closed styles
                 'data-closed:opacity-0',
                 // Entering styles

@@ -43,7 +43,7 @@ const ManageActiveRooms = ({ setMessage }: IManageActiveRoomsProps) => {
       <RoomLists setMessage={setMessage} />
       <div className="btn pb-3 pt-4 flex items-end justify-end">
         <button
-          className="button-blue h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+          className="primary-button h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={onEndAllRooms}
           disabled={isLoading}
         >

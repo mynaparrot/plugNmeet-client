@@ -408,13 +408,14 @@ const MicrophoneIcon = () => {
     <>
       <div className={wrapperClasses}>
         {showMutedTooltip && (
-          <div className="absolute -top-14 left-1/2 -translate-x-1/2 w-max max-w-xs z-20">
-            <div className="inner bg-white dark:bg-dark-secondary rounded-lg shadow-lg px-4 py-2 flex items-center gap-2">
+          <div className="micro-muted-tooltip tooltip-left absolute -left-3 rtl:microphone-rtl-left bottom-[48px] 3xl:bottom-[55px]">
+            <div className="inner w-max bg-Gray-50 dark:bg-dark-secondary2 rounded-lg shadow-lg px-4 py-4 flex items-center gap-2 relative">
+              <MicrophoneOff classes={'h-4 3xl:h-5 w-auto text-Red-600'} />
               <p className="text-sm text-gray-900 dark:text-white">
                 {t('footer.icons.you-are-muted')}
               </p>
               <button
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                className="text-gray-950 dark:text-white absolute cursor-pointer -top-5 -right-5"
                 onClick={() => {
                   tooltipDismissedRef.current = true;
                   setShowMutedTooltip(false);

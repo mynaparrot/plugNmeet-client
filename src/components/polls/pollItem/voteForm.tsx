@@ -183,7 +183,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       {!isRunning || voted || !selectedOption ? null : (
         <div className="button-section flex items-center justify-end mt-3">
           <button
-            className="button-blue h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue dark:bg-dark-secondary2 border border-DarkBlue dark:border-dark-secondary2 transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow dark:shadow-none"
+            className="primary-button h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue dark:bg-dark-secondary2 border border-DarkBlue dark:border-dark-secondary2 transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow dark:shadow-none"
             type="submit"
           >
             {t('polls.submit')}

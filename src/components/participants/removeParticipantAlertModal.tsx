@@ -85,7 +85,7 @@ const RemoveParticipantAlertModal = ({
         </button>
         <button
           type="button"
-          className="button-blue h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer ml-4"
+          className="primary-button h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer ml-4"
           onClick={() => onCloseRemoveParticipantAlert(false)}
         >
           {t('cancel')}

@@ -59,7 +59,7 @@ const ExtendDuration = ({ breakoutRoomId, setMessage }: IExtendTimeProps) => {
       <button
         onClick={handleExtendDuration}
         disabled={isLoading || duration <= 0}
-        className="button-blue h-8 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        className="primary-button h-8 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {t('breakout-room.extend-duration')}
       </button>

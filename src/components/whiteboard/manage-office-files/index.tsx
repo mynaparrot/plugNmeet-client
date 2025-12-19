@@ -165,13 +165,13 @@ const ManageOfficeFilesModal = ({
             </div>
             <div className="grid grid-cols-2 gap-3 px-4 py-4 border-t border-Gray-100 dark:border-Gray-800">
               <button
-                className="button-white h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer"
+                className="secondary-button h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer"
                 onClick={() => onClose()}
               >
                 {t('close')}
               </button>
               <button
-                className="button-blue h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Blue2-500 border border-Blue2-600 transition-all duration-300 hover:bg-Blue2-600  shadow-button-shadow cursor-pointer"
+                className="primary-button h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-white bg-Blue2-500 border border-Blue2-600 transition-all duration-300 hover:bg-Blue2-600  shadow-button-shadow cursor-pointer"
                 onClick={() => {
                   if (!showSwitchingWarning() && selectedOfficeFile)
                     debouncedAddToWhiteboard(selectedOfficeFile);

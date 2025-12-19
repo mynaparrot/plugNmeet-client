@@ -20,9 +20,9 @@ export interface ICustomDesignParams {
   background_image?: string;
   header_bg_color?: string;
   footer_bg_color?: string;
-  // @deprecated  Use `right_panel_bg_color` instead.
+  // @deprecated  Use `side-panel-bg-color` instead.
   right_side_bg_color?: string;
-  right_panel_bg_color?: string;
+  side_panel_bg_color?: string;
   custom_css_url?: string;
   custom_logo?: string;
   column_camera_width?: ColumnCameraWidth;
@@ -30,10 +30,10 @@ export interface ICustomDesignParams {
   footer_icon_bg_color?: string;
   footer_icon_color?: string;
   // text_color?: string;
-  blue_button_bg_color?: string;
-  blue_button_text_color?: string;
-  white_button_bg_color?: string;
-  white_button_text_color?: string;
+  primary_btn_bg_color?: string;
+  primary_btn_text_color?: string;
+  secondary_btn_bg_color?: string;
+  secondary_btn_text_color?: string;
 }
 
 const useClientCustomization = () => {
@@ -252,28 +252,28 @@ const useClientCustomization = () => {
         designCustomParams.footer_icon_color +
         '; }';
     }
-    if (designCustomParams.blue_button_bg_color) {
+    if (designCustomParams.primary_btn_bg_color) {
       css +=
-        '.button-blue { background: ' +
-        designCustomParams.blue_button_bg_color +
+        '.primary-button { background: ' +
+        designCustomParams.primary_btn_bg_color +
         '; }';
     }
-    if (designCustomParams.blue_button_text_color) {
+    if (designCustomParams.primary_btn_text_color) {
       css +=
-        '.button-blue { color: ' +
-        designCustomParams.blue_button_text_color +
+        '.primary-button { color: ' +
+        designCustomParams.primary_btn_text_color +
         '; }';
     }
-    if (designCustomParams.white_button_bg_color) {
+    if (designCustomParams.secondary_btn_bg_color) {
       css +=
-        '.button-white { background: ' +
-        designCustomParams.white_button_bg_color +
+        '.secondary-button { background: ' +
+        designCustomParams.secondary_btn_bg_color +
         '; }';
     }
-    if (designCustomParams.white_button_text_color) {
+    if (designCustomParams.secondary_btn_text_color) {
       css +=
-        '.button-white { color: ' +
-        designCustomParams.white_button_text_color +
+        '.secondary-button { color: ' +
+        designCustomParams.secondary_btn_text_color +
         '; }';
     }
     // if (designCustomParams.text_color) {
@@ -283,14 +283,14 @@ const useClientCustomization = () => {
 
     if (
       designCustomParams.right_side_bg_color ||
-      designCustomParams.right_panel_bg_color
+      designCustomParams.side_panel_bg_color
     ) {
       // with backward compatibility
-      let color = designCustomParams.right_panel_bg_color;
+      let color = designCustomParams.side_panel_bg_color;
       if (designCustomParams.right_side_bg_color) {
         color = designCustomParams.right_side_bg_color;
       }
-      css += '.right_panel_bg_color { background: ' + color + '; }';
+      css += '.side-panel-bg-color { background: ' + color + '; }';
     }
 
     if (
