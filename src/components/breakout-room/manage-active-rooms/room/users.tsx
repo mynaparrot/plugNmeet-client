@@ -69,7 +69,7 @@ const BreakoutRoomUsers = ({
               {!user.joined && (
                 <button
                   onClick={() => pushUser(user.name, user.id)}
-                  className="ml-auto h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                  className="button-blue ml-auto h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                 >
                   {t('breakout-room.push')}
                 </button>

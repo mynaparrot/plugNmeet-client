@@ -53,7 +53,7 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
                 {t('app.insert-secret-key')}
               </label>
               <input
-                className="shadow appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 dark:text-white mb-3 leading-tight focus:outline-hidden focus:shadow-outline"
+                className="shadow appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 dark:text-white mb-3 leading-tight focus:outline-hidden focus:shadow-outline placeholder:text-white placeholder:dark:text-white"
                 id="secretKey"
                 type="password"
                 placeholder="******************"

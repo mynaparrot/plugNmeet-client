@@ -27,6 +27,13 @@ export interface ICustomDesignParams {
   custom_logo?: string;
   column_camera_width?: ColumnCameraWidth;
   column_camera_position?: ColumnCameraPosition;
+  footer_icon_bg_color?: string;
+  footer_icon_color?: string;
+  // text_color?: string;
+  blue_button_bg_color?: string;
+  blue_button_text_color?: string;
+  white_button_bg_color?: string;
+  white_button_text_color?: string;
 }
 
 const useClientCustomization = () => {
@@ -189,7 +196,7 @@ const useClientCustomization = () => {
     }
 
     if (designCustomParams.background_image) {
-      css += `.main-app-bg { 
+      css += `#main-area { 
         background: url("${designCustomParams.background_image}") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
@@ -208,7 +215,7 @@ const useClientCustomization = () => {
         background-size: cover !important;
         }`;
     } else if (designCustomParams.background_color) {
-      css += `.main-app-bg { 
+      css += `#main-area { 
         background: ${designCustomParams.background_color} !important;
         }`;
       css += `.error-app-bg { 
@@ -233,6 +240,47 @@ const useClientCustomization = () => {
         '; }';
     }
 
+    if (designCustomParams.footer_icon_bg_color) {
+      css +=
+        '.footer-icon-bg { background: ' +
+        designCustomParams.footer_icon_bg_color +
+        '; }';
+    }
+    if (designCustomParams.footer_icon_color) {
+      css +=
+        '.footer-icon-bg { color: ' +
+        designCustomParams.footer_icon_color +
+        '; }';
+    }
+    if (designCustomParams.blue_button_bg_color) {
+      css +=
+        '.button-blue { background: ' +
+        designCustomParams.blue_button_bg_color +
+        '; }';
+    }
+    if (designCustomParams.blue_button_text_color) {
+      css +=
+        '.button-blue { color: ' +
+        designCustomParams.blue_button_text_color +
+        '; }';
+    }
+    if (designCustomParams.white_button_bg_color) {
+      css +=
+        '.button-white { background: ' +
+        designCustomParams.white_button_bg_color +
+        '; }';
+    }
+    if (designCustomParams.white_button_text_color) {
+      css +=
+        '.button-white { color: ' +
+        designCustomParams.white_button_text_color +
+        '; }';
+    }
+    // if (designCustomParams.text_color) {
+    //   css += '.text-Gray-950 { color: ' + designCustomParams.text_color + '; }';
+    //   css += '.text-Gray-800 { color: ' + designCustomParams.text_color + '; }';
+    // }
+
     if (
       designCustomParams.right_side_bg_color ||
       designCustomParams.right_panel_bg_color
@@ -242,7 +290,7 @@ const useClientCustomization = () => {
       if (designCustomParams.right_side_bg_color) {
         color = designCustomParams.right_side_bg_color;
       }
-      css += '.messageModule-wrapper { background: ' + color + '; }';
+      css += '.right_panel_bg_color { background: ' + color + '; }';
     }
 
     if (

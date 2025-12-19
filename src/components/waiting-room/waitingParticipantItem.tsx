@@ -132,7 +132,7 @@ const WaitingParticipantItem = ({
           <>
             <button
               onClick={handleApprove}
-              className="py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
+              className="button-blue py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
             >
               {t('left-panel.approve')}
             </button>

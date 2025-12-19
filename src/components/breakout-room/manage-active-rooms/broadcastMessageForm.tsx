@@ -57,7 +57,7 @@ const BroadcastMessageForm = ({ setMessage }: IBroadcastMessageFormProps) => {
       <button
         onClick={send}
         disabled={isLoading || msg.trim() === ''}
-        className="h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+        className="button-blue h-9 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {t('breakout-room.broadcast-msg')}
       </button>
