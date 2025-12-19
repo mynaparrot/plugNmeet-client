@@ -52,21 +52,20 @@ window.plugNmeetConfig = {
   // Design customization in JS Object or JSON format.
   /*designCustomization: {
     primary_color: '#004D90',
-    secondary_color: '#24AEF7',
-    background_color: '#0b7db4',
-    background_image: 'https://mydomain.com/custom_bg.png',
-    header_bg_color: '#45b3ec',
-    footer_bg_color: '#45b3ec',
-    side_panel_bg_color: '#04a2f3',
-    custom_css_url: 'https://mydomain.com/plugNmeet_desing.css',
-    custom_logo: 'https://mydomain.com/logo.png',
-    footer_icon_bg_color: '#004d90',
-    footer_icon_color: '#ffffff',
-    // text_color: '#ffffff',
     primary_btn_bg_color: '#00a1f28c',
     primary_btn_text_color: '#ffffff',
+    secondary_color: '#24AEF7',
     secondary_btn_bg_color: '#ffffff8c',
     secondary_btn_text_color: '#0c131a',
+    header_bg_color: '#45b3ec',
+    footer_bg_color: '#45b3ec',
+    footer_icon_bg_color: '#004d90',
+    footer_icon_color: '#ffffff',
+    side_panel_bg_color: '#04a2f3',
+    background_color: '#0b7db4',
+    background_image: 'https://mydomain.com/custom_bg.png',
+    custom_css_url: 'https://mydomain.com/plugNmeet_desing.css',
+    custom_logo: 'https://mydomain.com/logo.png',
   },*/
 
   // Whiteboard PreloadedLibraryItems, which should be an array of full library direct URLs.

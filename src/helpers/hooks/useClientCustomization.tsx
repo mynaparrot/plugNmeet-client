@@ -1,39 +1,32 @@
 import { useCallback, useEffect } from 'react';
 import { once } from 'es-toolkit';
-
-import {
-  ColumnCameraPosition,
-  ColumnCameraWidth,
-} from '../../store/slices/interfaces/roomSettings';
-import {
-  updateColumnCameraPosition,
-  updateColumnCameraWidth,
-  updateFocusActiveSpeakerWebcam,
-} from '../../store/slices/roomSettingsSlice';
+import { updateFocusActiveSpeakerWebcam } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
 import { getConfigValue } from '../utils';
 
 export interface ICustomDesignParams {
   primary_color?: string;
+  primary_btn_bg_color?: string;
+  primary_btn_text_color?: string;
+
   secondary_color?: string;
+  secondary_btn_bg_color?: string;
+  secondary_btn_text_color?: string;
+
   background_color?: string;
   background_image?: string;
+
   header_bg_color?: string;
   footer_bg_color?: string;
+  footer_icon_bg_color?: string;
+  footer_icon_color?: string;
+
   // @deprecated  Use `side-panel-bg-color` instead.
   right_side_bg_color?: string;
   side_panel_bg_color?: string;
+
   custom_css_url?: string;
   custom_logo?: string;
-  column_camera_width?: ColumnCameraWidth;
-  column_camera_position?: ColumnCameraPosition;
-  footer_icon_bg_color?: string;
-  footer_icon_color?: string;
-  // text_color?: string;
-  primary_btn_bg_color?: string;
-  primary_btn_text_color?: string;
-  secondary_btn_bg_color?: string;
-  secondary_btn_text_color?: string;
 }
 
 const useClientCustomization = () => {
@@ -279,10 +272,6 @@ const useClientCustomization = () => {
         designCustomParams.secondary_btn_text_color +
         '; }';
     }
-    // if (designCustomParams.text_color) {
-    //   css += '.text-Gray-950 { color: ' + designCustomParams.text_color + '; }';
-    //   css += '.text-Gray-800 { color: ' + designCustomParams.text_color + '; }';
-    // }
 
     if (
       designCustomParams.right_side_bg_color ||
@@ -295,29 +284,6 @@ const useClientCustomization = () => {
       }
       css +=
         'body:not(.dark) .side-panel-bg-color { background: ' + color + '; }';
-    }
-
-    if (
-      designCustomParams.column_camera_width &&
-      (designCustomParams.column_camera_width ===
-        ColumnCameraWidth.SMALL_WIDTH ||
-        designCustomParams.column_camera_width ===
-          ColumnCameraWidth.MEDIUM_WIDTH ||
-        designCustomParams.column_camera_width === ColumnCameraWidth.FULL_WIDTH)
-    ) {
-      dispatch(updateColumnCameraWidth(designCustomParams.column_camera_width));
-    }
-
-    if (
-      designCustomParams.column_camera_position &&
-      (designCustomParams.column_camera_position === ColumnCameraPosition.TOP ||
-        designCustomParams.column_camera_position ===
-          ColumnCameraPosition.BOTTOM ||
-        designCustomParams.column_camera_position === ColumnCameraPosition.LEFT)
-    ) {
-      dispatch(
-        updateColumnCameraPosition(designCustomParams.column_camera_position),
-      );
     }
 
     const head = document.head;
