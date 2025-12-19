@@ -119,29 +119,32 @@ const useClientCustomization = () => {
     let css = '';
 
     if (designCustomParams.primary_color) {
-      css += '.primaryColor{ color: ' + designCustomParams.primary_color + '}';
       css +=
-        '.text-primary-color { color: ' +
+        'body:not(.dark) .primaryColor{ color: ' +
         designCustomParams.primary_color +
         '}';
       css +=
-        '.placeholder\\:text-primaryColor\\/70::placeholder { color: ' +
+        'body:not(.dark) .text-primary-color { color: ' +
         designCustomParams.primary_color +
         '}';
       css +=
-        '.bg-primary-color { background: ' +
+        'body:not(.dark) .placeholder\\:text-primaryColor\\/70::placeholder { color: ' +
+        designCustomParams.primary_color +
+        '}';
+      css +=
+        'body:not(.dark) .bg-primary-color { background: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.hover\\:bg-primaryColor:hover { background: ' +
+        'body:not(.dark) .hover\\:bg-primaryColor:hover { background: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.border-primary-color { border-color: ' +
+        'body:not(.dark) .border-primary-color { border-color: ' +
         designCustomParams.primary_color +
         ' !important;}';
       css +=
-        '.excalidraw {\n' +
+        'body:not(.dark) .excalidraw {\n' +
         '    --color-primary: ' +
         designCustomParams.primary_color +
         ';\n' +
@@ -156,39 +159,39 @@ const useClientCustomization = () => {
 
     if (designCustomParams.secondary_color) {
       css +=
-        '.secondaryColor { color: ' +
+        'body:not(.dark) .secondaryColor { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.text-secondary-color { color: ' +
+        'body:not(.dark) .text-secondary-color { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.bg-secondary-color { background: ' +
+        'body:not(.dark) .bg-secondary-color { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.hover\\:text-secondaryColor:hover { color: ' +
+        'body:not(.dark) .hover\\:text-secondaryColor:hover { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.group:hover .group-hover\\:text-secondaryColor { color: ' +
+        'body:not(.dark) .group:hover .group-hover\\:text-secondaryColor { color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.bg-secondaryColor, .hover:bg-secondaryColor:hover { background: ' +
+        'body:not(.dark) .bg-secondaryColor, .hover:bg-secondaryColor:hover { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.hover:bg-secondaryColor:hover { background: ' +
+        'body:not(.dark) .hover:bg-secondaryColor:hover { background: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.border-secondary-color { border-color: ' +
+        'body:not(.dark) .border-secondary-color { border-color: ' +
         designCustomParams.secondary_color +
         ' !important;}';
       css +=
-        '.excalidraw {\n' +
+        'body:not(.dark) .excalidraw {\n' +
         '    --color-primary-light: ' +
         designCustomParams.secondary_color +
         ';\n' +
@@ -196,83 +199,83 @@ const useClientCustomization = () => {
     }
 
     if (designCustomParams.background_image) {
-      css += `#main-area { 
+      css += `body:not(.dark) #main-area { 
         background: url("${designCustomParams.background_image}") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
-      css += `.error-app-bg { 
+      css += `body:not(.dark) .error-app-bg { 
         background: url("${designCustomParams.background_image}") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
-      css += `.waiting-room { 
+      css += `body:not(.dark) .waiting-room { 
         background: url("${designCustomParams.background_image}") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
         }`;
     } else if (designCustomParams.background_color) {
-      css += `#main-area { 
+      css += `body:not(.dark) #main-area { 
         background: ${designCustomParams.background_color} !important;
         }`;
-      css += `.error-app-bg { 
+      css += `body:not(.dark) .error-app-bg { 
         background: ${designCustomParams.background_color} !important;
         }`;
-      css += `.waiting-room { 
+      css += `body:not(.dark) .waiting-room { 
         background: ${designCustomParams.background_color} !important;
         }`;
     }
 
     if (designCustomParams.header_bg_color) {
       css +=
-        'header#main-header { background: ' +
+        'body:not(.dark) header#main-header { background: ' +
         designCustomParams.header_bg_color +
         '; }';
     }
 
     if (designCustomParams.footer_bg_color) {
       css +=
-        'footer#main-footer { background: ' +
+        'body:not(.dark) footer#main-footer { background: ' +
         designCustomParams.footer_bg_color +
         '; }';
     }
 
     if (designCustomParams.footer_icon_bg_color) {
       css +=
-        '.footer-icon-bg { background: ' +
+        'body:not(.dark) .footer-icon-bg { background: ' +
         designCustomParams.footer_icon_bg_color +
         '; }';
     }
     if (designCustomParams.footer_icon_color) {
       css +=
-        '.footer-icon-bg { color: ' +
+        'body:not(.dark) .footer-icon-bg { color: ' +
         designCustomParams.footer_icon_color +
         '; }';
     }
     if (designCustomParams.primary_btn_bg_color) {
       css +=
-        '.primary-button { background: ' +
+        'body:not(.dark) .primary-button { background: ' +
         designCustomParams.primary_btn_bg_color +
         '; }';
     }
     if (designCustomParams.primary_btn_text_color) {
       css +=
-        '.primary-button { color: ' +
+        'body:not(.dark) .primary-button { color: ' +
         designCustomParams.primary_btn_text_color +
         '; }';
     }
     if (designCustomParams.secondary_btn_bg_color) {
       css +=
-        '.secondary-button { background: ' +
+        'body:not(.dark) .secondary-button { background: ' +
         designCustomParams.secondary_btn_bg_color +
         '; }';
     }
     if (designCustomParams.secondary_btn_text_color) {
       css +=
-        '.secondary-button { color: ' +
+        'body:not(.dark) .secondary-button { color: ' +
         designCustomParams.secondary_btn_text_color +
         '; }';
     }
@@ -290,7 +293,8 @@ const useClientCustomization = () => {
       if (designCustomParams.right_side_bg_color) {
         color = designCustomParams.right_side_bg_color;
       }
-      css += '.side-panel-bg-color { background: ' + color + '; }';
+      css +=
+        'body:not(.dark) .side-panel-bg-color { background: ' + color + '; }';
     }
 
     if (
