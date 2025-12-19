@@ -274,7 +274,8 @@
       "show-translation-settings": "Show Transcription Settings",
       "hide-translation-settings": "Hide Transcription Settings",
       "promote-presenter": "Make Presenter",
-      "demote-presenter": "Remove as Presenter"
+      "demote-presenter": "Remove as Presenter",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "Mute Everyone",

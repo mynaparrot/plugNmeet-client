@@ -1,7 +1,16 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
+  createAudioAnalyser,
   createLocalTracks,
+  LocalAudioTrack,
   LocalTrack,
+  LocalTrackPublication,
   ParticipantEvent,
   Track,
 } from 'livekit-client';
@@ -28,18 +37,28 @@ import {
   addAudioDevices,
   updateSelectedAudioDevice,
 } from '../../../store/slices/roomSettingsSlice';
-import { getAudioPreset, getInputMediaDevices } from '../../../helpers/utils';
+import {
+  getAudioPreset,
+  getInputMediaDevices,
+  sleep,
+} from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../helpers/nats';
 import { Microphone } from '../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
+import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const currentRoom = getMediaServerConnRoom();
   const conn = getNatsConn();
+
+  const [showMutedTooltip, setShowMutedTooltip] = useState(false);
+  const tooltipDismissedRef = useRef(false);
+  const isMutedRef = useRef(false);
+  const muteDelayTimer = useRef<NodeJS.Timeout | null>(null);
 
   const { showTooltip, muteOnStart, isAdmin, defaultLock } = useMemo(() => {
     const session = store.getState().session;
@@ -127,21 +146,123 @@ const MicrophoneIcon = () => {
     [currentRoom, conn],
   );
 
-  // for speaking to send stats
+  // for speaking to send stats & muted tooltip
   useEffect(() => {
     if (!currentRoom) {
       return;
     }
 
+    let interval: any;
+    let cleanupAnalyser: (() => void) | undefined;
+
+    const setupAnalyser = (publication: LocalTrackPublication) => {
+      if (publication.kind !== Track.Kind.Audio) {
+        return;
+      }
+      // Reset dismissed state for the new track session.
+      tooltipDismissedRef.current = false;
+
+      const track = publication.track as LocalAudioTrack;
+      const { calculateVolume, cleanup } = createAudioAnalyser(track, {
+        cloneTrack: true,
+      });
+      cleanupAnalyser = cleanup; // Store the cleanup function for this track.
+
+      interval = setInterval(() => {
+        const volume = calculateVolume();
+        if (
+          isMutedRef.current &&
+          volume > 0.2 &&
+          !tooltipDismissedRef.current
+        ) {
+          setShowMutedTooltip(true);
+        } else {
+          // Ensure we hide the tooltip if conditions are no longer met.
+          setShowMutedTooltip(false);
+        }
+      }, 500);
+    };
+
+    // This function now encapsulates the entire teardown.
+    const teardownAnalyser = async () => {
+      if (muteDelayTimer.current) {
+        clearTimeout(muteDelayTimer.current);
+      }
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+      if (cleanupAnalyser) {
+        cleanupAnalyser();
+        cleanupAnalyser = undefined;
+      }
+      await sleep(200);
+      setShowMutedTooltip(false);
+      tooltipDismissedRef.current = false;
+    };
+
+    const onTrackMuted = () => {
+      // Don't start immediately
+      muteDelayTimer.current = setTimeout(() => {
+        isMutedRef.current = true;
+      }, 3000);
+    };
+
+    const onTrackUnmuted = () => {
+      // If a timer is pending, cancel it.
+      if (muteDelayTimer.current) {
+        clearTimeout(muteDelayTimer.current);
+      }
+      // Immediately disarm the mute check.
+      isMutedRef.current = false;
+      setShowMutedTooltip(false);
+      tooltipDismissedRef.current = false;
+    };
+
+    // Attach all event listeners.
     currentRoom.localParticipant.on(
       ParticipantEvent.IsSpeakingChanged,
       speakingHandler,
     );
+    currentRoom.localParticipant.on(
+      ParticipantEvent.LocalTrackPublished,
+      setupAnalyser,
+    );
+    currentRoom.localParticipant.on(
+      ParticipantEvent.LocalTrackUnpublished,
+      teardownAnalyser,
+    );
+    currentRoom.localParticipant.on(ParticipantEvent.TrackMuted, onTrackMuted);
+    currentRoom.localParticipant.on(
+      ParticipantEvent.TrackUnmuted,
+      onTrackUnmuted,
+    );
+
+    // Main cleanup for when the component unmounts.
     return () => {
+      // Detach all listeners.
       currentRoom.localParticipant.off(
         ParticipantEvent.IsSpeakingChanged,
         speakingHandler,
       );
+      currentRoom.localParticipant.off(
+        ParticipantEvent.LocalTrackPublished,
+        setupAnalyser,
+      );
+      currentRoom.localParticipant.off(
+        ParticipantEvent.LocalTrackUnpublished,
+        teardownAnalyser,
+      );
+      currentRoom.localParticipant.off(
+        ParticipantEvent.TrackMuted,
+        onTrackMuted,
+      );
+      currentRoom.localParticipant.off(
+        ParticipantEvent.TrackUnmuted,
+        onTrackUnmuted,
+      );
+      // Final, robust cleanup.
+      teardownAnalyser().then();
     };
   }, [currentRoom, speakingHandler]);
 
@@ -286,6 +407,24 @@ const MicrophoneIcon = () => {
   return (
     <>
       <div className={wrapperClasses}>
+        {showMutedTooltip && (
+          <div className="absolute -top-14 left-1/2 -translate-x-1/2 w-max max-w-xs z-20">
+            <div className="inner bg-white dark:bg-dark-secondary rounded-lg shadow-lg px-4 py-2 flex items-center gap-2">
+              <p className="text-sm text-gray-900 dark:text-white">
+                {t('footer.icons.you-are-muted')}
+              </p>
+              <button
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                onClick={() => {
+                  tooltipDismissedRef.current = true;
+                  setShowMutedTooltip(false);
+                }}
+              >
+                <CloseIconSVG />
+              </button>
+            </div>
+          </div>
+        )}
         <div className={micWrapClasses}>
           <div className={iconDivClasses} onClick={manageMic}>
             <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
