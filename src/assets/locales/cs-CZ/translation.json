@@ -275,7 +275,7 @@
       "hide-translation-settings": "Skrýt nastavení přepisu",
       "promote-presenter": "Vytvoření prezentéru",
       "demote-presenter": "Odebrat jako prezentujícího",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Nikdo tě neslyší. Jsi ztlumený."
     },
     "menus": {
       "mute-all-users": "Ztlumit všechny",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Vyberte mediální soubor, který chcete nahrát",
       "upload-background-image": "Nahrát obrázek na pozadí",
       "shared-notepad": "Sdílený Poznámkový blok",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Vyberte si pozadí"
     }
   },
   "whiteboard": {
