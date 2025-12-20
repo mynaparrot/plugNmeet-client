@@ -274,7 +274,8 @@
       "show-translation-settings": "Visa transkriptionsinställningar",
       "hide-translation-settings": "Dölj transkriberingsinställningar",
       "promote-presenter": "Gör till presentatör",
-      "demote-presenter": "Ta bort som presentatör"
+      "demote-presenter": "Ta bort som presentatör",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "Stäng av ljudet för alla",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Filer som stöds: {{files}}",
       "external-media-player-select-file": "Välj en mediefil som ska laddas upp",
       "upload-background-image": "Ladda upp bakgrundsbild",
-      "shared-notepad": "Delat anteckningsblock"
+      "shared-notepad": "Delat anteckningsblock",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {
