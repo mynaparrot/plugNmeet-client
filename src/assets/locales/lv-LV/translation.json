@@ -275,7 +275,7 @@
       "hide-translation-settings": "Transkripcijas iestatījumu paslēpšana",
       "promote-presenter": "Padarīt prezentētāju",
       "demote-presenter": "Noņemt kā prezentētāju",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Neviens jūs nevar dzirdēt. Jūs esat izslēgts."
     },
     "menus": {
       "mute-all-users": "Izslēgt visu skaņu",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Augšupielādējamā multivides faila atlasīšana",
       "upload-background-image": "Augšupielādēt fona attēlu",
       "shared-notepad": "Koplietojams piezīmjbloks",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Izvēlieties fonu"
     }
   },
   "whiteboard": {
