@@ -274,7 +274,8 @@
       "show-translation-settings": "显示转录设置",
       "hide-translation-settings": "隐藏转录设置",
       "promote-presenter": "制作演示者",
-      "demote-presenter": "删除为演示者"
+      "demote-presenter": "删除为演示者",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "将所有人静音",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "支持的文件： {{files}}",
       "external-media-player-select-file": "选择要上传的媒体文件",
       "upload-background-image": "上传背景图片",
-      "shared-notepad": "共享记事本"
+      "shared-notepad": "共享记事本",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {
