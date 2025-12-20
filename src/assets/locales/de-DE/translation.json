@@ -275,7 +275,7 @@
       "hide-translation-settings": "Transkriptionseinstellungen ausblenden",
       "promote-presenter": "Zum Moderator machen",
       "demote-presenter": "Als Referent entfernen",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Niemand kann dich hören. Du bist stummgeschaltet."
     },
     "menus": {
       "mute-all-users": "Alle stummschalten",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Wählen Sie eine Mediendatei zum Hochladen aus",
       "upload-background-image": "Hintergrundbild hochladen",
       "shared-notepad": "Freigegebener Notizblock",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Wählen Sie Hintergrund"
     }
   },
   "whiteboard": {
