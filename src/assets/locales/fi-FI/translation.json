@@ -275,7 +275,7 @@
       "hide-translation-settings": "Piilota transkriptioasetukset",
       "promote-presenter": "Tee esittäjästä",
       "demote-presenter": "Poista esittäjänä",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Kukaan ei kuule sinua. Olet mykistetty."
     },
     "menus": {
       "mute-all-users": "Mykistä kaikki",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Valitse ladattava mediatiedosto",
       "upload-background-image": "Lataa taustakuva",
       "shared-notepad": "Jaettu muistio",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Valitse tausta"
     }
   },
   "whiteboard": {
