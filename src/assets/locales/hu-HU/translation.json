@@ -275,7 +275,7 @@
       "hide-translation-settings": "Átírási beállítások elrejtése",
       "promote-presenter": "Készítsen előadót",
       "demote-presenter": "Eltávolítás előadóként",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Senki sem hall téged. Némított vagy."
     },
     "menus": {
       "mute-all-users": "Mindenki elnémítása",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Válaszd ki a feltölteni kívánt médiafájlt",
       "upload-background-image": "Háttérkép feltöltése",
       "shared-notepad": "Megosztott jegyzettömb",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Válaszd a háttér"
     }
   },
   "whiteboard": {
