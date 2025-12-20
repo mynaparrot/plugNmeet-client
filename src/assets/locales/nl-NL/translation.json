@@ -274,7 +274,8 @@
       "show-translation-settings": "Transcriptie-instellingen weergeven",
       "hide-translation-settings": "Transcriptie-instellingen verbergen",
       "promote-presenter": "Presentator maken",
-      "demote-presenter": "Verwijderen als presentator"
+      "demote-presenter": "Verwijderen als presentator",
+      "you-are-muted": "Niemand kan je horen. Je bent gedempt."
     },
     "menus": {
       "mute-all-users": "Iedereen dempen",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Ondersteunde bestanden: {{files}}",
       "external-media-player-select-file": "Selecteer een mediabestand om te uploaden",
       "upload-background-image": "Achtergrondafbeelding uploaden",
-      "shared-notepad": "Gedeeld Kladblok"
+      "shared-notepad": "Gedeeld Kladblok",
+      "chose-virtual-bg": "Kies Achtergrond"
     }
   },
   "whiteboard": {

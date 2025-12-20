@@ -274,7 +274,8 @@
       "show-translation-settings": "הצג הגדרות תמלול",
       "hide-translation-settings": "הסתר הגדרות תמלול",
       "promote-presenter": "הפוך למציג",
-      "demote-presenter": "הסר כמציג"
+      "demote-presenter": "הסר כמציג",
+      "you-are-muted": "אף אחד לא שומע אותך. אתה מושתק."
     },
     "menus": {
       "mute-all-users": "השתק את כולם",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "קבצים נתמכים: {{files}}",
       "external-media-player-select-file": "בחר קובץ מדיה להעלאה",
       "upload-background-image": "העלה תמונת רקע",
-      "shared-notepad": "פנקס רשימות משותף"
+      "shared-notepad": "פנקס רשימות משותף",
+      "chose-virtual-bg": "בחר רקע"
     }
   },
   "whiteboard": {

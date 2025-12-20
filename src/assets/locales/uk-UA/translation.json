@@ -274,7 +274,8 @@
       "show-translation-settings": "Показати налаштування транскрипції",
       "hide-translation-settings": "Сховати налаштування транскрипції",
       "promote-presenter": "Зробити презентера",
-      "demote-presenter": "Видалити як доповідач"
+      "demote-presenter": "Видалити як доповідач",
+      "you-are-muted": "Ніхто тебе не почує. Ти приглушений."
     },
     "menus": {
       "mute-all-users": "Вимкнути звук для всіх",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Підтримувані файли: {{files}}",
       "external-media-player-select-file": "Виберіть медіафайл для завантаження",
       "upload-background-image": "Завантажити фонове зображення",
-      "shared-notepad": "Спільний блокнот"
+      "shared-notepad": "Спільний блокнот",
+      "chose-virtual-bg": "Виберіть фон"
     }
   },
   "whiteboard": {

@@ -186,7 +186,7 @@
         "share-microphone": "Bật micrô",
         "ask-to-unmute-mic": "Yêu cầu bật tiếng",
         "unmute-mic": "Bật tiếng",
-        "mute-mic": "Câm",
+        "mute-mic": "Tắt tiếng",
         "ask-to-share-webcam": "Yêu cầu bật máy ảnh",
         "ask-to-stop-webcam": "Yêu cầu tắt máy ảnh",
         "share-webcam": "Bật máy ảnh",
@@ -213,7 +213,7 @@
       "notice": {
         "participant-removed": "Người tham gia bị xóa",
         "confirm": "Bạn có chắc chắn muốn xóa {{name}}?",
-        "remove": "Triệt",
+        "remove": "Xóa",
         "asked-you-to": "{{name}} đang yêu cầu bạn {{task}}.",
         "you-have-asked": "Bạn đã hỏi {{name}} đến {{task}}.",
         "you-have-muted-to": "Bạn đã tắt tiếng {{name}}của micrô.",
@@ -226,7 +226,7 @@
     }
   },
   "right-panel": {
-    "you": "Mày",
+    "you": "Bạn",
     "uploading-file": "Tải lên {{fileName}}",
     "file-upload-success": "Tệp được tải lên thành công",
     "file-upload-default-error": "Đã xảy ra lỗi khi tải tệp lên.",
@@ -254,7 +254,7 @@
       "stop-screen-sharing": "Dừng chia sẻ màn hình",
       "start-screen-sharing": "Chia sẻ màn hình",
       "screen-sharing-locked": "Chia sẻ màn hình bị khóa",
-      "lower-hand": "Tay dưới",
+      "lower-hand": "Hạ tay xuống",
       "raise-hand": "Giơ tay",
       "stop-recording": "Dừng ghi",
       "start-recording": "Bắt đầu ghi âm",
@@ -274,7 +274,8 @@
       "show-translation-settings": "Hiển thị cài đặt phiên âm",
       "hide-translation-settings": "Ẩn cài đặt phiên âm",
       "promote-presenter": "Làm người thuyết trình",
-      "demote-presenter": "Xóa với tư cách là người thuyết trình"
+      "demote-presenter": "Xóa với tư cách là người thuyết trình",
+      "you-are-muted": "Không ai có thể nghe thấy bạn. Bạn bị tắt tiếng."
     },
     "menus": {
       "mute-all-users": "Tắt tiếng mọi người",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Các tệp được hỗ trợ: {{files}}",
       "external-media-player-select-file": "Chọn tệp phương tiện để tải lên",
       "upload-background-image": "Tải lên hình nền",
-      "shared-notepad": "Notepad được chia sẻ"
+      "shared-notepad": "Notepad được chia sẻ",
+      "chose-virtual-bg": "Chọn Hình nền"
     }
   },
   "whiteboard": {
@@ -356,7 +358,7 @@
     "upload-image": "Ảnh",
     "follow-presenter-tooltip": "Theo dõi người thuyết trình",
     "unfollow-presenter-tooltip": "Ngừng theo dõi người thuyết trình",
-    "follow": "Theo",
+    "follow": "Theo dõi",
     "unfollow": "Hủy theo dõi",
     "upload-files-title": "Tải lên tệp",
     "drag-drop-file": "Kéo và thả tệp của bạn để tải lên",
@@ -387,7 +389,7 @@
     "options": "Tùy chọn",
     "option": "Sự quyết định {{count}}",
     "total-responses": "Phản ứng: {{count}}",
-    "remove-option": "Triệt",
+    "remove-option": "Xóa",
     "add-new-option": "Thêm tùy chọn khác",
     "create-poll": "Tạo cuộc thăm dò ý kiến",
     "created-successfully": "Cuộc thăm dò đã được tạo.",
@@ -395,11 +397,11 @@
     "vote": "Bỏ phiếu",
     "submit-vote-form-title": "Gửi phiếu bầu của bạn",
     "select-option": "Chọn một tùy chọn",
-    "submit": "Trình",
+    "submit": "Gửi",
     "response-added": "Phiếu bầu của bạn đã được gửi.",
     "new-poll": "Một cuộc thăm dò mới đã bắt đầu.",
-    "poll-running": "Chạy",
-    "poll-closed": "Khép kín",
+    "poll-running": "Đang hoạt động",
+    "poll-closed": "Đóng",
     "view-details": "Chi tiết",
     "view-result": "Xem kết quả",
     "view-details-title": "Thông tin thăm dò ý kiến",
@@ -421,7 +423,7 @@
     "start": "Bắt đầu Phòng họp nhóm",
     "rooms-created": "Phòng họp nhóm đã được tạo.",
     "invitation-msg": "Bạn đã được mời tham gia phòng họp nhóm.",
-    "join": "Nối",
+    "join": "Tham gia",
     "need-one-user": "Ít nhất một người phải có mặt trong mỗi phòng họp nhóm.",
     "end-all": "Kết thúc tất cả các phòng",
     "end-all-success": "Tất cả các phòng họp nhóm đã kết thúc.",
@@ -463,7 +465,7 @@
   "external-display-link-display": {
     "modal-title": "Chia sẻ liên kết ngoài",
     "url": "URL",
-    "display": "Trưng bày",
+    "display": "Trình chiếu",
     "url-required": "URL hợp lệ là bắt buộc.",
     "link-invalid": "Liên kết không hợp lệ.",
     "note": "Lưu ý: Đảm bảo trang web cho phép nhúng. Không phải tất cả các trang web đều hoạt động.",

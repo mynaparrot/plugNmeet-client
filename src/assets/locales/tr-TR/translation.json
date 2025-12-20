@@ -274,7 +274,8 @@
       "show-translation-settings": "Transkripsiyon Ayarlarını Göster",
       "hide-translation-settings": "Transkripsiyon Ayarlarını Gizle",
       "promote-presenter": "Sunucu Yap",
-      "demote-presenter": "Sunucu Olarak Kaldır"
+      "demote-presenter": "Sunucu Olarak Kaldır",
+      "you-are-muted": "Kimse seni duymuyor. Sesin kısılmış."
     },
     "menus": {
       "mute-all-users": "Herkesi Sessize Al",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Desteklenen dosyalar: {{files}}",
       "external-media-player-select-file": "Yüklenecek medya dosyasını seçme",
       "upload-background-image": "Arka plan resmini yükle",
-      "shared-notepad": "Paylaşılan Not Defteri"
+      "shared-notepad": "Paylaşılan Not Defteri",
+      "chose-virtual-bg": "Arka Plan Seç"
     }
   },
   "whiteboard": {

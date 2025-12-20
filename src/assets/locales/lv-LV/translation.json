@@ -274,7 +274,8 @@
       "show-translation-settings": "Transkripcijas iestatījumu rādīšana",
       "hide-translation-settings": "Transkripcijas iestatījumu paslēpšana",
       "promote-presenter": "Padarīt prezentētāju",
-      "demote-presenter": "Noņemt kā prezentētāju"
+      "demote-presenter": "Noņemt kā prezentētāju",
+      "you-are-muted": "Neviens jūs nevar dzirdēt. Jūs esat izslēgts."
     },
     "menus": {
       "mute-all-users": "Izslēgt visu skaņu",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Atbalstītie faili: {{files}}",
       "external-media-player-select-file": "Augšupielādējamā multivides faila atlasīšana",
       "upload-background-image": "Augšupielādēt fona attēlu",
-      "shared-notepad": "Koplietojams piezīmjbloks"
+      "shared-notepad": "Koplietojams piezīmjbloks",
+      "chose-virtual-bg": "Izvēlieties fonu"
     }
   },
   "whiteboard": {

@@ -274,7 +274,8 @@
       "show-translation-settings": "إظهار إعدادات النسخ",
       "hide-translation-settings": "إخفاء إعدادات النسخ",
       "promote-presenter": "جعل مقدم العرض",
-      "demote-presenter": "إزالة كمقدم عرض"
+      "demote-presenter": "إزالة كمقدم عرض",
+      "you-are-muted": "لا أحد يسمعك. أنت مكتوم."
     },
     "menus": {
       "mute-all-users": "كتم صوت الجميع",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "الملفات المدعومة: {{files}}",
       "external-media-player-select-file": "حدد ملف وسائط لتحميله",
       "upload-background-image": "تحميل صورة الخلفية",
-      "shared-notepad": "المفكرة المشتركة"
+      "shared-notepad": "المفكرة المشتركة",
+      "chose-virtual-bg": "اختر الخلفية"
     }
   },
   "whiteboard": {

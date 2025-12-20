@@ -274,7 +274,8 @@
       "show-translation-settings": "顯示轉錄設定",
       "hide-translation-settings": "隱藏轉錄設定",
       "promote-presenter": "設為簡報者",
-      "demote-presenter": "移除為簡報者"
+      "demote-presenter": "移除為簡報者",
+      "you-are-muted": "沒有人能聽到你。你被靜音了。"
     },
     "menus": {
       "mute-all-users": "將所有人靜音",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "支援的檔案： {{files}}",
       "external-media-player-select-file": "選取要上傳的媒體檔案",
       "upload-background-image": "上傳背景圖片",
-      "shared-notepad": "共享記事本"
+      "shared-notepad": "共享記事本",
+      "chose-virtual-bg": "選擇背景"
     }
   },
   "whiteboard": {

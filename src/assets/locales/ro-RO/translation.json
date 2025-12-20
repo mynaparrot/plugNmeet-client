@@ -274,7 +274,8 @@
       "show-translation-settings": "Afișați setările de transcriere",
       "hide-translation-settings": "Ascundeți setările de transcriere",
       "promote-presenter": "Faceți prezentator",
-      "demote-presenter": "Eliminare ca prezentator"
+      "demote-presenter": "Eliminare ca prezentator",
+      "you-are-muted": "Nimeni nu te poate auzi. Ești mut."
     },
     "menus": {
       "mute-all-users": "Dezactivați sunetul tuturor",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Fișiere acceptate: {{files}}",
       "external-media-player-select-file": "Selectați un fișier media de încărcat",
       "upload-background-image": "Încărcați imaginea de fundal",
-      "shared-notepad": "Notepad partajat"
+      "shared-notepad": "Notepad partajat",
+      "chose-virtual-bg": "Alege fundalul"
     }
   },
   "whiteboard": {

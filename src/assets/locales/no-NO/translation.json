@@ -274,7 +274,8 @@
       "show-translation-settings": "Vis transkripsjonsinnstillinger",
       "hide-translation-settings": "Skjul transkripsjonsinnstillinger",
       "promote-presenter": "Gjør presentatør",
-      "demote-presenter": "Fjern som presentatør"
+      "demote-presenter": "Fjern som presentatør",
+      "you-are-muted": "Ingen kan høre deg. Du er mutet."
     },
     "menus": {
       "mute-all-users": "Demp alle",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Støttede filer: {{files}}",
       "external-media-player-select-file": "Velg en mediefil du vil laste opp",
       "upload-background-image": "Last opp bakgrunnsbilde",
-      "shared-notepad": "Delt notisblokk"
+      "shared-notepad": "Delt notisblokk",
+      "chose-virtual-bg": "Velg bakgrunn"
     }
   },
   "whiteboard": {

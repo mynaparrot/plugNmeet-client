@@ -274,7 +274,8 @@
       "show-translation-settings": "Εμφάνιση ρυθμίσεων μεταγραφής",
       "hide-translation-settings": "Απόκρυψη ρυθμίσεων μεταγραφής",
       "promote-presenter": "Κάντε παρουσιαστή",
-      "demote-presenter": "Κατάργηση ως παρουσιαστής"
+      "demote-presenter": "Κατάργηση ως παρουσιαστής",
+      "you-are-muted": "Κανείς δεν μπορεί να σε ακούσει. Είσαι σιωπηλός."
     },
     "menus": {
       "mute-all-users": "Σίγαση όλων",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Υποστηριζόμενα αρχεία: {{files}}",
       "external-media-player-select-file": "Επιλέξτε ένα αρχείο πολυμέσων για μεταφόρτωση",
       "upload-background-image": "Μεταφόρτωση εικόνας φόντου",
-      "shared-notepad": "Κοινόχρηστο Σημειωματάριο"
+      "shared-notepad": "Κοινόχρηστο Σημειωματάριο",
+      "chose-virtual-bg": "Επιλέξτε Φόντο"
     }
   },
   "whiteboard": {

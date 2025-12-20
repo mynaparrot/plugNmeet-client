@@ -274,7 +274,8 @@
       "show-translation-settings": "Näytä transkriptioasetukset",
       "hide-translation-settings": "Piilota transkriptioasetukset",
       "promote-presenter": "Tee esittäjästä",
-      "demote-presenter": "Poista esittäjänä"
+      "demote-presenter": "Poista esittäjänä",
+      "you-are-muted": "Kukaan ei kuule sinua. Olet mykistetty."
     },
     "menus": {
       "mute-all-users": "Mykistä kaikki",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Tuetut tiedostot: {{files}}",
       "external-media-player-select-file": "Valitse ladattava mediatiedosto",
       "upload-background-image": "Lataa taustakuva",
-      "shared-notepad": "Jaettu muistio"
+      "shared-notepad": "Jaettu muistio",
+      "chose-virtual-bg": "Valitse tausta"
     }
   },
   "whiteboard": {

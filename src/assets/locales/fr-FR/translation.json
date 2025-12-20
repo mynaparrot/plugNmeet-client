@@ -274,7 +274,8 @@
       "show-translation-settings": "Afficher les paramètres de transcription",
       "hide-translation-settings": "Masquer les paramètres de transcription",
       "promote-presenter": "Devenir présentateur",
-      "demote-presenter": "Supprimer en tant que présentateur"
+      "demote-presenter": "Supprimer en tant que présentateur",
+      "you-are-muted": "Personne ne peut t’entendre. Tu es en sourdine."
     },
     "menus": {
       "mute-all-users": "Mettre tout le monde en sourdine",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Fichiers pris en charge : {{files}}",
       "external-media-player-select-file": "Sélectionnez un fichier multimédia à télécharger",
       "upload-background-image": "Télécharger l’image d’arrière-plan",
-      "shared-notepad": "Bloc-notes partagé"
+      "shared-notepad": "Bloc-notes partagé",
+      "chose-virtual-bg": "Choisir le contexte"
     }
   },
   "whiteboard": {

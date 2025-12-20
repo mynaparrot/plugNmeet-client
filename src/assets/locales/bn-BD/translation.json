@@ -274,7 +274,8 @@
       "show-translation-settings": "প্রতিলিপি সেটিংস দেখান",
       "hide-translation-settings": "প্রতিলিপি সেটিংস লুকান",
       "promote-presenter": "উপস্থাপক তৈরি করুন",
-      "demote-presenter": "উপস্থাপক হিসাবে অপসারণ করুন"
+      "demote-presenter": "উপস্থাপক হিসাবে অপসারণ করুন",
+      "you-are-muted": "কেউ আপনার কথা শুনতে পাচ্ছে না। তুমি নীরব।"
     },
     "menus": {
       "mute-all-users": "সবাইকে নিঃশব্দ করুন",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "সমর্থিত ফাইলসমূহ: {{files}}",
       "external-media-player-select-file": "আপলোড করার জন্য একটি মিডিয়া ফাইল নির্বাচন করুন",
       "upload-background-image": "ব্যাকগ্রাউন্ড চিত্র আপলোড করুন",
-      "shared-notepad": "শেয়ার করা নোটপ্যাড"
+      "shared-notepad": "শেয়ার করা নোটপ্যাড",
+      "chose-virtual-bg": "পটভূমি নির্বাচন করুন"
     }
   },
   "whiteboard": {

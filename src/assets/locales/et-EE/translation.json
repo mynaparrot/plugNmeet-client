@@ -274,7 +274,8 @@
       "show-translation-settings": "Transkriptsiooniseadete kuvamine",
       "hide-translation-settings": "Transkriptsiooniseadete peitmine",
       "promote-presenter": "Tehke saatejuht",
-      "demote-presenter": "Eemalda esinejana"
+      "demote-presenter": "Eemalda esinejana",
+      "you-are-muted": "Keegi ei kuule sind. Sa oled vaigistatud."
     },
     "menus": {
       "mute-all-users": "Vaigista kõik",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Toetatud failid: {{files}}",
       "external-media-player-select-file": "Valige üleslaaditav meediumifail",
       "upload-background-image": "Laadige üles taustapilt",
-      "shared-notepad": "Jagatud märkmik"
+      "shared-notepad": "Jagatud märkmik",
+      "chose-virtual-bg": "Vali taust"
     }
   },
   "whiteboard": {

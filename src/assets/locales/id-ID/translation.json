@@ -274,7 +274,8 @@
       "show-translation-settings": "Tampilkan Pengaturan Transkripsi",
       "hide-translation-settings": "Sembunyikan Pengaturan Transkripsi",
       "promote-presenter": "Jadikan Presenter",
-      "demote-presenter": "Hapus sebagai Penyaji"
+      "demote-presenter": "Hapus sebagai Penyaji",
+      "you-are-muted": "Tidak ada yang bisa mendengar Anda. Anda diam."
     },
     "menus": {
       "mute-all-users": "Bisukan Semua Orang",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "File yang didukung: {{files}}",
       "external-media-player-select-file": "Memilih file media untuk diunggah",
       "upload-background-image": "Unggah gambar latar belakang",
-      "shared-notepad": "Notepad Bersama"
+      "shared-notepad": "Notepad Bersama",
+      "chose-virtual-bg": "Pilih Latar Belakang"
     }
   },
   "whiteboard": {
