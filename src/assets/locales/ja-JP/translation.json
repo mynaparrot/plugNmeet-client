@@ -275,7 +275,7 @@
       "hide-translation-settings": "文字起こし設定を非表示にする",
       "promote-presenter": "プレゼンターにする",
       "demote-presenter": "プレゼンターから削除",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "誰にも聞こえない。ミュートだ。"
     },
     "menus": {
       "mute-all-users": "全員をミュートする",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "アップロードするメディアファイルを選択します",
       "upload-background-image": "背景画像をアップロードする",
       "shared-notepad": "共有メモ帳",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "背景を選ぶ"
     }
   },
   "whiteboard": {
