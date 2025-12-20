@@ -275,7 +275,7 @@
       "hide-translation-settings": "Transkriptsiooniseadete peitmine",
       "promote-presenter": "Tehke saatejuht",
       "demote-presenter": "Eemalda esinejana",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Keegi ei kuule sind. Sa oled vaigistatud."
     },
     "menus": {
       "mute-all-users": "Vaigista kõik",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Valige üleslaaditav meediumifail",
       "upload-background-image": "Laadige üles taustapilt",
       "shared-notepad": "Jagatud märkmik",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Vali taust"
     }
   },
   "whiteboard": {
