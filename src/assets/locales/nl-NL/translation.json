@@ -275,7 +275,7 @@
       "hide-translation-settings": "Transcriptie-instellingen verbergen",
       "promote-presenter": "Presentator maken",
       "demote-presenter": "Verwijderen als presentator",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Niemand kan je horen. Je bent gedempt."
     },
     "menus": {
       "mute-all-users": "Iedereen dempen",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Selecteer een mediabestand om te uploaden",
       "upload-background-image": "Achtergrondafbeelding uploaden",
       "shared-notepad": "Gedeeld Kladblok",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Kies Achtergrond"
     }
   },
   "whiteboard": {
