@@ -275,7 +275,7 @@
       "hide-translation-settings": "مخفی کردن تنظیمات رونویسی",
       "promote-presenter": "ارائه دهنده بسازید",
       "demote-presenter": "برداشتن به عنوان ارائه دهنده",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "هیچ صدایت را نمی شنود. صدایت بی صدا است."
     },
     "menus": {
       "mute-all-users": "همه را بی صدا کنید",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "یک فایل رسانه ای را برای آپلود انتخاب کنید",
       "upload-background-image": "آپلود تصویر پس زمینه",
       "shared-notepad": "دفترچه یادداشت مشترک",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "انتخاب پیش زمینه"
     }
   },
   "whiteboard": {
