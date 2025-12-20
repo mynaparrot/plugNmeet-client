@@ -18,11 +18,11 @@ importers:
         specifier: 2.2.9
         version: 2.2.9(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@nats-io/jetstream':
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.3.0
+        version: 3.3.0
       '@nats-io/nats-core':
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.3.0
+        version: 3.3.0
       '@reduxjs/toolkit':
         specifier: 2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.3)(redux@5.0.1))(react@19.2.3)
@@ -532,11 +532,11 @@ packages:
   '@napi-rs/wasm-runtime@1.1.0':
     resolution: {integrity: sha512-Fq6DJW+Bb5jaWE69/qOE0D1TUN9+6uWhCeZpdnSBk14pjLcCWR7Q8n49PTSPHazM37JqrsdpEthXy2xn6jWWiA==}
 
-  '@nats-io/jetstream@3.2.0':
-    resolution: {integrity: sha512-6H/vMjTMPsFEXKGK7dqScwHEtP1ZedZrwbCdRQuYDIVq4WLqZOD6ryeEZ/gMAP7YKLy82G6IixGUm2DVsDPCMw==}
+  '@nats-io/jetstream@3.3.0':
+    resolution: {integrity: sha512-SK6lSr+Wf9nd6mffV4gdd1yDZxlhILEUJg74bAaU9yjQ2kBOPIJDHlYc2yMzcuZnQxIUcTVI3L7ow2d4qEDslQ==}
 
-  '@nats-io/nats-core@3.2.0':
-    resolution: {integrity: sha512-yHMsS0RTkKRh80COCGY/kuhEj0KPU47qkVU6IPEXmqjmskH6mX2roykxY5CXCAQc78FKYrpKQp6EHv02dRAjDw==}
+  '@nats-io/nats-core@3.3.0':
+    resolution: {integrity: sha512-+ImSYab7NvOMvFFBSBbWl03a4s/OUXCpFFauZ4iRx8pp+5ptsaBQNpacyPXeg8jbjAMeEAWn2Zuyl7oJCUffJA==}
 
   '@nats-io/nkeys@2.0.3':
     resolution: {integrity: sha512-JVt56GuE6Z89KUkI4TXUbSI9fmIfAmk6PMPknijmuL72GcD+UgIomTcRWiNvvJKxA01sBbmIPStqJs5cMRBC3A==}
@@ -3890,11 +3890,11 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@nats-io/jetstream@3.2.0':
+  '@nats-io/jetstream@3.3.0':
     dependencies:
-      '@nats-io/nats-core': 3.2.0
+      '@nats-io/nats-core': 3.3.0
 
-  '@nats-io/nats-core@3.2.0':
+  '@nats-io/nats-core@3.3.0':
     dependencies:
       '@nats-io/nkeys': 2.0.3
       '@nats-io/nuid': 2.0.3
