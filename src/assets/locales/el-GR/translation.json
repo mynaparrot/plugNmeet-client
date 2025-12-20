@@ -275,7 +275,7 @@
       "hide-translation-settings": "Απόκρυψη ρυθμίσεων μεταγραφής",
       "promote-presenter": "Κάντε παρουσιαστή",
       "demote-presenter": "Κατάργηση ως παρουσιαστής",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Κανείς δεν μπορεί να σε ακούσει. Είσαι σιωπηλός."
     },
     "menus": {
       "mute-all-users": "Σίγαση όλων",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Επιλέξτε ένα αρχείο πολυμέσων για μεταφόρτωση",
       "upload-background-image": "Μεταφόρτωση εικόνας φόντου",
       "shared-notepad": "Κοινόχρηστο Σημειωματάριο",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Επιλέξτε Φόντο"
     }
   },
   "whiteboard": {
