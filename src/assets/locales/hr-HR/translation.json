@@ -274,7 +274,8 @@
       "show-translation-settings": "Prikaz postavki transkripcije",
       "hide-translation-settings": "Sakrij postavke transkripcije",
       "promote-presenter": "Napravi izlagača",
-      "demote-presenter": "Ukloni kao izlagač"
+      "demote-presenter": "Ukloni kao izlagač",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "Isključi zvuk svih",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Podržane datoteke: {{files}}",
       "external-media-player-select-file": "Odaberite medijsku datoteku za prijenos",
       "upload-background-image": "Prenesite pozadinsku sliku",
-      "shared-notepad": "Zajednička bilježnica"
+      "shared-notepad": "Zajednička bilježnica",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {
