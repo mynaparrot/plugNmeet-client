@@ -275,7 +275,7 @@
       "hide-translation-settings": "Skjul transskriptionsindstillinger",
       "promote-presenter": "Gør oplægsholder",
       "demote-presenter": "Fjern som præsentationsvært",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Ingen kan høre dig. Du er muted."
     },
     "menus": {
       "mute-all-users": "Slå lyden fra for alle",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Vælg en mediefil, der skal uploades",
       "upload-background-image": "Upload baggrundsbillede",
       "shared-notepad": "Delt notesblok",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Vælg baggrund"
     }
   },
   "whiteboard": {
