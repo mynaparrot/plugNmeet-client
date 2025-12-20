@@ -274,7 +274,8 @@
       "show-translation-settings": "전사 설정 표시",
       "hide-translation-settings": "문자 발생 설정 숨기기",
       "promote-presenter": "발표자 만들기",
-      "demote-presenter": "발표자에서 제거"
+      "demote-presenter": "발표자에서 제거",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "모든 사람 음소거",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "지원되는 파일: {{files}}",
       "external-media-player-select-file": "업로드할 미디어 파일 선택",
       "upload-background-image": "배경 이미지 업로드",
-      "shared-notepad": "공유 메모장"
+      "shared-notepad": "공유 메모장",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {
