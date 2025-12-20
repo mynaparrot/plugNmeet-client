@@ -275,7 +275,7 @@
       "hide-translation-settings": "Dölj transkriberingsinställningar",
       "promote-presenter": "Gör till presentatör",
       "demote-presenter": "Ta bort som presentatör",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Ingen kan höra dig. Du är tyst."
     },
     "menus": {
       "mute-all-users": "Stäng av ljudet för alla",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Välj en mediefil som ska laddas upp",
       "upload-background-image": "Ladda upp bakgrundsbild",
       "shared-notepad": "Delat anteckningsblock",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Välj bakgrund"
     }
   },
   "whiteboard": {
