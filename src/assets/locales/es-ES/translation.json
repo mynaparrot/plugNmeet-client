@@ -274,7 +274,8 @@
       "show-translation-settings": "Mostrar configuración de transcripción",
       "hide-translation-settings": "Ocultar configuración de transcripción",
       "promote-presenter": "Hacer presentador",
-      "demote-presenter": "Quitar como presentador"
+      "demote-presenter": "Quitar como presentador",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "Silenciar a todos",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "Archivos compatibles: {{files}}",
       "external-media-player-select-file": "Seleccione un archivo multimedia para cargar",
       "upload-background-image": "Subir imagen de fondo",
-      "shared-notepad": "Bloc de notas compartido"
+      "shared-notepad": "Bloc de notas compartido",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {
