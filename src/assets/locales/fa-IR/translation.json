@@ -274,7 +274,8 @@
       "show-translation-settings": "نمایش تنظیمات رونویسی",
       "hide-translation-settings": "مخفی کردن تنظیمات رونویسی",
       "promote-presenter": "ارائه دهنده بسازید",
-      "demote-presenter": "برداشتن به عنوان ارائه دهنده"
+      "demote-presenter": "برداشتن به عنوان ارائه دهنده",
+      "you-are-muted": "No one can hear you. You're muted."
     },
     "menus": {
       "mute-all-users": "همه را بی صدا کنید",
@@ -344,7 +345,8 @@
       "external-media-player-upload-supported-files": "فایل های پشتیبانی شده: {{files}}",
       "external-media-player-select-file": "یک فایل رسانه ای را برای آپلود انتخاب کنید",
       "upload-background-image": "آپلود تصویر پس زمینه",
-      "shared-notepad": "دفترچه یادداشت مشترک"
+      "shared-notepad": "دفترچه یادداشت مشترک",
+      "chose-virtual-bg": "Choose Background"
     }
   },
   "whiteboard": {
