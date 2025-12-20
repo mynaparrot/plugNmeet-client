@@ -275,7 +275,7 @@
       "hide-translation-settings": "Скрыть настройки транскрипции",
       "promote-presenter": "Сделать презентатора",
       "demote-presenter": "Удалить как докладчика",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "Никто тебя не слышит. Ты приглушён."
     },
     "menus": {
       "mute-all-users": "Отключите звук для всех",
@@ -346,7 +346,7 @@
       "external-media-player-select-file": "Выберите медиафайл для загрузки",
       "upload-background-image": "Загрузить фоновое изображение",
       "shared-notepad": "Общий блокнот",
-      "chose-virtual-bg": "Choose Background"
+      "chose-virtual-bg": "Выберите предысторию"
     }
   },
   "whiteboard": {
