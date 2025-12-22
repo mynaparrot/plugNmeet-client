@@ -90,25 +90,3 @@ window.plugNmeetConfig = {
   // Default: 6 hours.
   // dbMaxAgeMs: 6 * 60 * 60 * 1000,
 };
-
-// For backward compatibility, we'll populate the old window variables
-// from our new configuration object.
-// This section can be removed in a future major release.
-window.PLUG_N_MEET_SERVER_URL = window.plugNmeetConfig.serverUrl;
-window.STATIC_ASSETS_PATH = window.plugNmeetConfig.staticAssetsPath;
-window.CUSTOM_LOGO = window.plugNmeetConfig.customLogo;
-window.ENABLE_DYNACAST = window.plugNmeetConfig.enableDynacast;
-window.ENABLE_SIMULCAST = window.plugNmeetConfig.enableSimulcast;
-window.VIDEO_CODEC = window.plugNmeetConfig.videoCodec;
-window.DEFAULT_WEBCAM_RESOLUTION =
-  window.plugNmeetConfig.defaultWebcamResolution;
-window.DEFAULT_SCREEN_SHARE_RESOLUTION =
-  window.plugNmeetConfig.defaultScreenShareResolution;
-window.DEFAULT_AUDIO_PRESET = window.plugNmeetConfig.defaultAudioPreset;
-window.STOP_MIC_TRACK_ON_MUTE = window.plugNmeetConfig.stopMicTrackOnMute;
-window.FOCUS_ACTIVE_SPEAKER_WEBCAM =
-  window.plugNmeetConfig.focusActiveSpeakerWebcam;
-window.DESIGN_CUSTOMIZATION = window.plugNmeetConfig.designCustomization;
-window.WHITEBOARD_PRELOADED_LIBRARY_ITEMS =
-  window.plugNmeetConfig.whiteboardPreloadedLibraryItems;
-window.PNM_VIRTUAL_BG_IMGS = window.plugNmeetConfig.virtualBackgroundImages;
