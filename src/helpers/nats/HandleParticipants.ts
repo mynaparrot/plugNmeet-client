@@ -42,10 +42,11 @@ import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { getMediaServerConn } from '../livekit/utils';
 import { isUserRecorder } from '../utils';
 
+const EMPTY_ROOM_CHECK_INTERVAL = 3000;
+
 export default class HandleParticipants {
   private connectNats: ConnectNats;
   private preferredLang = '';
-  private participantsCount = 0;
   private participantCounterInterval: any = 0;
 
   private _localUserId: string | undefined;
@@ -95,10 +96,7 @@ export default class HandleParticipants {
       participant = p;
     }
 
-    const added = await this._addRemoteParticipant(participant);
-    if (added && this._isLocalUserRecorder) {
-      this.participantsCount++;
-    }
+    await this._addRemoteParticipant(participant);
   };
 
   private async _addRemoteParticipant(
@@ -258,9 +256,6 @@ export default class HandleParticipants {
       console.error(e);
       return;
     }
-    if (this._isLocalUserRecorder) {
-      this.participantsCount--;
-    }
 
     // now remove user.
     store.dispatch(removeParticipant(p.userId));
@@ -340,11 +335,15 @@ export default class HandleParticipants {
    * */
   private startParticipantCounter() {
     this.participantCounterInterval = setInterval(async () => {
-      if (this.participantsCount <= 1) {
+      const allParticipants = participantsSelector.selectIds(store.getState());
+      const validUsers = allParticipants.filter(
+        (userId) => !isUserRecorder(userId),
+      );
+      if (!validUsers.length) {
         console.log('NO_USER_ONLINE');
         await this.connectNats.endSession('NO_USER_ONLINE');
       }
-    }, 3000);
+    }, EMPTY_ROOM_CHECK_INTERVAL);
   }
 
   private onAfterUserConnectMediaUpdate(userId: string) {
