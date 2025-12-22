@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.0...v2.0.1) (2025-12-22)
+
+
+### Bug Fixes
+
+* bug in recorder's user counting ([4dee807](https://github.com/mynaparrot/plugNmeet-client/commit/4dee807490645abf7f5ec78e172b14fec0a52a50))
+* clean up deprecated code ([11fbf59](https://github.com/mynaparrot/plugNmeet-client/commit/11fbf59b6ff16110e1b03ad4c9873be67da279ed))
+* use redux to get actual data of users ([15d3068](https://github.com/mynaparrot/plugNmeet-client/commit/15d306839a2b1358ecce7f81fa2b55d52273b347))
+
 ## [2.0.0](https://github.com/mynaparrot/plugNmeet-client/compare/v1.7.5...v2.0.0) (2025-12-20)
 
 
