@@ -73,7 +73,7 @@ export default class HandleParticipants {
     this._isLocalUserAdmin = info.isAdmin;
 
     if (this._isLocalUserRecorder) {
-      this.recorderJoined();
+      store.dispatch(setActiveSidePanel(null));
     }
 
     store.dispatch(addCurrentUser(localUser));
@@ -330,10 +330,10 @@ export default class HandleParticipants {
     }
   }
 
-  private recorderJoined() {
+  public recorderJoined = () => {
     this.startParticipantCounter();
     store.dispatch(setActiveSidePanel(null));
-  }
+  };
 
   /*
    * startParticipantCounter will only call if participant was a recorder or RTMP bot

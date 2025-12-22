@@ -112,7 +112,7 @@ const ChatComponent = () => {
     >
       <div className="h-full">
         <div className="all-MessageModule-wrap h-full">
-          <ChatTabs />
+          <ChatTabs isRecorder={isRecorder} />
         </div>
       </div>
       {canShowChatInput && (

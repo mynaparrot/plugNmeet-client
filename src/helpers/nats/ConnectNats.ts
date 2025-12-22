@@ -951,6 +951,10 @@ export default class ConnectNats {
         );
       }
     });
+
+    if (this._isRecorder) {
+      this.handleParticipants.recorderJoined();
+    }
   }
 
   private async initializeMediaServer(

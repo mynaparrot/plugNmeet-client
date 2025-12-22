@@ -90,7 +90,11 @@ const selectChatTabsData = createSelector(
   },
 );
 
-const ChatTabs = () => {
+interface ChatTabsProps {
+  isRecorder: boolean;
+}
+
+const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -110,6 +114,16 @@ const ChatTabs = () => {
   const closePanel = () => {
     dispatch(setActiveSidePanel(null));
   };
+
+  if (isRecorder) {
+    return (
+      <div className="h-full">
+        <div className="chat-messages-container">
+          <Messages messageKey={selectedChatOption} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full">
