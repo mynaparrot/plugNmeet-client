@@ -72,10 +72,14 @@ const IconsInMenu = () => {
     );
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
+  const isEnabledAiTextChat = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
+  );
   const isActiveAiTextChat = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
   );
-
   const toggleAiTextChatPanel = useCallback(() => {
     dispatch(updateIsActiveInsightsAiTextChat(!isActiveAiTextChat));
   }, [dispatch, isActiveAiTextChat]);
@@ -130,16 +134,18 @@ const IconsInMenu = () => {
           }
         />
       )}
-      <FooterMenuItem
-        onClick={toggleAiTextChatPanel}
-        isActive={isActiveAiTextChat}
-        icon={<AiIconSVG classes="w-auto" />}
-        text={
-          isActiveAiTextChat
-            ? t('footer.icons.hide-ai-chat-panel')
-            : t('footer.icons.show-ai-chat-panel')
-        }
-      />
+      {isEnabledAiTextChat && (
+        <FooterMenuItem
+          onClick={toggleAiTextChatPanel}
+          isActive={isActiveAiTextChat}
+          icon={<AiIconSVG classes="w-auto" />}
+          text={
+            isActiveAiTextChat
+              ? t('footer.icons.hide-ai-chat-panel')
+              : t('footer.icons.show-ai-chat-panel')
+          }
+        />
+      )}
     </>
   );
 };
