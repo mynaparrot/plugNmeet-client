@@ -108,7 +108,7 @@ const InsightsAiTextChat = () => {
           bounds="#main-area"
         >
           <div
-            className="h-[500px] w-[400px] min-w-[300px] min-h-[300px] relative pointer-events-auto rounded-xl bg-Gray-25 dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 resize overflow-auto"
+            className="h-[400px] md:h-[500px] w-[400px] min-w-[300px] min-h-[300px] relative pointer-events-auto rounded-xl bg-Gray-25 dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 resize overflow-auto"
             ref={nodeRef}
           >
             <div className="inner-wrapper relative z-20 w-full h-full flex flex-col">
@@ -127,7 +127,7 @@ const InsightsAiTextChat = () => {
                     </button>
                   )}
                   <button
-                    className="cursor-pointer relative z-30"
+                    className="cursor-pointer relative z-30 hidden md:inline"
                     onClick={close}
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600" />

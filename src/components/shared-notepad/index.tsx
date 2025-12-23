@@ -53,7 +53,7 @@ const SharedNotepad = () => {
                 >
                   <span>{t('footer.modal.shared-notepad')}</span>
                   <button
-                    className="cursor-pointer relative z-30"
+                    className="cursor-pointer relative z-30 hidden md:inline"
                     onClick={minimizePad}
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />

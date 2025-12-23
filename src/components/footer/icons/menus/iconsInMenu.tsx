@@ -72,12 +72,6 @@ const IconsInMenu = () => {
     );
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
-  const isEnabled = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
-  );
-
   const isActiveAiTextChat = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
   );
@@ -85,10 +79,6 @@ const IconsInMenu = () => {
   const toggleAiTextChatPanel = useCallback(() => {
     dispatch(updateIsActiveInsightsAiTextChat(!isActiveAiTextChat));
   }, [dispatch, isActiveAiTextChat]);
-
-  if (!isEnabled) {
-    return null;
-  }
 
   return (
     <>
