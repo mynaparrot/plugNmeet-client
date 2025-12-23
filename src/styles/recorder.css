@@ -35,3 +35,10 @@
     }
   }
 } */
+.isRecorder .subtitleTextsHistory {
+  display: none;
+}
+.isRecorder .notepad-wrapper,
+.isRecorder .ai-chat-widget {
+  justify-content: flex-start;
+}

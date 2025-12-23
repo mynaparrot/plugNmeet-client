@@ -6,6 +6,7 @@ import FooterMenuItem from './menuItem';
 import {
   setActiveSidePanel,
   updateDisplaySpeechSettingOptionsModal,
+  updateIsActiveInsightsAiTextChat,
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
 } from '../../../../store/slices/bottomIconsActivitySlice';
@@ -13,6 +14,7 @@ import { WhiteBoardIconSVG } from '../../../../assets/Icons/WhiteBoardIconSVG';
 import { SharedNotepadIconSVG } from '../../../../assets/Icons/SharedNotepadIconSVG';
 import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 
 const IconsInMenu = () => {
   const { t } = useTranslation();
@@ -70,6 +72,24 @@ const IconsInMenu = () => {
     );
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
+  const isEnabled = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
+  );
+
+  const isActiveAiTextChat = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
+  );
+
+  const toggleAiTextChatPanel = useCallback(() => {
+    dispatch(updateIsActiveInsightsAiTextChat(!isActiveAiTextChat));
+  }, [dispatch, isActiveAiTextChat]);
+
+  if (!isEnabled) {
+    return null;
+  }
+
   return (
     <>
       {roomFeatures?.whiteboardFeatures?.isAllow && (
@@ -120,6 +140,16 @@ const IconsInMenu = () => {
           }
         />
       )}
+      <FooterMenuItem
+        onClick={toggleAiTextChatPanel}
+        isActive={isActiveAiTextChat}
+        icon={<AiIconSVG classes="w-auto" />}
+        text={
+          isActiveAiTextChat
+            ? t('footer.icons.hide-ai-chat-panel')
+            : t('footer.icons.show-ai-chat-panel')
+        }
+      />
     </>
   );
 };

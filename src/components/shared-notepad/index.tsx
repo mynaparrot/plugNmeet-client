@@ -36,17 +36,17 @@ const SharedNotepad = () => {
             : 'hidden'
         }
       >
-        <div className="h-[calc(100%-50px)] mt-9 flex items-end justify-end">
+        <div className="notepad-wrapper h-[calc(100%-50px)] mt-9 flex items-end justify-center">
           <Draggable
             handle="#draggable-h1"
             nodeRef={nodeRef}
             bounds="#main-area"
           >
             <div
-              className="notepad-wrapper h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto rounded-xl"
+              className="h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] cursor-move relative pointer-events-auto rounded-xl"
               ref={nodeRef}
             >
-              <div className="inner w-full h-full pt-[45px] relative">
+              <div className="inner w-full h-full pt-[45px] relative bg-Gray-25 dark:bg-dark-primary rounded-xl">
                 <div
                   id="draggable-h1"
                   className="absolute top-0 w-full flex items-center justify-between text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border border-Gray-100 dark:border-Gray-800! bg-white dark:bg-dark-primary rounded-t-xl"

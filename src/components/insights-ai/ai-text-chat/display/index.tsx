@@ -97,18 +97,18 @@ const InsightsAiTextChat = () => {
     <div
       className={
         isActive
-          ? 'w-full notepadMainParent absolute h-full z-10 top-0 left-0 pointer-events-none'
+          ? 'w-full absolute h-full z-10 top-0 left-0 pointer-events-none'
           : 'hidden'
       }
     >
-      <div className="h-[calc(100%-50px)] mt-9 flex items-end justify-end">
+      <div className="ai-chat-widget h-[calc(100%-50px)] mt-9 flex items-end justify-center">
         <Draggable
           handle="#draggable-aichat"
           nodeRef={nodeRef}
           bounds="#main-area"
         >
           <div
-            className="notepad-wrapper h-[500px] w-[400px] min-w-[300px] min-h-[300px] relative pointer-events-auto rounded-xl bg-Gray-25 dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 resize overflow-auto"
+            className="h-[500px] w-[400px] min-w-[300px] min-h-[300px] relative pointer-events-auto rounded-xl bg-Gray-25 dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 resize overflow-auto"
             ref={nodeRef}
           >
             <div className="inner-wrapper relative z-20 w-full h-full flex flex-col">

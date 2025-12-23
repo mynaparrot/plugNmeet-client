@@ -47,7 +47,7 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
 
   return (
     <>
-      <div className="menu relative z-10">
+      <div className="menu relative z-10 footer-main-menu">
         <Menu>
           {({ open }) => (
             <div>
