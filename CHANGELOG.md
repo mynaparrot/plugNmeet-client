@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.1...v2.0.2) (2025-12-26)
+
+
+### Bug Fixes
+
+* display ai text icon ([a2ee4d3](https://github.com/mynaparrot/plugNmeet-client/commit/a2ee4d307345ec1f5293c90d74d931f474c4519b))
+* draggable components & header ([2676396](https://github.com/mynaparrot/plugNmeet-client/commit/26763963dd9ca0be172ea34bb7d693088b81d746))
+* icon hide for mobile ([ef5925c](https://github.com/mynaparrot/plugNmeet-client/commit/ef5925c250debd9563289c47ae69b357b12909dd))
+* invalid customDesign param ([29d169d](https://github.com/mynaparrot/plugNmeet-client/commit/29d169d8e05a54d7834b5773b3c579080f0c78e9))
+* use try..catch to handle error better way ([e17338b](https://github.com/mynaparrot/plugNmeet-client/commit/e17338be27e20e8f32344998c1792162d67e4690))
+
 ## [2.0.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.0...v2.0.1) (2025-12-22)
 
 
