@@ -71,10 +71,14 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
         'DESIGN_CUSTOMIZATION',
       );
       if (typeof customDesign !== 'undefined') {
-        if (typeof customDesign === 'object') {
-          body.customDesign = JSON.stringify(customDesign);
-        } else {
-          body.customDesign = customDesign.replace(/\s/g, '');
+        try {
+          if (typeof customDesign === 'object') {
+            body.customDesign = JSON.stringify(customDesign);
+          } else {
+            body.customDesign = customDesign.replace(/\s/g, '');
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
       const r = await sendAPIRequest(
