@@ -8,7 +8,7 @@ import SpeakerComponent from './speaker';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
-const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 4000;
+const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 8000;
 
 const reOrderWebcams = throttle(
   (speakers: IActiveSpeaker[], room: ReturnType<typeof getMediaServerConn>) => {
@@ -36,6 +36,9 @@ const reOrderWebcams = throttle(
 const ActiveSpeakers = ({ activeSidePanel }) => {
   const activeSpeakers = useAppSelector(selectSpeakingParticipants);
   const participantIds = useAppSelector(participantsSelector.selectIds);
+  const focusActiveSpeakerWebcam = useAppSelector(
+    (state) => state.roomSettings.focusActiveSpeakerWebcam,
+  );
   const room = getMediaServerConn();
 
   const speakingParticipantIds = useMemo(
@@ -48,7 +51,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   );
 
   useEffect(() => {
-    if (speakingParticipantIds) {
+    if (focusActiveSpeakerWebcam && speakingParticipantIds) {
       reOrderWebcams(activeSpeakers, room);
     }
 
@@ -56,8 +59,8 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
     return () => {
       reOrderWebcams.cancel();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speakingParticipantIds, room]);
+    // oxlint-disable-next-line exhaustive-deps
+  }, [speakingParticipantIds, room, focusActiveSpeakerWebcam]);
 
   const activeSpeakersElms = useMemo(() => {
     // Create a Set for efficient O(1) lookups.
