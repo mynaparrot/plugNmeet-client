@@ -226,7 +226,7 @@ class ResumableUploader {
 
   public start = () => {
     if (isUploadingFile) {
-      const msg = i18n.t('notifications.please-wait-other-task-to-finish');
+      const msg = i18n.t('notifications.wait-other-uploading-to-finish');
       this.args.onError?.(msg);
       store.dispatch(
         addUserNotification({ message: msg, typeOption: 'warning' }),

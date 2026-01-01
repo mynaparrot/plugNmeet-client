@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "A new system message has been posted in the public chat.",
     "queue-holding-messages": "Connection problem: messages are being held. ({{error}})",
     "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})",
-    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation"
+    "request-submitted-wait": "Your request has been submitted. Please wait for confirmation",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
