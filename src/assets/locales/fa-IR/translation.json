@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "یک پیام سیستم جدید در چت عمومی ارسال شده است.",
     "queue-holding-messages": "مشکل اتصال: پیام ها در حال نگهداری هستند. ({{error}})",
     "queue-discarded-message": "پیامی ارسال نشد و کنار گذاشته شد. ({{error}})",
-    "request-submitted-wait": "درخواست شما ارسال شده است. لطفا منتظر تأیید باشید"
+    "request-submitted-wait": "درخواست شما ارسال شده است. لطفا منتظر تأیید باشید",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
