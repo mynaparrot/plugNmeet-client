@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Avalikku vestlusse on postitatud uus süsteemiteade.",
     "queue-holding-messages": "Ühenduse probleem: sõnumeid hoitakse. ({{error}})",
     "queue-discarded-message": "Sõnumit ei saanud saata ja see visati ära. ({{error}})",
-    "request-submitted-wait": "Teie taotlus on esitatud. Palun oodake kinnitust"
+    "request-submitted-wait": "Teie taotlus on esitatud. Palun oodake kinnitust",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "See kohtumine salvestatakse.",
