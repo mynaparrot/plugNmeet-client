@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "공개 채팅에 새로운 시스템 메시지가 게시되었습니다.",
     "queue-holding-messages": "연결 문제: 메시지가 보류 중입니다. ({{error}})",
     "queue-discarded-message": "메시지를 보낼 수 없어 삭제되었습니다. ({{error}})",
-    "request-submitted-wait": "귀하의 요청이 제출되었습니다. 확인 결과를 기다려 주세요"
+    "request-submitted-wait": "귀하의 요청이 제출되었습니다. 확인 결과를 기다려 주세요",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화 중입니다.",
