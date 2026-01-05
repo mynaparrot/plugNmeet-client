@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "У загальнодоступному чаті опубліковано нове системне повідомлення.",
     "queue-holding-messages": "Проблема з підключенням: повідомлення утримуються. ({{error}})",
     "queue-discarded-message": "Повідомлення не вдалося надіслати, і його було відкинуто. ({{error}})",
-    "request-submitted-wait": "Ваш запит подано. Будь ласка, зачекайте на підтвердження"
+    "request-submitted-wait": "Ваш запит подано. Будь ласка, зачекайте на підтвердження",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "Ця зустріч ведеться в протоколі.",
