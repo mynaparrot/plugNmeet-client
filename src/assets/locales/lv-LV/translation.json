@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Publiskajā tērzēšanā ir ievietots jauns sistēmas ziņojums.",
     "queue-holding-messages": "Savienojuma problēma: tiek turēti ziņojumi. ({{error}})",
     "queue-discarded-message": "Ziņojumu nevarēja nosūtīt, un tas tika atmests. ({{error}})",
-    "request-submitted-wait": "Jūsu pieprasījums ir iesniegts. Lūdzu, gaidiet apstiprinājumu"
+    "request-submitted-wait": "Jūsu pieprasījums ir iesniegts. Lūdzu, gaidiet apstiprinājumu",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "Šī sanāksme tiek ierakstīta.",
