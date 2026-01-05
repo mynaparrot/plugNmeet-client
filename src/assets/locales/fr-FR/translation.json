@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Un nouveau message système a été publié dans le chat public.",
     "queue-holding-messages": "Problème de connexion : les messages sont en attente. ({{error}})",
     "queue-discarded-message": "Un message n’a pas pu être envoyé et a été ignoré. ({{error}})",
-    "request-submitted-wait": "Votre demande a été soumise. Veuillez patienter la confirmation"
+    "request-submitted-wait": "Votre demande a été soumise. Veuillez patienter la confirmation",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "La séance est enregistrée.",
