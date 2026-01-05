@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "En ny systemmelding er lagt ut i den offentlige chatten.",
     "queue-holding-messages": "Tilkoblingsproblem: meldinger blir holdt. ({{error}})",
     "queue-discarded-message": "En melding kunne ikke sendes og ble forkastet. ({{error}})",
-    "request-submitted-wait": "Forespørselen din er sendt inn. Vennligst vent på bekreftelse"
+    "request-submitted-wait": "Forespørselen din er sendt inn. Vennligst vent på bekreftelse",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
