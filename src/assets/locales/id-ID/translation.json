@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Pesan sistem baru telah diposting di obrolan publik.",
     "queue-holding-messages": "Masalah koneksi: pesan ditahan. ({{error}})",
     "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})",
-    "request-submitted-wait": "Permintaan Anda telah diajukan. Harap tunggu konfirmasi"
+    "request-submitted-wait": "Permintaan Anda telah diajukan. Harap tunggu konfirmasi",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "Pertemuan ini sedang direkam.",
