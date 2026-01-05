@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat gepostet.",
     "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten. ({{error}})",
     "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})",
-    "request-submitted-wait": "Ihr Antrag wurde eingereicht. Bitte warten Sie auf eine Bestätigung"
+    "request-submitted-wait": "Ihr Antrag wurde eingereicht. Bitte warten Sie auf eine Bestätigung",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "Dieses Treffen wird aufgezeichnet.",
