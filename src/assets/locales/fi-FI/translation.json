@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Uusi järjestelmäviesti on julkaistu julkisessa chatissa.",
     "queue-holding-messages": "Yhteysongelma: viestejä pidetään. ({{error}})",
     "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})",
-    "request-submitted-wait": "Pyyntösi on toimitettu. Odottakaa vahvistusta"
+    "request-submitted-wait": "Pyyntösi on toimitettu. Odottakaa vahvistusta",
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
