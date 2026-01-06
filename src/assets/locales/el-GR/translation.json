@@ -79,7 +79,7 @@
     "queue-holding-messages": "Πρόβλημα σύνδεσης: τα μηνύματα κρατούνται. ({{error}})",
     "queue-discarded-message": "Δεν ήταν δυνατή η αποστολή μηνύματος και απορρίφθηκε. ({{error}})",
     "request-submitted-wait": "Το αίτημά σας έχει υποβληθεί. Περιμένετε για επιβεβαίωση",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Μια άλλη μεταφόρτωση βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί."
   },
   "room-metadata": {
     "session-recording": "Αυτή η συνάντηση καταγράφεται.",
