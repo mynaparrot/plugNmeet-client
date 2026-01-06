@@ -79,7 +79,7 @@
     "queue-holding-messages": "接続の問題: メッセージが保留されています。({{error}})",
     "queue-discarded-message": "メッセージを送信できず、破棄されました。({{error}})",
     "request-submitted-wait": "あなたのリクエストは提出されました。確認をお待ちください",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "別のアップロードが進行中です。完成までお待ちください。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画中です。",
