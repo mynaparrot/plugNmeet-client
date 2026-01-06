@@ -79,7 +79,7 @@
     "queue-holding-messages": "連線問題：訊息正在保留。({{error}})",
     "queue-discarded-message": "無法傳送訊息，並已捨棄。({{error}})",
     "request-submitted-wait": "您的申請已提交。請稍候確認",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "另一段上傳正在進行中。請耐心等待完成。"
   },
   "room-metadata": {
     "session-recording": "這次會議正在錄製中。",
