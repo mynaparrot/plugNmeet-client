@@ -79,7 +79,7 @@
     "queue-holding-messages": "Problem z połączeniem: wiadomości są wstrzymywane. ({{error}})",
     "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona. ({{error}})",
     "request-submitted-wait": "Twoja prośba została złożona. Proszę poczekać na potwierdzenie",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Kolejne przesłanie jest w trakcie publikacji. Proszę poczekać na zakończenie."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
