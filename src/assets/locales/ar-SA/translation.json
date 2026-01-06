@@ -79,7 +79,7 @@
     "queue-holding-messages": "مشكلة الاتصال: يتم تعليق الرسائل. ({{error}})",
     "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها. ({{error}})",
     "request-submitted-wait": "تم تقديم طلبك. يرجى الانتظار للتأكيد",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "هناك تحميل آخر جار. يرجى الانتظار حتى يكتمل البرنامج."
   },
   "room-metadata": {
     "session-recording": "جاري تسجيل هذا الاجتماع.",
