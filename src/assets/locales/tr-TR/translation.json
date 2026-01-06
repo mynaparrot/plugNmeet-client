@@ -79,7 +79,7 @@
     "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor. ({{error}})",
     "queue-discarded-message": "Bir mesaj gönderilemedi ve atıldı. ({{error}})",
     "request-submitted-wait": "Talebiniz gönderildi. Lütfen onay için bekleyin",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Başka bir yükleme devam ediyor. Lütfen tamamlanana kadar bekleyin."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kayıt altına alınıyor.",
