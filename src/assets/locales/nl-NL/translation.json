@@ -79,7 +79,7 @@
     "queue-holding-messages": "Verbindingsprobleem: berichten worden vastgehouden. ({{error}})",
     "queue-discarded-message": "Een bericht kon niet worden verzonden en werd verwijderd. ({{error}})",
     "request-submitted-wait": "Uw verzoek is ingediend. Wacht alstublieft op bevestiging",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Een andere upload is in uitvoering. Wacht alsjeblieft tot het klaar is."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
