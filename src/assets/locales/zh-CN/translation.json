@@ -79,7 +79,7 @@
     "queue-holding-messages": "连接问题：消息正在被保留。({{error}})",
     "queue-discarded-message": "无法发送消息并被丢弃。({{error}})",
     "request-submitted-wait": "您的请求已提交。请稍候确认",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "另一项上传正在进行中。请耐心等待完成。"
   },
   "room-metadata": {
     "session-recording": "这次会议正在录制中。",
