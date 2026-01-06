@@ -79,7 +79,7 @@
     "queue-holding-messages": "Problema di connessione: i messaggi vengono trattenuti. ({{error}})",
     "queue-discarded-message": "Non è stato possibile inviare un messaggio ed è stato eliminato. ({{error}})",
     "request-submitted-wait": "La tua richiesta è stata inviata. Attendi la conferma",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Un altro upload è in corso. Attendi che si completi."
   },
   "room-metadata": {
     "session-recording": "Questo incontro è in fase di registrazione.",
