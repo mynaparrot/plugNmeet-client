@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Uma nova mensagem do sistema foi postada no chat público.",
     "queue-holding-messages": "Problema de conexão: as mensagens estão sendo mantidas. ({{error}})",
     "queue-discarded-message": "Não foi possível enviar uma mensagem e foi descartada. ({{error}})",
-    "request-submitted-wait": "O seu pedido foi submetido. Por favor, aguarde por confirmação"
+    "request-submitted-wait": "O seu pedido foi submetido. Por favor, aguarde por confirmação",
+    "wait-other-uploading-to-finish": "Outro upload está em curso. Por favor, aguarde que termine."
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",

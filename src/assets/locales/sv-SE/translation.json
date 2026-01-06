@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
     "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar. ({{error}})",
     "queue-discarded-message": "Det gick inte att skicka ett meddelande och det ignorerades. ({{error}})",
-    "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse"
+    "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse",
+    "wait-other-uploading-to-finish": "En ny uppladdning pågår. Vänligen vänta tills det är klart."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",

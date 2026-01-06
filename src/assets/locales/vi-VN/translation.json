@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Một thông báo hệ thống mới đã được đăng trong cuộc trò chuyện công khai.",
     "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ. ({{error}})",
     "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})",
-    "request-submitted-wait": "Yêu cầu của bạn đã được gửi. Vui lòng đợi xác nhận"
+    "request-submitted-wait": "Yêu cầu của bạn đã được gửi. Vui lòng đợi xác nhận",
+    "wait-other-uploading-to-finish": "Một tải lên khác đang được tiến hành. Vui lòng đợi nó hoàn tất."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",

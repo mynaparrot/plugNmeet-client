@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "新しいシステムメッセージが公開チャットに投稿されました。",
     "queue-holding-messages": "接続の問題: メッセージが保留されています。({{error}})",
     "queue-discarded-message": "メッセージを送信できず、破棄されました。({{error}})",
-    "request-submitted-wait": "あなたのリクエストは提出されました。確認をお待ちください"
+    "request-submitted-wait": "あなたのリクエストは提出されました。確認をお待ちください",
+    "wait-other-uploading-to-finish": "別のアップロードが進行中です。完成までお待ちください。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画中です。",

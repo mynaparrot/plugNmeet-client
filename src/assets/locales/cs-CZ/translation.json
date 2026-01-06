@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová hláška.",
     "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány. ({{error}})",
     "queue-discarded-message": "Zprávu nebylo možné odeslat a byla zahozena. ({{error}})",
-    "request-submitted-wait": "Vaše žádost byla podána. Prosím, počkejte na potvrzení"
+    "request-submitted-wait": "Vaše žádost byla podána. Prosím, počkejte na potvrzení",
+    "wait-other-uploading-to-finish": "Další nahrávání je v procesu. Prosím, počkejte, až to dokončí."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",

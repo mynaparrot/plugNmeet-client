@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "En ny systemmeddelelse er blevet offentliggjort i den offentlige chat.",
     "queue-holding-messages": "Forbindelsesproblem: meddelelser tilbageholdes. ({{error}})",
     "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})",
-    "request-submitted-wait": "Din anmodning er indsendt. Vent venligst på bekræftelse"
+    "request-submitted-wait": "Din anmodning er indsendt. Vent venligst på bekræftelse",
+    "wait-other-uploading-to-finish": "Endnu en upload er i gang. Vent venligst på, at det er færdigt."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",

@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public.",
     "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute. ({{error}})",
     "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})",
-    "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea"
+    "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea",
+    "wait-other-uploading-to-finish": "O altă încărcare este în curs de desfășurare. Vă rugăm să așteptați să se termine."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",

@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "U javnom chatu objavljena je nova poruka sustava.",
     "queue-holding-messages": "Problem s vezom: poruke se održavaju. ({{error}})",
     "queue-discarded-message": "Poruka se nije mogla poslati i odbačena je. ({{error}})",
-    "request-submitted-wait": "Vaš zahtjev je podnesen. Molimo pričekajte potvrdu"
+    "request-submitted-wait": "Vaš zahtjev je podnesen. Molimo pričekajte potvrdu",
+    "wait-other-uploading-to-finish": "Još jedno učitavanje je u tijeku. Molimo pričekajte da se završi."
   },
   "room-metadata": {
     "session-recording": "Ovaj sastanak se snima.",

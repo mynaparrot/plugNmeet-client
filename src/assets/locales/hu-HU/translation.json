@@ -78,7 +78,8 @@
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
     "queue-holding-messages": "Csatlakozási probléma: az üzenetek visszatartása folyamatban van. ({{error}})",
     "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})",
-    "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést"
+    "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést",
+    "wait-other-uploading-to-finish": "Egy újabb feltöltés folyamatban van. Kérlek, várj, amíg befejeződik."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
