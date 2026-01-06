@@ -79,7 +79,7 @@
     "queue-holding-messages": "Проблема с подключением: задерживаются сообщения. ({{error}})",
     "queue-discarded-message": "Сообщение не могло быть отправлено и было отброшено. ({{error}})",
     "request-submitted-wait": "Ваш запрос подан. Пожалуйста, дождитесь подтверждения",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "В процессе ещё одной загрузки. Пожалуйста, дождитесь, пока он завершится."
   },
   "room-metadata": {
     "session-recording": "Эта встреча записывается.",
