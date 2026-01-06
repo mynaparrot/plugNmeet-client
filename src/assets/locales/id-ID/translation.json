@@ -79,7 +79,7 @@
     "queue-holding-messages": "Masalah koneksi: pesan ditahan. ({{error}})",
     "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})",
     "request-submitted-wait": "Permintaan Anda telah diajukan. Harap tunggu konfirmasi",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Unggahan lain sedang berlangsung. Harap tunggu hingga selesai."
   },
   "room-metadata": {
     "session-recording": "Pertemuan ini sedang direkam.",
