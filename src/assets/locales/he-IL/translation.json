@@ -79,7 +79,7 @@
     "queue-holding-messages": "בעיית חיבור: הודעות מוחזקות. ({{error}})",
     "queue-discarded-message": "לא היתה אפשרות לשלוח הודעה והיא נמחקה. ({{error}})",
     "request-submitted-wait": "הבקשה שלך הוגשה. אנא המתינו לאישור",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "העלאה נוספת מתבצעת. אנא המתינו עד שזה יסתיים."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
