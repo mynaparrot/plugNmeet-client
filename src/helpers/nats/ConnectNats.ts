@@ -550,20 +550,15 @@ export default class ConnectNats {
   };
 
   /**
-   * All the events related with whiteboard will be handled here.
-   * This now uses NATS Core Pub/Sub for low-latency, "fire-and-forget" messaging,
-   * which is ideal for high-frequency data like drawing coordinates.
+   * Subscribes to the room's whiteboard channel using NATS Core Pub/Sub for low latency.
    */
   private async subscribeToWhiteboard() {
     if (!this._nc) {
       return;
     }
 
-    // Use the simpler, shared subject for the room.
     const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-
     const sub = this._nc.subscribe(subject);
-    console.log(`Subscribed to NATS core subject: ${subject}`);
 
     for await (const m of sub) {
       let dataToParse = m.data;
@@ -608,33 +603,36 @@ export default class ConnectNats {
       payload = data;
     }
 
-    // Publish to the same simpler, shared subject.
     const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-
     this._nc.publish(subject, payload);
   };
 
   /**
-   * subscribeToDataChannel to communicate with each other
+   * Subscribes to the room's data channel using NATS Core Pub/Sub for low latency.
    * Mostly with client to client
    */
   private async subscribeToDataChannel() {
-    await this._subscribe(
-      this._roomId,
-      this._subjects.dataChannel,
-      async (m) => {
-        let dataToParse = m.data;
-        if (this._enableE2EE) {
-          const data = await this.decryptData(dataToParse);
-          if (typeof data === 'undefined') {
-            return;
-          }
-          dataToParse = data;
+    if (!this._nc) {
+      return;
+    }
+
+    const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+    const sub = this._nc.subscribe(subject);
+
+    for await (const m of sub) {
+      let dataToParse = m.data;
+      if (this._enableE2EE) {
+        const data = await this.decryptData(dataToParse);
+        if (typeof data === 'undefined') {
+          continue;
         }
-        const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+        dataToParse = data;
+      }
+      const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+      if (payload.fromUserId !== this._userId) {
         await this.handleDataMsg.handleMessage(payload);
-      },
-    );
+      }
+    }
   }
 
   /**
@@ -645,6 +643,11 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
+    if (!this._nc) {
+      console.error('NATS connection not available to send data message.');
+      return;
+    }
+
     const data = create(DataChannelMessageSchema, {
       type,
       fromUserId: this._userId,
@@ -661,12 +664,8 @@ export default class ConnectNats {
       payload = data;
     }
 
-    const subject =
-      this._roomId + ':' + this._subjects.dataChannel + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload,
-    });
+    const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+    this._nc.publish(subject, payload);
   };
 
   /**
