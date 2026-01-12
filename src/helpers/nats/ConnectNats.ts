@@ -550,27 +550,36 @@ export default class ConnectNats {
   };
 
   /**
-   * All the events related with whiteboard will be handled here
+   * All the events related with whiteboard will be handled here.
+   * This now uses NATS Core Pub/Sub for low-latency, "fire-and-forget" messaging,
+   * which is ideal for high-frequency data like drawing coordinates.
    */
   private async subscribeToWhiteboard() {
-    await this._subscribe(
-      this._roomId,
-      this._subjects.whiteboard,
-      async (m) => {
-        let dataToParse = m.data;
-        if (this._enableE2EEWhiteboard) {
-          const data = await this.decryptData(dataToParse);
-          if (typeof data === 'undefined') {
-            return;
-          }
-          dataToParse = data;
+    if (!this._nc) {
+      return;
+    }
+
+    // Use the simpler, shared subject for the room.
+    const subject = `${this._subjects.whiteboard}.${this._roomId}`;
+
+    const sub = this._nc.subscribe(subject);
+    console.log(`Subscribed to NATS core subject: ${subject}`);
+
+    for await (const m of sub) {
+      let dataToParse = m.data;
+      if (this._enableE2EEWhiteboard) {
+        const data = await this.decryptData(dataToParse);
+        if (typeof data === 'undefined') {
+          continue; // Skip if decryption fails
         }
-        const payload = fromBinary(DataChannelMessageSchema, dataToParse);
-        if (payload.fromUserId !== this._userId) {
-          await this.handleWhiteboard.handleWhiteboardMsg(payload);
-        }
-      },
-    );
+        dataToParse = data;
+      }
+      const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+      // Still need to check if the message is from the local user to avoid echo.
+      if (payload.fromUserId !== this._userId) {
+        await this.handleWhiteboard.handleWhiteboardMsg(payload);
+      }
+    }
   }
 
   public sendWhiteboardData = async (
@@ -578,6 +587,11 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
+    if (!this._nc) {
+      console.error('NATS connection not available to send whiteboard data.');
+      return;
+    }
+
     const data = create(DataChannelMessageSchema, {
       type,
       fromUserId: this._userId,
@@ -589,17 +603,15 @@ export default class ConnectNats {
     if (this._enableE2EEWhiteboard) {
       const data = await this.encryptData(payload);
       if (typeof data === 'undefined') {
-        return;
+        return; // Don't send if encryption fails
       }
       payload = data;
     }
 
-    const subject =
-      this._roomId + ':' + this._subjects.whiteboard + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload,
-    });
+    // Publish to the same simpler, shared subject.
+    const subject = `${this._subjects.whiteboard}.${this._roomId}`;
+
+    this._nc.publish(subject, payload);
   };
 
   /**
