@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.2...v2.0.3) (2026-01-12)
+
+
+### Bug Fixes
+
+* added missing string ([6062f37](https://github.com/mynaparrot/plugNmeet-client/commit/6062f37c22ff40974cd0f5452a672cdc1a02c4d4))
+* config of `focusActiveSpeakerWebcam` was not working ([6b5fb2c](https://github.com/mynaparrot/plugNmeet-client/commit/6b5fb2c6c02399cb16a209bd1ba1073d8ff2b955))
+* **nats:** Prevent head-of-line blocking in MessageQueue ([91a7417](https://github.com/mynaparrot/plugNmeet-client/commit/91a74177f5d2b3e3265da9ef5e556f4973e89ff9))
+* new Crowdin updates ([56ba01d](https://github.com/mynaparrot/plugNmeet-client/commit/56ba01ddbfa926f7eceda18d24d7667bf698f6a2))
+* ping more frequently ([4226d06](https://github.com/mynaparrot/plugNmeet-client/commit/4226d062bbb4b7ec099af43b52fca2d3ac17f3a0))
+* **refactor:** migrate whiteboard & dataChannel to use nats core pub/sub for low latency as jetstream seems very slow ([df5e0a0](https://github.com/mynaparrot/plugNmeet-client/commit/df5e0a023d2b42b044a8c3dad86502d009ddc7c8))
+
 ## [2.0.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.1...v2.0.2) (2025-12-26)
 
 
