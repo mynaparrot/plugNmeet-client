@@ -130,7 +130,7 @@
       "column-camera-position-top": "En haut",
       "column-camera-position-bottom": "En bas",
       "focus-active-speaker-webcam": "Focus sur l'intervenant actif",
-      "max-num-webcam": "Max visible webcams"
+      "max-num-webcam": "Maximums de webcams visibles"
     },
     "keyboard-shortcuts": {
       "title": "Raccourcis clavier",
