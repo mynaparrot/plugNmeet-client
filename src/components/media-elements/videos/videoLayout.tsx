@@ -53,6 +53,10 @@ const VideoLayout = ({
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
+  const maxNumDisplayWebcams = useAppSelector(
+    (state) => state.roomSettings.maxNumDisplayWebcams,
+  );
+
   const isRecorder = store.getState().session.currentUser?.isRecorder;
   const { isMobile, isTablet, isDesktop, isSidebarOpen, isPortrait } =
     useDeviceInfo();
@@ -71,8 +75,23 @@ const VideoLayout = ({
   }, [dispatch, isVertical, pinParticipant]);
 
   useEffect(() => {
+    // 1. Determine the default value based on device type.
+    let deviceMax = DESKTOP_PER_PAGE;
+    if (isTablet) {
+      deviceMax = TABLET_PER_PAGE;
+    } else if (isMobile) {
+      deviceMax = MOBILE_PER_PAGE;
+    }
+
+    // 2. Determine the user's effective limit.
+    const effectiveUserLimit =
+      maxNumDisplayWebcams && maxNumDisplayWebcams > 0
+        ? maxNumDisplayWebcams
+        : deviceMax;
+
     let perPage: number;
 
+    // 3. Calculate the ideal number of webcams based purely on the current layout.
     if (isMobile) {
       if (enabledVerticalViewMode) {
         if (isPortrait) {
@@ -102,7 +121,6 @@ const VideoLayout = ({
       }
     } else {
       // PC
-      perPage = DESKTOP_PER_PAGE;
       if (enabledVerticalViewMode) {
         perPage = isEnabledExtendedVerticalCamView
           ? PC_EXTENDED_VERTICAL_PER_PAGE
@@ -116,9 +134,14 @@ const VideoLayout = ({
         perPage = isEnabledExtendedVerticalCamView
           ? PC_EXTENDED_VERTICAL_PER_PAGE
           : PC_VERTICAL_PER_PAGE;
+      } else {
+        perPage = DESKTOP_PER_PAGE;
       }
     }
-    setWebcamPerPage(perPage);
+
+    // 4. The final value is the MINIMUM of the layout's ideal value and the user's limit.
+    //    This ensures the user's data saving preference is always respected as a hard ceiling.
+    setWebcamPerPage(Math.min(perPage, effectiveUserLimit));
   }, [
     isEnabledExtendedVerticalCamView,
     enabledVerticalViewMode,
@@ -127,6 +150,7 @@ const VideoLayout = ({
     isTablet,
     isPortrait,
     isSidebarOpen,
+    maxNumDisplayWebcams,
   ]);
 
   useEffect(() => {

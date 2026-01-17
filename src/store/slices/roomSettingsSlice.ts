@@ -206,6 +206,9 @@ const roomSettingsSlice = createSlice({
     updateHasWebcamPages: (state, action: PayloadAction<boolean>) => {
       state.hasWebcamPages = action.payload;
     },
+    updateMaxNumDisplayWebcams: (state, action: PayloadAction<number>) => {
+      state.maxNumDisplayWebcams = action.payload;
+    },
   },
 });
 
@@ -245,6 +248,7 @@ export const {
   updateIsSidePanelOpened,
   updateSelectedChatTransLang,
   updateHasWebcamPages,
+  updateMaxNumDisplayWebcams,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;

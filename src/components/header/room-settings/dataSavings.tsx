@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { VideoQuality } from 'livekit-client';
 
@@ -6,10 +6,12 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateActivateWebcamsView,
   updateActiveScreenSharingView,
+  updateMaxNumDisplayWebcams,
   updateRoomVideoQuality,
 } from '../../../store/slices/roomSettingsSlice';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
-import Dropdown from '../../../helpers/ui/dropdown';
+import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
+import { UserDeviceType } from '../../../store/slices/interfaces/session';
 
 const DataSavings = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +25,33 @@ const DataSavings = () => {
   const activeScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
   );
+  const userDeviceType = useAppSelector(
+    (state) => state.session.userDeviceType,
+  );
+  const maxNumDisplayWebcams = useAppSelector(
+    (state) => state.roomSettings.maxNumDisplayWebcams,
+  );
+  const [numWebcamsOpts, setNumWebcamsOpts] = useState<ISelectOption[]>([]);
+
+  useEffect(() => {
+    let opts: ISelectOption[] = [
+      { text: '4', value: 4 },
+      { text: '6', value: 6 },
+    ];
+
+    if (userDeviceType === UserDeviceType.TABLET) {
+      opts = [{ text: '9', value: 9 }];
+    } else if (userDeviceType === UserDeviceType.DESKTOP) {
+      opts.push(
+        { text: '9', value: 9 },
+        { text: '12', value: 12 },
+        { text: '16', value: 16 },
+        { text: '24', value: 24 },
+      );
+    }
+
+    setNumWebcamsOpts(opts);
+  }, [userDeviceType]);
 
   const toggleWebcamView = () => {
     dispatch(updateActivateWebcamsView(!activateWebcamsView));
@@ -69,6 +98,16 @@ const DataSavings = () => {
         onChange={toggleWebcamView}
         customCss="my-4"
       />
+      {activateWebcamsView && (
+        <Dropdown
+          label={t('header.room-settings.max-num-webcam')}
+          id="max-num-webcam"
+          value={maxNumDisplayWebcams || 24}
+          onChange={(v) => dispatch(updateMaxNumDisplayWebcams(v))}
+          options={numWebcamsOpts}
+          direction="horizontal"
+        />
+      )}
       <SettingsSwitch
         label={t('header.room-settings.show-screen-share')}
         enabled={activeScreenSharingView}

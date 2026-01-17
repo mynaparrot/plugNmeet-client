@@ -46,6 +46,7 @@ export interface IRoomSettings {
   userNotifications: UserNotification[];
   isSidePanelOpened: boolean;
   hasWebcamPages: boolean;
+  maxNumDisplayWebcams?: number;
 }
 
 export interface IMediaDevice {
