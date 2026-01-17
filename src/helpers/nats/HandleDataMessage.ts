@@ -104,10 +104,6 @@ export default class HandleDataMessage {
           ]),
         );
         break;
-      case DataMsgBodyType.SPEECH_SUBTITLE_TEXT:
-        // TODO: remove
-        this.handleSpeechSubtitleText(payload.message);
-        break;
       case DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE:
         store.dispatch(
           updateParticipant({

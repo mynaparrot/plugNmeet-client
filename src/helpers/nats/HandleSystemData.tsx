@@ -1,7 +1,6 @@
 import { create, fromJsonString } from '@bufbuild/protobuf';
 import {
   ChatMessageSchema,
-  GenerateAzureTokenResSchema,
   InsightsAITextChatStreamResult,
   InsightsAITextChatStreamResultSchema,
   NatsMsgServerToClient,
@@ -13,7 +12,6 @@ import {
 import { store } from '../../store';
 import {
   addUserNotification,
-  updateAzureTokenInfo,
   updatePlayAudioNotification,
 } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
@@ -74,29 +72,6 @@ export default class HandleSystemData {
           this.playNotification();
         }
         break;
-    }
-  };
-
-  public handleAzureToken = (data: string) => {
-    const res = fromJsonString(GenerateAzureTokenResSchema, data);
-    if (res.status && res.token && res.keyId && res.serviceRegion) {
-      store.dispatch(
-        updateAzureTokenInfo({
-          token: res.token,
-          keyId: res.keyId,
-          serviceRegion: res.serviceRegion,
-          renew: res.renew,
-        }),
-      );
-    } else {
-      store.dispatch(
-        addUserNotification({
-          message: i18n.t('speech-services.token-generation-failed', {
-            error: res.msg,
-          }),
-          typeOption: 'error',
-        }),
-      );
     }
   };
 

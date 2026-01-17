@@ -702,8 +702,6 @@ export default class ConnectNats {
       this.handleParticipants.handleParticipantOffline(p.msg),
     [NatsMsgServerToClientEvents.USER_METADATA_UPDATE]: (p) =>
       this.handleParticipants.handleParticipantMetadataUpdate(p.msg),
-    [NatsMsgServerToClientEvents.AZURE_COGNITIVE_SERVICE_SPEECH_TOKEN]: (p) =>
-      this.handleSystemData.handleAzureToken(p.msg),
     [NatsMsgServerToClientEvents.SESSION_ENDED]: (p) => this.endSession(p.msg),
     [NatsMsgServerToClientEvents.POLL_CREATED]: (p) =>
       this.handleSystemData.handlePoll(p),
