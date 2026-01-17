@@ -279,9 +279,20 @@ export default class ConnectLivekit
     });
   }
 
+  private closeLocalTracks() {
+    this._room.localParticipant.getTrackPublications().forEach((track) => {
+      if (track.videoTrack) {
+        track.videoTrack.stop();
+      } else if (track.audioTrack) {
+        track.audioTrack.stop();
+      }
+    });
+  }
+
   public async disconnectRoom(normalDisconnect: boolean) {
     if (this._room.state === ConnectionState.Connected) {
       this.wasNormalDisconnected = normalDisconnect;
+      this.closeLocalTracks();
       await this._room.disconnect(true);
     }
   }
@@ -303,6 +314,7 @@ export default class ConnectLivekit
       // no need to show any message
       return;
     }
+    this.closeLocalTracks();
 
     this._errorState({
       title: i18n.t('notifications.room-disconnected-title'),
