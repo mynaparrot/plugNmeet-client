@@ -129,7 +129,8 @@
       "column-camera-position-left": "Vasak",
       "column-camera-position-top": "Top",
       "column-camera-position-bottom": "Alt",
-      "focus-active-speaker-webcam": "Keskenduge aktiivsele kõlarile"
+      "focus-active-speaker-webcam": "Keskenduge aktiivsele kõlarile",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "Kiirklahve",
