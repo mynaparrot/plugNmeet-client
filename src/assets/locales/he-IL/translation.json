@@ -129,7 +129,8 @@
       "column-camera-position-left": "שמאל",
       "column-camera-position-top": "סביבון",
       "column-camera-position-bottom": "ישבן",
-      "focus-active-speaker-webcam": "התמקדו ברמקול פעיל"
+      "focus-active-speaker-webcam": "התמקדו ברמקול פעיל",
+      "max-num-webcam": "מקסימום מצלמות רשת נראות"
     },
     "keyboard-shortcuts": {
       "title": "קיצורי מקשים",

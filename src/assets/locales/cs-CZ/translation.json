@@ -129,7 +129,8 @@
       "column-camera-position-left": "Vlevo",
       "column-camera-position-top": "Vrchol",
       "column-camera-position-bottom": "Dno",
-      "focus-active-speaker-webcam": "Zaměřte se na aktivního řečníka"
+      "focus-active-speaker-webcam": "Zaměřte se na aktivního řečníka",
+      "max-num-webcam": "Maximální viditelné webkamery"
     },
     "keyboard-shortcuts": {
       "title": "Klávesové zkratky",

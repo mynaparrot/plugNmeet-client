@@ -129,7 +129,8 @@
       "column-camera-position-left": "왼쪽",
       "column-camera-position-top": "맨 위로",
       "column-camera-position-bottom": "밑바닥",
-      "focus-active-speaker-webcam": "활성 발언자에 집중"
+      "focus-active-speaker-webcam": "활성 발언자에 집중",
+      "max-num-webcam": "최대 가시성 웹캠"
     },
     "keyboard-shortcuts": {
       "title": "키보드 단축키",

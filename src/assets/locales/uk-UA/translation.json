@@ -129,7 +129,8 @@
       "column-camera-position-left": "Ліворуч",
       "column-camera-position-top": "Верх",
       "column-camera-position-bottom": "Низ",
-      "focus-active-speaker-webcam": "Зосередьтеся на активному динаміку"
+      "focus-active-speaker-webcam": "Зосередьтеся на активному динаміку",
+      "max-num-webcam": "Максимальна кількість видимих вебкамер"
     },
     "keyboard-shortcuts": {
       "title": "Комбінації клавіш",

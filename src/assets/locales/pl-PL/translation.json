@@ -129,7 +129,8 @@
       "column-camera-position-left": "Lewy",
       "column-camera-position-top": "Do góry",
       "column-camera-position-bottom": "Dno",
-      "focus-active-speaker-webcam": "Skoncentruj się na aktywnym mówcy"
+      "focus-active-speaker-webcam": "Skoncentruj się na aktywnym mówcy",
+      "max-num-webcam": "Maksymalna widoczność kamer internetowych"
     },
     "keyboard-shortcuts": {
       "title": "Skróty klawiaturowe",

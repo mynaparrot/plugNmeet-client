@@ -129,7 +129,8 @@
       "column-camera-position-left": "Venstre",
       "column-camera-position-top": "Top",
       "column-camera-position-bottom": "Bund",
-      "focus-active-speaker-webcam": "Fokus på aktiv højttaler"
+      "focus-active-speaker-webcam": "Fokus på aktiv højttaler",
+      "max-num-webcam": "Maksimalt synlige webcams"
     },
     "keyboard-shortcuts": {
       "title": "Tastaturgenveje",

@@ -129,7 +129,8 @@
       "column-camera-position-left": "Pa kreisi",
       "column-camera-position-top": "Augša",
       "column-camera-position-bottom": "Apakša",
-      "focus-active-speaker-webcam": "Koncentrējieties uz aktīvo skaļruni"
+      "focus-active-speaker-webcam": "Koncentrējieties uz aktīvo skaļruni",
+      "max-num-webcam": "Maksimāli redzamas tīmekļa kameras"
     },
     "keyboard-shortcuts": {
       "title": "Īsinājumtaustiņi",

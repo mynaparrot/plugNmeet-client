@@ -129,7 +129,8 @@
       "column-camera-position-left": "Αριστερά",
       "column-camera-position-top": "Κορυφή",
       "column-camera-position-bottom": "Πυθμένας",
-      "focus-active-speaker-webcam": "Εστίαση στο ενεργό ηχείο"
+      "focus-active-speaker-webcam": "Εστίαση στο ενεργό ηχείο",
+      "max-num-webcam": "Μέγιστες ορατές κάμερες web"
     },
     "keyboard-shortcuts": {
       "title": "Συντομεύσεις πληκτρολογίου",

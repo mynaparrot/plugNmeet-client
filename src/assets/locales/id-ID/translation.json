@@ -129,7 +129,8 @@
       "column-camera-position-left": "Kiri",
       "column-camera-position-top": "Puncak",
       "column-camera-position-bottom": "Dasar",
-      "focus-active-speaker-webcam": "Fokus pada Pembicara Aktif"
+      "focus-active-speaker-webcam": "Fokus pada Pembicara Aktif",
+      "max-num-webcam": "Webcam maksimum yang terlihat"
     },
     "keyboard-shortcuts": {
       "title": "Pintasan keyboard",

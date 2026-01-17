@@ -129,7 +129,8 @@
       "column-camera-position-left": "Venstre",
       "column-camera-position-top": "Topp",
       "column-camera-position-bottom": "Bunn",
-      "focus-active-speaker-webcam": "Fokus på aktiv høyttaler"
+      "focus-active-speaker-webcam": "Fokus på aktiv høyttaler",
+      "max-num-webcam": "Maks synlige webkameraer"
     },
     "keyboard-shortcuts": {
       "title": "Hurtigtaster",

@@ -129,7 +129,8 @@
       "column-camera-position-left": "Izquierda",
       "column-camera-position-top": "Arriba",
       "column-camera-position-bottom": "Fondo",
-      "focus-active-speaker-webcam": "Centrarse en el altavoz activo"
+      "focus-active-speaker-webcam": "Centrarse en el altavoz activo",
+      "max-num-webcam": "Máximo de cámaras web visibles"
     },
     "keyboard-shortcuts": {
       "title": "Atajos de teclado",

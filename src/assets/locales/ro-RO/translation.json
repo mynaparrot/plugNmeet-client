@@ -129,7 +129,8 @@
       "column-camera-position-left": "Stânga",
       "column-camera-position-top": "Culme",
       "column-camera-position-bottom": "Fund",
-      "focus-active-speaker-webcam": "Concentrați-vă pe difuzorul activ"
+      "focus-active-speaker-webcam": "Concentrați-vă pe difuzorul activ",
+      "max-num-webcam": "Maxim camere web vizibile"
     },
     "keyboard-shortcuts": {
       "title": "Comenzi rapide de la tastatură",
