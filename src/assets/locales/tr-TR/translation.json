@@ -129,7 +129,8 @@
       "column-camera-position-left": "Sol",
       "column-camera-position-top": "Sayfanın Üstü",
       "column-camera-position-bottom": "Dip",
-      "focus-active-speaker-webcam": "Aktif Konuşmacıya Odaklanın"
+      "focus-active-speaker-webcam": "Aktif Konuşmacıya Odaklanın",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "Klavye kısayolları",
