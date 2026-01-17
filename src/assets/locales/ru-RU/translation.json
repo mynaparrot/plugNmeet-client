@@ -130,7 +130,7 @@
       "column-camera-position-top": "Вверх",
       "column-camera-position-bottom": "Дно",
       "focus-active-speaker-webcam": "Сосредоточьтесь на активном спикере",
-      "max-num-webcam": "Max visible webcams"
+      "max-num-webcam": "Максимальное количество видимых веб-камер"
     },
     "keyboard-shortcuts": {
       "title": "Сочетания клавиш",
