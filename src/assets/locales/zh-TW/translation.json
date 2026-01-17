@@ -129,7 +129,8 @@
       "column-camera-position-left": "左",
       "column-camera-position-top": "頂",
       "column-camera-position-bottom": "底",
-      "focus-active-speaker-webcam": "專注於活躍的演講者"
+      "focus-active-speaker-webcam": "專注於活躍的演講者",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "鍵盤快速鍵",
