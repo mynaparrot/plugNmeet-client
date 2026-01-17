@@ -129,7 +129,8 @@
       "column-camera-position-left": "বাঁদিকে",
       "column-camera-position-top": "শীর্ষ",
       "column-camera-position-bottom": "নিচে",
-      "focus-active-speaker-webcam": "অ্যাক্টিভ স্পিকারের উপর ফোকাস করুন"
+      "focus-active-speaker-webcam": "অ্যাক্টিভ স্পিকারের উপর ফোকাস করুন",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "কীবোর্ড শর্টকাট",
