@@ -129,7 +129,8 @@
       "column-camera-position-left": "يسار",
       "column-camera-position-top": "أعلى",
       "column-camera-position-bottom": "قاع",
-      "focus-active-speaker-webcam": "التركيز على مكبر الصوت النشط"
+      "focus-active-speaker-webcam": "التركيز على مكبر الصوت النشط",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "اختصارات لوحة المفاتيح",
