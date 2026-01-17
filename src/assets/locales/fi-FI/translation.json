@@ -129,7 +129,8 @@
       "column-camera-position-left": "Vasen",
       "column-camera-position-top": "Huippu",
       "column-camera-position-bottom": "Pohja",
-      "focus-active-speaker-webcam": "Keskity aktiiviseen kaiuttimeen"
+      "focus-active-speaker-webcam": "Keskity aktiiviseen kaiuttimeen",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "Pikanäppäimet",
