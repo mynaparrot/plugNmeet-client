@@ -129,7 +129,8 @@
       "column-camera-position-left": "Vänster",
       "column-camera-position-top": "Topp",
       "column-camera-position-bottom": "Botten",
-      "focus-active-speaker-webcam": "Fokusera på aktiv talare"
+      "focus-active-speaker-webcam": "Fokusera på aktiv talare",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "Kortkommandon",
