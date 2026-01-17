@@ -130,7 +130,7 @@
       "column-camera-position-top": "Huippu",
       "column-camera-position-bottom": "Pohja",
       "focus-active-speaker-webcam": "Keskity aktiiviseen kaiuttimeen",
-      "max-num-webcam": "Max visible webcams"
+      "max-num-webcam": "Maksimoi näkyvät webkamerat"
     },
     "keyboard-shortcuts": {
       "title": "Pikanäppäimet",
