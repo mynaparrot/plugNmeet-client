@@ -129,7 +129,8 @@
       "column-camera-position-left": "左",
       "column-camera-position-top": "ページのトップへ",
       "column-camera-position-bottom": "底",
-      "focus-active-speaker-webcam": "アクティブスピーカーに焦点を当てる"
+      "focus-active-speaker-webcam": "アクティブスピーカーに焦点を当てる",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "キーボードショートカット",
