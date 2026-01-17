@@ -15,10 +15,6 @@ const reOrderWebcams = throttle(
     if (typeof room === 'undefined' || !speakers.length) {
       return;
     }
-    if (room.videoSubscribersMap.size < 3) {
-      // no need to update
-      return;
-    }
 
     for (let i = 0; i < speakers.length; i++) {
       const speaker = speakers[i];
@@ -39,6 +35,9 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   const focusActiveSpeakerWebcam = useAppSelector(
     (state) => state.roomSettings.focusActiveSpeakerWebcam,
   );
+  const hasWebcamPages = useAppSelector(
+    (state) => state.roomSettings.hasWebcamPages,
+  );
   const room = getMediaServerConn();
 
   const speakingParticipantIds = useMemo(
@@ -51,7 +50,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   );
 
   useEffect(() => {
-    if (focusActiveSpeakerWebcam && speakingParticipantIds) {
+    if (hasWebcamPages && focusActiveSpeakerWebcam && speakingParticipantIds) {
       reOrderWebcams(activeSpeakers, room);
     }
 
@@ -60,7 +59,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
       reOrderWebcams.cancel();
     };
     // oxlint-disable-next-line exhaustive-deps
-  }, [speakingParticipantIds, room, focusActiveSpeakerWebcam]);
+  }, [speakingParticipantIds, room, focusActiveSpeakerWebcam, hasWebcamPages]);
 
   const activeSpeakersElms = useMemo(() => {
     // Create a Set for efficient O(1) lookups.

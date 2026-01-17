@@ -21,6 +21,7 @@ import {
 } from './helpers/utils';
 import { useDeviceInfo } from './helpers/useDeviceInfo';
 import { AngleDown } from '../../../assets/Icons/AngleDown';
+import { updateHasWebcamPages } from '../../../store/slices/roomSettingsSlice';
 
 interface IVideoLayoutProps {
   allParticipants: ReactElement<VideoParticipantProps>[];
@@ -62,12 +63,12 @@ const VideoLayout = ({
     useState(isVertical);
 
   useEffect(() => {
+    let verticalMode = !!isVertical;
     if (typeof pinParticipant !== 'undefined') {
-      setEnabledVerticalViewMode(true);
-    } else {
-      setEnabledVerticalViewMode(isVertical);
+      verticalMode = true;
     }
-  }, [isVertical, pinParticipant]);
+    setEnabledVerticalViewMode(verticalMode);
+  }, [dispatch, isVertical, pinParticipant]);
 
   useEffect(() => {
     let perPage: number;
@@ -127,6 +128,11 @@ const VideoLayout = ({
     isPortrait,
     isSidebarOpen,
   ]);
+
+  useEffect(() => {
+    const hasPages = allParticipants.length > webcamPerPage;
+    dispatch(updateHasWebcamPages(hasPages));
+  }, [allParticipants.length, webcamPerPage, dispatch]);
 
   const prePage = useCallback((currPage: number) => {
     const newCurrentPage = currPage - 1;

@@ -45,6 +45,7 @@ export interface IRoomSettings {
   selfInsertedE2EESecretKey?: string;
   userNotifications: UserNotification[];
   isSidePanelOpened: boolean;
+  hasWebcamPages: boolean;
 }
 
 export interface IMediaDevice {

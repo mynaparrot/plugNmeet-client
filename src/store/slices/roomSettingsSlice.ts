@@ -51,6 +51,7 @@ const initialState: IRoomSettings = {
   focusActiveSpeakerWebcam: true,
   userNotifications: [],
   isSidePanelOpened: false,
+  hasWebcamPages: false,
 };
 
 const roomSettingsSlice = createSlice({
@@ -202,6 +203,9 @@ const roomSettingsSlice = createSlice({
     updateSelectedChatTransLang: (state, action: PayloadAction<string>) => {
       state.selectedChatTransLang = action.payload;
     },
+    updateHasWebcamPages: (state, action: PayloadAction<boolean>) => {
+      state.hasWebcamPages = action.payload;
+    },
   },
 });
 
@@ -240,6 +244,7 @@ export const {
   setAllUserNotifications,
   updateIsSidePanelOpened,
   updateSelectedChatTransLang,
+  updateHasWebcamPages,
 } = roomSettingsSlice.actions;
 
 export default roomSettingsSlice.reducer;
