@@ -129,7 +129,8 @@
       "column-camera-position-left": "A sinistra",
       "column-camera-position-top": "In alto",
       "column-camera-position-bottom": "Fondoschiena",
-      "focus-active-speaker-webcam": "Concentrati sull'oratore attivo"
+      "focus-active-speaker-webcam": "Concentrati sull'oratore attivo",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "Scorciatoie da tastiera",
