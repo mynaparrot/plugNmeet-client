@@ -129,7 +129,8 @@
       "column-camera-position-left": "Bên trái",
       "column-camera-position-top": "Đỉnh",
       "column-camera-position-bottom": "Đáy",
-      "focus-active-speaker-webcam": "Tập trung vào Active Speaker"
+      "focus-active-speaker-webcam": "Tập trung vào Active Speaker",
+      "max-num-webcam": "Max visible webcams"
     },
     "keyboard-shortcuts": {
       "title": "Phím tắt",
