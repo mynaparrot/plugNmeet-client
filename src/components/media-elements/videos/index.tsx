@@ -80,7 +80,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           displaySwitchCamIcon = false;
         }
 
-        // for (let i = 0; i < 6; i++) {
+        // for (let i = 0; i < 25; i++) {
         totalNumWebcams++;
         const elm = (
           <VideoParticipant
