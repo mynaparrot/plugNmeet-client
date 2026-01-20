@@ -45,12 +45,6 @@ const RespondentItem = ({ user }: { user: Respondents }) => {
 };
 
 export const getFormatedRespondents = (respondents: Respondents[]) => {
-  /*for (let i = 0; i < 50; i++) {
-    respondents.push({
-      userId: `${i}`,
-      name: `user_${i}`,
-    });
-  }*/
   const elms: Array<ReactElement> = [];
   const respondentChunks = chunk(respondents, 10);
 

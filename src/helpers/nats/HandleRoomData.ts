@@ -47,7 +47,9 @@ export default class HandleRoomData {
 
   public updateRoomMetadata = async (data: string) => {
     try {
-      const metadata = fromJsonString(RoomMetadataSchema, data);
+      const metadata = fromJsonString(RoomMetadataSchema, data, {
+        ignoreUnknownFields: true,
+      });
       if (
         typeof this._room.metadata === 'undefined' ||
         this._room.metadata.metadataId !== metadata.metadataId
