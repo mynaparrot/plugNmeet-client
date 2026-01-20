@@ -108,6 +108,7 @@
       "data-savings": "Tiết kiệm dữ liệu",
       "notifications": "Thông báo",
       "ingress": "Đầu vào luồng trực tiếp",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Hiển thị webcam",
       "show-screen-share": "Hiển thị Chia sẻ màn hình",
       "allow-audio-notification": "Bật thông báo bằng âm thanh",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Vui lòng nhập hướng dẫn để biết cách tóm tắt.",
       "enabled-notification-all": "Âm thanh của cuộc họp này hiện đang được ghi lại để tạo ra một bản tóm tắt."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
