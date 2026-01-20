@@ -333,18 +333,20 @@ export default class HandleMediaTracks {
       return;
     }
     let userId = participant.identity;
+    let name = participant.name;
     // for special case SIP
     // our: sip_phoneNumber
     // LK: sip_+phoneNumber
     if (userId.startsWith('sip_')) {
       userId = userId.replace('+', '');
+      name = name?.replace('Phone ', '');
     }
 
     addAudioStream(track.audioTrack.mediaStream, (activity) => {
       store.dispatch(
         addOrUpdateSpeaker({
           userId: userId,
-          name: participant.name ?? '',
+          name: name ?? '',
           isSpeaking: activity.isSpeaking,
           audioLevel: activity.audioLevel,
           lastSpokeAt: activity.lastSpokeAt,
