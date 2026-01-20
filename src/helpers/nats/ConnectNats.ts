@@ -785,7 +785,9 @@ export default class ConnectNats {
     // 1. We'll try to decode the message.
     let data: NatsInitialData;
     try {
-      data = fromJsonString(NatsInitialDataSchema, msg);
+      data = fromJsonString(NatsInitialDataSchema, msg, {
+        ignoreUnknownFields: true,
+      });
     } catch (e: any) {
       console.error(e);
       this.setErrorStatus(
@@ -873,7 +875,9 @@ export default class ConnectNats {
     try {
       const onlineUsers: string[] = JSON.parse(msg);
       for (let i = 0; i < onlineUsers.length; i++) {
-        const user = fromJson(NatsKvUserInfoSchema, onlineUsers[i]);
+        const user = fromJson(NatsKvUserInfoSchema, onlineUsers[i], {
+          ignoreUnknownFields: true,
+        });
         await this.handleParticipants.addRemoteParticipant(user);
       }
       await this.onAfterUserReady();

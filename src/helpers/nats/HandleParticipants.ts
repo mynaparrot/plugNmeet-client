@@ -170,7 +170,9 @@ export default class HandleParticipants {
 
   public handleParticipantMetadataUpdate = async (d: string) => {
     try {
-      const data = fromJsonString(NatsUserMetadataUpdateSchema, d);
+      const data = fromJsonString(NatsUserMetadataUpdateSchema, d, {
+        ignoreUnknownFields: true,
+      });
       await this.updateParticipantMetadata(data.userId, data.metadata);
     } catch (e) {
       console.error(e);

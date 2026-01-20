@@ -10,23 +10,31 @@ import ApplicationSettings from './application';
 import DataSavings from './dataSavings';
 import Ingress from './ingress';
 import Notification from './notification';
+import SipDialIn from './sipDialIn';
 
 declare const PNM_VERSION: string;
 
 const RoomSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { serverVersion, currentUser, copyright_conf, ingressFeatures } =
-    useMemo(() => {
-      const session = store.getState().session;
-      return {
-        serverVersion: session.serverVersion,
-        currentUser: session.currentUser,
-        copyright_conf: session.currentRoom.metadata?.copyrightConf,
-        ingressFeatures:
-          session.currentRoom.metadata?.roomFeatures?.ingressFeatures,
-      };
-    }, []);
+  const {
+    serverVersion,
+    currentUser,
+    copyright_conf,
+    ingressFeatures,
+    sipDialInFeatures,
+  } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      serverVersion: session.serverVersion,
+      currentUser: session.currentUser,
+      copyright_conf: session.currentRoom.metadata?.copyrightConf,
+      ingressFeatures:
+        session.currentRoom.metadata?.roomFeatures?.ingressFeatures,
+      sipDialInFeatures:
+        session.currentRoom.metadata?.roomFeatures?.sipDialInFeatures,
+    };
+  }, []);
 
   const isShowRoomSettingsModal = useAppSelector(
     (state) => state.roomSettings.isShowRoomSettingsModal,
@@ -37,8 +45,13 @@ const RoomSettings = () => {
     'header.room-settings.data-savings': <DataSavings />,
     'header.room-settings.notifications': <Notification />,
   };
-  if (currentUser?.metadata?.isAdmin && ingressFeatures?.isAllow) {
-    baseCategories['header.room-settings.ingress'] = <Ingress />;
+  if (currentUser?.metadata?.isAdmin) {
+    if (ingressFeatures?.isAllow) {
+      baseCategories['header.room-settings.ingress'] = <Ingress />;
+    }
+    if (sipDialInFeatures?.isAllow) {
+      baseCategories['header.room-settings.sip-dial-in'] = <SipDialIn />;
+    }
   }
   const tabItems = Object.keys(baseCategories).map((k) => ({
     id: k,
