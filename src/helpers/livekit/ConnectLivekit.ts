@@ -455,10 +455,15 @@ export default class ConnectLivekit
     if (!participant.audioTrackPublications.size) {
       return;
     }
-    const existUser = participantsSelector.selectById(
-      store.getState(),
-      participant.identity,
-    );
+    let userId = participant.identity;
+    // for special case SIP
+    // our: sip_phoneNumber
+    // LK: sip_+phoneNumber
+    if (userId.startsWith('sip_')) {
+      userId = userId.replace('+', '');
+    }
+
+    const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;
     }
