@@ -108,7 +108,7 @@
       "data-savings": "Hemat Data",
       "notifications": "Pemberitahuan",
       "ingress": "Masukan Streaming Langsung",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "Panggilan SIP/VoIP",
       "show-webcams": "Tampilkan webcam",
       "show-screen-share": "Tampilkan Berbagi Layar",
       "allow-audio-notification": "Aktifkan Pemberitahuan Suara",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "Panggilan masuk SIP tidak diaktifkan untuk ruangan ini.",
+    "hide-phone-number": "Sembunyikan nomor penelepon",
+    "activate": "Aktifkan",
+    "pin": "Akses PIN",
+    "phone-numbers": "Nomor Dial-in:",
+    "no-phone-numbers": "Tidak ada nomor telepon yang tersedia.",
+    "publish-to-chat": "Bagikan ke Chat",
+    "dial-in-info": "Informasi Panggilan"
   }
 }
