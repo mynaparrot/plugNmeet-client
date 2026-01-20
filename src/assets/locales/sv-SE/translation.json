@@ -108,6 +108,7 @@
       "data-savings": "Sparande av data",
       "notifications": "Meddelanden",
       "ingress": "Inmatning av livestream",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Visa webbkameror",
       "show-screen-share": "Visa skärmdelning",
       "allow-audio-notification": "Aktivera ljudaviseringar",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Vänligen ange instruktioner för hur man sammanfattar.",
       "enabled-notification-all": "Ljudet från detta möte spelas nu in för att skapa en sammanfattning."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
