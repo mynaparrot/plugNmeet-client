@@ -38,9 +38,16 @@ const AudioElements = () => {
     audioSubscribers.forEach((participant) => {
       participant.audioTrackPublications.forEach((track) => {
         if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {
+          let userId = participant.identity;
+          // for special case SIP
+          // our: sip_phoneNumber
+          // LK: sip_+phoneNumber
+          if (userId.startsWith('sip_')) {
+            userId = userId.replace('+', '');
+          }
           elms.push(
             <AudioElm
-              userId={participant.identity}
+              userId={userId}
               audioTrack={track.audioTrack}
               key={track.trackSid}
             />,

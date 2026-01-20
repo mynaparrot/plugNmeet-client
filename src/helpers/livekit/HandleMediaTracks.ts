@@ -212,9 +212,17 @@ export default class HandleMediaTracks {
         const count = participant
           .getTrackPublications()
           .filter((t) => t.source === Track.Source.Microphone).length;
+
+        let userId = participant.identity;
+        // for special case SIP
+        // our: sip_phoneNumber
+        // LK: sip_+phoneNumber
+        if (userId.startsWith('sip_')) {
+          userId = userId.replace('+', '');
+        }
         store.dispatch(
           updateParticipant({
-            id: participant.identity,
+            id: userId,
             changes: {
               audioTracks: count,
               isMuted: track.audioTrack?.isMuted ?? false,
@@ -262,10 +270,15 @@ export default class HandleMediaTracks {
         break;
       }
       case Track.Source.Microphone: {
+        let userId = participant.identity;
+        // for special case SIP
+        if (userId.startsWith('sip_')) {
+          userId = userId.replace('+', '');
+        }
         this.connectLivekit.removeAudioSubscriber(participant.identity);
         store.dispatch(
           updateParticipant({
-            id: participant.identity,
+            id: userId,
             changes: {
               audioTracks:
                 participant
@@ -319,11 +332,18 @@ export default class HandleMediaTracks {
     ) {
       return;
     }
+    let userId = participant.identity;
+    // for special case SIP
+    // our: sip_phoneNumber
+    // LK: sip_+phoneNumber
+    if (userId.startsWith('sip_')) {
+      userId = userId.replace('+', '');
+    }
 
     addAudioStream(track.audioTrack.mediaStream, (activity) => {
       store.dispatch(
         addOrUpdateSpeaker({
-          userId: participant.identity,
+          userId: userId,
           name: participant.name ?? '',
           isSpeaking: activity.isSpeaking,
           audioLevel: activity.audioLevel,
@@ -348,6 +368,11 @@ export default class HandleMediaTracks {
       return;
     }
     removeAudioStream(track.audioTrack.mediaStream.id);
-    store.dispatch(removeOneSpeaker(participant.identity));
+    let userId = participant.identity;
+    // for special case SIP
+    if (userId.startsWith('sip_')) {
+      userId = userId.replace('+', '');
+    }
+    store.dispatch(removeOneSpeaker(userId));
   }
 }
