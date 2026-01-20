@@ -108,7 +108,7 @@
       "data-savings": "তথ্য সংরক্ষণ",
       "notifications": "প্রজ্ঞাপন",
       "ingress": "লাইভ স্ট্রিম ইনপুট",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "এসআইপি / ভিওআইপি ডায়াল-ইন",
       "show-webcams": "ওয়েবক্যাম দেখান",
       "show-screen-share": "স্ক্রিন শেয়ার দেখান",
       "allow-audio-notification": "ধ্বনি বিজ্ঞপ্তিগুলি সক্ষম করুন",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "এই রুমের জন্য SIP ডায়াল-ইন সক্ষম নেই।",
+    "hide-phone-number": "কলার নম্বর লুকান",
+    "activate": "সক্রিয় করুন",
+    "pin": "PIN অ্যাক্সেস করুন",
+    "phone-numbers": "ডায়াল-ইন নম্বর:",
+    "no-phone-numbers": "কোনও ফোন নম্বর সুলভ নেই।",
+    "publish-to-chat": "চ্যাটে শেয়ার করুন",
+    "dial-in-info": "ডায়াল-ইন তথ্য"
   }
 }
