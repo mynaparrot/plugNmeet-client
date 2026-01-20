@@ -108,6 +108,7 @@
       "data-savings": "Salvarea datelor",
       "notifications": "Notificări",
       "ingress": "Intrare flux live",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Afișați camerele web",
       "show-screen-share": "Afișați partajarea ecranului",
       "allow-audio-notification": "Activați notificările sonore",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Vă rugăm să introduceți instrucțiuni despre cum să rezumați.",
       "enabled-notification-all": "Înregistrarea audio a acestei întâlniri este acum pentru a genera un rezumat."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
