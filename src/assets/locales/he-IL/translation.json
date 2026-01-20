@@ -108,7 +108,7 @@
       "data-savings": "שמירת נתונים",
       "notifications": "הודעות",
       "ingress": "קלט שידור חי",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "חיוג SIP/VoIP",
       "show-webcams": "הצג מצלמות רשת",
       "show-screen-share": "הצג שיתוף מסך",
       "allow-audio-notification": "הפעלת הודעות קול",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "חיוג SIP לא מופעל בחדר זה.",
+    "hide-phone-number": "הסתר מספר מתקשר",
+    "activate": "הפעל",
+    "pin": "קוד גישה",
+    "phone-numbers": "מספרי חיוג:",
+    "no-phone-numbers": "אין מספרי טלפון זמינים.",
+    "publish-to-chat": "שתפו לצ'אט",
+    "dial-in-info": "מידע על חיוג"
   }
 }
