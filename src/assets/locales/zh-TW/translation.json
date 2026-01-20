@@ -108,6 +108,7 @@
       "data-savings": "資料保存",
       "notifications": "通知",
       "ingress": "直播輸入",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "顯示網路攝影機",
       "show-screen-share": "顯示螢幕共用",
       "allow-audio-notification": "啟用聲音通知",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "請輸入摘要說明。",
       "enabled-notification-all": "本次會議的音訊正在錄製，以生成摘要。"
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
