@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "SIP dial-in nu este activat pentru această cameră.",
+    "hide-phone-number": "Ascunde numărul apelantului",
+    "activate": "Activează",
+    "pin": "Codul PIN de acces",
+    "phone-numbers": "Numere de tip dial-in:",
+    "no-phone-numbers": "Nu sunt disponibile numere de telefon.",
+    "publish-to-chat": "Distribuie în chat",
+    "dial-in-info": "Informații dial-in"
   }
 }
