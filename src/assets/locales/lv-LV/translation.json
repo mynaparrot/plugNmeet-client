@@ -108,7 +108,7 @@
       "data-savings": "Datu saglabāšana",
       "notifications": "Paziņojumus",
       "ingress": "Tiešraides ievade",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIP iezvanes",
       "show-webcams": "Rādīt tīmekļa kameras",
       "show-screen-share": "Rādīt ekrāna koplietošanu",
       "allow-audio-notification": "Iespējot skaņas paziņojumus",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "SIP iezvane šajā telpā nav iespējota.",
+    "hide-phone-number": "Zvanītāja numura paslēpšana",
+    "activate": "Aktivizēt",
+    "pin": "Piekļuves PIN kods",
+    "phone-numbers": "Iezvanes numuri:",
+    "no-phone-numbers": "Tālruņa numuri nav pieejami.",
+    "publish-to-chat": "Dalīties tērzēšanā",
+    "dial-in-info": "Iezvanes informācija"
   }
 }
