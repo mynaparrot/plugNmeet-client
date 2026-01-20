@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "Il SIP dial-in non è abilitato per questa stanza.",
+    "hide-phone-number": "Nascondi numero chiamante",
+    "activate": "Attiva",
+    "pin": "PIN di accesso",
+    "phone-numbers": "Numeri di composizione:",
+    "no-phone-numbers": "Non sono disponibili numeri di telefono.",
+    "publish-to-chat": "Condividi in chat",
+    "dial-in-info": "Informazioni dial-in"
   }
 }
