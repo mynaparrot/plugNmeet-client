@@ -108,7 +108,7 @@
       "data-savings": "Dateneinsparung",
       "notifications": "Benachrichtigungen",
       "ingress": "Live-Stream-Eingabe",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIP-Einwahl",
       "show-webcams": "Webcams anzeigen",
       "show-screen-share": "Bildschirmfreigabe anzeigen",
       "allow-audio-notification": "Aktivieren von Sound-Benachrichtigungen",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "Die SIP-Einwahl ist für diesen Raum nicht aktiviert.",
+    "hide-phone-number": "Anrufernummer ausblenden",
+    "activate": "Aktivieren",
+    "pin": "Zugangs-PIN",
+    "phone-numbers": "Einwahlnummern:",
+    "no-phone-numbers": "Es sind keine Telefonnummern verfügbar.",
+    "publish-to-chat": "Teilen im Chat",
+    "dial-in-info": "Einwahlinformationen"
   }
 }
