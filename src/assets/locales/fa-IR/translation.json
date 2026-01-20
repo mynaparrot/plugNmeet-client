@@ -108,7 +108,7 @@
       "data-savings": "صرفه جویی در داده ها",
       "notifications": "اطلاعیه ها",
       "ingress": "ورودی پخش زنده",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "شماره گیری SIP/VoIP",
       "show-webcams": "نمایش وب کم",
       "show-screen-share": "نمایش اشتراک گذاری صفحه نمایش",
       "allow-audio-notification": "اعلان های صوتی را فعال کنید",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "اتصال SIP برای این اتاق فعال نیست.",
+    "hide-phone-number": "مخفی کردن شماره تماس گیرنده",
+    "activate": "فعال سازی",
+    "pin": "رمز دسترسی",
+    "phone-numbers": "شماره های شماره گیری:",
+    "no-phone-numbers": "هیچ شماره تلفنی در دسترس نیست.",
+    "publish-to-chat": "اشتراک گذاری در چت",
+    "dial-in-info": "اطلاعات شماره گیری"
   }
 }
