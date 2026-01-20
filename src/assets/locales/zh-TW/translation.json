@@ -108,7 +108,7 @@
       "data-savings": "資料保存",
       "notifications": "通知",
       "ingress": "直播輸入",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIP 撥號",
       "show-webcams": "顯示網路攝影機",
       "show-screen-share": "顯示螢幕共用",
       "allow-audio-notification": "啟用聲音通知",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "此房間未啟用SIP撥入功能。",
+    "hide-phone-number": "隱藏來電號碼",
+    "activate": "啟動",
+    "pin": "存取密碼",
+    "phone-numbers": "撥號號碼：",
+    "no-phone-numbers": "目前沒有電話號碼可供查詢。",
+    "publish-to-chat": "分享到聊天室",
+    "dial-in-info": "撥號資訊"
   }
 }
