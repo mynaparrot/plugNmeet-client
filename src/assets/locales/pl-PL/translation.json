@@ -108,6 +108,7 @@
       "data-savings": "Oszczędzanie danych",
       "notifications": "Powiadomienia",
       "ingress": "Wejście strumienia na żywo",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Pokaż kamery internetowe",
       "show-screen-share": "Pokaż udostępniony ekran",
       "allow-audio-notification": "Włącz powiadomienia dźwiękowe",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Proszę wpisać instrukcje, jak podsumować.",
       "enabled-notification-all": "Nagranie audio z tego spotkania jest teraz nagrywane, aby uzyskać podsumowanie."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
