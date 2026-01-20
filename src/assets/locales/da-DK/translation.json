@@ -108,7 +108,7 @@
       "data-savings": "Lagring af data",
       "notifications": "Meddelelser",
       "ingress": "Live Stream Input",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIP opkald ind",
       "show-webcams": "Vis webkameraer",
       "show-screen-share": "Vis skærmdeling",
       "allow-audio-notification": "Aktiver lydmeddelelser",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "SIP opkaldsindstilling er ikke aktiveret i dette rum.",
+    "hide-phone-number": "Skjul opkaldsnummer",
+    "activate": "Aktiver",
+    "pin": "Adgangs-PIN",
+    "phone-numbers": "Indringningsnumre:",
+    "no-phone-numbers": "Der er ingen telefonnumre tilgængelige.",
+    "publish-to-chat": "Del til chat",
+    "dial-in-info": "Opkaldsinformation"
   }
 }
