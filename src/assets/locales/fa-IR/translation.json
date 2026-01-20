@@ -108,6 +108,7 @@
       "data-savings": "صرفه جویی در داده ها",
       "notifications": "اطلاعیه ها",
       "ingress": "ورودی پخش زنده",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "نمایش وب کم",
       "show-screen-share": "نمایش اشتراک گذاری صفحه نمایش",
       "allow-audio-notification": "اعلان های صوتی را فعال کنید",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "لطفا دستورالعمل های خلاصه سازی را وارد کنید.",
       "enabled-notification-all": "صدای این جلسه اکنون ضبط می شود تا خلاصه ای تولید شود."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
