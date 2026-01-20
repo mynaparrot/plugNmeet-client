@@ -108,7 +108,7 @@
       "data-savings": "Αποθήκευση δεδομένων",
       "notifications": "Ειδοποιήσεις",
       "ingress": "Είσοδος ζωντανής ροής",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "Κλήση SIP/VoIP",
       "show-webcams": "Εμφάνιση webcam",
       "show-screen-share": "Εμφάνιση κοινής χρήσης οθόνης",
       "allow-audio-notification": "Ενεργοποίηση ηχητικών ειδοποιήσεων",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "Η κλήση SIP δεν είναι ενεργοποιημένη για αυτό το δωμάτιο.",
+    "hide-phone-number": "Απόκρυψη αριθμού καλούντος",
+    "activate": "Ενεργοποίηση",
+    "pin": "PIN πρόσβασης",
+    "phone-numbers": "Αριθμοί κλήσης:",
+    "no-phone-numbers": "Δεν υπάρχουν διαθέσιμοι αριθμοί τηλεφώνου.",
+    "publish-to-chat": "Κοινή χρήση στο Chat",
+    "dial-in-info": "Πληροφορίες κλήσης σύνδεσης"
   }
 }
