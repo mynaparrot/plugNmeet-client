@@ -108,7 +108,7 @@
       "data-savings": "データ保存",
       "notifications": "通知",
       "ingress": "ライブストリーム入力",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIPダイヤルイン",
       "show-webcams": "ウェブカメラを表示する",
       "show-screen-share": "画面共有を表示",
       "allow-audio-notification": "サウンド通知を有効にする",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "この部屋ではSIPダイヤルインは有効になっていません。",
+    "hide-phone-number": "発信者番号を隠す",
+    "activate": "起動",
+    "pin": "アクセスPIN",
+    "phone-numbers": "ダイヤルイン番号:",
+    "no-phone-numbers": "電話番号は利用できません。",
+    "publish-to-chat": "チャットで共有",
+    "dial-in-info": "ダイヤルイン情報"
   }
 }
