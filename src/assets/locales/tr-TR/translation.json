@@ -108,6 +108,7 @@
       "data-savings": "Veri Tasarrufu",
       "notifications": "Bildirim",
       "ingress": "Canlı Yayın Girişi",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Web kameralarını göster",
       "show-screen-share": "Ekran Paylaşımını Göster",
       "allow-audio-notification": "Sesli Bildirimleri Etkinleştir",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Lütfen nasıl özetleyeceğiniz için talimatları girin.",
       "enabled-notification-all": "Bu toplantının sesi şu anda bir özet oluşturmak için kaydediliyor."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in is not enabled for this room.",
+    "hide-phone-number": "Hide caller number",
+    "activate": "Activate",
+    "pin": "Access PIN",
+    "phone-numbers": "Dial-in Numbers:",
+    "no-phone-numbers": "No phone numbers are available.",
+    "publish-to-chat": "Share to Chat",
+    "dial-in-info": "Dial-in Information"
   }
 }
