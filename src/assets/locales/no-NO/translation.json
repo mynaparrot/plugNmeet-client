@@ -108,7 +108,7 @@
       "data-savings": "Lagring av data",
       "notifications": "Varslinger",
       "ingress": "Inndata for direktesending",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIP-innringing",
       "show-webcams": "Vis webkameraer",
       "show-screen-share": "Vis skjermdeling",
       "allow-audio-notification": "Aktiver lydvarsler",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "SIP-innringing er ikke aktivert for dette rommet.",
+    "hide-phone-number": "Skjul innringernummeret",
+    "activate": "Aktiver",
+    "pin": "Tilgangs-PIN",
+    "phone-numbers": "Innringingsnumre:",
+    "no-phone-numbers": "Ingen telefonnumre er tilgjengelige.",
+    "publish-to-chat": "Del for å chatte",
+    "dial-in-info": "Informasjon om innringing"
   }
 }
