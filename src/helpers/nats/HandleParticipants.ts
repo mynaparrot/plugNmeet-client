@@ -40,7 +40,7 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { getMediaServerConn } from '../livekit/utils';
-import { isUserRecorder } from '../utils';
+import { isUserRecorder, toLiveKitUserId } from '../utils';
 
 const EMPTY_ROOM_CHECK_INTERVAL = 3000;
 
@@ -358,15 +358,10 @@ export default class HandleParticipants {
       }),
     );
 
-    // for special case SIP
-    // our: sip_phoneNumber
-    // LK: sip_+phoneNumber
-    if (userId.startsWith('sip_')) {
-      userId = userId.replace('sip_', 'sip_+');
-    }
-
     const mediaConn = getMediaServerConn();
-    const participant = mediaConn.room.getParticipantByIdentity(userId);
+    const participant = mediaConn.room.getParticipantByIdentity(
+      toLiveKitUserId(userId),
+    );
     if (participant) {
       participant.trackPublications.forEach((track) => {
         if (

@@ -8,6 +8,7 @@ import {
 import AudioElm from './audio';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
+import { toPlugNmeetUserId } from '../../../helpers/utils';
 
 const AudioElements = () => {
   const [audioSubscribers, setAudioSubscribers] =
@@ -38,13 +39,7 @@ const AudioElements = () => {
     audioSubscribers.forEach((participant) => {
       participant.audioTrackPublications.forEach((track) => {
         if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {
-          let userId = participant.identity;
-          // for special case SIP
-          // our: sip_phoneNumber
-          // LK: sip_+phoneNumber
-          if (userId.startsWith('sip_')) {
-            userId = userId.replace('+', '');
-          }
+          const userId = toPlugNmeetUserId(participant.identity);
           elms.push(
             <AudioElm
               userId={userId}

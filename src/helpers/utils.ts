@@ -336,3 +336,20 @@ export const isValidHttpUrl = (url: string) => {
 
   return false;
 };
+
+// for special case SIP
+// our: sip_phoneNumber
+// LK: sip_+phoneNumber
+export const toPlugNmeetUserId = (userId: string) => {
+  if (userId.startsWith('sip_')) {
+    return userId.replace('+', '');
+  }
+  return userId;
+};
+
+export const toLiveKitUserId = (userId: string) => {
+  if (userId.startsWith('sip_')) {
+    return userId.replace('sip_', 'sip_+');
+  }
+  return userId;
+};
