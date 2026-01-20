@@ -108,7 +108,7 @@
       "data-savings": "توفير البيانات",
       "notifications": "الإخطارات",
       "ingress": "إدخال البث المباشر",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "الاتصال عبر SIP/VoIP",
       "show-webcams": "إظهار كاميرات الويب",
       "show-screen-share": "إظهار مشاركة الشاشة",
       "allow-audio-notification": "تمكين الإشعارات الصوتية",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "الاتصال ب SIP غير مفعل لهذه الغرفة.",
+    "hide-phone-number": "إخفاء رقم المتصل",
+    "activate": "تفعيل",
+    "pin": "رمز الدخول",
+    "phone-numbers": "أرقام الاتصال الهاتفي:",
+    "no-phone-numbers": "لا توجد أرقام هواتف متوفرة.",
+    "publish-to-chat": "شارك للدردشة",
+    "dial-in-info": "معلومات الاتصال"
   }
 }
