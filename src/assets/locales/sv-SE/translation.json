@@ -108,7 +108,7 @@
       "data-savings": "Sparande av data",
       "notifications": "Meddelanden",
       "ingress": "Inmatning av livestream",
-      "sip-dial-in": "SIP/VoIP Dial-In",
+      "sip-dial-in": "SIP/VoIP-uppringning",
       "show-webcams": "Visa webbkameror",
       "show-screen-share": "Visa skärmdelning",
       "allow-audio-notification": "Aktivera ljudaviseringar",
@@ -573,13 +573,13 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "SIP dial-in is not enabled for this room.",
-    "hide-phone-number": "Hide caller number",
-    "activate": "Activate",
-    "pin": "Access PIN",
-    "phone-numbers": "Dial-in Numbers:",
-    "no-phone-numbers": "No phone numbers are available.",
-    "publish-to-chat": "Share to Chat",
-    "dial-in-info": "Dial-in Information"
+    "feature-not-allow": "SIP-uppringning är inte aktiverad för detta rum.",
+    "hide-phone-number": "Göm uppringarens nummer",
+    "activate": "Aktivera",
+    "pin": "Åtkomst-PIN",
+    "phone-numbers": "Uppringda nummer:",
+    "no-phone-numbers": "Inga telefonnummer är tillgängliga.",
+    "publish-to-chat": "Dela till chatten",
+    "dial-in-info": "Information om uppringning"
   }
 }
