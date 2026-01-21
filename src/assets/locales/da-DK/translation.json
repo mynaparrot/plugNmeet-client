@@ -107,7 +107,7 @@
       "title": "Indstillinger",
       "data-savings": "Lagring af data",
       "notifications": "Meddelelser",
-      "ingress": "Live Stream Input",
+      "ingress": "Live stream-input",
       "sip-dial-in": "SIP/VoIP opkald ind",
       "show-webcams": "Vis webkameraer",
       "show-screen-share": "Vis skærmdeling",
@@ -147,7 +147,7 @@
       "show-hide-lock-settings": "Vis/skjul mødelåse",
       "show-hide-settings": "Skjul/vis indstillinger",
       "show-hide-whiteboard": "Skjul/vis whiteboard",
-      "show-hide-hand": "Raise/Lower Hand"
+      "show-hide-hand": "Raise/Sænk hånd"
     }
   },
   "app": {
@@ -331,7 +331,7 @@
       "lock-chat-file-share": "Deaktiver fildeling i chat",
       "rtmp-title": "Livestreaming",
       "rtmp-select-provider": "Vælg Service",
-      "rtmp-server-url": "Server URL",
+      "rtmp-server-url": "Server-URL",
       "rtmp-stream-key": "Stream nøgle",
       "rtmp-start-broadcast": "Begynd at streame",
       "rtmp-close-confirm": "Er du sikker på, at du vil afslutte livestreamen?",

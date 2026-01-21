@@ -159,7 +159,7 @@
     "verification-failed-title": "Verificatie mislukt!",
     "token-not-valid": "Het token is niet geldig.",
     "connecting": "Aansluiten...",
-    "re-connecting": "Reconnecting...",
+    "re-connecting": "Weer verbinden...",
     "receiving-data": "Vergadergegevens ophalen...",
     "checking": "Controleren...",
     "loading": "Laden...",
@@ -177,7 +177,7 @@
     "approve": "Goedkeuren",
     "reject": "Verwerpen",
     "participants-tab": "Deelnemers",
-    "polls-tab": "Polls",
+    "polls-tab": "Peilingen",
     "breakout-room-tab": "Breakout Ruimtes",
     "me": "(ik)",
     "public-chat": "Openbare chat",
@@ -331,7 +331,7 @@
       "lock-chat-file-share": "Bestandsdeling uitschakelen in de chat",
       "rtmp-title": "Live streamen",
       "rtmp-select-provider": "Selecteer Service",
-      "rtmp-server-url": "Server URL",
+      "rtmp-server-url": "Server-URL",
       "rtmp-stream-key": "Stream sleutel",
       "rtmp-start-broadcast": "Begin met streamen",
       "rtmp-close-confirm": "Weet je zeker dat je de livestream wilt beëindigen?",
@@ -384,7 +384,7 @@
     "no-pending-user": "Er is niemand die wacht om mee te doen."
   },
   "polls": {
-    "title": "Polls",
+    "title": "Peilingen",
     "poll-num": "Peiling {{index}}",
     "create": "Maak een nieuwe peiling",
     "enter-question": "Vul uw vraag in",
@@ -491,7 +491,7 @@
     "feature-not-allow": "Deze functie is niet toegestaan.",
     "join-as-name-required": "Een weergavenaam is vereist.",
     "gen-link": "Link genereren",
-    "stream-url": "Stream Host/URL",
+    "stream-url": "Streamhost/URL",
     "stream-key": "Stream sleutel"
   },
   "speech-services": {

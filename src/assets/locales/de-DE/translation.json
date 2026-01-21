@@ -486,7 +486,7 @@
   "ingress-features": {
     "ingress-type": "Eingabetyp",
     "ingress-type-rtmp": "RTMP (für OBS, etc.)",
-    "ingress-type-whip": "WHIP (WebRTC, OBS, etc.)",
+    "ingress-type-whip": "WHIP (WebRTC, OBS usw.)",
     "join-as-name": "Anzeigename",
     "feature-not-allow": "Diese Funktion ist nicht zulässig.",
     "join-as-name-required": "Ein Anzeigename ist erforderlich.",

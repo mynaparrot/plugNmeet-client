@@ -412,7 +412,7 @@
     "end-poll": "Avsluta omröstning",
     "end-poll-success": "Omröstningen är avslutad.",
     "publish-result": "Publicera resultat",
-    "total": "Total: {{count}}",
+    "total": "Totalt: {{count}}",
     "not-respondents-total": "Svarade inte: {{count}}"
   },
   "breakout-room": {
