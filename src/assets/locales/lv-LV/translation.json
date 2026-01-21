@@ -108,6 +108,7 @@
       "data-savings": "Datu saglabāšana",
       "notifications": "Paziņojumus",
       "ingress": "Tiešraides ievade",
+      "sip-dial-in": "SIP/VoIP iezvanes",
       "show-webcams": "Rādīt tīmekļa kameras",
       "show-screen-share": "Rādīt ekrāna koplietošanu",
       "allow-audio-notification": "Iespējot skaņas paziņojumus",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Lūdzu, ievadiet norādījumus, kā apkopot.",
       "enabled-notification-all": "Šīs sanāksmes audio tagad tiek ierakstīts, lai izveidotu kopsavilkumu."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP iezvane šajā telpā nav iespējota.",
+    "hide-phone-number": "Zvanītāja numura paslēpšana",
+    "activate": "Aktivizēt",
+    "pin": "Piekļuves PIN kods",
+    "phone-numbers": "Iezvanes numuri:",
+    "no-phone-numbers": "Tālruņa numuri nav pieejami.",
+    "publish-to-chat": "Dalīties tērzēšanā",
+    "dial-in-info": "Iezvanes informācija"
   }
 }

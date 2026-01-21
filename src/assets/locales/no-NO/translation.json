@@ -108,6 +108,7 @@
       "data-savings": "Lagring av data",
       "notifications": "Varslinger",
       "ingress": "Inndata for direktesending",
+      "sip-dial-in": "SIP/VoIP-innringing",
       "show-webcams": "Vis webkameraer",
       "show-screen-share": "Vis skjermdeling",
       "allow-audio-notification": "Aktiver lydvarsler",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Vennligst skriv inn instruksjoner for hvordan du skal oppsummere.",
       "enabled-notification-all": "Lydopptaket fra dette møtet blir nå tatt opp for å lage et sammendrag."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP-innringing er ikke aktivert for dette rommet.",
+    "hide-phone-number": "Skjul innringernummeret",
+    "activate": "Aktiver",
+    "pin": "Tilgangs-PIN",
+    "phone-numbers": "Innringingsnumre:",
+    "no-phone-numbers": "Ingen telefonnumre er tilgjengelige.",
+    "publish-to-chat": "Del for å chatte",
+    "dial-in-info": "Informasjon om innringing"
   }
 }

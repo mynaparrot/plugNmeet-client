@@ -108,6 +108,7 @@
       "data-savings": "Adatmentés",
       "notifications": "Értesítések",
       "ingress": "Élő közvetítés bemenete",
+      "sip-dial-in": "SIP/VoIP tárcsázás",
       "show-webcams": "Webkamerák megjelenítése",
       "show-screen-share": "Képernyőmegosztás megjelenítése",
       "allow-audio-notification": "Hangértesítések engedélyezése",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Kérjük, add meg az összefoglaló utasításait.",
       "enabled-notification-all": "A találkozó hanganyagát most rögzítik, hogy összefoglalót készítsenek."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "Ebben a szobában a SIP tárcsázás nem engedélyezett.",
+    "hide-phone-number": "Rejtsd el a hívószámot",
+    "activate": "Aktiválás",
+    "pin": "Hozzáférési PIN-kód",
+    "phone-numbers": "Tárcsázható számok:",
+    "no-phone-numbers": "Nincsenek elérhető telefonszámok.",
+    "publish-to-chat": "Megosztás a Csevegésbe",
+    "dial-in-info": "Tárcsázási információk"
   }
 }

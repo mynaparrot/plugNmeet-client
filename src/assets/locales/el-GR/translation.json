@@ -108,6 +108,7 @@
       "data-savings": "Αποθήκευση δεδομένων",
       "notifications": "Ειδοποιήσεις",
       "ingress": "Είσοδος ζωντανής ροής",
+      "sip-dial-in": "Κλήση SIP/VoIP",
       "show-webcams": "Εμφάνιση webcam",
       "show-screen-share": "Εμφάνιση κοινής χρήσης οθόνης",
       "allow-audio-notification": "Ενεργοποίηση ηχητικών ειδοποιήσεων",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Εισαγάγετε οδηγίες για τον τρόπο σύνοψης.",
       "enabled-notification-all": "Ο ήχος αυτής της συνάντησης ηχογραφείται τώρα για να δημιουργηθεί μια περίληψη."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "Η κλήση SIP δεν είναι ενεργοποιημένη για αυτό το δωμάτιο.",
+    "hide-phone-number": "Απόκρυψη αριθμού καλούντος",
+    "activate": "Ενεργοποίηση",
+    "pin": "PIN πρόσβασης",
+    "phone-numbers": "Αριθμοί κλήσης:",
+    "no-phone-numbers": "Δεν υπάρχουν διαθέσιμοι αριθμοί τηλεφώνου.",
+    "publish-to-chat": "Κοινή χρήση στο Chat",
+    "dial-in-info": "Πληροφορίες κλήσης σύνδεσης"
   }
 }

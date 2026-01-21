@@ -108,6 +108,7 @@
       "data-savings": "데이터 저장",
       "notifications": "알림을",
       "ingress": "라이브 스트림 입력",
+      "sip-dial-in": "SIP/VoIP 다이얼인",
       "show-webcams": "웹캠 표시",
       "show-screen-share": "화면 공유 표시",
       "allow-audio-notification": "소리 알림 활성화",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "요약 방법을 입력해 주세요.",
       "enabled-notification-all": "이 회의의 오디오가 현재 녹음되어 요약이 생성되고 있습니다."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "이 방에서는 SIP 다이얼인이 활성화되어 있지 않습니다.",
+    "hide-phone-number": "발신자 번호를 숨기기",
+    "activate": "활성화",
+    "pin": "PIN 접근",
+    "phone-numbers": "다이얼인 번호:",
+    "no-phone-numbers": "전화번호는 제공되지 않습니다.",
+    "publish-to-chat": "채팅에 공유",
+    "dial-in-info": "다이얼인 정보"
   }
 }

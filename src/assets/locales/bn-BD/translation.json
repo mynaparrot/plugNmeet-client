@@ -108,6 +108,7 @@
       "data-savings": "তথ্য সংরক্ষণ",
       "notifications": "প্রজ্ঞাপন",
       "ingress": "লাইভ স্ট্রিম ইনপুট",
+      "sip-dial-in": "এসআইপি / ভিওআইপি ডায়াল-ইন",
       "show-webcams": "ওয়েবক্যাম দেখান",
       "show-screen-share": "স্ক্রিন শেয়ার দেখান",
       "allow-audio-notification": "ধ্বনি বিজ্ঞপ্তিগুলি সক্ষম করুন",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "কীভাবে সংক্ষিপ্তসার করবেন তার জন্য নির্দেশাবলী লিখুন।",
       "enabled-notification-all": "একটি সারাংশ তৈরি করতে এই মিটিংয়ের অডিও এখন রেকর্ড করা হচ্ছে।"
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "এই রুমের জন্য SIP ডায়াল-ইন সক্ষম নেই।",
+    "hide-phone-number": "কলার নম্বর লুকান",
+    "activate": "সক্রিয় করুন",
+    "pin": "PIN অ্যাক্সেস করুন",
+    "phone-numbers": "ডায়াল-ইন নম্বর:",
+    "no-phone-numbers": "কোনও ফোন নম্বর সুলভ নেই।",
+    "publish-to-chat": "চ্যাটে শেয়ার করুন",
+    "dial-in-info": "ডায়াল-ইন তথ্য"
   }
 }

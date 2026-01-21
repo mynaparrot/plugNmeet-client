@@ -108,6 +108,7 @@
       "data-savings": "Spremanje podataka",
       "notifications": "Obavijesti",
       "ingress": "Ulaz za prijenos uživo",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Prikaži web kamere",
       "show-screen-share": "Prikaži dijeljenje zaslona",
       "allow-audio-notification": "Omogućite zvučne obavijesti",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Molimo unesite upute kako sažeti.",
       "enabled-notification-all": "Audio s ovog sastanka sada se snima kako bi se generirao sažetak."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP dial-in nije omogućen za ovu prostoriju.",
+    "hide-phone-number": "Sakrij broj pozivatelja",
+    "activate": "Aktiviraj",
+    "pin": "Pristupni PIN",
+    "phone-numbers": "Brojevi za biranje:",
+    "no-phone-numbers": "Nema dostupnih telefonskih brojeva.",
+    "publish-to-chat": "Podijeli za chat",
+    "dial-in-info": "Informacije za dial-in"
   }
 }

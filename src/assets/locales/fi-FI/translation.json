@@ -108,6 +108,7 @@
       "data-savings": "Tietojen tallennus",
       "notifications": "Ilmoitukset",
       "ingress": "Livestreamin tulo",
+      "sip-dial-in": "SIP/VoIP-soitto",
       "show-webcams": "Näytä verkkokamerat",
       "show-screen-share": "Näytä näytön jako",
       "allow-audio-notification": "Ota ääni-ilmoitukset käyttöön",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Syötäthän ohjeet yhteenvetoon.",
       "enabled-notification-all": "Tämän kokouksen äänitteitä nauhoitetaan nyt, jotta saadaan yhteenveto."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP-soittotoiminto ei ole käytössä tässä huoneessa.",
+    "hide-phone-number": "Piilota soittajan numero",
+    "activate": "Aktivoi",
+    "pin": "Access PIN-koodi",
+    "phone-numbers": "Puhelinnumerot:",
+    "no-phone-numbers": "Puhelinnumeroita ei ole saatavilla.",
+    "publish-to-chat": "Jaa chatissa",
+    "dial-in-info": "Soittotiedot"
   }
 }

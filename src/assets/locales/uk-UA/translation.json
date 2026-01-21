@@ -108,6 +108,7 @@
       "data-savings": "Економія даних",
       "notifications": "Сповіщення",
       "ingress": "Вхідні дані прямої трансляції",
+      "sip-dial-in": "SIP/VoIP Dial-In",
       "show-webcams": "Показати веб-камери",
       "show-screen-share": "Показати спільний доступ до екрана",
       "allow-audio-notification": "Увімкніть звукові сповіщення",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Будь ласка, введіть інструкції, як узагальнити.",
       "enabled-notification-all": "Аудіозапис цієї зустрічі зараз записується для створення резюме."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "Для цієї кімнати SIP-дзвінок не увімкнений.",
+    "hide-phone-number": "Приховати номер абонента",
+    "activate": "Активувати",
+    "pin": "PIN-код доступу",
+    "phone-numbers": "Номери для набору номерів:",
+    "no-phone-numbers": "Телефонні номери недоступні.",
+    "publish-to-chat": "Поділитися для чату",
+    "dial-in-info": "Інформація для дзвінка"
   }
 }

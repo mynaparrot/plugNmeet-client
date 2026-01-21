@@ -108,6 +108,7 @@
       "data-savings": "Gegevens opslaan",
       "notifications": "Meldingen",
       "ingress": "Invoer van livestreams",
+      "sip-dial-in": "SIP/VoIP Inbelen",
       "show-webcams": "Webcams weergeven",
       "show-screen-share": "Scherm delen weergeven",
       "allow-audio-notification": "Geluidsmeldingen inschakelen",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Voer instructies in voor hoe je het samenvat.",
       "enabled-notification-all": "De audio van deze vergadering wordt nu opgenomen om een samenvatting te maken."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP-inbelen is niet ingeschakeld voor deze kamer.",
+    "hide-phone-number": "Verberg het nummer.",
+    "activate": "Activeer",
+    "pin": "Toegangscode",
+    "phone-numbers": "Inbelnummers:",
+    "no-phone-numbers": "Er zijn geen telefoonnummers beschikbaar.",
+    "publish-to-chat": "Deel om te Chatten",
+    "dial-in-info": "Inbelinformatie"
   }
 }

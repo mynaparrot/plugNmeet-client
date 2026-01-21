@@ -108,6 +108,7 @@
       "data-savings": "Sauvegarde des données",
       "notifications": "Notifications",
       "ingress": "Entrée de flux en direct",
+      "sip-dial-in": "Commutation SIP/VoIP",
       "show-webcams": "Afficher les caméras",
       "show-screen-share": "Afficher le partage d’écran",
       "allow-audio-notification": "Activer les notifications sonores",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Veuillez entrer les instructions pour résumer.",
       "enabled-notification-all": "L’audio de cette réunion est maintenant enregistré pour générer un résumé."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "Le système de commutation SIP n’est pas activé pour cette pièce.",
+    "hide-phone-number": "Masquer le numéro de l’appelant",
+    "activate": "Activez",
+    "pin": "Code PIN d’accès",
+    "phone-numbers": "Numéros à composer :",
+    "no-phone-numbers": "Aucun numéro de téléphone n’est disponible.",
+    "publish-to-chat": "Partager sur le chat",
+    "dial-in-info": "Informations par numérotation"
   }
 }

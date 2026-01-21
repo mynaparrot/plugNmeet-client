@@ -108,6 +108,7 @@
       "data-savings": "שמירת נתונים",
       "notifications": "הודעות",
       "ingress": "קלט שידור חי",
+      "sip-dial-in": "חיוג SIP/VoIP",
       "show-webcams": "הצג מצלמות רשת",
       "show-screen-share": "הצג שיתוף מסך",
       "allow-audio-notification": "הפעלת הודעות קול",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "אנא הזן הוראות לסיכום.",
       "enabled-notification-all": "ההקלטה של הפגישה הזו מוקלטת כעת כדי להפיק סיכום."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "חיוג SIP לא מופעל בחדר זה.",
+    "hide-phone-number": "הסתר מספר מתקשר",
+    "activate": "הפעל",
+    "pin": "קוד גישה",
+    "phone-numbers": "מספרי חיוג:",
+    "no-phone-numbers": "אין מספרי טלפון זמינים.",
+    "publish-to-chat": "שתפו לצ'אט",
+    "dial-in-info": "מידע על חיוג"
   }
 }

@@ -108,6 +108,7 @@
       "data-savings": "数据保存",
       "notifications": "通知",
       "ingress": "直播输入",
+      "sip-dial-in": "SIP/VoIP 拨号",
       "show-webcams": "显示网络摄像头",
       "show-screen-share": "显示屏幕共享",
       "allow-audio-notification": "启用声音通知",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "请输入总结说明。",
       "enabled-notification-all": "本次会议的音频正在录制，以生成摘要。"
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "该房间未启用SIP拨号。",
+    "hide-phone-number": "隐藏来电号码",
+    "activate": "启动",
+    "pin": "访问密码",
+    "phone-numbers": "拨号号码：",
+    "no-phone-numbers": "没有电话号码可用。",
+    "publish-to-chat": "分享到聊天",
+    "dial-in-info": "拨号信息"
   }
 }

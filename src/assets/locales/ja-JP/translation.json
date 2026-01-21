@@ -108,6 +108,7 @@
       "data-savings": "データ保存",
       "notifications": "通知",
       "ingress": "ライブストリーム入力",
+      "sip-dial-in": "SIP/VoIPダイヤルイン",
       "show-webcams": "ウェブカメラを表示する",
       "show-screen-share": "画面共有を表示",
       "allow-audio-notification": "サウンド通知を有効にする",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "要約の手順を入力してください。",
       "enabled-notification-all": "この会議の音声は現在録音され、要約が作成されています。"
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "この部屋ではSIPダイヤルインは有効になっていません。",
+    "hide-phone-number": "発信者番号を隠す",
+    "activate": "起動",
+    "pin": "アクセスPIN",
+    "phone-numbers": "ダイヤルイン番号:",
+    "no-phone-numbers": "電話番号は利用できません。",
+    "publish-to-chat": "チャットで共有",
+    "dial-in-info": "ダイヤルイン情報"
   }
 }

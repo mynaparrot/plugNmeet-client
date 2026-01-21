@@ -108,6 +108,7 @@
       "data-savings": "Úspora dat",
       "notifications": "Upozornění",
       "ingress": "Vstup živého přenosu",
+      "sip-dial-in": "SIP/VoIP vytáčecí připojení",
       "show-webcams": "Zobrazit webkamery",
       "show-screen-share": "Zobrazit sdílení obrazovky",
       "allow-audio-notification": "Povolte zvuková upozornění",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Zadejte prosím instrukce, jak shrnout.",
       "enabled-notification-all": "Zvuková nahrávka tohoto setkání je nyní nahrávána, aby vzniklo shrnutí."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "SIP připojení není v této místnosti povoleno.",
+    "hide-phone-number": "Skryjte číslo volajícího",
+    "activate": "Aktivovat",
+    "pin": "Přístupový PIN",
+    "phone-numbers": "Čísla pro připojení k telefonu:",
+    "no-phone-numbers": "Nejsou k dispozici žádná telefonní čísla.",
+    "publish-to-chat": "Sdílet pro chat",
+    "dial-in-info": "Informace o připojení k připojení"
   }
 }

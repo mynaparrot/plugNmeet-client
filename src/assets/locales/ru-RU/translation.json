@@ -108,6 +108,7 @@
       "data-savings": "Экономия данных",
       "notifications": "Уведомления",
       "ingress": "Вход для прямой трансляции",
+      "sip-dial-in": "Набор SIP/VoIP",
       "show-webcams": "Показать веб-камеры",
       "show-screen-share": "Показать демонстрацию экрана",
       "allow-audio-notification": "Включить звуковые уведомления",
@@ -570,5 +571,15 @@
       "summarization-prompt-required": "Пожалуйста, введите инструкции по краткому изложению.",
       "enabled-notification-all": "Аудиозапись этой встречи сейчас записывается для создания краткого содержания."
     }
+  },
+  "sip-dial-in-features": {
+    "feature-not-allow": "Для этой комнаты SIP-набор не включён.",
+    "hide-phone-number": "Скрыть номер звонящего",
+    "activate": "Активировать",
+    "pin": "PIN-код доступа",
+    "phone-numbers": "Номера для звонка:",
+    "no-phone-numbers": "Телефонные номера недоступны.",
+    "publish-to-chat": "Поделиться в чате",
+    "dial-in-info": "Информация для звонка"
   }
 }
