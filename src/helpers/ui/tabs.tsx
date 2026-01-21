@@ -24,13 +24,13 @@ const Tabs = ({
 }: ITabsProps) => {
   return (
     <TabGroup vertical={vertical} className="outline-hidden">
-      <TabList className={clsx('flex', tabListCss)}>
+      <TabList className={clsx('tablist relative flex', tabListCss)}>
         {items.map((item) => (
           <Tab
             key={item.id}
             className={({ selected }) => {
               return clsx(
-                'w-full py-2 text-sm text-Gray-950 dark:text-white font-medium leading-5 border-b-4 border-solid transition ease-in outline-hidden cursor-pointer',
+                'w-full py-2 px-2 text-sm text-Gray-950 dark:text-white font-medium leading-5 border-b-4 border-solid transition ease-in outline-hidden cursor-pointer',
                 selected ? 'border-Blue' : 'border-Blue/20',
               );
             }}

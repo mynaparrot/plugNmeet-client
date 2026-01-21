@@ -1218,3 +1218,26 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     overflow-y: auto;
   }
 }
+@media screen and (min-width: 640px) {
+  .header-room-settings .tablist::before {
+    content: '';
+    @apply absolute bg-Blue/20 w-full h-1 bottom-0;
+  }
+  .header-room-settings .tablist button {
+    @apply w-auto;
+  }
+  .header-room-settings .tablist {
+    @apply justify-between;
+  }
+  .header-room-settings .tablist button.border-Blue\/20 {
+    @apply border-transparent;
+  }
+}
+@media screen and (max-width: 639px) {
+  .header-room-settings .tablist {
+    @apply justify-center flex-wrap;
+  }
+  .header-room-settings .tablist button {
+    @apply w-auto flex-1 min-w-28;
+  }
+}
