@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.1.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.3...v2.1.0) (2026-01-21)
+
+
+### Features
+
+* SIP dial-in ([816b37e](https://github.com/mynaparrot/plugNmeet-client/commit/816b37ef0975b902048953c04aaf073bb972ba2a))
+* SIP dial-in ([6a4299d](https://github.com/mynaparrot/plugNmeet-client/commit/6a4299d420b0799df7a67e2dea5cb1d3992231c9))
+
+
+### Bug Fixes
+
+* bump proto ([e4f02e2](https://github.com/mynaparrot/plugNmeet-client/commit/e4f02e2dd03fe676e9afc786fb50ae9850e2907d))
+* dependencies update ([a20350a](https://github.com/mynaparrot/plugNmeet-client/commit/a20350a36d601ad7ffeecee26f70e0d44aca17e7))
+* header tab design ([e2d5e36](https://github.com/mynaparrot/plugNmeet-client/commit/e2d5e36028bded7e214555667575b7c2ccd5368f))
+* invalid avatar for SIP phone ([438d1d3](https://github.com/mynaparrot/plugNmeet-client/commit/438d1d30f315286509ca4c34a7bab71f4ece386f))
+* **layout:** Improve active speaker re-ordering logic ([9f52cd3](https://github.com/mynaparrot/plugNmeet-client/commit/9f52cd3a90f56efa89a95c56095ed10a3a1fcc90))
+* mask phone number in proper way ([41f4123](https://github.com/mynaparrot/plugNmeet-client/commit/41f412350226765b665a1ae1ab0052f5a75a40b8))
+* new Crowdin updates ([692e047](https://github.com/mynaparrot/plugNmeet-client/commit/692e047cbda235375951dda25c340a0cafd215f6))
+* new Crowdin updates ([b27c667](https://github.com/mynaparrot/plugNmeet-client/commit/b27c66727287ddf69e6917ebbdf0110ba052ebf0))
+* next/prev button height issue ([5500fd8](https://github.com/mynaparrot/plugNmeet-client/commit/5500fd872c91486d38d96afc4b1edb975aae08a7))
+* on disconnect close all tracks ([8c4096f](https://github.com/mynaparrot/plugNmeet-client/commit/8c4096f731c5c3d27116d6a8f62668059b778b50))
+* option to set max number of visible webcams ([19cc268](https://github.com/mynaparrot/plugNmeet-client/commit/19cc268e44705b3baf0016ecb2ef76918ba83964))
+* removed deprecated `speechServices` ([3c51af8](https://github.com/mynaparrot/plugNmeet-client/commit/3c51af8d63785bf69514cbf88c9be6ca1fbc3378))
+* SIP design + logic ([b13b5b1](https://github.com/mynaparrot/plugNmeet-client/commit/b13b5b14e767f7b0879385ef349d9db936e8d4e8))
+* SIP user name ([5d44a47](https://github.com/mynaparrot/plugNmeet-client/commit/5d44a47c038e695967833835b1637a99449c2a58))
+* use sip provided name ([fe705fa](https://github.com/mynaparrot/plugNmeet-client/commit/fe705fa2c6abd6638d3d9a172bf79daea8e3c805))
+
 ## [2.0.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.2...v2.0.3) (2026-01-12)
 
 
