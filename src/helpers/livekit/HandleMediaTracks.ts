@@ -29,6 +29,7 @@ import {
   addAudioStream,
   removeAudioStream,
 } from '../libs/AudioActivityManager';
+import { toPlugNmeetUserId } from '../utils';
 
 export default class HandleMediaTracks {
   private connectLivekit: IConnectLivekit;
@@ -213,13 +214,7 @@ export default class HandleMediaTracks {
           .getTrackPublications()
           .filter((t) => t.source === Track.Source.Microphone).length;
 
-        let userId = participant.identity;
-        // for special case SIP
-        // our: sip_phoneNumber
-        // LK: sip_+phoneNumber
-        if (userId.startsWith('sip_')) {
-          userId = userId.replace('+', '');
-        }
+        const userId = toPlugNmeetUserId(participant.identity);
         store.dispatch(
           updateParticipant({
             id: userId,
@@ -270,11 +265,7 @@ export default class HandleMediaTracks {
         break;
       }
       case Track.Source.Microphone: {
-        let userId = participant.identity;
-        // for special case SIP
-        if (userId.startsWith('sip_')) {
-          userId = userId.replace('+', '');
-        }
+        const userId = toPlugNmeetUserId(participant.identity);
         this.connectLivekit.removeAudioSubscriber(participant.identity);
         store.dispatch(
           updateParticipant({
@@ -332,21 +323,14 @@ export default class HandleMediaTracks {
     ) {
       return;
     }
-    let userId = participant.identity;
-    let name = participant.name;
-    // for special case SIP
-    // our: sip_phoneNumber
-    // LK: sip_+phoneNumber
-    if (userId.startsWith('sip_')) {
-      userId = userId.replace('+', '');
-      name = name?.replace('Phone ', '');
-    }
+    const userId = toPlugNmeetUserId(participant.identity);
+    const userInfo = participantsSelector.selectById(store.getState(), userId);
 
     addAudioStream(track.audioTrack.mediaStream, (activity) => {
       store.dispatch(
         addOrUpdateSpeaker({
           userId: userId,
-          name: name ?? '',
+          name: userInfo.name,
           isSpeaking: activity.isSpeaking,
           audioLevel: activity.audioLevel,
           lastSpokeAt: activity.lastSpokeAt,
@@ -370,11 +354,7 @@ export default class HandleMediaTracks {
       return;
     }
     removeAudioStream(track.audioTrack.mediaStream.id);
-    let userId = participant.identity;
-    // for special case SIP
-    if (userId.startsWith('sip_')) {
-      userId = userId.replace('+', '');
-    }
+    const userId = toPlugNmeetUserId(participant.identity);
     store.dispatch(removeOneSpeaker(userId));
   }
 }

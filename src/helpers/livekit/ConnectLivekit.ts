@@ -49,7 +49,7 @@ import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
-import { getConfigValue } from '../utils';
+import { getConfigValue, toPlugNmeetUserId } from '../utils';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -455,10 +455,8 @@ export default class ConnectLivekit
     if (!participant.audioTrackPublications.size) {
       return;
     }
-    const existUser = participantsSelector.selectById(
-      store.getState(),
-      participant.identity,
-    );
+    const userId = toPlugNmeetUserId(participant.identity);
+    const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;
     }

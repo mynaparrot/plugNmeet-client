@@ -99,7 +99,7 @@ const RoomSettings = () => {
       show={true}
       onClose={closeModal}
       title={t('header.room-settings.title')}
-      maxWidth="max-w-2xl"
+      maxWidth="max-w-2xl header-room-settings"
     >
       <div className="wrap relative">
         <Tabs items={tabItems} tabPanelsCss="min-h-[316px]" />

@@ -116,19 +116,26 @@ const SipDialIn = () => {
   const renderInfo = () => {
     return (
       <>
+        <SettingsSwitch
+          label={t('sip-dial-in-features.hide-phone-number')}
+          enabled={hidePhoneNumber}
+          onChange={setHidePhoneNumber}
+          customCss="my-4"
+          disabled={true}
+        />
         <FormattedInputField
           label={t('sip-dial-in-features.pin')}
           id="pin"
           value={sipDialInFeatures?.pin}
           readOnly={true}
         />
-        <div className="mt-4">
-          <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <div className="flex flex-wrap items-start justify-between my-5">
+          <label className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text">
             {t('sip-dial-in-features.phone-numbers', 'Phone numbers')}
-          </p>
+          </label>
           {sipDialInFeatures?.phoneNumbers &&
           sipDialInFeatures.phoneNumbers.length > 0 ? (
-            <ul className="flex flex-col gap-y-2">
+            <ul className="grid gap-y-2 w-full max-w-full sm:max-w-[250px]">
               {sipDialInFeatures.phoneNumbers.map((phone) => (
                 <li key={phone} className="flex items-center gap-2 text-sm">
                   <div className="thumb h-6 w-6 rounded-full bg-blue-500 text-xs font-medium text-white flex items-center justify-center overflow-hidden shrink-0">
@@ -149,7 +156,7 @@ const SipDialIn = () => {
             </p>
           )}
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-10">
           <button
             onClick={publishToChat}
             className="primary-button h-8 px-5 flex items-center justify-center text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer"
