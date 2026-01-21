@@ -362,7 +362,14 @@ export const toPlugNmeetUserId = (userId: string) => {
 
 export const toLiveKitUserId = (userId: string) => {
   if (userId.startsWith('sip_')) {
-    return userId.replace('sip_', 'sip_+');
+    // if phone number hidden then SIP will send random userId
+    // which basically don't need to add + sign
+    if (
+      !store.getState().session.currentRoom.metadata?.roomFeatures
+        ?.sipDialInFeatures?.hidePhoneNumber
+    ) {
+      return userId.replace('sip_', 'sip_+');
+    }
   }
   return userId;
 };
