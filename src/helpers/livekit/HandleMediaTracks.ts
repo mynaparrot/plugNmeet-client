@@ -323,17 +323,12 @@ export default class HandleMediaTracks {
     ) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
-    let name = participant.name;
-    if (userId.startsWith('sip_')) {
-      name = userId.replace('sip_', '');
-    }
 
     addAudioStream(track.audioTrack.mediaStream, (activity) => {
       store.dispatch(
         addOrUpdateSpeaker({
-          userId: userId,
-          name: name ?? '',
+          userId: toPlugNmeetUserId(participant.identity),
+          name: participant.name ?? '',
           isSpeaking: activity.isSpeaking,
           audioLevel: activity.audioLevel,
           lastSpokeAt: activity.lastSpokeAt,
