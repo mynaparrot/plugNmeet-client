@@ -116,6 +116,13 @@ const SipDialIn = () => {
   const renderInfo = () => {
     return (
       <>
+        <SettingsSwitch
+          label={t('sip-dial-in-features.hide-phone-number')}
+          enabled={hidePhoneNumber}
+          onChange={setHidePhoneNumber}
+          customCss="my-4"
+          disabled={true}
+        />
         <FormattedInputField
           label={t('sip-dial-in-features.pin')}
           id="pin"
