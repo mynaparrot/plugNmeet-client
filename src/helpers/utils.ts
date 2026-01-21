@@ -310,15 +310,28 @@ export function createEmptyVideoStreamTrack(name: string) {
 }
 
 export const generateAvatarInitial = (name: string) => {
-  const nameParts = name.trim().split(/\s+/);
+  const trimmedName = name.trim();
+
+  // Check if the name contains any digits, which may indicate a phone number.
+  if (/\d/.test(trimmedName)) {
+    const firstChar = trimmedName[0] || '';
+    const lastChar =
+      trimmedName.length > 1 ? trimmedName[trimmedName.length - 1] : '';
+    return `${firstChar}${lastChar}`.toLocaleUpperCase();
+  }
+
+  // Fallback to the original logic for regular names.
+  const nameParts = trimmedName.split(/\s+/);
   const firstNameInitial = nameParts[0]?.[0] || '';
   let lastNameInitial = '';
 
   if (nameParts.length > 1) {
     lastNameInitial = nameParts[nameParts.length - 1]?.[0] || '';
   } else if (nameParts[0]?.length > 1) {
+    // If it's a single word, use the first and last characters.
     lastNameInitial = nameParts[0].slice(-1);
   }
+
   return `${firstNameInitial}${lastNameInitial}`.toLocaleUpperCase();
 };
 
