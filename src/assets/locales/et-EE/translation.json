@@ -128,7 +128,7 @@
       "column-camera-width-small": "Väike",
       "column-camera-position": "Videoveeru asukoht",
       "column-camera-position-left": "Vasak",
-      "column-camera-position-top": "Top",
+      "column-camera-position-top": "Algus",
       "column-camera-position-bottom": "Alt",
       "focus-active-speaker-webcam": "Keskenduge aktiivsele kõlarile",
       "max-num-webcam": "Max nähtavad veebikaamerad"
@@ -230,7 +230,7 @@
   },
   "right-panel": {
     "you": "Te",
-    "uploading-file": "Uploading {{fileName}}",
+    "uploading-file": "Üleslaadimine {{fileName}}",
     "file-upload-success": "Faili üleslaadimine õnnestus",
     "file-upload-default-error": "Faili üleslaadimisel ilmnes tõrge.",
     "chat-box-placeholder": "Saatke sõnum, kleepige pilt või kukutage fail siia (Uus rida: tõstuklahv + sisestusklahv)",
@@ -344,7 +344,7 @@
       "external-media-player-direct-link": "Lingilt",
       "external-media-player-upload-file": "Faili üleslaadimine",
       "external-media-player-upload-file-play": "Laadige üles ja mängige",
-      "external-media-player-uploading": "Uploading...",
+      "external-media-player-uploading": "Laadin...",
       "external-media-player-upload-supported-files": "Toetatud failid: {{files}}",
       "external-media-player-select-file": "Valige üleslaaditav meediumifail",
       "upload-background-image": "Laadige üles taustapilt",
