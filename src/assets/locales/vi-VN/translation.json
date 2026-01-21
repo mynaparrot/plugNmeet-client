@@ -177,7 +177,7 @@
     "approve": "Chấp nhận",
     "reject": "Bác bỏ",
     "participants-tab": "Tham gia",
-    "polls-tab": "Polls",
+    "polls-tab": "Thăm dò ý kiến",
     "breakout-room-tab": "Phòng họp nhóm",
     "me": "(tôi)",
     "public-chat": "Trò chuyện công khai",
@@ -384,7 +384,7 @@
     "no-pending-user": "Không có ai chờ đợi để tham gia."
   },
   "polls": {
-    "title": "Polls",
+    "title": "Thăm dò ý kiến",
     "poll-num": "Thăm dò ý kiến {{index}}",
     "create": "Tạo một cuộc thăm dò ý kiến mới",
     "enter-question": "Nhập câu hỏi của bạn",
