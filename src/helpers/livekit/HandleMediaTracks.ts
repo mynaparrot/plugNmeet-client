@@ -323,12 +323,14 @@ export default class HandleMediaTracks {
     ) {
       return;
     }
+    const userId = toPlugNmeetUserId(participant.identity);
+    const userInfo = participantsSelector.selectById(store.getState(), userId);
 
     addAudioStream(track.audioTrack.mediaStream, (activity) => {
       store.dispatch(
         addOrUpdateSpeaker({
-          userId: toPlugNmeetUserId(participant.identity),
-          name: participant.name ?? '',
+          userId: userId,
+          name: userInfo.name,
           isSpeaking: activity.isSpeaking,
           audioLevel: activity.audioLevel,
           lastSpokeAt: activity.lastSpokeAt,
