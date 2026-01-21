@@ -412,7 +412,7 @@
     "end-poll": "Avslutt avstemning",
     "end-poll-success": "Avstemningen er avsluttet.",
     "publish-result": "Publiser resultater",
-    "total": "Total: {{count}}",
+    "total": "Totalt: {{count}}",
     "not-respondents-total": "Svarte ikke: {{count}}"
   },
   "breakout-room": {
@@ -485,8 +485,8 @@
   },
   "ingress-features": {
     "ingress-type": "Type inngang",
-    "ingress-type-rtmp": "RTMP (for OBS, etc.)",
-    "ingress-type-whip": "WHIP (WebRTC, OBS, etc.)",
+    "ingress-type-rtmp": "RTMP (for OBS, osv.)",
+    "ingress-type-whip": "WHIP (WebRTC, OBS, osv.)",
     "join-as-name": "Visningsnavn",
     "feature-not-allow": "Denne funksjonen er ikke tillatt.",
     "join-as-name-required": "Et visningsnavn kreves.",
