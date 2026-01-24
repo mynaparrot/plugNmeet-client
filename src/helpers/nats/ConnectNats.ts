@@ -35,7 +35,7 @@ import {
   tokenAuthenticator,
   wsconnect,
 } from '@nats-io/nats-core';
-import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
+import { jetstream, JetStreamClient } from '@nats-io/jetstream';
 import { isE2EESupported } from 'livekit-client';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
@@ -91,6 +91,7 @@ import { executeChatTranslation } from '../../components/translation-transcripti
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
 const STATUS_CHECKER_INTERVAL = 500;
+const pnmRoomStream = 'pnm-room-stream';
 
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
@@ -210,10 +211,9 @@ export default class ConnectNats {
     // start monitoring connection
     this.monitorConnStatus().then();
 
-    // now we'll subscribe to the system only
-    // others will be done after received initial data
-    this.subscribeToSystemPrivate().then();
-    this.subscribeToSystemPublic().then();
+    // now we'll subscribe to the room events stream
+    this.subscribeToRoomEvents().then();
+    // we'll still need this for any pub/sub based messages
     this.subscribeToSystemPublicPubSub().then();
 
     this.startTokenRenewInterval();
@@ -352,27 +352,44 @@ export default class ConnectNats {
   }
 
   /**
-   * Subscribe to a stream
-   * @param streamName
-   * @param consumerNameSuffix
-   * @param handler
+   * Subscribes to the single user consumer on the main room stream.
+   * This one subscription will handle all JetStream-based messages for the user,
+   * including system events and chat messages.
    * @private
    */
-  private async _subscribe(
-    streamName: string,
-    consumerNameSuffix: string,
-    handler: (m: JsMsg) => Promise<void>,
-  ) {
+  private async subscribeToRoomEvents() {
     if (typeof this._js === 'undefined') {
       return;
     }
-    const consumerName = consumerNameSuffix + ':' + this._userId;
-    const consumer = await this._js.consumers.get(streamName, consumerName);
+    const consumerName = `${this._roomId}_${this._userId}`;
+    const consumer = await this._js.consumers.get(pnmRoomStream, consumerName);
     const sub = await consumer.consume();
 
     for await (const m of sub) {
       try {
-        await handler(m);
+        // Is it a chat message?
+        if (m.subject.startsWith(this._subjects.chat)) {
+          let dataToParse = m.data;
+          if (this._enableE2EEChat) {
+            const data = await this.decryptData(dataToParse);
+            if (typeof data === 'undefined') {
+              // Decryption failed, probably because the key is not ready.
+              // NAK will cause redelivery.
+              m.nak(1000);
+              continue;
+            }
+            dataToParse = data;
+          }
+          const payload = fromBinary(ChatMessageSchema, dataToParse);
+          await this.handleChat.handleMsg(payload);
+        } else {
+          // Otherwise, it's a system message
+          const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+          if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
+            m.ack(); // Ack early before session ends
+          }
+          await this.handleSystemEvents(payload);
+        }
         m.ack();
       } catch (e) {
         const err = e as Error;
@@ -380,41 +397,6 @@ export default class ConnectNats {
         m.nak();
       }
     }
-  }
-
-  /**
-   * All the system private events will be handled here
-   * @private
-   */
-  private async subscribeToSystemPrivate() {
-    await this._subscribe(
-      this._roomId,
-      this._subjects.systemPrivate,
-      async (m) => {
-        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-          m.ack(); // Ack early before session ends
-        }
-        await this.handleSystemEvents(payload);
-      },
-    );
-  }
-
-  /**
-   * All the system public events will be handled here
-   */
-  private async subscribeToSystemPublic() {
-    await this._subscribe(
-      this._roomId,
-      this._subjects.systemPublic,
-      async (m) => {
-        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-          m.ack(); // Ack early before session ends
-        }
-        await this.handleSystemEvents(payload);
-      },
-    );
   }
 
   /**
@@ -475,25 +457,6 @@ export default class ConnectNats {
     return undefined;
   }
 
-  /**
-   * All the events related with chat will be handled here,
-   * including public and private
-   */
-  private async subscribeToChat() {
-    await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
-      let dataToParse = m.data;
-      if (this._enableE2EEChat) {
-        const data = await this.decryptData(dataToParse);
-        if (typeof data === 'undefined') {
-          return;
-        }
-        dataToParse = data;
-      }
-      const payload = fromBinary(ChatMessageSchema, dataToParse);
-      await this.handleChat.handleMsg(payload);
-    });
-  }
-
   public sendChatMsg = async (to: string, msg: string) => {
     const isPrivate = to !== 'public';
     const chatMessage = create(ChatMessageSchema, {
@@ -542,8 +505,7 @@ export default class ConnectNats {
       payload = data;
     }
 
-    const subject =
-      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
+    const subject = `${this._subjects.chat}.${this._roomId}.${this._userId}`;
     this.messageQueue.addToQueue({
       subject,
       payload,
@@ -966,9 +928,7 @@ export default class ConnectNats {
     // 2. Subscribe to real-time data channels.
     // These subscriptions are set up after initial data is loaded to ensure
     // that all necessary user and room information is available.
-    // For example, E2EE requires a key that is part of the initial data.
     Promise.all([
-      this.subscribeToChat(),
       this.subscribeToWhiteboard(),
       this.subscribeToDataChannel(),
     ]).then(async () => {
