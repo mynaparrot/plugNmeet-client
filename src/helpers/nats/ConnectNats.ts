@@ -214,6 +214,7 @@ export default class ConnectNats {
     // others will be done after received initial data
     this.subscribeToSystemPrivate().then();
     this.subscribeToSystemPublic().then();
+    this.subscribeToSystemPublicPubSub().then();
 
     this.startTokenRenewInterval();
     this.startPingToServer();
@@ -414,6 +415,24 @@ export default class ConnectNats {
         await this.handleSystemEvents(payload);
       },
     );
+  }
+
+  /**
+   * All the system public events send by core pub/sub
+   * @private
+   */
+  private async subscribeToSystemPublicPubSub() {
+    if (!this._nc) {
+      return;
+    }
+
+    const subject = `${this._subjects.systemPublic}.${this._roomId}`;
+    const sub = this._nc.subscribe(subject);
+
+    for await (const m of sub) {
+      const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+      await this.handleSystemEvents(payload);
+    }
   }
 
   public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
