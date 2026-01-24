@@ -16,7 +16,7 @@
     "size-limit": "pnpm run build && size-limit --json"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "2.10.2",
+    "@bufbuild/protobuf": "2.11.0",
     "@excalidraw/excalidraw": "0.18.0",
     "@headlessui/react": "2.2.9",
     "@nats-io/jetstream": "3.3.0",

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@bufbuild/protobuf':
-        specifier: 2.10.2
-        version: 2.10.2
+        specifier: 2.11.0
+        version: 2.11.0
       '@excalidraw/excalidraw':
         specifier: 0.18.0
         version: 0.18.0(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(immer@11.0.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -76,7 +76,7 @@ importers:
         version: 0.12.0
       plugnmeet-protocol-js:
         specifier: 1.2.0
-        version: 1.2.0(@bufbuild/protobuf@2.10.2)
+        version: 1.2.0(@bufbuild/protobuf@2.11.0)
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -267,8 +267,8 @@ packages:
   '@bufbuild/protobuf@1.10.1':
     resolution: {integrity: sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ==}
 
-  '@bufbuild/protobuf@2.10.2':
-    resolution: {integrity: sha512-uFsRXwIGyu+r6AMdz+XijIIZJYpoWeYzILt5yZ2d3mCjQrWUTVpVD9WL/jZAbvp+Ed04rOhrsk7FiTcEDseB5A==}
+  '@bufbuild/protobuf@2.11.0':
+    resolution: {integrity: sha512-sBXGT13cpmPR5BMgHE6UEEfEaShh5Ror6rfN3yEK5si7QVrtZg8LEPQb0VVhiLRUslD2yLnXtnRzG035J/mZXQ==}
 
   '@emnapi/core@1.7.1':
     resolution: {integrity: sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg==}
@@ -3636,7 +3636,7 @@ snapshots:
 
   '@bufbuild/protobuf@1.10.1': {}
 
-  '@bufbuild/protobuf@2.10.2': {}
+  '@bufbuild/protobuf@2.11.0': {}
 
   '@emnapi/core@1.7.1':
     dependencies:
@@ -6150,9 +6150,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  plugnmeet-protocol-js@1.2.0(@bufbuild/protobuf@2.10.2):
+  plugnmeet-protocol-js@1.2.0(@bufbuild/protobuf@2.11.0):
     dependencies:
-      '@bufbuild/protobuf': 2.10.2
+      '@bufbuild/protobuf': 2.11.0
 
   png-chunk-text@1.0.0: {}
 
