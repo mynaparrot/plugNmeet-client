@@ -124,5 +124,13 @@ export const selectMessagesByKeyValue = createSelector(
   (chatMessages, key) => chatMessages.messages[key] ?? [],
 );
 
+/**
+ * Selects only the public chat messages.
+ */
+export const selectPublicChatMessages = createSelector(
+  [chatMessagesStateSelector],
+  (chatMessages) => chatMessages.messages['public'] ?? [],
+);
+
 export default chatMessagesSlice.reducer;
 export const { addChatMessage, addAllChatMessages } = chatMessagesSlice.actions;

@@ -91,7 +91,6 @@ import { executeChatTranslation } from '../../components/translation-transcripti
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
 const STATUS_CHECKER_INTERVAL = 500;
-const pnmRoomStream = 'pnm-room-stream';
 
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
@@ -108,6 +107,7 @@ export default class ConnectNats {
   private _userName: string = '';
   private _isAdmin: boolean = false;
   private _isRecorder: boolean = false;
+  private readonly _roomStreamName: string;
   private readonly _subjects: NatsSubjects;
   // this value won't be updated
   // so, don't use it for metadata those will be updated
@@ -136,6 +136,7 @@ export default class ConnectNats {
     token: string,
     roomId: string,
     userId: string,
+    roomStreamName: string,
     subjects: NatsSubjects,
     setErrorState: Dispatch<IErrorPageProps>,
     setRoomConnectionStatusState: Dispatch<roomConnectionStatus>,
@@ -145,6 +146,7 @@ export default class ConnectNats {
     this._token = token;
     this._roomId = roomId;
     this._userId = userId;
+    this._roomStreamName = roomStreamName;
     this._subjects = subjects;
     this._setErrorState = setErrorState;
     this._setRoomConnectionStatusState = setRoomConnectionStatusState;
@@ -354,7 +356,6 @@ export default class ConnectNats {
   /**
    * Subscribes to the single user consumer on the main room stream.
    * This one subscription will handle all JetStream-based messages for the user,
-   * including system events and chat messages.
    * @private
    */
   private async subscribeToRoomEvents() {
@@ -362,34 +363,19 @@ export default class ConnectNats {
       return;
     }
     const consumerName = `${this._roomId}_${this._userId}`;
-    const consumer = await this._js.consumers.get(pnmRoomStream, consumerName);
+    const consumer = await this._js.consumers.get(
+      this._roomStreamName,
+      consumerName,
+    );
     const sub = await consumer.consume();
 
     for await (const m of sub) {
       try {
-        // Is it a chat message?
-        if (m.subject.startsWith(this._subjects.chat)) {
-          let dataToParse = m.data;
-          if (this._enableE2EEChat) {
-            const data = await this.decryptData(dataToParse);
-            if (typeof data === 'undefined') {
-              // Decryption failed, probably because the key is not ready.
-              // NAK will cause redelivery.
-              m.nak(1000);
-              continue;
-            }
-            dataToParse = data;
-          }
-          const payload = fromBinary(ChatMessageSchema, dataToParse);
-          await this.handleChat.handleMsg(payload);
-        } else {
-          // Otherwise, it's a system message
-          const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-          if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-            m.ack(); // Ack early before session ends
-          }
-          await this.handleSystemEvents(payload);
+        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
+          m.ack(); // Ack early before the session ends
         }
+        await this.handleSystemEvents(payload);
         m.ack();
       } catch (e) {
         const err = e as Error;
@@ -401,7 +387,7 @@ export default class ConnectNats {
 
   /**
    * All the system public events send by core pub/sub
-   * @private
+   * this channel is different from the JS stream
    */
   private async subscribeToSystemPublicPubSub() {
     if (!this._nc) {
@@ -457,7 +443,37 @@ export default class ConnectNats {
     return undefined;
   }
 
+  /**
+   * All the events related with chat will be handled here,
+   * including public and private
+   */
+  private async subscribeToChat() {
+    if (!this._nc) {
+      return;
+    }
+
+    const subject = `${this._subjects.chat}.${this._roomId}`;
+    const sub = this._nc.subscribe(subject);
+
+    for await (const m of sub) {
+      let dataToParse = m.data;
+      if (this._enableE2EEChat) {
+        const data = await this.decryptData(dataToParse);
+        if (typeof data === 'undefined') {
+          return;
+        }
+        dataToParse = data;
+      }
+      const payload = fromBinary(ChatMessageSchema, dataToParse);
+      await this.handleChat.handleMsg(payload);
+    }
+  }
+
   public sendChatMsg = async (to: string, msg: string) => {
+    if (!this._nc) {
+      return;
+    }
+
     const isPrivate = to !== 'public';
     const chatMessage = create(ChatMessageSchema, {
       id: randomString(),
@@ -505,11 +521,8 @@ export default class ConnectNats {
       payload = data;
     }
 
-    const subject = `${this._subjects.chat}.${this._roomId}.${this._userId}`;
-    this.messageQueue.addToQueue({
-      subject,
-      payload,
-    });
+    const subject = `${this._subjects.chat}.${this._roomId}`;
+    this._nc.publish(subject, payload);
 
     if (isPrivate) {
       this.sendAnalyticsData(
@@ -929,20 +942,28 @@ export default class ConnectNats {
     // These subscriptions are set up after initial data is loaded to ensure
     // that all necessary user and room information is available.
     Promise.all([
+      this.subscribeToChat(),
       this.subscribeToWhiteboard(),
       this.subscribeToDataChannel(),
-    ]).then(async () => {
-      // 3. Now that we are fully connected and subscribed,
-      // request the complete whiteboard data from other users.
-      const donors = getWhiteboardDonors();
-      for (let i = 0; i < donors.length; i++) {
-        await this.sendDataMessage(
+    ]).then();
+
+    // 3. Now that we are fully connected and subscribed,
+    // request the complete whiteboard data from other users.
+    const donors = getWhiteboardDonors();
+    for (let i = 0; i < donors.length; i++) {
+      await Promise.all([
+        this.sendDataMessage(
           DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
           '',
           donors[i].userId,
-        );
-      }
-    });
+        ),
+        this.sendDataMessage(
+          DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
+          '',
+          donors[i].userId,
+        ),
+      ]);
+    }
 
     if (this._isRecorder) {
       this.handleParticipants.recorderJoined();

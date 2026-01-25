@@ -1,4 +1,5 @@
 import {
+  ChatMessage,
   DataChannelMessage,
   DataMsgBodyType,
   InsightsTranscriptionResultSchema,
@@ -21,6 +22,10 @@ import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whitebo
 import { fromJsonString } from '@bufbuild/protobuf';
 import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
+import {
+  addAllChatMessages,
+  selectPublicChatMessages,
+} from '../../store/slices/chatMessagesSlice';
 
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
@@ -41,6 +46,18 @@ export default class HandleDataMessage {
         if (payload.toUserId === this.connectNats.userId) {
           // only if was sent for me
           this.handleWhiteboardDataSentFromDonor(payload.message);
+        }
+        break;
+      case DataMsgBodyType.REQ_PUBLIC_CHAT_DATA:
+        if (payload.toUserId === this.connectNats.userId) {
+          // only if was sent for me
+          this.handlePublicChatDataReq(payload.fromUserId);
+        }
+        break;
+      case DataMsgBodyType.RES_PUBLIC_CHAT_DATA:
+        if (payload.toUserId === this.connectNats.userId) {
+          // only if was sent for me
+          this.handlePublicChatDataRes(payload.message);
         }
         break;
       case DataMsgBodyType.USER_VISIBILITY_CHANGE:
@@ -196,6 +213,35 @@ export default class HandleDataMessage {
     try {
       const data: WhiteboardDataAsDonorData = JSON.parse(msg);
       store.dispatch(addWhiteboardDataSentFromDonor(data));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private handlePublicChatDataReq(fromUserId: string) {
+    const publicChats = selectPublicChatMessages(store.getState()).filter(
+      (msg) => msg.fromUserId !== 'system',
+    );
+    if (publicChats.length) {
+      this.connectNats
+        .sendDataMessage(
+          DataMsgBodyType.RES_PUBLIC_CHAT_DATA,
+          JSON.stringify(publicChats),
+          fromUserId,
+        )
+        .then();
+    }
+  }
+
+  private handlePublicChatDataRes(msg: string) {
+    try {
+      const data: ChatMessage[] = JSON.parse(msg);
+      store.dispatch(
+        addAllChatMessages({
+          messages: data,
+          currentUserId: this.connectNats.userId,
+        }),
+      );
     } catch (e) {
       console.error(e);
     }
