@@ -35,7 +35,7 @@ import {
   tokenAuthenticator,
   wsconnect,
 } from '@nats-io/nats-core';
-import { jetstream, JetStreamClient, JsMsg } from '@nats-io/jetstream';
+import { jetstream, JetStreamClient } from '@nats-io/jetstream';
 import { isE2EESupported } from 'livekit-client';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
@@ -107,6 +107,7 @@ export default class ConnectNats {
   private _userName: string = '';
   private _isAdmin: boolean = false;
   private _isRecorder: boolean = false;
+  private readonly _roomStreamName: string;
   private readonly _subjects: NatsSubjects;
   // this value won't be updated
   // so, don't use it for metadata those will be updated
@@ -135,6 +136,7 @@ export default class ConnectNats {
     token: string,
     roomId: string,
     userId: string,
+    roomStreamName: string,
     subjects: NatsSubjects,
     setErrorState: Dispatch<IErrorPageProps>,
     setRoomConnectionStatusState: Dispatch<roomConnectionStatus>,
@@ -144,6 +146,7 @@ export default class ConnectNats {
     this._token = token;
     this._roomId = roomId;
     this._userId = userId;
+    this._roomStreamName = roomStreamName;
     this._subjects = subjects;
     this._setErrorState = setErrorState;
     this._setRoomConnectionStatusState = setRoomConnectionStatusState;
@@ -210,10 +213,9 @@ export default class ConnectNats {
     // start monitoring connection
     this.monitorConnStatus().then();
 
-    // now we'll subscribe to the system only
-    // others will be done after received initial data
-    this.subscribeToSystemPrivate().then();
-    this.subscribeToSystemPublic().then();
+    // now we'll subscribe to the room events stream
+    this.subscribeToRoomEvents().then();
+    // we'll still need this for any pub/sub based messages
     this.subscribeToSystemPublicPubSub().then();
 
     this.startTokenRenewInterval();
@@ -352,27 +354,28 @@ export default class ConnectNats {
   }
 
   /**
-   * Subscribe to a stream
-   * @param streamName
-   * @param consumerNameSuffix
-   * @param handler
+   * Subscribes to the single user consumer on the main room stream.
+   * This one subscription will handle all JetStream-based messages for the user,
    * @private
    */
-  private async _subscribe(
-    streamName: string,
-    consumerNameSuffix: string,
-    handler: (m: JsMsg) => Promise<void>,
-  ) {
+  private async subscribeToRoomEvents() {
     if (typeof this._js === 'undefined') {
       return;
     }
-    const consumerName = consumerNameSuffix + ':' + this._userId;
-    const consumer = await this._js.consumers.get(streamName, consumerName);
+    const consumerName = `${this._roomId}_${this._userId}`;
+    const consumer = await this._js.consumers.get(
+      this._roomStreamName,
+      consumerName,
+    );
     const sub = await consumer.consume();
 
     for await (const m of sub) {
       try {
-        await handler(m);
+        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
+          m.ack(); // Ack early before the session ends
+        }
+        await this.handleSystemEvents(payload);
         m.ack();
       } catch (e) {
         const err = e as Error;
@@ -383,43 +386,8 @@ export default class ConnectNats {
   }
 
   /**
-   * All the system private events will be handled here
-   * @private
-   */
-  private async subscribeToSystemPrivate() {
-    await this._subscribe(
-      this._roomId,
-      this._subjects.systemPrivate,
-      async (m) => {
-        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-          m.ack(); // Ack early before session ends
-        }
-        await this.handleSystemEvents(payload);
-      },
-    );
-  }
-
-  /**
-   * All the system public events will be handled here
-   */
-  private async subscribeToSystemPublic() {
-    await this._subscribe(
-      this._roomId,
-      this._subjects.systemPublic,
-      async (m) => {
-        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-        if (payload.event === NatsMsgServerToClientEvents.SESSION_ENDED) {
-          m.ack(); // Ack early before session ends
-        }
-        await this.handleSystemEvents(payload);
-      },
-    );
-  }
-
-  /**
    * All the system public events send by core pub/sub
-   * @private
+   * this channel is different from the JS stream
    */
   private async subscribeToSystemPublicPubSub() {
     if (!this._nc) {
@@ -480,7 +448,14 @@ export default class ConnectNats {
    * including public and private
    */
   private async subscribeToChat() {
-    await this._subscribe(this._roomId, this._subjects.chat, async (m) => {
+    if (!this._nc) {
+      return;
+    }
+
+    const subject = `${this._subjects.chat}.${this._roomId}`;
+    const sub = this._nc.subscribe(subject);
+
+    for await (const m of sub) {
       let dataToParse = m.data;
       if (this._enableE2EEChat) {
         const data = await this.decryptData(dataToParse);
@@ -491,10 +466,14 @@ export default class ConnectNats {
       }
       const payload = fromBinary(ChatMessageSchema, dataToParse);
       await this.handleChat.handleMsg(payload);
-    });
+    }
   }
 
   public sendChatMsg = async (to: string, msg: string) => {
+    if (!this._nc) {
+      return;
+    }
+
     const isPrivate = to !== 'public';
     const chatMessage = create(ChatMessageSchema, {
       id: randomString(),
@@ -542,12 +521,8 @@ export default class ConnectNats {
       payload = data;
     }
 
-    const subject =
-      this._roomId + ':' + this._subjects.chat + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload,
-    });
+    const subject = `${this._subjects.chat}.${this._roomId}`;
+    this._nc.publish(subject, payload);
 
     if (isPrivate) {
       this.sendAnalyticsData(
@@ -966,23 +941,29 @@ export default class ConnectNats {
     // 2. Subscribe to real-time data channels.
     // These subscriptions are set up after initial data is loaded to ensure
     // that all necessary user and room information is available.
-    // For example, E2EE requires a key that is part of the initial data.
     Promise.all([
       this.subscribeToChat(),
       this.subscribeToWhiteboard(),
       this.subscribeToDataChannel(),
-    ]).then(async () => {
-      // 3. Now that we are fully connected and subscribed,
-      // request the complete whiteboard data from other users.
-      const donors = getWhiteboardDonors();
-      for (let i = 0; i < donors.length; i++) {
-        await this.sendDataMessage(
+    ]).then();
+
+    // 3. Now that we are fully connected and subscribed,
+    // request the complete whiteboard data from other users.
+    const donors = getWhiteboardDonors();
+    for (let i = 0; i < donors.length; i++) {
+      await Promise.all([
+        this.sendDataMessage(
           DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
           '',
           donors[i].userId,
-        );
-      }
-    });
+        ),
+        this.sendDataMessage(
+          DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
+          '',
+          donors[i].userId,
+        ),
+      ]);
+    }
 
     if (this._isRecorder) {
       this.handleParticipants.recorderJoined();

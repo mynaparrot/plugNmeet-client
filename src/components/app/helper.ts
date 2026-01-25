@@ -36,6 +36,7 @@ export interface InfoToOpenConn {
   natsWsUrls: string[];
   roomId: string;
   userId: string;
+  roomStreamName: string;
   natsSubjects: NatsSubjects;
 }
 
@@ -86,11 +87,13 @@ export const verifyToken = once(
       res.natsWsUrls.length &&
       res.roomId &&
       res.userId &&
+      res.roomStreamName &&
       res.natsSubjects
     ) {
       setOpenConnInfo({
         accessToken: accessToken,
         natsWsUrls: res.natsWsUrls,
+        roomStreamName: res.roomStreamName,
         natsSubjects: res.natsSubjects,
         roomId: res.roomId,
         userId: res.userId,

@@ -80,6 +80,7 @@ const App = () => {
         openConnInfo.accessToken,
         openConnInfo.roomId,
         openConnInfo.userId,
+        openConnInfo.roomStreamName,
         openConnInfo.natsSubjects,
         setError,
         setRoomConnectionStatus,
