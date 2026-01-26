@@ -9,7 +9,6 @@ import Tabs from '../../../helpers/ui/tabs';
 import ApplicationSettings from './application';
 import DataSavings from './dataSavings';
 import Ingress from './ingress';
-import Notification from './notification';
 import SipDialIn from './sipDialIn';
 
 declare const PNM_VERSION: string;
@@ -43,7 +42,6 @@ const RoomSettings = () => {
   const baseCategories = {
     'header.room-settings.application': <ApplicationSettings />,
     'header.room-settings.data-savings': <DataSavings />,
-    'header.room-settings.notifications': <Notification />,
   };
   if (currentUser?.metadata?.isAdmin) {
     if (ingressFeatures?.isAllow) {

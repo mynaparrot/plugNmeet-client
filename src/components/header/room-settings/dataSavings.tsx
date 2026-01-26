@@ -93,6 +93,13 @@ const DataSavings = () => {
       />
 
       <SettingsSwitch
+        label={t('header.room-settings.show-screen-share')}
+        enabled={activeScreenSharingView}
+        onChange={toggleScreenShareView}
+        customCss="my-4"
+      />
+
+      <SettingsSwitch
         label={t('header.room-settings.show-webcams')}
         enabled={activateWebcamsView}
         onChange={toggleWebcamView}
@@ -108,11 +115,6 @@ const DataSavings = () => {
           direction="horizontal"
         />
       )}
-      <SettingsSwitch
-        label={t('header.room-settings.show-screen-share')}
-        enabled={activeScreenSharingView}
-        onChange={toggleScreenShareView}
-      />
     </div>
   );
 };

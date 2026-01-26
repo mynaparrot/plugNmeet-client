@@ -104,7 +104,7 @@ const RemoveParticipantAlertModal = ({
       renderButtons={renderButtons}
     >
       <div className="mb-2 pl-3">
-        <p className="text-sm text-gray-500 dark:text-dark-text">
+        <p className="text-sm dark:text-dark-text">
           {t('left-panel.menus.notice.want-to-block')}
         </p>
         <RadioOptions
