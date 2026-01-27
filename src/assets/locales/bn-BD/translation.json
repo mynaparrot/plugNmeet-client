@@ -291,7 +291,7 @@
       "disable-shared-notepad": "শেয়ার করা নোটপ্যাড অক্ষম করুন",
       "mute-microphone": "মাইক্রোফোন নীরব করুন",
       "unmute-microphone": "মাইক্রোফোন আনমিউট করুন",
-      "leave-microphone": "মাইক্রোফোন ছেড়ে দিন",
+      "leave-microphone": "মাইক্রোফোন বন্ধ করুন",
       "leave-webcam": "ওয়েবক্যাম ত্যাগ করুন",
       "start-external-media-player": "বাহ্যিক ভিডিও প্লে করুন",
       "stop-external-media-player": "বাহ্যিক ভিডিও বন্ধ করুন",
@@ -467,7 +467,8 @@
     "mic-menu-title": "মাইক্রোফোন নির্বাচন করুন",
     "background-filter-title": "পটভূমি এবং ফিল্টার",
     "config-background-btn": "ক্যামেরার ব্যাকগ্রাউন্ড কনফিগার করুন",
-    "waiting-for-approval-title": "আপনি ওয়েটিং রুমে আছেন"
+    "waiting-for-approval-title": "আপনি ওয়েটিং রুমে আছেন",
+    "finalizing-app": "মিটিং প্রস্তুত করা হচ্ছে..."
   },
   "external-display-link-display": {
     "modal-title": "বহিরাগত লিঙ্ক শেয়ার করুন",
