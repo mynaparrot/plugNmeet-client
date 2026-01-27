@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Gedeeld Kladblok uitschakelen",
       "mute-microphone": "Microfoon dempen",
       "unmute-microphone": "Dempen microfoon opheffen",
-      "leave-microphone": "Microfoon verlaten",
+      "leave-microphone": "Zet microfoon uit",
       "leave-webcam": "Laat webcam achter",
       "start-external-media-player": "Externe video afspelen",
       "stop-external-media-player": "Externe video stoppen",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Selecteer Microfoon",
     "background-filter-title": "Achtergrond & Filters",
     "config-background-btn": "Camera-achtergrond configureren",
-    "waiting-for-approval-title": "Je bevindt je in de wachtkamer"
+    "waiting-for-approval-title": "Je bevindt je in de wachtkamer",
+    "finalizing-app": "Vergadering voorbereiden..."
   },
   "external-display-link-display": {
     "modal-title": "Delen Externe link",
