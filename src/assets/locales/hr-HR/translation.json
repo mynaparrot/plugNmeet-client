@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Onemogućite dijeljenu bilježnicu",
       "mute-microphone": "Isključivanje mikrofona",
       "unmute-microphone": "Uključite zvuk mikrofona",
-      "leave-microphone": "Napusti mikrofon",
+      "leave-microphone": "Isključi mikrofon",
       "leave-webcam": "Napusti web kameru",
       "start-external-media-player": "Reprodukcija vanjskog videozapisa",
       "stop-external-media-player": "Zaustavite vanjski video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Odaberite mikrofon",
     "background-filter-title": "Pozadina i filtri",
     "config-background-btn": "Konfiguriranje pozadine kamere",
-    "waiting-for-approval-title": "U čekaonici si"
+    "waiting-for-approval-title": "U čekaonici si",
+    "finalizing-app": "Priprema sastanka..."
   },
   "external-display-link-display": {
     "modal-title": "Podijeli vanjsku poveznicu",
