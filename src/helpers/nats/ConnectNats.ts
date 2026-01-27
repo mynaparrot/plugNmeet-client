@@ -58,6 +58,7 @@ import {
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import {
   formatNatsError,
+  getChatDonors,
   getWhiteboardDonors,
   isUserRecorder,
   isValidHttpUrl,
@@ -451,9 +452,17 @@ export default class ConnectNats {
     if (!this._nc) {
       return;
     }
-
     const subject = `${this._subjects.chat}.${this._roomId}`;
     const sub = this._nc.subscribe(subject);
+
+    const donors = getChatDonors();
+    for (let i = 0; i < donors.length; i++) {
+      this.sendDataMessage(
+        DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
+        '',
+        donors[i].userId,
+      ).then();
+    }
 
     for await (const m of sub) {
       let dataToParse = m.data;
@@ -550,9 +559,17 @@ export default class ConnectNats {
     if (!this._nc) {
       return;
     }
-
     const subject = `${this._subjects.whiteboard}.${this._roomId}`;
     const sub = this._nc.subscribe(subject);
+
+    const donors = getWhiteboardDonors();
+    for (let i = 0; i < donors.length; i++) {
+      this.sendDataMessage(
+        DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
+        '',
+        donors[i].userId,
+      ).then();
+    }
 
     for await (const m of sub) {
       let dataToParse = m.data;
@@ -827,43 +844,13 @@ export default class ConnectNats {
    * Calling this method prematurely may result in the media server token expiring before it is used.
    */
   public finalizeAppConn = () => {
-    // 1. Request for users' list to prepare everything
+    // Request for users' list to prepare everything
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
       }),
     );
-
-    // 2. Request for media server connection data
-    this.sendMessageToSystemWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
-      }),
-    );
   };
-
-  /**
-   * handleMediaServerData will decode data and connect with media server
-   * @param msg
-   */
-  private async handleMediaServerData(msg: string) {
-    try {
-      const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
-      if (this.mediaServerConn) {
-        await this.mediaServerConn.initializeConnection(
-          serverInfo.url,
-          serverInfo.token,
-        );
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.setErrorStatus(
-        i18n.t('notifications.decode-error-title'),
-        i18n.t('notifications.decode-error-body'),
-      );
-      return;
-    }
-  }
 
   private async handleJoinedUsersList(msg: string) {
     try {
@@ -886,7 +873,14 @@ export default class ConnectNats {
    * user fully operational in the room.
    */
   private async onAfterUserReady() {
-    // 1. Restore user data from IndexedDB to maintain state across sessions.
+    // Request for media server connection data
+    this.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
+      }),
+    );
+
+    // Restore user data from IndexedDB to maintain state across sessions.
     try {
       const [
         chatMsgs,
@@ -938,7 +932,7 @@ export default class ConnectNats {
       console.error('Failed to load data from IndexedDB on startup:', e);
     }
 
-    // 2. Subscribe to real-time data channels.
+    // Subscribe to real-time data channels.
     // These subscriptions are set up after initial data is loaded to ensure
     // that all necessary user and room information is available.
     Promise.all([
@@ -947,26 +941,31 @@ export default class ConnectNats {
       this.subscribeToDataChannel(),
     ]).then();
 
-    // 3. Now that we are fully connected and subscribed,
-    // request the complete whiteboard data from other users.
-    const donors = getWhiteboardDonors();
-    for (let i = 0; i < donors.length; i++) {
-      await Promise.all([
-        this.sendDataMessage(
-          DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-          '',
-          donors[i].userId,
-        ),
-        this.sendDataMessage(
-          DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
-          '',
-          donors[i].userId,
-        ),
-      ]);
-    }
-
     if (this._isRecorder) {
       this.handleParticipants.recorderJoined();
+    }
+  }
+
+  /**
+   * handleMediaServerData will decode data and connect with media server
+   * @param msg
+   */
+  private async handleMediaServerData(msg: string) {
+    try {
+      const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
+      if (this.mediaServerConn) {
+        await this.mediaServerConn.initializeConnection(
+          serverInfo.url,
+          serverInfo.token,
+        );
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.setErrorStatus(
+        i18n.t('notifications.decode-error-title'),
+        i18n.t('notifications.decode-error-body'),
+      );
+      return;
     }
   }
 

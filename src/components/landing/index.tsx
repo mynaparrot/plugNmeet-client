@@ -114,6 +114,7 @@ const Landing = ({
       if (isReadyToConn) {
         const conn = getNatsConn();
         if (conn) {
+          setShowLoadingMsg(t('landing.finalizing-app'));
           conn.finalizeAppConn();
         }
       }

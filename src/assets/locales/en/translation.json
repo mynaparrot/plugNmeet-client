@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Disable Shared Notepad",
       "mute-microphone": "Mute Microphone",
       "unmute-microphone": "Unmute Microphone",
-      "leave-microphone": "Leave Microphone",
+      "leave-microphone": "Turn Off Microphone",
       "leave-webcam": "Leave webcam",
       "start-external-media-player": "Play External Video",
       "stop-external-media-player": "Stop External Video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Select Microphone",
     "background-filter-title": "Background & Filters",
     "config-background-btn": "Configure Camera Background",
-    "waiting-for-approval-title": "You're in the waiting room"
+    "waiting-for-approval-title": "You're in the waiting room",
+    "finalizing-app": "Preparing meeting..."
   },
   "external-display-link-display": {
     "modal-title": "Share External Link",

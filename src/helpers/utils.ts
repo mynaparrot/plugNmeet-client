@@ -262,6 +262,9 @@ export const formatNatsError = (err: any) => {
   return msg;
 };
 
+/**
+ * getWhiteboardDonors returns the presenter.
+ */
 export const getWhiteboardDonors = (): IParticipant[] => {
   const s = store.getState();
   return participantsSelector
@@ -271,6 +274,20 @@ export const getWhiteboardDonors = (): IParticipant[] => {
         participant.userId !== s.session.currentUser?.userId &&
         participant.metadata.isPresenter,
     );
+};
+
+/**
+ * getChatDonors returns the two participants who joined the session earliest.
+ */
+export const getChatDonors = (): IParticipant[] => {
+  const s = store.getState();
+  const allParticipants = participantsSelector.selectAll(s);
+
+  // Sort participants by their joinedAt timestamp in ascending order (earliest first).
+  allParticipants.sort((a, b) => a.joinedAt - b.joinedAt);
+
+  // Return the first two participants.
+  return allParticipants.slice(0, 2);
 };
 
 let emptyStreamTrack: MediaStreamTrack | undefined = undefined;
