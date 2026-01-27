@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Dezactivați blocnotesul partajat",
       "mute-microphone": "Microfon dezactivat",
       "unmute-microphone": "Activați microfonul",
-      "leave-microphone": "Părăsiți microfonul",
+      "leave-microphone": "Oprește microfonul",
       "leave-webcam": "Părăsiți camera web",
       "start-external-media-player": "Redați video extern",
       "stop-external-media-player": "Opriți videoclipul extern",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Selectați microfon",
     "background-filter-title": "Fundal și filtre",
     "config-background-btn": "Configurați fundalul camerei",
-    "waiting-for-approval-title": "Ești în sala de așteptare"
+    "waiting-for-approval-title": "Ești în sala de așteptare",
+    "finalizing-app": "Pregătirea întâlnirii..."
   },
   "external-display-link-display": {
     "modal-title": "Distribuie Link extern",
