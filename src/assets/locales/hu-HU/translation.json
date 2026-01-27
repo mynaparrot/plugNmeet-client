@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Tiltsa le a megosztott jegyzettömböt",
       "mute-microphone": "Mikrofon némítása",
       "unmute-microphone": "Mikrofon némításának feloldása",
-      "leave-microphone": "Hagyja el a mikrofont",
+      "leave-microphone": "Kapcsold ki a mikrofont",
       "leave-webcam": "Hagyja el a webkamerát",
       "start-external-media-player": "Külső videó lejátszása",
       "stop-external-media-player": "Külső videó leállítása",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Válassza a Mikrofon lehetőséget",
     "background-filter-title": "Háttér és szűrők",
     "config-background-btn": "Kamera háttér konfigurálása",
-    "waiting-for-approval-title": "A váróteremben vagy"
+    "waiting-for-approval-title": "A váróteremben vagy",
+    "finalizing-app": "Találkozó előkészítése..."
   },
   "external-display-link-display": {
     "modal-title": "Megosztás Külső hivatkozás",

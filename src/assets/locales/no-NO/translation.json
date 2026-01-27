@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Deaktiver delt notisblokk",
       "mute-microphone": "Demp mikrofon",
       "unmute-microphone": "Slå på mikrofonen",
-      "leave-microphone": "Forlat mikrofonen",
+      "leave-microphone": "Slå av mikrofonen",
       "leave-webcam": "Forlat webkameraet",
       "start-external-media-player": "Spill av ekstern video",
       "stop-external-media-player": "Stopp ekstern video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Velg Mikrofon",
     "background-filter-title": "Bakgrunn og filtre",
     "config-background-btn": "Konfigurer kamerabakgrunn",
-    "waiting-for-approval-title": "Du er på venterommet"
+    "waiting-for-approval-title": "Du er på venterommet",
+    "finalizing-app": "Forbereder møte..."
   },
   "external-display-link-display": {
     "modal-title": "Del ekstern lenke",

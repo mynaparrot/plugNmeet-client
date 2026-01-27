@@ -291,7 +291,7 @@
       "disable-shared-notepad": "共有メモ帳を無効にする",
       "mute-microphone": "マイクをミュート",
       "unmute-microphone": "マイクのミュート解除",
-      "leave-microphone": "マイクを離れる",
+      "leave-microphone": "マイクをオフにする",
       "leave-webcam": "ウェブカメラを離れる",
       "start-external-media-player": "外部ビデオの再生",
       "stop-external-media-player": "外部ビデオの停止",
@@ -467,7 +467,8 @@
     "mic-menu-title": "マイクの選択",
     "background-filter-title": "背景とフィルター",
     "config-background-btn": "カメラの背景を設定する",
-    "waiting-for-approval-title": "待合室にいる"
+    "waiting-for-approval-title": "待合室にいる",
+    "finalizing-app": "会議の準備をしています..."
   },
   "external-display-link-display": {
     "modal-title": "外部リンクを共有する",

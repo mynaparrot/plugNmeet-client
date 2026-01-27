@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Απενεργοποιήστε το κοινόχρηστο σημειωματάριο",
       "mute-microphone": "Σίγαση μικροφώνου",
       "unmute-microphone": "Κατάργηση σίγασης μικροφώνου",
-      "leave-microphone": "Αποχώρηση από το μικρόφωνο",
+      "leave-microphone": "Απενεργοποιήστε το μικρόφωνο",
       "leave-webcam": "Αποχώρηση από την κάμερα web",
       "start-external-media-player": "Αναπαραγωγή εξωτερικού βίντεο",
       "stop-external-media-player": "Διακοπή εξωτερικού βίντεο",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Επιλέξτε Μικρόφωνο",
     "background-filter-title": "Φόντο & Φίλτρα",
     "config-background-btn": "Διαμόρφωση φόντου κάμερας",
-    "waiting-for-approval-title": "Είσαι στην αίθουσα αναμονής"
+    "waiting-for-approval-title": "Είσαι στην αίθουσα αναμονής",
+    "finalizing-app": "Προετοιμασία συνάντησης..."
   },
   "external-display-link-display": {
     "modal-title": "Κοινή χρήση εξωτερικού συνδέσμου",

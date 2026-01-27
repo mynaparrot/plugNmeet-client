@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Zakázat sdílený poznámkový blok",
       "mute-microphone": "Ztlumit mikrofon",
       "unmute-microphone": "Zrušení ztlumení mikrofonu",
-      "leave-microphone": "Opusťte mikrofon",
+      "leave-microphone": "Vypnout mikrofon",
       "leave-webcam": "Opustit webkameru",
       "start-external-media-player": "Přehrát externí video",
       "stop-external-media-player": "Zastavení externího videa",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Vyberte možnost Mikrofon",
     "background-filter-title": "Pozadí a filtry",
     "config-background-btn": "Konfigurace pozadí kamery",
-    "waiting-for-approval-title": "Jste v čekárně"
+    "waiting-for-approval-title": "Jste v čekárně",
+    "finalizing-app": "Příprava schůzky..."
   },
   "external-display-link-display": {
     "modal-title": "Sdílet externí odkaz",

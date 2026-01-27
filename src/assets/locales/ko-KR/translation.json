@@ -291,7 +291,7 @@
       "disable-shared-notepad": "공유 메모장 비활성화",
       "mute-microphone": "마이크 음소거",
       "unmute-microphone": "마이크 음소거 해제",
-      "leave-microphone": "마이크 나가기",
+      "leave-microphone": "마이크 꺼",
       "leave-webcam": "웹캠 나가기",
       "start-external-media-player": "외부 비디오 재생",
       "stop-external-media-player": "외부 비디오 중지",
@@ -467,7 +467,8 @@
     "mic-menu-title": "마이크 선택",
     "background-filter-title": "배경 및 필터",
     "config-background-btn": "카메라 배경 구성",
-    "waiting-for-approval-title": "당신은 대기실에 있습니다"
+    "waiting-for-approval-title": "당신은 대기실에 있습니다",
+    "finalizing-app": "회의 준비 중..."
   },
   "external-display-link-display": {
     "modal-title": "외부 링크 공유",

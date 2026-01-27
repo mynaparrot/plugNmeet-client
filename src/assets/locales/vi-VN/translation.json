@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Tắt Notepad được chia sẻ",
       "mute-microphone": "Tắt tiếng micrô",
       "unmute-microphone": "Bật tiếng micrô",
-      "leave-microphone": "Rời khỏi micrô",
+      "leave-microphone": "Tắt micrô",
       "leave-webcam": "Rời khỏi webcam",
       "start-external-media-player": "Phát video bên ngoài",
       "stop-external-media-player": "Dừng video bên ngoài",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Chọn Micrô",
     "background-filter-title": "Nền và bộ lọc",
     "config-background-btn": "Định cấu hình nền máy ảnh",
-    "waiting-for-approval-title": "Bạn đang ở trong phòng chờ"
+    "waiting-for-approval-title": "Bạn đang ở trong phòng chờ",
+    "finalizing-app": "Chuẩn bị cuộc họp..."
   },
   "external-display-link-display": {
     "modal-title": "Chia sẻ liên kết ngoài",

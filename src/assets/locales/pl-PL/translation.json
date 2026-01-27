@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Wyłącz udostępniony Notatnik",
       "mute-microphone": "Wycisz mikrofon",
       "unmute-microphone": "Wyłącz wyciszenie mikrofonu",
-      "leave-microphone": "Opuść mikrofon",
+      "leave-microphone": "Wyłącz mikrofon",
       "leave-webcam": "Opuść kamerę internetową",
       "start-external-media-player": "Odtwórz zewnętrzne wideo",
       "stop-external-media-player": "Zatrzymaj zewnętrzne wideo",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Wybierz mikrofon",
     "background-filter-title": "Tło i filtry",
     "config-background-btn": "Konfiguracja tła kamery",
-    "waiting-for-approval-title": "Jesteś w poczekalni"
+    "waiting-for-approval-title": "Jesteś w poczekalni",
+    "finalizing-app": "Przygotowanie spotkania..."
   },
   "external-display-link-display": {
     "modal-title": "Udostępnij link zewnętrzny",

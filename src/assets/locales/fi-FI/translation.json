@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Poista jaettu muistio käytöstä",
       "mute-microphone": "Mykistä mikrofoni",
       "unmute-microphone": "Poista mikrofonin mykistys",
-      "leave-microphone": "Jätä mikrofoni",
+      "leave-microphone": "Sammuta mikrofoni",
       "leave-webcam": "Poistu verkkokamerasta",
       "start-external-media-player": "Toista ulkoinen video",
       "stop-external-media-player": "Pysäytä ulkoinen video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Valitse Mikrofoni",
     "background-filter-title": "Tausta ja suodattimet",
     "config-background-btn": "Määritä kameran tausta",
-    "waiting-for-approval-title": "Olet odotushuoneessa"
+    "waiting-for-approval-title": "Olet odotushuoneessa",
+    "finalizing-app": "Kokouksen valmistelu..."
   },
   "external-display-link-display": {
     "modal-title": "Jaa ulkoinen linkki",

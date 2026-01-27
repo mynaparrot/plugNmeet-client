@@ -291,7 +291,7 @@
       "disable-shared-notepad": "停用共用記事本",
       "mute-microphone": "靜音麥克風",
       "unmute-microphone": "取消靜音麥克風",
-      "leave-microphone": "離開麥克風",
+      "leave-microphone": "關閉麥克風",
       "leave-webcam": "離開網路攝影機",
       "start-external-media-player": "播放外部視訊",
       "stop-external-media-player": "停止外部視訊",
@@ -467,7 +467,8 @@
     "mic-menu-title": "選擇麥克風",
     "background-filter-title": "背景和濾鏡",
     "config-background-btn": "設定相機背景",
-    "waiting-for-approval-title": "你在候診室"
+    "waiting-for-approval-title": "你在候診室",
+    "finalizing-app": "準備會議......"
   },
   "external-display-link-display": {
     "modal-title": "分享外部連結",

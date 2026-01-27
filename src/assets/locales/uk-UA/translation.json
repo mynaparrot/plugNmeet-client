@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Вимкніть спільний блокнот",
       "mute-microphone": "Вимкнення мікрофона",
       "unmute-microphone": "Увімкнути звук мікрофона",
-      "leave-microphone": "Залиште мікрофон",
+      "leave-microphone": "Вимкніть мікрофон",
       "leave-webcam": "Залишити веб-камеру",
       "start-external-media-player": "Відтворення зовнішнього відео",
       "stop-external-media-player": "Зупинити зовнішнє відео",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Виберіть мікрофон",
     "background-filter-title": "Фон і фільтри",
     "config-background-btn": "Налаштуйте фон камери",
-    "waiting-for-approval-title": "Ви в залі очікування"
+    "waiting-for-approval-title": "Ви в залі очікування",
+    "finalizing-app": "Підготовка до зустрічі..."
   },
   "external-display-link-display": {
     "modal-title": "Поділитися зовнішнім посиланням",

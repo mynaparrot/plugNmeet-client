@@ -291,7 +291,7 @@
       "disable-shared-notepad": "禁用共享记事本",
       "mute-microphone": "静音麦克风",
       "unmute-microphone": "取消静音麦克风",
-      "leave-microphone": "离开麦克风",
+      "leave-microphone": "关闭麦克风",
       "leave-webcam": "离开网络摄像头",
       "start-external-media-player": "播放外部视频",
       "stop-external-media-player": "停止外部视频",
@@ -467,7 +467,8 @@
     "mic-menu-title": "选择麦克风",
     "background-filter-title": "背景和滤镜",
     "config-background-btn": "配置摄像机背景",
-    "waiting-for-approval-title": "你在候诊室"
+    "waiting-for-approval-title": "你在候诊室",
+    "finalizing-app": "准备会议......"
   },
   "external-display-link-display": {
     "modal-title": "分享外部链接",

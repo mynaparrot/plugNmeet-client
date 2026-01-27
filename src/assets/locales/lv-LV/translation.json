@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Atspējot koplietojamo piezīmjbloku",
       "mute-microphone": "Izslēgt mikrofonu",
       "unmute-microphone": "Mikrofona skaņas ieslēgšana",
-      "leave-microphone": "Atstāt mikrofonu",
+      "leave-microphone": "Izslēgt mikrofonu",
       "leave-webcam": "Atstāt tīmekļa kameru",
       "start-external-media-player": "Ārējā video atskaņošana",
       "stop-external-media-player": "Ārējā video apturēšana",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Atlasiet Mikrofons",
     "background-filter-title": "Fons un filtri",
     "config-background-btn": "Kameras fona konfigurēšana",
-    "waiting-for-approval-title": "Jūs atrodaties uzgaidāmajā telpā"
+    "waiting-for-approval-title": "Jūs atrodaties uzgaidāmajā telpā",
+    "finalizing-app": "Sapulces sagatavošana..."
   },
   "external-display-link-display": {
     "modal-title": "Kopīgot ārējo saiti",

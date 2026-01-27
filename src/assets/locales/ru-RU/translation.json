@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Отключение функции «Общий блокнот»",
       "mute-microphone": "Микрофон с отключением звука",
       "unmute-microphone": "Включение микрофона",
-      "leave-microphone": "Оставить микрофон",
+      "leave-microphone": "Выключить микрофон",
       "leave-webcam": "Оставить веб-камеру",
       "start-external-media-player": "Воспроизведение внешнего видео",
       "stop-external-media-player": "Остановить внешнее видео",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Выберите микрофон",
     "background-filter-title": "Фон и фильтры",
     "config-background-btn": "Настройка фона камеры",
-    "waiting-for-approval-title": "Вы находитесь в зале ожидания"
+    "waiting-for-approval-title": "Вы находитесь в зале ожидания",
+    "finalizing-app": "Подготовка к встрече..."
   },
   "external-display-link-display": {
     "modal-title": "Поделиться внешней ссылкой",

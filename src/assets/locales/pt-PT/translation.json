@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Desativar o Bloco de Notas Partilhado",
       "mute-microphone": "Silenciar microfone",
       "unmute-microphone": "Ativar Mudo do Microfone",
-      "leave-microphone": "Sair do microfone",
+      "leave-microphone": "Desligar o Microfone",
       "leave-webcam": "Sair da webcam",
       "start-external-media-player": "Reproduzir vídeo externo",
       "stop-external-media-player": "Parar vídeo externo",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Selecione Microfone",
     "background-filter-title": "Fundo & Filtros",
     "config-background-btn": "Configurar o plano de fundo da câmera",
-    "waiting-for-approval-title": "Você está na sala de espera"
+    "waiting-for-approval-title": "Você está na sala de espera",
+    "finalizing-app": "A preparar a reunião..."
   },
   "external-display-link-display": {
     "modal-title": "Partilhar Link Externo",

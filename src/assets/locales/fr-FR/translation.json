@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Désactiver le bloc-notes partagé",
       "mute-microphone": "Couper le microphone",
       "unmute-microphone": "Réactiver le microphone",
-      "leave-microphone": "Quitter le microphone",
+      "leave-microphone": "Éteindre le micro",
       "leave-webcam": "Quitter la caméra",
       "start-external-media-player": "Lire une vidéo externe",
       "stop-external-media-player": "Arrêter la vidéo externe",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Sélectionnez Microphone",
     "background-filter-title": "Arrière-plan et filtres",
     "config-background-btn": "Configurer l’arrière-plan de la caméra",
-    "waiting-for-approval-title": "Vous êtes dans la salle d’attente."
+    "waiting-for-approval-title": "Vous êtes dans la salle d’attente.",
+    "finalizing-app": "Préparation de la réunion..."
   },
   "external-display-link-display": {
     "modal-title": "Partager lien externe",
