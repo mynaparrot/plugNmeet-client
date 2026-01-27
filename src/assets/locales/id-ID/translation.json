@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Nonaktifkan Notepad Bersama",
       "mute-microphone": "Bisukan Mikrofon",
       "unmute-microphone": "Nyalakan Mikrofon",
-      "leave-microphone": "Tinggalkan Mikrofon",
+      "leave-microphone": "Matikan Mikrofon",
       "leave-webcam": "Tinggalkan webcam",
       "start-external-media-player": "Putar Video Eksternal",
       "stop-external-media-player": "Hentikan Video Eksternal",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Pilih Mikrofon",
     "background-filter-title": "Latar Belakang & Filter",
     "config-background-btn": "Konfigurasikan Latar Belakang Kamera",
-    "waiting-for-approval-title": "Anda berada di ruang tunggu"
+    "waiting-for-approval-title": "Anda berada di ruang tunggu",
+    "finalizing-app": "Mempersiapkan pertemuan..."
   },
   "external-display-link-display": {
     "modal-title": "Bagikan Tautan Eksternal",
