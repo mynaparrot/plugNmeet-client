@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Deaktiver delt notesblok",
       "mute-microphone": "Slå mikrofonen fra",
       "unmute-microphone": "Slå mikrofonen til",
-      "leave-microphone": "Forlad mikrofon",
+      "leave-microphone": "Sluk mikrofonen",
       "leave-webcam": "Forlad webcam",
       "start-external-media-player": "Afspil ekstern video",
       "stop-external-media-player": "Stop ekstern video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Vælg Mikrofon",
     "background-filter-title": "Baggrund & Filtre",
     "config-background-btn": "Konfigurer kamerabaggrund",
-    "waiting-for-approval-title": "Du er i venteværelset"
+    "waiting-for-approval-title": "Du er i venteværelset",
+    "finalizing-app": "Forbereder møde..."
   },
   "external-display-link-display": {
     "modal-title": "Del Eksternt link",
