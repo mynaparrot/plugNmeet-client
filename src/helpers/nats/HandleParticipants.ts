@@ -347,6 +347,13 @@ export default class HandleParticipants {
         );
 
         for (const u of serverUsers) {
+          if (this.activeUserTasks.has(u.userId)) {
+            console.log(
+              `Reconciliation: Deferring addition of ${u.userId} because a primary task is active.`,
+            );
+            continue;
+          }
+
           const isPresentLocally = currentParticipantsInStore.some(
             (p) => p.userId === u.userId,
           );
@@ -363,8 +370,6 @@ export default class HandleParticipants {
             continue;
           }
           if (!serverUserIds.has(p.userId)) {
-            // CRITICAL CHECK: If a primary task is already running for this user, DO NOT touch them.
-            // The primary task is the source of truth.
             if (this.activeUserTasks.has(p.userId)) {
               console.log(
                 `Reconciliation: Deferring removal of ${p.userId} because a primary task is active.`,
