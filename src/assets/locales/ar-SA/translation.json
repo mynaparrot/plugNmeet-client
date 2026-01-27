@@ -291,7 +291,7 @@
       "disable-shared-notepad": "تعطيل المفكرة المشتركة",
       "mute-microphone": "كتم صوت الميكروفون",
       "unmute-microphone": "إلغاء كتم صوت الميكروفون",
-      "leave-microphone": "اترك الميكروفون",
+      "leave-microphone": "أطفئ الميكروفون",
       "leave-webcam": "اترك كاميرا الويب",
       "start-external-media-player": "تشغيل فيديو خارجي",
       "stop-external-media-player": "إيقاف الفيديو الخارجي",
@@ -467,7 +467,8 @@
     "mic-menu-title": "حدد ميكروفون",
     "background-filter-title": "الخلفية والفلاتر",
     "config-background-btn": "تكوين خلفية الكاميرا",
-    "waiting-for-approval-title": "أنت في غرفة الانتظار"
+    "waiting-for-approval-title": "أنت في غرفة الانتظار",
+    "finalizing-app": "تحضير الاجتماع..."
   },
   "external-display-link-display": {
     "modal-title": "مشاركة رابط خارجي",
