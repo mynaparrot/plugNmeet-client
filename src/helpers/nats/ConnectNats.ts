@@ -92,6 +92,7 @@ import { executeChatTranslation } from '../../components/translation-transcripti
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
 const STATUS_CHECKER_INTERVAL = 500;
+const USERS_SYNC_INTERVAL = 30 * 1000;
 
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
@@ -117,6 +118,7 @@ export default class ConnectNats {
   private tokenRenewInterval: any;
   private pingInterval: any;
   private statusCheckerInterval: any;
+  private reconciliationInterval: any;
   private isRoomReconnecting: boolean = false;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
@@ -242,6 +244,7 @@ export default class ConnectNats {
     // 2. Clear all intervals to prevent further actions
     clearInterval(this.tokenRenewInterval);
     clearInterval(this.pingInterval);
+    clearInterval(this.reconciliationInterval); // Clear new interval
     this.handleParticipants.clearParticipantCounterInterval();
 
     // 3. Concurrently run all cleanup tasks.
@@ -696,6 +699,8 @@ export default class ConnectNats {
     },
     [NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST]: (p) =>
       this.handleJoinedUsersList(p.msg),
+    [NatsMsgServerToClientEvents.RESP_ONLINE_USERS_LIST]: (p) =>
+      this.handleParticipants.reconcileParticipants(p.msg),
     [NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE]: (p) =>
       this.handleRoomData.updateRoomMetadata(p.msg),
     [NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN]: (p) => {
@@ -791,6 +796,16 @@ export default class ConnectNats {
     // start instantly
     ping();
   }
+
+  private startUsersSync = () => {
+    this.reconciliationInterval = setInterval(() => {
+      this.sendMessageToSystemWorker(
+        create(NatsMsgClientToServerSchema, {
+          event: NatsMsgClientToServerEvents.REQ_ONLINE_USERS_LIST,
+        }),
+      );
+    }, USERS_SYNC_INTERVAL);
+  };
 
   private async handleInitialData(msg: string) {
     // 1. We'll try to decode the message.
@@ -944,6 +959,8 @@ export default class ConnectNats {
     if (this._isRecorder) {
       this.handleParticipants.recorderJoined();
     }
+
+    this.startUsersSync();
   }
 
   /**

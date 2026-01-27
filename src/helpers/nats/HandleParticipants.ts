@@ -10,7 +10,7 @@ import {
   UserMetadata,
   UserMetadataSchema,
 } from 'plugnmeet-protocol-js';
-import { create, fromJsonString } from '@bufbuild/protobuf';
+import { create, fromJson, fromJsonString } from '@bufbuild/protobuf';
 
 import ConnectNats from './ConnectNats';
 import {
@@ -53,9 +53,47 @@ export default class HandleParticipants {
   private _isLocalUserAdmin: boolean = false;
   private _isLocalUserRecorder = false;
 
+  private activeUserTasks: Set<string> = new Set();
+  private participantTaskChain: Promise<any> = Promise.resolve();
+
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
   }
+
+  /**
+   * Serializes tasks that modify the participant list to prevent race conditions.
+   * Each task is added to a promise chain and will only execute after the previous one is complete.
+   * @param task The async function to execute.
+   */
+  private serialTask = (task: () => Promise<any>): Promise<any> => {
+    this.participantTaskChain = this.participantTaskChain
+      .then(task)
+      .catch((err) => {
+        console.error('A participant task failed:', err);
+        // The chain continues even if one task fails.
+      });
+    return this.participantTaskChain;
+  };
+
+  /**
+   * Wraps a primary task (join, leave) to mark a user as "busy".
+   * This prevents the reconciliation task from making incorrect decisions based on stale data.
+   * @param userId The user being processed.
+   * @param task The async function to execute.
+   */
+  private _runPrimaryUserTask = async (
+    userId: string,
+    task: () => Promise<any>,
+  ) => {
+    this.activeUserTasks.add(userId);
+    try {
+      // We still use the serialTask chain to ensure primary tasks don't run over each other.
+      await this.serialTask(task);
+    } finally {
+      // This ALWAYS runs, ensuring the user is never permanently locked.
+      this.activeUserTasks.delete(userId);
+    }
+  };
 
   public addLocalParticipantInfo = async (
     info: NatsKvUserInfo,
@@ -83,20 +121,22 @@ export default class HandleParticipants {
     return localUser;
   };
 
-  public addRemoteParticipant = async (p: string | NatsKvUserInfo) => {
+  public addRemoteParticipant = (p: string | NatsKvUserInfo) => {
     let participant: NatsKvUserInfo;
     if (typeof p === 'string') {
       try {
         participant = fromJsonString(NatsKvUserInfoSchema, p);
       } catch (e) {
         console.error(e);
-        return;
+        return Promise.resolve();
       }
     } else {
       participant = p;
     }
 
-    await this._addRemoteParticipant(participant);
+    return this._runPrimaryUserTask(participant.userId, async () => {
+      await this._addRemoteParticipant(participant);
+    });
   };
 
   private async _addRemoteParticipant(
@@ -168,15 +208,17 @@ export default class HandleParticipants {
     return true;
   }
 
-  public handleParticipantMetadataUpdate = async (d: string) => {
-    try {
-      const data = fromJsonString(NatsUserMetadataUpdateSchema, d, {
-        ignoreUnknownFields: true,
-      });
-      await this.updateParticipantMetadata(data.userId, data.metadata);
-    } catch (e) {
-      console.error(e);
-    }
+  public handleParticipantMetadataUpdate = (d: string) => {
+    return this.serialTask(async () => {
+      try {
+        const data = fromJsonString(NatsUserMetadataUpdateSchema, d, {
+          ignoreUnknownFields: true,
+        });
+        await this.updateParticipantMetadata(data.userId, data.metadata);
+      } catch (e) {
+        console.error(e);
+      }
+    });
   };
 
   public updateParticipantMetadata = async (
@@ -215,6 +257,38 @@ export default class HandleParticipants {
   };
 
   /**
+   * Handles participant cleanup, either marking as disconnected or fully removing.
+   * @param userId The userId of the participant to clean up.
+   * @param isCompleteRemove If true, performs full removal (like offline); otherwise, marks as disconnected.
+   */
+  private _handleParticipantCleanup = (
+    userId: string,
+    isCompleteRemove: boolean,
+  ) => {
+    const mediaConn = getMediaServerConn();
+    // Always remove media subscribers for this user
+    mediaConn.removeAudioSubscriber(userId);
+    mediaConn.removeVideoSubscriber(userId);
+    mediaConn.removeScreenShareTrack(userId);
+
+    if (isCompleteRemove) {
+      // Full removal: remove from store and active speakers
+      store.dispatch(removeParticipant(userId));
+      store.dispatch(removeOneSpeaker(userId));
+    } else {
+      // Partial cleanup: mark as disconnected
+      store.dispatch(
+        updateParticipant({
+          id: userId,
+          changes: {
+            isOnline: false,
+          },
+        }),
+      );
+    }
+  };
+
+  /**
    * when user disconnected temporary e.g. network related issue,
    * we'll mainly pause media files
    * @param data string
@@ -225,23 +299,12 @@ export default class HandleParticipants {
       participant = fromJsonString(NatsKvUserInfoSchema, data);
     } catch (e) {
       console.error(e);
-      return;
+      return Promise.resolve();
     }
 
-    const mediaConn = getMediaServerConn();
-    // remove media for this user for the moment
-    mediaConn.removeAudioSubscriber(participant.userId);
-    mediaConn.removeVideoSubscriber(participant.userId);
-    mediaConn.removeScreenShareTrack(participant.userId);
-
-    store.dispatch(
-      updateParticipant({
-        id: participant.userId,
-        changes: {
-          isOnline: false,
-        },
-      }),
-    );
+    return this._runPrimaryUserTask(participant.userId, async () => {
+      this._handleParticipantCleanup(participant.userId, false);
+    });
   };
 
   /**
@@ -256,13 +319,69 @@ export default class HandleParticipants {
       p = fromJsonString(NatsKvUserInfoSchema, data);
     } catch (e) {
       console.error(e);
-      return;
+      return Promise.resolve();
     }
+    return this._runPrimaryUserTask(p.userId, async () => {
+      this._handleParticipantCleanup(p.userId, true);
+    });
+  };
 
-    // now remove user.
-    store.dispatch(removeParticipant(p.userId));
-    // remove if in active speaker
-    store.dispatch(removeOneSpeaker(p.userId));
+  /**
+   * Reconciles the local participant list with a fresh list from the server.
+   * This ensures the client's state is consistent, correcting any discrepancies
+   * caused by missed real-time events.
+   * @param msg A JSON string containing an array of NatsKvUserInfo objects.
+   */
+  public reconcileParticipants = (msg: string) => {
+    return this.serialTask(async () => {
+      try {
+        const serverUsersRaw: string[] = JSON.parse(msg);
+        const serverUsers = serverUsersRaw.map((u) =>
+          fromJson(NatsKvUserInfoSchema, u, {
+            ignoreUnknownFields: true,
+          }),
+        );
+        const serverUserIds = new Set(serverUsers.map((u) => u.userId));
+        const currentParticipantsInStore = participantsSelector.selectAll(
+          store.getState(),
+        );
+
+        for (const u of serverUsers) {
+          const isPresentLocally = currentParticipantsInStore.some(
+            (p) => p.userId === u.userId,
+          );
+          if (!isPresentLocally) {
+            console.log(
+              `Reconciliation: Adding missing participant ${u.userId}`,
+            );
+            await this._addRemoteParticipant(u);
+          }
+        }
+
+        for (const p of currentParticipantsInStore) {
+          if (p.isLocal) {
+            continue;
+          }
+          if (!serverUserIds.has(p.userId)) {
+            // CRITICAL CHECK: If a primary task is already running for this user, DO NOT touch them.
+            // The primary task is the source of truth.
+            if (this.activeUserTasks.has(p.userId)) {
+              console.log(
+                `Reconciliation: Deferring removal of ${p.userId} because a primary task is active.`,
+              );
+              continue; // Hands off!
+            }
+
+            console.log(
+              `Reconciliation: Removing stale participant ${p.userId}`,
+            );
+            this._handleParticipantCleanup(p.userId, true);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to reconcile participants list:', e);
+      }
+    });
   };
 
   public clearParticipantCounterInterval = () => {
