@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Jagatud märkmiku keelamine",
       "mute-microphone": "Mikrofoni vaigistamine",
       "unmute-microphone": "Mikrofoni vaigistuse tühistamine",
-      "leave-microphone": "Jäta mikrofon",
+      "leave-microphone": "Lülita mikrofon välja",
       "leave-webcam": "Lahku veebikaamerast",
       "start-external-media-player": "Välise video esitamine",
       "stop-external-media-player": "Peata väline video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Valige mikrofon",
     "background-filter-title": "Taust ja filtrid",
     "config-background-btn": "Kaamera tausta konfigureerimine",
-    "waiting-for-approval-title": "Sa oled ooteruumis"
+    "waiting-for-approval-title": "Sa oled ooteruumis",
+    "finalizing-app": "Koosoleku ettevalmistamine..."
   },
   "external-display-link-display": {
     "modal-title": "Jaga välislinki",
