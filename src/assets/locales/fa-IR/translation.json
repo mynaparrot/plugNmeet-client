@@ -291,7 +291,7 @@
       "disable-shared-notepad": "غیرفعال کردن دفترچه یادداشت مشترک",
       "mute-microphone": "میکروفون را بی صدا کنید",
       "unmute-microphone": "بی صدا کردن میکروفون",
-      "leave-microphone": "ترک کردن میکروفون",
+      "leave-microphone": "میکروفون را خاموش کنید",
       "leave-webcam": "ترک وب کم",
       "start-external-media-player": "پخش ویدیوی خارجی",
       "stop-external-media-player": "ویدیوی خارجی را متوقف کنید",
@@ -467,7 +467,8 @@
     "mic-menu-title": "میکروفون را انتخاب کنید",
     "background-filter-title": "پس زمینه و فیلترها",
     "config-background-btn": "پیکربندی پس زمینه دوربین",
-    "waiting-for-approval-title": "تو اتاق انتظار هستی"
+    "waiting-for-approval-title": "تو اتاق انتظار هستی",
+    "finalizing-app": "آماده سازی جلسه..."
   },
   "external-display-link-display": {
     "modal-title": "اشتراک گذاری لینک خارجی",
