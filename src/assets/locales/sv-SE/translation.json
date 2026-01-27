@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Inaktivera delat anteckningsblock",
       "mute-microphone": "Stäng av mikrofonen",
       "unmute-microphone": "Slå på mikrofonen",
-      "leave-microphone": "Lämna mikrofonen",
+      "leave-microphone": "Stäng av mikrofonen",
       "leave-webcam": "Lämna webbkameran",
       "start-external-media-player": "Spela upp extern video",
       "stop-external-media-player": "Stoppa extern video",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Välj Mikrofon",
     "background-filter-title": "Bakgrund och filter",
     "config-background-btn": "Konfigurera kamerabakgrund",
-    "waiting-for-approval-title": "Du är i väntrummet"
+    "waiting-for-approval-title": "Du är i väntrummet",
+    "finalizing-app": "Förbereder möte..."
   },
   "external-display-link-display": {
     "modal-title": "Dela Extern länk",
