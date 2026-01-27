@@ -291,7 +291,7 @@
       "disable-shared-notepad": "השבתת 'פנקס רשימות משותף'",
       "mute-microphone": "השתק מיקרופון",
       "unmute-microphone": "בטל את השתקת המיקרופון",
-      "leave-microphone": "עזוב את המיקרופון",
+      "leave-microphone": "כבה את המיקרופון",
       "leave-webcam": "עזוב את מצלמת האינטרנט",
       "start-external-media-player": "הפעל וידאו חיצוני",
       "stop-external-media-player": "עצירת וידאו חיצוני",
@@ -467,7 +467,8 @@
     "mic-menu-title": "בחר מיקרופון",
     "background-filter-title": "רקע ומסננים",
     "config-background-btn": "קביעת תצורה של רקע מצלמה",
-    "waiting-for-approval-title": "אתה בחדר ההמתנה"
+    "waiting-for-approval-title": "אתה בחדר ההמתנה",
+    "finalizing-app": "הכנה לפגישה..."
   },
   "external-display-link-display": {
     "modal-title": "שתפו את External Link",
