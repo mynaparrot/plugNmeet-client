@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Paylaşılan Not Defteri'ni devre dışı bırak",
       "mute-microphone": "Mikrofonu Sessize Al",
       "unmute-microphone": "Mikrofonun Sesini Aç",
-      "leave-microphone": "Mikrofonu Bırak",
+      "leave-microphone": "Mikrofonu Kapat",
       "leave-webcam": "Web kamerasından ayrıl",
       "start-external-media-player": "Harici Video Oynat",
       "stop-external-media-player": "Harici Videoyu Durdur",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Mikrofon Seç",
     "background-filter-title": "Arka Plan & Filtreler",
     "config-background-btn": "Kamera Arka Planını Yapılandır",
-    "waiting-for-approval-title": "Bekleme odasındasınız"
+    "waiting-for-approval-title": "Bekleme odasındasınız",
+    "finalizing-app": "Toplantıya hazırlanıyorum..."
   },
   "external-display-link-display": {
     "modal-title": "Dış Bağlantıyı Paylaş",
