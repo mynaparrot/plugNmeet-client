@@ -291,7 +291,7 @@
       "disable-shared-notepad": "Deaktivieren des freigegebenen Editors",
       "mute-microphone": "Mikrofon stummschalten",
       "unmute-microphone": "Mikrofonstummschaltung aufheben",
-      "leave-microphone": "Mikrofon verlassen",
+      "leave-microphone": "Mikrofon ausschalten",
       "leave-webcam": "Webcam verlassen",
       "start-external-media-player": "Externes Video abspielen",
       "stop-external-media-player": "Externes Video stoppen",
@@ -467,7 +467,8 @@
     "mic-menu-title": "Mikrofon auswählen",
     "background-filter-title": "Hintergrund & Filter",
     "config-background-btn": "Kamerahintergrund konfigurieren",
-    "waiting-for-approval-title": "Sie befinden sich im Wartezimmer"
+    "waiting-for-approval-title": "Sie befinden sich im Wartezimmer",
+    "finalizing-app": "Vorbereitung des Treffens..."
   },
   "external-display-link-display": {
     "modal-title": "Externen Link teilen",
