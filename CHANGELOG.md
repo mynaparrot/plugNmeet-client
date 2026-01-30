@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.1...v2.1.2) (2026-01-30)
+
+
+### Bug Fixes
+
+* wrong filtering of data ([5a1d213](https://github.com/mynaparrot/plugNmeet-client/commit/5a1d213877af40cc170ccfd359d5a334ab25c07e))
+
 ## [2.1.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.0...v2.1.1) (2026-01-30)
 
 
