@@ -643,9 +643,16 @@ export default class ConnectNats {
         dataToParse = data;
       }
       const payload = fromBinary(DataChannelMessageSchema, dataToParse);
-      if (payload.fromUserId !== this._userId) {
-        await this.handleDataMsg.handleMessage(payload);
+      // Don't process our own messages or private messages for others.
+      if (
+        payload.fromUserId === this._userId ||
+        (payload.toUserId && payload.toUserId !== this._userId)
+      ) {
+        continue;
       }
+
+      // All other messages are for us
+      await this.handleDataMsg.handleMessage(payload);
     }
   }
 
