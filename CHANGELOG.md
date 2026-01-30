@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.0...v2.1.1) (2026-01-30)
+
+
+### Bug Fixes
+
+* bump deps ([53de031](https://github.com/mynaparrot/plugNmeet-client/commit/53de031de6948fad6d3264c1eb3fa5e1c494cc96))
+* clean up + bump proto ([0835005](https://github.com/mynaparrot/plugNmeet-client/commit/0835005c2ce16b896bd59595e77e3bbc2828bce7))
+* deps update ([0540223](https://github.com/mynaparrot/plugNmeet-client/commit/0540223928193294138c7994c7a8ff934b5ecc0a))
+* **deps:** update dependency axios to v1.13.3 ([8867b4c](https://github.com/mynaparrot/plugNmeet-client/commit/8867b4c648f88776db2830918ba7719e95bdf56d))
+* **deps:** update dependency axios to v1.13.3 ([a84c262](https://github.com/mynaparrot/plugNmeet-client/commit/a84c26246fda247d39013aed2d60f00ac0f2c77f))
+* merged notification into application ([0d81614](https://github.com/mynaparrot/plugNmeet-client/commit/0d81614768414649277aa1ad9e579216a400e935))
+* migrate chat to core pub/sub ([307c735](https://github.com/mynaparrot/plugNmeet-client/commit/307c735977b82de910f3e960108dcd36123c7604))
+* nats optimisation ([2141234](https://github.com/mynaparrot/plugNmeet-client/commit/2141234e0e61cf69388e396253462f31bbdbb2f8))
+* nats optimisation ([4547a08](https://github.com/mynaparrot/plugNmeet-client/commit/4547a0882848f60b31a02fde934341e3b9dd3668))
+* new Crowdin updates ([cf973d0](https://github.com/mynaparrot/plugNmeet-client/commit/cf973d03d838e21567e007b10856fc417adab3d4))
+* new Crowdin updates ([fc6ed1a](https://github.com/mynaparrot/plugNmeet-client/commit/fc6ed1aed227bce45cd67ab0d776c51a7bee20e9))
+* periodically sync users and reconcile ([8fb8bc0](https://github.com/mynaparrot/plugNmeet-client/commit/8fb8bc0390cc18966060826ad569eb01d1f0f5b4))
+* update the data flow ([55f78f8](https://github.com/mynaparrot/plugNmeet-client/commit/55f78f8a0251f3a3767c41ac7eb53e385f669f1c))
+* use nats core pub/sub for high-performance, loss-tolerant events like `TRANSCRIPTION_OUTPUT_TEXT` ([74b1f17](https://github.com/mynaparrot/plugNmeet-client/commit/74b1f178fce4d611ad2e039190fcf133f012bc91))
+
 ## [2.1.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.0.3...v2.1.0) (2026-01-21)
 
 
