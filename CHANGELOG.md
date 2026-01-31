@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.2...v2.1.3) (2026-01-31)
+
+
+### Bug Fixes
+
+* deliver private messages routed by server through private channel ([3334261](https://github.com/mynaparrot/plugNmeet-client/commit/3334261126763fc70368cd4986a15f5339bce8b9))
+
 ## [2.1.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.1...v2.1.2) (2026-01-30)
 
 
