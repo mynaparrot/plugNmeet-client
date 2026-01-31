@@ -20,6 +20,7 @@ import {
   NatsMsgServerToClientEvents,
   NatsMsgServerToClientSchema,
   NatsSubjects,
+  PrivateDataDeliverySchema,
 } from 'plugnmeet-protocol-js';
 import {
   create,
@@ -93,6 +94,7 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
 const PING_INTERVAL = 10 * 1000;
 const STATUS_CHECKER_INTERVAL = 500;
 const USERS_SYNC_INTERVAL = 30 * 1000;
+type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG';
 
 export default class ConnectNats {
   private _nc: NatsConnection | undefined;
@@ -416,6 +418,39 @@ export default class ConnectNats {
     });
   };
 
+  private sendPrivateData(
+    payload: Uint8Array<ArrayBufferLike>,
+    type: PrivateDataDeliveryType,
+    toUserId: string,
+    echoToSender: boolean,
+  ) {
+    const msg = toJsonString(
+      PrivateDataDeliverySchema,
+      create(PrivateDataDeliverySchema, {
+        toUserId,
+        echoToSender,
+        type,
+      }),
+    );
+
+    this.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.REQ_PRIVATE_DATA_DELIVERY,
+        msg,
+        binMsg: payload,
+      }),
+    );
+  }
+
+  private handlePrivateDataDelivery(p: NatsMsgServerToClient) {
+    const header = fromJsonString(PrivateDataDeliverySchema, p.msg);
+    if ((header.type as PrivateDataDeliveryType) === 'CHAT') {
+      this.processToHandleChatMsg(p.binMsg).then();
+    } else if ((header.type as PrivateDataDeliveryType) === 'DATA_MSG') {
+      this.processToHandleDataMsg(p.binMsg).then();
+    }
+  }
+
   private async encryptData(payload: Uint8Array) {
     try {
       //  Encrypt the binary data directly to a Uint8Array
@@ -447,6 +482,19 @@ export default class ConnectNats {
     return undefined;
   }
 
+  private async processToHandleChatMsg(data: Uint8Array<ArrayBufferLike>) {
+    let dataToParse = data;
+    if (this._enableE2EEChat) {
+      const data = await this.decryptData(dataToParse);
+      if (typeof data === 'undefined') {
+        return;
+      }
+      dataToParse = data;
+    }
+    const payload = fromBinary(ChatMessageSchema, dataToParse);
+    await this.handleChat.handleMsg(payload);
+  }
+
   /**
    * All the events related with chat will be handled here,
    * including public and private
@@ -468,16 +516,7 @@ export default class ConnectNats {
     }
 
     for await (const m of sub) {
-      let dataToParse = m.data;
-      if (this._enableE2EEChat) {
-        const data = await this.decryptData(dataToParse);
-        if (typeof data === 'undefined') {
-          return;
-        }
-        dataToParse = data;
-      }
-      const payload = fromBinary(ChatMessageSchema, dataToParse);
-      await this.handleChat.handleMsg(payload);
+      await this.processToHandleChatMsg(m.data);
     }
   }
 
@@ -533,8 +572,12 @@ export default class ConnectNats {
       payload = data;
     }
 
-    const subject = `${this._subjects.chat}.${this._roomId}`;
-    this._nc.publish(subject, payload);
+    if (isPrivate) {
+      this.sendPrivateData(payload, 'CHAT', to, true);
+    } else {
+      const subject = `${this._subjects.chat}.${this._roomId}`;
+      this._nc.publish(subject, payload);
+    }
 
     if (isPrivate) {
       this.sendAnalyticsData(
@@ -621,6 +664,28 @@ export default class ConnectNats {
     this._nc.publish(subject, payload);
   };
 
+  private async processToHandleDataMsg(data: Uint8Array<ArrayBufferLike>) {
+    let dataToParse = data;
+    if (this._enableE2EE) {
+      const data = await this.decryptData(dataToParse);
+      if (typeof data === 'undefined') {
+        return;
+      }
+      dataToParse = data;
+    }
+    const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+    // Don't process our own messages or private messages for others.
+    if (
+      payload.fromUserId === this._userId ||
+      (payload.toUserId && payload.toUserId !== this._userId)
+    ) {
+      return;
+    }
+
+    // All other messages are for us
+    await this.handleDataMsg.handleMessage(payload);
+  }
+
   /**
    * Subscribes to the room's data channel using NATS Core Pub/Sub for low latency.
    * Mostly with client to client
@@ -634,25 +699,7 @@ export default class ConnectNats {
     const sub = this._nc.subscribe(subject);
 
     for await (const m of sub) {
-      let dataToParse = m.data;
-      if (this._enableE2EE) {
-        const data = await this.decryptData(dataToParse);
-        if (typeof data === 'undefined') {
-          continue;
-        }
-        dataToParse = data;
-      }
-      const payload = fromBinary(DataChannelMessageSchema, dataToParse);
-      // Don't process our own messages or private messages for others.
-      if (
-        payload.fromUserId === this._userId ||
-        (payload.toUserId && payload.toUserId !== this._userId)
-      ) {
-        continue;
-      }
-
-      // All other messages are for us
-      await this.handleDataMsg.handleMessage(payload);
+      await this.processToHandleDataMsg(m.data);
     }
   }
 
@@ -685,8 +732,12 @@ export default class ConnectNats {
       payload = data;
     }
 
-    const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-    this._nc.publish(subject, payload);
+    if (to) {
+      this.sendPrivateData(payload, 'DATA_MSG', to, false);
+    } else {
+      const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+      this._nc.publish(subject, payload);
+    }
   };
 
   /**
@@ -740,6 +791,8 @@ export default class ConnectNats {
       this.handleDataMsg.handleSpeechSubtitleText(p.msg),
     [NatsMsgServerToClientEvents.RESP_INSIGHTS_AI_TEXT_CHAT]: (p) =>
       this.handleSystemData.handleInsightsAITextData(p.msg),
+    [NatsMsgServerToClientEvents.DELIVERY_PRIVATE_DATA]: (p) =>
+      this.handlePrivateDataDelivery(p),
   };
 
   /**
