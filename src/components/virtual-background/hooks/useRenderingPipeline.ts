@@ -29,6 +29,7 @@ function useRenderingPipeline(
   useEffect(() => {
     if (backgroundConfig.type === 'image' && backgroundConfig.url) {
       const image = new Image();
+      image.crossOrigin = 'Anonymous';
       image.onload = () => {
         setBackgroundImage(image);
       };
