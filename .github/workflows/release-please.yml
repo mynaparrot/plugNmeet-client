@@ -23,7 +23,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
@@ -35,14 +35,14 @@ jobs:
         run: |
           # update package version
           pnpm version prerelease --no-commit-hooks --no-git-tag-version
-          
+
           # push changes
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "bump beta version"
+          git commit -m "bump beta version" --no-verify
           git push
-          
+
           # now create zip file
           pnpm run build
           echo ${BETA_VERSION} > dist/version.txt
@@ -57,8 +57,8 @@ jobs:
           server: ${{ secrets.PNM_FTP_HOST }}
           username: ${{ secrets.PNM_FTP_USER }}
           password: ${{ secrets.PNM_FTP_PASSWORD }}
-          local-dir: "./tmp/"
-          state-name: ".client-sync-state.json"
+          local-dir: './tmp/'
+          state-name: '.client-sync-state.json'
           exclude: |
             **/client/**
       - name: Release as production
