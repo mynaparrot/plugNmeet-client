@@ -2,20 +2,15 @@
 set -e
 
 echo "--- Formatting staged files with Prettier ---"
-# Find all staged files and pipe them directly to prettier.
-# xargs won't run prettier if the input is empty.
-# --ignore-unknown tells prettier to only process files it recognizes.
-git diff --cached --name-only --diff-filter=ACMR | xargs npx prettier --write --ignore-unknown
+# The -r flag tells xargs not to run if there's no input.
+git diff --cached --name-only --diff-filter=ACMR | xargs -r npx prettier --write --ignore-unknown
 
 echo "--- Linting staged files with oxlint ---"
-# Find all staged JS/TS files and pipe them directly to oxlint.
-# `|| true` is added because `grep` will exit with an error if it finds no matching files.
-# This ensures the script doesn't fail if you only commit non-JS files.
-git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|jsx|js)$' | xargs npx oxlint --fix || true
+# We also use -r here to prevent oxlint from running on the whole project.
+git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|jsx|js)$' | xargs -r npx oxlint --fix
 
 echo "--- Re-adding modified files to commit ---"
-# Find the list of staged files again and add them.
-# This ensures any changes made by the tools are included in the commit.
-git diff --cached --name-only --diff-filter=ACMR | xargs git add
+# Re-add any files that were modified by the formatters/linters.
+git diff --cached --name-only --diff-filter=ACMR | xargs -r git add
 
 exit 0
