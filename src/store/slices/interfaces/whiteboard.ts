@@ -69,6 +69,7 @@ export interface WhiteboardFileConversionRes {
 }
 
 export interface WhiteboardDataAsDonorData {
+  appState: IWhiteboardAppState;
   elements: readonly OrderedExcalidrawElement[];
   currentOfficeFilePages: string;
   currentWhiteboardOfficeFileId: string;

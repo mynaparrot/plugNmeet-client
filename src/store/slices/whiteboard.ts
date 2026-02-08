@@ -129,6 +129,7 @@ const whiteboardSlice = createSlice({
         }
       }
       state.allExcalidrawElements = JSON.stringify(action.payload.elements);
+      state.whiteboardAppState = action.payload.appState;
     },
   },
 });

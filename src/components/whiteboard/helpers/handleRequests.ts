@@ -31,7 +31,7 @@ export const sendRequestedForWhiteboardData = async () => {
   }
   const donors = getWhiteboardDonors();
   for (let i = 0; i < donors.length; i++) {
-    conn.sendDataMessage(
+    await conn.sendDataMessage(
       DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
       '',
       donors[i].userId,
@@ -54,15 +54,27 @@ export const sendWhiteboardDataAsDonor = async (
       currentWhiteboardOfficeFileId,
       currentPage,
     } = store.getState().whiteboard;
+    const appState = excalidrawAPI.getAppState();
 
     const data: WhiteboardDataAsDonorData = {
       currentOfficeFilePages: currentOfficeFilePages,
       currentPageNumber: currentPage,
       currentWhiteboardOfficeFileId: currentWhiteboardOfficeFileId,
       elements,
+      appState: {
+        height: appState.height,
+        width: appState.width,
+        scrollX: appState.scrollX,
+        scrollY: appState.scrollY,
+        zoomValue: appState.zoom.value,
+        theme: appState.theme,
+        viewBackgroundColor: appState.viewBackgroundColor,
+        zenModeEnabled: appState.zenModeEnabled,
+        gridSize: appState.gridSize,
+      },
     };
 
-    conn.sendDataMessage(
+    await conn.sendDataMessage(
       DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
       JSON.stringify(data),
       sendTo,
