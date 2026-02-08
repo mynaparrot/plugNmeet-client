@@ -9,6 +9,7 @@ import { createTimerWorker } from '../helpers/timerHelper';
 import { buildWebGL2Pipeline } from '../pipelines/webgl2/webgl2Pipeline';
 import { buildCanvas2dPipeline } from '../pipelines/canvas2d/canvas2dPipeline';
 import { TFLite } from '../helpers/utils';
+
 declare const IS_PRODUCTION: boolean;
 
 function useRenderingPipeline(
@@ -19,12 +20,29 @@ function useRenderingPipeline(
   tflite: TFLite,
 ) {
   const [pipeline, setPipeline] = useState<RenderingPipeline | null>(null);
-  const backgroundImageRef = useRef<HTMLImageElement>(null);
+  const [backgroundImage, setBackgroundImage] =
+    useState<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null!);
   const [fps, setFps] = useState(0);
   const [durations, setDurations] = useState<number[]>([]);
 
   useEffect(() => {
+    if (backgroundConfig.type === 'image' && backgroundConfig.url) {
+      const image = new Image();
+      image.onload = () => {
+        setBackgroundImage(image);
+      };
+      image.src = backgroundConfig.url;
+    } else {
+      setBackgroundImage(null);
+    }
+  }, [backgroundConfig]);
+
+  useEffect(() => {
+    if (backgroundConfig.type === 'image' && !backgroundImage) {
+      return;
+    }
+
     const targetTimerTimeoutMs = 1000 / segmentationConfig.targetFps;
 
     let previousTime = 0;
@@ -41,7 +59,7 @@ function useRenderingPipeline(
       segmentationConfig.pipeline === 'webgl2'
         ? buildWebGL2Pipeline(
             sourcePlayback,
-            backgroundImageRef.current,
+            backgroundImage,
             backgroundConfig,
             segmentationConfig,
             canvasRef.current,
@@ -123,11 +141,18 @@ function useRenderingPipeline(
 
       setPipeline(null);
     };
-  }, [sourcePlayback, backgroundConfig, segmentationConfig, bodyPix, tflite]);
+  }, [
+    sourcePlayback,
+    backgroundImage,
+    backgroundConfig,
+    segmentationConfig,
+    bodyPix,
+    tflite,
+  ]);
 
   return {
     pipeline,
-    backgroundImageRef,
+    backgroundImageRef: { current: backgroundImage },
     canvasRef,
     fps,
     durations,

@@ -1,12 +1,4 @@
 import { compileShader, createTexture, glsl } from '../helpers/webglHelper';
-import {
-  BackgroundBlurStage,
-  buildBackgroundBlurStage,
-} from './backgroundBlurStage';
-import {
-  BackgroundImageStage,
-  buildBackgroundImageStage,
-} from './backgroundImageStage';
 import { buildJointBilateralFilterStage } from './jointBilateralFilterStage';
 import { buildLoadSegmentationStage } from './loadSegmentationStage';
 import { buildResizingStage } from './resizingStage';
@@ -20,6 +12,7 @@ import {
 import { TimerWorker } from '../../helpers/timerHelper';
 import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
 import { TFLite } from '../../helpers/utils';
+import { buildBackgroundStage } from './backgroundStageFactory';
 
 export function buildWebGL2Pipeline(
   sourcePlayback: SourcePlayback,
@@ -135,24 +128,16 @@ export function buildWebGL2Pipeline(
     personMaskTexture,
     canvas,
   );
-  const backgroundStage =
-    backgroundConfig.type === 'blur-sm'
-      ? buildBackgroundBlurStage(
-          gl,
-          vertexShader,
-          positionBuffer,
-          texCoordBuffer,
-          personMaskTexture,
-          canvas,
-        )
-      : buildBackgroundImageStage(
-          gl,
-          positionBuffer,
-          texCoordBuffer,
-          personMaskTexture,
-          backgroundImage,
-          canvas,
-        );
+  const backgroundStage = buildBackgroundStage(
+    backgroundConfig,
+    gl,
+    vertexShader,
+    positionBuffer,
+    texCoordBuffer,
+    personMaskTexture,
+    canvas,
+    backgroundImage,
+  );
 
   async function render() {
     gl.activeTexture(gl.TEXTURE0);
@@ -193,23 +178,7 @@ export function buildWebGL2Pipeline(
     jointBilateralFilterStage.updateSigmaColor(
       postProcessingConfig.jointBilateralFilter.sigmaColor,
     );
-
-    if (backgroundConfig.type === 'image') {
-      const backgroundImageStage = backgroundStage as BackgroundImageStage;
-      backgroundImageStage.updateCoverage(postProcessingConfig.coverage);
-      backgroundImageStage.updateLightWrapping(
-        postProcessingConfig.lightWrapping,
-      );
-      backgroundImageStage.updateBlendMode(postProcessingConfig.blendMode);
-    } else if (backgroundConfig.type === 'blur-sm') {
-      const backgroundBlurStage = backgroundStage as BackgroundBlurStage;
-      backgroundBlurStage.updateCoverage(postProcessingConfig.coverage);
-    } else {
-      // TODO Handle no background in a separate pipeline path
-      const backgroundImageStage = backgroundStage as BackgroundImageStage;
-      backgroundImageStage.updateCoverage([0, 0.9999]);
-      backgroundImageStage.updateLightWrapping(0);
-    }
+    backgroundStage.updatePostProcessingConfig(postProcessingConfig);
   }
 
   function cleanUp() {

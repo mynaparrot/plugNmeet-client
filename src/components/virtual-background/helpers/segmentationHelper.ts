@@ -26,8 +26,8 @@ export const defaultSegmentationConfig: SegmentationConfig = {
   model: 'meet',
   backend: 'wasmSimd',
   inputResolution: '160x96',
-  pipeline: 'canvas2dCpu',
-  targetFps: 65,
+  pipeline: 'webgl2',
+  targetFps: 25,
   deferInputResizing: true,
 };
 

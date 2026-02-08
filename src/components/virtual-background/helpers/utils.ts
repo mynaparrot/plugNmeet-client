@@ -135,6 +135,12 @@ export const loadTFLite = once(
   },
 );
 
+export function isWebGL2Supported(): boolean {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl2');
+  return gl instanceof WebGL2RenderingContext;
+}
+
 function displayLog(message?: any, ...optionalParams: any[]) {
   if (IS_PRODUCTION) {
     return;

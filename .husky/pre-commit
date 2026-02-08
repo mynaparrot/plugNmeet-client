@@ -1,4 +1,32 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# 1. Find all staged files with relevant extensions
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|jsx|css|js)$')
 
-pnpm exec lint-staged
+if [ -z "$STAGED_FILES" ]; then
+  echo "No staged files to lint or format."
+  exit 0
+fi
+
+# 2. Run prettier on all staged files
+echo "Formatting staged files with prettier..."
+echo "$STAGED_FILES" | xargs npx prettier --write
+if [ $? -ne 0 ]; then
+  echo "Prettier failed. Please fix the errors and try again."
+  exit 1
+fi
+
+# 3. Run oxlint on TS/JS files
+TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|tsx|jsx|js)$')
+if [ -n "$TS_JS_FILES" ]; then
+  echo "Linting staged files with oxlint..."
+  echo "$TS_JS_FILES" | xargs npx oxlint --fix
+  if [ $? -ne 0 ]; then
+    echo "Oxlint failed. Please fix the errors and try again."
+    exit 1
+  fi
+fi
+
+# 4. Add the changes back to the staging area
+echo "Re-adding formatted and linted files to the commit..."
+echo "$STAGED_FILES" | xargs git add
+
+exit 0

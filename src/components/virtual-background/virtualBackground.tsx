@@ -13,7 +13,7 @@ import {
   defaultSegmentationConfig,
   SegmentationConfig,
 } from './helpers/segmentationHelper';
-import { loadBodyPix } from './helpers/utils';
+import { isWebGL2Supported, loadBodyPix } from './helpers/utils';
 
 interface IVirtualBackgroundProps {
   sourcePlayback: SourcePlayback;
@@ -37,14 +37,14 @@ const VirtualBackground = ({
   useEffect(() => {
     loadBodyPix(false).then((pix) => {
       setSegmentationConfig((previousSegmentationConfig) => {
-        if (
-          previousSegmentationConfig.backend === 'wasmSimd' &&
-          !isSIMDSupported
-        ) {
-          return { ...previousSegmentationConfig, backend: 'wasm' };
-        } else {
-          return previousSegmentationConfig;
+        const newConfig = { ...previousSegmentationConfig };
+        if (newConfig.backend === 'wasmSimd' && !isSIMDSupported) {
+          newConfig.backend = 'wasm';
         }
+        if (newConfig.pipeline === 'webgl2' && !isWebGL2Supported()) {
+          newConfig.pipeline = 'canvas2dCpu';
+        }
+        return newConfig;
       });
       setBodyPix(pix);
     });

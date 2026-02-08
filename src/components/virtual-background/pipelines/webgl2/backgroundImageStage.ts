@@ -1,18 +1,11 @@
-import { BlendMode } from '../../helpers/postProcessingHelper';
+import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
 import {
   compileShader,
   createPiplelineStageProgram,
   createTexture,
   glsl,
 } from '../helpers/webglHelper';
-
-export type BackgroundImageStage = {
-  render(): void;
-  updateCoverage(coverage: [number, number]): void;
-  updateLightWrapping(lightWrapping: number): void;
-  updateBlendMode(blendMode: BlendMode): void;
-  cleanUp(): void;
-};
+import { BackgroundStage } from './backgroundStageFactory';
 
 export function buildBackgroundImageStage(
   gl: WebGL2RenderingContext,
@@ -21,7 +14,7 @@ export function buildBackgroundImageStage(
   personMaskTexture: WebGLTexture,
   backgroundImage: HTMLImageElement | null,
   canvas: HTMLCanvasElement,
-): BackgroundImageStage {
+): BackgroundStage {
   const vertexShaderSource = glsl`#version 300 es
 
     uniform vec2 u_backgroundScale;
@@ -122,13 +115,8 @@ export function buildBackgroundImageStage(
   gl.uniform1f(blendModeLocation, 0);
 
   let backgroundTexture: WebGLTexture | null = null;
-  // TODO Find a better to handle background being loaded
-  if (backgroundImage?.complete) {
+  if (backgroundImage) {
     updateBackgroundImage(backgroundImage);
-  } else if (backgroundImage) {
-    backgroundImage.onload = () => {
-      updateBackgroundImage(backgroundImage);
-    };
   }
 
   function render() {
@@ -139,7 +127,6 @@ export function buildBackgroundImageStage(
     if (backgroundTexture !== null) {
       gl.activeTexture(gl.TEXTURE2);
       gl.bindTexture(gl.TEXTURE_2D, backgroundTexture);
-      // TODO Handle correctly the background not loaded yet
       gl.uniform1i(backgroundLocation, 2);
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -189,19 +176,20 @@ export function buildBackgroundImageStage(
     gl.uniform2f(backgroundOffsetLocation, xOffset, yOffset);
   }
 
-  function updateCoverage(coverage: [number, number]) {
+  function updatePostProcessingConfig(
+    postProcessingConfig: PostProcessingConfig,
+  ) {
     gl.useProgram(program);
-    gl.uniform2f(coverageLocation, coverage[0], coverage[1]);
-  }
-
-  function updateLightWrapping(lightWrapping: number) {
-    gl.useProgram(program);
-    gl.uniform1f(lightWrappingLocation, lightWrapping);
-  }
-
-  function updateBlendMode(blendMode: BlendMode) {
-    gl.useProgram(program);
-    gl.uniform1f(blendModeLocation, blendMode === 'screen' ? 0 : 1);
+    gl.uniform2f(
+      coverageLocation,
+      postProcessingConfig.coverage[0],
+      postProcessingConfig.coverage[1],
+    );
+    gl.uniform1f(lightWrappingLocation, postProcessingConfig.lightWrapping);
+    gl.uniform1f(
+      blendModeLocation,
+      postProcessingConfig.blendMode === 'screen' ? 0 : 1,
+    );
   }
 
   function cleanUp() {
@@ -213,9 +201,7 @@ export function buildBackgroundImageStage(
 
   return {
     render,
-    updateCoverage,
-    updateLightWrapping,
-    updateBlendMode,
+    updatePostProcessingConfig,
     cleanUp,
   };
 }

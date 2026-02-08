@@ -1,15 +1,11 @@
+import { PostProcessingConfig } from '../../helpers/postProcessingHelper';
 import {
   compileShader,
   createPiplelineStageProgram,
   createTexture,
   glsl,
 } from '../helpers/webglHelper';
-
-export type BackgroundBlurStage = {
-  render(): void;
-  updateCoverage(coverage: [number, number]): void;
-  cleanUp(): void;
-};
+import { BackgroundStage } from './backgroundStageFactory';
 
 export function buildBackgroundBlurStage(
   gl: WebGL2RenderingContext,
@@ -18,7 +14,7 @@ export function buildBackgroundBlurStage(
   texCoordBuffer: WebGLBuffer,
   personMaskTexture: WebGLTexture,
   canvas: HTMLCanvasElement,
-): BackgroundBlurStage {
+): BackgroundStage {
   const blurPass = buildBlurPass(
     gl,
     vertexShader,
@@ -34,8 +30,10 @@ export function buildBackgroundBlurStage(
     blendPass.render();
   }
 
-  function updateCoverage(coverage: [number, number]) {
-    blendPass.updateCoverage(coverage);
+  function updatePostProcessingConfig(
+    postProcessingConfig: PostProcessingConfig,
+  ) {
+    blendPass.updateCoverage(postProcessingConfig.coverage);
   }
 
   function cleanUp() {
@@ -45,7 +43,7 @@ export function buildBackgroundBlurStage(
 
   return {
     render,
-    updateCoverage,
+    updatePostProcessingConfig,
     cleanUp,
   };
 }
