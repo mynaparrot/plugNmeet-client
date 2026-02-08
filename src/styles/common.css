@@ -1241,3 +1241,12 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     @apply w-auto flex-1 min-w-28;
   }
 }
+.excalidraw-wrapper .excalidraw .buttonList label:hover svg,
+.excalidraw-wrapper .excalidraw .buttonList button:hover svg,
+.excalidraw-wrapper .excalidraw .buttonList .zIndexButton:hover svg {
+  color: #fff !important;
+}
+.excalidraw-wrapper .compact-shape-actions .ToolIcon .ToolIcon__icon:hover,
+.excalidraw-wrapper .excalidraw .App-toolbar__extra-tools-trigger:hover {
+  background: var(--button-hover-bg) !important;
+}
