@@ -195,6 +195,7 @@ export default class ConnectNats {
       this._nc = await wsconnect({
         servers: this._natsWSUrls,
         authenticator: tokenAuthenticator(() => this._token),
+        pingInterval: PING_INTERVAL,
       });
 
       console.info(`connected ${this._nc.getServer()}`);
