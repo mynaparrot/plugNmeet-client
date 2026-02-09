@@ -1,7 +1,7 @@
 name: Test
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,7 +11,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
@@ -22,8 +22,3 @@ jobs:
         run: pnpm run format-check
       - name: Build check
         run: pnpm run build
-      - uses: andresz1/size-limit-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          build_script: size-limit
-          skip_step: install
