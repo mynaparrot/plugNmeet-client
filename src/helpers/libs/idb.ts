@@ -30,6 +30,7 @@ class IDBManager {
   ];
   private dbPromise: Promise<IDBPDatabase> | null = null;
   private dbName: string | null = null;
+  private isDbActive = false;
 
   /**
    * Initializes a session-specific database. This must be called once at the
@@ -46,6 +47,7 @@ class IDBManager {
 
     // Use a stable name for persistence across reloads.
     this.dbName = `pnm-${roomSid}-${userId}`;
+    this.isDbActive = true;
     this.dbPromise = openDB(this.dbName, 3, {
       upgrade: (db) => {
         // Create all necessary object stores if they don't already exist.
@@ -71,6 +73,9 @@ class IDBManager {
    * @param value The value to save.
    */
   public store = async (storeName: IDBStoreName, key: string, value: any) => {
+    if (!this.isDbActive) {
+      return;
+    }
     const db = await this.getDb();
     // Update the timestamp on every write to keep the DB "alive".
     const tx = db.transaction([storeName, DB_STORE_METADATA], 'readwrite');
@@ -91,6 +96,9 @@ class IDBManager {
     storeName: IDBStoreName,
     key: string,
   ): Promise<T | undefined> => {
+    if (!this.isDbActive) {
+      return;
+    }
     const db = await this.getDb();
     if (!db.objectStoreNames.contains(storeName)) {
       return undefined;
@@ -104,6 +112,9 @@ class IDBManager {
    * @returns An array of all values in the store.
    */
   public getAll = async <T>(storeName: IDBStoreName): Promise<T[]> => {
+    if (!this.isDbActive) {
+      return [];
+    }
     const db = await this.getDb();
     if (!db.objectStoreNames.contains(storeName)) {
       return [];
@@ -115,6 +126,7 @@ class IDBManager {
    * Deletes the entire database for the current session.
    */
   public deleteDB = async () => {
+    this.isDbActive = false;
     if (this.dbName) {
       // Ensure the current connection is closed before deleting.
       if (this.dbPromise) {
