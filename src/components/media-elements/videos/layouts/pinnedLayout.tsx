@@ -1,8 +1,10 @@
 import React, { ReactElement } from 'react';
 
 import VerticalLayout from './verticalLayout';
+import { VideoParticipantProps } from '../videoParticipant';
 
 interface IPinnedLayoutProps {
+  allParticipants: ReactElement<VideoParticipantProps>[];
   participantsToRender: Array<ReactElement>;
   pinParticipant: ReactElement;
   totalNumWebcams: number;
@@ -13,6 +15,7 @@ interface IPinnedLayoutProps {
 }
 
 const PinnedLayout = ({
+  allParticipants,
   participantsToRender,
   pinParticipant,
   totalNumWebcams,
@@ -27,6 +30,7 @@ const PinnedLayout = ({
         {pinParticipant}
       </div>
       <VerticalLayout
+        allParticipants={allParticipants}
         participantsToRender={participantsToRender}
         totalNumWebcams={totalNumWebcams}
         currentPage={currentPage}

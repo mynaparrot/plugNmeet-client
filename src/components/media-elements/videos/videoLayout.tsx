@@ -328,6 +328,7 @@ const VideoLayout = ({
   if (pinParticipant) {
     return (
       <PinnedLayout
+        allParticipants={allParticipants}
         participantsToRender={structuredLayout}
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
@@ -342,6 +343,7 @@ const VideoLayout = ({
   if (enabledVerticalViewMode) {
     return (
       <VerticalLayout
+        allParticipants={allParticipants}
         participantsToRender={structuredLayout}
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
