@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { debounce } from 'es-toolkit';
 
-import { store, useAppDispatch } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
   setActiveSidePanel,
   updateIsEnabledExtendedVerticalCamView,
@@ -29,6 +29,9 @@ const MainArea = () => {
       roomFeatures,
     };
   }, []);
+  const isNatsServerConnected = useAppSelector(
+    (state) => state.roomSettings.isNatsServerConnected,
+  );
 
   const {
     columnCameraWidth,
@@ -167,10 +170,14 @@ const MainArea = () => {
     >
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div className={middleAreaClasses}>
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-none w-full">
-            <ActiveSpeakers activeSidePanel={activeSidePanel} />
-          </div>
-          {renderMainView}
+          {isNatsServerConnected && (
+            <>
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-none w-full">
+                <ActiveSpeakers activeSidePanel={activeSidePanel} />
+              </div>
+              {renderMainView}
+            </>
+          )}
         </div>
         <SidePanel
           isActive={activeSidePanel === 'PARTICIPANTS'}
