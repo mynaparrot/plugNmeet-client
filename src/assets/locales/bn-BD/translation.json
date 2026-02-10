@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "আপনাকে মিটিং থেকে অপসারণ করা হয়েছে।",
     "room-disconnected-room-ended": "বৈঠক শেষ হয়েছে।",
     "room-disconnected-state-mismatch": "একটি সংযোগ ত্রুটি ঘটেছে। দয়া করে পুনরায় যোগদান করার চেষ্টা করুন। (কোড: {{code}})",
+    "room-disconnected-server-unresponsive": "সার্ভারটি প্রতিক্রিয়া জানানো বন্ধ করে দেওয়ার কারণে আপনাকে সংযোগ বিচ্ছিন্ন করা হয়েছে।",
     "room-disconnected-reconnecting": "সংযোগ হারিয়ে গেছে। পুনরায় সংযোগ করা হচ্ছে...",
     "room-disconnected-network-error": "একটি নেটওয়ার্ক সমস্যার কারণে আপনি সংযোগ বিচ্ছিন্ন হয়েছেন।",
     "your-connection-quality-not-good": "আপনার ইন্টারনেট সংযোগ অস্থিতিশীল।",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "সংযোগের সমস্যা: বার্তাগুলি ধরে রাখা হচ্ছে। ({{error}})",
     "queue-discarded-message": "একটি বার্তা প্রেরণ করা যায়নি এবং পরিত্যাগ করা হয়েছে। ({{error}})",
     "request-submitted-wait": "আপনার অনুরোধ জমা দেওয়া হয়েছে। দয়া করে নিশ্চিতকরণের জন্য অপেক্ষা করুন",
-    "wait-other-uploading-to-finish": "আরেকটি আপলোড চলছে। দয়া করে এটি শেষ হওয়ার জন্য অপেক্ষা করুন।"
+    "wait-other-uploading-to-finish": "আরেকটি আপলোড চলছে। দয়া করে এটি শেষ হওয়ার জন্য অপেক্ষা করুন।",
+    "server-not-responding": "সার্ভার সাড়া দিচ্ছে না। আপনার সংযোগ অস্থিতিশীল হতে পারে।"
   },
   "room-metadata": {
     "session-recording": "এই মিটিং রেকর্ড করা হচ্ছে।",
