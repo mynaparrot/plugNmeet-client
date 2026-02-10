@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Anda telah dihapus dari rapat.",
     "room-disconnected-room-ended": "Pertemuan telah berakhir.",
     "room-disconnected-state-mismatch": "Terjadi kesalahan koneksi. Silakan coba bergabung kembali. (Kode: {{code}})",
+    "room-disconnected-server-unresponsive": "Anda telah terputus karena server berhenti merespons.",
     "room-disconnected-reconnecting": "Koneksi terputus. Menghubungkan kembali...",
     "room-disconnected-network-error": "Anda terputus karena masalah jaringan.",
     "your-connection-quality-not-good": "Koneksi internet Anda tidak stabil.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Masalah koneksi: pesan ditahan. ({{error}})",
     "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})",
     "request-submitted-wait": "Permintaan Anda telah diajukan. Harap tunggu konfirmasi",
-    "wait-other-uploading-to-finish": "Unggahan lain sedang berlangsung. Harap tunggu hingga selesai."
+    "wait-other-uploading-to-finish": "Unggahan lain sedang berlangsung. Harap tunggu hingga selesai.",
+    "server-not-responding": "Server tidak merespons. Koneksi Anda mungkin tidak stabil."
   },
   "room-metadata": {
     "session-recording": "Pertemuan ini sedang direkam.",
