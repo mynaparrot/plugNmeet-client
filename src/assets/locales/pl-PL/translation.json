@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Zostałeś usunięty ze spotkania.",
     "room-disconnected-room-ended": "Spotkanie dobiegło końca.",
     "room-disconnected-state-mismatch": "Wystąpił błąd połączenia. Spróbuj dołączyć ponownie. (Kod: {{code}})",
+    "room-disconnected-server-unresponsive": "Zostałeś rozłączony, ponieważ serwer przestał odpowiadać.",
     "room-disconnected-reconnecting": "Utracono połączenie. Ponowne łączenie...",
     "room-disconnected-network-error": "Nastąpiło rozłączenie z powodu problemu z siecią.",
     "your-connection-quality-not-good": "Twoje połączenie internetowe jest niestabilne.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Problem z połączeniem: wiadomości są wstrzymywane. ({{error}})",
     "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona. ({{error}})",
     "request-submitted-wait": "Twoja prośba została złożona. Proszę poczekać na potwierdzenie",
-    "wait-other-uploading-to-finish": "Kolejne przesłanie jest w trakcie publikacji. Proszę poczekać na zakończenie."
+    "wait-other-uploading-to-finish": "Kolejne przesłanie jest w trakcie publikacji. Proszę poczekać na zakończenie.",
+    "server-not-responding": "Serwer nie odpowiada. Twoje połączenie może być niestabilne."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
