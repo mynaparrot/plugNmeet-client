@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Jūs esat noņemts no sapulces.",
     "room-disconnected-room-ended": "Sanāksme ir beigusies.",
     "room-disconnected-state-mismatch": "Radās savienojuma kļūda. Lūdzu, mēģiniet atkārtoti pievienoties. (Kods: {{code}})",
+    "room-disconnected-server-unresponsive": "Savienojums ir pārtraukts, jo serveris pārstāja reaģēt.",
     "room-disconnected-reconnecting": "Savienojums zaudēts. Saiknes...",
     "room-disconnected-network-error": "Tīkla problēmas dēļ tika pārtraukts savienojums.",
     "your-connection-quality-not-good": "Jūsu interneta savienojums ir nestabils.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Savienojuma problēma: tiek turēti ziņojumi. ({{error}})",
     "queue-discarded-message": "Ziņojumu nevarēja nosūtīt, un tas tika atmests. ({{error}})",
     "request-submitted-wait": "Jūsu pieprasījums ir iesniegts. Lūdzu, gaidiet apstiprinājumu",
-    "wait-other-uploading-to-finish": "Notiek vēl viena augšupielāde. Lūdzu, pagaidiet, līdz tas tiks pabeigts."
+    "wait-other-uploading-to-finish": "Notiek vēl viena augšupielāde. Lūdzu, pagaidiet, līdz tas tiks pabeigts.",
+    "server-not-responding": "Serveris nereaģē. Savienojums var būt nestabils."
   },
   "room-metadata": {
     "session-recording": "Šī sanāksme tiek ierakstīta.",
