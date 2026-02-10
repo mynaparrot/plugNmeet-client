@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "会議から削除されました。",
     "room-disconnected-room-ended": "会議は終了しました。",
     "room-disconnected-state-mismatch": "接続エラーが発生しました。再参加してみてください。(コード: {{code}})",
+    "room-disconnected-server-unresponsive": "サーバーが応答しなくなったため、接続が切断されました。",
     "room-disconnected-reconnecting": "接続が失われました。再接続。。。",
     "room-disconnected-network-error": "ネットワークの問題により切断されました。",
     "your-connection-quality-not-good": "インターネット接続が不安定です。",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "接続の問題: メッセージが保留されています。({{error}})",
     "queue-discarded-message": "メッセージを送信できず、破棄されました。({{error}})",
     "request-submitted-wait": "あなたのリクエストは提出されました。確認をお待ちください",
-    "wait-other-uploading-to-finish": "別のアップロードが進行中です。完成までお待ちください。"
+    "wait-other-uploading-to-finish": "別のアップロードが進行中です。完成までお待ちください。",
+    "server-not-responding": "サーバーが応答しません。接続が不安定かもしれません。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画中です。",

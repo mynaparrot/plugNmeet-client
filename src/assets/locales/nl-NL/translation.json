@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "U bent verwijderd uit de vergadering.",
     "room-disconnected-room-ended": "De bijeenkomst is afgelopen.",
     "room-disconnected-state-mismatch": "Er is een verbindingsfout opgetreden. Probeer alsjeblieft opnieuw lid te worden. (Wetboek: {{code}})",
+    "room-disconnected-server-unresponsive": "Je bent verbroken omdat de server niet meer reageert.",
     "room-disconnected-reconnecting": "Verbinding verbroken. Reconnecting...",
     "room-disconnected-network-error": "De verbinding is verbroken vanwege een netwerkprobleem.",
     "your-connection-quality-not-good": "Uw internetverbinding is instabiel.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Verbindingsprobleem: berichten worden vastgehouden. ({{error}})",
     "queue-discarded-message": "Een bericht kon niet worden verzonden en werd verwijderd. ({{error}})",
     "request-submitted-wait": "Uw verzoek is ingediend. Wacht alstublieft op bevestiging",
-    "wait-other-uploading-to-finish": "Een andere upload is in uitvoering. Wacht alsjeblieft tot het klaar is."
+    "wait-other-uploading-to-finish": "Een andere upload is in uitvoering. Wacht alsjeblieft tot het klaar is.",
+    "server-not-responding": "Server reageert niet. Je verbinding kan onstabiel zijn."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",

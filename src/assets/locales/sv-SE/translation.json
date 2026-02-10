@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Du har tagits bort från mötet.",
     "room-disconnected-room-ended": "Mötet är avslutat.",
     "room-disconnected-state-mismatch": "Ett anslutningsfel uppstod. Försök att gå med igen. (Kod: {{code}})",
+    "room-disconnected-server-unresponsive": "Du har blivit frånkopplad eftersom servern slutade svara.",
     "room-disconnected-reconnecting": "Anslutningen har brutits. Återansluta...",
     "room-disconnected-network-error": "Du kopplades bort på grund av ett nätverksproblem.",
     "your-connection-quality-not-good": "Din internetanslutning är instabil.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar. ({{error}})",
     "queue-discarded-message": "Det gick inte att skicka ett meddelande och det ignorerades. ({{error}})",
     "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse",
-    "wait-other-uploading-to-finish": "En ny uppladdning pågår. Vänligen vänta tills det är klart."
+    "wait-other-uploading-to-finish": "En ny uppladdning pågår. Vänligen vänta tills det är klart.",
+    "server-not-responding": "Servern svarar inte. Din anslutning kan vara instabil."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",

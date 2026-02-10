@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Ați fost eliminat din întâlnire.",
     "room-disconnected-room-ended": "Întâlnirea s-a încheiat.",
     "room-disconnected-state-mismatch": "A apărut o eroare de conexiune. Vă rugăm să încercați să vă alăturați din nou. (Codul: {{code}})",
+    "room-disconnected-server-unresponsive": "Ai fost deconectat pentru că serverul a încetat să mai răspundă.",
     "room-disconnected-reconnecting": "Conexiune pierdută. Reconectarea...",
     "room-disconnected-network-error": "Ați fost deconectat din cauza unei probleme de rețea.",
     "your-connection-quality-not-good": "Conexiunea ta la internet este instabilă.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute. ({{error}})",
     "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})",
     "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea",
-    "wait-other-uploading-to-finish": "O altă încărcare este în curs de desfășurare. Vă rugăm să așteptați să se termine."
+    "wait-other-uploading-to-finish": "O altă încărcare este în curs de desfășurare. Vă rugăm să așteptați să se termine.",
+    "server-not-responding": "Serverul nu răspunde. Conexiunea ta poate fi instabilă."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",

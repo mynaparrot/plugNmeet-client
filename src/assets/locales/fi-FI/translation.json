@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Sinut on poistettu kokouksesta.",
     "room-disconnected-room-ended": "Kokous on päättynyt.",
     "room-disconnected-state-mismatch": "Tapahtui yhteysvirhe. Yritä liittyä uudelleen. (Koodi: {{code}})",
+    "room-disconnected-server-unresponsive": "Yhteys on katkaistu, koska palvelin lakkasi vastaamasta.",
     "room-disconnected-reconnecting": "Yhteys katkesi. Elvyttämään...",
     "room-disconnected-network-error": "Yhteys katkesi verkko-ongelman vuoksi.",
     "your-connection-quality-not-good": "Internet-yhteytesi on epävakaa.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Yhteysongelma: viestejä pidetään. ({{error}})",
     "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})",
     "request-submitted-wait": "Pyyntösi on toimitettu. Odottakaa vahvistusta",
-    "wait-other-uploading-to-finish": "Toinen lataus on käynnissä. Odota, että se valmistuu."
+    "wait-other-uploading-to-finish": "Toinen lataus on käynnissä. Odota, että se valmistuu.",
+    "server-not-responding": "Palvelin ei vastaa. Yhteytesi voi olla epävakaa."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",

@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Toplantıdan çıkarıldınız.",
     "room-disconnected-room-ended": "Toplantı sona erdi.",
     "room-disconnected-state-mismatch": "Bir bağlantı hatası oluştu. Lütfen yeniden katılmayı deneyin. (Kod: {{code}})",
+    "room-disconnected-server-unresponsive": "Sunucu yanıt vermeyi durdurduğu için bağlantınız kesildi.",
     "room-disconnected-reconnecting": "Bağlantı kesildi. Yeniden bağlanma...",
     "room-disconnected-network-error": "Bir ağ sorunu nedeniyle bağlantınız kesildi.",
     "your-connection-quality-not-good": "İnternet bağlantınız kararsız.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor. ({{error}})",
     "queue-discarded-message": "Bir mesaj gönderilemedi ve atıldı. ({{error}})",
     "request-submitted-wait": "Talebiniz gönderildi. Lütfen onay için bekleyin",
-    "wait-other-uploading-to-finish": "Başka bir yükleme devam ediyor. Lütfen tamamlanana kadar bekleyin."
+    "wait-other-uploading-to-finish": "Başka bir yükleme devam ediyor. Lütfen tamamlanana kadar bekleyin.",
+    "server-not-responding": "Sunucu cevap vermiyor. Bağlantınız dengesiz olabilir."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kayıt altına alınıyor.",

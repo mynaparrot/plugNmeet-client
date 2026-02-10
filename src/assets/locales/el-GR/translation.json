@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Έχετε διαγραφεί από τη συνάντηση.",
     "room-disconnected-room-ended": "Η συνάντηση έληξε.",
     "room-disconnected-state-mismatch": "Παρουσιάστηκε σφάλμα σύνδεσης. Δοκιμάστε να συμμετάσχετε ξανά. (Κωδικός: {{code}})",
+    "room-disconnected-server-unresponsive": "Έχετε αποσυνδεθεί επειδή ο διακομιστής σταμάτησε να ανταποκρίνεται.",
     "room-disconnected-reconnecting": "Η σύνδεση χάθηκε. Επανασύνδεση...",
     "room-disconnected-network-error": "Αποσυνδεθήκατε λόγω προβλήματος δικτύου.",
     "your-connection-quality-not-good": "Η σύνδεσή σας στο διαδίκτυο είναι ασταθής.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Πρόβλημα σύνδεσης: τα μηνύματα κρατούνται. ({{error}})",
     "queue-discarded-message": "Δεν ήταν δυνατή η αποστολή μηνύματος και απορρίφθηκε. ({{error}})",
     "request-submitted-wait": "Το αίτημά σας έχει υποβληθεί. Περιμένετε για επιβεβαίωση",
-    "wait-other-uploading-to-finish": "Μια άλλη μεταφόρτωση βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί."
+    "wait-other-uploading-to-finish": "Μια άλλη μεταφόρτωση βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί.",
+    "server-not-responding": "Ο διακομιστής δεν ανταποκρίνεται. Η σύνδεσή σας μπορεί να είναι ασταθής."
   },
   "room-metadata": {
     "session-recording": "Αυτή η συνάντηση καταγράφεται.",

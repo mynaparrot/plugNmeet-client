@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Teid on koosolekult eemaldatud.",
     "room-disconnected-room-ended": "Koosolek on lõppenud.",
     "room-disconnected-state-mismatch": "Ilmnes ühenduse tõrge. Palun proovige uuesti liituda. (Kood: {{code}})",
+    "room-disconnected-server-unresponsive": "Sind on ühendus katkestatud, sest server lõpetas vastamise.",
     "room-disconnected-reconnecting": "Ühendus katkes. Läheneb...",
     "room-disconnected-network-error": "Teie ühendus katkestati võrguprobleemi tõttu.",
     "your-connection-quality-not-good": "Teie Interneti-ühendus on ebastabiilne.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Ühenduse probleem: sõnumeid hoitakse. ({{error}})",
     "queue-discarded-message": "Sõnumit ei saanud saata ja see visati ära. ({{error}})",
     "request-submitted-wait": "Teie taotlus on esitatud. Palun oodake kinnitust",
-    "wait-other-uploading-to-finish": "Veel üks üleslaadimine on käimas. Palun oodake, kuni see valmis saab."
+    "wait-other-uploading-to-finish": "Veel üks üleslaadimine on käimas. Palun oodake, kuni see valmis saab.",
+    "server-not-responding": "Server ei vasta. Sinu ühendus võib olla ebastabiilne."
   },
   "room-metadata": {
     "session-recording": "See kohtumine salvestatakse.",

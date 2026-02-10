@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "تمت إزالته من الاجتماع.",
     "room-disconnected-room-ended": "وقد انتهى الاجتماع.",
     "room-disconnected-state-mismatch": "حدث خطأ في الاتصال. يرجى محاولة الانضمام.",
+    "room-disconnected-server-unresponsive": "تم فصلك لأن الخادم توقف عن الرد.",
     "room-disconnected-reconnecting": "فقد الاتصال. إعادة الاتصال...",
     "room-disconnected-network-error": "تم قطع اتصالك بسبب مشكلة في الشبكة.",
     "your-connection-quality-not-good": "اتصالك بالإنترنت غير مستقر.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "مشكلة الاتصال: يتم تعليق الرسائل. ({{error}})",
     "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها. ({{error}})",
     "request-submitted-wait": "تم تقديم طلبك. يرجى الانتظار للتأكيد",
-    "wait-other-uploading-to-finish": "هناك تحميل آخر جار. يرجى الانتظار حتى يكتمل البرنامج."
+    "wait-other-uploading-to-finish": "هناك تحميل آخر جار. يرجى الانتظار حتى يكتمل البرنامج.",
+    "server-not-responding": "الخادم لا يستجيب. قد يكون اتصالك غير مستقر."
   },
   "room-metadata": {
     "session-recording": "جاري تسجيل هذا الاجتماع.",

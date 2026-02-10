@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Ha sido eliminado de la reunión.",
     "room-disconnected-room-ended": "La reunión ha terminado.",
     "room-disconnected-state-mismatch": "Se ha producido un error de conexión. Por favor, intente volver a unirse. (Código: {{code}})",
+    "room-disconnected-server-unresponsive": "Te han desconectado porque el servidor dejó de responder.",
     "room-disconnected-reconnecting": "Conexión perdida. Reconectar...",
     "room-disconnected-network-error": "Te desconectaron debido a un problema de red.",
     "your-connection-quality-not-good": "Tu conexión a Internet es inestable.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Problema de conexión: los mensajes están retenidos. ({{error}})",
     "queue-discarded-message": "No se pudo enviar un mensaje y se descartó. ({{error}})",
     "request-submitted-wait": "Tu solicitud ha sido enviada. Por favor, esperad la confirmación",
-    "wait-other-uploading-to-finish": "Otra subida está en proceso. Por favor, espera a que termine."
+    "wait-other-uploading-to-finish": "Otra subida está en proceso. Por favor, espera a que termine.",
+    "server-not-responding": "El servidor no responde. Tu conexión puede ser inestable."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",

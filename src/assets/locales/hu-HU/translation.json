@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Eltávolították az értekezletről.",
     "room-disconnected-room-ended": "A találkozó véget ért.",
     "room-disconnected-state-mismatch": "Csatlakozási hiba történt. Kérjük, próbáljon meg újra csatlakozni. (Kód: {{code}})",
+    "room-disconnected-server-unresponsive": "Azért szakítottak el a kapcsolatot, mert a szerver nem válaszolt.",
     "room-disconnected-reconnecting": "A kapcsolat megszakadt. Újracsatlakoztatás...",
     "room-disconnected-network-error": "Hálózati probléma miatt megszakadt a kapcsolat.",
     "your-connection-quality-not-good": "Az internetkapcsolat instabil.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Csatlakozási probléma: az üzenetek visszatartása folyamatban van. ({{error}})",
     "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})",
     "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést",
-    "wait-other-uploading-to-finish": "Egy újabb feltöltés folyamatban van. Kérlek, várj, amíg befejeződik."
+    "wait-other-uploading-to-finish": "Egy újabb feltöltés folyamatban van. Kérlek, várj, amíg befejeződik.",
+    "server-not-responding": "A szerver nem válaszol. Lehet, hogy a kapcsolatod instabil."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",

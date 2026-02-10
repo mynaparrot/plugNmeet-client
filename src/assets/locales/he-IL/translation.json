@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "הוסרת מהפגישה.",
     "room-disconnected-room-ended": "הפגישה הסתיימה.",
     "room-disconnected-state-mismatch": "אירעה שגיאת חיבור. אנא נסה להצטרף מחדש. (קוד: {{code}})",
+    "room-disconnected-server-unresponsive": "ניתקת כי השרת הפסיק להגיב.",
     "room-disconnected-reconnecting": "החיבור אבד. מתחבר מחדש...",
     "room-disconnected-network-error": "נותקת עקב בעיית רשת.",
     "your-connection-quality-not-good": "חיבור האינטרנט שלך אינו יציב.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "בעיית חיבור: הודעות מוחזקות. ({{error}})",
     "queue-discarded-message": "לא היתה אפשרות לשלוח הודעה והיא נמחקה. ({{error}})",
     "request-submitted-wait": "הבקשה שלך הוגשה. אנא המתינו לאישור",
-    "wait-other-uploading-to-finish": "העלאה נוספת מתבצעת. אנא המתינו עד שזה יסתיים."
+    "wait-other-uploading-to-finish": "העלאה נוספת מתבצעת. אנא המתינו עד שזה יסתיים.",
+    "server-not-responding": "השרת לא מגיב. הקשר שלך עלול להיות לא יציב."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
