@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Вы были удалены из собрания.",
     "room-disconnected-room-ended": "Встреча завершилась.",
     "room-disconnected-state-mismatch": "Произошла ошибка подключения. Пожалуйста, попробуйте присоединиться снова. (Код: {{code}})",
+    "room-disconnected-server-unresponsive": "Вас отключили, потому что сервер перестал отвечать.",
     "room-disconnected-reconnecting": "Связь потеряна. Повторное соединение...",
     "room-disconnected-network-error": "Вы были отключены из-за проблем с сетью.",
     "your-connection-quality-not-good": "Ваше интернет-соединение нестабильно.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Проблема с подключением: задерживаются сообщения. ({{error}})",
     "queue-discarded-message": "Сообщение не могло быть отправлено и было отброшено. ({{error}})",
     "request-submitted-wait": "Ваш запрос подан. Пожалуйста, дождитесь подтверждения",
-    "wait-other-uploading-to-finish": "В процессе ещё одной загрузки. Пожалуйста, дождитесь, пока он завершится."
+    "wait-other-uploading-to-finish": "В процессе ещё одной загрузки. Пожалуйста, дождитесь, пока он завершится.",
+    "server-not-responding": "Сервер не отвечает. Ваше соединение может быть нестабильным."
   },
   "room-metadata": {
     "session-recording": "Эта встреча записывается.",
