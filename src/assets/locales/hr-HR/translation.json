@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Uklonjeni ste sa sastanka.",
     "room-disconnected-room-ended": "Sastanak je završio.",
     "room-disconnected-state-mismatch": "Došlo je do pogreške u povezivanju. Pokušajte se ponovno pridružiti. (Šifra: {{code}})",
+    "room-disconnected-server-unresponsive": "Prekinuli ste vezu jer je server prestao odgovarati.",
     "room-disconnected-reconnecting": "Veza je izgubljena. Reconnecting...",
     "room-disconnected-network-error": "Prekinuli ste vezu zbog problema s mrežom.",
     "your-connection-quality-not-good": "Vaša internetska veza je nestabilna.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Problem s vezom: poruke se održavaju. ({{error}})",
     "queue-discarded-message": "Poruka se nije mogla poslati i odbačena je. ({{error}})",
     "request-submitted-wait": "Vaš zahtjev je podnesen. Molimo pričekajte potvrdu",
-    "wait-other-uploading-to-finish": "Još jedno učitavanje je u tijeku. Molimo pričekajte da se završi."
+    "wait-other-uploading-to-finish": "Još jedno učitavanje je u tijeku. Molimo pričekajte da se završi.",
+    "server-not-responding": "Server ne odgovara. Vaša veza može biti nestabilna."
   },
   "room-metadata": {
     "session-recording": "Ovaj sastanak se snima.",
