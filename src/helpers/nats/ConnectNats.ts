@@ -239,7 +239,7 @@ export default class ConnectNats {
   };
 
   public endSession = async (msg: string) => {
-    // 1. Immediately update UI and stop new messages
+    // Immediately update UI and stop new messages
     this._setErrorState({
       title: i18n.t('notifications.room-disconnected-title'),
       text: i18n.t(msg),
@@ -247,13 +247,17 @@ export default class ConnectNats {
     this.messageQueue.setIsConnected(false);
     this._setRoomConnectionStatusState('disconnected');
 
-    // 2. Clear all intervals to prevent further actions
+    // Clear all intervals to prevent further actions
+    if (this.pongMissedToastId) {
+      toast.dismiss(this.pongMissedToastId);
+      this.pongMissedToastId = undefined;
+    }
     clearInterval(this.tokenRenewInterval);
     clearInterval(this.pingInterval);
-    clearInterval(this.reconciliationInterval); // Clear new interval
+    clearInterval(this.reconciliationInterval);
     this.handleParticipants.clearParticipantCounterInterval();
 
-    // 3. Concurrently run all cleanup tasks.
+    // Concurrently run all cleanup tasks.
     const cleanupPromises: Promise<void>[] = [];
     if (this.mediaServerConn) {
       cleanupPromises.push(this.mediaServerConn.disconnectRoom(true));
@@ -265,10 +269,10 @@ export default class ConnectNats {
 
     await Promise.allSettled(cleanupPromises);
 
-    // 4. Final resource cleanup
+    // Final resource cleanup
     destroyAudioManager();
 
-    // 5. Handle post-session navigation after a delay
+    // Handle post-session navigation after a delay
     // This timeout allows the user time to read the disconnection message.
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;
