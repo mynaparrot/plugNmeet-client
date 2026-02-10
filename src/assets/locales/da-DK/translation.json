@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Du er blevet fjernet fra mødet.",
     "room-disconnected-room-ended": "Mødet er afsluttet.",
     "room-disconnected-state-mismatch": "Der opstod en forbindelsesfejl. Prøv at deltage igen. (Kode: {{code}})",
+    "room-disconnected-server-unresponsive": "Du er blevet afbrudt, fordi serveren stoppede med at svare.",
     "room-disconnected-reconnecting": "Forbindelsen mistet. Genopretter forbindelsen...",
     "room-disconnected-network-error": "Du blev afbrudt på grund af et netværksproblem.",
     "your-connection-quality-not-good": "Din internetforbindelse er ustabil.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Forbindelsesproblem: meddelelser tilbageholdes. ({{error}})",
     "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})",
     "request-submitted-wait": "Din anmodning er indsendt. Vent venligst på bekræftelse",
-    "wait-other-uploading-to-finish": "Endnu en upload er i gang. Vent venligst på, at det er færdigt."
+    "wait-other-uploading-to-finish": "Endnu en upload er i gang. Vent venligst på, at det er færdigt.",
+    "server-not-responding": "Serveren svarer ikke. Din forbindelse kan være ustabil."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
