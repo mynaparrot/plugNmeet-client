@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
@@ -11,6 +11,7 @@ import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
+import { getMediaServerConn } from '../../helpers/livekit/utils';
 
 import ActiveSpeakers from '../active-speakers';
 import MainView from './mainView';
@@ -21,6 +22,8 @@ import SidePanel from './sidePanel';
 
 const MainArea = () => {
   const dispatch = useAppDispatch();
+  const mediaServerConn = getMediaServerConn();
+
   const { isRecorder, roomFeatures } = useMemo(() => {
     const session = store.getState().session;
     const roomFeatures = session.currentRoom.metadata?.roomFeatures;
@@ -32,6 +35,7 @@ const MainArea = () => {
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
   );
+  const natsPrevioulyState = useRef<boolean>(isNatsServerConnected);
 
   const {
     columnCameraWidth,
@@ -73,6 +77,29 @@ const MainArea = () => {
       Notification.requestPermission().then();
     }
   }, [dispatch, isRecorder, roomFeatures]);
+
+  useEffect(() => {
+    if (!mediaServerConn) {
+      return;
+    }
+
+    const publications = Array.from(
+      mediaServerConn.room.localParticipant.trackPublications.values(),
+    );
+
+    if (!isNatsServerConnected) {
+      // NATS has disconnected. Pause all upstream tracks.
+      const pausePromises = publications.map((pub) => pub.pauseUpstream());
+      Promise.all(pausePromises).then();
+    } else if (isNatsServerConnected && !natsPrevioulyState.current) {
+      // NATS has reconnected (was previously false, now true). Resume tracks.
+      const resumePromises = publications.map((pub) => pub.resumeUpstream());
+      Promise.all(resumePromises).then();
+    }
+
+    // Update the ref to prepare for the next change.
+    natsPrevioulyState.current = isNatsServerConnected;
+  }, [isNatsServerConnected, mediaServerConn]);
 
   const customCSS = useMainAreaCustomCSS({
     isActiveScreenSharingView,
