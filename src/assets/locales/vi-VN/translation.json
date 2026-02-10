@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Bạn đã bị xóa khỏi cuộc họp.",
     "room-disconnected-room-ended": "Cuộc họp đã kết thúc.",
     "room-disconnected-state-mismatch": "Đã xảy ra lỗi kết nối. Vui lòng thử tham gia lại. (Mã số: {{code}})",
+    "room-disconnected-server-unresponsive": "Bạn đã bị ngắt kết nối vì máy chủ ngừng phản hồi.",
     "room-disconnected-reconnecting": "Mất kết nối. Đang kết nối lại...",
     "room-disconnected-network-error": "Bạn đã bị ngắt kết nối do sự cố mạng.",
     "your-connection-quality-not-good": "Kết nối internet của bạn không ổn định.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ. ({{error}})",
     "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})",
     "request-submitted-wait": "Yêu cầu của bạn đã được gửi. Vui lòng đợi xác nhận",
-    "wait-other-uploading-to-finish": "Một tải lên khác đang được tiến hành. Vui lòng đợi nó hoàn tất."
+    "wait-other-uploading-to-finish": "Một tải lên khác đang được tiến hành. Vui lòng đợi nó hoàn tất.",
+    "server-not-responding": "Máy chủ không phản hồi. Kết nối của bạn có thể không ổn định."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
