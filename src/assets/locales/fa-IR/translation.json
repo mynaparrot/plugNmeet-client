@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "از جلسه برداشته شده اید.",
     "room-disconnected-room-ended": "جلسه به پایان رسیده است.",
     "room-disconnected-state-mismatch": "خطای اتصال رخ داد. لطفا دوباره بپیوندید. (کد: {{code}})",
+    "room-disconnected-server-unresponsive": "شما قطع شده اید چون سرور پاسخ را قطع کرده است.",
     "room-disconnected-reconnecting": "اتصال قطع شد. اتصال مجدد...",
     "room-disconnected-network-error": "به دلیل مشکل شبکه ارتباط شما قطع شد.",
     "your-connection-quality-not-good": "اتصال اینترنت شما ناپایدار است.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "مشکل اتصال: پیام ها در حال نگهداری هستند. ({{error}})",
     "queue-discarded-message": "پیامی ارسال نشد و کنار گذاشته شد. ({{error}})",
     "request-submitted-wait": "درخواست شما ارسال شده است. لطفا منتظر تأیید باشید",
-    "wait-other-uploading-to-finish": "یک بارگذاری دیگر در حال انجام است. لطفا منتظر بمانید تا کامل شود."
+    "wait-other-uploading-to-finish": "یک بارگذاری دیگر در حال انجام است. لطفا منتظر بمانید تا کامل شود.",
+    "server-not-responding": "سرور پاسخ نمی دهد. ممکن است اتصال شما ناپایدار باشد."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
