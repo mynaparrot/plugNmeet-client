@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "您已被从会议中删除。",
     "room-disconnected-room-ended": "会议已经结束。",
     "room-disconnected-state-mismatch": "发生连接错误。请尝试重新加入。（代码： {{code}})",
+    "room-disconnected-server-unresponsive": "你被断线是因为服务器停止响应。",
     "room-disconnected-reconnecting": "连接丢失。重新连接...",
     "room-disconnected-network-error": "由于网络问题，您断开了连接。",
     "your-connection-quality-not-good": "您的互联网连接不稳定。",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "连接问题：消息正在被保留。({{error}})",
     "queue-discarded-message": "无法发送消息并被丢弃。({{error}})",
     "request-submitted-wait": "您的请求已提交。请稍候确认",
-    "wait-other-uploading-to-finish": "另一项上传正在进行中。请耐心等待完成。"
+    "wait-other-uploading-to-finish": "另一项上传正在进行中。请耐心等待完成。",
+    "server-not-responding": "服务器没有响应。你的连接可能不稳定。"
   },
   "room-metadata": {
     "session-recording": "这次会议正在录制中。",
