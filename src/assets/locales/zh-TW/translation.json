@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "您已被從會議中移除。",
     "room-disconnected-room-ended": "會議已經結束。",
     "room-disconnected-state-mismatch": "發生連線錯誤。請嘗試重新加入。（代碼： {{code}})",
+    "room-disconnected-server-unresponsive": "你被斷線是因為伺服器停止回應。",
     "room-disconnected-reconnecting": "連線中斷。重新連接...",
     "room-disconnected-network-error": "由於網路問題，您已中斷連線。",
     "your-connection-quality-not-good": "您的網路連線不穩定。",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "連線問題：訊息正在保留。({{error}})",
     "queue-discarded-message": "無法傳送訊息，並已捨棄。({{error}})",
     "request-submitted-wait": "您的申請已提交。請稍候確認",
-    "wait-other-uploading-to-finish": "另一段上傳正在進行中。請耐心等待完成。"
+    "wait-other-uploading-to-finish": "另一段上傳正在進行中。請耐心等待完成。",
+    "server-not-responding": "伺服器無法回應。你的連線可能不穩定。"
   },
   "room-metadata": {
     "session-recording": "這次會議正在錄製中。",
