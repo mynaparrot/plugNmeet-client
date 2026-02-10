@@ -450,12 +450,15 @@ export default class ConnectNats {
     );
   }
 
-  private handlePrivateDataDelivery(p: NatsMsgServerToClient) {
+  private async handlePrivateDataDelivery(p: NatsMsgServerToClient) {
     const header = fromJsonString(PrivateDataDeliverySchema, p.msg);
-    if ((header.type as PrivateDataDeliveryType) === 'CHAT') {
-      this.processToHandleChatMsg(p.binMsg).then();
-    } else if ((header.type as PrivateDataDeliveryType) === 'DATA_MSG') {
-      this.processToHandleDataMsg(p.binMsg).then();
+    switch (header.type as PrivateDataDeliveryType) {
+      case 'CHAT':
+        await this.processToHandleChatMsg(p.binMsg);
+        break;
+      case 'DATA_MSG':
+        await this.processToHandleDataMsg(p.binMsg);
+        break;
     }
   }
 
