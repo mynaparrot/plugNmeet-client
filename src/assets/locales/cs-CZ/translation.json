@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Byli jste odebráni ze schůzky.",
     "room-disconnected-room-ended": "Schůze skončila.",
     "room-disconnected-state-mismatch": "Došlo k chybě připojení. Zkuste se prosím znovu připojit. (Kód: {{code}})",
+    "room-disconnected-server-unresponsive": "Byl jste odpojeni, protože server přestal reagovat.",
     "room-disconnected-reconnecting": "Připojení ztraceno. Opětovné připojení...",
     "room-disconnected-network-error": "Byli jste odpojeni kvůli problému se sítí.",
     "your-connection-quality-not-good": "Vaše připojení k internetu je nestabilní.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány. ({{error}})",
     "queue-discarded-message": "Zprávu nebylo možné odeslat a byla zahozena. ({{error}})",
     "request-submitted-wait": "Vaše žádost byla podána. Prosím, počkejte na potvrzení",
-    "wait-other-uploading-to-finish": "Další nahrávání je v procesu. Prosím, počkejte, až to dokončí."
+    "wait-other-uploading-to-finish": "Další nahrávání je v procesu. Prosím, počkejte, až to dokončí.",
+    "server-not-responding": "Server nereaguje. Vaše připojení může být nestabilní."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
