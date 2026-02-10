@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "Вас видалено із зустрічі.",
     "room-disconnected-room-ended": "Засідання завершилося.",
     "room-disconnected-state-mismatch": "Сталася помилка підключення. Будь ласка, спробуйте приєднатися знову. (Код ЄДРПОУ: {{code}})",
+    "room-disconnected-server-unresponsive": "Вас відключили, бо сервер перестав відповідати.",
     "room-disconnected-reconnecting": "Зв'язок втрачено. Переключення...",
     "room-disconnected-network-error": "Ви були відключені через проблему з мережею.",
     "your-connection-quality-not-good": "Інтернет-з'єднання нестабільне.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Проблема з підключенням: повідомлення утримуються. ({{error}})",
     "queue-discarded-message": "Повідомлення не вдалося надіслати, і його було відкинуто. ({{error}})",
     "request-submitted-wait": "Ваш запит подано. Будь ласка, зачекайте на підтвердження",
-    "wait-other-uploading-to-finish": "Ще одне завантаження триває. Будь ласка, зачекайте, поки вона завершиться."
+    "wait-other-uploading-to-finish": "Ще одне завантаження триває. Будь ласка, зачекайте, поки вона завершиться.",
+    "server-not-responding": "Сервер не відповідає. Ваше з'єднання може бути нестабільним."
   },
   "room-metadata": {
     "session-recording": "Ця зустріч ведеться в протоколі.",
