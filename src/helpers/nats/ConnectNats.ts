@@ -90,10 +90,11 @@ import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServices
 import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 
-const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000;
-const PING_INTERVAL = 10 * 1000;
-const STATUS_CHECKER_INTERVAL = 500;
-const USERS_SYNC_INTERVAL = 30 * 1000;
+const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
+  PING_INTERVAL = 10 * 1000,
+  STATUS_CHECKER_INTERVAL = 500,
+  USERS_SYNC_INTERVAL = 30 * 1000,
+  MAX_MISSED_PONGS = 3;
 type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG';
 
 export default class ConnectNats {
@@ -121,6 +122,8 @@ export default class ConnectNats {
   private pingInterval: any;
   private statusCheckerInterval: any;
   private reconciliationInterval: any;
+  private missedPongs = 0;
+  private pongMissedToastId: any;
   private isRoomReconnecting: boolean = false;
 
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
@@ -794,6 +797,7 @@ export default class ConnectNats {
       this.handleSystemData.handleInsightsAITextData(p.msg),
     [NatsMsgServerToClientEvents.DELIVERY_PRIVATE_DATA]: (p) =>
       this.handlePrivateDataDelivery(p),
+    [NatsMsgServerToClientEvents.PONG]: () => this.handlePong(),
   };
 
   /**
@@ -843,19 +847,42 @@ export default class ConnectNats {
     }, RENEW_TOKEN_FREQUENT);
   }
 
+  private handlePong() {
+    this.missedPongs = 0;
+    if (this.pongMissedToastId) {
+      toast.dismiss(this.pongMissedToastId);
+      this.pongMissedToastId = undefined;
+    }
+  }
+
   private startPingToServer() {
-    const ping = () => {
+    const ping = async () => {
+      if (this.missedPongs === 1) {
+        this.pongMissedToastId = toast.loading(
+          i18n.t('notifications.server-not-responding'),
+          {
+            type: 'warning',
+            closeButton: false,
+            autoClose: false,
+          },
+        );
+      } else if (this.missedPongs >= MAX_MISSED_PONGS) {
+        await this.endSession(
+          'notifications.room-disconnected-server-unresponsive',
+        );
+        return;
+      }
+
       this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.PING,
         }),
       );
+      this.missedPongs++;
     };
-    this.pingInterval = setInterval(() => {
-      ping();
-    }, PING_INTERVAL);
+    this.pingInterval = setInterval(ping, PING_INTERVAL);
     // start instantly
-    ping();
+    ping().then();
   }
 
   private startUsersSync = () => {

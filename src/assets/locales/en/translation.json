@@ -43,6 +43,7 @@
     "room-disconnected-participant-removed": "You have been removed from the meeting.",
     "room-disconnected-room-ended": "The meeting has ended.",
     "room-disconnected-state-mismatch": "A connection error occurred. Please try rejoining.",
+    "room-disconnected-server-unresponsive": "You have been disconnected because the server stopped responding.",
     "room-disconnected-reconnecting": "Connection lost. Reconnecting...",
     "room-disconnected-network-error": "You were disconnected due to a network problem.",
     "your-connection-quality-not-good": "Your connection to the meeting is unstable.",
@@ -83,7 +84,8 @@
     "queue-holding-messages": "Connection problem: messages are being held. ({{error}})",
     "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})",
     "request-submitted-wait": "Your request has been submitted. Please wait for confirmation",
-    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete."
+    "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete.",
+    "server-not-responding": "Server not responding. Your connection may be unstable."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
