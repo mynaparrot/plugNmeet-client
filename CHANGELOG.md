@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.1.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.3...v2.1.4) (2026-02-11)
+
+
+### Bug Fixes
+
+* `pauseUpstream` when we're not connected with NATS ([669da1b](https://github.com/mynaparrot/plugNmeet-client/commit/669da1bacf6deb9eafa63170fbeeedad695c427f))
+* better to use `switch` ([fa2b468](https://github.com/mynaparrot/plugNmeet-client/commit/fa2b4689acd0ed449d8e6707c21a3761cd354716))
+* ensure DB connected before operation ([9a7024b](https://github.com/mynaparrot/plugNmeet-client/commit/9a7024bde4ead9db14076eec516b09b08ce6d50d))
+* ensure NATS is connected for using any service ([aca2c6f](https://github.com/mynaparrot/plugNmeet-client/commit/aca2c6f9e91cb67f1dafa1e412cb93c4cb0e210c))
+* **feature:** implemented PiP using upcoming `DocumentPictureInPicture` feature ([0bdaeec](https://github.com/mynaparrot/plugNmeet-client/commit/0bdaeec9a12880ebc283f954b154f0fc1286ac90))
+* **feature:** implemented PONG from server to client to detect backend server's responsiveness ([34b8101](https://github.com/mynaparrot/plugNmeet-client/commit/34b81017d31258b2dca6f7f9276ef340e63ef46e))
+* follow NATS ping interval same as application ([ca3500e](https://github.com/mynaparrot/plugNmeet-client/commit/ca3500e7ccb62031849da7920504d58671ae5ba4))
+* for VB use `webgl2` as default pipeline with fallback to `canvas2dCpu` ([3b4238c](https://github.com/mynaparrot/plugNmeet-client/commit/3b4238c6c766000dd4099916a8661531584e4e11))
+* new Crowdin updates ([35dfe66](https://github.com/mynaparrot/plugNmeet-client/commit/35dfe6656a7d605eb20f2adaf0f35c377473d924))
+* problem with crossOrigin ([7b4fb62](https://github.com/mynaparrot/plugNmeet-client/commit/7b4fb62132a2da1c4ed0ab88708c2922311d4ac5))
+* spacing issue ([ea46de3](https://github.com/mynaparrot/plugNmeet-client/commit/ea46de386824226a6ce6879006912c15058ef1a3))
+* spacing issue ([8cf54f2](https://github.com/mynaparrot/plugNmeet-client/commit/8cf54f29ef9b9fd5b9888e55db75da4ed8783060))
+* toast wasn't cleaning ([18ed195](https://github.com/mynaparrot/plugNmeet-client/commit/18ed195c46935868d49a433226fb742dff7d44cf))
+* upgrade excalidraw to latest RC ([ea96d99](https://github.com/mynaparrot/plugNmeet-client/commit/ea96d9939105e38a4ab4b56c027ccfc89ba569fd))
+* whiteboard style ([fc09589](https://github.com/mynaparrot/plugNmeet-client/commit/fc09589dc394a0d173a008df6b0d1fd104274528))
+* whiteboard style ([2c3843a](https://github.com/mynaparrot/plugNmeet-client/commit/2c3843a6484cb2219189f9818745a01e0ab1e470))
+
 ## [2.1.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.2...v2.1.3) (2026-01-31)
 
 
