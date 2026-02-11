@@ -212,6 +212,15 @@
           color: #fff !important;
         }
       }
+      .buttonList label:hover svg,
+      .buttonList button:hover svg,
+      .buttonList .zIndexButton:hover svg {
+        color: #fff !important;
+      }
+      .compact-shape-actions .ToolIcon .ToolIcon__icon:hover,
+      .App-toolbar__extra-tools-trigger:hover {
+        background: var(--button-hover-bg) !important;
+      }
     }
   }
 }

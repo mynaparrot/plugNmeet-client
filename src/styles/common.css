@@ -729,19 +729,19 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   @apply bottom-[55px];
 }
 
-.portrait-device.is-mobile
+/* .portrait-device.is-mobile
   #main-area.fullWidthMainArea
   .verticalsWebcamsActivated
   .excalidraw-wrapper {
   @apply h-[calc(100%-110px)] m-0 p-2;
-}
-.portrait-device.is-mobile
+} */
+/* .portrait-device.is-mobile
   #main-area.fullWidthMainArea
   .verticalsWebcamsActivated
   .notepad-wrapper {
   @apply h-[calc(100%-110px)] m-0 p-2;
-}
-.portrait-device.is-mobile
+} */
+/* .portrait-device.is-mobile
   #main-area.fullWidthMainArea
   .verticalsWebcamsActivated
   .Div-external-media-player {
@@ -753,8 +753,8 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   .Div-external-media-player
   .externalMediaPlayerWrapper {
   @apply p-0;
-}
-.portrait-device.is-mobile
+} */
+/* .portrait-device.is-mobile
   #main-area.fullWidthMainArea
   .verticalsWebcamsActivated
   .external-display-link-wrapper {
@@ -765,7 +765,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   .verticalsWebcamsActivated
   .screen-share-video {
   @apply h-[calc(100%-110px)];
-}
+} */
 .portrait-device.is-mobile .middle-fullscreen-wrapper .screen-share-video {
   @apply h-full m-0 p-2;
 }
@@ -1240,13 +1240,4 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   .header-room-settings .tablist button {
     @apply w-auto flex-1 min-w-28;
   }
-}
-.excalidraw-wrapper .excalidraw .buttonList label:hover svg,
-.excalidraw-wrapper .excalidraw .buttonList button:hover svg,
-.excalidraw-wrapper .excalidraw .buttonList .zIndexButton:hover svg {
-  color: #fff !important;
-}
-.excalidraw-wrapper .compact-shape-actions .ToolIcon .ToolIcon__icon:hover,
-.excalidraw-wrapper .excalidraw .App-toolbar__extra-tools-trigger:hover {
-  background: var(--button-hover-bg) !important;
 }
