@@ -27,7 +27,8 @@
         "no-await-in-loop": "off",
         "no-unused-expressions": "off",
         "no-array-sort": "off",
-        "no-array-reverse": "off"
+        "no-array-reverse": "off",
+        "no-array-index-key": "off"
       }
     }
   ]
