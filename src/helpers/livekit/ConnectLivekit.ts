@@ -11,6 +11,7 @@ import {
   RemoteParticipant,
   RemoteTrackPublication,
   Room,
+  RoomConnectOptions,
   RoomEvent,
   RoomOptions,
   supportsAV1,
@@ -24,6 +25,7 @@ import {
   AnalyticsEvents,
   AnalyticsEventType,
   DataMsgBodyType,
+  MediaServerConnInfo,
 } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 // @ts-expect-error not an error
@@ -116,7 +118,7 @@ export default class ConnectLivekit
     return this._room;
   }
 
-  public initializeConnection = async (url: string, token: string) => {
+  public initializeConnection = async (serverInfo: MediaServerConnInfo) => {
     this._roomConnectionStatusState('media-server-conn-start');
 
     try {
@@ -124,8 +126,26 @@ export default class ConnectLivekit
         await this._e2eeKeyProvider.setKey(this.encryptionKey);
         await this._room.setE2EEEnabled(true);
       }
-      await this._room.connect(url, token);
 
+      let opts: RoomConnectOptions | undefined;
+      if (serverInfo.turnCredentials) {
+        opts = {
+          rtcConfig: {
+            iceServers: [
+              {
+                username: serverInfo.turnCredentials.username,
+                credential: serverInfo.turnCredentials.password,
+                urls: serverInfo.turnCredentials.uris,
+              },
+            ],
+            iceTransportPolicy: serverInfo.turnCredentials.forceTurn
+              ? 'relay'
+              : 'all',
+          },
+        };
+      }
+
+      await this._room.connect(serverInfo.url, serverInfo.token, opts);
       // we'll prepare our information
       await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');

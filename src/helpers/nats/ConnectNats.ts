@@ -1066,10 +1066,7 @@ export default class ConnectNats {
     try {
       const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
       if (this.mediaServerConn) {
-        await this.mediaServerConn.initializeConnection(
-          serverInfo.url,
-          serverInfo.token,
-        );
+        await this.mediaServerConn.initializeConnection(serverInfo);
       }
     } catch (e: any) {
       console.error(e);

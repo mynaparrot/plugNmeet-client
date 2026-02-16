@@ -7,6 +7,7 @@ import type {
   Room,
 } from 'livekit-client';
 import type EventEmitter from 'eventemitter3';
+import { MediaServerConnInfo } from 'plugnmeet-protocol-js';
 
 export enum CurrentConnectionEvents {
   ScreenShareStatus = 'screenShareStatus',
@@ -34,7 +35,7 @@ export interface IConnectLivekit extends EventEmitter {
     string,
     Array<LocalTrackPublication | RemoteTrackPublication>
   >;
-  initializeConnection(url: string, token: string): Promise<void>;
+  initializeConnection(serverInfo: MediaServerConnInfo): Promise<void>;
   disconnectRoom(normalDisconnect: boolean): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
   addAudioSubscriber(
