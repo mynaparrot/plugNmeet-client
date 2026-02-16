@@ -12,7 +12,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
@@ -39,6 +39,6 @@ jobs:
           server: ${{ secrets.PNM_FTP_HOST }}
           username: ${{ secrets.PNM_FTP_USER }}
           password: ${{ secrets.PNM_FTP_PASSWORD }}
-          local-dir: "./tmp/client/dist/"
-          server-dir: "./design-v2/"
-          state-name: ".v2-sync-state.json"
+          local-dir: './tmp/client/dist/'
+          server-dir: './design-v2/'
+          state-name: '.v2-sync-state.json'
