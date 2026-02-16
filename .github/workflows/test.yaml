@@ -18,7 +18,9 @@ jobs:
           version: 10
       - name: Install dependencies
         run: pnpm install
+      - name: lint
+        run: pnpm run lint:check
       - name: Check format
-        run: pnpm run format-check
+        run: pnpm run format:check
       - name: Build check
         run: pnpm run build
