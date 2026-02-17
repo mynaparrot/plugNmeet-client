@@ -85,7 +85,8 @@
     "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها. ({{error}})",
     "request-submitted-wait": "تم تقديم طلبك. يرجى الانتظار للتأكيد",
     "wait-other-uploading-to-finish": "هناك تحميل آخر جار. يرجى الانتظار حتى يكتمل البرنامج.",
-    "server-not-responding": "الخادم لا يستجيب. قد يكون اتصالك غير مستقر."
+    "server-not-responding": "الخادم لا يستجيب. قد يكون اتصالك غير مستقر.",
+    "re-routing-connection": "الاتصال غير مستقر. إعادة التوجيه لتحسين الاستقرار..."
   },
   "room-metadata": {
     "session-recording": "جاري تسجيل هذا الاجتماع.",
