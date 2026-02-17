@@ -85,7 +85,8 @@
     "queue-discarded-message": "Ziņojumu nevarēja nosūtīt, un tas tika atmests. ({{error}})",
     "request-submitted-wait": "Jūsu pieprasījums ir iesniegts. Lūdzu, gaidiet apstiprinājumu",
     "wait-other-uploading-to-finish": "Notiek vēl viena augšupielāde. Lūdzu, pagaidiet, līdz tas tiks pabeigts.",
-    "server-not-responding": "Serveris nereaģē. Savienojums var būt nestabils."
+    "server-not-responding": "Serveris nereaģē. Savienojums var būt nestabils.",
+    "re-routing-connection": "Savienojums ir nestabils. Maršruta maiņa labākai stabilitātei..."
   },
   "room-metadata": {
     "session-recording": "Šī sanāksme tiek ierakstīta.",
