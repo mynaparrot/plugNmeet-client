@@ -85,7 +85,8 @@
     "queue-discarded-message": "无法发送消息并被丢弃。({{error}})",
     "request-submitted-wait": "您的请求已提交。请稍候确认",
     "wait-other-uploading-to-finish": "另一项上传正在进行中。请耐心等待完成。",
-    "server-not-responding": "服务器没有响应。你的连接可能不稳定。"
+    "server-not-responding": "服务器没有响应。你的连接可能不稳定。",
+    "re-routing-connection": "连接不稳定。重新布线以提升稳定性......"
   },
   "room-metadata": {
     "session-recording": "这次会议正在录制中。",
