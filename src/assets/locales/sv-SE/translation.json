@@ -85,7 +85,8 @@
     "queue-discarded-message": "Det gick inte att skicka ett meddelande och det ignorerades. ({{error}})",
     "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse",
     "wait-other-uploading-to-finish": "En ny uppladdning pågår. Vänligen vänta tills det är klart.",
-    "server-not-responding": "Servern svarar inte. Din anslutning kan vara instabil."
+    "server-not-responding": "Servern svarar inte. Din anslutning kan vara instabil.",
+    "re-routing-connection": "Anslutningen är instabil. Omdirigering för bättre stabilitet..."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",
