@@ -85,7 +85,8 @@
     "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona. ({{error}})",
     "request-submitted-wait": "Twoja prośba została złożona. Proszę poczekać na potwierdzenie",
     "wait-other-uploading-to-finish": "Kolejne przesłanie jest w trakcie publikacji. Proszę poczekać na zakończenie.",
-    "server-not-responding": "Serwer nie odpowiada. Twoje połączenie może być niestabilne."
+    "server-not-responding": "Serwer nie odpowiada. Twoje połączenie może być niestabilne.",
+    "re-routing-connection": "Połączenie jest niestabilne. Przekierowanie dla lepszej stabilności..."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
