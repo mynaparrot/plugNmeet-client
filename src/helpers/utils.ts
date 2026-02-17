@@ -390,3 +390,11 @@ export const toLiveKitUserId = (userId: string) => {
   }
   return userId;
 };
+
+export const isFirefoxMobile = () => {
+  const ua = window.navigator.userAgent;
+  const isFirefox = ua.includes('Firefox');
+  const isMobile =
+    ua.includes('Android') || ua.includes('Mobile') || ua.includes('Mobi');
+  return isFirefox && isMobile;
+};

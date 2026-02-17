@@ -51,7 +51,7 @@ import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
-import { getConfigValue, toPlugNmeetUserId } from '../utils';
+import { getConfigValue, isFirefoxMobile, toPlugNmeetUserId } from '../utils';
 
 export default class ConnectLivekit
   extends EventEmitter
@@ -129,6 +129,11 @@ export default class ConnectLivekit
 
       let opts: RoomConnectOptions | undefined;
       if (serverInfo.turnCredentials) {
+        const policy: RTCIceTransportPolicy =
+          isFirefoxMobile() || !serverInfo.turnCredentials.forceTurn
+            ? 'all'
+            : 'relay';
+
         opts = {
           rtcConfig: {
             iceServers: [
@@ -138,9 +143,7 @@ export default class ConnectLivekit
                 urls: serverInfo.turnCredentials.uris,
               },
             ],
-            iceTransportPolicy: serverInfo.turnCredentials.forceTurn
-              ? 'relay'
-              : 'all',
+            iceTransportPolicy: policy,
           },
         };
       }
