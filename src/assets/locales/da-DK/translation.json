@@ -85,7 +85,8 @@
     "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})",
     "request-submitted-wait": "Din anmodning er indsendt. Vent venligst på bekræftelse",
     "wait-other-uploading-to-finish": "Endnu en upload er i gang. Vent venligst på, at det er færdigt.",
-    "server-not-responding": "Serveren svarer ikke. Din forbindelse kan være ustabil."
+    "server-not-responding": "Serveren svarer ikke. Din forbindelse kan være ustabil.",
+    "re-routing-connection": "Forbindelsen er ustabil. Omlægning for bedre stabilitet..."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
