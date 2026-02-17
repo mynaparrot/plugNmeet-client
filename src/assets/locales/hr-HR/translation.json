@@ -85,7 +85,8 @@
     "queue-discarded-message": "Poruka se nije mogla poslati i odbačena je. ({{error}})",
     "request-submitted-wait": "Vaš zahtjev je podnesen. Molimo pričekajte potvrdu",
     "wait-other-uploading-to-finish": "Još jedno učitavanje je u tijeku. Molimo pričekajte da se završi.",
-    "server-not-responding": "Server ne odgovara. Vaša veza može biti nestabilna."
+    "server-not-responding": "Server ne odgovara. Vaša veza može biti nestabilna.",
+    "re-routing-connection": "Veza je nestabilna. Preusmjeravanje radi bolje stabilnosti..."
   },
   "room-metadata": {
     "session-recording": "Ovaj sastanak se snima.",
