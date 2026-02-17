@@ -85,7 +85,8 @@
     "queue-discarded-message": "پیامی ارسال نشد و کنار گذاشته شد. ({{error}})",
     "request-submitted-wait": "درخواست شما ارسال شده است. لطفا منتظر تأیید باشید",
     "wait-other-uploading-to-finish": "یک بارگذاری دیگر در حال انجام است. لطفا منتظر بمانید تا کامل شود.",
-    "server-not-responding": "سرور پاسخ نمی دهد. ممکن است اتصال شما ناپایدار باشد."
+    "server-not-responding": "سرور پاسخ نمی دهد. ممکن است اتصال شما ناپایدار باشد.",
+    "re-routing-connection": "اتصال ناپایدار است. برای پایداری بهتر، مسیر را تغییر می دهم..."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
