@@ -78,6 +78,10 @@ export default class ConnectLivekit
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
+  // for silent fallback
+  private poorConnectionCounter: number = 0;
+  private hasAttemptedSilentFallback: boolean = false;
+  private serverInfo: MediaServerConnInfo | undefined = undefined;
 
   constructor(
     errorState: Dispatch<IErrorPageProps>,
@@ -119,6 +123,7 @@ export default class ConnectLivekit
   }
 
   public initializeConnection = async (serverInfo: MediaServerConnInfo) => {
+    this.serverInfo = serverInfo;
     this._roomConnectionStatusState('media-server-conn-start');
 
     try {
@@ -152,8 +157,6 @@ export default class ConnectLivekit
       // we'll prepare our information
       await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');
-
-      setInterval(this.executeSilentRelayFallback, 30000);
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
@@ -165,11 +168,28 @@ export default class ConnectLivekit
   };
 
   private executeSilentRelayFallback = () => {
-    console.log('Attempting to execute silent relay fallback...');
+    if (this.hasAttemptedSilentFallback) {
+      console.log('[Fallback] Already attempted, skipping.');
+      return;
+    }
+    this.hasAttemptedSilentFallback = true;
+
+    if (!this.serverInfo?.turnCredentials) {
+      console.error(
+        '[Fallback] Cannot attempt fallback: TURN credentials are not configured.',
+      );
+      return;
+    }
+
+    toast.info(i18n.t('notifications.re-routing-connection'), {
+      autoClose: 4000,
+    });
+
     try {
       const pcManager = this._room.engine.pcManager;
       if (!pcManager || !pcManager.updateConfiguration) {
         console.error('PCManager or updateConfiguration method not available.');
+        this.hasAttemptedSilentFallback = false; // Allow another try
         return;
       }
 
@@ -182,6 +202,7 @@ export default class ConnectLivekit
       pcManager.updateConfiguration(config, true);
     } catch (e) {
       console.error('Failed to execute silent relay fallback:', e);
+      this.hasAttemptedSilentFallback = false; // Allow another try on error
     }
   };
 
@@ -352,6 +373,9 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
+    this.poorConnectionCounter = 0;
+    this.hasAttemptedSilentFallback = false;
+
     if (typeof this.toastIdConnecting !== 'undefined') {
       toast.dismiss(this.toastIdConnecting);
     }
@@ -443,6 +467,37 @@ export default class ConnectLivekit
           connectionQuality,
         )
         .then();
+    }
+
+    // Only run this logic if the server has enabled it.
+    if (!this.serverInfo?.turnCredentials?.fallbackTurn) {
+      return;
+    }
+
+    if (this.hasAttemptedSilentFallback) {
+      return; // We've already tried this, don't do it again.
+    }
+
+    // If the connection is poor or lost, start counting.
+    if (
+      connectionQuality === ConnectionQuality.Poor ||
+      connectionQuality === ConnectionQuality.Lost
+    ) {
+      this.poorConnectionCounter++;
+      console.log(
+        `Unstable connection detected (${connectionQuality}). Count: ${this.poorConnectionCounter}`,
+      );
+    } else {
+      // If quality improves (Good, Excellent), reset the counter.
+      this.poorConnectionCounter = 0;
+    }
+
+    // If we have 3 consecutive unstable checks, trigger the fallback.
+    if (this.poorConnectionCounter >= 3) {
+      console.warn(
+        'Connection has been unstable for multiple checks. Attempting silent relay fallback as a final measure.',
+      );
+      this.executeSilentRelayFallback();
     }
   };
 

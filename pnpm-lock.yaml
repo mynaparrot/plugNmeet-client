@@ -47,8 +47,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
       framer-motion:
-        specifier: 12.34.0
-        version: 12.34.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: 12.34.1
+        version: 12.34.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       i18next:
         specifier: 25.8.10
         version: 25.8.10(typescript@5.9.3)
@@ -74,8 +74,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.2.2-6
-        version: 1.2.2-6(@bufbuild/protobuf@2.11.0)
+        specifier: 1.2.2-7
+        version: 1.2.2-7(@bufbuild/protobuf@2.11.0)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -3923,10 +3923,10 @@ packages:
       }
     engines: { node: ^14.13.1 || >=16.0.0 }
 
-  framer-motion@12.34.0:
+  framer-motion@12.34.1:
     resolution:
       {
-        integrity: sha512-+/H49owhzkzQyxtn7nZeF4kdH++I2FWrESQ184Zbcw5cEqNHYkE5yxWxcTLSj5lNx3NWdbIRy5FHqUvetD8FWg==,
+        integrity: sha512-kcZyNaYQfvE2LlH6+AyOaJAQV4rGp5XbzfhsZpiSZcwDMfZUHhuxLWeyRzf5I7jip3qKRpuimPA9pXXfr111kQ==,
       }
     peerDependencies:
       '@emotion/is-prop-valid': '*'
@@ -4589,10 +4589,10 @@ packages:
         integrity: sha512-yc0LhH6tItlvfLBugVUEtgawwFU2sIe+cSdmRJJCTMZ5GEJyLxNyC/NIOAOGk67Fa8GNpOttO3Xz/1bHpXFD/g==,
       }
 
-  motion-dom@12.34.0:
+  motion-dom@12.34.1:
     resolution:
       {
-        integrity: sha512-Lql3NuEcScRDxTAO6GgUsRHBZOWI/3fnMlkMcH5NftzcN37zJta+bpbMAV9px4Nj057TuvRooMK7QrzMCgtz6Q==,
+        integrity: sha512-SC7ZC5dRcGwku2g7EsPvI4q/EzHumUbqsDNumBmZTLFg+goBO5LTJvDu9MAxx+0mtX4IA78B2be/A3aRjY0jnw==,
       }
 
   motion-utils@12.29.2:
@@ -4819,10 +4819,10 @@ packages:
         integrity: sha512-z/T8hJGaTkHT9vdXgWdOgF37eB1FV7/j52VXQZ2lgEhpru9oT8TaUWIxp6GoxTnhPBM4X6nSbpkAHrT7UTjUKg==,
       }
 
-  plugnmeet-protocol-js@1.2.2-6:
+  plugnmeet-protocol-js@1.2.2-7:
     resolution:
       {
-        integrity: sha512-gy8zXqcrKbu4VvthIv1s/cI+gKTokUJ9f3z+f7q9ylSxHvLd0KJo9irNZErYMTfqVfSIAn/ROrNQ7T1VeqPXVA==,
+        integrity: sha512-wsySfHb1kVnKLXWL/z4D7OndgH45vg74acD8Jp+aApPFmiY6KzSSH77DsRaXaZxiLMqZ6aHXseS3KcuD62kKxQ==,
       }
     peerDependencies:
       '@bufbuild/protobuf': ^2.11.0
@@ -8140,9 +8140,9 @@ snapshots:
 
   fractional-indexing@3.2.0: {}
 
-  framer-motion@12.34.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  framer-motion@12.34.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      motion-dom: 12.34.0
+      motion-dom: 12.34.1
       motion-utils: 12.29.2
       tslib: 2.8.1
     optionalDependencies:
@@ -8483,7 +8483,7 @@ snapshots:
 
   mobile-detect@1.4.5: {}
 
-  motion-dom@12.34.0:
+  motion-dom@12.34.1:
     dependencies:
       motion-utils: 12.29.2
 
@@ -8610,7 +8610,7 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  plugnmeet-protocol-js@1.2.2-6(@bufbuild/protobuf@2.11.0):
+  plugnmeet-protocol-js@1.2.2-7(@bufbuild/protobuf@2.11.0):
     dependencies:
       '@bufbuild/protobuf': 2.11.0
 

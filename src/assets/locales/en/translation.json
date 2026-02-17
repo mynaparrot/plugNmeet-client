@@ -85,7 +85,8 @@
     "queue-discarded-message": "A message could not be sent and was discarded. ({{error}})",
     "request-submitted-wait": "Your request has been submitted. Please wait for confirmation",
     "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete.",
-    "server-not-responding": "Server not responding. Your connection may be unstable."
+    "server-not-responding": "Server not responding. Your connection may be unstable.",
+    "re-routing-connection": "Connection is unstable. Re-routing for better stability..."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
