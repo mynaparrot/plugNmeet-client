@@ -85,7 +85,8 @@
     "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})",
     "request-submitted-wait": "Yêu cầu của bạn đã được gửi. Vui lòng đợi xác nhận",
     "wait-other-uploading-to-finish": "Một tải lên khác đang được tiến hành. Vui lòng đợi nó hoàn tất.",
-    "server-not-responding": "Máy chủ không phản hồi. Kết nối của bạn có thể không ổn định."
+    "server-not-responding": "Máy chủ không phản hồi. Kết nối của bạn có thể không ổn định.",
+    "re-routing-connection": "Kết nối không ổn định. Định tuyến lại để ổn định hơn..."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
