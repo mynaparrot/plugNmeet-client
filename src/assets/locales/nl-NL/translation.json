@@ -85,7 +85,8 @@
     "queue-discarded-message": "Een bericht kon niet worden verzonden en werd verwijderd. ({{error}})",
     "request-submitted-wait": "Uw verzoek is ingediend. Wacht alstublieft op bevestiging",
     "wait-other-uploading-to-finish": "Een andere upload is in uitvoering. Wacht alsjeblieft tot het klaar is.",
-    "server-not-responding": "Server reageert niet. Je verbinding kan onstabiel zijn."
+    "server-not-responding": "Server reageert niet. Je verbinding kan onstabiel zijn.",
+    "re-routing-connection": "De verbinding is instabiel. Omleidingen voor betere stabiliteit..."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
