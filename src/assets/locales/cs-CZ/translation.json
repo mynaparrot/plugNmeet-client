@@ -85,7 +85,8 @@
     "queue-discarded-message": "Zprávu nebylo možné odeslat a byla zahozena. ({{error}})",
     "request-submitted-wait": "Vaše žádost byla podána. Prosím, počkejte na potvrzení",
     "wait-other-uploading-to-finish": "Další nahrávání je v procesu. Prosím, počkejte, až to dokončí.",
-    "server-not-responding": "Server nereaguje. Vaše připojení může být nestabilní."
+    "server-not-responding": "Server nereaguje. Vaše připojení může být nestabilní.",
+    "re-routing-connection": "Připojení je nestabilní. Přesměrování pro lepší stabilitu..."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
