@@ -469,8 +469,8 @@ export default class ConnectLivekit
         .then();
     }
 
-    // Only run this logic if the server has enabled it.
-    if (!this.serverInfo?.turnCredentials?.fallbackTurn) {
+    // Only run this logic if the server has enabled it AND it's not Firefox Mobile.
+    if (!this.serverInfo?.turnCredentials?.fallbackTurn || isFirefoxMobile()) {
       return;
     }
 
