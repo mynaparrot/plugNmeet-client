@@ -85,7 +85,8 @@
     "queue-discarded-message": "Bir mesaj gönderilemedi ve atıldı. ({{error}})",
     "request-submitted-wait": "Talebiniz gönderildi. Lütfen onay için bekleyin",
     "wait-other-uploading-to-finish": "Başka bir yükleme devam ediyor. Lütfen tamamlanana kadar bekleyin.",
-    "server-not-responding": "Sunucu cevap vermiyor. Bağlantınız dengesiz olabilir."
+    "server-not-responding": "Sunucu cevap vermiyor. Bağlantınız dengesiz olabilir.",
+    "re-routing-connection": "Bağlantı kararsız. Daha iyi stabilite için yönlendirme değişikliği..."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kayıt altına alınıyor.",
