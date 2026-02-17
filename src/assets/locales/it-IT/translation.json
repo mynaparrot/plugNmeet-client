@@ -85,7 +85,8 @@
     "queue-discarded-message": "Non è stato possibile inviare un messaggio ed è stato eliminato. ({{error}})",
     "request-submitted-wait": "La tua richiesta è stata inviata. Attendi la conferma",
     "wait-other-uploading-to-finish": "Un altro upload è in corso. Attendi che si completi.",
-    "server-not-responding": "Il server non risponde. La tua connessione potrebbe essere instabile."
+    "server-not-responding": "Il server non risponde. La tua connessione potrebbe essere instabile.",
+    "re-routing-connection": "La connessione è instabile. Spostamento per una maggiore stabilità..."
   },
   "room-metadata": {
     "session-recording": "Questo incontro è in fase di registrazione.",

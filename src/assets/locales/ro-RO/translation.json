@@ -85,7 +85,8 @@
     "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})",
     "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea",
     "wait-other-uploading-to-finish": "O altă încărcare este în curs de desfășurare. Vă rugăm să așteptați să se termine.",
-    "server-not-responding": "Serverul nu răspunde. Conexiunea ta poate fi instabilă."
+    "server-not-responding": "Serverul nu răspunde. Conexiunea ta poate fi instabilă.",
+    "re-routing-connection": "Conexiunea este instabilă. Redirecționarea pentru o stabilitate mai bună..."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",

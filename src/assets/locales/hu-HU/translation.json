@@ -85,7 +85,8 @@
     "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})",
     "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést",
     "wait-other-uploading-to-finish": "Egy újabb feltöltés folyamatban van. Kérlek, várj, amíg befejeződik.",
-    "server-not-responding": "A szerver nem válaszol. Lehet, hogy a kapcsolatod instabil."
+    "server-not-responding": "A szerver nem válaszol. Lehet, hogy a kapcsolatod instabil.",
+    "re-routing-connection": "A kapcsolat instabil. Átirányítás a jobb stabilitás érdekében..."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",

@@ -85,7 +85,8 @@
     "queue-discarded-message": "Não foi possível enviar uma mensagem e foi descartada. ({{error}})",
     "request-submitted-wait": "O seu pedido foi submetido. Por favor, aguarde por confirmação",
     "wait-other-uploading-to-finish": "Outro upload está em curso. Por favor, aguarde que termine.",
-    "server-not-responding": "O servidor não responde. A sua ligação pode ser instável."
+    "server-not-responding": "O servidor não responde. A sua ligação pode ser instável.",
+    "re-routing-connection": "A ligação é instável. Redirecionar para melhor estabilidade..."
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",

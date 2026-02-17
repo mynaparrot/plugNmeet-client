@@ -85,7 +85,8 @@
     "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})",
     "request-submitted-wait": "Ihr Antrag wurde eingereicht. Bitte warten Sie auf eine Bestätigung",
     "wait-other-uploading-to-finish": "Ein weiterer Upload ist im Gange. Bitte warten Sie, bis es fertig ist.",
-    "server-not-responding": "Server reagiert nicht. Deine Verbindung könnte instabil sein."
+    "server-not-responding": "Server reagiert nicht. Deine Verbindung könnte instabil sein.",
+    "re-routing-connection": "Die Verbindung ist instabil. Umleitung für bessere Stabilität..."
   },
   "room-metadata": {
     "session-recording": "Dieses Treffen wird aufgezeichnet.",

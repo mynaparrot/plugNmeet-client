@@ -85,7 +85,8 @@
     "queue-discarded-message": "Sõnumit ei saanud saata ja see visati ära. ({{error}})",
     "request-submitted-wait": "Teie taotlus on esitatud. Palun oodake kinnitust",
     "wait-other-uploading-to-finish": "Veel üks üleslaadimine on käimas. Palun oodake, kuni see valmis saab.",
-    "server-not-responding": "Server ei vasta. Sinu ühendus võib olla ebastabiilne."
+    "server-not-responding": "Server ei vasta. Sinu ühendus võib olla ebastabiilne.",
+    "re-routing-connection": "Ühendus on ebastabiilne. Suuna muutmine parema stabiilsuse jaoks..."
   },
   "room-metadata": {
     "session-recording": "See kohtumine salvestatakse.",

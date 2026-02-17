@@ -85,7 +85,8 @@
     "queue-discarded-message": "メッセージを送信できず、破棄されました。({{error}})",
     "request-submitted-wait": "あなたのリクエストは提出されました。確認をお待ちください",
     "wait-other-uploading-to-finish": "別のアップロードが進行中です。完成までお待ちください。",
-    "server-not-responding": "サーバーが応答しません。接続が不安定かもしれません。"
+    "server-not-responding": "サーバーが応答しません。接続が不安定かもしれません。",
+    "re-routing-connection": "接続が不安定です。安定性を高めるために迂回..."
   },
   "room-metadata": {
     "session-recording": "この会議は録画中です。",

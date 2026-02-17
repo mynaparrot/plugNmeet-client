@@ -85,7 +85,8 @@
     "queue-discarded-message": "En melding kunne ikke sendes og ble forkastet. ({{error}})",
     "request-submitted-wait": "Forespørselen din er sendt inn. Vennligst vent på bekreftelse",
     "wait-other-uploading-to-finish": "En ny opplasting pågår. Vennligst vent til det er ferdig.",
-    "server-not-responding": "Serveren svarer ikke. Forbindelsen din kan være ustabil."
+    "server-not-responding": "Serveren svarer ikke. Forbindelsen din kan være ustabil.",
+    "re-routing-connection": "Forbindelsen er ustabil. Omdirigering for bedre stabilitet..."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",

@@ -85,7 +85,8 @@
     "queue-discarded-message": "Un message n’a pas pu être envoyé et a été ignoré. ({{error}})",
     "request-submitted-wait": "Votre demande a été soumise. Veuillez attendre la confirmation.",
     "wait-other-uploading-to-finish": "Un autre import est en cours. Veuillez attendre qu’il soit terminé.",
-    "server-not-responding": "Le serveur ne répond pas. Votre connexion peut être instable."
+    "server-not-responding": "Le serveur ne répond pas. Votre connexion peut être instable.",
+    "re-routing-connection": "La connexion est instable. Rediriger pour une meilleure stabilité..."
   },
   "room-metadata": {
     "session-recording": "La séance est enregistrée.",

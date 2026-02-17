@@ -85,7 +85,8 @@
     "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang. ({{error}})",
     "request-submitted-wait": "Permintaan Anda telah diajukan. Harap tunggu konfirmasi",
     "wait-other-uploading-to-finish": "Unggahan lain sedang berlangsung. Harap tunggu hingga selesai.",
-    "server-not-responding": "Server tidak merespons. Koneksi Anda mungkin tidak stabil."
+    "server-not-responding": "Server tidak merespons. Koneksi Anda mungkin tidak stabil.",
+    "re-routing-connection": "Koneksi tidak stabil. Perutean ulang untuk stabilitas yang lebih baik..."
   },
   "room-metadata": {
     "session-recording": "Pertemuan ini sedang direkam.",
