@@ -74,8 +74,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.2.2-7
-        version: 1.2.2-7(@bufbuild/protobuf@2.11.0)
+        specifier: 1.2.2-8
+        version: 1.2.2-8(@bufbuild/protobuf@2.11.0)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -4819,10 +4819,10 @@ packages:
         integrity: sha512-z/T8hJGaTkHT9vdXgWdOgF37eB1FV7/j52VXQZ2lgEhpru9oT8TaUWIxp6GoxTnhPBM4X6nSbpkAHrT7UTjUKg==,
       }
 
-  plugnmeet-protocol-js@1.2.2-7:
+  plugnmeet-protocol-js@1.2.2-8:
     resolution:
       {
-        integrity: sha512-wsySfHb1kVnKLXWL/z4D7OndgH45vg74acD8Jp+aApPFmiY6KzSSH77DsRaXaZxiLMqZ6aHXseS3KcuD62kKxQ==,
+        integrity: sha512-Ype11JO+30wI5380X7IgebtOIuyPnNC+usB7Qcu0vSk1aQun3N/8ntfDlGO+NlGhNvoVcqo75IC5gcR8hZ/yBg==,
       }
     peerDependencies:
       '@bufbuild/protobuf': ^2.11.0
@@ -8610,7 +8610,7 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  plugnmeet-protocol-js@1.2.2-7(@bufbuild/protobuf@2.11.0):
+  plugnmeet-protocol-js@1.2.2-8(@bufbuild/protobuf@2.11.0):
     dependencies:
       '@bufbuild/protobuf': 2.11.0
 

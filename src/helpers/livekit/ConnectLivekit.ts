@@ -497,19 +497,23 @@ export default class ConnectLivekit
     ) {
       // If a timer isn't already running, start one.
       if (!this.fallbackTimer) {
+        const fallbackDuration =
+          Number(this.serverInfo?.turnCredentials?.fallbackTimerDuration) ||
+          FALLBACK_TIMER_DURATION;
+
         console.log(
           `Connection is unstable (${connectionQuality}). Starting ${
-            FALLBACK_TIMER_DURATION / 1000
+            fallbackDuration / 1000
           }s fallback timer.`,
         );
         this.fallbackTimer = setTimeout(() => {
           console.warn(
             `Connection has remained unstable for ${
-              FALLBACK_TIMER_DURATION / 1000
+              fallbackDuration / 1000
             }s. Executing fallback as a final measure.`,
           );
           this.executeSilentRelayFallback();
-        }, FALLBACK_TIMER_DURATION);
+        }, fallbackDuration);
       }
     } else if (this.fallbackTimer) {
       // If the connection is STABLE (Good or Excellent) and a timer was running, cancel it.
