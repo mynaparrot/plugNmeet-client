@@ -85,7 +85,8 @@
     "queue-discarded-message": "無法傳送訊息，並已捨棄。({{error}})",
     "request-submitted-wait": "您的申請已提交。請稍候確認",
     "wait-other-uploading-to-finish": "另一段上傳正在進行中。請耐心等待完成。",
-    "server-not-responding": "伺服器無法回應。你的連線可能不穩定。"
+    "server-not-responding": "伺服器無法回應。你的連線可能不穩定。",
+    "re-routing-connection": "連線不穩定。為了更穩定，重新規劃路線......"
   },
   "room-metadata": {
     "session-recording": "這次會議正在錄製中。",
