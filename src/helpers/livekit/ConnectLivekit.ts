@@ -53,6 +53,8 @@ import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
 import { getConfigValue, isFirefoxMobile, toPlugNmeetUserId } from '../utils';
 
+const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
+
 export default class ConnectLivekit
   extends EventEmitter
   implements IConnectLivekit
@@ -79,7 +81,7 @@ export default class ConnectLivekit
   private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
   // for silent fallback
-  private poorConnectionCounter: number = 0;
+  private fallbackTimer: NodeJS.Timeout | null = null;
   private hasAttemptedSilentFallback: boolean = false;
   private serverInfo: MediaServerConnInfo | undefined = undefined;
 
@@ -168,6 +170,12 @@ export default class ConnectLivekit
   };
 
   private executeSilentRelayFallback = () => {
+    // Clear any pending timer as we are now executing.
+    if (this.fallbackTimer) {
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = null;
+    }
+
     if (this.hasAttemptedSilentFallback) {
       console.log('[Fallback] Already attempted, skipping.');
       return;
@@ -373,7 +381,11 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
-    this.poorConnectionCounter = 0;
+    // Clear any running timer on disconnect
+    if (this.fallbackTimer) {
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = null;
+    }
     this.hasAttemptedSilentFallback = false;
 
     if (typeof this.toastIdConnecting !== 'undefined') {
@@ -478,26 +490,32 @@ export default class ConnectLivekit
       return; // We've already tried this, don't do it again.
     }
 
-    // If the connection is poor or lost, start counting.
+    // If the connection is now UNSTABLE
     if (
       connectionQuality === ConnectionQuality.Poor ||
       connectionQuality === ConnectionQuality.Lost
     ) {
-      this.poorConnectionCounter++;
-      console.log(
-        `Unstable connection detected (${connectionQuality}). Count: ${this.poorConnectionCounter}`,
-      );
-    } else {
-      // If quality improves (Good, Excellent), reset the counter.
-      this.poorConnectionCounter = 0;
-    }
-
-    // If we have 3 consecutive unstable checks, trigger the fallback.
-    if (this.poorConnectionCounter >= 3) {
-      console.warn(
-        'Connection has been unstable for multiple checks. Attempting silent relay fallback as a final measure.',
-      );
-      this.executeSilentRelayFallback();
+      // If a timer isn't already running, start one.
+      if (!this.fallbackTimer) {
+        console.log(
+          `Connection is unstable (${connectionQuality}). Starting ${
+            FALLBACK_TIMER_DURATION / 1000
+          }s fallback timer.`,
+        );
+        this.fallbackTimer = setTimeout(() => {
+          console.warn(
+            `Connection has remained unstable for ${
+              FALLBACK_TIMER_DURATION / 1000
+            }s. Executing fallback as a final measure.`,
+          );
+          this.executeSilentRelayFallback();
+        }, FALLBACK_TIMER_DURATION);
+      }
+    } else if (this.fallbackTimer) {
+      // If the connection is STABLE (Good or Excellent) and a timer was running, cancel it.
+      console.log('Connection has recovered. Cancelling fallback timer.');
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = null;
     }
   };
 
