@@ -85,7 +85,8 @@
     "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})",
     "request-submitted-wait": "Pyyntösi on toimitettu. Odottakaa vahvistusta",
     "wait-other-uploading-to-finish": "Toinen lataus on käynnissä. Odota, että se valmistuu.",
-    "server-not-responding": "Palvelin ei vastaa. Yhteytesi voi olla epävakaa."
+    "server-not-responding": "Palvelin ei vastaa. Yhteytesi voi olla epävakaa.",
+    "re-routing-connection": "Yhteys on epävakaa. Uudelleenreititys paremman vakauden vuoksi..."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
