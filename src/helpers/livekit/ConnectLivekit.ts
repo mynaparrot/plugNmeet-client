@@ -152,6 +152,8 @@ export default class ConnectLivekit
       // we'll prepare our information
       await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');
+
+      setInterval(this.executeSilentRelayFallback, 30000);
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
@@ -159,6 +161,27 @@ export default class ConnectLivekit
         title: 'Error',
         text: String(error),
       });
+    }
+  };
+
+  private executeSilentRelayFallback = () => {
+    console.log('Attempting to execute silent relay fallback...');
+    try {
+      const pcManager = this._room.engine.pcManager;
+      if (!pcManager || !pcManager.updateConfiguration) {
+        console.error('PCManager or updateConfiguration method not available.');
+        return;
+      }
+
+      const config = this._room.engine.rtcConfig;
+      config.iceTransportPolicy = 'relay';
+
+      console.log(
+        'Updating configuration and restarting ICE with relay-only policy...',
+      );
+      pcManager.updateConfiguration(config, true);
+    } catch (e) {
+      console.error('Failed to execute silent relay fallback:', e);
     }
   };
 
