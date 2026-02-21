@@ -605,7 +605,7 @@ export default class ConnectLivekit
   };
 
   private syncAudioSubscribers() {
-    const audioSubscribers = new Map(this._audioSubscribersMap) as any;
+    const audioSubscribers = new Map(this._audioSubscribersMap);
     this.emit(CurrentConnectionEvents.AudioSubscribers, audioSubscribers);
     // update session reducer
     store.dispatch(updateTotalAudioSubscribers(audioSubscribers.size));
@@ -655,13 +655,16 @@ export default class ConnectLivekit
     }
 
     const activeSpeakers = activeSpeakersSelector.selectAll(store.getState());
+    // Create a Map for O(1) lookups
+    const speakerMap = new Map(activeSpeakers.map((s) => [s.userId, s]));
+
     const mediaSubscribersToArray = Array.from(this._videoSubscribersMap);
     mediaSubscribersToArray.sort((a, b) => {
       const aPrt = a[1];
       const bPart = b[1];
 
-      const aSpeaker = activeSpeakers.find((s) => s.userId === aPrt.identity);
-      const bSpeaker = activeSpeakers.find((s) => s.userId === bPart.identity);
+      const aSpeaker = speakerMap.get(aPrt.identity);
+      const bSpeaker = speakerMap.get(bPart.identity);
 
       const aIsSpeaking = aSpeaker?.isSpeaking ?? false;
       const bIsSpeaking = bSpeaker?.isSpeaking ?? false;
