@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.4...v2.1.5) (2026-02-21)
+
+
+### Bug Fixes
+
+* bump deps ([ec36279](https://github.com/mynaparrot/plugNmeet-client/commit/ec362790cfc2babb6e96279bf65ac0c9e9385e74))
+* configurable option to `fallback_turn` when connection bad ([5870443](https://github.com/mynaparrot/plugNmeet-client/commit/58704439489c3d3ff2728bbb11e8f4fd79f702f4))
+* deps upgrade ([5222420](https://github.com/mynaparrot/plugNmeet-client/commit/5222420d24136cea40636ac1af78fdd417274d66))
+* disable `relay` for mobile firefox for the moment. ([76def67](https://github.com/mynaparrot/plugNmeet-client/commit/76def67f03b594c9a29ef4416300f2f33451f302))
+* don't process for firefox mobile for the moment ([3edf0bc](https://github.com/mynaparrot/plugNmeet-client/commit/3edf0bcb3587759ff1f951749a2c996988032deb))
+* **feat:** option to configure custom turn servers ([278923c](https://github.com/mynaparrot/plugNmeet-client/commit/278923cdd1af0c55d969c2ac93eb75873aa35a7d))
+* **feat:** option to configure custom turn servers ([034aeae](https://github.com/mynaparrot/plugNmeet-client/commit/034aeae0de6b1a6769157241e9b37badaf2b7a19))
+* new Crowdin updates ([3b84db6](https://github.com/mynaparrot/plugNmeet-client/commit/3b84db6d65f5cd059357ae653a29658805ed8fc9))
+* option to set `fallbackTimerDuration` in server config ([81fb2f1](https://github.com/mynaparrot/plugNmeet-client/commit/81fb2f1309a7e1038f5d7ea78dc263dee22ae093))
+* use Map for O(1) lookups ([e8beebf](https://github.com/mynaparrot/plugNmeet-client/commit/e8beebf73228dfe64b9659ddcf8013f33c02f2e9))
+* use timer to execute fallback ([d6857db](https://github.com/mynaparrot/plugNmeet-client/commit/d6857db46f680ec1ff7bfffde62c46fb7421f945))
+
 ## [2.1.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.3...v2.1.4) (2026-02-11)
 
 
