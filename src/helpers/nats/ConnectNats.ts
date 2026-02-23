@@ -196,6 +196,7 @@ export default class ConnectNats {
   public openConn = async () => {
     try {
       this._nc = await wsconnect({
+        name: `plugnmeet-client-${this._roomId}_${this._userId}`,
         servers: this._natsWSUrls,
         authenticator: tokenAuthenticator(() => this._token),
         pingInterval: PING_INTERVAL,
