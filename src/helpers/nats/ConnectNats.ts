@@ -532,7 +532,7 @@ export default class ConnectNats {
   }
 
   public sendChatMsg = async (to: string, msg: string) => {
-    if (!this._nc) {
+    if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
@@ -650,8 +650,7 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (!this._nc) {
-      console.error('NATS connection not available to send whiteboard data.');
+    if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
@@ -722,8 +721,7 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (!this._nc) {
-      console.error('NATS connection not available to send data message.');
+    if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
