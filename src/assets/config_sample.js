@@ -13,6 +13,9 @@ window.plugNmeetConfig = {
     main_logo_dark: 'https://mydomain.com/logo_dark.png',
   },*/
 
+  // AdaptiveStream lets LiveKit automatically manage the quality of subscribed video tracks to optimize for bandwidth and CPU.
+  enableAdaptiveStream: true,
+
   // Dynacast dynamically pauses video layers that are not being consumed by any subscribers,
   // significantly reducing publishing CPU and bandwidth usage.
   enableDynacast: true,

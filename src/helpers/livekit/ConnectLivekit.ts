@@ -228,7 +228,11 @@ export default class ConnectLivekit
     }
 
     const roomOptions: RoomOptions = {
-      adaptiveStream: true,
+      adaptiveStream: getConfigValue<boolean>(
+        'enableAdaptiveStream',
+        true,
+        'ENABLE_ADAPTIVE_STREAM',
+      ),
       dynacast: getConfigValue<boolean>(
         'enableDynacast',
         false,
