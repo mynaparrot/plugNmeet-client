@@ -7,7 +7,6 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
-  updateVirtualBackground,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam/menu';
@@ -155,11 +154,6 @@ const WebcamIcon = () => {
       await checkPreviousCameraTrackAndReplace(emptyStream);
 
       dispatch(updateIsActiveWebcam(false));
-      dispatch(
-        updateVirtualBackground({
-          type: 'none',
-        }),
-      );
     }
     //eslint-disable-next-line
   }, [

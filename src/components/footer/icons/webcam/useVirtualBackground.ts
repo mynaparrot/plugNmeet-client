@@ -12,17 +12,12 @@ const useVirtualBackground = (deviceId: string | undefined) => {
   );
 
   useEffect(() => {
-    // we'll only clear if the deviceId is empty & webcam isn't active.
-    if (!deviceId && !isActiveWebcam) {
+    if (!isActiveWebcam || !deviceId) {
       if (virtualBgLocalTrack) {
         virtualBgLocalTrack.getTracks().forEach((t) => t.stop());
         setVirtualBgLocalTrack(undefined);
         setSourcePlayback(undefined);
       }
-      return;
-    }
-    // otherwise, we won't do anything if there's no deviceId
-    if (!deviceId) {
       return;
     }
 
