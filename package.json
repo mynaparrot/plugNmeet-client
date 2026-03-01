@@ -23,7 +23,7 @@
     "@reduxjs/toolkit": "2.11.2",
     "@tensorflow-models/body-pix": "2.2.1",
     "@tensorflow/tfjs": "4.22.0",
-    "axios": "1.13.5",
+    "axios": "1.13.6",
     "clsx": "2.1.1",
     "copy-text-to-clipboard": "3.2.2",
     "es-toolkit": "1.44.0",
