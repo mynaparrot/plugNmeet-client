@@ -1,5 +1,10 @@
-import { createLocalVideoTrack, Track } from 'livekit-client';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
+import {
+  createLocalVideoTrack,
+  LocalTrackPublication,
+  Track,
+  TrackPublishOptions,
+} from 'livekit-client';
 
 import { useAppDispatch } from '../../../../store';
 import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';
@@ -9,44 +14,72 @@ import { updateIsActiveWebcam } from '../../../../store/slices/bottomIconsActivi
 const useWebcamPublisher = () => {
   const dispatch = useAppDispatch();
   const room = getMediaServerConnRoom();
+  const publishing = useRef<boolean>(false);
 
   const replaceTrack = useCallback(
     async (newTrack: MediaStreamTrack): Promise<boolean> => {
-      if (!room) return false;
+      if (!room || publishing.current) return false;
       let replaced = false;
-      for (const publication of room.localParticipant.videoTrackPublications.values()) {
-        if (
-          publication.track &&
-          publication.track.source === Track.Source.Camera
-        ) {
+      publishing.current = true;
+
+      const publications = room.localParticipant.getTrackPublications();
+      for (let i = 0; i < publications.length; i++) {
+        const pub = publications[i] as LocalTrackPublication;
+        if (pub.source === Track.Source.Camera && pub.track) {
           newTrack.enabled = true;
-          await publication.track.replaceTrack(newTrack, {
+          await pub.track.replaceTrack(newTrack, {
             userProvidedTrack: true,
           });
           replaced = true;
+          break;
         }
       }
+      publishing.current = false;
       return replaced;
     },
     [room],
   );
 
+  /**
+   * publishNewTrack will end any of the previous tracks,
+   * don't use this for replacement
+   */
   const publishNewTrack = useCallback(
-    async (deviceId: string) => {
-      if (!room) return;
-      const resolution = getWebcamResolution();
-      const track = await createLocalVideoTrack({
-        deviceId: { exact: deviceId, ideal: deviceId },
-        resolution,
-      });
+    async (
+      deviceId: string,
+      mediaStreamTrack?: MediaStreamTrack,
+      options?: TrackPublishOptions,
+    ) => {
+      if (!room || publishing.current) return;
+      publishing.current = true;
 
-      const replaced = await replaceTrack(track.mediaStreamTrack);
-      if (!replaced) {
-        await room.localParticipant.publishTrack(track);
+      const publications = room.localParticipant.getTrackPublications();
+      for (let i = 0; i < publications.length; i++) {
+        const pub = publications[i] as LocalTrackPublication;
+        if (pub.source === Track.Source.Camera && pub.track) {
+          await room.localParticipant.unpublishTrack(pub.track, true);
+        }
       }
+
+      const resolution = getWebcamResolution();
+      if (deviceId !== '') {
+        const track = await createLocalVideoTrack({
+          deviceId: { exact: deviceId, ideal: deviceId },
+          resolution,
+        });
+        await room.localParticipant.publishTrack(track);
+      } else if (mediaStreamTrack) {
+        await room.localParticipant.publishTrack(mediaStreamTrack, options);
+      } else {
+        console.error('webcam publishing was not successful');
+        publishing.current = false;
+        return;
+      }
+
       dispatch(updateIsActiveWebcam(true));
+      publishing.current = false;
     },
-    [dispatch, room, replaceTrack],
+    [dispatch, room],
   );
 
   return {

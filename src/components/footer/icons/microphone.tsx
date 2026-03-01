@@ -59,6 +59,7 @@ const MicrophoneIcon = () => {
   const tooltipDismissedRef = useRef(false);
   const isMutedRef = useRef(false);
   const muteDelayTimer = useRef<NodeJS.Timeout | null>(null);
+  const isPublishing = useRef<boolean>(false);
 
   const { showTooltip, muteOnStart, isAdmin, defaultLock } = useMemo(() => {
     const session = store.getState().session;
@@ -334,9 +335,10 @@ const MicrophoneIcon = () => {
     async (deviceId?: string) => {
       dispatch(updateShowMicrophoneModal(false));
 
-      if (isEmpty(deviceId) || !currentRoom) {
+      if (isEmpty(deviceId) || !currentRoom || isPublishing.current) {
         return;
       }
+      isPublishing.current = true;
 
       const localTracks = await createLocalTracks({
         audio: {
@@ -367,6 +369,7 @@ const MicrophoneIcon = () => {
       if (deviceId != null) {
         dispatch(updateSelectedAudioDevice(deviceId));
       }
+      isPublishing.current = false;
     },
     [dispatch, currentRoom, muteOnStart],
   );
