@@ -28,7 +28,7 @@ const VideoParticipant = ({
     const elements: Array<React.ReactNode> = [];
 
     for (const track of participant.videoTrackPublications.values()) {
-      if (track.source === Track.Source.Camera) {
+      if (track.source === Track.Source.Camera && !track.isMuted && track.videoTrack) {
         const elm = (
           <VideoComponent
             userId={participant.identity}
