@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.6](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.5...v2.1.6) (2026-03-02)
+
+
+### Bug Fixes
+
+* bump `vite` ([1ea0108](https://github.com/mynaparrot/plugNmeet-client/commit/1ea01087b041553584b13c068604edf84aa70bed))
+
 ## [2.1.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.4...v2.1.5) (2026-03-02)
 
 
