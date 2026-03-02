@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.1.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.4...v2.1.5) (2026-03-02)
+
+
+### Bug Fixes
+
+* because of race-condition same track was publishing multiple times ([82fdcbc](https://github.com/mynaparrot/plugNmeet-client/commit/82fdcbc62ebd12d5ddc4ac28b0309e7ce9326a67))
+* bump deps ([ec36279](https://github.com/mynaparrot/plugNmeet-client/commit/ec362790cfc2babb6e96279bf65ac0c9e9385e74))
+* configurable option to `fallback_turn` when connection bad ([5870443](https://github.com/mynaparrot/plugNmeet-client/commit/58704439489c3d3ff2728bbb11e8f4fd79f702f4))
+* deps upgrade ([5222420](https://github.com/mynaparrot/plugNmeet-client/commit/5222420d24136cea40636ac1af78fdd417274d66))
+* disable `relay` for mobile firefox for the moment. ([76def67](https://github.com/mynaparrot/plugNmeet-client/commit/76def67f03b594c9a29ef4416300f2f33451f302))
+* don't process for firefox mobile for the moment ([3edf0bc](https://github.com/mynaparrot/plugNmeet-client/commit/3edf0bcb3587759ff1f951749a2c996988032deb))
+* **feat:** option to configure custom turn servers ([278923c](https://github.com/mynaparrot/plugNmeet-client/commit/278923cdd1af0c55d969c2ac93eb75873aa35a7d))
+* **feat:** option to configure custom turn servers ([034aeae](https://github.com/mynaparrot/plugNmeet-client/commit/034aeae0de6b1a6769157241e9b37badaf2b7a19))
+* nats connection tag name ([38aec54](https://github.com/mynaparrot/plugNmeet-client/commit/38aec54320b9757347558ca1a1a21d701a50868c))
+* new Crowdin updates ([3b84db6](https://github.com/mynaparrot/plugNmeet-client/commit/3b84db6d65f5cd059357ae653a29658805ed8fc9))
+* option to configure `enableAdaptiveStream` ([6b71b25](https://github.com/mynaparrot/plugNmeet-client/commit/6b71b2546160a7d87a9250739bcd326624c9ca5c))
+* option to set `fallbackTimerDuration` in server config ([81fb2f1](https://github.com/mynaparrot/plugNmeet-client/commit/81fb2f1309a7e1038f5d7ea78dc263dee22ae093))
+* prevent duplicate click while sharing screen task in progress ([6de8fac](https://github.com/mynaparrot/plugNmeet-client/commit/6de8faccb6a71e2323d03d0c3e9f345f376d3e8a))
+* trying to send message when nats disconnected ([779a77f](https://github.com/mynaparrot/plugNmeet-client/commit/779a77f5899a0401abb2fcb97a192eb7d0e39ed2))
+* use Map for O(1) lookups ([e8beebf](https://github.com/mynaparrot/plugNmeet-client/commit/e8beebf73228dfe64b9659ddcf8013f33c02f2e9))
+* use timer to execute fallback ([d6857db](https://github.com/mynaparrot/plugNmeet-client/commit/d6857db46f680ec1ff7bfffde62c46fb7421f945))
+* video participant race condition upon ws disconnection ([1eccebf](https://github.com/mynaparrot/plugNmeet-client/commit/1eccebf71e419dd7be19be27fb0c2222d67fb92e))
+* video participant race condition upon ws disconnection ([439f8af](https://github.com/mynaparrot/plugNmeet-client/commit/439f8af1882fd782f786d0035e2ad7263a2ce076))
+* webcam toggle was loosing virtual background ([882b561](https://github.com/mynaparrot/plugNmeet-client/commit/882b561154cbc8b0b4ba1ab45c6a707d4c4094f7))
+
 ## [2.1.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.3...v2.1.4) (2026-02-11)
 
 
