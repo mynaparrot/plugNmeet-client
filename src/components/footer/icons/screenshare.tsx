@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   createLocalScreenTracks,
@@ -19,6 +19,7 @@ const ScrenshareIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
+  const isPublishing = useRef<boolean>(false);
 
   const { isAdmin, isScreenShareAllowed, showTooltip } = useMemo(() => {
     const session = store.getState().session;
@@ -88,9 +89,10 @@ const ScrenshareIcon = () => {
   }, [sessionScreenSharing]);
 
   const toggleScreenShare = async () => {
-    if (isLocked) {
+    if (isLocked || isPublishing.current) {
       return;
     }
+    isPublishing.current = true;
 
     if (!isActiveScreenshare) {
       if (sessionScreenSharing.isActive) {
@@ -100,10 +102,12 @@ const ScrenshareIcon = () => {
             typeOption: 'error',
           }),
         );
+        isPublishing.current = false;
         return;
       }
 
       if (!currentRoom) {
+        isPublishing.current = false;
         return;
       }
 
@@ -132,8 +136,10 @@ const ScrenshareIcon = () => {
           sharedBy: currentRoom.localParticipant.identity,
         }),
       );
+      isPublishing.current = false;
     } else {
-      endScreenShare().then();
+      await endScreenShare();
+      isPublishing.current = false;
     }
   };
 
