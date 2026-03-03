@@ -53,9 +53,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
       try {
         const imageUrl = new URL(src, window.location.href);
         if (imageUrl.origin !== window.location.origin) {
-          console.log(
-            `[loadImage] Cross-origin URL detected. Setting crossOrigin="anonymous".`,
-          );
+          // not the same origin
           img.crossOrigin = 'anonymous';
         }
       } catch (e) {
@@ -66,19 +64,8 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
       }
 
       img.src = src;
-      img.onload = () => {
-        console.log(
-          `[loadImage] SUCCESS: Image loaded successfully. Dimensions: ${img.width}x${img.height}`,
-        );
-        resolve(img);
-      };
-      img.onerror = (err) => {
-        console.error(`[loadImage] ERROR: Image failed to load.`, err);
-        reject(err);
-      };
-      img.onabort = () => {
-        console.warn(`[loadImage] ABORT: Image load was aborted.`);
-      };
+      img.onload = () => resolve(img);
+      img.onerror = reject;
     });
   }
 
