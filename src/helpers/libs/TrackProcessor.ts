@@ -50,9 +50,35 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   private loadImage(src: string): Promise<HTMLImageElement | undefined> {
     return new Promise((resolve, reject) => {
       const img = new Image();
+      try {
+        const imageUrl = new URL(src, window.location.href);
+        if (imageUrl.origin !== window.location.origin) {
+          console.log(
+            `[loadImage] Cross-origin URL detected. Setting crossOrigin="anonymous".`,
+          );
+          img.crossOrigin = 'anonymous';
+        }
+      } catch (e) {
+        // This will catch malformed URLs that the constructor can't parse.
+        console.error(`[loadImage] Invalid URL provided: ${src}`, e);
+        reject(new Error(`Invalid URL: ${src}`));
+        return;
+      }
+
       img.src = src;
-      img.onload = () => resolve(img);
-      img.onerror = reject;
+      img.onload = () => {
+        console.log(
+          `[loadImage] SUCCESS: Image loaded successfully. Dimensions: ${img.width}x${img.height}`,
+        );
+        resolve(img);
+      };
+      img.onerror = (err) => {
+        console.error(`[loadImage] ERROR: Image failed to load.`, err);
+        reject(err);
+      };
+      img.onabort = () => {
+        console.warn(`[loadImage] ABORT: Image load was aborted.`);
+      };
     });
   }
 
