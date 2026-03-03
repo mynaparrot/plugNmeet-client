@@ -15,11 +15,6 @@ export default defineConfig({
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {
-      '@tensorflow/tfjs$': resolve(__dirname, './custom_tfjs/custom_tfjs.js'),
-      '@tensorflow/tfjs-core$': resolve(
-        __dirname,
-        './custom_tfjs/custom_tfjs_core.js',
-      ),
       '~': resolve(__dirname, 'src'),
     },
   },
@@ -92,7 +87,6 @@ function assetFileNames(names: string[]) {
 }
 
 const vendorChunkMap: Record<string, string[]> = {
-  tensorflow: ['@tensorflow'],
   mermaid: ['mermaid'],
   excalidraw: ['@excalidraw'],
   'react-libs': [
@@ -149,15 +143,10 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
           'assets/imgs',
           'assets/locales',
           'assets/lti',
-          'assets/models',
           'assets/config_sample.js',
           !isProduction ? 'assets/config.js' : '',
         ].filter(Boolean),
         dest: 'assets/',
-      },
-      {
-        src: 'assets/tflite/*',
-        dest: 'assets/js/',
       },
       {
         src: 'login.html',

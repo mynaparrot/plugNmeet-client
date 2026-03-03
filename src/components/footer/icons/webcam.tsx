@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { LocalTrack, Track } from 'livekit-client';
@@ -7,20 +7,16 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveWebcam,
   updateShowVideoShareModal,
-  updateVirtualBackground,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam/menu';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
-import VirtualBackground from '../../virtual-background/virtualBackground';
 import { createEmptyVideoStreamTrack } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import useWebcamPublisher from './webcam/useWebcamPublisher';
-import useVirtualBackground from './webcam/useVirtualBackground';
-import { BackgroundConfig } from '../../virtual-background/helpers/backgroundHelper';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
@@ -70,11 +66,6 @@ const WebcamIcon = () => {
   );
 
   const { publishNewTrack, replaceTrack } = useWebcamPublisher();
-  const { sourcePlayback, virtualBgVideoPlayer, handleVirtualBgVideoOnLoad } =
-    useVirtualBackground(
-      virtualBackground.type !== 'none' ? selectedVideoDevice : undefined,
-    );
-  const lastVirtualBackground = useRef<BackgroundConfig | null>(null);
 
   // for change in webcam lock setting
   useEffect(() => {
@@ -121,11 +112,9 @@ const WebcamIcon = () => {
     async (deviceId: string) => {
       dispatch(updateSelectedVideoDevice(deviceId));
       dispatch(updateIsActiveWebcam(true));
-      if (!lastVirtualBackground.current && virtualBackground.type === 'none') {
-        await publishNewTrack(deviceId);
-      }
+      await publishNewTrack(deviceId, undefined, virtualBackground);
     },
-    [dispatch, publishNewTrack, virtualBackground.type],
+    [dispatch, publishNewTrack, virtualBackground],
   );
 
   // only for initial if device was selected in landing page
@@ -144,12 +133,8 @@ const WebcamIcon = () => {
     if (!isActiveWebcam) {
       if (!currentRoom) return;
       if (selectedVideoDevice !== '') {
-        if (lastVirtualBackground.current) {
-          dispatch(updateVirtualBackground(lastVirtualBackground.current));
-        }
         await onSelectedDevice(selectedVideoDevice);
       } else {
-        lastVirtualBackground.current = null;
         dispatch(updateShowVideoShareModal(!isActiveWebcam));
       }
     } else if (isActiveWebcam) {
@@ -158,52 +143,23 @@ const WebcamIcon = () => {
       const emptyStream = createEmptyVideoStreamTrack(
         currentRoom.localParticipant.name ?? 'User',
       );
-      await checkPreviousCameraTrackAndReplace(emptyStream);
 
+      if (virtualBackground.type == 'none') {
+        await replaceTrack(emptyStream);
+      } else {
+        await publishNewTrack('', emptyStream);
+      }
       dispatch(updateIsActiveWebcam(false));
-      lastVirtualBackground.current = virtualBackground;
-      dispatch(
-        updateVirtualBackground({
-          type: 'none',
-        }),
-      );
     }
-    //eslint-disable-next-line
+    //oxlint-disable-next-line
   }, [
     isWebcamLocked,
     isActiveWebcam,
     selectedVideoDevice,
-    dispatch,
     currentRoom,
     onSelectedDevice,
+    virtualBackground,
   ]);
-
-  const checkPreviousCameraTrackAndReplace = useCallback(
-    async (newTrack: MediaStreamTrack): Promise<boolean> => {
-      return await replaceTrack(newTrack);
-    },
-    [replaceTrack],
-  );
-
-  // handle virtual background canvas
-  const onCanvasRef = useCallback(
-    async (canvasRef: React.RefObject<HTMLCanvasElement>) => {
-      if (!canvasRef.current) {
-        return;
-      }
-      const stream = canvasRef.current.captureStream(25);
-      for (const track of stream.getTracks()) {
-        if (track.kind === 'video') {
-          await publishNewTrack('', track, {
-            source: Track.Source.Camera,
-            name: 'canvas',
-          });
-          return;
-        }
-      }
-    },
-    [publishNewTrack],
-  );
 
   const getTooltipText = () => {
     if (!isActiveWebcam && !isWebcamLock) {
@@ -287,29 +243,6 @@ const WebcamIcon = () => {
           selectedDeviceId={selectedVideoDevice}
           displayWebcamSelection={true}
         />
-      )}
-
-      {/*For virtual background*/}
-      {sourcePlayback &&
-        selectedVideoDevice &&
-        virtualBackground.type !== 'none' && (
-          <div style={{ display: 'none' }}>
-            <VirtualBackground
-              sourcePlayback={sourcePlayback}
-              id={selectedVideoDevice}
-              backgroundConfig={virtualBackground}
-              onCanvasRef={onCanvasRef}
-            />
-          </div>
-        )}
-      {virtualBackground.type !== 'none' && (
-        <div style={{ display: 'none' }}>
-          <video
-            ref={virtualBgVideoPlayer}
-            autoPlay
-            onLoadedData={handleVirtualBgVideoOnLoad}
-          />
-        </div>
       )}
     </>
   );

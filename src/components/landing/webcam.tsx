@@ -1,6 +1,7 @@
 import React, { SetStateAction } from 'react';
 import { Menu, MenuButton, MenuItem, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { isSupported } from '@twilio/video-processors';
 
 import { Camera } from '../../assets/Icons/Camera';
 import { PlusIcon } from '../../assets/Icons/PlusIcon';
@@ -105,20 +106,25 @@ const WebcamIcon = ({
                         </MenuItem>
                       </div>
                     ))}
-                    <div className="divider w-[calc(100%+16px)] relative -left-2 h-1 bg-Gray-50 dark:bg-Gray-700 mt-2"></div>
-                    <div className="title h-9 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
-                      {t('landing.background-filter-title')}
-                    </div>
-                    <p
-                      className="min-h-9 w-full flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-dark-secondary2 cursor-pointer"
-                      onClick={() =>
-                        dispatch(
-                          updateShowVideoShareModal(!showVideoShareModal),
-                        )
-                      }
-                    >
-                      {t('landing.config-background-btn')}
-                    </p>
+
+                    {isSupported && (
+                      <>
+                        <div className="divider w-[calc(100%+16px)] relative -left-2 h-1 bg-Gray-50 dark:bg-Gray-700 mt-2"></div>
+                        <div className="title h-9 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
+                          {t('landing.background-filter-title')}
+                        </div>
+                        <p
+                          className="min-h-9 w-full flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-dark-secondary2 cursor-pointer"
+                          onClick={() =>
+                            dispatch(
+                              updateShowVideoShareModal(!showVideoShareModal),
+                            )
+                          }
+                        >
+                          {t('landing.config-background-btn')}
+                        </p>
+                      </>
+                    )}
                   </div>
                 </Transition>
               </>

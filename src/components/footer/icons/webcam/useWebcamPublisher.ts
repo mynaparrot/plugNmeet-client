@@ -3,13 +3,17 @@ import {
   createLocalVideoTrack,
   LocalTrackPublication,
   Track,
-  TrackPublishOptions,
 } from 'livekit-client';
 
 import { useAppDispatch } from '../../../../store';
 import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';
 import { getWebcamResolution } from '../../../../helpers/utils';
 import { updateIsActiveWebcam } from '../../../../store/slices/bottomIconsActivitySlice';
+import {
+  BackgroundConfig,
+  createVirtualBackgroundProcessor,
+  TwilioBackgroundProcessor,
+} from '../../../../helpers/libs/TrackProcessor';
 
 const useWebcamPublisher = () => {
   const dispatch = useAppDispatch();
@@ -48,7 +52,7 @@ const useWebcamPublisher = () => {
     async (
       deviceId: string,
       mediaStreamTrack?: MediaStreamTrack,
-      options?: TrackPublishOptions,
+      virtualBackground?: BackgroundConfig,
     ) => {
       if (!room || publishing.current) return;
       publishing.current = true;
@@ -63,13 +67,22 @@ const useWebcamPublisher = () => {
 
       const resolution = getWebcamResolution();
       if (deviceId !== '') {
+        let processor: TwilioBackgroundProcessor | undefined;
+        if (virtualBackground && virtualBackground.type !== 'none') {
+          processor = createVirtualBackgroundProcessor(virtualBackground);
+        }
+
         const track = await createLocalVideoTrack({
           deviceId: { exact: deviceId, ideal: deviceId },
           resolution,
+          processor,
         });
         await room.localParticipant.publishTrack(track);
       } else if (mediaStreamTrack) {
-        await room.localParticipant.publishTrack(mediaStreamTrack, options);
+        // assuming we are not using virtual background
+        await room.localParticipant.publishTrack(mediaStreamTrack, {
+          source: Track.Source.Camera,
+        });
       } else {
         console.error('webcam publishing was not successful');
         publishing.current = false;

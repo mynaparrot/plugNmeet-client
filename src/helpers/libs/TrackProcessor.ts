@@ -1,0 +1,177 @@
+import {
+  GaussianBlurBackgroundProcessor,
+  ImageFit,
+  VirtualBackgroundProcessor,
+} from '@twilio/video-processors';
+import { Track, TrackProcessor, VideoProcessorOptions } from 'livekit-client';
+
+import { getConfigValue } from '../utils';
+
+export type BackgroundConfig = {
+  type: 'none' | 'blur' | 'image';
+  url?: string;
+};
+
+const assetPath = getConfigValue(
+  'staticAssetsPath',
+  '/assets',
+  'STATIC_ASSETS_PATH',
+);
+const vbPaths = `${assetPath}/backgrounds/assets`;
+
+class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
+  name = 'pnm-virtual-background';
+
+  private processor:
+    | GaussianBlurBackgroundProcessor
+    | VirtualBackgroundProcessor
+    | null = null;
+  private sourceElement = document.createElement('video');
+  private canvas = document.createElement('canvas');
+  private isProcessing = false;
+  private isDestroyed = false; // Flag to prevent multiple destroys.
+
+  readonly processedTrack: MediaStreamTrack;
+
+  constructor(private backgroundConfig: BackgroundConfig) {
+    this.processedTrack = this.canvas.captureStream().getVideoTracks()[0];
+    this.sourceElement.autoplay = true;
+    this.sourceElement.muted = true; // Mute to prevent any audio feedback
+  }
+
+  async init(opts: VideoProcessorOptions) {
+    this.sourceElement.srcObject = new MediaStream([opts.track]);
+    await this.sourceElement.play();
+
+    await this.initTwilioProcessor();
+    await this.startProcessingLoop();
+  }
+
+  private async initTwilioProcessor() {
+    if (this.backgroundConfig.type === 'blur') {
+      this.processor = new GaussianBlurBackgroundProcessor({
+        assetsPath: vbPaths,
+        useWebWorker: true,
+      });
+    } else if (
+      this.backgroundConfig.type === 'image' &&
+      this.backgroundConfig.url
+    ) {
+      const backgroundImage = new Image();
+      backgroundImage.src = this.backgroundConfig.url;
+      await backgroundImage.decode();
+
+      this.processor = new VirtualBackgroundProcessor({
+        assetsPath: vbPaths,
+        backgroundImage: backgroundImage,
+        fitType: ImageFit.Fill,
+        useWebWorker: true,
+      });
+    }
+
+    if (this.processor) {
+      await this.processor.loadModel();
+    }
+  }
+
+  private renderLoop = async () => {
+    if (
+      !this.isProcessing ||
+      !this.processor ||
+      this.sourceElement.videoWidth === 0
+    ) {
+      return;
+    }
+
+    if (
+      this.canvas.width !== this.sourceElement.videoWidth ||
+      this.canvas.height !== this.sourceElement.videoHeight
+    ) {
+      this.canvas.width = this.sourceElement.videoWidth;
+      this.canvas.height = this.sourceElement.videoHeight;
+    }
+
+    try {
+      await this.processor.processFrame(this.sourceElement, this.canvas);
+    } catch (e) {
+      console.error('Failed to process frame for virtual background', e);
+      this.isProcessing = false;
+    }
+
+    if (this.isProcessing) {
+      setTimeout(this.renderLoop, 1000 / 24); // Use setTimeout to avoid stopping in background tabs
+    }
+  };
+
+  private async startProcessingLoop() {
+    if (this.processor) {
+      this.isProcessing = true;
+      await this.renderLoop();
+    }
+  }
+
+  private cleanupSourceStream() {
+    if (this.sourceElement.srcObject) {
+      this.sourceElement.pause();
+      const stream = this.sourceElement.srcObject as MediaStream;
+      stream.getTracks().forEach((t) => t.stop());
+      this.sourceElement.srcObject = null;
+    }
+  }
+
+  async restart(opts: VideoProcessorOptions) {
+    this.isProcessing = false;
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    this.cleanupSourceStream();
+
+    this.sourceElement.srcObject = new MediaStream([opts.track]);
+    await this.sourceElement.play();
+
+    await this.startProcessingLoop();
+  }
+
+  async update(backgroundConfig: BackgroundConfig) {
+    // If the new type is 'none', it's a signal to stop and clean up completely.
+    if (backgroundConfig.type === 'none') {
+      await this.destroy();
+      return;
+    }
+
+    // Otherwise, update to the new background.
+    this.isProcessing = false;
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    this.backgroundConfig = backgroundConfig;
+    this.processor = null;
+
+    await this.initTwilioProcessor();
+    await this.startProcessingLoop();
+  }
+
+  async onUnpublish() {
+    await this.destroy();
+  }
+
+  async destroy() {
+    // Prevent the destroy logic from running multiple times.
+    if (this.isDestroyed) {
+      return;
+    }
+    // Set the flag immediately to prevent race conditions.
+    this.isDestroyed = true;
+
+    this.isProcessing = false;
+    this.processor = null;
+    this.cleanupSourceStream();
+    this.processedTrack?.stop();
+  }
+}
+
+// Factory function to create a new processor with the given config.
+export function createVirtualBackgroundProcessor(
+  backgroundConfig: BackgroundConfig,
+): TwilioTrackProcessor {
+  return new TwilioTrackProcessor(backgroundConfig);
+}
+export type TwilioBackgroundProcessor = TwilioTrackProcessor;

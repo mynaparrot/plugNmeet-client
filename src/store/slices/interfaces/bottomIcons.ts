@@ -1,4 +1,4 @@
-import { BackgroundConfig } from '../../../components/virtual-background/helpers/backgroundHelper';
+import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
 
 export type DeviceOrientation = 'landscape' | 'portrait';
 

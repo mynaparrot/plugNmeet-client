@@ -1,13 +1,4 @@
-import { getConfigValue } from '../../../helpers/utils';
-
-export type BackgroundConfig = {
-  type: 'none' | 'blur-sm' | 'image';
-  url?: string;
-};
-
-const defaultBackgroundConfig: BackgroundConfig = {
-  type: 'none',
-};
+import { getConfigValue } from '../../../../helpers/utils';
 
 const assetPath = getConfigValue(
   'staticAssetsPath',
@@ -58,4 +49,4 @@ if (
   })();
 }
 
-export { backgroundImageUrls, defaultBackgroundConfig };
+export { backgroundImageUrls };

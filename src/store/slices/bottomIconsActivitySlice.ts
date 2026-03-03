@@ -5,10 +5,7 @@ import {
   IBottomIconsSlice,
   SidePanelType,
 } from './interfaces/bottomIcons';
-import {
-  BackgroundConfig,
-  defaultBackgroundConfig,
-} from '../../components/virtual-background/helpers/backgroundHelper';
+import { BackgroundConfig } from '../../helpers/libs/TrackProcessor';
 
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
@@ -40,7 +37,7 @@ const initialState: IBottomIconsSlice = {
   showInsightsAISettingsModal: false,
 
   totalUnreadChatMsgs: 0,
-  virtualBackground: defaultBackgroundConfig,
+  virtualBackground: { type: 'none' },
   isEnabledExtendedVerticalCamView: false,
 };
 
