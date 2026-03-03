@@ -26,7 +26,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     | GaussianBlurBackgroundProcessor
     | VirtualBackgroundProcessor
     | null = null;
-  private sourceElement = document.createElement('video');
+  private sourceElement: HTMLVideoElement | undefined = undefined;
   private canvas = document.createElement('canvas');
   private isProcessing = false;
   private isDestroyed = false; // Flag to prevent multiple destroys.
@@ -35,12 +35,18 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
 
   constructor(private backgroundConfig: BackgroundConfig) {
     this.processedTrack = this.canvas.captureStream().getVideoTracks()[0];
-    this.sourceElement.autoplay = true;
-    this.sourceElement.muted = true; // Mute to prevent any audio feedback
   }
 
   async init(opts: VideoProcessorOptions) {
+    if (opts.element) {
+      this.sourceElement = opts.element as HTMLVideoElement;
+    } else {
+      this.sourceElement = document.createElement('video');
+    }
+
     this.sourceElement.srcObject = new MediaStream([opts.track]);
+    this.sourceElement.autoplay = true;
+    this.sourceElement.muted = true;
     await this.sourceElement.play();
 
     await this.initTwilioProcessor();
@@ -102,6 +108,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     if (
       !this.isProcessing ||
       !this.processor ||
+      !this.sourceElement ||
       this.sourceElement.videoWidth === 0
     ) {
       return;
@@ -135,7 +142,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   }
 
   private cleanupSourceStream() {
-    if (this.sourceElement.srcObject) {
+    if (this.sourceElement && this.sourceElement.srcObject) {
       this.sourceElement.pause();
       const stream = this.sourceElement.srcObject as MediaStream;
       stream.getTracks().forEach((t) => t.stop());
@@ -144,6 +151,10 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   }
 
   async restart(opts: VideoProcessorOptions) {
+    if (!this.sourceElement) {
+      return;
+    }
+
     this.isProcessing = false;
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
