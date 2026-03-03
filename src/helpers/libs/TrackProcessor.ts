@@ -47,6 +47,15 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     await this.startProcessingLoop();
   }
 
+  private loadImage(src: string): Promise<HTMLImageElement | undefined> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+    });
+  }
+
   private async initTwilioProcessor() {
     if (this.backgroundConfig.type === 'blur') {
       this.processor = new GaussianBlurBackgroundProcessor({
@@ -57,9 +66,11 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
       this.backgroundConfig.type === 'image' &&
       this.backgroundConfig.url
     ) {
-      const backgroundImage = new Image();
-      backgroundImage.src = this.backgroundConfig.url;
-      await backgroundImage.decode();
+      const backgroundImage = await this.loadImage(this.backgroundConfig.url);
+      if (!backgroundImage) {
+        console.error('failed to load image', this.backgroundConfig.url);
+        return;
+      }
 
       this.processor = new VirtualBackgroundProcessor({
         assetsPath: vbPaths,
