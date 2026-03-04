@@ -22,7 +22,6 @@ import { IConnectLivekit } from '../../helpers/livekit/types';
 import { isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import { InfoToOpenConn, roomConnectionStatus, verifyToken } from './helper';
-import { loadBodyPix } from '../virtual-background/helpers/utils';
 import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
 
 const App = () => {
@@ -30,9 +29,6 @@ const App = () => {
   const { t, i18n } = useTranslation();
   // make sure we're using correct body dir
   document.dir = i18n.dir();
-  // we'll require making ready virtual background
-  // elements as early as possible.
-  loadBodyPix(true).then();
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot

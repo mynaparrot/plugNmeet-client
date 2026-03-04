@@ -1,13 +1,11 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
-import {
-  BackgroundConfig,
-  backgroundImageUrls,
-} from '../../../virtual-background/helpers/backgroundHelper';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
 import { useAppSelector } from '../../../../store';
 import { getConfigValue } from '../../../../helpers/utils';
+import { backgroundImageUrls } from './backgroundHelper';
+import { BackgroundConfig } from '../../../../helpers/libs/TrackProcessor';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;
@@ -85,11 +83,11 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         </div>
       </div>
       <div
-        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'blur-sm' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
-        onClick={() => handleOnClick('blur-sm', '')}
+        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+        onClick={() => handleOnClick('blur', '')}
       >
         <div
-          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'blur-sm' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
+          className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
         >
           <i className="pnm-blur dark:text-white" />
         </div>
