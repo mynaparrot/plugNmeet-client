@@ -2,6 +2,7 @@ import {
   GaussianBlurBackgroundProcessor,
   ImageFit,
   VirtualBackgroundProcessor,
+  isSupported,
 } from '@twilio/video-processors';
 import { Track, TrackProcessor, VideoProcessorOptions } from 'livekit-client';
 
@@ -200,6 +201,29 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     this.processor = null;
     this.cleanupSourceStream();
     this.processedTrack?.stop();
+  }
+}
+
+// run during application bootup and cache, so next time it will be faster
+if (isSupported) {
+  try {
+    const blur = new GaussianBlurBackgroundProcessor({
+      assetsPath: vbPaths,
+    });
+
+    // create a blank image
+    const blankImage = new Image();
+    blankImage.src =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
+    const imageVb = new VirtualBackgroundProcessor({
+      assetsPath: vbPaths,
+      backgroundImage: blankImage,
+    });
+
+    Promise.all([blur.loadModel(), imageVb.loadModel()]).then();
+  } catch (e) {
+    console.error(e);
   }
 }
 
