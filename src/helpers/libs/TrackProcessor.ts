@@ -73,6 +73,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
       img.src = src;
       img.onload = () => resolve(img);
       img.onerror = reject;
+      img.decode();
     });
   }
 
@@ -232,7 +233,7 @@ if (isSupported) {
         backgroundImage: blankImage,
       });
 
-      await Promise.all([blur.loadModel(), imageVb.loadModel()]);
+      Promise.all([blur.loadModel(), imageVb.loadModel()]).then();
     } catch (e) {
       console.error(e);
     }
