@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.6](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.5...v2.1.6) (2026-03-04)
+
+
+### Bug Fixes
+
+* bump `vite` ([1ea0108](https://github.com/mynaparrot/plugNmeet-client/commit/1ea01087b041553584b13c068604edf84aa70bed))
+* continue looping without waiting ([f68b596](https://github.com/mynaparrot/plugNmeet-client/commit/f68b59669109e5d499062f75c04608fe5f920373))
+* improve display VB + clear properly ([371e166](https://github.com/mynaparrot/plugNmeet-client/commit/371e166ecd6a96b7dd7ffe90e44af747fe7b3976))
+* load models during bootup and cache for loading faster next time ([d734345](https://github.com/mynaparrot/plugNmeet-client/commit/d734345994be74815727d06cd6c04dbaf22925ef))
+* **refactor:** virtual background replaced with `@twilio/video-processors` library ([096b9e6](https://github.com/mynaparrot/plugNmeet-client/commit/096b9e65115b7749e1339155c7694ce909c6d470))
+* **refactor:** virtual background replaced with `@twilio/video-processors` library ([7b7d125](https://github.com/mynaparrot/plugNmeet-client/commit/7b7d125272598abfaf4ed13cf6f1348c8adb0284))
+* use recommended resolution ([5003c52](https://github.com/mynaparrot/plugNmeet-client/commit/5003c52ff2f9c1099da933794fd57721a9a12ffa))
+
 ## [2.1.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.4...v2.1.5) (2026-03-02)
 
 
