@@ -131,7 +131,8 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     }
 
     if (this.isProcessing) {
-      setTimeout(this.renderLoop, 1000 / 24); // Use setTimeout to avoid stopping in background tabs
+      // continue looping
+      this.renderLoop().then();
     }
   };
 
