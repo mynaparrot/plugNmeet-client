@@ -204,29 +204,6 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   }
 }
 
-// run during application bootup and cache, so next time it will be faster
-if (isSupported) {
-  try {
-    const blur = new GaussianBlurBackgroundProcessor({
-      assetsPath: vbPaths,
-    });
-
-    // create a blank image
-    const blankImage = new Image();
-    blankImage.src =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-
-    const imageVb = new VirtualBackgroundProcessor({
-      assetsPath: vbPaths,
-      backgroundImage: blankImage,
-    });
-
-    Promise.all([blur.loadModel(), imageVb.loadModel()]).then();
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 // Factory function to create a new processor with the given config.
 export function createVirtualBackgroundProcessor(
   backgroundConfig: BackgroundConfig,
@@ -234,3 +211,29 @@ export function createVirtualBackgroundProcessor(
   return new TwilioTrackProcessor(backgroundConfig);
 }
 export type TwilioBackgroundProcessor = TwilioTrackProcessor;
+
+// run during application bootup and cache, so next time it will be faster
+if (isSupported) {
+  (async () => {
+    try {
+      const blur = new GaussianBlurBackgroundProcessor({
+        assetsPath: vbPaths,
+      });
+
+      // create a blank image
+      const blankImage = new Image();
+      blankImage.src =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+      await blankImage.decode();
+
+      const imageVb = new VirtualBackgroundProcessor({
+        assetsPath: vbPaths,
+        backgroundImage: blankImage,
+      });
+
+      await Promise.all([blur.loadModel(), imageVb.loadModel()]);
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+}
