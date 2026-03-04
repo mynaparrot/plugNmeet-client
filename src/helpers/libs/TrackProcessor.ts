@@ -31,6 +31,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   private canvas = document.createElement('canvas');
   private isProcessing = false;
   private isDestroyed = false; // Flag to prevent multiple destroys.
+  private loopPromise: Promise<void> | null = null;
 
   readonly processedTrack: MediaStreamTrack;
 
@@ -51,30 +52,26 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     await this.sourceElement.play();
 
     await this.initTwilioProcessor();
-    await this.startProcessingLoop();
+    this.startProcessingLoop();
   }
 
-  private loadImage(src: string): Promise<HTMLImageElement | undefined> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      try {
-        const imageUrl = new URL(src, window.location.href);
-        if (imageUrl.origin !== window.location.origin) {
-          // not the same origin
-          img.crossOrigin = 'anonymous';
-        }
-      } catch (e) {
-        // This will catch malformed URLs that the constructor can't parse.
-        console.error(`[loadImage] Invalid URL provided: ${src}`, e);
-        reject(new Error(`Invalid URL: ${src}`));
-        return;
+  private async loadImage(src: string): Promise<HTMLImageElement | null> {
+    const img = new Image();
+    try {
+      const imageUrl = new URL(src, window.location.href);
+      if (imageUrl.origin !== window.location.origin) {
+        // not the same origin
+        img.crossOrigin = 'anonymous';
       }
+    } catch (e) {
+      // This will catch malformed URLs that the constructor can't parse.
+      console.error(`[loadImage] Invalid URL provided: ${src}`, e);
+      return null;
+    }
 
-      img.src = src;
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.decode();
-    });
+    img.src = src;
+    await img.decode();
+    return img;
   }
 
   private async initTwilioProcessor() {
@@ -89,7 +86,6 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     ) {
       const backgroundImage = await this.loadImage(this.backgroundConfig.url);
       if (!backgroundImage) {
-        console.error('failed to load image', this.backgroundConfig.url);
         return;
       }
 
@@ -107,40 +103,39 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   }
 
   private renderLoop = async () => {
-    if (
-      !this.isProcessing ||
-      !this.processor ||
-      !this.sourceElement ||
-      this.sourceElement.videoWidth === 0
-    ) {
-      return;
-    }
+    while (this.isProcessing) {
+      if (
+        !this.processor ||
+        !this.sourceElement ||
+        this.sourceElement.videoWidth === 0
+      ) {
+        // Source is not ready, wait briefly to avoid a busy loop.
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        continue;
+      }
 
-    if (
-      this.canvas.width !== this.sourceElement.videoWidth ||
-      this.canvas.height !== this.sourceElement.videoHeight
-    ) {
-      this.canvas.width = this.sourceElement.videoWidth;
-      this.canvas.height = this.sourceElement.videoHeight;
-    }
+      if (
+        this.canvas.width !== this.sourceElement.videoWidth ||
+        this.canvas.height !== this.sourceElement.videoHeight
+      ) {
+        this.canvas.width = this.sourceElement.videoWidth;
+        this.canvas.height = this.sourceElement.videoHeight;
+      }
 
-    try {
-      await this.processor.processFrame(this.sourceElement, this.canvas);
-    } catch (e) {
-      console.error('Failed to process frame for virtual background', e);
-      this.isProcessing = false;
-    }
-
-    if (this.isProcessing) {
-      // continue looping
-      this.renderLoop().then();
+      try {
+        // Await the frame processing. The loop will continue immediately after.
+        await this.processor.processFrame(this.sourceElement, this.canvas);
+      } catch (e) {
+        console.error('Failed to process frame for virtual background', e);
+        this.isProcessing = false;
+      }
     }
   };
 
-  private async startProcessingLoop() {
+  private startProcessingLoop() {
     if (this.processor) {
       this.isProcessing = true;
-      await this.renderLoop();
+      this.loopPromise = this.renderLoop();
     }
   }
 
@@ -159,14 +154,16 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     }
 
     this.isProcessing = false;
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+    if (this.loopPromise) {
+      await this.loopPromise;
+    }
 
     this.cleanupSourceStream();
 
     this.sourceElement.srcObject = new MediaStream([opts.track]);
     await this.sourceElement.play();
 
-    await this.startProcessingLoop();
+    this.startProcessingLoop();
   }
 
   async update(backgroundConfig: BackgroundConfig) {
@@ -178,13 +175,15 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
 
     // Otherwise, update to the new background.
     this.isProcessing = false;
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+    if (this.loopPromise) {
+      await this.loopPromise;
+    }
 
     this.backgroundConfig = backgroundConfig;
     this.processor = null;
 
     await this.initTwilioProcessor();
-    await this.startProcessingLoop();
+    this.startProcessingLoop();
   }
 
   async onUnpublish() {
@@ -200,6 +199,9 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     this.isDestroyed = true;
 
     this.isProcessing = false;
+    if (this.loopPromise) {
+      await this.loopPromise;
+    }
     this.processor = null;
     this.cleanupSourceStream();
     this.processedTrack?.stop();

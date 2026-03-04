@@ -25,7 +25,7 @@ import { LoadingIcon } from '../../assets/Icons/Loading';
 
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
-import WebcamPreview from './webcamPreview';
+import WebcamPreview from '../footer/modals/webcam/webcamPreview';
 
 interface StartupJoinModalProps {
   setIsAppReady: Dispatch<boolean>;
@@ -181,7 +181,11 @@ const Landing = ({
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
-              <WebcamPreview selectedVideoDevice={selectedVideoDevice} />
+              <div className="camera bg-Gray-950 rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80">
+                {selectedVideoDevice !== '' && (
+                  <WebcamPreview deviceId={selectedVideoDevice} />
+                )}
+              </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
                 {lockMicrophone ? (
                   <div className="microphone-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">

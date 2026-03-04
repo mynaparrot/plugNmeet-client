@@ -7,7 +7,7 @@ import {
   updateShowVideoShareModal,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { getInputMediaDevices } from '../../../../helpers/utils';
-import PreviewWebcam from './previewWebcam';
+import WebcamSettings from './webcamSettings';
 import { addVideoDevices } from '../../../../store/slices/roomSettingsSlice';
 import Modal from '../../../../helpers/ui/modal';
 import Dropdown from '../../../../helpers/ui/dropdown';
@@ -99,7 +99,7 @@ const ShareWebcamModal = ({
           </div>
         )}
         <div className="w-full">
-          <PreviewWebcam deviceId={selectedWebcam} />
+          <WebcamSettings deviceId={selectedWebcam} />
         </div>
       </Modal>
     )
