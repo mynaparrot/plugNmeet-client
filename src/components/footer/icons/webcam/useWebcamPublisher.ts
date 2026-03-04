@@ -70,6 +70,10 @@ const useWebcamPublisher = () => {
         let processor: TwilioBackgroundProcessor | undefined;
         if (virtualBackground && virtualBackground.type !== 'none') {
           processor = createVirtualBackgroundProcessor(virtualBackground);
+          resolution.height = 480;
+          resolution.width = 640;
+          resolution.frameRate = 24;
+          resolution.aspectRatio = undefined;
         }
 
         const track = await createLocalVideoTrack({
@@ -77,7 +81,9 @@ const useWebcamPublisher = () => {
           resolution,
           processor,
         });
-        await room.localParticipant.publishTrack(track);
+        await room.localParticipant.publishTrack(track, {
+          source: Track.Source.Camera,
+        });
       } else if (mediaStreamTrack) {
         // assuming we are not using virtual background
         await room.localParticipant.publishTrack(mediaStreamTrack, {

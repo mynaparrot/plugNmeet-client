@@ -1,15 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  createLocalVideoTrack,
-  LocalVideoTrack,
-  VideoPresets,
-} from 'livekit-client';
+import { createLocalVideoTrack, LocalVideoTrack } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
 import {
   createVirtualBackgroundProcessor,
   TwilioBackgroundProcessor,
 } from '../../../../helpers/libs/TrackProcessor';
+import { getWebcamResolution } from '../../../../helpers/utils';
 
 interface WebcamPreviewProps {
   deviceId: string;
@@ -32,13 +29,18 @@ const WebcamPreview = ({ deviceId }: WebcamPreviewProps) => {
       }
 
       let processor: TwilioBackgroundProcessor | undefined;
+      const resolution = getWebcamResolution();
       if (virtualBackground.type !== 'none') {
         processor = createVirtualBackgroundProcessor(virtualBackground);
+        resolution.height = 480;
+        resolution.width = 640;
+        resolution.frameRate = 24;
+        resolution.aspectRatio = undefined;
       }
 
       createLocalVideoTrack({
         deviceId,
-        resolution: VideoPresets.h720.resolution,
+        resolution,
         processor,
       }).then((track) => {
         localVideoTrack.current = track;
