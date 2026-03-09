@@ -94,7 +94,7 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
   STATUS_CHECKER_INTERVAL = 500,
   USERS_SYNC_INTERVAL = 30 * 1000,
-  MAX_MISSED_PONGS = 3;
+  MAX_MISSED_PONGS = 6;
 type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG';
 
 export default class ConnectNats {
@@ -200,6 +200,7 @@ export default class ConnectNats {
         servers: this._natsWSUrls,
         authenticator: tokenAuthenticator(() => this._token),
         pingInterval: PING_INTERVAL,
+        noEcho: true,
       });
 
       console.info(`connected ${this._nc.getServer()}`);
@@ -585,7 +586,7 @@ export default class ConnectNats {
     }
 
     if (isPrivate) {
-      this.sendPrivateData(payload, 'CHAT', to, true);
+      this.sendPrivateData(payload, 'CHAT', to, false);
     } else {
       const subject = `${this._subjects.chat}.${this._roomId}`;
       this._nc.publish(subject, payload);
@@ -608,6 +609,9 @@ export default class ConnectNats {
         '1',
       );
     }
+
+    // to add own message
+    await this.handleChat.handleMsg(chatMessage);
   };
 
   /**
@@ -863,7 +867,7 @@ export default class ConnectNats {
 
   private startPingToServer() {
     const ping = async () => {
-      if (this.missedPongs === 1) {
+      if (this.missedPongs === 3) {
         this.pongMissedToastId = toast.loading(
           i18n.t('notifications.server-not-responding'),
           {
