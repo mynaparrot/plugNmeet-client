@@ -562,7 +562,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         />
       )}
       <Excalidraw
-        excalidrawAPI={(api: ExcalidrawImperativeAPI) => {
+        onExcalidrawAPI={(api) => {
           if (api) {
             setExcalidrawAPI(api);
             onReadyExcalidrawAPI(api);
