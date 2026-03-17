@@ -28,8 +28,9 @@ import {
   MediaServerConnInfo,
 } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
+import { CorsWorker } from '@twilio/video-processors/es5/utils/CorsWorker';
 // @ts-expect-error not an error
-import LkWorker from 'livekit-client/e2ee-worker?worker';
+import LkWorkerUrl from 'livekit-client/e2ee-worker?url';
 
 import { store } from '../../store';
 import {
@@ -76,7 +77,7 @@ export default class ConnectLivekit
   private readonly encryptionKey: string | undefined = '';
 
   private readonly handleMediaTracks: HandleMediaTracks;
-  private readonly _room: Room;
+  private _room!: Room;
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
@@ -103,9 +104,7 @@ export default class ConnectLivekit
       this.encryptionKey = encryptionKey;
     }
     this.handleMediaTracks = new HandleMediaTracks(this);
-
-    // configure room
-    this._room = this.configureRoom();
+    this.configureRoom().then();
   }
 
   public get videoSubscribersMap() {
@@ -214,7 +213,7 @@ export default class ConnectLivekit
     }
   };
 
-  private configureRoom() {
+  private async configureRoom() {
     let videoCodec = getConfigValue<VideoCodec>(
       'videoCodec',
       'vp8',
@@ -263,9 +262,11 @@ export default class ConnectLivekit
     };
 
     if (this.enabledE2EE && isE2EESupported()) {
+      const corsWorker = new CorsWorker(LkWorkerUrl);
+      const LkWorker = await corsWorker.workerPromise;
       roomOptions.encryption = {
         keyProvider: this._e2eeKeyProvider,
-        worker: new LkWorker(),
+        worker: LkWorker,
       };
     }
 
@@ -326,7 +327,7 @@ export default class ConnectLivekit
       this.localUserConnectionQualityChanged,
     );
 
-    return room;
+    this._room = room;
   }
 
   private async initiateParticipants() {
