@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.11.0",
-    "@excalidraw/excalidraw": "0.18.0-816c81c",
+    "@excalidraw/excalidraw": "0.18.0-81ab857",
     "@headlessui/react": "2.2.9",
     "@nats-io/jetstream": "3.3.1",
     "@nats-io/nats-core": "3.3.1",
@@ -27,8 +27,8 @@
     "copy-text-to-clipboard": "3.2.2",
     "es-toolkit": "1.45.1",
     "eventemitter3": "5.0.4",
-    "framer-motion": "12.36.0",
-    "i18next": "25.8.18",
+    "framer-motion": "12.38.0",
+    "i18next": "25.8.20",
     "i18next-browser-languagedetector": "8.2.1",
     "i18next-http-backend": "3.0.2",
     "idb": "8.0.3",
@@ -49,11 +49,11 @@
     "react-redux": "9.2.0",
     "react-toastify": "11.0.5",
     "resumablejs": "1.1.0",
-    "sanitize-html": "2.17.1"
+    "sanitize-html": "2.17.2"
   },
   "devDependencies": {
     "@prettier/plugin-oxc": "0.1.3",
-    "@tailwindcss/vite": "4.2.1",
+    "@tailwindcss/vite": "4.2.2",
     "@types/emscripten": "1.41.5",
     "@types/node": "25.5.0",
     "@types/react": "19.2.14",
@@ -61,11 +61,11 @@
     "@types/sanitize-html": "2.16.1",
     "@vitejs/plugin-react": "6.0.1",
     "husky": "9.1.7",
-    "oxlint": "1.55.0",
+    "oxlint": "1.56.0",
     "prettier": "3.8.1",
-    "tailwindcss": "4.2.1",
+    "tailwindcss": "4.2.2",
     "typescript": "5.9.3",
-    "vite": "8.0.0",
+    "vite": "8.0.1",
     "vite-plugin-clean": "2.0.1",
     "vite-plugin-oxlint": "2.0.1",
     "vite-plugin-static-copy": "3.3.0"
