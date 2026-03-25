@@ -147,6 +147,7 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
           !isProduction ? 'assets/config.js' : '',
         ].filter(Boolean),
         dest: 'assets/',
+        rename: { stripBase: 1 },
       },
       {
         src: 'login.html',
