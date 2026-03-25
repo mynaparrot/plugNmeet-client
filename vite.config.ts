@@ -24,9 +24,6 @@ export default defineConfig({
       interval: BUILD_INTERVAL,
     },
   },
-  experimental: {
-    enableNativePlugin: true,
-  },
   build: {
     outDir: '../dist',
     emptyOutDir: false,
