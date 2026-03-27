@@ -118,7 +118,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
   if (isRecorder) {
     return (
       <div className="h-full">
-        <div className="chat-messages-container">
+        <div className="h-[calc(100%-5px)] chat-messages-container">
           <Messages messageKey={selectedChatOption} />
         </div>
       </div>
