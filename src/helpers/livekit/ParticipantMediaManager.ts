@@ -114,7 +114,7 @@ export default class ParticipantMediaManager {
       return;
     }
     // we don't want to add local audio here.
-    if (participant.identity === this.localUserId) {
+    if (userId === this.localUserId) {
       return;
     }
 
