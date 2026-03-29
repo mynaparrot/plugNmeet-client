@@ -41,6 +41,7 @@ import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
 import { getChatDonors, getWhiteboardDonors } from '../utils';
 import i18n from '../i18n';
+import { addToken } from '../../store/slices/sessionSlice';
 
 export default class SubscriptionHandler {
   private readonly connectNats: ConnectNats;
@@ -282,6 +283,7 @@ export default class SubscriptionHandler {
       this._handleRoomData.updateRoomMetadata(p.msg),
     [NatsMsgServerToClientEvents.RESP_RENEW_PNM_TOKEN]: (p) => {
       this.connectNats.token = p.msg.toString();
+      store.dispatch(addToken(this.connectNats.token));
     },
     [NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION]: (p) => {
       !this.connectNats.isRecorder &&
