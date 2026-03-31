@@ -1,3 +1,13 @@
+:root {
+  --primary-color: #24aef7;
+  --primary-color-hover: rgba(0, 69, 131);
+  --danger-color: rgba(220, 38, 38);
+  --text-color-light: #fff;
+  --border-color: rgba(0, 0, 0, 0.2);
+  --background-color-light: rgba(0, 0, 0, 0.03);
+  --background-color-hover: rgba(0, 0, 0, 0.05);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -71,16 +81,23 @@ h1.headline {
   left: 49%;
 }
 
-.table-head {
-  display: flex;
-  align-items: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  padding: 10px;
+.table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.table-head div,
-.table-item div {
+.table-head {
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table-head th {
+  padding: 10px;
+  text-align: left;
+}
+
+.table-head th,
+.table-item td {
   width: 25%;
 }
 
@@ -89,43 +106,43 @@ h1.headline {
 }
 
 .table-item {
-  display: flex;
-  align-items: center;
   padding: 5px 10px;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: var(--background-color-light);
   margin-top: 2px;
   transition: all 0.3s ease-in;
   cursor: pointer;
 }
 
 .table-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--background-color-hover);
 }
 
-.table-item .action a {
+.table-item .action button {
   font-size: 16px;
   text-decoration: none;
   display: inline-block;
   padding: 7px 15px;
-  color: #fff;
+  color: var(--text-color-light);
   border-radius: 5px;
   transition: all 0.3s ease-in;
+  border: none;
+  cursor: pointer;
 }
 
-.table-item .action a.download {
-  background-color: #24aef7;
+.table-item .action .download {
+  background-color: var(--primary-color);
   margin-right: 10px;
 }
 
-.table-item .action a.delete {
-  background-color: rgba(220, 38, 38);
+.table-item .action .delete {
+  background-color: var(--danger-color);
 }
 
-.table-item .action a.download:hover {
-  background-color: rgba(0, 69, 131);
+.table-item .action .download:hover {
+  background-color: var(--primary-color-hover);
 }
 
-ul.pagination {
+.pagination {
   display: flex;
   justify-content: flex-end;
   width: 100%;
@@ -134,75 +151,82 @@ ul.pagination {
   margin-bottom: 30px;
 }
 
-ul.pagination li,
-ul.pagination button {
+.pagination button {
   display: inline-flex;
   height: 28px;
-  width: 28px;
+  width: auto;
+  padding: 0 10px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #24aef7;
+  border: 1px solid var(--primary-color);
   margin-left: 5px;
   border-radius: 5px;
   font-size: 14px;
   transition: all 0.3s ease-in;
   cursor: pointer;
-}
-
-ul.pagination button {
-  width: auto;
-  padding: 0 10px;
   background-color: transparent;
 }
 
-ul.pagination li:hover,
-ul.pagination button:hover,
-ul.pagination li.active {
-  background-color: #24aef7;
-  color: #fff;
+.pagination button:hover,
+.pagination button.active {
+  background-color: var(--primary-color-hover);
+  color: var(--text-color-light);
 }
 
-ul.pagination button:disabled {
+.pagination button:disabled {
   background-color: #c7ddf3;
   color: #171616;
   cursor: default;
   border: none;
 }
 
-.join-area a {
+.join-area button {
   font-size: 16px;
   text-decoration: none;
   display: inline-block;
   padding: 7px 40px;
-  color: #fff;
+  color: var(--text-color-light);
   border-radius: 5px;
   transition: all 0.3s ease-in;
+  border: none;
+  cursor: pointer;
 }
 
 .join-area {
   margin-left: 15px;
 }
 
-.join-area a.join {
-  background-color: #24aef7;
+.join-area .join {
+  background-color: var(--primary-color);
   margin-right: 10px;
 }
 
-.join-area a.end {
-  background-color: rgba(220, 38, 38);
+.join-area .end {
+  background-color: var(--danger-color);
 }
 
-.join-area a.join:hover {
-  background-color: rgba(0, 69, 131);
+.join-area .join:hover {
+  background-color: var(--primary-color-hover);
+}
+
+#error-container {
+  width: calc(100% - 30px);
+  margin: 0 15px 15px;
+  padding: 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 @media screen and (max-width: 1023px) {
-  .table-item .action a {
+  .table-item .action button {
     font-size: 12px;
   }
 
-  .table-head div,
-  .table-item div {
+  .table-head th,
+  .table-item td {
     font-size: 14px;
   }
 }
