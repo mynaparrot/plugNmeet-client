@@ -21,7 +21,7 @@
       setInterval(isSessionActive, 1000 * 60 * 5);
     }
 
-    await fetchRecordings();
+    loadRecordingsForPage(currentPage);
     designCustomization();
     attachEventListeners();
   };
@@ -33,10 +33,10 @@
     dom.pagination.addEventListener('click', (e) => {
       if (e.target.id === 'backward' && !dom.backwardBtn.disabled) {
         currentPage--;
-        paginate(currentPage);
+        loadRecordingsForPage(currentPage);
       } else if (e.target.id === 'forward' && !dom.forwardBtn.disabled) {
         currentPage++;
-        paginate(currentPage);
+        loadRecordingsForPage(currentPage);
       }
     });
 
@@ -203,21 +203,21 @@
   const showPagination = () => {
     currentPage = 1;
     dom.pagination.style.display = 'flex';
-    paginate(currentPage);
+    loadRecordingsForPage(currentPage);
   };
 
-  const paginate = (page) => {
+  const loadRecordingsForPage = (page) => {
     dom.recordingListsBody.innerHTML = '';
     const from = (page - 1) * limitPerPage;
 
     dom.backwardBtn.disabled = page === 1;
-    dom.forwardBtn.disabled = page >= totalRecordings / limitPerPage;
+    dom.forwardBtn.disabled = page >= Math.ceil(totalRecordings / limitPerPage);
 
     fetchRecordings(from, limitPerPage);
   };
 
   const showMessage = (msg) => {
-    dom.recordingListsBody.innerHTML = `<tr><td colspan="4">${msg}</td></tr>`;
+    dom.recordingListsBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px;">${msg}</td></tr>`;
   };
 
   const showError = (msg) => {

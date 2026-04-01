@@ -106,11 +106,13 @@ h1.headline {
 }
 
 .table-item {
-  padding: 5px 10px;
   background-color: var(--background-color-light);
-  margin-top: 2px;
   transition: all 0.3s ease-in;
   cursor: pointer;
+}
+
+.table-item td {
+  padding: 15px 10px;
 }
 
 .table-item:hover {
@@ -147,8 +149,8 @@ h1.headline {
   justify-content: flex-end;
   width: 100%;
   list-style: none;
-  margin-right: 15px;
   margin-bottom: 30px;
+  padding-right: 35px;
 }
 
 .pagination button {
@@ -193,7 +195,12 @@ h1.headline {
 }
 
 .join-area {
-  margin-left: 15px;
+  margin: 15px;
+  border: 1px solid rgb(0 0 0 / 15%);
+  box-shadow: 0 4px 52px rgb(0 0 0 / 15%);
+  border-radius: 10px;
+  padding: 20px;
+  width: calc(100% - 30px);
 }
 
 .join-area .join {
