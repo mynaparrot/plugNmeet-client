@@ -10,6 +10,7 @@ import {
   AnalyticsEventType,
   DataMsgBodyType,
 } from 'plugnmeet-protocol-js';
+import { throttle } from 'es-toolkit';
 
 import { store } from '../../../store';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
@@ -23,7 +24,29 @@ const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
 let preScrollX = 0,
   preScrollY = 0,
-  conn: ConnectNats;
+  conn: ConnectNats,
+  annotatedAnalyticsBatchCounter = 0;
+
+const flushAnnotatedAnalyticsData = () => {
+  if (annotatedAnalyticsBatchCounter > 0) {
+    if (!conn) {
+      conn = getNatsConn();
+    }
+    conn.sendAnalyticsData(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED,
+      AnalyticsEventType.USER,
+      '',
+      '',
+      annotatedAnalyticsBatchCounter.toString(),
+    );
+    annotatedAnalyticsBatchCounter = 0; // Reset after sending
+  }
+};
+
+// Initialize the throttled function once at module load
+const throttledFlushAnalytics = throttle(flushAnnotatedAnalyticsData, 5000, {
+  edges: ['trailing'],
+});
 
 export const sendRequestedForWhiteboardData = async () => {
   if (!conn) {
@@ -171,13 +194,9 @@ export const broadcastScreenDataByNats = async (
     JSON.stringify(elements),
     sendTo,
   );
-  conn.sendAnalyticsData(
-    AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED,
-    AnalyticsEventType.USER,
-    '',
-    '',
-    '1',
-  );
+  annotatedAnalyticsBatchCounter++;
+  // Trigger the throttled flush whenever there's activity
+  throttledFlushAnalytics();
 };
 
 export const broadcastCurrentPageNumber = async (

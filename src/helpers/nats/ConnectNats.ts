@@ -58,7 +58,7 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
   STATUS_CHECKER_INTERVAL = 500,
   USERS_SYNC_INTERVAL = 30 * 1000,
-  MAX_MISSED_PONGS = 6;
+  MAX_MISSED_PONGS = 12;
 export type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG';
 
 export default class ConnectNats {
@@ -263,6 +263,7 @@ export default class ConnectNats {
         pingInterval: PING_INTERVAL,
         noEcho: true,
       });
+      this.messageQueue.setNc(this._nc);
 
       console.info(`connected ${this._nc.getServer()}`);
     } catch (e) {
@@ -431,12 +432,19 @@ export default class ConnectNats {
     }
   }
 
+  /**
+   * Sends a message to the system worker with guaranteed delivery.
+   * This method uses JetStream to ensure the message is received by the server.
+   * It is used for critical messages like PINGs, token renewals, and private data delivery.
+   * @param data The message to send.
+   */
   public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
     const subject =
       this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
       payload: toBinary(NatsMsgClientToServerSchema, data),
+      useJetStream: true,
     });
   };
 
@@ -495,6 +503,12 @@ export default class ConnectNats {
     return undefined;
   }
 
+  /**
+   * Sends a chat message.
+   * Private messages are sent via the system worker with JetStream's guaranteed delivery.
+   * Public messages are sent as fire-and-forget core NATS messages to the public chat subject.
+   * Both are managed by the MessageQueue.
+   */
   public sendChatMsg = async (to: string, msg: string) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
@@ -551,7 +565,10 @@ export default class ConnectNats {
       this.sendPrivateData(payload, 'CHAT', to, false);
     } else {
       const subject = `${this._subjects.chat}.${this._roomId}`;
-      this._nc.publish(subject, payload);
+      this.messageQueue.addToQueue({
+        subject,
+        payload,
+      });
     }
 
     if (isPrivate) {
@@ -576,6 +593,11 @@ export default class ConnectNats {
     await this.subscriptionHandler.handleChat.handleMsg(chatMessage);
   };
 
+  /**
+   * Sends whiteboard data as a fire-and-forget message.
+   * This method uses the core NATS `publish` method via the `MessageQueue`
+   * to avoid blocking critical messages.
+   */
   public sendWhiteboardData = async (
     type: DataMsgBodyType,
     msg: string,
@@ -602,11 +624,17 @@ export default class ConnectNats {
     }
 
     const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-    this._nc.publish(subject, payload);
+    this.messageQueue.addToQueue({
+      subject,
+      payload,
+    });
   };
 
   /**
-   * sendDataMessage method mostly use to communicate between clients
+   * Sends a generic data message.
+   * Private messages are sent via the system worker with JetStream's guaranteed delivery.
+   * Public messages are sent as fire-and-forget core NATS messages to the public data channel subject.
+   * Both are managed by the MessageQueue.
    */
   public sendDataMessage = async (
     type: DataMsgBodyType,
@@ -637,10 +665,19 @@ export default class ConnectNats {
       this.sendPrivateData(payload, 'DATA_MSG', to, false);
     } else {
       const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-      this._nc.publish(subject, payload);
+      this.messageQueue.addToQueue({
+        subject,
+        payload,
+      });
     }
   };
 
+  /**
+   * Sends analytics data to the server as a lightweight, fire-and-forget message.
+   * This method uses the core NATS `publish` method via the `MessageQueue`
+   * by publishing to the `systemJsWorker` subject without the `useJetStream` flag.
+   * This avoids blocking critical JetStream messages.
+   */
   public sendAnalyticsData = (
     event_name: AnalyticsEvents,
     event_type: AnalyticsEventType = AnalyticsEventType.USER,
@@ -662,7 +699,13 @@ export default class ConnectNats {
       event: NatsMsgClientToServerEvents.PUSH_ANALYTICS_DATA,
       msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
     });
-    this.sendMessageToSystemWorker(data);
+
+    const subject =
+      this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(NatsMsgClientToServerSchema, data),
+    });
   };
 
   private startTokenRenewInterval() {
@@ -686,7 +729,7 @@ export default class ConnectNats {
 
   private startPingToServer() {
     const ping = async () => {
-      if (this.missedPongs === 3) {
+      if (this.missedPongs === 6) {
         this.pongMissedToastId = toast.loading(
           i18n.t('notifications.server-not-responding'),
           {
