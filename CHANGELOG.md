@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.1.6](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.5...v2.1.6) (2026-04-02)
+
+
+### Bug Fixes
+
+* better to use `onInitialize` to set `ExcalidrawImperativeAPI` ([e1635fa](https://github.com/mynaparrot/plugNmeet-client/commit/e1635fa30ca04561af42ad87f543e00ed8d11b81))
+* bug fix and improved LTI ([5df719c](https://github.com/mynaparrot/plugNmeet-client/commit/5df719c4ea3bc086f83f05e361911f26bf9119a2))
+* bump `vite` ([1ea0108](https://github.com/mynaparrot/plugNmeet-client/commit/1ea01087b041553584b13c068604edf84aa70bed))
+* bump deps ([16d1d94](https://github.com/mynaparrot/plugNmeet-client/commit/16d1d9470928e97edbd618d698cd06dcc542d762))
+* bump deps ([a7fff52](https://github.com/mynaparrot/plugNmeet-client/commit/a7fff520761d3a1a931f0159fdbaec8cb51d1c66))
+* bump deps ([96f2ecb](https://github.com/mynaparrot/plugNmeet-client/commit/96f2ecbb5e5b7c148202ba48c695caff2a371e1b))
+* continue looping without waiting ([f68b596](https://github.com/mynaparrot/plugNmeet-client/commit/f68b59669109e5d499062f75c04608fe5f920373))
+* improve display VB + clear properly ([371e166](https://github.com/mynaparrot/plugNmeet-client/commit/371e166ecd6a96b7dd7ffe90e44af747fe7b3976))
+* load models during bootup and cache for loading faster next time ([d734345](https://github.com/mynaparrot/plugNmeet-client/commit/d734345994be74815727d06cd6c04dbaf22925ef))
+* **LTI:** logic + style ([6b9bb62](https://github.com/mynaparrot/plugNmeet-client/commit/6b9bb62e554b0bab0e3a2b5e323c539d780c0a92))
+* missed to update token :( ([225af75](https://github.com/mynaparrot/plugNmeet-client/commit/225af75ecc9ccba4c046c018e0d02591950d96f7))
+* **nats:** Implemented new system pub/sub core channel and moved `sendAnalyticsData` to use it. ([f583fc8](https://github.com/mynaparrot/plugNmeet-client/commit/f583fc8653f58e1c95a8a3b2eebad29de2b98216))
+* prevent echo back to sender ([0323d34](https://github.com/mynaparrot/plugNmeet-client/commit/0323d34df5f0487310ab1909c976aa9262fa6c36))
+* recorder chat was not auto scrolling ([260fcee](https://github.com/mynaparrot/plugNmeet-client/commit/260fcee950838f36983e37d575a7449408b5d530))
+* **refactor:** virtual background replaced with `@twilio/video-processors` library ([096b9e6](https://github.com/mynaparrot/plugNmeet-client/commit/096b9e65115b7749e1339155c7694ce909c6d470))
+* **refactor:** virtual background replaced with `@twilio/video-processors` library ([7b7d125](https://github.com/mynaparrot/plugNmeet-client/commit/7b7d125272598abfaf4ed13cf6f1348c8adb0284))
+* removed deprecated option ([f3daa44](https://github.com/mynaparrot/plugNmeet-client/commit/f3daa44a8a1c5c0cde83bb0d856d355a7fdecbda))
+* Separate NATS & LK subscription logic into handler ([a63fbb1](https://github.com/mynaparrot/plugNmeet-client/commit/a63fbb1f8079b6e82eb107787036a9e9e85c4aa2))
+* Separate NATS & LK subscription logic into handler ([57d8aaa](https://github.com/mynaparrot/plugNmeet-client/commit/57d8aaa78c642fd1fccf2aee9061e9560bab379c))
+* use `CorsWorker` from `[@twilio](https://github.com/twilio)` ([e5ba2ea](https://github.com/mynaparrot/plugNmeet-client/commit/e5ba2eabbb4d68d1605cbaa5fcf3dd253f3d84c3))
+* use recommended resolution ([5003c52](https://github.com/mynaparrot/plugNmeet-client/commit/5003c52ff2f9c1099da933794fd57721a9a12ffa))
+* with new option `stripBase` ([6e8151d](https://github.com/mynaparrot/plugNmeet-client/commit/6e8151d2bab764234a3a7d0c53a3c6e5bed03cf8))
+
 ## [2.1.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.4...v2.1.5) (2026-03-02)
 
 
