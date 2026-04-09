@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.7](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.6...v2.1.7) (2026-04-09)
+
+
+### Bug Fixes
+
+* **critical:** duplicate event was sending because of using same subject for both JS and Core pub/sub ([4bf7815](https://github.com/mynaparrot/plugNmeet-client/commit/4bf7815b1ded941835adde07bf9becf8a1935f62))
+
 ## [2.1.6](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.5...v2.1.6) (2026-04-02)
 
 
