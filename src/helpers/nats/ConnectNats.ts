@@ -674,9 +674,7 @@ export default class ConnectNats {
 
   /**
    * Sends analytics data to the server as a lightweight, fire-and-forget message.
-   * This method uses the core NATS `publish` method via the `MessageQueue`
-   * by publishing to the `systemJsWorker` subject without the `useJetStream` flag.
-   * This avoids blocking critical JetStream messages.
+   * This method uses the core NATS subject `systemCoreWorker` via the `MessageQueue`
    */
   public sendAnalyticsData = (
     event_name: AnalyticsEvents,
@@ -701,7 +699,7 @@ export default class ConnectNats {
     });
 
     const subject =
-      this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
+      this._subjects.systemCoreWorker + '.' + this._roomId + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
       payload: toBinary(NatsMsgClientToServerSchema, data),
@@ -709,6 +707,9 @@ export default class ConnectNats {
   };
 
   private startTokenRenewInterval() {
+    if (this.tokenRenewInterval) {
+      return;
+    }
     this.tokenRenewInterval = setInterval(() => {
       this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
@@ -728,6 +729,10 @@ export default class ConnectNats {
   }
 
   private startPingToServer() {
+    if (this.pingInterval) {
+      // Already running, no need to start another.
+      return;
+    }
     const ping = async () => {
       if (this.missedPongs === 6) {
         this.pongMissedToastId = toast.loading(
@@ -758,6 +763,9 @@ export default class ConnectNats {
   }
 
   public startUsersSync = () => {
+    if (this.reconciliationInterval) {
+      return;
+    }
     this.reconciliationInterval = setInterval(() => {
       this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
