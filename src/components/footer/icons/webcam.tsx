@@ -65,7 +65,7 @@ const WebcamIcon = () => {
     [isAdmin, isWebcamLock, defaultLock],
   );
 
-  const { publishNewTrack } = useWebcamPublisher();
+  const { publishNewTrack, replaceTrack } = useWebcamPublisher();
 
   // for change in webcam lock setting
   useEffect(() => {
@@ -144,7 +144,11 @@ const WebcamIcon = () => {
         currentRoom.localParticipant.name ?? 'User',
       );
 
-      await publishNewTrack('', emptyStream);
+      if (virtualBackground.type == 'none') {
+        await replaceTrack(emptyStream);
+      } else {
+        await publishNewTrack('', emptyStream);
+      }
       dispatch(updateIsActiveWebcam(false));
     }
     //oxlint-disable-next-line
