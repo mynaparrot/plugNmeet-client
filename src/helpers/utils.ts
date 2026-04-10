@@ -291,10 +291,16 @@ export const getChatDonors = (): IParticipant[] => {
 };
 
 let emptyStreamTrack: MediaStreamTrack | undefined = undefined;
+let animationInterval: any | undefined = undefined;
+
 export function createEmptyVideoStreamTrack(name: string) {
   // Reuse the track only if it exists and is still live.
   if (emptyStreamTrack && emptyStreamTrack.readyState === 'live') {
     return emptyStreamTrack;
+  }
+
+  if (animationInterval) {
+    clearInterval(animationInterval);
   }
 
   const canvas = document.createElement('canvas');
@@ -303,18 +309,39 @@ export function createEmptyVideoStreamTrack(name: string) {
 
   const ctx = canvas.getContext('2d');
   if (ctx) {
-    // Set a black background for high contrast.
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     const textString = generateAvatarInitial(name);
+    let scale = 1.0;
+    let scaleDirection = 0.0005;
 
-    // Style the text for clarity.
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 120px sans-serif';
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
-    ctx.fillText(textString, canvas.width / 2, canvas.height / 2);
+    const draw = () => {
+      if (!ctx) return;
+      // Set a black background for high contrast.
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Very subtle pulsating effect
+      if (scale > 1.01) {
+        scaleDirection = -0.00025;
+      } else if (scale < 1.0) {
+        scaleDirection = 0.00025;
+      }
+      scale += scaleDirection;
+
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.scale(scale, scale);
+
+      // Style the text for clarity.
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 120px sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
+      ctx.fillText(textString, 0, 0);
+
+      ctx.restore();
+    };
+
+    animationInterval = setInterval(draw, 1000 / 15); // 15 fps
   }
 
   const canvasStream = canvas.captureStream();
@@ -322,6 +349,12 @@ export function createEmptyVideoStreamTrack(name: string) {
   if (!emptyStreamTrack) {
     throw Error('Could not get empty media stream video track');
   }
+
+  emptyStreamTrack.onended = () => {
+    if (animationInterval) {
+      clearInterval(animationInterval);
+    }
+  };
 
   return emptyStreamTrack;
 }

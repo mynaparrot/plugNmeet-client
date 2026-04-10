@@ -7,7 +7,7 @@ import {
 
 import { useAppDispatch } from '../../../../store';
 import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';
-import { getWebcamResolution } from '../../../../helpers/utils';
+import { getWebcamResolution, sleep } from '../../../../helpers/utils';
 import { updateIsActiveWebcam } from '../../../../store/slices/bottomIconsActivitySlice';
 import {
   BackgroundConfig,
@@ -58,11 +58,16 @@ const useWebcamPublisher = () => {
       publishing.current = true;
 
       const publications = room.localParticipant.getTrackPublications();
+      let replaced = false;
       for (let i = 0; i < publications.length; i++) {
         const pub = publications[i] as LocalTrackPublication;
         if (pub.source === Track.Source.Camera && pub.track) {
           await room.localParticipant.unpublishTrack(pub.track, true);
+          replaced = true;
         }
+      }
+      if (replaced) {
+        await sleep(500);
       }
 
       const resolution = getWebcamResolution();
