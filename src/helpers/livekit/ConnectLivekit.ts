@@ -62,6 +62,7 @@ export default class ConnectLivekit
   private fallbackTimer: NodeJS.Timeout | null = null;
   private hasAttemptedSilentFallback: boolean = false;
   private serverInfo: MediaServerConnInfo | undefined = undefined;
+  private poorConnectionTimestamps: number[] = [];
   private participantMediaManager: ParticipantMediaManager;
 
   constructor(
@@ -477,37 +478,80 @@ export default class ConnectLivekit
       return; // We've already tried this, don't do it again.
     }
 
-    // If the connection is now UNSTABLE
     if (
       connectionQuality === ConnectionQuality.Poor ||
       connectionQuality === ConnectionQuality.Lost
     ) {
-      // If a timer isn't already running, start one.
-      if (!this.fallbackTimer) {
-        const fallbackDuration =
-          Number(this.serverInfo?.turnCredentials?.fallbackTimerDuration) ||
-          FALLBACK_TIMER_DURATION;
-
-        console.log(
-          `Connection is unstable (${connectionQuality}). Starting ${
-            fallbackDuration / 1000
-          }s fallback timer.`,
-        );
-        this.fallbackTimer = setTimeout(() => {
-          console.warn(
-            `Connection has remained unstable for ${
-              fallbackDuration / 1000
-            }s. Executing fallback as a final measure.`,
-          );
-          this.executeSilentRelayFallback();
-        }, fallbackDuration);
+      // If the "flapping" strategy is enabled from the server, use it exclusively
+      if (this.serverInfo?.turnCredentials?.fallbackOnFlapping?.enabled) {
+        this.handleFallbackOnFlapping();
+      } else {
+        // Otherwise, use the default timer-based fallback strategy.
+        this.handleTimerBasedFallback(connectionQuality);
       }
-    } else if (this.fallbackTimer) {
-      // If the connection is STABLE (Good or Excellent) and a timer was running, cancel it.
-      console.log('Connection has recovered. Cancelling fallback timer.');
-      clearTimeout(this.fallbackTimer);
-      this.fallbackTimer = null;
+    } else {
+      // Connection is GOOD.
+      // If a timer-based fallback was active, cancel its timer.
+      if (this.fallbackTimer) {
+        console.log('Connection has recovered. Cancelling fallback timer.');
+        clearTimeout(this.fallbackTimer);
+        this.fallbackTimer = null;
+      }
     }
+  };
+
+  private handleFallbackOnFlapping = () => {
+    const fallbackOnFlapping =
+      this.serverInfo?.turnCredentials?.fallbackOnFlapping;
+    // Guard clause to satisfy TypeScript and ensure safety
+    if (!fallbackOnFlapping?.enabled) {
+      return;
+    }
+
+    const now = Date.now();
+    this.poorConnectionTimestamps.push(now);
+
+    const checkDuration = (fallbackOnFlapping.checkDurationInSec ?? 120) * 1000;
+    const relevantTimestamps = this.poorConnectionTimestamps.filter(
+      (timestamp) => now - timestamp <= checkDuration,
+    );
+
+    this.poorConnectionTimestamps = relevantTimestamps;
+
+    if (relevantTimestamps.length >= fallbackOnFlapping.maxPoorConnCount) {
+      console.warn(
+        `Connection has been unstable ${
+          relevantTimestamps.length
+        } times in the last ${checkDuration / 1000}s. Executing fallback.`,
+      );
+      this.executeSilentRelayFallback();
+      this.poorConnectionTimestamps = []; // Clear to prevent re-triggering
+    }
+  };
+
+  private handleTimerBasedFallback = (connectionQuality: ConnectionQuality) => {
+    // This logic should only run if the timer-based fallback isn't already running.
+    if (this.fallbackTimer) {
+      return;
+    }
+
+    const fallbackDuration =
+      Number(this.serverInfo?.turnCredentials?.fallbackTimerDuration) ||
+      FALLBACK_TIMER_DURATION;
+
+    console.log(
+      `Connection is unstable (${connectionQuality}). Starting ${
+        fallbackDuration / 1000
+      }s fallback timer.`,
+    );
+    this.fallbackTimer = setTimeout(() => {
+      console.warn(
+        `Connection has remained unstable for ${
+          fallbackDuration / 1000
+        }s. Executing fallback as a final measure.`,
+      );
+      this.executeSilentRelayFallback();
+    }, fallbackDuration);
   };
 
   public addScreenShareTrack: typeof ParticipantMediaManager.prototype.addScreenShareTrack =
