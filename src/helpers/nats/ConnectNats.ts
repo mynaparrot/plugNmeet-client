@@ -515,7 +515,7 @@ export default class ConnectNats {
     }
 
     const isPrivate = to !== 'public';
-    const chatMessage = create(ChatMessageSchema, {
+    const data = {
       id: randomString(),
       fromName: this._userName,
       fromUserId: this._userId,
@@ -524,7 +524,8 @@ export default class ConnectNats {
       isPrivate: isPrivate,
       message: msg,
       fromAdmin: this.isAdmin,
-    });
+    };
+    const chatMessage = create(ChatMessageSchema, data);
 
     // check translation settings
     const state = store.getState();
@@ -589,8 +590,10 @@ export default class ConnectNats {
       );
     }
 
-    // to add own message
-    await this.subscriptionHandler.handleChat.handleMsg(chatMessage);
+    // to add original message as own
+    await this.subscriptionHandler.handleChat.handleMsg(
+      create(ChatMessageSchema, data),
+    );
   };
 
   /**
