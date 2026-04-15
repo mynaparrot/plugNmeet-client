@@ -62,7 +62,7 @@
     "@vitejs/plugin-react": "6.0.1",
     "husky": "9.1.7",
     "oxlint": "1.59.0",
-    "prettier": "3.8.1",
+    "prettier": "3.8.3",
     "tailwindcss": "4.2.2",
     "typescript": "5.9.3",
     "vite": "8.0.8",
