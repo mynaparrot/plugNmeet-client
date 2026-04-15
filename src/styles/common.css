@@ -1223,9 +1223,9 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     content: '';
     @apply absolute bg-Blue/20 w-full h-1 bottom-0;
   }
-  .header-room-settings .tablist button {
+  /*.header-room-settings .tablist button {
     @apply w-auto;
-  }
+  }*/
   .header-room-settings .tablist {
     @apply justify-between;
   }
