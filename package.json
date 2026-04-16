@@ -49,7 +49,7 @@
     "react-redux": "9.2.0",
     "react-toastify": "11.0.5",
     "resumablejs": "1.1.0",
-    "sanitize-html": "2.17.2"
+    "sanitize-html": "2.17.3"
   },
   "devDependencies": {
     "@prettier/plugin-oxc": "0.1.3",
