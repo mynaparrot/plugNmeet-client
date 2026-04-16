@@ -1226,6 +1226,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   /*.header-room-settings .tablist button {
     @apply w-auto;
   }*/
+  /* test */
   .header-room-settings .tablist {
     @apply justify-between;
   }
