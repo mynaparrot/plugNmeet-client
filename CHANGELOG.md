@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.8](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.7...v2.1.8) (2026-04-21)
+
+
+### Bug Fixes
+
+* bump deps ([7cc974a](https://github.com/mynaparrot/plugNmeet-client/commit/7cc974a95ee1acf208cf24c8c4b0ad0067bd7baa))
+* Empty Video Stream was giving LK brandwidth algo false-positive result ([863bb96](https://github.com/mynaparrot/plugNmeet-client/commit/863bb96998db253856a19570d27f4e3d15c3aa24))
+* **feat:** new option `fallback_on_flapping` for turn server ([79564f1](https://github.com/mynaparrot/plugNmeet-client/commit/79564f10913a65427d11ccf148cd8f94190e31e5))
+* header tab size problem ([6d9358c](https://github.com/mynaparrot/plugNmeet-client/commit/6d9358c1379694fa99e47fcfeb73e05fb28353d8))
+* original message was translated for owner as well ([9839a88](https://github.com/mynaparrot/plugNmeet-client/commit/9839a88326a59279a630e6abe48bfbc7a000cf3b))
+* remove `replaceTrack` track as it's creating problem with bandwidth algo ([6a00290](https://github.com/mynaparrot/plugNmeet-client/commit/6a002900af9d04d32a5eb713d41fb2758154beae))
+* reverted back ([998a8aa](https://github.com/mynaparrot/plugNmeet-client/commit/998a8aa321b3967db52c177ee27115f8568d9c2b))
+
 ## [2.1.7](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.6...v2.1.7) (2026-04-09)
 
 
