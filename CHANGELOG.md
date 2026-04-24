@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.9](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.8...v2.1.9) (2026-04-24)
+
+
+### Bug Fixes
+
+* check contrast ratio before applying custom design for better view ([ce4d806](https://github.com/mynaparrot/plugNmeet-client/commit/ce4d80667d0be8cc3cc79cc27bd10a4cfcf3d0ab))
+
 ## [2.1.8](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.7...v2.1.8) (2026-04-21)
 
 
