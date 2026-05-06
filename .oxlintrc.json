@@ -29,7 +29,8 @@
         "no-array-sort": "off",
         "no-array-reverse": "off",
         "no-array-index-key": "off",
-        "no-shadow": "off"
+        "no-shadow": "off",
+        "no-underscore-dangle": "off"
       }
     }
   ]
