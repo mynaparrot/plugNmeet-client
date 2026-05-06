@@ -12,7 +12,7 @@ jobs:
   release-client:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -24,10 +24,10 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
-          version: 10
+          version: 'latest'
       - name: Install dependencies
         run: pnpm install
       - name: Release as beta
@@ -51,7 +51,7 @@ jobs:
           cd tmp
           zip -X -r client.zip client
       - name: Upload by ftp
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        uses: SamKirkland/FTP-Deploy-Action@v4
         if: ${{ ! steps.release.outputs.release_created }}
         with:
           server: ${{ secrets.PNM_FTP_HOST }}
