@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "De RTMP-URL is niet geldig of wordt niet ondersteund.",
       "rtmp-stream-key-required": "Een stream-sleutel is vereist.",
       "external-media-player-url-invalid": "De URL is niet geldig of wordt niet ondersteund.",
-      "external-media-player-starting": "Even geduld a.u.b. om de video voor te bereiden voor afspelen."
+      "external-media-player-starting": "Even geduld a.u.b. om de video voor te bereiden voor afspelen.",
+      "screenshare-error": "Het schermdelen kon niet worden gestart."
     },
     "modal": {
       "lock-settings-title": "Instellingen voor Meeting Lock",
