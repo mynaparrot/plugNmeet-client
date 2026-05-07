@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP URL'si geçersiz veya desteklenmiyor.",
       "rtmp-stream-key-required": "Bir yayın anahtarı gereklidir.",
       "external-media-player-url-invalid": "URL geçersiz veya desteklenmiyor.",
-      "external-media-player-starting": "Video oynatma için hazırlanıyor, lütfen bekleyin."
+      "external-media-player-starting": "Video oynatma için hazırlanıyor, lütfen bekleyin.",
+      "screenshare-error": "Ekran paylaşımı başlatılamadı."
     },
     "modal": {
       "lock-settings-title": "Toplantı Kilidi Ayarları",
