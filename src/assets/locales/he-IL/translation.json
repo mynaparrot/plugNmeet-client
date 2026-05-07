@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "כתובת ה-URL של RTMP אינה חוקית ואינה נתמכת.",
       "rtmp-stream-key-required": "נדרש מפתח זרם.",
       "external-media-player-url-invalid": "כתובת ה- URL אינה חוקית או נתמכת.",
-      "external-media-player-starting": "הכנת וידאו להפעלה, נא להמתין."
+      "external-media-player-starting": "הכנת וידאו להפעלה, נא להמתין.",
+      "screenshare-error": "שיתוף המסך לא ניתן היה להתחיל."
     },
     "modal": {
       "lock-settings-title": "הגדרות נעילת פגישה",
