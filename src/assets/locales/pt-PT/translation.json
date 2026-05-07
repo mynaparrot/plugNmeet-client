@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "O URL RTMP é inválido ou não é suportado.",
       "rtmp-stream-key-required": "É necessária uma chave de transmissão.",
       "external-media-player-url-invalid": "O URL é inválido ou não é suportado.",
-      "external-media-player-starting": "A preparar o vídeo para reprodução, por favor, aguarde."
+      "external-media-player-starting": "A preparar o vídeo para reprodução, por favor, aguarde.",
+      "screenshare-error": "A partilha de ecrã não pôde ser iniciada."
     },
     "modal": {
       "lock-settings-title": "Definições de bloqueio da reunião",
