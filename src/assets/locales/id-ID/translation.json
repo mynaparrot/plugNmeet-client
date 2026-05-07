@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "URL RTMP tidak valid atau tidak didukung.",
       "rtmp-stream-key-required": "Kunci streaming diperlukan.",
       "external-media-player-url-invalid": "URL tidak valid atau tidak didukung.",
-      "external-media-player-starting": "Mempersiapkan video untuk diputar, harap tunggu."
+      "external-media-player-starting": "Mempersiapkan video untuk diputar, harap tunggu.",
+      "screenshare-error": "Berbagi layar tidak dapat dimulai."
     },
     "modal": {
       "lock-settings-title": "Pengaturan Kunci Rapat",
