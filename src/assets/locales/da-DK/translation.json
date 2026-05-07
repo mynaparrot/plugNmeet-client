@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP-webadressen er ikke gyldig eller understøttes ikke.",
       "rtmp-stream-key-required": "En streamnøgle er påkrævet.",
       "external-media-player-url-invalid": "URL'en er ikke gyldig eller understøttes.",
-      "external-media-player-starting": "Forberedelse af video til afspilning, vent venligst."
+      "external-media-player-starting": "Forberedelse af video til afspilning, vent venligst.",
+      "screenshare-error": "Skærmdelingen kunne ikke startes."
     },
     "modal": {
       "lock-settings-title": "Indstillinger for mødelås",
