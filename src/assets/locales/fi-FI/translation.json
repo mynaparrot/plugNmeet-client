@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP-URL-osoite ei kelpaa tai sitä ei tueta.",
       "rtmp-stream-key-required": "Striimausavain vaaditaan.",
       "external-media-player-url-invalid": "URL-osoite ei ole kelvollinen tai sitä ei tueta.",
-      "external-media-player-starting": "Videon valmistelu toistoa varten, odota."
+      "external-media-player-starting": "Videon valmistelu toistoa varten, odota.",
+      "screenshare-error": "Näytön jakamista ei voitu käynnistää."
     },
     "modal": {
       "lock-settings-title": "Kokouksen lukituksen asetukset",
