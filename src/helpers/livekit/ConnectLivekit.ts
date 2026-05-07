@@ -5,6 +5,7 @@ import {
   DisconnectReason,
   ExternalE2EEKeyProvider,
   isE2EESupported,
+  ParticipantEvent,
   RemoteTrackPublication,
   Room,
   RoomConnectOptions,
@@ -306,7 +307,7 @@ export default class ConnectLivekit
 
     // for individual local user events
     room.localParticipant.on(
-      'connectionQualityChanged',
+      ParticipantEvent.ConnectionQualityChanged,
       this.localUserConnectionQualityChanged,
     );
 
