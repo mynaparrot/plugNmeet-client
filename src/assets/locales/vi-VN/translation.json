@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "URL RTMP không hợp lệ hoặc không được hỗ trợ.",
       "rtmp-stream-key-required": "Cần có khóa luồng.",
       "external-media-player-url-invalid": "URL không hợp lệ hoặc không được hỗ trợ.",
-      "external-media-player-starting": "Chuẩn bị video để phát lại, vui lòng đợi."
+      "external-media-player-starting": "Chuẩn bị video để phát lại, vui lòng đợi.",
+      "screenshare-error": "Không thể bắt đầu chia sẻ màn hình."
     },
     "modal": {
       "lock-settings-title": "Cài đặt khóa cuộc họp",
