@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "URL-адрес RTMP недействителен или не поддерживается.",
       "rtmp-stream-key-required": "Ключ потока обязателен.",
       "external-media-player-url-invalid": "URL-адрес недействителен или не поддерживается.",
-      "external-media-player-starting": "Готовя видео к воспроизведению, пожалуйста, подождите."
+      "external-media-player-starting": "Готовя видео к воспроизведению, пожалуйста, подождите.",
+      "screenshare-error": "Общий доступ экрана не удалось запустить."
     },
     "modal": {
       "lock-settings-title": "Настройки блокировки совещаний",
