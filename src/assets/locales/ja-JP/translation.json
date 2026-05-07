@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP URLが無効か、サポートされていません。",
       "rtmp-stream-key-required": "ストリームキーが必要です。",
       "external-media-player-url-invalid": "URLが無効か、サポートされていません。",
-      "external-media-player-starting": "再生のためにビデオを準備しています。お待ちください。"
+      "external-media-player-starting": "再生のためにビデオを準備しています。お待ちください。",
+      "screenshare-error": "画面共有が起動できませんでした。"
     },
     "modal": {
       "lock-settings-title": "会議のロック設定",
