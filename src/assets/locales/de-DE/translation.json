@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "Die RTMP-URL ist ungültig oder wird nicht unterstützt.",
       "rtmp-stream-key-required": "Ein Stream-Schlüssel ist erforderlich.",
       "external-media-player-url-invalid": "Die URL ist ungültig oder wird nicht unterstützt.",
-      "external-media-player-starting": "Video wird für die Wiedergabe vorbereitet, bitte warten."
+      "external-media-player-starting": "Video wird für die Wiedergabe vorbereitet, bitte warten.",
+      "screenshare-error": "Die Bildschirmfreigabe konnte nicht gestartet werden."
     },
     "modal": {
       "lock-settings-title": "Sperreinstellungen für das Meeting",
