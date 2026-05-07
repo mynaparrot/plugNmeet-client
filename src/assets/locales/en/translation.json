@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "The RTMP URL is not valid or supported.",
       "rtmp-stream-key-required": "A stream key is required.",
       "external-media-player-url-invalid": "The URL is not valid or supported.",
-      "external-media-player-starting": "Preparing video for playback, please wait."
+      "external-media-player-starting": "Preparing video for playback, please wait.",
+      "screenshare-error": "The screen share could not be started."
     },
     "modal": {
       "lock-settings-title": "Meeting Lock Settings",

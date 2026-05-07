@@ -88,60 +88,76 @@ const ScrenshareIcon = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionScreenSharing]);
 
-  const toggleScreenShare = async () => {
+  const toggleScreenShare = useCallback(async () => {
     if (isLocked || isPublishing.current) {
       return;
     }
     isPublishing.current = true;
 
-    if (!isActiveScreenshare) {
-      if (sessionScreenSharing.isActive) {
+    try {
+      if (!isActiveScreenshare) {
+        if (sessionScreenSharing.isActive) {
+          dispatch(
+            addUserNotification({
+              message: t('footer.notice.already-active-screen-sharing'),
+              typeOption: 'error',
+            }),
+          );
+          return;
+        }
+
+        if (!currentRoom) {
+          return;
+        }
+
+        const option: ScreenShareCaptureOptions = {
+          audio: true,
+        };
+        // because of one bug, we'll disable to set regulation for safari
+        // https://bugs.webkit.org/show_bug.cgi?id=263015
+        const isSafari = /^((?!chrome|android).)*safari/i.test(
+          navigator.userAgent,
+        );
+        if (!isSafari) {
+          option.resolution = getScreenShareResolution();
+        }
+
+        const localTracks = await createLocalScreenTracks(option);
+        for (let i = 0; i < localTracks.length; i++) {
+          const track = localTracks[i];
+          await currentRoom.localParticipant.publishTrack(track);
+        }
+
+        dispatch(updateIsActiveScreenshare(true));
         dispatch(
-          addUserNotification({
-            message: t('footer.notice.already-active-screen-sharing'),
-            typeOption: 'error',
+          updateScreenSharing({
+            isActive: true,
+            sharedBy: currentRoom.localParticipant.identity,
           }),
         );
-        isPublishing.current = false;
-        return;
+      } else {
+        await endScreenShare();
       }
-
-      if (!currentRoom) {
-        isPublishing.current = false;
-        return;
-      }
-
-      const option: ScreenShareCaptureOptions = {
-        audio: true,
-      };
-      // because of one bug, we'll disable to set regulation for safari
-      // https://bugs.webkit.org/show_bug.cgi?id=263015
-      const isSafari = /^((?!chrome|android).)*safari/i.test(
-        navigator.userAgent,
-      );
-      if (!isSafari) {
-        option.resolution = getScreenShareResolution();
-      }
-
-      const localTracks = await createLocalScreenTracks(option);
-      for (let i = 0; i < localTracks.length; i++) {
-        const track = localTracks[i];
-        await currentRoom.localParticipant.publishTrack(track);
-      }
-
-      dispatch(updateIsActiveScreenshare(true));
+    } catch (e) {
+      console.error('screenshare error', e);
       dispatch(
-        updateScreenSharing({
-          isActive: true,
-          sharedBy: currentRoom.localParticipant.identity,
+        addUserNotification({
+          message: t('footer.notice.screenshare-error'),
+          typeOption: 'error',
         }),
       );
-      isPublishing.current = false;
-    } else {
-      await endScreenShare();
+    } finally {
       isPublishing.current = false;
     }
-  };
+  }, [
+    isLocked,
+    isActiveScreenshare,
+    sessionScreenSharing,
+    currentRoom,
+    dispatch,
+    t,
+    endScreenShare,
+  ]);
 
   const text = () => {
     if (isActiveScreenshare) {
@@ -178,7 +194,7 @@ const ScrenshareIcon = () => {
   }
 
   return (
-    <div className={wrapperClasses} onClick={() => toggleScreenShare()}>
+    <div className={wrapperClasses} onClick={toggleScreenShare}>
       <div className={innerDivClasses}>
         <span className="tooltip">{text()}</span>
         <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
