@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP URL অবৈধ বা সমর্থিত নয়।",
       "rtmp-stream-key-required": "একটি স্ট্রিম কী প্রয়োজন।",
       "external-media-player-url-invalid": "URL অবৈধ বা সমর্থিত নয়।",
-      "external-media-player-starting": "ভিডিও প্লে করার জন্য প্রস্তুত করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন।"
+      "external-media-player-starting": "ভিডিও প্লে করার জন্য প্রস্তুত করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন।",
+      "screenshare-error": "স্ক্রিন শেয়ার শুরু করা যায়নি।"
     },
     "modal": {
       "lock-settings-title": "মিটিং লক সেটিংস",
