@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP-URL:en är inte giltig eller stöds inte.",
       "rtmp-stream-key-required": "En streamnyckel krävs.",
       "external-media-player-url-invalid": "URL:en är inte giltig eller stöds inte.",
-      "external-media-player-starting": "Förbereder video för uppspelning, vänta."
+      "external-media-player-starting": "Förbereder video för uppspelning, vänta.",
+      "screenshare-error": "Skärmdelningen kunde inte startas."
     },
     "modal": {
       "lock-settings-title": "Inställningar för möteslås",
