@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP URL이 유효하지 않거나 지원되지 않습니다.",
       "rtmp-stream-key-required": "스트림 키가 필요합니다.",
       "external-media-player-url-invalid": "URL이 유효하지 않거나 지원되지 않습니다.",
-      "external-media-player-starting": "재생할 비디오를 준비 중입니다. 잠시 기다려 주십시오."
+      "external-media-player-starting": "재생할 비디오를 준비 중입니다. 잠시 기다려 주십시오.",
+      "screenshare-error": "화면 공유가 시작되지 않았습니다."
     },
     "modal": {
       "lock-settings-title": "회의 잠금 설정",
