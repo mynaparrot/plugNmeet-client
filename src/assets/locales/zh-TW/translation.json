@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "RTMP URL 無效或不支援。",
       "rtmp-stream-key-required": "需要串流金鑰。",
       "external-media-player-url-invalid": "URL 無效或不支援。",
-      "external-media-player-starting": "正在準備播放影片，請稍候。"
+      "external-media-player-starting": "正在準備播放影片，請稍候。",
+      "screenshare-error": "螢幕共享無法啟動。"
     },
     "modal": {
       "lock-settings-title": "會議鎖定設定",
