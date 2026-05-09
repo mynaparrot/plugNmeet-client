@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "URL-адреса RTMP недійсна та не підтримується.",
       "rtmp-stream-key-required": "Потрібен ключ для стріму.",
       "external-media-player-url-invalid": "URL-адреса недійсна та не підтримується.",
-      "external-media-player-starting": "Готуючи відео до відтворення, зачекайте, будь ласка."
+      "external-media-player-starting": "Готуючи відео до відтворення, зачекайте, будь ласка.",
+      "screenshare-error": "Спільний перегляд екрану не вдалося запустити."
     },
     "modal": {
       "lock-settings-title": "Налаштування блокування зустрічей",

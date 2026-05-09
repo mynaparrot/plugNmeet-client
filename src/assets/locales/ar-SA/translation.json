@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "عنوان URL لـ RTMP غير صالح أو غير مدعوم.",
       "rtmp-stream-key-required": "مطلوب مفتاح البث.",
       "external-media-player-url-invalid": "عنوان URL غير صالح أو غير مدعوم.",
-      "external-media-player-starting": "جارٍ تحضير الفيديو للتشغيل، يرجى الانتظار."
+      "external-media-player-starting": "جارٍ تحضير الفيديو للتشغيل، يرجى الانتظار.",
+      "screenshare-error": "لم يكن بالإمكان بدء مشاركة الشاشة."
     },
     "modal": {
       "lock-settings-title": "إعدادات قفل الاجتماع",

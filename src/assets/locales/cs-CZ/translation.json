@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "Adresa URL RTMP není platná ani podporovaná.",
       "rtmp-stream-key-required": "Je vyžadován klíč streamu.",
       "external-media-player-url-invalid": "Adresa URL není platná ani podporovaná.",
-      "external-media-player-starting": "Příprava videa pro přehrávání, čekejte prosím."
+      "external-media-player-starting": "Příprava videa pro přehrávání, čekejte prosím.",
+      "screenshare-error": "Sdílení obrazovky nešlo spustit."
     },
     "modal": {
       "lock-settings-title": "Nastavení zámku schůzky",

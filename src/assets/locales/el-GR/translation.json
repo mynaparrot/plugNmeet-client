@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "Η διεύθυνση URL RTMP δεν είναι έγκυρη ούτε υποστηρίζεται.",
       "rtmp-stream-key-required": "Απαιτείται κλειδί ροής.",
       "external-media-player-url-invalid": "Η διεύθυνση URL δεν είναι έγκυρη ούτε υποστηρίζεται.",
-      "external-media-player-starting": "Προετοιμασία βίντεο για αναπαραγωγή, περιμένετε."
+      "external-media-player-starting": "Προετοιμασία βίντεο για αναπαραγωγή, περιμένετε.",
+      "screenshare-error": "Δεν ήταν δυνατή η έναρξη της κοινής χρήσης οθόνης."
     },
     "modal": {
       "lock-settings-title": "Ρυθμίσεις κλειδώματος σύσκεψης",

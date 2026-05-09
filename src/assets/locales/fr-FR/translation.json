@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "L'URL RTMP n'est pas valide ou n'est pas prise en charge.",
       "rtmp-stream-key-required": "Une clé de flux est requise.",
       "external-media-player-url-invalid": "L'URL n'est pas valide ou n'est pas prise en charge.",
-      "external-media-player-starting": "Préparation de la vidéo pour la lecture, veuillez patienter."
+      "external-media-player-starting": "Préparation de la vidéo pour la lecture, veuillez patienter.",
+      "screenshare-error": "Le partage d’écran n’a pas pu être lancé."
     },
     "modal": {
       "lock-settings-title": "Paramètres de verrouillage de la réunion",

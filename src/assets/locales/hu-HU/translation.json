@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "Az RTMP URL nem érvényes vagy támogatott.",
       "rtmp-stream-key-required": "Adatfolyam-kulcs szükséges.",
       "external-media-player-url-invalid": "Az URL-cím nem érvényes vagy nem támogatott.",
-      "external-media-player-starting": "A videó előkészítése lejátszásra, kérjük, várjon."
+      "external-media-player-starting": "A videó előkészítése lejátszásra, kérjük, várjon.",
+      "screenshare-error": "A képernyőmegosztást nem lehetett elindítani."
     },
     "modal": {
       "lock-settings-title": "Értekezletzár beállításai",

@@ -323,7 +323,8 @@
       "rtmp-url-invalid": "Adres URL RTMP jest nieprawidłowy lub nieobsługiwany.",
       "rtmp-stream-key-required": "Wymagany jest klucz strumienia.",
       "external-media-player-url-invalid": "Adres URL jest nieprawidłowy lub nieobsługiwany.",
-      "external-media-player-starting": "Przygotowanie wideo do odtwarzania, proszę czekać."
+      "external-media-player-starting": "Przygotowanie wideo do odtwarzania, proszę czekać.",
+      "screenshare-error": "Udostępnianie ekranu nie mogło zostać uruchomione."
     },
     "modal": {
       "lock-settings-title": "Ustawienia blokady spotkania",
