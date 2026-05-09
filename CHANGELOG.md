@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.1.9](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.8...v2.1.9) (2026-05-09)
+
+
+### Bug Fixes
+
+* bump actions ([88df64f](https://github.com/mynaparrot/plugNmeet-client/commit/88df64fef59199358c6f0fdf49813a6f9312cd51))
+* bump actions ([72236c3](https://github.com/mynaparrot/plugNmeet-client/commit/72236c390cfb5b2361615c4ed2f9ecc3157672a0))
+* bump deps ([5898563](https://github.com/mynaparrot/plugNmeet-client/commit/589856357cbaecfac4daed0cbec16a790b926e1b))
+* bump deps ([c33889a](https://github.com/mynaparrot/plugNmeet-client/commit/c33889ab87b3198e4d79998af7103a353ac84cec))
+* bump proto ([db13125](https://github.com/mynaparrot/plugNmeet-client/commit/db1312546d45c452de35ebaedc1eaaabb4e9c163))
+* check contrast ratio before applying custom design for better view ([ce4d806](https://github.com/mynaparrot/plugNmeet-client/commit/ce4d80667d0be8cc3cc79cc27bd10a4cfcf3d0ab))
+* new Crowdin updates ([44c2953](https://github.com/mynaparrot/plugNmeet-client/commit/44c2953c0419a1956df1ae82b243e63c5ca3828c))
+* removed contrast checker and let user check and apply according to their need ([d5173d8](https://github.com/mynaparrot/plugNmeet-client/commit/d5173d8872d771185140eb8846900c6fd9da2259))
+* **screenshare:** Handle share cancellation and add error notification, fixed: [#1030](https://github.com/mynaparrot/plugNmeet-client/issues/1030) ([1085b4d](https://github.com/mynaparrot/plugNmeet-client/commit/1085b4de08ce8e174505f1a6d3edc6da0215fffc))
+* update language strings ([9ae14d8](https://github.com/mynaparrot/plugNmeet-client/commit/9ae14d85927d3fadf5dbaa09e2754400973b3c17))
+* update language strings ([ada3cba](https://github.com/mynaparrot/plugNmeet-client/commit/ada3cba5aaec2f31dffdca58819a01981d1fc976))
+* use value from declared + deps update ([2aacf4e](https://github.com/mynaparrot/plugNmeet-client/commit/2aacf4ee3a94b6548ad4a5d3b8fcb22c39d7d405))
+
 ## [2.1.8](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.7...v2.1.8) (2026-04-21)
 
 
