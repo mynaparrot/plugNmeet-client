@@ -32,17 +32,22 @@ const ManageOfficeFilesModal = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { allowedFileTypes, maxAllowedFileSize } = useMemo(() => {
-    const maxAllowedFileSize =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.whiteboardFeatures?.maxAllowedFileSize ?? '30';
-    // prettier-ignore
-    const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
-    return {
-      maxAllowedFileSize,
-      allowedFileTypes,
-    };
-  }, []);
+  const { allowedFileTypes, maxAllowedFileSize, officeFileTypes } =
+    useMemo(() => {
+      const maxAllowedFileSize =
+        store.getState().session.currentRoom.metadata?.roomFeatures
+          ?.whiteboardFeatures?.maxAllowedFileSize ?? '30';
+      // prettier-ignore
+      const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
+      const officeFileTypes = allowedFileTypes
+        .map((ext) => '.' + ext)
+        .join(',');
+      return {
+        maxAllowedFileSize,
+        allowedFileTypes,
+        officeFileTypes,
+      };
+    }, []);
 
   const inputFile = useRef<HTMLInputElement>(null);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
@@ -119,7 +124,7 @@ const ManageOfficeFilesModal = ({
                   disabled={disableUploading}
                   ref={inputFile}
                   onChange={handleFileChange}
-                  accept={allowedFileTypes.join(',')}
+                  accept={officeFileTypes}
                   className="w-full h-full absolute top-0 left-0 opacity-0 cursor-pointer"
                 />
                 <div className="text-wrap text-sm font-medium text-center cursor-pointer">
