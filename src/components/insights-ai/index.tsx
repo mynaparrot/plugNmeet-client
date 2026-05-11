@@ -68,6 +68,9 @@ const InsightsAiSettingsModal = () => {
         ),
       });
     }
+    if (tabItems.length === 0) {
+      setErrorMsg(t('insights.no-ai-feature-available'));
+    }
     setTabItems(tabItems);
   }, [t, setErrorMsg, closeModal]);
 
@@ -89,7 +92,7 @@ const InsightsAiSettingsModal = () => {
               {errorMsg}
             </div>
           )}
-          {tabItems.length && <Tabs items={tabItems} vertical />}
+          {tabItems.length > 0 && <Tabs items={tabItems} vertical />}
         </div>
       </Modal>
     )
