@@ -32,7 +32,6 @@ import {
 } from '../../../store/slices/bottomIconsActivitySlice';
 import MicMenu from './mic-menu';
 import MicrophoneModal from '../modals/microphoneModal';
-import { updateMuteOnStart } from '../../../store/slices/sessionSlice';
 import {
   addAudioDevices,
   updateSelectedAudioDevice,
@@ -60,12 +59,14 @@ const MicrophoneIcon = () => {
   const isMutedRef = useRef(false);
   const muteDelayTimer = useRef<NodeJS.Timeout | null>(null);
   const isPublishing = useRef<boolean>(false);
+  const muteOnStartRef = useRef(
+    !!store.getState().session.currentRoom.metadata?.roomFeatures?.muteOnStart,
+  );
 
-  const { showTooltip, muteOnStart, isAdmin, defaultLock } = useMemo(() => {
+  const { showTooltip, isAdmin, defaultLock } = useMemo(() => {
     const session = store.getState().session;
     return {
       showTooltip: session.userDeviceType === 'desktop',
-      muteOnStart: !!session.currentRoom.metadata?.roomFeatures?.muteOnStart,
       isAdmin: !!session.currentUser?.metadata?.isAdmin,
       defaultLock:
         !!session.currentRoom?.metadata?.defaultLockSettings?.lockMicrophone,
@@ -203,7 +204,13 @@ const MicrophoneIcon = () => {
     };
 
     const onTrackMuted = () => {
-      // Don't start immediately
+      if (muteOnStartRef.current) {
+        isMutedRef.current = true;
+        // it has been handled, don't do it again for this session.
+        muteOnStartRef.current = false;
+        return;
+      }
+      // Don't start immediately for other cases
       muteDelayTimer.current = setTimeout(() => {
         isMutedRef.current = true;
       }, 3000);
@@ -352,32 +359,29 @@ const MicrophoneIcon = () => {
       );
 
       if (audioTrack) {
-        if (muteOnStart) {
-          // Mute the track before publishing to prevent any audio leak.
-          await audioTrack.mute();
-          dispatch(updateIsMicMuted(true));
-          // We'll disable it as it was for the first time only.
-          dispatch(updateMuteOnStart(false));
-        }
-
         await currentRoom.localParticipant.publishTrack(audioTrack, {
           audioPreset: getAudioPreset(),
+          source: Track.Source.Microphone,
         });
         dispatch(updateIsActiveMicrophone(true));
-      }
 
+        if (muteOnStartRef.current) {
+          await currentRoom.localParticipant.setMicrophoneEnabled(false);
+          dispatch(updateIsMicMuted(true));
+        }
+      }
       if (deviceId != null) {
         dispatch(updateSelectedAudioDevice(deviceId));
       }
       isPublishing.current = false;
     },
-    [dispatch, currentRoom, muteOnStart],
+    [dispatch, currentRoom],
   );
 
   // only for initial if device was selected in landing page
   useEffect(() => {
     if (selectedAudioDevice) {
-      onCloseMicrophoneModal(selectedAudioDevice).then();
+      sleep(500).then(() => onCloseMicrophoneModal(selectedAudioDevice));
     }
     //eslint-disable-next-line
   }, [onCloseMicrophoneModal]);

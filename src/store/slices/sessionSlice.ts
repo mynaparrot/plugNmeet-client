@@ -169,11 +169,6 @@ const sessionSlice = createSlice({
     updateTotalAudioSubscribers: (state, action: PayloadAction<number>) => {
       state.totalAudioSubscribers = action.payload;
     },
-    updateMuteOnStart: (state, action: PayloadAction<boolean>) => {
-      if (state.currentRoom.metadata?.roomFeatures) {
-        state.currentRoom.metadata.roomFeatures.muteOnStart = action.payload;
-      }
-    },
     updateUserDeviceType: (state, action: PayloadAction<UserDeviceType>) => {
       state.userDeviceType = action.payload;
     },
@@ -195,7 +190,6 @@ export const {
   updateCurrentRoomMetadata,
   updateTotalVideoSubscribers,
   updateTotalAudioSubscribers,
-  updateMuteOnStart,
   updateUserDeviceType,
   updateIsCloud,
 } = sessionSlice.actions;
