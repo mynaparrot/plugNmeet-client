@@ -41,33 +41,28 @@ const MicMenuItems = ({ currentRoom }: IMicMenuItemsProps) => {
 
   const muteUnmuteMic = useCallback(async () => {
     if (!currentRoom) return;
-    for (const publication of currentRoom.localParticipant.audioTrackPublications.values()) {
-      if (
-        publication.track &&
-        publication.track.source === Track.Source.Microphone
-      ) {
-        if (publication.isMuted) {
-          await publication.track.unmute();
-          dispatch(updateIsMicMuted(false));
-        } else {
-          await publication.track.mute();
-          dispatch(updateIsMicMuted(true));
-        }
+    const publication = currentRoom.localParticipant.getTrackPublication(
+      Track.Source.Microphone,
+    );
+    if (publication && publication.track) {
+      if (publication.isMuted) {
+        await currentRoom.localParticipant.setMicrophoneEnabled(true);
+      } else {
+        await currentRoom.localParticipant.setMicrophoneEnabled(false);
       }
     }
-  }, [currentRoom, dispatch]);
+  }, [currentRoom]);
 
   const leaveMic = useCallback(async () => {
     if (!currentRoom) return;
-    for (const publication of currentRoom.localParticipant.audioTrackPublications.values()) {
-      if (publication.track && publication.kind === Track.Kind.Audio) {
-        if (publication.track) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
-      }
+    const publication = currentRoom.localParticipant.getTrackPublication(
+      Track.Source.Microphone,
+    );
+    if (publication && publication.track) {
+      await currentRoom.localParticipant.unpublishTrack(
+        publication.track,
+        true,
+      );
     }
     dispatch(updateIsActiveMicrophone(false));
     dispatch(updateIsMicMuted(false));

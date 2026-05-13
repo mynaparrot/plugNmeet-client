@@ -3,14 +3,14 @@ import { MenuItem, MenuItems } from '@headlessui/react';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch, useAppSelector } from '../../../../../store';
-import { updateSelectedVideoDevice } from '../../../../../store/slices/roomSettingsSlice';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { updateSelectedVideoDevice } from '../../../../store/slices/roomSettingsSlice';
 import {
   updateIsActiveWebcam,
   updateVirtualBackground,
-} from '../../../../../store/slices/bottomIconsActivitySlice';
-import { CheckMarkIcon } from '../../../../../assets/Icons/CheckMarkIcon';
-import { CameraOff } from '../../../../../assets/Icons/CameraOff';
+} from '../../../../store/slices/bottomIconsActivitySlice';
+import { CheckMarkIcon } from '../../../../assets/Icons/CheckMarkIcon';
+import { CameraOff } from '../../../../assets/Icons/CameraOff';
 
 interface IWebcamMenuItemsProps {
   currentRoom: Room;
@@ -40,25 +40,23 @@ const WebcamMenuItems = ({
 
   const leaveWebcam = useCallback(async () => {
     if (currentRoom) {
-      for (const publication of currentRoom.localParticipant.videoTrackPublications.values()) {
-        if (
-          publication.track &&
-          publication.track.source === Track.Source.Camera
-        ) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
+      const publication = currentRoom.localParticipant.getTrackPublication(
+        Track.Source.Camera,
+      );
+      if (publication && publication.track) {
+        await currentRoom.localParticipant.unpublishTrack(
+          publication.track,
+          true,
+        );
+        dispatch(updateIsActiveWebcam(false));
+        dispatch(updateSelectedVideoDevice(''));
+        dispatch(
+          updateVirtualBackground({
+            type: 'none',
+          }),
+        );
       }
     }
-    dispatch(updateIsActiveWebcam(false));
-    dispatch(updateSelectedVideoDevice(''));
-    dispatch(
-      updateVirtualBackground({
-        type: 'none',
-      }),
-    );
   }, [currentRoom, dispatch]);
 
   return (

@@ -1,19 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import {
-  createAudioAnalyser,
-  createLocalTracks,
-  LocalAudioTrack,
-  LocalTrack,
-  LocalTrackPublication,
-  ParticipantEvent,
-  Track,
-} from 'livekit-client';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { createLocalTracks, LocalTrack, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import clsx from 'clsx';
@@ -47,21 +33,14 @@ import { Microphone } from '../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
+import { useMicrophoneActivity } from './hooks/useMicrophoneActivity';
 
 const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const currentRoom = getMediaServerConnRoom();
   const conn = getNatsConn();
-
-  const [showMutedTooltip, setShowMutedTooltip] = useState(false);
-  const tooltipDismissedRef = useRef(false);
-  const isMutedRef = useRef(false);
-  const muteDelayTimer = useRef<NodeJS.Timeout | null>(null);
   const isPublishing = useRef<boolean>(false);
-  const muteOnStartRef = useRef(
-    !!store.getState().session.currentRoom.metadata?.roomFeatures?.muteOnStart,
-  );
 
   const { showTooltip, isAdmin, defaultLock } = useMemo(() => {
     const session = store.getState().session;
@@ -90,6 +69,9 @@ const MicrophoneIcon = () => {
     (state) => state.roomSettings.selectedAudioDevice,
   );
 
+  const { showMutedTooltip, onDismissTooltip, muteOnStartRef } =
+    useMicrophoneActivity(currentRoom, isMicMuted);
+
   // Lock if not an admin & user-specific lock is set, or fall back to room default.
   const isLocked = useMemo(
     () => !isAdmin && (isMicLock ?? defaultLock),
@@ -116,199 +98,38 @@ const MicrophoneIcon = () => {
     }
   }, [isLocked, currentRoom, dispatch]);
 
-  const speakingHandler = useCallback(
-    (speaking: boolean) => {
-      if (!currentRoom) {
-        return;
-      }
-      if (!speaking) {
-        const lastSpokeAt = currentRoom.localParticipant.lastSpokeAt?.getTime();
-        if (lastSpokeAt) {
-          const cal = Date.now() - lastSpokeAt;
-          // send analytics
-          conn.sendAnalyticsData(
-            AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED_DURATION,
-            AnalyticsEventType.USER,
-            undefined,
-            undefined,
-            cal.toString(),
-          );
-        }
-      } else {
-        // send analytics as user has spoken
-        conn.sendAnalyticsData(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_TALKED,
-          AnalyticsEventType.USER,
-          undefined,
-          undefined,
-          '1',
-        );
-      }
-    },
-    [currentRoom, conn],
-  );
-
-  // for speaking to send stats & muted tooltip
-  useEffect(() => {
-    if (!currentRoom) {
-      return;
-    }
-
-    let interval: any;
-    let cleanupAnalyser: (() => void) | undefined;
-
-    const setupAnalyser = (publication: LocalTrackPublication) => {
-      if (publication.kind !== Track.Kind.Audio) {
-        return;
-      }
-      // Reset dismissed state for the new track session.
-      tooltipDismissedRef.current = false;
-
-      const track = publication.track as LocalAudioTrack;
-      const { calculateVolume, cleanup } = createAudioAnalyser(track, {
-        cloneTrack: true,
-      });
-      cleanupAnalyser = cleanup; // Store the cleanup function for this track.
-
-      interval = setInterval(() => {
-        const volume = calculateVolume();
-        if (
-          isMutedRef.current &&
-          volume > 0.2 &&
-          !tooltipDismissedRef.current
-        ) {
-          setShowMutedTooltip(true);
-        } else {
-          // Ensure we hide the tooltip if conditions are no longer met.
-          setShowMutedTooltip(false);
-        }
-      }, 500);
-    };
-
-    // This function now encapsulates the entire teardown.
-    const teardownAnalyser = async () => {
-      if (muteDelayTimer.current) {
-        clearTimeout(muteDelayTimer.current);
-      }
-      if (interval) {
-        clearInterval(interval);
-        interval = null;
-      }
-      if (cleanupAnalyser) {
-        cleanupAnalyser();
-        cleanupAnalyser = undefined;
-      }
-      await sleep(200);
-      setShowMutedTooltip(false);
-      tooltipDismissedRef.current = false;
-    };
-
-    const onTrackMuted = () => {
-      if (muteOnStartRef.current) {
-        isMutedRef.current = true;
-        // it has been handled, don't do it again for this session.
-        muteOnStartRef.current = false;
-        return;
-      }
-      // Don't start immediately for other cases
-      muteDelayTimer.current = setTimeout(() => {
-        isMutedRef.current = true;
-      }, 3000);
-    };
-
-    const onTrackUnmuted = () => {
-      // If a timer is pending, cancel it.
-      if (muteDelayTimer.current) {
-        clearTimeout(muteDelayTimer.current);
-      }
-      // Immediately disarm the mute check.
-      isMutedRef.current = false;
-      setShowMutedTooltip(false);
-      tooltipDismissedRef.current = false;
-    };
-
-    // Attach all event listeners.
-    currentRoom.localParticipant.on(
-      ParticipantEvent.IsSpeakingChanged,
-      speakingHandler,
-    );
-    currentRoom.localParticipant.on(
-      ParticipantEvent.LocalTrackPublished,
-      setupAnalyser,
-    );
-    currentRoom.localParticipant.on(
-      ParticipantEvent.LocalTrackUnpublished,
-      teardownAnalyser,
-    );
-    currentRoom.localParticipant.on(ParticipantEvent.TrackMuted, onTrackMuted);
-    currentRoom.localParticipant.on(
-      ParticipantEvent.TrackUnmuted,
-      onTrackUnmuted,
-    );
-
-    // Main cleanup for when the component unmounts.
-    return () => {
-      // Detach all listeners.
-      currentRoom.localParticipant.off(
-        ParticipantEvent.IsSpeakingChanged,
-        speakingHandler,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.LocalTrackPublished,
-        setupAnalyser,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.LocalTrackUnpublished,
-        teardownAnalyser,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.TrackMuted,
-        onTrackMuted,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.TrackUnmuted,
-        onTrackUnmuted,
-      );
-      // Final, robust cleanup.
-      teardownAnalyser().then();
-    };
-  }, [currentRoom, speakingHandler]);
-
   const muteUnmuteMic = useCallback(async () => {
     if (!currentRoom) {
       return;
     }
-    for (const publication of currentRoom.localParticipant.audioTrackPublications.values()) {
-      if (
-        publication.track &&
-        publication.track.source === Track.Source.Microphone
-      ) {
-        if (publication.isMuted) {
-          await publication.track.unmute();
-          dispatch(updateIsMicMuted(false));
+    const publication = currentRoom.localParticipant.getTrackPublication(
+      Track.Source.Microphone,
+    );
 
-          // send analytics
-          const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
-          conn.sendAnalyticsData(
-            AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
-            AnalyticsEventType.USER,
-            val['name'],
-          );
-        } else {
-          await publication.track.mute();
-          dispatch(updateIsMicMuted(true));
+    if (publication && publication.track) {
+      if (publication.isMuted) {
+        await currentRoom.localParticipant.setMicrophoneEnabled(true);
 
-          // send analytics
-          const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
-          conn.sendAnalyticsData(
-            AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
-            AnalyticsEventType.USER,
-            val['name'],
-          );
-        }
+        // send analytics
+        const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
+        conn.sendAnalyticsData(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+          AnalyticsEventType.USER,
+          val['name'],
+        );
+      } else {
+        await currentRoom.localParticipant.setMicrophoneEnabled(false);
+
+        // send analytics
+        const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
+        conn.sendAnalyticsData(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+          AnalyticsEventType.USER,
+          val['name'],
+        );
       }
     }
-  }, [currentRoom, conn, dispatch]);
+  }, [currentRoom, conn]);
 
   const manageMic = useCallback(async () => {
     if (!isActiveMicrophone && !isLocked) {
@@ -375,7 +196,7 @@ const MicrophoneIcon = () => {
       }
       isPublishing.current = false;
     },
-    [dispatch, currentRoom],
+    [dispatch, currentRoom, muteOnStartRef],
   );
 
   // only for initial if device was selected in landing page
@@ -423,10 +244,7 @@ const MicrophoneIcon = () => {
               </p>
               <button
                 className="text-gray-950 dark:text-white absolute cursor-pointer top-1 right-1"
-                onClick={() => {
-                  tooltipDismissedRef.current = true;
-                  setShowMutedTooltip(false);
-                }}
+                onClick={onDismissTooltip}
               >
                 <CloseIconSVG />
               </button>

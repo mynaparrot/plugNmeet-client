@@ -9,14 +9,14 @@ import {
   updateShowVideoShareModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam';
-import WebcamMenu from './webcam/menu';
+import WebcamMenu from './webcam-menu';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
 import { createEmptyVideoStreamTrack } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
-import useWebcamPublisher from './webcam/useWebcamPublisher';
+import useWebcamPublisher from './hooks/useWebcamPublisher';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
