@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnalyticsEvents, AnalyticsEventType } from 'plugnmeet-protocol-js';
+import {
+  AnalyticsEvents,
+  AnalyticsEventType,
+  AnalyticsStatus,
+  AnalyticsStatusSchema,
+} from 'plugnmeet-protocol-js';
 import {
   createAudioAnalyser,
   LocalAudioTrack,
@@ -130,6 +135,13 @@ export const useMicrophoneActivity = (
         return;
       }
       dispatch(updateIsMicMuted(true));
+      // send analytics
+      const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
+      conn.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+        AnalyticsEventType.USER,
+        val['name'],
+      );
 
       if (muteOnStartRef.current) {
         isMutedRef.current = true;
@@ -142,22 +154,38 @@ export const useMicrophoneActivity = (
         isMutedRef.current = true;
       }, 3000);
     },
-    [dispatch],
+    [conn, dispatch],
   );
 
-  const onTrackUnmuted = useCallback(() => {
-    // If a timer is pending, cancel it.
-    if (muteDelayTimer.current) {
-      clearTimeout(muteDelayTimer.current);
-    }
-    if (isMutedRef.current) {
-      dispatch(updateIsMicMuted(false));
-    }
-    // Immediately disarm the mute check.
-    isMutedRef.current = false;
-    setShowMutedTooltip(false);
-    tooltipDismissedRef.current = false;
-  }, [dispatch]);
+  const onTrackUnmuted = useCallback(
+    (publication: TrackPublication) => {
+      if (publication.source !== Track.Source.Microphone) {
+        return;
+      }
+      if (isMutedRef.current) {
+        dispatch(updateIsMicMuted(false));
+      }
+
+      // send analytics
+      const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
+      conn.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
+        AnalyticsEventType.USER,
+        val['name'],
+      );
+
+      // If a timer is pending, cancel it.
+      if (muteDelayTimer.current) {
+        clearTimeout(muteDelayTimer.current);
+      }
+
+      // Immediately disarm the mute check.
+      isMutedRef.current = false;
+      setShowMutedTooltip(false);
+      tooltipDismissedRef.current = false;
+    },
+    [conn, dispatch],
+  );
 
   // for speaking to send stats & muted tooltip
   useEffect(() => {

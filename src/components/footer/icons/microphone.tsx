@@ -3,12 +3,6 @@ import { createLocalTracks, LocalTrack, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import clsx from 'clsx';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  AnalyticsStatus,
-  AnalyticsStatusSchema,
-} from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
@@ -28,7 +22,6 @@ import {
   sleep,
 } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
-import { getNatsConn } from '../../../helpers/nats';
 import { Microphone } from '../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
@@ -39,7 +32,6 @@ const MicrophoneIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const currentRoom = getMediaServerConnRoom();
-  const conn = getNatsConn();
   const isPublishing = useRef<boolean>(false);
 
   const { showTooltip, isAdmin, defaultLock } = useMemo(() => {
@@ -109,27 +101,11 @@ const MicrophoneIcon = () => {
     if (publication && publication.track) {
       if (publication.isMuted) {
         await currentRoom.localParticipant.setMicrophoneEnabled(true);
-
-        // send analytics
-        const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
-        conn.sendAnalyticsData(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
-          AnalyticsEventType.USER,
-          val['name'],
-        );
       } else {
         await currentRoom.localParticipant.setMicrophoneEnabled(false);
-
-        // send analytics
-        const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
-        conn.sendAnalyticsData(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
-          AnalyticsEventType.USER,
-          val['name'],
-        );
       }
     }
-  }, [currentRoom, conn]);
+  }, [currentRoom]);
 
   const manageMic = useCallback(async () => {
     if (!isActiveMicrophone && !isLocked) {
