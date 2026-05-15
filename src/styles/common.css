@@ -581,6 +581,10 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   @apply z-2;
 }
 
+.active-speakers-wrap > .item {
+  pointer-events: auto;
+}
+
 .breakout-room-list-item .timer {
   border-color: #fff;
   color: #fff;

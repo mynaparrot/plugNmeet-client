@@ -199,7 +199,7 @@ const MainArea = () => {
         <div className={middleAreaClasses}>
           {isNatsServerConnected && (
             <>
-              <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-none w-full">
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full">
                 <ActiveSpeakers activeSidePanel={activeSidePanel} />
               </div>
               {renderMainView}
