@@ -581,7 +581,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   @apply z-2;
 }
 
-.active-speakers-wrap > .item {
+.active-speakers-wrap > .speaker {
   pointer-events: auto;
 }
 
