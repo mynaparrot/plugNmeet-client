@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "הקלטת שמע ווידאו בלבד אינה זמינה כאשר הצפנה מקצה לקצה מופעלת.",
     "you-are-sharing-screen": "אתה משתף את המסך שלך כעת. אחרים יראו נוף גדול יותר.",
     "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי.",
-    "queue-holding-messages": "בעיית חיבור: הודעות מוחזקות. ({{error}})",
-    "queue-discarded-message": "לא היתה אפשרות לשלוח הודעה והיא נמחקה. ({{error}})",
+    "queue-holding-messages": "בעיית חיבור: ההודעות מוחזקות.",
+    "queue-discarded-message": "הודעה לא יכלה להישלח והיא נזרקה.",
     "request-submitted-wait": "הבקשה שלך הוגשה. אנא המתינו לאישור",
     "wait-other-uploading-to-finish": "העלאה נוספת מתבצעת. אנא המתינו עד שזה יסתיים.",
     "server-not-responding": "השרת לא מגיב. הקשר שלך עלול להיות לא יציב.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "סיכום הפגישה",
     "feature-disable-while-e2ee-self-key-enabled": "תכונה זו מושבתת כאשר הצפנה מקצה לקצה המנוהלת באופן עצמי פעילה.",
     "not-enough-credit-to-start-service": "אשראי לא מספיק כדי להתחיל את השירות הזה. אנא פנה למנהל כדי להוסיף קרדיט נוסף.",
+    "no-ai-feature-available": "אין תכונות בינה מלאכותית זמינות.",
     "ai-text-chat": {
       "name": "עוזר בינה מלאכותית",
       "panel-title": "צ'אט עוזר בינה מלאכותית",
