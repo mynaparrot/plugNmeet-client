@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Înregistrarea numai audio și video nu este disponibilă atunci când criptarea end-to-end este activată.",
     "you-are-sharing-screen": "Partajați ecranul acum. Alții vor vedea o vedere mai mare.",
     "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public.",
-    "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute. ({{error}})",
-    "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost eliminat. ({{error}})",
+    "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute.",
+    "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost aruncat.",
     "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea",
     "wait-other-uploading-to-finish": "O altă încărcare este în curs de desfășurare. Vă rugăm să așteptați să se termine.",
     "server-not-responding": "Serverul nu răspunde. Conexiunea ta poate fi instabilă.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Rezumatul ședinței",
     "feature-disable-while-e2ee-self-key-enabled": "Această funcție este dezactivată atunci când criptarea End-to-End autogestionată este activă.",
     "not-enough-credit-to-start-service": "Credit insuficient pentru a începe acest serviciu. Vă rugăm să contactați un administrator pentru a adăuga mai mult credit.",
+    "no-ai-feature-available": "Nu sunt disponibile funcții AI.",
     "ai-text-chat": {
       "name": "Asistent AI",
       "panel-title": "AI Assistant Chat",
