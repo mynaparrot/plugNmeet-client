@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "تسجيل الصوت والفيديو فقط غير متاح عند تمكين التشفير من طرف إلى طرف.",
     "you-are-sharing-screen": "أنت تشارك شاشتك الآن. سيرى الآخرون عرضاً أكبر.",
     "new-system-message-in-chat": "تم نشر رسالة نظام جديدة في الدردشة العامة.",
-    "queue-holding-messages": "مشكلة في الاتصال: الرسائل معلقة. ({{error}})",
-    "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها. ({{error}})",
+    "queue-holding-messages": "مشكلة الاتصال: يتم الاحتفاظ بالرسائل.",
+    "queue-discarded-message": "لم يكن بالإمكان إرسال رسالة وتم التخلص منها.",
     "request-submitted-wait": "تم تقديم طلبك. يرجى انتظار التأكيد.",
     "wait-other-uploading-to-finish": "يوجد تحميل آخر قيد التقدم. يرجى الانتظار حتى يكتمل.",
     "server-not-responding": "الخادم لا يستجيب. قد يكون اتصالك غير مستقر.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "ملخص الاجتماع",
     "feature-disable-while-e2ee-self-key-enabled": "هذه الميزة معطلة عند تفعيل التشفير من طرف إلى طرف المدار ذاتيًا.",
     "not-enough-credit-to-start-service": "رصيد غير كافٍ لبدء هذه الخدمة. يرجى الاتصال بالمسؤول لإضافة المزيد من الرصيد.",
+    "no-ai-feature-available": "لا تتوفر ميزات ذكاء اصطناعي.",
     "ai-text-chat": {
       "name": "مساعد الذكاء الاصطناعي",
       "panel-title": "دردشة مساعد الذكاء الاصطناعي",
