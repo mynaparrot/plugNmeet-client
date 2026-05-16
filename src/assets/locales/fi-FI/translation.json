@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Vain äänen ja videon tallentaminen ei ole käytettävissä, kun päästä päähän -salaus on käytössä.",
     "you-are-sharing-screen": "Jaat nyt näyttösi. Toiset näkevät suuremman näkymän.",
     "new-system-message-in-chat": "Uusi järjestelmäviesti on julkaistu julkisessa chatissa.",
-    "queue-holding-messages": "Yhteysongelma: viestejä pidetään. ({{error}})",
-    "queue-discarded-message": "Viestiä ei voitu lähettää, ja se hylättiin. ({{error}})",
+    "queue-holding-messages": "Yhteysongelma: viestejä pidätetään.",
+    "queue-discarded-message": "Viestiä ei voitu lähettää ja se hylättiin.",
     "request-submitted-wait": "Pyyntösi on toimitettu. Odottakaa vahvistusta",
     "wait-other-uploading-to-finish": "Toinen lataus on käynnissä. Odota, että se valmistuu.",
     "server-not-responding": "Palvelin ei vastaa. Yhteytesi voi olla epävakaa.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Kokouksen yhteenveto",
     "feature-disable-while-e2ee-self-key-enabled": "Tämä ominaisuus on poistettu käytöstä, kun itsehallinnoitu End-to-End -salaus on aktiivinen.",
     "not-enough-credit-to-start-service": "Riittämätön luotto tämän palvelun aloittamiseen. Ota yhteyttä ylläpitäjään lisäpisteiden lisäämiseksi.",
+    "no-ai-feature-available": "Tekoälyominaisuuksia ei ole saatavilla.",
     "ai-text-chat": {
       "name": "AI-avustaja",
       "panel-title": "AI-avustajan keskustelu",
