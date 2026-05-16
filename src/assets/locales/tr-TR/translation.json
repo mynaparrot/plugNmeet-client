@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Uçtan uca şifreleme etkinleştirildiğinde yalnızca ses ve video kaydı yapılamaz.",
     "you-are-sharing-screen": "Şu anda ekranınızı paylaşıyorsunuz. Diğer katılımcılar daha büyük bir görünüm görecek.",
     "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı.",
-    "queue-holding-messages": "Bağlantı sorunu: mesajlar bekletiliyor. ({{error}})",
-    "queue-discarded-message": "Bir mesaj gönderilemedi ve silindi. ({{error}})",
+    "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor.",
+    "queue-discarded-message": "Mesaj gönderilemedi ve atıldı.",
     "request-submitted-wait": "İsteğiniz gönderildi. Lütfen onayı bekleyin.",
     "wait-other-uploading-to-finish": "Başka bir yükleme devam ediyor. Lütfen tamamlanmasını bekleyin.",
     "server-not-responding": "Sunucu yanıt vermiyor. Bağlantınız kararsız olabilir.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Toplantı Özeti",
     "feature-disable-while-e2ee-self-key-enabled": "Bu özellik, kendi kendine yönetilen Uçtan Uca Şifreleme etkinken devre dışı bırakılır.",
     "not-enough-credit-to-start-service": "Bu hizmeti başlatmak için yeterli kredi yok. Lütfen daha fazla kredi eklemek için bir yöneticiyle iletişime geçin.",
+    "no-ai-feature-available": "Yapay zeka özelliği mevcut değil.",
     "ai-text-chat": {
       "name": "Yapay Zeka Asistanı",
       "panel-title": "Yapay Zeka Asistanı Sohbeti",
