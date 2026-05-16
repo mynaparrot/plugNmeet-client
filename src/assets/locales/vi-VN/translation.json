@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Chỉ ghi âm thanh và video không khả dụng khi mã hóa đầu cuối được bật.",
     "you-are-sharing-screen": "Bạn đang chia sẻ màn hình của mình ngay bây giờ. Những người khác sẽ thấy một cái nhìn lớn hơn.",
     "new-system-message-in-chat": "Một thông báo hệ thống mới đã được đăng trong cuộc trò chuyện công khai.",
-    "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ. ({{error}})",
-    "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ. ({{error}})",
+    "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ.",
+    "queue-discarded-message": "Một tin nhắn không thể được gửi và đã bị loại bỏ.",
     "request-submitted-wait": "Yêu cầu của bạn đã được gửi. Vui lòng đợi xác nhận",
     "wait-other-uploading-to-finish": "Một tải lên khác đang được tiến hành. Vui lòng đợi nó hoàn tất.",
     "server-not-responding": "Máy chủ không phản hồi. Kết nối của bạn có thể không ổn định.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Tóm tắt cuộc họp",
     "feature-disable-while-e2ee-self-key-enabled": "Tính năng này bị tắt khi Mã hóa đầu cuối tự quản lý đang hoạt động.",
     "not-enough-credit-to-start-service": "Không đủ tín dụng để bắt đầu dịch vụ này. Vui lòng liên hệ với quản trị viên để thêm tín dụng.",
+    "no-ai-feature-available": "Không có tính năng AI nào có sẵn.",
     "ai-text-chat": {
       "name": "Trợ lý AI",
       "panel-title": "Trò chuyện trợ lý AI",

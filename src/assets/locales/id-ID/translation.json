@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Perekaman hanya audio dan video tidak tersedia saat enkripsi ujung-ke-ujung diaktifkan.",
     "you-are-sharing-screen": "Anda sedang berbagi layar. Peserta lain akan melihat tampilan yang lebih besar.",
     "new-system-message-in-chat": "Sebuah pesan sistem baru telah diposting di obrolan publik.",
-    "queue-holding-messages": "Masalah koneksi: pesan ditahan. ({{error}})",
-    "queue-discarded-message": "Sebuah pesan tidak dapat dikirim dan telah dibuang. ({{error}})",
+    "queue-holding-messages": "Masalah koneksi: pesan ditahan.",
+    "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang.",
     "request-submitted-wait": "Permintaan Anda telah dikirim. Harap tunggu konfirmasi.",
     "wait-other-uploading-to-finish": "Unggahan lain sedang berlangsung. Harap tunggu hingga selesai.",
     "server-not-responding": "Server tidak merespons. Koneksi Anda mungkin tidak stabil.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Ringkasan Rapat",
     "feature-disable-while-e2ee-self-key-enabled": "Fitur ini dinonaktifkan saat enkripsi ujung-ke-ujung yang dikelola sendiri aktif.",
     "not-enough-credit-to-start-service": "Kredit tidak cukup untuk memulai layanan ini. Silakan hubungi administrator untuk menambahkan lebih banyak kredit.",
+    "no-ai-feature-available": "Tidak ada fitur AI yang tersedia.",
     "ai-text-chat": {
       "name": "Asisten AI",
       "panel-title": "Obrolan Asisten AI",

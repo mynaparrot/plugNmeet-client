@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Nahrávání pouze zvuku a videa není k dispozici, pokud je povoleno šifrování mezi koncovými body.",
     "you-are-sharing-screen": "Nyní sdílíte obrazovku. Ostatní uvidí větší pohled.",
     "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová hláška.",
-    "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány. ({{error}})",
-    "queue-discarded-message": "Zprávu nebylo možné odeslat a byla zahozena. ({{error}})",
+    "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány.",
+    "queue-discarded-message": "Zpráva nemohla být odeslána a byla vyřazena.",
     "request-submitted-wait": "Vaše žádost byla podána. Prosím, počkejte na potvrzení",
     "wait-other-uploading-to-finish": "Další nahrávání je v procesu. Prosím, počkejte, až to dokončí.",
     "server-not-responding": "Server nereaguje. Vaše připojení může být nestabilní.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Shrnutí zasedání",
     "feature-disable-while-e2ee-self-key-enabled": "Tato funkce je deaktivována, když je aktivní samospravující se End-to-End šifrování.",
     "not-enough-credit-to-start-service": "Nedostatečný kredit na zahájení této služby. Pro přidání dalších kreditů kontaktujte prosím administrátora.",
+    "no-ai-feature-available": "Nejsou k dispozici žádné AI funkce.",
     "ai-text-chat": {
       "name": "AI Assistant",
       "panel-title": "AI Assistant Chat",

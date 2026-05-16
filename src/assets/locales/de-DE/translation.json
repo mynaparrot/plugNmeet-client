@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Die reine Audio- und Videoaufzeichnung ist nicht verfügbar, wenn die Ende-zu-Ende-Verschlüsselung aktiviert ist.",
     "you-are-sharing-screen": "Sie geben gerade Ihren Bildschirm frei. Andere Teilnehmer sehen eine vergrößerte Ansicht.",
     "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat veröffentlicht.",
-    "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten. ({{error}})",
-    "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen. ({{error}})",
+    "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten.",
+    "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen.",
     "request-submitted-wait": "Ihre Anfrage wurde übermittelt. Bitte warten Sie auf Bestätigung.",
     "wait-other-uploading-to-finish": "Ein anderer Upload läuft gerade. Bitte warten Sie, bis dieser abgeschlossen ist.",
     "server-not-responding": "Der Server antwortet nicht. Ihre Verbindung ist möglicherweise instabil.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Meeting-Zusammenfassung",
     "feature-disable-while-e2ee-self-key-enabled": "Diese Funktion ist deaktiviert, wenn die selbstverwaltete Ende-zu-Ende-Verschlüsselung aktiv ist.",
     "not-enough-credit-to-start-service": "Nicht genügend Guthaben, um diesen Dienst zu starten. Bitte kontaktieren Sie einen Administrator, um mehr Guthaben hinzuzufügen.",
+    "no-ai-feature-available": "KI-Funktionen sind nicht verfügbar.",
     "ai-text-chat": {
       "name": "KI-Assistent",
       "panel-title": "KI-Assistent-Chat",

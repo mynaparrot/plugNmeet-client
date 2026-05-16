@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Csak hang és videó rögzítése nem érhető el, ha a végpontok közötti titkosítás engedélyezve van.",
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
-    "queue-holding-messages": "Csatlakozási probléma: az üzenetek visszatartása folyamatban van. ({{error}})",
-    "queue-discarded-message": "Az üzenetet nem lehetett küldeni, és elvetették. ({{error}})",
+    "queue-holding-messages": "Kapcsolati probléma: üzenetek maradnak.",
+    "queue-discarded-message": "Üzenetet nem lehetett küldeni, ezért elvetették.",
     "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést",
     "wait-other-uploading-to-finish": "Egy újabb feltöltés folyamatban van. Kérlek, várj, amíg befejeződik.",
     "server-not-responding": "A szerver nem válaszol. Lehet, hogy a kapcsolatod instabil.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Találkozó összefoglaló",
     "feature-disable-while-e2ee-self-key-enabled": "Ez a funkció akkor van letiltva, ha az önálló End-to-End titkosítás aktív.",
     "not-enough-credit-to-start-service": "Nem volt elég hitel a szolgáltatás elindításához. Kérjük, vegye fel a kapcsolatot egy adminisztrátorral, hogy további kreditet adjon.",
+    "no-ai-feature-available": "Nincsenek mesterséges intelligencia funkciók.",
     "ai-text-chat": {
       "name": "AI asszisztens",
       "panel-title": "AI asszisztens chat",

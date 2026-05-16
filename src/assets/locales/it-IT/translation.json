@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "La registrazione di solo audio e video non è disponibile quando la crittografia end-to-end è abilitata.",
     "you-are-sharing-screen": "Stai condividendo il tuo schermo. Gli altri vedranno una visualizzazione più grande.",
     "new-system-message-in-chat": "Un nuovo messaggio di sistema è stato pubblicato nella chat pubblica.",
-    "queue-holding-messages": "Problema di connessione: i messaggi sono in attesa. ({{error}})",
-    "queue-discarded-message": "Impossibile inviare un messaggio, che è stato scartato. ({{error}})",
+    "queue-holding-messages": "Problema di connessione: i messaggi sono trattenuti.",
+    "queue-discarded-message": "Un messaggio non poteva essere inviato ed è stato scartato.",
     "request-submitted-wait": "La tua richiesta è stata inviata. Attendi la conferma.",
     "wait-other-uploading-to-finish": "Un altro caricamento è in corso. Attendi il suo completamento.",
     "server-not-responding": "Il server non risponde. La tua connessione potrebbe essere instabile.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Riassunto della riunione",
     "feature-disable-while-e2ee-self-key-enabled": "Questa funzione è disabilitata quando è attiva la crittografia end-to-end autogestita.",
     "not-enough-credit-to-start-service": "Credito insufficiente per avviare questo servizio. Contatta un amministratore per aggiungere altro credito.",
+    "no-ai-feature-available": "Non sono disponibili funzionalità di IA.",
     "ai-text-chat": {
       "name": "Assistente AI",
       "panel-title": "Chat Assistente AI",

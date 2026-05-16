@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Het opnemen van alleen audio en video is niet beschikbaar wanneer end-to-end-versleuteling is ingeschakeld.",
     "you-are-sharing-screen": "Je deelt nu je scherm. Anderen zullen een groter beeld zien.",
     "new-system-message-in-chat": "Er is een nieuw systeembericht geplaatst in de openbare chat.",
-    "queue-holding-messages": "Verbindingsprobleem: berichten worden vastgehouden. ({{error}})",
-    "queue-discarded-message": "Een bericht kon niet worden verzonden en werd verwijderd. ({{error}})",
+    "queue-holding-messages": "Verbindingsprobleem: berichten worden vastgehouden.",
+    "queue-discarded-message": "Er kon geen bericht worden verzonden en werd verworpen.",
     "request-submitted-wait": "Uw verzoek is ingediend. Wacht alstublieft op bevestiging",
     "wait-other-uploading-to-finish": "Een andere upload is in uitvoering. Wacht alsjeblieft tot het klaar is.",
     "server-not-responding": "Server reageert niet. Je verbinding kan onstabiel zijn.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Samenvatting van de vergadering",
     "feature-disable-while-e2ee-self-key-enabled": "Deze functie wordt uitgeschakeld wanneer zelfbeheerde End-to-End-encryptie actief is.",
     "not-enough-credit-to-start-service": "Onvoldoende krediet om deze dienst te starten. Neem contact op met een beheerder om meer krediet toe te voegen.",
+    "no-ai-feature-available": "Er zijn geen AI-functies beschikbaar.",
     "ai-text-chat": {
       "name": "AI-assistent",
       "panel-title": "AI Assistent Chat",

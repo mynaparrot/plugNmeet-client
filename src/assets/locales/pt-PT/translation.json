@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "A gravação apenas de áudio e vídeo não está disponível quando a encriptação de ponta a ponta está ativada.",
     "you-are-sharing-screen": "Está a partilhar o seu ecrã. Os outros participantes verão uma vista ampliada.",
     "new-system-message-in-chat": "Foi publicada uma nova mensagem de sistema no chat público.",
-    "queue-holding-messages": "Problema de ligação: as mensagens estão retidas. ({{error}})",
-    "queue-discarded-message": "Não foi possível enviar uma mensagem, que foi descartada. ({{error}})",
+    "queue-holding-messages": "Problema de ligação: estão a ser retidas mensagens.",
+    "queue-discarded-message": "Uma mensagem não podia ser enviada e era descartada.",
     "request-submitted-wait": "O seu pedido foi submetido. Por favor, aguarde a confirmação.",
     "wait-other-uploading-to-finish": "Outro carregamento está em curso. Por favor, aguarde a sua conclusão.",
     "server-not-responding": "O servidor não está a responder. A sua ligação pode estar instável.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Resumo da reunião",
     "feature-disable-while-e2ee-self-key-enabled": "Esta funcionalidade está desativada quando a encriptação de ponta a ponta autogerida está ativa.",
     "not-enough-credit-to-start-service": "Crédito insuficiente para iniciar este serviço. Por favor, contacte um administrador para adicionar mais crédito.",
+    "no-ai-feature-available": "Não existem funcionalidades de IA disponíveis.",
     "ai-text-chat": {
       "name": "Assistente de IA",
       "panel-title": "Chat do Assistente de IA",
