@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "エンドツーエンド暗号化が有効な場合、音声と映像のみの録画は利用できません。",
     "you-are-sharing-screen": "画面を共有中です。他の参加者には拡大表示されます。",
     "new-system-message-in-chat": "新しいシステムメッセージがパブリックチャットに投稿されました。",
-    "queue-holding-messages": "接続の問題：メッセージが保留されています。({{error}})",
-    "queue-discarded-message": "メッセージを送信できず、破棄されました。({{error}})",
+    "queue-holding-messages": "接続の問題:メッセージが保留されている。",
+    "queue-discarded-message": "メッセージを送信できず、破棄されました。",
     "request-submitted-wait": "リクエストが送信されました。承認をお待ちください。",
     "wait-other-uploading-to-finish": "別のアップロードが進行中です。完了するまでお待ちください。",
     "server-not-responding": "サーバーが応答しません。接続が不安定な可能性があります。",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "会議の要約",
     "feature-disable-while-e2ee-self-key-enabled": "自己管理型エンドツーエンド暗号化が有効な場合、この機能は無効になります。",
     "not-enough-credit-to-start-service": "このサービスを開始するためのクレジットが不足しています。クレジットを追加するには、管理者にお問い合わせください。",
+    "no-ai-feature-available": "AI機能は一切利用できません。",
     "ai-text-chat": {
       "name": "AIアシスタント",
       "panel-title": "AIアシスタントチャット",
