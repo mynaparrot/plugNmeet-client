@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "启用端到端加密后，仅录制音频和视频的功能不可用。",
     "you-are-sharing-screen": "您正在共享屏幕。其他参与者将看到放大的视图。",
     "new-system-message-in-chat": "公共聊天中发布了一条新的系统消息。",
-    "queue-holding-messages": "连接问题：消息被挂起。（{{error}}）",
-    "queue-discarded-message": "一条消息无法发送并已被丢弃。（{{error}}）",
+    "queue-holding-messages": "连接问题：消息被保留了。",
+    "queue-discarded-message": "无法发送消息并被丢弃。",
     "request-submitted-wait": "您的请求已提交。请等待确认。",
     "wait-other-uploading-to-finish": "另一个上传正在进行中。请等待其完成。",
     "server-not-responding": "服务器无响应。您的连接可能不稳定。",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "会议摘要",
     "feature-disable-while-e2ee-self-key-enabled": "当自管理端到端加密激活时，此功能将被禁用。",
     "not-enough-credit-to-start-service": "启动此服务的信用额度不足。请联系管理员以增加信用额度。",
+    "no-ai-feature-available": "没有可用的AI功能。",
     "ai-text-chat": {
       "name": "AI 助手",
       "panel-title": "AI 助手聊天",
