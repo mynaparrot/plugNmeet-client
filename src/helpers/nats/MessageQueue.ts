@@ -30,7 +30,7 @@ export default class MessageQueue {
 
   private readonly queues: SubjectQueues = new Map();
   private readonly processingSubjects: Set<string> = new Set();
-  private _isHoldingNotificationShown = false;
+  private _heldNotificationsCount: number = 0;
 
   public setIsConnected = (value: boolean) => {
     this._isConnected = value;
@@ -86,7 +86,7 @@ export default class MessageQueue {
       // Message sent successfully.
       subjectQueue.shift();
       this.processingSubjects.delete(subject);
-      this._isHoldingNotificationShown = false;
+      this._heldNotificationsCount = 0;
       if (subjectQueue.length > 0) {
         this.processSubjectQueue(subject).then();
       }
@@ -101,6 +101,7 @@ export default class MessageQueue {
           e instanceof JetStreamError)
       ) {
         request.retries = (request.retries || 0) + 1;
+        this._heldNotificationsCount++;
 
         if (request.retries > MAX_RETRIES) {
           // Exceeded max retries, discard the message.
@@ -110,9 +111,7 @@ export default class MessageQueue {
           );
           store.dispatch(
             addUserNotification({
-              message: i18n.t('notifications.queue-discarded-message', {
-                error: formattedError,
-              }),
+              message: i18n.t('notifications.queue-discarded-message'),
               typeOption: 'error',
             }),
           );
@@ -128,16 +127,14 @@ export default class MessageQueue {
             `NATS transient error for subject '${subject}'. Retrying (${request.retries}/${MAX_RETRIES})...`,
             { error: formattedError },
           );
-          if (!this._isHoldingNotificationShown) {
+          if (this._heldNotificationsCount > 3) {
             store.dispatch(
               addUserNotification({
-                message: i18n.t('notifications.queue-holding-messages', {
-                  error: formattedError,
-                }),
+                message: i18n.t('notifications.queue-holding-messages'),
                 typeOption: 'warning',
               }),
             );
-            this._isHoldingNotificationShown = true;
+            this._heldNotificationsCount = 0;
           }
 
           this.processingSubjects.delete(subject);
@@ -153,9 +150,7 @@ export default class MessageQueue {
         );
         store.dispatch(
           addUserNotification({
-            message: i18n.t('notifications.queue-discarded-message', {
-              error: formattedError, // Use formatted error
-            }),
+            message: i18n.t('notifications.queue-discarded-message'),
             typeOption: 'error',
           }),
         );
