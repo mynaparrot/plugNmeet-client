@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Nagrywanie tylko dźwięku i obrazu nie jest dostępne, gdy włączone jest szyfrowanie typu end-to-end.",
     "you-are-sharing-screen": "Udostępniasz teraz swój ekran. Inni zobaczą większy widok.",
     "new-system-message-in-chat": "Na czacie publicznym została opublikowana nowa wiadomość systemowa.",
-    "queue-holding-messages": "Problem z połączeniem: wiadomości są wstrzymywane. ({{error}})",
-    "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona. ({{error}})",
+    "queue-holding-messages": "Problem z połączeniem: wiadomości są zatrzymywane.",
+    "queue-discarded-message": "Wiadomości nie można było wysłać i została odrzucona.",
     "request-submitted-wait": "Twoja prośba została złożona. Proszę poczekać na potwierdzenie",
     "wait-other-uploading-to-finish": "Kolejne przesłanie jest w trakcie publikacji. Proszę poczekać na zakończenie.",
     "server-not-responding": "Serwer nie odpowiada. Twoje połączenie może być niestabilne.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Podsumowanie spotkania",
     "feature-disable-while-e2ee-self-key-enabled": "Ta funkcja jest wyłączona, gdy aktywne jest samodzielnie zarządzane szyfrowanie end-to-end.",
     "not-enough-credit-to-start-service": "Niewystarczająca liczba kredytów, by rozpocząć tę usługę. Prosimy o kontakt z administratorem, aby dodać więcej punktów kredytowych.",
+    "no-ai-feature-available": "Nie ma dostępnych funkcji AI.",
     "ai-text-chat": {
       "name": "Asystent AI",
       "panel-title": "Czat z asystentem AI",
