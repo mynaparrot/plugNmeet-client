@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Det går inte att spela in endast ljud och video när end-to-end-kryptering är aktiverat.",
     "you-are-sharing-screen": "Du delar din skärm nu. Andra kommer att se en större vy.",
     "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
-    "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar. ({{error}})",
-    "queue-discarded-message": "Det gick inte att skicka ett meddelande och det ignorerades. ({{error}})",
+    "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar.",
+    "queue-discarded-message": "Ett meddelande kunde inte skickas och förkastades.",
     "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse",
     "wait-other-uploading-to-finish": "En ny uppladdning pågår. Vänligen vänta tills det är klart.",
     "server-not-responding": "Servern svarar inte. Din anslutning kan vara instabil.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Sammanfattning av mötet",
     "feature-disable-while-e2ee-self-key-enabled": "Denna funktion inaktiveras när självstyrd End-to-End-kryptering är aktiv.",
     "not-enough-credit-to-start-service": "Otillräcklig kredit för att starta denna tjänst. Vänligen kontakta en administratör för att få mer poäng.",
+    "no-ai-feature-available": "Inga AI-funktioner finns tillgängliga.",
     "ai-text-chat": {
       "name": "AI-assistent",
       "panel-title": "AI-assistentchatt",
