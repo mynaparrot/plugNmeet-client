@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "L'enregistrement audio et vidéo uniquement n'est pas disponible lorsque le chiffrement de bout en bout est activé.",
     "you-are-sharing-screen": "Vous partagez actuellement votre écran. Les autres participants verront un affichage agrandi.",
     "new-system-message-in-chat": "Un nouveau message système a été publié dans le chat public.",
-    "queue-holding-messages": "Problème de connexion : les messages sont en attente. ({{error}})",
-    "queue-discarded-message": "Un message n'a pas pu être envoyé et a été supprimé. ({{error}})",
+    "queue-holding-messages": "Problème de connexion : des messages sont retenus.",
+    "queue-discarded-message": "Un message ne pouvait pas être envoyé et était rejeté.",
     "request-submitted-wait": "Votre demande a été soumise. Veuillez attendre la confirmation.",
     "wait-other-uploading-to-finish": "Un autre téléchargement est en cours. Veuillez attendre qu'il se termine.",
     "server-not-responding": "Le serveur ne répond pas. Votre connexion est peut-être instable.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Résumé de la réunion",
     "feature-disable-while-e2ee-self-key-enabled": "Cette fonctionnalité est désactivée lorsque le chiffrement de bout en bout autogéré est actif.",
     "not-enough-credit-to-start-service": "Crédit insuffisant pour démarrer ce service. Veuillez contacter un administrateur pour ajouter plus de crédit.",
+    "no-ai-feature-available": "Aucune fonctionnalité d’IA n’est disponible.",
     "ai-text-chat": {
       "name": "Assistant IA",
       "panel-title": "Chat de l'assistant IA",
