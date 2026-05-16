@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "Optagelse af lyd og video er ikke tilgængelig, når end-to-end-kryptering er aktiveret.",
     "you-are-sharing-screen": "Du deler din skærm nu. Andre vil se en større visning.",
     "new-system-message-in-chat": "En ny systemmeddelelse er blevet offentliggjort i den offentlige chat.",
-    "queue-holding-messages": "Forbindelsesproblem: meddelelser tilbageholdes. ({{error}})",
-    "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret. ({{error}})",
+    "queue-holding-messages": "Forbindelsesproblem: beskeder bliver tilbageholdt.",
+    "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret.",
     "request-submitted-wait": "Din anmodning er indsendt. Vent venligst på bekræftelse",
     "wait-other-uploading-to-finish": "Endnu en upload er i gang. Vent venligst på, at det er færdigt.",
     "server-not-responding": "Serveren svarer ikke. Din forbindelse kan være ustabil.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Mødeopsummering",
     "feature-disable-while-e2ee-self-key-enabled": "Denne funktion deaktiveres, når selvadministreret end-to-end-kryptering er aktiv.",
     "not-enough-credit-to-start-service": "Utilstrækkelig kredit til at starte denne service. Kontakt venligst en administrator for at få mere kredit.",
+    "no-ai-feature-available": "Der er ingen AI-funktioner tilgængelige.",
     "ai-text-chat": {
       "name": "AI-assistent",
       "panel-title": "AI Assistent Chat",
