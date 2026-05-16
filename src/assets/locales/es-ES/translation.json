@@ -81,8 +81,8 @@
     "media-only-recording-not-support-e2ee": "La grabación de solo audio y vídeo no está disponible cuando el cifrado de extremo a extremo está habilitado.",
     "you-are-sharing-screen": "Está compartiendo su pantalla. Los demás verán una vista más grande.",
     "new-system-message-in-chat": "Se ha publicado un nuevo mensaje del sistema en el chat público.",
-    "queue-holding-messages": "Problema de conexión: los mensajes están retenidos. ({{error}})",
-    "queue-discarded-message": "No se ha podido enviar un mensaje y se ha descartado. ({{error}})",
+    "queue-holding-messages": "Problema de conexión: se están reteniendo mensajes.",
+    "queue-discarded-message": "No se pudo enviar un mensaje y se descartó.",
     "request-submitted-wait": "Su solicitud ha sido enviada. Por favor, espere la confirmación.",
     "wait-other-uploading-to-finish": "Hay otra subida en curso. Por favor, espere a que finalice.",
     "server-not-responding": "El servidor no responde. Su conexión puede ser inestable.",
@@ -564,6 +564,7 @@
     "tab-meeting-summarization-title": "Resumen de la reunión",
     "feature-disable-while-e2ee-self-key-enabled": "Esta función está desactivada cuando el cifrado de extremo a extremo autogestionado está activo.",
     "not-enough-credit-to-start-service": "Crédito insuficiente para iniciar este servicio. Por favor, contacte con un administrador para añadir más crédito.",
+    "no-ai-feature-available": "No hay funciones de IA disponibles.",
     "ai-text-chat": {
       "name": "Asistente de IA",
       "panel-title": "Chat del asistente de IA",
