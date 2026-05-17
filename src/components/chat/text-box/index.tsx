@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import sanitizeHtml from 'sanitize-html';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
@@ -19,6 +18,7 @@ import { publishFileAttachmentToChat } from '../utils';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import SendIconSVG from '../../../assets/Icons/SendIconSVG';
+import { cleanHtmlForChat } from '../../../helpers/utils';
 
 const urlRegex =
   /(\b(https?):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%?=~_|])/gi;
@@ -90,16 +90,6 @@ const TextBoxArea = () => {
     return !!defaultLockSettings?.lockChatFileShare;
   }, [isAdmin, isLockSendFile, defaultLockSettings?.lockChatFileShare]);
 
-  const cleanHtml = (rawText: string) => {
-    return sanitizeHtml(rawText, {
-      allowedTags: ['b', 'i', 'strong', 'br', 'a'],
-      allowedAttributes: {
-        a: ['href', 'target', 'class'],
-      },
-      allowedSchemes: ['http', 'https', 'mailto', 'tel'],
-    });
-  };
-
   const sendMsg = useCallback(async () => {
     if (isSendingMsg || isMsgSendingLocked) {
       return;
@@ -110,7 +100,7 @@ const TextBoxArea = () => {
         (url) =>
           `<a href="${url}" target="_blank" class="text-[#24aef7] hover:underline">${url}</a>`,
       );
-      const msg = cleanHtml(formattedMessage);
+      const msg = cleanHtmlForChat(formattedMessage);
 
       if (isEmpty(msg)) {
         return;

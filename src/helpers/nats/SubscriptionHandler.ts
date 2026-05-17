@@ -60,9 +60,9 @@ export default class SubscriptionHandler {
       this.connectNats.roomId,
       this.connectNats.userId,
     );
-    this._handleSystemData = new HandleSystemData(this.connectNats.userId);
-    this._handleParticipants = new HandleParticipants(this.connectNats);
     this._handleChat = new HandleChat(this.connectNats);
+    this._handleSystemData = new HandleSystemData(this._handleChat);
+    this._handleParticipants = new HandleParticipants(this.connectNats);
     this._handleDataMsg = new HandleDataMessage(this.connectNats);
     this._handleWhiteboard = new HandleWhiteboard();
   }

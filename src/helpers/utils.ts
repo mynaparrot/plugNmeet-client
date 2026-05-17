@@ -6,6 +6,7 @@ import { store } from '../store';
 import { participantsSelector } from '../store/slices/participantSlice';
 import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
+import sanitizeHtml from 'sanitize-html';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -430,4 +431,14 @@ export const isFirefoxMobile = () => {
   const isMobile =
     ua.includes('Android') || ua.includes('Mobile') || ua.includes('Mobi');
   return isFirefox && isMobile;
+};
+
+export const cleanHtmlForChat = (rawText: string) => {
+  return sanitizeHtml(rawText, {
+    allowedTags: ['b', 'i', 'strong', 'br', 'a'],
+    allowedAttributes: {
+      a: ['href', 'target', 'class'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+  });
 };

@@ -18,15 +18,15 @@ import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
-import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import { randomString } from '../utils';
+import { cleanHtmlForChat, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
+import HandleChat from './HandleChat';
 
 export default class HandleSystemData {
-  private readonly userId: string;
+  private readonly _handleChat: HandleChat;
 
-  constructor(userId: string) {
-    this.userId = userId;
+  constructor(handleChat: HandleChat) {
+    this._handleChat = handleChat;
   }
   /**
    * To handle various notifications
@@ -140,20 +140,19 @@ export default class HandleSystemData {
     }
   };
 
-  public handleSysChatMsg = (msg: string) => {
-    const body = create(ChatMessageSchema, {
-      id: randomString(),
-      sentAt: Date.now().toString(),
-      isPrivate: false,
-      fromName: 'system',
-      fromUserId: 'system',
-      message: msg,
-      fromAdmin: true, // system message always from admin
-    });
-
-    store.dispatch(
-      addChatMessage({ message: body, currentUserId: this.userId }),
+  public handleSysChatMsg = async (msg: string) => {
+    await this._handleChat.handleMsg(
+      create(ChatMessageSchema, {
+        id: randomString(),
+        sentAt: Date.now().toString(),
+        isPrivate: false,
+        fromName: 'system',
+        fromUserId: 'system',
+        message: cleanHtmlForChat(msg),
+        fromAdmin: true, // system message always from admin
+      }),
     );
+
     store.dispatch(
       addUserNotification({
         message: i18n.t('notifications.new-system-message-in-chat'),
