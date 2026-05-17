@@ -1,7 +1,8 @@
 import { throttle } from 'es-toolkit';
+import { getConfigValue } from '../utils';
 
 // --- Configuration ---
-const SPEAKING_THRESHOLD = 0.2;
+const SPEAKING_THRESHOLD = getConfigValue<number>('SPEAKING_THRESHOLD', 0.1);
 const SILENCE_THRESHOLD = 0.02;
 // Delay to prevent the speaking indicator from flickering during natural pauses.
 const STOP_SPEAKING_DELAY = 1000;

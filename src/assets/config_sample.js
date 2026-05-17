@@ -92,4 +92,9 @@ window.plugNmeetConfig = {
   // Databases older than this will be cleaned up on startup (in milliseconds).
   // Default: 6 hours.
   // dbMaxAgeMs: 6 * 60 * 60 * 1000,
+
+  // The threshold for audio activity to be considered "speaking".
+  // A higher value requires a louder input to trigger the speaking indicator.
+  // Default: 0.1.
+  // speakingThreshold: 0.1,
 };
