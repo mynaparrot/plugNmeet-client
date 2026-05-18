@@ -14,10 +14,8 @@ import {
 } from '../../store/slices/sessionSlice';
 import i18n from '../i18n';
 import { addChatMessage } from '../../store/slices/chatMessagesSlice';
-import { WhiteboardFileConversionRes } from '../../store/slices/interfaces/whiteboard';
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
-import { createAndRegisterOfficeFile } from '../../components/whiteboard/helpers/handleFiles';
 
 export default class HandleRoomData {
   private _room: ICurrentRoom;
@@ -184,11 +182,7 @@ export default class HandleRoomData {
         this.toastId = undefined;
       }
       return;
-    }
-
-    if (!whiteboard.fileName || whiteboard.fileName === '') {
-      // we have preload file, but that wasn't ready
-      // we'll wait until the new update arrives
+    } else {
       if (!this.toastId) {
         this.toastId = toast.loading(
           i18n.t('notifications.preloaded-whiteboard-file-processing'),
@@ -198,46 +192,6 @@ export default class HandleRoomData {
           },
         );
       }
-      return;
-    }
-
-    const ff = whiteboard?.preloadFile?.split('/');
-    if (!ff) {
-      return;
-    }
-    const fileName = ff[ff.length - 1];
-
-    if (fileName !== whiteboard?.fileName) {
-      // maybe one new file was uploaded & we do not change it
-      this.checkedPreloadedWhiteboardFile = true;
-      if (this.toastId) {
-        toast.dismiss(this.toastId);
-        this.toastId = undefined;
-      }
-      return;
-    }
-
-    const whiteboardFiles =
-      store.getState().whiteboard.whiteboardUploadedOfficeFiles;
-    const exist = whiteboardFiles.find(
-      (f) => f.fileId === whiteboard.whiteboardFileId,
-    );
-    if (!exist) {
-      const f: WhiteboardFileConversionRes = {
-        status: true,
-        msg: '',
-        fileId: whiteboard.whiteboardFileId,
-        fileName: whiteboard.fileName,
-        filePath: whiteboard.filePath,
-        totalPages: whiteboard.totalPages,
-      };
-      createAndRegisterOfficeFile(f);
-    }
-    this.checkedPreloadedWhiteboardFile = true;
-
-    if (this.toastId) {
-      toast.dismiss(this.toastId);
-      this.toastId = undefined;
     }
   }
 }

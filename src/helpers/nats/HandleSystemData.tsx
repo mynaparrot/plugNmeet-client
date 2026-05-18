@@ -21,6 +21,7 @@ import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 import { cleanHtmlForChat, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 import HandleChat from './HandleChat';
+import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
 
 export default class HandleSystemData {
   private readonly _handleChat: HandleChat;
@@ -34,6 +35,9 @@ export default class HandleSystemData {
    */
   public handleNotification = (data: string) => {
     const nt = fromJsonString(NatsSystemNotificationSchema, data);
+    if (nt.msg === 'notifications.whiteboard-new-file-added') {
+      store.dispatch(triggerRefreshWhiteboardFilesListSignal());
+    }
     switch (nt.type) {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
         store.dispatch(

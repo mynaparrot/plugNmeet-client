@@ -32,6 +32,7 @@ const initialState: IWhiteboardSlice = {
     },
   ],
   refreshWhiteboardSignal: 0,
+  refreshWhiteboardFilesListSignal: 0,
   whiteboardResetSignal: 0,
   allExcalidrawElements: '',
 };
@@ -107,6 +108,9 @@ const whiteboardSlice = createSlice({
     triggerRefreshWhiteboard: (state) => {
       state.refreshWhiteboardSignal = Date.now();
     },
+    triggerRefreshWhiteboardFilesListSignal: (state) => {
+      state.refreshWhiteboardFilesListSignal = Date.now();
+    },
     triggerWhiteboardReset: (state) => {
       // clean up whiteboard state
       state.excalidrawElements = '';
@@ -145,6 +149,7 @@ export const {
   addWhiteboardUploadedOfficeFile,
   triggerRefreshWhiteboard,
   triggerWhiteboardReset,
+  triggerRefreshWhiteboardFilesListSignal,
   addAllExcalidrawElements,
   addWhiteboardDataSentFromDonor,
 } = whiteboardSlice.actions;

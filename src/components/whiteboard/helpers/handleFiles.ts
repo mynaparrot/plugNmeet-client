@@ -221,7 +221,7 @@ const prepareForExcalidraw = (
     y: (excalidrawHeight - fileHeight) / 2,
     width: fileWidth,
     height: fileHeight,
-    angle: 0,
+    angle: 0 as any,
     strokeColor: 'transparent',
     backgroundColor: 'transparent',
     fillStyle: 'hachure',

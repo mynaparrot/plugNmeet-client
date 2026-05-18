@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   GetRoomUploadedFilesReqSchema,
@@ -32,7 +32,7 @@ const UploadedFilesList = ({
   selectedOfficeFile,
 }: UploadedFilesListProps) => {
   const { t } = useTranslation();
-  const isFetched = useRef(false);
+  const isFetchingData = useRef<boolean>(false);
 
   const whiteboardUploadedOfficeFiles = useAppSelector(
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
@@ -40,54 +40,56 @@ const UploadedFilesList = ({
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
+  const refreshWhiteboardFilesListSignal = useAppSelector(
+    (state) => state.whiteboard.refreshWhiteboardFilesListSignal,
+  );
+
+  const fetchAndUpdateFiles = useCallback(async () => {
+    const body = create(GetRoomUploadedFilesReqSchema, {
+      roomId: roomId,
+      fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
+    });
+    const r = await sendAPIRequest(
+      'getRoomFilesByType',
+      toBinary(GetRoomUploadedFilesReqSchema, body),
+      false,
+      'application/protobuf',
+      'arraybuffer',
+    );
+    const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
+    if (!res.status || !res.files) {
+      return;
+    }
+
+    // let's compare with local store
+    res.files.forEach((file) => {
+      const exist = whiteboardUploadedOfficeFiles.find(
+        (f) => f.fileId === file.fileId,
+      );
+      if (!exist) {
+        const newFile: WhiteboardFileConversionRes = {
+          msg: '',
+          status: true,
+          fileId: file.fileId,
+          fileName: file.fileName,
+          filePath: file.filePath,
+          totalPages: file.totalPages ?? 0,
+        };
+        createAndRegisterOfficeFile(
+          newFile,
+          excalidrawAPI.getAppState().height,
+          excalidrawAPI.getAppState().width,
+        );
+      }
+    });
+  }, [whiteboardUploadedOfficeFiles, excalidrawAPI, roomId]);
 
   useEffect(() => {
-    const fetchAndUpdateFiles = async () => {
-      const body = create(GetRoomUploadedFilesReqSchema, {
-        roomId: roomId,
-        fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
-      });
-      const r = await sendAPIRequest(
-        'getRoomFilesByType',
-        toBinary(GetRoomUploadedFilesReqSchema, body),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
-      if (!res.status || !res.files) {
-        return;
-      }
-
-      // let's compare with local store
-      res.files.forEach((file) => {
-        const exist = whiteboardUploadedOfficeFiles.find(
-          (f) => f.fileId === file.fileId,
-        );
-        if (!exist) {
-          const newFile: WhiteboardFileConversionRes = {
-            msg: '',
-            status: true,
-            fileId: file.fileId,
-            fileName: file.fileName,
-            filePath: file.filePath,
-            totalPages: file.totalPages ?? 0,
-          };
-          createAndRegisterOfficeFile(
-            newFile,
-            excalidrawAPI.getAppState().height,
-            excalidrawAPI.getAppState().width,
-          );
-        }
-      });
-    };
-
-    if (!isFetched.current) {
-      isFetched.current = true;
-      fetchAndUpdateFiles().then();
+    if (!isFetchingData.current && refreshWhiteboardFilesListSignal) {
+      isFetchingData.current = true;
+      fetchAndUpdateFiles().then(() => (isFetchingData.current = false));
     }
-    // oxlint-disable-next-line exhaustive-deps
-  }, []);
+  }, [refreshWhiteboardFilesListSignal, fetchAndUpdateFiles]);
 
   return (
     <div className="max-h-40 overflow-y-auto scrollBar grid gap-2">
