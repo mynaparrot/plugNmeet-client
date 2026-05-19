@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: false
   plugnmeet-protocol-js: true
+minimumReleaseAgeExclude:
+  - marked@18.0.4
