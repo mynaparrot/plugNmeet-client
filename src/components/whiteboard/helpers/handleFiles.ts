@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/utils';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { store } from '../../../store';
-import { uploadBase64EncodedFile } from '../../../helpers/fileUpload';
+import { uploadResumableFile } from '../../../helpers/fileUpload';
 import {
   IWhiteboardFile,
   IWhiteboardOfficeFile,
@@ -35,8 +35,8 @@ export interface ImageCustomData {
   uploaderWhiteboardWidth?: number;
 }
 
-const uploadingCanvasBinaryFile: Map<string, string> = new Map();
 const processedImageElements: Map<string, string> = new Map();
+const uploadPromises: Map<string, Promise<void>> = new Map();
 
 export const createAndRegisterOfficeFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
@@ -277,74 +277,124 @@ const getFileDimension = (
   return { fileHeight, fileWidth };
 };
 
-export const uploadCanvasBinaryFile = async (
+const dataURLtoFile = (dataUrl: string, filename: string): File | null => {
+  const arr = dataUrl.split(',');
+  if (!arr[0]) return null;
+
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  if (!mimeMatch) return null;
+
+  const mime = mimeMatch[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
+
+export const uploadCanvasBinaryFile = (
   elm: ExcalidrawImageElement,
   file: BinaryFileData,
   excalidrawAPI?: ExcalidrawImperativeAPI,
 ) => {
-  if (uploadingCanvasBinaryFile.has(file.id)) {
+  // This ensures concurrent calls wait for the same upload.
+  if (uploadPromises.has(file.id)) {
     return;
   }
 
-  try {
-    // Add to the queue to prevent duplicate uploads.
-    uploadingCanvasBinaryFile.set(file.id, elm.id);
-
-    const res = await uploadBase64EncodedFile(
-      `${file.id}.png`,
-      file.dataURL,
-      RoomUploadedFileType.WHITEBOARD_IMAGE_FILE,
-    );
-    if (!res || !res.status) {
-      // If upload fails, we stop here. The `finally` block will clean up the queue.
-      console.error('Failed to upload canvas binary file.');
-      return;
-    }
-    const fileUrl =
-      getConfigValue<string>(
-        'serverUrl',
-        'http://localhost:8080',
-        'PLUG_N_MEET_SERVER_URL',
-      ) +
-      '/download/uploadedFile/' +
-      res.filePath;
-
-    const customData: ImageCustomData = {
-      fileUrl,
-      isOfficeFile: false,
-      uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height,
-      uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width,
-    };
-
-    const localElements =
-      excalidrawAPI?.getSceneElementsIncludingDeleted() ?? [];
-    let updatedImageElement: ExcalidrawImageElement | undefined;
-
-    // Use map for a cleaner, immutable update.
-    const newElms = localElements.map((el) => {
-      if (el.id === elm.id && el.type === 'image') {
-        updatedImageElement = {
-          ...el,
-          status: 'saved',
-          version: el.version + 1,
-          versionNonce: el.versionNonce + 1,
-          customData,
-        };
-        return updatedImageElement;
+  // Create a new promise that encapsulates the entire upload process.
+  const uploadPromise = new Promise<void>((resolve, reject) => {
+    try {
+      const imageFile = dataURLtoFile(file.dataURL, `${file.id}.png`);
+      if (!imageFile) {
+        // If conversion fails, reject the promise.
+        console.error('Failed to convert canvas data to a file.');
+        return reject(new Error('Failed to convert canvas data to a file.'));
       }
-      return el;
-    });
 
-    // Finally, update the scene with the element marked as 'saved'.
-    excalidrawAPI?.updateScene({
-      elements: newElms,
-    });
-  } catch (error) {
-    console.error('Error during canvas file upload:', error);
-  } finally {
-    // Always remove from the queue, whether it succeeded or failed.
-    uploadingCanvasBinaryFile.delete(file.id);
-  }
+      uploadResumableFile(
+        [],
+        undefined,
+        RoomUploadedFileType.WHITEBOARD_IMAGE_FILE,
+        [imageFile],
+        (res) => {
+          // This is the onSuccess callback
+          if (!res.status || !res.filePath) {
+            console.error('Failed to upload canvas binary file.');
+            return reject(new Error('Upload failed.'));
+          }
+
+          const fileUrl =
+            getConfigValue<string>(
+              'serverUrl',
+              'http://localhost:8080',
+              'PLUG_N_MEET_SERVER_URL',
+            ) +
+            '/download/uploadedFile/' +
+            res.filePath;
+
+          const customData: ImageCustomData = {
+            fileUrl,
+            isOfficeFile: false,
+            uploaderWhiteboardHeight: excalidrawAPI?.getAppState().height,
+            uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width,
+          };
+
+          const localElements =
+            excalidrawAPI?.getSceneElementsIncludingDeleted() ?? [];
+          let updatedImageElement: ExcalidrawImageElement | undefined;
+
+          // Use map for a cleaner, immutable update.
+          const newElms = localElements.map((el) => {
+            if (el.id === elm.id && el.type === 'image') {
+              updatedImageElement = {
+                ...el,
+                status: 'saved',
+                version: el.version + 1,
+                versionNonce: el.versionNonce + 1,
+                customData,
+              };
+              return updatedImageElement;
+            }
+            return el;
+          });
+
+          // Finally, update the scene with the element marked as 'saved'.
+          excalidrawAPI?.updateScene({
+            elements: newElms,
+          });
+          // Resolve the promise on success.
+          resolve();
+        },
+        undefined, // isUploading
+        undefined, // uploadingProgress
+        (errorMsg) => {
+          // Reject the promise on error.
+          console.error('Error during canvas file upload:', errorMsg);
+          reject(new Error(errorMsg));
+        },
+      );
+    } catch (error) {
+      // Reject the promise if any synchronous error occurs.
+      console.error('Error preparing canvas file for upload:', error);
+      reject(error);
+    }
+  });
+
+  // **Immediately** store the promise in the map. This is the atomic part.
+  uploadPromises.set(file.id, uploadPromise);
+
+  // When the promise is settled (either success or failure),
+  // remove it from the map so a re-upload can be attempted later if needed.
+  uploadPromise.finally(() => {
+    uploadPromises.delete(file.id);
+  });
+
+  // Return the newly created promise.
+  return uploadPromise;
 };
 
 export const ensureImageDataIsLoaded = async (

@@ -163,7 +163,7 @@ export const broadcastSceneOnChange = async (
         // We found the data. Let's upload it.
         // The `uploadCanvasBinaryFile` function will handle broadcasting
         // the 'saved' status of the element once the upload is complete.
-        uploadCanvasBinaryFile(elm, fileData, excalidrawAPI).then();
+        uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
       }
       // We don't broadcast the 'pending' element itself. We wait for the
       // upload to finish and broadcast the 'saved' element then.
