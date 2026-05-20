@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.1.10](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.9...v2.1.10) (2026-05-20)
+
+
+### Bug Fixes
+
+* active-speakers visibility wasn't always on top ([8b692b6](https://github.com/mynaparrot/plugNmeet-client/commit/8b692b62620cda0cfc1b0fd065cb2be16b1ecb0c))
+* added configurable `speakingThreshold` and now default `0.1` ([b629da0](https://github.com/mynaparrot/plugNmeet-client/commit/b629da04c739131eb511bc8b1d387f2b940f27c1))
+* added officeFileTypes in input accept ([22d231e](https://github.com/mynaparrot/plugNmeet-client/commit/22d231ef20f4e570e855b8ab05dd106cbb3db0b6))
+* append whiteboard files from notification ([5b6c883](https://github.com/mynaparrot/plugNmeet-client/commit/5b6c883b9c0dc11423154d3007fab5987f843a56))
+* better error handling ([bd7f58a](https://github.com/mynaparrot/plugNmeet-client/commit/bd7f58a2aaa38e0cb199bfe1d942ee7b94d469ca))
+* bump deps ([7f8f5ee](https://github.com/mynaparrot/plugNmeet-client/commit/7f8f5ee14b8c0cb5491ef94f9312b0fa1e4a3177))
+* bump sdks ([9b64f81](https://github.com/mynaparrot/plugNmeet-client/commit/9b64f8129696216e6f4fa1f6752502dc49196b2b))
+* display message when no AI features are available ([c9270d9](https://github.com/mynaparrot/plugNmeet-client/commit/c9270d973329402936b65803a872a52116bcee98))
+* microphone mute/unmute wasn't handling properly ([ff5983c](https://github.com/mynaparrot/plugNmeet-client/commit/ff5983c15ec01608d3a23fd1519d496a2ff42623))
+* migrate to use default file based uploading ([618cfd2](https://github.com/mynaparrot/plugNmeet-client/commit/618cfd2107c822a58b3abcf302c7c5e2f79aa396))
+* moved analytics to hook ([560c177](https://github.com/mynaparrot/plugNmeet-client/commit/560c177d778ca05371f89c40fbaf863f7e184d6c))
+* muteOnStart wasn't working properly ([d028f74](https://github.com/mynaparrot/plugNmeet-client/commit/d028f74e9e2bec39ac520ea6c4a236226958b8ec))
+* new Crowdin updates ([4c07d38](https://github.com/mynaparrot/plugNmeet-client/commit/4c07d38f21e8258b83783777e9d44a32150eb15f))
+* simplified error message ([4657e51](https://github.com/mynaparrot/plugNmeet-client/commit/4657e51cfce6cf6fbafa709a474acf4dcc7559d0))
+* system chat message wasn't handling correctly ([ae943e2](https://github.com/mynaparrot/plugNmeet-client/commit/ae943e21bf91839bef60f94d3c16514569645d00))
+* type in `speakingThreshold` ([119cc7e](https://github.com/mynaparrot/plugNmeet-client/commit/119cc7e72fe96a4e500bb663ee23653729175082))
+* typo in class name ([a52ec97](https://github.com/mynaparrot/plugNmeet-client/commit/a52ec973ca830706f24ecb2f1b9cc22fb0037a9a))
+
 ## [2.1.9](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.8...v2.1.9) (2026-05-09)
 
 
