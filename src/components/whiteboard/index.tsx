@@ -28,7 +28,9 @@ import { toast } from 'react-toastify';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
+// @ts-ignore
 import '@excalidraw/excalidraw/index.css';
+// @ts-ignore
 import './style.css';
 
 import ManageOfficeFilesModal from './manage-office-files';
