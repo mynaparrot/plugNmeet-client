@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { selectMessagesByKeyValue } from '../../../store/slices/chatMessagesSlice';
 import Message from './message';
 import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
+import { getRecorderBotOptions } from '../../../helpers/utils';
 
 interface IMessagesProps {
   messageKey: string;
@@ -13,11 +20,20 @@ interface IMessagesProps {
 
 const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   const dispatch = useAppDispatch();
-  const recorderBotOptions = useAppSelector(
-    (state) =>
-      state.session.currentRoom?.metadata?.roomFeatures?.recordingFeatures
-        ?.recorderBotOptions,
-  );
+
+  const recorderBotOptions = useMemo(() => {
+    const session = store.getState().session;
+    if (
+      session.currentUser?.userId &&
+      session.currentRoom?.metadata?.roomFeatures
+    ) {
+      return getRecorderBotOptions(
+        session.currentUser.userId,
+        session.currentRoom.metadata.roomFeatures,
+      );
+    }
+  }, []);
+
   const chatMessages = useAppSelector((state) =>
     selectMessagesByKeyValue(state, messageKey),
   );
@@ -37,8 +53,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     }
 
     const timer = setTimeout(() => {
-      // Close the chat panel
-      dispatch(setActiveSidePanel('CHAT'));
+      dispatch(setActiveSidePanel(null));
     }, recorderBotOptions.durationAfterLastMessage * 1000);
 
     // Clear the timer if a new message arrives or the component unmounts

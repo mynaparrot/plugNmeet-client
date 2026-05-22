@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   CloudRecordingVariants,
   CommonResponseSchema,
+  RecorderBotOptions,
   RecordingReqSchema,
   RecordingTasks,
 } from 'plugnmeet-protocol-js';
@@ -31,11 +32,15 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
   }, []);
 
   const startRecording = useCallback(
-    async (variant?: CloudRecordingVariants) => {
+    async (
+      variant?: CloudRecordingVariants,
+      botOptions?: RecorderBotOptions,
+    ) => {
       const body = create(RecordingReqSchema, {
         task: RecordingTasks.START_RECORDING,
         sid: currentRoom.sid,
         recordingVariant: CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING,
+        recorderBotOptions: botOptions,
       });
 
       if (

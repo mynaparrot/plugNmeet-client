@@ -7,6 +7,7 @@ import { participantsSelector } from '../store/slices/participantSlice';
 import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 import sanitizeHtml from 'sanitize-html';
+import { RecorderBotOptions, RoomCreateFeatures } from 'plugnmeet-protocol-js';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -441,4 +442,18 @@ export const cleanHtmlForChat = (rawText: string) => {
     },
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
   });
+};
+
+export const getRecorderBotOptions = (
+  currentUserId: string,
+  roomFeatures: RoomCreateFeatures,
+): RecorderBotOptions | undefined => {
+  switch (currentUserId) {
+    case 'RECORDER_BOT':
+      return roomFeatures?.recordingFeatures?.recorderBotOptions;
+    case 'RTMP_BOT':
+      return roomFeatures?.externalBroadcastingFeatures?.recorderBotOptions;
+    default:
+      return undefined;
+  }
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
+import { RecorderBotOptions } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
@@ -48,6 +49,7 @@ const RecordingIcon = () => {
   const isRunningCloudRecording = useAppSelector(
     (state) => state.session.isActiveRecording,
   );
+
   const [disable, setDisable] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -157,6 +159,7 @@ const RecordingIcon = () => {
 
   const startRecording = async (
     selectedRecordingType: SelectedRecordingType,
+    botOptions?: RecorderBotOptions,
   ) => {
     if (selectedRecordingType.type === RecordingType.RECORDING_TYPE_LOCAL) {
       setDisable(true);
@@ -167,7 +170,7 @@ const RecordingIcon = () => {
     ) {
       setDisable(true);
       setRecordingType(selectedRecordingType.type);
-      await startCloudRecording(selectedRecordingType.variant);
+      await startCloudRecording(selectedRecordingType.variant, botOptions);
 
       const timer = setTimeout(() => {
         setDisable(false);
@@ -182,9 +185,12 @@ const RecordingIcon = () => {
     }
   };
 
-  const onCloseModal = (selectedRecordingType: SelectedRecordingType) => {
+  const onCloseModal = (
+    selectedRecordingType: SelectedRecordingType,
+    botOptions?: RecorderBotOptions,
+  ) => {
     setOpenModal(false);
-    startRecording(selectedRecordingType).then();
+    startRecording(selectedRecordingType, botOptions).then();
   };
 
   // for auto cloud recording
@@ -230,11 +236,7 @@ const RecordingIcon = () => {
   return (
     <>
       {openModal && (
-        <RecordingModal
-          showModal={openModal}
-          recordingFeatures={roomMetadata.roomFeatures?.recordingFeatures}
-          onCloseModal={onCloseModal}
-        />
+        <RecordingModal showModal={openModal} onCloseModal={onCloseModal} />
       )}
       <button
         className={buttonClasses}
