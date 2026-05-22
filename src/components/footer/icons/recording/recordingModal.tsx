@@ -49,7 +49,7 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
       ?.endToEndEncryptionFeatures;
 
   const startRecording = useCallback(
-    (e: React.ChangeEvent<HTMLFormElement>) => {
+    (e: React.SubmitEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (recordingType) {
         const botOptions: RecorderBotOptions = create(

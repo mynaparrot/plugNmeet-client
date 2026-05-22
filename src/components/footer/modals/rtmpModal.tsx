@@ -65,7 +65,7 @@ const RtmpModal = () => {
   };
 
   const startBroadcasting = useCallback(
-    async (e: React.FormEvent | React.MouseEvent) => {
+    async (e: React.SubmitEvent | React.MouseEvent) => {
       e.preventDefault();
       setDisplayError('');
 
