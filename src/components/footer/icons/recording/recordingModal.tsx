@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CloudRecordingVariants,
+  RecorderBotOptions,
   RecordingFeatures,
 } from 'plugnmeet-protocol-js';
 
@@ -12,6 +13,8 @@ import ActionButton from '../../../../helpers/ui/actionButton';
 import RadioOptions, {
   IRadioOption,
 } from '../../../../helpers/ui/radioOptions';
+import SettingsSwitch from '../../../../helpers/ui/settingsSwitch';
+import FormattedInputField from '../../../../helpers/ui/formattedInputField';
 
 interface IRecordingModalProps {
   showModal: boolean;
@@ -27,6 +30,12 @@ const RecordingModal = ({
   const [recordingType, setRecordingType] = useState<
     SelectedRecordingType | undefined
   >(undefined);
+  const [enableAutoCloseChatPanel, setEnableAutoCloseChatPanel] =
+    useState<boolean>(false);
+  const [durationAfterLastMessage, setDurationAfterLastMessage] =
+    useState<number>(
+      recordingFeatures?.recorderBotOptions?.durationAfterLastMessage ?? 300,
+    );
   const { t } = useTranslation();
   const isCloud = store.getState().session.isCloud;
   const e2eeFeatures =
@@ -37,10 +46,22 @@ const RecordingModal = ({
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (recordingType) {
-        onCloseModal(recordingType);
+        const botOptions: RecorderBotOptions = {
+          enableAutoCloseChatPanel,
+          durationAfterLastMessage,
+        };
+        onCloseModal({
+          ...recordingType,
+          recorder_bot_options: botOptions,
+        });
       }
     },
-    [recordingType, onCloseModal],
+    [
+      recordingType,
+      onCloseModal,
+      enableAutoCloseChatPanel,
+      durationAfterLastMessage,
+    ],
   );
 
   const closeModal = () => {
@@ -130,6 +151,31 @@ const RecordingModal = ({
           checked={getCheckedValue()}
           onChange={handleRadioChange}
         />
+        {recordingType?.variant ===
+        CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING ? (
+          <div className="mt-4">
+            <SettingsSwitch
+              label={t('recorder-bot-options.enable-auto-close-chat-panel')}
+              enabled={enableAutoCloseChatPanel}
+              onChange={setEnableAutoCloseChatPanel}
+              customCss="my-4"
+            />
+            {enableAutoCloseChatPanel && (
+              <FormattedInputField
+                label={t('recorder-bot-options.duration-after-last-message')}
+                id="duration"
+                value={String(durationAfterLastMessage)}
+                onChange={(e) =>
+                  setDurationAfterLastMessage(Number(e.target.value))
+                }
+                helpText={t(
+                  'recorder-bot-options.duration-after-last-message-help',
+                )}
+                type="number"
+              />
+            )}
+          </div>
+        ) : null}
       </form>
     </Modal>
   );

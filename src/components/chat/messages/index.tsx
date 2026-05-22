@@ -1,15 +1,23 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from 'es-toolkit';
 
-import { store, useAppSelector } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { selectMessagesByKeyValue } from '../../../store/slices/chatMessagesSlice';
 import Message from './message';
+import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
 
 interface IMessagesProps {
   messageKey: string;
+  isRecorder: boolean;
 }
 
-const Messages = ({ messageKey }: IMessagesProps) => {
+const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
+  const dispatch = useAppDispatch();
+  const recorderBotOptions = useAppSelector(
+    (state) =>
+      state.session.currentRoom?.metadata?.roomFeatures?.recordingFeatures
+        ?.recorderBotOptions,
+  );
   const chatMessages = useAppSelector((state) =>
     selectMessagesByKeyValue(state, messageKey),
   );
@@ -17,6 +25,27 @@ const Messages = ({ messageKey }: IMessagesProps) => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const currentUser = store.getState().session.currentUser;
   const [autoScrollToBottom, setAutoScrollToBottom] = useState<boolean>(true);
+
+  // Timer logic for recorder
+  useEffect(() => {
+    if (
+      !isRecorder ||
+      !recorderBotOptions?.enableAutoCloseChatPanel ||
+      !recorderBotOptions.durationAfterLastMessage
+    ) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      // Close the chat panel
+      dispatch(setActiveSidePanel('CHAT'));
+    }, recorderBotOptions.durationAfterLastMessage * 1000);
+
+    // Clear the timer if a new message arrives or the component unmounts
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [chatMessages, isRecorder, recorderBotOptions, dispatch]);
 
   const scrollToBottom = useCallback(() => {
     if (autoScrollToBottom && messagesContainerRef.current) {
