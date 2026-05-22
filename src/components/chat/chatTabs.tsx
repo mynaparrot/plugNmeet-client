@@ -119,7 +119,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
     return (
       <div className="h-full">
         <div className="h-[calc(100%-5px)] chat-messages-container">
-          <Messages messageKey={selectedChatOption} />
+          <Messages messageKey={selectedChatOption} isRecorder={isRecorder} />
         </div>
       </div>
     );
@@ -216,7 +216,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
         </div>
       </Listbox>
       <div className="h-[calc(100%-135px)] 3xl:h-[calc(100%-176px)] chat-messages-container">
-        <Messages messageKey={selectedChatOption} />
+        <Messages messageKey={selectedChatOption} isRecorder={isRecorder} />
       </div>
     </div>
   );

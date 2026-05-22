@@ -592,5 +592,10 @@
     "no-phone-numbers": "No phone numbers are available.",
     "publish-to-chat": "Share to Chat",
     "dial-in-info": "Dial-in Information"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Enable auto-close chat panel",
+    "duration-after-last-message": "Duration after last message (in minutes)",
+    "duration-after-last-message-help": "The chat panel will close automatically after this duration of inactivity."
   }
 }

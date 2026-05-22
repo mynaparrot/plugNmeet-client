@@ -10,6 +10,7 @@ interface IFormattedInputFieldProps {
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  helpText?: string;
 }
 
 const FormattedInputField = ({
@@ -20,6 +21,7 @@ const FormattedInputField = ({
   placeholder,
   onChange,
   type = 'text',
+  helpText,
 }: IFormattedInputFieldProps) => {
   const inputClasses = clsx(
     'default-input rounded-[8px] h-10 w-full',
@@ -31,29 +33,33 @@ const FormattedInputField = ({
   );
 
   return (
-    <Field
-      as="div"
-      className="flex flex-wrap items-center justify-between mb-2"
-    >
-      {label ? (
-        <Label
-          htmlFor={id}
-          className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
-        >
-          {label}
-        </Label>
+    <div className="mb-2">
+      <Field as="div" className="flex flex-wrap items-center justify-between">
+        {label ? (
+          <Label
+            htmlFor={id}
+            className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
+          >
+            {label}
+          </Label>
+        ) : null}
+        <input
+          type={type}
+          name={id}
+          id={id}
+          value={value ?? ''}
+          readOnly={readOnly}
+          onChange={onChange}
+          className={inputClasses}
+          placeholder={placeholder}
+        />
+      </Field>
+      {helpText ? (
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          {helpText}
+        </p>
       ) : null}
-      <input
-        type={type}
-        name={id}
-        id={id}
-        value={value ?? ''}
-        readOnly={readOnly}
-        onChange={onChange}
-        className={inputClasses}
-        placeholder={placeholder}
-      />
-    </Field>
+    </div>
   );
 };
 

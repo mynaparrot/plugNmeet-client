@@ -17,6 +17,7 @@ import ConfirmationModal from '../../../helpers/ui/confirmationModal';
 import ActionButton from '../../../helpers/ui/actionButton';
 import Modal from '../../../helpers/ui/modal';
 import { getConfigValue } from '../../../helpers/utils';
+import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,22 @@ const RtmpModal = () => {
   const isActiveRtmpBroadcasting = useAppSelector(
     (state) => state.session.isActiveRtmpBroadcasting,
   );
+  const externalBroadcastingFeatures = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.roomFeatures
+        ?.externalBroadcastingFeatures,
+  );
+
+  const [enableAutoCloseChatPanel, setEnableAutoCloseChatPanel] =
+    useState<boolean>(
+      !!externalBroadcastingFeatures?.recorderBotOptions
+        ?.enableAutoCloseChatPanel,
+    );
+  const [durationAfterLastMessage, setDurationAfterLastMessage] =
+    useState<number>(
+      externalBroadcastingFeatures?.recorderBotOptions
+        ?.durationAfterLastMessage ?? 300,
+    );
   const [provider, setProvider] = useState<string>('youtube');
   const [showServerUrl, setShowServerUrl] = useState<boolean>(false);
   const [serverUrl, setServerUrl] = useState<string>('');
@@ -48,7 +65,7 @@ const RtmpModal = () => {
   };
 
   const startBroadcasting = useCallback(
-    async (e: React.FormEvent | React.MouseEvent) => {
+    async (e: React.SubmitEvent | React.MouseEvent) => {
       e.preventDefault();
       setDisplayError('');
 
@@ -78,6 +95,10 @@ const RtmpModal = () => {
         task: RecordingTasks.START_RTMP,
         sid: store.getState().session.currentRoom.sid,
         rtmpUrl: [url.replace(/\/$/, ''), serverKey].join('/'),
+        recorderBotOptions: {
+          enableAutoCloseChatPanel,
+          durationAfterLastMessage,
+        },
       });
 
       const customDesign = getConfigValue<string | undefined>(
@@ -176,6 +197,28 @@ const RtmpModal = () => {
               setDisplayError('');
             }}
           />
+          <div className="mt-4">
+            <SettingsSwitch
+              label={t('recorder-bot-options.enable-auto-close-chat-panel')}
+              enabled={enableAutoCloseChatPanel}
+              onChange={setEnableAutoCloseChatPanel}
+              customCss="my-4"
+            />
+            {enableAutoCloseChatPanel && (
+              <FormattedInputField
+                label={t('recorder-bot-options.duration-after-last-message')}
+                id="duration"
+                value={String(durationAfterLastMessage / 60)}
+                onChange={(e) =>
+                  setDurationAfterLastMessage(Number(e.target.value) * 60)
+                }
+                helpText={t(
+                  'recorder-bot-options.duration-after-last-message-help',
+                )}
+                type="number"
+              />
+            )}
+          </div>
         </div>
       </Modal>
     );

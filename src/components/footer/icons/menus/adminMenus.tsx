@@ -83,18 +83,19 @@ const AdminMenus = () => {
             text={t('footer.menus.ai-settings')}
           />
         )}
-      {roomFeatures?.allowRtmp && (
-        <FooterMenuItem
-          onClick={openRtmpModal}
-          isActive={isActiveRtmpBroadcasting}
-          icon={<RTMPIconSVG />}
-          text={
-            isActiveRtmpBroadcasting
-              ? t('footer.icons.stop-rtmp-broadcasting')
-              : t('footer.icons.start-rtmp-broadcasting')
-          }
-        />
-      )}
+      {roomFeatures?.externalBroadcastingFeatures?.isAllow &&
+        roomFeatures?.externalBroadcastingFeatures?.isAllowRtmp && (
+          <FooterMenuItem
+            onClick={openRtmpModal}
+            isActive={isActiveRtmpBroadcasting}
+            icon={<RTMPIconSVG />}
+            text={
+              isActiveRtmpBroadcasting
+                ? t('footer.icons.stop-rtmp-broadcasting')
+                : t('footer.icons.start-rtmp-broadcasting')
+            }
+          />
+        )}
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
           <FooterMenuItem
