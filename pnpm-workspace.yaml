@@ -1,5 +1,6 @@
 allowBuilds:
   esbuild: false
   plugnmeet-protocol-js: true
+minimumReleaseAge: 0
 minimumReleaseAgeExclude:
   - plugnmeet-protocol-js
