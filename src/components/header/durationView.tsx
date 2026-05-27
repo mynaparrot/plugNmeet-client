@@ -28,11 +28,9 @@ const DurationView = () => {
 
   const remaining = useRoomDurationCountdown(endTime);
 
-  // Show the clock only if the initial room duration is 60 minutes or less.
-  const showClock = useMemo(() => {
-    const duration = Number(roomDuration);
-    return duration > 0 && duration <= 60;
-  }, [roomDuration]);
+  // Show the clock only when the remaining time is 60 minutes or less.
+  const remainingInMs = endTime - Date.now();
+  const showClock = endTime > 0 && remainingInMs / (1000 * 60) <= 60;
 
   useEffect(() => {
     if (isRecorder) {
