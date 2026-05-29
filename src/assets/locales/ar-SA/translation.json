@@ -594,7 +594,7 @@
     "dial-in-info": "معلومات الاتصال"
   },
   "recorder-bot-options": {
-    "enable-auto-close-chat-panel": "تفعيل لوحة الدردشة المغلقة تلقائيا",
+    "enable-auto-close-chat-panel": "تفعيل الإغلاق التلقائي للوحة الدردشة",
     "duration-after-last-message": "المدة بعد آخر رسالة (بالدقائق)",
     "duration-after-last-message-help": "ستنغلق لوحة الدردشة تلقائيا بعد هذه الفترة من عدم النشاط."
   }
