@@ -86,7 +86,8 @@
     "request-submitted-wait": "تم تقديم طلبك. يرجى انتظار التأكيد.",
     "wait-other-uploading-to-finish": "يوجد تحميل آخر قيد التقدم. يرجى الانتظار حتى يكتمل.",
     "server-not-responding": "الخادم لا يستجيب. قد يكون اتصالك غير مستقر.",
-    "re-routing-connection": "الاتصال غير مستقر. جارٍ إعادة التوجيه لتحسين الاستقرار..."
+    "re-routing-connection": "الاتصال غير مستقر. جارٍ إعادة التوجيه لتحسين الاستقرار...",
+    "whiteboard-new-file-added": "الملف الجديد جاهز وتمت إضافته إلى قائمة ملفات السبورة البيضاء."
   },
   "room-metadata": {
     "session-recording": "يتم تسجيل هذا الاجتماع.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "لا توجد أرقام هواتف متاحة.",
     "publish-to-chat": "مشاركة في الدردشة",
     "dial-in-info": "معلومات الاتصال"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "تفعيل لوحة الدردشة المغلقة تلقائيا",
+    "duration-after-last-message": "المدة بعد آخر رسالة (بالدقائق)",
+    "duration-after-last-message-help": "ستنغلق لوحة الدردشة تلقائيا بعد هذه الفترة من عدم النشاط."
   }
 }
