@@ -86,7 +86,8 @@
     "request-submitted-wait": "Votre demande a été soumise. Veuillez attendre la confirmation.",
     "wait-other-uploading-to-finish": "Un autre téléchargement est en cours. Veuillez attendre qu'il se termine.",
     "server-not-responding": "Le serveur ne répond pas. Votre connexion est peut-être instable.",
-    "re-routing-connection": "La connexion est instable. Réacheminement pour une meilleure stabilité..."
+    "re-routing-connection": "La connexion est instable. Réacheminement pour une meilleure stabilité...",
+    "whiteboard-new-file-added": "Le nouveau fichier est prêt et a été ajouté à la liste des fichiers du tableau blanc."
   },
   "room-metadata": {
     "session-recording": "Cette réunion est en cours d'enregistrement.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Aucun numéro de téléphone n'est disponible.",
     "publish-to-chat": "Partager dans le chat",
     "dial-in-info": "Informations d'appel"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Activez le panneau de fermeture automatique du chat",
+    "duration-after-last-message": "Durée après le dernier message (en minutes)",
+    "duration-after-last-message-help": "Le panneau de discussion se fermera automatiquement après cette période d’inactivité."
   }
 }
