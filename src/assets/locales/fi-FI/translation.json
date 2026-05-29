@@ -86,7 +86,8 @@
     "request-submitted-wait": "Pyyntösi on toimitettu. Odottakaa vahvistusta",
     "wait-other-uploading-to-finish": "Toinen lataus on käynnissä. Odota, että se valmistuu.",
     "server-not-responding": "Palvelin ei vastaa. Yhteytesi voi olla epävakaa.",
-    "re-routing-connection": "Yhteys on epävakaa. Uudelleenreititys paremman vakauden vuoksi..."
+    "re-routing-connection": "Yhteys on epävakaa. Uudelleenreititys paremman vakauden vuoksi...",
+    "whiteboard-new-file-added": "Uusi tiedosto on valmis ja lisätty valkotaulun tiedostolistalle."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Puhelinnumeroita ei ole saatavilla.",
     "publish-to-chat": "Jaa chatissa",
     "dial-in-info": "Soittotiedot"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Ota automaattinen chat-paneelin sulkeminen käyttöön",
+    "duration-after-last-message": "Kesto viimeisen viestin jälkeen (minuuteissa)",
+    "duration-after-last-message-help": "Chat-paneeli sulkeutuu automaattisesti tämän tauon jälkeen."
   }
 }
