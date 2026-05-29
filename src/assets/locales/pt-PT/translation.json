@@ -86,7 +86,8 @@
     "request-submitted-wait": "O seu pedido foi submetido. Por favor, aguarde a confirmação.",
     "wait-other-uploading-to-finish": "Outro carregamento está em curso. Por favor, aguarde a sua conclusão.",
     "server-not-responding": "O servidor não está a responder. A sua ligação pode estar instável.",
-    "re-routing-connection": "A ligação está instável. A redirecionar para melhor estabilidade..."
+    "re-routing-connection": "A ligação está instável. A redirecionar para melhor estabilidade...",
+    "whiteboard-new-file-added": "O novo ficheiro está pronto e foi adicionado à lista de ficheiros do quadro branco."
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Não há números de telefone disponíveis.",
     "publish-to-chat": "Partilhar no chat",
     "dial-in-info": "Informações de chamada"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Ativar o painel de chat de encerramento automático",
+    "duration-after-last-message": "Duração após a última mensagem (em minutos)",
+    "duration-after-last-message-help": "O painel de chat fecha-se automaticamente após este período de inatividade."
   }
 }
