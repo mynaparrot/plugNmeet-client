@@ -299,7 +299,7 @@
       "leave-webcam": "ওয়েবক্যাম বন্ধ করুন",
       "start-external-media-player": "বাহ্যিক ভিডিও প্লে করুন",
       "stop-external-media-player": "বাহ্যিক ভিডিও বন্ধ করুন",
-      "manage-waiting-room": "অপেক্ষার রুম পরিচালনা করুন",
+      "manage-waiting-room": "ওয়েটিং রুম পরিচালনা করুন",
       "manage-breakout-room": "ব্রেকআউট রুম পরিচালনা করুন",
       "start-display-external-link": "বাহ্যিক লিঙ্ক শেয়ার করুন",
       "stop-display-external-link": "লিঙ্ক শেয়ার করা বন্ধ করুন",
@@ -381,10 +381,10 @@
     "total-pages": "মোট পৃষ্ঠা: {{count}}"
   },
   "waiting-room": {
-    "modal-title": "অপেক্ষার রুম পরিচালনা করুন",
-    "update-waiting-message": "অপেক্ষার রুমের বার্তা আপডেট করুন",
+    "modal-title": "ওয়েটিং রুম পরিচালনা করুন",
+    "update-waiting-message": "ওয়েটিং রুমের বার্তা আপডেট করুন",
     "update-msg": "আপডেট করুন",
-    "updated-msg": "অপেক্ষার রুমের বার্তা আপডেট করা হয়েছে।",
+    "updated-msg": "ওয়েটিং রুমের বার্তাটি আপডেট করা হয়েছে।",
     "accept-all": "সবাইকে অনুমোদন করুন",
     "reject-all": "সবাইকে প্রত্যাখ্যান করুন",
     "list-waiting-participants": "যোগদানের জন্য অপেক্ষারত ব্যক্তিরা ({{count}})",
@@ -472,7 +472,7 @@
     "mic-menu-title": "মাইক্রোফোন নির্বাচন করুন",
     "background-filter-title": "পটভূমি এবং ফিল্টার",
     "config-background-btn": "ক্যামেরার পটভূমি কনফিগার করুন",
-    "waiting-for-approval-title": "আপনি অপেক্ষার রুমে আছেন।",
+    "waiting-for-approval-title": "আপনি ওয়েটিং রুমে আছেন",
     "finalizing-app": "মিটিং প্রস্তুত করা হচ্ছে..."
   },
   "external-display-link-display": {
