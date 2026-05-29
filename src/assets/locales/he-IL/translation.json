@@ -86,7 +86,8 @@
     "request-submitted-wait": "הבקשה שלך הוגשה. אנא המתינו לאישור",
     "wait-other-uploading-to-finish": "העלאה נוספת מתבצעת. אנא המתינו עד שזה יסתיים.",
     "server-not-responding": "השרת לא מגיב. הקשר שלך עלול להיות לא יציב.",
-    "re-routing-connection": "החיבור לא יציב. ניתוב מחדש ליציבות טובה יותר..."
+    "re-routing-connection": "החיבור לא יציב. ניתוב מחדש ליציבות טובה יותר...",
+    "whiteboard-new-file-added": "קובץ חדש מוכן ונוסף לרשימת קבצי הלוח הלבן."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "אין מספרי טלפון זמינים.",
     "publish-to-chat": "שתפו לצ'אט",
     "dial-in-info": "מידע על חיוג"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "הפעלת לוח צ'אט עם סגירה אוטומטית",
+    "duration-after-last-message": "משך ההודעה האחרונה (בדקות)",
+    "duration-after-last-message-help": "לוח הצ'אט ייסגר אוטומטית לאחר תקופה זו של חוסר פעילות."
   }
 }
