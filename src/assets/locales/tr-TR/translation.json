@@ -86,7 +86,8 @@
     "request-submitted-wait": "İsteğiniz gönderildi. Lütfen onayı bekleyin.",
     "wait-other-uploading-to-finish": "Başka bir yükleme devam ediyor. Lütfen tamamlanmasını bekleyin.",
     "server-not-responding": "Sunucu yanıt vermiyor. Bağlantınız kararsız olabilir.",
-    "re-routing-connection": "Bağlantı kararsız. Daha iyi bir stabilite için yeniden yönlendiriliyor..."
+    "re-routing-connection": "Bağlantı kararsız. Daha iyi bir stabilite için yeniden yönlendiriliyor...",
+    "whiteboard-new-file-added": "Yeni dosya hazır ve beyaz tahta dosya listesine eklendi."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kaydedilmektedir.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Kullanılabilir telefon numarası yok.",
     "publish-to-chat": "Sohbette Paylaş",
     "dial-in-info": "Arama Bilgileri"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Otomatik kapanma sohbet panelini etkinleştir",
+    "duration-after-last-message": "Son mesajdan sonraki süre (dakikalar cinsinden)",
+    "duration-after-last-message-help": "Bu süre boyunca sohbet paneli otomatik olarak kapanıyor."
   }
 }
