@@ -86,7 +86,8 @@
     "request-submitted-wait": "您的請求已提交。請等待確認。",
     "wait-other-uploading-to-finish": "另一個上傳正在進行中。請等待其完成。",
     "server-not-responding": "伺服器無回應。您的連線可能不穩定。",
-    "re-routing-connection": "連線不穩定。正在重新路由以獲得更好的穩定性..."
+    "re-routing-connection": "連線不穩定。正在重新路由以獲得更好的穩定性...",
+    "whiteboard-new-file-added": "新檔案已準備好，並已加入白板檔案清單。"
   },
   "room-metadata": {
     "session-recording": "此會議正在錄製中。",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "沒有可用的電話號碼。",
     "publish-to-chat": "在聊天中分享",
     "dial-in-info": "撥入資訊"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "啟用自動關閉聊天面板",
+    "duration-after-last-message": "最後一則訊息後的持續時間（以分鐘計）",
+    "duration-after-last-message-help": "聊天面板會在這段時間內自動關閉。"
   }
 }
