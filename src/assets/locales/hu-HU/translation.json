@@ -596,6 +596,6 @@
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "Kapcsold be az automatikus csevegőpanel zárását",
     "duration-after-last-message": "Az utolsó üzenet utáni időtartam (percekben)",
-    "duration-after-last-message-help": "A chat panel automatikusan bezáródik ez a mozgás nélküli időszak után."
+    "duration-after-last-message-help": "A csevegőpanel automatikusan bezáródik ezen inaktivitási időszak után."
   }
 }
