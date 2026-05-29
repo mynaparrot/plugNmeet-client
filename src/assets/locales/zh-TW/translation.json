@@ -596,6 +596,6 @@
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "啟用自動關閉聊天面板",
     "duration-after-last-message": "最後一則訊息後的持續時間（以分鐘計）",
-    "duration-after-last-message-help": "聊天面板會在這段時間內自動關閉。"
+    "duration-after-last-message-help": "聊天面板會在無活動達此時間段後自動關閉。"
   }
 }
