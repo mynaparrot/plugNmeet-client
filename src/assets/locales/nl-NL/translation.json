@@ -86,7 +86,8 @@
     "request-submitted-wait": "Uw verzoek is ingediend. Wacht alstublieft op bevestiging",
     "wait-other-uploading-to-finish": "Een andere upload is in uitvoering. Wacht alsjeblieft tot het klaar is.",
     "server-not-responding": "Server reageert niet. Je verbinding kan onstabiel zijn.",
-    "re-routing-connection": "De verbinding is instabiel. Omleidingen voor betere stabiliteit..."
+    "re-routing-connection": "De verbinding is instabiel. Omleidingen voor betere stabiliteit...",
+    "whiteboard-new-file-added": "Het nieuwe bestand is klaar en is toegevoegd aan de whiteboard-bestandslijst."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Er zijn geen telefoonnummers beschikbaar.",
     "publish-to-chat": "Deel om te Chatten",
     "dial-in-info": "Inbelinformatie"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Activeer automatisch sluiten chatpaneel",
+    "duration-after-last-message": "Duur na het laatste bericht (in minuten)",
+    "duration-after-last-message-help": "Het chatpaneel sluit automatisch na deze periode van inactiviteit."
   }
 }
