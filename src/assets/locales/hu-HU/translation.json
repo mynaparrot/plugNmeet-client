@@ -86,7 +86,8 @@
     "request-submitted-wait": "A kérelmed be lett adva. Kérem, várja a megerősítést",
     "wait-other-uploading-to-finish": "Egy újabb feltöltés folyamatban van. Kérlek, várj, amíg befejeződik.",
     "server-not-responding": "A szerver nem válaszol. Lehet, hogy a kapcsolatod instabil.",
-    "re-routing-connection": "A kapcsolat instabil. Átirányítás a jobb stabilitás érdekében..."
+    "re-routing-connection": "A kapcsolat instabil. Átirányítás a jobb stabilitás érdekében...",
+    "whiteboard-new-file-added": "Az új fájl készen áll, és felkerült a fehértábla fájllistára."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Nincsenek elérhető telefonszámok.",
     "publish-to-chat": "Megosztás a Csevegésbe",
     "dial-in-info": "Tárcsázási információk"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Kapcsold be az automatikus csevegőpanel zárását",
+    "duration-after-last-message": "Az utolsó üzenet utáni időtartam (percekben)",
+    "duration-after-last-message-help": "A chat panel automatikusan bezáródik ez a mozgás nélküli időszak után."
   }
 }
