@@ -595,7 +595,7 @@
   },
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "הפעלת לוח צ'אט עם סגירה אוטומטית",
-    "duration-after-last-message": "משך ההודעה האחרונה (בדקות)",
+    "duration-after-last-message": "משך הזمان לאחר ההודעה האחרונה (בדקות)",
     "duration-after-last-message-help": "לוח הצ'אט ייסגר אוטומטית לאחר תקופה זו של חוסר פעילות."
   }
 }
