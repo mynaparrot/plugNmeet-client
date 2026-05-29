@@ -86,7 +86,8 @@
     "request-submitted-wait": "リクエストが送信されました。承認をお待ちください。",
     "wait-other-uploading-to-finish": "別のアップロードが進行中です。完了するまでお待ちください。",
     "server-not-responding": "サーバーが応答しません。接続が不安定な可能性があります。",
-    "re-routing-connection": "接続が不安定です。安定性を高めるために経路を変更しています..."
+    "re-routing-connection": "接続が不安定です。安定性を高めるために経路を変更しています...",
+    "whiteboard-new-file-added": "新しいファイルは完成し、ホワイトボードのファイルリストに追加されました。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画されています。",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "利用可能な電話番号はありません。",
     "publish-to-chat": "チャットで共有",
     "dial-in-info": "ダイヤルイン情報"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "自動クローズチャットパネルを有効にしてください",
+    "duration-after-last-message": "最後のメッセージからの時間(分単位)",
+    "duration-after-last-message-help": "この期間の非アクティブが続くとチャットパネルは自動的に閉じられます。"
   }
 }

@@ -86,7 +86,8 @@
     "request-submitted-wait": "Yêu cầu của bạn đã được gửi. Vui lòng đợi xác nhận",
     "wait-other-uploading-to-finish": "Một tải lên khác đang được tiến hành. Vui lòng đợi nó hoàn tất.",
     "server-not-responding": "Máy chủ không phản hồi. Kết nối của bạn có thể không ổn định.",
-    "re-routing-connection": "Kết nối không ổn định. Định tuyến lại để ổn định hơn..."
+    "re-routing-connection": "Kết nối không ổn định. Định tuyến lại để ổn định hơn...",
+    "whiteboard-new-file-added": "Tệp mới đã sẵn sàng và đã được thêm vào danh sách tệp bảng trắng."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Không có số điện thoại.",
     "publish-to-chat": "Chia sẻ lên trò chuyện",
     "dial-in-info": "Thông tin quay số"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Bật bảng trò chuyện tự động đóng",
+    "duration-after-last-message": "Thời lượng sau tin nhắn cuối cùng (tính bằng phút)",
+    "duration-after-last-message-help": "Bảng trò chuyện sẽ tự động đóng sau khoảng thời gian không hoạt động này."
   }
 }

@@ -86,7 +86,8 @@
     "request-submitted-wait": "Vaše žádost byla podána. Prosím, počkejte na potvrzení",
     "wait-other-uploading-to-finish": "Další nahrávání je v procesu. Prosím, počkejte, až to dokončí.",
     "server-not-responding": "Server nereaguje. Vaše připojení může být nestabilní.",
-    "re-routing-connection": "Připojení je nestabilní. Přesměrování pro lepší stabilitu..."
+    "re-routing-connection": "Připojení je nestabilní. Přesměrování pro lepší stabilitu...",
+    "whiteboard-new-file-added": "Nový soubor je připraven a byl přidán do seznamu souborů na tabuli."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Nejsou k dispozici žádná telefonní čísla.",
     "publish-to-chat": "Sdílet pro chat",
     "dial-in-info": "Informace o připojení k připojení"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Povolte automatické zavírání chatovacího panelu",
+    "duration-after-last-message": "Doba trvání po poslední zprávě (v minutách)",
+    "duration-after-last-message-help": "Panel chatu se po této době nečinnosti automaticky zavře."
   }
 }

@@ -86,7 +86,8 @@
     "request-submitted-wait": "Twoja prośba została złożona. Proszę poczekać na potwierdzenie",
     "wait-other-uploading-to-finish": "Kolejne przesłanie jest w trakcie publikacji. Proszę poczekać na zakończenie.",
     "server-not-responding": "Serwer nie odpowiada. Twoje połączenie może być niestabilne.",
-    "re-routing-connection": "Połączenie jest niestabilne. Przekierowanie dla lepszej stabilności..."
+    "re-routing-connection": "Połączenie jest niestabilne. Przekierowanie dla lepszej stabilności...",
+    "whiteboard-new-file-added": "Nowy plik jest gotowy i został dodany do listy plików na tablicy."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Nie ma dostępnych numerów telefonów.",
     "publish-to-chat": "Udostępnij na czacie",
     "dial-in-info": "Informacje o dial-in"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Włącz automatyczne zamykanie panelu czatu",
+    "duration-after-last-message": "Czas trwania po ostatniej wiadomości (w minutach)",
+    "duration-after-last-message-help": "Panel czatu automatycznie się zamyka po tym czasie bezczynności."
   }
 }

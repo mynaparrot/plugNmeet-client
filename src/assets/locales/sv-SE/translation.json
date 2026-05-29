@@ -86,7 +86,8 @@
     "request-submitted-wait": "Din begäran har skickats in. Vänligen vänta på bekräftelse",
     "wait-other-uploading-to-finish": "En ny uppladdning pågår. Vänligen vänta tills det är klart.",
     "server-not-responding": "Servern svarar inte. Din anslutning kan vara instabil.",
-    "re-routing-connection": "Anslutningen är instabil. Omdirigering för bättre stabilitet..."
+    "re-routing-connection": "Anslutningen är instabil. Omdirigering för bättre stabilitet...",
+    "whiteboard-new-file-added": "Ny fil är redo och har lagts till i whiteboard-fillistan."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Inga telefonnummer är tillgängliga.",
     "publish-to-chat": "Dela till chatten",
     "dial-in-info": "Information om uppringning"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Aktivera automatisk stängning av chattpanelen",
+    "duration-after-last-message": "Varaktighet efter senaste meddelande (i minuter)",
+    "duration-after-last-message-help": "Chattpanelen stängs automatiskt efter denna tid av inaktivitet."
   }
 }

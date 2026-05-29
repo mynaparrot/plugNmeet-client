@@ -86,7 +86,8 @@
     "request-submitted-wait": "Cererea dumneavoastră a fost depusă. Vă rugăm să așteptați confirmarea",
     "wait-other-uploading-to-finish": "O altă încărcare este în curs de desfășurare. Vă rugăm să așteptați să se termine.",
     "server-not-responding": "Serverul nu răspunde. Conexiunea ta poate fi instabilă.",
-    "re-routing-connection": "Conexiunea este instabilă. Redirecționarea pentru o stabilitate mai bună..."
+    "re-routing-connection": "Conexiunea este instabilă. Redirecționarea pentru o stabilitate mai bună...",
+    "whiteboard-new-file-added": "Fișierul nou este gata și a fost adăugat pe lista de fișiere de pe tablă."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Nu sunt disponibile numere de telefon.",
     "publish-to-chat": "Distribuie în chat",
     "dial-in-info": "Informații dial-in"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Activează panoul de închidere automată a chatului",
+    "duration-after-last-message": "Durata după ultimul mesaj (în minute)",
+    "duration-after-last-message-help": "Panoul de chat se va închide automat după această perioadă de inactivitate."
   }
 }

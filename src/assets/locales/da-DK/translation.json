@@ -86,7 +86,8 @@
     "request-submitted-wait": "Din anmodning er indsendt. Vent venligst på bekræftelse",
     "wait-other-uploading-to-finish": "Endnu en upload er i gang. Vent venligst på, at det er færdigt.",
     "server-not-responding": "Serveren svarer ikke. Din forbindelse kan være ustabil.",
-    "re-routing-connection": "Forbindelsen er ustabil. Omlægning for bedre stabilitet..."
+    "re-routing-connection": "Forbindelsen er ustabil. Omlægning for bedre stabilitet...",
+    "whiteboard-new-file-added": "Den nye fil er klar og er blevet tilføjet til whiteboard-fillisten."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "Der er ingen telefonnumre tilgængelige.",
     "publish-to-chat": "Del til chat",
     "dial-in-info": "Opkaldsinformation"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Aktivér automatisk luk chatpanel",
+    "duration-after-last-message": "Varighed efter sidste besked (i minutter)",
+    "duration-after-last-message-help": "Chatpanelet lukker automatisk efter denne periode med inaktivitet."
   }
 }

@@ -86,7 +86,8 @@
     "request-submitted-wait": "您的请求已提交。请等待确认。",
     "wait-other-uploading-to-finish": "另一个上传正在进行中。请等待其完成。",
     "server-not-responding": "服务器无响应。您的连接可能不稳定。",
-    "re-routing-connection": "连接不稳定。正在重新路由以获得更好的稳定性..."
+    "re-routing-connection": "连接不稳定。正在重新路由以获得更好的稳定性...",
+    "whiteboard-new-file-added": "新文件已准备好，并已添加到白板文件列表。"
   },
   "room-metadata": {
     "session-recording": "此会议正在录制中。",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "没有可用的电话号码。",
     "publish-to-chat": "在聊天中分享",
     "dial-in-info": "拨入信息"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "启用自动关闭聊天面板",
+    "duration-after-last-message": "最后一条消息后的时长（分钟）",
+    "duration-after-last-message-help": "聊天面板将在无活动达此时间段后自动关闭。"
   }
 }
