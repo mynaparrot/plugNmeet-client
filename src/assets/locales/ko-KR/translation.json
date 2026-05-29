@@ -86,7 +86,8 @@
     "request-submitted-wait": "요청이 제출되었습니다. 확인을 기다려 주십시오.",
     "wait-other-uploading-to-finish": "다른 업로드가 진행 중입니다. 완료될 때까지 기다려 주십시오.",
     "server-not-responding": "서버가 응답하지 않습니다. 연결이 불안정할 수 있습니다.",
-    "re-routing-connection": "연결이 불안정합니다. 더 나은 안정성을 위해 경로를 변경 중입니다..."
+    "re-routing-connection": "연결이 불안정합니다. 더 나은 안정성을 위해 경로를 변경 중입니다...",
+    "whiteboard-new-file-added": "새 파일이 준비되어 화이트보드 파일 목록에 추가되었습니다."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
@@ -591,5 +592,10 @@
     "no-phone-numbers": "사용 가능한 전화번호가 없습니다.",
     "publish-to-chat": "채팅에 공유",
     "dial-in-info": "다이얼 인 정보"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "자동 종료 채팅 패널 활성화",
+    "duration-after-last-message": "마지막 메시지 이후 지속 시간 (분 단위)",
+    "duration-after-last-message-help": "이 기간 동안 비활성 상태가 지속되면 채팅 패널이 자동으로 닫힙니다."
   }
 }
