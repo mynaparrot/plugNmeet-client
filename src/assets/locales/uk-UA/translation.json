@@ -595,7 +595,7 @@
   },
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "Увімкніть автоматичне закриття панелі чату",
-    "duration-after-last-message": "Тривалість після останнього повідомлення (у хвилинах)",
+    "duration-after-last-message": "Тривалість після останнього повідомлення (за кілька хвилин)",
     "duration-after-last-message-help": "Панель чату автоматично закривається після цього періоду бездіяльності."
   }
 }
