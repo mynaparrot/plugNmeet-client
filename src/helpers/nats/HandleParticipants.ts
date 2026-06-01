@@ -347,6 +347,9 @@ export default class HandleParticipants {
         );
 
         for (const u of serverUsers) {
+          if (isUserRecorder(u.userId)) {
+            continue;
+          }
           if (this.activeUserTasks.has(u.userId)) {
             console.log(
               `Reconciliation: Deferring addition of ${u.userId} because a primary task is active.`,
