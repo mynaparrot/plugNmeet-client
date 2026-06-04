@@ -1,18 +1,16 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react';
-import {
-  LocalParticipant,
-  RemoteAudioTrack,
-  RemoteParticipant,
-} from 'livekit-client';
+import { RemoteAudioTrack } from 'livekit-client';
 
 import AudioElm from './audio';
-import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
+import {
+  CurrentConnectionEvents,
+  ISubscriberInfo,
+} from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
-import { toPlugNmeetUserId } from '../../../helpers/utils';
 
 const AudioElements = () => {
   const [audioSubscribers, setAudioSubscribers] =
-    useState<Map<string, RemoteParticipant | LocalParticipant>>();
+    useState<Map<string, ISubscriberInfo>>();
   const currentConnection = getMediaServerConn();
 
   useEffect(() => {
@@ -36,19 +34,17 @@ const AudioElements = () => {
       return null;
     }
     const elms: Array<ReactElement> = [];
-    audioSubscribers.forEach((participant) => {
-      participant.audioTrackPublications.forEach((track) => {
-        if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {
-          const userId = toPlugNmeetUserId(participant.identity);
-          elms.push(
-            <AudioElm
-              userId={userId}
-              audioTrack={track.audioTrack}
-              key={track.trackSid}
-            />,
-          );
-        }
-      });
+    audioSubscribers.forEach((subscriber) => {
+      const track = subscriber.track;
+      if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {
+        elms.push(
+          <AudioElm
+            userId={subscriber.user.userId}
+            audioTrack={track.audioTrack}
+            key={track.trackSid}
+          />,
+        );
+      }
     });
 
     return elms;

@@ -1,53 +1,57 @@
 import React, { useMemo, useState } from 'react';
-import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
+import {
+  LocalTrackPublication,
+  RemoteTrackPublication,
+  Track,
+} from 'livekit-client';
 
 import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
 import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
+import { IParticipant } from '../../../store/slices/interfaces/participant';
 
 export interface VideoParticipantProps {
   participantType: VideoParticipantType;
-  participant: RemoteParticipant | LocalParticipant;
+  user: IParticipant;
+  track: LocalTrackPublication | RemoteTrackPublication;
   displayPinIcon: boolean;
   displaySwitchCamIcon: boolean;
 }
 const VideoParticipant = ({
   participantType,
-  participant,
+  user,
+  track,
   displayPinIcon,
   displaySwitchCamIcon,
 }: VideoParticipantProps) => {
-  const isSpeaking = useAppSelector(
-    selectIsSpeakingByUserId(participant.identity),
-  );
+  const isSpeaking = useAppSelector(selectIsSpeakingByUserId(user.userId));
   const [floatView, setFloatView] = useState<boolean>(true);
 
   const renderVideoElms = useMemo(() => {
     const elements: Array<React.ReactNode> = [];
 
-    for (const track of participant.videoTrackPublications.values()) {
-      if (
-        track.source === Track.Source.Camera &&
-        !track.isMuted &&
-        track.videoTrack
-      ) {
-        const elm = (
-          <VideoComponent
-            userId={participant.identity}
-            name={participant.name ?? ''}
-            isLocal={participantType.isLocal}
-            track={track}
-            displayPinIcon={displayPinIcon}
-            key={track.trackSid}
-          />
-        );
-        elements.push(elm);
-      }
+    if (
+      track.source === Track.Source.Camera &&
+      !track.isMuted &&
+      track.videoTrack
+    ) {
+      const elm = (
+        <VideoComponent
+          userId={user.userId}
+          name={user.name}
+          isLocal={participantType.isLocal}
+          track={track}
+          displayPinIcon={displayPinIcon}
+          key={track.trackSid}
+        />
+      );
+      elements.push(elm);
     }
+
     return elements;
-  }, [participant, displayPinIcon, participantType]);
+  }, [displayPinIcon, user, track, participantType]);
 
   return (
     <div

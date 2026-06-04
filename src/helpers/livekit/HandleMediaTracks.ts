@@ -206,7 +206,7 @@ export default class HandleMediaTracks {
             changes: { screenShareTrack: 1 },
           }),
         );
-        this.connectLivekit.addScreenShareTrack(participant.identity, track);
+        this.connectLivekit.addScreenShareTrack(participant, track);
         break;
       }
       case Track.Source.Microphone: {
@@ -225,7 +225,7 @@ export default class HandleMediaTracks {
             },
           }),
         );
-        this.connectLivekit.addAudioSubscriber(participant);
+        this.connectLivekit.addAudioSubscriber(participant, track);
         break;
       }
       case Track.Source.Camera: {
@@ -242,7 +242,7 @@ export default class HandleMediaTracks {
             changes: { videoTracks: count },
           }),
         );
-        this.connectLivekit.addVideoSubscriber(participant);
+        this.connectLivekit.addVideoSubscriber(participant, track);
         break;
       }
     }

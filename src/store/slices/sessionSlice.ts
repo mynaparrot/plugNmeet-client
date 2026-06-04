@@ -45,7 +45,6 @@ const initialState: ISession = {
         allowViewOtherWebcams: true,
         allowViewOtherUsersList: true,
         adminOnlyWebcams: false,
-        allowPolls: true,
         roomDuration: '0',
         allowVirtualBg: true,
         allowRaiseHand: true,

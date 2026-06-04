@@ -101,7 +101,7 @@ export default class HandleParticipants {
     this._isLocalUserRecorder = isUserRecorder(info.userId);
 
     const metadata = this.decodeMetadata(info.metadata);
-    const localUser = {
+    const localUser: ICurrentUser = {
       userId: info.userId,
       sid: info.userSid,
       name: info.name,
@@ -116,7 +116,7 @@ export default class HandleParticipants {
     }
 
     store.dispatch(addCurrentUser(localUser));
-    await this.updateParticipantMetadata(info.userId, metadata);
+    //await this.updateParticipantMetadata(info.userId, metadata);
 
     return localUser;
   };
@@ -139,6 +139,11 @@ export default class HandleParticipants {
     });
   };
 
+  /**
+   * This method will add both local and remote users in the participants list
+   * @param participant
+   * @private
+   */
   private async _addRemoteParticipant(
     participant: NatsKvUserInfo,
   ): Promise<boolean> {
@@ -191,7 +196,7 @@ export default class HandleParticipants {
         userId: participant.userId,
         name: participant.name,
         metadata: metadata,
-        isLocal: false,
+        isLocal: participant.userId === this._localUserId,
         joinedAt: Number(participant.joinedAt),
         visibility: 'visible',
         audioVolume: store.getState().roomSettings.roomAudioVolume,
@@ -499,12 +504,18 @@ export default class HandleParticipants {
           track.source === Track.Source.ScreenShareAudio
         ) {
           mediaConn.addScreenShareTrack(
-            participant.identity,
+            participant,
             track as RemoteTrackPublication,
           );
         } else {
-          mediaConn.addVideoSubscriber(participant);
-          mediaConn.addAudioSubscriber(participant);
+          mediaConn.addVideoSubscriber(
+            participant,
+            track as RemoteTrackPublication,
+          );
+          mediaConn.addAudioSubscriber(
+            participant,
+            track as RemoteTrackPublication,
+          );
         }
       });
     }

@@ -16,19 +16,13 @@ import {
 } from '../../store/slices/sessionSlice';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
 import { toPlugNmeetUserId } from '../utils';
-import { CurrentConnectionEvents } from './types';
+import { CurrentConnectionEvents, ISubscriberInfo } from './types';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
 
 export default class ParticipantMediaManager {
-  private _audioSubscribersMap = new Map<string, RemoteParticipant>();
-  private _videoSubscribersMap = new Map<
-    string,
-    Participant | LocalParticipant | RemoteParticipant
-  >();
-  private _screenShareTracksMap = new Map<
-    string,
-    Array<LocalTrackPublication | RemoteTrackPublication>
-  >();
+  private _audioSubscribersMap = new Map<string, ISubscriberInfo>();
+  private _videoSubscribersMap = new Map<string, ISubscriberInfo>();
+  private _screenShareTracksMap = new Map<string, Array<ISubscriberInfo>>();
 
   private readonly localUserId: string;
   private eventEmitter: EventEmitter;
@@ -51,24 +45,32 @@ export default class ParticipantMediaManager {
   }
 
   public addScreenShareTrack = (
-    userId: string,
+    participant: Participant | LocalParticipant | RemoteParticipant,
     track: LocalTrackPublication | RemoteTrackPublication,
   ) => {
-    const existUser = participantsSelector.selectById(store.getState(), userId);
-    if (!existUser || !existUser.isOnline) {
+    const user = participantsSelector.selectById(
+      store.getState(),
+      participant.identity,
+    );
+    if (!user || !user.isOnline) {
       return;
     }
 
-    const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
-    if (this._screenShareTracksMap.has(userId)) {
-      const oldTracks = this._screenShareTracksMap.get(userId);
+    const subscriberInfo: ISubscriberInfo = {
+      user: user,
+      track: track,
+    };
+
+    const tracks: Array<ISubscriberInfo> = [];
+    if (this._screenShareTracksMap.has(user.userId)) {
+      const oldTracks = this._screenShareTracksMap.get(user.userId);
       if (oldTracks && oldTracks.length) {
         tracks.push(...oldTracks);
       }
     }
-    tracks.push(track);
-    this._screenShareTracksMap.set(userId, tracks);
-    this.syncScreenShareTracks(userId);
+    tracks.push(subscriberInfo);
+    this._screenShareTracksMap.set(user.userId, tracks);
+    this.syncScreenShareTracks(user.userId);
   };
 
   public removeScreenShareTrack = (userId: string) => {
@@ -94,7 +96,7 @@ export default class ParticipantMediaManager {
     }
 
     // emit a new tracks map
-    const screenShareTracks = new Map(this._screenShareTracksMap) as any;
+    const screenShareTracks = new Map(this._screenShareTracksMap);
     this.eventEmitter.emit(
       CurrentConnectionEvents.ScreenShareTracks,
       screenShareTracks,
@@ -104,13 +106,14 @@ export default class ParticipantMediaManager {
 
   public addAudioSubscriber = (
     participant: Participant | LocalParticipant | RemoteParticipant,
+    track: LocalTrackPublication | RemoteTrackPublication,
   ) => {
     if (!participant.audioTrackPublications.size) {
       return;
     }
     const userId = toPlugNmeetUserId(participant.identity);
-    const existUser = participantsSelector.selectById(store.getState(), userId);
-    if (!existUser || !existUser.isOnline) {
+    const user = participantsSelector.selectById(store.getState(), userId);
+    if (!user || !user.isOnline) {
       return;
     }
     // we don't want to add local audio here.
@@ -118,10 +121,12 @@ export default class ParticipantMediaManager {
       return;
     }
 
-    this._audioSubscribersMap.set(
-      participant.identity,
-      participant as RemoteParticipant,
-    );
+    const subscriberInfo: ISubscriberInfo = {
+      user: user,
+      track: track,
+    };
+
+    this._audioSubscribersMap.set(user.userId, subscriberInfo);
     this.syncAudioSubscribers();
   };
 
@@ -146,19 +151,25 @@ export default class ParticipantMediaManager {
 
   public addVideoSubscriber = (
     participant: Participant | LocalParticipant | RemoteParticipant,
+    track: LocalTrackPublication | RemoteTrackPublication,
   ) => {
     if (!participant.videoTrackPublications.size) {
       return;
     }
-    const existUser = participantsSelector.selectById(
+    const user = participantsSelector.selectById(
       store.getState(),
       participant.identity,
     );
-    if (!existUser || !existUser.isOnline) {
+    if (!user || !user.isOnline) {
       return;
     }
 
-    this._videoSubscribersMap.set(participant.identity, participant);
+    const subscriberInfo: ISubscriberInfo = {
+      user: user,
+      track: track,
+    };
+
+    this._videoSubscribersMap.set(user.userId, subscriberInfo);
     this.syncVideoSubscribers();
   };
 
@@ -182,7 +193,7 @@ export default class ParticipantMediaManager {
     }
 
     if (this._videoSubscribersMap.size <= 1) {
-      const subscribers = new Map(this._videoSubscribersMap) as any;
+      const subscribers = new Map(this._videoSubscribersMap);
       this.eventEmitter.emit(
         CurrentConnectionEvents.VideoSubscribers,
         subscribers,
@@ -196,11 +207,11 @@ export default class ParticipantMediaManager {
 
     const mediaSubscribersToArray = Array.from(this._videoSubscribersMap);
     mediaSubscribersToArray.sort((a, b) => {
-      const aPrt = a[1];
-      const bPart = b[1];
+      const aUser = a[1].user;
+      const bUser = b[1].user;
 
-      const aSpeaker = speakerMap.get(aPrt.identity);
-      const bSpeaker = speakerMap.get(bPart.identity);
+      const aSpeaker = speakerMap.get(aUser.userId);
+      const bSpeaker = speakerMap.get(bUser.userId);
 
       const aIsSpeaking = aSpeaker?.isSpeaking ?? false;
       const bIsSpeaking = bSpeaker?.isSpeaking ?? false;
@@ -217,17 +228,10 @@ export default class ParticipantMediaManager {
         return bLastSpoke - aLastSpoke;
       }
 
-      // then LiveKit's last active speaker
-      if (aPrt.lastSpokeAt !== bPart.lastSpokeAt) {
-        const aLast = aPrt.lastSpokeAt?.getTime() ?? 0;
-        const bLast = bPart.lastSpokeAt?.getTime() ?? 0;
-        return bLast - aLast;
-      }
-
-      return (aPrt.joinedAt?.getTime() ?? 0) - (bPart.joinedAt?.getTime() ?? 0);
+      return (aUser.joinedAt ?? 0) - (bUser.joinedAt ?? 0);
     });
 
-    const subscribers = new Map(mediaSubscribersToArray) as any;
+    const subscribers = new Map(mediaSubscribersToArray);
     this.eventEmitter.emit(
       CurrentConnectionEvents.VideoSubscribers,
       subscribers,

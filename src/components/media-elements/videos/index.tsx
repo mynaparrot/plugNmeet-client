@@ -1,14 +1,15 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react';
-import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
 import { concat } from 'es-toolkit/compat';
 
-import { store, useAppDispatch, useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import VideoLayout from './videoLayout';
 import VideoParticipant, { VideoParticipantProps } from './videoParticipant';
-import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
+import {
+  CurrentConnectionEvents,
+  ISubscriberInfo,
+} from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
 import { updatePinCamUserId } from '../../../store/slices/roomSettingsSlice';
-import { participantsSelector } from '../../../store/slices/participantSlice';
 
 interface IVideosComponentProps {
   isVertical?: boolean;
@@ -25,12 +26,12 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     (state) => state.roomSettings.pinCamUserId,
   );
   const [videoSubscribers, setVideoSubscribers] =
-    useState<Map<string, LocalParticipant | RemoteParticipant>>();
+    useState<Map<string, ISubscriberInfo>>();
   const currentConnection = getMediaServerConn();
 
   useEffect(() => {
     if (currentConnection.videoSubscribersMap.size) {
-      setVideoSubscribers(currentConnection.videoSubscribersMap as any);
+      setVideoSubscribers(currentConnection.videoSubscribersMap);
     }
     currentConnection.on(
       CurrentConnectionEvents.VideoSubscribers,
@@ -56,55 +57,46 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
       ? Array.from(videoSubscribers.values())
       : [];
 
-    for (const participant of subscribers) {
+    for (const subscriber of subscribers) {
       // we will only take if source from Camera
-      const videoTracks = participant.getTrackPublication(Track.Source.Camera);
-      if (videoTracks) {
-        let isAdmin = false,
-          displayPinIcon = true,
-          displaySwitchCamIcon = true;
+      let displayPinIcon = true,
+        displaySwitchCamIcon = true;
 
-        const pp = participantsSelector.selectById(
-          store.getState(),
-          participant.identity,
-        );
-        isAdmin = !!pp?.metadata?.isAdmin;
+      const participantType: VideoParticipantType = {
+        isAdmin: subscriber.user.metadata?.isAdmin ?? false,
+        isLocal: subscriber.user.isLocal,
+      };
 
-        const participantType: VideoParticipantType = {
-          isAdmin,
-          isLocal: participant instanceof LocalParticipant,
-        };
-
-        if (subscribers.length === 1) {
-          displayPinIcon = false;
-          displaySwitchCamIcon = false;
-        }
-
-        // for (let i = 0; i < 25; i++) {
-        totalNumWebcams++;
-        const elm = (
-          <VideoParticipant
-            key={participant.sid}
-            // key={participant.sid + '_' + i}
-            participantType={participantType}
-            participant={participant}
-            displayPinIcon={displayPinIcon}
-            displaySwitchCamIcon={displaySwitchCamIcon}
-          />
-        );
-
-        if (pinCamUserId && participant.identity === pinCamUserId) {
-          pinSubscribers = elm;
-          totalNumWebcams--;
-        } else if (isAdmin) {
-          adminSubscribers.push(elm);
-        } else if (participant instanceof LocalParticipant) {
-          localSubscribers.push(elm);
-        } else {
-          otherSubscribers.push(elm);
-        }
-        // }
+      if (subscribers.length === 1) {
+        displayPinIcon = false;
+        displaySwitchCamIcon = false;
       }
+
+      // for (let i = 0; i < 25; i++) {
+      totalNumWebcams++;
+      const elm = (
+        <VideoParticipant
+          key={subscriber.user.userId}
+          // key={participant.sid + '_' + i}
+          participantType={participantType}
+          track={subscriber.track}
+          user={subscriber.user}
+          displayPinIcon={displayPinIcon}
+          displaySwitchCamIcon={displaySwitchCamIcon}
+        />
+      );
+
+      if (pinCamUserId && subscriber.user.userId === pinCamUserId) {
+        pinSubscribers = elm;
+        totalNumWebcams--;
+      } else if (participantType.isAdmin) {
+        adminSubscribers.push(elm);
+      } else if (subscriber.user.isLocal) {
+        localSubscribers.push(elm);
+      } else {
+        otherSubscribers.push(elm);
+      }
+      // }
     }
 
     const allParticipants = concat(

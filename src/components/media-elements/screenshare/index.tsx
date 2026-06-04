@@ -1,21 +1,17 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react';
-import {
-  LocalTrackPublication,
-  RemoteAudioTrack,
-  RemoteTrackPublication,
-  Track,
-} from 'livekit-client';
+import { RemoteAudioTrack, Track } from 'livekit-client';
 
 import VideoElm from './videoElm';
 import AudioElm from './audioElm';
-import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
+import {
+  CurrentConnectionEvents,
+  ISubscriberInfo,
+} from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
 
 const ScreenShareElements = () => {
   const [screenShareTracks, setScreenShareTracks] =
-    useState<
-      Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>
-    >();
+    useState<Map<string, Array<ISubscriberInfo>>>();
   const currentConnection = getMediaServerConn();
 
   useEffect(() => {
@@ -38,8 +34,9 @@ const ScreenShareElements = () => {
     if (screenShareTracks) {
       const elm = Array<ReactElement>();
 
-      screenShareTracks.forEach((tracks) => {
-        tracks.forEach((track) => {
+      screenShareTracks.forEach((subscriberInfos) => {
+        subscriberInfos.forEach((subscriberInfo) => {
+          const track = subscriberInfo.track;
           if (track.source === Track.Source.ScreenShare) {
             elm.push(<VideoElm key={track.trackSid} track={track} />);
           } else if (

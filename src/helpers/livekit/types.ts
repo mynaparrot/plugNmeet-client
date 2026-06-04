@@ -8,6 +8,7 @@ import type {
 } from 'livekit-client';
 import type EventEmitter from 'eventemitter3';
 import { MediaServerConnInfo } from 'plugnmeet-protocol-js';
+import { IParticipant } from '../../store/slices/interfaces/participant';
 
 export enum CurrentConnectionEvents {
   ScreenShareStatus = 'screenShareStatus',
@@ -17,30 +18,31 @@ export enum CurrentConnectionEvents {
   ScreenShareTracks = 'screenShareTracks',
 }
 
+export interface ISubscriberInfo {
+  user: IParticipant;
+  track: LocalTrackPublication | RemoteTrackPublication;
+}
+
 export interface IConnectLivekit extends EventEmitter {
   get room(): Room;
-  get videoSubscribersMap(): Map<
-    string,
-    Participant | LocalParticipant | RemoteParticipant
-  >;
-  get audioSubscribersMap(): Map<string, RemoteParticipant>;
-  get screenShareTracksMap(): Map<
-    string,
-    Array<LocalTrackPublication | RemoteTrackPublication>
-  >;
+  get videoSubscribersMap(): Map<string, ISubscriberInfo>;
+  get audioSubscribersMap(): Map<string, ISubscriberInfo>;
+  get screenShareTracksMap(): Map<string, Array<ISubscriberInfo>>;
   initializeConnection(serverInfo: MediaServerConnInfo): Promise<void>;
   disconnectRoom(normalDisconnect: boolean): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
   addAudioSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
+    track: LocalTrackPublication | RemoteTrackPublication,
   ): void;
   removeAudioSubscriber(userId: string): void;
   addVideoSubscriber(
     participant: Participant | LocalParticipant | RemoteParticipant,
+    track: LocalTrackPublication | RemoteTrackPublication,
   ): void;
   removeVideoSubscriber(userId: string): void;
   addScreenShareTrack(
-    userId: string,
+    participant: Participant | LocalParticipant | RemoteParticipant,
     track: LocalTrackPublication | RemoteTrackPublication,
   ): void;
   removeScreenShareTrack(userId: string): void;
@@ -54,21 +56,14 @@ export interface IConnectLivekit extends EventEmitter {
   );
   on(
     event: CurrentConnectionEvents.AudioSubscribers,
-    listener: (subscribers: Map<string, RemoteParticipant>) => void,
+    listener: (subscribers: Map<string, ISubscriberInfo>) => void,
   );
   on(
     event: CurrentConnectionEvents.VideoSubscribers,
-    listener: (
-      subscribers: Map<string, LocalParticipant | RemoteParticipant>,
-    ) => void,
+    listener: (subscribers: Map<string, ISubscriberInfo>) => void,
   );
   on(
     event: CurrentConnectionEvents.ScreenShareTracks,
-    listener: (
-      tracks: Map<
-        string,
-        Array<LocalTrackPublication | RemoteTrackPublication>
-      >,
-    ) => void,
+    listener: (tracks: Map<string, Array<ISubscriberInfo>>) => void,
   );
 }

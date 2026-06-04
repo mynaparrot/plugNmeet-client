@@ -332,11 +332,14 @@ export default class ConnectLivekit
               }),
             );
             this.addScreenShareTrack(
-              participant.identity,
+              participant,
               track as RemoteTrackPublication,
             );
           } else if (track.source === Track.Source.Camera) {
-            this.addVideoSubscriber(participant);
+            this.addVideoSubscriber(
+              participant,
+              track as RemoteTrackPublication,
+            );
           }
         }
       });
@@ -556,22 +559,22 @@ export default class ConnectLivekit
   };
 
   public addScreenShareTrack: typeof ParticipantMediaManager.prototype.addScreenShareTrack =
-    (userId, track) =>
-      this.participantMediaManager.addScreenShareTrack(userId, track);
+    (participant, track) =>
+      this.participantMediaManager.addScreenShareTrack(participant, track);
 
   public removeScreenShareTrack: typeof ParticipantMediaManager.prototype.removeScreenShareTrack =
     (userId) => this.participantMediaManager.removeScreenShareTrack(userId);
 
   public addAudioSubscriber: typeof ParticipantMediaManager.prototype.addAudioSubscriber =
-    (participant) =>
-      this.participantMediaManager.addAudioSubscriber(participant);
+    (participant, track) =>
+      this.participantMediaManager.addAudioSubscriber(participant, track);
 
   public removeAudioSubscriber: typeof ParticipantMediaManager.prototype.removeAudioSubscriber =
     (userId) => this.participantMediaManager.removeAudioSubscriber(userId);
 
   public addVideoSubscriber: typeof ParticipantMediaManager.prototype.addVideoSubscriber =
-    (participant) =>
-      this.participantMediaManager.addVideoSubscriber(participant);
+    (participant, track) =>
+      this.participantMediaManager.addVideoSubscriber(participant, track);
 
   public removeVideoSubscriber: typeof ParticipantMediaManager.prototype.removeVideoSubscriber =
     (userId) => this.participantMediaManager.removeVideoSubscriber(userId);
