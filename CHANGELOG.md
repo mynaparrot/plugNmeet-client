@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.2.0...v2.2.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* no reconcile for recorder ([8c8ab23](https://github.com/mynaparrot/plugNmeet-client/commit/8c8ab23f2fa42feded716868e68e4750b18fbcc9))
+* use chunk minimum size 10Mb ([2e8a5e9](https://github.com/mynaparrot/plugNmeet-client/commit/2e8a5e96dff816bf7627ef76430748ba5826ecf2))
+
 ## [2.2.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.9...v2.2.0) (2026-05-31)
 
 
