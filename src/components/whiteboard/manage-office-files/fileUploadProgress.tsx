@@ -35,6 +35,7 @@ interface FileUploadProgressProps {
   maxAllowedFileSize: string;
   file: File;
   setDisableUploading: Dispatch<SetStateAction<boolean>>;
+  onUploadFinished: () => void;
 }
 type message = {
   isError: boolean;
@@ -46,6 +47,7 @@ const FileUploadProgress = ({
   maxAllowedFileSize,
   file,
   setDisableUploading,
+  onUploadFinished,
 }: FileUploadProgressProps) => {
   const { t } = useTranslation();
   const conn = getNatsConn();
@@ -62,13 +64,14 @@ const FileUploadProgress = ({
   const [uploadingProgress, setUploadingProgress] = useState<number>(0);
   const [message, setMessage] = useState<message | undefined>(undefined);
   const [removeView, setRemoveView] = useState<boolean>(false);
-  const [isWorking, setIsWorking] = useState<boolean>(false);
+  const isWorking = useRef(false);
   const uploadInitiated = useRef(false);
 
-  useEffect(() => {
-    setDisableUploading(isWorking);
-    // oxlint-disable-next-line exhaustive-deps
-  }, [isWorking]);
+  const setWorking = useCallback((working: boolean) => {
+    isWorking.current = working;
+    setDisableUploading(working);
+    //oxlint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (uploadInitiated.current) {
@@ -83,10 +86,13 @@ const FileUploadProgress = ({
       RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
       files,
       (result) => convertFile(result.filePath),
-      (isUploading) => setIsWorking(isUploading),
+      (isUploading) => setWorking(isUploading),
       (uploadProgress) =>
         setUploadingProgress(Math.round(uploadProgress * 100)),
-      (errMsg) => setMessage({ isError: true, msg: errMsg }),
+      (errMsg) => {
+        setMessage({ isError: true, msg: errMsg });
+        setWorking(false);
+      },
     );
     // oxlint-disable-next-line
   }, [uploadInitiated, file]);
@@ -96,7 +102,7 @@ const FileUploadProgress = ({
       type: 'info',
     });
     setMessage({ isError: false, msg: t('whiteboard.converting') });
-    setIsWorking(true);
+    setWorking(true);
     const body: WhiteboardFileConversionReq = {
       roomSid: roomSid,
       roomId: roomId,
@@ -110,7 +116,7 @@ const FileUploadProgress = ({
     );
     if (!res.status) {
       setMessage({ isError: true, msg: t(res.msg) });
-      setIsWorking(false);
+      setWorking(false);
       toast.update(id, {
         render: t(res.msg),
         type: 'error',
@@ -147,14 +153,16 @@ const FileUploadProgress = ({
     setMessage({ isError: false, msg: t('whiteboard.file-ready') });
     await sleep(1000);
     setRemoveView(true);
-    setIsWorking(false);
+    setWorking(false);
+    onUploadFinished();
   };
 
   const handleDelete = useCallback(() => {
-    if (!isWorking) {
+    if (!isWorking.current) {
       setRemoveView(true);
+      onUploadFinished();
     }
-  }, [isWorking]);
+  }, [onUploadFinished]);
 
   return (
     !removeView && (

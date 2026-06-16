@@ -1,4 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { debounce } from 'es-toolkit';
@@ -13,6 +19,7 @@ import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboa
 import { savePageData } from '../helpers/utils';
 import { broadcastCurrentFileId } from '../helpers/handleRequests';
 import { sleep } from '../../../helpers/utils';
+import { RefreshIcon } from '../../../assets/Icons/RefreshIcon';
 
 interface ManageOfficeFilesModalProps {
   roomId: string;
@@ -31,6 +38,7 @@ const ManageOfficeFilesModal = ({
 }: ManageOfficeFilesModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const [refresh, setRefresh] = useState(0);
 
   const { allowedFileTypes, maxAllowedFileSize, officeFileTypes } =
     useMemo(() => {
@@ -56,12 +64,28 @@ const ManageOfficeFilesModal = ({
   >(undefined);
   const [disableUploading, setDisableUploading] = useState<boolean>(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
-    if (selectedFiles.length) {
-      setFileToUpload(selectedFiles[0]);
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
+      if (selectedFiles.length) {
+        setFileToUpload(selectedFiles[0]);
+      }
+    },
+    [],
+  );
+
+  const onUploadFinished = useCallback(() => {
+    if (inputFile.current) {
+      inputFile.current.value = '';
     }
-  };
+    setFileToUpload(undefined);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setRefresh(Date.now());
+    }
+  }, [isOpen]);
 
   const debouncedAddToWhiteboard = useMemo(
     () =>
@@ -111,7 +135,15 @@ const ManageOfficeFilesModal = ({
               as="h3"
               className="flex items-center justify-between text-base font-semibold leading-7 text-Gray-950 dark:text-white px-4 py-2 border-b border-Gray-100 dark:border-Gray-800"
             >
-              <span>{t('whiteboard.upload-files-title')}</span>
+              <div className="flex items-center gap-2">
+                {t('whiteboard.upload-files-title')}
+                <div
+                  className="cursor-pointer"
+                  onClick={() => setRefresh(Date.now())}
+                >
+                  <RefreshIcon />
+                </div>
+              </div>
               <Button className="cursor-pointer" onClick={() => onClose()}>
                 <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
               </Button>
@@ -158,6 +190,7 @@ const ManageOfficeFilesModal = ({
                     maxAllowedFileSize={maxAllowedFileSize}
                     file={fileToUpload}
                     setDisableUploading={setDisableUploading}
+                    onUploadFinished={onUploadFinished}
                   />
                 )}
                 <UploadedFilesList
@@ -165,6 +198,7 @@ const ManageOfficeFilesModal = ({
                   excalidrawAPI={excalidrawAPI}
                   onSelectOfficeFile={setSelectedOfficeFile}
                   selectedOfficeFile={selectedOfficeFile}
+                  refresh={refresh}
                 />
               </div>
             </div>

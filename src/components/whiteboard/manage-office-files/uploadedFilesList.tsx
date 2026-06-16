@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   GetRoomUploadedFilesReqSchema,
@@ -17,12 +17,14 @@ import {
 import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
+import { sleep } from '../../../helpers/utils';
 
 interface UploadedFilesListProps {
   roomId: string;
   excalidrawAPI: ExcalidrawImperativeAPI;
   onSelectOfficeFile: (fileId: IWhiteboardOfficeFile) => void;
   selectedOfficeFile?: IWhiteboardOfficeFile;
+  refresh?: number;
 }
 
 const UploadedFilesList = ({
@@ -30,9 +32,10 @@ const UploadedFilesList = ({
   excalidrawAPI,
   onSelectOfficeFile,
   selectedOfficeFile,
+  refresh,
 }: UploadedFilesListProps) => {
   const { t } = useTranslation();
-  const isFetchingData = useRef<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const whiteboardUploadedOfficeFiles = useAppSelector(
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
@@ -45,54 +48,71 @@ const UploadedFilesList = ({
   );
 
   const fetchAndUpdateFiles = useCallback(async () => {
-    const body = create(GetRoomUploadedFilesReqSchema, {
-      roomId: roomId,
-      fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
-    });
-    const r = await sendAPIRequest(
-      'getRoomFilesByType',
-      toBinary(GetRoomUploadedFilesReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
-    if (!res.status || !res.files) {
-      return;
-    }
-
-    // let's compare with local store
-    res.files.forEach((file) => {
-      const exist = whiteboardUploadedOfficeFiles.find(
-        (f) => f.fileId === file.fileId,
+    setIsLoading(true);
+    try {
+      const body = create(GetRoomUploadedFilesReqSchema, {
+        roomId: roomId,
+        fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
+      });
+      const r = await sendAPIRequest(
+        'getRoomFilesByType',
+        toBinary(GetRoomUploadedFilesReqSchema, body),
+        false,
+        'application/protobuf',
+        'arraybuffer',
       );
-      if (!exist) {
-        const newFile: WhiteboardFileConversionRes = {
-          msg: '',
-          status: true,
-          fileId: file.fileId,
-          fileName: file.fileName,
-          filePath: file.filePath,
-          totalPages: file.totalPages ?? 0,
-        };
-        createAndRegisterOfficeFile(
-          newFile,
-          excalidrawAPI.getAppState().height,
-          excalidrawAPI.getAppState().width,
-        );
+      const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
+      if (!res.status || !res.files) {
+        return;
       }
-    });
+
+      // let's compare with local store
+      res.files.forEach((file) => {
+        const exist = whiteboardUploadedOfficeFiles.find(
+          (f) => f.fileId === file.fileId,
+        );
+        if (!exist) {
+          const newFile: WhiteboardFileConversionRes = {
+            msg: '',
+            status: true,
+            fileId: file.fileId,
+            fileName: file.fileName,
+            filePath: file.filePath,
+            totalPages: file.totalPages ?? 0,
+          };
+          createAndRegisterOfficeFile(
+            newFile,
+            excalidrawAPI.getAppState().height,
+            excalidrawAPI.getAppState().width,
+          );
+        }
+      });
+    } finally {
+      await sleep(500);
+      setIsLoading(false);
+    }
   }, [whiteboardUploadedOfficeFiles, excalidrawAPI, roomId]);
 
   useEffect(() => {
-    if (!isFetchingData.current && refreshWhiteboardFilesListSignal) {
-      isFetchingData.current = true;
-      fetchAndUpdateFiles().then(() => (isFetchingData.current = false));
+    if (refresh) {
+      fetchAndUpdateFiles();
+    }
+  }, [refresh, fetchAndUpdateFiles]);
+
+  useEffect(() => {
+    if (refreshWhiteboardFilesListSignal) {
+      fetchAndUpdateFiles();
     }
   }, [refreshWhiteboardFilesListSignal, fetchAndUpdateFiles]);
 
   return (
-    <div className="max-h-40 overflow-y-auto scrollBar grid gap-2">
+    <div
+      className={`max-h-40 overflow-y-auto scrollBar grid gap-2 relative ${
+        isLoading
+          ? 'opacity-50 blur-sm transition-all duration-300 pointer-events-none'
+          : ''
+      }`}
+    >
       {whiteboardUploadedOfficeFiles.map((file) => {
         const isCurrentlyInUse = currentWhiteboardOfficeFileId === file.fileId;
         const isSelectedInModal = selectedOfficeFile?.fileId === file.fileId;
