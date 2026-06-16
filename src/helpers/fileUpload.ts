@@ -77,6 +77,7 @@ let isUploadingFile = false; // Global lock to prevent multiple uploads from the
 class ResumableUploader {
   private readonly resumable: Resumable;
   private toastId: string | number = '';
+  private mergeToastId: string | number = '';
   private fileName = '';
   private readonly args: IResumableUploaderArgs;
   private readonly session: ISession;
@@ -133,6 +134,12 @@ class ResumableUploader {
   };
 
   private onFileSuccess = async (file: ResumableFile) => {
+    // clean up previous toast
+    this.cleanUp();
+    // Display loading indicator for merge operation
+    this.mergeToastId = toast.loading(i18n.t('notifications.merging-file'), {
+      type: 'info',
+    });
     await sleep(1000);
 
     const mergeReq = create(UploadedFileMergeReqSchema, {
@@ -154,13 +161,23 @@ class ResumableUploader {
     );
     const res = fromBinary(UploadedFileResSchema, new Uint8Array(r));
 
-    this.cleanUp();
-
     if (res.status && res.filePath && res.fileName) {
+      toast.update(this.mergeToastId, {
+        render: i18n.t('notifications.file-merge-success'),
+        type: 'success',
+        isLoading: false,
+        autoClose: 1000,
+      });
       this.args.onSuccess(res);
     } else {
-      this.args.onError?.(i18n.t(res.msg));
-      toast(i18n.t(res.msg), { type: 'error' });
+      const errorMessage = i18n.t(res.msg || 'notifications.file-merge-failed');
+      toast.update(this.mergeToastId, {
+        render: errorMessage,
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
+      this.args.onError?.(errorMessage);
     }
   };
 
@@ -189,6 +206,7 @@ class ResumableUploader {
       {
         closeButton: false,
         progress: 0,
+        autoClose: false,
       },
     );
   };
