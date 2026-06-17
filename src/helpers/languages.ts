@@ -38,9 +38,10 @@ const languages: Language[] = [
   { code: 'zh-TW', text: '繁體中文' },
 ];
 
+//languagesMap will provide maps of language. Here key is the language code's lowercase
 const languagesMap = new Map<string, Language>();
 languages.forEach((lang) => {
-  languagesMap.set(lang.code, lang);
+  languagesMap.set(lang.code.toLowerCase(), lang);
 });
 
 export { languagesMap };
