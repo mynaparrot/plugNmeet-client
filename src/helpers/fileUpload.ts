@@ -81,6 +81,7 @@ class ResumableUploader {
   private fileName = '';
   private readonly args: IResumableUploaderArgs;
   private readonly session: ISession;
+  private isUploadedFirstChunk: boolean = false;
 
   constructor(args: IResumableUploaderArgs) {
     this.args = args;
@@ -103,7 +104,6 @@ class ResumableUploader {
       headers: {
         Authorization: this.session.token,
       },
-      prioritizeFirstAndLastChunk: true,
       fileType: this.args.allowedFileTypes,
       // @ts-ignore
       maxFileSize: this.args.maxFileSize
@@ -113,6 +113,26 @@ class ResumableUploader {
       maxFileSizeErrorCallback: this.onMaxFileSizeError,
       chunkSize: 10 * 1024 * 1024, // 10MB
       forceChunkSize: true,
+      preprocess: (chunk: any) => {
+        if (this.isUploadedFirstChunk) {
+          chunk.preprocessFinished();
+          return chunk;
+        }
+
+        if (chunk.offset === 0) {
+          chunk.preprocessFinished();
+        } else {
+          const check = () => {
+            if (this.isUploadedFirstChunk) {
+              chunk.preprocessFinished();
+            } else {
+              setTimeout(check, 1000);
+            }
+          };
+          check();
+        }
+        return chunk;
+      },
     });
 
     this.setupEventListeners();
@@ -212,7 +232,20 @@ class ResumableUploader {
     );
   };
 
+  private checkFirstChunkUploadStatus = (file: any) => {
+    if (this.isUploadedFirstChunk) {
+      return;
+    }
+    const firstChunk = file.chunks[0];
+    if (firstChunk.status() === 'success') {
+      this.isUploadedFirstChunk = true;
+    }
+  };
+
   private onFileProgress = (file: ResumableFile) => {
+    // check status of first chunk
+    this.checkFirstChunkUploadStatus(file);
+
     const progress = file.progress(false);
     this.args.uploadingProgress?.(Number(progress));
     toast.update(this.toastId, { progress: Number(progress) });
