@@ -112,6 +112,7 @@ class ResumableUploader {
       fileTypeErrorCallback: this.onFileTypeError,
       maxFileSizeErrorCallback: this.onMaxFileSizeError,
       chunkSize: 10 * 1024 * 1024, // 10MB
+      forceChunkSize: true,
     });
 
     this.setupEventListeners();
