@@ -81,7 +81,7 @@ class ResumableUploader {
   private fileName = '';
   private readonly args: IResumableUploaderArgs;
   private readonly session: ISession;
-  private isUploadedFirstChunk: boolean = false;
+  private uploadedFirstChunk: boolean = false;
 
   constructor(args: IResumableUploaderArgs) {
     this.args = args;
@@ -114,7 +114,7 @@ class ResumableUploader {
       chunkSize: 10 * 1024 * 1024, // 10MB
       forceChunkSize: true,
       preprocess: (chunk: any) => {
-        if (this.isUploadedFirstChunk) {
+        if (this.uploadedFirstChunk) {
           chunk.preprocessFinished();
           return chunk;
         }
@@ -123,7 +123,7 @@ class ResumableUploader {
           chunk.preprocessFinished();
         } else {
           const check = () => {
-            if (this.isUploadedFirstChunk) {
+            if (this.uploadedFirstChunk) {
               chunk.preprocessFinished();
             } else {
               setTimeout(check, 1000);
@@ -232,19 +232,19 @@ class ResumableUploader {
     );
   };
 
-  private checkFirstChunkUploadStatus = (file: any) => {
-    if (this.isUploadedFirstChunk) {
+  private confirmFirstChunkUploaded = (file: any) => {
+    if (this.uploadedFirstChunk) {
       return;
     }
     const firstChunk = file.chunks[0];
     if (firstChunk.status() === 'success') {
-      this.isUploadedFirstChunk = true;
+      this.uploadedFirstChunk = true;
     }
   };
 
   private onFileProgress = (file: ResumableFile) => {
     // check status of first chunk
-    this.checkFirstChunkUploadStatus(file);
+    this.confirmFirstChunkUploaded(file);
 
     const progress = file.progress(false);
     this.args.uploadingProgress?.(Number(progress));
