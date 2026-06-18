@@ -233,7 +233,7 @@ class ResumableUploader {
   };
 
   private confirmFirstChunkUploaded = (file: any) => {
-    if (this.uploadedFirstChunk) {
+    if (this.uploadedFirstChunk || file.chunks.length === 1) {
       return;
     }
     const firstChunk = file.chunks[0];
