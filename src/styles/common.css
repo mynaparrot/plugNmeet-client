@@ -466,6 +466,11 @@ body.dark .micro-muted-tooltip::after {
   right: auto !important;
 }
 
+.tooltip-right::before {
+  right: 24px !important;
+  left: auto !important;
+}
+
 html[dir='rtl'] span.tooltip.tooltip-left {
   right: -34px !important;
   left: auto !important;
@@ -762,7 +767,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   #main-area.fullWidthMainArea
   .verticalsWebcamsActivated
   .external-display-link-wrapper {
-  @apply h-[calc(100%-110px)] m-0 p-2;
+  @apply h-[calc(100%-145px)];
 }
 .portrait-device.is-mobile
   #main-area.fullWidthMainArea

@@ -6,7 +6,7 @@ import {
   CommonResponseSchema,
   RoomEndAPIReqSchema,
 } from 'plugnmeet-protocol-js';
-import { Button } from '@headlessui/react';
+import clsx from 'clsx';
 
 import { store } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
@@ -21,11 +21,12 @@ const EndMeetingButton = () => {
 
   const { t } = useTranslation();
   const conn = getNatsConn();
-  const { isAdmin, roomId } = useMemo(() => {
+  const { isAdmin, roomId, showTooltip } = useMemo(() => {
     const session = store.getState().session;
     return {
       isAdmin: session.currentUser?.metadata?.isAdmin,
       roomId: session.currentRoom.roomId,
+      showTooltip: session.userDeviceType === 'desktop',
     };
   }, []);
 
@@ -78,19 +79,26 @@ const EndMeetingButton = () => {
     setIsOpen(false);
   }, [isBusy, isAdmin, conn, roomId, t]);
 
+  const buttonClasses = clsx(
+    'relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px]',
+  );
+  const innerDivClasses = clsx(
+    'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow',
+    {
+      'has-tooltip': showTooltip,
+    },
+  );
+
   return (
     <>
-      <Button
-        onClick={open}
-        className="h-[34px] md:h-10 3xl:h-11 w-[34px] md:w-10 lg:w-auto px-2 lg:px-5 flex items-center justify-center rounded-[12px] md:rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
-      >
-        <span className="hidden lg:block">
-          {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
-        </span>
-        <span className="block lg:hidden">
+      <div className={buttonClasses} onClick={open}>
+        <div className={innerDivClasses}>
+          <span className="tooltip tooltip-right right-0">
+            {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
+          </span>
           <EndMeetingIconSVG />
-        </span>
-      </Button>
+        </div>
+      </div>
 
       <ConfirmationModal
         show={isOpen}
