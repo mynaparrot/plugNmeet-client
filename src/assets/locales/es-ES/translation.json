@@ -76,7 +76,7 @@
     "max-num-participates-exceeded": "La reunión está llena. No puede unirse en este momento.",
     "uploading-file": "Subiendo archivo...",
     "merging-file": "Finalizando la subida del archivo...",
-    "file-merge-success": "¡El expediente está listo!",
+    "file-merge-success": "¡El archivo está listo!",
     "file-merge-failed": "No se pude finalizar la subida del archivo.",
     "ending-session": "La reunión está finalizando, por favor espere...",
     "whiteboard-other-task-to-finish": "La pizarra está preparando nuevo contenido. Por favor, espere.",
