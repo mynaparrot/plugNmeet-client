@@ -11,7 +11,7 @@
   "open": "Öffnen",
   "please-wait": "Bitte warten...",
   "are-you-sure-to-close": "Möchten Sie wirklich schließen?",
-  "you-are-about-to-close": "Sie sind dabei, die Sitzung zu schließen.",
+  "you-are-about-to-close": "Sie sind im Begriff zu schließen.",
   "notifications": {
     "room-not-active": "Dieser Raum ist nicht aktiv.",
     "recording-already-running": "Die Aufnahme läuft bereits.",
@@ -30,7 +30,7 @@
     "you-have-removed": "Sie wurden aus dem Meeting entfernt.",
     "you-are-blocked": "Sie dürfen an diesem Meeting nicht teilnehmen.",
     "you-have-reject": "Ihre Anfrage zur Teilnahme am Meeting wurde abgelehnt.",
-    "user-info-not-found": "Ihre Benutzerdaten konnten nicht gefunden werden. Bitte versuchen Sie erneut, dem Meeting beizutreten.",
+    "user-info-not-found": "Wir konnten Ihre Benutzerdetails nicht finden. Bitte versuchen Sie erneut, dem Meeting beizutreten.",
     "auth-header-missing": "Authentifizierung fehlgeschlagen (Header fehlt). Bitte versuchen Sie erneut, dem Meeting beizutreten.",
     "token-expired": "Ihre Sitzung ist abgelaufen. Bitte treten Sie dem Meeting erneut bei, um fortzufahren.",
     "invalid-token": "Ihre Sitzung konnte nicht validiert werden (ungültiges Token). Bitte versuchen Sie erneut, dem Meeting beizutreten.",
@@ -55,7 +55,7 @@
     "websocket-not-connected": "Sie sind nicht verbunden. Nachrichten können nicht gesendet werden.",
     "room-will-end-in": "Dieses Meeting endet in {{minutes}} Minuten.",
     "e2ee-unsupported-browser-title": "Browser nicht unterstützt",
-    "e2ee-unsupported-browser-msg": "Dieses Meeting verwendet Sicherheitsfunktionen, die Ihr Browser nicht unterstützt. Bitte versuchen Sie es mit einem anderen Browser wie Chrome oder Firefox.",
+    "e2ee-unsupported-browser-msg": "Dieses Meeting verwendet Sicherheitsfunktionen, die von Ihrem Browser nicht unterstützt werden. Bitte versuchen Sie es mit einem anderen Browser wie Chrome oder Firefox.",
     "e2ee-invalid-key-title": "Ungültiger Sicherheitsschlüssel",
     "e2ee-invalid-key-msg": "Der von Ihnen eingegebene Sicherheitsschlüssel ist falsch.",
     "e2ee-empty-key-msg": "Der Sicherheitsschlüssel darf nicht leer sein.",
@@ -75,9 +75,9 @@
     "preloaded-whiteboard-file-processing-error": "Beim Laden der Whiteboard-Datei ist ein Fehler aufgetreten.",
     "max-num-participates-exceeded": "Das Meeting ist voll. Sie können zurzeit nicht beitreten.",
     "uploading-file": "Datei wird hochgeladen...",
-    "merging-file": "Dateihochladen wird abgeschlossen...",
-    "file-merge-success": "Die Akte ist fertig!",
-    "file-merge-failed": "Ich konnte den Dateiupload nicht abschließen.",
+    "merging-file": "Datei-Upload wird abgeschlossen...",
+    "file-merge-success": "Datei ist bereit!",
+    "file-merge-failed": "Datei-Upload konnte nicht abgeschlossen werden.",
     "ending-session": "Das Meeting wird beendet, bitte warten...",
     "whiteboard-other-task-to-finish": "Das Whiteboard bereitet neue Inhalte vor. Bitte warten Sie.",
     "cloud-recording-not-supported-self-key": "Cloud-Aufzeichnung ist nicht verfügbar, wenn ein benutzerdefinierter Sicherheitsschlüssel verwendet wird.",
@@ -89,7 +89,7 @@
     "request-submitted-wait": "Ihre Anfrage wurde übermittelt. Bitte warten Sie auf Bestätigung.",
     "wait-other-uploading-to-finish": "Ein anderer Upload läuft gerade. Bitte warten Sie, bis dieser abgeschlossen ist.",
     "server-not-responding": "Der Server antwortet nicht. Ihre Verbindung ist möglicherweise instabil.",
-    "re-routing-connection": "Die Verbindung ist instabil. Es wird eine neue Route für eine bessere Stabilität gesucht...",
+    "re-routing-connection": "Verbindung ist instabil. Umleitung für bessere Stabilität wird versucht...",
     "whiteboard-new-file-added": "Die neue Datei ist bereit und wurde zur Liste der Whiteboard-Dateien hinzugefügt."
   },
   "room-metadata": {
@@ -101,8 +101,8 @@
   "header": {
     "hide-header": "Kopfzeile ausblenden",
     "show-header": "Kopfzeile einblenden",
-    "room-audio-volume": "Meeting-Lautstärke",
-    "room-screen-share-audio-volume": "Bildschirmfreigabe-Lautstärke",
+    "room-audio-volume": "Meeting-Audio",
+    "room-screen-share-audio-volume": "Audio der Bildschirmfreigabe",
     "menus": {
       "settings": "Einstellungen",
       "keyboard-shortcuts": "Tastenkombinationen",
@@ -118,7 +118,7 @@
       "title": "Einstellungen",
       "data-savings": "Datensparmodus",
       "notifications": "Benachrichtigungen",
-      "ingress": "Live-Stream-Eingang",
+      "ingress": "Live-Stream-Eingabe",
       "sip-dial-in": "SIP/VoIP-Einwahl",
       "show-webcams": "Webcams anzeigen",
       "show-screen-share": "Bildschirmfreigabe anzeigen",
@@ -180,7 +180,7 @@
     "require-ssl-title": "Sichere Verbindung erforderlich",
     "require-ssl-des": "Für die Nutzung dieses Dienstes ist eine sichere Verbindung (SSL) erforderlich.",
     "insert-secret-key": "Sicherheitsschlüssel eingeben",
-    "insert-secret-help": "Für dieses sichere Meeting müssen alle Teilnehmer denselben Sicherheitsschlüssel verwenden. Wenn er nicht übereinstimmt, können Sie keine Verbindung herstellen. Bitte holen Sie sich den korrekten Sicherheitsschlüssel vom Organisator des Meetings.",
+    "insert-secret-help": "Für dieses sichere Meeting müssen alle Teilnehmer denselben Sicherheitsschlüssel verwenden. Wenn er nicht übereinstimmt, können Sie keine Verbindung herstellen. Bitte fordern Sie den korrekten Sicherheitsschlüssel vom Organisator des Meetings an.",
     "save": "Speichern"
   },
   "left-panel": {
@@ -388,12 +388,12 @@
     "update-waiting-message": "Warteraum-Nachricht aktualisieren",
     "update-msg": "Aktualisieren",
     "updated-msg": "Die Warteraum-Nachricht wurde aktualisiert.",
-    "accept-all": "Alle zulassen",
+    "accept-all": "Alle annehmen",
     "reject-all": "Alle ablehnen",
     "list-waiting-participants": "Wartende Personen ({{count}})",
     "reject-and-block-user": "Ablehnen & Blockieren",
     "user-waiting": "{{name}} wartet auf Einlass.",
-    "no-pending-user": "Es wartet niemand auf den Beitritt."
+    "no-pending-user": "Niemand wartet auf den Beitritt."
   },
   "polls": {
     "title": "Umfragen",
@@ -410,7 +410,7 @@
     "created-successfully": "Die Umfrage wurde erfolgreich erstellt.",
     "you-voted": "Sie haben abgestimmt.",
     "vote": "Abstimmen",
-    "submit-vote-form-title": "Stimme abgeben",
+    "submit-vote-form-title": "Ihre Stimme abgeben",
     "select-option": "Wählen Sie eine Option",
     "submit": "Senden",
     "response-added": "Ihre Stimme wurde abgegeben.",
@@ -513,7 +513,7 @@
     "chat-translation": "Chat-Übersetzung",
     "enable-speech-to-text": "Transkription aktivieren",
     "speech-langs-label": "Gesprochene Sprachen",
-    "allow-transcription-storage": "Meinen Beitrag im endgültigen Transkript speichern",
+    "allow-transcription-storage": "Meinen Redebeitrag im finalen Transkript speichern",
     "speech-users-label": "Zu transkribierende Benutzer",
     "subtitle-font-size": "Schriftgröße der Untertitel",
     "enable-translation": "Übersetzung aktivieren",
@@ -568,7 +568,7 @@
     "tab-meeting-summarization-title": "Meeting-Zusammenfassung",
     "feature-disable-while-e2ee-self-key-enabled": "Diese Funktion ist deaktiviert, wenn die selbstverwaltete Ende-zu-Ende-Verschlüsselung aktiv ist.",
     "not-enough-credit-to-start-service": "Nicht genügend Guthaben, um diesen Dienst zu starten. Bitte kontaktieren Sie einen Administrator, um mehr Guthaben hinzuzufügen.",
-    "no-ai-feature-available": "KI-Funktionen sind nicht verfügbar.",
+    "no-ai-feature-available": "Keine KI-Funktionen verfügbar.",
     "ai-text-chat": {
       "name": "KI-Assistent",
       "panel-title": "KI-Assistent-Chat",
@@ -597,7 +597,7 @@
     "dial-in-info": "Einwahlinformationen"
   },
   "recorder-bot-options": {
-    "enable-auto-close-chat-panel": "Aktiviere das automatische Schließen des Chat-Panels",
+    "enable-auto-close-chat-panel": "Automatisches Schließen des Chat-Fensters aktivieren",
     "duration-after-last-message": "Dauer nach der letzten Nachricht (in Minuten)",
     "duration-after-last-message-help": "Das Chat-Panel schließt sich nach dieser Dauer der Inaktivität automatisch."
   }
