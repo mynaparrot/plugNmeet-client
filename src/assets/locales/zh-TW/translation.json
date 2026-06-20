@@ -75,6 +75,9 @@
     "preloaded-whiteboard-file-processing-error": "載入白板檔案時出錯。",
     "max-num-participates-exceeded": "會議已滿。您目前無法加入。",
     "uploading-file": "正在上傳檔案...",
+    "merging-file": "正在完成檔案上傳...",
+    "file-merge-success": "檔案已準備就緒！",
+    "file-merge-failed": "無法完成檔案上傳。",
     "ending-session": "會議即將結束，請稍候...",
     "whiteboard-other-task-to-finish": "白板正在準備新內容。請稍候。",
     "cloud-recording-not-supported-self-key": "使用自訂安全金鑰時，雲端錄製不可用。",
@@ -203,21 +206,21 @@
         "share-webcam": "開啟攝影機",
         "stop-webcam": "關閉攝影機",
         "unlock-microphone": "允許使用麥克風",
-        "lock-microphone": "鎖定麥克風",
+        "lock-microphone": "停用麥克風",
         "unlock-webcam": "允許使用攝影機",
-        "lock-webcam": "鎖定攝影機",
+        "lock-webcam": "停用攝影機",
         "unlock-screen-sharing": "允許螢幕分享",
-        "lock-screen-sharing": "鎖定螢幕分享",
+        "lock-screen-sharing": "停用螢幕分享",
         "unlock-whiteboard": "允許使用白板",
-        "lock-whiteboard": "鎖定白板",
+        "lock-whiteboard": "停用白板",
         "unlock-shared-notepad": "允許使用共用記事本",
-        "lock-shared-notepad": "鎖定共用記事本",
+        "lock-shared-notepad": "停用共用記事本",
         "unlock-chat": "允許聊天",
-        "lock-chat": "鎖定聊天",
+        "lock-chat": "停用聊天",
         "unlock-send-chat-message": "允許傳送訊息",
-        "lock-send-chat-message": "鎖定訊息傳送",
+        "lock-send-chat-message": "停用訊息傳送",
         "unlock-send-file": "允許檔案分享",
-        "lock-send-file": "鎖定檔案分享",
+        "lock-send-file": "停用檔案分享",
         "remove-participant": "移除與會者",
         "private-chat": "傳送私人訊息"
       },
@@ -325,7 +328,7 @@
       "rtmp-stream-key-required": "需要串流金鑰。",
       "external-media-player-url-invalid": "URL 無效或不支援。",
       "external-media-player-starting": "正在準備播放影片，請稍候。",
-      "screenshare-error": "螢幕共享無法啟動。"
+      "screenshare-error": "螢幕分享無法啟動。"
     },
     "modal": {
       "lock-settings-title": "會議鎖定設定",
@@ -596,6 +599,6 @@
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "啟用自動關閉聊天面板",
     "duration-after-last-message": "最後一則訊息後的持續時間（以分鐘計）",
-    "duration-after-last-message-help": "聊天面板會在這段時間內自動關閉。"
+    "duration-after-last-message-help": "聊天面板將在這段時間內自動關閉。"
   }
 }

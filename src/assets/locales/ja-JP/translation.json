@@ -75,19 +75,22 @@
     "preloaded-whiteboard-file-processing-error": "ホワイトボードファイルの読み込み中にエラーが発生しました。",
     "max-num-participates-exceeded": "会議は満員です。現在参加できません。",
     "uploading-file": "ファイルをアップロードしています...",
+    "merging-file": "ファイルのアップロードを最終処理中です...",
+    "file-merge-success": "ファイルの準備ができました！",
+    "file-merge-failed": "ファイルのアップロードを最終処理できませんでした。",
     "ending-session": "会議を終了しています。お待ちください...",
     "whiteboard-other-task-to-finish": "ホワイトボードで新しいコンテンツを準備しています。お待ちください。",
     "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウド録画は利用できません。",
     "media-only-recording-not-support-e2ee": "エンドツーエンド暗号化が有効な場合、音声と映像のみの録画は利用できません。",
     "you-are-sharing-screen": "画面を共有中です。他の参加者には拡大表示されます。",
     "new-system-message-in-chat": "新しいシステムメッセージがパブリックチャットに投稿されました。",
-    "queue-holding-messages": "接続の問題:メッセージが保留されている。",
+    "queue-holding-messages": "接続に問題があります：メッセージが保留されています。",
     "queue-discarded-message": "メッセージを送信できず、破棄されました。",
     "request-submitted-wait": "リクエストが送信されました。承認をお待ちください。",
     "wait-other-uploading-to-finish": "別のアップロードが進行中です。完了するまでお待ちください。",
     "server-not-responding": "サーバーが応答しません。接続が不安定な可能性があります。",
     "re-routing-connection": "接続が不安定です。安定性を高めるために経路を変更しています...",
-    "whiteboard-new-file-added": "新しいファイルは完成し、ホワイトボードのファイルリストに追加されました。"
+    "whiteboard-new-file-added": "新しいファイルが準備でき、ホワイトボードのファイルリストに追加されました。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画されています。",
@@ -98,8 +101,8 @@
   "header": {
     "hide-header": "ヘッダーを非表示",
     "show-header": "ヘッダーを表示",
-    "room-audio-volume": "会議の音量",
-    "room-screen-share-audio-volume": "画面共有の音量",
+    "room-audio-volume": "会議の音声",
+    "room-screen-share-audio-volume": "画面共有の音声",
     "menus": {
       "settings": "設定",
       "keyboard-shortcuts": "キーボードショートカット",
@@ -128,8 +131,8 @@
       "low": "低",
       "enable-dark-theme": "ダークテーマを有効にする",
       "video-object-fit": "ビデオの表示方法",
-      "video-object-fit-cover": "画面に合わせる（全体表示）",
-      "video-object-fit-contain": "画面に合わせる（フィット）",
+      "video-object-fit-cover": "画面全体に表示",
+      "video-object-fit-contain": "画面に合わせて表示",
       "column-camera-width": "ビデオ列の幅",
       "column-camera-width-default": "デフォルト",
       "column-camera-width-medium": "中",
@@ -145,7 +148,7 @@
       "title": "キーボードショートカット",
       "key-comb": "キーの組み合わせ",
       "actions": "アクション",
-      "mute-unmute": "マイクのミュート/ミュート解除",
+      "mute-unmute": "ミュート/ミュート解除",
       "start-audio": "マイクをオンにする",
       "leave-audio": "マイクをオフにする",
       "start-webcam": "カメラをオンにする",
@@ -203,21 +206,21 @@
         "share-webcam": "カメラを有効にする",
         "stop-webcam": "カメラを無効にする",
         "unlock-microphone": "マイクを許可",
-        "lock-microphone": "マイクをロック",
+        "lock-microphone": "マイクを無効にする",
         "unlock-webcam": "カメラを許可",
-        "lock-webcam": "カメラをロック",
+        "lock-webcam": "カメラを無効にする",
         "unlock-screen-sharing": "画面共有を許可",
-        "lock-screen-sharing": "画面共有をロック",
+        "lock-screen-sharing": "画面共有を無効にする",
         "unlock-whiteboard": "ホワイトボードを許可",
-        "lock-whiteboard": "ホワイトボードをロック",
+        "lock-whiteboard": "ホワイトボードを無効にする",
         "unlock-shared-notepad": "共有メモ帳を許可",
-        "lock-shared-notepad": "共有メモ帳をロック",
+        "lock-shared-notepad": "共有メモ帳を無効にする",
         "unlock-chat": "チャットを許可",
-        "lock-chat": "チャットをロック",
+        "lock-chat": "チャットを無効にする",
         "unlock-send-chat-message": "チャットメッセージの送信を許可",
-        "lock-send-chat-message": "チャットメッセージの送信をロック",
+        "lock-send-chat-message": "チャットメッセージの送信を無効にする",
         "unlock-send-file": "ファイル共有を許可",
-        "lock-send-file": "ファイル共有をロック",
+        "lock-send-file": "ファイル共有を無効にする",
         "remove-participant": "参加者を削除",
         "private-chat": "プライベートメッセージを送信"
       },
@@ -325,7 +328,7 @@
       "rtmp-stream-key-required": "ストリームキーが必要です。",
       "external-media-player-url-invalid": "URLが無効か、サポートされていません。",
       "external-media-player-starting": "再生のためにビデオを準備しています。お待ちください。",
-      "screenshare-error": "画面共有が起動できませんでした。"
+      "screenshare-error": "画面共有を開始できませんでした。"
     },
     "modal": {
       "lock-settings-title": "会議のロック設定",
@@ -565,7 +568,7 @@
     "tab-meeting-summarization-title": "会議の要約",
     "feature-disable-while-e2ee-self-key-enabled": "自己管理型エンドツーエンド暗号化が有効な場合、この機能は無効になります。",
     "not-enough-credit-to-start-service": "このサービスを開始するためのクレジットが不足しています。クレジットを追加するには、管理者にお問い合わせください。",
-    "no-ai-feature-available": "AI機能は一切利用できません。",
+    "no-ai-feature-available": "利用可能なAI機能はありません。",
     "ai-text-chat": {
       "name": "AIアシスタント",
       "panel-title": "AIアシスタントチャット",
@@ -594,8 +597,8 @@
     "dial-in-info": "ダイヤルイン情報"
   },
   "recorder-bot-options": {
-    "enable-auto-close-chat-panel": "自動クローズチャットパネルを有効にしてください",
-    "duration-after-last-message": "最後のメッセージからの時間(分単位)",
-    "duration-after-last-message-help": "この期間の非アクティブが続くとチャットパネルは自動的に閉じられます。"
+    "enable-auto-close-chat-panel": "チャットパネルの自動クローズを有効にする",
+    "duration-after-last-message": "最後のメッセージからの時間（分）",
+    "duration-after-last-message-help": "この非アクティブ期間が経過すると、チャットパネルは自動的に閉じます。"
   }
 }

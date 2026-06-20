@@ -11,14 +11,14 @@
   "open": "Abrir",
   "please-wait": "Por favor, espere...",
   "are-you-sure-to-close": "¿Está seguro de que desea cerrar?",
-  "you-are-about-to-close": "Está a punto de cerrar",
+  "you-are-about-to-close": "Está a punto de cerrar.",
   "notifications": {
     "room-not-active": "Esta sala no está activa.",
     "recording-already-running": "La grabación ya está en curso.",
     "recording-not-running": "No hay ninguna grabación en curso.",
     "no-recorder-available": "No hay ninguna grabadora disponible.",
-    "recording-started": "Se ha iniciado la grabación",
-    "recording-ended": "Se ha finalizado la grabación",
+    "recording-started": "Se ha iniciado la grabación.",
+    "recording-ended": "Se ha finalizado la grabación.",
     "recording-ended-with-error": "La grabación ha finalizado con un error.",
     "local-recording-started": "{{name}} ha iniciado una grabación local.",
     "local-recording-ended": "{{name}} ha finalizado la grabación local.",
@@ -65,7 +65,7 @@
     "nats-error-request-failed": "No se ha podido enviar su solicitud.",
     "decode-error-title": "Error de datos",
     "decode-error-body": "Ha habido un problema al recibir datos del servidor.",
-    "invalid-missing-data": "Se han recibido datos no válidos o faltantes",
+    "invalid-missing-data": "Se han recibido datos no válidos o faltantes.",
     "nats-error-auth-title": "Error de inicio de sesión",
     "nats-error-auth-body": "No hemos podido verificar su información. Es posible que su sesión haya caducado.",
     "user-logged-out": "Ha cerrado la sesión.",
@@ -75,6 +75,9 @@
     "preloaded-whiteboard-file-processing-error": "Se ha producido un error al cargar el archivo de la pizarra.",
     "max-num-participates-exceeded": "La reunión está llena. No puede unirse en este momento.",
     "uploading-file": "Subiendo archivo...",
+    "merging-file": "Finalizando la subida del archivo...",
+    "file-merge-success": "¡Archivo listo!",
+    "file-merge-failed": "No se pudo finalizar la subida del archivo.",
     "ending-session": "La reunión está finalizando, por favor espere...",
     "whiteboard-other-task-to-finish": "La pizarra está preparando nuevo contenido. Por favor, espere.",
     "cloud-recording-not-supported-self-key": "La grabación en la nube no está disponible cuando se utiliza una clave de seguridad personalizada.",
@@ -82,12 +85,12 @@
     "you-are-sharing-screen": "Está compartiendo su pantalla. Los demás verán una vista más grande.",
     "new-system-message-in-chat": "Se ha publicado un nuevo mensaje del sistema en el chat público.",
     "queue-holding-messages": "Problema de conexión: se están reteniendo mensajes.",
-    "queue-discarded-message": "No se pudo enviar un mensaje y se descartó.",
+    "queue-discarded-message": "No se pudo enviar un mensaje y fue descartado.",
     "request-submitted-wait": "Su solicitud ha sido enviada. Por favor, espere la confirmación.",
     "wait-other-uploading-to-finish": "Hay otra subida en curso. Por favor, espere a que finalice.",
     "server-not-responding": "El servidor no responde. Su conexión puede ser inestable.",
     "re-routing-connection": "La conexión es inestable. Redirigiendo para una mejor estabilidad...",
-    "whiteboard-new-file-added": "El nuevo archivo está listo y se ha añadido a la lista de archivos de la pizarra blanca."
+    "whiteboard-new-file-added": "El nuevo archivo está listo y se ha añadido a la lista de archivos de la pizarra."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -222,7 +225,7 @@
         "private-chat": "Enviar mensaje privado"
       },
       "notice": {
-        "participant-removed": "Participante eliminado",
+        "participant-removed": "Participante eliminado.",
         "confirm": "¿Está seguro de que quiere eliminar a {{name}}?",
         "remove": "Eliminar",
         "asked-you-to": "{{name}} le está pidiendo que {{task}}.",
@@ -239,7 +242,7 @@
   "right-panel": {
     "you": "Usted",
     "uploading-file": "Subiendo {{fileName}}",
-    "file-upload-success": "Archivo subido correctamente",
+    "file-upload-success": "Archivo subido correctamente.",
     "file-upload-default-error": "Se ha producido un error al subir el archivo.",
     "chat-box-placeholder": "Envíe un mensaje, pegue una imagen o suelte un archivo aquí (Nueva línea: Mayús + Intro)",
     "sending-message": "Por favor, espere, enviando..."
@@ -286,7 +289,7 @@
       "hide-translation-settings": "Ocultar ajustes de transcripción",
       "promote-presenter": "Hacer presentador",
       "demote-presenter": "Quitar como presentador",
-      "you-are-muted": "Nadie puede oírle. Está silenciado."
+      "you-are-muted": "Nadie puede oírle. Su micrófono está silenciado."
     },
     "menus": {
       "mute-all-users": "Silenciar a todos",
@@ -325,7 +328,7 @@
       "rtmp-stream-key-required": "Se requiere una clave de transmisión.",
       "external-media-player-url-invalid": "La URL no es válida o no es compatible.",
       "external-media-player-starting": "Preparando el vídeo para su reproducción, por favor espere.",
-      "screenshare-error": "No se pudo iniciar el compartición de pantalla."
+      "screenshare-error": "No se pudo iniciar la compartición de pantalla."
     },
     "modal": {
       "lock-settings-title": "Ajustes de bloqueo de la reunión",
@@ -364,7 +367,7 @@
   "whiteboard": {
     "page": "Página {{count}}",
     "converting": "Por favor, espere, el archivo se está convirtiendo.",
-    "file-ready": "El archivo está listo",
+    "file-ready": "El archivo está listo.",
     "upload-file": "Subir archivo",
     "manage-files": "Archivos",
     "upload-image": "Imagen",
@@ -405,7 +408,7 @@
     "add-new-option": "Añadir otra opción",
     "create-poll": "Crear encuesta",
     "created-successfully": "La encuesta se ha creado correctamente.",
-    "you-voted": "Ha votado",
+    "you-voted": "Ha votado.",
     "vote": "Votar",
     "submit-vote-form-title": "Envíe su voto",
     "select-option": "Seleccione una opción",
@@ -472,7 +475,7 @@
     "mic-menu-title": "Seleccionar micrófono",
     "background-filter-title": "Fondo y filtros",
     "config-background-btn": "Configurar fondo de la cámara",
-    "waiting-for-approval-title": "Está en la sala de espera",
+    "waiting-for-approval-title": "Está en la sala de espera.",
     "finalizing-app": "Preparando la reunión..."
   },
   "external-display-link-display": {
@@ -550,7 +553,7 @@
     "enable-transcription": "Activar transcripción",
     "download-header": "Historial de subtítulos para {{name}}\nIdioma: {{lang}}\nGenerado el: {{date}} a las {{time}}",
     "mic-not-ready-warning": "Para iniciar el servicio, debe activar su micrófono.",
-    "max-lang-selection-warning": "Puede seleccionar un máximo de {{num}} idiomas para la traducción",
+    "max-lang-selection-warning": "Puede seleccionar un máximo de {{num}} idiomas para la traducción.",
     "read-and-write-in-label": "Leer y escribir en (máx.: {{num}}):",
     "enable-trans-synthesis": "Activar síntesis de traducción"
   },
@@ -559,8 +562,8 @@
     "start-service": "Iniciar servicio",
     "stop-service": "Detener servicio",
     "update-service": "Actualizar ajustes",
-    "service-started-successfully": "El servicio se ha iniciado correctamente",
-    "service-stopped-successfully": "El servicio se ha detenido correctamente",
+    "service-started-successfully": "El servicio se ha iniciado correctamente.",
+    "service-stopped-successfully": "El servicio se ha detenido correctamente.",
     "tab-ai-text-chat-title": "Chat del asistente de IA",
     "tab-meeting-summarization-title": "Resumen de la reunión",
     "feature-disable-while-e2ee-self-key-enabled": "Esta función está desactivada cuando el cifrado de extremo a extremo autogestionado está activo.",
@@ -594,7 +597,7 @@
     "dial-in-info": "Información de marcación"
   },
   "recorder-bot-options": {
-    "enable-auto-close-chat-panel": "Activar el panel de cierre automático del chat",
+    "enable-auto-close-chat-panel": "Activar el cierre automático del panel de chat",
     "duration-after-last-message": "Duración desde el último mensaje (en minutos)",
     "duration-after-last-message-help": "El panel de chat se cerrará automáticamente tras este periodo de inactividad."
   }
