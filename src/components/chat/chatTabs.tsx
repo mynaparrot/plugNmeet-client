@@ -118,7 +118,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
   if (isRecorder) {
     return (
       <div className="h-full">
-        <div className="h-[calc(100%-5px)] chat-messages-container">
+        <div className="h-full chat-messages-container">
           <Messages messageKey={selectedChatOption} isRecorder={isRecorder} />
         </div>
       </div>
@@ -126,7 +126,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <div className="top-chat-header flex items-center gap-2 h-10 px-3 3xl:px-5 justify-between">
         <div className="left flex items-center gap-3">
           <p className="text-sm text-Gray-950 dark:text-white 3xl:font-medium leading-tight">
@@ -215,7 +215,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
           </Transition>
         </div>
       </Listbox>
-      <div className="h-[calc(100%-135px)] 3xl:h-[calc(100%-176px)] chat-messages-container">
+      <div className="flex-1 min-h-0 chat-messages-container">
         <Messages messageKey={selectedChatOption} isRecorder={isRecorder} />
       </div>
     </div>

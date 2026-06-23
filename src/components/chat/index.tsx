@@ -106,17 +106,17 @@ const ChatComponent = () => {
 
   return (
     <div
-      className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800 h-full"
+      className="side-panel-bg-color z-10 w-full bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800 h-full flex flex-col"
       onDrop={handleOnDrop}
       onDragOver={(e) => e.preventDefault()}
     >
-      <div className="h-full">
+      <div className="flex-1 min-h-0">
         <div className="all-MessageModule-wrap h-full">
           <ChatTabs isRecorder={isRecorder} />
         </div>
       </div>
       {canShowChatInput && (
-        <div className="side-panel-bg-color message-form absolute bottom-0 z-30 border-t border-Gray-200 dark:border-Gray-800 bg-white dark:bg-dark-secondary w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
+        <div className="side-panel-bg-color message-form border-t border-Gray-200 dark:border-Gray-800 bg-white dark:bg-dark-secondary w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center">
           <TextBoxArea />
         </div>
       )}
