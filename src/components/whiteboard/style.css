@@ -222,6 +222,13 @@
         background: var(--button-hover-bg) !important;
       }
     }
+    &.toolbar-hidden {
+      .App-toolbar-container > .Island,
+      .App-bottom-bar > .Island,
+      .App-menu_top .selected-shape-actions-container {
+        display: none !important;
+      }
+    }
   }
 }
 .excalidraw

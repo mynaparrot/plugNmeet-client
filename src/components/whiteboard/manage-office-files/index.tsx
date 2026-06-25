@@ -160,10 +160,10 @@ const ManageOfficeFilesModal = ({
                   className="w-full h-full absolute top-0 left-0 opacity-0 cursor-pointer"
                 />
                 <div className="text-wrap text-sm font-medium text-center cursor-pointer">
-                  <p className="text-Gray-950 dark:text-white font-semibold pb-1">
+                  <p className="text-[12px] text-Gray-700 dark:text-white font-semibold pb-1">
                     {t('whiteboard.drag-drop-file')}
                   </p>
-                  <p className="text-Gray-700 dark:text-dark-text">
+                  <p className="text-Gray-950 dark:text-dark-text">
                     {t('whiteboard.max-file-size', {
                       size: maxAllowedFileSize,
                     })}

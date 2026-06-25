@@ -61,6 +61,7 @@ import {
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
+import ToolbarBar from '../../assets/Icons/ToolbarBar';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -120,6 +121,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const [isFollowing, setIsFollowing] = useState(true);
   const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
     useState<boolean>(false);
+  const [isToolbarHidden, setIsToolbarHidden] = useState<boolean>(false);
 
   const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
   const previousPage = usePrevious(currentPage);
@@ -523,7 +525,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const renderTopRightUI = useCallback(
     () => (
       <>
-        {isPresenter && excalidrawAPI && (
+        {screenWidth > 767 && isPresenter && excalidrawAPI && (
           <div className="menu relative z-10">
             <button
               onClick={() => setIsOpenManageFilesUI(true)}
@@ -536,7 +538,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         )}
       </>
     ),
-    [isPresenter, excalidrawAPI, t],
+    [isPresenter, excalidrawAPI, t, screenWidth],
   );
 
   const renderFooter = useMemo(
@@ -562,7 +564,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   return (
-    <div className="excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0">
+    <div
+      className={`excalidraw-wrapper flex-1 w-full max-w-[1140px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0 ${
+        isToolbarHidden ? 'toolbar-hidden' : ''
+      }`}
+    >
       {isPresenter && excalidrawAPI && (
         <ManageOfficeFilesModal
           roomId={roomId}
@@ -599,6 +605,38 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       >
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
+          {isPresenter && excalidrawAPI && (
+            <div
+              className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+              onClick={() => {
+                setIsOpenManageFilesUI(true);
+              }}
+              role="button"
+            >
+              <div className="dropdown-menu-item__icon">
+                <i className="pnm-attachment text-[13px]" />
+              </div>
+              <div className="dropdown-menu-item__text">
+                {t('whiteboard.manage-files-menu-title')}
+              </div>
+            </div>
+          )}
+          {!viewModeEnabled && (
+            <div
+              className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+              onClick={() => setIsToolbarHidden(!isToolbarHidden)}
+              role="button"
+            >
+              <div className="dropdown-menu-item__icon">
+                <ToolbarBar className="w-[13px] h-[13px]" />
+              </div>
+              <div className="dropdown-menu-item__text">
+                {isToolbarHidden
+                  ? t('whiteboard.show-toolbar')
+                  : t('whiteboard.hide-toolbar')}
+              </div>
+            </div>
+          )}
           <MainMenu.DefaultItems.Help />
           {screenWidth <= 767 && renderFooter}
         </MainMenu>
