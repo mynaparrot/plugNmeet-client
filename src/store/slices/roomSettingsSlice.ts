@@ -5,6 +5,7 @@ import { Theme } from '@excalidraw/excalidraw/element/types';
 import {
   ColumnCameraPosition,
   ColumnCameraWidth,
+  IMaxNumDisplayWebcams,
   IMediaDevice,
   InitiatePrivateChat,
   IRoomSettings,
@@ -52,6 +53,11 @@ const initialState: IRoomSettings = {
   userNotifications: [],
   isSidePanelOpened: false,
   hasWebcamPages: false,
+  maxNumDisplayWebcams: {
+    desktop: 24,
+    tablet: 9,
+    mobile: 6,
+  },
 };
 
 const roomSettingsSlice = createSlice({
@@ -206,7 +212,10 @@ const roomSettingsSlice = createSlice({
     updateHasWebcamPages: (state, action: PayloadAction<boolean>) => {
       state.hasWebcamPages = action.payload;
     },
-    updateMaxNumDisplayWebcams: (state, action: PayloadAction<number>) => {
+    updateMaxNumDisplayWebcams: (
+      state,
+      action: PayloadAction<IMaxNumDisplayWebcams>,
+    ) => {
       state.maxNumDisplayWebcams = action.payload;
     },
   },

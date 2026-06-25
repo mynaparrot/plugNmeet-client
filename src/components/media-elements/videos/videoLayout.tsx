@@ -76,18 +76,18 @@ const VideoLayout = ({
 
   useEffect(() => {
     // 1. Determine the default value based on device type.
-    let deviceMax = DESKTOP_PER_PAGE;
+    let deviceMax: number;
     if (isTablet) {
-      deviceMax = TABLET_PER_PAGE;
+      deviceMax = maxNumDisplayWebcams.tablet;
     } else if (isMobile) {
-      deviceMax = MOBILE_PER_PAGE;
+      deviceMax = maxNumDisplayWebcams.mobile;
+    } else {
+      deviceMax = maxNumDisplayWebcams.desktop;
     }
 
     // 2. Determine the user's effective limit.
     const effectiveUserLimit =
-      maxNumDisplayWebcams && maxNumDisplayWebcams > 0
-        ? maxNumDisplayWebcams
-        : deviceMax;
+      deviceMax && deviceMax > 0 ? deviceMax : DESKTOP_PER_PAGE;
 
     let perPage: number;
 

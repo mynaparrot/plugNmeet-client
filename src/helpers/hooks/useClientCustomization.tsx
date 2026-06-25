@@ -1,9 +1,13 @@
 import { useCallback, useEffect } from 'react';
 import { once } from 'es-toolkit';
 
-import { updateFocusActiveSpeakerWebcam } from '../../store/slices/roomSettingsSlice';
+import {
+  updateFocusActiveSpeakerWebcam,
+  updateMaxNumDisplayWebcams,
+} from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
 import { getConfigValue } from '../utils';
+import { IMaxNumDisplayWebcams } from '../../store/slices/interfaces/roomSettings';
 
 export interface ICustomDesignParams {
   primary_color?: string;
@@ -30,6 +34,10 @@ export interface ICustomDesignParams {
   custom_logo?: string;
 }
 
+function isObject(value: any): value is object {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
 const useClientCustomization = () => {
   const dispatch = useAppDispatch();
 
@@ -41,6 +49,20 @@ const useClientCustomization = () => {
       'FOCUS_ACTIVE_SPEAKER_WEBCAM',
     );
     dispatch(updateFocusActiveSpeakerWebcam(focusActiveSpeakerWebcam));
+
+    const maxNumDisplayWebcams = getConfigValue<IMaxNumDisplayWebcams>(
+      'max_num_display_webcams',
+    );
+
+    if (
+      maxNumDisplayWebcams &&
+      isObject(maxNumDisplayWebcams) &&
+      maxNumDisplayWebcams.desktop &&
+      maxNumDisplayWebcams.tablet &&
+      maxNumDisplayWebcams.mobile
+    ) {
+      dispatch(updateMaxNumDisplayWebcams(maxNumDisplayWebcams));
+    }
   }, [dispatch]);
 
   // oxlint-disable-next-line exhaustive-deps

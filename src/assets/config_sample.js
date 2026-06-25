@@ -49,6 +49,19 @@ window.plugNmeetConfig = {
   // Default: true.
   focusActiveSpeakerWebcam: true,
 
+  // The maximum number of webcams to display per page before pagination begins, based on device type.
+  // Higher numbers will increase bandwidth and CPU usage.
+  //
+  // Max allowed values:
+  // - desktop: 24 (recommended: 12 for better performance)
+  // - tablet: 9
+  // - mobile: 6
+  max_num_display_webcams: {
+    desktop: 24,
+    tablet: 9,
+    mobile: 6,
+  },
+
   // Disables the dark mode theme and the user's ability to toggle it.
   disableDarkMode: false,
 
