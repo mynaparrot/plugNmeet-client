@@ -51,6 +51,7 @@ window.plugNmeetConfig = {
 
   // The maximum number of webcams to display per page before pagination begins, based on device type.
   // Higher numbers will increase bandwidth and CPU usage.
+  // You can provide partial values; any omitted values will fallback to the default settings.
   //
   // Max allowed values:
   // - desktop: 24 (recommended: 12 for better performance)

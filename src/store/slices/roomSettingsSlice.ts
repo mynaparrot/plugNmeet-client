@@ -214,9 +214,12 @@ const roomSettingsSlice = createSlice({
     },
     updateMaxNumDisplayWebcams: (
       state,
-      action: PayloadAction<IMaxNumDisplayWebcams>,
+      action: PayloadAction<Partial<IMaxNumDisplayWebcams>>,
     ) => {
-      state.maxNumDisplayWebcams = action.payload;
+      state.maxNumDisplayWebcams = {
+        ...state.maxNumDisplayWebcams,
+        ...action.payload,
+      };
     },
   },
 });

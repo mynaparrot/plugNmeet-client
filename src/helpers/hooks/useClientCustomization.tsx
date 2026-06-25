@@ -57,9 +57,9 @@ const useClientCustomization = () => {
     if (
       maxNumDisplayWebcams &&
       isObject(maxNumDisplayWebcams) &&
-      maxNumDisplayWebcams.desktop &&
-      maxNumDisplayWebcams.tablet &&
-      maxNumDisplayWebcams.mobile
+      (maxNumDisplayWebcams.desktop ||
+        maxNumDisplayWebcams.tablet ||
+        maxNumDisplayWebcams.mobile)
     ) {
       dispatch(updateMaxNumDisplayWebcams(maxNumDisplayWebcams));
     }
