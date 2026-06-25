@@ -102,11 +102,18 @@
         border: 1px solid var(--Blue-600, #08c);
         background: var(--Blue-500, #00a1f2);
       }
+      .btn-secondary {
+        border: 1px solid var(--Gray-400, #999);
+        background: var(--Gray-500, #666);
+      }
       .btn-danger:hover {
         background-color: #cc0000;
       }
       .btn-primary:hover {
         background-color: #08c;
+      }
+      .btn-secondary:hover {
+        background-color: #555;
       }
       form#loginForm .buttons {
         display: flex;
@@ -144,6 +151,10 @@
         background-repeat: no-repeat;
         background-position: right 10px center;
         padding-right: 30px;
+      }
+      .input-group {
+        display: flex;
+        gap: 10px;
       }
       @media screen and (max-width: 767px) {
         .inputs-wrapper {
@@ -343,25 +354,55 @@
                 class="form-control"
               />
             </div>
-            <div class="item select-wrap">
-              <label for="room_id" class="form-label">Select Room</label>
-              <select class="form-select" id="room_id" name="room_id">
-                <option value="room01">Room 1</option>
-                <option value="room02">Room 2</option>
-                <option value="room03">Room 3</option>
-                <option value="room04">Room 4</option>
-                <option value="room05">Room 5</option>
-                <option value="room06">Room 6</option>
-                <option value="room07">Room 7</option>
-                <option value="room08">Room 8</option>
-                <option value="room09">Room 9</option>
-                <option value="room10">Room 10</option>
-                <option value="room11">Room 11</option>
-                <option value="room12">Room 12</option>
-                <option value="room13">Room 13</option>
-                <option value="room14">Room 14</option>
-                <option value="room15">Room 15</option>
-              </select>
+            <div class="item">
+              <label for="room_id_select" class="form-label">Room</label>
+              <div id="room-selection">
+                <div class="input-group">
+                  <select class="form-select" id="room_id_select">
+                    <option value="room01">Room 1</option>
+                    <option value="room02">Room 2</option>
+                    <option value="room03">Room 3</option>
+                    <option value="room04">Room 4</option>
+                    <option value="room05">Room 5</option>
+                    <option value="room06">Room 6</option>
+                    <option value="room07">Room 7</option>
+                    <option value="room08">Room 8</option>
+                    <option value="room09">Room 9</option>
+                    <option value="room10">Room 10</option>
+                    <option value="room11">Room 11</option>
+                    <option value="room12">Room 12</option>
+                    <option value="room13">Room 13</option>
+                    <option value="room14">Room 14</option>
+                    <option value="room15">Room 15</option>
+                  </select>
+                  <button
+                    class="btn btn-secondary"
+                    type="button"
+                    id="show-custom-room"
+                  >
+                    Custom
+                  </button>
+                </div>
+              </div>
+              <div id="room-custom" style="display: none">
+                <div class="input-group">
+                  <input type="text" id="room_id_input" class="form-control" />
+                  <button
+                    class="btn btn-secondary"
+                    type="button"
+                    id="random-room"
+                  >
+                    Random
+                  </button>
+                  <button
+                    class="btn btn-secondary"
+                    type="button"
+                    id="show-room-list"
+                  >
+                    List
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="item select-wrap">
               <label for="user_type" class="form-label">User type</label>
@@ -372,23 +413,41 @@
             </div>
             <div class="item">
               <label for="name" class="form-label">Name</label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                required
-                class="form-control"
-              />
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  required
+                  class="form-control"
+                />
+                <button
+                  class="btn btn-secondary"
+                  type="button"
+                  id="random-name"
+                >
+                  Random
+                </button>
+              </div>
             </div>
             <div class="item">
               <label for="user_id" class="form-label">User Id</label>
-              <input
-                type="text"
-                name="user_id"
-                id="user_id"
-                required
-                class="form-control"
-              />
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="user_id"
+                  id="user_id"
+                  required
+                  class="form-control"
+                />
+                <button
+                  class="btn btn-secondary"
+                  type="button"
+                  id="random-user-id"
+                >
+                  Random
+                </button>
+              </div>
             </div>
           </div>
           <div class="buttons">
@@ -407,12 +466,56 @@
         'user-' + Math.floor(Math.random() * 100);
       const toUrl = window.location.href.replace(/\/login.*$/i, '');
 
+      const roomSelection = document.getElementById('room-selection');
+      const roomCustom = document.getElementById('room-custom');
+      let useCustomRoom = false;
+
+      document
+        .getElementById('show-custom-room')
+        .addEventListener('click', () => {
+          roomSelection.style.display = 'none';
+          roomCustom.style.display = 'block';
+          useCustomRoom = true;
+          document.getElementById('room_id_input').value =
+            'room-' + Math.random().toString(36).substring(7);
+        });
+
+      document.getElementById('random-room').addEventListener('click', () => {
+        document.getElementById('room_id_input').value =
+          'room-' + Math.random().toString(36).substring(7);
+      });
+
+      document
+        .getElementById('show-room-list')
+        .addEventListener('click', () => {
+          roomSelection.style.display = 'block';
+          roomCustom.style.display = 'none';
+          useCustomRoom = false;
+        });
+
+      document.getElementById('random-name').addEventListener('click', () => {
+        document.getElementById('name').value =
+          'user-' + Math.floor(Math.random() * 100);
+      });
+
+      document
+        .getElementById('random-user-id')
+        .addEventListener('click', () => {
+          document.getElementById('user_id').value = Date.now();
+        });
+
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const data = new FormData(e.target);
+        let roomId;
+        if (useCustomRoom) {
+          roomId = document.getElementById('room_id_input').value;
+        } else {
+          roomId = document.getElementById('room_id_select').value;
+        }
 
         const roomInfo = {
-          room_id: data.get('room_id'),
+          room_id: roomId,
           empty_timeout: 60 * 60 * 2,
           metadata: {
             room_title: 'Demo room',
