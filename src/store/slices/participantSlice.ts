@@ -162,23 +162,25 @@ export const selectVisibleParticipants = createSelector(
       );
     }
 
-    // Raised hands float to the top in queue order (matches the 1/2/3 badges).
-    // Returns 0 for non-raised pairs so the stable sort keeps the baseline name
-    // order (entity adapter sortComparer).
-    const raisedRank = (
-      a: IVisibleParticipantInfo,
-      b: IVisibleParticipantInfo,
-    ) => {
-      const pa = queue.positions[a.userId];
-      const pb = queue.positions[b.userId];
-      if (pa && pb) return pa - pb;
-      if (pa) return -1;
-      if (pb) return 1;
-      return 0;
-    };
-
-    // .sort() mutates the array; `list` is already a filtered copy, so this is safe.
+    // Raised-hands-first ordering is an admin-only concern (managing the queue).
+    // Non-admins keep the baseline name order. .sort() mutates the array, but
+    // `list` is already a filtered copy, so this is safe.
     if (isAdmin) {
+      // Raised hands float to the top in queue order (matches the 1/2/3 badges).
+      // Returns 0 for non-raised pairs so the stable sort keeps the baseline name
+      // order (entity adapter sortComparer).
+      const raisedRank = (
+        a: IVisibleParticipantInfo,
+        b: IVisibleParticipantInfo,
+      ) => {
+        const pa = queue.positions[a.userId];
+        const pb = queue.positions[b.userId];
+        if (pa && pb) return pa - pb;
+        if (pa) return -1;
+        if (pb) return 1;
+        return 0;
+      };
+
       // waiting-room users stay on top, then raised hands, then the rest.
       return list.sort((a, b) => {
         if (a.waitForApproval !== b.waitForApproval) {
@@ -187,6 +189,6 @@ export const selectVisibleParticipants = createSelector(
         return raisedRank(a, b);
       });
     }
-    return list.sort(raisedRank);
+    return list;
   },
 );
