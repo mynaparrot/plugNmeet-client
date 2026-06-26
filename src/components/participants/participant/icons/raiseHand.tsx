@@ -15,9 +15,7 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
     (state) =>
       participantsSelector.selectById(state, userId)?.metadata.raisedHand,
   );
-  // select primitives so this row only re-renders when ITS own position
-  // changes or when the count crosses the threshold of 2 — not on every
-  // raise/lower of other participants.
+
   const position = useAppSelector(
     (state) => selectRaisedHandsQueue(state).positions[userId],
   );
