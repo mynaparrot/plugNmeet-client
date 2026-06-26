@@ -37,6 +37,7 @@ export interface ImageCustomData {
 
 const processedImageElements: Map<string, string> = new Map();
 const uploadPromises: Map<string, Promise<void>> = new Map();
+const imageDataCache: Map<string, BinaryFileData> = new Map();
 
 export const createAndRegisterOfficeFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
@@ -397,6 +398,35 @@ export const uploadCanvasBinaryFile = (
   return uploadPromise;
 };
 
+const getImageData = async (
+  elm: ExcalidrawImageElement,
+  customData: ImageCustomData,
+): Promise<BinaryFileData | null> => {
+  if (!elm.fileId || !customData.fileUrl) {
+    return null;
+  }
+
+  const cached = imageDataCache.get(elm.fileId);
+  if (cached) {
+    return cached;
+  }
+
+  const result = await fetchFileWithElm(
+    customData.fileUrl,
+    elm.fileId,
+    customData.isOfficeFile,
+    customData.uploaderWhiteboardHeight,
+    customData.uploaderWhiteboardWidth,
+  );
+
+  if (result) {
+    imageDataCache.set(elm.fileId, result.image);
+    return result.image;
+  }
+
+  return null;
+};
+
 export const ensureImageDataIsLoaded = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   elm: ExcalidrawImageElement,
@@ -417,22 +447,14 @@ export const ensureImageDataIsLoaded = async (
     return;
   }
 
-  const result = await fetchFileWithElm(
-    customData.fileUrl,
-    elm.fileId,
-    customData.isOfficeFile,
-    customData.uploaderWhiteboardHeight,
-    customData.uploaderWhiteboardWidth,
-  );
-
-  if (!result) {
+  const imageData = await getImageData(elm, customData);
+  if (!imageData) {
     console.error('fetching image file failed', customData.fileUrl);
     processedImageElements.delete(elm.id);
     return;
   }
 
-  const fileReadImages: Array<BinaryFileData> = [result.image];
-  excalidrawAPI.addFiles(fileReadImages);
+  excalidrawAPI.addFiles([imageData]);
 };
 
 export function cleanProcessedImageElementsMap() {
