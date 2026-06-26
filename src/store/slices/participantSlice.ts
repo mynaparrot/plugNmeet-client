@@ -96,11 +96,20 @@ export interface IRaisedHandsQueue {
 export const selectRaisedHandsQueue = createSelector(
   [participantsSelector.selectAll],
   (participants): IRaisedHandsQueue => {
+    // raisedHandAt is an int64 emitted as a string (jstype=JS_STRING). Coerce
+    // defensively: a missing/invalid value falls back to 0 so the comparator can
+    // never return NaN — a NaN result would violate the Array.sort contract and
+    // produce unstable ordering across JS engines.
+    const raisedAtMs = (p: IParticipant) => {
+      const n = Number(p.metadata?.raisedHandAt);
+      return Number.isNaN(n) ? 0 : n;
+    };
+
     const raised = participants
       .filter((p) => p.metadata?.raisedHand === true)
       .sort((a, b) => {
-        const at = Number(a.metadata?.raisedHandAt);
-        const bt = Number(b.metadata?.raisedHandAt);
+        const at = raisedAtMs(a);
+        const bt = raisedAtMs(b);
         if (at !== bt) {
           return at - bt;
         }
