@@ -1,7 +1,10 @@
 import React from 'react';
 
 import { useAppSelector } from '../../../../store';
-import { participantsSelector } from '../../../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  selectRaisedHandsQueue,
+} from '../../../../store/slices/participantSlice';
 import { HandsIconSVG } from '../../../../assets/Icons/HandsIconSVG';
 
 interface RaisedHandProps {
@@ -14,12 +17,27 @@ const RaisedHand = ({ userId }: RaisedHandProps) => {
       participantsSelector.selectById(state, userId)?.metadata.raisedHand,
   );
 
+  const position = useAppSelector(
+    (state) => selectRaisedHandsQueue(state).positions[userId],
+  );
+  const showNumber = useAppSelector((state) => {
+    const queue = selectRaisedHandsQueue(state);
+    return queue.count >= 2 && !!queue.positions[userId];
+  });
+
+  if (!raisedHand) {
+    return null;
+  }
+
   return (
-    raisedHand && (
-      <div className="raised-hand absolute bottom-0 right-4 cursor-pointer w-7 h-7 rounded-full bg-Blue2-500 flex items-center justify-center">
-        <HandsIconSVG classes="h-4 w-auto" />
-      </div>
-    )
+    <div className="raised-hand absolute bottom-0 right-4 cursor-pointer w-7 h-7 rounded-full bg-Blue2-500 flex items-center justify-center">
+      <HandsIconSVG classes="h-4 w-auto" />
+      {showNumber && (
+        <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-white text-Blue2-500 text-[10px] leading-4 font-semibold text-center">
+          {position}
+        </span>
+      )}
+    </div>
   );
 };
 export default RaisedHand;

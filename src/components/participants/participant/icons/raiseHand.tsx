@@ -1,6 +1,9 @@
 import React from 'react';
 import { useAppSelector } from '../../../../store';
-import { participantsSelector } from '../../../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  selectRaisedHandsQueue,
+} from '../../../../store/slices/participantSlice';
 import { HandsIconSVG } from '../../../../assets/Icons/HandsIconSVG';
 import IconWrapper from './iconWrapper';
 
@@ -13,12 +16,29 @@ const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
       participantsSelector.selectById(state, userId)?.metadata.raisedHand,
   );
 
+  const position = useAppSelector(
+    (state) => selectRaisedHandsQueue(state).positions[userId],
+  );
+  const showNumber = useAppSelector((state) => {
+    const queue = selectRaisedHandsQueue(state);
+    return queue.count >= 2 && !!queue.positions[userId];
+  });
+
+  if (!raisedHand) {
+    return null;
+  }
+
   return (
-    raisedHand && (
-      <IconWrapper>
+    <IconWrapper>
+      <div className="relative flex items-center justify-center">
         <HandsIconSVG classes={'h-3 3xl:h-4 w-auto dark:text-white'} />
-      </IconWrapper>
-    )
+        {showNumber && (
+          <span className="absolute -top-2 -right-2 min-w-[14px] h-3.5 px-0.5 rounded-full bg-Blue2-500 text-white text-[9px] leading-[14px] font-semibold text-center">
+            {position}
+          </span>
+        )}
+      </div>
+    </IconWrapper>
   );
 };
 
