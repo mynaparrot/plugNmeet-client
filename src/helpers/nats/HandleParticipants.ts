@@ -9,6 +9,7 @@ import {
   NatsUserMetadataUpdateSchema,
   UserMetadata,
   UserMetadataSchema,
+  UserRaisedHandSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromJson, fromJsonString } from '@bufbuild/protobuf';
 
@@ -252,7 +253,7 @@ export default class HandleParticipants {
       }
 
       store.dispatch(updateCurrentUserMetadata(metadata));
-      store.dispatch(updateIsActiveRaisehand(metadata.raisedHand));
+      store.dispatch(updateIsActiveRaisehand(!!metadata.raisedHand?.isRaised));
     }
   };
 
@@ -409,7 +410,10 @@ export default class HandleParticipants {
     return create(UserMetadataSchema, {
       isAdmin: false,
       isPresenter: false,
-      raisedHand: false,
+      raisedHand: create(UserRaisedHandSchema, {
+        isRaised: false,
+        raisedAt: '0',
+      }),
       waitForApproval: false,
       lockSettings: {
         lockMicrophone: true,

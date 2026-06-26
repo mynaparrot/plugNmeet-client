@@ -8,8 +8,8 @@ importers:
   .:
     dependencies:
       '@bufbuild/protobuf':
-        specifier: 2.12.1
-        version: 2.12.1
+        specifier: 2.12.0
+        version: 2.12.0
       '@excalidraw/excalidraw':
         specifier: 0.18.0-2a82821
         version: 0.18.0-2a82821(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(immer@11.1.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -38,17 +38,17 @@ importers:
         specifier: 3.2.2
         version: 3.2.2
       es-toolkit:
-        specifier: 1.48.1
-        version: 1.48.1
+        specifier: 1.49.0
+        version: 1.49.0
       eventemitter3:
         specifier: 5.0.4
         version: 5.0.4
       framer-motion:
-        specifier: 12.41.0
-        version: 12.41.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 12.42.0
+        version: 12.42.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       i18next:
-        specifier: 26.3.2
-        version: 26.3.2(typescript@6.0.3)
+        specifier: 26.3.3
+        version: 26.3.3(typescript@6.0.3)
       i18next-browser-languagedetector:
         specifier: 8.2.1
         version: 8.2.1
@@ -71,8 +71,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.3.1-18
-        version: 1.3.1-18(@bufbuild/protobuf@2.12.1)
+        specifier: 1.3.1-19
+        version: 1.3.1-19(@bufbuild/protobuf@2.12.0)
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -92,11 +92,11 @@ importers:
         specifier: 4.7.0
         version: 4.7.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-hotkeys-hook:
-        specifier: 5.3.2
-        version: 5.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 5.3.3
+        version: 5.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-i18next:
         specifier: 17.0.8
-        version: 17.0.8(i18next@26.3.2(typescript@6.0.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.3(typescript@6.0.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       react-player:
         specifier: 3.4.0
         version: 3.4.0(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -144,8 +144,8 @@ importers:
         specifier: 1.71.0
         version: 1.71.0
       prettier:
-        specifier: 3.8.4
-        version: 3.8.4
+        specifier: 3.8.5
+        version: 3.8.5
       tailwindcss:
         specifier: 4.3.1
         version: 4.3.1
@@ -197,10 +197,10 @@ packages:
         integrity: sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ==,
       }
 
-  '@bufbuild/protobuf@2.12.1':
+  '@bufbuild/protobuf@2.12.0':
     resolution:
       {
-        integrity: sha512-BvAMfS6LrgZiryOAZ4pBYucu4wG/Ei/9o9DZ9akbREnMLbPJiom2i8b9C8IsKErQoiKqVhrerzt3kOT/RrzLHg==,
+        integrity: sha512-B/XlCaFIP8LOwzo+bz5uFzATYokcwCKQcghqnlfwSmM5eX/qTkvDBnDPs+gXtX/RyjxJ4DRikECcPJbyALA8FA==,
       }
 
   '@chevrotain/cst-dts-gen@11.0.3':
@@ -3723,10 +3723,10 @@ packages:
       }
     engines: { node: '>= 0.4' }
 
-  es-toolkit@1.48.1:
+  es-toolkit@1.49.0:
     resolution:
       {
-        integrity: sha512-wfnXlwd5I75eXRtdD2vuEs50xHHESECDsGD7yiQnfFVNoa5522NwXEbmgo98LfiukSQHs+mBM7/YG3qKJB9/mQ==,
+        integrity: sha512-G5iZ6Pc/FNRY/soKZHC+TxGDD83rHUDXxzaWhGCX44vAv/tMs56WMusnm/KMNK+luUPsgA9U28cGr4RDlSzL2g==,
       }
 
   es6-promise-pool@2.5.0:
@@ -3814,10 +3814,10 @@ packages:
       }
     engines: { node: '>= 6' }
 
-  framer-motion@12.41.0:
+  framer-motion@12.42.0:
     resolution:
       {
-        integrity: sha512-OHAMNiCEON1RDBlRGuulsN5AD8ptMjvk5QWfFmYmBLPZ3zFGIJe60kQucQQf4cez1OzQmjYBWDY+dYfISkUdqg==,
+        integrity: sha512-wp7EJnfWaaEScVygKv3e20udoRz+LbtxScsuTkakAxfXmt+ReC6WyPW2nINRAGvd+hG9odwcjBLyOTPjH5pBRA==,
       }
     peerDependencies:
       '@emotion/is-prop-valid': '*'
@@ -3990,10 +3990,10 @@ packages:
       }
     engines: { node: '>=18' }
 
-  i18next@26.3.2:
+  i18next@26.3.3:
     resolution:
       {
-        integrity: sha512-QQkXAM1sPDHqhxMQuBeHVMUn6mJchF+wdpOoQerciLAFqO3ZYdxO0EUbeEhruyutnNwpUQIITDVzLjwnNL0T1w==,
+        integrity: sha512-aYVegyBdXSO93CMMihvr47jI7GHSOcIahMpJX+qzUXDzW4xDJf2uenIA+45vDU+YhiVdcfsql70AC9RVdMNrHg==,
       }
     peerDependencies:
       typescript: ^5 || ^6
@@ -4432,10 +4432,10 @@ packages:
         integrity: sha512-yc0LhH6tItlvfLBugVUEtgawwFU2sIe+cSdmRJJCTMZ5GEJyLxNyC/NIOAOGk67Fa8GNpOttO3Xz/1bHpXFD/g==,
       }
 
-  motion-dom@12.41.0:
+  motion-dom@12.42.0:
     resolution:
       {
-        integrity: sha512-Lk3J39fOGg6xNr1KRZsN6usDyBf8aP7MEbUPez1VCughHt79OrP7VGqNrPyFL0riaT7WS8t9DRw1M3BHtM/xKw==,
+        integrity: sha512-M63h4n8R+quJdNhBwuLlgxM+OLYa9+I/T2pzDRboB9fLXRdbou+Gw7Zury+SkpaCyACP1JHSjHgZ1EgTkBr30w==,
       }
 
   motion-utils@12.39.0:
@@ -4617,10 +4617,10 @@ packages:
         integrity: sha512-5O9bkbq0APQIkhptyZwp0gUgheCeImGPFo4hvPF2M5xBmgsUYzsUPHCfMye2xyeRE1zvQBKtziaC3jPgnHE1tw==,
       }
 
-  plugnmeet-protocol-js@1.3.1-18:
+  plugnmeet-protocol-js@1.3.1-19:
     resolution:
       {
-        integrity: sha512-4AxMz6xM9cSxeM5mX16xkuSm7iZgsNKVYd5UUIQqJQGZHnDjvDXh13QIwfiTMiS7FVObA73w50t81AmYW90ESQ==,
+        integrity: sha512-z6GteyVV0y95ufcd3364bKLw0CTHo2MEXeSnrrvCvoV84xnqMPPnBXKFb5ho9nKCq0yph/yiZ8e6RennnyphfQ==,
       }
     peerDependencies:
       '@bufbuild/protobuf': ^2.12.0
@@ -4668,10 +4668,10 @@ packages:
       }
     engines: { node: ^10 || ^12 || >=14 }
 
-  prettier@3.8.4:
+  prettier@3.8.5:
     resolution:
       {
-        integrity: sha512-N2MylSdi48+5N/6S5j+maeHbUSIzzZ5uOcX5Hm4QpV8Dkb1HFjfAKTKX6yNPJQD9AhcT3ifHNB66tWTTJDi11Q==,
+        integrity: sha512-zxcTTCedNGJM4R8sj/Cq/F0W/c4iE0afWBcBwMTRtw4WHYP9TWkYjdiH3npPRUYsXQCPR0hTU9yjovOu+E6EQA==,
       }
     engines: { node: '>=14' }
     hasBin: true
@@ -4769,10 +4769,10 @@ packages:
       react: '>= 16.3.0'
       react-dom: '>= 16.3.0'
 
-  react-hotkeys-hook@5.3.2:
+  react-hotkeys-hook@5.3.3:
     resolution:
       {
-        integrity: sha512-DDDy9xK6mbTQ6aPlQvIl0dA/a90T/AWml4Rm21JXFDLlRHalIg4/Rv3equUQYs5xPTWq+oEl6RD7mi/nBpU3Uw==,
+        integrity: sha512-aswgyWUnE25hmhzHTfKDmKzsaSE5DJ4LKaU/o6rQSXkDd/1Bh9TfAFQbHkf6fLy11HvlYkp+cDDarGdhmCDhoQ==,
       }
     peerDependencies:
       react: '>=16.8.0'
@@ -5459,7 +5459,7 @@ snapshots:
 
   '@bufbuild/protobuf@1.10.1': {}
 
-  '@bufbuild/protobuf@2.12.1': {}
+  '@bufbuild/protobuf@2.12.0': {}
 
   '@chevrotain/cst-dts-gen@11.0.3':
     dependencies:
@@ -7620,7 +7620,7 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.4
 
-  es-toolkit@1.48.1: {}
+  es-toolkit@1.49.0: {}
 
   es6-promise-pool@2.5.0: {}
 
@@ -7681,9 +7681,9 @@ snapshots:
       hasown: 2.0.4
       mime-types: 2.1.35
 
-  framer-motion@12.41.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  framer-motion@12.42.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
-      motion-dom: 12.41.0
+      motion-dom: 12.42.0
       motion-utils: 12.39.0
       tslib: 2.8.1
     optionalDependencies:
@@ -7779,7 +7779,7 @@ snapshots:
 
   i18next-http-backend@4.0.0: {}
 
-  i18next@26.3.2(typescript@6.0.3):
+  i18next@26.3.3(typescript@6.0.3):
     optionalDependencies:
       typescript: 6.0.3
 
@@ -7984,7 +7984,7 @@ snapshots:
       dagre-d3-es: 7.0.14
       dayjs: 1.11.21
       dompurify: 3.4.10
-      es-toolkit: 1.48.1
+      es-toolkit: 1.49.0
       katex: 0.16.47
       khroma: 2.1.0
       marked: 16.4.2
@@ -8001,7 +8001,7 @@ snapshots:
 
   mobile-detect@1.4.5: {}
 
-  motion-dom@12.41.0:
+  motion-dom@12.42.0:
     dependencies:
       motion-utils: 12.39.0
 
@@ -8113,9 +8113,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  plugnmeet-protocol-js@1.3.1-18(@bufbuild/protobuf@2.12.1):
+  plugnmeet-protocol-js@1.3.1-19(@bufbuild/protobuf@2.12.0):
     dependencies:
-      '@bufbuild/protobuf': 2.12.1
+      '@bufbuild/protobuf': 2.12.0
 
   png-chunk-text@1.0.0: {}
 
@@ -8143,7 +8143,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier@3.8.4: {}
+  prettier@3.8.5: {}
 
   prop-types@15.8.1:
     dependencies:
@@ -8265,16 +8265,16 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  react-hotkeys-hook@5.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-hotkeys-hook@5.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  react-i18next@17.0.8(i18next@26.3.2(typescript@6.0.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3):
+  react-i18next@17.0.8(i18next@26.3.3(typescript@6.0.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3):
     dependencies:
       '@babel/runtime': 7.29.7
       html-parse-stringify: 3.0.1
-      i18next: 26.3.2(typescript@6.0.3)
+      i18next: 26.3.3(typescript@6.0.3)
       react: 19.2.7
       use-sync-external-store: 1.6.0(react@19.2.7)
     optionalDependencies:

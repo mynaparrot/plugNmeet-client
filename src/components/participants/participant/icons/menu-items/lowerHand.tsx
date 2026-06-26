@@ -16,9 +16,10 @@ interface ILowerHandMenuItemProps {
 }
 
 const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
-  const raisedHand = useAppSelector(
+  const isRaisedHand = useAppSelector(
     (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.raisedHand,
+      participantsSelector.selectById(state, userId)?.metadata.raisedHand
+        ?.isRaised,
   );
   const { t } = useTranslation();
   const conn = getNatsConn();
@@ -32,7 +33,7 @@ const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
   };
 
   return (
-    raisedHand && (
+    isRaisedHand && (
       <div className="" role="none">
         <MenuItem>
           {() => (

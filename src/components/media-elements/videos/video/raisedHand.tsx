@@ -12,9 +12,10 @@ interface RaisedHandProps {
 }
 
 const RaisedHand = ({ userId }: RaisedHandProps) => {
-  const raisedHand = useAppSelector(
+  const isRaisedHand = useAppSelector(
     (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.raisedHand,
+      participantsSelector.selectById(state, userId)?.metadata.raisedHand
+        ?.isRaised,
   );
 
   const position = useAppSelector(
@@ -25,7 +26,7 @@ const RaisedHand = ({ userId }: RaisedHandProps) => {
     return queue.count >= 2 && !!queue.positions[userId];
   });
 
-  if (!raisedHand) {
+  if (!isRaisedHand) {
     return null;
   }
 
