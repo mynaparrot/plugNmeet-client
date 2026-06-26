@@ -122,6 +122,7 @@ export const selectRaisedHandsQueue = createSelector(
 export const selectVisibleParticipants = createSelector(
   [
     selectParticipantsForListDisplay,
+    selectRaisedHandsQueue,
     (state: RootState, isAdmin: boolean) => isAdmin,
     (state: RootState, isAdmin: boolean, search: string) => search,
     (
@@ -138,7 +139,14 @@ export const selectVisibleParticipants = createSelector(
       currentUserId: string | undefined,
     ) => currentUserId,
   ],
-  (participants, isAdmin, search, allowViewOtherUsers, currentUserId) => {
+  (
+    participants,
+    queue,
+    isAdmin,
+    search,
+    allowViewOtherUsers,
+    currentUserId,
+  ) => {
     let list = participants.filter(
       (p) =>
         p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
@@ -154,16 +162,31 @@ export const selectVisibleParticipants = createSelector(
       );
     }
 
+    // Raised hands float to the top in queue order (matches the 1/2/3 badges).
+    // Returns 0 for non-raised pairs so the stable sort keeps the baseline name
+    // order (entity adapter sortComparer).
+    const raisedRank = (
+      a: IVisibleParticipantInfo,
+      b: IVisibleParticipantInfo,
+    ) => {
+      const pa = queue.positions[a.userId];
+      const pb = queue.positions[b.userId];
+      if (pa && pb) return pa - pb;
+      if (pa) return -1;
+      if (pb) return 1;
+      return 0;
+    };
+
+    // .sort() mutates the array; `list` is already a filtered copy, so this is safe.
     if (isAdmin) {
-      // .sort() mutates the array, so we work on a copy.
-      return list.sort((a, b) =>
-        a.waitForApproval === b.waitForApproval
-          ? 0
-          : a.waitForApproval
-            ? -1
-            : 1,
-      );
+      // waiting-room users stay on top, then raised hands, then the rest.
+      return list.sort((a, b) => {
+        if (a.waitForApproval !== b.waitForApproval) {
+          return a.waitForApproval ? -1 : 1;
+        }
+        return raisedRank(a, b);
+      });
     }
-    return list;
+    return list.sort(raisedRank);
   },
 );
