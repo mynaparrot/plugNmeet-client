@@ -86,6 +86,39 @@ const selectParticipantsForListDisplay = createSelector(
   },
 );
 
+export interface IRaisedHandsQueue {
+  // userId -> 1-based position in the raise order
+  positions: Record<string, number>;
+  // total number of currently raised hands
+  count: number;
+}
+
+export const selectRaisedHandsQueue = createSelector(
+  [participantsSelector.selectAll],
+  (participants): IRaisedHandsQueue => {
+    const raised = participants
+      .filter((p) => p.metadata?.raisedHand === true)
+      .sort((a, b) => {
+        const at = Number(a.metadata?.raisedHandAt);
+        const bt = Number(b.metadata?.raisedHandAt);
+        if (at !== bt) {
+          return at - bt;
+        }
+        return a.userId.localeCompare(b.userId);
+      });
+
+    const positions: Record<string, number> = {};
+    raised.forEach((p, i) => {
+      positions[p.userId] = i + 1;
+    });
+
+    return { positions, count: raised.length };
+  },
+  {
+    memoizeOptions: { resultEqualityCheck: isEqual },
+  },
+);
+
 export const selectVisibleParticipants = createSelector(
   [
     selectParticipantsForListDisplay,
