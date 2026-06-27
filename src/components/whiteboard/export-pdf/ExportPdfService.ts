@@ -241,11 +241,7 @@ class ExportPdfService {
   ): Promise<ImageBitmap> {
     const blob = await exportToBlob({
       elements,
-      appState: {
-        ...appState,
-        exportBackground: true,
-        viewBackgroundColor: appState.viewBackgroundColor || '#ffffff',
-      },
+      appState,
       files,
       mimeType: MIME_TYPES.png,
       exportPadding: 20,

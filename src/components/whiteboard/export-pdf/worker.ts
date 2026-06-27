@@ -16,6 +16,7 @@ async function uploadSlice(
 ): Promise<void> {
   const formData = new FormData();
 
+  formData.append('Authorization', authToken);
   formData.append('file_id', fileId);
   formData.append('file_name', fileName);
   formData.append('page_number', String(pageNumber));
@@ -25,9 +26,6 @@ async function uploadSlice(
 
   const response = await fetch(uploadUrl, {
     method: 'POST',
-    headers: {
-      Authorization: authToken,
-    },
     body: formData,
   });
 
@@ -51,10 +49,28 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
     uploadUrl,
   } = event.data;
 
-  const horizontalSlices = Math.ceil(pageImageBitmap.width / A4_WIDTH);
-  const verticalSlices = Math.ceil(pageImageBitmap.height / A4_HEIGHT);
+  // Ensure we have at least 1 slice in each direction
+  const horizontalSlices = Math.max(
+    1,
+    Math.ceil(pageImageBitmap.width / A4_WIDTH),
+  );
+  const verticalSlices = Math.max(
+    1,
+    Math.ceil(pageImageBitmap.height / A4_HEIGHT),
+  );
   const totalSlices = horizontalSlices * verticalSlices;
-  const dataUrls: string[] = []; // Keep for testing
+
+  // Calculate the total width of our virtual A4 paper grid
+  const totalGridWidth = horizontalSlices * A4_WIDTH;
+
+  // --- THE HYBRID OFFSET ---
+  // 1. HORIZONTAL: Calculate leftover horizontal space and divide by 2 to center it.
+  const offsetX = (totalGridWidth - pageImageBitmap.width) / 2;
+
+  // 2. VERTICAL: Lock to 0. Excalidraw's native padding handles the top margin.
+  const offsetY = 0;
+
+  const dataUrls: string[] = [];
   let sliceCount = 0;
 
   try {
@@ -78,17 +94,11 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
         ctx.fillStyle = appState.viewBackgroundColor || '#ffffff';
         ctx.fillRect(0, 0, A4_WIDTH, A4_HEIGHT);
 
-        ctx.drawImage(
-          pageImageBitmap,
-          h * A4_WIDTH,
-          v * A4_HEIGHT,
-          A4_WIDTH,
-          A4_HEIGHT,
-          0,
-          0,
-          A4_WIDTH,
-          A4_HEIGHT,
-        );
+        // Apply the hybrid offset.
+        const dx = offsetX - h * A4_WIDTH;
+        const dy = offsetY - v * A4_HEIGHT;
+
+        ctx.drawImage(pageImageBitmap, dx, dy);
 
         const blob = await sliceCanvas.convertToBlob({ type: 'image/png' });
 
