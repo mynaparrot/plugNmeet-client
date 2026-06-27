@@ -22,7 +22,7 @@ async function uploadSlice(
   formData.append('page_number', String(pageNumber));
   formData.append('slice_number', String(sliceNumber));
   formData.append('export_id', exportId);
-  formData.append('file', blob, `${sliceNumber}.png`);
+  formData.append('file', blob, `${pageNumber}_${sliceNumber}.png`);
 
   const response = await fetch(uploadUrl, {
     method: 'POST',
@@ -70,7 +70,6 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
   // 2. VERTICAL: Lock to 0. Excalidraw's native padding handles the top margin.
   const offsetY = 0;
 
-  const dataUrls: string[] = [];
   let sliceCount = 0;
 
   try {
@@ -113,21 +112,12 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
           authToken,
           uploadUrl,
         );
-
-        // For testing: generate a data URL to send back to the main thread
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-        dataUrls.push(dataUrl);
       }
     }
 
     self.postMessage({
       type: 'complete',
-      payload: { pageNumber: pageNumber, dataUrls: dataUrls }, // Keep dataUrls for testing
+      payload: { pageNumber: pageNumber },
       // oxlint-disable-next-line unicorn/require-post-message-target-origin
     } as WorkerMessage);
   } catch (error) {

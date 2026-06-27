@@ -111,7 +111,7 @@ const FileUploadProgress = ({
     };
 
     const res: WhiteboardFileConversionRes = await sendAPIRequest(
-      'convertWhiteboardFile',
+      'whiteboard/convert',
       body,
     );
     if (!res.status) {

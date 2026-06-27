@@ -28,7 +28,6 @@ export type WorkerMessage =
       type: 'complete';
       payload: {
         pageNumber: number; // The original page number this worker has completed
-        dataUrls?: string[]; // Keeping this for testing as requested
       };
     }
   | {

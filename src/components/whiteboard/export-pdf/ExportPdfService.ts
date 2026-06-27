@@ -168,7 +168,6 @@ class ExportPdfService {
           autoClose: 3000,
           progress: 1,
         });
-        console.log('PDF Download URL:', res.filePath);
       } else {
         const errorMessage = i18n.t(
           res.msg || 'notifications.file-merge-failed',
@@ -286,7 +285,6 @@ class ExportPdfService {
             progress: progress,
           });
         } else if (type === 'complete') {
-          console.log(`Worker finished page ${pageNumber}.`, payload.dataUrls);
           worker.terminate();
           resolve();
         } else if (type === 'error') {

@@ -90,7 +90,8 @@
     "wait-other-uploading-to-finish": "Another upload is in progress. Please wait for it to complete.",
     "server-not-responding": "Server not responding. Your connection may be unstable.",
     "re-routing-connection": "Connection is unstable. Re-routing for better stability...",
-    "whiteboard-new-file-added": "New file is ready and has been added to the whiteboard files list."
+    "whiteboard-new-file-added": "New file is ready and has been added to the whiteboard files list.",
+    "private-download-link-ready": "Your download link is ready. Only you can see this message.<br/>{{link}}"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -404,7 +405,9 @@
     "export-pdf-unknown-error": "An unknown error occurred.",
     "export-pdf-processing-page": "Processing page {{page}} (slice {{slice}}/{{totalSlices}})...",
     "export-pdf-worker-error": "An unexpected worker error occurred.",
-    "export-pdf-worker-error-render": "Worker Error: {{message}}"
+    "export-pdf-worker-error-render": "Worker Error: {{message}}",
+    "export-pdf-finalizing": "Finalizing PDF...",
+    "export-pdf-finished": "PDF export finished successfully!"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",
