@@ -573,20 +573,20 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }`}
     >
       {isPresenter && excalidrawAPI && (
-        <ManageOfficeFilesModal
-          roomId={roomId}
-          excalidrawAPI={excalidrawAPI}
-          onClose={() => setIsOpenManageFilesUI(false)}
-          isOpen={isOpenManageFilesUI}
-          showSwitchingWarning={showSwitchingWarning}
-        />
-      )}
-      {isPresenter && excalidrawAPI && (
-        <ExportPDFModal
-          excalidrawAPI={excalidrawAPI}
-          onClose={() => setIsOpenExportPdfUI(false)}
-          isOpen={isOpenExportPdfUI}
-        />
+        <>
+          <ManageOfficeFilesModal
+            roomId={roomId}
+            excalidrawAPI={excalidrawAPI}
+            onClose={() => setIsOpenManageFilesUI(false)}
+            isOpen={isOpenManageFilesUI}
+            showSwitchingWarning={showSwitchingWarning}
+          />
+          <ExportPDFModal
+            excalidrawAPI={excalidrawAPI}
+            onClose={() => setIsOpenExportPdfUI(false)}
+            isOpen={isOpenExportPdfUI}
+          />
+        </>
       )}
       <Excalidraw
         onInitialize={onInitializeSetExcalidrawAPI}
@@ -619,6 +619,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             <>
               <div
                 className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={() => setIsOpenExportPdfUI(true)}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <PdfIcon className="w-[13px] h-[13px]" />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.export-pdf-title')}
+                </div>
+              </div>
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
                 onClick={() => {
                   setIsOpenManageFilesUI(true);
                 }}
@@ -629,18 +641,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                 </div>
                 <div className="dropdown-menu-item__text">
                   {t('whiteboard.manage-files-menu-title')}
-                </div>
-              </div>
-              <div
-                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-                onClick={() => setIsOpenExportPdfUI(true)}
-                role="button"
-              >
-                <div className="dropdown-menu-item__icon">
-                  <PdfIcon className="w-[13px] h-[13px]" />
-                </div>
-                <div className="dropdown-menu-item__text">
-                  {t('whiteboard.export-pdf-title')}
                 </div>
               </div>
             </>

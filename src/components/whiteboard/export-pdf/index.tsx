@@ -102,9 +102,11 @@ const ExportPDFModal = ({
 
   const renderButtons = () => {
     return (
-      <ActionButton onClick={handleExport} isLoading={isLoading}>
-        {t('whiteboard.export-pdf-button')}
-      </ActionButton>
+      availablePages.length > 0 && (
+        <ActionButton onClick={handleExport} isLoading={isLoading}>
+          {t('whiteboard.export-pdf-button')}
+        </ActionButton>
+      )
     );
   };
 

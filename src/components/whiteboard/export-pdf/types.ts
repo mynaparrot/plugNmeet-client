@@ -9,6 +9,9 @@ export interface WorkerInput {
   appState: {
     viewBackgroundColor: string;
   };
+  exportId: string;
+  authToken: string;
+  uploadUrl: string;
 }
 
 // Messages sent from the worker back to the main thread
@@ -16,17 +19,16 @@ export type WorkerMessage =
   | {
       type: 'progress';
       payload: {
-        currentPage: number;
-        totalPages: number;
+        currentPage: number; // Current slice number being processed by the worker
+        totalPages: number; // Total slices for the current page
+        pageNumber: number; // The original page number this worker is handling
       };
     }
   | {
       type: 'complete';
-      // Temporarily, the payload will be an array of data URLs for testing.
-      // In production, it will be a single download URL.
       payload: {
-        dataUrls?: string[];
-        downloadUrl?: string;
+        pageNumber: number; // The original page number this worker has completed
+        dataUrls?: string[]; // Keeping this for testing as requested
       };
     }
   | {
