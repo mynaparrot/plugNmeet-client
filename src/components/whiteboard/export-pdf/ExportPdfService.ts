@@ -134,11 +134,14 @@ class ExportPdfService {
         });
         return;
       }
+      setTimeout(() => toast.dismiss(toastId), 300);
 
-      toast.update(toastId, {
-        render: i18n.t('whiteboard.export-pdf-finalizing'),
-        progress: 0.9,
-      });
+      const finalizingToastId = toast.loading(
+        i18n.t('whiteboard.export-pdf-finalizing'),
+        {
+          type: 'info',
+        },
+      );
 
       const mergeReq = create(UploadedFileMergeReqSchema, {
         resumableIdentifier: exportId,
@@ -161,23 +164,21 @@ class ExportPdfService {
       );
 
       if (res.status && res.filePath && res.fileName) {
-        toast.update(toastId, {
+        toast.update(finalizingToastId, {
           render: i18n.t('whiteboard.export-pdf-finished'),
           type: 'success',
           isLoading: false,
-          autoClose: 3000,
-          progress: 1,
+          autoClose: 5000,
         });
       } else {
         const errorMessage = i18n.t(
           res.msg || 'notifications.file-merge-failed',
         );
-        toast.update(toastId, {
+        toast.update(finalizingToastId, {
           render: errorMessage,
           type: 'error',
           isLoading: false,
-          autoClose: 3000,
-          progress: 1,
+          autoClose: 5000,
         });
       }
     } catch (error) {

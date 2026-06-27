@@ -31,8 +31,9 @@ async function uploadSlice(
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error(errorText);
     throw new Error(
-      `Failed to upload slice ${sliceNumber} for page ${pageNumber}. Server: ${errorText}`,
+      `Failed to upload slice ${sliceNumber} for page ${pageNumber}`,
     );
   }
 }
