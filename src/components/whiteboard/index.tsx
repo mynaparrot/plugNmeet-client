@@ -35,6 +35,7 @@ import './style.css';
 
 import ManageOfficeFilesModal from './manage-office-files';
 import FooterUI from './footerUI';
+import ExportPDFModal from './export-pdf';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -62,6 +63,7 @@ import {
 import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
+import PdfIcon from '../../assets/Icons/PdfIcon';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -121,6 +123,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const [isFollowing, setIsFollowing] = useState(true);
   const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
     useState<boolean>(false);
+  const [isOpenExportPdfUI, setIsOpenExportPdfUI] = useState<boolean>(false);
   const [isToolbarHidden, setIsToolbarHidden] = useState<boolean>(false);
 
   const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
@@ -578,6 +581,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           showSwitchingWarning={showSwitchingWarning}
         />
       )}
+      {isPresenter && excalidrawAPI && (
+        <ExportPDFModal
+          excalidrawAPI={excalidrawAPI}
+          onClose={() => setIsOpenExportPdfUI(false)}
+          isOpen={isOpenExportPdfUI}
+        />
+      )}
       <Excalidraw
         onInitialize={onInitializeSetExcalidrawAPI}
         onChange={handleCanvasChange}
@@ -606,20 +616,34 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
           {isPresenter && excalidrawAPI && (
-            <div
-              className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-              onClick={() => {
-                setIsOpenManageFilesUI(true);
-              }}
-              role="button"
-            >
-              <div className="dropdown-menu-item__icon">
-                <i className="pnm-attachment text-[13px]" />
+            <>
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={() => {
+                  setIsOpenManageFilesUI(true);
+                }}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <i className="pnm-attachment text-[13px]" />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.manage-files-menu-title')}
+                </div>
               </div>
-              <div className="dropdown-menu-item__text">
-                {t('whiteboard.manage-files-menu-title')}
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={() => setIsOpenExportPdfUI(true)}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <PdfIcon className="w-[13px] h-[13px]" />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.export-pdf-title')}
+                </div>
               </div>
-            </div>
+            </>
           )}
           {!viewModeEnabled && (
             <div

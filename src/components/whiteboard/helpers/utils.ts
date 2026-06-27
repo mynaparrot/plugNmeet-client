@@ -65,6 +65,10 @@ export const formatStorageKey = (pageNumber: number, fileId?: string) => {
   return `${key}_${pageNumber}`;
 };
 
+export const getStorageKeyPageNumberRegex = (fileId: string) => {
+  return new RegExp(`^${fileId}_(\\d+)$`);
+};
+
 export const savePageData = async (
   elms: readonly OrderedExcalidrawElement[],
   page: number,

@@ -398,7 +398,7 @@ export const uploadCanvasBinaryFile = (
   return uploadPromise;
 };
 
-const getImageData = async (
+export const getImageData = async (
   elm: ExcalidrawImageElement,
   customData: ImageCustomData,
 ): Promise<BinaryFileData | null> => {
