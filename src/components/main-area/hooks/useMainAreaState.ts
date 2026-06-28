@@ -35,18 +35,6 @@ export const useMainAreaState = () => {
       state.session.currentRoom.metadata?.roomFeatures
         ?.displayExternalLinkFeatures?.isActive,
   );
-  const screenHeight = useAppSelector(
-    (state) => state.bottomIconsActivity.screenHeight,
-  );
-  const screenWidth = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
-  const headerVisible = useAppSelector(
-    (state) => state.roomSettings.visibleHeader,
-  );
-  const footerVisible = useAppSelector(
-    (state) => state.roomSettings.visibleFooter,
-  );
 
   const [hasScreenShareSubscribers, setHasScreenShareSubscribers] =
     useState<boolean>(false);
@@ -93,9 +81,5 @@ export const useMainAreaState = () => {
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
-    screenHeight,
-    screenWidth,
-    headerVisible,
-    footerVisible,
   };
 };

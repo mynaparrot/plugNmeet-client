@@ -7,7 +7,6 @@ import oxlintPlugin from 'vite-plugin-oxlint';
 import cleanPlugin from 'vite-plugin-clean';
 
 const isProduction = process.env.NODE_ENV === 'production';
-const BUILD_INTERVAL = 1500;
 
 export default defineConfig({
   root: join(__dirname, 'src'),
@@ -20,31 +19,22 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    watch: {
-      interval: BUILD_INTERVAL,
-    },
   },
   build: {
     outDir: '../dist',
     emptyOutDir: false,
     sourcemap: !isProduction,
     assetsInlineLimit: 0,
+    chunkSizeWarningLimit: 6000,
     rolldownOptions: {
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
         chunkFileNames: 'assets/chunks/[name].[hash].js',
         assetFileNames: ({ names }) => assetFileNames(names),
-        advancedChunks: {
-          groups: [
-            {
-              name: (moduleId: string) => manualChunks(moduleId),
-            },
-          ],
-        },
+        manualChunks: manualChunks,
       },
       watch: {
         exclude: 'node_modules/**',
-        buildDelay: BUILD_INTERVAL,
       },
     },
   },
@@ -119,29 +109,34 @@ function manualChunks(id: string) {
     return null;
   }
 
-  const modulePath = id.split('node_modules/')[1];
-  const topLevelFolder = modulePath.split('/')[0];
-  if (topLevelFolder !== '.pnpm') {
-    return topLevelFolder;
-  }
-
+  // Ensure CSS from dependencies is grouped with vendor
   if (id.endsWith('.css')) {
     return 'vendor';
-  } else if (id.endsWith('.js')) {
-    const packageName = modulePath.split('/')[1];
-    for (const chunk in vendorChunkMap) {
-      if (vendorChunkMap[chunk].some((pkg) => packageName.includes(pkg))) {
-        return chunk;
-      }
-    }
+  }
 
-    if (/react(-dom)?/.test(packageName)) {
-      return 'react';
-    } else {
-      // If we can't find a specific chunk, we can return 'vendor'
-      return 'vendor';
+  // Grouping logic based on path
+  for (const chunk in vendorChunkMap) {
+    if (
+      vendorChunkMap[chunk].some(
+        (pkg) =>
+          id.includes(`/node_modules/${pkg}/`) || id.includes(`/.pnpm/${pkg}`),
+      )
+    ) {
+      return chunk;
     }
   }
+
+  // Group React ecosystem
+  if (
+    id.includes('/node_modules/react/') ||
+    id.includes('/node_modules/react-dom/') ||
+    id.includes('/.pnpm/react@') ||
+    id.includes('/.pnpm/react-dom@')
+  ) {
+    return 'react';
+  }
+
+  return 'vendor';
 }
 
 function getStaticFilesToCopy(): ViteStaticCopyOptions {
