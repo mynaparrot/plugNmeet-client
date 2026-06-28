@@ -1,8 +1,4 @@
-import { WorkerInput, WorkerMessage } from './types';
-
-const SCALE = 2;
-const A4_WIDTH = 1240 * SCALE;
-const A4_HEIGHT = 1754 * SCALE;
+import { A4_WIDTH, A4_HEIGHT, WorkerInput, WorkerMessage } from './types';
 
 async function uploadSlice(
   blob: Blob,

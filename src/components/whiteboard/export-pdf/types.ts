@@ -1,5 +1,9 @@
 // These types are shared between the main thread and the web worker.
 
+export const SCALE = 2;
+export const A4_WIDTH = 1240 * SCALE;
+export const A4_HEIGHT = 1754 * SCALE;
+
 // Message sent from the main thread to the worker
 export interface WorkerInput {
   pageImageBitmap: ImageBitmap;
