@@ -27,7 +27,7 @@ import {
 import { toast } from 'react-toastify';
 import { CorsWorker } from '@twilio/video-processors/es5/utils/CorsWorker';
 // @ts-expect-error not an error
-import LkWorkerUrl from 'livekit-client/e2ee-worker?url';
+import LkWorkerUrl from 'livekit-client/e2ee-worker?worker&url';
 
 import ParticipantMediaManager from './ParticipantMediaManager';
 import HandleMediaTracks from './HandleMediaTracks';

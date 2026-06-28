@@ -16,7 +16,7 @@ import { toast, Id } from 'react-toastify';
 import { exportToBlob, MIME_TYPES } from '@excalidraw/excalidraw';
 
 // @ts-expect-error not an error
-import ExportWorkerUrl from './worker?url';
+import ExportWorkerUrl from './exportPdf.worker?worker&url';
 
 import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
 import { formatStorageKey } from '../helpers/utils';

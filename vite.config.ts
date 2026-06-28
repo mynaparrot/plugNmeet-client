@@ -28,6 +28,7 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: false,
     sourcemap: !isProduction,
+    assetsInlineLimit: 0,
     rolldownOptions: {
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
@@ -47,13 +48,26 @@ export default defineConfig({
       },
     },
   },
+  worker: {
+    format: 'iife',
+    rolldownOptions: {
+      output: {
+        entryFileNames: 'assets/worker/[name].[hash].js',
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
     viteStaticCopy(getStaticFilesToCopy()),
     oxlintPlugin(),
     cleanPlugin({
-      targetFiles: ['dist/assets/js', 'dist/assets/css', 'dist/assets/chunks'],
+      targetFiles: [
+        'dist/assets/js',
+        'dist/assets/css',
+        'dist/assets/chunks',
+        'dist/assets/worker',
+      ],
     }),
   ],
   define: {
