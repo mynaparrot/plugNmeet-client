@@ -392,6 +392,7 @@
     "export-pdf-current-page": "Current: {{page}}",
     "export-pdf-selected-pages": "Selected Pages",
     "export-pdf-select-pages-label": "Select pages to export:",
+    "export-pdf-pages-info": "Only pages that have been opened at least once on the whiteboard will be considered for export. Unopened pages will not be included.",
     "export-pdf-no-pages-selected": "Please select at least one page to export.",
     "export-pdf-no-content-on-current-page": "There is no content on the current page to export.",
     "export-pdf-no-pages-to-export": "There are no pages with content to export.",

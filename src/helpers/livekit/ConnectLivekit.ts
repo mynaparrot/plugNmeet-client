@@ -25,7 +25,6 @@ import {
   MediaServerConnInfo,
 } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
-import { CorsWorker } from '@twilio/video-processors/es5/utils/CorsWorker';
 // @ts-expect-error not an error
 import LkWorkerUrl from 'livekit-client/e2ee-worker?worker&url';
 
@@ -41,6 +40,7 @@ import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { getConfigValue, isFirefoxMobile } from '../utils';
+import { CorsWorker } from '../libs/corsWorker';
 
 const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
@@ -246,8 +246,7 @@ export default class ConnectLivekit
     };
 
     if (this.enabledE2EE && isE2EESupported()) {
-      const corsWorker = new CorsWorker(LkWorkerUrl);
-      const LkWorker = await corsWorker.workerPromise;
+      const LkWorker = await CorsWorker.create(LkWorkerUrl);
       roomOptions.encryption = {
         keyProvider: this._e2eeKeyProvider,
         worker: LkWorker,

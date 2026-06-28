@@ -22,7 +22,7 @@ import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
 import { formatStorageKey } from '../helpers/utils';
 import { getImageData, ImageCustomData } from '../helpers/handleFiles';
 import { WorkerInput, WorkerMessage } from './types';
-import { CorsWorker } from './corsWorker';
+import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
 import { store } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';

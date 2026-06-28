@@ -179,6 +179,12 @@ const ExportPDFModal = ({
       renderButtons={renderButtons}
     >
       <div>
+        <div className="p-3 mb-4 rounded-md bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            {t('whiteboard.export-pdf-pages-info')}
+          </p>
+        </div>
+
         {availablePages.length > 0 ? (
           <>
             <RadioOptions
