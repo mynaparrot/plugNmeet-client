@@ -19,7 +19,7 @@ import { exportToBlob, MIME_TYPES } from '@excalidraw/excalidraw';
 import ExportWorkerUrl from './exportPdf.worker?worker&url';
 
 import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
-import { formatStorageKey } from '../helpers/utils';
+import { A4_BOUNDARY_GUIDE_ID, formatStorageKey } from '../helpers/utils';
 import { getImageData, ImageCustomData } from '../helpers/handleFiles';
 import { SCALE, WorkerInput, WorkerMessage } from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
@@ -214,7 +214,9 @@ class ExportPdfService {
       return { elements: [], files: {} };
     }
 
-    const pageElements = elements.filter((el) => !el.isDeleted);
+    const pageElements = elements.filter(
+      (el) => !el.isDeleted && !el.id.startsWith(A4_BOUNDARY_GUIDE_ID),
+    );
 
     for (const el of pageElements) {
       if (el.type === 'image') {

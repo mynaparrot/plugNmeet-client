@@ -56,8 +56,10 @@ import {
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import {
+  A4_BOUNDARY_GUIDE_ID,
   displaySavedPageData,
   ensureAllImagesDataIsLoaded,
+  prepareA4BoundaryGuide,
   savePageData,
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
@@ -236,6 +238,22 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [],
   );
 
+  const addBoundaryToElements = useCallback(
+    (elements: readonly ExcalidrawElement[]) => {
+      if (!excalidrawAPI || viewModeEnabled) {
+        return elements;
+      }
+      const boundary = prepareA4BoundaryGuide(
+        excalidrawAPI.getAppState().height,
+        excalidrawAPI.getAppState().width,
+      );
+      const finalElements = elements.filter((e) => e.id !== boundary.id);
+      finalElements.push(boundary);
+      return finalElements;
+    },
+    [excalidrawAPI, viewModeEnabled],
+  );
+
   /**
    * Handles the logic for switching between whiteboard pages or office documents.
    * It cleans the canvas and prepares it for new data.
@@ -264,6 +282,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       );
       if (loadedFromStorage) {
         isSwitching.current = false;
+        const elements = excalidrawAPI.getSceneElements();
+        excalidrawAPI.updateScene({
+          elements: addBoundaryToElements(elements),
+        });
       } else {
         // This mean new file so sync the office file page.
         // We get the data first, then unlock, then update the scene.
@@ -271,7 +293,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         const elements = await syncOfficeFilePage(currentPage);
         isSwitching.current = false;
         if (elements) {
-          excalidrawAPI.updateScene({ elements });
+          excalidrawAPI.updateScene({
+            elements: addBoundaryToElements(elements),
+          });
+        } else {
+          excalidrawAPI.updateScene({
+            elements: addBoundaryToElements([]),
+          });
         }
       }
     } else {
@@ -285,6 +313,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     currentPage,
     resetWhiteboardState,
     syncOfficeFilePage,
+    addBoundaryToElements,
   ]);
 
   // clean up store during exit
@@ -326,6 +355,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           currentWhiteboardOfficeFileId,
           isSwitching,
         );
+        const elements = excalidrawAPI.getSceneElements();
+        excalidrawAPI.updateScene({
+          elements: addBoundaryToElements(elements),
+        });
         // now set that we're ready
         // presenter should not fetch data from anyone else
         // to make sure single point of truth
@@ -426,21 +459,24 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       ) {
         return;
       }
+      const elms = elements.filter(
+        (e) => !e.id.startsWith(A4_BOUNDARY_GUIDE_ID),
+      );
       if (
+        elms.length &&
         // Presenters or unlocked users can broadcast scene changes.
         canEdit &&
         // This check is crucial for multi-user synchronization. We create a hash (signature)
         // of the current scene and compare it to the last version we either sent or received.
         // If they are the same, we don't broadcast, preventing an infinite loop where a
         // client re-broadcasts the same data it just received from another user.
-        hashElementsVersion(elements) !==
+        hashElementsVersion(elms) !==
           lastBroadcastOrReceivedSceneVersion.current
       ) {
         // add new hash of the current scene
-        lastBroadcastOrReceivedSceneVersion.current =
-          hashElementsVersion(elements);
+        lastBroadcastOrReceivedSceneVersion.current = hashElementsVersion(elms);
         broadcastSceneOnChange(
-          elements,
+          elms,
           false,
           undefined,
           excalidrawAPI,

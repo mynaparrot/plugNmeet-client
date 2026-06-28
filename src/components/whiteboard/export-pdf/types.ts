@@ -1,8 +1,12 @@
 // These types are shared between the main thread and the web worker.
 
+// Standard A4 dimensions at 150 DPI
+export const DEFAULT_A4_WIDTH = 1240;
+export const DEFAULT_A4_HEIGHT = 1754;
+
 export const SCALE = 2;
-export const A4_WIDTH = 1240 * SCALE;
-export const A4_HEIGHT = 1754 * SCALE;
+export const A4_WIDTH = DEFAULT_A4_WIDTH * SCALE;
+export const A4_HEIGHT = DEFAULT_A4_HEIGHT * SCALE;
 
 // Message sent from the main thread to the worker
 export interface WorkerInput {
