@@ -241,18 +241,20 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   const addBoundaryToElements = useCallback(
     (elements: readonly ExcalidrawElement[]) => {
-      if (!excalidrawAPI || !canEdit) {
+      if (!excalidrawAPI || !isPresenter) {
         return elements;
       }
       const boundary = prepareA4BoundaryGuide(
         excalidrawAPI.getAppState().height,
         excalidrawAPI.getAppState().width,
       );
-      const finalElements = elements.filter((e) => e.id !== boundary.id);
-      finalElements.push(boundary);
+      const finalElements = elements.filter(
+        (e) => e.id !== A4_BOUNDARY_GUIDE_ID,
+      );
+      finalElements.push(...boundary);
       return finalElements;
     },
-    [excalidrawAPI, canEdit],
+    [excalidrawAPI, isPresenter],
   );
 
   /**
@@ -417,25 +419,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     }
   }, [excalidrawAPI, whiteboardResetSignal, resetWhiteboardState]);
 
-  // applying A4_BOUNDARY upon changing edit right
-  useEffect(() => {
-    if (!excalidrawAPI || isSwitching.current) {
-      return;
-    }
-    const allElements = excalidrawAPI.getSceneElementsIncludingDeleted();
-    let elms: readonly ExcalidrawElement[];
-    if (!canEdit) {
-      elms = allElements.filter((e) => !e.id.startsWith(A4_BOUNDARY_GUIDE_ID));
-    } else {
-      elms = addBoundaryToElements(allElements);
-    }
-    if (elms.length) {
-      excalidrawAPI.updateScene({
-        elements: elms,
-      });
-    }
-  }, [excalidrawAPI, canEdit, addBoundaryToElements]);
-
   // a debounced function to save the scene to localStorage.
   const debouncedSaveToStorage = useMemo(
     () =>
@@ -479,9 +462,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       ) {
         return;
       }
-      const elms = elements.filter(
-        (e) => !e.id.startsWith(A4_BOUNDARY_GUIDE_ID),
-      );
+      const elms = elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
       if (
         elms.length &&
         // Presenters or unlocked users can broadcast scene changes.

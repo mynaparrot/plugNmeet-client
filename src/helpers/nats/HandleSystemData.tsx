@@ -167,6 +167,7 @@ export default class HandleSystemData {
         newInstance: true,
       }),
     );
+    this.playNotification();
   };
 
   private processIncomingChatMsg(input: string) {

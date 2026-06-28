@@ -1,4 +1,5 @@
 import { RefObject } from 'react';
+import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawElement,
@@ -8,7 +9,7 @@ import {
 
 import { broadcastSceneOnChange } from './handleRequests';
 import { store } from '../../../store';
-import { getConfigValue, randomInteger, sleep } from '../../../helpers/utils';
+import { getConfigValue, sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { DEFAULT_A4_HEIGHT, DEFAULT_A4_WIDTH } from '../export-pdf/types';
@@ -77,9 +78,7 @@ export const savePageData = async (
   fileId?: string,
 ) => {
   if (elms.length) {
-    const toSaveElms = elms.filter(
-      (e) => !e.id.startsWith(A4_BOUNDARY_GUIDE_ID),
-    );
+    const toSaveElms = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
     await idbStore(
       DB_STORE_NAMES.WHITEBOARD,
       formatStorageKey(page, fileId),
@@ -168,7 +167,7 @@ export const ensureAllImagesDataIsLoaded = (
 export const prepareA4BoundaryGuide = (
   uploaderWhiteboardHeight: number,
   uploaderWhiteboardWidth: number,
-): ExcalidrawElement => {
+): OrderedExcalidrawElement[] => {
   const excalidrawHeight = uploaderWhiteboardHeight ?? 260;
   const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
 
@@ -176,30 +175,26 @@ export const prepareA4BoundaryGuide = (
   const startX = (excalidrawWidth - DEFAULT_A4_WIDTH) / 2;
   const startY = (excalidrawHeight - DEFAULT_A4_HEIGHT) / 2;
 
-  return {
-    id: `${A4_BOUNDARY_GUIDE_ID}`,
-    type: 'rectangle',
-    x: startX,
-    y: startY,
-    width: DEFAULT_A4_WIDTH,
-    height: DEFAULT_A4_HEIGHT,
-    angle: 0,
-    strokeColor: '#ff0000',
-    backgroundColor: 'transparent',
-    fillStyle: 'hachure',
-    strokeWidth: 1,
-    strokeStyle: 'dashed',
-    roughness: 0,
-    opacity: 20,
-    groupIds: [],
-    roundness: null,
-    seed: randomInteger(),
-    version: 1,
-    versionNonce: randomInteger(),
-    isDeleted: false,
-    boundElements: null,
-    updated: Date.now(),
-    link: null,
-    locked: true, // Locks it so users can't accidentally move the "paper"
-  } as unknown as ExcalidrawElement;
+  return convertToExcalidrawElements(
+    [
+      {
+        id: A4_BOUNDARY_GUIDE_ID,
+        type: 'rectangle',
+        x: startX,
+        y: startY,
+        width: DEFAULT_A4_WIDTH,
+        height: DEFAULT_A4_HEIGHT,
+        strokeColor: '#ff0000',
+        backgroundColor: 'transparent',
+        fillStyle: 'hachure',
+        strokeWidth: 1,
+        strokeStyle: 'dashed',
+        opacity: 20,
+        locked: true,
+      },
+    ],
+    {
+      regenerateIds: false,
+    },
+  );
 };

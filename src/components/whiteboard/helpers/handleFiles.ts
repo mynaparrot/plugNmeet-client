@@ -1,17 +1,12 @@
 import {
   BinaryFileData,
-  DataURL,
   ExcalidrawImperativeAPI,
 } from '@excalidraw/excalidraw/types';
 import {
-  ExcalidrawElement,
   ExcalidrawImageElement,
+  OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
-import {
-  getConfigValue,
-  randomInteger,
-  randomString,
-} from '../../../helpers/utils';
+import { getConfigValue, randomString } from '../../../helpers/utils';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { store } from '../../../store';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
@@ -22,10 +17,11 @@ import {
 } from '../../../store/slices/interfaces/whiteboard';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
+import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
 
 export interface FileReaderResult {
   image: BinaryFileData;
-  elm: ExcalidrawElement;
+  elms: OrderedExcalidrawElement[];
 }
 
 export interface ImageCustomData {
@@ -209,54 +205,34 @@ const prepareForExcalidraw = (
   uploaderWhiteboardWidth?: number,
 ): FileReaderResult => {
   const image: BinaryFileData = {
-    id: fileId as any,
-    dataURL: imgData as DataURL,
+    id: fileId as BinaryFileData['id'],
+    dataURL: imgData as BinaryFileData['dataURL'],
     mimeType: fileMimeType as any,
     created: Date.now(),
   };
 
-  let elm: ExcalidrawImageElement = {
-    id: fileId,
-    type: 'image',
-    x: (excalidrawWidth - fileWidth) / 2,
-    y: (excalidrawHeight - fileHeight) / 2,
-    width: fileWidth,
-    height: fileHeight,
-    angle: 0 as any,
-    strokeColor: 'transparent',
-    backgroundColor: 'transparent',
-    fillStyle: 'hachure',
-    strokeWidth: 1,
-    strokeStyle: 'solid',
-    roughness: 1,
-    opacity: 100,
-    groupIds: [],
-    roundness: null,
-    seed: randomInteger(),
-    version: 1,
-    versionNonce: randomInteger(),
-    isDeleted: false,
-    boundElements: null,
-    updated: Date.now(),
-    link: null,
-    status: 'saved',
-    fileId: fileId as any,
-    scale: [1, 1],
-    locked: isOfficeFile,
-    frameId: null,
-    crop: null,
-    index: null,
-    customData: {
-      fileUrl,
-      isOfficeFile,
-      uploaderWhiteboardHeight,
-      uploaderWhiteboardWidth,
+  const elms = convertToExcalidrawElements([
+    {
+      fileId: image.id,
+      type: 'image',
+      x: (excalidrawWidth - fileWidth) / 2,
+      y: (excalidrawHeight - fileHeight) / 2,
+      width: fileWidth,
+      height: fileHeight,
+      locked: isOfficeFile,
+      status: 'saved',
+      customData: {
+        fileUrl,
+        isOfficeFile,
+        uploaderWhiteboardHeight,
+        uploaderWhiteboardWidth,
+      },
     },
-  };
+  ]);
 
   return {
     image,
-    elm,
+    elms,
   };
 };
 

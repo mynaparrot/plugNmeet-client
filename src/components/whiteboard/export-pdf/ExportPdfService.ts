@@ -215,7 +215,7 @@ class ExportPdfService {
     }
 
     const pageElements = elements.filter(
-      (el) => !el.isDeleted && !el.id.startsWith(A4_BOUNDARY_GUIDE_ID),
+      (el) => !el.isDeleted && el.id !== A4_BOUNDARY_GUIDE_ID,
     );
 
     for (const el of pageElements) {

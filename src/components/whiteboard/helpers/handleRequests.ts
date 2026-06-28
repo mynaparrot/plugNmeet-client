@@ -72,7 +72,7 @@ export const sendWhiteboardDataAsDonor = async (
   }
 
   const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
-  const elements = elms.filter((e) => !e.id.startsWith(A4_BOUNDARY_GUIDE_ID));
+  const elements = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
 
   if (elements.length) {
     const {
