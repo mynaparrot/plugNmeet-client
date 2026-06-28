@@ -66,6 +66,7 @@ import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
+import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -696,6 +697,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                 </div>
                 <div className="dropdown-menu-item__text">
                   {t('whiteboard.manage-files-menu-title')}
+                </div>
+              </div>
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={handleSwitchPageOrDocument}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <RefreshIcon />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.force-sync')}
                 </div>
               </div>
             </>

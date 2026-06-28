@@ -384,8 +384,8 @@
     "select-file": "Select a File",
     "add-to-whiteboard": "Add to Whiteboard",
     "total-pages": "Total pages: {{count}}",
-    "show-toolbar": "Show Toolbar",
-    "hide-toolbar": "Hide Toolbar",
+    "show-toolbar": "Show toolbar",
+    "hide-toolbar": "Hide toolbar",
     "export-pdf-title": "Export to PDF",
     "export-pdf-button": "Export",
     "export-pdf-all-pages": "All Pages ({{count}})",
@@ -408,7 +408,8 @@
     "export-pdf-worker-error": "An unexpected worker error occurred.",
     "export-pdf-worker-error-render": "Worker Error: {{message}}",
     "export-pdf-finalizing": "Finalizing PDF...",
-    "export-pdf-finished": "PDF export finished successfully!"
+    "export-pdf-finished": "PDF export finished successfully!",
+    "force-sync": "Refresh whiteboard"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",

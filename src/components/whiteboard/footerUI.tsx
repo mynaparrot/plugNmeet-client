@@ -162,22 +162,24 @@ const FooterUI = ({
             <i className="pnm-presenter text-[14px]" />
           </button>
         )}
-        <button
-          className={`px-2 ${isFollowing ? 'following' : ''}`}
-          onClick={handleFollowPresenter}
-          title={
-            isFollowing
-              ? t('whiteboard.unfollow-presenter-tooltip')
-              : t('whiteboard.follow-presenter-tooltip')
-          }
-        >
-          <i
-            className={`pnm-device-connected text-[14px] ltr:mr-1 rtl:ml-1 ${
-              isFollowing ? 'animate-pulse' : ''
-            }`}
-          />
-          {isFollowing ? t('whiteboard.unfollow') : t('whiteboard.follow')}
-        </button>
+        {!isRecorder && (
+          <button
+            className={`px-2 ${isFollowing ? 'following' : ''}`}
+            onClick={handleFollowPresenter}
+            title={
+              isFollowing
+                ? t('whiteboard.unfollow-presenter-tooltip')
+                : t('whiteboard.follow-presenter-tooltip')
+            }
+          >
+            <i
+              className={`pnm-device-connected text-[14px] ltr:mr-1 rtl:ml-1 ${
+                isFollowing ? 'animate-pulse' : ''
+              }`}
+            />
+            {isFollowing ? t('whiteboard.unfollow') : t('whiteboard.follow')}
+          </button>
+        )}
         {t('whiteboard.page', { count: currentPage })}
       </div>
     );

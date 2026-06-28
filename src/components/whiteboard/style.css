@@ -238,3 +238,11 @@
   svg {
   color: #5b57d1 !important;
 }
+
+.isRecorder .App-menu_top {
+  display: none !important;
+}
+
+.isRecorder .App-menu button {
+  display: none !important;
+}
