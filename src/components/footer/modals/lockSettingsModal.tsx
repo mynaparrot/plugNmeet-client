@@ -107,6 +107,11 @@ const LockSettingsModal = () => {
       service: 'sharedNotepad',
     },
     {
+      label: t('footer.modal.lock-reactions'),
+      checked: roomLockSettings?.lockReactions ?? false,
+      service: 'reactions',
+    },
+    {
       label: t('footer.modal.lock-chat'),
       checked: roomLockSettings?.lockChat ?? false,
       service: 'chat',

@@ -13,6 +13,7 @@ import DummyAudio from './dummyAudio';
 import { store, useAppDispatch } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import AudioNotification from './audioNotification';
+import ReactionsOverlay from '../reactions';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useClientCustomization from '../../helpers/hooks/useClientCustomization';
 import useWatchWindowSize from '../../helpers/hooks/useWatchWindowSize';
@@ -125,6 +126,7 @@ const App = () => {
             <Footer />
             <AudioNotification />
             <DummyAudio />
+            <ReactionsOverlay />
           </div>
         );
       default:
