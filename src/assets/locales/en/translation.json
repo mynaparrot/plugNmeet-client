@@ -384,7 +384,18 @@
     "add-to-whiteboard": "Add to Whiteboard",
     "total-pages": "Total pages: {{count}}",
     "show-toolbar": "Show Toolbar",
-    "hide-toolbar": "Hide Toolbar"
+    "hide-toolbar": "Hide Toolbar",
+    "export-pdf": "Export as PDF",
+    "export-pdf-title": "Export as PDF",
+    "export-pdf-current-page": "Export the current whiteboard page as a PDF.",
+    "export-pdf-quality": "Quality",
+    "quality-small": "Small file",
+    "quality-normal": "Normal",
+    "quality-high": "High quality",
+    "export-pdf-download": "Download PDF",
+    "export-pdf-exporting": "Exporting…",
+    "export-pdf-success": "PDF exported successfully.",
+    "export-pdf-error": "Could not export the PDF. Please try again."
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",

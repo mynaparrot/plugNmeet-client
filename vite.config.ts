@@ -86,6 +86,8 @@ function assetFileNames(names: string[]) {
 const vendorChunkMap: Record<string, string[]> = {
   mermaid: ['mermaid'],
   excalidraw: ['@excalidraw'],
+  // Kept separate so it is lazy-loaded only on whiteboard PDF export.
+  jspdf: ['jspdf'],
   'react-libs': [
     'react-dnd',
     'dnd-core',

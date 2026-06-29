@@ -32,6 +32,7 @@
     "i18next-browser-languagedetector": "8.2.1",
     "i18next-http-backend": "4.0.0",
     "idb": "8.0.3",
+    "jspdf": "4.2.1",
     "livekit-client": "2.20.0",
     "marked": "18.0.5",
     "mobile-detect": "1.4.5",

@@ -34,6 +34,7 @@ import '@excalidraw/excalidraw/index.css';
 import './style.css';
 
 import ManageOfficeFilesModal from './manage-office-files';
+import PdfExportModal from './pdf-export/PdfExportModal';
 import FooterUI from './footerUI';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
@@ -119,6 +120,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
   const [isFollowing, setIsFollowing] = useState(true);
+  const [isOpenPdfExportUI, setIsOpenPdfExportUI] = useState<boolean>(false);
   const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
     useState<boolean>(false);
   const [isToolbarHidden, setIsToolbarHidden] = useState<boolean>(false);
@@ -578,6 +580,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           showSwitchingWarning={showSwitchingWarning}
         />
       )}
+      {!isRecorder && excalidrawAPI && (
+        <PdfExportModal
+          excalidrawAPI={excalidrawAPI}
+          roomId={roomId}
+          currentPage={currentPage}
+          isOpen={isOpenPdfExportUI}
+          onClose={() => setIsOpenPdfExportUI(false)}
+        />
+      )}
       <Excalidraw
         onInitialize={onInitializeSetExcalidrawAPI}
         onChange={handleCanvasChange}
@@ -605,6 +616,20 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       >
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
+          {!isRecorder && excalidrawAPI && (
+            <div
+              className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+              onClick={() => setIsOpenPdfExportUI(true)}
+              role="button"
+            >
+              <div className="dropdown-menu-item__icon">
+                <i className="pnm-download text-[13px]" />
+              </div>
+              <div className="dropdown-menu-item__text">
+                {t('whiteboard.export-pdf')}
+              </div>
+            </div>
+          )}
           {isPresenter && excalidrawAPI && (
             <div
               className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
