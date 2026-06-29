@@ -77,8 +77,9 @@ export const savePageData = async (
   page: number,
   fileId?: string,
 ) => {
-  if (elms.length) {
-    const toSaveElms = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
+  const toSaveElms = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
+
+  if (toSaveElms.length > 0) {
     await idbStore(
       DB_STORE_NAMES.WHITEBOARD,
       formatStorageKey(page, fileId),

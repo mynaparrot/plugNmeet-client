@@ -207,7 +207,7 @@ const prepareForExcalidraw = (
   const image: BinaryFileData = {
     id: fileId as BinaryFileData['id'],
     dataURL: imgData as BinaryFileData['dataURL'],
-    mimeType: fileMimeType as any,
+    mimeType: fileMimeType as BinaryFileData['mimeType'],
     created: Date.now(),
   };
 
@@ -241,16 +241,18 @@ const getFileDimension = (
   width: number,
   excalidrawWidth: number,
 ) => {
-  let fileHeight = height;
-  let fileWidth = width;
-
   const excalidrawActualWidth = excalidrawWidth - 150;
-  const reducedBy = 0.01;
 
-  while (fileWidth > excalidrawActualWidth) {
-    fileHeight *= 1 - reducedBy;
-    fileWidth *= 1 - reducedBy;
+  // If the image already fits, no scaling is needed.
+  if (width <= excalidrawActualWidth) {
+    return { fileHeight: height, fileWidth: width };
   }
+
+  // Calculate the scaling ratio required to make the image fit the width.
+  const ratio = excalidrawActualWidth / width;
+  const fileHeight = height * ratio;
+  const fileWidth = width * ratio; // This will be equal to excalidrawActualWidth
+
   return { fileHeight, fileWidth };
 };
 
