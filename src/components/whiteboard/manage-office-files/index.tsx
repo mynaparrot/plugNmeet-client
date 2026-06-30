@@ -182,9 +182,8 @@ const ManageOfficeFilesModal = ({
                 </div>
               </div>
               <div className="file-preview-list grid gap-2 pt-4">
-                {fileToUpload && (
+                {
                   <FileUploadProgress
-                    key={fileToUpload.name + fileToUpload.lastModified}
                     excalidrawAPI={excalidrawAPI}
                     allowedFileTypes={allowedFileTypes}
                     maxAllowedFileSize={maxAllowedFileSize}
@@ -192,7 +191,7 @@ const ManageOfficeFilesModal = ({
                     setDisableUploading={setDisableUploading}
                     onUploadFinished={onUploadFinished}
                   />
-                )}
+                }
                 <UploadedFilesList
                   roomId={roomId}
                   excalidrawAPI={excalidrawAPI}

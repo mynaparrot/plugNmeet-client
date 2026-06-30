@@ -386,6 +386,7 @@
     "total-pages": "Total pages: {{count}}",
     "show-toolbar": "Show toolbar",
     "hide-toolbar": "Hide toolbar",
+    "file-conversion-failed": "File conversion failed",
     "export-pdf-title": "Export to PDF",
     "export-pdf-button": "Export",
     "export-pdf-button-count": "Export ({{count}})",
