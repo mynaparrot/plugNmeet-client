@@ -189,7 +189,9 @@ export default class HandleSystemData {
           'http://localhost:8080',
         );
         const downloadLink =
-          rootUrl + '/download/uploadedFile/' + payload.filePath;
+          rootUrl +
+          '/download/uploadedFile/' +
+          window.encodeURIComponent(payload.filePath);
         const htmlLink = `<a href="${downloadLink}" target="_blank" class="text-[#24aef7] hover:underline">${payload.fileName}</a>`;
 
         return i18n.t('notifications.private-download-link-ready', {
