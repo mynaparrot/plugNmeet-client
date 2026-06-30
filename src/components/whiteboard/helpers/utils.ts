@@ -12,11 +12,16 @@ import { store } from '../../../store';
 import { getConfigValue, sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
-import { DEFAULT_A4_HEIGHT, DEFAULT_A4_WIDTH } from '../export-pdf/types';
+import {
+  DEFAULT_A4_HEIGHT,
+  DEFAULT_A4_MARGIN,
+  DEFAULT_A4_WIDTH,
+} from '../export-pdf/types';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
 export const A4_BOUNDARY_GUIDE_ID = 'a4-boundary-guide-id';
+export const ourExcalidrawPadding = 150;
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -173,8 +178,8 @@ export const prepareA4BoundaryGuide = (
   const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
 
   // Dead-center the single A4 box in the viewport
-  const startX = (excalidrawWidth - DEFAULT_A4_WIDTH) / 2;
-  const startY = (excalidrawHeight - DEFAULT_A4_HEIGHT) / 2;
+  const startX = (excalidrawWidth - DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN) / 2;
+  const startY = (excalidrawHeight - DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN) / 2;
 
   return convertToExcalidrawElements(
     [
@@ -182,7 +187,7 @@ export const prepareA4BoundaryGuide = (
         id: A4_BOUNDARY_GUIDE_ID,
         type: 'rectangle',
         x: startX,
-        y: startY,
+        y: startY + ourExcalidrawPadding,
         width: DEFAULT_A4_WIDTH,
         height: DEFAULT_A4_HEIGHT,
         strokeColor: '#ff0000',

@@ -21,7 +21,7 @@ import ExportWorkerUrl from './exportPdf.worker?worker&url';
 import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
 import { A4_BOUNDARY_GUIDE_ID, formatStorageKey } from '../helpers/utils';
 import { getImageData, ImageCustomData } from '../helpers/handleFiles';
-import { SCALE, WorkerInput, WorkerMessage } from './types';
+import { DEFAULT_A4_MARGIN, SCALE, WorkerInput, WorkerMessage } from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
 import { store } from '../../../store';
@@ -244,7 +244,7 @@ class ExportPdfService {
       appState,
       files,
       mimeType: MIME_TYPES.png,
-      exportPadding: 20,
+      exportPadding: DEFAULT_A4_MARGIN,
       getDimensions: (width: number, height: number) => ({
         width: width * SCALE,
         height: height * SCALE,

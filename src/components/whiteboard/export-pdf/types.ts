@@ -3,6 +3,7 @@
 // Standard A4 dimensions at 150 DPI
 export const DEFAULT_A4_WIDTH = 1240;
 export const DEFAULT_A4_HEIGHT = 1754;
+export const DEFAULT_A4_MARGIN = 40;
 
 export const SCALE = 2;
 export const A4_WIDTH = DEFAULT_A4_WIDTH * SCALE;

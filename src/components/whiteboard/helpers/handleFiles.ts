@@ -18,6 +18,7 @@ import {
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
 import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
+import { ourExcalidrawPadding } from './utils';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -241,7 +242,7 @@ const getFileDimension = (
   width: number,
   excalidrawWidth: number,
 ) => {
-  const excalidrawActualWidth = excalidrawWidth - 150;
+  const excalidrawActualWidth = excalidrawWidth - ourExcalidrawPadding;
 
   // If the image already fits, no scaling is needed.
   if (width <= excalidrawActualWidth) {
