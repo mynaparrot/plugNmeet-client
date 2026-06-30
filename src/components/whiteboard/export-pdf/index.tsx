@@ -59,6 +59,28 @@ const ExportPDFModal = ({
     fetchAvailablePages();
   }, [isOpen, fileId]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let timeoutId: NodeJS.Timeout;
+
+    const checkStatus = () => {
+      const serviceIsExporting = exportPdfService.isExporting;
+      if (isExporting !== serviceIsExporting) {
+        setIsExporting(serviceIsExporting);
+      }
+      if (serviceIsExporting) {
+        timeoutId = setTimeout(checkStatus, 500);
+      }
+    };
+
+    checkStatus();
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isOpen, isExporting]);
+
   const handleExport = async () => {
     let pagesToExport: number[] = [];
     switch (mode) {

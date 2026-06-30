@@ -37,7 +37,7 @@ export interface ExportParams {
 
 class ExportPdfService {
   private readonly uploadUrl: string;
-  private isExporting = false;
+  private _isExporting = false;
 
   constructor() {
     const rootUrl = getConfigValue<string>(
@@ -48,8 +48,12 @@ class ExportPdfService {
     this.uploadUrl = `${rootUrl}/api/whiteboard/pdf-export/upload`;
   }
 
+  public get isExporting() {
+    return this._isExporting;
+  }
+
   public async export(params: ExportParams) {
-    if (this.isExporting) {
+    if (this._isExporting) {
       toast.warn(i18n.t('whiteboard.export-pdf-progress-warning'));
       return;
     }
@@ -62,7 +66,7 @@ class ExportPdfService {
       return;
     }
 
-    this.isExporting = true;
+    this._isExporting = true;
     const toastId = toast.loading(i18n.t('whiteboard.export-pdf-starting'), {
       progress: 0,
       autoClose: false,
@@ -192,7 +196,7 @@ class ExportPdfService {
         autoClose: 5000,
       });
     } finally {
-      this.isExporting = false;
+      this._isExporting = false;
     }
   }
 
