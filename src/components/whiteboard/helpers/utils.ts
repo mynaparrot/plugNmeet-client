@@ -176,10 +176,12 @@ export const prepareA4BoundaryGuide = (
 ): OrderedExcalidrawElement[] => {
   const excalidrawHeight = uploaderWhiteboardHeight ?? 260;
   const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
+  const height = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+  const width = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
 
   // Dead-center the single A4 box in the viewport
-  const startX = (excalidrawWidth - DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN) / 2;
-  const startY = (excalidrawHeight - DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN) / 2;
+  const startX = (excalidrawWidth - width) / 2;
+  const startY = (excalidrawHeight - height) / 2;
 
   return convertToExcalidrawElements(
     [
@@ -188,8 +190,8 @@ export const prepareA4BoundaryGuide = (
         type: 'rectangle',
         x: startX,
         y: startY + ourExcalidrawPadding,
-        width: DEFAULT_A4_WIDTH,
-        height: DEFAULT_A4_HEIGHT,
+        width: width,
+        height: height,
         strokeColor: '#ff0000',
         backgroundColor: 'transparent',
         fillStyle: 'hachure',
