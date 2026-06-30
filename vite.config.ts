@@ -119,7 +119,8 @@ function manualChunks(id: string) {
     if (
       vendorChunkMap[chunk].some(
         (pkg) =>
-          id.includes(`/node_modules/${pkg}/`) || id.includes(`/.pnpm/${pkg}`),
+          id.includes(`/node_modules/${pkg}/`) ||
+          new RegExp(`/\\.pnpm/${pkg}(@|/)`).test(id),
       )
     ) {
       return chunk;
