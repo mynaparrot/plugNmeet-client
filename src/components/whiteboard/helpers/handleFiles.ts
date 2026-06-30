@@ -1,5 +1,6 @@
 import {
   BinaryFileData,
+  BinaryFiles,
   DataURL,
   ExcalidrawImperativeAPI,
 } from '@excalidraw/excalidraw/types';
@@ -455,6 +456,37 @@ export const ensureImageDataIsLoaded = async (
   }
 
   excalidrawAPI.addFiles([imageData]);
+};
+
+/**
+ * Resolves the binary image data for the given elements directly from the
+ * whiteboard persistence layer (the IndexedDB image cache, falling back to the
+ * original upload URL over the network). Returns a `BinaryFiles` map suitable
+ * for passing to Excalidraw's export helpers.
+ *
+ * Unlike {@link ensureImageDataIsLoaded}, this does not mutate the live scene's
+ * file store, which makes it safe to use when rendering arbitrary (e.g.
+ * non-current) pages for export. Image binaries are loaded reliably even for
+ * pages that were never opened locally, as long as their element data is
+ * available and the original file URL is still reachable.
+ */
+export const resolveImageFilesForElements = async (
+  elements: readonly ExcalidrawElement[],
+): Promise<BinaryFiles> => {
+  const files: BinaryFiles = {};
+  const imageElements = elements.filter(
+    (elm): elm is ExcalidrawImageElement =>
+      elm.type === 'image' && !!elm.fileId && !!elm.customData,
+  );
+  await Promise.all(
+    imageElements.map(async (elm) => {
+      const data = await getImageData(elm, elm.customData as ImageCustomData);
+      if (data && elm.fileId) {
+        files[elm.fileId] = data;
+      }
+    }),
+  );
+  return files;
 };
 
 export function cleanProcessedImageElementsMap() {

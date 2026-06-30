@@ -103,6 +103,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     (state) => state.bottomIconsActivity.screenWidth,
   );
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
+  const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
@@ -585,6 +586,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           excalidrawAPI={excalidrawAPI}
           roomId={roomId}
           currentPage={currentPage}
+          totalPages={totalPages}
+          fileId={currentWhiteboardOfficeFileId}
+          isPresenter={!!isPresenter}
           isOpen={isOpenPdfExportUI}
           onClose={() => setIsOpenPdfExportUI(false)}
         />
