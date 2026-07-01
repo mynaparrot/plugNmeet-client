@@ -1,5 +1,42 @@
 # Changelog
 
+## [2.3.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.2.0...v2.3.0) (2026-07-01)
+
+
+### Features
+
+* add emoji reaction ([3df011c](https://github.com/mynaparrot/plugNmeet-client/commit/3df011cf8eb7ec0d94a88f65ad85a8fa87cd09dd))
+* add emoji reaction ([9d25ba2](https://github.com/mynaparrot/plugNmeet-client/commit/9d25ba2bc9e963adb82d88d2f6c7774cc891be13))
+* added config option to allow to set `max_num_display_webcams` ([99105d5](https://github.com/mynaparrot/plugNmeet-client/commit/99105d5f81478f8e5ab26e23e1a8acb4f8916560))
+* added menu option to hide/display whiteboard's toolbar ([2c9296a](https://github.com/mynaparrot/plugNmeet-client/commit/2c9296ac930114d2442c76847dd72024ab886dc9))
+* show numbered queue for raised hands ([d06a85b](https://github.com/mynaparrot/plugNmeet-client/commit/d06a85b62a39821a7ca1bf3a4af8f669a99537cf))
+* show numbered queue for raised hands ([6ab1ffa](https://github.com/mynaparrot/plugNmeet-client/commit/6ab1ffa4e5462d16229d55223b18a4f02afb6092))
+* sort participant list with raised hands first ([550ebe9](https://github.com/mynaparrot/plugNmeet-client/commit/550ebe95c252f9a7011d9dd843fb6d5e19a20a64))
+* **whiteboard:** export to PDF ([7c74745](https://github.com/mynaparrot/plugNmeet-client/commit/7c747452402133cb8cd76510993f7566063cf384))
+* **whiteboard:** export to PDF ([b579c96](https://github.com/mynaparrot/plugNmeet-client/commit/b579c9619d1fe23f289acebce11e38225c705121))
+
+
+### Bug Fixes
+
+* `0` will not downgrade to Good unless video is actually active and FPS is low ([f940c76](https://github.com/mynaparrot/plugNmeet-client/commit/f940c76ff79cef4015ac703203c9659bc035d117))
+* added option for randomizing values ([33b453d](https://github.com/mynaparrot/plugNmeet-client/commit/33b453db46632d085372dc53ca3003134f98921f))
+* added toast loading during merging file ([a184ce2](https://github.com/mynaparrot/plugNmeet-client/commit/a184ce21b441b225c1e49253b6b093b06b665c74))
+* adjusted few CSS ([dcfa49a](https://github.com/mynaparrot/plugNmeet-client/commit/dcfa49ac659ef2366c0c86304be54d72adea289b))
+* allow to set partial values ([61349af](https://github.com/mynaparrot/plugNmeet-client/commit/61349af0ad549acd67184244ca683b04e214b3ca))
+* cache images as wb `BinaryFileData` format ([7ac42f1](https://github.com/mynaparrot/plugNmeet-client/commit/7ac42f1523156d3eb77db993850f327dfdad3340))
+* consider video quality ([e8d576f](https://github.com/mynaparrot/plugNmeet-client/commit/e8d576f1de83890fdf6fb617a046c04d8b818c7c))
+* create map with lowercase of language code ([0132c36](https://github.com/mynaparrot/plugNmeet-client/commit/0132c3662843c511f64185c9dc89fb7a36191e94))
+* ensure url encoded when sharing link in chat ([6177d5f](https://github.com/mynaparrot/plugNmeet-client/commit/6177d5f7884899dd5b5f5ddbaa3df2f21d78069c))
+* ensure we're not sending other chunks until first chunk is fully uploaded ([e1928a5](https://github.com/mynaparrot/plugNmeet-client/commit/e1928a55315068c97c57f9360da5c50fe4a7050b))
+* file uploading was disabled if error happened + added refresh icon ([b0b884d](https://github.com/mynaparrot/plugNmeet-client/commit/b0b884d6c27fc8a94e68ecd66128949a695269e1))
+* improved connection quality checking ([fffa467](https://github.com/mynaparrot/plugNmeet-client/commit/fffa467f081ee024b3db4df31c48ed1a21abc12b))
+* moved `raised_hand` to its own `UserRaisedHand` message ([04a304c](https://github.com/mynaparrot/plugNmeet-client/commit/04a304c918226b25f2fa8f7ba34247293216dd46))
+* new Crowdin updates ([30d609e](https://github.com/mynaparrot/plugNmeet-client/commit/30d609ef079a45940cbedd5b25fb14fe5ca5ad58))
+* no reconcile for recorder ([8c8ab23](https://github.com/mynaparrot/plugNmeet-client/commit/8c8ab23f2fa42feded716868e68e4750b18fbcc9))
+* set `forceChunkSize` to `true` ([a7e39c2](https://github.com/mynaparrot/plugNmeet-client/commit/a7e39c2c8e0fa50c2f7ba446540d42b13d91dca7))
+* update design of end button ([3c01953](https://github.com/mynaparrot/plugNmeet-client/commit/3c01953f15ca7bf099a351378f2c0cf0c7bdf3fa))
+* use chunk minimum size 10Mb ([2e8a5e9](https://github.com/mynaparrot/plugNmeet-client/commit/2e8a5e96dff816bf7627ef76430748ba5826ecf2))
+
 ## [2.2.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.1.9...v2.2.0) (2026-05-31)
 
 
