@@ -1,11 +1,9 @@
 import { Dispatch } from 'react';
 import {
-  ConnectionQuality,
   ConnectionState,
   DisconnectReason,
   ExternalE2EEKeyProvider,
   isE2EESupported,
-  ParticipantEvent,
   RemoteTrackPublication,
   Room,
   RoomConnectOptions,
@@ -38,9 +36,12 @@ import { IConnectLivekit } from './types';
 import i18n from '../i18n';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
-import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { getConfigValue, isFirefoxMobile } from '../utils';
 import { CorsWorker } from '../libs/corsWorker';
+import ConnectionQualityMonitor, {
+  ConnectionQuality,
+  QualityStats,
+} from './ConnectionQualityMonitor';
 
 const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
@@ -55,6 +56,8 @@ export default class ConnectLivekit
   private readonly encryptionKey: string | undefined = '';
 
   private readonly handleMediaTracks: HandleMediaTracks;
+  private readonly participantMediaManager: ParticipantMediaManager;
+
   private _room!: Room;
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
@@ -64,7 +67,9 @@ export default class ConnectLivekit
   private hasAttemptedSilentFallback: boolean = false;
   private serverInfo: MediaServerConnInfo | undefined = undefined;
   private poorConnectionTimestamps: number[] = [];
-  private participantMediaManager: ParticipantMediaManager;
+
+  private lastReportedConnectionQuality: ConnectionQuality | null = null;
+  private readonly connectionQualityMonitor: ConnectionQualityMonitor;
 
   constructor(
     errorState: Dispatch<IErrorPageProps>,
@@ -89,7 +94,14 @@ export default class ConnectLivekit
       this.localUserId,
     );
     this.configureRoom().then();
+
+    this.connectionQualityMonitor = new ConnectionQualityMonitor(this._room);
+    window.addEventListener('beforeunload', this.onBeforeUnload);
   }
+
+  private onBeforeUnload = () => {
+    this.connectionQualityMonitor.stop();
+  };
 
   public get videoSubscribersMap() {
     return this.participantMediaManager.videoSubscribersMap;
@@ -270,6 +282,9 @@ export default class ConnectLivekit
         toast.dismiss(this.toastIdConnecting);
         this.toastIdConnecting = undefined;
       }
+      this.connectionQualityMonitor.start(
+        this.checkConnectionQualityForFallback,
+      );
     });
     room.on(RoomEvent.Reconnected, () => {
       if (typeof this.toastIdConnecting !== 'undefined') {
@@ -302,12 +317,6 @@ export default class ConnectLivekit
     room.on(
       RoomEvent.TrackStreamStateChanged,
       this.handleMediaTracks.trackStreamStateChanged,
-    );
-
-    // for individual local user events
-    room.localParticipant.on(
-      ParticipantEvent.ConnectionQualityChanged,
-      this.localUserConnectionQualityChanged,
     );
 
     this._room = room;
@@ -369,6 +378,9 @@ export default class ConnectLivekit
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+    this.connectionQualityMonitor.stop();
+
     // Clear any running timer on disconnect
     if (this.fallbackTimer) {
       clearTimeout(this.fallbackTimer);
@@ -426,111 +438,102 @@ export default class ConnectLivekit
     console.error(error);
   };
 
-  private localUserConnectionQualityChanged = async (
-    connectionQuality: ConnectionQuality,
-  ) => {
-    store.dispatch(
-      updateParticipant({
-        id: this.localUserId,
-        changes: {
-          connectionQuality: connectionQuality,
-        },
-      }),
-    );
+  private checkConnectionQualityForFallback = async (stats: QualityStats) => {
+    const qualityChanged = this.lastReportedConnectionQuality !== stats.quality;
 
-    if (
-      connectionQuality === ConnectionQuality.Poor ||
-      connectionQuality === ConnectionQuality.Lost
-    ) {
-      let msg = i18n.t('notifications.your-connection-quality-not-good');
-      if (connectionQuality === ConnectionQuality.Lost) {
-        msg = i18n.t('notifications.your-connection-quality-lost');
-      }
+    if (qualityChanged) {
+      this.lastReportedConnectionQuality = stats.quality;
+
       store.dispatch(
-        addUserNotification({
-          message: msg,
-          typeOption: 'error',
+        updateParticipant({
+          id: this.localUserId,
+          changes: {
+            connectionQuality: stats.quality,
+          },
         }),
       );
+
+      const conn = getNatsConn();
+
+      if (conn) {
+        conn.sendAnalyticsData(
+          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
+          AnalyticsEventType.USER,
+          stats.quality,
+        );
+
+        conn
+          .sendDataMessage(
+            DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
+            stats.quality,
+          )
+          .catch((error) => {
+            console.warn('Failed to send connection quality change:', error);
+          });
+      }
     }
 
-    const conn = getNatsConn();
-    if (conn) {
-      conn.sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
-        AnalyticsEventType.USER,
-        connectionQuality.toString(),
-      );
-      conn
-        .sendDataMessage(
-          DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
-          connectionQuality,
-        )
-        .then();
-    }
-
-    // Only run this logic if the server has enabled it AND it's not Firefox Mobile.
     if (!this.serverInfo?.turnCredentials?.fallbackTurn || isFirefoxMobile()) {
       return;
     }
 
     if (this.hasAttemptedSilentFallback) {
-      return; // We've already tried this, don't do it again.
+      return;
     }
 
-    if (
-      connectionQuality === ConnectionQuality.Poor ||
-      connectionQuality === ConnectionQuality.Lost
-    ) {
-      // If the "flapping" strategy is enabled from the server, use it exclusively
+    const isPoorOrLost =
+      stats.quality === ConnectionQuality.Poor ||
+      stats.quality === ConnectionQuality.Lost;
+
+    if (isPoorOrLost) {
       if (this.serverInfo?.turnCredentials?.fallbackOnFlapping?.enabled) {
         this.handleFallbackOnFlapping();
       } else {
-        // Otherwise, use the default timer-based fallback strategy.
-        this.handleTimerBasedFallback(connectionQuality);
+        this.handleTimerBasedFallback(stats.quality);
       }
-    } else {
-      // Connection is GOOD.
-      // If a timer-based fallback was active, cancel its timer.
-      if (this.fallbackTimer) {
-        console.log('Connection has recovered. Cancelling fallback timer.');
-        clearTimeout(this.fallbackTimer);
-        this.fallbackTimer = null;
-      }
+
+      return;
+    }
+
+    if (this.fallbackTimer) {
+      console.log('Connection has recovered. Cancelling fallback timer.');
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = null;
     }
   };
 
   private handleFallbackOnFlapping = () => {
     const fallbackOnFlapping =
       this.serverInfo?.turnCredentials?.fallbackOnFlapping;
-    // Guard clause to satisfy TypeScript and ensure safety
+
     if (!fallbackOnFlapping?.enabled) {
       return;
     }
 
+    const maxPoorConnCount = fallbackOnFlapping.maxPoorConnCount ?? 3;
+    const checkDuration = (fallbackOnFlapping.checkDurationInSec ?? 120) * 1000;
+
     const now = Date.now();
+
     this.poorConnectionTimestamps.push(now);
 
-    const checkDuration = (fallbackOnFlapping.checkDurationInSec ?? 120) * 1000;
-    const relevantTimestamps = this.poorConnectionTimestamps.filter(
+    this.poorConnectionTimestamps = this.poorConnectionTimestamps.filter(
       (timestamp) => now - timestamp <= checkDuration,
     );
 
-    this.poorConnectionTimestamps = relevantTimestamps;
-
-    if (relevantTimestamps.length >= fallbackOnFlapping.maxPoorConnCount) {
+    if (this.poorConnectionTimestamps.length >= maxPoorConnCount) {
       console.warn(
-        `Connection has been unstable ${
-          relevantTimestamps.length
-        } times in the last ${checkDuration / 1000}s. Executing fallback.`,
+        `Connection has been unstable ${this.poorConnectionTimestamps.length} times in the last ${
+          checkDuration / 1000
+        }s. Executing fallback.`,
       );
+
+      this.poorConnectionTimestamps = [];
       this.executeSilentRelayFallback();
-      this.poorConnectionTimestamps = []; // Clear to prevent re-triggering
     }
   };
 
   private handleTimerBasedFallback = (connectionQuality: ConnectionQuality) => {
-    // This logic should only run if the timer-based fallback isn't already running.
     if (this.fallbackTimer) {
       return;
     }
@@ -544,12 +547,20 @@ export default class ConnectLivekit
         fallbackDuration / 1000
       }s fallback timer.`,
     );
+
     this.fallbackTimer = setTimeout(() => {
+      this.fallbackTimer = null;
+
+      if (this.hasAttemptedSilentFallback) {
+        return;
+      }
+
       console.warn(
         `Connection has remained unstable for ${
           fallbackDuration / 1000
         }s. Executing fallback as a final measure.`,
       );
+
       this.executeSilentRelayFallback();
     }, fallbackDuration);
   };

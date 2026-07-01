@@ -47,7 +47,7 @@
     "room-disconnected-reconnecting": "Connection lost. Reconnecting...",
     "room-disconnected-network-error": "You were disconnected due to a network problem.",
     "your-connection-quality-not-good": "Your connection to the meeting is unstable.",
-    "your-connection-quality-lost": "Your connection to the meeting is poor.",
+    "your-connection-lost-or-unstable": "Your connection has been lost or is critically unstable.",
     "need-to-disable-display-external-link": "To play a video, please stop sharing the external link first.",
     "need-to-disable-external-media-player": "To share an external link, please stop the video player first.",
     "websocket-disconnected": "Connection lost, trying to reconnect...",

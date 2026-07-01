@@ -1,4 +1,4 @@
-import { ConnectionQuality } from 'livekit-client';
+import { ConnectionQuality } from '../../../helpers/livekit/ConnectionQualityMonitor';
 import { ICurrentUserMetadata } from './session';
 
 export interface IParticipant {
