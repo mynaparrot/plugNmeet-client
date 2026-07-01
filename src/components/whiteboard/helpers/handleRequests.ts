@@ -19,6 +19,7 @@ import ConnectNats from '../../../helpers/nats/ConnectNats';
 import { getWhiteboardDonors } from '../../../helpers/utils';
 import { uploadCanvasBinaryFile } from './handleFiles';
 import { WhiteboardDataAsDonorData } from '../../../store/slices/interfaces/whiteboard';
+import { A4_BOUNDARY_GUIDE_ID } from './utils';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
@@ -70,7 +71,9 @@ export const sendWhiteboardDataAsDonor = async (
     conn = getNatsConn();
   }
 
-  const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
+  const elms = excalidrawAPI.getSceneElementsIncludingDeleted();
+  const elements = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
+
   if (elements.length) {
     const {
       currentOfficeFilePages,

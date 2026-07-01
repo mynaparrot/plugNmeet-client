@@ -98,6 +98,9 @@ const whiteboardSlice = createSlice({
       state,
       action: PayloadAction<IWhiteboardOfficeFile>,
     ) => {
+      if (action.payload.fileId === '' || action.payload.totalPages == 0) {
+        return;
+      }
       const exists = state.whiteboardUploadedOfficeFiles.some(
         (f) => f.fileId === action.payload.fileId,
       );

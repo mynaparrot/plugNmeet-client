@@ -1,17 +1,12 @@
 import {
   BinaryFileData,
-  DataURL,
   ExcalidrawImperativeAPI,
 } from '@excalidraw/excalidraw/types';
 import {
-  ExcalidrawElement,
   ExcalidrawImageElement,
+  OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
-import {
-  getConfigValue,
-  randomInteger,
-  randomString,
-} from '../../../helpers/utils';
+import { getConfigValue, randomString } from '../../../helpers/utils';
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { store } from '../../../store';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
@@ -22,10 +17,12 @@ import {
 } from '../../../store/slices/interfaces/whiteboard';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
+import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
+import { ourExcalidrawPadding } from './utils';
 
 export interface FileReaderResult {
   image: BinaryFileData;
-  elm: ExcalidrawElement;
+  elms: OrderedExcalidrawElement[];
 }
 
 export interface ImageCustomData {
@@ -209,54 +206,34 @@ const prepareForExcalidraw = (
   uploaderWhiteboardWidth?: number,
 ): FileReaderResult => {
   const image: BinaryFileData = {
-    id: fileId as any,
-    dataURL: imgData as DataURL,
-    mimeType: fileMimeType as any,
+    id: fileId as BinaryFileData['id'],
+    dataURL: imgData as BinaryFileData['dataURL'],
+    mimeType: fileMimeType as BinaryFileData['mimeType'],
     created: Date.now(),
   };
 
-  let elm: ExcalidrawImageElement = {
-    id: fileId,
-    type: 'image',
-    x: (excalidrawWidth - fileWidth) / 2,
-    y: (excalidrawHeight - fileHeight) / 2,
-    width: fileWidth,
-    height: fileHeight,
-    angle: 0 as any,
-    strokeColor: 'transparent',
-    backgroundColor: 'transparent',
-    fillStyle: 'hachure',
-    strokeWidth: 1,
-    strokeStyle: 'solid',
-    roughness: 1,
-    opacity: 100,
-    groupIds: [],
-    roundness: null,
-    seed: randomInteger(),
-    version: 1,
-    versionNonce: randomInteger(),
-    isDeleted: false,
-    boundElements: null,
-    updated: Date.now(),
-    link: null,
-    status: 'saved',
-    fileId: fileId as any,
-    scale: [1, 1],
-    locked: isOfficeFile,
-    frameId: null,
-    crop: null,
-    index: null,
-    customData: {
-      fileUrl,
-      isOfficeFile,
-      uploaderWhiteboardHeight,
-      uploaderWhiteboardWidth,
+  const elms = convertToExcalidrawElements([
+    {
+      fileId: image.id,
+      type: 'image',
+      x: (excalidrawWidth - fileWidth) / 2,
+      y: (excalidrawHeight - fileHeight) / 2,
+      width: fileWidth,
+      height: fileHeight,
+      locked: isOfficeFile,
+      status: 'saved',
+      customData: {
+        fileUrl,
+        isOfficeFile,
+        uploaderWhiteboardHeight,
+        uploaderWhiteboardWidth,
+      },
     },
-  };
+  ]);
 
   return {
     image,
-    elm,
+    elms,
   };
 };
 
@@ -265,16 +242,18 @@ const getFileDimension = (
   width: number,
   excalidrawWidth: number,
 ) => {
-  let fileHeight = height;
-  let fileWidth = width;
+  const excalidrawActualWidth = excalidrawWidth - ourExcalidrawPadding;
 
-  const excalidrawActualWidth = excalidrawWidth - 150;
-  const reducedBy = 0.01;
-
-  while (fileWidth > excalidrawActualWidth) {
-    fileHeight *= 1 - reducedBy;
-    fileWidth *= 1 - reducedBy;
+  // If the image already fits, no scaling is needed.
+  if (width <= excalidrawActualWidth) {
+    return { fileHeight: height, fileWidth: width };
   }
+
+  // Calculate the scaling ratio required to make the image fit the width.
+  const ratio = excalidrawActualWidth / width;
+  const fileHeight = height * ratio;
+  const fileWidth = width * ratio; // This will be equal to excalidrawActualWidth
+
   return { fileHeight, fileWidth };
 };
 
@@ -398,7 +377,7 @@ export const uploadCanvasBinaryFile = (
   return uploadPromise;
 };
 
-const getImageData = async (
+export const getImageData = async (
   elm: ExcalidrawImageElement,
   customData: ImageCustomData,
 ): Promise<BinaryFileData | null> => {

@@ -35,6 +35,7 @@ import './style.css';
 
 import ManageOfficeFilesModal from './manage-office-files';
 import FooterUI from './footerUI';
+import ExportPDFModal from './export-pdf';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -55,13 +56,17 @@ import {
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 import {
+  A4_BOUNDARY_GUIDE_ID,
   displaySavedPageData,
   ensureAllImagesDataIsLoaded,
+  prepareA4BoundaryGuide,
   savePageData,
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
+import PdfIcon from '../../assets/Icons/PdfIcon';
+import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -121,6 +126,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const [isFollowing, setIsFollowing] = useState(true);
   const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
     useState<boolean>(false);
+  const [isOpenExportPdfUI, setIsOpenExportPdfUI] = useState<boolean>(false);
   const [isToolbarHidden, setIsToolbarHidden] = useState<boolean>(false);
 
   const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
@@ -233,6 +239,24 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [],
   );
 
+  const addBoundaryToElements = useCallback(
+    (elements: readonly ExcalidrawElement[]) => {
+      if (!excalidrawAPI || !isPresenter) {
+        return elements;
+      }
+      const boundary = prepareA4BoundaryGuide(
+        excalidrawAPI.getAppState().height,
+        excalidrawAPI.getAppState().width,
+      );
+      const finalElements = elements.filter(
+        (e) => e.id !== A4_BOUNDARY_GUIDE_ID,
+      );
+      finalElements.push(...boundary);
+      return finalElements;
+    },
+    [excalidrawAPI, isPresenter],
+  );
+
   /**
    * Handles the logic for switching between whiteboard pages or office documents.
    * It cleans the canvas and prepares it for new data.
@@ -261,6 +285,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       );
       if (loadedFromStorage) {
         isSwitching.current = false;
+        const elements = excalidrawAPI.getSceneElements();
+        excalidrawAPI.updateScene({
+          elements: addBoundaryToElements(elements),
+        });
       } else {
         // This mean new file so sync the office file page.
         // We get the data first, then unlock, then update the scene.
@@ -268,7 +296,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         const elements = await syncOfficeFilePage(currentPage);
         isSwitching.current = false;
         if (elements) {
-          excalidrawAPI.updateScene({ elements });
+          excalidrawAPI.updateScene({
+            elements: addBoundaryToElements(elements),
+          });
+        } else {
+          excalidrawAPI.updateScene({
+            elements: addBoundaryToElements([]),
+          });
         }
       }
     } else {
@@ -282,6 +316,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     currentPage,
     resetWhiteboardState,
     syncOfficeFilePage,
+    addBoundaryToElements,
   ]);
 
   // clean up store during exit
@@ -323,6 +358,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           currentWhiteboardOfficeFileId,
           isSwitching,
         );
+        const elements = excalidrawAPI.getSceneElements();
+        excalidrawAPI.updateScene({
+          elements: addBoundaryToElements(elements),
+        });
         // now set that we're ready
         // presenter should not fetch data from anyone else
         // to make sure single point of truth
@@ -423,21 +462,22 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       ) {
         return;
       }
+      const elms = elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
       if (
+        elms.length &&
         // Presenters or unlocked users can broadcast scene changes.
         canEdit &&
         // This check is crucial for multi-user synchronization. We create a hash (signature)
         // of the current scene and compare it to the last version we either sent or received.
         // If they are the same, we don't broadcast, preventing an infinite loop where a
         // client re-broadcasts the same data it just received from another user.
-        hashElementsVersion(elements) !==
+        hashElementsVersion(elms) !==
           lastBroadcastOrReceivedSceneVersion.current
       ) {
         // add new hash of the current scene
-        lastBroadcastOrReceivedSceneVersion.current =
-          hashElementsVersion(elements);
+        lastBroadcastOrReceivedSceneVersion.current = hashElementsVersion(elms);
         broadcastSceneOnChange(
-          elements,
+          elms,
           false,
           undefined,
           excalidrawAPI,
@@ -570,13 +610,20 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }`}
     >
       {isPresenter && excalidrawAPI && (
-        <ManageOfficeFilesModal
-          roomId={roomId}
-          excalidrawAPI={excalidrawAPI}
-          onClose={() => setIsOpenManageFilesUI(false)}
-          isOpen={isOpenManageFilesUI}
-          showSwitchingWarning={showSwitchingWarning}
-        />
+        <>
+          <ManageOfficeFilesModal
+            roomId={roomId}
+            excalidrawAPI={excalidrawAPI}
+            onClose={() => setIsOpenManageFilesUI(false)}
+            isOpen={isOpenManageFilesUI}
+            showSwitchingWarning={showSwitchingWarning}
+          />
+          <ExportPDFModal
+            excalidrawAPI={excalidrawAPI}
+            onClose={() => setIsOpenExportPdfUI(false)}
+            isOpen={isOpenExportPdfUI}
+          />
+        </>
       )}
       <Excalidraw
         onInitialize={onInitializeSetExcalidrawAPI}
@@ -606,20 +653,46 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
           {isPresenter && excalidrawAPI && (
-            <div
-              className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-              onClick={() => {
-                setIsOpenManageFilesUI(true);
-              }}
-              role="button"
-            >
-              <div className="dropdown-menu-item__icon">
-                <i className="pnm-attachment text-[13px]" />
+            <>
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={() => setIsOpenExportPdfUI(true)}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <PdfIcon className="w-[13px] h-[13px]" />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.export-pdf-title')}
+                </div>
               </div>
-              <div className="dropdown-menu-item__text">
-                {t('whiteboard.manage-files-menu-title')}
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={() => {
+                  setIsOpenManageFilesUI(true);
+                }}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <i className="pnm-attachment text-[13px]" />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.manage-files-menu-title')}
+                </div>
               </div>
-            </div>
+              <div
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                onClick={handleSwitchPageOrDocument}
+                role="button"
+              >
+                <div className="dropdown-menu-item__icon">
+                  <RefreshIcon />
+                </div>
+                <div className="dropdown-menu-item__text">
+                  {t('whiteboard.force-sync')}
+                </div>
+              </div>
+            </>
           )}
           {!viewModeEnabled && (
             <div

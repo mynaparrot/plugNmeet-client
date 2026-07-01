@@ -120,7 +120,7 @@ const App = () => {
         return <InsertE2EEKey setOpenConn={setOpenConn} />;
       case isAppReady:
         return (
-          <div className="plugNmeet-app overflow-hidden h-screen">
+          <div className="plugNmeet-app overflow-hidden h-screen flex flex-col">
             <Header />
             <MainArea />
             <Footer />

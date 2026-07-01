@@ -76,7 +76,7 @@ const useOfficePageSyncer = ({
 
       if (result) {
         newImages.push(result.image);
-        newElements.push(result.elm);
+        newElements.push(...result.elms);
       } else {
         return; // No result, no need to proceed
       }

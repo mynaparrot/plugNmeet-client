@@ -123,6 +123,24 @@ class IDBManager {
   };
 
   /**
+   * Retrieves all keys from a specified object store.
+   * @param storeName The name of the object store.
+   * @returns An array of all keys in the store.
+   */
+  public getAllKeys = async (
+    storeName: IDBStoreName,
+  ): Promise<IDBValidKey[]> => {
+    if (!this.isDbActive) {
+      return [];
+    }
+    const db = await this.getDb();
+    if (!db.objectStoreNames.contains(storeName)) {
+      return [];
+    }
+    return db.getAllKeys(storeName);
+  };
+
+  /**
    * Deletes the entire database for the current session.
    */
   public deleteDB = async () => {
@@ -200,6 +218,7 @@ const initIDB = idbManager.init;
 const idbStore = idbManager.store;
 const idbGet = idbManager.get;
 const idbGetAll = idbManager.getAll;
+const idbGetAllKeys = idbManager.getAllKeys;
 const deleteRoomDB = idbManager.deleteDB;
 
-export { initIDB, idbStore, idbGet, idbGetAll, deleteRoomDB };
+export { initIDB, idbStore, idbGet, idbGetAll, idbGetAllKeys, deleteRoomDB };

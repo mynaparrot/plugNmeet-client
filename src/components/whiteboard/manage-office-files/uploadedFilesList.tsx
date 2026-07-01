@@ -114,6 +114,9 @@ const UploadedFilesList = ({
       }`}
     >
       {whiteboardUploadedOfficeFiles.map((file) => {
+        if (!file || !file.fileId || file.totalPages === 0) {
+          return null;
+        }
         const isCurrentlyInUse = currentWhiteboardOfficeFileId === file.fileId;
         const isSelectedInModal = selectedOfficeFile?.fileId === file.fileId;
 

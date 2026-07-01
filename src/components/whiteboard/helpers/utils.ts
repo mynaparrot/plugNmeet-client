@@ -1,4 +1,5 @@
 import { RefObject } from 'react';
+import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawElement,
@@ -11,9 +12,16 @@ import { store } from '../../../store';
 import { getConfigValue, sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
+import {
+  DEFAULT_A4_HEIGHT,
+  DEFAULT_A4_MARGIN,
+  DEFAULT_A4_WIDTH,
+} from '../export-pdf/types';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
+export const A4_BOUNDARY_GUIDE_ID = 'a4-boundary-guide-id';
+export const ourExcalidrawPadding = 150;
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -65,16 +73,22 @@ export const formatStorageKey = (pageNumber: number, fileId?: string) => {
   return `${key}_${pageNumber}`;
 };
 
+export const getStorageKeyPageNumberRegex = (fileId: string) => {
+  return new RegExp(`^${fileId}_(\\d+)$`);
+};
+
 export const savePageData = async (
   elms: readonly OrderedExcalidrawElement[],
   page: number,
   fileId?: string,
 ) => {
-  if (elms.length) {
+  const toSaveElms = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
+
+  if (toSaveElms.length > 0) {
     await idbStore(
       DB_STORE_NAMES.WHITEBOARD,
       formatStorageKey(page, fileId),
-      elms,
+      toSaveElms,
     );
   }
 };
@@ -153,5 +167,42 @@ export const ensureAllImagesDataIsLoaded = (
   // This allows the UI to update while images load in the background.
   Promise.all(imagePromises).catch((e) =>
     console.error('Error loading image data:', e),
+  );
+};
+
+export const prepareA4BoundaryGuide = (
+  uploaderWhiteboardHeight: number,
+  uploaderWhiteboardWidth: number,
+): OrderedExcalidrawElement[] => {
+  const excalidrawHeight = uploaderWhiteboardHeight ?? 260;
+  const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
+  const height = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+  const width = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+
+  // Dead-center the single A4 box in the viewport
+  const startX = (excalidrawWidth - width) / 2;
+  const startY = (excalidrawHeight - height) / 2;
+
+  return convertToExcalidrawElements(
+    [
+      {
+        id: A4_BOUNDARY_GUIDE_ID,
+        type: 'rectangle',
+        x: startX,
+        y: startY + ourExcalidrawPadding,
+        width: width,
+        height: height,
+        strokeColor: '#ff0000',
+        backgroundColor: 'transparent',
+        fillStyle: 'hachure',
+        strokeWidth: 1,
+        strokeStyle: 'dashed',
+        opacity: 20,
+        locked: true,
+      },
+    ],
+    {
+      regenerateIds: false,
+    },
   );
 };

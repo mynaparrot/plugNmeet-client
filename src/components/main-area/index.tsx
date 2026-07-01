@@ -48,10 +48,6 @@ const MainArea = () => {
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
-    screenHeight,
-    screenWidth,
-    headerVisible,
-    footerVisible,
   } = useMainAreaState();
 
   useEffect(() => {
@@ -110,56 +106,6 @@ const MainArea = () => {
     isRecorder,
   });
 
-  const renderMainView = useMemo(() => {
-    return (
-      <MainView
-        isRecorder={isRecorder}
-        isActiveWhiteboard={isActiveWhiteboard}
-        isActiveExternalMediaPlayer={isActiveExternalMediaPlayer ?? false}
-        isActiveDisplayExternalLink={isActiveDisplayExternalLink ?? false}
-        isActiveScreenSharingView={isActiveScreenSharingView}
-        hasScreenShareSubscribers={hasScreenShareSubscribers}
-        isActiveWebcamsView={isActiveWebcamsView}
-        hasVideoSubscribers={hasVideoSubscribers}
-      />
-    );
-  }, [
-    isRecorder,
-    isActiveScreenSharingView,
-    hasScreenShareSubscribers,
-    isActiveWebcamsView,
-    hasVideoSubscribers,
-    isActiveDisplayExternalLink,
-    isActiveExternalMediaPlayer,
-    isActiveWhiteboard,
-  ]);
-
-  const height = useMemo(() => {
-    if (isRecorder) {
-      return screenHeight;
-    }
-
-    const isSmallScreen = screenWidth < 768;
-    const isMediumScreen = screenWidth < 1760;
-
-    if (headerVisible && footerVisible) {
-      if (isSmallScreen) {
-        return screenHeight - 119.5;
-      }
-      if (isMediumScreen) {
-        return screenHeight - 108;
-      }
-      return screenHeight - 144;
-    } else if (headerVisible) {
-      return screenHeight - 68;
-    } else if (footerVisible) {
-      return screenHeight - 76;
-    } else {
-      // If both are hidden
-      return screenHeight;
-    }
-  }, [screenHeight, screenWidth, isRecorder, headerVisible, footerVisible]);
-
   const debouncedRefresh = useMemo(
     () =>
       debounce(() => {
@@ -184,17 +130,13 @@ const MainArea = () => {
     }
   }, [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder]);
 
-  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
+  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
     activeSidePanel ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]' : ''
   }`;
 
   return (
-    <div
-      id="main-area"
-      className={mainAreaClasses}
-      style={{ height: `${height}px` }}
-    >
+    <div id="main-area" className={mainAreaClasses}>
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div className={middleAreaClasses}>
           {isNatsServerConnected && (
@@ -202,7 +144,20 @@ const MainArea = () => {
               <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full">
                 <ActiveSpeakers activeSidePanel={activeSidePanel} />
               </div>
-              {renderMainView}
+              <MainView
+                isRecorder={isRecorder}
+                isActiveWhiteboard={isActiveWhiteboard}
+                isActiveExternalMediaPlayer={
+                  isActiveExternalMediaPlayer ?? false
+                }
+                isActiveDisplayExternalLink={
+                  isActiveDisplayExternalLink ?? false
+                }
+                isActiveScreenSharingView={isActiveScreenSharingView}
+                hasScreenShareSubscribers={hasScreenShareSubscribers}
+                isActiveWebcamsView={isActiveWebcamsView}
+                hasVideoSubscribers={hasVideoSubscribers}
+              />
             </>
           )}
         </div>

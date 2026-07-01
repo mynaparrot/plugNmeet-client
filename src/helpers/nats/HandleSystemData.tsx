@@ -7,6 +7,7 @@ import {
   NatsMsgServerToClientEvents,
   NatsSystemNotificationSchema,
   NatsSystemNotificationTypes,
+  RoomUploadedFileMetadataSchema,
 } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
@@ -17,11 +18,11 @@ import {
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
-import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
-import { cleanHtmlForChat, randomString } from '../utils';
+import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 import HandleChat from './HandleChat';
 import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
+import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
 
 export default class HandleSystemData {
   private readonly _handleChat: HandleChat;
@@ -145,6 +146,8 @@ export default class HandleSystemData {
   };
 
   public handleSysChatMsg = async (msg: string) => {
+    const finalMsg = this.processIncomingChatMsg(msg);
+
     await this._handleChat.handleMsg(
       create(ChatMessageSchema, {
         id: randomString(),
@@ -152,7 +155,7 @@ export default class HandleSystemData {
         isPrivate: false,
         fromName: 'system',
         fromUserId: 'system',
-        message: cleanHtmlForChat(msg),
+        message: cleanHtmlForChat(finalMsg),
         fromAdmin: true, // system message always from admin
       }),
     );
@@ -164,7 +167,41 @@ export default class HandleSystemData {
         newInstance: true,
       }),
     );
+    this.playNotification();
   };
+
+  private processIncomingChatMsg(input: string) {
+    // First, check if it's even parseable as JSON
+    try {
+      JSON.parse(input);
+    } catch {
+      // If JSON.parse fails, it's definitely just plain text
+      return input;
+    }
+
+    try {
+      const payload = fromJsonString(RoomUploadedFileMetadataSchema, input, {
+        ignoreUnknownFields: true,
+      });
+      if (payload.filePath !== '') {
+        const rootUrl = getConfigValue<string>(
+          'serverUrl',
+          'http://localhost:8080',
+        );
+        const downloadLink =
+          rootUrl +
+          '/download/uploadedFile/' +
+          window.encodeURIComponent(payload.filePath);
+        const htmlLink = `<a href="${downloadLink}" target="_blank" class="text-[#24aef7] hover:underline">${payload.fileName}</a>`;
+
+        return i18n.t('notifications.private-download-link-ready', {
+          link: htmlLink,
+        });
+      }
+    } catch {}
+
+    return input;
+  }
 
   public handleInsightsAITextData = (msg: string) => {
     const data = fromJsonString(InsightsAITextChatStreamResultSchema, msg);
