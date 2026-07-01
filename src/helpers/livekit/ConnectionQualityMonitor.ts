@@ -11,7 +11,6 @@ export enum ConnectionQuality {
   Lost = 'lost',
 }
 
-// --- Thresholds ---
 const EXCELLENT_PACKET_LOSS_THRESHOLD = 3;
 const GOOD_PACKET_LOSS_THRESHOLD = 10;
 const LOST_PACKET_LOSS_THRESHOLD = 20;
@@ -35,6 +34,8 @@ const MIN_SCORE = 20;
 const DECREASE_FACTOR = 0.8;
 const INCREASE_FACTOR = 0.4;
 
+const PACKET_LOSS_HISTORY_SIZE = 3;
+
 type PrevInboundStats = {
   lost: number;
   received: number;
@@ -45,6 +46,7 @@ type PrevInboundStats = {
 
 export type QualityStats = {
   packetLoss: number;
+  rawPacketLoss: number;
   rtt: number;
   rawQuality: ConnectionQuality;
   quality: ConnectionQuality;
@@ -78,6 +80,7 @@ export default class ConnectionQualityMonitor {
   private qualityScore = MAX_SCORE;
 
   private prevDownlinkStats: Record<string, PrevInboundStats> = {};
+  private packetLossHistory: number[] = [];
 
   constructor(room: Room) {
     this.room = room;
@@ -119,6 +122,7 @@ export default class ConnectionQualityMonitor {
     this.currentQuality = ConnectionQuality.Excellent;
     this.qualityScore = MAX_SCORE;
     this.prevDownlinkStats = {};
+    this.packetLossHistory = [];
   };
 
   public getCurrentQuality = (): ConnectionQuality => {
@@ -129,6 +133,7 @@ export default class ConnectionQualityMonitor {
     if (this.room.state !== ConnectionState.Connected) {
       return this.createStats({
         packetLoss: 100,
+        rawPacketLoss: 100,
         rtt: LOST_RTT_THRESHOLD,
         rawQuality: ConnectionQuality.Lost,
         fps: 0,
@@ -144,6 +149,7 @@ export default class ConnectionQualityMonitor {
     if (!pcManager) {
       return this.createStats({
         packetLoss: 100,
+        rawPacketLoss: 100,
         rtt: LOST_RTT_THRESHOLD,
         rawQuality: ConnectionQuality.Lost,
         fps: 0,
@@ -308,10 +314,12 @@ export default class ConnectionQualityMonitor {
       });
     }
 
+    const rawPacketLoss = maxPacketLoss;
+    const smoothedPacketLoss = this.getSmoothedPacketLoss(rawPacketLoss);
     const fps = Number.isFinite(minFps) ? minFps : 0;
 
     const rawQuality = this.classifyRawQuality({
-      packetLoss: maxPacketLoss,
+      packetLoss: smoothedPacketLoss,
       rtt: maxRtt,
       fps,
       freezeDelta: maxFreezeDelta,
@@ -320,7 +328,8 @@ export default class ConnectionQualityMonitor {
     });
 
     return this.createStats({
-      packetLoss: maxPacketLoss,
+      packetLoss: smoothedPacketLoss,
+      rawPacketLoss,
       rtt: maxRtt,
       rawQuality,
       fps,
@@ -331,8 +340,22 @@ export default class ConnectionQualityMonitor {
     });
   };
 
+  private getSmoothedPacketLoss = (newLoss: number): number => {
+    this.packetLossHistory.push(newLoss);
+
+    if (this.packetLossHistory.length > PACKET_LOSS_HISTORY_SIZE) {
+      this.packetLossHistory.shift();
+    }
+
+    return (
+      this.packetLossHistory.reduce((sum, loss) => sum + loss, 0) /
+      this.packetLossHistory.length
+    );
+  };
+
   private createStats = ({
     packetLoss,
+    rawPacketLoss,
     rtt,
     rawQuality,
     fps,
@@ -342,6 +365,7 @@ export default class ConnectionQualityMonitor {
     hasActiveAudio,
   }: {
     packetLoss: number;
+    rawPacketLoss: number;
     rtt: number;
     rawQuality: ConnectionQuality;
     fps: number;
@@ -366,6 +390,7 @@ export default class ConnectionQualityMonitor {
 
     return {
       packetLoss,
+      rawPacketLoss,
       rtt,
       rawQuality,
       quality,
