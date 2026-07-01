@@ -154,6 +154,10 @@ export default class ConnectLivekit
       // we'll prepare our information
       await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');
+      // start connection quality monitor
+      this.connectionQualityMonitor.start(
+        this.checkConnectionQualityForFallback,
+      );
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
@@ -282,9 +286,6 @@ export default class ConnectLivekit
         toast.dismiss(this.toastIdConnecting);
         this.toastIdConnecting = undefined;
       }
-      this.connectionQualityMonitor.start(
-        this.checkConnectionQualityForFallback,
-      );
     });
     room.on(RoomEvent.Reconnected, () => {
       if (typeof this.toastIdConnecting !== 'undefined') {
