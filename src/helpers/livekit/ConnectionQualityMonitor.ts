@@ -53,6 +53,15 @@ export type QualityStats = {
   freezeDelta: number;
   videoStalled: boolean;
   hasActiveVideo: boolean;
+  hasActiveAudio: boolean;
+};
+
+type MaybeCandidatePairStats = {
+  type?: string;
+  state?: string;
+  selected?: boolean;
+  nominated?: boolean;
+  currentRoundTripTime?: number;
 };
 
 export default class ConnectionQualityMonitor {
@@ -77,7 +86,7 @@ export default class ConnectionQualityMonitor {
   public start = (onQualityUpdate?: (stats: QualityStats) => void) => {
     this.stop();
 
-    this.qualityCheckInterval = setInterval(async () => {
+    const checkQuality = async () => {
       if (this.isCheckingQuality) return;
 
       this.isCheckingQuality = true;
@@ -89,7 +98,11 @@ export default class ConnectionQualityMonitor {
       } finally {
         this.isCheckingQuality = false;
       }
-    }, INTERVAL);
+    };
+
+    void checkQuality();
+
+    this.qualityCheckInterval = setInterval(checkQuality, INTERVAL);
   };
 
   public stop = () => {
@@ -122,6 +135,7 @@ export default class ConnectionQualityMonitor {
         freezeDelta: 0,
         videoStalled: true,
         hasActiveVideo: false,
+        hasActiveAudio: false,
       });
     }
 
@@ -136,6 +150,7 @@ export default class ConnectionQualityMonitor {
         freezeDelta: 0,
         videoStalled: true,
         hasActiveVideo: false,
+        hasActiveAudio: false,
       });
     }
 
@@ -158,11 +173,26 @@ export default class ConnectionQualityMonitor {
     let maxRtt = 0;
     let minFps = Number.POSITIVE_INFINITY;
     let maxFreezeDelta = 0;
+
     let hasVideoStats = false;
     let hasVideoStall = false;
     let hasActiveVideo = false;
+    let hasActiveAudio = false;
+
+    const checkCandidatePairRtt = (stat: MaybeCandidatePairStats) => {
+      if (
+        stat.type === 'candidate-pair' &&
+        stat.state === 'succeeded' &&
+        (stat.selected === true || stat.nominated === true) &&
+        typeof stat.currentRoundTripTime === 'number'
+      ) {
+        maxRtt = this.updateMaxRtt(maxRtt, stat.currentRoundTripTime * 1000);
+      }
+    };
 
     publisherStats?.forEach((stat) => {
+      checkCandidatePairRtt(stat);
+
       if (stat.type === 'remote-inbound-rtp') {
         if (typeof stat.fractionLost === 'number') {
           const packetLoss = Math.max(0, stat.fractionLost * 100);
@@ -173,23 +203,26 @@ export default class ConnectionQualityMonitor {
           maxRtt = this.updateMaxRtt(maxRtt, stat.roundTripTime * 1000);
         }
       }
-
-      if (
-        stat.type === 'candidate-pair' &&
-        stat.state === 'succeeded' &&
-        (stat.selected === true || stat.nominated === true) &&
-        typeof stat.currentRoundTripTime === 'number'
-      ) {
-        maxRtt = this.updateMaxRtt(maxRtt, stat.currentRoundTripTime * 1000);
-      }
     });
 
     const activeDownlinkSsrcs = new Set<string>();
 
     subscriberStats?.forEach((stat) => {
-      if (stat.type !== 'inbound-rtp' || stat.kind !== 'video') return;
+      checkCandidatePairRtt(stat);
 
-      hasVideoStats = true;
+      if (
+        stat.type !== 'inbound-rtp' ||
+        (stat.kind !== 'video' && stat.kind !== 'audio')
+      ) {
+        return;
+      }
+
+      const isVideo = stat.kind === 'video';
+      const isAudio = stat.kind === 'audio';
+
+      if (isVideo) {
+        hasVideoStats = true;
+      }
 
       const ssrc = String(stat.ssrc);
       activeDownlinkSsrcs.add(ssrc);
@@ -197,19 +230,21 @@ export default class ConnectionQualityMonitor {
       const currentLost = Math.max(0, stat.packetsLost || 0);
       const currentReceived = Math.max(0, stat.packetsReceived || 0);
       const currentBytesReceived = Math.max(0, stat.bytesReceived || 0);
-      const currentFreezeCount = Math.max(0, stat.freezeCount || 0);
+
+      const currentFreezeCount = isVideo
+        ? Math.max(0, stat.freezeCount || 0)
+        : 0;
 
       const currentFps =
-        typeof stat.framesPerSecond === 'number'
+        isVideo && typeof stat.framesPerSecond === 'number'
           ? stat.framesPerSecond
           : Number.POSITIVE_INFINITY;
 
-      if (Number.isFinite(currentFps) && currentFps > 0) {
+      if (isVideo && Number.isFinite(currentFps) && currentFps > 0) {
         minFps = Math.min(minFps, currentFps);
       }
 
       const prev = this.prevDownlinkStats[ssrc];
-
       let noDataCount = 0;
 
       if (prev) {
@@ -219,9 +254,6 @@ export default class ConnectionQualityMonitor {
           0,
           currentBytesReceived - prev.bytesReceived,
         );
-        const freezeDelta = Math.max(0, currentFreezeCount - prev.freezeCount);
-
-        maxFreezeDelta = Math.max(maxFreezeDelta, freezeDelta);
 
         const totalDelta = lostDelta + receivedDelta;
 
@@ -231,15 +263,31 @@ export default class ConnectionQualityMonitor {
         }
 
         if (receivedDelta > 0 || bytesDelta > 0) {
-          hasActiveVideo = true;
+          if (isVideo) {
+            hasActiveVideo = true;
+          }
+
+          if (isAudio) {
+            hasActiveAudio = true;
+          }
         }
 
-        const noPacketOrByteProgress = receivedDelta === 0 && bytesDelta === 0;
+        if (isVideo) {
+          const freezeDelta = Math.max(
+            0,
+            currentFreezeCount - prev.freezeCount,
+          );
 
-        noDataCount = noPacketOrByteProgress ? prev.noDataCount + 1 : 0;
+          maxFreezeDelta = Math.max(maxFreezeDelta, freezeDelta);
 
-        if (noDataCount >= VIDEO_STALL_INTERVAL_THRESHOLD) {
-          hasVideoStall = true;
+          const noPacketOrByteProgress =
+            receivedDelta === 0 && bytesDelta === 0;
+
+          noDataCount = noPacketOrByteProgress ? prev.noDataCount + 1 : 0;
+
+          if (noDataCount >= VIDEO_STALL_INTERVAL_THRESHOLD) {
+            hasVideoStall = true;
+          }
         }
       }
 
@@ -279,6 +327,7 @@ export default class ConnectionQualityMonitor {
       freezeDelta: maxFreezeDelta,
       videoStalled: hasVideoStats && hasVideoStall,
       hasActiveVideo,
+      hasActiveAudio,
     });
   };
 
@@ -290,6 +339,7 @@ export default class ConnectionQualityMonitor {
     freezeDelta,
     videoStalled,
     hasActiveVideo,
+    hasActiveAudio,
   }: {
     packetLoss: number;
     rtt: number;
@@ -298,6 +348,7 @@ export default class ConnectionQualityMonitor {
     freezeDelta: number;
     videoStalled: boolean;
     hasActiveVideo: boolean;
+    hasActiveAudio: boolean;
   }): QualityStats => {
     const rawScore = this.qualityToScore(rawQuality);
 
@@ -323,6 +374,7 @@ export default class ConnectionQualityMonitor {
       freezeDelta,
       videoStalled,
       hasActiveVideo,
+      hasActiveAudio,
     };
   };
 
