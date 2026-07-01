@@ -256,7 +256,11 @@ export default class SubscriptionHandler {
     const sub = this.connectNats.nc.subscribe(subject);
 
     for await (const m of sub) {
-      await this.processToHandleDataMsg(m.data);
+      try {
+        await this.processToHandleDataMsg(m.data);
+      } catch (e) {
+        console.error('failed to process data channel message', e);
+      }
     }
   }
 

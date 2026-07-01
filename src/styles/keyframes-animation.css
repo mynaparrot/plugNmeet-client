@@ -106,3 +106,26 @@
 .hiddenAnimation {
   animation: refresh 0.5s infinite;
 }
+
+@keyframes reaction-float-up {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    transform: translate(calc(var(--reaction-drift, 0px) * 0.25), -6vh)
+      scale(1.15);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--reaction-drift, 0px), -68vh) scale(1);
+    opacity: 0;
+  }
+}
+.reaction-float {
+  animation: reaction-float-up var(--reaction-dur, 4s) ease-out forwards;
+  will-change: transform, opacity;
+}

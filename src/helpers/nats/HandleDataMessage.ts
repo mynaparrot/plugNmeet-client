@@ -13,8 +13,17 @@ import {
   updateRequestedWhiteboardData,
 } from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
-import { updateParticipant } from '../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  updateParticipant,
+} from '../../store/slices/participantSlice';
+
+const REACTION_RECEIVE_MIN_INTERVAL_MS = 400;
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
+import {
+  addReaction,
+  REACTION_EMOJIS,
+} from '../../store/slices/reactionsSlice';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
@@ -29,6 +38,7 @@ import {
 
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
+  private lastReactionAt = new Map<string, number>();
 
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
@@ -100,6 +110,40 @@ export default class HandleDataMessage {
         }
         this.handleExternalMediaPlayerEvents(payload.message);
         break;
+      case DataMsgBodyType.REACTION: {
+        if (
+          store.getState().session.currentRoom.metadata?.roomFeatures
+            ?.allowReactions !== true
+        ) {
+          return;
+        }
+        if (!REACTION_EMOJIS.includes(payload.message)) {
+          return;
+        }
+        if (
+          participantsSelector.selectById(store.getState(), payload.fromUserId)
+            ?.metadata?.lockSettings?.lockReactions
+        ) {
+          return;
+        }
+        const createdAt = Date.now();
+        if (
+          createdAt - (this.lastReactionAt.get(payload.fromUserId) ?? 0) <
+          REACTION_RECEIVE_MIN_INTERVAL_MS
+        ) {
+          return;
+        }
+        this.lastReactionAt.set(payload.fromUserId, createdAt);
+        store.dispatch(
+          addReaction({
+            id: `${payload.fromUserId}-${createdAt}`,
+            emoji: payload.message,
+            fromUserId: payload.fromUserId,
+            createdAt,
+          }),
+        );
+        break;
+      }
       case DataMsgBodyType.NEW_POLL_RESPONSE:
         if (payload.fromUserId === this.connectNats.userId) {
           return;
