@@ -30,8 +30,6 @@ const GOOD_COUNT_THRESHOLD = 2;
 const INTERVAL = 5000;
 const NOTIFICATION_COOLDOWN = 60_000;
 
-// Score smoothing, similar spirit to LiveKit:
-// degrade quickly, recover slowly.
 const MAX_SCORE = 100;
 const MIN_SCORE = 20;
 const DECREASE_FACTOR = 0.8;
@@ -54,6 +52,7 @@ export type QualityStats = {
   fps: number;
   freezeDelta: number;
   videoStalled: boolean;
+  hasActiveVideo: boolean;
 };
 
 export default class ConnectionQualityMonitor {
@@ -122,6 +121,7 @@ export default class ConnectionQualityMonitor {
         fps: 0,
         freezeDelta: 0,
         videoStalled: true,
+        hasActiveVideo: false,
       });
     }
 
@@ -135,6 +135,7 @@ export default class ConnectionQualityMonitor {
         fps: 0,
         freezeDelta: 0,
         videoStalled: true,
+        hasActiveVideo: false,
       });
     }
 
@@ -159,6 +160,7 @@ export default class ConnectionQualityMonitor {
     let maxFreezeDelta = 0;
     let hasVideoStats = false;
     let hasVideoStall = false;
+    let hasActiveVideo = false;
 
     publisherStats?.forEach((stat) => {
       if (stat.type === 'remote-inbound-rtp') {
@@ -202,7 +204,7 @@ export default class ConnectionQualityMonitor {
           ? stat.framesPerSecond
           : Number.POSITIVE_INFINITY;
 
-      if (Number.isFinite(currentFps)) {
+      if (Number.isFinite(currentFps) && currentFps > 0) {
         minFps = Math.min(minFps, currentFps);
       }
 
@@ -226,6 +228,10 @@ export default class ConnectionQualityMonitor {
         if (totalDelta > 0) {
           const lossPercentage = (lostDelta / totalDelta) * 100;
           maxPacketLoss = Math.max(maxPacketLoss, lossPercentage);
+        }
+
+        if (receivedDelta > 0 || bytesDelta > 0) {
+          hasActiveVideo = true;
         }
 
         const noPacketOrByteProgress = receivedDelta === 0 && bytesDelta === 0;
@@ -262,6 +268,7 @@ export default class ConnectionQualityMonitor {
       fps,
       freezeDelta: maxFreezeDelta,
       videoStalled: hasVideoStats && hasVideoStall,
+      hasActiveVideo,
     });
 
     return this.createStats({
@@ -271,6 +278,7 @@ export default class ConnectionQualityMonitor {
       fps,
       freezeDelta: maxFreezeDelta,
       videoStalled: hasVideoStats && hasVideoStall,
+      hasActiveVideo,
     });
   };
 
@@ -281,6 +289,7 @@ export default class ConnectionQualityMonitor {
     fps,
     freezeDelta,
     videoStalled,
+    hasActiveVideo,
   }: {
     packetLoss: number;
     rtt: number;
@@ -288,6 +297,7 @@ export default class ConnectionQualityMonitor {
     fps: number;
     freezeDelta: number;
     videoStalled: boolean;
+    hasActiveVideo: boolean;
   }): QualityStats => {
     const rawScore = this.qualityToScore(rawQuality);
 
@@ -312,6 +322,7 @@ export default class ConnectionQualityMonitor {
       fps,
       freezeDelta,
       videoStalled,
+      hasActiveVideo,
     };
   };
 
@@ -329,12 +340,14 @@ export default class ConnectionQualityMonitor {
     fps,
     freezeDelta,
     videoStalled,
+    hasActiveVideo,
   }: {
     packetLoss: number;
     rtt: number;
     fps: number;
     freezeDelta: number;
     videoStalled: boolean;
+    hasActiveVideo: boolean;
   }): ConnectionQuality => {
     if (
       videoStalled ||
@@ -355,7 +368,7 @@ export default class ConnectionQualityMonitor {
     if (
       packetLoss >= EXCELLENT_PACKET_LOSS_THRESHOLD ||
       rtt >= EXCELLENT_RTT_THRESHOLD ||
-      fps < LOW_FPS_THRESHOLD
+      (hasActiveVideo && fps > 0 && fps < LOW_FPS_THRESHOLD)
     ) {
       return ConnectionQuality.Good;
     }
