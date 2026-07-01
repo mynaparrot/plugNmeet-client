@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Popover,
@@ -15,8 +15,9 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 import clsx from 'clsx';
+import { throttle } from 'es-toolkit';
 
-import { useAppDispatch, useAppSelector } from '../../../store';
+import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
 import {
   addReaction,
@@ -31,55 +32,56 @@ const ReactionsIcon = () => {
   const { t } = useTranslation();
   const conn = getNatsConn();
   const dispatch = useAppDispatch();
-  const lastSentAt = useRef<number>(0);
 
-  const userDeviceType = useAppSelector(
-    (state) => state.session.userDeviceType,
-  );
-  const showTooltip = userDeviceType === 'desktop';
+  const { allowReactions, allowRaiseHand, showTooltip, currentUser } =
+    useMemo(() => {
+      const session = store.getState().session;
+      return {
+        allowReactions:
+          session.currentRoom.metadata?.roomFeatures?.allowReactions !== false,
+        allowRaiseHand:
+          session.currentRoom.metadata?.roomFeatures?.allowRaiseHand !== false,
+        showTooltip: session.userDeviceType === 'desktop',
+        currentUser: session.currentUser,
+      };
+    }, []);
 
   const canReact = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.allowReactions ===
-        true &&
+      allowReactions &&
       !state.session.currentUser?.metadata?.lockSettings?.lockReactions,
-  );
-  const canRaiseHand = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.allowRaiseHand !==
-      false,
   );
   const isActiveRaisehand = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveRaisehand,
   );
 
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const sendReaction = useCallback(
-    (emoji: string) => {
-      const now = Date.now();
-      if (now - lastSentAt.current < THROTTLE_MS) {
+    throttle((emoji: string) => {
+      if (!conn) {
         return;
       }
-      lastSentAt.current = now;
+      const msg = {
+        id: `${currentUser?.userId}-${Date.now()}`,
+        emoji,
+        fromUserId: currentUser?.userId ?? '',
+        fromName: currentUser?.name ?? '',
+        createdAt: Date.now(),
+      };
 
-      conn.sendDataMessage(DataMsgBodyType.REACTION, emoji);
+      conn.sendDataMessage(DataMsgBodyType.REACTION, JSON.stringify(msg));
 
-      dispatch(
-        addReaction({
-          id: `${conn.userId}-${now}`,
-          emoji,
-          fromUserId: conn.userId,
-          createdAt: now,
-        }),
-      );
+      dispatch(addReaction(msg));
 
       conn.sendAnalyticsData(
         AnalyticsEvents.ANALYTICS_EVENT_USER_REACTION,
         AnalyticsEventType.USER,
         undefined,
-        emoji,
+        undefined,
+        '1',
       );
-    },
-    [conn, dispatch],
+    }, THROTTLE_MS),
+    [dispatch, currentUser],
   );
 
   const toggleRaiseHand = useCallback(() => {
@@ -95,7 +97,7 @@ const ReactionsIcon = () => {
     conn.sendMessageToSystemWorker(data);
   }, [isActiveRaisehand, conn, t]);
 
-  if (!canReact && !canRaiseHand) {
+  if (!canReact && !allowRaiseHand) {
     return null;
   }
 
@@ -172,7 +174,7 @@ const ReactionsIcon = () => {
       >
         <PopoverPanel className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-50">
           <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 shadow-lg">
-            {canReact ? (
+            {canReact && (
               <div className="flex items-center gap-1">
                 {REACTION_EMOJIS.map((emoji) => (
                   <button
@@ -186,9 +188,9 @@ const ReactionsIcon = () => {
                   </button>
                 ))}
               </div>
-            ) : null}
+            )}
 
-            {canRaiseHand ? (
+            {allowRaiseHand && (
               <button
                 type="button"
                 onClick={toggleRaiseHand}
@@ -204,7 +206,7 @@ const ReactionsIcon = () => {
                   ? t('footer.icons.lower-hand')
                   : t('footer.icons.raise-hand')}
               </button>
-            ) : null}
+            )}
           </div>
         </PopoverPanel>
       </Transition>

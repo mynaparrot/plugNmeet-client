@@ -4,7 +4,6 @@ import {
   DataMsgBodyType,
   InsightsTranscriptionResultSchema,
 } from 'plugnmeet-protocol-js';
-import { ConnectionQuality } from 'livekit-client';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
@@ -13,15 +12,11 @@ import {
   updateRequestedWhiteboardData,
 } from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
-import {
-  participantsSelector,
-  updateParticipant,
-} from '../../store/slices/participantSlice';
-
-const REACTION_RECEIVE_MIN_INTERVAL_MS = 400;
+import { updateParticipant } from '../../store/slices/participantSlice';
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
 import {
   addReaction,
+  IReaction,
   REACTION_EMOJIS,
 } from '../../store/slices/reactionsSlice';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
@@ -35,10 +30,10 @@ import {
   addAllChatMessages,
   selectPublicChatMessages,
 } from '../../store/slices/chatMessagesSlice';
+import { ConnectionQuality } from '../livekit/ConnectionQualityMonitor';
 
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
-  private lastReactionAt = new Map<string, number>();
 
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
@@ -110,40 +105,9 @@ export default class HandleDataMessage {
         }
         this.handleExternalMediaPlayerEvents(payload.message);
         break;
-      case DataMsgBodyType.REACTION: {
-        if (
-          store.getState().session.currentRoom.metadata?.roomFeatures
-            ?.allowReactions !== true
-        ) {
-          return;
-        }
-        if (!REACTION_EMOJIS.includes(payload.message)) {
-          return;
-        }
-        if (
-          participantsSelector.selectById(store.getState(), payload.fromUserId)
-            ?.metadata?.lockSettings?.lockReactions
-        ) {
-          return;
-        }
-        const createdAt = Date.now();
-        if (
-          createdAt - (this.lastReactionAt.get(payload.fromUserId) ?? 0) <
-          REACTION_RECEIVE_MIN_INTERVAL_MS
-        ) {
-          return;
-        }
-        this.lastReactionAt.set(payload.fromUserId, createdAt);
-        store.dispatch(
-          addReaction({
-            id: `${payload.fromUserId}-${createdAt}`,
-            emoji: payload.message,
-            fromUserId: payload.fromUserId,
-            createdAt,
-          }),
-        );
+      case DataMsgBodyType.REACTION:
+        this.handleUserEmojiReaction(payload.message);
         break;
-      }
       case DataMsgBodyType.NEW_POLL_RESPONSE:
         if (payload.fromUserId === this.connectNats.userId) {
           return;
@@ -286,6 +250,18 @@ export default class HandleDataMessage {
           currentUserId: this.connectNats.userId,
         }),
       );
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private handleUserEmojiReaction(msg: string) {
+    try {
+      const data: IReaction = JSON.parse(msg);
+      if (!REACTION_EMOJIS.includes(data.emoji)) {
+        return;
+      }
+      store.dispatch(addReaction(data));
     } catch (e) {
       console.error(e);
     }

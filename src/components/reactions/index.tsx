@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useAppSelector } from '../../store';
 import { selectAllReactions } from '../../store/slices/reactionsSlice';
-import ReactionFloatItem from './ReactionFloatItem';
+import ReactionFloatItem from './reactionFloatItem';
 
 const ReactionsOverlay = () => {
   const reactions = useAppSelector(selectAllReactions);

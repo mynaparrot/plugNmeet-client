@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 
-import { useAppSelector } from '../../store';
 import { IReaction, REACTION_TTL_MS } from '../../store/slices/reactionsSlice';
-import { participantsSelector } from '../../store/slices/participantSlice';
 
-const ReactionFloatItem = ({ reaction }: { reaction: IReaction }) => {
-  const name = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, reaction.fromUserId)?.name,
-  );
+interface IReactionFloatItemProps {
+  reaction: IReaction;
+}
 
+const ReactionFloatItem = ({ reaction }: IReactionFloatItemProps) => {
   const [motion] = useState(() => ({
     left: 15 + Math.random() * 70,
     drift: (Math.random() * 2 - 1) * 40,
@@ -34,11 +31,11 @@ const ReactionFloatItem = ({ reaction }: { reaction: IReaction }) => {
       >
         {reaction.emoji}
       </span>
-      {name ? (
+      {reaction.fromName !== '' && (
         <span className="mt-1 max-w-[8rem] truncate rounded-full bg-black/60 px-2 py-0.5 text-xs font-medium text-white">
-          {name}
+          {reaction.fromName}
         </span>
-      ) : null}
+      )}
     </div>
   );
 };

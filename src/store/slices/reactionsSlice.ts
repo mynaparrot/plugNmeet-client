@@ -4,20 +4,14 @@ import { RootState } from '..';
 
 export const REACTION_TTL_MS = 4000;
 
-export const REACTION_EMOJIS: string[] = [
-  '👍',
-  '❤️',
-  '😂',
-  '🎉',
-  '👏',
-  '🙌',
-  '😯',
-];
+// prettier-ignore
+export const REACTION_EMOJIS: string[] = [ '👍', '❤️', '😂', '🎉', '👏', '🙌', '😯' ];
 
 export interface IReaction {
   id: string;
   emoji: string;
   fromUserId: string;
+  fromName: string;
   createdAt: number;
 }
 
