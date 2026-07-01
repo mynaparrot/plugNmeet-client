@@ -5,7 +5,7 @@ import WebcamIcon from './icons/webcam';
 import MicrophoneIcon from './icons/microphone';
 import ChatIcon from './icons/chat';
 import ParticipantIcon from './icons/participant';
-import RaiseHandIcon from './icons/raisehand';
+import ReactionsIcon from './icons/reactions';
 import ScreenshareIcon from './icons/screenshare';
 import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
@@ -43,7 +43,7 @@ const Footer = () => {
         <div className="footer-middle flex items-center gap-1 3xl:gap-2">
           <ScreenshareIcon />
           <WhiteboardIcon />
-          <RaiseHandIcon />
+          <ReactionsIcon />
           <SharedNotePadIcon />
           <PollsIcon />
           <Translation />
