@@ -166,15 +166,21 @@
       "upload": "전송 품질",
       "download": "수신 품질",
       "packet-loss": "데이터 손실",
-      "rtt": "Delay (RTT)",
-      "copy": "Copy Details",
+      "rtt": "지연 (RTT)",
+      "copy": "사본 정보",
       "tooltips": {
-        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
-        "score": "A score from 0 to 100 that represents the stability of your connection.",
-        "upload": "The quality of the video and audio you are sending to others.",
-        "download": "The quality of the video and audio you are receiving from others.",
-        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
-        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+        "overall-quality": "송수신 품질을 기준으로 한 전체 회의 경험입니다.",
+        "score": "0에서 100까지의 점수는 당신의 연결 안정성을 나타냅니다.",
+        "upload": "다른 사람에게 보내는 영상과 오디오의 품질입니다.",
+        "download": "다른 사람들로부터 받는 영상과 오디오의 품질입니다.",
+        "packet-loss": "인터넷을 통해 이동하는 동안 손실된 데이터 비율. 낮을수록 좋습니다.",
+        "rtt": "데이터가 서버와 돌아오는 데 걸리는 시간입니다. 낮을수록 좋습니다."
+      },
+      "qualities": {
+        "excellent": "훌륭해",
+        "good": "좋아",
+        "poor": "불쌍하네요",
+        "lost": "잃어버렸다"
       }
     }
   },
