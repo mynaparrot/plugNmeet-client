@@ -148,7 +148,7 @@ const MainArea = () => {
     }
   }, [screenHeight, screenWidth, isRecorder]);
 
-  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
+  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
     activeSidePanel ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]' : ''
   }`;
