@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "由于服务器停止响应，您已断开连接。",
     "room-disconnected-reconnecting": "连接已断开。正在重新连接...",
     "room-disconnected-network-error": "由于网络问题，您已断开连接。",
-    "your-connection-quality-not-good": "您与会议的连接不稳定。",
-    "your-connection-lost-or-unstable": "你的连接已经丢失或极度不稳定。",
+    "your-connection-lost-or-unstable": "你的连接不稳定。其他人可能听到你的音频或视频质量不佳。",
     "need-to-disable-display-external-link": "要播放视频，请先停止分享外部链接。",
     "need-to-disable-external-media-player": "要分享外部链接，请先停止视频播放器。",
     "websocket-disconnected": "连接已断开，正在尝试重新连接...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "显示/隐藏设置",
       "show-hide-whiteboard": "显示/隐藏白板",
       "show-hide-hand": "举手/放下手"
+    },
+    "connection-status": {
+      "overall-quality": "整体体验",
+      "score": "连接评分",
+      "upload": "发送质量",
+      "download": "接球质量",
+      "packet-loss": "数据丢失",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (用于 OBS 等)",
     "ingress-type-whip": "WHIP (用于 WebRTC, OBS 等)",
     "join-as-name": "显示名称",
-    "feature-not-allow": "此功能未被允许。",
+    "feature-not-allow": "该房间未启用此功能。",
     "join-as-name-required": "需要显示名称。",
     "gen-link": "生成链接",
     "stream-url": "流媒体主机/URL",
