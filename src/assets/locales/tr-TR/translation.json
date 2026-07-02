@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "Sunucu yanıt vermeyi durdurduğu için bağlantınız kesildi.",
     "room-disconnected-reconnecting": "Bağlantı kesildi. Yeniden bağlanılıyor...",
     "room-disconnected-network-error": "Bir ağ sorunu nedeniyle bağlantınız kesildi.",
-    "your-connection-quality-not-good": "Toplantı bağlantınız kararsız.",
-    "your-connection-lost-or-unstable": "Bağlantınız kayboldu ya da kritik derecede istikrarsız.",
+    "your-connection-lost-or-unstable": "Bağlantınız dengesiz. Bazıları sizden kötü ses veya görüntü alabilir.",
     "need-to-disable-display-external-link": "Bir video oynatmak için lütfen önce harici bağlantı paylaşımını durdurun.",
     "need-to-disable-external-media-player": "Harici bir bağlantı paylaşmak için lütfen önce video oynatıcıyı durdurun.",
     "websocket-disconnected": "Bağlantı kesildi, yeniden bağlanmaya çalışılıyor...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "Ayarları Göster/Gizle",
       "show-hide-whiteboard": "Beyaz Tahtayı Göster/Gizle",
       "show-hide-hand": "El Kaldır/İndir"
+    },
+    "connection-status": {
+      "overall-quality": "Genel Deneyim",
+      "score": "Bağlantı Puanı",
+      "upload": "Gönderme Kalitesi",
+      "download": "Alım Kalitesi",
+      "packet-loss": "Veri kaybı",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (OBS vb. için)",
     "ingress-type-whip": "WHIP (WebRTC, OBS vb. için)",
     "join-as-name": "Görünen Ad",
-    "feature-not-allow": "Bu özelliğe izin verilmiyor.",
+    "feature-not-allow": "Bu özellik bu odada etkinleştirilmemiştir.",
     "join-as-name-required": "Görünen ad gereklidir.",
     "gen-link": "Bağlantı Oluştur",
     "stream-url": "Yayın Sunucusu/URL",
