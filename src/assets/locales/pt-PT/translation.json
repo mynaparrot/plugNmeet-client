@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "Foi desligado porque o servidor deixou de responder.",
     "room-disconnected-reconnecting": "Ligação perdida. A restabelecer ligação...",
     "room-disconnected-network-error": "Foi desligado devido a um problema de rede.",
-    "your-connection-quality-not-good": "A sua ligação à reunião está instável.",
-    "your-connection-lost-or-unstable": "A sua ligação perdeu-se ou está criticamente instável.",
+    "your-connection-lost-or-unstable": "A tua ligação é instável. Outros podem estar a experienciar áudio ou vídeo fraco da sua parte.",
     "need-to-disable-display-external-link": "Para reproduzir um vídeo, por favor, pare primeiro a partilha do link externo.",
     "need-to-disable-external-media-player": "Para partilhar um link externo, por favor, pare primeiro o leitor de vídeo.",
     "websocket-disconnected": "Ligação perdida, a tentar restabelecer ligação...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "Mostrar/Ocultar definições",
       "show-hide-whiteboard": "Mostrar/Ocultar quadro branco",
       "show-hide-hand": "Levantar/Baixar mão"
+    },
+    "connection-status": {
+      "overall-quality": "Experiência Geral",
+      "score": "Pontuação de Conexão",
+      "upload": "Qualidade de Envio",
+      "download": "Qualidade de Receção",
+      "packet-loss": "Perda de Dados",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (para OBS, etc.)",
     "ingress-type-whip": "WHIP (WebRTC, OBS, etc.)",
     "join-as-name": "Nome de exibição",
-    "feature-not-allow": "Esta funcionalidade não é permitida.",
+    "feature-not-allow": "Esta funcionalidade não está ativada para esta sala.",
     "join-as-name-required": "É necessário um nome de exibição.",
     "gen-link": "Gerar link",
     "stream-url": "Anfitrião/URL da transmissão",
