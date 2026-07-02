@@ -19,6 +19,9 @@ const EXCELLENT_RTT_THRESHOLD = 250;
 const GOOD_RTT_THRESHOLD = 500;
 const LOST_RTT_THRESHOLD = 1000;
 
+const COMPOUND_POOR_PACKET_LOSS_THRESHOLD = 5;
+const COMPOUND_POOR_RTT_THRESHOLD = 350;
+
 const MAX_SANE_RTT = 10_000;
 
 const POOR_COUNT_THRESHOLD = 3;
@@ -112,16 +115,10 @@ export default class ConnectionQualityMonitor {
 
       try {
         const stats = await this.collectQualityStats();
-
         if (this.isStopped) return;
 
         this.handleQualityState(stats);
         onQualityUpdate?.(stats);
-      } catch (error) {
-        console.error(
-          '[ConnectionQualityMonitor] Failed to collect or handle quality stats:',
-          error,
-        );
       } finally {
         this.isCheckingQuality = false;
 
@@ -154,10 +151,10 @@ export default class ConnectionQualityMonitor {
 
   public getOverallQuality = () => this.currentQuality;
 
-  private _processStatsReport = (
+  private _processStatsReport(
     statsReport: RTCStatsReport | undefined,
     state: QualityCheckState,
-  ) => {
+  ) {
     statsReport?.forEach((rawStat) => {
       const stat = rawStat as WebRTCStat;
 
@@ -221,9 +218,9 @@ export default class ConnectionQualityMonitor {
         };
       }
     });
-  };
+  }
 
-  private collectQualityStats = async (): Promise<QualityStats> => {
+  private async collectQualityStats(): Promise<QualityStats> {
     if (this.room.state !== ConnectionState.Connected) {
       return this.createStats({
         rawPacketLoss: 100,
@@ -276,7 +273,7 @@ export default class ConnectionQualityMonitor {
       myRtt: state.myRtt,
       receivePacketLoss: state.inboundPacketLoss,
     });
-  };
+  }
 
   private classify({
     packetLoss,
@@ -292,7 +289,13 @@ export default class ConnectionQualityMonitor {
       return ConnectionQuality.Lost;
     }
 
+    const isCompoundingPoor =
+      packetLoss >= COMPOUND_POOR_PACKET_LOSS_THRESHOLD &&
+      rtt !== null &&
+      rtt >= COMPOUND_POOR_RTT_THRESHOLD;
+
     if (
+      isCompoundingPoor ||
       packetLoss >= GOOD_PACKET_LOSS_THRESHOLD ||
       (rtt !== null && rtt >= GOOD_RTT_THRESHOLD)
     ) {
@@ -309,13 +312,13 @@ export default class ConnectionQualityMonitor {
     return ConnectionQuality.Excellent;
   }
 
-  private createStats = (input: {
+  private createStats(input: {
     rawPacketLoss: number;
     rtt: number | null;
     myPacketLoss: number;
     myRtt: number | null;
     receivePacketLoss: number;
-  }): QualityStats => {
+  }): QualityStats {
     const hasUploadSignal = input.myRtt !== null || input.myPacketLoss > 0;
 
     const uploadQuality = hasUploadSignal
@@ -330,29 +333,33 @@ export default class ConnectionQualityMonitor {
       rtt: input.rtt,
     });
 
-    const qualities = new Set([uploadQuality, receiveQuality]);
-
-    const worstQuality = qualities.has(ConnectionQuality.Lost)
-      ? ConnectionQuality.Lost
-      : qualities.has(ConnectionQuality.Poor)
-        ? ConnectionQuality.Poor
-        : qualities.has(ConnectionQuality.Good)
-          ? ConnectionQuality.Good
-          : ConnectionQuality.Excellent;
+    const worstQuality =
+      uploadQuality === ConnectionQuality.Lost ||
+      receiveQuality === ConnectionQuality.Lost
+        ? ConnectionQuality.Lost
+        : uploadQuality === ConnectionQuality.Poor ||
+            receiveQuality === ConnectionQuality.Poor
+          ? ConnectionQuality.Poor
+          : uploadQuality === ConnectionQuality.Good ||
+              receiveQuality === ConnectionQuality.Good
+            ? ConnectionQuality.Good
+            : ConnectionQuality.Excellent;
 
     const rawScore = this.qualityToScore(worstQuality);
-
     const factor =
       rawScore < this.qualityScore ? DECREASE_FACTOR : INCREASE_FACTOR;
 
     this.qualityScore = factor * rawScore + (1 - factor) * this.qualityScore;
-
     this.qualityScore = Math.max(
       MIN_SCORE,
       Math.min(MAX_SCORE, this.qualityScore),
     );
 
     const overallQuality = this.scoreToQuality(this.qualityScore);
+
+    const isMyConnectionPoor =
+      uploadQuality === ConnectionQuality.Poor ||
+      uploadQuality === ConnectionQuality.Lost;
 
     return {
       rawPacketLoss: input.rawPacketLoss,
@@ -368,17 +375,15 @@ export default class ConnectionQualityMonitor {
       myRtt: input.myRtt,
       receivePacketLoss: input.receivePacketLoss,
 
-      isMyConnectionPoor:
-        uploadQuality === ConnectionQuality.Poor ||
-        uploadQuality === ConnectionQuality.Lost,
+      isMyConnectionPoor,
 
       isReceivingPoor:
         receiveQuality === ConnectionQuality.Poor ||
         receiveQuality === ConnectionQuality.Lost,
     };
-  };
+  }
 
-  private handleQualityState = (stats: QualityStats) => {
+  private handleQualityState(stats: QualityStats) {
     this.currentQuality = stats.overallQuality;
 
     if (stats.isMyConnectionPoor) {
@@ -397,9 +402,9 @@ export default class ConnectionQualityMonitor {
     }
 
     this.maybeNotifyUser(stats);
-  };
+  }
 
-  private maybeNotifyUser = (stats: QualityStats) => {
+  private maybeNotifyUser(stats: QualityStats) {
     if (!stats.isMyConnectionPoor || this.isConnectionCurrentlyPoor) return;
 
     const now = Date.now();
@@ -418,20 +423,16 @@ export default class ConnectionQualityMonitor {
         typeOption: 'error',
       }),
     );
-  };
+  }
 
-  private updateMaxRtt = (
-    current: number | null,
-    value: number,
-  ): number | null => {
+  private updateMaxRtt(current: number | null, value: number): number | null {
     if (!Number.isFinite(value) || value <= 0 || value > MAX_SANE_RTT) {
       return current;
     }
-
     return current === null ? value : Math.max(current, value);
-  };
+  }
 
-  private qualityToScore = (quality: ConnectionQuality): number => {
+  private qualityToScore(quality: ConnectionQuality): number {
     switch (quality) {
       case ConnectionQuality.Excellent:
         return 100;
@@ -444,12 +445,12 @@ export default class ConnectionQualityMonitor {
       default:
         return 100;
     }
-  };
+  }
 
-  private scoreToQuality = (score: number): ConnectionQuality => {
+  private scoreToQuality(score: number): ConnectionQuality {
     if (score > 80) return ConnectionQuality.Excellent;
     if (score > 40) return ConnectionQuality.Good;
     if (score > 20) return ConnectionQuality.Poor;
     return ConnectionQuality.Lost;
-  };
+  }
 }
