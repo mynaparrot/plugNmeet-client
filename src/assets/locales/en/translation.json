@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "You have been disconnected because the server stopped responding.",
     "room-disconnected-reconnecting": "Connection lost. Reconnecting...",
     "room-disconnected-network-error": "You were disconnected due to a network problem.",
-    "your-connection-lost-or-unstable": "Your connection is unstable. Others may be experiencing poor audio or video from you.",
+    "your-connection-lost-or-unstable": "Your connection is a bit unstable right now. Others may notice some audio or video issues from you.",
     "need-to-disable-display-external-link": "To play a video, please stop sharing the external link first.",
     "need-to-disable-external-media-player": "To share an external link, please stop the video player first.",
     "websocket-disconnected": "Connection lost, trying to reconnect...",
