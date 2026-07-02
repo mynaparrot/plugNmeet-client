@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "Ihre Verbindung wurde getrennt, da der Server nicht mehr reagiert.",
     "room-disconnected-reconnecting": "Verbindung verloren. Erneuter Verbindungsaufbau...",
     "room-disconnected-network-error": "Ihre Verbindung wurde aufgrund eines Netzwerkproblems getrennt.",
-    "your-connection-quality-not-good": "Ihre Verbindung zum Meeting ist instabil.",
-    "your-connection-lost-or-unstable": "Ihre Verbindung ist verloren gegangen oder kritisch instabil.",
+    "your-connection-lost-or-unstable": "Deine Verbindung ist instabil. Andere erleben vielleicht schlechte Audio- oder Videoaufnahmen von dir.",
     "need-to-disable-display-external-link": "Um ein Video abzuspielen, beenden Sie bitte zuerst die Freigabe des externen Links.",
     "need-to-disable-external-media-player": "Um einen externen Link zu teilen, beenden Sie bitte zuerst den Videoplayer.",
     "websocket-disconnected": "Verbindung verloren, versuche erneut zu verbinden...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "Einstellungen ein-/ausblenden",
       "show-hide-whiteboard": "Whiteboard ein-/ausblenden",
       "show-hide-hand": "Hand heben/senken"
+    },
+    "connection-status": {
+      "overall-quality": "Gesamterfahrung",
+      "score": "Verbindungswert",
+      "upload": "Sendequalität",
+      "download": "Empfangsqualität",
+      "packet-loss": "Datenverlust",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (für OBS usw.)",
     "ingress-type-whip": "WHIP (WebRTC, OBS usw.)",
     "join-as-name": "Anzeigename",
-    "feature-not-allow": "Diese Funktion ist nicht zulässig.",
+    "feature-not-allow": "Diese Funktion ist für diesen Raum nicht aktiviert.",
     "join-as-name-required": "Ein Anzeigename ist erforderlich.",
     "gen-link": "Link generieren",
     "stream-url": "Stream-Host/URL",
