@@ -7,6 +7,12 @@ import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 export const useMainAreaState = () => {
   const currentConnection = getMediaServerConn();
 
+  const screenHeight = useAppSelector(
+    (state) => state.bottomIconsActivity.screenHeight,
+  );
+  const screenWidth = useAppSelector(
+    (state) => state.bottomIconsActivity.screenWidth,
+  );
   const columnCameraWidth = useAppSelector(
     (state) => state.roomSettings.columnCameraWidth,
   );
@@ -71,6 +77,8 @@ export const useMainAreaState = () => {
   }, [currentConnection]);
 
   return {
+    screenHeight,
+    screenWidth,
     columnCameraWidth,
     columnCameraPosition,
     activeSidePanel,
