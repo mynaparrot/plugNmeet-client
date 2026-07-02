@@ -88,9 +88,7 @@ export interface UserNotification {
 }
 
 export type NotificationCats =
-  | 'new-poll-created'
-  | 'breakout-room-invitation'
-  | 'default';
+  'new-poll-created' | 'breakout-room-invitation' | 'default';
 
 export interface IMaxNumDisplayWebcams {
   desktop: number;

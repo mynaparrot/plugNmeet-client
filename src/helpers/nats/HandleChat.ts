@@ -31,7 +31,8 @@ export default class HandleChat {
 
     if (typeof this.allowViewOtherUsersList === 'undefined') {
       this.allowViewOtherUsersList =
-        store.getState().session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList;
+        store.getState().session.currentRoom.metadata?.roomFeatures
+          ?.allowViewOtherUsersList;
     }
 
     if (

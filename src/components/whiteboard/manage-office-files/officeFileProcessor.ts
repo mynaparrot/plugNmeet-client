@@ -19,11 +19,7 @@ import { getNatsConn } from '../../../helpers/nats';
 import { sleep } from '../../../helpers/utils';
 
 export type OfficeFileStatus =
-  | 'idle'
-  | 'uploading'
-  | 'converting'
-  | 'success'
-  | 'error';
+  'idle' | 'uploading' | 'converting' | 'success' | 'error';
 
 export interface IOfficeFileProcessing {
   onProgress(progress: number): void;

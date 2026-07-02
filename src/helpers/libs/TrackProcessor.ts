@@ -24,9 +24,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   name = 'pnm-virtual-background';
 
   private processor:
-    | GaussianBlurBackgroundProcessor
-    | VirtualBackgroundProcessor
-    | null = null;
+    GaussianBlurBackgroundProcessor | VirtualBackgroundProcessor | null = null;
   private sourceElement: HTMLVideoElement | undefined = undefined;
   private canvas = document.createElement('canvas');
   private isProcessing = false;
