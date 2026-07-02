@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "সার্ভার প্রতিক্রিয়া জানানো বন্ধ করায় আপনার সংযোগ বিচ্ছিন্ন হয়েছে।",
     "room-disconnected-reconnecting": "সংযোগ বিচ্ছিন্ন হয়েছে। পুনরায় সংযোগ করা হচ্ছে...",
     "room-disconnected-network-error": "একটি নেটওয়ার্ক সমস্যার কারণে আপনার সংযোগ বিচ্ছিন্ন হয়েছে।",
-    "your-connection-quality-not-good": "আপনার মিটিংয়ের সাথে ইন্টারনেট সংযোগটি স্থিতিশীল নয়।",
-    "your-connection-lost-or-unstable": "আপনার সংযোগ হারিয়ে গেছে বা সমালোচনামূলকভাবে অস্থিতিশীল।",
+    "your-connection-lost-or-unstable": "আপনার সংযোগ অস্থিতিশীল। অন্যরা আপনার কাছ থেকে দুর্বল অডিও বা ভিডিও অনুভব করতে পারে।",
     "need-to-disable-display-external-link": "একটি ভিডিও প্লে করতে, অনুগ্রহ করে প্রথমে বাহ্যিক লিঙ্ক শেয়ার করা বন্ধ করুন।",
     "need-to-disable-external-media-player": "একটি বাহ্যিক লিঙ্ক শেয়ার করতে, অনুগ্রহ করে প্রথমে ভিডিও প্লেয়ারটি বন্ধ করুন।",
     "websocket-disconnected": "সংযোগ বিচ্ছিন্ন হয়েছে, পুনরায় সংযোগ করার চেষ্টা করা হচ্ছে...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "সেটিংস দেখান/লুকান",
       "show-hide-whiteboard": "হোয়াইটবোর্ড দেখান/লুকান",
       "show-hide-hand": "হাত তুলুন/নামান"
+    },
+    "connection-status": {
+      "overall-quality": "সামগ্রিক অভিজ্ঞতা",
+      "score": "কানেকশন স্কোর",
+      "upload": "কোয়ালিটি প্রেরণ করা হচ্ছে",
+      "download": "গুণমান প্রাপ্তি",
+      "packet-loss": "ডেটা ক্ষতি",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (OBS, ইত্যাদির জন্য)",
     "ingress-type-whip": "WHIP (WebRTC, OBS, ইত্যাদির জন্য)",
     "join-as-name": "প্রদর্শনের নাম",
-    "feature-not-allow": "এই বৈশিষ্ট্যটি অনুমোদিত নয়।",
+    "feature-not-allow": "এই কক্ষের জন্য এই বৈশিষ্ট্যটি সক্ষম নেই।",
     "join-as-name-required": "একটি প্রদর্শনের নাম প্রয়োজন।",
     "gen-link": "লিঙ্ক তৈরি করুন",
     "stream-url": "স্ট্রিম হোস্ট/URL",
