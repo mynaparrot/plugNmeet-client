@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "Je bent verbroken omdat de server niet meer reageert.",
     "room-disconnected-reconnecting": "Verbinding verbroken. Reconnecting...",
     "room-disconnected-network-error": "De verbinding is verbroken vanwege een netwerkprobleem.",
-    "your-connection-quality-not-good": "Uw internetverbinding is instabiel.",
-    "your-connection-lost-or-unstable": "Je verbinding is verloren gegaan of is kritiek instabiel.",
+    "your-connection-lost-or-unstable": "Je verbinding is onstabiel. Anderen ervaren misschien slecht geluid of beeld van jou.",
     "need-to-disable-display-external-link": "Als u een video wilt afspelen, moet u eerst stoppen met het delen van de externe link.",
     "need-to-disable-external-media-player": "Als u een externe link wilt delen, moet u eerst de videospeler stoppen.",
     "websocket-disconnected": "Verbinding verbroken, proberen opnieuw verbinding te maken...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "Instellingen verbergen/weergeven",
       "show-hide-whiteboard": "Whiteboard verbergen/tonen",
       "show-hide-hand": "Hand opsteken/verlagen"
+    },
+    "connection-status": {
+      "overall-quality": "Algemene ervaring",
+      "score": "Verbindingsscore",
+      "upload": "Verzendkwaliteit",
+      "download": "Ontvangstkwaliteit",
+      "packet-loss": "Dataverlies",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (voor OBS, enz.)",
     "ingress-type-whip": "ZWEEP (WebRTC, OBS, enz.)",
     "join-as-name": "Weergavenaam",
-    "feature-not-allow": "Deze functie is niet toegestaan.",
+    "feature-not-allow": "Deze functie is niet ingeschakeld voor deze kamer.",
     "join-as-name-required": "Een weergavenaam is vereist.",
     "gen-link": "Link genereren",
     "stream-url": "Streamhost/URL",
