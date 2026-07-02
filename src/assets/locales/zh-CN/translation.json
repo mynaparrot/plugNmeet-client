@@ -166,15 +166,21 @@
       "upload": "发送质量",
       "download": "接球质量",
       "packet-loss": "数据丢失",
-      "rtt": "Delay (RTT)",
-      "copy": "Copy Details",
+      "rtt": "延迟（RTT）",
+      "copy": "副本详情",
       "tooltips": {
-        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
-        "score": "A score from 0 to 100 that represents the stability of your connection.",
-        "upload": "The quality of the video and audio you are sending to others.",
-        "download": "The quality of the video and audio you are receiving from others.",
-        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
-        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+        "overall-quality": "你整体的会议体验，基于发送和接收质量。",
+        "score": "0到100分的分数代表你们连接的稳定性。",
+        "upload": "你发送给他人的视频和音频质量。",
+        "download": "你从他人那里接收到的视频和音频质量。",
+        "packet-loss": "互联网旅行中丢失的数据比例。越低越好。",
+        "rtt": "数据往返服务器所需的时间。越低越好。"
+      },
+      "qualities": {
+        "excellent": "太好了",
+        "good": "很好",
+        "poor": "可怜",
+        "lost": "迷失"
       }
     }
   },
