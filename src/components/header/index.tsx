@@ -13,6 +13,7 @@ import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 import UserNotifications from './user-notifications';
+import ConnectionStatus from './connectionStatus';
 import ConfirmationModal from '../../helpers/ui/confirmationModal';
 
 const Header = () => {
@@ -64,6 +65,7 @@ const Header = () => {
           <div className="right flex items-center justify-end relative -right-3 w-1/2 md:w-1/3 gap-0.5 z-30 order-2 md:order-3">
             <DurationView />
             <UserNotifications />
+            <ConnectionStatus />
             <VolumeControl />
             <Menu>
               {({ open }) => (

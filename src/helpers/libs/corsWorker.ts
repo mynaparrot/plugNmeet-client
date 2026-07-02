@@ -30,6 +30,10 @@ export class CorsWorker {
     }
 
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Could not fetch worker: ${url}`);
+    }
+
     const code = await response.text();
     const blob = new Blob([code], { type: 'application/javascript' });
     const workerUrl = URL.createObjectURL(blob);

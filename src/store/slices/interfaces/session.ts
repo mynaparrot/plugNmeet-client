@@ -1,4 +1,5 @@
 import { type RoomMetadata, UserMetadata } from 'plugnmeet-protocol-js';
+import { QualityStats } from '../../../helpers/livekit/ConnectionQualityMonitor';
 
 export enum UserDeviceType {
   MOBILE = 'mobile',
@@ -20,6 +21,7 @@ export interface ISession {
   totalAudioSubscribers: number;
   userDeviceType: UserDeviceType;
   isCloud: boolean;
+  qualityStats?: QualityStats;
 }
 
 export interface ICurrentUser {

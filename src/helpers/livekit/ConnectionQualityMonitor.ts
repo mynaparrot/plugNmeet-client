@@ -21,9 +21,6 @@ const LOST_RTT_THRESHOLD = 1000;
 
 const MAX_SANE_RTT = 10_000;
 
-const LOW_FPS_THRESHOLD = 5;
-const FREEZE_DELTA_POOR_THRESHOLD = 2;
-
 const POOR_COUNT_THRESHOLD = 3;
 const GOOD_COUNT_THRESHOLD = 2;
 const INTERVAL = 5000;
@@ -34,26 +31,27 @@ const MIN_SCORE = 20;
 const DECREASE_FACTOR = 0.8;
 const INCREASE_FACTOR = 0.4;
 
-const PACKET_LOSS_HISTORY_SIZE = 3;
-
 type PrevInboundStats = {
   lost: number;
   received: number;
-  bytesReceived: number;
-  freezeCount: number;
 };
 
 export type QualityStats = {
-  packetLoss: number;
   rawPacketLoss: number;
   rtt: number | null;
-  rawQuality: ConnectionQuality;
-  quality: ConnectionQuality;
+
+  uploadQuality: ConnectionQuality;
+  receiveQuality: ConnectionQuality;
+  overallQuality: ConnectionQuality;
+
   score: number;
-  fps: number;
-  freezeDelta: number;
-  hasActiveVideo: boolean;
-  hasActiveAudio: boolean;
+
+  myPacketLoss: number;
+  myRtt: number | null;
+  receivePacketLoss: number;
+
+  isMyConnectionPoor: boolean;
+  isReceivingPoor: boolean;
 };
 
 type WebRTCStat = {
@@ -62,21 +60,26 @@ type WebRTCStat = {
   kind?: string;
   mediaType?: string;
   ssrc?: number | string;
-
   packetsLost?: number;
   packetsReceived?: number;
-  bytesReceived?: number;
-
-  freezeCount?: number;
-  framesPerSecond?: number;
-
   fractionLost?: number;
   roundTripTime?: number;
-
   state?: string;
   selected?: boolean;
   nominated?: boolean;
   currentRoundTripTime?: number;
+};
+
+type QualityCheckState = {
+  maxPacketLoss: number;
+  maxRtt: number | null;
+
+  myPacketLoss: number;
+  myRtt: number | null;
+
+  inboundPacketLoss: number;
+
+  activeInboundSsrcs: Set<string>;
 };
 
 export default class ConnectionQualityMonitor {
@@ -85,15 +88,15 @@ export default class ConnectionQualityMonitor {
   private poorConnectionCount = 0;
   private goodConnectionCount = 0;
   private lastPoorConnectionNotificationAt = 0;
-  private qualityCheckInterval: ReturnType<typeof setInterval> | null = null;
+  private qualityCheckTimeout: ReturnType<typeof setTimeout> | null = null;
   private isConnectionCurrentlyPoor = false;
   private isCheckingQuality = false;
+  private isStopped = true;
 
   private currentQuality: ConnectionQuality = ConnectionQuality.Excellent;
   private qualityScore = MAX_SCORE;
 
   private prevInboundStats: Record<string, PrevInboundStats> = {};
-  private packetLossHistory: number[] = [];
 
   constructor(room: Room) {
     this.room = room;
@@ -101,29 +104,42 @@ export default class ConnectionQualityMonitor {
 
   public start = (onQualityUpdate?: (stats: QualityStats) => void) => {
     this.stop();
+    this.isStopped = false;
 
     const checkQuality = async () => {
-      if (this.isCheckingQuality) return;
-
+      if (this.isStopped || this.isCheckingQuality) return;
       this.isCheckingQuality = true;
 
       try {
         const stats = await this.collectQualityStats();
+
+        if (this.isStopped) return;
+
         this.handleQualityState(stats);
         onQualityUpdate?.(stats);
+      } catch (error) {
+        console.error(
+          '[ConnectionQualityMonitor] Failed to collect or handle quality stats:',
+          error,
+        );
       } finally {
         this.isCheckingQuality = false;
+
+        if (!this.isStopped) {
+          this.qualityCheckTimeout = setTimeout(checkQuality, INTERVAL);
+        }
       }
     };
 
     void checkQuality();
-    this.qualityCheckInterval = setInterval(checkQuality, INTERVAL);
   };
 
   public stop = () => {
-    if (this.qualityCheckInterval) {
-      clearInterval(this.qualityCheckInterval);
-      this.qualityCheckInterval = null;
+    this.isStopped = true;
+
+    if (this.qualityCheckTimeout) {
+      clearTimeout(this.qualityCheckTimeout);
+      this.qualityCheckTimeout = null;
     }
 
     this.poorConnectionCount = 0;
@@ -134,243 +150,197 @@ export default class ConnectionQualityMonitor {
     this.currentQuality = ConnectionQuality.Excellent;
     this.qualityScore = MAX_SCORE;
     this.prevInboundStats = {};
-    this.packetLossHistory = [];
   };
 
-  public getCurrentQuality = (): ConnectionQuality => {
-    return this.currentQuality;
-  };
+  public getOverallQuality = () => this.currentQuality;
 
-  private collectQualityStats = async (): Promise<QualityStats> => {
-    if (this.room.state !== ConnectionState.Connected) {
-      return this.createStats({
-        packetLoss: 100,
-        rawPacketLoss: 100,
-        rtt: LOST_RTT_THRESHOLD,
-        rawQuality: ConnectionQuality.Lost,
-        fps: 0,
-        freezeDelta: 0,
-        hasActiveVideo: false,
-        hasActiveAudio: false,
-      });
-    }
+  private _processStatsReport = (
+    statsReport: RTCStatsReport | undefined,
+    state: QualityCheckState,
+  ) => {
+    statsReport?.forEach((rawStat) => {
+      const stat = rawStat as WebRTCStat;
 
-    const pcManager = this.room.engine.pcManager;
-
-    if (!pcManager) {
-      return this.createStats({
-        packetLoss: 100,
-        rawPacketLoss: 100,
-        rtt: LOST_RTT_THRESHOLD,
-        rawQuality: ConnectionQuality.Lost,
-        fps: 0,
-        freezeDelta: 0,
-        hasActiveVideo: false,
-        hasActiveAudio: false,
-      });
-    }
-
-    const [publisherResult, subscriberResult] = await Promise.allSettled([
-      pcManager.publisher?.getStats(),
-      pcManager.subscriber?.getStats(),
-    ]);
-
-    const publisherStats =
-      publisherResult.status === 'fulfilled'
-        ? publisherResult.value
-        : undefined;
-
-    const subscriberStats =
-      subscriberResult.status === 'fulfilled'
-        ? subscriberResult.value
-        : undefined;
-
-    let maxPacketLoss = 0;
-    let maxRtt: number | null = null;
-    let minFps = Number.POSITIVE_INFINITY;
-    let maxFreezeDelta = 0;
-
-    let hasActiveVideo = false;
-    let hasActiveAudio = false;
-
-    const activeInboundSsrcs = new Set<string>();
-
-    const updateRttFromCandidatePair = (stat: WebRTCStat) => {
       if (
         stat.type === 'candidate-pair' &&
         stat.state === 'succeeded' &&
-        (stat.selected === true || stat.nominated === true) &&
+        (stat.selected || stat.nominated) &&
         typeof stat.currentRoundTripTime === 'number'
       ) {
-        maxRtt = this.updateMaxRtt(maxRtt, stat.currentRoundTripTime * 1000);
+        const rttMs = stat.currentRoundTripTime * 1000;
+        state.maxRtt = this.updateMaxRtt(state.maxRtt, rttMs);
+        state.myRtt = this.updateMaxRtt(state.myRtt, rttMs);
       }
-    };
 
-    const processStatsReport = (statsReport?: RTCStatsReport) => {
-      statsReport?.forEach((rawStat) => {
-        const stat = rawStat as WebRTCStat;
-
-        updateRttFromCandidatePair(stat);
-
-        if (stat.type === 'remote-inbound-rtp') {
-          if (typeof stat.fractionLost === 'number') {
-            maxPacketLoss = Math.max(
-              maxPacketLoss,
-              Math.max(0, stat.fractionLost * 100),
-            );
-          }
-
-          if (typeof stat.roundTripTime === 'number') {
-            maxRtt = this.updateMaxRtt(maxRtt, stat.roundTripTime * 1000);
-          }
-
-          return;
+      if (stat.type === 'remote-inbound-rtp') {
+        if (typeof stat.fractionLost === 'number') {
+          const loss = Math.max(0, stat.fractionLost * 100);
+          state.myPacketLoss = Math.max(state.myPacketLoss, loss);
+          state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
         }
 
-        if (stat.type !== 'inbound-rtp') return;
+        if (typeof stat.roundTripTime === 'number') {
+          const rttMs = stat.roundTripTime * 1000;
+          state.myRtt = this.updateMaxRtt(state.myRtt, rttMs);
+          state.maxRtt = this.updateMaxRtt(state.maxRtt, rttMs);
+        }
 
-        const kind = stat.kind ?? stat.mediaType;
+        return;
+      }
 
-        if (kind !== 'video' && kind !== 'audio') return;
+      const kind = stat.kind ?? stat.mediaType;
+      if (kind !== 'video' && kind !== 'audio') return;
 
-        const isVideo = kind === 'video';
-        const isAudio = kind === 'audio';
-
+      if (stat.type === 'inbound-rtp') {
         const ssrc = String(stat.ssrc ?? stat.id);
-        activeInboundSsrcs.add(ssrc);
+        state.activeInboundSsrcs.add(ssrc);
 
         const currentLost = Math.max(0, stat.packetsLost || 0);
         const currentReceived = Math.max(0, stat.packetsReceived || 0);
-        const currentBytesReceived = Math.max(0, stat.bytesReceived || 0);
-
-        const currentFreezeCount = isVideo
-          ? Math.max(0, stat.freezeCount || 0)
-          : 0;
-
-        const currentFps =
-          isVideo && typeof stat.framesPerSecond === 'number'
-            ? stat.framesPerSecond
-            : Number.POSITIVE_INFINITY;
-
-        if (isVideo && Number.isFinite(currentFps) && currentFps > 0) {
-          minFps = Math.min(minFps, currentFps);
-        }
 
         const prev = this.prevInboundStats[ssrc];
 
         if (prev) {
-          const lostDelta = Math.max(0, currentLost - prev.lost);
-          const receivedDelta = Math.max(0, currentReceived - prev.received);
-          const bytesDelta = Math.max(
-            0,
-            currentBytesReceived - prev.bytesReceived,
-          );
+          const lostDelta = currentLost - prev.lost;
+          const receivedDelta = currentReceived - prev.received;
 
-          const totalDelta = lostDelta + receivedDelta;
+          if (lostDelta >= 0 && receivedDelta >= 0) {
+            const total = lostDelta + receivedDelta;
 
-          if (totalDelta > 0) {
-            maxPacketLoss = Math.max(
-              maxPacketLoss,
-              (lostDelta / totalDelta) * 100,
-            );
+            if (total > 0) {
+              const loss = (lostDelta / total) * 100;
+              state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
+              state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
+            }
           }
-
-          if (receivedDelta > 0 || bytesDelta > 0) {
-            if (isVideo) hasActiveVideo = true;
-            if (isAudio) hasActiveAudio = true;
-          }
-
-          if (isVideo) {
-            maxFreezeDelta = Math.max(
-              maxFreezeDelta,
-              Math.max(0, currentFreezeCount - prev.freezeCount),
-            );
-          }
-        } else if (currentReceived > 0 || currentBytesReceived > 0) {
-          if (isVideo) hasActiveVideo = true;
-          if (isAudio) hasActiveAudio = true;
         }
 
         this.prevInboundStats[ssrc] = {
           lost: currentLost,
           received: currentReceived,
-          bytesReceived: currentBytesReceived,
-          freezeCount: currentFreezeCount,
         };
-      });
-    };
+      }
+    });
+  };
 
-    // Important:
-    // Some LiveKit/browser setups use a single peer connection.
-    // In that case, inbound remote media can appear under publisher stats.
-    processStatsReport(publisherStats);
-    processStatsReport(subscriberStats);
-
-    if (publisherStats || subscriberStats) {
-      Object.keys(this.prevInboundStats).forEach((ssrc) => {
-        if (!activeInboundSsrcs.has(ssrc)) {
-          delete this.prevInboundStats[ssrc];
-        }
+  private collectQualityStats = async (): Promise<QualityStats> => {
+    if (this.room.state !== ConnectionState.Connected) {
+      return this.createStats({
+        rawPacketLoss: 100,
+        rtt: LOST_RTT_THRESHOLD,
+        myPacketLoss: 100,
+        myRtt: LOST_RTT_THRESHOLD,
+        receivePacketLoss: 100,
       });
     }
 
-    const rawPacketLoss = maxPacketLoss;
-    const packetLoss = this.getSmoothedPacketLoss(rawPacketLoss);
-    const fps = Number.isFinite(minFps) ? minFps : 0;
+    const pcManager = (this.room.engine as any)?.pcManager;
 
-    const rawQuality = this.classifyRawQuality({
-      packetLoss,
-      rtt: maxRtt,
-      fps,
-      freezeDelta: maxFreezeDelta,
-      hasActiveVideo,
+    if (!pcManager) {
+      return this.createStats({
+        rawPacketLoss: 100,
+        rtt: LOST_RTT_THRESHOLD,
+        myPacketLoss: 100,
+        myRtt: LOST_RTT_THRESHOLD,
+        receivePacketLoss: 100,
+      });
+    }
+
+    const [pub, sub] = await Promise.allSettled([
+      pcManager.publisher?.getStats(),
+      pcManager.subscriber?.getStats(),
+    ]);
+
+    const state: QualityCheckState = {
+      maxPacketLoss: 0,
+      maxRtt: null,
+      myPacketLoss: 0,
+      myRtt: null,
+      inboundPacketLoss: 0,
+      activeInboundSsrcs: new Set(),
+    };
+
+    if (pub.status === 'fulfilled') this._processStatsReport(pub.value, state);
+    if (sub.status === 'fulfilled') this._processStatsReport(sub.value, state);
+
+    Object.keys(this.prevInboundStats).forEach((ssrc) => {
+      if (!state.activeInboundSsrcs.has(ssrc)) {
+        delete this.prevInboundStats[ssrc];
+      }
     });
 
     return this.createStats({
-      packetLoss,
-      rawPacketLoss,
-      rtt: maxRtt,
-      rawQuality,
-      fps,
-      freezeDelta: maxFreezeDelta,
-      hasActiveVideo,
-      hasActiveAudio,
+      rawPacketLoss: state.maxPacketLoss,
+      rtt: state.maxRtt,
+      myPacketLoss: state.myPacketLoss,
+      myRtt: state.myRtt,
+      receivePacketLoss: state.inboundPacketLoss,
     });
   };
 
-  private getSmoothedPacketLoss = (newLoss: number): number => {
-    this.packetLossHistory.push(newLoss);
-
-    if (this.packetLossHistory.length > PACKET_LOSS_HISTORY_SIZE) {
-      this.packetLossHistory.shift();
-    }
-
-    return (
-      this.packetLossHistory.reduce((sum, loss) => sum + loss, 0) /
-      this.packetLossHistory.length
-    );
-  };
-
-  private createStats = ({
+  private classify({
     packetLoss,
-    rawPacketLoss,
     rtt,
-    rawQuality,
-    fps,
-    freezeDelta,
-    hasActiveVideo,
-    hasActiveAudio,
   }: {
     packetLoss: number;
+    rtt: number | null;
+  }): ConnectionQuality {
+    if (
+      packetLoss >= LOST_PACKET_LOSS_THRESHOLD ||
+      (rtt !== null && rtt >= LOST_RTT_THRESHOLD)
+    ) {
+      return ConnectionQuality.Lost;
+    }
+
+    if (
+      packetLoss >= GOOD_PACKET_LOSS_THRESHOLD ||
+      (rtt !== null && rtt >= GOOD_RTT_THRESHOLD)
+    ) {
+      return ConnectionQuality.Poor;
+    }
+
+    if (
+      packetLoss >= EXCELLENT_PACKET_LOSS_THRESHOLD ||
+      (rtt !== null && rtt >= EXCELLENT_RTT_THRESHOLD)
+    ) {
+      return ConnectionQuality.Good;
+    }
+
+    return ConnectionQuality.Excellent;
+  }
+
+  private createStats = (input: {
     rawPacketLoss: number;
     rtt: number | null;
-    rawQuality: ConnectionQuality;
-    fps: number;
-    freezeDelta: number;
-    hasActiveVideo: boolean;
-    hasActiveAudio: boolean;
+    myPacketLoss: number;
+    myRtt: number | null;
+    receivePacketLoss: number;
   }): QualityStats => {
-    const rawScore = this.qualityToScore(rawQuality);
+    const hasUploadSignal = input.myRtt !== null || input.myPacketLoss > 0;
+
+    const uploadQuality = hasUploadSignal
+      ? this.classify({
+          packetLoss: input.myPacketLoss,
+          rtt: input.myRtt,
+        })
+      : ConnectionQuality.Excellent;
+
+    const receiveQuality = this.classify({
+      packetLoss: input.receivePacketLoss,
+      rtt: input.rtt,
+    });
+
+    const qualities = new Set([uploadQuality, receiveQuality]);
+
+    const worstQuality = qualities.has(ConnectionQuality.Lost)
+      ? ConnectionQuality.Lost
+      : qualities.has(ConnectionQuality.Poor)
+        ? ConnectionQuality.Poor
+        : qualities.has(ConnectionQuality.Good)
+          ? ConnectionQuality.Good
+          : ConnectionQuality.Excellent;
+
+    const rawScore = this.qualityToScore(worstQuality);
 
     const factor =
       rawScore < this.qualityScore ? DECREASE_FACTOR : INCREASE_FACTOR;
@@ -382,68 +352,83 @@ export default class ConnectionQualityMonitor {
       Math.min(MAX_SCORE, this.qualityScore),
     );
 
+    const overallQuality = this.scoreToQuality(this.qualityScore);
+
     return {
-      packetLoss,
-      rawPacketLoss,
-      rtt,
-      rawQuality,
-      quality: this.scoreToQuality(this.qualityScore),
+      rawPacketLoss: input.rawPacketLoss,
+      rtt: input.rtt,
+
+      uploadQuality,
+      receiveQuality,
+      overallQuality,
+
       score: this.qualityScore,
-      fps,
-      freezeDelta,
-      hasActiveVideo,
-      hasActiveAudio,
+
+      myPacketLoss: input.myPacketLoss,
+      myRtt: input.myRtt,
+      receivePacketLoss: input.receivePacketLoss,
+
+      isMyConnectionPoor:
+        uploadQuality === ConnectionQuality.Poor ||
+        uploadQuality === ConnectionQuality.Lost,
+
+      isReceivingPoor:
+        receiveQuality === ConnectionQuality.Poor ||
+        receiveQuality === ConnectionQuality.Lost,
     };
   };
 
-  private updateMaxRtt = (
-    currentMaxRtt: number | null,
-    rttMs: number,
-  ): number | null => {
-    if (!Number.isFinite(rttMs)) return currentMaxRtt;
-    if (rttMs <= 0) return currentMaxRtt;
-    if (rttMs > MAX_SANE_RTT) return currentMaxRtt;
+  private handleQualityState = (stats: QualityStats) => {
+    this.currentQuality = stats.overallQuality;
 
-    return currentMaxRtt === null ? rttMs : Math.max(currentMaxRtt, rttMs);
+    if (stats.isMyConnectionPoor) {
+      this.poorConnectionCount++;
+      this.goodConnectionCount = 0;
+    } else {
+      this.goodConnectionCount++;
+      this.poorConnectionCount = 0;
+    }
+
+    if (
+      this.isConnectionCurrentlyPoor &&
+      this.goodConnectionCount >= GOOD_COUNT_THRESHOLD
+    ) {
+      this.isConnectionCurrentlyPoor = false;
+    }
+
+    this.maybeNotifyUser(stats);
   };
 
-  private classifyRawQuality = ({
-    packetLoss,
-    rtt,
-    fps,
-    freezeDelta,
-    hasActiveVideo,
-  }: {
-    packetLoss: number;
-    rtt: number | null;
-    fps: number;
-    freezeDelta: number;
-    hasActiveVideo: boolean;
-  }): ConnectionQuality => {
-    if (
-      packetLoss >= LOST_PACKET_LOSS_THRESHOLD ||
-      (rtt !== null && rtt >= LOST_RTT_THRESHOLD)
-    ) {
-      return ConnectionQuality.Lost;
+  private maybeNotifyUser = (stats: QualityStats) => {
+    if (!stats.isMyConnectionPoor || this.isConnectionCurrentlyPoor) return;
+
+    const now = Date.now();
+    const canNotify =
+      now - this.lastPoorConnectionNotificationAt > NOTIFICATION_COOLDOWN;
+
+    if (this.poorConnectionCount < POOR_COUNT_THRESHOLD || !canNotify) return;
+
+    this.isConnectionCurrentlyPoor = true;
+    this.lastPoorConnectionNotificationAt = now;
+    this.poorConnectionCount = 0;
+
+    store.dispatch(
+      addUserNotification({
+        message: i18n.t('notifications.your-connection-lost-or-unstable'),
+        typeOption: 'error',
+      }),
+    );
+  };
+
+  private updateMaxRtt = (
+    current: number | null,
+    value: number,
+  ): number | null => {
+    if (!Number.isFinite(value) || value <= 0 || value > MAX_SANE_RTT) {
+      return current;
     }
 
-    if (
-      packetLoss >= GOOD_PACKET_LOSS_THRESHOLD ||
-      (rtt !== null && rtt >= GOOD_RTT_THRESHOLD) ||
-      freezeDelta >= FREEZE_DELTA_POOR_THRESHOLD
-    ) {
-      return ConnectionQuality.Poor;
-    }
-
-    if (
-      packetLoss >= EXCELLENT_PACKET_LOSS_THRESHOLD ||
-      (rtt !== null && rtt >= EXCELLENT_RTT_THRESHOLD) ||
-      (hasActiveVideo && fps > 0 && fps < LOW_FPS_THRESHOLD)
-    ) {
-      return ConnectionQuality.Good;
-    }
-
-    return ConnectionQuality.Excellent;
+    return current === null ? value : Math.max(current, value);
   };
 
   private qualityToScore = (quality: ConnectionQuality): number => {
@@ -465,65 +450,6 @@ export default class ConnectionQualityMonitor {
     if (score > 80) return ConnectionQuality.Excellent;
     if (score > 40) return ConnectionQuality.Good;
     if (score > 20) return ConnectionQuality.Poor;
-
     return ConnectionQuality.Lost;
-  };
-
-  private handleQualityState = (stats: QualityStats) => {
-    const { quality } = stats;
-
-    this.currentQuality = quality;
-
-    const isPoorOrLost =
-      quality === ConnectionQuality.Poor || quality === ConnectionQuality.Lost;
-
-    if (isPoorOrLost) {
-      this.poorConnectionCount++;
-      this.goodConnectionCount = 0;
-    } else {
-      this.goodConnectionCount++;
-      this.poorConnectionCount = 0;
-    }
-
-    if (
-      this.isConnectionCurrentlyPoor &&
-      this.goodConnectionCount >= GOOD_COUNT_THRESHOLD
-    ) {
-      this.isConnectionCurrentlyPoor = false;
-    }
-
-    this.maybeNotifyUser(quality);
-  };
-
-  private maybeNotifyUser = (quality: ConnectionQuality) => {
-    const isPoorOrLost =
-      quality === ConnectionQuality.Poor || quality === ConnectionQuality.Lost;
-
-    if (!isPoorOrLost || this.isConnectionCurrentlyPoor) return;
-
-    const now = Date.now();
-    const canNotify =
-      now - this.lastPoorConnectionNotificationAt > NOTIFICATION_COOLDOWN;
-
-    if (this.poorConnectionCount < POOR_COUNT_THRESHOLD || !canNotify) {
-      return;
-    }
-
-    this.isConnectionCurrentlyPoor = true;
-    this.lastPoorConnectionNotificationAt = now;
-
-    const message =
-      quality === ConnectionQuality.Lost
-        ? i18n.t('notifications.your-connection-lost-or-unstable')
-        : i18n.t('notifications.your-connection-quality-not-good');
-
-    store.dispatch(
-      addUserNotification({
-        message,
-        typeOption: 'error',
-      }),
-    );
-
-    this.poorConnectionCount = 0;
   };
 }

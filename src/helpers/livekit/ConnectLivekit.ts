@@ -42,6 +42,7 @@ import ConnectionQualityMonitor, {
   ConnectionQuality,
   QualityStats,
 } from './ConnectionQualityMonitor';
+import { updateQualityStats } from '../../store/slices/sessionSlice';
 
 const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
@@ -440,33 +441,36 @@ export default class ConnectLivekit
   };
 
   private checkConnectionQualityForFallback = async (stats: QualityStats) => {
-    const qualityChanged = this.lastReportedConnectionQuality !== stats.quality;
+    // For local UI - show the overall experience
+    store.dispatch(updateQualityStats(stats));
 
+    store.dispatch(
+      updateParticipant({
+        id: this.localUserId,
+        changes: {
+          connectionQuality: stats.overallQuality,
+        },
+      }),
+    );
+
+    // For broadcasting - only send our own connection's quality
+    const qualityChanged =
+      this.lastReportedConnectionQuality !== stats.uploadQuality;
     if (qualityChanged) {
-      this.lastReportedConnectionQuality = stats.quality;
-
-      store.dispatch(
-        updateParticipant({
-          id: this.localUserId,
-          changes: {
-            connectionQuality: stats.quality,
-          },
-        }),
-      );
+      this.lastReportedConnectionQuality = stats.uploadQuality;
 
       const conn = getNatsConn();
-
       if (conn) {
         conn.sendAnalyticsData(
           AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
           AnalyticsEventType.USER,
-          stats.quality,
+          stats.uploadQuality,
         );
 
         conn
           .sendDataMessage(
             DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
-            stats.quality,
+            stats.uploadQuality,
           )
           .catch((error) => {
             console.warn('Failed to send connection quality change:', error);
@@ -482,17 +486,12 @@ export default class ConnectLivekit
       return;
     }
 
-    const isPoorOrLost =
-      stats.quality === ConnectionQuality.Poor ||
-      stats.quality === ConnectionQuality.Lost;
-
-    if (isPoorOrLost) {
+    if (stats.isMyConnectionPoor) {
       if (this.serverInfo?.turnCredentials?.fallbackOnFlapping?.enabled) {
         this.handleFallbackOnFlapping();
       } else {
-        this.handleTimerBasedFallback(stats.quality);
+        this.handleTimerBasedFallback(stats.uploadQuality);
       }
-
       return;
     }
 
