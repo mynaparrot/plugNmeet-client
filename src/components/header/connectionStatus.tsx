@@ -105,21 +105,27 @@ const ConnectionStatus = () => {
               <div className="flex flex-col gap-1">
                 {renderStat(
                   t('header.connection-status.overall-quality'),
-                  'Overall',
+                  t(
+                    `header.connection-status.qualities.${qualityStats.overallQuality}`,
+                  ),
                   t('header.connection-status.tooltips.overall-quality'),
                   overallColor,
                 )}
 
                 {renderStat(
                   t('header.connection-status.upload'),
-                  'Upload',
+                  t(
+                    `header.connection-status.qualities.${qualityStats.uploadQuality}`,
+                  ),
                   t('header.connection-status.tooltips.upload'),
                   getColor(qualityStats.uploadQuality),
                 )}
 
                 {renderStat(
                   t('header.connection-status.download'),
-                  'Download',
+                  t(
+                    `header.connection-status.qualities.${qualityStats.receiveQuality}`,
+                  ),
                   t('header.connection-status.tooltips.download'),
                   getColor(qualityStats.receiveQuality),
                 )}

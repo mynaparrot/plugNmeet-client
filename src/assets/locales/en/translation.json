@@ -175,6 +175,12 @@
         "download": "The quality of the video and audio you are receiving from others.",
         "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
         "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      },
+      "qualities": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "poor": "Poor",
+        "lost": "Lost"
       }
     }
   },
