@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "ניתקת כי השרת הפסיק להגיב.",
     "room-disconnected-reconnecting": "החיבור אבד. מתחבר מחדש...",
     "room-disconnected-network-error": "נותקת עקב בעיית רשת.",
-    "your-connection-quality-not-good": "חיבור האינטרנט שלך אינו יציב.",
-    "your-connection-lost-or-unstable": "הקשר שלך אבד או שהוא לא יציב באופן קריטי.",
+    "your-connection-lost-or-unstable": "הקשר שלך לא יציב. אחרים עשויים לחוות אודיו או וידאו גרועים ממך.",
     "need-to-disable-display-external-link": "כדי להפעיל סרטון, אנא הפסק לשתף תחילה את הקישור החיצוני.",
     "need-to-disable-external-media-player": "כדי לשתף קישור חיצוני, אנא עצור תחילה את נגן הווידאו.",
     "websocket-disconnected": "החיבור אבד, מנסה להתחבר מחדש...",
@@ -160,6 +159,23 @@
       "show-hide-settings": "הסתרה/הצגה של הגדרות",
       "show-hide-whiteboard": "הסתרה/הצגה של לוח ציור",
       "show-hide-hand": "הרמה/יד תחתונה"
+    },
+    "connection-status": {
+      "overall-quality": "חוויה כוללת",
+      "score": "ציון חיבור",
+      "upload": "איכות המשלוח",
+      "download": "איכות קליטה",
+      "packet-loss": "אובדן נתונים",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      }
     }
   },
   "app": {
@@ -539,7 +555,7 @@
     "ingress-type-rtmp": "RTMP (עבור OBS וכו')",
     "ingress-type-whip": "WHIP (WebRTC, OBS וכו')",
     "join-as-name": "שם תצוגה",
-    "feature-not-allow": "תכונה זו אסורה.",
+    "feature-not-allow": "תכונה זו אינה מופעלת עבור חדר זה.",
     "join-as-name-required": "נדרש שם תצוגה.",
     "gen-link": "צור קישור",
     "stream-url": "מארח זרם/כתובת URL",
