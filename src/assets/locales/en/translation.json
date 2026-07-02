@@ -46,8 +46,7 @@
     "room-disconnected-server-unresponsive": "You have been disconnected because the server stopped responding.",
     "room-disconnected-reconnecting": "Connection lost. Reconnecting...",
     "room-disconnected-network-error": "You were disconnected due to a network problem.",
-    "your-connection-quality-not-good": "Your connection to the meeting is unstable.",
-    "your-connection-lost-or-unstable": "Your connection has been lost or is critically unstable.",
+    "your-connection-lost-or-unstable": "Your connection is unstable. Others may be experiencing poor audio or video from you.",
     "need-to-disable-display-external-link": "To play a video, please stop sharing the external link first.",
     "need-to-disable-external-media-player": "To share an external link, please stop the video player first.",
     "websocket-disconnected": "Connection lost, trying to reconnect...",
@@ -160,6 +159,15 @@
       "show-hide-settings": "Hide/Show Settings",
       "show-hide-whiteboard": "Hide/Show Whiteboard",
       "show-hide-hand": "Raise/Lower Hand"
+    },
+    "connection-status": {
+      "overall-quality": "Overall Quality",
+      "score": "Score",
+      "upload": "Upload",
+      "download": "Download",
+      "packet-loss": "Packet Loss",
+      "rtt": "Response Time",
+      "copy": "Copy"
     }
   },
   "app": {
@@ -539,7 +547,7 @@
     "ingress-type-rtmp": "RTMP (for OBS, etc.)",
     "ingress-type-whip": "WHIP (WebRTC, OBS, etc.)",
     "join-as-name": "Display Name",
-    "feature-not-allow": "This feature is not allowed.",
+    "feature-not-allow": "This feature is not enabled for this room.",
     "join-as-name-required": "A display name is required.",
     "gen-link": "Generate Link",
     "stream-url": "Stream Host/URL",
