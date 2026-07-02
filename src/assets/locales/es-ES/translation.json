@@ -166,15 +166,21 @@
       "upload": "Calidad de envío",
       "download": "Calidad de recepción",
       "packet-loss": "Pérdida de datos",
-      "rtt": "Delay (RTT)",
-      "copy": "Copy Details",
+      "rtt": "Retraso (RTT)",
+      "copy": "Copiar detalles",
       "tooltips": {
-        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
-        "score": "A score from 0 to 100 that represents the stability of your connection.",
-        "upload": "The quality of the video and audio you are sending to others.",
-        "download": "The quality of the video and audio you are receiving from others.",
-        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
-        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+        "overall-quality": "Tu experiencia general en la reunión, basada en la calidad de envío y recepción.",
+        "score": "Una puntuación de 0 a 100 que representa la estabilidad de tu conexión.",
+        "upload": "La calidad del vídeo y audio que envías a los demás.",
+        "download": "La calidad del vídeo y el audio que recibes de otros.",
+        "packet-loss": "El porcentaje de datos que se perdió mientras viajaba por internet. Cuanto menos, mejor.",
+        "rtt": "El tiempo que tarda tus datos en llegar y volver al servidor. Cuanto menos, mejor."
+      },
+      "qualities": {
+        "excellent": "Excelente",
+        "good": "Bien",
+        "poor": "Pobre",
+        "lost": "Perdidos"
       }
     }
   },
