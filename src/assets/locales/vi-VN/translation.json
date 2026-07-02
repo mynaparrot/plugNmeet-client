@@ -166,15 +166,21 @@
       "upload": "Chất lượng gửi",
       "download": "Chất lượng nhận",
       "packet-loss": "Mất dữ liệu",
-      "rtt": "Delay (RTT)",
-      "copy": "Copy Details",
+      "rtt": "Độ trễ (RTT)",
+      "copy": "Sao chép chi tiết",
       "tooltips": {
-        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
-        "score": "A score from 0 to 100 that represents the stability of your connection.",
-        "upload": "The quality of the video and audio you are sending to others.",
-        "download": "The quality of the video and audio you are receiving from others.",
-        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
-        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+        "overall-quality": "Trải nghiệm cuộc họp tổng thể của bạn, dựa trên chất lượng gửi và nhận.",
+        "score": "Điểm từ 0 đến 100 thể hiện sự ổn định của kết nối của bạn.",
+        "upload": "Chất lượng của video và âm thanh bạn đang gửi cho người khác.",
+        "download": "Chất lượng của video và âm thanh bạn đang nhận được từ người khác.",
+        "packet-loss": "Tỷ lệ phần trăm dữ liệu bị mất khi di chuyển qua internet. Thấp hơn là tốt hơn.",
+        "rtt": "Thời gian cần thiết để dữ liệu của bạn di chuyển đến máy chủ và quay lại. Thấp hơn là tốt hơn."
+      },
+      "qualities": {
+        "excellent": "Thông minh",
+        "good": "Tốt",
+        "poor": "Nghèo",
+        "lost": "Mất"
       }
     }
   },
