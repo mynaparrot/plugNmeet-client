@@ -166,15 +166,21 @@
       "upload": "কোয়ালিটি প্রেরণ করা হচ্ছে",
       "download": "গুণমান প্রাপ্তি",
       "packet-loss": "ডেটা ক্ষতি",
-      "rtt": "Delay (RTT)",
-      "copy": "Copy Details",
+      "rtt": "বিলম্ব (RTT)",
+      "copy": "বিবরণ অনুলিপি করুন",
       "tooltips": {
-        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
-        "score": "A score from 0 to 100 that represents the stability of your connection.",
-        "upload": "The quality of the video and audio you are sending to others.",
-        "download": "The quality of the video and audio you are receiving from others.",
-        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
-        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+        "overall-quality": "পাঠানো এবং গ্রহণের গুণমানের উপর ভিত্তি করে আপনার সামগ্রিক মিটিংয়ের অভিজ্ঞতা।",
+        "score": "0 থেকে 100 পর্যন্ত একটি স্কোর যা আপনার সংযোগের স্থায়িত্বের প্রতিনিধিত্ব করে।",
+        "upload": "আপনি অন্যদের যে ভিডিও এবং অডিও প্রেরণ করছেন তার গুণমান।",
+        "download": "আপনি অন্যের কাছ থেকে যে ভিডিও এবং অডিও পাচ্ছেন তার গুণমান।",
+        "packet-loss": "ইন্টারনেটে ভ্রমণ করার সময় হারিয়ে যাওয়া ডেটার শতাংশ। কম হলে ভালো হয়।",
+        "rtt": "আপনার ডেটা সার্ভারে ভ্রমণ এবং ফিরে আসতে যে সময় লাগে। কম হলে ভালো হয়।"
+      },
+      "qualities": {
+        "excellent": "চমৎকার",
+        "good": "ভালো",
+        "poor": "দরিদ্র",
+        "lost": "হারিয়ে গেছে"
       }
     }
   },
