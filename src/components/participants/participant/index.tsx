@@ -10,6 +10,7 @@ import MenuIcon from './icons/menu';
 import VisibilityIcon from './icons/visibility';
 import PresenterIcon from './icons/presenterIcon';
 import WaitingApproval from './waitingApproval';
+import ConnectionQualityIcon from './icons/connectionQuality';
 
 import { ICurrentUser } from '../../../store/slices/interfaces/session';
 import { IVisibleParticipantInfo } from '../../../store/slices/interfaces/participant';
@@ -44,6 +45,7 @@ const ParticipantComponent = ({
       </div>
       <div className="right flex-auto flex items-center justify-end ml-2">
         <div className="icon-group flex items-center justify-center gap-1">
+          <ConnectionQualityIcon userId={participant.userId} />
           <RaiseHandIcon userId={participant.userId} />
           <VisibilityIcon userId={participant.userId} />
           <PresenterIcon userId={participant.userId} />
