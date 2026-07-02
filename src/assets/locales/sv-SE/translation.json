@@ -166,15 +166,21 @@
       "upload": "Sändningskvalitet",
       "download": "Mottagningskvalitet",
       "packet-loss": "Dataförlust",
-      "rtt": "Delay (RTT)",
-      "copy": "Copy Details",
+      "rtt": "Fördröjning (RTT)",
+      "copy": "Kopiera detaljer",
       "tooltips": {
-        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
-        "score": "A score from 0 to 100 that represents the stability of your connection.",
-        "upload": "The quality of the video and audio you are sending to others.",
-        "download": "The quality of the video and audio you are receiving from others.",
-        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
-        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+        "overall-quality": "Din totala mötesupplevelse, baserad på att skicka och ta emot kvalitet.",
+        "score": "Ett resultat från 0 till 100 som representerar stabiliteten i din anslutning.",
+        "upload": "Kvaliteten på videon och ljudet du skickar till andra.",
+        "download": "Kvaliteten på videon och ljudet du får från andra.",
+        "packet-loss": "Andelen data som gick förlorad under resor över internet. Lägre är bättre.",
+        "rtt": "Tiden det tar för din data att resa till servern och tillbaka. Lägre är bättre."
+      },
+      "qualities": {
+        "excellent": "Utmärkt",
+        "good": "Bra",
+        "poor": "Fattigt",
+        "lost": "Lost"
       }
     }
   },
