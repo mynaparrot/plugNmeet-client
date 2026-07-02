@@ -144,7 +144,7 @@ const ConnectionStatus = () => {
 
                 {renderStat(
                   t('header.connection-status.rtt'),
-                  `${qualityStats.rtt ?? 0} ms`,
+                  `${qualityStats.rtt ? qualityStats.rtt.toFixed(2) : 0} ms`,
                   t('header.connection-status.tooltips.rtt'),
                 )}
               </div>

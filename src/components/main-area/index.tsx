@@ -48,8 +48,6 @@ const MainArea = () => {
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
     isActiveDisplayExternalLink,
-    screenWidth,
-    screenHeight,
   } = useMainAreaState();
 
   useEffect(() => {
@@ -132,33 +130,13 @@ const MainArea = () => {
     }
   }, [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder]);
 
-  const height = useMemo(() => {
-    if (isRecorder) {
-      return screenHeight;
-    }
-
-    const isSmallScreen = screenWidth < 768;
-    const isMediumScreen = screenWidth < 1760;
-
-    if (isSmallScreen) {
-      return screenHeight - 119.5;
-    }
-    if (isMediumScreen) {
-      return screenHeight - 108;
-    }
-  }, [screenHeight, screenWidth, isRecorder]);
-
-  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
+  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
     activeSidePanel ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]' : ''
   }`;
 
   return (
-    <div
-      id="main-area"
-      className={mainAreaClasses}
-      style={{ height: `${height}px` }}
-    >
+    <div id="main-area" className={mainAreaClasses}>
       <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
         <div className={middleAreaClasses}>
           {isNatsServerConnected && (

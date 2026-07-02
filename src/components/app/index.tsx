@@ -50,7 +50,7 @@ const App = () => {
   // to handle different customization
   useClientCustomization();
   useWatchVisibilityChange();
-  const { deviceClass, orientationClass, screenHeight } = useWatchWindowSize(
+  const { deviceClass, orientationClass } = useWatchWindowSize(
     currentMediaServerConn?.room,
   );
   useThemeSettings();
@@ -120,7 +120,7 @@ const App = () => {
         return <InsertE2EEKey setOpenConn={setOpenConn} />;
       case isAppReady:
         return (
-          <div className="plugNmeet-app overflow-hidden h-screen">
+          <div className="plugNmeet-app overflow-hidden h-full flex flex-col">
             <Header />
             <MainArea />
             <Footer />
@@ -142,8 +142,7 @@ const App = () => {
 
   return (
     <div
-      className={`${orientationClass} ${deviceClass} ${userTypeClass} bg-Gray-50 dark:bg-dark-secondary`}
-      style={{ height: screenHeight }}
+      className={`${orientationClass} ${deviceClass} ${userTypeClass} h-dvh bg-Gray-50 dark:bg-dark-secondary`}
     >
       {renderElms}
     </div>
