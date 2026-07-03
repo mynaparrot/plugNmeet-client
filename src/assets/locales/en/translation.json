@@ -244,6 +244,8 @@
         "lock-send-chat-message": "Disable Sending Chat Messages",
         "unlock-send-file": "Allow File Sharing",
         "lock-send-file": "Disable File Sharing",
+        "lock-reaction": "Disable Sending Reactions",
+        "unlock-reaction": "Allow Sending Reactions",
         "remove-participant": "Remove Participant",
         "private-chat": "Send Private Message"
       },

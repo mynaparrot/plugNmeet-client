@@ -29,6 +29,7 @@ const serviceToLockSettingMap: Record<
   chat: 'lockChat',
   sendChatMsg: 'lockChatSendMessage',
   chatFile: 'lockChatFileShare',
+  reactions: 'lockReactions',
 };
 
 const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
@@ -152,6 +153,13 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
       isLocked: lockSettings?.lockChatFileShare,
       lockText: t('left-panel.menus.items.lock-send-file'),
       unlockText: t('left-panel.menus.items.unlock-send-file'),
+    },
+    {
+      key: 'reactions',
+      isDisplayed: roomFeatures?.allowReactions !== false,
+      isLocked: lockSettings?.lockReactions,
+      lockText: t('left-panel.menus.items.lock-reaction'),
+      unlockText: t('left-panel.menus.items.unlock-reaction'),
     },
   ];
 
