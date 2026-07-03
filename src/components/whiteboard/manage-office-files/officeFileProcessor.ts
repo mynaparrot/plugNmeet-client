@@ -29,27 +29,27 @@ export interface IOfficeFileProcessing {
 }
 
 class OfficeFileProcessor {
-  private isBusy = false;
-  private status: OfficeFileStatus = 'idle';
+  private _isBusy = false;
+  private fileStatus: OfficeFileStatus = 'idle';
   private fileName = '';
   private fileSize = 0;
   private progress = 0;
 
-  public start(
+  public start = (
     file: File,
     excalidrawAPI: ExcalidrawImperativeAPI,
     allowedFileTypes: string[],
     maxAllowedFileSize: string,
     callbacks: IOfficeFileProcessing,
-  ) {
-    if (this.isBusy) {
+  ) => {
+    if (this._isBusy) {
       return;
     }
 
-    this.isBusy = true;
+    this._isBusy = true;
     this.fileName = file.name;
     this.fileSize = file.size;
-    this.status = 'uploading';
+    this.fileStatus = 'uploading';
     this.progress = 0;
     callbacks.onStart();
 
@@ -60,15 +60,15 @@ class OfficeFileProcessor {
       maxAllowedFileSize,
       callbacks,
     );
-  }
+  };
 
-  private cleanup = () => {
-    this.isBusy = false;
+  private cleanup() {
+    this._isBusy = false;
     this.fileName = '';
     this.fileSize = 0;
-    this.status = 'idle';
+    this.fileStatus = 'idle';
     this.progress = 0;
-  };
+  }
 
   private upload(
     file: File,
@@ -91,7 +91,7 @@ class OfficeFileProcessor {
         callbacks.onProgress(this.progress);
       },
       (errMsg) => {
-        this.status = 'error';
+        this.fileStatus = 'error';
         callbacks.onError(errMsg);
         this.cleanup();
       },
@@ -106,7 +106,7 @@ class OfficeFileProcessor {
     const id = toast.loading(i18n.t('whiteboard.converting'), {
       type: 'info',
     });
-    this.status = 'converting';
+    this.fileStatus = 'converting';
     this.progress = 100;
     callbacks.onProgress(100);
 
@@ -128,7 +128,7 @@ class OfficeFileProcessor {
         msg = i18n.t('whiteboard.file-conversion-failed');
       }
 
-      this.status = 'error';
+      this.fileStatus = 'error';
       callbacks.onError(msg);
       toast.update(id, {
         render: i18n.t(msg),
@@ -165,19 +165,19 @@ class OfficeFileProcessor {
       isLoading: false,
       autoClose: 1000,
     });
-    this.status = 'success';
+    this.fileStatus = 'success';
     callbacks.onSuccess(i18n.t('whiteboard.file-ready'));
     await sleep(1000);
     this.cleanup();
   }
 
-  public getIsBusy() {
-    return this.isBusy;
+  public get isBusy() {
+    return this._isBusy;
   }
 
-  public getStatus() {
+  public get status() {
     return {
-      status: this.status,
+      status: this.fileStatus,
       fileName: this.fileName,
       fileSize: this.fileSize,
       progress: this.progress,
@@ -187,26 +187,6 @@ class OfficeFileProcessor {
 
 const officeFileProcessor = new OfficeFileProcessor();
 
-export const startProcessing = (
-  file: File,
-  excalidrawAPI: ExcalidrawImperativeAPI,
-  allowedFileTypes: string[],
-  maxAllowedFileSize: string,
-  callbacks: IOfficeFileProcessing,
-) => {
-  officeFileProcessor.start(
-    file,
-    excalidrawAPI,
-    allowedFileTypes,
-    maxAllowedFileSize,
-    callbacks,
-  );
-};
-
-export const getIsAnyFileProcessing = () => {
-  return officeFileProcessor.getIsBusy();
-};
-
-export const getProcessorStatus = () => {
-  return officeFileProcessor.getStatus();
-};
+export const startProcessing = officeFileProcessor.start;
+export const getIsAnyFileProcessing = () => officeFileProcessor.isBusy;
+export const getProcessorStatus = () => officeFileProcessor.status;

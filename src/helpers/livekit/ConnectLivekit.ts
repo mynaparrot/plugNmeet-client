@@ -94,7 +94,7 @@ export default class ConnectLivekit
       this,
       this.localUserId,
     );
-    this.configureRoom().then();
+    void this.configureRoom();
 
     this.connectionQualityMonitor = new ConnectionQualityMonitor(this._room);
     window.addEventListener('beforeunload', this.onBeforeUnload);
@@ -467,14 +467,10 @@ export default class ConnectLivekit
           stats.uploadQuality,
         );
 
-        conn
-          .sendDataMessage(
-            DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
-            stats.uploadQuality,
-          )
-          .catch((error) => {
-            console.warn('Failed to send connection quality change:', error);
-          });
+        void conn.sendDataMessage(
+          DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
+          stats.uploadQuality,
+        );
       }
     }
 

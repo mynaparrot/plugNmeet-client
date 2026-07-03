@@ -261,7 +261,7 @@ export default class ConnectionQualityMonitor {
       });
     }
 
-    const pcManager = (this.room.engine as any)?.pcManager;
+    const pcManager = this.room.engine?.pcManager;
 
     if (!pcManager) {
       return this.createStats({
