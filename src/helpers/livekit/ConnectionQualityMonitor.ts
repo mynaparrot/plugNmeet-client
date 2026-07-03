@@ -24,8 +24,10 @@ const COMPOUND_POOR_RTT_THRESHOLD = 350;
 
 const MAX_SANE_RTT = 10_000;
 
-const POOR_COUNT_THRESHOLD = 3;
-const GOOD_COUNT_THRESHOLD = 2;
+const HISTORY_WINDOW_SIZE = 5;
+const POOR_WINDOW_THRESHOLD = 3;
+const GOOD_RECOVERY_THRESHOLD = 3;
+
 const INTERVAL = 5000;
 const NOTIFICATION_COOLDOWN = 60_000;
 
@@ -34,9 +36,22 @@ const MIN_SCORE = 20;
 const DECREASE_FACTOR = 0.8;
 const INCREASE_FACTOR = 0.4;
 
+const MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS = 20;
+const MIN_STREAMS_FOR_DOWNLOAD_ISSUE = 2;
+const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
+
 type PrevInboundStats = {
   lost: number;
   received: number;
+};
+
+export type RemoteReceiveStats = {
+  ssrc: string;
+  kind: 'audio' | 'video';
+  packetLoss: number;
+  packetsLostDelta: number;
+  packetsReceivedDelta: number;
+  quality: ConnectionQuality;
 };
 
 export type QualityStats = {
@@ -52,6 +67,9 @@ export type QualityStats = {
   myPacketLoss: number;
   myRtt: number | null;
   receivePacketLoss: number;
+
+  remoteReceiveStats: RemoteReceiveStats[];
+  isLikelyDownloadIssue: boolean;
 
   isMyConnectionPoor: boolean;
   isReceivingPoor: boolean;
@@ -81,6 +99,7 @@ type QualityCheckState = {
   myRtt: number | null;
 
   inboundPacketLoss: number;
+  remoteReceiveStats: RemoteReceiveStats[];
 
   activeInboundSsrcs: Set<string>;
 };
@@ -88,8 +107,7 @@ type QualityCheckState = {
 export default class ConnectionQualityMonitor {
   private readonly room: Room;
 
-  private poorConnectionCount = 0;
-  private goodConnectionCount = 0;
+  private poorConnectionHistory: boolean[] = [];
   private lastPoorConnectionNotificationAt = 0;
   private qualityCheckTimeout: ReturnType<typeof setTimeout> | null = null;
   private isConnectionCurrentlyPoor = false;
@@ -139,8 +157,7 @@ export default class ConnectionQualityMonitor {
       this.qualityCheckTimeout = null;
     }
 
-    this.poorConnectionCount = 0;
-    this.goodConnectionCount = 0;
+    this.poorConnectionHistory = [];
     this.lastPoorConnectionNotificationAt = 0;
     this.isConnectionCurrentlyPoor = false;
     this.isCheckingQuality = false;
@@ -208,6 +225,18 @@ export default class ConnectionQualityMonitor {
               const loss = (lostDelta / total) * 100;
               state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
               state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
+
+              state.remoteReceiveStats.push({
+                ssrc,
+                kind,
+                packetLoss: loss,
+                packetsLostDelta: lostDelta,
+                packetsReceivedDelta: receivedDelta,
+                quality: this.classify({
+                  packetLoss: loss,
+                  rtt: null,
+                }),
+              });
             }
           }
         }
@@ -228,6 +257,7 @@ export default class ConnectionQualityMonitor {
         myPacketLoss: 100,
         myRtt: LOST_RTT_THRESHOLD,
         receivePacketLoss: 100,
+        remoteReceiveStats: [],
       });
     }
 
@@ -240,6 +270,7 @@ export default class ConnectionQualityMonitor {
         myPacketLoss: 100,
         myRtt: LOST_RTT_THRESHOLD,
         receivePacketLoss: 100,
+        remoteReceiveStats: [],
       });
     }
 
@@ -254,6 +285,7 @@ export default class ConnectionQualityMonitor {
       myPacketLoss: 0,
       myRtt: null,
       inboundPacketLoss: 0,
+      remoteReceiveStats: [],
       activeInboundSsrcs: new Set(),
     };
 
@@ -272,6 +304,7 @@ export default class ConnectionQualityMonitor {
       myPacketLoss: state.myPacketLoss,
       myRtt: state.myRtt,
       receivePacketLoss: state.inboundPacketLoss,
+      remoteReceiveStats: state.remoteReceiveStats,
     });
   }
 
@@ -318,6 +351,7 @@ export default class ConnectionQualityMonitor {
     myPacketLoss: number;
     myRtt: number | null;
     receivePacketLoss: number;
+    remoteReceiveStats: RemoteReceiveStats[];
   }): QualityStats {
     const hasUploadSignal = input.myRtt !== null || input.myPacketLoss > 0;
 
@@ -328,10 +362,19 @@ export default class ConnectionQualityMonitor {
         })
       : ConnectionQuality.Excellent;
 
-    const receiveQuality = this.classify({
-      packetLoss: input.receivePacketLoss,
-      rtt: input.rtt,
-    });
+    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(
+      input.remoteReceiveStats,
+    );
+
+    const receiveQuality = isLikelyDownloadIssue
+      ? this.classify({
+          packetLoss: input.receivePacketLoss,
+          rtt: input.rtt,
+        })
+      : this.classify({
+          packetLoss: 0,
+          rtt: input.rtt,
+        });
 
     const worstQuality =
       uploadQuality === ConnectionQuality.Lost ||
@@ -375,6 +418,9 @@ export default class ConnectionQualityMonitor {
       myRtt: input.myRtt,
       receivePacketLoss: input.receivePacketLoss,
 
+      remoteReceiveStats: input.remoteReceiveStats,
+      isLikelyDownloadIssue,
+
       isMyConnectionPoor,
 
       isReceivingPoor:
@@ -383,39 +429,66 @@ export default class ConnectionQualityMonitor {
     };
   }
 
+  private isLikelyMyDownloadIssue(
+    remoteReceiveStats: RemoteReceiveStats[],
+  ): boolean {
+    const activeStreams = remoteReceiveStats.filter(
+      (stat) =>
+        stat.packetsLostDelta + stat.packetsReceivedDelta >=
+        MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS,
+    );
+
+    if (activeStreams.length === 0) return false;
+
+    const poorStreams = activeStreams.filter(
+      (stat) =>
+        stat.quality === ConnectionQuality.Poor ||
+        stat.quality === ConnectionQuality.Lost,
+    );
+
+    if (activeStreams.length < MIN_STREAMS_FOR_DOWNLOAD_ISSUE) {
+      return poorStreams.length > 0;
+    }
+
+    return (
+      poorStreams.length / activeStreams.length >=
+      DOWNLOAD_ISSUE_POOR_STREAM_RATIO
+    );
+  }
+
   private handleQualityState(stats: QualityStats) {
     this.currentQuality = stats.overallQuality;
 
-    if (stats.isMyConnectionPoor) {
-      this.poorConnectionCount++;
-      this.goodConnectionCount = 0;
-    } else {
-      this.goodConnectionCount++;
-      this.poorConnectionCount = 0;
+    this.poorConnectionHistory.push(stats.isMyConnectionPoor);
+    if (this.poorConnectionHistory.length > HISTORY_WINDOW_SIZE) {
+      this.poorConnectionHistory.shift();
     }
+
+    const poorCount = this.poorConnectionHistory.filter(Boolean).length;
+    const goodCount = this.poorConnectionHistory.length - poorCount;
 
     if (
       this.isConnectionCurrentlyPoor &&
-      this.goodConnectionCount >= GOOD_COUNT_THRESHOLD
+      goodCount >= GOOD_RECOVERY_THRESHOLD
     ) {
       this.isConnectionCurrentlyPoor = false;
     }
 
-    this.maybeNotifyUser(stats);
+    this.maybeNotifyUser(poorCount);
   }
 
-  private maybeNotifyUser(stats: QualityStats) {
-    if (!stats.isMyConnectionPoor || this.isConnectionCurrentlyPoor) return;
+  private maybeNotifyUser(poorCount: number) {
+    if (this.isConnectionCurrentlyPoor) return;
 
     const now = Date.now();
     const canNotify =
       now - this.lastPoorConnectionNotificationAt > NOTIFICATION_COOLDOWN;
 
-    if (this.poorConnectionCount < POOR_COUNT_THRESHOLD || !canNotify) return;
+    if (poorCount < POOR_WINDOW_THRESHOLD || !canNotify) return;
 
     this.isConnectionCurrentlyPoor = true;
     this.lastPoorConnectionNotificationAt = now;
-    this.poorConnectionCount = 0;
+    this.poorConnectionHistory = [];
 
     store.dispatch(
       addUserNotification({
