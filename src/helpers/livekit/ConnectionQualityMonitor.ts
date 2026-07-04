@@ -40,9 +40,17 @@ const MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS = 20;
 const MIN_STREAMS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
+const OUTBOUND_STUCK_INTERVAL_THRESHOLD = 2;
+
 type PrevInboundStats = {
   lost: number;
   received: number;
+};
+
+type PrevOutboundStats = {
+  bytesSent: number;
+  framesSent: number;
+  stagnantCount: number;
 };
 
 export type RemoteReceiveStats = {
@@ -73,6 +81,9 @@ export type QualityStats = {
 
   isMyConnectionPoor: boolean;
   isReceivingPoor: boolean;
+
+  isUploadAudioStuck: boolean;
+  isUploadVideoStuck: boolean;
 };
 
 type WebRTCStat = {
@@ -89,6 +100,8 @@ type WebRTCStat = {
   selected?: boolean;
   nominated?: boolean;
   currentRoundTripTime?: number;
+  bytesSent?: number;
+  framesSent?: number;
 };
 
 type QualityCheckState = {
@@ -101,7 +114,13 @@ type QualityCheckState = {
   inboundPacketLoss: number;
   remoteReceiveStats: RemoteReceiveStats[];
 
+  hasAudioOutbound: boolean;
+  hasVideoOutbound: boolean;
+  isAudioOutboundStuck: boolean;
+  isVideoOutboundStuck: boolean;
+
   activeInboundSsrcs: Set<string>;
+  activeOutboundSsrcs: Set<string>;
 };
 
 export default class ConnectionQualityMonitor {
@@ -118,6 +137,7 @@ export default class ConnectionQualityMonitor {
   private qualityScore = MAX_SCORE;
 
   private prevInboundStats: Record<string, PrevInboundStats> = {};
+  private prevOutboundStats: Record<string, PrevOutboundStats> = {};
 
   constructor(room: Room) {
     this.room = room;
@@ -129,6 +149,7 @@ export default class ConnectionQualityMonitor {
 
     const checkQuality = async () => {
       if (this.isStopped || this.isCheckingQuality) return;
+
       this.isCheckingQuality = true;
 
       try {
@@ -164,6 +185,7 @@ export default class ConnectionQualityMonitor {
     this.currentQuality = ConnectionQuality.Excellent;
     this.qualityScore = MAX_SCORE;
     this.prevInboundStats = {};
+    this.prevOutboundStats = {};
   };
 
   public getOverallQuality = () => this.currentQuality;
@@ -198,6 +220,71 @@ export default class ConnectionQualityMonitor {
           state.myRtt = this.updateMaxRtt(state.myRtt, rttMs);
           state.maxRtt = this.updateMaxRtt(state.maxRtt, rttMs);
         }
+
+        return;
+      }
+
+      if (stat.type === 'outbound-rtp') {
+        const ssrc = String(stat.ssrc ?? stat.id);
+        const outboundKind = stat.kind ?? stat.mediaType;
+
+        if (outboundKind !== 'audio' && outboundKind !== 'video') return;
+
+        state.activeOutboundSsrcs.add(ssrc);
+
+        const currentBytes = stat.bytesSent ?? 0;
+        const currentFrames =
+          outboundKind === 'video' ? (stat.framesSent ?? 0) : 0;
+        const prev = this.prevOutboundStats[ssrc];
+
+        let isTrackActive = true;
+
+        for (const pub of this.room.localParticipant.trackPublications.values()) {
+          const mediaStreamTrack = pub.track?.mediaStreamTrack;
+
+          if (pub.kind === outboundKind && mediaStreamTrack) {
+            isTrackActive =
+              !pub.isMuted &&
+              mediaStreamTrack.enabled &&
+              mediaStreamTrack.readyState !== 'ended';
+            break;
+          }
+        }
+
+        let isStagnant = false;
+
+        if (prev && isTrackActive && prev.bytesSent > 0 && currentBytes > 0) {
+          if (outboundKind === 'audio') {
+            isStagnant = currentBytes === prev.bytesSent;
+          }
+
+          if (outboundKind === 'video') {
+            isStagnant =
+              currentBytes === prev.bytesSent &&
+              currentFrames === prev.framesSent;
+          }
+        }
+
+        const stagnantCount =
+          isStagnant && prev ? (prev.stagnantCount ?? 0) + 1 : 0;
+
+        const isStuck = stagnantCount >= OUTBOUND_STUCK_INTERVAL_THRESHOLD;
+
+        if (outboundKind === 'audio') {
+          state.hasAudioOutbound = true;
+          state.isAudioOutboundStuck ||= isStuck;
+        }
+
+        if (outboundKind === 'video') {
+          state.hasVideoOutbound = true;
+          state.isVideoOutboundStuck ||= isStuck;
+        }
+
+        this.prevOutboundStats[ssrc] = {
+          bytesSent: currentBytes,
+          framesSent: currentFrames,
+          stagnantCount,
+        };
 
         return;
       }
@@ -257,6 +344,8 @@ export default class ConnectionQualityMonitor {
         myPacketLoss: 100,
         myRtt: LOST_RTT_THRESHOLD,
         receivePacketLoss: 100,
+        isUploadAudioStuck: false,
+        isUploadVideoStuck: false,
         remoteReceiveStats: [],
       });
     }
@@ -270,6 +359,8 @@ export default class ConnectionQualityMonitor {
         myPacketLoss: 100,
         myRtt: LOST_RTT_THRESHOLD,
         receivePacketLoss: 100,
+        isUploadAudioStuck: false,
+        isUploadVideoStuck: false,
         remoteReceiveStats: [],
       });
     }
@@ -286,7 +377,12 @@ export default class ConnectionQualityMonitor {
       myRtt: null,
       inboundPacketLoss: 0,
       remoteReceiveStats: [],
+      hasAudioOutbound: false,
+      hasVideoOutbound: false,
+      isAudioOutboundStuck: false,
+      isVideoOutboundStuck: false,
       activeInboundSsrcs: new Set(),
+      activeOutboundSsrcs: new Set(),
     };
 
     if (pub.status === 'fulfilled') this._processStatsReport(pub.value, state);
@@ -298,6 +394,12 @@ export default class ConnectionQualityMonitor {
       }
     });
 
+    Object.keys(this.prevOutboundStats).forEach((ssrc) => {
+      if (!state.activeOutboundSsrcs.has(ssrc)) {
+        delete this.prevOutboundStats[ssrc];
+      }
+    });
+
     return this.createStats({
       rawPacketLoss: state.maxPacketLoss,
       rtt: state.maxRtt,
@@ -305,6 +407,8 @@ export default class ConnectionQualityMonitor {
       myRtt: state.myRtt,
       receivePacketLoss: state.inboundPacketLoss,
       remoteReceiveStats: state.remoteReceiveStats,
+      isUploadAudioStuck: state.hasAudioOutbound && state.isAudioOutboundStuck,
+      isUploadVideoStuck: state.hasVideoOutbound && state.isVideoOutboundStuck,
     });
   }
 
@@ -351,6 +455,8 @@ export default class ConnectionQualityMonitor {
     myPacketLoss: number;
     myRtt: number | null;
     receivePacketLoss: number;
+    isUploadAudioStuck: boolean;
+    isUploadVideoStuck: boolean;
     remoteReceiveStats: RemoteReceiveStats[];
   }): QualityStats {
     const hasUploadSignal = input.myRtt !== null || input.myPacketLoss > 0;
@@ -426,6 +532,9 @@ export default class ConnectionQualityMonitor {
       isReceivingPoor:
         receiveQuality === ConnectionQuality.Poor ||
         receiveQuality === ConnectionQuality.Lost,
+
+      isUploadAudioStuck: input.isUploadAudioStuck,
+      isUploadVideoStuck: input.isUploadVideoStuck,
     };
   }
 
@@ -502,6 +611,7 @@ export default class ConnectionQualityMonitor {
     if (!Number.isFinite(value) || value <= 0 || value > MAX_SANE_RTT) {
       return current;
     }
+
     return current === null ? value : Math.max(current, value);
   }
 
