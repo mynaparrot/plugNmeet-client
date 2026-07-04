@@ -22,6 +22,8 @@ import {
   DEFAULT_A4_WIDTH,
   DEFAULT_A4_HEIGHT,
   DEFAULT_A4_MARGIN,
+  VIRTUAL_WORKSPACE_WIDTH,
+  VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
 
 export interface FileReaderResult {
@@ -42,8 +44,8 @@ const imageDataCache: Map<string, BinaryFileData> = new Map();
 
 export const createAndRegisterOfficeFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
-  uploaderWhiteboardHeight = 260,
-  uploaderWhiteboardWidth = 1160,
+  uploaderWhiteboardHeight = VIRTUAL_WORKSPACE_HEIGHT,
+  uploaderWhiteboardWidth = VIRTUAL_WORKSPACE_WIDTH,
 ) => {
   const files: Array<IWhiteboardFile> = [];
   for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
@@ -135,9 +137,6 @@ export const fetchFileWithElm = async (
       imgData.indexOf(';base64'),
     );
 
-    const excalidrawHeight = uploaderWhiteboardHeight ?? 260;
-    const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
-
     if (
       fileMimeType === 'image/png' ||
       fileMimeType === 'image/jpeg' ||
@@ -168,8 +167,6 @@ export const fetchFileWithElm = async (
         fileMimeType,
         fileHeight,
         fileWidth,
-        excalidrawHeight,
-        excalidrawWidth,
         is_office_file,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
@@ -186,8 +183,6 @@ export const fetchFileWithElm = async (
         fileMimeType,
         fileHeight,
         fileWidth,
-        excalidrawHeight,
-        excalidrawWidth,
         is_office_file,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
@@ -209,8 +204,6 @@ const prepareForExcalidraw = (
   fileMimeType: string,
   fileHeight: number,
   fileWidth: number,
-  excalidrawHeight: number,
-  excalidrawWidth: number,
   isOfficeFile: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
@@ -226,9 +219,10 @@ const prepareForExcalidraw = (
   const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
   const targetBoundaryHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
 
-  // Calculate starting positions of the A4 boundary box
-  const boundaryStartX = (excalidrawWidth - targetBoundaryWidth) / 2;
-  const boundaryStartY = (excalidrawHeight - targetBoundaryHeight) / 2;
+  // Anchor the bounding box calculation to a fixed coordinate center (e.g., reference base size 1160x260)
+  // to prevent image coordinates from drifting based on different browser sizes during upload.
+  const boundaryStartX = (VIRTUAL_WORKSPACE_WIDTH - targetBoundaryWidth) / 2;
+  const boundaryStartY = (VIRTUAL_WORKSPACE_HEIGHT - targetBoundaryHeight) / 2;
 
   // Center the image element exactly inside the A4 boundary guide
   const imageX = boundaryStartX + (targetBoundaryWidth - fileWidth) / 2;

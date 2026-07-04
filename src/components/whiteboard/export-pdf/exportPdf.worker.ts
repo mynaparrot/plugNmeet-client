@@ -64,6 +64,11 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
 
   let sliceCount = 0;
 
+  // Reuse a single OffscreenCanvas and Context instance to prevent
+  // expensive garbage collection sweeps in the browser loop
+  const sliceCanvas = new OffscreenCanvas(A4_WIDTH, A4_HEIGHT);
+  const ctx = sliceCanvas.getContext('2d');
+
   try {
     for (let v = 0; v < verticalSlices; v++) {
       for (let h = 0; h < horizontalSlices; h++) {
@@ -78,9 +83,10 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
           // oxlint-disable-next-line unicorn/require-post-message-target-origin
         } as WorkerMessage);
 
-        const sliceCanvas = new OffscreenCanvas(A4_WIDTH, A4_HEIGHT);
-        const ctx = sliceCanvas.getContext('2d');
         if (!ctx) continue;
+
+        // Clear the canvas instead of instantiating a new object
+        ctx.clearRect(0, 0, A4_WIDTH, A4_HEIGHT);
 
         ctx.fillStyle = appState.viewBackgroundColor || '#ffffff';
         ctx.fillRect(0, 0, A4_WIDTH, A4_HEIGHT);

@@ -23,6 +23,7 @@ import {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
   Gesture,
+  NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
@@ -64,6 +65,13 @@ import {
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
+import {
+  VIRTUAL_WORKSPACE_WIDTH,
+  VIRTUAL_WORKSPACE_HEIGHT,
+  DEFAULT_A4_WIDTH,
+  DEFAULT_A4_HEIGHT,
+  DEFAULT_A4_MARGIN,
+} from './export-pdf/types';
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
 import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
@@ -131,6 +139,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
   const previousPage = usePrevious(currentPage);
+
+  // Keep mutable references to decouple state-sync values from high-frequency drawing dependencies
+  const currentPageRef = useRef(currentPage);
+  const currentFileIdRef = useRef(currentWhiteboardOfficeFileId);
+
+  useEffect(() => {
+    currentPageRef.current = currentPage;
+    currentFileIdRef.current = currentWhiteboardOfficeFileId;
+  }, [currentPage, currentWhiteboardOfficeFileId]);
 
   const isProgrammaticScroll = useRef(false);
   const isSwitching = useRef(false);
@@ -239,22 +256,47 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [],
   );
 
+  /**
+   * Smoothly pans and frames the camera view so that it snaps exactly to the beginning
+   * of the red A4 boundary guide box, with a safe padding offset to prevent the top
+   * toolbar and left menu panel from overlaying any content.
+   */
+  const scrollToBoundary = useCallback((api: ExcalidrawImperativeAPI) => {
+    const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+    const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+
+    // Calculate the start positions of the boundary guide matching utils.ts
+    const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
+    const startY = (VIRTUAL_WORKSPACE_HEIGHT - targetHeight) / 2;
+
+    // Offset padding to ensure the canvas doesn't sit under the floating tools
+    const PADDING_LEFT = 20;
+    const PADDING_TOP = 50;
+
+    api.updateScene({
+      appState: {
+        // Snap to the top-left of the red guide box plus comfortable visual padding
+        scrollX: -startX + PADDING_LEFT,
+        scrollY: -startY + PADDING_TOP,
+        // Maintain a default zoom base of 100% on load
+        zoom: { value: 1 as NormalizedZoomValue },
+      },
+    });
+  }, []);
+
   const addBoundaryToElements = useCallback(
     (elements: readonly ExcalidrawElement[]) => {
-      if (!excalidrawAPI || !isPresenter) {
+      if (!isPresenter) {
         return elements;
       }
-      const boundary = prepareA4BoundaryGuide(
-        excalidrawAPI.getAppState().height,
-        excalidrawAPI.getAppState().width,
-      );
+      const boundary = prepareA4BoundaryGuide();
       const finalElements = elements.filter(
         (e) => e.id !== A4_BOUNDARY_GUIDE_ID,
       );
       finalElements.push(...boundary);
       return finalElements;
     },
-    [excalidrawAPI, isPresenter],
+    [isPresenter],
   );
 
   /**
@@ -289,6 +331,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         excalidrawAPI.updateScene({
           elements: addBoundaryToElements(elements),
         });
+        scrollToBoundary(excalidrawAPI);
       } else {
         // This mean new file so sync the office file page.
         // We get the data first, then unlock, then update the scene.
@@ -299,10 +342,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           excalidrawAPI.updateScene({
             elements: addBoundaryToElements(elements),
           });
+          scrollToBoundary(excalidrawAPI);
         } else {
           excalidrawAPI.updateScene({
             elements: addBoundaryToElements([]),
           });
+          scrollToBoundary(excalidrawAPI);
         }
       }
     } else {
@@ -317,6 +362,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     resetWhiteboardState,
     syncOfficeFilePage,
     addBoundaryToElements,
+    scrollToBoundary,
   ]);
 
   // clean up store during exit
@@ -362,6 +408,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         excalidrawAPI.updateScene({
           elements: addBoundaryToElements(elements),
         });
+        scrollToBoundary(excalidrawAPI);
         // now set that we're ready
         // presenter should not fetch data from anyone else
         // to make sure single point of truth
@@ -372,9 +419,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
     };
 
-    setTimeout(() => initialize().then(), 300);
+    setTimeout(() => void initialize(), 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [excalidrawAPI]);
+  }, [excalidrawAPI, scrollToBoundary]);
 
   // when receive full whiteboard data
   useEffect(() => {
@@ -402,7 +449,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     const hasPageChanged = previousPage && currentPage !== previousPage;
 
     if (!isSwitching.current && (hasFileChanged || hasPageChanged)) {
-      handleSwitchPageOrDocument().then();
+      void handleSwitchPageOrDocument();
     }
   }, [
     currentWhiteboardOfficeFileId,
@@ -422,20 +469,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   // a debounced function to save the scene to localStorage.
   const debouncedSaveToStorage = useMemo(
     () =>
-      debounce(
-        (
-          excalidrawAPI: ExcalidrawImperativeAPI,
-          currentPage: number,
-          currentWhiteboardOfficeFileId: string,
-        ) => {
-          savePageData(
-            excalidrawAPI.getSceneElementsIncludingDeleted(),
-            currentPage,
-            currentWhiteboardOfficeFileId,
-          ).then();
-        },
-        SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT,
-      ),
+      debounce((excalidrawAPI: ExcalidrawImperativeAPI) => {
+        const elements = excalidrawAPI.getSceneElementsIncludingDeleted();
+        if (elements.length > 0) {
+          void savePageData(
+            elements,
+            currentPageRef.current,
+            currentFileIdRef.current,
+          );
+        }
+      }, SAVE_TO_STORAGE_DEBOUNCE_TIMEOUT),
     [],
   );
 
@@ -462,7 +505,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       ) {
         return;
       }
-      const elms = elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
+
+      // Check if boundary is present before running O(N) filter allocations
+      const hasBoundary = elements.some((e) => e.id === A4_BOUNDARY_GUIDE_ID);
+      const elms = hasBoundary
+        ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID)
+        : (elements as ExcalidrawElement[]);
+
       if (
         elms.length &&
         // Presenters or unlocked users can broadcast scene changes.
@@ -482,20 +531,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           undefined,
           excalidrawAPI,
           files,
-        ).then(
-          () =>
-            isPresenter &&
-            debouncedSaveToStorage(
-              excalidrawAPI,
-              currentPage,
-              currentWhiteboardOfficeFileId,
-            ),
-        );
+        ).then(() => isPresenter && debouncedSaveToStorage(excalidrawAPI));
       }
 
       // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
       if (isPresenter) {
-        broadcastAppStateChanges(
+        void broadcastAppStateChanges(
           appState.height,
           appState.width,
           appState.scrollX,
@@ -505,18 +546,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           appState.viewBackgroundColor,
           appState.zenModeEnabled,
           appState.gridSize,
-        ).then();
+        );
       }
     },
-    [
-      excalidrawAPI,
-      currentUser,
-      canEdit,
-      isPresenter,
-      debouncedSaveToStorage,
-      currentPage,
-      currentWhiteboardOfficeFileId,
-    ],
+    [excalidrawAPI, currentUser, canEdit, isPresenter, debouncedSaveToStorage],
   );
 
   // oxlint-disable-next-line react-hooks/exhaustive-deps
@@ -538,7 +571,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           username: currentUser.name,
           avatarUrl: currentUser.metadata?.profilePic,
         };
-        broadcastMousePointerUpdate(msg).then();
+        void broadcastMousePointerUpdate(msg);
       },
       CURSOR_SYNC_TIMEOUT,
     ),

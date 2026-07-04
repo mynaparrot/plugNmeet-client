@@ -95,13 +95,13 @@ const UploadedFilesList = ({
 
   useEffect(() => {
     if (refresh) {
-      fetchAndUpdateFiles();
+      void fetchAndUpdateFiles();
     }
   }, [refresh, fetchAndUpdateFiles]);
 
   useEffect(() => {
     if (refreshWhiteboardFilesListSignal) {
-      fetchAndUpdateFiles();
+      void fetchAndUpdateFiles();
     }
   }, [refreshWhiteboardFilesListSignal, fetchAndUpdateFiles]);
 

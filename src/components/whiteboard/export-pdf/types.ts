@@ -1,5 +1,9 @@
 // These types are shared between the main thread and the web worker.
 
+// Virtual coordinate viewport reference used for absolute element positioning
+export const VIRTUAL_WORKSPACE_WIDTH = 1160;
+export const VIRTUAL_WORKSPACE_HEIGHT = 260;
+
 // Standard A4 dimensions at 150 DPI
 export const DEFAULT_A4_WIDTH = 1240;
 export const DEFAULT_A4_HEIGHT = 1754;

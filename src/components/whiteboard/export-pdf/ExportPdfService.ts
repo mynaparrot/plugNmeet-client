@@ -120,10 +120,7 @@ class ExportPdfService {
         });
 
         // Generate a standard boundary coordinate reference matching the presenter's original workspace
-        const referenceBoundary = prepareA4BoundaryGuide(
-          appState.height,
-          appState.width,
-        );
+        const referenceBoundary = prepareA4BoundaryGuide();
         // We keep a transparent/invisible border representation to force Excalidraw's bounding-box
         // engine to output the exact A4 layout dimensions.
         const boundGuide = {
@@ -271,10 +268,18 @@ class ExportPdfService {
     const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
     const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
 
-    // 1. Identify the boundary guide element to determine its physical coordinate placement
-    const guide = elements.find((el) => el.id === A4_BOUNDARY_GUIDE_ID);
-    const startX = guide ? guide.x : 0;
-    const startY = guide ? guide.y : 0;
+    // 1. Scan and gather limits in a single loop pass to keep search O(N)
+    let startX = 0;
+    let startY = 0;
+
+    const nonDeletedElms = elements.filter((el) => {
+      if (el.id === A4_BOUNDARY_GUIDE_ID) {
+        startX = el.x;
+        startY = el.y;
+        return false;
+      }
+      return !el.isDeleted;
+    });
 
     // 2. Find the absolute physical limits of all elements on the canvas
     let minX = startX;
@@ -282,8 +287,7 @@ class ExportPdfService {
     let maxX = startX + targetWidth;
     let maxY = startY + targetHeight;
 
-    elements.forEach((el) => {
-      if (el.isDeleted || el.id === A4_BOUNDARY_GUIDE_ID) return;
+    nonDeletedElms.forEach((el) => {
       minX = Math.min(minX, el.x);
       minY = Math.min(minY, el.y);
       maxX = Math.max(maxX, el.x + el.width);

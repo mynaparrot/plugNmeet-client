@@ -16,6 +16,8 @@ import {
   DEFAULT_A4_HEIGHT,
   DEFAULT_A4_MARGIN,
   DEFAULT_A4_WIDTH,
+  VIRTUAL_WORKSPACE_WIDTH,
+  VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
 
 // A simple in-memory cache for preloaded library items.
@@ -170,18 +172,14 @@ export const ensureAllImagesDataIsLoaded = (
   );
 };
 
-export const prepareA4BoundaryGuide = (
-  uploaderWhiteboardHeight: number,
-  uploaderWhiteboardWidth: number,
-): OrderedExcalidrawElement[] => {
-  const excalidrawHeight = uploaderWhiteboardHeight ?? 260;
-  const excalidrawWidth = uploaderWhiteboardWidth ?? 1160;
+export const prepareA4BoundaryGuide = (): OrderedExcalidrawElement[] => {
   const height = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
   const width = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
 
-  // Dead-center the single A4 box in the viewport
-  const startX = (excalidrawWidth - width) / 2;
-  const startY = (excalidrawHeight - height) / 2;
+  // Use the same standard workspace reference size as handleFiles.ts
+  // to ensure absolute coordinate alignment under all browser dimensions and resizes.
+  const startX = (VIRTUAL_WORKSPACE_WIDTH - width) / 2;
+  const startY = (VIRTUAL_WORKSPACE_HEIGHT - height) / 2;
 
   return convertToExcalidrawElements(
     [
