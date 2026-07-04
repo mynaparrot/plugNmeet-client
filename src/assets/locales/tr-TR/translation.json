@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Sunucu yanıt vermeyi durdurduğu için bağlantınız kesildi.",
     "room-disconnected-reconnecting": "Bağlantı kesildi. Yeniden bağlanılıyor...",
     "room-disconnected-network-error": "Bir ağ sorunu nedeniyle bağlantınız kesildi.",
-    "your-connection-lost-or-unstable": "Bağlantınız dengesiz. Bazıları sizden kötü ses veya görüntü alabilir.",
+    "your-connection-lost-or-unstable": "Şu anda bağlantınız biraz dengesiz. Diğerleri sizde bazı ses veya görüntü sorunları fark edebilir.",
     "need-to-disable-display-external-link": "Bir video oynatmak için lütfen önce harici bağlantı paylaşımını durdurun.",
     "need-to-disable-external-media-player": "Harici bir bağlantı paylaşmak için lütfen önce video oynatıcıyı durdurun.",
     "websocket-disconnected": "Bağlantı kesildi, yeniden bağlanmaya çalışılıyor...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Sunucu yanıt vermiyor. Bağlantınız kararsız olabilir.",
     "re-routing-connection": "Bağlantı kararsız. Daha iyi bir stabilite için yeniden yönlendiriliyor...",
     "whiteboard-new-file-added": "Yeni dosya hazır ve beyaz tahta dosya listesine eklendi.",
-    "private-download-link-ready": "İndirme bağlantınız hazır. Bu mesajı sadece sen görebilirsin.<br/>{{link}}"
+    "private-download-link-ready": "İndirme bağlantınız hazır. Bu mesajı sadece sen görebilirsin.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Mikrofonunuzda bir sorun tespit ettik. Kapatıp tekrar açmayı dene.",
+    "local-video-stuck-fallback": "Kameranızda bir sorun tespit ettik. Kapatıp tekrar açmayı dene."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kaydedilmektedir.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Mesaj Göndermeyi Kilitle",
         "unlock-send-file": "Dosya Paylaşımına İzin Ver",
         "lock-send-file": "Dosya Paylaşımını Kilitle",
+        "lock-reaction": "Gönderme Reaksiyonlarını Devre Dışı Bırakın",
+        "unlock-reaction": "Tepki göndermeye izin verin",
         "remove-participant": "Katılımcıyı Çıkar",
         "private-chat": "Özel Mesaj Gönder"
       },
