@@ -115,7 +115,12 @@ const useWhiteboardAppStateSync = ({
   // note: refreshWhiteboardSignal and whiteboardResetSignal are not same!
   // refreshWhiteboardSignal happen for width change, sidebar open, webcam/screen sharing on/off etc.
   useEffect(() => {
-    if (excalidrawAPI && isFollowing && refreshWhiteboardSignal > 0) {
+    if (
+      excalidrawAPI &&
+      isFollowing &&
+      whiteboardAppState &&
+      refreshWhiteboardSignal > 0
+    ) {
       debouncedSync(excalidrawAPI, whiteboardAppState);
     }
 
