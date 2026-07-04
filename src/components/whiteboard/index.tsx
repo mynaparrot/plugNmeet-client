@@ -509,6 +509,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID)
         : (elements as ExcalidrawElement[]);
 
+      // Get hash (signature) of the current scene.
+      const currentSceneVersion = hashElementsVersion(elms);
+
       if (
         elms.length &&
         // Presenters or unlocked users can broadcast scene changes.
@@ -517,11 +520,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         // of the current scene and compare it to the last version we either sent or received.
         // If they are the same, we don't broadcast, preventing an infinite loop where a
         // client re-broadcasts the same data it just received from another user.
-        hashElementsVersion(elms) !==
-          lastBroadcastOrReceivedSceneVersion.current
+        currentSceneVersion !== lastBroadcastOrReceivedSceneVersion.current
       ) {
         // add new hash of the current scene
-        lastBroadcastOrReceivedSceneVersion.current = hashElementsVersion(elms);
+        lastBroadcastOrReceivedSceneVersion.current = currentSceneVersion;
         broadcastSceneOnChange(
           elms,
           false,

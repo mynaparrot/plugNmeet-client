@@ -142,13 +142,22 @@ export const broadcastSceneOnChange = async (
   // 2. It's NEW (not in our memory map).
   // 3. It's UPDATED (its version is higher than the one in our memory map).
   // This ensures we only broadcast a small "diff" of changes, not the entire scene.
-  const syncableElements = allElements.filter(
-    (element) =>
-      (syncAll ||
-        !broadcastedElementVersions.has(element.id) ||
-        element.version > broadcastedElementVersions.get(element.id)!) &&
-      isSyncableElement(element),
-  );
+  const syncableElements = allElements.filter((element) => {
+    if (!isSyncableElement(element)) {
+      return false;
+    }
+
+    if (syncAll) {
+      return true;
+    }
+
+    const previousVersion = broadcastedElementVersions.get(element.id);
+    if (previousVersion === undefined) {
+      return true;
+    }
+
+    return element.version > previousVersion;
+  });
 
   if (!syncableElements.length) {
     return;
@@ -165,7 +174,7 @@ export const broadcastSceneOnChange = async (
         // We found the data. Let's upload it.
         // The `uploadCanvasBinaryFile` function will handle broadcasting
         // the 'saved' status of the element once the upload is complete.
-        uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
+        void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
       }
       // We don't broadcast the 'pending' element itself. We wait for the
       // upload to finish and broadcast the 'saved' element then.

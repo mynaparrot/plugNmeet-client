@@ -1,5 +1,47 @@
 import { A4_WIDTH, A4_HEIGHT, WorkerInput, WorkerMessage } from './types';
 
+/**
+ * Inspects the drawn canvas pixels to determine if the slice contains only background color.
+ * This prevents exporting pages that are visually blank.
+ */
+function isSliceVisuallyBlank(
+  ctx: OffscreenCanvasRenderingContext2D,
+  bgColor: string,
+): boolean {
+  const imgData = ctx.getImageData(0, 0, A4_WIDTH, A4_HEIGHT);
+  const data = imgData.data;
+
+  // Parse bgColor to RGB (defaulting to white if parsing fails)
+  let bgR = 255,
+    bgG = 255,
+    bgB = 255;
+  if (bgColor.startsWith('#')) {
+    const hex = bgColor.replace('#', '');
+    if (hex.length === 3) {
+      bgR = parseInt(hex[0] + hex[0], 16);
+      bgG = parseInt(hex[1] + hex[1], 16);
+      bgB = parseInt(hex[2] + hex[2], 16);
+    } else if (hex.length === 6) {
+      bgR = parseInt(hex.substring(0, 2), 16);
+      bgG = parseInt(hex.substring(2, 4), 16);
+      bgB = parseInt(hex.substring(4, 6), 16);
+    }
+  }
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
+
+    // If there is any non-background color or semi-transparent pixel, it is not blank
+    if (a > 0 && (r !== bgR || g !== bgG || b !== bgB)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 async function uploadSlice(
   blob: Blob,
   sliceNumber: number,
@@ -46,14 +88,16 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
     uploadUrl,
   } = event.data;
 
-  // Ensure we have at least 1 slice in each direction
+  // Epsilon tolerance threshold (in pixels) to prevent sub-pixel floating point
+  // rounding anomalies from incorrectly spawning a new blank slice.
+  const EPSILON = 1;
   const horizontalSlices = Math.max(
     1,
-    Math.ceil(pageImageBitmap.width / A4_WIDTH),
+    Math.ceil((pageImageBitmap.width - EPSILON) / A4_WIDTH),
   );
   const verticalSlices = Math.max(
     1,
-    Math.ceil(pageImageBitmap.height / A4_HEIGHT),
+    Math.ceil((pageImageBitmap.height - EPSILON) / A4_HEIGHT),
   );
   const totalSlices = horizontalSlices * verticalSlices;
 
@@ -68,6 +112,7 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
   // expensive garbage collection sweeps in the browser loop
   const sliceCanvas = new OffscreenCanvas(A4_WIDTH, A4_HEIGHT);
   const ctx = sliceCanvas.getContext('2d');
+  const bgColor = appState.viewBackgroundColor || '#ffffff';
 
   try {
     for (let v = 0; v < verticalSlices; v++) {
@@ -96,6 +141,14 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
         const dy = offsetY - v * A4_HEIGHT;
 
         ctx.drawImage(pageImageBitmap, dx, dy);
+
+        // Skip uploading if this slice is visually empty (only background)
+        if (isSliceVisuallyBlank(ctx, bgColor)) {
+          console.warn(
+            `Skipping slice ${sliceCount} for page ${pageNumber} as it is visually blank.`,
+          );
+          continue;
+        }
 
         const blob = await sliceCanvas.convertToBlob({ type: 'image/png' });
 
