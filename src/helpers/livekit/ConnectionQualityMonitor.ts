@@ -1,4 +1,8 @@
-import { ConnectionState, Room } from 'livekit-client';
+import {
+  ConnectionState,
+  Room,
+  type LocalTrackPublication,
+} from 'livekit-client';
 
 import { store } from '../../store';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
@@ -41,6 +45,9 @@ const MIN_STREAMS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
 const OUTBOUND_STUCK_INTERVAL_THRESHOLD = 2;
+const AUTO_RECOVERY_COOLDOWN = 45_000;
+const MAX_AUTO_RECOVERY_ATTEMPTS = 2;
+const STUCK_MEDIA_NOTIFICATION_COOLDOWN = 60_000;
 
 type PrevInboundStats = {
   lost: number;
@@ -92,6 +99,7 @@ type WebRTCStat = {
   kind?: string;
   mediaType?: string;
   ssrc?: number | string;
+  mid?: string;
   packetsLost?: number;
   packetsReceived?: number;
   fractionLost?: number;
@@ -135,6 +143,13 @@ export default class ConnectionQualityMonitor {
 
   private currentQuality: ConnectionQuality = ConnectionQuality.Excellent;
   private qualityScore = MAX_SCORE;
+
+  private lastAudioRecoveryAt = 0;
+  private lastVideoRecoveryAt = 0;
+  private audioRecoveryCount = 0;
+  private videoRecoveryCount = 0;
+  private lastAudioStuckNotificationAt = 0;
+  private lastVideoStuckNotificationAt = 0;
 
   private prevInboundStats: Record<string, PrevInboundStats> = {};
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
@@ -184,6 +199,14 @@ export default class ConnectionQualityMonitor {
     this.isCheckingQuality = false;
     this.currentQuality = ConnectionQuality.Excellent;
     this.qualityScore = MAX_SCORE;
+
+    this.lastAudioRecoveryAt = 0;
+    this.lastVideoRecoveryAt = 0;
+    this.audioRecoveryCount = 0;
+    this.videoRecoveryCount = 0;
+    this.lastAudioStuckNotificationAt = 0;
+    this.lastVideoStuckNotificationAt = 0;
+
     this.prevInboundStats = {};
     this.prevOutboundStats = {};
   };
@@ -237,19 +260,13 @@ export default class ConnectionQualityMonitor {
           outboundKind === 'video' ? (stat.framesSent ?? 0) : 0;
         const prev = this.prevOutboundStats[ssrc];
 
-        let isTrackActive = true;
+        const senderTrack = this.findSenderTrackByMid(stat.mid);
+        const matchingPub = this.findActiveLocalPublication(
+          outboundKind,
+          senderTrack,
+        );
 
-        for (const pub of this.room.localParticipant.trackPublications.values()) {
-          const mediaStreamTrack = pub.track?.mediaStreamTrack;
-
-          if (pub.kind === outboundKind && mediaStreamTrack) {
-            isTrackActive =
-              !pub.isMuted &&
-              mediaStreamTrack.enabled &&
-              mediaStreamTrack.readyState !== 'ended';
-            break;
-          }
-        }
+        const isTrackActive = matchingPub !== undefined;
 
         let isStagnant = false;
 
@@ -272,12 +289,20 @@ export default class ConnectionQualityMonitor {
 
         if (outboundKind === 'audio') {
           state.hasAudioOutbound = true;
-          state.isAudioOutboundStuck ||= isStuck;
+
+          if (isStuck) {
+            state.isAudioOutboundStuck = true;
+            void this.autoRecoverTrack('audio', senderTrack);
+          }
         }
 
         if (outboundKind === 'video') {
           state.hasVideoOutbound = true;
-          state.isVideoOutboundStuck ||= isStuck;
+
+          if (isStuck) {
+            state.isVideoOutboundStuck = true;
+            void this.autoRecoverTrack('video', senderTrack);
+          }
         }
 
         this.prevOutboundStats[ssrc] = {
@@ -410,6 +435,111 @@ export default class ConnectionQualityMonitor {
       isUploadAudioStuck: state.hasAudioOutbound && state.isAudioOutboundStuck,
       isUploadVideoStuck: state.hasVideoOutbound && state.isVideoOutboundStuck,
     });
+  }
+
+  private findSenderTrackByMid(mid?: string): MediaStreamTrack | null {
+    if (!mid) return null;
+
+    const transceivers =
+      this.room.engine?.pcManager?.publisher?.getTransceivers?.();
+
+    if (!transceivers) return null;
+
+    const transceiver = transceivers.find(
+      (item) => item.mid === mid && item.direction !== 'stopped',
+    );
+
+    return transceiver?.sender.track ?? null;
+  }
+
+  private findActiveLocalPublication(
+    kind: 'audio' | 'video',
+    senderTrack?: MediaStreamTrack | null,
+  ): LocalTrackPublication | undefined {
+    for (const pub of this.room.localParticipant.trackPublications.values()) {
+      const mediaStreamTrack = pub.track?.mediaStreamTrack;
+
+      if (
+        pub.kind !== kind ||
+        !pub.track ||
+        !mediaStreamTrack ||
+        pub.isMuted ||
+        !mediaStreamTrack.enabled ||
+        mediaStreamTrack.readyState === 'ended'
+      ) {
+        continue;
+      }
+
+      if (senderTrack && mediaStreamTrack === senderTrack) {
+        return pub;
+      }
+    }
+  }
+
+  private async autoRecoverTrack(
+    kind: 'audio' | 'video',
+    senderTrack?: MediaStreamTrack | null,
+  ) {
+    const now = Date.now();
+
+    const lastRecoveryAt =
+      kind === 'audio' ? this.lastAudioRecoveryAt : this.lastVideoRecoveryAt;
+
+    const recoveryCount =
+      kind === 'audio' ? this.audioRecoveryCount : this.videoRecoveryCount;
+
+    if (now - lastRecoveryAt < AUTO_RECOVERY_COOLDOWN) return;
+
+    if (recoveryCount >= MAX_AUTO_RECOVERY_ATTEMPTS) {
+      this.notifyUserOfStuckMedia(kind);
+      return;
+    }
+
+    const matchingPub = this.findActiveLocalPublication(kind, senderTrack);
+    const track = matchingPub?.track;
+
+    if (!track || typeof track.restartTrack !== 'function') return;
+
+    if (kind === 'audio') {
+      this.lastAudioRecoveryAt = now;
+      this.audioRecoveryCount++;
+    } else {
+      this.lastVideoRecoveryAt = now;
+      this.videoRecoveryCount++;
+    }
+
+    try {
+      await track.restartTrack();
+    } catch (error) {
+      console.error(
+        `[QualityMonitor] Failed to auto-recover local ${kind} track:`,
+        error,
+      );
+    }
+  }
+
+  private notifyUserOfStuckMedia(kind: 'audio' | 'video') {
+    const now = Date.now();
+
+    const lastNotificationAt =
+      kind === 'audio'
+        ? this.lastAudioStuckNotificationAt
+        : this.lastVideoStuckNotificationAt;
+
+    if (now - lastNotificationAt < STUCK_MEDIA_NOTIFICATION_COOLDOWN) return;
+
+    if (kind === 'audio') {
+      this.lastAudioStuckNotificationAt = now;
+    } else {
+      this.lastVideoStuckNotificationAt = now;
+    }
+
+    store.dispatch(
+      addUserNotification({
+        message: i18n.t(`notifications.local-${kind}-stuck-fallback`),
+        typeOption: 'warning',
+      }),
+    );
   }
 
   private classify({
