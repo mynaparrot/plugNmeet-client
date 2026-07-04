@@ -100,7 +100,11 @@ const RoomSettings = () => {
       maxWidth="max-w-2xl header-room-settings"
     >
       <div className="wrap relative">
-        <Tabs items={tabItems} tabPanelsCss="min-h-[316px]" />
+        <Tabs
+          uniqueKey="roomSettings"
+          items={tabItems}
+          tabPanelsCss="min-h-[316px]"
+        />
         {renderModalFooter()}
       </div>
     </Modal>

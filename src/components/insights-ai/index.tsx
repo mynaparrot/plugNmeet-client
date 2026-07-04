@@ -92,7 +92,13 @@ const InsightsAiSettingsModal = () => {
               {errorMsg}
             </div>
           )}
-          {tabItems.length > 0 && <Tabs items={tabItems} vertical />}
+          {tabItems.length > 0 && (
+            <Tabs
+              uniqueKey="insightsAiSettingsModal"
+              items={tabItems}
+              vertical
+            />
+          )}
         </div>
       </Modal>
     )

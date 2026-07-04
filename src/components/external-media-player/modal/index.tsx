@@ -98,7 +98,7 @@ const ExternalMediaPlayerModal = () => {
         {errorMsg && (
           <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>
         )}
-        <Tabs items={items} vertical />
+        <Tabs uniqueKey="externalMediaPlayerModal" items={items} vertical />
         <div className="mt-8 flex justify-end">
           <ActionButton
             isLoading={isLoading}

@@ -86,7 +86,15 @@ const TranslationTranscriptionSettingModal = () => {
             />
           </div>
         ) : (
-          <>{tabItems.length ? <Tabs items={tabItems} vertical /> : null}</>
+          <>
+            {tabItems.length ? (
+              <Tabs
+                uniqueKey="translationTranscriptionSettingModal"
+                items={tabItems}
+                vertical
+              />
+            ) : null}
+          </>
         )}
       </div>
     </Modal>
