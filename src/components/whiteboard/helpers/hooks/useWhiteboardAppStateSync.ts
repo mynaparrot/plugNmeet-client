@@ -23,67 +23,84 @@ const useWhiteboardAppStateSync = ({
   const whiteboardAppState = useAppSelector(
     (state) => state.whiteboard.whiteboardAppState,
   );
+  const refreshWhiteboardSignal = useAppSelector(
+    (state) => state.whiteboard.refreshWhiteboardSignal,
+  );
 
-  // Stable debounced handler to prevent rapid consecutive viewport updates from choking the CPU
   const debouncedSync = useMemo(
     () =>
       debounce(
         (api: ExcalidrawImperativeAPI, state: typeof whiteboardAppState) => {
           if (!state) return;
 
-          // Receiver's current state from the API
           const receiverState = api.getAppState();
-          // Sender's state
-          const senderState = state;
 
-          const appState: Partial<AppState> = {
-            theme: senderState.theme as Theme,
-            viewBackgroundColor: senderState.viewBackgroundColor,
-            zenModeEnabled: senderState.zenModeEnabled,
-            gridSize: senderState.gridSize ?? undefined,
-          };
+          const senderWidth = state.width;
+          const senderHeight = state.height;
+          const receiverWidth = receiverState.width;
+          const receiverHeight = receiverState.height;
+          const senderZoom = state.zoomValue;
 
-          // We calculate raw ratios first to evaluate the physical size difference.
-          const rawWidthRatio = receiverState.width / senderState.width;
-          const rawHeightRatio = receiverState.height / senderState.height;
+          if (
+            !senderWidth ||
+            !senderHeight ||
+            !receiverWidth ||
+            !receiverHeight ||
+            !senderZoom
+          ) {
+            return;
+          }
 
-          // We define a threshold (e.g. 90% of sender size). If the receiver's screen is
-          // significantly smaller (like a mobile/tablet), we apply safety padding to keep
-          // elements from hugging the viewport edges. Otherwise, we scale 1:1.
           const scaleThreshold = 0.9;
           const padding = 16;
 
+          const rawWidthRatio = receiverWidth / senderWidth;
+          const rawHeightRatio = receiverHeight / senderHeight;
+
+          const safeReceiverWidth = Math.max(receiverWidth - padding * 2, 1);
+          const safeReceiverHeight = Math.max(receiverHeight - padding * 2, 1);
+
           const widthScale =
             rawWidthRatio < scaleThreshold
-              ? (receiverState.width - padding * 2) / senderState.width
+              ? safeReceiverWidth / senderWidth
               : Math.min(1, rawWidthRatio);
 
           const heightScale =
             rawHeightRatio < scaleThreshold
-              ? (receiverState.height - padding * 2) / senderState.height
+              ? safeReceiverHeight / senderHeight
               : Math.min(1, rawHeightRatio);
 
           const responsiveMultiplier = Math.min(widthScale, heightScale, 1);
-          const adjustedZoom = senderState.zoomValue * responsiveMultiplier;
 
-          appState.zoom = { value: adjustedZoom as NormalizedZoomValue };
-          appState.scrollX =
-            senderState.scrollX +
-            (receiverState.width - senderState.width * responsiveMultiplier) /
-              (2 * adjustedZoom);
-          appState.scrollY =
-            senderState.scrollY +
-            (receiverState.height - senderState.height * responsiveMultiplier) /
-              (2 * adjustedZoom);
+          const adjustedZoom = Math.max(senderZoom * responsiveMultiplier, 0.1);
 
-          api.updateScene({ appState: appState as AppState });
+          // Keep follower centered on the same scene/world point as presenter.
+          const senderCenterX = -state.scrollX + senderWidth / (2 * senderZoom);
+          const senderCenterY =
+            -state.scrollY + senderHeight / (2 * senderZoom);
+
+          const appState: Partial<AppState> = {
+            theme: state.theme as Theme,
+            viewBackgroundColor: state.viewBackgroundColor,
+            zenModeEnabled: state.zenModeEnabled,
+            gridSize: state.gridSize ?? undefined,
+            zoom: {
+              value: adjustedZoom as NormalizedZoomValue,
+            },
+            scrollX: -(senderCenterX - receiverWidth / (2 * adjustedZoom)),
+            scrollY: -(senderCenterY - receiverHeight / (2 * adjustedZoom)),
+          };
+
+          api.updateScene({
+            appState: appState as AppState,
+          });
         },
         VIEWPORT_SYNC_DEBOUNCE_TIMEOUT,
       ),
     [],
   );
 
-  // for handling AppState changes
+  // Handle incoming AppState changes from the presenter
   useEffect(() => {
     if (excalidrawAPI && whiteboardAppState && isFollowing) {
       debouncedSync(excalidrawAPI, whiteboardAppState);
@@ -93,6 +110,20 @@ const useWhiteboardAppStateSync = ({
       debouncedSync.cancel();
     };
   }, [excalidrawAPI, whiteboardAppState, isFollowing, debouncedSync]);
+
+  // Recalibrate the local viewport when the refreshWhiteboardSignal triggered
+  // note: refreshWhiteboardSignal and whiteboardResetSignal are not same!
+  // refreshWhiteboardSignal happen for width change, sidebar open, webcam/screen sharing on/off etc.
+  useEffect(() => {
+    if (excalidrawAPI && isFollowing && refreshWhiteboardSignal > 0) {
+      debouncedSync(excalidrawAPI, whiteboardAppState);
+    }
+
+    return () => {
+      debouncedSync.cancel();
+    };
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshWhiteboardSignal]);
 };
 
 export default useWhiteboardAppStateSync;

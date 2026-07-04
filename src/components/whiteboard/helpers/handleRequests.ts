@@ -10,7 +10,7 @@ import {
   AnalyticsEventType,
   DataMsgBodyType,
 } from 'plugnmeet-protocol-js';
-import { throttle } from 'es-toolkit';
+import { throttle, isEqual } from 'es-toolkit';
 
 import { store } from '../../../store';
 import { updateRequestedWhiteboardData } from '../../../store/slices/whiteboard';
@@ -23,8 +23,7 @@ import { A4_BOUNDARY_GUIDE_ID } from './utils';
 
 const broadcastedElementVersions: Map<string, number> = new Map(),
   DELETED_ELEMENT_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours
-let preScrollX = 0,
-  preScrollY = 0,
+let preAppState: Record<string, any> | null = null,
   conn: ConnectNats,
   annotatedAnalyticsBatchCounter = 0;
 
@@ -262,15 +261,7 @@ export const broadcastAppStateChanges = async (
   zenModeEnabled: boolean,
   gridSize: number | null,
 ) => {
-  if (preScrollX === scrollX && preScrollY === scrollY) {
-    // if both same then we don't need to update
-    return;
-  } else {
-    preScrollX = scrollX;
-    preScrollY = scrollY;
-  }
-
-  const finalMsg = JSON.stringify({
+  const currentAppState = {
     height,
     width,
     scrollX,
@@ -280,7 +271,14 @@ export const broadcastAppStateChanges = async (
     viewBackgroundColor,
     zenModeEnabled,
     gridSize,
-  });
+  };
+
+  if (preAppState && isEqual(preAppState, currentAppState)) {
+    return;
+  }
+
+  preAppState = currentAppState;
+  const finalMsg = JSON.stringify(currentAppState);
 
   if (!conn) {
     conn = getNatsConn();
