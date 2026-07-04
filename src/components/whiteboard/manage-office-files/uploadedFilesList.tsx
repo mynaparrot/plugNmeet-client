@@ -6,7 +6,6 @@ import {
   RoomUploadedFileType,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { useAppSelector } from '../../../store';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
@@ -21,7 +20,6 @@ import { sleep } from '../../../helpers/utils';
 
 interface UploadedFilesListProps {
   roomId: string;
-  excalidrawAPI: ExcalidrawImperativeAPI;
   onSelectOfficeFile: (fileId: IWhiteboardOfficeFile) => void;
   selectedOfficeFile?: IWhiteboardOfficeFile;
   refresh?: number;
@@ -29,7 +27,6 @@ interface UploadedFilesListProps {
 
 const UploadedFilesList = ({
   roomId,
-  excalidrawAPI,
   onSelectOfficeFile,
   selectedOfficeFile,
   refresh,
@@ -80,18 +77,14 @@ const UploadedFilesList = ({
             filePath: file.filePath,
             totalPages: file.totalPages ?? 0,
           };
-          createAndRegisterOfficeFile(
-            newFile,
-            excalidrawAPI.getAppState().height,
-            excalidrawAPI.getAppState().width,
-          );
+          createAndRegisterOfficeFile(newFile);
         }
       });
     } finally {
       await sleep(500);
       setIsLoading(false);
     }
-  }, [whiteboardUploadedOfficeFiles, excalidrawAPI, roomId]);
+  }, [whiteboardUploadedOfficeFiles, roomId]);
 
   useEffect(() => {
     if (refresh) {

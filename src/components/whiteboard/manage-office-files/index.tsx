@@ -194,7 +194,6 @@ const ManageOfficeFilesModal = ({
                 }
                 <UploadedFilesList
                   roomId={roomId}
-                  excalidrawAPI={excalidrawAPI}
                   onSelectOfficeFile={setSelectedOfficeFile}
                   selectedOfficeFile={selectedOfficeFile}
                   refresh={refresh}
