@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Ai fost deconectat pentru că serverul a încetat să mai răspundă.",
     "room-disconnected-reconnecting": "Conexiune pierdută. Reconectarea...",
     "room-disconnected-network-error": "Ați fost deconectat din cauza unei probleme de rețea.",
-    "your-connection-lost-or-unstable": "Conexiunea ta este instabilă. Alții pot experimenta audio sau video slab din partea ta.",
+    "your-connection-lost-or-unstable": "Conexiunea ta este puțin instabilă acum. Alții pot observa unele probleme audio sau video din partea ta.",
     "need-to-disable-display-external-link": "Pentru a reda un videoclip, vă rugăm să opriți mai întâi partajarea linkului extern.",
     "need-to-disable-external-media-player": "Pentru a partaja un link extern, vă rugăm să opriți mai întâi playerul video.",
     "websocket-disconnected": "Conexiune pierdută, încercarea de a se reconecta...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Serverul nu răspunde. Conexiunea ta poate fi instabilă.",
     "re-routing-connection": "Conexiunea este instabilă. Redirecționarea pentru o stabilitate mai bună...",
     "whiteboard-new-file-added": "Fișierul nou este gata și a fost adăugat pe lista de fișiere de pe tablă.",
-    "private-download-link-ready": "Linkul tău de descărcare este gata. Doar tu poți vedea acest mesaj.<br/>{{link}}"
+    "private-download-link-ready": "Linkul tău de descărcare este gata. Doar tu poți vedea acest mesaj.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Am detectat o problemă cu microfonul tău. Încearcă să-l oprești și să-l pornești la loc.",
+    "local-video-stuck-fallback": "Am detectat o problemă cu camera ta. Încearcă să-l oprești și să-l pornești la loc."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
@@ -177,10 +179,10 @@
         "rtt": "Timpul necesar pentru ca datele tale să ajungă la server și înapoi. Cu cât mai jos, cu atât mai bine."
       },
       "qualities": {
-        "excellent": "Excellent",
-        "good": "Good",
-        "poor": "Poor",
-        "lost": "Lost"
+        "excellent": "Excelent",
+        "good": "Bine",
+        "poor": "Sărac",
+        "lost": "Pierdut"
       }
     }
   },
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Dezactivați trimiterea mesajelor de chat",
         "unlock-send-file": "Permiteți partajarea fișierelor",
         "lock-send-file": "Dezactivați partajarea fișierelor",
+        "lock-reaction": "Dezactivează reacțiile de trimitere",
+        "unlock-reaction": "Permite reacțiile de trimitere",
         "remove-participant": "Eliminați participantul",
         "private-chat": "Trimite mesaj privat"
       },
