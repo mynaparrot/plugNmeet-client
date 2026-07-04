@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "サーバーが応答を停止したため、切断されました。",
     "room-disconnected-reconnecting": "接続が切れました。再接続しています...",
     "room-disconnected-network-error": "ネットワークの問題により切断されました。",
-    "your-connection-lost-or-unstable": "接続が不安定です。他の人はあなたの音声や映像の悪さを感じているかもしれません。",
+    "your-connection-lost-or-unstable": "今、接続が少し不安定です。他の人はあなたの音声や映像に問題を感じるかもしれません。",
     "need-to-disable-display-external-link": "ビデオを再生するには、まず外部リンクの共有を停止してください。",
     "need-to-disable-external-media-player": "外部リンクを共有するには、まずビデオプレーヤーを停止してください。",
     "websocket-disconnected": "接続が切れました。再接続を試みています...",
@@ -90,7 +90,9 @@
     "server-not-responding": "サーバーが応答しません。接続が不安定な可能性があります。",
     "re-routing-connection": "接続が不安定です。安定性を高めるために経路を変更しています...",
     "whiteboard-new-file-added": "新しいファイルが準備でき、ホワイトボードのファイルリストに追加されました。",
-    "private-download-link-ready": "ダウンロードリンクは準備できています。このメッセージはあなただけが見ることができます。<br/>{{link}}"
+    "private-download-link-ready": "ダウンロードリンクは準備できています。このメッセージはあなただけが見ることができます。<br/>{{link}}",
+    "local-audio-stuck-fallback": "マイクに問題が検出されました。電源を切ってから入れ直してみてください。",
+    "local-video-stuck-fallback": "カメラに問題が発生した。電源を切ってから入れ直してみてください。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画されています。",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "チャットメッセージの送信を無効にする",
         "unlock-send-file": "ファイル共有を許可",
         "lock-send-file": "ファイル共有を無効にする",
+        "lock-reaction": "送信リアクションを無効にする",
+        "unlock-reaction": "リアクション送信を許可する",
         "remove-participant": "参加者を削除",
         "private-chat": "プライベートメッセージを送信"
       },
