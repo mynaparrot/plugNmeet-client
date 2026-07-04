@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Bạn đã bị ngắt kết nối vì máy chủ ngừng phản hồi.",
     "room-disconnected-reconnecting": "Mất kết nối. Đang kết nối lại...",
     "room-disconnected-network-error": "Bạn đã bị ngắt kết nối do sự cố mạng.",
-    "your-connection-lost-or-unstable": "Kết nối của bạn không ổn định. Những người khác có thể gặp phải âm thanh hoặc video kém từ bạn.",
+    "your-connection-lost-or-unstable": "Kết nối của bạn hiện có một chút không ổn định. Những người khác có thể nhận thấy một số vấn đề về âm thanh hoặc video từ bạn.",
     "need-to-disable-display-external-link": "Để phát video, vui lòng ngừng chia sẻ liên kết bên ngoài trước.",
     "need-to-disable-external-media-player": "Để chia sẻ liên kết bên ngoài, vui lòng dừng trình phát video trước.",
     "websocket-disconnected": "Mất kết nối, cố gắng kết nối lại...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Máy chủ không phản hồi. Kết nối của bạn có thể không ổn định.",
     "re-routing-connection": "Kết nối không ổn định. Định tuyến lại để ổn định hơn...",
     "whiteboard-new-file-added": "Tệp mới đã sẵn sàng và đã được thêm vào danh sách tệp bảng trắng.",
-    "private-download-link-ready": "Liên kết tải xuống của bạn đã sẵn sàng. Chỉ bạn mới có thể xem thông báo này.<br/>{{link}}"
+    "private-download-link-ready": "Liên kết tải xuống của bạn đã sẵn sàng. Chỉ bạn mới có thể xem thông báo này.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Chúng tôi đã phát hiện ra sự cố với micrô của bạn. Hãy thử tắt và bật lại.",
+    "local-video-stuck-fallback": "Chúng tôi đã phát hiện ra sự cố với máy ảnh của bạn. Hãy thử tắt và bật lại."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Tắt tính năng gửi tin nhắn trò chuyện",
         "unlock-send-file": "Cho phép chia sẻ tệp",
         "lock-send-file": "Tắt chia sẻ tệp",
+        "lock-reaction": "Tắt tính năng gửi cảm xúc",
+        "unlock-reaction": "Cho phép gửi phản ứng",
         "remove-participant": "Xóa người tham gia",
         "private-chat": "Gửi tin nhắn riêng"
       },
