@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Ha sido desconectado porque el servidor ha dejado de responder.",
     "room-disconnected-reconnecting": "Se ha perdido la conexión. Reconectando...",
     "room-disconnected-network-error": "Ha sido desconectado debido a un problema de red.",
-    "your-connection-lost-or-unstable": "Tu conexión es inestable. Otros pueden estar experimentando audio o vídeo deficiente de tu parte.",
+    "your-connection-lost-or-unstable": "Tu conexión está un poco inestable ahora mismo. Otros pueden notar algunos problemas de audio o vídeo por tu parte.",
     "need-to-disable-display-external-link": "Para reproducir un vídeo, primero deje de compartir el enlace externo.",
     "need-to-disable-external-media-player": "Para compartir un enlace externo, primero detenga el reproductor de vídeo.",
     "websocket-disconnected": "Se ha perdido la conexión, intentando reconectar...",
@@ -90,7 +90,9 @@
     "server-not-responding": "El servidor no responde. Su conexión puede ser inestable.",
     "re-routing-connection": "La conexión es inestable. Redirigiendo para una mejor estabilidad...",
     "whiteboard-new-file-added": "El nuevo archivo está listo y se ha añadido a la lista de archivos de la pizarra.",
-    "private-download-link-ready": "Tu enlace de descarga está listo. Solo tú puedes ver este mensaje.<br/>{{link}}"
+    "private-download-link-ready": "Tu enlace de descarga está listo. Solo tú puedes ver este mensaje.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Detectamos un problema con tu micrófono. Prueba a apagarlo y encenderlo de nuevo.",
+    "local-video-stuck-fallback": "Detectamos un problema con tu cámara. Prueba a apagarlo y encenderlo de nuevo."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Desactivar el envío de mensajes de chat",
         "unlock-send-file": "Permitir compartir archivos",
         "lock-send-file": "Desactivar compartir archivos",
+        "lock-reaction": "Desactivar las reacciones de envío",
+        "unlock-reaction": "Permitir reacciones de envío",
         "remove-participant": "Eliminar participante",
         "private-chat": "Enviar mensaje privado"
       },
