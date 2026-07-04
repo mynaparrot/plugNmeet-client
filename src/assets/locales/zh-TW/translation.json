@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "由於伺服器停止回應，您已斷線。",
     "room-disconnected-reconnecting": "連線已中斷。正在重新連線...",
     "room-disconnected-network-error": "由於網路問題，您已斷線。",
-    "your-connection-lost-or-unstable": "你的連線不穩定。其他人可能也遇到你的音訊或影像品質不佳。",
+    "your-connection-lost-or-unstable": "你的連線現在有點不穩定。其他人可能會注意到你的音訊或影像問題。",
     "need-to-disable-display-external-link": "要播放影片，請先停止分享外部連結。",
     "need-to-disable-external-media-player": "要分享外部連結，請先停止影片播放器。",
     "websocket-disconnected": "連線已中斷，正在嘗試重新連線...",
@@ -90,7 +90,9 @@
     "server-not-responding": "伺服器無回應。您的連線可能不穩定。",
     "re-routing-connection": "連線不穩定。正在重新路由以獲得更好的穩定性...",
     "whiteboard-new-file-added": "新檔案已準備好，並已加入白板檔案清單。",
-    "private-download-link-ready": "您的下載連結已準備好。只有你能看到這則訊息。<br/>{{link}}"
+    "private-download-link-ready": "您的下載連結已準備好。只有你能看到這則訊息。<br/>{{link}}",
+    "local-audio-stuck-fallback": "我們偵測到你的麥克風有問題。試著關機再開機。",
+    "local-video-stuck-fallback": "我們偵測到你的相機有問題。試著關機再開機。"
   },
   "room-metadata": {
     "session-recording": "此會議正在錄製中。",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "停用訊息傳送",
         "unlock-send-file": "允許檔案分享",
         "lock-send-file": "停用檔案分享",
+        "lock-reaction": "停用傳送反應",
+        "unlock-reaction": "允許發送反應",
         "remove-participant": "移除與會者",
         "private-chat": "傳送私人訊息"
       },
