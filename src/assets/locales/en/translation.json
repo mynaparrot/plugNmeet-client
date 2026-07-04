@@ -90,7 +90,9 @@
     "server-not-responding": "Server not responding. Your connection may be unstable.",
     "re-routing-connection": "Connection is unstable. Re-routing for better stability...",
     "whiteboard-new-file-added": "New file is ready and has been added to the whiteboard files list.",
-    "private-download-link-ready": "Your download link is ready. Only you can see this message.<br/>{{link}}"
+    "private-download-link-ready": "Your download link is ready. Only you can see this message.<br/>{{link}}",
+    "local-audio-stuck-fallback": "We detected an issue with your microphone. Try turning it off and back on.",
+    "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
