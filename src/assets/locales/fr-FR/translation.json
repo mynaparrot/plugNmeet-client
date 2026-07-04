@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Vous avez été déconnecté(e) car le serveur ne répond plus.",
     "room-disconnected-reconnecting": "Connexion perdue. Reconnexion en cours...",
     "room-disconnected-network-error": "Vous avez été déconnecté(e) en raison d'un problème de réseau.",
-    "your-connection-lost-or-unstable": "Votre connexion est instable. D’autres peuvent avoir un mauvais son ou vidéo de votre part.",
+    "your-connection-lost-or-unstable": "Votre connexion est un peu instable en ce moment. D’autres peuvent remarquer des problèmes audio ou vidéo de votre part.",
     "need-to-disable-display-external-link": "Pour lire une vidéo, veuillez d'abord arrêter le partage du lien externe.",
     "need-to-disable-external-media-player": "Pour partager un lien externe, veuillez d'abord arrêter le lecteur vidéo.",
     "websocket-disconnected": "Connexion perdue, tentative de reconnexion...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Le serveur ne répond pas. Votre connexion est peut-être instable.",
     "re-routing-connection": "La connexion est instable. Réacheminement pour une meilleure stabilité...",
     "whiteboard-new-file-added": "Le nouveau fichier est prêt et a été ajouté à la liste des fichiers du tableau blanc.",
-    "private-download-link-ready": "Votre lien de téléchargement est prêt. Toi seul peux voir ce message.<br/>{{link}}"
+    "private-download-link-ready": "Votre lien de téléchargement est prêt. Toi seul peux voir ce message.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Nous avons détecté un problème avec votre micro. Essaie de l’éteindre puis de le rallumer.",
+    "local-video-stuck-fallback": "Nous avons détecté un problème avec votre appareil photo. Essaie de l’éteindre puis de le rallumer."
   },
   "room-metadata": {
     "session-recording": "Cette réunion est en cours d'enregistrement.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Désactiver l'envoi de messages",
         "unlock-send-file": "Autoriser le partage de fichiers",
         "lock-send-file": "Désactiver le partage de fichiers",
+        "lock-reaction": "Désactiver l’envoi de réactions",
+        "unlock-reaction": "Autoriser les réactions d’envoi",
         "remove-participant": "Exclure le participant",
         "private-chat": "Envoyer un message privé"
       },
