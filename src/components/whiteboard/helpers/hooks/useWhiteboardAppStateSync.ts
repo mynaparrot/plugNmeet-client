@@ -2,6 +2,7 @@ import { RefObject, useEffect } from 'react';
 import {
   AppState,
   ExcalidrawImperativeAPI,
+  NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
 import { Theme } from '@excalidraw/excalidraw/element/types';
 
@@ -37,19 +38,38 @@ const useWhiteboardAppStateSync = ({
         gridSize: senderState.gridSize ?? undefined,
       };
 
-      // we calculate the new scroll position for the receiver
-      // so that their viewport is centered on the same
-      // scene coordinates as the sender's. This provides an intuitive "follow-me"
-      // experience, ensuring both users are looking at the same focal point.
-      const senderZoom = senderState.zoomValue;
+      // We calculate raw ratios first to evaluate the physical size difference.
+      const rawWidthRatio = receiverState.width / senderState.width;
+      const rawHeightRatio = receiverState.height / senderState.height;
 
-      appState.zoom = { value: senderZoom };
+      // We define a threshold (e.g. 90% of sender size). If the receiver's screen is
+      // significantly smaller (like a mobile/tablet), we apply safety padding to keep
+      // elements from hugging the viewport edges. Otherwise, we scale 1:1.
+      const scaleThreshold = 0.9;
+      const padding = 16;
+
+      const widthScale =
+        rawWidthRatio < scaleThreshold
+          ? (receiverState.width - padding * 2) / senderState.width
+          : Math.min(1, rawWidthRatio);
+
+      const heightScale =
+        rawHeightRatio < scaleThreshold
+          ? (receiverState.height - padding * 2) / senderState.height
+          : Math.min(1, rawHeightRatio);
+
+      const responsiveMultiplier = Math.min(widthScale, heightScale, 1);
+      const adjustedZoom = senderState.zoomValue * responsiveMultiplier;
+
+      appState.zoom = { value: adjustedZoom as NormalizedZoomValue };
       appState.scrollX =
         senderState.scrollX +
-        (receiverState.width - senderState.width) / (2 * senderZoom);
+        (receiverState.width - senderState.width * responsiveMultiplier) /
+          (2 * adjustedZoom);
       appState.scrollY =
         senderState.scrollY +
-        (receiverState.height - senderState.height) / (2 * senderZoom);
+        (receiverState.height - senderState.height * responsiveMultiplier) /
+          (2 * adjustedZoom);
 
       isProgrammaticScroll.current = true;
       excalidrawAPI.updateScene({ appState: appState as AppState });

@@ -189,7 +189,7 @@ export const prepareA4BoundaryGuide = (
         id: A4_BOUNDARY_GUIDE_ID,
         type: 'rectangle',
         x: startX,
-        y: startY + ourExcalidrawPadding,
+        y: startY,
         width: width,
         height: height,
         strokeColor: '#ff0000',

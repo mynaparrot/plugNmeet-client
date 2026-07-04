@@ -18,7 +18,11 @@ import {
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
 import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
-import { ourExcalidrawPadding } from './utils';
+import {
+  DEFAULT_A4_WIDTH,
+  DEFAULT_A4_HEIGHT,
+  DEFAULT_A4_MARGIN,
+} from '../export-pdf/types';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -146,10 +150,15 @@ export const fetchFileWithElm = async (
         image.onerror = reject;
       });
 
+      // Scale image relative to the A4 PDF Boundary dimensions
+      const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+      const targetBoundaryHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+
       const { fileHeight, fileWidth } = getFileDimension(
         image.height,
         image.width,
-        excalidrawWidth,
+        targetBoundaryWidth,
+        targetBoundaryHeight,
       );
 
       return prepareForExcalidraw(
@@ -166,8 +175,9 @@ export const fetchFileWithElm = async (
         uploaderWhiteboardWidth,
       );
     } else if (fileMimeType === 'image/svg+xml') {
-      const fileHeight = excalidrawHeight * 0.8;
-      const fileWidth = excalidrawWidth * 0.7;
+      const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+      const fileWidth = targetBoundaryWidth * 0.9;
+      const fileHeight = fileWidth * (1754 / 1240); // Maintain A4 Aspect Ratio
 
       return prepareForExcalidraw(
         file_id,
@@ -212,12 +222,24 @@ const prepareForExcalidraw = (
     created: Date.now(),
   };
 
+  // Get target A4 bounding box properties matching prepareA4BoundaryGuide
+  const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+  const targetBoundaryHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+
+  // Calculate starting positions of the A4 boundary box
+  const boundaryStartX = (excalidrawWidth - targetBoundaryWidth) / 2;
+  const boundaryStartY = (excalidrawHeight - targetBoundaryHeight) / 2;
+
+  // Center the image element exactly inside the A4 boundary guide
+  const imageX = boundaryStartX + (targetBoundaryWidth - fileWidth) / 2;
+  const imageY = boundaryStartY + (targetBoundaryHeight - fileHeight) / 2;
+
   const elms = convertToExcalidrawElements([
     {
       fileId: image.id,
       type: 'image',
-      x: (excalidrawWidth - fileWidth) / 2,
-      y: (excalidrawHeight - fileHeight) / 2,
+      x: imageX,
+      y: imageY,
       width: fileWidth,
       height: fileHeight,
       locked: isOfficeFile,
@@ -240,21 +262,23 @@ const prepareForExcalidraw = (
 const getFileDimension = (
   height: number,
   width: number,
-  excalidrawWidth: number,
+  targetWidth: number,
+  targetHeight: number,
 ) => {
-  const excalidrawActualWidth = excalidrawWidth - ourExcalidrawPadding;
-
-  // If the image already fits, no scaling is needed.
-  if (width <= excalidrawActualWidth) {
+  // If the image already fits inside both bounds, no scaling is needed.
+  if (width <= targetWidth && height <= targetHeight) {
     return { fileHeight: height, fileWidth: width };
   }
 
-  // Calculate the scaling ratio required to make the image fit the width.
-  const ratio = excalidrawActualWidth / width;
-  const fileHeight = height * ratio;
-  const fileWidth = width * ratio; // This will be equal to excalidrawActualWidth
+  // Calculate scale ratios for both dimensions and pick the most restrictive one (Math.min)
+  const widthRatio = targetWidth / width;
+  const heightRatio = targetHeight / height;
+  const scaleRatio = Math.min(widthRatio, heightRatio);
 
-  return { fileHeight, fileWidth };
+  return {
+    fileHeight: height * scaleRatio,
+    fileWidth: width * scaleRatio,
+  };
 };
 
 const dataURLtoFile = (dataUrl: string, filename: string): File | null => {

@@ -19,9 +19,20 @@ import { exportToBlob, MIME_TYPES } from '@excalidraw/excalidraw';
 import ExportWorkerUrl from './exportPdf.worker?worker&url';
 
 import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
-import { A4_BOUNDARY_GUIDE_ID, formatStorageKey } from '../helpers/utils';
+import {
+  A4_BOUNDARY_GUIDE_ID,
+  formatStorageKey,
+  prepareA4BoundaryGuide,
+} from '../helpers/utils';
 import { getImageData, ImageCustomData } from '../helpers/handleFiles';
-import { DEFAULT_A4_MARGIN, SCALE, WorkerInput, WorkerMessage } from './types';
+import {
+  DEFAULT_A4_MARGIN,
+  SCALE,
+  WorkerInput,
+  WorkerMessage,
+  DEFAULT_A4_WIDTH,
+  DEFAULT_A4_HEIGHT,
+} from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
 import { store } from '../../../store';
@@ -108,8 +119,21 @@ class ExportPdfService {
           }),
         });
 
+        // Generate a standard boundary coordinate reference matching the presenter's original workspace
+        const referenceBoundary = prepareA4BoundaryGuide(
+          appState.height,
+          appState.width,
+        );
+        // We keep a transparent/invisible border representation to force Excalidraw's bounding-box
+        // engine to output the exact A4 layout dimensions.
+        const boundGuide = {
+          ...referenceBoundary[0],
+          strokeColor: 'transparent',
+          backgroundColor: 'transparent',
+        };
+
         const pageImageBitmap = await this.createPageImage(
-          elements,
+          [boundGuide, ...elements],
           files,
           appState,
         );
@@ -243,15 +267,45 @@ class ExportPdfService {
     files: Record<string, BinaryFileData>,
     appState: AppState,
   ): Promise<ImageBitmap> {
+    // Calculate standard A4 bounds
+    const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+    const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+
+    // 1. Identify the boundary guide element to determine its physical coordinate placement
+    const guide = elements.find((el) => el.id === A4_BOUNDARY_GUIDE_ID);
+    const startX = guide ? guide.x : 0;
+    const startY = guide ? guide.y : 0;
+
+    // 2. Find the absolute physical limits of all elements on the canvas
+    let minX = startX;
+    let minY = startY;
+    let maxX = startX + targetWidth;
+    let maxY = startY + targetHeight;
+
+    elements.forEach((el) => {
+      if (el.isDeleted || el.id === A4_BOUNDARY_GUIDE_ID) return;
+      minX = Math.min(minX, el.x);
+      minY = Math.min(minY, el.y);
+      maxX = Math.max(maxX, el.x + el.width);
+      maxY = Math.max(maxY, el.y + el.height);
+    });
+
+    // 3. Dynamically expand the export dimensions relative to the boundary starting origin
+    const exportWidth = Math.max(targetWidth, maxX - startX);
+    const exportHeight = Math.max(targetHeight, maxY - startY);
+
     const blob = await exportToBlob({
       elements,
-      appState,
+      appState: {
+        ...appState,
+        exportBackground: true,
+      },
       files,
       mimeType: MIME_TYPES.png,
-      exportPadding: DEFAULT_A4_MARGIN,
-      getDimensions: (width: number, height: number) => ({
-        width: width * SCALE,
-        height: height * SCALE,
+      exportPadding: 0,
+      getDimensions: () => ({
+        width: exportWidth * SCALE,
+        height: exportHeight * SCALE,
         scale: SCALE,
       }),
     });

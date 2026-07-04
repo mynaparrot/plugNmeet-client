@@ -57,14 +57,9 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
   );
   const totalSlices = horizontalSlices * verticalSlices;
 
-  // Calculate the total width of our virtual A4 paper grid
-  const totalGridWidth = horizontalSlices * A4_WIDTH;
-
-  // --- THE HYBRID OFFSET ---
-  // 1. HORIZONTAL: Calculate leftover horizontal space and divide by 2 to center it.
-  const offsetX = (totalGridWidth - pageImageBitmap.width) / 2;
-
-  // 2. VERTICAL: Lock to 0. Excalidraw's native padding handles the top margin.
+  // Keep elements anchored natively relative to the original document bounds.
+  // This ensures that spilled content matches up perfectly with grid divisions.
+  const offsetX = 0;
   const offsetY = 0;
 
   let sliceCount = 0;
