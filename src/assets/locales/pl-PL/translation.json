@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Zostałeś rozłączony, ponieważ serwer przestał odpowiadać.",
     "room-disconnected-reconnecting": "Utracono połączenie. Ponowne łączenie...",
     "room-disconnected-network-error": "Zostałeś rozłączony z powodu problemu z siecią.",
-    "your-connection-lost-or-unstable": "Twoje połączenie jest niestabilne. Inni mogą mieć słaby dźwięk lub obraz z twojej strony.",
+    "your-connection-lost-or-unstable": "Twoje połączenie jest teraz trochę niestabilne. Inni mogą zauważyć problemy z dźwiękiem lub obrazem u Ciebie.",
     "need-to-disable-display-external-link": "Aby odtworzyć wideo, najpierw przestań udostępniać link zewnętrzny.",
     "need-to-disable-external-media-player": "Aby udostępnić link zewnętrzny, najpierw zatrzymaj odtwarzacz wideo.",
     "websocket-disconnected": "Utracono połączenie, próba ponownego połączenia...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Serwer nie odpowiada. Twoje połączenie może być niestabilne.",
     "re-routing-connection": "Połączenie jest niestabilne. Przekierowywanie w celu uzyskania lepszej stabilności...",
     "whiteboard-new-file-added": "Nowy plik jest gotowy i został dodany do listy plików na tablicy.",
-    "private-download-link-ready": "Twój link do pobrania jest gotowy. Tylko ty możesz zobaczyć tę wiadomość.<br/>{{link}}"
+    "private-download-link-ready": "Twój link do pobrania jest gotowy. Tylko ty możesz zobaczyć tę wiadomość.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Wykryliśmy problem z twoim mikrofonem. Spróbuj go wyłączyć i włączyć ponownie.",
+    "local-video-stuck-fallback": "Wykryliśmy problem z twoją kamerą. Spróbuj go wyłączyć i włączyć ponownie."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Wyłącz wysyłanie wiadomości na czacie",
         "unlock-send-file": "Zezwól na udostępnianie plików",
         "lock-send-file": "Wyłącz udostępnianie plików",
+        "lock-reaction": "Wyłącz wysyłanie reakcji",
+        "unlock-reaction": "Pozwól na wysyłanie reakcji",
         "remove-participant": "Usuń uczestnika",
         "private-chat": "Wyślij prywatną wiadomość"
       },
