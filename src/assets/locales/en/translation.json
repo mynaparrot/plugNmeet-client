@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "You have been disconnected because the server stopped responding.",
     "room-disconnected-reconnecting": "Connection lost. Reconnecting...",
     "room-disconnected-network-error": "You were disconnected due to a network problem.",
-    "your-connection-lost-or-unstable": "Your connection is unstable. Others may be experiencing poor audio or video from you.",
+    "your-connection-lost-or-unstable": "Your connection is a bit unstable right now. Others may notice some audio or video issues from you.",
     "need-to-disable-display-external-link": "To play a video, please stop sharing the external link first.",
     "need-to-disable-external-media-player": "To share an external link, please stop the video player first.",
     "websocket-disconnected": "Connection lost, trying to reconnect...",
@@ -175,6 +175,12 @@
         "download": "The quality of the video and audio you are receiving from others.",
         "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
         "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      },
+      "qualities": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "poor": "Poor",
+        "lost": "Lost"
       }
     }
   },
@@ -238,6 +244,8 @@
         "lock-send-chat-message": "Disable Sending Chat Messages",
         "unlock-send-file": "Allow File Sharing",
         "lock-send-file": "Disable File Sharing",
+        "lock-reaction": "Disable Sending Reactions",
+        "unlock-reaction": "Allow Sending Reactions",
         "remove-participant": "Remove Participant",
         "private-chat": "Send Private Message"
       },
