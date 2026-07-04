@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Anda terputus karena server berhenti merespons.",
     "room-disconnected-reconnecting": "Koneksi terputus. Menyambungkan kembali...",
     "room-disconnected-network-error": "Anda terputus karena masalah jaringan.",
-    "your-connection-lost-or-unstable": "Koneksi Anda tidak stabil. Orang lain mungkin mengalami audio atau video yang buruk dari Anda.",
+    "your-connection-lost-or-unstable": "Koneksi Anda agak tidak stabil saat ini. Orang lain mungkin melihat beberapa masalah audio atau video dari Anda.",
     "need-to-disable-display-external-link": "Untuk memutar video, harap hentikan dulu berbagi tautan eksternal.",
     "need-to-disable-external-media-player": "Untuk berbagi tautan eksternal, harap hentikan dulu pemutar video.",
     "websocket-disconnected": "Koneksi terputus, mencoba menyambungkan kembali...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Server tidak merespons. Koneksi Anda mungkin tidak stabil.",
     "re-routing-connection": "Koneksi tidak stabil. Mengalihkan rute untuk stabilitas yang lebih baik...",
     "whiteboard-new-file-added": "File baru sudah siap dan telah ditambahkan ke daftar file papan tulis.",
-    "private-download-link-ready": "Tautan unduhan Anda sudah siap. Hanya Anda yang dapat melihat pesan ini.<br/>{{link}}"
+    "private-download-link-ready": "Tautan unduhan Anda sudah siap. Hanya Anda yang dapat melihat pesan ini.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Kami mendeteksi masalah dengan mikrofon Anda. Coba matikan dan hidupkan kembali.",
+    "local-video-stuck-fallback": "Kami mendeteksi masalah dengan kamera Anda. Coba matikan dan hidupkan kembali."
   },
   "room-metadata": {
     "session-recording": "Rapat ini sedang direkam.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Kunci Mengirim Pesan",
         "unlock-send-file": "Izinkan Berbagi File",
         "lock-send-file": "Kunci Berbagi File",
+        "lock-reaction": "Nonaktifkan Mengirim Reaksi",
+        "unlock-reaction": "Izinkan Mengirim Reaksi",
         "remove-participant": "Keluarkan Peserta",
         "private-chat": "Kirim Pesan Pribadi"
       },
