@@ -23,7 +23,6 @@ import {
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
 export const A4_BOUNDARY_GUIDE_ID = 'a4-boundary-guide-id';
-export const ourExcalidrawPadding = 150;
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',
@@ -33,7 +32,7 @@ const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/ocapraro/bubbles.excalidrawlib',
 ];
 
-export const addPreloadedLibraryItems = (
+export const addPreloadedLibraryItems = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
 ) => {
   let libraryItems = defaultPreloadedLibraryItems;
@@ -46,27 +45,37 @@ export const addPreloadedLibraryItems = (
     libraryItems = getFromCnf;
   }
 
-  libraryItems.forEach(async (item) => {
-    try {
-      let blob: Blob;
-      if (libraryCache.has(item)) {
-        // Cache hit: Use the cached blob.
-        blob = libraryCache.get(item)!;
-      } else {
-        // Cache miss: Fetch the library, convert to blob, and cache it.
-        const request = await fetch(item);
-        blob = await request.blob();
-        libraryCache.set(item, blob);
-      }
-      await excalidrawAPI.updateLibrary({
-        libraryItems: blob, // Use the blob (from cache or network)
-        merge: true,
-        defaultStatus: 'published',
-      });
-    } catch (e) {
-      console.error(e);
+  const fetchPromises = libraryItems.map(async (item) => {
+    if (libraryCache.has(item)) {
+      return libraryCache.get(item)!;
     }
+    const request = await fetch(item);
+    const blob = await request.blob();
+    libraryCache.set(item, blob);
+    return blob;
   });
+
+  const results = await Promise.allSettled(fetchPromises);
+
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      try {
+        // Excalidraw expects a single Blob at a time rather than a Blob[]
+        await excalidrawAPI.updateLibrary({
+          libraryItems: result.value,
+          merge: true,
+          defaultStatus: 'published',
+        });
+      } catch (err) {
+        console.error('Failed to register library item onto Excalidraw:', err);
+      }
+    } else {
+      console.error(
+        'Failed to pre-fetch whiteboard library item:',
+        result.reason,
+      );
+    }
+  }
 };
 
 export const formatStorageKey = (pageNumber: number, fileId?: string) => {
@@ -167,9 +176,16 @@ export const ensureAllImagesDataIsLoaded = (
     );
   // We fire off all the promises but don't wait for them to complete.
   // This allows the UI to update while images load in the background.
-  Promise.all(imagePromises).catch((e) =>
-    console.error('Error loading image data:', e),
-  );
+  Promise.allSettled(imagePromises).then((results) => {
+    results.forEach((result, idx) => {
+      if (result.status === 'rejected') {
+        console.error(
+          `Error loading image data at index ${idx}:`,
+          result.reason,
+        );
+      }
+    });
+  });
 };
 
 export const prepareA4BoundaryGuide = (): OrderedExcalidrawElement[] => {

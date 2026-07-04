@@ -21,7 +21,6 @@ import {
   Collaborator,
   CollaboratorPointer,
   ExcalidrawImperativeAPI,
-  ExcalidrawProps,
   Gesture,
   NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
@@ -149,7 +148,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     currentFileIdRef.current = currentWhiteboardOfficeFileId;
   }, [currentPage, currentWhiteboardOfficeFileId]);
 
-  const isProgrammaticScroll = useRef(false);
   const isSwitching = useRef(false);
   const lastBroadcastOrReceivedSceneVersion = useRef<number>(-1);
 
@@ -174,7 +172,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   useWhiteboardAppStateSync({
     excalidrawAPI,
     isFollowing,
-    isProgrammaticScroll,
   });
   const { syncOfficeFilePage } = useOfficePageSyncer({
     excalidrawAPI,
@@ -588,13 +585,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     return false;
   }, [t]);
 
-  const onScrollChange: ExcalidrawProps['onScrollChange'] = useCallback(() => {
-    // When a non-presenter scrolls manually, disable "follow mode".
-    if (!isPresenter && !isProgrammaticScroll.current) {
-      setIsFollowing(false);
-    }
-  }, [isPresenter]);
-
   const renderTopRightUI = useCallback(
     () => (
       <>
@@ -662,7 +652,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         onInitialize={onInitializeSetExcalidrawAPI}
         onChange={handleCanvasChange}
         onPointerUpdate={onPointerUpdate}
-        onScrollChange={onScrollChange}
         viewModeEnabled={viewModeEnabled}
         isCollaborating={true}
         theme={theme}

@@ -97,7 +97,7 @@ const useOfficePageSyncer = ({
   useEffect(() => {
     if (isPresenter) {
       // broadcast to everyone else
-      broadcastCurrentOfficeFilePages(currentOfficeFilePages);
+      void broadcastCurrentOfficeFilePages(currentOfficeFilePages);
     }
 
     if (currentOfficeFilePages !== '') {

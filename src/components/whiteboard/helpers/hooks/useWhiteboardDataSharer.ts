@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { useAppSelector } from '../../../../store';
 import {
@@ -14,16 +14,24 @@ const useWhiteboardDataSharer = ({
   excalidrawAPI,
 }: IUseWhiteboardDataSharer) => {
   const [fetchedData, setFetchedData] = useState<boolean>(false);
+  const isFetchingRef = useRef<boolean>(false);
+
   const requestedWhiteboardData = useAppSelector(
     (state) => state.whiteboard.requestedWhiteboardData,
   );
 
-  const fetchDataFromDonner = useEffectEvent(() => {
-    if (!fetchedData && excalidrawAPI) {
-      // get initial data from other users who had joined before me
-      sendRequestedForWhiteboardData().then(() => setFetchedData(true));
+  const fetchDataFromDonner = useCallback(() => {
+    if (!fetchedData && excalidrawAPI && !isFetchingRef.current) {
+      isFetchingRef.current = true;
+      sendRequestedForWhiteboardData()
+        .then(() => {
+          setFetchedData(true);
+        })
+        .finally(() => {
+          isFetchingRef.current = false;
+        });
     }
-  });
+  }, [fetchedData, excalidrawAPI]);
 
   // keep looking for request from other users & send data
   useEffect(() => {
