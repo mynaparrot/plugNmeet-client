@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Byl jste odpojeni, protože server přestal reagovat.",
     "room-disconnected-reconnecting": "Připojení ztraceno. Opětovné připojení...",
     "room-disconnected-network-error": "Byli jste odpojeni kvůli problému se sítí.",
-    "your-connection-lost-or-unstable": "Tvé spojení je nestabilní. Jiní mohou mít špatný zvuk nebo obraz od vás.",
+    "your-connection-lost-or-unstable": "Tvoje připojení je teď trochu nestabilní. Jiní si mohou všimnout některých problémů se zvukem nebo obrazem u vás.",
     "need-to-disable-display-external-link": "Chcete-li přehrát video, nejprve přestaňte sdílet externí odkaz.",
     "need-to-disable-external-media-player": "Chcete-li sdílet externí odkaz, nejprve zastavte přehrávač videa.",
     "websocket-disconnected": "Připojení ztraceno, pokus o opětovné připojení...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Server nereaguje. Vaše připojení může být nestabilní.",
     "re-routing-connection": "Připojení je nestabilní. Přesměrování pro lepší stabilitu...",
     "whiteboard-new-file-added": "Nový soubor je připraven a byl přidán do seznamu souborů na tabuli.",
-    "private-download-link-ready": "Váš odkaz ke stažení je připraven. Tuto zprávu vidíš jen ty.<br/>{{link}}"
+    "private-download-link-ready": "Váš odkaz ke stažení je připraven. Tuto zprávu vidíš jen ty.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Zjistili jsme problém s vaším mikrofonem. Zkuste ho vypnout a znovu zapnout.",
+    "local-video-stuck-fallback": "Zjistili jsme problém s vaší kamerou. Zkuste ho vypnout a znovu zapnout."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Zakázat odesílání chatových zpráv",
         "unlock-send-file": "Povolit sdílení souborů",
         "lock-send-file": "Zakázat sdílení souborů",
+        "lock-reaction": "Vypnout odesílání reakcí",
+        "unlock-reaction": "Povolit odesílání reakcí",
         "remove-participant": "Odebrat účastníka",
         "private-chat": "Odeslat soukromou zprávu"
       },
