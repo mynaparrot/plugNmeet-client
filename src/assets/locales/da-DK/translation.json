@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Du er blevet afbrudt, fordi serveren stoppede med at svare.",
     "room-disconnected-reconnecting": "Forbindelsen mistet. Genopretter forbindelsen...",
     "room-disconnected-network-error": "Du blev afbrudt på grund af et netværksproblem.",
-    "your-connection-lost-or-unstable": "Din forbindelse er ustabil. Andre kan opleve dårlig lyd eller video fra dig.",
+    "your-connection-lost-or-unstable": "Din forbindelse er lidt ustabil lige nu. Andre kan bemærke nogle lyd- eller videoproblemer fra dig.",
     "need-to-disable-display-external-link": "Hvis du vil afspille en video, skal du først stoppe med at dele det eksterne link.",
     "need-to-disable-external-media-player": "For at dele et eksternt link skal du først stoppe videoafspilleren.",
     "websocket-disconnected": "Forbindelsen mistet, forsøger at genoprette forbindelsen...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Serveren svarer ikke. Din forbindelse kan være ustabil.",
     "re-routing-connection": "Forbindelsen er ustabil. Omlægning for bedre stabilitet...",
     "whiteboard-new-file-added": "Den nye fil er klar og er blevet tilføjet til whiteboard-fillisten.",
-    "private-download-link-ready": "Dit downloadlink er klar. Kun du kan se denne besked.<br/>{{link}}"
+    "private-download-link-ready": "Dit downloadlink er klar. Kun du kan se denne besked.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Vi opdagede et problem med din mikrofon. Prøv at slukke og tænde den igen.",
+    "local-video-stuck-fallback": "Vi opdagede et problem med dit kamera. Prøv at slukke og tænde den igen."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Deaktiver afsendelse af chatbeskeder",
         "unlock-send-file": "Tillad fildeling",
         "lock-send-file": "Deaktiver fildeling",
+        "lock-reaction": "Deaktiver Sendereaktioner",
+        "unlock-reaction": "Tillad afsendelsesreaktioner",
         "remove-participant": "Fjern deltager",
         "private-chat": "Send privat besked"
       },
