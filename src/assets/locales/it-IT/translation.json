@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Lei è stato disconnesso perché il server ha smesso di rispondere.",
     "room-disconnected-reconnecting": "Connessione persa. Riconnessione in corso...",
     "room-disconnected-network-error": "Lei è stato disconnesso a causa di un problema di rete.",
-    "your-connection-lost-or-unstable": "La tua connessione è instabile. Altri potrebbero avere audio o video scadenti da parte tua.",
+    "your-connection-lost-or-unstable": "La tua connessione è un po' instabile in questo momento. Altri potrebbero notare qualche problema audio o video da parte tua.",
     "need-to-disable-display-external-link": "Per riprodurre un video, interrompa prima la condivisione del link esterno.",
     "need-to-disable-external-media-player": "Per condividere un link esterno, interrompa prima il lettore video.",
     "websocket-disconnected": "Connessione persa, tentativo di riconnessione...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Il server non risponde. La sua connessione potrebbe essere instabile.",
     "re-routing-connection": "La connessione è instabile. Reindirizzamento per una migliore stabilità...",
     "whiteboard-new-file-added": "Il nuovo file è pronto ed è stato aggiunto all'elenco dei file della lavagna.",
-    "private-download-link-ready": "Il link per il download è pronto. Solo tu puoi vedere questo messaggio.<br/>{{link}}"
+    "private-download-link-ready": "Il link per il download è pronto. Solo tu puoi vedere questo messaggio.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Abbiamo rilevato un problema con il tuo microfono. Prova a spegnerlo e riaccenderlo.",
+    "local-video-stuck-fallback": "Abbiamo rilevato un problema con la tua fotocamera. Prova a spegnerlo e riaccenderlo."
   },
   "room-metadata": {
     "session-recording": "Questa riunione è in fase di registrazione.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Disattiva invio di messaggi",
         "unlock-send-file": "Consenti condivisione file",
         "lock-send-file": "Disattiva condivisione file",
+        "lock-reaction": "Disabilita le reazioni di invio",
+        "unlock-reaction": "Consentire reazioni di invio",
         "remove-participant": "Rimuovi partecipante",
         "private-chat": "Invia messaggio privato"
       },
