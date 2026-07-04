@@ -131,6 +131,7 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
     self.postMessage({
       type: 'error',
       payload: 'Failed to create OffscreenCanvas 2D context',
+      // oxlint-disable-next-line
     } as WorkerMessage);
 
     self.close();
@@ -165,6 +166,7 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
 
         const isBlank = isSliceVisuallyBlank(ctx, bgR, bgG, bgB, 3);
 
+        // we'll skip to upload any blank page slices
         if (isBlank) {
           console.warn(
             `Skipping slice ${sliceCount} for page ${pageNumber} as it is visually blank.`,
