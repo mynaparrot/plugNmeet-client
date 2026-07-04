@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Je bent verbroken omdat de server niet meer reageert.",
     "room-disconnected-reconnecting": "Verbinding verbroken. Reconnecting...",
     "room-disconnected-network-error": "De verbinding is verbroken vanwege een netwerkprobleem.",
-    "your-connection-lost-or-unstable": "Je verbinding is onstabiel. Anderen ervaren misschien slecht geluid of beeld van jou.",
+    "your-connection-lost-or-unstable": "Je verbinding is nu wat onstabiel. Anderen merken misschien wat audio- of videoproblemen bij jou op.",
     "need-to-disable-display-external-link": "Als u een video wilt afspelen, moet u eerst stoppen met het delen van de externe link.",
     "need-to-disable-external-media-player": "Als u een externe link wilt delen, moet u eerst de videospeler stoppen.",
     "websocket-disconnected": "Verbinding verbroken, proberen opnieuw verbinding te maken...",
@@ -90,7 +90,9 @@
     "server-not-responding": "Server reageert niet. Je verbinding kan onstabiel zijn.",
     "re-routing-connection": "De verbinding is instabiel. Omleidingen voor betere stabiliteit...",
     "whiteboard-new-file-added": "Het nieuwe bestand is klaar en is toegevoegd aan de whiteboard-bestandslijst.",
-    "private-download-link-ready": "Je downloadlink is klaar. Alleen jij kunt dit bericht zien.<br/>{{link}}"
+    "private-download-link-ready": "Je downloadlink is klaar. Alleen jij kunt dit bericht zien.<br/>{{link}}",
+    "local-audio-stuck-fallback": "We hebben een probleem met uw microfoon gedetecteerd. Probeer hem uit en weer aan te zetten.",
+    "local-video-stuck-fallback": "We hebben een probleem met uw camera gedetecteerd. Probeer hem uit en weer aan te zetten."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "Schakel het verzenden van chatberichten uit",
         "unlock-send-file": "Bestandsdeling toestaan",
         "lock-send-file": "Bestandsdeling uitschakelen",
+        "lock-reaction": "Schakel het verzenden van reacties uit",
+        "unlock-reaction": "Laat het verzenden van reacties toe",
         "remove-participant": "Deelnemer verwijderen",
         "private-chat": "Stuur prive-bericht"
       },
