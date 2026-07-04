@@ -11,7 +11,7 @@ import {
 import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam-menu';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
-import { createEmptyVideoStreamTrack } from '../../../helpers/utils';
+import { createEmptyVideoStreamTrack, sleep } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
@@ -119,9 +119,56 @@ const WebcamIcon = () => {
 
   // only for initial if device was selected in landing page
   useEffect(() => {
-    if (selectedVideoDevice) {
-      onSelectedDevice(selectedVideoDevice).then();
-    }
+    let isSubscribed = true;
+    let intervalId: NodeJS.Timeout | null = null;
+
+    const startWebcam = (device: string) => {
+      sleep(500).then(() => onSelectedDevice(device));
+    };
+
+    const initializeVideoTrack = async () => {
+      if (!selectedVideoDevice) return;
+
+      // Get the synchronous state of the selected audio device on mount to avoid dependency triggers
+      const initialAudioDevice =
+        store.getState().roomSettings.selectedAudioDevice;
+
+      // If an audio device was selected, wait for its track negotiation to complete
+      if (initialAudioDevice && initialAudioDevice !== '') {
+        const checkMicrophoneReady = () => {
+          if (!isSubscribed) return;
+
+          const micEnabled = currentRoom?.localParticipant?.isMicrophoneEnabled;
+          if (micEnabled) {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+            startWebcam(selectedVideoDevice);
+          }
+        };
+
+        // Check immediately first
+        const micEnabled = currentRoom?.localParticipant?.isMicrophoneEnabled;
+        if (micEnabled) {
+          startWebcam(selectedVideoDevice);
+        } else {
+          // Otherwise check every 250ms until the media server negotiation completes
+          intervalId = setInterval(checkMicrophoneReady, 250);
+        }
+      } else {
+        startWebcam(selectedVideoDevice);
+      }
+    };
+
+    void initializeVideoTrack();
+
+    return () => {
+      isSubscribed = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
     //eslint-disable-next-line
   }, []);
 
