@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "서버가 응답하지 않아 연결이 끊어졌습니다.",
     "room-disconnected-reconnecting": "연결이 끊어졌습니다. 다시 연결 중...",
     "room-disconnected-network-error": "네트워크 문제로 인해 연결이 끊어졌습니다.",
-    "your-connection-lost-or-unstable": "당신의 연결이 불안정합니다. 다른 사람들은 당신의 오디오나 영상 품질이 좋지 않을 수도 있습니다.",
+    "your-connection-lost-or-unstable": "지금 연결이 좀 불안정해요. 다른 사람들은 당신의 오디오나 비디오 문제를 감지할 수도 있습니다.",
     "need-to-disable-display-external-link": "비디오를 재생하려면 먼저 외부 링크 공유를 중지하십시오.",
     "need-to-disable-external-media-player": "외부 링크를 공유하려면 먼저 비디오 플레이어를 중지하십시오.",
     "websocket-disconnected": "연결이 끊어졌습니다. 다시 연결을 시도 중...",
@@ -90,7 +90,9 @@
     "server-not-responding": "서버가 응답하지 않습니다. 연결이 불안정할 수 있습니다.",
     "re-routing-connection": "연결이 불안정합니다. 더 나은 안정성을 위해 경로를 변경 중입니다...",
     "whiteboard-new-file-added": "새 파일이 준비되어 화이트보드 파일 목록에 추가되었습니다.",
-    "private-download-link-ready": "다운로드 링크가 준비되었습니다. 이 메시지는 오직 당신만 볼 수 있습니다.<br/>{{link}}"
+    "private-download-link-ready": "다운로드 링크가 준비되었습니다. 이 메시지는 오직 당신만 볼 수 있습니다.<br/>{{link}}",
+    "local-audio-stuck-fallback": "마이크에 문제가 감지됐습니다. 꺼버렸다가 다시 켜보세요.",
+    "local-video-stuck-fallback": "카메라에 문제가 감지됐습니다. 꺼버렸다가 다시 켜보세요."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "메시지 보내기 비활성화",
         "unlock-send-file": "파일 공유 허용",
         "lock-send-file": "파일 공유 비활성화",
+        "lock-reaction": "전송 반응 비활성화",
+        "unlock-reaction": "반응 전송 허용",
         "remove-participant": "참가자 내보내기",
         "private-chat": "비공개 메시지 보내기"
       },
