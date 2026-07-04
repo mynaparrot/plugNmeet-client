@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "ניתקת כי השרת הפסיק להגיב.",
     "room-disconnected-reconnecting": "החיבור אבד. מתחבר מחדש...",
     "room-disconnected-network-error": "נותקת עקב בעיית רשת.",
-    "your-connection-lost-or-unstable": "הקשר שלך לא יציב. אחרים עשויים לחוות אודיו או וידאו גרועים ממך.",
+    "your-connection-lost-or-unstable": "החיבור שלך קצת לא יציב כרגע. אחרים עשויים להבחין בבעיות אודיו או וידאו אצלך.",
     "need-to-disable-display-external-link": "כדי להפעיל סרטון, אנא הפסק לשתף תחילה את הקישור החיצוני.",
     "need-to-disable-external-media-player": "כדי לשתף קישור חיצוני, אנא עצור תחילה את נגן הווידאו.",
     "websocket-disconnected": "החיבור אבד, מנסה להתחבר מחדש...",
@@ -90,7 +90,9 @@
     "server-not-responding": "השרת לא מגיב. הקשר שלך עלול להיות לא יציב.",
     "re-routing-connection": "החיבור לא יציב. ניתוב מחדש ליציבות טובה יותר...",
     "whiteboard-new-file-added": "קובץ חדש מוכן ונוסף לרשימת קבצי הלוח הלבן.",
-    "private-download-link-ready": "קישור ההורדה שלך מוכן. רק אתה יכול לראות את ההודעה הזו.<br/>{{link}}"
+    "private-download-link-ready": "קישור ההורדה שלך מוכן. רק אתה יכול לראות את ההודעה הזו.<br/>{{link}}",
+    "local-audio-stuck-fallback": "זיהינו בעיה במיקרופון שלך. נסה לכבות ולהדליק שוב.",
+    "local-video-stuck-fallback": "זיהינו בעיה במצלמה שלך. נסה לכבות ולהדליק שוב."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
@@ -244,6 +246,8 @@
         "lock-send-chat-message": "השבתת שליחת הודעות צ'אט",
         "unlock-send-file": "אפשר שיתוף קבצים",
         "lock-send-file": "הפיכת שיתוף קבצים ללא זמין",
+        "lock-reaction": "השבתת שליחת תגובות",
+        "unlock-reaction": "אפשר שליחת תגובות",
         "remove-participant": "הסרת משתתף",
         "private-chat": "שלח הודעה פרטית"
       },
