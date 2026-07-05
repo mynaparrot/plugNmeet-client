@@ -14,6 +14,9 @@ import {
   getIsAnyFileProcessing,
   getProcessorStatus,
   OfficeFileStatus,
+  IOfficeFileProcessing,
+  registerProcessorCallbacks,
+  unregisterProcessorCallbacks,
   startProcessing,
 } from './officeFileProcessor';
 
@@ -60,39 +63,33 @@ const FileUploadProgress = ({
   }, [onUploadFinished, setDisableUploading]);
 
   useEffect(() => {
-    const isAnotherFileProcessing = getIsAnyFileProcessing();
+    const callbacks: IOfficeFileProcessing = {
+      onStart: () => {
+        setDisableUploading(true);
+        setStatus('uploading');
+      },
+      onProgress: (p) => {
+        setUploadingProgress(p);
+        if (p === 100) {
+          setStatus('converting');
+        }
+      },
+      onSuccess: (msg) => {
+        setMessage({ isError: false, msg: msg });
+        cleanupProcess();
+      },
+      onError: (msg) => {
+        setMessage({ isError: true, msg: msg });
+      },
+    };
 
-    if (isAnotherFileProcessing) {
+    if (getIsAnyFileProcessing()) {
       setDisableUploading(true);
-
-      const interval = setInterval(() => {
-        const ps = getProcessorStatus();
-        if (ps.status === 'idle') {
-          // The processor has finished its entire lifecycle (including its own delays).
-          // Now, we can clean up the component and stop polling.
-          cleanupProcess();
-          clearInterval(interval);
-          return;
-        }
-
-        // While the process is active, sync the component's state with the processor.
-        setCurrentFile({
-          name: ps.fileName,
-          size: ps.fileSize,
-        });
-        setStatus(ps.status);
-        setUploadingProgress(ps.progress);
-
-        if (ps.status === 'success') {
-          setMessage({ isError: false, msg: t('whiteboard.file-ready') });
-        } else if (ps.status === 'error') {
-          setMessage({ isError: true, msg: t('whiteboard.error-occurred') });
-        }
-      }, 1000);
-
-      return () => {
-        clearInterval(interval);
-      };
+      const ps = getProcessorStatus();
+      setCurrentFile({ name: ps.fileName, size: ps.fileSize });
+      setStatus(ps.status);
+      setUploadingProgress(ps.progress);
+      registerProcessorCallbacks(callbacks);
     } else if (file) {
       setCurrentFile(file);
       // if no file is processing, start one for the current file
@@ -101,37 +98,15 @@ const FileUploadProgress = ({
         excalidrawAPI,
         allowedFileTypes,
         maxAllowedFileSize,
-        {
-          onStart: () => {
-            setDisableUploading(true);
-            setStatus('uploading');
-          },
-          onProgress: (p) => {
-            setUploadingProgress(p);
-            if (p === 100) {
-              setStatus('converting');
-            }
-          },
-          onSuccess: (msg) => {
-            setMessage({ isError: false, msg: msg });
-            cleanupProcess();
-          },
-          onError: (msg) => {
-            setMessage({ isError: true, msg: msg });
-          },
-        },
+        callbacks,
       );
     }
-  }, [
-    t,
-    allowedFileTypes,
-    excalidrawAPI,
-    file,
-    maxAllowedFileSize,
-    onUploadFinished,
-    setDisableUploading,
-    cleanupProcess,
-  ]);
+
+    return () => {
+      unregisterProcessorCallbacks();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file, cleanupProcess]);
 
   const handleDelete = useCallback(() => {
     if (!getIsAnyFileProcessing()) {

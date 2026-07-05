@@ -34,6 +34,7 @@ class OfficeFileProcessor {
   private fileName = '';
   private fileSize = 0;
   private progress = 0;
+  private activeCallbacks: IOfficeFileProcessing | null = null;
 
   public start = (
     file: File,
@@ -51,16 +52,28 @@ class OfficeFileProcessor {
     this.fileSize = file.size;
     this.fileStatus = 'uploading';
     this.progress = 0;
+    this.activeCallbacks = callbacks;
     callbacks.onStart();
 
-    this.upload(
-      file,
-      excalidrawAPI,
-      allowedFileTypes,
-      maxAllowedFileSize,
-      callbacks,
-    );
+    this.upload(file, excalidrawAPI, allowedFileTypes, maxAllowedFileSize);
   };
+
+  // Allows UI component to subscribe to an already active background upload/conversion
+  public registerCallbacks(callbacks: IOfficeFileProcessing) {
+    this.activeCallbacks = callbacks;
+    // Instantly notify listener of the current active progress state upon subscription
+    if (this.fileStatus === 'converting') {
+      callbacks.onProgress(100);
+    } else if (this.fileStatus === 'success') {
+      callbacks.onSuccess(i18n.t('whiteboard.file-ready'));
+    } else if (this.fileStatus === 'error') {
+      callbacks.onError(i18n.t('whiteboard.error-occurred'));
+    }
+  }
+
+  public unregisterCallbacks() {
+    this.activeCallbacks = null;
+  }
 
   private cleanup() {
     this._isBusy = false;
@@ -68,6 +81,7 @@ class OfficeFileProcessor {
     this.fileSize = 0;
     this.fileStatus = 'idle';
     this.progress = 0;
+    this.activeCallbacks = null;
   }
 
   private upload(
@@ -75,7 +89,6 @@ class OfficeFileProcessor {
     excalidrawAPI: ExcalidrawImperativeAPI,
     allowedFileTypes: string[],
     maxAllowedFileSize: string,
-    callbacks: IOfficeFileProcessing,
   ) {
     const files: File[] = [file];
 
@@ -84,15 +97,19 @@ class OfficeFileProcessor {
       maxAllowedFileSize,
       RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
       files,
-      (result) => this.convertFile(result.filePath, excalidrawAPI, callbacks),
+      (result) => this.convertFile(result.filePath, excalidrawAPI),
       () => {},
       (uploadProgress) => {
         this.progress = Math.round(uploadProgress * 100);
-        callbacks.onProgress(this.progress);
+        if (this.activeCallbacks) {
+          this.activeCallbacks.onProgress(this.progress);
+        }
       },
       (errMsg) => {
         this.fileStatus = 'error';
-        callbacks.onError(errMsg);
+        if (this.activeCallbacks) {
+          this.activeCallbacks.onError(errMsg);
+        }
         this.cleanup();
       },
     );
@@ -101,14 +118,15 @@ class OfficeFileProcessor {
   private async convertFile(
     filePath: string,
     excalidrawAPI: ExcalidrawImperativeAPI,
-    callbacks: IOfficeFileProcessing,
   ) {
     const id = toast.loading(i18n.t('whiteboard.converting'), {
       type: 'info',
     });
     this.fileStatus = 'converting';
     this.progress = 100;
-    callbacks.onProgress(100);
+    if (this.activeCallbacks) {
+      this.activeCallbacks.onProgress(100);
+    }
 
     const { currentRoom, currentUser } = store.getState().session;
     const body: WhiteboardFileConversionReq = {
@@ -129,7 +147,9 @@ class OfficeFileProcessor {
       }
 
       this.fileStatus = 'error';
-      callbacks.onError(msg);
+      if (this.activeCallbacks) {
+        this.activeCallbacks.onError(msg);
+      }
       toast.update(id, {
         render: i18n.t(msg),
         type: 'error',
@@ -166,7 +186,9 @@ class OfficeFileProcessor {
       autoClose: 1000,
     });
     this.fileStatus = 'success';
-    callbacks.onSuccess(i18n.t('whiteboard.file-ready'));
+    if (this.activeCallbacks) {
+      this.activeCallbacks.onSuccess(i18n.t('whiteboard.file-ready'));
+    }
     await sleep(1000);
     this.cleanup();
   }
@@ -190,3 +212,7 @@ const officeFileProcessor = new OfficeFileProcessor();
 export const startProcessing = officeFileProcessor.start;
 export const getIsAnyFileProcessing = () => officeFileProcessor.isBusy;
 export const getProcessorStatus = () => officeFileProcessor.status;
+export const registerProcessorCallbacks = (callbacks: IOfficeFileProcessing) =>
+  officeFileProcessor.registerCallbacks(callbacks);
+export const unregisterProcessorCallbacks = () =>
+  officeFileProcessor.unregisterCallbacks();
