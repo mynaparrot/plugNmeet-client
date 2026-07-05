@@ -23,7 +23,7 @@ import {
 } from './pip/utils';
 
 interface IVerticalLayoutProps {
-  allParticipants: ReactElement<VideoParticipantProps>[];
+  pipParticipants: ReactElement<VideoParticipantProps>[];
   participantsToRender: React.ReactElement<
     unknown,
     string | React.JSXElementConstructor<any>
@@ -37,7 +37,7 @@ interface IVerticalLayoutProps {
 }
 
 const VerticalLayout = ({
-  allParticipants,
+  pipParticipants,
   participantsToRender,
   pinParticipant,
   totalNumWebcams,
@@ -59,8 +59,8 @@ const VerticalLayout = ({
       ?.requestWindow === 'function';
 
   const pipItems = useMemo<IPipItem[]>(() => {
-    return getPipItems(allParticipants);
-  }, [allParticipants]);
+    return getPipItems(pipParticipants);
+  }, [pipParticipants]);
 
   const toggleExtendedVerticalCamView = useCallback(() => {
     dispatch(

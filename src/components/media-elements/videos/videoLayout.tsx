@@ -18,6 +18,7 @@ import {
   getElmsForPc,
   getElmsForPCExtendedVerticalView,
   getElmsForTablet,
+  getTotalWebcamPages,
 } from './helpers/utils';
 import { useDeviceInfo } from './helpers/useDeviceInfo';
 import { AngleDown } from '../../../assets/Icons/AngleDown';
@@ -28,6 +29,11 @@ interface IVideoLayoutProps {
   pinParticipant?: ReactElement<VideoParticipantProps>;
   totalNumWebcams: number;
   isVertical?: boolean;
+}
+
+interface IPaginatedParticipantsResult {
+  pipParticipants: ReactElement<VideoParticipantProps>[];
+  participantsToRender: ReactElement[];
 }
 
 const DESKTOP_PER_PAGE = 24,
@@ -72,6 +78,7 @@ const VideoLayout = ({
   useEffect(() => {
     // 1. Determine the default value based on device type.
     let deviceMax: number;
+
     if (isTablet) {
       deviceMax = maxNumDisplayWebcams.tablet;
     } else if (isMobile) {
@@ -120,6 +127,7 @@ const VideoLayout = ({
         perPage = isEnabledExtendedVerticalCamView
           ? PC_EXTENDED_VERTICAL_PER_PAGE
           : PC_VERTICAL_PER_PAGE;
+
         if (pinParticipant) {
           // if vertical view has pin, we will lose space.
           perPage -= isEnabledExtendedVerticalCamView ? 2 : 1;
@@ -153,45 +161,68 @@ const VideoLayout = ({
     dispatch(updateHasWebcamPages(hasPages));
   }, [allParticipants.length, webcamPerPage, dispatch]);
 
-  const prePage = useCallback((currPage: number) => {
-    const newCurrentPage = currPage - 1;
-    setCurrentPage(newCurrentPage);
+  const prePage = useCallback(() => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   }, []);
 
-  const nextPage = useCallback((currPage: number) => {
-    const newCurrentPage = currPage + 1;
-    setCurrentPage(newCurrentPage);
+  const nextPage = useCallback(() => {
+    setCurrentPage((prev) => prev + 1);
   }, []);
 
-  const paginatedParticipants = useMemo(() => {
+  const paginatedParticipants = useMemo<IPaginatedParticipantsResult>(() => {
     // If we don't have enough participants to require pagination, just return them all.
     if (allParticipants.length <= webcamPerPage) {
-      return allParticipants;
+      return {
+        pipParticipants: allParticipants,
+        participantsToRender: [...allParticipants],
+      };
     }
+
+    // We don't show pagination for recorders.
+    // Keep the recorder view limited to the first page worth of participants.
+    if (isRecorder) {
+      const pipParticipants = allParticipants.slice(0, webcamPerPage);
+
+      return {
+        pipParticipants,
+        participantsToRender: [...pipParticipants],
+      };
+    }
+
+    const safeCurrentPage = Math.max(currentPage, 1);
+
+    // Determine if a "Previous" button is needed.
+    const hasPrevPage = safeCurrentPage > 1;
+
+    /**
+     * Calculate the starting index for the slice.
+     *
+     * This logic accounts for the shifting number of participant items on each page:
+     * - Page 1 can reserve one slot for the "Next" button.
+     * - Middle pages can reserve two slots for "Previous" and "Next" buttons.
+     * - Last page can reserve one slot for the "Previous" button.
+     *
+     * This prevents participants from being skipped when pagination buttons consume slots.
+     */
+    const firstPageParticipantCapacity = webcamPerPage - 1;
+    const middlePageParticipantCapacity = webcamPerPage - 2;
+
+    const startIndex = hasPrevPage
+      ? firstPageParticipantCapacity +
+        (safeCurrentPage - 2) * middlePageParticipantCapacity
+      : 0;
 
     // Start with the max number of items per page. This will be adjusted if we need pagination buttons.
     let itemsToDisplay = webcamPerPage;
 
-    // Determine if a "Previous" button is needed. We don't show pagination for recorders.
-    const hasPrevPage = !isRecorder && currentPage > 1;
     if (hasPrevPage) {
       // Decrement the number of items to show, making space for the "Previous" button.
       itemsToDisplay--;
     }
 
-    // Calculate the starting index for the slice.
-    // This logic is a bit dense: it accounts for the shifting number of items on each page
-    // (e.g., page 1 has one pagination button, middle pages have two, the last page has one).
-    const startIndex = hasPrevPage
-      ? (currentPage - 1) * itemsToDisplay - (currentPage - 2)
-      : 0;
-
-    // Slice the array to find all participants that would come *after* the current page's items.
-    const potentialNextItems = allParticipants.slice(
-      startIndex + itemsToDisplay,
-    );
     // Determine if a "Next" button is needed based on the remaining items.
-    const hasNextPage = !isRecorder && potentialNextItems.length > 0;
+    const hasNextPage = allParticipants.length > startIndex + itemsToDisplay;
+
     if (hasNextPage) {
       // Decrement the number of items to show, making space for the "Next" button.
       itemsToDisplay--;
@@ -199,17 +230,24 @@ const VideoLayout = ({
 
     // Now that we have the final number of items to display, calculate the end index.
     const endIndex = startIndex + itemsToDisplay;
+
     // Slice the main array to get the participants for the current page.
-    const display = allParticipants.slice(startIndex, endIndex);
+    // This raw typed list is used by PiP so it follows the current page without relying on wrapped layout elements.
+    const pipParticipants = allParticipants.slice(startIndex, endIndex);
+
+    // This render list may include pagination buttons and is passed to the layout helpers.
+    const participantsToRender: ReactElement[] = [...pipParticipants];
 
     // If a "Next" button is needed, create the button component and add it to the end of our display array.
     if (hasNextPage) {
-      display.push(
+      const potentialNextItems = allParticipants.slice(endIndex);
+
+      participantsToRender.push(
         <button
           key="next-page"
           role="button"
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
-          onClick={() => nextPage(currentPage)}
+          onClick={nextPage}
         >
           <div className="left flex-1 flex justify-center items-center absolute top-0 left-0 w-full h-full">
             {formatNextPreButton(potentialNextItems)}
@@ -225,13 +263,14 @@ const VideoLayout = ({
     if (hasPrevPage) {
       // Get the list of participants that were on the previous pages.
       const prevItems = allParticipants.slice(0, startIndex);
+
       // The unshift() method adds one or more elements to the beginning of an array.
-      display.unshift(
+      participantsToRender.unshift(
         <button
           key="prev-page"
           role="button"
           className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
-          onClick={() => prePage(currentPage)}
+          onClick={prePage}
         >
           <div className="right rotate-90 absolute top-[calc(50%-12px)] left-3">
             <AngleDown />
@@ -243,8 +282,12 @@ const VideoLayout = ({
       );
     }
 
-    // Return the final array of components to be rendered.
-    return display;
+    // Return the final array of components to be rendered,
+    // plus the raw typed participants for PiP.
+    return {
+      pipParticipants,
+      participantsToRender,
+    };
   }, [
     isRecorder,
     nextPage,
@@ -259,27 +302,30 @@ const VideoLayout = ({
     // and passes them directly to the correct layout helper.
     let layout: ReactElement[];
 
+    const participantsToRender = paginatedParticipants.participantsToRender;
+
     if (isMobile) {
       layout = getElmsForMobile(
-        paginatedParticipants,
+        participantsToRender,
         isPortrait,
         enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else if (isTablet) {
       layout = getElmsForTablet(
-        paginatedParticipants,
+        participantsToRender,
         enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else {
       // PC
       if (enabledVerticalViewMode && isEnabledExtendedVerticalCamView) {
-        layout = getElmsForPCExtendedVerticalView(paginatedParticipants);
+        layout = getElmsForPCExtendedVerticalView(participantsToRender);
       } else {
-        layout = getElmsForPc(paginatedParticipants, enabledVerticalViewMode);
+        layout = getElmsForPc(participantsToRender, enabledVerticalViewMode);
       }
     }
+
     return layout;
   }, [
     paginatedParticipants,
@@ -294,6 +340,7 @@ const VideoLayout = ({
   useEffect(() => {
     const isPaginating =
       allParticipants.length > webcamPerPage && currentPage > 1;
+
     dispatch(setWebcamPaginating(isPaginating));
   }, [allParticipants.length, webcamPerPage, currentPage, dispatch]);
 
@@ -306,15 +353,20 @@ const VideoLayout = ({
     // This effect manages page number resets.
     // It resets to page 1 if the current page becomes invalid due to changes
     // in participant count or layout (which affects webcamPerPage).
-    const totalPages = Math.ceil(allParticipantsCount / webcamPerPage);
+    const totalPages = getTotalWebcamPages(
+      allParticipantsCount,
+      webcamPerPage,
+      isRecorder,
+    );
+
     if (
       currentPage > totalPages ||
       (allParticipantsCount > 0 && currentPage === 0)
     ) {
       setCurrentPage(1);
     }
-    //eslint-disable-next-line
-  }, [allParticipantsCount, webcamPerPage]);
+    // eslint-disable-next-line
+  }, [allParticipantsCount, webcamPerPage, isRecorder]);
 
   if (!totalNumWebcams) {
     return null;
@@ -323,7 +375,7 @@ const VideoLayout = ({
   if (pinParticipant) {
     return (
       <PinnedLayout
-        allParticipants={allParticipants}
+        pipParticipants={paginatedParticipants.pipParticipants}
         participantsToRender={structuredLayout}
         pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
@@ -338,7 +390,7 @@ const VideoLayout = ({
   if (enabledVerticalViewMode) {
     return (
       <VerticalLayout
-        allParticipants={allParticipants}
+        pipParticipants={paginatedParticipants.pipParticipants}
         participantsToRender={structuredLayout}
         pinParticipant={undefined}
         totalNumWebcams={totalNumWebcams}

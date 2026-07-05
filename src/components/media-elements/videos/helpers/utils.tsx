@@ -227,11 +227,27 @@ export const getElmsForPCExtendedVerticalView = (
   return elms;
 };
 
-const sliceFirstLetterOfText = (name: any) =>
-  name
+const sliceFirstLetterOfText = (name?: string) =>
+  (name ?? '')
+    .trim()
     .split(/\s+/)
-    .map((word: string[]) => word[0].toUpperCase())
+    .filter(Boolean)
+    .map((word) => word[0]?.toUpperCase() ?? '')
     .join('');
+
+const getParticipantKey = (
+  participantElement: ReactElement<VideoParticipantProps>,
+  suffix: string,
+) => {
+  const participant = participantElement.props.participant;
+
+  return `${
+    participant.sid ??
+    participantElement.key ??
+    participant.name ??
+    'participant'
+  }-${suffix}`;
+};
 
 export const formatNextPreButton = (
   remaining: ReactElement<VideoParticipantProps>[],
@@ -242,7 +258,7 @@ export const formatNextPreButton = (
 
   const shortNameElms = participantsToShow.map((p) => (
     <span
-      key={`${p.key}-short`}
+      key={getParticipantKey(p, 'short')}
       className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ml-2 overflow-hidden"
     >
       {sliceFirstLetterOfText(p.props.participant.name)}
@@ -251,7 +267,7 @@ export const formatNextPreButton = (
 
   const fullNameElms = participantsToShow.map((p, index) => (
     <span
-      key={`${p.key}-full`}
+      key={getParticipantKey(p, 'full')}
       className="inline-block order-1 pr-1 capitalize"
     >
       {p.props.participant.name}
@@ -285,4 +301,24 @@ export const formatNextPreButton = (
       </div>
     </>
   );
+};
+
+export const getTotalWebcamPages = (
+  totalItems: number,
+  perPage: number,
+  isRecorder?: boolean,
+) => {
+  if (totalItems <= perPage) return 1;
+  if (isRecorder) return 1;
+
+  const firstPageParticipantCapacity = perPage - 1;
+  const middlePageParticipantCapacity = perPage - 2;
+
+  if (totalItems <= firstPageParticipantCapacity) {
+    return 1;
+  }
+
+  const remainingAfterFirstPage = totalItems - firstPageParticipantCapacity;
+
+  return 1 + Math.ceil(remainingAfterFirstPage / middlePageParticipantCapacity);
 };
