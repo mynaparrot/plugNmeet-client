@@ -5,7 +5,7 @@ interface SidePanelProps {
   isActive: boolean;
   panelClass: string;
   children: ReactNode;
-  onToggle?: (isOpen: boolean) => void;
+  onToggle: (isOpen: boolean) => void;
 }
 
 const SidePanel = ({
@@ -23,8 +23,8 @@ const SidePanel = ({
       leave="transform transition ease-in-out duration-300"
       leaveFrom="translate-y-0 md:translate-x-0"
       leaveTo="translate-y-full md:translate-y-0 md:translate-x-full"
-      afterEnter={() => onToggle?.(true)}
-      afterLeave={() => onToggle?.(false)}
+      afterEnter={() => onToggle(true)}
+      afterLeave={() => onToggle(false)}
     >
       <div
         className={`${panelClass} bottom-0 absolute w-full md:w-[300px] 3xl:w-[340px] right-0 h-[300px] md:h-full`}

@@ -21,8 +21,11 @@ const DarkThemeSwitcher = () => {
   };
 
   return (
-    <button onClick={toggleDarkMode}>
-      <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden hidden lg:flex items-center cursor-pointer transition-all duration-300">
+    <button
+      onClick={toggleDarkMode}
+      className="flex items-center shrink-0 h-8 w-8 md:w-auto justify-center"
+    >
+      <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden hidden md:flex items-center cursor-pointer transition-all duration-300">
         <div
           className={`item w-7 md:w-8 3xl:w-9 h-7 md:h-8 3xl:h-9 rounded-xl transition-all duration-300 flex items-center justify-center text-[#005580] dark:text-white dark:opacity-30 ${theme === 'light' ? 'bg-white dark:bg-Gray-950' : ''}`}
         >
@@ -34,7 +37,7 @@ const DarkThemeSwitcher = () => {
           <MoonIcon />
         </div>
       </div>
-      <div className="mobile inline lg:hidden cursor-pointer">
+      <div className="mobile flex md:hidden cursor-pointer items-center justify-center">
         {theme === 'dark' ? (
           <div className="moon w-8 h-8 rounded-full flex items-center justify-center">
             <i className="pnm-moon w-4 h-4 text-primaryColor dark:text-white" />

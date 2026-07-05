@@ -49,20 +49,18 @@ const Header = () => {
       <>
         <header
           id="main-header"
-          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-wrap md:flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
+          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
         >
-          <div className="left relative z-20 flex items-center gap-2 md:gap-3 lg:gap-5 w-1/2 md:w-1/3">
+          <div className="left relative z-20 flex items-center gap-2 md:gap-2.5 lg:gap-5 shrink-0 justify-start">
             <HeaderLogo />
-            <div className="dark-mode">
-              <DarkThemeSwitcher />
-            </div>
+            <DarkThemeSwitcher />
           </div>
-          <div className="middle w-full md:w-1/3 z-10 order-3 md:order-2 py-0.5 pointer-events-none">
-            <h2 className="header-title text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center truncate">
+          <div className="middle flex-1 min-w-0 flex justify-center z-10 order-2 py-0.5 pointer-events-none mx-2">
+            <h2 className="header-title text-xs sm:text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center truncate">
               {title}
             </h2>
           </div>
-          <div className="right flex items-center justify-end relative -right-3 w-1/2 md:w-1/3 gap-0.5 z-30 order-2 md:order-3">
+          <div className="right flex items-center justify-end relative -right-3 shrink-0 gap-0.5 z-30 order-3">
             <DurationView />
             <UserNotifications />
             <ConnectionStatus />
