@@ -3,33 +3,18 @@ import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../store';
-import { ConnectionQuality } from '../../helpers/livekit/ConnectionQualityMonitor';
 import CopyIcon from '../../assets/Icons/CopyIcon';
 import Tooltip from '../../helpers/ui/tooltip';
+import { getConnectionQualityColor } from '../../helpers/utils';
 
 const ConnectionStatus = () => {
   const { t } = useTranslation();
   const qualityStats = useAppSelector((state) => state.session.qualityStats);
   const [copied, setCopied] = useState(false);
 
-  const getColor = (quality: ConnectionQuality) => {
-    switch (quality) {
-      case ConnectionQuality.Excellent:
-        return '#22c55e';
-      case ConnectionQuality.Good:
-        return '#84cc16';
-      case ConnectionQuality.Poor:
-        return '#f97316';
-      case ConnectionQuality.Lost:
-        return '#ef4444';
-      default:
-        return '#9ca3af';
-    }
-  };
-
   const overallColor = useMemo(() => {
     if (!qualityStats) return '#9ca3af';
-    return getColor(qualityStats.overallQuality);
+    return getConnectionQualityColor(qualityStats.overallQuality);
   }, [qualityStats]);
 
   const handleCopy = () => {
@@ -118,7 +103,7 @@ const ConnectionStatus = () => {
                     `header.connection-status.qualities.${qualityStats.uploadQuality}`,
                   ),
                   t('header.connection-status.tooltips.upload'),
-                  getColor(qualityStats.uploadQuality),
+                  getConnectionQualityColor(qualityStats.uploadQuality),
                 )}
 
                 {renderStat(
@@ -127,7 +112,7 @@ const ConnectionStatus = () => {
                     `header.connection-status.qualities.${qualityStats.receiveQuality}`,
                   ),
                   t('header.connection-status.tooltips.download'),
-                  getColor(qualityStats.receiveQuality),
+                  getConnectionQualityColor(qualityStats.receiveQuality),
                 )}
 
                 {renderStat(

@@ -1,18 +1,33 @@
-import React, { ReactElement, useCallback, useEffect, useRef } from 'react';
-import { Track, VideoTrack } from 'livekit-client';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { createPortal } from 'react-dom';
 
 import { useAppDispatch } from '../../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../../store/slices/bottomIconsActivitySlice';
 import { ArrowRight } from '../../../../assets/Icons/ArrowRight';
 import { VideoParticipantProps } from '../videoParticipant';
-
-const MAX_NUM_WEBCAMS_PIP = 5,
-  PIP_WINDOW_HEIGHT = 600,
-  PIP_WINDOW_WIDTH = 280;
+import PipVideoTrack from './pip/pipVideoTrack';
+import {
+  DocumentPictureInPictureWindow,
+  getPipItems,
+  injectPipStyles,
+  IPipItem,
+  PIP_WINDOW_HEIGHT,
+  PIP_WINDOW_WIDTH,
+} from './pip/utils';
 
 interface IVerticalLayoutProps {
   allParticipants: ReactElement<VideoParticipantProps>[];
-  participantsToRender: Array<ReactElement>;
+  participantsToRender: React.ReactElement<
+    unknown,
+    string | React.JSXElementConstructor<any>
+  >[];
   pinParticipant?: ReactElement;
   totalNumWebcams: number;
   currentPage: number;
@@ -32,10 +47,20 @@ const VerticalLayout = ({
   isDesktop,
 }: IVerticalLayoutProps) => {
   const dispatch = useAppDispatch();
+
+  const [pipWindow, setPipWindow] = useState<Window | null>(null);
+
   const pipWindowRef = useRef<Window | null>(null);
-  const tracksToDetachRef = useRef<
-    { track: VideoTrack; videoElm: HTMLVideoElement }[]
-  >([]);
+  const isMountedRef = useRef(false);
+
+  const isDocumentPipSupported =
+    typeof window !== 'undefined' &&
+    typeof (window as DocumentPictureInPictureWindow).documentPictureInPicture
+      ?.requestWindow === 'function';
+
+  const pipItems = useMemo<IPipItem[]>(() => {
+    return getPipItems(allParticipants);
+  }, [allParticipants]);
 
   const toggleExtendedVerticalCamView = useCallback(() => {
     dispatch(
@@ -43,103 +68,76 @@ const VerticalLayout = ({
     );
   }, [dispatch, isEnabledExtendedVerticalCamView]);
 
-  const renderPipView = useCallback(
-    (participants: ReactElement<VideoParticipantProps>[]) => {
-      const pipWindow = pipWindowRef.current;
-      if (!pipWindow) return;
-
-      // First, clear previous content & detach old tracks
-      while (pipWindow.document.body.firstChild) {
-        pipWindow.document.body.removeChild(pipWindow.document.body.firstChild);
-      }
-      tracksToDetachRef.current.forEach(({ track, videoElm }) => {
-        track.detach(videoElm);
-      });
-      tracksToDetachRef.current = [];
-
-      // Now create a flex container for a single-column layout
-      const container = document.createElement('div');
-      container.style.display = 'flex';
-      container.style.flexDirection = 'column';
-      container.style.width = '100%';
-      container.style.height = '100%';
-      pipWindow.document.body.appendChild(container);
-
-      // Finally iterate through participants, create video elements, and attach tracks
-      participants.slice(0, MAX_NUM_WEBCAMS_PIP).forEach((p) => {
-        const participant = p.props.participant;
-        const videoTrack = participant.getTrackPublication(
-          Track.Source.Camera,
-        )?.videoTrack;
-
-        if (videoTrack) {
-          const video = document.createElement('video');
-          video.style.width = '100%';
-          video.style.marginBottom = '8px';
-          video.autoplay = true;
-          video.muted = true;
-          video.title = p.props.participant.name ?? '';
-          videoTrack.attach(video);
-          container.appendChild(video);
-          tracksToDetachRef.current.push({
-            track: videoTrack,
-            videoElm: video,
-          });
-        }
-      });
-    },
-    [],
-  );
-
   const openPip = useCallback(async () => {
     try {
-      const pipWindow = await (
-        window as any
-      ).documentPictureInPicture.requestWindow({
+      if (typeof window === 'undefined') return;
+
+      const documentPictureInPicture = (
+        window as DocumentPictureInPictureWindow
+      ).documentPictureInPicture;
+
+      if (typeof documentPictureInPicture?.requestWindow !== 'function') {
+        return;
+      }
+
+      if (pipWindowRef.current && !pipWindowRef.current.closed) {
+        pipWindowRef.current.focus();
+        return;
+      }
+
+      const win = await documentPictureInPicture.requestWindow({
         width: PIP_WINDOW_WIDTH,
         height: PIP_WINDOW_HEIGHT,
       });
-      pipWindowRef.current = pipWindow;
 
-      // Set base styles for the PiP window
-      pipWindow.document.documentElement.style.height = '100%';
-      pipWindow.document.body.style.height = '100%';
-      pipWindow.document.body.style.margin = '0';
-      pipWindow.document.body.style.background = '#000';
+      pipWindowRef.current = win;
+      injectPipStyles(win);
 
-      // Initial render
-      renderPipView(allParticipants);
+      // Explicitly pull focus back to the PiP window after OS/browser focus shifts.
+      setTimeout(() => {
+        if (!win.closed) {
+          win.focus();
+        }
+      }, 0);
 
-      // When the Picture-in-Picture window closes, detach all tracks.
-      pipWindow.addEventListener('pagehide', () => {
-        tracksToDetachRef.current.forEach(({ track, videoElm }) => {
-          track.detach(videoElm);
-        });
-        tracksToDetachRef.current = [];
-        pipWindowRef.current = null;
-      });
+      win.addEventListener(
+        'pagehide',
+        () => {
+          pipWindowRef.current = null;
+
+          if (isMountedRef.current) {
+            setPipWindow(null);
+          }
+        },
+        { once: true },
+      );
+
+      if (isMountedRef.current) {
+        setPipWindow(win);
+      }
     } catch (error) {
       console.error('Failed to open PiP window:', error);
-    }
-  }, [allParticipants, renderPipView]);
 
-  useEffect(() => {
-    // If PiP window is open, re-render its content when participants change
-    if (pipWindowRef.current) {
-      renderPipView(allParticipants);
-    }
-  }, [allParticipants, renderPipView]);
+      pipWindowRef.current = null;
 
-  useEffect(() => {
-    // clean everything up when the component unmounts
-    return () => {
-      if (pipWindowRef.current) {
-        tracksToDetachRef.current.forEach(({ track, videoElm }) => {
-          track.detach(videoElm);
-        });
-        pipWindowRef.current.close();
-        pipWindowRef.current = null;
+      if (isMountedRef.current) {
+        setPipWindow(null);
       }
+    }
+  }, []);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+
+      // Only close on unmount if the window exists and has already established state.
+      if (pipWindowRef.current && !pipWindowRef.current.closed) {
+        pipWindowRef.current.close();
+      }
+
+      pipWindowRef.current = null;
     };
   }, []);
 
@@ -160,43 +158,82 @@ const VerticalLayout = ({
   } ${pinParticipant ? 'has-pin-cam' : ''}`;
 
   return (
-    <div className={wrapperClasses}>
-      {(window as any).documentPictureInPicture && (
-        <button
-          className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
-          onClick={openPip}
-          title="Picture-in-Picture"
-        >
-          <i className="icon pnm-pip text-[14px] text-white" />
-        </button>
-      )}
-      <div className={innerClasses}>
-        {pinParticipant && (
+    <>
+      {pipWindow &&
+        createPortal(
           <div
-            className={`pinCam-item video-camera-item order-2! ${
-              isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''
-            }`}
+            className="pip-flex-container"
+            style={
+              {
+                '--pip-count': Math.max(pipItems.length, 1),
+              } as React.CSSProperties & Record<'--pip-count', number>
+            }
           >
-            {pinParticipant}
-          </div>
+            {pipItems.map((item) => (
+              <PipVideoTrack
+                key={item.key}
+                videoTrack={item.videoTrack}
+                name={item.name}
+                isCameraMuted={item.isCameraMuted}
+              />
+            ))}
+          </div>,
+          pipWindow.document.body,
         )}
-        {participantsToRender}
-      </div>
-      {isDesktop && !isSidebarOpen && (
-        <button
-          onClick={toggleExtendedVerticalCamView}
-          className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-left-4"
-        >
-          <span
-            className={`${
-              isEnabledExtendedVerticalCamView ? '' : 'rotate-180'
-            }`}
+
+      <div className={wrapperClasses}>
+        {isDocumentPipSupported && (
+          <button
+            type="button"
+            className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+            onMouseDown={(event) => {
+              event.stopPropagation();
+            }}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              void openPip();
+            }}
+            title="Picture-in-Picture"
           >
-            <ArrowRight />
-          </span>
-        </button>
-      )}
-    </div>
+            <i className="icon pnm-pip text-[14px] text-white" />
+          </button>
+        )}
+
+        <div className={innerClasses}>
+          {pinParticipant && (
+            <div
+              className={`pinCam-item video-camera-item order-2! ${
+                isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''
+              }`}
+            >
+              {pinParticipant}
+            </div>
+          )}
+
+          {participantsToRender}
+        </div>
+
+        {isDesktop && !isSidebarOpen && (
+          <button
+            type="button"
+            onClick={toggleExtendedVerticalCamView}
+            className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-left-4"
+          >
+            <span
+              className={`${
+                isEnabledExtendedVerticalCamView ? '' : 'rotate-180'
+              }`}
+            >
+              <ArrowRight />
+            </span>
+          </button>
+        )}
+      </div>
+    </>
   );
 };
 

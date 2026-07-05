@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
-import { ConnectionQuality } from '../../../../helpers/livekit/ConnectionQualityMonitor';
+import { getConnectionQualityColor } from '../../../../helpers/utils';
 
 interface IConnectionStatusProps {
   userId: string;
@@ -14,18 +14,7 @@ const ConnectionStatus = ({ userId }: IConnectionStatusProps) => {
   );
 
   const color = useMemo(() => {
-    switch (connectionQuality) {
-      case ConnectionQuality.Excellent:
-        return '#38f105';
-      case ConnectionQuality.Good:
-        return '#c8f6bd';
-      case ConnectionQuality.Poor:
-        return '#FF0000';
-      case ConnectionQuality.Lost:
-        return '#e03131';
-      default:
-        return '#FFFFFF';
-    }
+    return getConnectionQualityColor(connectionQuality);
   }, [connectionQuality]);
 
   return (

@@ -1,4 +1,4 @@
-import React, { Dispatch, FormEvent } from 'react';
+import React, { Dispatch, SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
@@ -13,7 +13,7 @@ const InsertE2EEKey = ({ setOpenConn }: IInsertE2EEKeyProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);

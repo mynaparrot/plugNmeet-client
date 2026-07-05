@@ -1,4 +1,9 @@
-import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
+import {
+  AudioPresets,
+  ConnectionQuality,
+  ScreenSharePresets,
+  VideoPresets,
+} from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
 
 import i18n from './i18n';
@@ -455,5 +460,20 @@ export const getRecorderBotOptions = (
       return roomFeatures?.externalBroadcastingFeatures?.recorderBotOptions;
     default:
       return undefined;
+  }
+};
+
+export const getConnectionQualityColor = (quality: ConnectionQuality) => {
+  switch (quality) {
+    case ConnectionQuality.Excellent:
+      return '#22c55e';
+    case ConnectionQuality.Good:
+      return '#84cc16';
+    case ConnectionQuality.Poor:
+      return '#f97316';
+    case ConnectionQuality.Lost:
+      return '#ef4444';
+    default:
+      return '#9ca3af';
   }
 };

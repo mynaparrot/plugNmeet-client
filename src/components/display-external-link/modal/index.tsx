@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { SubmitEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
@@ -52,7 +52,7 @@ const DisplayExternalLinkModal = () => {
     }));
   }, []);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let url: URL;

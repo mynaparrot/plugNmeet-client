@@ -1,5 +1,6 @@
 import React, {
   ReactElement,
+  SubmitEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -55,7 +56,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const [addResponse, { isLoading, data: addReqResponse }] =
     useAddResponseMutation();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!selectedOption || isLoading) {

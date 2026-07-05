@@ -63,16 +63,11 @@ const VideoLayout = ({
 
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [enabledVerticalViewMode, setEnabledVerticalViewMode] =
-    useState(isVertical);
 
-  useEffect(() => {
-    let verticalMode = !!isVertical;
-    if (typeof pinParticipant !== 'undefined') {
-      verticalMode = true;
-    }
-    setEnabledVerticalViewMode(verticalMode);
-  }, [dispatch, isVertical, pinParticipant]);
+  // Derive view mode directly from props to prevent unnecessary re-renders via local state
+  const enabledVerticalViewMode = useMemo(() => {
+    return !!isVertical || typeof pinParticipant !== 'undefined';
+  }, [isVertical, pinParticipant]);
 
   useEffect(() => {
     // 1. Determine the default value based on device type.
@@ -268,13 +263,13 @@ const VideoLayout = ({
       layout = getElmsForMobile(
         paginatedParticipants,
         isPortrait,
-        !!enabledVerticalViewMode,
+        enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else if (isTablet) {
       layout = getElmsForTablet(
         paginatedParticipants,
-        !!enabledVerticalViewMode,
+        enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else {
@@ -282,7 +277,7 @@ const VideoLayout = ({
       if (enabledVerticalViewMode && isEnabledExtendedVerticalCamView) {
         layout = getElmsForPCExtendedVerticalView(paginatedParticipants);
       } else {
-        layout = getElmsForPc(paginatedParticipants, !!enabledVerticalViewMode);
+        layout = getElmsForPc(paginatedParticipants, enabledVerticalViewMode);
       }
     }
     return layout;
@@ -345,7 +340,7 @@ const VideoLayout = ({
       <VerticalLayout
         allParticipants={allParticipants}
         participantsToRender={structuredLayout}
-        pinParticipant={pinParticipant}
+        pinParticipant={undefined}
         totalNumWebcams={totalNumWebcams}
         currentPage={currentPage}
         isSidebarOpen={isSidebarOpen}
