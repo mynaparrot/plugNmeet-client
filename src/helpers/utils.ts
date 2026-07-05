@@ -353,6 +353,12 @@ export function createEmptyVideoStreamTrack(name: string) {
     throw Error('Could not get empty media stream video track');
   }
 
+  // Attach custom property metadata to easily identify this as a placeholder canvas track
+  Object.defineProperty(emptyStreamTrack, 'isPlaceholderCanvas', {
+    value: true,
+    writable: false,
+  });
+
   emptyStreamTrack.onended = () => {
     if (animationInterval) {
       clearInterval(animationInterval);

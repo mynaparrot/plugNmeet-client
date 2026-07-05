@@ -45,9 +45,6 @@ const MIN_STREAMS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
 const OUTBOUND_STUCK_INTERVAL_THRESHOLD = 2;
-const AUTO_RECOVERY_COOLDOWN = 45_000;
-const MAX_AUTO_RECOVERY_ATTEMPTS = 2;
-const STUCK_MEDIA_NOTIFICATION_COOLDOWN = 60_000;
 
 type PrevInboundStats = {
   lost: number;
@@ -144,13 +141,6 @@ export default class ConnectionQualityMonitor {
   private currentQuality: PnmConnectionQuality = PnmConnectionQuality.Excellent;
   private qualityScore = MAX_SCORE;
 
-  private lastAudioRecoveryAt = 0;
-  private lastVideoRecoveryAt = 0;
-  private audioRecoveryCount = 0;
-  private videoRecoveryCount = 0;
-  private lastAudioStuckNotificationAt = 0;
-  private lastVideoStuckNotificationAt = 0;
-
   private prevInboundStats: Record<string, PrevInboundStats> = {};
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
 
@@ -199,13 +189,6 @@ export default class ConnectionQualityMonitor {
     this.isCheckingQuality = false;
     this.currentQuality = PnmConnectionQuality.Excellent;
     this.qualityScore = MAX_SCORE;
-
-    this.lastAudioRecoveryAt = 0;
-    this.lastVideoRecoveryAt = 0;
-    this.audioRecoveryCount = 0;
-    this.videoRecoveryCount = 0;
-    this.lastAudioStuckNotificationAt = 0;
-    this.lastVideoStuckNotificationAt = 0;
 
     this.prevInboundStats = {};
     this.prevOutboundStats = {};
@@ -261,6 +244,15 @@ export default class ConnectionQualityMonitor {
         const prev = this.prevOutboundStats[ssrc];
 
         const senderTrack = this.findSenderTrackByMid(stat.mid);
+
+        // Detect empty blank canvas tracks to avoid false reports
+        const isCanvasTrack =
+          senderTrack &&
+          ((senderTrack as any).isPlaceholderCanvas ||
+            senderTrack.label === 'canvas' ||
+            (typeof HTMLCanvasElement !== 'undefined' &&
+              (senderTrack as any).canvas instanceof HTMLCanvasElement));
+
         const matchingPub = this.findActiveLocalPublication(
           outboundKind,
           senderTrack,
@@ -270,7 +262,13 @@ export default class ConnectionQualityMonitor {
 
         let isStagnant = false;
 
-        if (prev && isTrackActive && prev.bytesSent > 0 && currentBytes > 0) {
+        if (
+          prev &&
+          isTrackActive &&
+          !isCanvasTrack &&
+          prev.bytesSent > 0 &&
+          currentBytes > 0
+        ) {
           if (outboundKind === 'audio') {
             isStagnant = currentBytes === prev.bytesSent;
           }
@@ -292,7 +290,6 @@ export default class ConnectionQualityMonitor {
 
           if (isStuck) {
             state.isAudioOutboundStuck = true;
-            void this.autoRecoverTrack('audio', senderTrack);
           }
         }
 
@@ -301,7 +298,6 @@ export default class ConnectionQualityMonitor {
 
           if (isStuck) {
             state.isVideoOutboundStuck = true;
-            void this.autoRecoverTrack('video', senderTrack);
           }
         }
 
@@ -474,72 +470,6 @@ export default class ConnectionQualityMonitor {
         return pub;
       }
     }
-  }
-
-  private async autoRecoverTrack(
-    kind: 'audio' | 'video',
-    senderTrack?: MediaStreamTrack | null,
-  ) {
-    const now = Date.now();
-
-    const lastRecoveryAt =
-      kind === 'audio' ? this.lastAudioRecoveryAt : this.lastVideoRecoveryAt;
-
-    const recoveryCount =
-      kind === 'audio' ? this.audioRecoveryCount : this.videoRecoveryCount;
-
-    if (now - lastRecoveryAt < AUTO_RECOVERY_COOLDOWN) return;
-
-    if (recoveryCount >= MAX_AUTO_RECOVERY_ATTEMPTS) {
-      this.notifyUserOfStuckMedia(kind);
-      return;
-    }
-
-    const matchingPub = this.findActiveLocalPublication(kind, senderTrack);
-    const track = matchingPub?.track;
-
-    if (!track || typeof track.restartTrack !== 'function') return;
-
-    if (kind === 'audio') {
-      this.lastAudioRecoveryAt = now;
-      this.audioRecoveryCount++;
-    } else {
-      this.lastVideoRecoveryAt = now;
-      this.videoRecoveryCount++;
-    }
-
-    try {
-      await track.restartTrack();
-    } catch (error) {
-      console.error(
-        `[QualityMonitor] Failed to auto-recover local ${kind} track:`,
-        error,
-      );
-    }
-  }
-
-  private notifyUserOfStuckMedia(kind: 'audio' | 'video') {
-    const now = Date.now();
-
-    const lastNotificationAt =
-      kind === 'audio'
-        ? this.lastAudioStuckNotificationAt
-        : this.lastVideoStuckNotificationAt;
-
-    if (now - lastNotificationAt < STUCK_MEDIA_NOTIFICATION_COOLDOWN) return;
-
-    if (kind === 'audio') {
-      this.lastAudioStuckNotificationAt = now;
-    } else {
-      this.lastVideoStuckNotificationAt = now;
-    }
-
-    store.dispatch(
-      addUserNotification({
-        message: i18n.t(`notifications.local-${kind}-stuck-fallback`),
-        typeOption: 'warning',
-      }),
-    );
   }
 
   private classify({
