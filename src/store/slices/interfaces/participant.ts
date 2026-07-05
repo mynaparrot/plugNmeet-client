@@ -1,4 +1,4 @@
-import { ConnectionQuality } from '../../../helpers/livekit/ConnectionQualityMonitor';
+import { PnmConnectionQuality } from '../../../helpers/livekit/ConnectionQualityMonitor';
 import { ICurrentUserMetadata } from './session';
 
 export interface IParticipant {
@@ -11,7 +11,7 @@ export interface IParticipant {
   videoTracks: number;
   screenShareTrack: number;
   isMuted: boolean;
-  connectionQuality: ConnectionQuality;
+  connectionQuality: PnmConnectionQuality;
   isLocal: boolean;
   joinedAt: number;
   visibility: string;

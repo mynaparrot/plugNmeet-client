@@ -39,7 +39,7 @@ import { roomConnectionStatus } from '../../components/app/helper';
 import { getConfigValue, isFirefoxMobile } from '../utils';
 import { CorsWorker } from '../libs/corsWorker';
 import ConnectionQualityMonitor, {
-  ConnectionQuality,
+  PnmConnectionQuality,
   QualityStats,
 } from './ConnectionQualityMonitor';
 import { updateQualityStats } from '../../store/slices/sessionSlice';
@@ -69,7 +69,7 @@ export default class ConnectLivekit
   private serverInfo: MediaServerConnInfo | undefined = undefined;
   private poorConnectionTimestamps: number[] = [];
 
-  private lastReportedConnectionQuality: ConnectionQuality | null = null;
+  private lastReportedConnectionQuality: PnmConnectionQuality | null = null;
   private readonly connectionQualityMonitor: ConnectionQualityMonitor;
 
   constructor(
@@ -529,7 +529,9 @@ export default class ConnectLivekit
     }
   };
 
-  private handleTimerBasedFallback = (connectionQuality: ConnectionQuality) => {
+  private handleTimerBasedFallback = (
+    connectionQuality: PnmConnectionQuality,
+  ) => {
     if (this.fallbackTimer) {
       return;
     }

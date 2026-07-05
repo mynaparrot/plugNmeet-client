@@ -1,9 +1,4 @@
-import {
-  AudioPresets,
-  ConnectionQuality,
-  ScreenSharePresets,
-  VideoPresets,
-} from 'livekit-client';
+import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
 
 import i18n from './i18n';
@@ -13,6 +8,7 @@ import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 import sanitizeHtml from 'sanitize-html';
 import { RecorderBotOptions, RoomCreateFeatures } from 'plugnmeet-protocol-js';
+import { PnmConnectionQuality } from './livekit/ConnectionQualityMonitor';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -463,15 +459,15 @@ export const getRecorderBotOptions = (
   }
 };
 
-export const getConnectionQualityColor = (quality: ConnectionQuality) => {
+export const getConnectionQualityColor = (quality: PnmConnectionQuality) => {
   switch (quality) {
-    case ConnectionQuality.Excellent:
+    case PnmConnectionQuality.Excellent:
       return '#22c55e';
-    case ConnectionQuality.Good:
+    case PnmConnectionQuality.Good:
       return '#84cc16';
-    case ConnectionQuality.Poor:
+    case PnmConnectionQuality.Poor:
       return '#f97316';
-    case ConnectionQuality.Lost:
+    case PnmConnectionQuality.Lost:
       return '#ef4444';
     default:
       return '#9ca3af';
