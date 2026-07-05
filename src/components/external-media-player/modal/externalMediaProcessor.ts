@@ -40,13 +40,19 @@ class ExternalMediaProcessor {
   };
 
   // Allows UI components to re-register callbacks on mount if an upload is already running
-  public registerCallbacks(callbacks: IExternalMediaUploadCallbacks) {
+  public registerCallbacks = (callbacks: IExternalMediaUploadCallbacks) => {
     this.activeCallbacks = callbacks;
-  }
+    // Instantly notify listener of the current active progress state upon subscription
+    if (this.uploadStatus === 'uploading') {
+      callbacks.onProgress(this.progress);
+    } else if (this.uploadStatus === 'error') {
+      callbacks.onError('Error occurred');
+    }
+  };
 
-  public unregisterCallbacks() {
+  public unregisterCallbacks = () => {
     this.activeCallbacks = null;
-  }
+  };
 
   private cleanup() {
     this._isBusy = false;

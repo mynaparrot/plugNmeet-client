@@ -8,17 +8,12 @@ import React, {
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { useTranslation } from 'react-i18next';
 
+import officeFileProcessor, {
+  IOfficeFileProcessing,
+  OfficeFileStatus,
+} from './officeFileProcessor';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 import { TrashSVG } from '../../../assets/Icons/TrashSVG';
-import {
-  getIsAnyFileProcessing,
-  getProcessorStatus,
-  OfficeFileStatus,
-  IOfficeFileProcessing,
-  registerProcessorCallbacks,
-  unregisterProcessorCallbacks,
-  startProcessing,
-} from './officeFileProcessor';
 
 interface FileUploadProgressProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
@@ -83,17 +78,17 @@ const FileUploadProgress = ({
       },
     };
 
-    if (getIsAnyFileProcessing()) {
+    if (officeFileProcessor.isBusy) {
       setDisableUploading(true);
-      const ps = getProcessorStatus();
+      const ps = officeFileProcessor.status;
       setCurrentFile({ name: ps.fileName, size: ps.fileSize });
       setStatus(ps.status);
       setUploadingProgress(ps.progress);
-      registerProcessorCallbacks(callbacks);
+      officeFileProcessor.registerCallbacks(callbacks);
     } else if (file) {
       setCurrentFile(file);
       // if no file is processing, start one for the current file
-      startProcessing(
+      officeFileProcessor.start(
         file,
         excalidrawAPI,
         allowedFileTypes,
@@ -103,13 +98,13 @@ const FileUploadProgress = ({
     }
 
     return () => {
-      unregisterProcessorCallbacks();
+      officeFileProcessor.unregisterCallbacks();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file, cleanupProcess]);
 
   const handleDelete = useCallback(() => {
-    if (!getIsAnyFileProcessing()) {
+    if (!officeFileProcessor.isBusy) {
       cleanupProcess();
     }
   }, [cleanupProcess]);

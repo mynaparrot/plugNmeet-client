@@ -59,7 +59,7 @@ class OfficeFileProcessor {
   };
 
   // Allows UI component to subscribe to an already active background upload/conversion
-  public registerCallbacks(callbacks: IOfficeFileProcessing) {
+  public registerCallbacks = (callbacks: IOfficeFileProcessing) => {
     this.activeCallbacks = callbacks;
     // Instantly notify listener of the current active progress state upon subscription
     if (this.fileStatus === 'converting') {
@@ -69,11 +69,11 @@ class OfficeFileProcessor {
     } else if (this.fileStatus === 'error') {
       callbacks.onError(i18n.t('whiteboard.error-occurred'));
     }
-  }
+  };
 
-  public unregisterCallbacks() {
+  public unregisterCallbacks = () => {
     this.activeCallbacks = null;
-  }
+  };
 
   private cleanup() {
     this._isBusy = false;
@@ -208,11 +208,4 @@ class OfficeFileProcessor {
 }
 
 const officeFileProcessor = new OfficeFileProcessor();
-
-export const startProcessing = officeFileProcessor.start;
-export const getIsAnyFileProcessing = () => officeFileProcessor.isBusy;
-export const getProcessorStatus = () => officeFileProcessor.status;
-export const registerProcessorCallbacks = (callbacks: IOfficeFileProcessing) =>
-  officeFileProcessor.registerCallbacks(callbacks);
-export const unregisterProcessorCallbacks = () =>
-  officeFileProcessor.unregisterCallbacks();
+export default officeFileProcessor;
