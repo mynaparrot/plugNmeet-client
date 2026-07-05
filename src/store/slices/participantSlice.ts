@@ -35,6 +35,16 @@ export const { addParticipant, removeParticipant, updateParticipant } =
   participantsSlice.actions;
 export default participantsSlice.reducer;
 
+export const selectWaitingParticipants = createSelector(
+  [participantsSelector.selectAll],
+  (participants) => participants.filter((p) => p.metadata.waitForApproval),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: isEqual,
+    },
+  },
+);
+
 // our custom selectors
 export const selectBasicParticipants = createSelector(
   [participantsSelector.selectAll],

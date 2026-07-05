@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
 
@@ -17,15 +17,20 @@ const SharedNotepad = () => {
   const nodeRef = useRef(null);
   const url = useNotepadUrl();
 
-  const [loaded, setLoaded] = useState<boolean>();
+  const [loaded, setLoaded] = useState<boolean>(false);
 
-  const onLoad = () => {
+  // Reset the loaded status whenever the notepad URL changes to show the loader
+  useEffect(() => {
+    setLoaded(false);
+  }, [url]);
+
+  const onLoad = useCallback(() => {
     setLoaded(true);
-  };
+  }, []);
 
-  const minimizePad = () => {
+  const minimizePad = useCallback(() => {
     dispatch(updateIsActiveSharedNotePad(false));
-  };
+  }, [dispatch]);
 
   return (
     url && (

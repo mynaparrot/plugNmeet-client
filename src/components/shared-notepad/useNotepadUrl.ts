@@ -7,6 +7,9 @@ const getUserColor = () => {
   let userColor = sessionStorage.getItem('shared-notepad-user-color');
   if (!userColor) {
     userColor = ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0');
+    userColor = Math.floor(Math.random() * 0xffffff)
+      .toString(16)
+      .padStart(6, '0');
     sessionStorage.setItem('shared-notepad-user-color', userColor);
   }
   return userColor;

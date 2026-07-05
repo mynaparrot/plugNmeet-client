@@ -27,54 +27,14 @@ const WaitingParticipantItem = ({
 
   const handleApprove = useCallback(async () => {
     setIsProcessing(true);
-    const body = create(ApproveWaitingUsersReqSchema, {
-      userId: participant.userId,
-    });
-
-    const r = await sendAPIRequest(
-      'waitingRoom/approveUsers',
-      toBinary(ApproveWaitingUsersReqSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-
-    if (res.status) {
-      dispatch(
-        addUserNotification({
-          message: t('left-panel.menus.notice.user-approved', {
-            name: participant.name,
-          }),
-          typeOption: 'info',
-        }),
-      );
-    } else {
-      dispatch(
-        addUserNotification({
-          message: t(res.msg),
-          typeOption: 'error',
-        }),
-      );
-    }
-    // No need to set isProcessing(false) as the component will unmount on success.
-  }, [dispatch, participant, t]);
-
-  const handleReject = useCallback(
-    async (block: boolean) => {
-      setIsProcessing(true);
-      const session = store.getState().session;
-      const body = create(RemoveParticipantReqSchema, {
-        sid: session.currentRoom.sid,
-        roomId: session.currentRoom.roomId,
+    try {
+      const body = create(ApproveWaitingUsersReqSchema, {
         userId: participant.userId,
-        msg: t('notifications.you-have-reject').toString(),
-        blockUser: block,
       });
 
       const r = await sendAPIRequest(
-        'removeParticipant',
-        toBinary(RemoveParticipantReqSchema, body),
+        'waitingRoom/approveUsers',
+        toBinary(ApproveWaitingUsersReqSchema, body),
         false,
         'application/protobuf',
         'arraybuffer',
@@ -84,7 +44,9 @@ const WaitingParticipantItem = ({
       if (res.status) {
         dispatch(
           addUserNotification({
-            message: t('left-panel.menus.notice.participant-removed'),
+            message: t('left-panel.menus.notice.user-approved', {
+              name: participant.name,
+            }),
             typeOption: 'info',
           }),
         );
@@ -95,6 +57,55 @@ const WaitingParticipantItem = ({
             typeOption: 'error',
           }),
         );
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsProcessing(false);
+    }
+  }, [dispatch, participant, t]);
+
+  const handleReject = useCallback(
+    async (block: boolean) => {
+      setIsProcessing(true);
+      try {
+        const session = store.getState().session;
+        const body = create(RemoveParticipantReqSchema, {
+          sid: session.currentRoom.sid,
+          roomId: session.currentRoom.roomId,
+          userId: participant.userId,
+          msg: t('notifications.you-have-reject').toString(),
+          blockUser: block,
+        });
+
+        const r = await sendAPIRequest(
+          'removeParticipant',
+          toBinary(RemoveParticipantReqSchema, body),
+          false,
+          'application/protobuf',
+          'arraybuffer',
+        );
+        const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+
+        if (res.status) {
+          dispatch(
+            addUserNotification({
+              message: t('left-panel.menus.notice.participant-removed'),
+              typeOption: 'info',
+            }),
+          );
+        } else {
+          dispatch(
+            addUserNotification({
+              message: t(res.msg),
+              typeOption: 'error',
+            }),
+          );
+          setIsProcessing(false);
+        }
+      } catch (error) {
+        console.error(error);
+        setIsProcessing(false);
       }
     },
     [dispatch, participant, t],
