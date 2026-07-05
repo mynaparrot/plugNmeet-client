@@ -5,3 +5,15 @@ video::-webkit-media-controls {
 video:media-controls {
   display: none !important;
 }
+
+.screen-share-video {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remote-screen-share {
+  object-fit: contain;
+}

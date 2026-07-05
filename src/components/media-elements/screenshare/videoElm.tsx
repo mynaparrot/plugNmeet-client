@@ -9,6 +9,7 @@ import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
+// @ts-ignore not error
 import './style.css';
 import { useAppSelector } from '../../../store';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
@@ -68,7 +69,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   }, []);
 
   return (
-    <div className="screen-share-video group relative">
+    <div className="screen-share-video group relative w-full h-full overflow-hidden">
       {!isLoaded && (
         <div className="loading-status absolute flex h-full w-full items-center justify-center bg-black/50">
           <LoadingIcon
@@ -79,7 +80,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       )}
       {isLoaded && (
         <button
-          className="absolute z-99 bottom-2 right-2 p-1 bg-black/50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute z-10 bottom-2 right-2 p-1 bg-black/50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
           onClick={fullScreen}
         >
           <i className="icon pnm-fullscreen text-[18px] text-white" />
@@ -88,10 +89,10 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       <video
         onLoadedData={onLoadedData}
         ref={ref}
-        className={clsx('video-player absolute', {
+        className={clsx('video-player absolute w-full h-full', {
           'self-screen-share !w-auto !h-52 !left-1/2 !top-1/2 !-translate-x-1/2 !-translate-y-1/2':
             self,
-          'remote-screen-share': !self,
+          'remote-screen-share left-0 top-0': !self,
         })}
       />
       {self && (
