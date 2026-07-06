@@ -667,12 +667,17 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           tools: {
             image: true,
           },
+          getFormFactor: (width) => {
+            // Use mobile UI on screens smaller than 768px
+            if (width < 768) {
+              return 'phone';
+            }
+            // Force 'tablet' on larger screens for a compact desktop layout
+            return 'tablet';
+          },
         }}
-        autoFocus={true}
-        detectScroll={true}
         langCode={i18n.languages[0]}
         renderTopRightUI={renderTopRightUI}
-        libraryReturnUrl=""
       >
         <MainMenu>
           <MainMenu.DefaultItems.SaveAsImage />
