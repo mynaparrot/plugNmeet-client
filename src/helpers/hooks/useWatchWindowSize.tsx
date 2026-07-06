@@ -58,7 +58,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     }
     initialRef.current = true;
 
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
       setScreenWidth(window.innerWidth);
       dispatch(updateScreenHeight(window.innerHeight));
       adjustScreenSize();
@@ -69,7 +69,9 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
         // if both open better to close one
         dispatch(setActiveSidePanel(null));
       }
-    });
+    };
+
+    window.addEventListener('resize', handleResize);
 
     setScreenWidth(window.innerWidth);
     dispatch(updateScreenWidth(window.innerWidth));
@@ -121,7 +123,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       dispatch(updateDeviceOrientation('landscape'));
     }
 
-    mql.addEventListener('change', (m) => {
+    const handleOrientationChange = (m: MediaQueryListEvent) => {
       if (m.matches) {
         setOrientationClass('portrait-device');
         dispatch(updateDeviceOrientation('portrait'));
@@ -129,7 +131,13 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
         setOrientationClass('landscape-device');
         dispatch(updateDeviceOrientation('landscape'));
       }
-    });
+    };
+
+    mql.addEventListener('change', handleOrientationChange);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      mql.removeEventListener('change', handleOrientationChange);
+    };
     //eslint-disable-next-line
   }, []);
 
