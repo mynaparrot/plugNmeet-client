@@ -982,16 +982,6 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   flex: 1 1 auto;
 }
 
-/* Ensure participant names truncate cleanly inside smaller bottom bar video slots */
-.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
-  .video-camera-item
-  .name {
-  max-width: calc(100% - 48px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .vertical-bottom-layout.vertical-webcams-wrapper.not-extended
   .inner
   > .camera-row-0 {
