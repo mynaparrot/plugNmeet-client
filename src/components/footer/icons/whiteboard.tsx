@@ -44,7 +44,7 @@ const WhiteboardIcon = () => {
   );
   const isPresenter = useAppSelector(
     (state) =>
-      !!participantsSelector.selectById(state, currentUserId ?? '')?.metadata
+      participantsSelector.selectById(state, currentUserId ?? '')?.metadata
         .isPresenter,
   );
 
