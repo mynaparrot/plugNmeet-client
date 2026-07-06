@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { debounce, throttle } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import {
   CaptureUpdateAction,
   Excalidraw,
@@ -24,9 +25,9 @@ import {
   Gesture,
   NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
-import { toast } from 'react-toastify';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
+import { SetViewportOptions } from '@excalidraw/excalidraw/viewport';
 
 // @ts-ignore
 import '@excalidraw/excalidraw/index.css';
@@ -628,6 +629,33 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [],
   );
 
+  const initialStateViewport = useMemo(() => {
+    const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+    const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+    const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
+    const startY = (VIRTUAL_WORKSPACE_HEIGHT - targetHeight) / 2;
+    const extraPages = targetHeight * 3;
+
+    const viewport: SetViewportOptions = {
+      target: [startX, startY, startX + targetWidth, startY + extraPages],
+      fit: 'none',
+      lock: {
+        scroll: true,
+        overscroll: false,
+        zoom: false,
+      },
+      offsets: {
+        top: 60,
+        left: 20,
+        right: 20,
+      },
+    };
+
+    return {
+      viewport: viewport,
+    };
+  }, []);
+
   return (
     <div
       className={`excalidraw-wrapper flex-1 w-full max-w-[1280px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0 ${
@@ -656,6 +684,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         onPointerUpdate={onPointerUpdate}
         viewModeEnabled={viewModeEnabled}
         isCollaborating={true}
+        initialState={initialStateViewport}
         theme={theme}
         name="plugNmeet whiteboard"
         UIOptions={{
