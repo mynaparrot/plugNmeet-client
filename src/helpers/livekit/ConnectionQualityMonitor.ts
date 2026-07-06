@@ -8,7 +8,7 @@ import { store } from '../../store';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 
-export enum ConnectionQuality {
+export enum PnmConnectionQuality {
   Excellent = 'excellent',
   Good = 'good',
   Poor = 'poor',
@@ -45,9 +45,6 @@ const MIN_STREAMS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
 const OUTBOUND_STUCK_INTERVAL_THRESHOLD = 2;
-const AUTO_RECOVERY_COOLDOWN = 45_000;
-const MAX_AUTO_RECOVERY_ATTEMPTS = 2;
-const STUCK_MEDIA_NOTIFICATION_COOLDOWN = 60_000;
 
 type PrevInboundStats = {
   lost: number;
@@ -66,16 +63,16 @@ export type RemoteReceiveStats = {
   packetLoss: number;
   packetsLostDelta: number;
   packetsReceivedDelta: number;
-  quality: ConnectionQuality;
+  quality: PnmConnectionQuality;
 };
 
 export type QualityStats = {
   rawPacketLoss: number;
   rtt: number | null;
 
-  uploadQuality: ConnectionQuality;
-  receiveQuality: ConnectionQuality;
-  overallQuality: ConnectionQuality;
+  uploadQuality: PnmConnectionQuality;
+  receiveQuality: PnmConnectionQuality;
+  overallQuality: PnmConnectionQuality;
 
   score: number;
 
@@ -141,15 +138,8 @@ export default class ConnectionQualityMonitor {
   private isCheckingQuality = false;
   private isStopped = true;
 
-  private currentQuality: ConnectionQuality = ConnectionQuality.Excellent;
+  private currentQuality: PnmConnectionQuality = PnmConnectionQuality.Excellent;
   private qualityScore = MAX_SCORE;
-
-  private lastAudioRecoveryAt = 0;
-  private lastVideoRecoveryAt = 0;
-  private audioRecoveryCount = 0;
-  private videoRecoveryCount = 0;
-  private lastAudioStuckNotificationAt = 0;
-  private lastVideoStuckNotificationAt = 0;
 
   private prevInboundStats: Record<string, PrevInboundStats> = {};
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
@@ -197,15 +187,8 @@ export default class ConnectionQualityMonitor {
     this.lastPoorConnectionNotificationAt = 0;
     this.isConnectionCurrentlyPoor = false;
     this.isCheckingQuality = false;
-    this.currentQuality = ConnectionQuality.Excellent;
+    this.currentQuality = PnmConnectionQuality.Excellent;
     this.qualityScore = MAX_SCORE;
-
-    this.lastAudioRecoveryAt = 0;
-    this.lastVideoRecoveryAt = 0;
-    this.audioRecoveryCount = 0;
-    this.videoRecoveryCount = 0;
-    this.lastAudioStuckNotificationAt = 0;
-    this.lastVideoStuckNotificationAt = 0;
 
     this.prevInboundStats = {};
     this.prevOutboundStats = {};
@@ -261,6 +244,15 @@ export default class ConnectionQualityMonitor {
         const prev = this.prevOutboundStats[ssrc];
 
         const senderTrack = this.findSenderTrackByMid(stat.mid);
+
+        // Detect empty blank canvas tracks to avoid false reports
+        const isCanvasTrack =
+          senderTrack &&
+          ((senderTrack as any).isPlaceholderCanvas ||
+            senderTrack.label === 'canvas' ||
+            (typeof HTMLCanvasElement !== 'undefined' &&
+              (senderTrack as any).canvas instanceof HTMLCanvasElement));
+
         const matchingPub = this.findActiveLocalPublication(
           outboundKind,
           senderTrack,
@@ -270,7 +262,13 @@ export default class ConnectionQualityMonitor {
 
         let isStagnant = false;
 
-        if (prev && isTrackActive && prev.bytesSent > 0 && currentBytes > 0) {
+        if (
+          prev &&
+          isTrackActive &&
+          !isCanvasTrack &&
+          prev.bytesSent > 0 &&
+          currentBytes > 0
+        ) {
           if (outboundKind === 'audio') {
             isStagnant = currentBytes === prev.bytesSent;
           }
@@ -292,7 +290,6 @@ export default class ConnectionQualityMonitor {
 
           if (isStuck) {
             state.isAudioOutboundStuck = true;
-            void this.autoRecoverTrack('audio', senderTrack);
           }
         }
 
@@ -301,7 +298,6 @@ export default class ConnectionQualityMonitor {
 
           if (isStuck) {
             state.isVideoOutboundStuck = true;
-            void this.autoRecoverTrack('video', senderTrack);
           }
         }
 
@@ -476,84 +472,18 @@ export default class ConnectionQualityMonitor {
     }
   }
 
-  private async autoRecoverTrack(
-    kind: 'audio' | 'video',
-    senderTrack?: MediaStreamTrack | null,
-  ) {
-    const now = Date.now();
-
-    const lastRecoveryAt =
-      kind === 'audio' ? this.lastAudioRecoveryAt : this.lastVideoRecoveryAt;
-
-    const recoveryCount =
-      kind === 'audio' ? this.audioRecoveryCount : this.videoRecoveryCount;
-
-    if (now - lastRecoveryAt < AUTO_RECOVERY_COOLDOWN) return;
-
-    if (recoveryCount >= MAX_AUTO_RECOVERY_ATTEMPTS) {
-      this.notifyUserOfStuckMedia(kind);
-      return;
-    }
-
-    const matchingPub = this.findActiveLocalPublication(kind, senderTrack);
-    const track = matchingPub?.track;
-
-    if (!track || typeof track.restartTrack !== 'function') return;
-
-    if (kind === 'audio') {
-      this.lastAudioRecoveryAt = now;
-      this.audioRecoveryCount++;
-    } else {
-      this.lastVideoRecoveryAt = now;
-      this.videoRecoveryCount++;
-    }
-
-    try {
-      await track.restartTrack();
-    } catch (error) {
-      console.error(
-        `[QualityMonitor] Failed to auto-recover local ${kind} track:`,
-        error,
-      );
-    }
-  }
-
-  private notifyUserOfStuckMedia(kind: 'audio' | 'video') {
-    const now = Date.now();
-
-    const lastNotificationAt =
-      kind === 'audio'
-        ? this.lastAudioStuckNotificationAt
-        : this.lastVideoStuckNotificationAt;
-
-    if (now - lastNotificationAt < STUCK_MEDIA_NOTIFICATION_COOLDOWN) return;
-
-    if (kind === 'audio') {
-      this.lastAudioStuckNotificationAt = now;
-    } else {
-      this.lastVideoStuckNotificationAt = now;
-    }
-
-    store.dispatch(
-      addUserNotification({
-        message: i18n.t(`notifications.local-${kind}-stuck-fallback`),
-        typeOption: 'warning',
-      }),
-    );
-  }
-
   private classify({
     packetLoss,
     rtt,
   }: {
     packetLoss: number;
     rtt: number | null;
-  }): ConnectionQuality {
+  }): PnmConnectionQuality {
     if (
       packetLoss >= LOST_PACKET_LOSS_THRESHOLD ||
       (rtt !== null && rtt >= LOST_RTT_THRESHOLD)
     ) {
-      return ConnectionQuality.Lost;
+      return PnmConnectionQuality.Lost;
     }
 
     const isCompoundingPoor =
@@ -566,17 +496,17 @@ export default class ConnectionQualityMonitor {
       packetLoss >= GOOD_PACKET_LOSS_THRESHOLD ||
       (rtt !== null && rtt >= GOOD_RTT_THRESHOLD)
     ) {
-      return ConnectionQuality.Poor;
+      return PnmConnectionQuality.Poor;
     }
 
     if (
       packetLoss >= EXCELLENT_PACKET_LOSS_THRESHOLD ||
       (rtt !== null && rtt >= EXCELLENT_RTT_THRESHOLD)
     ) {
-      return ConnectionQuality.Good;
+      return PnmConnectionQuality.Good;
     }
 
-    return ConnectionQuality.Excellent;
+    return PnmConnectionQuality.Excellent;
   }
 
   private createStats(input: {
@@ -596,7 +526,7 @@ export default class ConnectionQualityMonitor {
           packetLoss: input.myPacketLoss,
           rtt: input.myRtt,
         })
-      : ConnectionQuality.Excellent;
+      : PnmConnectionQuality.Excellent;
 
     const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(
       input.remoteReceiveStats,
@@ -613,16 +543,16 @@ export default class ConnectionQualityMonitor {
         });
 
     const worstQuality =
-      uploadQuality === ConnectionQuality.Lost ||
-      receiveQuality === ConnectionQuality.Lost
-        ? ConnectionQuality.Lost
-        : uploadQuality === ConnectionQuality.Poor ||
-            receiveQuality === ConnectionQuality.Poor
-          ? ConnectionQuality.Poor
-          : uploadQuality === ConnectionQuality.Good ||
-              receiveQuality === ConnectionQuality.Good
-            ? ConnectionQuality.Good
-            : ConnectionQuality.Excellent;
+      uploadQuality === PnmConnectionQuality.Lost ||
+      receiveQuality === PnmConnectionQuality.Lost
+        ? PnmConnectionQuality.Lost
+        : uploadQuality === PnmConnectionQuality.Poor ||
+            receiveQuality === PnmConnectionQuality.Poor
+          ? PnmConnectionQuality.Poor
+          : uploadQuality === PnmConnectionQuality.Good ||
+              receiveQuality === PnmConnectionQuality.Good
+            ? PnmConnectionQuality.Good
+            : PnmConnectionQuality.Excellent;
 
     const rawScore = this.qualityToScore(worstQuality);
     const factor =
@@ -637,8 +567,8 @@ export default class ConnectionQualityMonitor {
     const overallQuality = this.scoreToQuality(this.qualityScore);
 
     const isMyConnectionPoor =
-      uploadQuality === ConnectionQuality.Poor ||
-      uploadQuality === ConnectionQuality.Lost;
+      uploadQuality === PnmConnectionQuality.Poor ||
+      uploadQuality === PnmConnectionQuality.Lost;
 
     return {
       rawPacketLoss: input.rawPacketLoss,
@@ -660,8 +590,8 @@ export default class ConnectionQualityMonitor {
       isMyConnectionPoor,
 
       isReceivingPoor:
-        receiveQuality === ConnectionQuality.Poor ||
-        receiveQuality === ConnectionQuality.Lost,
+        receiveQuality === PnmConnectionQuality.Poor ||
+        receiveQuality === PnmConnectionQuality.Lost,
 
       isUploadAudioStuck: input.isUploadAudioStuck,
       isUploadVideoStuck: input.isUploadVideoStuck,
@@ -681,8 +611,8 @@ export default class ConnectionQualityMonitor {
 
     const poorStreams = activeStreams.filter(
       (stat) =>
-        stat.quality === ConnectionQuality.Poor ||
-        stat.quality === ConnectionQuality.Lost,
+        stat.quality === PnmConnectionQuality.Poor ||
+        stat.quality === PnmConnectionQuality.Lost,
     );
 
     if (activeStreams.length < MIN_STREAMS_FOR_DOWNLOAD_ISSUE) {
@@ -745,25 +675,25 @@ export default class ConnectionQualityMonitor {
     return current === null ? value : Math.max(current, value);
   }
 
-  private qualityToScore(quality: ConnectionQuality): number {
+  private qualityToScore(quality: PnmConnectionQuality): number {
     switch (quality) {
-      case ConnectionQuality.Excellent:
+      case PnmConnectionQuality.Excellent:
         return 100;
-      case ConnectionQuality.Good:
+      case PnmConnectionQuality.Good:
         return 75;
-      case ConnectionQuality.Poor:
+      case PnmConnectionQuality.Poor:
         return 40;
-      case ConnectionQuality.Lost:
+      case PnmConnectionQuality.Lost:
         return 20;
       default:
         return 100;
     }
   }
 
-  private scoreToQuality(score: number): ConnectionQuality {
-    if (score > 80) return ConnectionQuality.Excellent;
-    if (score > 40) return ConnectionQuality.Good;
-    if (score > 20) return ConnectionQuality.Poor;
-    return ConnectionQuality.Lost;
+  private scoreToQuality(score: number): PnmConnectionQuality {
+    if (score > 80) return PnmConnectionQuality.Excellent;
+    if (score > 40) return PnmConnectionQuality.Good;
+    if (score > 20) return PnmConnectionQuality.Poor;
+    return PnmConnectionQuality.Lost;
   }
 }

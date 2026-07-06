@@ -30,7 +30,7 @@ import {
   addAllChatMessages,
   selectPublicChatMessages,
 } from '../../store/slices/chatMessagesSlice';
-import { ConnectionQuality } from '../livekit/ConnectionQualityMonitor';
+import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
 
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
@@ -134,7 +134,7 @@ export default class HandleDataMessage {
           updateParticipant({
             id: payload.fromUserId,
             changes: {
-              connectionQuality: payload.message as ConnectionQuality,
+              connectionQuality: payload.message as PnmConnectionQuality,
             },
           }),
         );

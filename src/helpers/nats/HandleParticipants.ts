@@ -1,8 +1,4 @@
-import {
-  ConnectionQuality,
-  RemoteTrackPublication,
-  Track,
-} from 'livekit-client';
+import { RemoteTrackPublication, Track } from 'livekit-client';
 import {
   NatsKvUserInfo,
   NatsKvUserInfoSchema,
@@ -42,6 +38,7 @@ import {
 import { removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
 import { getMediaServerConn } from '../livekit/utils';
 import { isUserRecorder, toLiveKitUserId } from '../utils';
+import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
 
 const EMPTY_ROOM_CHECK_INTERVAL = 3000;
 
@@ -200,7 +197,7 @@ export default class HandleParticipants {
         videoTracks: 0,
         screenShareTrack: 0,
         isMuted: false,
-        connectionQuality: ConnectionQuality.Unknown,
+        connectionQuality: PnmConnectionQuality.Good,
         isOnline: true,
       }),
     );

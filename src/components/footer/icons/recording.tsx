@@ -56,7 +56,7 @@ const RecordingIcon = () => {
   const [recordingType, setRecordingType] = useState<RecordingType>(
     RecordingType.RECORDING_TYPE_NONE,
   );
-  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const checkedAutoRecording = useRef(false);
 
   useEffect(() => {
@@ -69,7 +69,9 @@ const RecordingIcon = () => {
       }
 
       setRecordingType(RecordingType.RECORDING_TYPE_CLOUD);
-      clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
       setDisable(false);
       setIsRecording(true);
     } else if (
@@ -77,7 +79,9 @@ const RecordingIcon = () => {
       recordingType === RecordingType.RECORDING_TYPE_CLOUD &&
       !isRecording
     ) {
-      clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
       setDisable(false);
       setIsRecording(true);
     } else if (
@@ -85,21 +89,23 @@ const RecordingIcon = () => {
       recordingType === RecordingType.RECORDING_TYPE_CLOUD &&
       isRecording
     ) {
-      clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
       setDisable(false);
       setIsRecording(false);
       setRecordingType(RecordingType.RECORDING_TYPE_NONE);
     }
     //eslint-disable-next-line
-  }, [isRunningCloudRecording, recordingType, isRecording, timer]);
+  }, [isRunningCloudRecording, recordingType, isRecording]);
 
   useEffect(() => {
     return () => {
-      if (timer) {
-        clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
     };
-  }, [timer]);
+  }, []);
 
   useEffect(() => {
     if (localRecordingEvent === RecordingEvent.STARTED_RECORDING) {
@@ -115,8 +121,8 @@ const RecordingIcon = () => {
     const reset = () => {
       setDisable(false);
       setIsRecording(false);
-      if (timer) {
-        clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
     };
 
@@ -143,7 +149,10 @@ const RecordingIcon = () => {
       } else if (recordingType === RecordingType.RECORDING_TYPE_CLOUD) {
         await stopCloudRecording();
 
-        const timer = setTimeout(() => {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+        timerRef.current = setTimeout(() => {
           setDisable(false);
           dispatch(
             addUserNotification({
@@ -152,7 +161,6 @@ const RecordingIcon = () => {
             }),
           );
         }, 30000);
-        setTimer(timer);
       }
     }
   };
@@ -172,7 +180,10 @@ const RecordingIcon = () => {
       setRecordingType(selectedRecordingType.type);
       await startCloudRecording(selectedRecordingType.variant, botOptions);
 
-      const timer = setTimeout(() => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => {
         setDisable(false);
         dispatch(
           addUserNotification({
@@ -181,7 +192,6 @@ const RecordingIcon = () => {
           }),
         );
       }, 30000);
-      setTimer(timer);
     }
   };
 
@@ -190,7 +200,7 @@ const RecordingIcon = () => {
     botOptions?: RecorderBotOptions,
   ) => {
     setOpenModal(false);
-    startRecording(selectedRecordingType, botOptions).then();
+    void startRecording(selectedRecordingType, botOptions);
   };
 
   // for auto cloud recording

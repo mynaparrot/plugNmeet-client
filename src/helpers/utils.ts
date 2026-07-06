@@ -8,6 +8,7 @@ import { IParticipant } from '../store/slices/interfaces/participant';
 import { IMediaDevice } from '../store/slices/interfaces/roomSettings';
 import sanitizeHtml from 'sanitize-html';
 import { RecorderBotOptions, RoomCreateFeatures } from 'plugnmeet-protocol-js';
+import { PnmConnectionQuality } from './livekit/ConnectionQualityMonitor';
 
 export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
 
@@ -352,6 +353,12 @@ export function createEmptyVideoStreamTrack(name: string) {
     throw Error('Could not get empty media stream video track');
   }
 
+  // Attach custom property metadata to easily identify this as a placeholder canvas track
+  Object.defineProperty(emptyStreamTrack, 'isPlaceholderCanvas', {
+    value: true,
+    writable: false,
+  });
+
   emptyStreamTrack.onended = () => {
     if (animationInterval) {
       clearInterval(animationInterval);
@@ -455,5 +462,20 @@ export const getRecorderBotOptions = (
       return roomFeatures?.externalBroadcastingFeatures?.recorderBotOptions;
     default:
       return undefined;
+  }
+};
+
+export const getConnectionQualityColor = (quality: PnmConnectionQuality) => {
+  switch (quality) {
+    case PnmConnectionQuality.Excellent:
+      return '#22c55e';
+    case PnmConnectionQuality.Good:
+      return '#84cc16';
+    case PnmConnectionQuality.Poor:
+      return '#f97316';
+    case PnmConnectionQuality.Lost:
+      return '#ef4444';
+    default:
+      return '#9ca3af';
   }
 };

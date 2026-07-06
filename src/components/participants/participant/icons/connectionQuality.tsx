@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
-import { ConnectionQuality } from '../../../../helpers/livekit/ConnectionQualityMonitor';
+import { PnmConnectionQuality } from '../../../../helpers/livekit/ConnectionQualityMonitor';
 import IconWrapper from './iconWrapper';
 
 interface ConnectionQualityIconProps {
@@ -16,18 +16,18 @@ const ConnectionQualityIcon = ({ userId }: ConnectionQualityIconProps) => {
   );
 
   const getColor = () => {
-    if (connectionQuality === ConnectionQuality.Poor) {
+    if (connectionQuality === PnmConnectionQuality.Poor) {
       return '#f97316'; // orange
     }
-    if (connectionQuality === ConnectionQuality.Lost) {
+    if (connectionQuality === PnmConnectionQuality.Lost) {
       return '#ef4444'; // red
     }
     return '';
   };
 
   if (
-    connectionQuality === ConnectionQuality.Poor ||
-    connectionQuality === ConnectionQuality.Lost
+    connectionQuality === PnmConnectionQuality.Poor ||
+    connectionQuality === PnmConnectionQuality.Lost
   ) {
     return (
       <IconWrapper>

@@ -233,7 +233,9 @@ if (isSupported) {
         backgroundImage: blankImage,
       });
 
-      Promise.all([blur.loadModel(), imageVb.loadModel()]).then();
+      Promise.allSettled([blur.loadModel(), imageVb.loadModel()]).catch((e) => {
+        console.error('Failed to preload Twilio video processor models', e);
+      });
     } catch (e) {
       console.error(e);
     }

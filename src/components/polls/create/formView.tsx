@@ -1,7 +1,7 @@
 import React, {
   Dispatch,
-  FormEvent,
   SetStateAction,
+  SubmitEvent,
   useEffect,
   useState,
 } from 'react';
@@ -60,7 +60,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
     }
   }, [data, dispatch, setIsOpen, t]);
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) {
       return;
