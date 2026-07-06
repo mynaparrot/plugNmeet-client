@@ -21,6 +21,7 @@ import {
   PIP_WINDOW_HEIGHT,
   PIP_WINDOW_WIDTH,
 } from './pip/utils';
+import { useDeviceInfo } from '../helpers/useDeviceInfo';
 
 interface IVerticalLayoutProps {
   pipParticipants: ReactElement<VideoParticipantProps>[];
@@ -47,6 +48,7 @@ const VerticalLayout = ({
   isDesktop,
 }: IVerticalLayoutProps) => {
   const dispatch = useAppDispatch();
+  const { isMobile, isTablet, isPortrait } = useDeviceInfo();
 
   const [pipWindow, setPipWindow] = useState<Window | null>(null);
 
@@ -141,20 +143,20 @@ const VerticalLayout = ({
     };
   }, []);
 
-  const wrapperClasses = `vertical-webcams-wrapper group absolute right-0 bottom-0 md:bottom-auto md:top-0 bg-Gray-25 dark:bg-dark-primary border-t md:border-t-0 md:border-l border-Gray-200 dark:border-Gray-800 h-[126px] md:h-full p-3 transition-all duration-300 z-20 ${
-    isEnabledExtendedVerticalCamView
-      ? 'w-full xl:w-[416px] flex flex-col justify-center extended-view-wrap'
-      : 'w-full md:w-[212px] not-extended'
+  const shouldBeAtBottom = isMobile || (isTablet && isPortrait);
+
+  const wrapperClasses = `vertical-webcams-wrapper group absolute z-20 p-3 transition-all duration-300 bg-Gray-25 dark:bg-dark-primary border-Gray-200 dark:border-Gray-800 ${
+    shouldBeAtBottom
+      ? 'vertical-bottom-layout bottom-0 left-0 right-0 h-[126px] border-t w-full flex flex-row justify-center not-extended'
+      : `top-0 right-0 h-full border-l flex flex-col justify-center ${
+          isEnabledExtendedVerticalCamView
+            ? 'xl:w-[416px] extended-view-wrap'
+            : 'md:w-[212px] not-extended'
+        }`
   }`;
 
-  const innerClasses = `inner row-count-${
-    participantsToRender.length
-  } total-cam-${totalNumWebcams} group-total-cam-${
-    totalNumWebcams
-  } page-${currentPage} ${
-    isEnabledExtendedVerticalCamView
-      ? 'flex gap-3 h-full xl:flex-col justify-center w-full'
-      : 'h-full flex md:flex-col justify-center gap-3 z-20'
+  const innerClasses = `inner row-count-${participantsToRender.length} total-cam-${totalNumWebcams} group-total-cam-${totalNumWebcams} page-${currentPage} h-full w-full flex gap-3 z-20 ${
+    shouldBeAtBottom ? 'flex-row justify-center items-center' : 'flex-col'
   } ${pinParticipant ? 'has-pin-cam' : ''}`;
 
   return (

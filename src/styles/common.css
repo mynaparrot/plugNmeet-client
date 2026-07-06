@@ -430,6 +430,11 @@ input.polls-checkbox:checked:before {
   @apply pb-[126px] md:pb-0 md:pr-[212px] transition-all duration-300;
 }
 
+/* Force bottom space instead of right space when in portrait orientation */
+.portrait-device .middle-fullscreen-wrapper.verticalsWebcamsActivated {
+  @apply pb-[126px]! pr-0! md:pb-[126px]! md:pr-0!;
+}
+
 .middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
   @apply xl:pr-[416px];
 }
@@ -965,6 +970,35 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 .vertical-webcams-wrapper.not-extended .video-camera-item {
   @apply w-1/3 md:w-full h-full md:h-1/4;
 }
+
+/* Isolated bottom-bar styling to prevent visual breakage on tablets/mobile devices */
+.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
+  .video-camera-item {
+  width: 100% !important;
+  max-width: calc(33.333% - 8px) !important;
+  height: auto !important;
+  max-height: 100% !important;
+  aspect-ratio: 16 / 9;
+  flex: 1 1 auto;
+}
+
+.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
+  .inner
+  > .camera-row-0 {
+  flex-flow: row !important;
+  width: 100% !important;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Reset special 2-camera layout rules when inside the vertical bottom bar */
+.vertical-webcams-wrapper .video-camera-item.its-me,
+.portrait-device .vertical-webcams-wrapper .video-camera-item.its-me {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+}
+
 .vertical-webcams-wrapper.not-extended
   .video-camera-item.pinCam-item
   .video-camera-item {
@@ -1174,6 +1208,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   gap: 8px;
   justify-content: center;
 }
+
 @media screen and (max-width: 767px) {
   .vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
     flex-flow: row;

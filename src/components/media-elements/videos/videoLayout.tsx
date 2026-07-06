@@ -304,7 +304,9 @@ const VideoLayout = ({
 
     const participantsToRender = paginatedParticipants.participantsToRender;
 
-    if (isMobile) {
+    // If the device is mobile OR a tablet in portrait mode (which moves webcams to the bottom),
+    // use the mobile element layout to prevent horizontal squeezing and layout breaks.
+    if (isMobile || (isTablet && isPortrait)) {
       layout = getElmsForMobile(
         participantsToRender,
         isPortrait,
