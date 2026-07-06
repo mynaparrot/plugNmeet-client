@@ -1210,6 +1210,13 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
     #0088cc 100%
   );
 }
+
+.vertical-webcams-wrapper.extended-view-wrap .inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
   display: flex;
   flex-flow: column;
@@ -1220,7 +1227,9 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 }
 
 @media screen and (max-width: 767px) {
-  .vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
+  .vertical-bottom-layout.vertical-webcams-wrapper.not-extended
+    .inner
+    > .camera-row-0 {
     flex-flow: row;
   }
   .vertical-webcams-wrapper.not-extended .webcam-next-page,
