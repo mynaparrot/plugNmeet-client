@@ -10,6 +10,14 @@ interface ChatMessagesState {
   messageIds: {
     [messageId: string]: string; // messageId: key
   };
+  // Client-local, monotonically increasing arrival index used as the sort key
+  // instead of sentAt. sentAt is the *sender's* local clock (Date.now()), which
+  // is unreliable when participants' clocks are skewed and caused messages to be
+  // inserted into the middle of the history rather than appended (issue #1062).
+  messageOrder: {
+    [messageId: string]: number;
+  };
+  nextOrder: number;
 }
 
 const initialState: ChatMessagesState = {
@@ -17,6 +25,8 @@ const initialState: ChatMessagesState = {
     public: [],
   },
   messageIds: {},
+  messageOrder: {},
+  nextOrder: 0,
 };
 
 const getChatKey = (message: ChatMessage, currentUserId: string): string => {
@@ -29,11 +39,6 @@ const getChatKey = (message: ChatMessage, currentUserId: string): string => {
   } else {
     return message.fromUserId!;
   }
-};
-
-// Helper to ensure correct chronological sorting based on string timestamps
-const sortMessages = (a: ChatMessage, b: ChatMessage) => {
-  return Number(a.sentAt) - Number(b.sentAt);
 };
 
 const chatMessagesSlice = createSlice({
@@ -58,9 +63,13 @@ const chatMessagesSlice = createSlice({
         state.messages[key] = [];
       }
 
-      state.messages[key].push(message);
+      // Assign the next arrival index. Because it strictly increases in the
+      // order this client receives messages (which matches the server's relay
+      // order), the new message always belongs at the end — no re-sort needed,
+      // and a peer's skewed clock can no longer reorder existing messages.
+      state.messageOrder[message.id] = state.nextOrder++;
       state.messageIds[message.id] = key;
-      state.messages[key].sort(sortMessages);
+      state.messages[key].push(message);
     },
     addAllChatMessages: (
       state,
@@ -70,32 +79,31 @@ const chatMessagesSlice = createSlice({
       }>,
     ) => {
       const { messages, currentUserId } = action.payload;
-      const newMessagesByKey: { [key: string]: ChatMessage[] } = {};
 
-      // 1. Group all new messages by key, filtering out duplicates
-      messages.forEach((message) => {
-        if (state.messageIds[message.id]) {
-          return;
-        }
-        const key = getChatKey(message, currentUserId);
-        if (!newMessagesByKey[key]) {
-          newMessagesByKey[key] = [];
-        }
-        newMessagesByKey[key].push(message);
-      });
-
-      // 2. Merge, update IDs, and sort for each key that has new messages
-      Object.keys(newMessagesByKey).forEach((key) => {
-        const newMessages = newMessagesByKey[key];
-        if (!state.messages[key]) {
-          state.messages[key] = [];
-        }
-
-        state.messages[key].push(...newMessages);
-        newMessages.forEach((msg) => {
-          state.messageIds[msg.id] = key;
+      // Bootstrap path (e.g. persisted history). Live arrival order is unknown
+      // here, so seed the arrival index using sentAt as a best-effort ordering.
+      // This is the ONLY place sentAt still influences ordering, and it affects
+      // historical messages only — never live ones added via addChatMessage.
+      const affectedKeys = new Set<string>();
+      messages
+        .filter((message) => !state.messageIds[message.id])
+        .sort((a, b) => Number(a.sentAt) - Number(b.sentAt))
+        .forEach((message) => {
+          const key = getChatKey(message, currentUserId);
+          if (!state.messages[key]) {
+            state.messages[key] = [];
+          }
+          state.messageOrder[message.id] = state.nextOrder++;
+          state.messageIds[message.id] = key;
+          state.messages[key].push(message);
+          affectedKeys.add(key);
         });
-        state.messages[key].sort(sortMessages);
+
+      // Keep each touched conversation ordered by the arrival index.
+      affectedKeys.forEach((key) => {
+        state.messages[key].sort(
+          (a, b) => state.messageOrder[a.id] - state.messageOrder[b.id],
+        );
       });
     },
   },
