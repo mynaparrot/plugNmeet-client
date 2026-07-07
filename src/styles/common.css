@@ -979,7 +979,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   height: auto !important;
   max-height: 100% !important;
   aspect-ratio: 16 / 9;
-  flex: 1 1 auto;
+  flex: 0 1 calc(33.333% - 8px);
 }
 
 .vertical-bottom-layout.vertical-webcams-wrapper.not-extended

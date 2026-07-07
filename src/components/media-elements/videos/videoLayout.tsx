@@ -44,8 +44,7 @@ const DESKTOP_PER_PAGE = 24,
   PC_VERTICAL_PER_PAGE = 5,
   PC_EXTENDED_VERTICAL_PER_PAGE = 10,
   TABLET_VERTICAL_PER_PAGE = 4,
-  // same as TABLET_PER_PAGE because tablet portrait orientations move the vertical webcam wrapper to the bottom bar.
-  TABLET_VERTICAL_WITH_SIDEBAR_PER_PAGE = 4,
+  TABLET_VERTICAL_PORTRAIT_WITH_SIDEBAR_PER_PAGE = 3,
   MOBILE_VERTICAL_PORTRAIT_PER_PAGE = 3,
   MOBILE_VERTICAL_LANDSCAPE_PER_PAGE = 4,
   MOBILE_VERTICAL_WITH_SIDEBAR_PER_PAGE = 2;
@@ -113,9 +112,10 @@ const VideoLayout = ({
       }
     } else if (isTablet) {
       if (enabledVerticalViewMode) {
-        perPage = isSidebarOpen
-          ? TABLET_VERTICAL_WITH_SIDEBAR_PER_PAGE
-          : TABLET_VERTICAL_PER_PAGE;
+        perPage =
+          isPortrait && isSidebarOpen
+            ? TABLET_VERTICAL_PORTRAIT_WITH_SIDEBAR_PER_PAGE
+            : TABLET_VERTICAL_PER_PAGE;
       } else {
         // default mode
         perPage = isSidebarOpen
