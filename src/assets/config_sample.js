@@ -57,7 +57,7 @@ window.plugNmeetConfig = {
   // - desktop: 24 (recommended: 12 for better performance)
   // - tablet: 9
   // - mobile: 6
-  max_num_display_webcams: {
+  maxNumDisplayWebcams: {
     desktop: 24,
     tablet: 9,
     mobile: 6,

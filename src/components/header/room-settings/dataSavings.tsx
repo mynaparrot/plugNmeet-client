@@ -37,7 +37,7 @@ const DataSavings = () => {
 
   useEffect(() => {
     const configMaxNumWebcams = getConfigValue<IMaxNumDisplayWebcams>(
-      'max_num_display_webcams',
+      'maxNumDisplayWebcams',
     );
 
     let allOpts: ISelectOption[];

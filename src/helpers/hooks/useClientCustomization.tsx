@@ -51,7 +51,7 @@ const useClientCustomization = () => {
     dispatch(updateFocusActiveSpeakerWebcam(focusActiveSpeakerWebcam));
 
     const maxNumDisplayWebcams = getConfigValue<IMaxNumDisplayWebcams>(
-      'max_num_display_webcams',
+      'maxNumDisplayWebcams',
     );
 
     if (
