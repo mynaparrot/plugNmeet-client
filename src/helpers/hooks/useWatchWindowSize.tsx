@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { debounce } from 'es-toolkit';
 import MobileDetect from 'mobile-detect';
 import type { Room } from 'livekit-client';
 import NoSleep from 'nosleep.js';
@@ -12,20 +13,19 @@ import {
 import { store, useAppDispatch } from '../../store';
 import { updateUserDeviceType } from '../../store/slices/sessionSlice';
 import { UserDeviceType } from '../../store/slices/interfaces/session';
-import useStorePreviousInt from './useStorePreviousInt';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
+
+const RESIZE_DEBOUNCE_DELAY_MS = 150;
 
 const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
-  const noSleep = new NoSleep();
+  const noSleepRef = useRef<NoSleep | null>(null);
   const initialRef = useRef(false);
 
   const [deviceClass, setDeviceClass] = useState<string>('');
   const [orientationClass, setOrientationClass] =
     useState<string>('landscape-device');
   const [screenHeight, setScreenHeight] = useState<string>('');
-  const [screenWidth, setScreenWidth] = useState<number>(0);
-  const preScreenWidth = useStorePreviousInt(screenWidth);
 
   const adjustScreenSize = () => {
     setScreenHeight(`${window.innerHeight}px`);
@@ -42,39 +42,42 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     };
   }, [currentRoom?.state]);
 
-  useEffect(() => {
-    if (preScreenWidth && preScreenWidth !== screenWidth) {
-      dispatch(updateScreenWidth(window.innerWidth));
+  const debouncedDispatchWidth = useMemo(() => {
+    return debounce((width: number) => {
+      dispatch(updateScreenWidth(width));
       if (store.getState().bottomIconsActivity.isActiveWhiteboard) {
         dispatch(triggerRefreshWhiteboard());
       }
-    }
-    //eslint-disable-next-line
-  }, [preScreenWidth, screenWidth]);
+    }, RESIZE_DEBOUNCE_DELAY_MS);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (initialRef.current) {
-      return;
+    if (!noSleepRef.current) {
+      noSleepRef.current = new NoSleep();
     }
-    initialRef.current = true;
+    const noSleep = noSleepRef.current;
 
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-      dispatch(updateScreenHeight(window.innerHeight));
+    const handleResize = (width: number, height: number) => {
+      dispatch(updateScreenHeight(height));
       adjustScreenSize();
+      debouncedDispatchWidth(width);
 
       const activeSidePanel =
         store.getState().bottomIconsActivity.activeSidePanel;
-      if (window.innerWidth < 1024 && activeSidePanel) {
+      if (width < 1024 && activeSidePanel) {
         // if both open better to close one
         dispatch(setActiveSidePanel(null));
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      handleResize(Math.round(width), Math.round(height));
+    });
+    resizeObserver.observe(document.body);
 
-    setScreenWidth(window.innerWidth);
-    dispatch(updateScreenWidth(window.innerWidth));
     dispatch(updateScreenHeight(window.innerHeight));
 
     if (window.innerWidth < 1024) {
@@ -83,6 +86,11 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
 
     let deviceClass = 'is-pc',
       isSmallDevice = false;
+
+    if (initialRef.current) {
+      deviceClass = 'is-pc'; // Skip duplicate device initialization logic on remount if already computed
+    }
+    initialRef.current = true;
     const md = new MobileDetect(window.navigator.userAgent);
     const isIpad =
       /Macintosh/i.test(window.navigator.userAgent) &&
@@ -101,7 +109,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
 
     if (isSmallDevice) {
       // Prevent display sleep for mobile devices
-      noSleep.enable().then();
+      void noSleep.enable();
     }
 
     const os = md.os();
@@ -135,11 +143,12 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
 
     mql.addEventListener('change', handleOrientationChange);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      debouncedDispatchWidth.cancel();
+      resizeObserver.disconnect();
       mql.removeEventListener('change', handleOrientationChange);
     };
     //eslint-disable-next-line
-  }, []);
+  }, [dispatch]);
 
   return {
     deviceClass,
