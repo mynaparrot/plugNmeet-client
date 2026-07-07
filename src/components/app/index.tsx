@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
@@ -28,8 +28,6 @@ import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice'
 const App = () => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation();
-  // make sure we're using correct body dir
-  document.dir = i18n.dir();
 
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
@@ -56,13 +54,18 @@ const App = () => {
   useThemeSettings();
 
   useEffect(() => {
-    verifyToken(
+    // make sure we're using correct body dir
+    document.dir = i18n.dir();
+  }, [i18n, i18n.language]);
+
+  useEffect(() => {
+    void verifyToken(
       setLoading,
       setError,
       setOpenConnInfo,
       setRoomConnectionStatus,
       setOpenConn,
-    ).then();
+    );
   }, []);
 
   useEffect(() => {
@@ -72,7 +75,7 @@ const App = () => {
       dispatch(addServerVersion(openConnInfo.serverVersion));
 
       setRoomConnectionStatus('connecting');
-      startNatsConn(
+      void startNatsConn(
         openConnInfo.natsWsUrls,
         openConnInfo.accessToken,
         openConnInfo.roomId,
@@ -82,7 +85,7 @@ const App = () => {
         setError,
         setRoomConnectionStatus,
         setCurrentMediaServerConn,
-      ).then();
+      );
     }
   }, [dispatch, openConnInfo, openConn]);
 
@@ -110,41 +113,45 @@ const App = () => {
     }
   }, [dispatch, roomConnectionStatus]);
 
-  const renderElms = useMemo(() => {
-    switch (true) {
-      case loading:
-        return <Loading text={t('app.' + roomConnectionStatus)} />;
-      case error && !loading:
-        return <ErrorPage title={error.title} text={error.text} />;
-      case roomConnectionStatus === 'insert-e2ee-key':
-        return <InsertE2EEKey setOpenConn={setOpenConn} />;
-      case isAppReady:
-        return (
-          <div className="plugNmeet-app overflow-hidden h-full flex flex-col">
-            <Header />
-            <MainArea />
-            <Footer />
-            <AudioNotification />
-            <DummyAudio />
-            <ReactionsOverlay />
-          </div>
-        );
-      default:
-        return (
-          <Landing
-            setIsAppReady={setIsAppReady}
-            roomConnectionStatus={roomConnectionStatus}
-          />
-        );
+  const renderElms = () => {
+    if (loading) {
+      return <Loading text={t(`app.${roomConnectionStatus}`)} />;
     }
-    //eslint-disable-next-line
-  }, [loading, error, roomConnectionStatus, isAppReady]);
+
+    if (error) {
+      return <ErrorPage title={error.title} text={error.text} />;
+    }
+
+    if (roomConnectionStatus === 'insert-e2ee-key') {
+      return <InsertE2EEKey setOpenConn={setOpenConn} />;
+    }
+
+    if (!isAppReady) {
+      return (
+        <Landing
+          setIsAppReady={setIsAppReady}
+          roomConnectionStatus={roomConnectionStatus}
+        />
+      );
+    }
+
+    return (
+      <div className="plugNmeet-app overflow-hidden h-full flex flex-col">
+        <Header />
+        <MainArea />
+        <Footer />
+        <AudioNotification />
+        <DummyAudio />
+        <ReactionsOverlay />
+      </div>
+    );
+  };
 
   return (
     <div
       className={`${orientationClass} ${deviceClass} ${userTypeClass} h-dvh bg-Gray-50 dark:bg-dark-secondary`}
     >
-      {renderElms}
+      {renderElms()}
     </div>
   );
 };
