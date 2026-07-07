@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Ha sido desconectado porque el servidor ha dejado de responder.",
     "room-disconnected-reconnecting": "Se ha perdido la conexión. Reconectando...",
     "room-disconnected-network-error": "Ha sido desconectado debido a un problema de red.",
-    "your-connection-lost-or-unstable": "Tu conexión está un poco inestable ahora mismo. Otros pueden notar algunos problemas de audio o vídeo por tu parte.",
+    "your-connection-lost-or-unstable": "Tu conexión está un poco inestable ahora mismo. Otros pueden notar algunos problemas de audio o video de tu parte.",
     "need-to-disable-display-external-link": "Para reproducir un vídeo, primero deje de compartir el enlace externo.",
     "need-to-disable-external-media-player": "Para compartir un enlace externo, primero detenga el reproductor de vídeo.",
     "websocket-disconnected": "Se ha perdido la conexión, intentando reconectar...",
@@ -92,7 +92,7 @@
     "whiteboard-new-file-added": "El nuevo archivo está listo y se ha añadido a la lista de archivos de la pizarra.",
     "private-download-link-ready": "Tu enlace de descarga está listo. Solo tú puedes ver este mensaje.<br/>{{link}}",
     "local-audio-stuck-fallback": "Detectamos un problema con tu micrófono. Prueba a apagarlo y encenderlo de nuevo.",
-    "local-video-stuck-fallback": "Detectamos un problema con tu cámara. Prueba a apagarlo y encenderlo de nuevo."
+    "local-video-stuck-fallback": "Detectamos un problema con tu cámara. Prueba a apagarla y encenderla de nuevo."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -180,9 +180,9 @@
       },
       "qualities": {
         "excellent": "Excelente",
-        "good": "Bien",
+        "good": "Buena",
         "poor": "Pobre",
-        "lost": "Perdidos"
+        "lost": "Perdida"
       }
     }
   },
@@ -246,8 +246,8 @@
         "lock-send-chat-message": "Desactivar el envío de mensajes de chat",
         "unlock-send-file": "Permitir compartir archivos",
         "lock-send-file": "Desactivar compartir archivos",
-        "lock-reaction": "Desactivar las reacciones de envío",
-        "unlock-reaction": "Permitir reacciones de envío",
+        "lock-reaction": "Desactivar el envío de reacciones",
+        "unlock-reaction": "Permitir el envío de reacciones",
         "remove-participant": "Eliminar participante",
         "private-chat": "Enviar mensaje privado"
       },
@@ -414,10 +414,10 @@
     "total-pages": "Total de páginas: {{count}}",
     "show-toolbar": "Mostrar barra de herramientas",
     "hide-toolbar": "Ocultar barra de herramientas",
-    "file-conversion-failed": "Fallida la conversión de archivos",
+    "file-conversion-failed": "Falló la conversión de archivo",
     "export-pdf-title": "Exportar a PDF",
-    "export-pdf-button": "Exportación",
-    "export-pdf-button-count": "Exportación ({{count}})",
+    "export-pdf-button": "Exportar",
+    "export-pdf-button-count": "Exportar ({{count}})",
     "export-pdf-all-pages": "Todas las páginas ({{count}})",
     "export-pdf-current-page": "Página actual: {{page}}",
     "export-pdf-selected-pages": "Páginas seleccionadas",
@@ -428,15 +428,15 @@
     "export-pdf-no-content-on-current-page": "No hay contenido en la página actual para exportar.",
     "export-pdf-no-pages-to-export": "No hay páginas con contenido para exportar.",
     "export-pdf-no-pages-with-content": "No se encuentran páginas con contenido para exportar.",
-    "export-pdf-progress-warning": "Ya hay una exportación en marcha.",
+    "export-pdf-progress-warning": "Una exportación ya está en curso.",
     "export-pdf-api-not-ready": "La API de Excalidraw no está lista.",
     "export-pdf-starting": "Iniciando exportación PDF...",
-    "export-pdf-gathering-page": "Página de Gathering {{page}} ({{current}}/{{total}})...",
-    "export-pdf-creating-image": "Creando imagen para página {{page}}...",
+    "export-pdf-gathering-page": "Recolectando página {{page}} ({{current}}/{{total}})...",
+    "export-pdf-creating-image": "Creando imagen para la página {{page}}...",
     "export-pdf-all-pages-processed": "¡Todas las páginas procesadas!",
     "export-pdf-unknown-error": "Se produjo un error desconocido.",
-    "export-pdf-processing-page": "Página de procesamiento {{page}} (corte {{slice}}/{{totalSlices}})...",
-    "export-pdf-worker-error": "Se produjo un error inesperado de trabajador.",
+    "export-pdf-processing-page": "Procesando página {{page}} (segmento {{slice}}/{{totalSlices}})...",
+    "export-pdf-worker-error": "Se produjo un error inesperado del trabajador.",
     "export-pdf-worker-error-render": "Error del trabajador: {{message}}",
     "export-pdf-finalizing": "Finalizando el PDF...",
     "export-pdf-finished": "¡La exportación en PDF terminó con éxito!",
@@ -444,7 +444,7 @@
     "export-pdf-mode": "Modo de exportación",
     "export-pdf-pages": "Páginas",
     "export-pdf-select-all": "Seleccionar todo",
-    "export-pdf-clear": "¡Libre",
+    "export-pdf-clear": "Borrar",
     "export-pdf-exporting": "Exportando..."
   },
   "waiting-room": {
