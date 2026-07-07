@@ -13,7 +13,10 @@ import {
   updateCurrentRoomMetadata,
 } from '../../store/slices/sessionSlice';
 import i18n from '../i18n';
-import { addChatMessage } from '../../store/slices/chatMessagesSlice';
+import {
+  addChatMessage,
+  WELCOME_MESSAGE_ID,
+} from '../../store/slices/chatMessagesSlice';
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
@@ -145,8 +148,8 @@ export default class HandleRoomData {
 
     this.welcomeMessage = this._room.metadata?.welcomeMessage;
     const body = create(ChatMessageSchema, {
-      id: '1',
-      sentAt: '1', // to make sure it's always on top
+      id: WELCOME_MESSAGE_ID, // to make sure it's always on top
+      sentAt: '1',
       isPrivate: false,
       fromName: 'system',
       fromUserId: 'system',
