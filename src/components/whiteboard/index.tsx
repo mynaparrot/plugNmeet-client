@@ -255,11 +255,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   /**
-   * Smoothly pans and frames the camera view so that it snaps exactly to the beginning
-   * of the red A4 boundary guide box, with a safe padding offset to prevent the top
-   * toolbar and left menu panel from overlaying any content.
+   * Positions the viewport at the A4 boundary with an initial width-based zoom.
    */
   const scrollToBoundary = useCallback((api: ExcalidrawImperativeAPI) => {
+    const { width: viewportWidth } = api.getAppState();
+
     const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
     const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
 
@@ -271,13 +271,29 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     const PADDING_LEFT = 20;
     const PADDING_TOP = 50;
 
+    // Fit the initial presenter viewport based on available canvas width. We fit by A4 width only, not full A4 height.
+    const VIEWPORT_HORIZONTAL_PADDING = 40;
+    const MIN_ZOOM = 0.1;
+    const MAX_INITIAL_ZOOM = 1;
+
+    const safeViewportWidth = Math.max(
+      viewportWidth - VIEWPORT_HORIZONTAL_PADDING,
+      1,
+    );
+
+    const initialZoom = Math.max(
+      Math.min(safeViewportWidth / targetWidth, MAX_INITIAL_ZOOM),
+      MIN_ZOOM,
+    ) as NormalizedZoomValue;
+
     api.updateScene({
       appState: {
         // Snap to the top-left of the red guide box plus comfortable visual padding
         scrollX: -startX + PADDING_LEFT,
         scrollY: -startY + PADDING_TOP,
-        // Maintain a default zoom base of 100% on load
-        zoom: { value: 1 as NormalizedZoomValue },
+        zoom: {
+          value: initialZoom,
+        },
       },
     });
   }, []);
