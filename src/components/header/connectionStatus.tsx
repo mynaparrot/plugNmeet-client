@@ -1,28 +1,61 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../store';
+import { getConnectionQualityColor } from '../../helpers/utils';
+import { getMediaServerConn } from '../../helpers/livekit/utils';
+import { QualityStats } from '../../helpers/livekit/ConnectionQualityMonitor';
 import CopyIcon from '../../assets/Icons/CopyIcon';
 import Tooltip from '../../helpers/ui/tooltip';
-import { getConnectionQualityColor } from '../../helpers/utils';
 
 const ConnectionStatus = () => {
   const { t } = useTranslation();
-  const qualityStats = useAppSelector((state) => state.session.qualityStats);
+  const overallQuality = useAppSelector(
+    (state) => state.session.overallConnectionQuality,
+  );
+  const [qualityStats, setQualityStats] = useState<QualityStats | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
 
   const overallColor = useMemo(() => {
-    if (!qualityStats) return '#9ca3af';
-    return getConnectionQualityColor(qualityStats.overallQuality);
-  }, [qualityStats]);
+    if (!overallQuality) return '#9ca3af';
+    return getConnectionQualityColor(overallQuality);
+  }, [overallQuality]);
 
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     if (!qualityStats) return;
-    navigator.clipboard.writeText(JSON.stringify(qualityStats, null, 2));
+    void navigator.clipboard.writeText(JSON.stringify(qualityStats, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+  }, [qualityStats]);
+
+  const fetchStats = useCallback(() => {
+    const conn = getMediaServerConn();
+    if (conn.qualityMonitor) {
+      const stats = conn.qualityMonitor.getStats();
+      setQualityStats(stats);
+    }
+  }, []);
+
+  useEffect(() => {
+    let interval: any;
+    if (isPolling) {
+      fetchStats();
+      interval = setInterval(fetchStats, 5000);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isPolling, fetchStats]);
 
   const renderStat = (
     label: string,
@@ -51,7 +84,7 @@ const ConnectionStatus = () => {
     </div>
   );
 
-  if (!qualityStats) return null;
+  if (!overallQuality) return null;
 
   return (
     <Menu as={Fragment}>
@@ -80,6 +113,8 @@ const ConnectionStatus = () => {
             leave="transition ease-in duration-150"
             leaveFrom="opacity-100 scale-100 translate-y-0"
             leaveTo="opacity-0 scale-95 -translate-y-1"
+            afterEnter={() => setIsPolling(true)}
+            afterLeave={() => setIsPolling(false)}
           >
             <MenuItems
               className="absolute z-10 mt-2 w-72 right-0 rtl:left-0
@@ -87,52 +122,54 @@ const ConnectionStatus = () => {
               bg-white dark:bg-dark-primary
               border border-gray-200 dark:border-Gray-700"
             >
-              <div className="flex flex-col gap-1">
-                {renderStat(
-                  t('header.connection-status.overall-quality'),
-                  t(
-                    `header.connection-status.qualities.${qualityStats.overallQuality}`,
-                  ),
-                  t('header.connection-status.tooltips.overall-quality'),
-                  overallColor,
-                )}
+              {qualityStats ? (
+                <div className="flex flex-col gap-1">
+                  {renderStat(
+                    t('header.connection-status.overall-quality'),
+                    t(
+                      `header.connection-status.qualities.${qualityStats.overallQuality}`,
+                    ),
+                    t('header.connection-status.tooltips.overall-quality'),
+                    getConnectionQualityColor(qualityStats.overallQuality),
+                  )}
 
-                {renderStat(
-                  t('header.connection-status.upload'),
-                  t(
-                    `header.connection-status.qualities.${qualityStats.uploadQuality}`,
-                  ),
-                  t('header.connection-status.tooltips.upload'),
-                  getConnectionQualityColor(qualityStats.uploadQuality),
-                )}
+                  {renderStat(
+                    t('header.connection-status.upload'),
+                    t(
+                      `header.connection-status.qualities.${qualityStats.uploadQuality}`,
+                    ),
+                    t('header.connection-status.tooltips.upload'),
+                    getConnectionQualityColor(qualityStats.uploadQuality),
+                  )}
 
-                {renderStat(
-                  t('header.connection-status.download'),
-                  t(
-                    `header.connection-status.qualities.${qualityStats.receiveQuality}`,
-                  ),
-                  t('header.connection-status.tooltips.download'),
-                  getConnectionQualityColor(qualityStats.receiveQuality),
-                )}
+                  {renderStat(
+                    t('header.connection-status.download'),
+                    t(
+                      `header.connection-status.qualities.${qualityStats.receiveQuality}`,
+                    ),
+                    t('header.connection-status.tooltips.download'),
+                    getConnectionQualityColor(qualityStats.receiveQuality),
+                  )}
 
-                {renderStat(
-                  t('header.connection-status.score'),
-                  qualityStats.score.toFixed(2),
-                  t('header.connection-status.tooltips.score'),
-                )}
+                  {renderStat(
+                    t('header.connection-status.score'),
+                    qualityStats.score.toFixed(2),
+                    t('header.connection-status.tooltips.score'),
+                  )}
 
-                {renderStat(
-                  t('header.connection-status.packet-loss'),
-                  `${qualityStats.rawPacketLoss.toFixed(2)}%`,
-                  t('header.connection-status.tooltips.packet-loss'),
-                )}
+                  {renderStat(
+                    t('header.connection-status.packet-loss'),
+                    `${qualityStats.rawPacketLoss.toFixed(2)}%`,
+                    t('header.connection-status.tooltips.packet-loss'),
+                  )}
 
-                {renderStat(
-                  t('header.connection-status.rtt'),
-                  `${qualityStats.rtt ? qualityStats.rtt.toFixed(2) : 0} ms`,
-                  t('header.connection-status.tooltips.rtt'),
-                )}
-              </div>
+                  {renderStat(
+                    t('header.connection-status.rtt'),
+                    `${qualityStats.rtt ? qualityStats.rtt.toFixed(2) : 0} ms`,
+                    t('header.connection-status.tooltips.rtt'),
+                  )}
+                </div>
+              ) : null}
 
               <div className="flex justify-end mt-4">
                 <button

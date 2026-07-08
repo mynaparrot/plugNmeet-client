@@ -143,6 +143,7 @@ export default class ConnectionQualityMonitor {
 
   private prevInboundStats: Record<string, PrevInboundStats> = {};
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
+  private lastStats: QualityStats | null = null;
 
   constructor(room: Room) {
     this.room = room;
@@ -159,6 +160,7 @@ export default class ConnectionQualityMonitor {
 
       try {
         const stats = await this.collectQualityStats();
+        this.lastStats = stats;
         if (this.isStopped) return;
 
         this.handleQualityState(stats);
@@ -192,6 +194,11 @@ export default class ConnectionQualityMonitor {
 
     this.prevInboundStats = {};
     this.prevOutboundStats = {};
+    this.lastStats = null;
+  };
+
+  public getStats = () => {
+    return this.lastStats;
   };
 
   public getOverallQuality = () => this.currentQuality;

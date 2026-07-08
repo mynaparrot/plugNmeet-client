@@ -36,13 +36,13 @@ import { IConnectLivekit } from './types';
 import i18n from '../i18n';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
-import { getConfigValue, isFirefoxMobile } from '../utils';
+import { getConfigValue, isFirefoxMobile, toPlugNmeetUserId } from '../utils';
 import { CorsWorker } from '../libs/corsWorker';
 import ConnectionQualityMonitor, {
   PnmConnectionQuality,
   QualityStats,
 } from './ConnectionQualityMonitor';
-import { updateQualityStats } from '../../store/slices/sessionSlice';
+import { updateOverallConnectionQuality } from '../../store/slices/sessionSlice';
 
 const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
@@ -70,6 +70,7 @@ export default class ConnectLivekit
   private poorConnectionTimestamps: number[] = [];
 
   private lastReportedConnectionQuality: PnmConnectionQuality | null = null;
+  private lastDispatchedOverallQuality: PnmConnectionQuality | null = null;
   private readonly connectionQualityMonitor: ConnectionQualityMonitor;
 
   constructor(
@@ -118,6 +119,10 @@ export default class ConnectLivekit
 
   public get room() {
     return this._room;
+  }
+
+  public get qualityMonitor(): ConnectionQualityMonitor {
+    return this.connectionQualityMonitor;
   }
 
   public initializeConnection = async (serverInfo: MediaServerConnInfo) => {
@@ -335,7 +340,7 @@ export default class ConnectLivekit
           ) {
             store.dispatch(
               updateParticipant({
-                id: participant.identity,
+                id: toPlugNmeetUserId(participant.identity),
                 changes: {
                   screenShareTrack: 1,
                 },
@@ -441,17 +446,19 @@ export default class ConnectLivekit
   };
 
   private checkConnectionQualityForFallback = async (stats: QualityStats) => {
-    // For local UI - show the overall experience
-    store.dispatch(updateQualityStats(stats));
-
-    store.dispatch(
-      updateParticipant({
-        id: this.localUserId,
-        changes: {
-          connectionQuality: stats.overallQuality,
-        },
-      }),
-    );
+    // For local UI - show the overall experience & update participant list
+    if (this.lastDispatchedOverallQuality !== stats.overallQuality) {
+      this.lastDispatchedOverallQuality = stats.overallQuality;
+      store.dispatch(updateOverallConnectionQuality(stats.overallQuality));
+      store.dispatch(
+        updateParticipant({
+          id: toPlugNmeetUserId(this.localUserId),
+          changes: {
+            connectionQuality: stats.overallQuality,
+          },
+        }),
+      );
+    }
 
     // For broadcasting - only send our own connection's quality
     const qualityChanged =

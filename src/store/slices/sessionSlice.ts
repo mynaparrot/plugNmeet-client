@@ -11,7 +11,7 @@ import {
   ISession,
   UserDeviceType,
 } from './interfaces/session';
-import { QualityStats } from '../../helpers/livekit/ConnectionQualityMonitor';
+import { PnmConnectionQuality } from '../../helpers/livekit/ConnectionQualityMonitor';
 
 const initialState: ISession = {
   token: '',
@@ -175,8 +175,11 @@ const sessionSlice = createSlice({
     updateIsCloud: (state, action: PayloadAction<boolean>) => {
       state.isCloud = action.payload;
     },
-    updateQualityStats: (state, action: PayloadAction<QualityStats>) => {
-      state.qualityStats = action.payload;
+    updateOverallConnectionQuality: (
+      state,
+      action: PayloadAction<PnmConnectionQuality>,
+    ) => {
+      state.overallConnectionQuality = action.payload;
     },
   },
 });
@@ -195,7 +198,7 @@ export const {
   updateTotalAudioSubscribers,
   updateUserDeviceType,
   updateIsCloud,
-  updateQualityStats,
+  updateOverallConnectionQuality,
 } = sessionSlice.actions;
 
 export default sessionSlice.reducer;
