@@ -76,9 +76,9 @@ export default class SubscriptionHandler {
 
   public initializeSubscriptions = () => {
     // now we'll subscribe to the room events stream
-    this.subscribeToRoomEvents().then();
+    void this.subscribeToRoomEvents();
     // we'll still need this for any pub/sub based messages
-    this.subscribeToSystemPublicPubSub().then();
+    void this.subscribeToSystemPublicPubSub();
   };
 
   /**
@@ -412,12 +412,7 @@ export default class SubscriptionHandler {
 
     // Restore user data from IndexedDB to maintain state across sessions.
     try {
-      const [
-        chatMsgs,
-        notifications,
-        lastSubtitleLang,
-        speechToTextFinalTexts,
-      ] = await Promise.all([
+      const results = await Promise.allSettled([
         idbGetAll<ChatMessage>(DB_STORE_NAMES.CHAT_MESSAGES),
         idbGetAll<UserNotification>(DB_STORE_NAMES.USER_NOTIFICATIONS),
         idbGet<string>(
@@ -427,7 +422,29 @@ export default class SubscriptionHandler {
         idbGetAll<TextWithInfo>(DB_STORE_NAMES.SPEECH_TO_TEXT_FINAL_TEXTS),
       ]);
 
-      if (chatMsgs.length) {
+      const chatMsgs =
+        results[0].status === 'fulfilled' ? results[0].value : [];
+      const notifications =
+        results[1].status === 'fulfilled' ? results[1].value : [];
+      const lastSubtitleLang =
+        results[2].status === 'fulfilled' ? results[2].value : undefined;
+      const speechToTextFinalTexts =
+        results[3].status === 'fulfilled' ? results[3].value : [];
+
+      if (results[0].status === 'rejected') {
+        console.error(
+          'Failed to load chat messages from IndexedDB:',
+          results[0].reason,
+        );
+      }
+      if (results[1].status === 'rejected') {
+        console.error(
+          'Failed to load notifications from IndexedDB:',
+          results[1].reason,
+        );
+      }
+
+      if (chatMsgs && chatMsgs.length) {
         store.dispatch(
           addAllChatMessages({
             messages: chatMsgs,
@@ -435,14 +452,19 @@ export default class SubscriptionHandler {
           }),
         );
       }
-      if (notifications.length) {
+      if (notifications && notifications.length) {
         store.dispatch(setAllUserNotifications(notifications));
       }
       // Restore speech-to-text data if the feature is enabled.
       const transcriptionFeatures =
         this.connectNats.currentRoomInfo?.metadata?.roomFeatures
           ?.insightsFeatures?.transcriptionFeatures;
-      if (
+      if (results[3].status === 'rejected') {
+        console.error(
+          'Failed to load speech-to-text data from IndexedDB:',
+          results[3].reason,
+        );
+      } else if (
         transcriptionFeatures?.isEnabled &&
         speechToTextFinalTexts &&
         speechToTextFinalTexts.length
@@ -469,7 +491,9 @@ export default class SubscriptionHandler {
       this.subscribeToChat(),
       this.subscribeToWhiteboard(),
       this.subscribeToDataChannel(),
-    ]).then();
+    ]).catch((err) => {
+      console.error('Failed to initialize subscription channels:', err);
+    });
 
     if (this.connectNats.isRecorder) {
       this._handleParticipants.recorderJoined();
