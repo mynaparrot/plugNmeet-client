@@ -8,6 +8,8 @@ export const VIRTUAL_WORKSPACE_HEIGHT = 260;
 export const DEFAULT_A4_WIDTH = 1240;
 export const DEFAULT_A4_HEIGHT = 1754;
 export const DEFAULT_A4_MARGIN = 40;
+export const A4_VIEWPORT_PADDING_LEFT = 20;
+export const A4_VIEWPORT_PADDING_TOP = 50;
 
 export const SCALE = 2;
 export const A4_WIDTH = DEFAULT_A4_WIDTH * SCALE;

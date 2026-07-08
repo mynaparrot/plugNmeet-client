@@ -23,7 +23,6 @@ import {
   CollaboratorPointer,
   ExcalidrawImperativeAPI,
   Gesture,
-  NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
@@ -60,6 +59,7 @@ import {
   A4_BOUNDARY_GUIDE_ID,
   displaySavedPageData,
   ensureAllImagesDataIsLoaded,
+  getA4WidthBasedZoom,
   prepareA4BoundaryGuide,
   savePageData,
 } from './helpers/utils';
@@ -71,6 +71,8 @@ import {
   DEFAULT_A4_WIDTH,
   DEFAULT_A4_HEIGHT,
   DEFAULT_A4_MARGIN,
+  A4_VIEWPORT_PADDING_LEFT,
+  A4_VIEWPORT_PADDING_TOP,
 } from './export-pdf/types';
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
@@ -173,6 +175,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   useWhiteboardAppStateSync({
     excalidrawAPI,
     isFollowing,
+    isPresenter: !!isPresenter,
   });
   const { syncOfficeFilePage } = useOfficePageSyncer({
     excalidrawAPI,
@@ -267,30 +270,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
     const startY = (VIRTUAL_WORKSPACE_HEIGHT - targetHeight) / 2;
 
-    // Offset padding to ensure the canvas doesn't sit under the floating tools
-    const PADDING_LEFT = 20;
-    const PADDING_TOP = 50;
-
-    // Fit the initial presenter viewport based on available canvas width. We fit by A4 width only, not full A4 height.
-    const VIEWPORT_HORIZONTAL_PADDING = 40;
-    const MIN_ZOOM = 0.1;
-    const MAX_INITIAL_ZOOM = 1;
-
-    const safeViewportWidth = Math.max(
-      viewportWidth - VIEWPORT_HORIZONTAL_PADDING,
-      1,
-    );
-
-    const initialZoom = Math.max(
-      Math.min(safeViewportWidth / targetWidth, MAX_INITIAL_ZOOM),
-      MIN_ZOOM,
-    ) as NormalizedZoomValue;
+    const initialZoom = getA4WidthBasedZoom(viewportWidth, targetWidth);
 
     api.updateScene({
       appState: {
         // Snap to the top-left of the red guide box plus comfortable visual padding
-        scrollX: -startX + PADDING_LEFT,
-        scrollY: -startY + PADDING_TOP,
+        scrollX: -startX + A4_VIEWPORT_PADDING_LEFT,
+        scrollY: -startY + A4_VIEWPORT_PADDING_TOP,
         zoom: {
           value: initialZoom,
         },

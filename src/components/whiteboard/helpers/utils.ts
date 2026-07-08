@@ -1,6 +1,9 @@
 import { RefObject } from 'react';
 import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import {
+  ExcalidrawImperativeAPI,
+  NormalizedZoomValue,
+} from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawElement,
   ExcalidrawImageElement,
@@ -219,4 +222,23 @@ export const prepareA4BoundaryGuide = (): OrderedExcalidrawElement[] => {
       regenerateIds: false,
     },
   );
+};
+
+export const getA4WidthBasedZoom = (
+  viewportWidth: number,
+  targetWidth: number,
+): NormalizedZoomValue => {
+  const VIEWPORT_HORIZONTAL_PADDING = 40;
+  const MIN_ZOOM = 0.1;
+  const MAX_INITIAL_ZOOM = 1;
+
+  const safeViewportWidth = Math.max(
+    viewportWidth - VIEWPORT_HORIZONTAL_PADDING,
+    1,
+  );
+
+  return Math.max(
+    Math.min(safeViewportWidth / targetWidth, MAX_INITIAL_ZOOM),
+    MIN_ZOOM,
+  ) as NormalizedZoomValue;
 };

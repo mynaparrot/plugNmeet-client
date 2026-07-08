@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   AppState,
   ExcalidrawImperativeAPI,
@@ -8,17 +8,26 @@ import { Theme } from '@excalidraw/excalidraw/element/types';
 import { debounce } from 'es-toolkit';
 
 import { useAppSelector } from '../../../../store';
+import {
+  A4_VIEWPORT_PADDING_LEFT,
+  DEFAULT_A4_MARGIN,
+  DEFAULT_A4_WIDTH,
+  VIRTUAL_WORKSPACE_WIDTH,
+} from '../../export-pdf/types';
+import { getA4WidthBasedZoom } from '../utils';
 
 const VIEWPORT_SYNC_DEBOUNCE_TIMEOUT = 150;
 
 interface IUseWhiteboardAppStateSync {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   isFollowing: boolean;
+  isPresenter: boolean;
 }
 
 const useWhiteboardAppStateSync = ({
   excalidrawAPI,
   isFollowing,
+  isPresenter,
 }: IUseWhiteboardAppStateSync) => {
   const whiteboardAppState = useAppSelector(
     (state) => state.whiteboard.whiteboardAppState,
@@ -102,14 +111,20 @@ const useWhiteboardAppStateSync = ({
 
   // Handle incoming AppState changes from the presenter
   useEffect(() => {
-    if (excalidrawAPI && whiteboardAppState && isFollowing) {
+    if (excalidrawAPI && !isPresenter && whiteboardAppState && isFollowing) {
       debouncedSync(excalidrawAPI, whiteboardAppState);
     }
 
     return () => {
       debouncedSync.cancel();
     };
-  }, [excalidrawAPI, whiteboardAppState, isFollowing, debouncedSync]);
+  }, [
+    excalidrawAPI,
+    isPresenter,
+    whiteboardAppState,
+    isFollowing,
+    debouncedSync,
+  ]);
 
   // Recalibrate the local viewport when the refreshWhiteboardSignal triggered
   // note: refreshWhiteboardSignal and whiteboardResetSignal are not same!
@@ -117,6 +132,7 @@ const useWhiteboardAppStateSync = ({
   useEffect(() => {
     if (
       excalidrawAPI &&
+      !isPresenter &&
       isFollowing &&
       whiteboardAppState &&
       refreshWhiteboardSignal > 0
@@ -128,7 +144,63 @@ const useWhiteboardAppStateSync = ({
       debouncedSync.cancel();
     };
     // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshWhiteboardSignal]);
+  }, [isFollowing, isPresenter, refreshWhiteboardSignal]);
+
+  /** For presenter */
+
+  const refreshPresenterViewport = useCallback(
+    (api: ExcalidrawImperativeAPI) => {
+      const appState = api.getAppState();
+
+      const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+      const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
+
+      const nextZoom = getA4WidthBasedZoom(appState.width, targetWidth);
+
+      if (
+        !appState.width ||
+        !appState.height ||
+        !nextZoom ||
+        !Number.isFinite(nextZoom)
+      ) {
+        return;
+      }
+
+      api.updateScene({
+        appState: {
+          zoom: {
+            value: nextZoom,
+          },
+          scrollX: -startX + A4_VIEWPORT_PADDING_LEFT,
+          scrollY: appState.scrollY,
+        },
+      });
+    },
+    [],
+  );
+
+  const debouncedRefreshPresenterViewport = useMemo(
+    () =>
+      debounce((api: ExcalidrawImperativeAPI) => {
+        refreshPresenterViewport(api);
+      }, VIEWPORT_SYNC_DEBOUNCE_TIMEOUT),
+    [refreshPresenterViewport],
+  );
+
+  useEffect(() => {
+    if (excalidrawAPI && isPresenter && refreshWhiteboardSignal > 0) {
+      debouncedRefreshPresenterViewport(excalidrawAPI);
+    }
+
+    return () => {
+      debouncedRefreshPresenterViewport.cancel();
+    };
+  }, [
+    excalidrawAPI,
+    isPresenter,
+    refreshWhiteboardSignal,
+    debouncedRefreshPresenterViewport,
+  ]);
 };
 
 export default useWhiteboardAppStateSync;
