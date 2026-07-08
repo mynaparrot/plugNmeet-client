@@ -46,7 +46,7 @@
     "room-disconnected-server-unresponsive": "Ha sido desconectado porque el servidor ha dejado de responder.",
     "room-disconnected-reconnecting": "Se ha perdido la conexión. Reconectando...",
     "room-disconnected-network-error": "Ha sido desconectado debido a un problema de red.",
-    "your-connection-lost-or-unstable": "Tu conexión está un poco inestable ahora mismo. Otros pueden notar algunos problemas de audio o video de tu parte.",
+    "your-connection-lost-or-unstable": "Su conexión es un poco inestable en este momento. Es posible que otros noten algunos problemas de audio o video.",
     "need-to-disable-display-external-link": "Para reproducir un vídeo, primero deje de compartir el enlace externo.",
     "need-to-disable-external-media-player": "Para compartir un enlace externo, primero detenga el reproductor de vídeo.",
     "websocket-disconnected": "Se ha perdido la conexión, intentando reconectar...",
@@ -90,9 +90,9 @@
     "server-not-responding": "El servidor no responde. Su conexión puede ser inestable.",
     "re-routing-connection": "La conexión es inestable. Redirigiendo para una mejor estabilidad...",
     "whiteboard-new-file-added": "El nuevo archivo está listo y se ha añadido a la lista de archivos de la pizarra.",
-    "private-download-link-ready": "Tu enlace de descarga está listo. Solo tú puedes ver este mensaje.<br/>{{link}}",
-    "local-audio-stuck-fallback": "Detectamos un problema con tu micrófono. Prueba a apagarlo y encenderlo de nuevo.",
-    "local-video-stuck-fallback": "Detectamos un problema con tu cámara. Prueba a apagarla y encenderla de nuevo."
+    "private-download-link-ready": "Su enlace de descarga está listo. Solo usted puede ver este mensaje.<br/>{{link}}",
+    "local-audio-stuck-fallback": "Detectamos un problema con su micrófono. Pruebe a apagarlo y encenderlo de nuevo.",
+    "local-video-stuck-fallback": "Detectamos un problema con su cámara. Prueba a apagarla y encenderla de nuevo."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -121,7 +121,7 @@
       "data-savings": "Ahorro de datos",
       "notifications": "Notificaciones",
       "ingress": "Entrada de transmisión en vivo",
-      "sip-dial-in": "Marcación de entrada SIP/VoIP",
+      "sip-dial-in": "Acceso telefónico SIP/VoIP",
       "show-webcams": "Mostrar cámaras web",
       "show-screen-share": "Mostrar pantalla compartida",
       "allow-audio-notification": "Activar notificaciones de sonido",
@@ -171,12 +171,12 @@
       "rtt": "Retraso (RTT)",
       "copy": "Copiar detalles",
       "tooltips": {
-        "overall-quality": "Tu experiencia general en la reunión, basada en la calidad de envío y recepción.",
-        "score": "Una puntuación de 0 a 100 que representa la estabilidad de tu conexión.",
-        "upload": "La calidad del vídeo y audio que envías a los demás.",
-        "download": "La calidad del vídeo y el audio que recibes de otros.",
+        "overall-quality": "Su experiencia general en la reunión, basada en la calidad de envío y recepción.",
+        "score": "Una puntuación de 0 a 100 que representa la estabilidad de su conexión.",
+        "upload": "La calidad del video y audio que envía a los demás.",
+        "download": "La calidad del video y el audio que recibe de otros.",
         "packet-loss": "El porcentaje de datos que se perdió mientras viajaba por internet. Cuanto menos, mejor.",
-        "rtt": "El tiempo que tarda tus datos en llegar y volver al servidor. Cuanto menos, mejor."
+        "rtt": "El tiempo que tarda sus datos en llegar y volver al servidor. Cuanto menos, mejor."
       },
       "qualities": {
         "excellent": "Excelente",
@@ -651,7 +651,7 @@
     }
   },
   "sip-dial-in-features": {
-    "feature-not-allow": "La marcación de entrada SIP no está habilitada para esta sala.",
+    "feature-not-allow": "El acceso telefónico SIP no está habilitado para esta sala.",
     "hide-phone-number": "Ocultar número de teléfono",
     "activate": "Activar",
     "pin": "PIN de acceso",
