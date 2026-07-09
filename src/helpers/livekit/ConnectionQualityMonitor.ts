@@ -33,7 +33,8 @@ const POOR_WINDOW_THRESHOLD = 3;
 const GOOD_RECOVERY_THRESHOLD = 3;
 
 const INTERVAL = 5000;
-const NOTIFICATION_COOLDOWN = 60_000;
+const NOTIFICATION_COOLDOWN = 5 * 60_000; // 5 minutes
+const MAX_POOR_CONNECTION_NOTIFICATIONS = 3;
 
 const MAX_SCORE = 100;
 const MIN_SCORE = 20;
@@ -133,6 +134,7 @@ export default class ConnectionQualityMonitor {
 
   private poorConnectionHistory: boolean[] = [];
   private lastPoorConnectionNotificationAt = 0;
+  private poorConnectionNotificationCount: number = 0;
   private qualityCheckTimeout: ReturnType<typeof setTimeout> | null = null;
   private isConnectionCurrentlyPoor = false;
   private isCheckingQuality = false;
@@ -656,6 +658,12 @@ export default class ConnectionQualityMonitor {
   private maybeNotifyUser(poorCount: number) {
     if (this.isConnectionCurrentlyPoor) return;
 
+    if (
+      this.poorConnectionNotificationCount >= MAX_POOR_CONNECTION_NOTIFICATIONS
+    ) {
+      return;
+    }
+
     const now = Date.now();
     const canNotify =
       now - this.lastPoorConnectionNotificationAt > NOTIFICATION_COOLDOWN;
@@ -664,6 +672,7 @@ export default class ConnectionQualityMonitor {
 
     this.isConnectionCurrentlyPoor = true;
     this.lastPoorConnectionNotificationAt = now;
+    this.poorConnectionNotificationCount += 1;
     this.poorConnectionHistory = [];
 
     store.dispatch(
