@@ -189,6 +189,7 @@ export default class ConnectionQualityMonitor {
 
     this.poorConnectionHistory = [];
     this.lastPoorConnectionNotificationAt = 0;
+    this.poorConnectionNotificationCount = 0;
     this.isConnectionCurrentlyPoor = false;
     this.isCheckingQuality = false;
     this.currentQuality = PnmConnectionQuality.Excellent;
