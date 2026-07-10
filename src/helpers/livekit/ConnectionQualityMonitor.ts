@@ -130,7 +130,7 @@ type QualityCheckState = {
 };
 
 export default class ConnectionQualityMonitor {
-  private readonly room: Room;
+  private room: Room | undefined;
 
   private poorConnectionHistory: boolean[] = [];
   private lastPoorConnectionNotificationAt = 0;
@@ -147,12 +147,12 @@ export default class ConnectionQualityMonitor {
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
   private lastStats: QualityStats | null = null;
 
-  constructor(room: Room) {
-    this.room = room;
-  }
-
-  public start = (onQualityUpdate?: (stats: QualityStats) => void) => {
+  public start = (
+    room: Room,
+    onQualityUpdate?: (stats: QualityStats) => void,
+  ) => {
     this.stop();
+    this.room = room;
     this.isStopped = false;
 
     const checkQuality = async () => {
@@ -368,7 +368,7 @@ export default class ConnectionQualityMonitor {
   }
 
   private async collectQualityStats(): Promise<QualityStats> {
-    if (this.room.state !== ConnectionState.Connected) {
+    if (!this.room || this.room.state !== ConnectionState.Connected) {
       return this.createStats({
         rawPacketLoss: 100,
         rtt: LOST_RTT_THRESHOLD,
@@ -444,7 +444,7 @@ export default class ConnectionQualityMonitor {
   }
 
   private findSenderTrackByMid(mid?: string): MediaStreamTrack | null {
-    if (!mid) return null;
+    if (!this.room || !mid) return null;
 
     const transceivers =
       this.room.engine?.pcManager?.publisher?.getTransceivers?.();
@@ -462,6 +462,10 @@ export default class ConnectionQualityMonitor {
     kind: 'audio' | 'video',
     senderTrack?: MediaStreamTrack | null,
   ): LocalTrackPublication | undefined {
+    if (!this.room) {
+      return undefined;
+    }
+
     for (const pub of this.room.localParticipant.trackPublications.values()) {
       const mediaStreamTrack = pub.track?.mediaStreamTrack;
 

@@ -97,7 +97,7 @@ export default class ConnectLivekit
     );
     void this.configureRoom();
 
-    this.connectionQualityMonitor = new ConnectionQualityMonitor(this._room);
+    this.connectionQualityMonitor = new ConnectionQualityMonitor();
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
@@ -162,6 +162,7 @@ export default class ConnectLivekit
       this._roomConnectionStatusState('media-server-conn-established');
       // start connection quality monitor
       this.connectionQualityMonitor.start(
+        this._room,
         this.checkConnectionQualityForFallback,
       );
     } catch (error) {
