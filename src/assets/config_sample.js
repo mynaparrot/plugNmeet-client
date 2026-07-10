@@ -24,8 +24,8 @@ window.plugNmeetConfig = {
   // The client can then pick the most appropriate one.
   enableSimulcast: true,
 
-  // Available options: 'vp8' | 'h264' | 'vp9' | 'av1'. Default: 'vp8'.
-  videoCodec: 'vp8',
+  // Available options: 'vp8' | 'h264' | 'vp9' | 'av1'. Default: 'vp9'.
+  videoCodec: 'vp9',
 
   // Available options: 'h90' | 'h180' | 'h216' | 'h360' | 'h540' | 'h720' | 'h1080' | 'h1440' | 'h2160'.
   // Default: 'h720'.

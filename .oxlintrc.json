@@ -18,7 +18,7 @@
   },
   "overrides": [
     {
-      "files": ["src/**/*.{ts,jsx,tsx}"],
+      "files": ["src/**/*.{ts,jsx,tsx}", "src/assets/config_sample.js"],
       "rules": {
         "react-in-jsx-scope": "off",
         "iframe-missing-sandbox": "off",
