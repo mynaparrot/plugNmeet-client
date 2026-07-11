@@ -536,18 +536,22 @@ export default class ConnectNats {
       // we'll get our selected lang
       const selectedChatTransLang = state.roomSettings.selectedChatTransLang;
       if (selectedChatTransLang !== '') {
-        // we'll need to send request to get translation of selected lang
-        const body = create(InsightsTranslateTextReqSchema, {
-          text: chatMessage.message,
-          sourceLang: selectedChatTransLang,
-          targetLangs: chatTranslationFeatures.allowedTransLangs,
-        });
-        const res = await executeChatTranslation(body);
-        if (res.status && res.result) {
-          chatMessage.sourceLang = selectedChatTransLang;
-          chatMessage.translations = res.result.translations;
-        } else {
-          console.error(res.msg);
+        try {
+          // we'll need to send request to get translation of selected lang
+          const body = create(InsightsTranslateTextReqSchema, {
+            text: chatMessage.message,
+            sourceLang: selectedChatTransLang,
+            targetLangs: chatTranslationFeatures.allowedTransLangs,
+          });
+          const res = await executeChatTranslation(body);
+          if (res.status && res.result) {
+            chatMessage.sourceLang = selectedChatTransLang;
+            chatMessage.translations = res.result.translations;
+          } else {
+            console.error(res.msg);
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
     }

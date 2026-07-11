@@ -641,7 +641,8 @@
       "allowed-users": "Allowed Participants",
       "users-required": "At least one participant must be selected.",
       "chat-box-placeholder": "Ask the AI Assistant a question...",
-      "responding-placeholder": "AI Assistant is responding..."
+      "responding-placeholder": "AI Assistant is responding...",
+      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",

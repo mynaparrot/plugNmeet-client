@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useCallback, useRef, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { isEmpty } from 'es-toolkit/compat';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -30,6 +36,31 @@ const TextBoxArea = () => {
   const [message, setMessage] = useState<string>('');
   useAutosizeTextArea(textAreaRef.current, message);
 
+  // This effect now manages the entire timeout lifecycle.
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    // If we start waiting for a response, set a 30-second timeout.
+    if (isAwaitingResponse) {
+      timeoutId = setTimeout(() => {
+        dispatch(clearIsAwaitingResponse());
+        toast(t('insights.ai-text-chat.response-timed-out'), {
+          type: 'error',
+        });
+      }, 30000); // 30 seconds
+    }
+
+    // The cleanup function will run when the component unmounts,
+    // or when `isAwaitingResponse` changes again.
+    return () => {
+      // If a response arrives in time (isAwaitingResponse becomes false),
+      // this cleanup will run and clear the timeout before it can fire.
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isAwaitingResponse, dispatch, t]);
+
   const sendMsg = useCallback(async () => {
     if (isAwaitingResponse || isEmpty(message)) return;
 
@@ -38,23 +69,36 @@ const TextBoxArea = () => {
       text: message,
     });
     // Dispatch the user message immediately, this will set isAwaitingResponse to true
-    // and instantly lock the UI.
+    // and instantly lock the UI and will trigger the useEffect above to start the timeout.
     dispatch(addAiTextChatUserMessage(message));
     setMessage('');
 
-    const r = await sendAPIRequest(
-      'insights/ai/textChat/execute',
-      toBinary(InsightsAITextChatContentSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    );
+    try {
+      const r = await sendAPIRequest(
+        'insights/ai/textChat/execute',
+        toBinary(InsightsAITextChatContentSchema, body),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
 
-    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-    if (!res.status) {
-      toast(t(res.msg), {
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+      if (!res.status) {
+        toast(t(res.msg), {
+          type: 'error',
+        });
+        // If the API call fails, clear the waiting state.
+        // This will trigger the useEffect cleanup, cancelling the timeout.
+        dispatch(clearIsAwaitingResponse());
+      }
+      // On success, we do nothing. The WebSocket listener is now responsible
+      // for eventually calling `clearIsAwaitingResponse`.
+    } catch (error) {
+      console.error(error);
+      toast(t('insights.ai-text-chat.response-timed-out'), {
         type: 'error',
       });
+      // Also clear on network errors.
       dispatch(clearIsAwaitingResponse());
     }
   }, [t, dispatch, message, isAwaitingResponse]);
