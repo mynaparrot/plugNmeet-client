@@ -41,13 +41,31 @@ const InsightsAiTextChat = () => {
         ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
   );
 
+  const parsedFinalMessages = useMemo(() => {
+    return finalMessages.map((msg) => {
+      const parsedMessage = marked.parse(msg.parts.join(''), {
+        async: false,
+      });
+      return {
+        ...msg,
+        parsedMessage,
+      };
+    });
+  }, [finalMessages]);
+
   const allMessages = useMemo(() => {
-    const messages = [...finalMessages];
+    const messages = [...parsedFinalMessages];
     if (interimMessage) {
-      messages.push(interimMessage);
+      const parsedMessage = marked.parse(interimMessage.parts.join(''), {
+        async: false,
+      });
+      messages.push({
+        ...interimMessage,
+        parsedMessage,
+      });
     }
     return messages;
-  }, [finalMessages, interimMessage]);
+  }, [parsedFinalMessages, interimMessage]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -145,9 +163,6 @@ const InsightsAiTextChat = () => {
                     {allMessages.map((msg) => {
                       if (!msg) return null;
 
-                      const parsedMessage = marked.parse(msg.parts.join(''), {
-                        async: false,
-                      });
                       const isStreaming =
                         interimMessage !== null && interimMessage.id === msg.id;
 
@@ -159,13 +174,13 @@ const InsightsAiTextChat = () => {
                           {msg.role === 'model' ? (
                             <AIMessage
                               name={t('insights.ai-text-chat.name')}
-                              message={parsedMessage}
+                              message={msg.parsedMessage}
                               isStreaming={isStreaming}
                               sentAt={msg.createdAt}
                             />
                           ) : (
                             <MyMessage
-                              message={parsedMessage}
+                              message={msg.parsedMessage}
                               sentAt={msg.createdAt}
                             />
                           )}
