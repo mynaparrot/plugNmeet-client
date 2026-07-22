@@ -18,12 +18,11 @@ import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import {
   DEFAULT_A4_MARGIN,
   DEFAULT_PAGE_ORIENTATION,
-  getPageSize,
   PageOrientation,
-  resolvePageOrientation,
   VIRTUAL_WORKSPACE_WIDTH,
   VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
+import { getPageSize, resolvePageOrientation } from '../export-pdf/utils';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();

@@ -22,13 +22,15 @@ import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
 import {
   DEFAULT_A4_MARGIN,
   DEFAULT_PAGE_ORIENTATION,
-  getPageSize,
   PageOrientation,
-  pageSizeFromMetaPixels,
-  resolvePageOrientation,
   VIRTUAL_WORKSPACE_WIDTH,
   VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
+import {
+  getPageSize,
+  pageSizeFromMetaPixels,
+  resolvePageOrientation,
+} from '../export-pdf/utils';
 
 export interface FileReaderResult {
   image: BinaryFileData;

@@ -1,4 +1,5 @@
-import { getExportPageSize, SCALE, WorkerInput, WorkerMessage } from './types';
+import { SCALE, WorkerInput, WorkerMessage } from './types';
+import { getExportPageSize } from './utils';
 
 /**
  * Resolves any valid CSS color string into RGB components using browser parsing.
