@@ -72,6 +72,7 @@ const useOfficePageSyncer = ({
         file.isOfficeFile,
         file.uploaderWhiteboardHeight,
         file.uploaderWhiteboardWidth,
+        file.metaFilePath,
       );
 
       if (result) {

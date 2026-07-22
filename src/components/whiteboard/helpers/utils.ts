@@ -16,9 +16,10 @@ import { getConfigValue, sleep } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import {
-  DEFAULT_A4_HEIGHT,
   DEFAULT_A4_MARGIN,
-  DEFAULT_A4_WIDTH,
+  DEFAULT_PAGE_ORIENTATION,
+  getPageSize,
+  PageOrientation,
   VIRTUAL_WORKSPACE_WIDTH,
   VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
@@ -191,14 +192,56 @@ export const ensureAllImagesDataIsLoaded = (
   });
 };
 
-export const prepareA4BoundaryGuide = (): OrderedExcalidrawElement[] => {
-  const height = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
-  const width = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
+export interface PageBoundaryMetrics {
+  orientation: PageOrientation;
+  /** Full A4 page size (includes margin). */
+  pageWidth: number;
+  pageHeight: number;
+  /** Drawable area inside the red guide (page minus margin). */
+  width: number;
+  height: number;
+  /** Top-left of the drawable guide. */
+  startX: number;
+  startY: number;
+  /** Top-left of the full page frame (guide inset by half margin each side). */
+  pageStartX: number;
+  pageStartY: number;
+  /** Half of DEFAULT_A4_MARGIN — padding on each side of the drawable area. */
+  edgeInset: number;
+}
+
+/** Logical drawable A4 frame metrics for the given orientation. */
+export const getPageBoundaryMetrics = (
+  orientation: PageOrientation = DEFAULT_PAGE_ORIENTATION,
+): PageBoundaryMetrics => {
+  const { width: pageWidth, height: pageHeight } = getPageSize(orientation);
+  const edgeInset = DEFAULT_A4_MARGIN / 2;
+  const width = pageWidth - DEFAULT_A4_MARGIN;
+  const height = pageHeight - DEFAULT_A4_MARGIN;
 
   // Use the same standard workspace reference size as handleFiles.ts
   // to ensure absolute coordinate alignment under all browser dimensions and resizes.
   const startX = (VIRTUAL_WORKSPACE_WIDTH - width) / 2;
   const startY = (VIRTUAL_WORKSPACE_HEIGHT - height) / 2;
+
+  return {
+    orientation,
+    pageWidth,
+    pageHeight,
+    width,
+    height,
+    startX,
+    startY,
+    pageStartX: startX - edgeInset,
+    pageStartY: startY - edgeInset,
+    edgeInset,
+  };
+};
+
+export const prepareA4BoundaryGuide = (
+  orientation: PageOrientation = DEFAULT_PAGE_ORIENTATION,
+): OrderedExcalidrawElement[] => {
+  const { width, height, startX, startY } = getPageBoundaryMetrics(orientation);
 
   return convertToExcalidrawElements(
     [
@@ -216,6 +259,9 @@ export const prepareA4BoundaryGuide = (): OrderedExcalidrawElement[] => {
         strokeStyle: 'dashed',
         opacity: 20,
         locked: true,
+        customData: {
+          pageOrientation: orientation,
+        },
       },
     ],
     {
@@ -241,4 +287,26 @@ export const getA4WidthBasedZoom = (
     Math.min(safeViewportWidth / targetWidth, MAX_INITIAL_ZOOM),
     MIN_ZOOM,
   ) as NormalizedZoomValue;
+};
+
+/**
+ * Prefer orientation stamped on scene elements (office image / boundary).
+ * Office pages stamp this from page_N_meta.json when the image is placed.
+ * Default: portrait A4.
+ */
+export const resolveOrientationFromElements = (
+  elements: readonly ExcalidrawElement[],
+): PageOrientation => {
+  for (const el of elements) {
+    const orientation = el.customData?.pageOrientation;
+    if (orientation === 'landscape' || orientation === 'portrait') {
+      return orientation;
+    }
+  }
+  return DEFAULT_PAGE_ORIENTATION;
+};
+
+/** Blank / non-office pages use portrait A4. */
+export const getCurrentPageOrientation = (): PageOrientation => {
+  return DEFAULT_PAGE_ORIENTATION;
 };

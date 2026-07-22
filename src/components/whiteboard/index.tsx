@@ -60,19 +60,18 @@ import {
   displaySavedPageData,
   ensureAllImagesDataIsLoaded,
   getA4WidthBasedZoom,
+  getCurrentPageOrientation,
+  getPageBoundaryMetrics,
   prepareA4BoundaryGuide,
+  resolveOrientationFromElements,
   savePageData,
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
 import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 import {
-  VIRTUAL_WORKSPACE_WIDTH,
-  VIRTUAL_WORKSPACE_HEIGHT,
-  DEFAULT_A4_WIDTH,
-  DEFAULT_A4_HEIGHT,
-  DEFAULT_A4_MARGIN,
   A4_VIEWPORT_PADDING_LEFT,
   A4_VIEWPORT_PADDING_TOP,
+  PageOrientation,
 } from './export-pdf/types';
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
@@ -260,36 +259,43 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   /**
    * Positions the viewport at the A4 boundary with an initial width-based zoom.
    */
-  const scrollToBoundary = useCallback((api: ExcalidrawImperativeAPI) => {
-    const { width: viewportWidth } = api.getAppState();
+  const scrollToBoundary = useCallback(
+    (
+      api: ExcalidrawImperativeAPI,
+      orientation: PageOrientation = getCurrentPageOrientation(),
+    ) => {
+      const { width: viewportWidth } = api.getAppState();
+      const {
+        width: targetWidth,
+        startX,
+        startY,
+      } = getPageBoundaryMetrics(orientation);
 
-    const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-    const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+      const initialZoom = getA4WidthBasedZoom(viewportWidth, targetWidth);
 
-    // Calculate the start positions of the boundary guide matching utils.ts
-    const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
-    const startY = (VIRTUAL_WORKSPACE_HEIGHT - targetHeight) / 2;
-
-    const initialZoom = getA4WidthBasedZoom(viewportWidth, targetWidth);
-
-    api.updateScene({
-      appState: {
-        // Snap to the top-left of the red guide box plus comfortable visual padding
-        scrollX: -startX + A4_VIEWPORT_PADDING_LEFT,
-        scrollY: -startY + A4_VIEWPORT_PADDING_TOP,
-        zoom: {
-          value: initialZoom,
+      api.updateScene({
+        appState: {
+          // Snap to the top-left of the red guide box plus comfortable visual padding
+          scrollX: -startX + A4_VIEWPORT_PADDING_LEFT,
+          scrollY: -startY + A4_VIEWPORT_PADDING_TOP,
+          zoom: {
+            value: initialZoom,
+          },
         },
-      },
-    });
-  }, []);
+      });
+    },
+    [],
+  );
 
   const addBoundaryToElements = useCallback(
-    (elements: readonly ExcalidrawElement[]) => {
+    (
+      elements: readonly ExcalidrawElement[],
+      orientation: PageOrientation = getCurrentPageOrientation(),
+    ) => {
       if (!isPresenter) {
         return elements;
       }
-      const boundary = prepareA4BoundaryGuide();
+      const boundary = prepareA4BoundaryGuide(orientation);
       const finalElements = elements.filter(
         (e) => e.id !== A4_BOUNDARY_GUIDE_ID,
       );
@@ -328,10 +334,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       if (loadedFromStorage) {
         isSwitching.current = false;
         const elements = excalidrawAPI.getSceneElements();
+        const pageOrientation = resolveOrientationFromElements(elements);
         excalidrawAPI.updateScene({
-          elements: addBoundaryToElements(elements),
+          elements: addBoundaryToElements(elements, pageOrientation),
         });
-        scrollToBoundary(excalidrawAPI);
+        scrollToBoundary(excalidrawAPI, pageOrientation);
       } else {
         // This mean new file so sync the office file page.
         // We get the data first, then unlock, then update the scene.
@@ -339,15 +346,17 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         const elements = await syncOfficeFilePage(currentPage);
         isSwitching.current = false;
         if (elements) {
+          const pageOrientation = resolveOrientationFromElements(elements);
           excalidrawAPI.updateScene({
-            elements: addBoundaryToElements(elements),
+            elements: addBoundaryToElements(elements, pageOrientation),
           });
-          scrollToBoundary(excalidrawAPI);
+          scrollToBoundary(excalidrawAPI, pageOrientation);
         } else {
+          const pageOrientation = getCurrentPageOrientation();
           excalidrawAPI.updateScene({
-            elements: addBoundaryToElements([]),
+            elements: addBoundaryToElements([], pageOrientation),
           });
-          scrollToBoundary(excalidrawAPI);
+          scrollToBoundary(excalidrawAPI, pageOrientation);
         }
       }
     } else {
@@ -405,10 +414,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           isSwitching,
         );
         const elements = excalidrawAPI.getSceneElements();
+        const pageOrientation = resolveOrientationFromElements(elements);
         excalidrawAPI.updateScene({
-          elements: addBoundaryToElements(elements),
+          elements: addBoundaryToElements(elements, pageOrientation),
         });
-        scrollToBoundary(excalidrawAPI);
+        scrollToBoundary(excalidrawAPI, pageOrientation);
         // now set that we're ready
         // presenter should not fetch data from anyone else
         // to make sure single point of truth
@@ -632,10 +642,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   const initialStateViewport = useMemo(() => {
-    const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-    const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
-    const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
-    const startY = (VIRTUAL_WORKSPACE_HEIGHT - targetHeight) / 2;
+    // Fixed portrait reference frame. Do not retarget by orientation at runtime —
+    // page switches only adjust scroll/zoom via scrollToBoundary.
+    const {
+      width: targetWidth,
+      height: targetHeight,
+      startX,
+      startY,
+    } = getPageBoundaryMetrics('portrait');
     const extraPages = targetHeight * 3;
 
     const viewport: SetViewportOptions = {

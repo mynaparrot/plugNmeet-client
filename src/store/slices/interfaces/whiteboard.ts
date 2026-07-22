@@ -17,6 +17,8 @@ export interface IWhiteboardSlice {
   allExcalidrawElements: string;
 }
 
+export type WhiteboardPageOrientation = 'portrait' | 'landscape';
+
 export interface IWhiteboardFile {
   id: string;
   currentPage: number;
@@ -25,6 +27,16 @@ export interface IWhiteboardFile {
   uploaderWhiteboardHeight: number;
   uploaderWhiteboardWidth: number;
   isOfficeFile: boolean;
+  /** Server-side sidecar: page_N_meta.json (same dir as page_N.png). Always present for office pages. */
+  metaFilePath: string;
+}
+
+/** Shape of page_N_meta.json written during whiteboard conversion. */
+export interface WhiteboardOfficePageMeta {
+  page: number;
+  orientation: WhiteboardPageOrientation;
+  width: number;
+  height: number;
 }
 
 export interface IRequestWhiteboardData {

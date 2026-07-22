@@ -22,16 +22,20 @@ import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
 import {
   A4_BOUNDARY_GUIDE_ID,
   formatStorageKey,
+  getPageBoundaryMetrics,
   prepareA4BoundaryGuide,
 } from '../helpers/utils';
-import { getImageData, ImageCustomData } from '../helpers/handleFiles';
 import {
-  DEFAULT_A4_MARGIN,
+  getImageData,
+  getOfficePageOrientation,
+  ImageCustomData,
+} from '../helpers/handleFiles';
+import {
+  DEFAULT_PAGE_ORIENTATION,
+  PageOrientation,
   SCALE,
   WorkerInput,
   WorkerMessage,
-  DEFAULT_A4_WIDTH,
-  DEFAULT_A4_HEIGHT,
 } from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
@@ -119,20 +123,21 @@ class ExportPdfService {
           }),
         });
 
-        // Generate a standard boundary coordinate reference matching the presenter's original workspace
-        const referenceBoundary = prepareA4BoundaryGuide();
-        // We keep a transparent/invisible border representation to force Excalidraw's bounding-box
-        // engine to output the exact A4 layout dimensions.
-        const boundGuide = {
-          ...referenceBoundary[0],
-          strokeColor: 'transparent',
-          backgroundColor: 'transparent',
-        };
+        const pageOrientation = await this.resolvePageOrientation(
+          params.fileId,
+          pageNumber,
+          elements,
+        );
+
+        // Full A4 page frame (including edge margin), not just the drawable guide.
+        // This restores left/top padding in the exported PDF slices.
+        const pageFrame = this.prepareExportPageFrame(pageOrientation);
 
         const pageImageBitmap = await this.createPageImage(
-          [boundGuide, ...elements],
+          [pageFrame, ...elements],
           files,
           appState,
+          pageOrientation,
         );
 
         await this.runExportWorker(
@@ -142,6 +147,7 @@ class ExportPdfService {
           params.fileName,
           totalPagesToExport,
           pageNumber,
+          pageOrientation,
           appState,
           exportId,
           authToken,
@@ -259,18 +265,76 @@ class ExportPdfService {
     return { elements: pageElements, files: Object.fromEntries(files) };
   }
 
+  private async resolvePageOrientation(
+    fileId: string,
+    pageNumber: number,
+    elements: ExcalidrawElement[],
+  ): Promise<PageOrientation> {
+    // Prefer orientation stamped when the office page image was placed.
+    for (const el of elements) {
+      const orientation = el.customData?.pageOrientation;
+      if (orientation === 'landscape' || orientation === 'portrait') {
+        return orientation;
+      }
+    }
+
+    // Otherwise always load page_N_meta.json for this office page.
+    const whiteboard = store.getState().whiteboard;
+    const officeFile = whiteboard.whiteboardUploadedOfficeFiles.find(
+      (f) => f.fileId === fileId,
+    );
+    if (officeFile?.pageFiles) {
+      return getOfficePageOrientation(pageNumber, officeFile.pageFiles);
+    }
+
+    if (fileId === whiteboard.currentWhiteboardOfficeFileId) {
+      return getOfficePageOrientation(
+        pageNumber,
+        whiteboard.currentOfficeFilePages,
+      );
+    }
+
+    return DEFAULT_PAGE_ORIENTATION;
+  }
+
+  /**
+   * Transparent full-page rect used only during export so the bitmap matches
+   * A4 slice size and keeps equal edge margin around the drawable area.
+   */
+  private prepareExportPageFrame(
+    orientation: PageOrientation,
+  ): ExcalidrawElement {
+    const { pageWidth, pageHeight, pageStartX, pageStartY } =
+      getPageBoundaryMetrics(orientation);
+    const reference = prepareA4BoundaryGuide(orientation)[0];
+
+    return {
+      ...reference,
+      x: pageStartX,
+      y: pageStartY,
+      width: pageWidth,
+      height: pageHeight,
+      strokeColor: 'transparent',
+      backgroundColor: 'transparent',
+    } as ExcalidrawElement;
+  }
+
   private async createPageImage(
     elements: ExcalidrawElement[],
     files: Record<string, BinaryFileData>,
     appState: AppState,
+    orientation: PageOrientation,
   ): Promise<ImageBitmap> {
-    // Calculate standard A4 bounds
-    const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-    const targetHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+    const {
+      pageWidth: targetWidth,
+      pageHeight: targetHeight,
+      pageStartX: boundaryStartX,
+      pageStartY: boundaryStartY,
+    } = getPageBoundaryMetrics(orientation);
 
     // 1. Scan and gather limits in a single loop pass to keep search O(N)
-    let startX = 0;
-    let startY = 0;
+    let startX = boundaryStartX;
+    let startY = boundaryStartY;
 
     const nonDeletedElms = elements.filter((el) => {
       if (el.id === A4_BOUNDARY_GUIDE_ID) {
@@ -294,7 +358,7 @@ class ExportPdfService {
       maxY = Math.max(maxY, el.y + el.height);
     });
 
-    // 3. Dynamically expand the export dimensions relative to the boundary starting origin
+    // 3. Full A4 page minimum; expand only if content spills past the page frame
     const exportWidth = Math.max(targetWidth, maxX - startX);
     const exportHeight = Math.max(targetHeight, maxY - startY);
 
@@ -323,6 +387,7 @@ class ExportPdfService {
     fileName: string,
     totalPagesToExport: number,
     pageNumber: number,
+    pageOrientation: PageOrientation,
     appState: AppState,
     exportId: string,
     authToken: string,
@@ -373,6 +438,7 @@ class ExportPdfService {
         fileId,
         fileName,
         pageNumber,
+        pageOrientation,
         appState: {
           viewBackgroundColor: appState.viewBackgroundColor || '#ffffff',
         },

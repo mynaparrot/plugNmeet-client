@@ -6,6 +6,7 @@ export const DB_STORE_NAMES = {
   USER_SETTINGS: 'userSettings',
   WHITEBOARD: 'whiteboard',
   IMAGE_CACHE: 'imageCache',
+  OFFICE_PAGE_META_CACHE: 'officePageMetaCache',
   CHAT_MESSAGES: 'chatMessages',
   USER_NOTIFICATIONS: 'userNotifications',
   SPEECH_TO_TEXT_FINAL_TEXTS: 'speechToTextFinalTexts',
@@ -48,7 +49,7 @@ class IDBManager {
     // Use a stable name for persistence across reloads.
     this.dbName = `pnm-${roomSid}-${userId}`;
     this.isDbActive = true;
-    this.dbPromise = openDB(this.dbName, 3, {
+    this.dbPromise = openDB(this.dbName, 4, {
       upgrade: (db) => {
         // Create all necessary object stores if they don't already exist.
         for (const storeName of this.ALL_STORES) {

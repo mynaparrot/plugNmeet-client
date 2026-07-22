@@ -14,14 +14,17 @@ import {
   IWhiteboardFile,
   IWhiteboardOfficeFile,
   WhiteboardFileConversionRes,
+  WhiteboardOfficePageMeta,
 } from '../../../store/slices/interfaces/whiteboard';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
 import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
 import {
-  DEFAULT_A4_WIDTH,
-  DEFAULT_A4_HEIGHT,
   DEFAULT_A4_MARGIN,
+  DEFAULT_PAGE_ORIENTATION,
+  getPageSize,
+  PageOrientation,
+  resolvePageOrientation,
   VIRTUAL_WORKSPACE_WIDTH,
   VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
@@ -36,6 +39,7 @@ export interface ImageCustomData {
   isOfficeFile: boolean;
   uploaderWhiteboardHeight?: number;
   uploaderWhiteboardWidth?: number;
+  pageOrientation?: PageOrientation;
 }
 
 const processedImageElements: Map<string, string> = new Map();
@@ -48,18 +52,22 @@ export const createAndRegisterOfficeFile = (
   uploaderWhiteboardWidth = VIRTUAL_WORKSPACE_WIDTH,
 ) => {
   const files: Array<IWhiteboardFile> = [];
+
   for (let i = 0; i < whiteboardFileConversionRes.totalPages; i++) {
-    const fileName = 'page_' + (i + 1) + '.png';
-    const file: IWhiteboardFile = {
+    const pageNum = i + 1;
+    const fileName = `page_${pageNum}.png`;
+    const metaFileName = `page_${pageNum}_meta.json`;
+    files.push({
       id: randomString(),
-      currentPage: i + 1,
-      filePath: whiteboardFileConversionRes.filePath + '/' + fileName,
+      currentPage: pageNum,
+      filePath: `${whiteboardFileConversionRes.filePath}/${fileName}`,
       fileName,
+      // Orientation always comes from this sidecar at page open time.
+      metaFilePath: `${whiteboardFileConversionRes.filePath}/${metaFileName}`,
       uploaderWhiteboardHeight,
       uploaderWhiteboardWidth,
       isOfficeFile: true,
-    };
-    files.push(file);
+    });
   }
 
   const newFile: IWhiteboardOfficeFile = {
@@ -72,6 +80,113 @@ export const createAndRegisterOfficeFile = (
 
   store.dispatch(addWhiteboardUploadedOfficeFile(newFile));
   return newFile;
+};
+
+const getDownloadBaseUrl = () =>
+  getConfigValue<string>(
+    'serverUrl',
+    'http://localhost:8080',
+    'PLUG_N_MEET_SERVER_URL',
+  ) + '/download/uploadedFile/';
+
+/** page_1.png path/url -> page_1_meta.json */
+export const toOfficePageMetaPath = (imagePathOrUrl: string): string => {
+  return imagePathOrUrl.replace(/\.png(\?.*)?$/i, '_meta.json$1');
+};
+
+/**
+ * Loads page_N_meta.json written beside converted page images.
+ * Multi-cluster safe: same download path / storage hooks as the PNGs.
+ * Cached in IDB the same way as office page images.
+ */
+export const fetchOfficePageMeta = async (
+  metaFilePathOrUrl: string,
+): Promise<WhiteboardOfficePageMeta | null> => {
+  const url = metaFilePathOrUrl.startsWith('http')
+    ? metaFilePathOrUrl
+    : getDownloadBaseUrl() + metaFilePathOrUrl;
+
+  // 1. Check IDB cache first (same pattern as fetchAndCacheImage).
+  const cached = await idbGet<WhiteboardOfficePageMeta>(
+    DB_STORE_NAMES.OFFICE_PAGE_META_CACHE,
+    url,
+  );
+  if (cached?.orientation) {
+    return {
+      ...cached,
+      orientation: resolvePageOrientation(cached.orientation),
+    };
+  }
+
+  let meta: WhiteboardOfficePageMeta | null = null;
+  try {
+    // 2. If not cached, fetch from the network.
+    const res = await fetch(url);
+    if (!res.ok) {
+      return null;
+    }
+    const raw = (await res.json()) as WhiteboardOfficePageMeta;
+    if (!raw?.orientation) {
+      return null;
+    }
+    meta = {
+      ...raw,
+      orientation: resolvePageOrientation(raw.orientation),
+    };
+  } catch (e) {
+    console.warn('Failed to fetch office page meta', e);
+  } finally {
+    // 3. Cache successful fetches for later page opens / preload.
+    if (meta) {
+      await idbStore(DB_STORE_NAMES.OFFICE_PAGE_META_CACHE, url, meta);
+    }
+  }
+
+  return meta;
+};
+
+const getBoundaryMetrics = (orientation: PageOrientation) => {
+  const { width: pageWidth, height: pageHeight } = getPageSize(orientation);
+  const width = pageWidth - DEFAULT_A4_MARGIN;
+  const height = pageHeight - DEFAULT_A4_MARGIN;
+  return {
+    width,
+    height,
+    startX: (VIRTUAL_WORKSPACE_WIDTH - width) / 2,
+    startY: (VIRTUAL_WORKSPACE_HEIGHT - height) / 2,
+  };
+};
+
+const parsePageFiles = (pageFilesJson?: string | null): IWhiteboardFile[] => {
+  if (!pageFilesJson) {
+    return [];
+  }
+  try {
+    const pages = JSON.parse(pageFilesJson) as IWhiteboardFile[];
+    return Array.isArray(pages) ? pages : [];
+  } catch {
+    return [];
+  }
+};
+
+/**
+ * Always loads page_N_meta.json for office pages.
+ * Falls back to portrait A4 if meta cannot be fetched.
+ */
+export const resolveOfficePageOrientation = async (
+  metaFilePath?: string,
+  imageFilePathOrUrl?: string,
+): Promise<PageOrientation> => {
+  const metaPath =
+    metaFilePath ||
+    (imageFilePathOrUrl ? toOfficePageMetaPath(imageFilePathOrUrl) : undefined);
+
+  if (!metaPath) {
+    return DEFAULT_PAGE_ORIENTATION;
+  }
+
+  const meta = await fetchOfficePageMeta(metaPath);
+  return meta?.orientation ?? DEFAULT_PAGE_ORIENTATION;
 };
 
 /**
@@ -122,10 +237,19 @@ export const fetchFileWithElm = async (
   is_office_file: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
+  metaFilePath?: string,
 ): Promise<FileReaderResult | null> => {
   try {
+    // Office pages: always fetch page_N_meta.json (default portrait if missing).
+    const orientationPromise = is_office_file
+      ? resolveOfficePageOrientation(metaFilePath, url)
+      : Promise.resolve(DEFAULT_PAGE_ORIENTATION);
+
     // Use the shared helper to get the image data from cache or network.
-    const imgData = await fetchAndCacheImage(url);
+    const [imgData, orientation] = await Promise.all([
+      fetchAndCacheImage(url),
+      orientationPromise,
+    ]);
 
     if (!imgData) {
       // If fetching/caching failed, stop here.
@@ -149,15 +273,13 @@ export const fetchFileWithElm = async (
         image.onerror = reject;
       });
 
-      // Scale image relative to the A4 PDF Boundary dimensions
-      const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-      const targetBoundaryHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+      const boundary = getBoundaryMetrics(orientation);
 
       const { fileHeight, fileWidth } = getFileDimension(
         image.height,
         image.width,
-        targetBoundaryWidth,
-        targetBoundaryHeight,
+        boundary.width,
+        boundary.height,
       );
 
       return prepareForExcalidraw(
@@ -170,11 +292,12 @@ export const fetchFileWithElm = async (
         is_office_file,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
+        orientation,
       );
     } else if (fileMimeType === 'image/svg+xml') {
-      const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-      const fileWidth = targetBoundaryWidth * 0.9;
-      const fileHeight = fileWidth * (1754 / 1240); // Maintain A4 Aspect Ratio
+      const boundary = getBoundaryMetrics(orientation);
+      const fileWidth = boundary.width * 0.9;
+      const fileHeight = fileWidth * (boundary.height / boundary.width);
 
       return prepareForExcalidraw(
         file_id,
@@ -186,6 +309,7 @@ export const fetchFileWithElm = async (
         is_office_file,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
+        orientation,
       );
     } else {
       console.error('unsupported file type:', fileMimeType);
@@ -207,6 +331,7 @@ const prepareForExcalidraw = (
   isOfficeFile: boolean,
   uploaderWhiteboardHeight?: number,
   uploaderWhiteboardWidth?: number,
+  pageOrientation: PageOrientation = DEFAULT_PAGE_ORIENTATION,
 ): FileReaderResult => {
   const image: BinaryFileData = {
     id: fileId as BinaryFileData['id'],
@@ -216,17 +341,19 @@ const prepareForExcalidraw = (
   };
 
   // Get target A4 bounding box properties matching prepareA4BoundaryGuide
-  const targetBoundaryWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-  const targetBoundaryHeight = DEFAULT_A4_HEIGHT - DEFAULT_A4_MARGIN;
+  const {
+    width: targetBoundaryWidth,
+    height: targetBoundaryHeight,
+    startX: boundaryStartX,
+    startY: boundaryStartY,
+  } = getBoundaryMetrics(pageOrientation);
 
-  // Anchor the bounding box calculation to a fixed coordinate center (e.g., reference base size 1160x260)
-  // to prevent image coordinates from drifting based on different browser sizes during upload.
-  const boundaryStartX = (VIRTUAL_WORKSPACE_WIDTH - targetBoundaryWidth) / 2;
-  const boundaryStartY = (VIRTUAL_WORKSPACE_HEIGHT - targetBoundaryHeight) / 2;
-
-  // Center the image element exactly inside the A4 boundary guide
+  // Center horizontally; pin office pages to the top of the guide so landscape
+  // (and letterboxed) pages don't leave a large empty band above the content.
   const imageX = boundaryStartX + (targetBoundaryWidth - fileWidth) / 2;
-  const imageY = boundaryStartY + (targetBoundaryHeight - fileHeight) / 2;
+  const imageY = isOfficeFile
+    ? boundaryStartY
+    : boundaryStartY + (targetBoundaryHeight - fileHeight) / 2;
 
   const elms = convertToExcalidrawElements([
     {
@@ -243,6 +370,7 @@ const prepareForExcalidraw = (
         isOfficeFile,
         uploaderWhiteboardHeight,
         uploaderWhiteboardWidth,
+        pageOrientation,
       },
     },
   ]);
@@ -251,6 +379,21 @@ const prepareForExcalidraw = (
     image,
     elms,
   };
+};
+
+/** Resolve orientation for an office page by always fetching its meta file. */
+export const getOfficePageOrientation = async (
+  pageNumber: number,
+  pageFilesJson?: string,
+): Promise<PageOrientation> => {
+  const pages = parsePageFiles(
+    pageFilesJson ?? store.getState().whiteboard.currentOfficeFilePages,
+  );
+  const page = pages.find((p) => p.currentPage === pageNumber);
+  if (!page?.isOfficeFile) {
+    return DEFAULT_PAGE_ORIENTATION;
+  }
+  return resolveOfficePageOrientation(page.metaFilePath, page.filePath);
 };
 
 const getFileDimension = (
@@ -414,6 +557,9 @@ export const getImageData = async (
     customData.isOfficeFile,
     customData.uploaderWhiteboardHeight,
     customData.uploaderWhiteboardWidth,
+    customData.isOfficeFile
+      ? toOfficePageMetaPath(customData.fileUrl)
+      : undefined,
   );
 
   if (result) {
@@ -509,17 +655,18 @@ export const preloadOfficeFilePages = (
       return;
     }
 
-    const url =
-      getConfigValue<string>(
-        'serverUrl',
-        'http://localhost:8080',
-        'PLUG_N_MEET_SERVER_URL',
-      ) +
-      '/download/uploadedFile/' +
-      fileToPreload.filePath;
+    const url = getDownloadBaseUrl() + fileToPreload.filePath;
 
-    // Use the shared helper to fetch and cache the image. It will automatically handle existing entries.
-    await fetchAndCacheImage(url);
+    // Prefetch image + page meta (meta is required for office page orientation).
+    await Promise.all([
+      fetchAndCacheImage(url),
+      fileToPreload.isOfficeFile
+        ? resolveOfficePageOrientation(
+            fileToPreload.metaFilePath,
+            fileToPreload.filePath,
+          )
+        : Promise.resolve(DEFAULT_PAGE_ORIENTATION),
+    ]);
   });
 
   // We run all promises concurrently but don't block the main thread.

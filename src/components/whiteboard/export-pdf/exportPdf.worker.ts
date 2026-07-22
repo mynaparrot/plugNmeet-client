@@ -1,4 +1,4 @@
-import { A4_WIDTH, A4_HEIGHT, WorkerInput, WorkerMessage } from './types';
+import { getExportPageSize, WorkerInput, WorkerMessage } from './types';
 
 /**
  * Resolves any valid CSS color string into RGB components using browser parsing.
@@ -24,12 +24,14 @@ function parseCssColorToRgb(color: string): [number, number, number] {
  */
 function isSliceVisuallyBlank(
   ctx: OffscreenCanvasRenderingContext2D,
+  sliceWidth: number,
+  sliceHeight: number,
   targetR: number,
   targetG: number,
   targetB: number,
   tolerance = 3,
 ): boolean {
-  const imgData = ctx.getImageData(0, 0, A4_WIDTH, A4_HEIGHT);
+  const imgData = ctx.getImageData(0, 0, sliceWidth, sliceHeight);
   const data = imgData.data;
 
   for (let i = 0; i < data.length; i += 4) {
@@ -95,21 +97,25 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
     fileId,
     fileName,
     pageNumber,
+    pageOrientation,
     exportId,
     authToken,
     uploadUrl,
   } = event.data;
 
+  const { width: sliceWidth, height: sliceHeight } =
+    getExportPageSize(pageOrientation);
+
   const EPSILON = 1;
 
   const horizontalSlices = Math.max(
     1,
-    Math.ceil((pageImageBitmap.width - EPSILON) / A4_WIDTH),
+    Math.ceil((pageImageBitmap.width - EPSILON) / sliceWidth),
   );
 
   const verticalSlices = Math.max(
     1,
-    Math.ceil((pageImageBitmap.height - EPSILON) / A4_HEIGHT),
+    Math.ceil((pageImageBitmap.height - EPSILON) / sliceHeight),
   );
 
   const totalSlices = horizontalSlices * verticalSlices;
@@ -122,7 +128,7 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
   let sliceCount = 0;
   let uploadedSlicesCount = 0;
 
-  const sliceCanvas = new OffscreenCanvas(A4_WIDTH, A4_HEIGHT);
+  const sliceCanvas = new OffscreenCanvas(sliceWidth, sliceHeight);
   const ctx = sliceCanvas.getContext('2d', {
     alpha: false,
   });
@@ -157,14 +163,22 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
         } as WorkerMessage);
 
         ctx.fillStyle = bgColorStr;
-        ctx.fillRect(0, 0, A4_WIDTH, A4_HEIGHT);
+        ctx.fillRect(0, 0, sliceWidth, sliceHeight);
 
-        const dx = offsetX - h * A4_WIDTH;
-        const dy = offsetY - v * A4_HEIGHT;
+        const dx = offsetX - h * sliceWidth;
+        const dy = offsetY - v * sliceHeight;
 
         ctx.drawImage(pageImageBitmap, dx, dy);
 
-        const isBlank = isSliceVisuallyBlank(ctx, bgR, bgG, bgB, 3);
+        const isBlank = isSliceVisuallyBlank(
+          ctx,
+          sliceWidth,
+          sliceHeight,
+          bgR,
+          bgG,
+          bgB,
+          3,
+        );
 
         // we'll skip to upload any blank page slices
         if (isBlank) {

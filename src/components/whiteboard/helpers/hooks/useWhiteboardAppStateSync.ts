@@ -8,13 +8,12 @@ import { Theme } from '@excalidraw/excalidraw/element/types';
 import { debounce } from 'es-toolkit';
 
 import { useAppSelector } from '../../../../store';
+import { A4_VIEWPORT_PADDING_LEFT } from '../../export-pdf/types';
 import {
-  A4_VIEWPORT_PADDING_LEFT,
-  DEFAULT_A4_MARGIN,
-  DEFAULT_A4_WIDTH,
-  VIRTUAL_WORKSPACE_WIDTH,
-} from '../../export-pdf/types';
-import { getA4WidthBasedZoom } from '../utils';
+  getA4WidthBasedZoom,
+  getPageBoundaryMetrics,
+  resolveOrientationFromElements,
+} from '../utils';
 
 const VIEWPORT_SYNC_DEBOUNCE_TIMEOUT = 150;
 
@@ -151,9 +150,11 @@ const useWhiteboardAppStateSync = ({
   const refreshPresenterViewport = useCallback(
     (api: ExcalidrawImperativeAPI) => {
       const appState = api.getAppState();
-
-      const targetWidth = DEFAULT_A4_WIDTH - DEFAULT_A4_MARGIN;
-      const startX = (VIRTUAL_WORKSPACE_WIDTH - targetWidth) / 2;
+      const orientation = resolveOrientationFromElements(
+        api.getSceneElements(),
+      );
+      const { width: targetWidth, startX } =
+        getPageBoundaryMetrics(orientation);
 
       const nextZoom = getA4WidthBasedZoom(appState.width, targetWidth);
 

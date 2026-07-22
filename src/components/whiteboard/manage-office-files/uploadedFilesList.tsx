@@ -63,7 +63,8 @@ const UploadedFilesList = ({
         return;
       }
 
-      // let's compare with local store
+      // Register any room files missing from local store.
+      // Page orientation is always loaded from page_N_meta.json on page open.
       res.files.forEach((file) => {
         const exist = whiteboardUploadedOfficeFiles.find(
           (f) => f.fileId === file.fileId,
