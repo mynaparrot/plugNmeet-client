@@ -23,13 +23,17 @@ export interface PageSize {
 }
 
 /**
- * Server renders page PNGs at 300 DPI (`mutool -r 300`);
- * logical whiteboard units are 150 DPI. So logical = pixels / 2.
- * A4 PNG 2480x3508 -> 1240x1754 (identical to the A4 constants).
+ * Normalize a rendered page (page_N_meta.json pixels) to the standard frame:
+ * the long side is always A4's long side (DEFAULT_A4_HEIGHT), the short side
+ * follows the page's real aspect ratio.
+ *
+ * This keeps viewport zoom/scroll stable for ANY source page, while A4 pages
+ * map to the exact same frames as the A4 constants:
+ * - A4 portrait  2480x3508 -> 1240x1754
+ * - A4 landscape 3508x2480 -> 1754x1240
+ * - 16:9 slide   8000x4500 -> 1754x986
+ * - US Letter    2550x3300 -> 1355x1754
  */
-export const PAGE_PIXELS_TO_LOGICAL = 2;
-
-/** Convert rendered page pixels (from page_N_meta.json) to logical page size. */
 export const pageSizeFromMetaPixels = (
   pixelWidth?: number,
   pixelHeight?: number,
@@ -37,9 +41,21 @@ export const pageSizeFromMetaPixels = (
   if (!pixelWidth || !pixelHeight || pixelWidth <= 0 || pixelHeight <= 0) {
     return null;
   }
+
+  const ratio = pixelWidth / pixelHeight;
+  const longSide = DEFAULT_A4_HEIGHT;
+
+  if (ratio >= 1) {
+    // Landscape: standard width, aspect-derived height.
+    return {
+      width: longSide,
+      height: Math.max(1, Math.round(longSide / ratio)),
+    };
+  }
+  // Portrait: standard height, aspect-derived width.
   return {
-    width: Math.max(1, Math.round(pixelWidth / PAGE_PIXELS_TO_LOGICAL)),
-    height: Math.max(1, Math.round(pixelHeight / PAGE_PIXELS_TO_LOGICAL)),
+    width: Math.max(1, Math.round(longSide * ratio)),
+    height: longSide,
   };
 };
 

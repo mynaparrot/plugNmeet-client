@@ -198,7 +198,8 @@ const defaultOfficePageInfo = (): OfficePageInfo => {
 
 /**
  * Always loads page_N_meta.json for office pages.
- * Exact page size comes from meta (pixels / 2 = logical units);
+ * Frame size = standard A4 long side + the page's real aspect ratio
+ * (A4 pages map to the exact standard A4 frames);
  * falls back to portrait A4 if meta cannot be fetched.
  */
 export const resolveOfficePageInfo = async (
