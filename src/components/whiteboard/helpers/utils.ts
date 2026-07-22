@@ -20,6 +20,7 @@ import {
   DEFAULT_PAGE_ORIENTATION,
   getPageSize,
   PageOrientation,
+  resolvePageOrientation,
   VIRTUAL_WORKSPACE_WIDTH,
   VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
@@ -210,14 +211,24 @@ export interface PageBoundaryMetrics {
   edgeInset: number;
 }
 
-/** Logical drawable A4 frame metrics for the given orientation. */
+/**
+ * Logical drawable frame metrics. When pageWidth/pageHeight are given
+ * (exact size from page_N_meta.json) they win; otherwise A4 by orientation.
+ */
 export const getPageBoundaryMetrics = (
   orientation: PageOrientation = DEFAULT_PAGE_ORIENTATION,
+  pageWidth?: number,
+  pageHeight?: number,
 ): PageBoundaryMetrics => {
-  const { width: pageWidth, height: pageHeight } = getPageSize(orientation);
+  const size =
+    pageWidth && pageHeight
+      ? { width: pageWidth, height: pageHeight }
+      : getPageSize(orientation);
+  const frameWidth = size.width;
+  const frameHeight = size.height;
   const edgeInset = DEFAULT_A4_MARGIN / 2;
-  const width = pageWidth - DEFAULT_A4_MARGIN;
-  const height = pageHeight - DEFAULT_A4_MARGIN;
+  const width = frameWidth - DEFAULT_A4_MARGIN;
+  const height = frameHeight - DEFAULT_A4_MARGIN;
 
   // Use the same standard workspace reference size as handleFiles.ts
   // to ensure absolute coordinate alignment under all browser dimensions and resizes.
@@ -226,8 +237,8 @@ export const getPageBoundaryMetrics = (
 
   return {
     orientation,
-    pageWidth,
-    pageHeight,
+    pageWidth: frameWidth,
+    pageHeight: frameHeight,
     width,
     height,
     startX,
@@ -240,18 +251,20 @@ export const getPageBoundaryMetrics = (
 
 export const prepareA4BoundaryGuide = (
   orientation: PageOrientation = DEFAULT_PAGE_ORIENTATION,
+  pageWidth?: number,
+  pageHeight?: number,
 ): OrderedExcalidrawElement[] => {
-  const { width, height, startX, startY } = getPageBoundaryMetrics(orientation);
+  const metrics = getPageBoundaryMetrics(orientation, pageWidth, pageHeight);
 
   return convertToExcalidrawElements(
     [
       {
         id: A4_BOUNDARY_GUIDE_ID,
         type: 'rectangle',
-        x: startX,
-        y: startY,
-        width: width,
-        height: height,
+        x: metrics.startX,
+        y: metrics.startY,
+        width: metrics.width,
+        height: metrics.height,
         strokeColor: '#ff0000',
         backgroundColor: 'transparent',
         fillStyle: 'hachure',
@@ -261,6 +274,8 @@ export const prepareA4BoundaryGuide = (
         locked: true,
         customData: {
           pageOrientation: orientation,
+          pageWidth: metrics.pageWidth,
+          pageHeight: metrics.pageHeight,
         },
       },
     ],
@@ -289,24 +304,45 @@ export const getA4WidthBasedZoom = (
   ) as NormalizedZoomValue;
 };
 
+export interface ResolvedPageInfo {
+  orientation: PageOrientation;
+  /** Exact logical page size when stamped (from page_N_meta.json). */
+  pageWidth?: number;
+  pageHeight?: number;
+}
+
 /**
- * Prefer orientation stamped on scene elements (office image / boundary).
+ * Read page info stamped on scene elements (office image / boundary guide).
  * Office pages stamp this from page_N_meta.json when the image is placed.
  * Default: portrait A4.
  */
-export const resolveOrientationFromElements = (
+export const resolvePageInfoFromElements = (
   elements: readonly ExcalidrawElement[],
-): PageOrientation => {
+): ResolvedPageInfo => {
   for (const el of elements) {
-    const orientation = el.customData?.pageOrientation;
-    if (orientation === 'landscape' || orientation === 'portrait') {
-      return orientation;
+    const cd = el.customData as
+      | {
+          pageOrientation?: string;
+          pageWidth?: number;
+          pageHeight?: number;
+        }
+      | undefined;
+    if (!cd) {
+      continue;
+    }
+    if (cd.pageWidth && cd.pageHeight) {
+      return {
+        orientation: resolvePageOrientation(cd.pageOrientation),
+        pageWidth: cd.pageWidth,
+        pageHeight: cd.pageHeight,
+      };
+    }
+    if (
+      cd.pageOrientation === 'landscape' ||
+      cd.pageOrientation === 'portrait'
+    ) {
+      return { orientation: cd.pageOrientation };
     }
   }
-  return DEFAULT_PAGE_ORIENTATION;
-};
-
-/** Blank / non-office pages use portrait A4. */
-export const getCurrentPageOrientation = (): PageOrientation => {
-  return DEFAULT_PAGE_ORIENTATION;
+  return { orientation: DEFAULT_PAGE_ORIENTATION };
 };

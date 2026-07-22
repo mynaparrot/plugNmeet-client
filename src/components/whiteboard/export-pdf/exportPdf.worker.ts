@@ -1,4 +1,4 @@
-import { getExportPageSize, WorkerInput, WorkerMessage } from './types';
+import { getExportPageSize, SCALE, WorkerInput, WorkerMessage } from './types';
 
 /**
  * Resolves any valid CSS color string into RGB components using browser parsing.
@@ -98,13 +98,21 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
     fileName,
     pageNumber,
     pageOrientation,
+    pageWidth,
+    pageHeight,
     exportId,
     authToken,
     uploadUrl,
   } = event.data;
 
+  // Exact page size wins (from page_N_meta.json); A4 by orientation as fallback.
   const { width: sliceWidth, height: sliceHeight } =
-    getExportPageSize(pageOrientation);
+    pageWidth && pageHeight
+      ? {
+          width: Math.round(pageWidth * SCALE),
+          height: Math.round(pageHeight * SCALE),
+        }
+      : getExportPageSize(pageOrientation);
 
   const EPSILON = 1;
 

@@ -60,10 +60,10 @@ import {
   displaySavedPageData,
   ensureAllImagesDataIsLoaded,
   getA4WidthBasedZoom,
-  getCurrentPageOrientation,
   getPageBoundaryMetrics,
   prepareA4BoundaryGuide,
-  resolveOrientationFromElements,
+  ResolvedPageInfo,
+  resolvePageInfoFromElements,
   savePageData,
 } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
@@ -71,8 +71,12 @@ import { cleanProcessedImageElementsMap } from './helpers/handleFiles';
 import {
   A4_VIEWPORT_PADDING_LEFT,
   A4_VIEWPORT_PADDING_TOP,
-  PageOrientation,
+  DEFAULT_PAGE_ORIENTATION,
 } from './export-pdf/types';
+
+const DEFAULT_PAGE_INFO: ResolvedPageInfo = {
+  orientation: DEFAULT_PAGE_ORIENTATION,
+};
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
 import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
@@ -257,19 +261,23 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   /**
-   * Positions the viewport at the A4 boundary with an initial width-based zoom.
+   * Positions the viewport at the page boundary with an initial width-based zoom.
    */
   const scrollToBoundary = useCallback(
     (
       api: ExcalidrawImperativeAPI,
-      orientation: PageOrientation = getCurrentPageOrientation(),
+      pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO,
     ) => {
       const { width: viewportWidth } = api.getAppState();
       const {
         width: targetWidth,
         startX,
         startY,
-      } = getPageBoundaryMetrics(orientation);
+      } = getPageBoundaryMetrics(
+        pageInfo.orientation,
+        pageInfo.pageWidth,
+        pageInfo.pageHeight,
+      );
 
       const initialZoom = getA4WidthBasedZoom(viewportWidth, targetWidth);
 
@@ -290,12 +298,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const addBoundaryToElements = useCallback(
     (
       elements: readonly ExcalidrawElement[],
-      orientation: PageOrientation = getCurrentPageOrientation(),
+      pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO,
     ) => {
       if (!isPresenter) {
         return elements;
       }
-      const boundary = prepareA4BoundaryGuide(orientation);
+      const boundary = prepareA4BoundaryGuide(
+        pageInfo.orientation,
+        pageInfo.pageWidth,
+        pageInfo.pageHeight,
+      );
       const finalElements = elements.filter(
         (e) => e.id !== A4_BOUNDARY_GUIDE_ID,
       );
@@ -334,11 +346,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       if (loadedFromStorage) {
         isSwitching.current = false;
         const elements = excalidrawAPI.getSceneElements();
-        const pageOrientation = resolveOrientationFromElements(elements);
+        const pageInfo = resolvePageInfoFromElements(elements);
         excalidrawAPI.updateScene({
-          elements: addBoundaryToElements(elements, pageOrientation),
+          elements: addBoundaryToElements(elements, pageInfo),
         });
-        scrollToBoundary(excalidrawAPI, pageOrientation);
+        scrollToBoundary(excalidrawAPI, pageInfo);
       } else {
         // This mean new file so sync the office file page.
         // We get the data first, then unlock, then update the scene.
@@ -346,17 +358,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         const elements = await syncOfficeFilePage(currentPage);
         isSwitching.current = false;
         if (elements) {
-          const pageOrientation = resolveOrientationFromElements(elements);
+          const pageInfo = resolvePageInfoFromElements(elements);
           excalidrawAPI.updateScene({
-            elements: addBoundaryToElements(elements, pageOrientation),
+            elements: addBoundaryToElements(elements, pageInfo),
           });
-          scrollToBoundary(excalidrawAPI, pageOrientation);
+          scrollToBoundary(excalidrawAPI, pageInfo);
         } else {
-          const pageOrientation = getCurrentPageOrientation();
           excalidrawAPI.updateScene({
-            elements: addBoundaryToElements([], pageOrientation),
+            elements: addBoundaryToElements([]),
           });
-          scrollToBoundary(excalidrawAPI, pageOrientation);
+          scrollToBoundary(excalidrawAPI);
         }
       }
     } else {
@@ -414,11 +425,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           isSwitching,
         );
         const elements = excalidrawAPI.getSceneElements();
-        const pageOrientation = resolveOrientationFromElements(elements);
+        const pageInfo = resolvePageInfoFromElements(elements);
         excalidrawAPI.updateScene({
-          elements: addBoundaryToElements(elements, pageOrientation),
+          elements: addBoundaryToElements(elements, pageInfo),
         });
-        scrollToBoundary(excalidrawAPI, pageOrientation);
+        scrollToBoundary(excalidrawAPI, pageInfo);
         // now set that we're ready
         // presenter should not fetch data from anyone else
         // to make sure single point of truth

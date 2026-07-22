@@ -12,7 +12,7 @@ import { A4_VIEWPORT_PADDING_LEFT } from '../../export-pdf/types';
 import {
   getA4WidthBasedZoom,
   getPageBoundaryMetrics,
-  resolveOrientationFromElements,
+  resolvePageInfoFromElements,
 } from '../utils';
 
 const VIEWPORT_SYNC_DEBOUNCE_TIMEOUT = 150;
@@ -150,11 +150,12 @@ const useWhiteboardAppStateSync = ({
   const refreshPresenterViewport = useCallback(
     (api: ExcalidrawImperativeAPI) => {
       const appState = api.getAppState();
-      const orientation = resolveOrientationFromElements(
-        api.getSceneElements(),
+      const pageInfo = resolvePageInfoFromElements(api.getSceneElements());
+      const { width: targetWidth, startX } = getPageBoundaryMetrics(
+        pageInfo.orientation,
+        pageInfo.pageWidth,
+        pageInfo.pageHeight,
       );
-      const { width: targetWidth, startX } =
-        getPageBoundaryMetrics(orientation);
 
       const nextZoom = getA4WidthBasedZoom(appState.width, targetWidth);
 

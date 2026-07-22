@@ -24,19 +24,15 @@ import {
   formatStorageKey,
   getPageBoundaryMetrics,
   prepareA4BoundaryGuide,
+  ResolvedPageInfo,
+  resolvePageInfoFromElements,
 } from '../helpers/utils';
 import {
   getImageData,
-  getOfficePageOrientation,
+  getOfficePageInfo,
   ImageCustomData,
 } from '../helpers/handleFiles';
-import {
-  DEFAULT_PAGE_ORIENTATION,
-  PageOrientation,
-  SCALE,
-  WorkerInput,
-  WorkerMessage,
-} from './types';
+import { SCALE, WorkerInput, WorkerMessage } from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
 import { store } from '../../../store';
@@ -123,21 +119,21 @@ class ExportPdfService {
           }),
         });
 
-        const pageOrientation = await this.resolvePageOrientation(
+        const pageInfo = await this.resolvePageInfo(
           params.fileId,
           pageNumber,
           elements,
         );
 
-        // Full A4 page frame (including edge margin), not just the drawable guide.
+        // Full page frame (including edge margin), not just the drawable guide.
         // This restores left/top padding in the exported PDF slices.
-        const pageFrame = this.prepareExportPageFrame(pageOrientation);
+        const pageFrame = this.prepareExportPageFrame(pageInfo);
 
         const pageImageBitmap = await this.createPageImage(
           [pageFrame, ...elements],
           files,
           appState,
-          pageOrientation,
+          pageInfo,
         );
 
         await this.runExportWorker(
@@ -147,7 +143,7 @@ class ExportPdfService {
           params.fileName,
           totalPagesToExport,
           pageNumber,
-          pageOrientation,
+          pageInfo,
           appState,
           exportId,
           authToken,
@@ -265,17 +261,15 @@ class ExportPdfService {
     return { elements: pageElements, files: Object.fromEntries(files) };
   }
 
-  private async resolvePageOrientation(
+  private async resolvePageInfo(
     fileId: string,
     pageNumber: number,
     elements: ExcalidrawElement[],
-  ): Promise<PageOrientation> {
-    // Prefer orientation stamped when the office page image was placed.
-    for (const el of elements) {
-      const orientation = el.customData?.pageOrientation;
-      if (orientation === 'landscape' || orientation === 'portrait') {
-        return orientation;
-      }
+  ): Promise<ResolvedPageInfo> {
+    // Prefer page info stamped when the office page image was placed.
+    const fromElements = resolvePageInfoFromElements(elements);
+    if (fromElements.pageWidth && fromElements.pageHeight) {
+      return fromElements;
     }
 
     // Otherwise always load page_N_meta.json for this office page.
@@ -284,29 +278,34 @@ class ExportPdfService {
       (f) => f.fileId === fileId,
     );
     if (officeFile?.pageFiles) {
-      return getOfficePageOrientation(pageNumber, officeFile.pageFiles);
+      return getOfficePageInfo(pageNumber, officeFile.pageFiles);
     }
 
     if (fileId === whiteboard.currentWhiteboardOfficeFileId) {
-      return getOfficePageOrientation(
-        pageNumber,
-        whiteboard.currentOfficeFilePages,
-      );
+      return getOfficePageInfo(pageNumber, whiteboard.currentOfficeFilePages);
     }
 
-    return DEFAULT_PAGE_ORIENTATION;
+    return fromElements;
   }
 
   /**
    * Transparent full-page rect used only during export so the bitmap matches
-   * A4 slice size and keeps equal edge margin around the drawable area.
+   * slice size and keeps equal edge margin around the drawable area.
    */
   private prepareExportPageFrame(
-    orientation: PageOrientation,
+    pageInfo: ResolvedPageInfo,
   ): ExcalidrawElement {
     const { pageWidth, pageHeight, pageStartX, pageStartY } =
-      getPageBoundaryMetrics(orientation);
-    const reference = prepareA4BoundaryGuide(orientation)[0];
+      getPageBoundaryMetrics(
+        pageInfo.orientation,
+        pageInfo.pageWidth,
+        pageInfo.pageHeight,
+      );
+    const reference = prepareA4BoundaryGuide(
+      pageInfo.orientation,
+      pageInfo.pageWidth,
+      pageInfo.pageHeight,
+    )[0];
 
     return {
       ...reference,
@@ -323,14 +322,18 @@ class ExportPdfService {
     elements: ExcalidrawElement[],
     files: Record<string, BinaryFileData>,
     appState: AppState,
-    orientation: PageOrientation,
+    pageInfo: ResolvedPageInfo,
   ): Promise<ImageBitmap> {
     const {
       pageWidth: targetWidth,
       pageHeight: targetHeight,
       pageStartX: boundaryStartX,
       pageStartY: boundaryStartY,
-    } = getPageBoundaryMetrics(orientation);
+    } = getPageBoundaryMetrics(
+      pageInfo.orientation,
+      pageInfo.pageWidth,
+      pageInfo.pageHeight,
+    );
 
     // 1. Scan and gather limits in a single loop pass to keep search O(N)
     let startX = boundaryStartX;
@@ -387,7 +390,7 @@ class ExportPdfService {
     fileName: string,
     totalPagesToExport: number,
     pageNumber: number,
-    pageOrientation: PageOrientation,
+    pageInfo: ResolvedPageInfo,
     appState: AppState,
     exportId: string,
     authToken: string,
@@ -438,7 +441,9 @@ class ExportPdfService {
         fileId,
         fileName,
         pageNumber,
-        pageOrientation,
+        pageOrientation: pageInfo.orientation,
+        pageWidth: pageInfo.pageWidth,
+        pageHeight: pageInfo.pageHeight,
         appState: {
           viewBackgroundColor: appState.viewBackgroundColor || '#ffffff',
         },
