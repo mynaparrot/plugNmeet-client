@@ -8,7 +8,6 @@ import {
 import AudioElm from './audio';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
-import { toPlugNmeetUserId } from '../../../helpers/utils';
 
 const AudioElements = () => {
   const [audioSubscribers, setAudioSubscribers] =
@@ -36,10 +35,9 @@ const AudioElements = () => {
       return null;
     }
     const elms: Array<ReactElement> = [];
-    audioSubscribers.forEach((participant) => {
-      participant.audioTrackPublications.forEach((track) => {
+    for (const [userId, participant] of audioSubscribers) {
+      for (const track of participant.audioTrackPublications.values()) {
         if (track.audioTrack && track.audioTrack instanceof RemoteAudioTrack) {
-          const userId = toPlugNmeetUserId(participant.identity);
           elms.push(
             <AudioElm
               userId={userId}
@@ -48,8 +46,8 @@ const AudioElements = () => {
             />,
           );
         }
-      });
-    });
+      }
+    }
 
     return elms;
   }, [audioSubscribers]);

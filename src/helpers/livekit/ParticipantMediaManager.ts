@@ -118,10 +118,7 @@ export default class ParticipantMediaManager {
       return;
     }
 
-    this._audioSubscribersMap.set(
-      participant.identity,
-      participant as RemoteParticipant,
-    );
+    this._audioSubscribersMap.set(userId, participant as RemoteParticipant);
     this.syncAudioSubscribers();
   };
 
@@ -150,15 +147,13 @@ export default class ParticipantMediaManager {
     if (!participant.videoTrackPublications.size) {
       return;
     }
-    const existUser = participantsSelector.selectById(
-      store.getState(),
-      participant.identity,
-    );
+    const userId = toPlugNmeetUserId(participant.identity);
+    const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;
     }
 
-    this._videoSubscribersMap.set(participant.identity, participant);
+    this._videoSubscribersMap.set(userId, participant);
     this.syncVideoSubscribers();
   };
 
@@ -199,8 +194,8 @@ export default class ParticipantMediaManager {
       const aPrt = a[1];
       const bPart = b[1];
 
-      const aSpeaker = speakerMap.get(aPrt.identity);
-      const bSpeaker = speakerMap.get(bPart.identity);
+      const aSpeaker = speakerMap.get(a[0]);
+      const bSpeaker = speakerMap.get(b[0]);
 
       const aIsSpeaking = aSpeaker?.isSpeaking ?? false;
       const bIsSpeaking = bSpeaker?.isSpeaking ?? false;

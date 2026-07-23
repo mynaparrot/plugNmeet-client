@@ -80,17 +80,18 @@ export default class HandleMediaTracks {
     if (track.source !== Track.Source.Microphone) {
       return;
     }
+    const userId = toPlugNmeetUserId(participant.identity);
 
     store.dispatch(
       updateParticipant({
-        id: participant.identity,
+        id: userId,
         changes: {
           isMuted: true,
         },
       }),
     );
 
-    if (participant.identity === this.currentUser?.userId) {
+    if (userId === this.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(true));
     }
     this.removeSpeaker(track, participant);
@@ -100,17 +101,18 @@ export default class HandleMediaTracks {
     if (track.source !== Track.Source.Microphone) {
       return;
     }
+    const userId = toPlugNmeetUserId(participant.identity);
 
     store.dispatch(
       updateParticipant({
-        id: participant.identity,
+        id: userId,
         changes: {
           isMuted: false,
         },
       }),
     );
 
-    if (participant.identity === this.currentUser?.userId) {
+    if (userId === this.currentUser?.userId) {
       store.dispatch(updateIsMicMuted(false));
     }
     this.addSpeaker(track, participant);
@@ -144,15 +146,13 @@ export default class HandleMediaTracks {
   };
 
   private _shouldAddWebcam(participant: Participant): boolean {
+    const userId = toPlugNmeetUserId(participant.identity);
     // Always add to display own webcam.
-    if (participant.identity === this.currentUser?.userId) {
+    if (userId === this.currentUser?.userId) {
       return true;
     }
 
-    const user = participantsSelector.selectById(
-      store.getState(),
-      participant.identity,
-    );
+    const user = participantsSelector.selectById(store.getState(), userId);
 
     // If we don't have the participant's metadata, deny subscription as a precaution.
     if (!user?.metadata) {
@@ -204,16 +204,18 @@ export default class HandleMediaTracks {
       this.currentUser = store.getState().session.currentUser;
     }
 
+    const userId = toPlugNmeetUserId(participant.identity);
+
     switch (track.source) {
       case Track.Source.ScreenShare:
       case Track.Source.ScreenShareAudio: {
         store.dispatch(
           updateParticipant({
-            id: participant.identity,
+            id: userId,
             changes: { screenShareTrack: 1 },
           }),
         );
-        this.connectLivekit.addScreenShareTrack(participant.identity, track);
+        this.connectLivekit.addScreenShareTrack(userId, track);
         break;
       }
       case Track.Source.Microphone: {
@@ -221,7 +223,6 @@ export default class HandleMediaTracks {
           .getTrackPublications()
           .filter((t) => t.source === Track.Source.Microphone).length;
 
-        const userId = toPlugNmeetUserId(participant.identity);
         store.dispatch(
           updateParticipant({
             id: userId,
@@ -245,7 +246,7 @@ export default class HandleMediaTracks {
           .filter((t) => t.source === Track.Source.Camera).length;
         store.dispatch(
           updateParticipant({
-            id: participant.identity,
+            id: userId,
             changes: { videoTracks: count },
           }),
         );
@@ -259,21 +260,22 @@ export default class HandleMediaTracks {
     track: LocalTrackPublication | RemoteTrackPublication,
     participant: LocalParticipant | RemoteParticipant,
   ) {
+    const userId = toPlugNmeetUserId(participant.identity);
+
     switch (track.source) {
       case Track.Source.ScreenShare:
       case Track.Source.ScreenShareAudio: {
         store.dispatch(
           updateParticipant({
-            id: participant.identity,
+            id: userId,
             changes: { screenShareTrack: 0 },
           }),
         );
-        this.connectLivekit.removeScreenShareTrack(participant.identity);
+        this.connectLivekit.removeScreenShareTrack(userId);
         break;
       }
       case Track.Source.Microphone: {
-        const userId = toPlugNmeetUserId(participant.identity);
-        this.connectLivekit.removeAudioSubscriber(participant.identity);
+        this.connectLivekit.removeAudioSubscriber(userId);
         store.dispatch(
           updateParticipant({
             id: userId,
@@ -290,10 +292,10 @@ export default class HandleMediaTracks {
         break;
       }
       case Track.Source.Camera: {
-        this.connectLivekit.removeVideoSubscriber(participant.identity);
+        this.connectLivekit.removeVideoSubscriber(userId);
         store.dispatch(
           updateParticipant({
-            id: participant.identity,
+            id: userId,
             changes: {
               videoTracks:
                 participant
@@ -303,9 +305,7 @@ export default class HandleMediaTracks {
           }),
         );
 
-        if (
-          store.getState().roomSettings.pinCamUserId === participant.identity
-        ) {
+        if (store.getState().roomSettings.pinCamUserId === userId) {
           // so, need to unset
           store.dispatch(updatePinCamUserId(undefined));
         }

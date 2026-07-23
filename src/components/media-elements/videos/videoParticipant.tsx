@@ -15,19 +15,19 @@ import { generateAvatarInitial } from '../../../helpers/utils';
 
 export interface VideoParticipantProps {
   participantType: VideoParticipantType;
+  userId: string;
   participant: RemoteParticipant | LocalParticipant;
   displayPinIcon: boolean;
   displaySwitchCamIcon: boolean;
 }
 const VideoParticipant = ({
   participantType,
+  userId,
   participant,
   displayPinIcon,
   displaySwitchCamIcon,
 }: VideoParticipantProps) => {
-  const isSpeaking = useAppSelector(
-    selectIsSpeakingByUserId(participant.identity),
-  );
+  const isSpeaking = useAppSelector(selectIsSpeakingByUserId(userId));
   const [floatView, setFloatView] = useState<boolean>(true);
 
   const [version, forceUpdate] = useReducer((x: number) => x + 1, 0);
@@ -50,18 +50,18 @@ const VideoParticipant = ({
       if (!track.isMuted && track.videoTrack) {
         elements.push(
           <VideoComponent
-            userId={participant.identity}
+            userId={userId}
             name={participant.name ?? ''}
             isLocal={participantType.isLocal}
             track={track}
             displayPinIcon={displayPinIcon}
-            key={participant.identity}
+            key={userId}
           />,
         );
       } else {
         elements.push(
           <div
-            key={participant.identity}
+            key={userId}
             className="camera-muted-fallback w-full h-full flex items-center justify-center bg-Gray-900"
           >
             <span className="text-xl 3xl:text-2xl font-medium text-white">

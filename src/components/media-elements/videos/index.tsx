@@ -53,10 +53,10 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     const otherSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
 
     const subscribers = videoSubscribers
-      ? Array.from(videoSubscribers.values())
+      ? Array.from(videoSubscribers.entries())
       : [];
 
-    for (const participant of subscribers) {
+    for (const [userId, participant] of subscribers) {
       // we will only take if source from Camera
       const videoTracks = participant.getTrackPublication(Track.Source.Camera);
       if (videoTracks) {
@@ -64,10 +64,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           displayPinIcon = true,
           displaySwitchCamIcon = true;
 
-        const pp = participantsSelector.selectById(
-          store.getState(),
-          participant.identity,
-        );
+        const pp = participantsSelector.selectById(store.getState(), userId);
         isAdmin = pp?.metadata?.isAdmin;
 
         const participantType: VideoParticipantType = {
@@ -87,13 +84,14 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
             key={participant.sid}
             // key={participant.sid + '_' + i}
             participantType={participantType}
+            userId={userId}
             participant={participant}
             displayPinIcon={displayPinIcon}
             displaySwitchCamIcon={displaySwitchCamIcon}
           />
         );
 
-        if (pinCamUserId && participant.identity === pinCamUserId) {
+        if (pinCamUserId && userId === pinCamUserId) {
           pinSubscribers = elm;
           totalNumWebcams--;
         } else if (isAdmin) {
