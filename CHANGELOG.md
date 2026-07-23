@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.3.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.3.0...v2.3.1) (2026-07-23)
+
+
+### Bug Fixes
+
+* added missing translation ([ec220f2](https://github.com/mynaparrot/plugNmeet-client/commit/ec220f28866c2d29957dcea7d52fa23785d057cb))
+* bug fixes and improvement ([eb9d061](https://github.com/mynaparrot/plugNmeet-client/commit/eb9d061067219a9fffa814eb57fc4d9269ce08f2))
+* bump deps ([de11977](https://github.com/mynaparrot/plugNmeet-client/commit/de11977a242c46131fb6dda0d29091dbab0c2ef3))
+* dynamically calculated A4 page orientation e.g. landscape or  portrait based on converted image file ([f5ef045](https://github.com/mynaparrot/plugNmeet-client/commit/f5ef045310d868c2ba99da8c50aae3c8ec91cd7b))
+* exact per-page size from meta (not just two A4 profiles) ([cb33fb4](https://github.com/mynaparrot/plugNmeet-client/commit/cb33fb4f24b596456a8fb7f0d185fec31acf269a))
+* handle error properly in case error happen ([57a6312](https://github.com/mynaparrot/plugNmeet-client/commit/57a631221feb941ad6c96764d29c16e393ba69b4))
+* initialize `ConnectionQualityMonitor` only when room is fully ready ([bc6b3d1](https://github.com/mynaparrot/plugNmeet-client/commit/bc6b3d17f15a3aa14fa136e721c0a7463dfac489))
+* normalize all subscriber maps to use plugNmeet userId as single canonical key ([997a7c6](https://github.com/mynaparrot/plugNmeet-client/commit/997a7c64356ab439e2299a625de0c879230621b6))
+* now default recommended codec is ([e98d23c](https://github.com/mynaparrot/plugNmeet-client/commit/e98d23c65bb0425341d85f7d3225e40df51ec5fa))
+* organized code into utils ([f886278](https://github.com/mynaparrot/plugNmeet-client/commit/f88627863154d19dbfd4e10736b0de619eb80019))
+* process messages before displaying ([0342931](https://github.com/mynaparrot/plugNmeet-client/commit/034293126c11600b69cc88c9a83e250399841a93))
+* reduce connection quality notification frequency ([ab1e4ea](https://github.com/mynaparrot/plugNmeet-client/commit/ab1e4eaa8439da7d99e6f7e850943cbfb235d1db))
+* use A4 as standard frame to calculate others ([de7a331](https://github.com/mynaparrot/plugNmeet-client/commit/de7a331c03b731ec0b73850868f1498b104a6027))
+
 ## [2.3.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.2.0...v2.3.0) (2026-07-09)
 
 
