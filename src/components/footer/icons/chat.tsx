@@ -45,7 +45,7 @@ const ChatIcon = () => {
   );
 
   return (
-    <div className={wrapperClasses} onClick={toggleChatPanel}>
+    <button type="button" className={wrapperClasses} onClick={toggleChatPanel}>
       <div className={innerDivClasses}>
         <span className="tooltip">
           {isActiveChatPanel
@@ -59,7 +59,7 @@ const ChatIcon = () => {
           </div>
         )}
       </div>
-    </div>
+    </button>
   );
 };
 

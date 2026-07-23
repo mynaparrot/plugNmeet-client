@@ -136,7 +136,7 @@ export const useMicrophoneActivity = (
       }
       dispatch(updateIsMicMuted(true));
       // send analytics
-      const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
+      const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
       conn.sendAnalyticsData(
         AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
         AnalyticsEventType.USER,
@@ -167,7 +167,7 @@ export const useMicrophoneActivity = (
       }
 
       // send analytics
-      const val = AnalyticsStatusSchema.values[AnalyticsStatus.MUTED];
+      const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];
       conn.sendAnalyticsData(
         AnalyticsEvents.ANALYTICS_EVENT_USER_MIC_STATUS,
         AnalyticsEventType.USER,

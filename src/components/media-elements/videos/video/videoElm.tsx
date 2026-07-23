@@ -41,16 +41,17 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
 
     useEffect(() => {
       const el = ref.current;
-      if (el) {
-        track.videoTrack?.attach(el);
+      const videoTrack = track.videoTrack;
+      if (el && videoTrack) {
+        videoTrack.attach(el);
       }
 
       return () => {
-        if (el) {
-          track.videoTrack?.detach(el);
+        if (el && videoTrack) {
+          videoTrack.detach(el);
         }
       };
-    }, [track]);
+    }, [track.videoTrack]);
 
     useEffect(() => {
       if (track instanceof RemoteTrackPublication) {

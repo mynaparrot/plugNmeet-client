@@ -242,7 +242,7 @@ const getParticipantKey = (
   const participant = participantElement.props.participant;
 
   return `${
-    participant.sid ??
+    participant.identity ??
     participantElement.key ??
     participant.name ??
     'participant'

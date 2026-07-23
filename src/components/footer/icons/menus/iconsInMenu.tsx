@@ -50,7 +50,7 @@ const IconsInMenu = () => {
       state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
   );
   const isActivePollsPanel = useAppSelector(
-    (state) => state.bottomIconsActivity.activeSidePanel === 'PARTICIPANTS',
+    (state) => state.bottomIconsActivity.activeSidePanel === 'POLLS',
   );
   const togglePollsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('POLLS'));

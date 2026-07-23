@@ -242,7 +242,7 @@ const WebcamIcon = () => {
   );
 
   const iconDivClasses = clsx(
-    'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center',
+    'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
       'has-tooltip': showTooltip,
     },
@@ -252,7 +252,11 @@ const WebcamIcon = () => {
     <>
       <div className={wrapperClasses}>
         <div className={camWrapClasses}>
-          <div className={iconDivClasses} onClick={() => toggleWebcam()}>
+          <button
+            type="button"
+            className={iconDivClasses}
+            onClick={() => toggleWebcam()}
+          >
             <span className="tooltip">{getTooltipText()}</span>
             {isActiveWebcam ? <Camera classes={'h-4 3xl:h-5 w-auto'} /> : null}
             {!isActiveWebcam && (
@@ -273,7 +277,7 @@ const WebcamIcon = () => {
                 )}
               </>
             )}
-          </div>
+          </button>
           {isActiveWebcam && (
             <WebcamMenu
               currentRoom={currentRoom}

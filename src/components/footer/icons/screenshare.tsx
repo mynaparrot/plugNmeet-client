@@ -138,14 +138,17 @@ const ScrenshareIcon = () => {
       } else {
         await endScreenShare();
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('screenshare error', e);
-      dispatch(
-        addUserNotification({
-          message: t('footer.notice.screenshare-error'),
-          typeOption: 'error',
-        }),
-      );
+      const name = e?.name ?? '';
+      if (name !== 'NotAllowedError' && name !== 'PermissionDeniedError') {
+        dispatch(
+          addUserNotification({
+            message: t('footer.notice.screenshare-error'),
+            typeOption: 'error',
+          }),
+        );
+      }
     } finally {
       isPublishing.current = false;
     }
@@ -194,7 +197,11 @@ const ScrenshareIcon = () => {
   }
 
   return (
-    <div className={wrapperClasses} onClick={toggleScreenShare}>
+    <button
+      type="button"
+      className={wrapperClasses}
+      onClick={toggleScreenShare}
+    >
       <div className={innerDivClasses}>
         <span className="tooltip">{text()}</span>
         <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
@@ -204,7 +211,7 @@ const ScrenshareIcon = () => {
           </span>
         )}
       </div>
-    </div>
+    </button>
   );
 };
 

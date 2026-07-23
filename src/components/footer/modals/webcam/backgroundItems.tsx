@@ -4,7 +4,10 @@ import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
 import { useAppSelector } from '../../../../store';
 import { getConfigValue } from '../../../../helpers/utils';
-import { backgroundImageUrls } from './backgroundHelper';
+import {
+  backgroundImageUrls,
+  loadBackgroundImageUrls,
+} from './backgroundHelper';
 import { BackgroundConfig } from '../../../../helpers/libs/TrackProcessor';
 
 interface IBackgroundItemsProps {
@@ -27,6 +30,18 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
     files,
     fileType: RoomUploadedFileType.VIRTUAL_BACKGROUND,
   });
+
+  useEffect(() => {
+    let cancelled = false;
+    loadBackgroundImageUrls().then((urls) => {
+      if (!cancelled) {
+        setBgImgs(urls);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (result && result.filePath) {

@@ -65,6 +65,16 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
 
   // start audio (ctrl+alt+a)
   useHotkeys('ctrl+alt+a', () => {
+    const session = store.getState().session;
+    const isAdmin = !!session.currentUser?.metadata?.isAdmin;
+    const lockMicrophone =
+      session.currentUser?.metadata?.lockSettings?.lockMicrophone;
+    const defaultLockMicrophone =
+      session.currentRoom?.metadata?.defaultLockSettings?.lockMicrophone;
+    if (!isAdmin && (lockMicrophone ?? defaultLockMicrophone)) {
+      return;
+    }
+
     const bottomIconsActivity = store.getState().bottomIconsActivity;
     if (
       !bottomIconsActivity.isActiveMicrophone &&
@@ -104,6 +114,15 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
 
   // start video (ctrl+alt+v)
   useHotkeys('ctrl+alt+v', () => {
+    const session = store.getState().session;
+    const isAdmin = !!session.currentUser?.metadata?.isAdmin;
+    const lockWebcam = session.currentUser?.metadata?.lockSettings?.lockWebcam;
+    const defaultLockWebcam =
+      session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam;
+    if (!isAdmin && (lockWebcam ?? defaultLockWebcam)) {
+      return;
+    }
+
     const bottomIconsActivity = store.getState().bottomIconsActivity;
     if (
       !bottomIconsActivity.isActiveWebcam &&
@@ -182,9 +201,22 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
 
   // toggle whiteboard (ctrl+alt+w)
   useHotkeys('ctrl+alt+w', () => {
-    const isActiveWhiteboard =
-      store.getState().bottomIconsActivity.isActiveWhiteboard;
-    dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
+    const session = store.getState().session;
+    const isAdmin = !!session.currentUser?.metadata?.isAdmin;
+    const lockWhiteboard =
+      session.currentUser?.metadata?.lockSettings?.lockWhiteboard;
+    const defaultLockWhiteboard =
+      session.currentRoom?.metadata?.defaultLockSettings?.lockWhiteboard;
+    if (!isAdmin && (lockWhiteboard ?? defaultLockWhiteboard)) {
+      return;
+    }
+
+    const bottomIconsActivity = store.getState().bottomIconsActivity;
+    if (bottomIconsActivity.isActiveScreenshare) {
+      return;
+    }
+
+    dispatch(updateIsActiveWhiteboard(!bottomIconsActivity.isActiveWhiteboard));
   });
 
   // toggle raise hand (ctrl+alt+r) start

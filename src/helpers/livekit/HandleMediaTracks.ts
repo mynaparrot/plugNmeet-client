@@ -77,6 +77,10 @@ export default class HandleMediaTracks {
   };
 
   public trackMuted = (track: TrackPublication, participant: Participant) => {
+    if (track.source !== Track.Source.Microphone) {
+      return;
+    }
+
     store.dispatch(
       updateParticipant({
         id: participant.identity,
@@ -93,6 +97,10 @@ export default class HandleMediaTracks {
   };
 
   public trackUnmuted = (track: TrackPublication, participant: Participant) => {
+    if (track.source !== Track.Source.Microphone) {
+      return;
+    }
+
     store.dispatch(
       updateParticipant({
         id: participant.identity,
@@ -125,6 +133,14 @@ export default class HandleMediaTracks {
     // to do
     console.log('==== trackStreamStateChanged ====');
     console.log(participant.name, streamState);
+  };
+
+  public processExistingTrack = (
+    track: RemoteTrackPublication,
+    participant: RemoteParticipant,
+  ) => {
+    this.addSubscriber(track, participant);
+    this.addSpeaker(track, participant);
   };
 
   private _shouldAddWebcam(participant: Participant): boolean {
@@ -321,7 +337,7 @@ export default class HandleMediaTracks {
       store.dispatch(
         addOrUpdateSpeaker({
           userId: userId,
-          name: userInfo.name,
+          name: userInfo?.name ?? participant.name ?? '',
           isSpeaking: activity.isSpeaking,
           audioLevel: activity.audioLevel,
           lastSpokeAt: activity.lastSpokeAt,
@@ -337,14 +353,12 @@ export default class HandleMediaTracks {
    * @private
    */
   private removeSpeaker(track: TrackPublication, participant: Participant) {
-    if (
-      track.source !== Track.Source.Microphone ||
-      !track.audioTrack ||
-      !track.audioTrack.mediaStream
-    ) {
+    if (track.source !== Track.Source.Microphone) {
       return;
     }
-    removeAudioStream(track.audioTrack.mediaStream.id);
+    if (track.audioTrack?.mediaStream) {
+      removeAudioStream(track.audioTrack.mediaStream.id);
+    }
     const userId = toPlugNmeetUserId(participant.identity);
     store.dispatch(removeOneSpeaker(userId));
   }

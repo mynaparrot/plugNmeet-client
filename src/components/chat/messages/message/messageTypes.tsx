@@ -7,6 +7,7 @@ import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 import Avatar from './avatar';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import { cleanHtmlForChat } from '../../../../helpers/utils';
 
 export const SystemMessage = memo(({ message }: { message: string }) => {
   return (
@@ -14,7 +15,7 @@ export const SystemMessage = memo(({ message }: { message: string }) => {
       <div className="flex-1 border-t border-dashed border-Gray-300 dark:border-Gray-800" />
       <p
         className="message-content text-xs text-Gray-600 dark:text-dark-text px-2"
-        dangerouslySetInnerHTML={{ __html: message }}
+        dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
       />
       <div className="flex-1 border-t border-dashed border-Gray-300 dark:border-Gray-800" />
     </div>
@@ -35,7 +36,7 @@ export const MyMessage = memo(
         </div>
         <p
           className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-br-none text-sm text-Gray-950 dark:text-white break-words"
-          dangerouslySetInnerHTML={{ __html: message }}
+          dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
         />
       </div>
     );
@@ -66,7 +67,7 @@ export const OtherUserMessage = memo(({ body }: { body: ChatMessage }) => {
         </div>
         <p
           className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-tl-none bg-Gray-50 dark:bg-Gray-800"
-          dangerouslySetInnerHTML={{ __html: body.message }}
+          dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(body.message) }}
         />
       </div>
     </>
@@ -103,7 +104,7 @@ export const AIMessage = memo(
           <div className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-tl-none bg-Gray-50 dark:bg-Gray-800">
             <div
               className="break-words"
-              dangerouslySetInnerHTML={{ __html: message }}
+              dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
             />
             {isStreaming && (
               <span className="blinking-cursor inline-block h-4 w-0.5 ml-1 bg-gray-900" />

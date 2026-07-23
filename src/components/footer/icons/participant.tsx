@@ -45,7 +45,11 @@ const ParticipantIcon = () => {
   );
 
   return (
-    <div className={wrapperClasses} onClick={toggleParticipantsPanel}>
+    <button
+      type="button"
+      className={wrapperClasses}
+      onClick={toggleParticipantsPanel}
+    >
       <div className={innerDivClasses}>
         <span className="tooltip">
           {isActiveParticipantsPanel
@@ -59,7 +63,7 @@ const ParticipantIcon = () => {
           </div>
         )}
       </div>
-    </div>
+    </button>
   );
 };
 

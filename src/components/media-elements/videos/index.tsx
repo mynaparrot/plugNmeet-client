@@ -68,7 +68,7 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
           store.getState(),
           participant.identity,
         );
-        isAdmin = !!pp?.metadata?.isAdmin;
+        isAdmin = pp?.metadata?.isAdmin;
 
         const participantType: VideoParticipantType = {
           isAdmin,

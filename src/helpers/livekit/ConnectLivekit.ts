@@ -11,7 +11,6 @@ import {
   RoomOptions,
   supportsAV1,
   supportsVP9,
-  Track,
   VideoCodec,
   VideoPresets,
 } from 'livekit-client';
@@ -331,29 +330,15 @@ export default class ConnectLivekit
   }
 
   private async initiateParticipants() {
-    // all other connected Participants
+    // all other connected Participants — route through HandleMediaTracks
+    // so permission gates (e.g. _shouldAddWebcam) apply consistently
     this._room.remoteParticipants.forEach((participant) => {
       participant.getTrackPublications().forEach((track) => {
         if (track.isSubscribed) {
-          if (
-            track.source === Track.Source.ScreenShare ||
-            track.source === Track.Source.ScreenShareAudio
-          ) {
-            store.dispatch(
-              updateParticipant({
-                id: toPlugNmeetUserId(participant.identity),
-                changes: {
-                  screenShareTrack: 1,
-                },
-              }),
-            );
-            this.addScreenShareTrack(
-              participant.identity,
-              track as RemoteTrackPublication,
-            );
-          } else if (track.source === Track.Source.Camera) {
-            this.addVideoSubscriber(participant);
-          }
+          this.handleMediaTracks.processExistingTrack(
+            track as RemoteTrackPublication,
+            participant,
+          );
         }
       });
     });

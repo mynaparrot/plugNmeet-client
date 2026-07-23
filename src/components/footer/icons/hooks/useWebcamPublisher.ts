@@ -26,20 +26,23 @@ const useWebcamPublisher = () => {
       let replaced = false;
       publishing.current = true;
 
-      const publications = room.localParticipant.getTrackPublications();
-      for (let i = 0; i < publications.length; i++) {
-        const pub = publications[i] as LocalTrackPublication;
-        if (pub.source === Track.Source.Camera && pub.track) {
-          newTrack.enabled = true;
-          await pub.track.replaceTrack(newTrack, {
-            userProvidedTrack: true,
-          });
-          replaced = true;
-          break;
+      try {
+        const publications = room.localParticipant.getTrackPublications();
+        for (let i = 0; i < publications.length; i++) {
+          const pub = publications[i] as LocalTrackPublication;
+          if (pub.source === Track.Source.Camera && pub.track) {
+            newTrack.enabled = true;
+            await pub.track.replaceTrack(newTrack, {
+              userProvidedTrack: true,
+            });
+            replaced = true;
+            break;
+          }
         }
+        return replaced;
+      } finally {
+        publishing.current = false;
       }
-      publishing.current = false;
-      return replaced;
     },
     [room],
   );
@@ -57,51 +60,53 @@ const useWebcamPublisher = () => {
       if (!room || publishing.current) return;
       publishing.current = true;
 
-      const publications = room.localParticipant.getTrackPublications();
-      let replaced = false;
-      for (let i = 0; i < publications.length; i++) {
-        const pub = publications[i] as LocalTrackPublication;
-        if (pub.source === Track.Source.Camera && pub.track) {
-          await room.localParticipant.unpublishTrack(pub.track, true);
-          replaced = true;
+      try {
+        const publications = room.localParticipant.getTrackPublications();
+        let replaced = false;
+        for (let i = 0; i < publications.length; i++) {
+          const pub = publications[i] as LocalTrackPublication;
+          if (pub.source === Track.Source.Camera && pub.track) {
+            await room.localParticipant.unpublishTrack(pub.track, true);
+            replaced = true;
+          }
         }
-      }
-      if (replaced) {
-        await sleep(500);
-      }
-
-      const resolution = getWebcamResolution();
-      if (deviceId !== '') {
-        let processor: TwilioBackgroundProcessor | undefined;
-        if (virtualBackground && virtualBackground.type !== 'none') {
-          processor = createVirtualBackgroundProcessor(virtualBackground);
-          resolution.height = 480;
-          resolution.width = 640;
-          resolution.frameRate = 24;
-          resolution.aspectRatio = undefined;
+        if (replaced) {
+          await sleep(500);
         }
 
-        const track = await createLocalVideoTrack({
-          deviceId: { exact: deviceId, ideal: deviceId },
-          resolution,
-          processor,
-        });
-        await room.localParticipant.publishTrack(track, {
-          source: Track.Source.Camera,
-        });
-      } else if (mediaStreamTrack) {
-        // assuming we are not using virtual background
-        await room.localParticipant.publishTrack(mediaStreamTrack, {
-          source: Track.Source.Camera,
-        });
-      } else {
-        console.error('webcam publishing was not successful');
+        const resolution = getWebcamResolution();
+        if (deviceId !== '') {
+          let processor: TwilioBackgroundProcessor | undefined;
+          if (virtualBackground && virtualBackground.type !== 'none') {
+            processor = createVirtualBackgroundProcessor(virtualBackground);
+            resolution.height = 480;
+            resolution.width = 640;
+            resolution.frameRate = 24;
+            resolution.aspectRatio = undefined;
+          }
+
+          const track = await createLocalVideoTrack({
+            deviceId: { exact: deviceId, ideal: deviceId },
+            resolution,
+            processor,
+          });
+          await room.localParticipant.publishTrack(track, {
+            source: Track.Source.Camera,
+          });
+        } else if (mediaStreamTrack) {
+          // assuming we are not using virtual background
+          await room.localParticipant.publishTrack(mediaStreamTrack, {
+            source: Track.Source.Camera,
+          });
+        } else {
+          console.error('webcam publishing was not successful');
+          return;
+        }
+
+        dispatch(updateIsActiveWebcam(true));
+      } finally {
         publishing.current = false;
-        return;
       }
-
-      dispatch(updateIsActiveWebcam(true));
-      publishing.current = false;
     },
     [dispatch, room],
   );

@@ -1,11 +1,17 @@
-import React, { useMemo, useState } from 'react';
-import { LocalParticipant, RemoteParticipant, Track } from 'livekit-client';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import {
+  LocalParticipant,
+  ParticipantEvent,
+  RemoteParticipant,
+  Track,
+} from 'livekit-client';
 
 import VideoComponent from './video';
 import { useAppSelector } from '../../../store';
 import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
+import { generateAvatarInitial } from '../../../helpers/utils';
 
 export interface VideoParticipantProps {
   participantType: VideoParticipantType;
@@ -24,30 +30,50 @@ const VideoParticipant = ({
   );
   const [floatView, setFloatView] = useState<boolean>(true);
 
+  const [version, forceUpdate] = useReducer((x: number) => x + 1, 0);
+
+  useEffect(() => {
+    participant.on(ParticipantEvent.TrackMuted, forceUpdate);
+    participant.on(ParticipantEvent.TrackUnmuted, forceUpdate);
+    return () => {
+      participant.off(ParticipantEvent.TrackMuted, forceUpdate);
+      participant.off(ParticipantEvent.TrackUnmuted, forceUpdate);
+    };
+  }, [participant]);
+
   const renderVideoElms = useMemo(() => {
     const elements: Array<React.ReactNode> = [];
-
     for (const track of participant.videoTrackPublications.values()) {
-      if (
-        track.source === Track.Source.Camera &&
-        !track.isMuted &&
-        track.videoTrack
-      ) {
-        const elm = (
+      if (track.source !== Track.Source.Camera) {
+        continue;
+      }
+      if (!track.isMuted && track.videoTrack) {
+        elements.push(
           <VideoComponent
             userId={participant.identity}
             name={participant.name ?? ''}
             isLocal={participantType.isLocal}
             track={track}
             displayPinIcon={displayPinIcon}
-            key={track.trackSid}
-          />
+            key={participant.identity}
+          />,
         );
-        elements.push(elm);
+      } else {
+        elements.push(
+          <div
+            key={participant.identity}
+            className="camera-muted-fallback w-full h-full flex items-center justify-center bg-Gray-900"
+          >
+            <span className="text-xl 3xl:text-2xl font-medium text-white">
+              {generateAvatarInitial(participant.name ?? '')}
+            </span>
+          </div>,
+        );
       }
     }
     return elements;
-  }, [participant, displayPinIcon, participantType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participant, displayPinIcon, participantType, version]);
 
   return (
     <div

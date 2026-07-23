@@ -144,33 +144,38 @@ const MicrophoneIcon = () => {
       }
       isPublishing.current = true;
 
-      const localTracks = await createLocalTracks({
-        audio: {
-          deviceId: deviceId,
-        },
-        video: false,
-      });
-
-      const audioTrack = localTracks.find(
-        (track) => track.kind === Track.Kind.Audio,
-      );
-
-      if (audioTrack) {
-        await currentRoom.localParticipant.publishTrack(audioTrack, {
-          audioPreset: getAudioPreset(),
-          source: Track.Source.Microphone,
+      try {
+        const localTracks = await createLocalTracks({
+          audio: {
+            deviceId: deviceId,
+          },
+          video: false,
         });
-        dispatch(updateIsActiveMicrophone(true));
 
-        if (muteOnStartRef.current) {
-          await currentRoom.localParticipant.setMicrophoneEnabled(false);
-          dispatch(updateIsMicMuted(true));
+        const audioTrack = localTracks.find(
+          (track) => track.kind === Track.Kind.Audio,
+        );
+
+        if (audioTrack) {
+          await currentRoom.localParticipant.publishTrack(audioTrack, {
+            audioPreset: getAudioPreset(),
+            source: Track.Source.Microphone,
+          });
+          dispatch(updateIsActiveMicrophone(true));
+
+          if (muteOnStartRef.current) {
+            await currentRoom.localParticipant.setMicrophoneEnabled(false);
+            dispatch(updateIsMicMuted(true));
+          }
         }
+        if (deviceId != null) {
+          dispatch(updateSelectedAudioDevice(deviceId));
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        isPublishing.current = false;
       }
-      if (deviceId != null) {
-        dispatch(updateSelectedAudioDevice(deviceId));
-      }
-      isPublishing.current = false;
     },
     [dispatch, currentRoom, muteOnStartRef],
   );
@@ -202,7 +207,7 @@ const MicrophoneIcon = () => {
   );
 
   const iconDivClasses = clsx(
-    'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center',
+    'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
       'has-tooltip': showTooltip,
     },
@@ -228,7 +233,7 @@ const MicrophoneIcon = () => {
           </div>
         )}
         <div className={micWrapClasses}>
-          <div className={iconDivClasses} onClick={manageMic}>
+          <button type="button" className={iconDivClasses} onClick={manageMic}>
             <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
               {getTooltipText()}
             </span>
@@ -250,7 +255,7 @@ const MicrophoneIcon = () => {
             {isMicMuted && isActiveMicrophone && (
               <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
             )}
-          </div>
+          </button>
           {isActiveMicrophone && (
             <MicMenu
               currentRoom={currentRoom}

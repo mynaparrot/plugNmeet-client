@@ -6,7 +6,7 @@ const assetPath = getConfigValue(
   'STATIC_ASSETS_PATH',
 );
 
-let backgroundImageUrls = [
+const DEFAULT_BACKGROUND_IMAGE_URLS = [
   'kenny-eliason-Wp7t4cWN-68-unsplash',
   'jonny-caspari-KuudDjBHIlA-unsplash',
   'roman-bozhko-PypjzKTUqLo-unsplash',
@@ -18,35 +18,38 @@ let backgroundImageUrls = [
   'steve-richey-6xqAK6oAeHA-unsplash',
 ].map((imageName) => `${assetPath}/backgrounds/${imageName}.jpg`);
 
-const bgImgUrlsFromCnf = getConfigValue<string[] | undefined>(
-  'virtualBackgroundImages',
-  undefined,
-  'PNM_VIRTUAL_BG_IMGS',
-);
+// Sync defaults for initial render; config URLs load via loadBackgroundImageUrls().
+const backgroundImageUrls = DEFAULT_BACKGROUND_IMAGE_URLS;
 
-if (
-  bgImgUrlsFromCnf &&
-  Array.isArray(bgImgUrlsFromCnf) &&
-  bgImgUrlsFromCnf.length > 0
-) {
+const loadBackgroundImageUrls = async (): Promise<string[]> => {
+  const bgImgUrlsFromCnf = getConfigValue<string[] | undefined>(
+    'virtualBackgroundImages',
+    undefined,
+    'PNM_VIRTUAL_BG_IMGS',
+  );
+
+  if (
+    !bgImgUrlsFromCnf ||
+    !Array.isArray(bgImgUrlsFromCnf) ||
+    bgImgUrlsFromCnf.length === 0
+  ) {
+    return DEFAULT_BACKGROUND_IMAGE_URLS;
+  }
+
   const imgUrls: Array<string> = [];
-
-  (async () => {
-    for (let i = 0; i < bgImgUrlsFromCnf.length; i++) {
-      const url = bgImgUrlsFromCnf[i];
-      try {
-        const req = await fetch(url, { method: 'HEAD' });
-        if (req.ok) {
-          imgUrls.push(url);
-        }
-      } catch (e) {
-        console.error(e);
+  for (let i = 0; i < bgImgUrlsFromCnf.length; i++) {
+    const url = bgImgUrlsFromCnf[i];
+    try {
+      const req = await fetch(url, { method: 'HEAD' });
+      if (req.ok) {
+        imgUrls.push(url);
       }
+    } catch (e) {
+      console.error(e);
     }
-    if (imgUrls.length) {
-      backgroundImageUrls = imgUrls;
-    }
-  })();
-}
+  }
 
-export { backgroundImageUrls };
+  return imgUrls.length ? imgUrls : DEFAULT_BACKGROUND_IMAGE_URLS;
+};
+
+export { backgroundImageUrls, loadBackgroundImageUrls };

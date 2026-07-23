@@ -15,7 +15,7 @@ const useThemeSettings = () => {
       '',
     );
     if (disableDarkMode) {
-      updateTheme('light');
+      dispatch(updateTheme('light'));
       return;
     }
 

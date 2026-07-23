@@ -56,7 +56,7 @@ const PollsIcon = () => {
   }
 
   return (
-    <div className={wrapperClasses} onClick={togglePollsPanel}>
+    <button type="button" className={wrapperClasses} onClick={togglePollsPanel}>
       <div className={innerDivClasses}>
         <span className="tooltip">
           {isActivePollsPanel
@@ -65,7 +65,7 @@ const PollsIcon = () => {
         </span>
         <PollsIconSVG classes="" />
       </div>
-    </div>
+    </button>
   );
 };
 

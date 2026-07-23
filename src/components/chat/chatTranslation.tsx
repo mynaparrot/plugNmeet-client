@@ -65,7 +65,7 @@ const ChatTranslation = () => {
 
   return (
     chatTranslationFeatures?.isEnabled &&
-    transLangs.length && (
+    transLangs.length > 0 && (
       <Listbox value={selectedLanguage} onChange={setSelectedLanguage}>
         <ListboxButton className="lang h-6 w-9 flex items-center justify-center cursor-pointer border border-Gray-300 dark:border-Gray-800 rounded-md 3xl:rounded-[11px] text-xs font-medium text-Gray-950 dark:text-white">
           {selectedLanguage?.code.toLocaleUpperCase()}

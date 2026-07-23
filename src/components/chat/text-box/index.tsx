@@ -108,11 +108,17 @@ const TextBoxArea = () => {
       setIsSendingMsg(true);
       setMessage('');
 
-      await conn.sendChatMsg(
-        selectedChatOption,
-        msg.replace(/\r?\n/g, '<br />'),
-      );
-      setIsSendingMsg(false);
+      try {
+        await conn.sendChatMsg(
+          selectedChatOption,
+          msg.replace(/\r?\n/g, '<br />'),
+        );
+      } catch (e) {
+        console.error(e);
+        setMessage(message);
+      } finally {
+        setIsSendingMsg(false);
+      }
     }
   }, [conn, message, selectedChatOption, isSendingMsg, isMsgSendingLocked]);
 

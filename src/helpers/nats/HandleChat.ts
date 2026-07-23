@@ -9,6 +9,7 @@ import {
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateUnreadMsgFrom } from '../../store/slices/roomSettingsSlice';
 import { DB_STORE_NAMES, idbStore } from '../libs/idb';
+import { cleanHtmlForChat } from '../utils';
 
 export default class HandleChat {
   private connectNats: ConnectNats;
@@ -59,6 +60,9 @@ export default class HandleChat {
         }
       }
     }
+
+    // Sanitize after any translation swap and before store/dispatch
+    payload.message = cleanHtmlForChat(payload.message);
 
     store.dispatch(
       addChatMessage({

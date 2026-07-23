@@ -17,7 +17,7 @@ const RoomLists = ({ setMessage }: IRoomListsProps) => {
   const sortedRooms = useMemo(() => {
     if (data && data.rooms) {
       const sortedRooms = data.rooms.slice();
-      sortedRooms.sort((a, b) => b.title.localeCompare(a.title));
+      sortedRooms.sort((a, b) => a.title.localeCompare(b.title));
       return sortedRooms;
     }
     return [];
