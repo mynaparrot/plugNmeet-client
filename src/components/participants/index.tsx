@@ -116,7 +116,7 @@ const ParticipantsComponent = () => {
               type="text"
               name="search-participants"
               id="search-participants"
-              placeholder="Search for Participant"
+              placeholder={t('left-panel.search-participant')}
               className="text-Gray-950 dark:text-white placeholder:text-Gray-600 dark:placeholder:text-white h-9 rounded-lg 3xl:rounded-[15px] bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 w-full pl-8 3xl:pl-10 outline-hidden text-xs 3xl:text-sm"
               onChange={(e) => setSearchParticipant(e.target.value)}
             />

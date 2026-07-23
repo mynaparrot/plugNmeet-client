@@ -5,10 +5,13 @@
   "cancel": "Cancel",
   "yes": "Yes",
   "no": "No",
+  "error": "Error",
   "join": "Join",
   "share": "Share",
   "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Open",
+  "other": "Other",
+  "pip": "Picture-in-Picture",
   "please-wait": "Please wait...",
   "are-you-sure-to-close": "Are you sure you want to close?",
   "you-are-about-to-close": "You are about to close",
@@ -92,7 +95,10 @@
     "whiteboard-new-file-added": "New file is ready and has been added to the whiteboard files list.",
     "private-download-link-ready": "Your download link is ready. Only you can see this message.<br/>{{link}}",
     "local-audio-stuck-fallback": "We detected an issue with your microphone. Try turning it off and back on.",
-    "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on."
+    "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on.",
+    "encryption-error": "Encryption error: {{error}}",
+    "decryption-error": "Decryption error: {{error}}",
+    "error-occurred": "Error occurred"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -216,6 +222,7 @@
     "polls-tab": "Polls",
     "breakout-room-tab": "Breakout Rooms",
     "me": "(me)",
+    "search-participant": "Search for Participant",
     "public-chat": "Public Chat",
     "private-chat": "Private Chat",
     "select-chat-conversation-title": "Select a conversation",
@@ -489,7 +496,8 @@
     "end-poll-success": "The poll has ended.",
     "publish-result": "Publish Results",
     "total": "Total: {{count}}",
-    "not-respondents-total": "Did not respond: {{count}}"
+    "not-respondents-total": "Did not respond: {{count}}",
+    "ask-question": "Ask a question"
   },
   "breakout-room": {
     "modal-title": "Manage Breakout Rooms",

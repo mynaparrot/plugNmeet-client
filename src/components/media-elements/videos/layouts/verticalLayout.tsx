@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch } from '../../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../../store/slices/bottomIconsActivitySlice';
@@ -48,6 +49,7 @@ const VerticalLayout = ({
   isDesktop,
 }: IVerticalLayoutProps) => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const { isMobile, isTablet, isPortrait } = useDeviceInfo();
 
   const [pipWindow, setPipWindow] = useState<Window | null>(null);
@@ -199,7 +201,7 @@ const VerticalLayout = ({
               event.stopPropagation();
               void openPip();
             }}
-            title="Picture-in-Picture"
+            title={t('pip')}
           >
             <i className="icon pnm-pip text-[14px] text-white" />
           </button>

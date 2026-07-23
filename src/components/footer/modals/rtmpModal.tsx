@@ -173,7 +173,7 @@ const RtmpModal = () => {
             options={[
               { value: 'youtube', text: 'YouTube' },
               { value: 'facebook', text: 'Facebook' },
-              { value: 'other', text: 'Other' },
+              { value: 'other', text: t('other') },
             ]}
             direction="horizontal"
           />

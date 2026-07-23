@@ -479,7 +479,9 @@ export default class ConnectNats {
     } catch (e: any) {
       store.dispatch(
         addUserNotification({
-          message: 'Encryption error: ' + e.message,
+          message: i18n.t('notifications.encryption-error', {
+            error: e.message,
+          }),
           typeOption: 'error',
         }),
       );
@@ -494,7 +496,9 @@ export default class ConnectNats {
     } catch (e: any) {
       store.dispatch(
         addUserNotification({
-          message: 'Decryption error: ' + e.message,
+          message: i18n.t('notifications.decryption-error', {
+            error: e.message,
+          }),
           typeOption: 'error',
         }),
       );

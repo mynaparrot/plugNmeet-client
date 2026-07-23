@@ -168,7 +168,7 @@ export default class ConnectLivekit
       console.error(error);
       this._roomConnectionStatusState('error');
       this._errorState({
-        title: 'Error',
+        title: i18n.t('error'),
         text: String(error),
       });
     }

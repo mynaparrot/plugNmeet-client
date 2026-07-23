@@ -96,7 +96,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           value={question}
           required={true}
           onChange={(e) => setQuestion(e.currentTarget.value)}
-          placeholder="Ask a question"
+          placeholder={t('polls.ask-question')}
           className="default-input"
           autoComplete="off"
         />

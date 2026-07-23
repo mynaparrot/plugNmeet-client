@@ -1,5 +1,6 @@
 import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
+import i18n from '../../../helpers/i18n';
 
 export type ExternalMediaUploadStatus =
   'idle' | 'uploading' | 'success' | 'error';
@@ -46,7 +47,7 @@ class ExternalMediaProcessor {
     if (this.uploadStatus === 'uploading') {
       callbacks.onProgress(this.progress);
     } else if (this.uploadStatus === 'error') {
-      callbacks.onError('Error occurred');
+      callbacks.onError(i18n.t('notifications.error-occurred'));
     }
   };
 
