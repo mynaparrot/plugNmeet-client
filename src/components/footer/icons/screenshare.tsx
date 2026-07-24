@@ -14,7 +14,6 @@ import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
-import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import {
   isHybridMode,
@@ -242,7 +241,7 @@ const ScreenshareIcon = () => {
         <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
         {!isActiveShare && (
           <span className="add absolute -top-2 -right-2 z-10">
-            {isLocked ? <i className="pnm-lock primaryColor" /> : <PlusIcon />}
+            {isLocked ? <i className="pnm-lock primaryColor" /> : null}
           </span>
         )}
       </div>
