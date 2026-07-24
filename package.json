@@ -9,9 +9,11 @@
     "start": "vite",
     "build": "vite build",
     "build-netlify": "pnpm run build && cp dist/assets/config_sample.js dist/assets/config.js",
-    "lint": "oxlint --config=./.oxlintrc.json --fix && prettier --write src/**/*.{jsx,ts,tsx}",
-    "lint:check": "oxlint --config=./.oxlintrc.json",
-    "format:check": "prettier --check src/**/*.{jsx,ts,tsx}",
+    "lint": "pnpm lint:oxlint && pnpm lint:format && pnpm lint:typecheck",
+    "lint:fix": "oxlint --config=./.oxlintrc.json --fix && prettier --write src/**/*.{jsx,ts,tsx}",
+    "lint:oxlint": "oxlint --config=./.oxlintrc.json",
+    "lint:format": "prettier --check src/**/*.{jsx,ts,tsx}",
+    "lint:typecheck": "tsc --noEmit",
     "prepare": "husky"
   },
   "dependencies": {

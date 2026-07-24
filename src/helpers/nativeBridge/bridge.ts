@@ -87,15 +87,18 @@ class NativeBridge {
     const str = toJsonString(NativeBridgeMsgSchema, msg);
 
     if (window.ReactNativeWebView?.postMessage) {
+      // oxlint-disable-next-line unicorn/require-post-message-target-origin
       window.ReactNativeWebView.postMessage(str);
       return;
     }
     const wkHandler = window.webkit?.messageHandlers?.pnmNativeBridge;
     if (wkHandler?.postMessage) {
+      // oxlint-disable-next-line unicorn/require-post-message-target-origin
       wkHandler.postMessage(str);
       return;
     }
     if (window.PnmNative?.postMessage) {
+      // oxlint-disable-next-line unicorn/require-post-message-target-origin
       window.PnmNative.postMessage(str);
       return;
     }

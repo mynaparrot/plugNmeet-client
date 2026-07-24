@@ -5,7 +5,9 @@ import { ToastContainer } from 'react-toastify';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
+// @ts-ignore
 import 'react-toastify/dist/ReactToastify.css';
+// @ts-ignore
 import './styles/index.css';
 import './helpers/i18n';
 

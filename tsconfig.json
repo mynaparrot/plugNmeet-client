@@ -17,8 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "downlevelIteration": true
+    "noEmit": true
   },
   "include": ["src", "vite.config.ts"],
   "ts-node": {

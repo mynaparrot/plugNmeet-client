@@ -11,6 +11,7 @@ import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import { useAppSelector } from '../../../../store';
 import { LoadingIcon } from '../../../../assets/Icons/Loading';
+// @ts-ignore
 import './style.css';
 
 interface IVideoElmProps {

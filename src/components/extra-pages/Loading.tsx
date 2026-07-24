@@ -1,5 +1,6 @@
 import React from 'react';
 
+// @ts-ignore
 import './style.css';
 import { LoadingIcon } from '../../assets/Icons/Loading';
 
