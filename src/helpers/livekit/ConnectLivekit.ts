@@ -108,6 +108,15 @@ export default class ConnectLivekit
     return this.participantMediaManager.videoSubscribersMap;
   }
 
+  /**
+   * Returns the video-subscriber participant stored under the given PRIMARY
+   * user id. Use this instead of Room.getParticipantByIdentity, which fails
+   * for hybrid native-twin participants (identity "[userID]-native").
+   */
+  public getVideoSubscriberParticipant(userId: string) {
+    return this.participantMediaManager.getVideoSubscriberParticipant(userId);
+  }
+
   public get audioSubscribersMap() {
     return this.participantMediaManager.audioSubscribersMap;
   }

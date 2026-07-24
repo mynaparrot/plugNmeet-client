@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { LocalTrack, Track } from 'livekit-client';
+import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
@@ -17,6 +18,12 @@ import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import useWebcamPublisher from './hooks/useWebcamPublisher';
+import {
+  isHybridMode,
+  publishNativeMedia,
+  unpublishNativeMedia,
+  useNativePublisherStatus,
+} from '../../../helpers/nativeBridge';
 
 const WebcamIcon = () => {
   const dispatch = useAppDispatch();
@@ -49,6 +56,12 @@ const WebcamIcon = () => {
   const isActiveWebcam = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWebcam,
   );
+
+  const hybrid = isHybridMode();
+  const nativeStatus = useNativePublisherStatus();
+  const nativeCam = nativeStatus.sources[NativeMediaSource.WEBCAM];
+  const isActiveCam = hybrid ? nativeCam.active : isActiveWebcam;
+
   const isWebcamLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
   );
@@ -69,6 +82,10 @@ const WebcamIcon = () => {
 
   // for change in webcam lock setting
   useEffect(() => {
+    if (hybrid) {
+      if (isWebcamLocked) unpublishNativeMedia(NativeMediaSource.WEBCAM);
+      return;
+    }
     if (!currentRoom) return;
 
     const closeWebcamOnLock = async (cameraTrack: LocalTrack) => {
@@ -84,7 +101,7 @@ const WebcamIcon = () => {
         closeWebcamOnLock(hasCameraTrack.track).then();
       }
     }
-  }, [isWebcamLocked, currentRoom, dispatch]);
+  }, [isWebcamLocked, currentRoom, dispatch, hybrid]);
 
   // this is required during changing webcam device
   useEffect(() => {
@@ -173,6 +190,16 @@ const WebcamIcon = () => {
   }, []);
 
   const toggleWebcam = useCallback(async () => {
+    if (hybrid) {
+      if (isWebcamLocked || !nativeStatus.available) return;
+      if (!nativeCam.active) {
+        publishNativeMedia(NativeMediaSource.WEBCAM);
+      } else {
+        unpublishNativeMedia(NativeMediaSource.WEBCAM);
+      }
+      return;
+    }
+
     if (isWebcamLocked) {
       return;
     }
@@ -200,7 +227,10 @@ const WebcamIcon = () => {
     }
     //oxlint-disable-next-line
   }, [
+    hybrid,
     isWebcamLocked,
+    nativeStatus.available,
+    nativeCam.active,
     isActiveWebcam,
     selectedVideoDevice,
     currentRoom,
@@ -209,11 +239,14 @@ const WebcamIcon = () => {
   ]);
 
   const getTooltipText = () => {
-    if (!isActiveWebcam && !isWebcamLock) {
+    if (hybrid && !nativeStatus.available) {
+      return t('footer.icons.native-publisher-unavailable');
+    }
+    if (!isActiveCam && !isWebcamLock) {
       return t('footer.icons.start-webcam');
-    } else if (!isActiveWebcam && isWebcamLock) {
+    } else if (!isActiveCam && isWebcamLock) {
       return t('footer.icons.webcam-locked');
-    } else if (isActiveWebcam) {
+    } else if (isActiveCam) {
       return t('footer.icons.turn-off-webcam');
     }
   };
@@ -225,9 +258,9 @@ const WebcamIcon = () => {
   const wrapperClasses = clsx(
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
-      'border-Red-100!': !isActiveWebcam && selectedVideoDevice !== '',
-      'border-[rgba(124,206,247,0.25)]': isActiveWebcam,
-      'border-transparent': !isActiveWebcam,
+      'border-Red-100!': !isActiveCam && selectedVideoDevice !== '',
+      'border-[rgba(124,206,247,0.25)]': isActiveCam,
+      'border-transparent': !isActiveCam,
       'border-Red-100! dark:!border-Red-600 pointer-events-none':
         isWebcamLocked,
     },
@@ -236,7 +269,7 @@ const WebcamIcon = () => {
   const camWrapClasses = clsx(
     'footer-icon-bg cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 dark:border-Gray-700 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white bg-white dark:bg-Gray-800',
     {
-      'border-Red-200!': !isActiveWebcam && selectedVideoDevice !== '',
+      'border-Red-200!': !isActiveCam && selectedVideoDevice !== '',
       'border-Red-200! dark:!border-Red-400 text-Red-400': isWebcamLocked,
     },
   );
@@ -245,6 +278,8 @@ const WebcamIcon = () => {
     'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
       'has-tooltip': showTooltip,
+      'pointer-events-none opacity-50':
+        hybrid && !nativeStatus.available && !isWebcamLocked,
     },
   );
 
@@ -258,8 +293,8 @@ const WebcamIcon = () => {
             onClick={() => toggleWebcam()}
           >
             <span className="tooltip">{getTooltipText()}</span>
-            {isActiveWebcam ? <Camera classes={'h-4 3xl:h-5 w-auto'} /> : null}
-            {!isActiveWebcam && (
+            {isActiveCam ? <Camera classes={'h-4 3xl:h-5 w-auto'} /> : null}
+            {!isActiveCam && (
               <>
                 {selectedVideoDevice === '' ? (
                   <>

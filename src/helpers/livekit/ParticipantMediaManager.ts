@@ -15,7 +15,7 @@ import {
   updateTotalVideoSubscribers,
 } from '../../store/slices/sessionSlice';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
-import { toPlugNmeetUserId } from '../utils';
+import { toPlugNmeetUserIdPrimary } from '../utils';
 import { CurrentConnectionEvents } from './types';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
 
@@ -40,6 +40,11 @@ export default class ParticipantMediaManager {
 
   public get videoSubscribersMap() {
     return this._videoSubscribersMap;
+  }
+
+  /** Returns the participant stored under the given (primary) user id, if any. */
+  public getVideoSubscriberParticipant(userId: string) {
+    return this._videoSubscribersMap.get(userId);
   }
 
   public get audioSubscribersMap() {
@@ -108,7 +113,7 @@ export default class ParticipantMediaManager {
     if (!participant.audioTrackPublications.size) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;
@@ -147,7 +152,7 @@ export default class ParticipantMediaManager {
     if (!participant.videoTrackPublications.size) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;

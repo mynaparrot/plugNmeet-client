@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RoomMetadataSchema } from 'plugnmeet-protocol-js';
+import { ClientType, RoomMetadataSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import {
@@ -27,6 +27,7 @@ const initialState: ISession = {
   totalVideoSubscribers: 0,
   userDeviceType: UserDeviceType.DESKTOP,
   isCloud: false,
+  clientType: ClientType.WEB,
   currentRoom: {
     sid: '',
     roomId: '',
@@ -175,6 +176,9 @@ const sessionSlice = createSlice({
     updateIsCloud: (state, action: PayloadAction<boolean>) => {
       state.isCloud = action.payload;
     },
+    updateClientType: (state, action: PayloadAction<ClientType>) => {
+      state.clientType = action.payload;
+    },
     updateOverallConnectionQuality: (
       state,
       action: PayloadAction<PnmConnectionQuality>,
@@ -198,6 +202,7 @@ export const {
   updateTotalAudioSubscribers,
   updateUserDeviceType,
   updateIsCloud,
+  updateClientType,
   updateOverallConnectionQuality,
 } = sessionSlice.actions;
 

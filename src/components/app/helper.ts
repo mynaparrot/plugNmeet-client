@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { once } from 'es-toolkit';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
+  ClientType,
   NatsSubjects,
   VerifyTokenReqSchema,
   VerifyTokenResSchema,
@@ -12,7 +13,10 @@ import { IErrorPageProps } from '../extra-pages/Error';
 import i18n from '../../helpers/i18n';
 import { getAccessToken } from '../../helpers/utils';
 import { store } from '../../store';
-import { updateIsCloud } from '../../store/slices/sessionSlice';
+import {
+  updateClientType,
+  updateIsCloud,
+} from '../../store/slices/sessionSlice';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -100,6 +104,7 @@ export const verifyToken = once(
         serverVersion: res.serverVersion ?? '',
       });
       store.dispatch(updateIsCloud(!!res.isCloud));
+      store.dispatch(updateClientType(res.clientType ?? ClientType.WEB));
 
       if (res.enabledSelfInsertEncryptionKey) {
         setLoading(false);

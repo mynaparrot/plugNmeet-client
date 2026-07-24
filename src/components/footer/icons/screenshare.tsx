@@ -6,6 +6,7 @@ import {
   Track,
 } from 'livekit-client';
 import clsx from 'clsx';
+import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActivitySlice';
@@ -13,9 +14,16 @@ import { updateScreenSharing } from '../../../store/slices/sessionSlice';
 import { getScreenShareResolution } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
+import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import {
+  isHybridMode,
+  publishNativeMedia,
+  unpublishNativeMedia,
+  useNativePublisherStatus,
+} from '../../../helpers/nativeBridge';
 
-const ScrenshareIcon = () => {
+const ScreenshareIcon = () => {
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
@@ -41,6 +49,11 @@ const ScrenshareIcon = () => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
   );
+
+  const hybrid = isHybridMode();
+  const nativeStatus = useNativePublisherStatus();
+  const nativeShare = nativeStatus.sources[NativeMediaSource.SCREENSHARE];
+  const isActiveShare = hybrid ? nativeShare.active : isActiveScreenshare;
 
   const isLocked = useMemo(
     () => !isAdmin && isScreenshareLock,
@@ -73,6 +86,10 @@ const ScrenshareIcon = () => {
 
   // for change in lock setting
   useEffect(() => {
+    if (hybrid) {
+      if (isLocked) unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
+      return;
+    }
     if (isLocked) {
       endScreenShare().then();
     }
@@ -92,6 +109,17 @@ const ScrenshareIcon = () => {
     if (isLocked || isPublishing.current) {
       return;
     }
+
+    if (hybrid) {
+      if (!nativeStatus.available) return;
+      if (!nativeShare.active) {
+        publishNativeMedia(NativeMediaSource.SCREENSHARE);
+      } else {
+        unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
+      }
+      return;
+    }
+
     isPublishing.current = true;
 
     try {
@@ -154,6 +182,9 @@ const ScrenshareIcon = () => {
     }
   }, [
     isLocked,
+    hybrid,
+    nativeStatus.available,
+    nativeShare.active,
     isActiveScreenshare,
     sessionScreenSharing,
     currentRoom,
@@ -163,9 +194,12 @@ const ScrenshareIcon = () => {
   ]);
 
   const text = () => {
-    if (isActiveScreenshare) {
+    if (hybrid && !nativeStatus.available) {
+      return t('footer.icons.native-publisher-unavailable');
+    }
+    if (isActiveShare) {
       return t('footer.icons.stop-screen-sharing');
-    } else if (!isActiveScreenshare && !isLocked) {
+    } else if (!isActiveShare && !isLocked) {
       return t('footer.icons.start-screen-sharing');
     } else if (isLocked) {
       return t('footer.icons.screen-sharing-locked');
@@ -175,9 +209,8 @@ const ScrenshareIcon = () => {
   const wrapperClasses = clsx(
     'share-screen hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
-      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
-        isActiveScreenshare,
-      'border-transparent': !isActiveScreenshare,
+      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800': isActiveShare,
+      'border-transparent': !isActiveShare,
       '!border-Red-100 dark:!border-Red-600 pointer-events-none': isLocked,
     },
   );
@@ -186,9 +219,11 @@ const ScrenshareIcon = () => {
     'footer-icon-bg h-full relative w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white',
     {
       'has-tooltip': showTooltip,
-      'bg-gray-100 dark:bg-Gray-700': isActiveScreenshare,
-      'bg-white dark:bg-Gray-800': !isActiveScreenshare,
+      'bg-gray-100 dark:bg-Gray-700': isActiveShare,
+      'bg-white dark:bg-Gray-800': !isActiveShare,
       '!border-Red-200 dark:!border-Red-400 text-Red-400': isLocked,
+      'pointer-events-none opacity-50':
+        hybrid && !nativeStatus.available && !isLocked,
     },
   );
 
@@ -205,9 +240,9 @@ const ScrenshareIcon = () => {
       <div className={innerDivClasses}>
         <span className="tooltip">{text()}</span>
         <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
-        {isLocked && (
+        {!isActiveShare && (
           <span className="add absolute -top-2 -right-2 z-10">
-            <i className="pnm-lock primaryColor" />
+            {isLocked ? <i className="pnm-lock primaryColor" /> : <PlusIcon />}
           </span>
         )}
       </div>
@@ -215,4 +250,4 @@ const ScrenshareIcon = () => {
   );
 };
 
-export default ScrenshareIcon;
+export default ScreenshareIcon;

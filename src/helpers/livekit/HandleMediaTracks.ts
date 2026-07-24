@@ -29,7 +29,7 @@ import {
   addAudioStream,
   removeAudioStream,
 } from '../libs/AudioActivityManager';
-import { toPlugNmeetUserId } from '../utils';
+import { toPlugNmeetUserIdPrimary } from '../utils';
 
 export default class HandleMediaTracks {
   private connectLivekit: IConnectLivekit;
@@ -80,7 +80,7 @@ export default class HandleMediaTracks {
     if (track.source !== Track.Source.Microphone) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
 
     store.dispatch(
       updateParticipant({
@@ -101,7 +101,7 @@ export default class HandleMediaTracks {
     if (track.source !== Track.Source.Microphone) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
 
     store.dispatch(
       updateParticipant({
@@ -146,7 +146,7 @@ export default class HandleMediaTracks {
   };
 
   private _shouldAddWebcam(participant: Participant): boolean {
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     // Always add to display own webcam.
     if (userId === this.currentUser?.userId) {
       return true;
@@ -204,7 +204,7 @@ export default class HandleMediaTracks {
       this.currentUser = store.getState().session.currentUser;
     }
 
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
 
     switch (track.source) {
       case Track.Source.ScreenShare:
@@ -260,7 +260,7 @@ export default class HandleMediaTracks {
     track: LocalTrackPublication | RemoteTrackPublication,
     participant: LocalParticipant | RemoteParticipant,
   ) {
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
 
     switch (track.source) {
       case Track.Source.ScreenShare:
@@ -330,7 +330,7 @@ export default class HandleMediaTracks {
     ) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     const userInfo = participantsSelector.selectById(store.getState(), userId);
 
     addAudioStream(track.audioTrack.mediaStream, (activity) => {
@@ -359,7 +359,7 @@ export default class HandleMediaTracks {
     if (track.audioTrack?.mediaStream) {
       removeAudioStream(track.audioTrack.mediaStream.id);
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     store.dispatch(removeOneSpeaker(userId));
   }
 }

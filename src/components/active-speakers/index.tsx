@@ -6,7 +6,6 @@ import { selectSpeakingParticipants } from '../../store/slices/activeSpeakersSli
 import { participantsSelector } from '../../store/slices/participantSlice';
 import SpeakerComponent from './speaker';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
-import { toLiveKitUserId } from '../../helpers/utils';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 8000;
@@ -19,9 +18,7 @@ const reOrderWebcams = throttle(
 
     for (let i = 0; i < speakers.length; i++) {
       const speaker = speakers[i];
-      const participant = room.room.getParticipantByIdentity(
-        toLiveKitUserId(speaker.userId),
-      );
+      const participant = room.getVideoSubscriberParticipant(speaker.userId);
       // if this user has video then we can update to reorder
       if (participant && participant.videoTrackPublications.size) {
         room.addVideoSubscriber(participant);
