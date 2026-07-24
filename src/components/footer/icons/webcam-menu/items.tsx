@@ -64,27 +64,29 @@ const WebcamMenuItems = ({
       static
       className="menu origin-top-right z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max"
     >
-      <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
-        {t('footer.icons.select-webcam')}
-      </div>
-      {videoDevices.map((device) => (
-        <MenuItem key={device.id}>
-          {() => (
-            <p
-              className={`${
-                selectedVideoDevice === device.id
-                  ? 'bg-Gray-50 dark:bg-dark-secondary2'
-                  : ''
-              } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2`}
-              onClick={() => handleDeviceChange(device.id)}
-            >
-              {device.label}
-              {selectedVideoDevice === device.id ? <CheckMarkIcon /> : ''}
-            </p>
-          )}
-        </MenuItem>
-      ))}
-      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-1"></div>
+      <>
+        <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
+          {t('footer.icons.select-webcam')}
+        </div>
+        {videoDevices.map((device) => (
+          <MenuItem key={device.id}>
+            {() => (
+              <p
+                className={`${
+                  selectedVideoDevice === device.id
+                    ? 'bg-Gray-50 dark:bg-dark-secondary2'
+                    : ''
+                } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2`}
+                onClick={() => handleDeviceChange(device.id)}
+              >
+                {device.label}
+                {selectedVideoDevice === device.id ? <CheckMarkIcon /> : ''}
+              </p>
+            )}
+          </MenuItem>
+        ))}
+        <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-1"></div>
+      </>
       <div className="" role="none">
         <MenuItem>
           {() => (

@@ -300,11 +300,12 @@ const MicrophoneIcon = () => {
               <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
             )}
           </button>
-          {isActiveMic && !hybrid && (
+          {isActiveMic && (
             <MicMenu
               currentRoom={currentRoom}
-              isActiveMicrophone={isActiveMicrophone}
-              isMicMuted={isMicMuted}
+              isActiveMicrophone={isActiveMic}
+              isMicMuted={isMicMutedEffective}
+              hybrid={hybrid}
             />
           )}
         </div>
