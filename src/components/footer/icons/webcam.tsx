@@ -248,12 +248,41 @@ const WebcamIcon = () => {
     if (hybrid && !nativeStatus.available) {
       return t('footer.icons.native-publisher-unavailable');
     }
-    if (isMuted && !isWebcamLock) {
+    if (!isActiveCam && !isWebcamLock) {
       return t('footer.icons.start-webcam');
-    } else if (isMuted && isWebcamLock) {
+    } else if (isActiveCam && isMuted) {
+      return t('footer.icons.start-webcam');
+    } else if (!isActiveCam && isWebcamLock) {
       return t('footer.icons.webcam-locked');
-    } else if (!isMuted) {
+    } else if (isActiveCam && !isMuted) {
       return t('footer.icons.turn-off-webcam');
+    }
+  };
+
+  const renderIcon = () => {
+    if (isActiveCam) {
+      if (isMuted) {
+        return <CameraOff classes={'h-4 3xl:h-5 w-auto'} />;
+      } else {
+        return <Camera classes={'h-4 3xl:h-5 w-auto'} />;
+      }
+    } else {
+      const showPlus =
+        (hybrid && !nativeStatus.available) || selectedVideoDevice === '';
+      return (
+        <>
+          <Camera classes={'h-4 3xl:h-5 w-auto'} />
+          {showPlus ? (
+            <span className="add absolute -top-2 -right-2 z-10">
+              {isWebcamLocked ? (
+                <i className="pnm-lock primaryColor" />
+              ) : (
+                <PlusIcon />
+              )}
+            </span>
+          ) : null}
+        </>
+      );
     }
   };
 
@@ -264,9 +293,9 @@ const WebcamIcon = () => {
   const wrapperClasses = clsx(
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
-      'border-Red-100!': isMuted && selectedVideoDevice !== '',
-      'border-[rgba(124,206,247,0.25)]': !isMuted,
-      'border-transparent': isMuted,
+      'border-Red-100!': !isActiveCam || isMuted,
+      'border-[rgba(124,206,247,0.25)]': isActiveCam && !isMuted,
+      'border-transparent': !isActiveCam,
       'border-Red-100! dark:!border-Red-600 pointer-events-none':
         isWebcamLocked,
     },
@@ -275,7 +304,7 @@ const WebcamIcon = () => {
   const camWrapClasses = clsx(
     'footer-icon-bg cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 dark:border-Gray-700 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white bg-white dark:bg-Gray-800',
     {
-      'border-Red-200!': isMuted && selectedVideoDevice !== '',
+      'border-Red-200!': !isActiveCam || isMuted,
       'border-Red-200! dark:!border-Red-400 text-Red-400': isWebcamLocked,
     },
   );
@@ -299,25 +328,7 @@ const WebcamIcon = () => {
             onClick={() => toggleWebcam()}
           >
             <span className="tooltip">{getTooltipText()}</span>
-            {!isMuted ? <Camera classes={'h-4 3xl:h-5 w-auto'} /> : null}
-            {isMuted && (
-              <>
-                {selectedVideoDevice === '' ? (
-                  <>
-                    <Camera classes={'h-4 3xl:h-5 w-auto'} />
-                    <span className="add absolute -top-2 -right-2 z-10">
-                      {isWebcamLocked ? (
-                        <i className="pnm-lock primaryColor" />
-                      ) : (
-                        <PlusIcon />
-                      )}
-                    </span>
-                  </>
-                ) : (
-                  <CameraOff classes={'h-4 3xl:h-5 w-auto'} />
-                )}
-              </>
-            )}
+            {renderIcon()}
           </button>
           {isActiveCam && (
             <WebcamMenu
