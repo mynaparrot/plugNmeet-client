@@ -1,19 +1,19 @@
-/**
- * Low-level transport for the plugNmeet native bridge.
- * Detects the available webview channel (React Native WebView, iOS WKWebView,
- * Android JavascriptInterface, or iframe fallback) and exchanges
- * `NativeBridgeMsg` messages as proto3 JSON strings.
- *
- * Inbound messages are re-dispatched as prefixed CustomEvents so multiple
- * listeners never conflict: `pnm-native-bridge:<ACTION_NAME>`.
- */
 import {
   NativeBridgeActions,
   NativeBridgeMsgSchema,
   type NativeBridgeMsg,
 } from 'plugnmeet-protocol-js';
-import { fromJson, toJsonString, type JsonValue } from '@bufbuild/protobuf';
+import {
+  fromJson,
+  toJsonString,
+  type JsonValue,
+  fromJsonString,
+} from '@bufbuild/protobuf';
 
+/**
+ * Inbound messages are re-dispatched as prefixed CustomEvents so multiple
+ * listeners never conflict: `pnm-native-bridge:<ACTION_NAME>`.
+ */
 const EVENT_PREFIX = 'pnm-native-bridge:';
 
 /** action enum value -> enum name (e.g. 20 -> "NATIVE_MEDIA_STATUS") */
@@ -55,17 +55,21 @@ class NativeBridge {
     );
   };
 
+  /**
+   * exchanges `NativeBridgeMsg` messages as proto3 JSON strings.
+   * @param data
+   * @private
+   */
   private static parse(data: unknown): NativeBridgeMsg | null {
     try {
-      let json: JsonValue;
+      let msg: NativeBridgeMsg;
       if (typeof data === 'string') {
-        json = JSON.parse(data);
+        msg = fromJsonString(NativeBridgeMsgSchema, data);
       } else if (typeof data === 'object' && data !== null) {
-        json = data as JsonValue;
+        msg = fromJson(NativeBridgeMsgSchema, data as JsonValue);
       } else {
         return null;
       }
-      const msg = fromJson(NativeBridgeMsgSchema, json);
       if (msg.action === NativeBridgeActions.NATIVE_BRIDGE_ACTION_UNSPECIFIED) {
         return null;
       }
@@ -101,7 +105,11 @@ class NativeBridge {
     // else: not inside a webview host — intentionally a no-op
   }
 
-  /** True when a real native host channel (not iframe) is present. */
+  /**
+   * True when a real native host channel (not iframe) is present.
+   * Detects the available webview channel (React Native WebView, iOS WKWebView,
+   * Android JavascriptInterface, or iframe fallback)
+   * */
   public isNativeHostDetected(): boolean {
     return (
       !!window.ReactNativeWebView?.postMessage ||

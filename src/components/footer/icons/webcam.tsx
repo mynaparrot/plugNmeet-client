@@ -313,7 +313,7 @@ const WebcamIcon = () => {
               </>
             )}
           </button>
-          {isActiveWebcam && (
+          {isActiveWebcam && !hybrid && (
             <WebcamMenu
               currentRoom={currentRoom}
               isActiveWebcam={isActiveWebcam}

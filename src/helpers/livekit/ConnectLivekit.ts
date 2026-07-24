@@ -35,13 +35,23 @@ import { IConnectLivekit } from './types';
 import i18n from '../i18n';
 import { getNatsConn } from '../nats';
 import { roomConnectionStatus } from '../../components/app/helper';
-import { getConfigValue, isFirefoxMobile, toPlugNmeetUserId } from '../utils';
+import {
+  getConfigValue,
+  isFirefoxMobile,
+  toNativeTwinIdentity,
+  toPlugNmeetUserId,
+} from '../utils';
 import { CorsWorker } from '../libs/corsWorker';
 import ConnectionQualityMonitor, {
   PnmConnectionQuality,
   QualityStats,
 } from './ConnectionQualityMonitor';
 import { updateOverallConnectionQuality } from '../../store/slices/sessionSlice';
+import {
+  initializeNativePublisher,
+  startNativeHeartbeat,
+  teardownNativePublisher,
+} from '../nativeBridge';
 
 const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
@@ -102,6 +112,7 @@ export default class ConnectLivekit
 
   private onBeforeUnload = () => {
     this.connectionQualityMonitor.stop();
+    teardownNativePublisher();
   };
 
   public get videoSubscribersMap() {
@@ -173,6 +184,22 @@ export default class ConnectLivekit
         this._room,
         this.checkConnectionQualityForFallback,
       );
+
+      // Hybrid mode: if the server sent a native publish token, hand it to the
+      // native host over the bridge and start the liveness heartbeat (doc 4.3).
+      if (serverInfo.nativeToken) {
+        const e2ee =
+          this.enabledE2EE && this.encryptionKey
+            ? { enabled: true, key: this.encryptionKey }
+            : undefined;
+        initializeNativePublisher(
+          serverInfo.url,
+          serverInfo.nativeToken,
+          toNativeTwinIdentity(this.localUserId),
+          e2ee,
+        );
+        startNativeHeartbeat();
+      }
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');

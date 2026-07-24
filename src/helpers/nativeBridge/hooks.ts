@@ -1,6 +1,3 @@
-/**
- * React bindings for the native bridge.
- */
 import { useEffect, useSyncExternalStore } from 'react';
 import type {
   NativeBridgeActions,

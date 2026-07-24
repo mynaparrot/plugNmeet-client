@@ -540,6 +540,7 @@
     "join-prompt-mic-locked": "The microphone is disabled for this meeting. You can enable your camera or join as a listener.",
     "join-prompt-cam-locked": "The camera is disabled for this meeting. You can enable your microphone or join as a listener.",
     "join-prompt-both-locked": "The microphone and camera are disabled for this meeting. Please join as a listener.",
+    "join-prompt-hybrid": "Click Join to enter the meeting. Your camera and microphone are managed by the app.",
     "enable-mic-cam-btn": "Enable Microphone and Camera",
     "enable-mic-btn": "Enable Microphone",
     "enable-cam-btn": "Enable Camera",

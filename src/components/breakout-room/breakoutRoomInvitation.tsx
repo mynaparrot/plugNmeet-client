@@ -24,6 +24,7 @@ import {
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
 import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
+import { isHybridMode } from '../../helpers/nativeBridge';
 
 const BreakoutRoomInvitation = () => {
   const { t } = useTranslation();
@@ -81,6 +82,11 @@ const BreakoutRoomInvitation = () => {
         '?' +
         searchParams.toString();
 
+      if (isHybridMode()) {
+        // Hybrid mode: webview can't open new tabs; reload the current view with the new token.
+        window.location.href = url;
+        return;
+      }
       if (!window.open(url, '_blank')) {
         // If popup was blocked, show the link to the user.
         setJoinLink(url);

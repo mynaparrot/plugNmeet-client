@@ -39,15 +39,7 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
-import {
-  getChatDonors,
-  getWhiteboardDonors,
-  toNativeTwinIdentity,
-} from '../utils';
-import {
-  initializeNativePublisher,
-  startNativeHeartbeat,
-} from '../nativeBridge';
+import { getChatDonors, getWhiteboardDonors } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 
@@ -519,33 +511,6 @@ export default class SubscriptionHandler {
       const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
       if (this.connectNats.mediaServerConn) {
         await this.connectNats.mediaServerConn.initializeConnection(serverInfo);
-
-        // Hybrid mode: if the server sent a native publish token, hand it to the
-        // native host over the bridge and start the liveness heartbeat (doc 4.3).
-        if (serverInfo.nativeToken) {
-          const userId = store.getState().session.currentUser?.userId;
-          if (userId) {
-            let e2ee: { enabled: boolean; key?: string } | undefined;
-            if (serverInfo.enabledE2ee) {
-              const key =
-                store.getState().roomSettings.selfInsertedE2EESecretKey;
-              if (key) {
-                e2ee = { enabled: true, key };
-              } else {
-                console.warn(
-                  'hybrid: E2EE enabled but no self-inserted key available; native tracks may be unreadable',
-                );
-              }
-            }
-            initializeNativePublisher(
-              serverInfo.url,
-              serverInfo.nativeToken,
-              toNativeTwinIdentity(userId),
-              e2ee,
-            );
-            startNativeHeartbeat();
-          }
-        }
       }
     } catch (e: any) {
       console.error(e);

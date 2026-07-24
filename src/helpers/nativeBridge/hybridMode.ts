@@ -12,17 +12,8 @@ import { ClientType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 
-declare global {
-  interface Window {
-    plugNmeetConfig?: {
-      force_hybrid_web?: boolean;
-      [key: string]: unknown;
-    };
-  }
-}
-
 export const isHybridMode = (): boolean => {
-  const cfg = window.plugNmeetConfig;
+  const cfg = (window as any).plugNmeetConfig;
   if (cfg?.force_hybrid_web === true) {
     return true;
   }
