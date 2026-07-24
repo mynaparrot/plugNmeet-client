@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
 import { Room, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
+import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { updateSelectedVideoDevice } from '../../../../store/slices/roomSettingsSlice';
@@ -11,15 +12,18 @@ import {
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../../../assets/Icons/CheckMarkIcon';
 import { CameraOff } from '../../../../assets/Icons/CameraOff';
+import { unpublishNativeMedia } from '../../../../helpers/nativeBridge';
 
 interface IWebcamMenuItemsProps {
   currentRoom: Room;
+  isHybrid: boolean;
   toggleWebcam: () => void;
 }
 
 const WebcamMenuItems = ({
   toggleWebcam,
   currentRoom,
+  isHybrid,
 }: IWebcamMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -39,6 +43,10 @@ const WebcamMenuItems = ({
   );
 
   const leaveWebcam = useCallback(async () => {
+    if (isHybrid) {
+      unpublishNativeMedia(NativeMediaSource.WEBCAM);
+      return;
+    }
     if (currentRoom) {
       const publication = currentRoom.localParticipant.getTrackPublication(
         Track.Source.Camera,
@@ -57,13 +65,10 @@ const WebcamMenuItems = ({
         );
       }
     }
-  }, [currentRoom, dispatch]);
+  }, [currentRoom, dispatch, isHybrid]);
 
-  return (
-    <MenuItems
-      static
-      className="menu origin-top-right z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max"
-    >
+  const renderWebMenuItems = () => {
+    return (
       <>
         <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
           {t('footer.icons.select-webcam')}
@@ -87,6 +92,15 @@ const WebcamMenuItems = ({
         ))}
         <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-1"></div>
       </>
+    );
+  };
+
+  return (
+    <MenuItems
+      static
+      className="menu origin-top-right z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max"
+    >
+      {!isHybrid ? renderWebMenuItems() : null}
       <div className="" role="none">
         <MenuItem>
           {() => (

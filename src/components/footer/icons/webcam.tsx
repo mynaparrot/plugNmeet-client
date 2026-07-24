@@ -20,7 +20,9 @@ import { PlusIcon } from '../../../assets/Icons/PlusIcon';
 import useWebcamPublisher from './hooks/useWebcamPublisher';
 import {
   isHybridMode,
+  muteNativeMedia,
   publishNativeMedia,
+  unmuteNativeMedia,
   unpublishNativeMedia,
   useNativePublisherStatus,
 } from '../../../helpers/nativeBridge';
@@ -61,6 +63,7 @@ const WebcamIcon = () => {
   const nativeStatus = useNativePublisherStatus();
   const nativeCam = nativeStatus.sources[NativeMediaSource.WEBCAM];
   const isActiveCam = hybrid ? nativeCam.active : isActiveWebcam;
+  const isMuted = hybrid ? nativeCam.muted : !isActiveWebcam;
 
   const isWebcamLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
@@ -194,8 +197,10 @@ const WebcamIcon = () => {
       if (isWebcamLocked || !nativeStatus.available) return;
       if (!nativeCam.active) {
         publishNativeMedia(NativeMediaSource.WEBCAM);
+      } else if (nativeCam.muted) {
+        unmuteNativeMedia(NativeMediaSource.WEBCAM);
       } else {
-        unpublishNativeMedia(NativeMediaSource.WEBCAM);
+        muteNativeMedia(NativeMediaSource.WEBCAM);
       }
       return;
     }
@@ -231,6 +236,7 @@ const WebcamIcon = () => {
     isWebcamLocked,
     nativeStatus.available,
     nativeCam.active,
+    nativeCam.muted,
     isActiveWebcam,
     selectedVideoDevice,
     currentRoom,
@@ -242,11 +248,11 @@ const WebcamIcon = () => {
     if (hybrid && !nativeStatus.available) {
       return t('footer.icons.native-publisher-unavailable');
     }
-    if (!isActiveCam && !isWebcamLock) {
+    if (isMuted && !isWebcamLock) {
       return t('footer.icons.start-webcam');
-    } else if (!isActiveCam && isWebcamLock) {
+    } else if (isMuted && isWebcamLock) {
       return t('footer.icons.webcam-locked');
-    } else if (isActiveCam) {
+    } else if (!isMuted) {
       return t('footer.icons.turn-off-webcam');
     }
   };
@@ -258,9 +264,9 @@ const WebcamIcon = () => {
   const wrapperClasses = clsx(
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
-      'border-Red-100!': !isActiveCam && selectedVideoDevice !== '',
-      'border-[rgba(124,206,247,0.25)]': isActiveCam,
-      'border-transparent': !isActiveCam,
+      'border-Red-100!': isMuted && selectedVideoDevice !== '',
+      'border-[rgba(124,206,247,0.25)]': !isMuted,
+      'border-transparent': isMuted,
       'border-Red-100! dark:!border-Red-600 pointer-events-none':
         isWebcamLocked,
     },
@@ -269,7 +275,7 @@ const WebcamIcon = () => {
   const camWrapClasses = clsx(
     'footer-icon-bg cam-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 dark:border-Gray-700 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white bg-white dark:bg-Gray-800',
     {
-      'border-Red-200!': !isActiveCam && selectedVideoDevice !== '',
+      'border-Red-200!': isMuted && selectedVideoDevice !== '',
       'border-Red-200! dark:!border-Red-400 text-Red-400': isWebcamLocked,
     },
   );
@@ -293,8 +299,8 @@ const WebcamIcon = () => {
             onClick={() => toggleWebcam()}
           >
             <span className="tooltip">{getTooltipText()}</span>
-            {isActiveCam ? <Camera classes={'h-4 3xl:h-5 w-auto'} /> : null}
-            {!isActiveCam && (
+            {!isMuted ? <Camera classes={'h-4 3xl:h-5 w-auto'} /> : null}
+            {isMuted && (
               <>
                 {selectedVideoDevice === '' ? (
                   <>
@@ -313,10 +319,10 @@ const WebcamIcon = () => {
               </>
             )}
           </button>
-          {isActiveWebcam && !hybrid && (
+          {isActiveCam && (
             <WebcamMenu
               currentRoom={currentRoom}
-              isActiveWebcam={isActiveWebcam}
+              isHybrid={hybrid}
               toggleWebcam={toggleWebcam}
             />
           )}
