@@ -35,9 +35,17 @@ const VideoParticipant = ({
   useEffect(() => {
     participant.on(ParticipantEvent.TrackMuted, forceUpdate);
     participant.on(ParticipantEvent.TrackUnmuted, forceUpdate);
+    participant.on(ParticipantEvent.TrackPublished, forceUpdate);
+    participant.on(ParticipantEvent.TrackUnpublished, forceUpdate);
+    participant.on(ParticipantEvent.LocalTrackPublished, forceUpdate);
+    participant.on(ParticipantEvent.LocalTrackUnpublished, forceUpdate);
     return () => {
       participant.off(ParticipantEvent.TrackMuted, forceUpdate);
       participant.off(ParticipantEvent.TrackUnmuted, forceUpdate);
+      participant.off(ParticipantEvent.TrackPublished, forceUpdate);
+      participant.off(ParticipantEvent.TrackUnpublished, forceUpdate);
+      participant.off(ParticipantEvent.LocalTrackPublished, forceUpdate);
+      participant.off(ParticipantEvent.LocalTrackUnpublished, forceUpdate);
     };
   }, [participant]);
 
