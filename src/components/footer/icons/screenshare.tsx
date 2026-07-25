@@ -28,15 +28,18 @@ const ScreenshareIcon = () => {
   const { t } = useTranslation();
   const isPublishing = useRef<boolean>(false);
 
-  const { isAdmin, isScreenShareAllowed, showTooltip } = useMemo(() => {
-    const session = store.getState().session;
-    return {
-      isAdmin: !!session.currentUser?.metadata?.isAdmin,
-      isScreenShareAllowed:
-        !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
-      showTooltip: session.userDeviceType === 'desktop',
-    };
-  }, []);
+  const { isAdmin, isScreenShareAllowed, showTooltip, isMobileOrTablet } =
+    useMemo(() => {
+      const session = store.getState().session;
+      const deviceType = session.userDeviceType;
+      return {
+        isAdmin: !!session.currentUser?.metadata?.isAdmin,
+        isScreenShareAllowed:
+          !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
+        showTooltip: session.userDeviceType === 'desktop',
+        isMobileOrTablet: deviceType === 'mobile' || deviceType === 'tablet',
+      };
+    }, []);
 
   const isActiveScreenshare = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveScreenshare,
@@ -90,7 +93,7 @@ const ScreenshareIcon = () => {
       return;
     }
     if (isLocked) {
-      endScreenShare().then();
+      void endScreenShare();
     }
     //eslint-disable-next-line
   }, [isLocked]);
@@ -227,6 +230,10 @@ const ScreenshareIcon = () => {
   );
 
   if (!isScreenShareAllowed) {
+    return null;
+  }
+
+  if (isMobileOrTablet && !hybrid) {
     return null;
   }
 

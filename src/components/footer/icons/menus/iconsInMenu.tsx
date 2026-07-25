@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import FooterMenuItem from './menuItem';
@@ -15,17 +16,49 @@ import { SharedNotepadIconSVG } from '../../../../assets/Icons/SharedNotepadIcon
 import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
+import {
+  isHybridMode,
+  publishNativeMedia,
+  unpublishNativeMedia,
+  useNativePublisherStatus,
+} from '../../../../helpers/nativeBridge';
 
 const IconsInMenu = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { roomFeatures } = useMemo(() => {
+  const { roomFeatures, isMobileOrTablet, isAdmin } = useMemo(() => {
+    const rf = store.getState().session.currentRoom?.metadata?.roomFeatures;
+    const deviceType = store.getState().session.userDeviceType;
     return {
-      roomFeatures:
-        store.getState().session.currentRoom?.metadata?.roomFeatures,
+      roomFeatures: rf,
+      isMobileOrTablet: deviceType === 'mobile' || deviceType === 'tablet',
+      isAdmin: !!store.getState().session.currentUser?.metadata?.isAdmin,
     };
   }, []);
+
+  const hybrid = isHybridMode();
+  const nativeStatus = useNativePublisherStatus();
+  const nativeShare = nativeStatus.sources[NativeMediaSource.SCREENSHARE];
+
+  const isScreenshareLock = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
+  );
+  const isScreenShareLocked = useMemo(
+    () => !isAdmin && isScreenshareLock,
+    [isAdmin, isScreenshareLock],
+  );
+
+  const toggleScreenShare = useCallback(() => {
+    if (isScreenShareLocked || !hybrid || !nativeStatus.available) return;
+    if (!nativeShare.active) {
+      publishNativeMedia(NativeMediaSource.SCREENSHARE);
+    } else {
+      unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
+    }
+  }, [isScreenShareLocked, hybrid, nativeStatus.available, nativeShare.active]);
 
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
@@ -95,6 +128,20 @@ const IconsInMenu = () => {
             isActiveWhiteboard
               ? t('footer.icons.hide-whiteboard')
               : t('footer.icons.show-whiteboard')
+          }
+        />
+      )}
+      {roomFeatures?.allowScreenShare && !(isMobileOrTablet && !hybrid) && (
+        <FooterMenuItem
+          onClick={toggleScreenShare}
+          isActive={nativeShare.active}
+          icon={<ShareScreenIconSVG classes="w-auto h-4" />}
+          text={
+            isScreenShareLocked
+              ? t('footer.icons.screen-sharing-locked')
+              : nativeShare.active
+                ? t('footer.icons.stop-screen-sharing')
+                : t('footer.icons.start-screen-sharing')
           }
         />
       )}
