@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   createLocalScreenTracks,
@@ -33,11 +33,12 @@ export interface UseScreenshareReturn {
   endScreenShare: () => Promise<void>;
 }
 
+let isPublishing = false;
+
 const useScreenshare = (): UseScreenshareReturn => {
   const dispatch = useAppDispatch();
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
-  const isPublishing = useRef<boolean>(false);
 
   const { isAdmin, isScreenShareAllowed, isMobileOrTablet, showTooltip } =
     useMemo(() => {
@@ -118,7 +119,7 @@ const useScreenshare = (): UseScreenshareReturn => {
   }, [sessionScreenSharing]);
 
   const toggleScreenShare = useCallback(async () => {
-    if (isLocked || isPublishing.current) {
+    if (isLocked || isPublishing) {
       return;
     }
 
@@ -132,7 +133,7 @@ const useScreenshare = (): UseScreenshareReturn => {
       return;
     }
 
-    isPublishing.current = true;
+    isPublishing = true;
 
     try {
       if (!isActiveScreenshare) {
@@ -188,7 +189,7 @@ const useScreenshare = (): UseScreenshareReturn => {
         );
       }
     } finally {
-      isPublishing.current = false;
+      isPublishing = false;
     }
   }, [
     isLocked,
