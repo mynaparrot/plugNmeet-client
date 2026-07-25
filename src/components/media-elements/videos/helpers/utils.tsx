@@ -73,7 +73,7 @@ export const getElmsForTablet = (
  * -------------------------------------------
  * 1    | 1 row     | 1 row      | 1 row
  * 2    | 2 rows    | 2 rows     | 1 row of 2
- * 3    | 3 rows    | 2+1        | 2+1
+ * 3    | 2+1       | 2+1        | 2+1
  * 4    | 2x2       | 2+2        | 2+2
  * 5    | -         | 2+2+1      | 2+2+1
  * 6    | -         | 2+2+2      | 2+2+2
@@ -111,8 +111,8 @@ export const getElmsForMobile = (
     // Default Mode (Grid View)
     if (isSidebarOpen) {
       // With sidebar, max 4 participants.
-      if (n <= 3) {
-        // 1-3 participants: each in own row
+      if (n <= 2) {
+        // 1-2 participants: each in own row
         chunkParts = chunk(participants, 1);
       } else {
         // 4 participants: 2x2 grid

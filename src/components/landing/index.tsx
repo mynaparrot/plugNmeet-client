@@ -191,7 +191,9 @@ const Landing = ({
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
-              <div className="camera bg-Gray-950 rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80">
+              <div
+                className={`camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 ${hybrid ? 'bg-transparent' : 'bg-Gray-950'}`}
+              >
                 {hybrid ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <img
