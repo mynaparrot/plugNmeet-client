@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import FooterMenuItem from './menuItem';
@@ -17,54 +16,31 @@ import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
-import {
-  isHybridMode,
-  publishNativeMedia,
-  unpublishNativeMedia,
-  useNativePublisherStatus,
-} from '../../../../helpers/nativeBridge';
+import useScreenshare from '../hooks/useScreenshare';
 
 const IconsInMenu = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const {
+    isScreenShareAllowed,
+    isMobileOrTablet,
+    hybrid,
+    isActiveShare,
+    isLocked: isScreenShareLocked,
+    toggleScreenShare,
+  } = useScreenshare();
 
-  const { roomFeatures, isMobileOrTablet, isAdmin } = useMemo(() => {
-    const rf = store.getState().session.currentRoom?.metadata?.roomFeatures;
-    const deviceType = store.getState().session.userDeviceType;
+  const { roomFeatures } = useMemo(() => {
     return {
-      roomFeatures: rf,
-      isMobileOrTablet: deviceType === 'mobile' || deviceType === 'tablet',
-      isAdmin: !!store.getState().session.currentUser?.metadata?.isAdmin,
+      roomFeatures:
+        store.getState().session.currentRoom?.metadata?.roomFeatures,
     };
   }, []);
-
-  const hybrid = isHybridMode();
-  const nativeStatus = useNativePublisherStatus();
-  const nativeShare = nativeStatus.sources[NativeMediaSource.SCREENSHARE];
-
-  const isScreenshareLock = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
-  );
-  const isScreenShareLocked = useMemo(
-    () => !isAdmin && isScreenshareLock,
-    [isAdmin, isScreenshareLock],
-  );
-
-  const toggleScreenShare = useCallback(() => {
-    if (isScreenShareLocked || !hybrid || !nativeStatus.available) return;
-    if (!nativeShare.active) {
-      publishNativeMedia(NativeMediaSource.SCREENSHARE);
-    } else {
-      unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
-    }
-  }, [isScreenShareLocked, hybrid, nativeStatus.available, nativeShare.active]);
 
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
   );
   const toggleWhiteboard = useCallback(() => {
-    // prevent toggling whiteboard during screen sharing
     if (store.getState().bottomIconsActivity.isActiveScreenshare) {
       return;
     }
@@ -131,15 +107,15 @@ const IconsInMenu = () => {
           }
         />
       )}
-      {roomFeatures?.allowScreenShare && !(isMobileOrTablet && !hybrid) && (
+      {isScreenShareAllowed && !(isMobileOrTablet && !hybrid) && (
         <FooterMenuItem
           onClick={toggleScreenShare}
-          isActive={nativeShare.active}
+          isActive={isActiveShare}
           icon={<ShareScreenIconSVG classes="w-auto h-4" />}
           text={
             isScreenShareLocked
               ? t('footer.icons.screen-sharing-locked')
-              : nativeShare.active
+              : isActiveShare
                 ? t('footer.icons.stop-screen-sharing')
                 : t('footer.icons.start-screen-sharing')
           }

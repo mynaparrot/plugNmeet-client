@@ -1,199 +1,22 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  createLocalScreenTracks,
-  ScreenShareCaptureOptions,
-  Track,
-} from 'livekit-client';
 import clsx from 'clsx';
-import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
-import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { updateIsActiveScreenshare } from '../../../store/slices/bottomIconsActivitySlice';
-import { updateScreenSharing } from '../../../store/slices/sessionSlice';
-import { getScreenShareResolution } from '../../../helpers/utils';
-import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { ShareScreenIconSVG } from '../../../assets/Icons/ShareScreenIconSVG';
-import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
-import {
-  isHybridMode,
-  publishNativeMedia,
-  unpublishNativeMedia,
-  useNativePublisherStatus,
-} from '../../../helpers/nativeBridge';
+import useScreenshare from './hooks/useScreenshare';
 
 const ScreenshareIcon = () => {
-  const dispatch = useAppDispatch();
-  const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
-  const isPublishing = useRef<boolean>(false);
-
-  const { isAdmin, isScreenShareAllowed, showTooltip, isMobileOrTablet } =
-    useMemo(() => {
-      const session = store.getState().session;
-      const deviceType = session.userDeviceType;
-      return {
-        isAdmin: !!session.currentUser?.metadata?.isAdmin,
-        isScreenShareAllowed:
-          !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
-        showTooltip: session.userDeviceType === 'desktop',
-        isMobileOrTablet: deviceType === 'mobile' || deviceType === 'tablet',
-      };
-    }, []);
-
-  const isActiveScreenshare = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveScreenshare,
-  );
-  const sessionScreenSharing = useAppSelector(
-    (state) => state.session.screenSharing,
-  );
-  const isScreenshareLock = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
-  );
-
-  const hybrid = isHybridMode();
-  const nativeStatus = useNativePublisherStatus();
-  const nativeShare = nativeStatus.sources[NativeMediaSource.SCREENSHARE];
-  const isActiveShare = hybrid ? nativeShare.active : isActiveScreenshare;
-
-  const isLocked = useMemo(
-    () => !isAdmin && isScreenshareLock,
-    [isAdmin, isScreenshareLock],
-  );
-
-  const endScreenShare = useCallback(async () => {
-    if (isActiveScreenshare && currentRoom) {
-      for (const publication of currentRoom.localParticipant.trackPublications.values()) {
-        if (
-          (publication.source === Track.Source.ScreenShare ||
-            publication.source === Track.Source.ScreenShareAudio) &&
-          publication.track
-        ) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
-      }
-      dispatch(updateIsActiveScreenshare(false));
-      dispatch(
-        updateScreenSharing({
-          isActive: false,
-          sharedBy: '',
-        }),
-      );
-    }
-  }, [isActiveScreenshare, dispatch, currentRoom]);
-
-  // for change in lock setting
-  useEffect(() => {
-    if (hybrid) {
-      if (isLocked) unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
-      return;
-    }
-    if (isLocked) {
-      void endScreenShare();
-    }
-    //eslint-disable-next-line
-  }, [isLocked]);
-
-  // for special case when user cancels sharing from browser directly,
-  // we will check & disable button status.
-  useEffect(() => {
-    if (!sessionScreenSharing.isActive && isActiveScreenshare) {
-      dispatch(updateIsActiveScreenshare(false));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionScreenSharing]);
-
-  const toggleScreenShare = useCallback(async () => {
-    if (isLocked || isPublishing.current) {
-      return;
-    }
-
-    if (hybrid) {
-      if (!nativeStatus.available) return;
-      if (!nativeShare.active) {
-        publishNativeMedia(NativeMediaSource.SCREENSHARE);
-      } else {
-        unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
-      }
-      return;
-    }
-
-    isPublishing.current = true;
-
-    try {
-      if (!isActiveScreenshare) {
-        if (sessionScreenSharing.isActive) {
-          dispatch(
-            addUserNotification({
-              message: t('footer.notice.already-active-screen-sharing'),
-              typeOption: 'error',
-            }),
-          );
-          return;
-        }
-
-        if (!currentRoom) {
-          return;
-        }
-
-        const option: ScreenShareCaptureOptions = {
-          audio: true,
-        };
-        // because of one bug, we'll disable to set regulation for safari
-        // https://bugs.webkit.org/show_bug.cgi?id=263015
-        const isSafari = /^((?!chrome|android).)*safari/i.test(
-          navigator.userAgent,
-        );
-        if (!isSafari) {
-          option.resolution = getScreenShareResolution();
-        }
-
-        const localTracks = await createLocalScreenTracks(option);
-        for (let i = 0; i < localTracks.length; i++) {
-          const track = localTracks[i];
-          await currentRoom.localParticipant.publishTrack(track);
-        }
-
-        dispatch(updateIsActiveScreenshare(true));
-        dispatch(
-          updateScreenSharing({
-            isActive: true,
-            sharedBy: currentRoom.localParticipant.identity,
-          }),
-        );
-      } else {
-        await endScreenShare();
-      }
-    } catch (e: any) {
-      console.error('screenshare error', e);
-      const name = e?.name ?? '';
-      if (name !== 'NotAllowedError' && name !== 'PermissionDeniedError') {
-        dispatch(
-          addUserNotification({
-            message: t('footer.notice.screenshare-error'),
-            typeOption: 'error',
-          }),
-        );
-      }
-    } finally {
-      isPublishing.current = false;
-    }
-  }, [
-    isLocked,
+  const {
+    isScreenShareAllowed,
+    isMobileOrTablet,
+    showTooltip,
     hybrid,
-    nativeStatus.available,
-    nativeShare.active,
-    isActiveScreenshare,
-    sessionScreenSharing,
-    currentRoom,
-    dispatch,
-    t,
-    endScreenShare,
-  ]);
+    nativeStatus,
+    isActiveShare,
+    isLocked,
+    toggleScreenShare,
+  } = useScreenshare();
 
   const text = () => {
     if (hybrid && !nativeStatus.available) {
