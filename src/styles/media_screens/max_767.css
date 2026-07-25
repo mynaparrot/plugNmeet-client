@@ -25,7 +25,11 @@
   } */
   .all-webcam-wrapper
     .all-webcam-wrapper-inner
-    .camera-row-0.total-items-3
+    .camera-row-1.total-items-2.inner-items-1
+    .video-camera-item,
+  .all-webcam-wrapper
+    .all-webcam-wrapper-inner
+    .camera-row-1.total-items-3.inner-items-1
     .video-camera-item {
     width: 100%;
   }
