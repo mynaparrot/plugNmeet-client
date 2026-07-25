@@ -88,16 +88,19 @@ on(NativeBridgeActions.NATIVE_TRACK_PUBLISHED, (msg) => {
     setSource(msg.payload.value.source, { active: true, muted: false });
   }
 });
+
 on(NativeBridgeActions.NATIVE_TRACK_UNPUBLISHED, (msg) => {
   if (msg.payload.case === 'trackState') {
     setSource(msg.payload.value.source, { active: false, muted: false });
   }
 });
+
 on(NativeBridgeActions.NATIVE_MEDIA_MUTED, (msg) => {
   if (msg.payload.case === 'mediaMuted') {
     setSource(msg.payload.value.source, { muted: msg.payload.value.muted });
   }
 });
+
 on(NativeBridgeActions.NATIVE_MEDIA_STATUS, (msg) => {
   if (msg.payload.case === 'mediaStatus' && msg.payload.value.error) {
     emit({ lastError: msg.payload.value.error });
