@@ -8,11 +8,13 @@ import {
 import AudioElm from './audio';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 import { getMediaServerConn } from '../../../helpers/livekit/utils';
+import { store } from '../../../store';
 
 const AudioElements = () => {
   const [audioSubscribers, setAudioSubscribers] =
     useState<Map<string, RemoteParticipant | LocalParticipant>>();
   const currentConnection = getMediaServerConn();
+  const localUserId = store.getState().session.currentUser?.userId;
 
   useEffect(() => {
     if (currentConnection.audioSubscribersMap.size) {
@@ -42,6 +44,7 @@ const AudioElements = () => {
             <AudioElm
               userId={userId}
               audioTrack={track.audioTrack}
+              isLocalUser={userId === localUserId}
               key={track.trackSid}
             />,
           );
@@ -50,7 +53,7 @@ const AudioElements = () => {
     }
 
     return elms;
-  }, [audioSubscribers]);
+  }, [audioSubscribers, localUserId]);
 };
 
 export default AudioElements;

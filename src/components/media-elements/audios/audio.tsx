@@ -8,9 +8,10 @@ import { participantsSelector } from '../../../store/slices/participantSlice';
 interface IAudioElmProps {
   audioTrack: RemoteAudioTrack;
   userId: string;
+  isLocalUser: boolean;
 }
 
-const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
+const AudioElm = ({ audioTrack, userId, isLocalUser }: IAudioElmProps) => {
   const ref = useRef<HTMLAudioElement>(null);
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
@@ -33,7 +34,9 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
     const el = ref.current;
     if (el) {
       audioTrack.attach(el);
-      if (typeof audioVolume !== 'undefined') {
+      if (isLocalUser) {
+        audioTrack.setVolume(0);
+      } else if (typeof audioVolume !== 'undefined') {
         audioTrack.setVolume(audioVolume);
       }
     }
@@ -44,13 +47,15 @@ const AudioElm = ({ audioTrack, userId }: IAudioElmProps) => {
       }
     };
     //eslint-disable-next-line
-  }, [audioTrack]);
+  }, [audioTrack, isLocalUser]);
 
   useEffect(() => {
-    if (typeof audioVolume !== 'undefined') {
+    if (isLocalUser) {
+      audioTrack.setVolume(0);
+    } else if (typeof audioVolume !== 'undefined') {
       throttledSetVolume(audioVolume);
     }
-  }, [audioVolume, throttledSetVolume]);
+  }, [audioVolume, throttledSetVolume, isLocalUser, audioTrack]);
 
   useEffect(() => {
     const el = ref.current;
