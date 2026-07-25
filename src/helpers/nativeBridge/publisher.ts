@@ -1,9 +1,3 @@
-/**
- * High-level native-publisher API.
- * Footer icons and any other component call these methods instead of touching
- * the transport directly. Also tracks native-side publishing status (fed by
- * native -> web bridge messages) and runs the heartbeat watchdog (doc 4.3).
- */
 import { create } from '@bufbuild/protobuf';
 import {
   NativeBridgeActions,
@@ -17,6 +11,9 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import { nativeBridge, nativeBridgeEventName } from './bridge';
+import { store } from '../../store';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import i18n from '../i18n';
 
 export interface NativeSourceStatus {
   active: boolean;
@@ -104,6 +101,25 @@ on(NativeBridgeActions.NATIVE_MEDIA_MUTED, (msg) => {
 on(NativeBridgeActions.NATIVE_MEDIA_STATUS, (msg) => {
   if (msg.payload.case === 'mediaStatus' && msg.payload.value.error) {
     emit({ lastError: msg.payload.value.error });
+  }
+});
+
+on(NativeBridgeActions.NATIVE_ERROR, (msg) => {
+  if (msg.payload.case === 'error') {
+    const error = msg.payload.value;
+    console.error(
+      'NativeBridge error:',
+      error.msg,
+      error.context ? `(Context: ${error.context})` : '',
+    );
+    store.dispatch(
+      addUserNotification({
+        message: i18n.t('notifications.native-bridge-error', {
+          error: error.msg,
+        }),
+        typeOption: 'error',
+      }),
+    );
   }
 });
 

@@ -98,7 +98,8 @@
     "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on.",
     "encryption-error": "Encryption error: {{error}}",
     "decryption-error": "Decryption error: {{error}}",
-    "error-occurred": "Error occurred"
+    "error-occurred": "Error occurred",
+    "native-bridge-error": "The application reported an error: {{error}}"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
