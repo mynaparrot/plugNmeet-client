@@ -34,6 +34,14 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  html,
+  body,
+  #plugNmeet-app {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   *,
   ::after,
   ::before,
