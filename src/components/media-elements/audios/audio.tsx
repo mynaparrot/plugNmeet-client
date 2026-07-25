@@ -62,12 +62,12 @@ const AudioElm = ({ audioTrack, userId, isLocalUser }: IAudioElmProps) => {
     if (!el) {
       return;
     }
-    if (!isNatsServerConnected) {
+    if (!isNatsServerConnected && !isLocalUser) {
       el.pause();
-    } else if (isNatsServerConnected && el.paused) {
-      el.play().then();
+    } else if ((isNatsServerConnected || isLocalUser) && el.paused) {
+      void el.play();
     }
-  }, [isNatsServerConnected]);
+  }, [isNatsServerConnected, isLocalUser]);
 
   return (
     <div style={{ display: 'none' }}>
