@@ -15,7 +15,7 @@ import {
   updateTotalVideoSubscribers,
 } from '../../store/slices/sessionSlice';
 import { IScreenSharing } from '../../store/slices/interfaces/session';
-import { toPlugNmeetUserId } from '../utils';
+import { toPlugNmeetUserIdPrimary } from '../utils';
 import { CurrentConnectionEvents } from './types';
 import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
 
@@ -40,6 +40,11 @@ export default class ParticipantMediaManager {
 
   public get videoSubscribersMap() {
     return this._videoSubscribersMap;
+  }
+
+  /** Returns the participant stored under the given (primary) user id, if any. */
+  public getVideoSubscriberParticipant(userId: string) {
+    return this._videoSubscribersMap.get(userId);
   }
 
   public get audioSubscribersMap() {
@@ -108,13 +113,19 @@ export default class ParticipantMediaManager {
     if (!participant.audioTrackPublications.size) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;
     }
-    // we don't want to add local audio here.
+    // we don't want to add local audio here unless in hybrid mode.
     if (userId === this.localUserId) {
+      // In hybrid mode, the native app publishes the mic and the webview subscribes to it as a RemoteParticipant.
+      // Play it at volume 0 to keep the AudioContext processing for speaking detection.
+      if (participant instanceof RemoteParticipant) {
+        this._audioSubscribersMap.set(userId, participant);
+        this.syncAudioSubscribers();
+      }
       return;
     }
 
@@ -147,7 +158,7 @@ export default class ParticipantMediaManager {
     if (!participant.videoTrackPublications.size) {
       return;
     }
-    const userId = toPlugNmeetUserId(participant.identity);
+    const userId = toPlugNmeetUserIdPrimary(participant.identity);
     const existUser = participantsSelector.selectById(store.getState(), userId);
     if (!existUser || !existUser.isOnline) {
       return;

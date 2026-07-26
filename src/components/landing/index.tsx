@@ -26,6 +26,8 @@ import { LoadingIcon } from '../../assets/Icons/Loading';
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
 import WebcamPreview from '../footer/modals/webcam/webcamPreview';
+import { isHybridMode } from '../../helpers/nativeBridge';
+import useLogo from '../../helpers/hooks/useLogo';
 
 interface StartupJoinModalProps {
   setIsAppReady: Dispatch<boolean>;
@@ -55,6 +57,9 @@ const Landing = ({
       isWebcamAllowed: show,
     };
   }, []);
+
+  const hybrid = isHybridMode();
+  const logo = useLogo();
 
   const isStartup = useAppSelector((state) => state.session.isStartup);
   const waitForApproval = useAppSelector(
@@ -122,17 +127,19 @@ const Landing = ({
   }, [t, waitForApproval, isReadyToConn]);
 
   const openConn = useCallback(() => {
-    if (selectedVideoDevice !== '') {
-      dispatch(updateSelectedVideoDevice(selectedVideoDevice));
-      dispatch(addVideoDevices(videoDevices));
+    if (!hybrid) {
+      if (selectedVideoDevice !== '') {
+        dispatch(updateSelectedVideoDevice(selectedVideoDevice));
+        dispatch(addVideoDevices(videoDevices));
+      }
+      if (selectedAudioDevice !== '') {
+        dispatch(updateSelectedAudioDevice(selectedAudioDevice));
+        dispatch(addAudioDevices(audioDevices));
+      }
     }
-    if (selectedAudioDevice !== '') {
-      dispatch(updateSelectedAudioDevice(selectedAudioDevice));
-      dispatch(addAudioDevices(audioDevices));
-    }
-
     setIsReadyToConn(true);
   }, [
+    hybrid,
     selectedAudioDevice,
     selectedVideoDevice,
     dispatch,
@@ -141,6 +148,9 @@ const Landing = ({
   ]);
 
   const getJoinPrompt = useCallback(() => {
+    if (hybrid) {
+      return t('landing.join-prompt-hybrid');
+    }
     if (lockMicrophone && (lockWebcam || !isWebcamAllowed)) {
       return t('landing.join-prompt-both-locked');
     } else if (lockMicrophone) {
@@ -149,7 +159,7 @@ const Landing = ({
       return t('landing.join-prompt-cam-locked');
     }
     return t('landing.join-prompt');
-  }, [lockMicrophone, lockWebcam, isWebcamAllowed, t]);
+  }, [hybrid, lockMicrophone, lockWebcam, isWebcamAllowed, t]);
 
   const getEnableDeviceButton = useCallback(() => {
     if (lockMicrophone) {
@@ -181,39 +191,55 @@ const Landing = ({
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
-              <div className="camera bg-Gray-950 rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80">
-                {selectedVideoDevice !== '' && (
-                  <WebcamPreview deviceId={selectedVideoDevice} />
+              <div
+                className={`camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 ${hybrid ? 'bg-transparent' : 'bg-Gray-950'}`}
+              >
+                {hybrid ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <img
+                      src={logo}
+                      alt="logo"
+                      className="max-w-[60%] max-h-[60%] object-contain"
+                    />
+                  </div>
+                ) : (
+                  selectedVideoDevice !== '' && (
+                    <WebcamPreview deviceId={selectedVideoDevice} />
+                  )
                 )}
               </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
-                {lockMicrophone ? (
-                  <div className="microphone-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
-                    <MicrophoneOff classes="h-6 w-6 text-red-200" />
-                    <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500"></i>
-                  </div>
-                ) : (
-                  <MicrophoneIcon
-                    audioDevices={audioDevices}
-                    enableMediaDevices={enableMediaDevices}
-                    disableMic={disableMic}
-                    setSelectedAudioDevice={setSelectedAudioDevice}
-                    selectedAudioDevice={selectedAudioDevice}
-                  />
-                )}
-                {lockWebcam || !isWebcamAllowed ? (
-                  <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
-                    <CameraOff classes="h-6 w-6 text-red-200" />
-                    <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500" />
-                  </div>
-                ) : (
-                  <WebcamIcon
-                    videoDevices={videoDevices}
-                    enableMediaDevices={enableMediaDevices}
-                    disableWebcam={disableWebcam}
-                    setSelectedVideoDevice={setSelectedVideoDevice}
-                    selectedVideoDevice={selectedVideoDevice}
-                  />
+                {!hybrid && (
+                  <>
+                    {lockMicrophone ? (
+                      <div className="microphone-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
+                        <MicrophoneOff classes="h-6 w-6 text-red-200" />
+                        <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500"></i>
+                      </div>
+                    ) : (
+                      <MicrophoneIcon
+                        audioDevices={audioDevices}
+                        enableMediaDevices={enableMediaDevices}
+                        disableMic={disableMic}
+                        setSelectedAudioDevice={setSelectedAudioDevice}
+                        selectedAudioDevice={selectedAudioDevice}
+                      />
+                    )}
+                    {lockWebcam || !isWebcamAllowed ? (
+                      <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
+                        <CameraOff classes="h-6 w-6 text-red-200" />
+                        <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500" />
+                      </div>
+                    ) : (
+                      <WebcamIcon
+                        videoDevices={videoDevices}
+                        enableMediaDevices={enableMediaDevices}
+                        disableWebcam={disableWebcam}
+                        setSelectedVideoDevice={setSelectedVideoDevice}
+                        selectedVideoDevice={selectedVideoDevice}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -261,7 +287,17 @@ const Landing = ({
                     </p>
                   </div>
                   <div className="buttons grid gap-3 w-full pt-10">
-                    {lockMicrophone && (lockWebcam || !isWebcamAllowed) ? (
+                    {hybrid ? (
+                      // Hybrid mode: just show Join button (no device selection needed)
+                      <button
+                        type="button"
+                        disabled={isReadyToConn === true}
+                        className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
+                        onClick={() => openConn()}
+                      >
+                        {t('join')}
+                      </button>
+                    ) : lockMicrophone && (lockWebcam || !isWebcamAllowed) ? (
                       // Case 1: Both devices are locked, only show the listener button.
                       <button
                         id="listenOnlyJoin"

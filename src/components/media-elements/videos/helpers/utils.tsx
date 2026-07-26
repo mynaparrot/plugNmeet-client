@@ -66,6 +66,18 @@ export const getElmsForTablet = (
 /*
  * For Mobile devices, for both normal & vertical view.
  */
+/*
+ * Mobile layout reference (Default Grid View, non-vertical):
+ *
+ * Cams | Sidebar   | Portrait   | Landscape
+ * -------------------------------------------
+ * 1    | 1 row     | 1 row      | 1 row
+ * 2    | 2 rows    | 2 rows     | 1 row of 2
+ * 3    | 2+1       | 2+1        | 2+1
+ * 4    | 2x2       | 2+2        | 2+2
+ * 5    | -         | 2+2+1      | 2+2+1
+ * 6    | -         | 2+2+2      | 2+2+2
+ */
 export const getElmsForMobile = (
   participants: ReactElement[],
   isPortrait: boolean,
@@ -99,9 +111,9 @@ export const getElmsForMobile = (
     // Default Mode (Grid View)
     if (isSidebarOpen) {
       // With sidebar, max 4 participants.
-      if (n <= 3) {
-        // 1-3 participants: 1 row
-        chunkParts = [participants];
+      if (n <= 2) {
+        // 1-2 participants: each in own row
+        chunkParts = chunk(participants, 1);
       } else {
         // 4 participants: 2x2 grid
         chunkParts = chunk(participants, 2);
@@ -110,19 +122,20 @@ export const getElmsForMobile = (
       // No sidebar, up to 6 participants.
       if (isPortrait) {
         // Portrait
-        if (n <= 3) {
-          chunkParts = [participants];
+        if (n <= 2) {
+          // 1-2 participants: each in own row
+          chunkParts = chunk(participants, 1);
         } else {
           // 4-6 Participants: 3-row by 2-column grid
           chunkParts = chunk(participants, 2);
         }
       } else {
         // Landscape
-        if (n <= 4) {
+        if (n <= 2) {
           chunkParts = [participants];
         } else {
-          // 5-6 Participants: 2-row by 3-column grid
-          chunkParts = chunk(participants, 3);
+          // 3+ Participants: max 2 per row
+          chunkParts = chunk(participants, 2);
         }
       }
     }

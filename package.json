@@ -9,9 +9,11 @@
     "start": "vite",
     "build": "vite build",
     "build-netlify": "pnpm run build && cp dist/assets/config_sample.js dist/assets/config.js",
-    "lint": "oxlint --config=./.oxlintrc.json --fix && prettier --write src/**/*.{jsx,ts,tsx}",
-    "lint:check": "oxlint --config=./.oxlintrc.json",
-    "format:check": "prettier --check src/**/*.{jsx,ts,tsx}",
+    "lint": "pnpm lint:oxlint && pnpm lint:format && pnpm lint:typecheck",
+    "lint:fix": "oxlint --config=./.oxlintrc.json --fix && prettier --write src/**/*.{jsx,ts,tsx}",
+    "lint:oxlint": "oxlint --config=./.oxlintrc.json",
+    "lint:format": "prettier --check src/**/*.{jsx,ts,tsx}",
+    "lint:typecheck": "tsc --noEmit",
     "prepare": "husky"
   },
   "dependencies": {
@@ -36,7 +38,7 @@
     "marked": "18.0.6",
     "mobile-detect": "1.4.5",
     "nosleep.js": "0.12.0",
-    "plugnmeet-protocol-js": "1.4.1-0",
+    "plugnmeet-protocol-js": "1.4.1-4",
     "react": "19.2.7",
     "react-cool-virtual": "0.7.0",
     "react-dnd": "16.0.1",

@@ -97,6 +97,7 @@ const ChatTranslationSettings = ({
                 maxLangsAllowSelecting={
                   chatTranslationFeatures?.maxSelectedTransLangs ?? 2
                 }
+                isServiceRunning={!!chatTranslationFeatures?.isEnabled}
               />
               <DefaultSubtitleLangSelector
                 label={t('speech-services.default-lang-label')}
@@ -104,6 +105,7 @@ const ChatTranslationSettings = ({
                 selectedTransLangs={selectedTransLangs}
                 selectedDefaultSubtitleLang={selectedDefaultLang}
                 setSelectedDefaultSubtitleLang={setSelectedDefaultLang}
+                isServiceRunning={!!chatTranslationFeatures?.isEnabled}
               />
             </div>
           </div>

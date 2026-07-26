@@ -3,6 +3,12 @@ window.plugNmeetConfig = {
   // The URL of your plugNmeet server.
   serverUrl: 'http://localhost:8080',
 
+  // Forces the web client into hybrid mode (native publisher + web subscriber).
+  // In hybrid mode the web client hides local media controls and drives media
+  // publishing through the native bridge.  Useful for testing, or when the
+  // server-issued token already carries client_type = HYBRID_WEB.
+  // force_hybrid_web: false,
+
   // This is helpful for external plugin development where images or other files are located
   // in another place.
   // staticAssetsPath: '',

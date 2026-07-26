@@ -7,13 +7,13 @@ import { ArrowUp } from '../../../../assets/Icons/ArrowUp';
 
 interface IWebcamMenuProps {
   currentRoom: Room;
-  isActiveWebcam: any;
+  isHybrid: boolean;
   toggleWebcam: () => void;
 }
 
 const WebcamMenu = ({
   currentRoom,
-  isActiveWebcam,
+  isHybrid,
   toggleWebcam,
 }: IWebcamMenuProps) => {
   return (
@@ -22,7 +22,7 @@ const WebcamMenu = ({
         {({ open }) => (
           <>
             <MenuButton
-              className={`footer-icon-bg w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-r-0 border overflow-hidden ${isActiveWebcam ? 'bg-Gray-50 dark:bg-transparent rounded-r-xl 3xl:rounded-r-2xl' : 'border-Gray-300'} ${open ? 'border-Gray-100 dark:border-Gray-700 dark:bg-Gray-800!' : 'border-Gray-300 dark:border-Gray-700 dark:border-l-Gray-800'}`}
+              className={`footer-icon-bg w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-r-0 border overflow-hidden bg-Gray-50 dark:bg-transparent rounded-r-xl 3xl:rounded-r-2xl ${open ? 'border-Gray-100 dark:border-Gray-700 dark:bg-Gray-800!' : 'border-Gray-300 dark:border-Gray-700 dark:border-l-Gray-800'}`}
             >
               <ArrowUp />
             </MenuButton>
@@ -40,6 +40,7 @@ const WebcamMenu = ({
             >
               <WebcamMenuItems
                 currentRoom={currentRoom}
+                isHybrid={isHybrid}
                 toggleWebcam={toggleWebcam}
               />
             </Transition>

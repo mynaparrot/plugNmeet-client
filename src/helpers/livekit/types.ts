@@ -46,6 +46,9 @@ export interface IConnectLivekit extends EventEmitter {
     track: LocalTrackPublication | RemoteTrackPublication,
   ): void;
   removeScreenShareTrack(userId: string): void;
+  getVideoSubscriberParticipant(
+    userId: string,
+  ): Participant | LocalParticipant | RemoteParticipant | undefined;
   on(
     event: CurrentConnectionEvents.ScreenShareStatus,
     listener: (active: boolean) => void,

@@ -98,7 +98,8 @@
     "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on.",
     "encryption-error": "Encryption error: {{error}}",
     "decryption-error": "Decryption error: {{error}}",
-    "error-occurred": "Error occurred"
+    "error-occurred": "Error occurred",
+    "native-bridge-error": "The application reported an error: {{error}}"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -302,6 +303,7 @@
       "stop-screen-sharing": "Stop Sharing Screen",
       "start-screen-sharing": "Share Screen",
       "screen-sharing-locked": "Screen Sharing Locked",
+      "native-publisher-unavailable": "Native publisher unavailable",
       "lower-hand": "Lower Hand",
       "raise-hand": "Raise Hand",
       "reactions": "Reactions",
@@ -355,6 +357,9 @@
       "has-raised-hand": "{{user}} has raised their hand.",
       "you-raised-hand": "You have raised your hand.",
       "muted-all-microphone": "All microphones have been muted.",
+      "no-suitable-track-found": "No suitable track found to mute/unmute.",
+      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
+      "failed-to-load-participant-info": "Failed to load participant info.",
       "applied-settings": "New lock settings have been applied.",
       "rtmp-starting": "Live stream is starting. Please wait.",
       "rtmp-ending": "Live stream is ending. Please wait.",
@@ -539,6 +544,7 @@
     "join-prompt-mic-locked": "The microphone is disabled for this meeting. You can enable your camera or join as a listener.",
     "join-prompt-cam-locked": "The camera is disabled for this meeting. You can enable your microphone or join as a listener.",
     "join-prompt-both-locked": "The microphone and camera are disabled for this meeting. Please join as a listener.",
+    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
     "enable-mic-cam-btn": "Enable Microphone and Camera",
     "enable-mic-btn": "Enable Microphone",
     "enable-cam-btn": "Enable Camera",

@@ -419,6 +419,23 @@ export const toPlugNmeetUserId = (userId: string) => {
   return userId;
 };
 
+// resolves a LiveKit identity to the PRIMARY plugNmeet user id:
+// applies toPlugNmeetUserId, then strips the reserved native-twin suffix.
+// e.g. "user1-native" -> "user1" (see HYBRID_INTEGRATION_ARCHITECTURE.md 6.1)
+export const NATIVE_TWIN_SUFFIX = '-native';
+
+export const toPlugNmeetUserIdPrimary = (userId: string) => {
+  const id = toPlugNmeetUserId(userId);
+  return id.endsWith(NATIVE_TWIN_SUFFIX)
+    ? id.slice(0, id.length - NATIVE_TWIN_SUFFIX.length)
+    : id;
+};
+
+// builds the LiveKit identity of the hybrid native twin for a primary user id
+// (mirrors the server's config.GetNativeTwinIdentity)
+export const toNativeTwinIdentity = (userId: string) =>
+  `${userId}${NATIVE_TWIN_SUFFIX}`;
+
 export const toLiveKitUserId = (userId: string) => {
   if (userId.startsWith('sip_')) {
     // if phone number hidden then SIP will send random userId

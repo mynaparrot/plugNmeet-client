@@ -15,10 +15,20 @@ import { SharedNotepadIconSVG } from '../../../../assets/Icons/SharedNotepadIcon
 import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
+import useScreenshare from '../hooks/useScreenshare';
 
 const IconsInMenu = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const {
+    isScreenShareAllowed,
+    isMobileOrTablet,
+    hybrid,
+    isActiveShare,
+    isLocked: isScreenShareLocked,
+    toggleScreenShare,
+  } = useScreenshare();
 
   const { roomFeatures } = useMemo(() => {
     return {
@@ -31,7 +41,6 @@ const IconsInMenu = () => {
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
   );
   const toggleWhiteboard = useCallback(() => {
-    // prevent toggling whiteboard during screen sharing
     if (store.getState().bottomIconsActivity.isActiveScreenshare) {
       return;
     }
@@ -95,6 +104,20 @@ const IconsInMenu = () => {
             isActiveWhiteboard
               ? t('footer.icons.hide-whiteboard')
               : t('footer.icons.show-whiteboard')
+          }
+        />
+      )}
+      {isScreenShareAllowed && !(isMobileOrTablet && !hybrid) && (
+        <FooterMenuItem
+          onClick={toggleScreenShare}
+          isActive={isActiveShare}
+          icon={<ShareScreenIconSVG classes="w-auto h-4" />}
+          text={
+            isScreenShareLocked
+              ? t('footer.icons.screen-sharing-locked')
+              : isActiveShare
+                ? t('footer.icons.stop-screen-sharing')
+                : t('footer.icons.start-screen-sharing')
           }
         />
       )}

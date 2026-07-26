@@ -9,12 +9,14 @@ interface IMicMenuProps {
   currentRoom: Room;
   isActiveMicrophone: any;
   isMicMuted: any;
+  hybrid?: boolean;
 }
 
 const MicMenu = ({
   currentRoom,
   isActiveMicrophone,
   isMicMuted,
+  hybrid,
 }: IMicMenuProps) => {
   return (
     <div className="menu relative">
@@ -37,7 +39,7 @@ const MicMenu = ({
               leaveFrom="transform opacity-100 scale-100 translate-y-0"
               leaveTo="transform opacity-0 scale-95 translate-y-2"
             >
-              <MicMenuItems currentRoom={currentRoom} />
+              <MicMenuItems currentRoom={currentRoom} hybrid={hybrid} />
             </Transition>
           </>
         )}

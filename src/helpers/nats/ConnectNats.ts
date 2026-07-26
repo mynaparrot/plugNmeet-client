@@ -53,6 +53,7 @@ import { destroyAudioManager } from '../libs/AudioActivityManager';
 import { deleteRoomDB } from '../libs/idb';
 import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
+import { teardownNativePublisher } from '../nativeBridge';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -317,6 +318,10 @@ export default class ConnectNats {
     clearInterval(this.pingInterval);
     clearInterval(this.reconciliationInterval);
     this.subscriptionHandler.handleParticipants.clearParticipantCounterInterval();
+
+    // Hybrid mode: tell the native host to release its LiveKit publisher + media
+    // (no-op in a regular browser; see HYBRID_INTEGRATION_ARCHITECTURE.md 4.1)
+    teardownNativePublisher();
 
     // Concurrently run all cleanup tasks.
     const cleanupPromises: Promise<void>[] = [];
