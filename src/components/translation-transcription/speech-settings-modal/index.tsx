@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   InsightsTranscriptionFeatures,
   InsightsUserSessionAction,
+  NativeMediaSource,
 } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 
@@ -18,6 +19,10 @@ import {
   startOrStopUserSession,
 } from '../helpers/apiConnections';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
+import {
+  isHybridMode,
+  useNativePublisherStatus,
+} from '../../../helpers/nativeBridge';
 import { updateSelectedSubtitleLang } from '../../../store/slices/speechServicesSlice';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
@@ -40,6 +45,8 @@ const SpeechSettingsModal = ({
   const isActiveDisplayOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
+  const hybrid = isHybridMode();
+  const nativeStatus = useNativePublisherStatus();
   const selectedSubtitleLang = useAppSelector(
     (state) => state.speechServices.selectedSubtitleLang,
   );
@@ -53,7 +60,10 @@ const SpeechSettingsModal = ({
 
   useEffect(() => {
     if (isActiveDisplayOptionsModal) {
-      if (mediaServerConn) {
+      if (hybrid) {
+        const nativeMic = nativeStatus.sources[NativeMediaSource.MIC];
+        setReadyToStart(nativeMic?.active);
+      } else if (mediaServerConn) {
         setReadyToStart(mediaServerConn.localParticipant.isMicrophoneEnabled);
       }
       getUserTaskStatus().then((res) => {
