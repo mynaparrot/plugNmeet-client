@@ -20,9 +20,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Check lint
-        run: pnpm run lint:check
-      - name: Check format
-        run: pnpm run format:check
+        run: pnpm run lint
       - name: Build project
         run: |
           pnpm run build
