@@ -101,7 +101,8 @@ const MenuIcon = ({
             >
               <MenuItems
                 static
-                className="origin-top-right z-10 absolute top-8 ltr:right-0 rtl:left-0 w-60 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-secondary3 shadow-lg rounded-2xl overflow-hidden p-2"
+                anchor="bottom end"
+                className="z-10 w-60 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-secondary3 shadow-lg rounded-2xl p-2 max-h-[80vh] overflow-y-auto [--anchor-gap:8px]"
               >
                 {menuItems}
               </MenuItems>
