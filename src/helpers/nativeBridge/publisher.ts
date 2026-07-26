@@ -193,10 +193,10 @@ const HEARTBEAT_INTERVAL_MS = 10_000;
 const HEARTBEAT_TIMEOUT_MS = 30_000;
 
 let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
-let lastPongAt = 0;
+let lastPongAt = performance.now();
 
 on(NativeBridgeActions.NATIVE_HEARTBEAT_PONG, () => {
-  lastPongAt = Date.now();
+  lastPongAt = performance.now();
   if (!status.available) {
     emit({ available: true });
   }
@@ -206,13 +206,13 @@ export const startNativeHeartbeat = (): void => {
   if (heartbeatTimer) {
     return;
   }
-  lastPongAt = Date.now();
+  lastPongAt = performance.now();
   heartbeatTimer = setInterval(() => {
     send(NativeBridgeActions.NATIVE_HEARTBEAT_PING, {
       case: 'heartbeat',
       value: create(NativeBridgeHeartbeatSchema, { ts: Date.now().toString() }),
     });
-    const alive = Date.now() - lastPongAt <= HEARTBEAT_TIMEOUT_MS;
+    const alive = performance.now() - lastPongAt <= HEARTBEAT_TIMEOUT_MS;
     if (alive !== status.available) {
       emit({ available: alive });
     }

@@ -36,7 +36,7 @@ const ScreenshareIcon = () => {
     {
       'border-[rgba(124,206,247,0.25)] dark:border-Gray-800': isActiveShare,
       'border-transparent': !isActiveShare,
-      '!border-Red-100 dark:!border-Red-600 pointer-events-none': isLocked,
+      '!border-Red-100 dark:!border-Red-600 cursor-not-allowed': isLocked,
     },
   );
 
@@ -47,7 +47,7 @@ const ScreenshareIcon = () => {
       'bg-gray-100 dark:bg-Gray-700': isActiveShare,
       'bg-white dark:bg-Gray-800': !isActiveShare,
       '!border-Red-200 dark:!border-Red-400 text-Red-400': isLocked,
-      'pointer-events-none opacity-50':
+      'cursor-not-allowed opacity-50':
         hybrid && !nativeStatus.available && !isLocked,
     },
   );

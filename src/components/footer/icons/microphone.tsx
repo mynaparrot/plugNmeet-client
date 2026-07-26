@@ -236,7 +236,7 @@ const MicrophoneIcon = () => {
       'border-Red-100!': isMicMutedEffective && isActiveMic,
       'border-[rgba(124,206,247,0.25)]': isActiveMic,
       'border-transparent': !isActiveMic,
-      'border-Red-100! dark:!border-Red-600 pointer-events-none': isLocked,
+      'border-Red-100! dark:!border-Red-600 cursor-not-allowed': isLocked,
     },
   );
 
@@ -252,7 +252,7 @@ const MicrophoneIcon = () => {
     'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
       'has-tooltip': showTooltip,
-      'pointer-events-none opacity-50':
+      'cursor-not-allowed opacity-50':
         hybrid && !nativeStatus.available && !isLocked,
     },
   );

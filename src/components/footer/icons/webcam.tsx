@@ -305,8 +305,7 @@ const WebcamIcon = () => {
   const wrapperClasses = clsx(
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
-      'border-Red-100! dark:!border-Red-600 pointer-events-none':
-        isWebcamLocked,
+      'border-Red-100! dark:!border-Red-600 cursor-not-allowed': isWebcamLocked,
       'border-Red-100!':
         !isWebcamLocked &&
         ((isActiveCam && isMuted) ||
@@ -333,7 +332,7 @@ const WebcamIcon = () => {
     'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
       'has-tooltip': showTooltip,
-      'pointer-events-none opacity-50':
+      'cursor-not-allowed opacity-50':
         hybrid && !nativeStatus.available && !isWebcamLocked,
     },
   );
