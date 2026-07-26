@@ -49,6 +49,7 @@ import ConnectionQualityMonitor, {
 import { updateOverallConnectionQuality } from '../../store/slices/sessionSlice';
 import {
   initializeNativePublisher,
+  nativeBridge,
   startNativeHeartbeat,
   teardownNativePublisher,
 } from '../nativeBridge';
@@ -186,8 +187,10 @@ export default class ConnectLivekit
       );
 
       // Hybrid mode: if the server sent a native publish token, hand it to the
-      // native host over the bridge and start the liveness heartbeat (doc 4.3).
+      // native host over the bridge and start the liveness heartbeat.
       if (serverInfo.nativeToken) {
+        // start our listener first
+        nativeBridge.start();
         const e2ee =
           this.enabledE2EE && this.encryptionKey
             ? { enabled: true, key: this.encryptionKey }

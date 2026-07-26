@@ -10,7 +10,7 @@ import {
   type NativeBridgeMsg,
 } from 'plugnmeet-protocol-js';
 
-import { nativeBridge, nativeBridgeEventName } from './bridge';
+import { nativeBridge, NATIVE_BRIDGE_EVENT } from './bridge';
 import { store } from '../../store';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
@@ -73,58 +73,64 @@ export const subscribeNativePublisherStatus = (
   return () => listeners.delete(fn);
 };
 
-const on = (
-  action: NativeBridgeActions,
-  cb: (msg: NativeBridgeMsg) => void,
-) => {
-  window.addEventListener(nativeBridgeEventName(action), ((
-    e: CustomEvent<NativeBridgeMsg>,
-  ) => cb(e.detail)) as EventListener);
-};
-
 // ---- native -> web status tracking (registered once at module load) ----
-on(NativeBridgeActions.NATIVE_TRACK_PUBLISHED, (msg) => {
-  if (msg.payload.case === 'trackState') {
-    setSource(msg.payload.value.source, { active: true, muted: false });
-  }
-});
+window.addEventListener(NATIVE_BRIDGE_EVENT, ((
+  e: CustomEvent<NativeBridgeMsg>,
+) => {
+  const msg = e.detail;
+  switch (msg.action) {
+    case NativeBridgeActions.NATIVE_HEARTBEAT_PONG:
+      lastPongAt = performance.now();
+      if (!status.available) {
+        emit({ available: true });
+      }
+      break;
 
-on(NativeBridgeActions.NATIVE_TRACK_UNPUBLISHED, (msg) => {
-  if (msg.payload.case === 'trackState') {
-    setSource(msg.payload.value.source, { active: false, muted: false });
-  }
-});
+    case NativeBridgeActions.NATIVE_TRACK_PUBLISHED:
+      if (msg.payload.case === 'trackState') {
+        setSource(msg.payload.value.source, { active: true, muted: false });
+      }
+      break;
 
-on(NativeBridgeActions.NATIVE_MEDIA_MUTED, (msg) => {
-  if (msg.payload.case === 'mediaMuted') {
-    setSource(msg.payload.value.source, { muted: msg.payload.value.muted });
-  }
-});
+    case NativeBridgeActions.NATIVE_TRACK_UNPUBLISHED:
+      if (msg.payload.case === 'trackState') {
+        setSource(msg.payload.value.source, { active: false, muted: false });
+      }
+      break;
 
-on(NativeBridgeActions.NATIVE_MEDIA_STATUS, (msg) => {
-  if (msg.payload.case === 'mediaStatus' && msg.payload.value.error) {
-    emit({ lastError: msg.payload.value.error });
-  }
-});
+    case NativeBridgeActions.NATIVE_MEDIA_MUTED:
+      if (msg.payload.case === 'mediaMuted') {
+        setSource(msg.payload.value.source, { muted: msg.payload.value.muted });
+      }
+      break;
 
-on(NativeBridgeActions.NATIVE_ERROR, (msg) => {
-  if (msg.payload.case === 'error') {
-    const error = msg.payload.value;
-    console.error(
-      'NativeBridge error:',
-      error.msg,
-      error.context ? `(Context: ${error.context})` : '',
-    );
-    store.dispatch(
-      addUserNotification({
-        message: i18n.t('notifications.native-bridge-error', {
-          error: error.msg,
-        }),
-        typeOption: 'error',
-      }),
-    );
+    case NativeBridgeActions.NATIVE_MEDIA_STATUS:
+      if (msg.payload.case === 'mediaStatus' && msg.payload.value.error) {
+        emit({ lastError: msg.payload.value.error });
+      }
+      break;
+
+    case NativeBridgeActions.NATIVE_ERROR:
+      if (msg.payload.case === 'error') {
+        console.error(
+          'NativeBridge error:',
+          msg.payload.value.msg,
+          msg.payload.value.context
+            ? `(Context: ${msg.payload.value.context})`
+            : '',
+        );
+        store.dispatch(
+          addUserNotification({
+            message: i18n.t('notifications.native-bridge-error', {
+              error: msg.payload.value.msg,
+            }),
+            typeOption: 'error',
+          }),
+        );
+      }
+      break;
   }
-});
+}) as EventListener);
 
 // ---- outbound helpers ----
 const send = (
@@ -194,13 +200,6 @@ const HEARTBEAT_TIMEOUT_MS = 30_000;
 
 let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
 let lastPongAt = performance.now();
-
-on(NativeBridgeActions.NATIVE_HEARTBEAT_PONG, () => {
-  lastPongAt = performance.now();
-  if (!status.available) {
-    emit({ available: true });
-  }
-});
 
 export const startNativeHeartbeat = (): void => {
   if (heartbeatTimer) {

@@ -1,4 +1,4 @@
-export { nativeBridge, nativeBridgeEventName } from './bridge';
+export { nativeBridge, NATIVE_BRIDGE_EVENT } from './bridge';
 export { isHybridMode } from './hybridMode';
 export {
   initializeNativePublisher,
@@ -13,4 +13,4 @@ export {
   subscribeNativePublisherStatus,
 } from './publisher';
 export type { NativePublisherStatus, NativeSourceStatus } from './publisher';
-export { useNativeBridgeEvent, useNativePublisherStatus } from './hooks';
+export { useNativePublisherStatus } from './hooks';

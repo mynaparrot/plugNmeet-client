@@ -11,21 +11,10 @@ import {
 } from '@bufbuild/protobuf';
 
 /**
- * Inbound messages are re-dispatched as prefixed CustomEvents so multiple
- * listeners never conflict: `pnm-native-bridge:<ACTION_NAME>`.
+ * Inbound messages are re-dispatched as a single CustomEvent so listeners
+ * never conflict: `pnm-native-bridge`.
  */
-const EVENT_PREFIX = 'pnm-native-bridge:';
-
-/** action enum value -> enum name (e.g. 20 -> "NATIVE_MEDIA_STATUS") */
-const actionNames = new Map<number, string>();
-for (const [name, value] of Object.entries(NativeBridgeActions)) {
-  if (typeof value === 'number') {
-    actionNames.set(value, name);
-  }
-}
-
-export const nativeBridgeEventName = (action: NativeBridgeActions): string =>
-  `${EVENT_PREFIX}${actionNames.get(action) ?? action}`;
+export const NATIVE_BRIDGE_EVENT = 'pnm-native-bridge';
 
 declare global {
   interface Window {
@@ -38,7 +27,18 @@ declare global {
 }
 
 class NativeBridge {
-  constructor() {
+  private started = false;
+
+  /**
+   * Activates the bridge by registering message listeners. Must be called
+   * only when the app is running as a hybrid client inside a native webview.
+   * Safe to call multiple times — subsequent calls are no-ops.
+   */
+  public start(): void {
+    if (this.started) {
+      return;
+    }
+    this.started = true;
     // RN WebView delivers messages on `document`; others on `window`.
     window.addEventListener('message', this.onMessage, false);
     document.addEventListener('message', this.onMessage, false);
@@ -50,15 +50,11 @@ class NativeBridge {
     if (!msg) {
       return; // foreign message on the bus — ignore
     }
-    window.dispatchEvent(
-      new CustomEvent(nativeBridgeEventName(msg.action), { detail: msg }),
-    );
+    window.dispatchEvent(new CustomEvent(NATIVE_BRIDGE_EVENT, { detail: msg }));
   };
 
   /**
    * exchanges `NativeBridgeMsg` messages as proto3 JSON strings.
-   * @param data
-   * @private
    */
   private static parse(data: unknown): NativeBridgeMsg | null {
     try {
@@ -106,19 +102,6 @@ class NativeBridge {
       window.parent.postMessage(str, '*');
     }
     // else: not inside a webview host — intentionally a no-op
-  }
-
-  /**
-   * True when a real native host channel (not iframe) is present.
-   * Detects the available webview channel (React Native WebView, iOS WKWebView,
-   * Android JavascriptInterface, or iframe fallback)
-   * */
-  public isNativeHostDetected(): boolean {
-    return (
-      !!window.ReactNativeWebView?.postMessage ||
-      !!window.webkit?.messageHandlers?.pnmNativeBridge?.postMessage ||
-      !!window.PnmNative?.postMessage
-    );
   }
 }
 
