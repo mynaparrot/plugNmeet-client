@@ -7,10 +7,11 @@ export {
   muteNativeMedia,
   unmuteNativeMedia,
   teardownNativePublisher,
-  startNativeHeartbeat,
-  stopNativeHeartbeat,
+} from './publisher';
+export { startNativeHeartbeat, stopNativeHeartbeat } from './heartbeat';
+export {
   getNativePublisherStatus,
   subscribeNativePublisherStatus,
-} from './publisher';
-export type { NativePublisherStatus, NativeSourceStatus } from './publisher';
+} from './subscriber';
+export type { NativePublisherStatus, NativeSourceStatus } from './subscriber';
 export { useNativePublisherStatus } from './hooks';
