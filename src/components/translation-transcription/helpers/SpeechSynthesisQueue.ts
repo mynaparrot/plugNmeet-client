@@ -6,13 +6,17 @@ class SpeechSynthesisQueue {
   private readonly _queue: SpeechSynthesisUtterance[] = [];
   private _state = WAITING;
 
+  private get isApiAvailable(): boolean {
+    return typeof window !== 'undefined' && !!window.speechSynthesis;
+  }
+
   /**
    * Adds a new utterance to the queue and starts processing if not already active.
    * @param text The text to be spoken.
    * @param lang The language code for the voice.
    */
   public speak = (text: string, lang: string) => {
-    if (!text || !lang) return;
+    if (!text || !lang || !this.isApiAvailable) return;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
@@ -41,7 +45,7 @@ class SpeechSynthesisQueue {
   public stop = () => {
     this._isActive = false;
     this._queue.length = 0; // Clear the array
-    window.speechSynthesis.cancel();
+    window.speechSynthesis?.cancel();
   };
 
   /**
@@ -52,7 +56,8 @@ class SpeechSynthesisQueue {
     if (
       this._state === PROCESSING ||
       this._queue.length === 0 ||
-      !this._isActive
+      !this._isActive ||
+      !this.isApiAvailable
     ) {
       this._state = WAITING;
       return;
